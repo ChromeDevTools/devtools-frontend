@@ -40,7 +40,7 @@ import * as PanelsCommon from '../common/common.js';
 
 import * as Elements from './elements.js';
 
-function getBaseViewInput(): Elements.ElementsTreeElement.ViewInput {
+function getBaseViewInput(): Elements.DOMTreeElementWidget.ViewInput {
   return {
     node: null,
     isClosingTag: false,
@@ -101,7 +101,7 @@ function getBaseViewInput(): Elements.ElementsTreeElement.ViewInput {
   };
 }
 
-describe('ElementsTreeElement', () => {
+describe('DOMTreeElementWidget', () => {
   describe('convertUnicodeCharsToHTMLEntities', () => {
     it('converts unicode characters to HTML entities', () => {
       const input = '\u2002\u2002This string has spaces\xA0\xA0and other\u202Aunicode characters\u200A.';
@@ -117,7 +117,7 @@ describe('ElementsTreeElement', () => {
         ],
       };
 
-      const result = Elements.ElementsTreeElement.convertUnicodeCharsToHTMLEntities(input);
+      const result = Elements.DOMTreeElementWidget.convertUnicodeCharsToHTMLEntities(input);
       assert.strictEqual(result.text, expected.text);
       assert.deepEqual(result.entityRanges, expected.entityRanges);
     });
@@ -129,7 +129,7 @@ describe('ElementsTreeElement', () => {
         entityRanges: [],
       };
 
-      const result = Elements.ElementsTreeElement.convertUnicodeCharsToHTMLEntities(input);
+      const result = Elements.DOMTreeElementWidget.convertUnicodeCharsToHTMLEntities(input);
       assert.strictEqual(result.text, expected.text);
       assert.deepEqual(result.entityRanges, expected.entityRanges);
     });
@@ -157,7 +157,7 @@ describe('ElementsTreeElement', () => {
     ];
     for (const [char, entity] of entityCases) {
       it(`converts U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')} to ${entity}`, () => {
-        const result = Elements.ElementsTreeElement.convertUnicodeCharsToHTMLEntities(`a${char}b`);
+        const result = Elements.DOMTreeElementWidget.convertUnicodeCharsToHTMLEntities(`a${char}b`);
         assert.strictEqual(result.text, `a${entity}b`);
         assert.deepEqual(result.entityRanges, [new TextUtils.TextRange.SourceRange(1, entity.length)]);
       });
@@ -165,7 +165,7 @@ describe('ElementsTreeElement', () => {
 
     it('converts the full legacy elements-panel-structure special character sequence', () => {
       const input = ' ><"\' ' + entityCases.map(([char]) => char).join('_') + ' ';
-      const result = Elements.ElementsTreeElement.convertUnicodeCharsToHTMLEntities(input);
+      const result = Elements.DOMTreeElementWidget.convertUnicodeCharsToHTMLEntities(input);
       assert.strictEqual(
           result.text,
           ' ><"\' &nbsp;_&shy;_&ensp;_&emsp;_&thinsp;_&hairsp;_&ZeroWidthSpace;_&zwnj;_&zwj;_&lrm;_&rlm;_' +
@@ -179,7 +179,7 @@ describe('ElementsTreeElement', () => {
     target.style.width = '100px';
     target.style.height = '20px';
     const style = document.createElement('style');
-    // FIXME: styles are currently external to ElementsTreeElement.
+    // FIXME: styles are currently external to DOMTreeElementWidget.
     style.innerText = Elements.DOMTreeWidget.elementsTreeOutlineStyles;
     target.append(style);
     renderElementIntoDOM(target, {
@@ -192,19 +192,19 @@ describe('ElementsTreeElement', () => {
     const descendantDecorations = [
       {title: 'Descendant 1', color: 'green'},
     ];
-    Elements.ElementsTreeElement.DEFAULT_VIEW({
+    Elements.DOMTreeElementWidget.DEFAULT_VIEW({
       ...getBaseViewInput(),
       decorations,
       descendantDecorations,
       decorationsTooltip: 'Title',
       indent: 20,
     },
-                                              {}, target);
+                                               {}, target);
     await assertScreenshot('elements/gutter_decorations.png');
   });
 });
 
-describeWithEnvironment('ElementsTreeElement', () => {
+describeWithEnvironment('DOMTreeElementWidget', () => {
   const DEFAULT_LAYOUT_PROPERTIES = {
     isFlex: false,
     isGrid: false,
@@ -243,13 +243,13 @@ describeWithEnvironment('ElementsTreeElement', () => {
     it('renders fallback tooltip when no provenance is available', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         adTooltipId: 'ad-tooltip-test',
         target,
         adProvenance: {},
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       const adorners = domTarget.querySelectorAll('devtools-adorner');
       const adorner = Array.from(adorners).find(a => a.name === 'ad');
@@ -263,13 +263,13 @@ describeWithEnvironment('ElementsTreeElement', () => {
     it('renders filter list rule', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         adTooltipId: 'ad-tooltip-test',
         target,
         adProvenance: {filterlistRule: '||ads.com^'},
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       const tooltip = domTarget.querySelector('devtools-tooltip');
       assert.exists(tooltip);
@@ -301,7 +301,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
       dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent);
 
       // Render the view.
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         adTooltipId: 'ad-tooltip-test',
         target,
@@ -312,7 +312,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
           },
         },
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       // Wait for the asynchronous Linkifier to render the script name.
       await raf();
@@ -356,11 +356,11 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
       sinon.stub(domModel, 'getElementByRelation').resolves(undefined);
 
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         node,
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       await raf();  // Wait for directive to run
 
@@ -396,11 +396,11 @@ describeWithEnvironment('ElementsTreeElement', () => {
       const fakeLink = html`<span>LINKIFIED_TARGET</span>`;
       const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(fakeLink);
 
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         node,
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       await raf();  // Wait for directive to run
 
@@ -446,11 +446,11 @@ describeWithEnvironment('ElementsTreeElement', () => {
       const fakeLink = html`<span>LINKIFIED_TARGET</span>`;
       const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(fakeLink);
 
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         node,
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       await raf();  // Wait for directive to run
 
@@ -554,7 +554,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     const event = new Event('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const node = new SDK.DOMModel.DOMNode(domModel);
-    Elements.ElementsTreeElement.ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, node);
+    Elements.DOMTreeElementWidget.DOMTreeElementWidget.populateForcedPseudoStateItems(contextMenu, node);
 
     const subMenu = findMenuItemWithLabel(contextMenu.debugSection(), 'Force state');
     assert.instanceOf(subMenu, UI.ContextMenu.SubMenu);
@@ -566,8 +566,8 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.assert.calledOnce(buttonProvider.showPane);
   });
 
-  function createTreeWidget(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
-    const widget = new Elements.ElementsTreeElement.ElementsTreeWidget();
+  function createTreeWidget(node: SDK.DOMModel.DOMNode): Elements.DOMTreeElementWidget.DOMTreeElementWidget {
+    const widget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget();
     widget.node = node;
     return widget;
   }
@@ -883,13 +883,13 @@ describeWithEnvironment('ElementsTreeElement', () => {
       assert.exists(domModel);
     });
 
-    function renderTreeNode(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
+    function renderTreeNode(node: SDK.DOMModel.DOMNode): Elements.DOMTreeElementWidget.DOMTreeElementWidget {
       const widget = createTreeWidget(node);
       widget.performUpdate();
       return widget;
     }
 
-    function getLinkOutputs(widget: Elements.ElementsTreeElement.ElementsTreeWidget):
+    function getLinkOutputs(widget: Elements.DOMTreeElementWidget.DOMTreeElementWidget):
         Array<{text: string, href: string}> {
       const linkElements =
           Array.from(widget.contentElement.querySelectorAll('.webkit-html-attribute-value .devtools-link'));
@@ -1047,7 +1047,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
   });
 });
 
-describeWithEnvironment('ElementsTreeElement highlighting', () => {
+describeWithEnvironment('DOMTreeElementWidget highlighting', () => {
   let domModel: SDK.DOMModel.DOMModel;
   let domTree: Elements.DOMTreeWidget.DOMTreeWidget;
   let containerNode: SDK.DOMModel.DOMNode;
@@ -1106,12 +1106,12 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     await UI.Widget.Widget.allUpdatesComplete;
   }
 
-  function findWidget(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
+  function findWidget(node: SDK.DOMModel.DOMNode): Elements.DOMTreeElementWidget.DOMTreeElementWidget {
     const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
     assert.exists(tree);
     for (const el of tree.getInternalTreeOutlineForTest().contentElement.querySelectorAll('devtools-widget')) {
       const widget = UI.Widget.Widget.get(el);
-      if (widget instanceof Elements.ElementsTreeElement.ElementsTreeWidget && widget.node === node &&
+      if (widget instanceof Elements.DOMTreeElementWidget.DOMTreeElementWidget && widget.node === node &&
           !widget.isClosingTag) {
         return widget;
       }
@@ -1355,16 +1355,16 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
   });
 });
 
-describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
+describeWithEnvironment('DOMTreeElementWidget in Snapshot Mode', () => {
   let target: SDK.Target.Target;
   let domModel: SDK.DOMModel.DOMModel;
   let node: SDK.DOMModel.DOMNode;
-  let widget: Elements.ElementsTreeElement.ElementsTreeWidget;
+  let widget: Elements.DOMTreeElementWidget.DOMTreeElementWidget;
 
   /** Creates the widget the way DOMTreeWidget renders snapshot trees: edits disabled, no AI button. */
   function createSnapshotWidget(node: SDK.DOMModel.DOMNode,
-                                disableEdits = true): Elements.ElementsTreeElement.ElementsTreeWidget {
-    const widget = new Elements.ElementsTreeElement.ElementsTreeWidget();
+                                disableEdits = true): Elements.DOMTreeElementWidget.DOMTreeElementWidget {
+    const widget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget();
     widget.disableEdits = disableEdits;
     widget.showAIButton = false;
     widget.node = node;
@@ -1568,12 +1568,12 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     it('renders selected hint when selected and inspectable', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         isSelected: true,
         canInspect: true,
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       const hint = domTarget.querySelector('.selected-hint');
       assert.exists(hint);
@@ -1582,12 +1582,12 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     it('does not render selected hint when selected but not inspectable', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         isSelected: true,
         canInspect: false,
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       const hint = domTarget.querySelector('.selected-hint');
       assert.isNull(hint);
@@ -1596,12 +1596,12 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     it('does not render selected hint when not selected', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
-      Elements.ElementsTreeElement.DEFAULT_VIEW({
+      Elements.DOMTreeElementWidget.DEFAULT_VIEW({
         ...getBaseViewInput(),
         isSelected: false,
         canInspect: true,
       },
-                                                {}, domTarget);
+                                                 {}, domTarget);
 
       const hint = domTarget.querySelector('.selected-hint');
       assert.isNull(hint);
@@ -1634,14 +1634,14 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
   });
 });
 
-describeWithEnvironment('ElementsTreeElement issue management', () => {
+describeWithEnvironment('DOMTreeElementWidget issue management', () => {
   let universe: TestUniverse;
   let target: SDK.Target.Target;
   let testDomModel: SDK.DOMModel.DOMModel;
   let domIssuesManager: IssuesManager.DOMIssuesManager.DOMIssuesManager;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
   let labelNode: SDK.DOMModel.DOMNode;
-  let widget: Elements.ElementsTreeElement.ElementsTreeWidget;
+  let widget: Elements.DOMTreeElementWidget.DOMTreeElementWidget;
   let mockModel: SDK.IssuesModel.IssuesModel;
 
   beforeEach(() => {
@@ -1680,7 +1680,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     labelNode = rootNode.children()![0];
     assert.isNotNull(labelNode);
 
-    widget = new Elements.ElementsTreeElement.ElementsTreeWidget();
+    widget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget();
     widget.node = labelNode;
     widget.markAsRoot();
     renderElementIntoDOM(widget);
@@ -2047,9 +2047,9 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
 
     function createWidget(
         node: SDK.DOMModel.DOMNode,
-        view: ViewFunctionStub<typeof Elements.ElementsTreeElement.ElementsTreeWidget>,
-        ): Elements.ElementsTreeElement.ElementsTreeWidget {
-      const widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined], view);
+        view: ViewFunctionStub<typeof Elements.DOMTreeElementWidget.DOMTreeElementWidget>,
+        ): Elements.DOMTreeElementWidget.DOMTreeElementWidget {
+      const widget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget(undefined, [undefined], view);
       widget.node = node;
       return widget;
     }
@@ -2057,7 +2057,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     it('eagerly fetches implicit anchor candidates when adorner is updated', async () => {
       const candidatesStub =
           sinon.stub(popoverNode, 'getImplicitAnchorCandidates').resolves([deferredCandidate1, deferredCandidate2]);
-      const view = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      const view = createViewFunctionStub(Elements.DOMTreeElementWidget.DOMTreeElementWidget);
 
       createWidget(popoverNode, view);
       await view.nextInput;
@@ -2066,7 +2066,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
 
       const nonPopoverNode = candidate1;
       const nonPopoverStub = sinon.stub(nonPopoverNode, 'getImplicitAnchorCandidates');
-      const nonPopoverView = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      const nonPopoverView = createViewFunctionStub(Elements.DOMTreeElementWidget.DOMTreeElementWidget);
       createWidget(nonPopoverNode, nonPopoverView);
       await nonPopoverView.nextInput;
 
@@ -2079,7 +2079,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
       const forceShowStub = sinon.stub<[Protocol.DOM.ForceShowPopoverRequest]>();
       connection.setSuccessHandler('DOM.forceShowPopover', forceShowStub);
 
-      const view = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      const view = createViewFunctionStub(Elements.DOMTreeElementWidget.DOMTreeElementWidget);
       createWidget(popoverNode, view);
       await view.nextInput;
 
@@ -2125,7 +2125,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show');
 
-      const view = createViewFunctionStub(Elements.ElementsTreeElement.ElementsTreeWidget);
+      const view = createViewFunctionStub(Elements.DOMTreeElementWidget.DOMTreeElementWidget);
       createWidget(popoverNode, view);
       await view.nextInput;
 
@@ -2225,17 +2225,17 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
   });
 });
 
-describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
+describeWithEnvironment('DOMTreeElementWidget Change Tracking', () => {
   let target: SDK.Target.Target;
   let testDomModel: SDK.DOMModel.DOMModel;
   let universe: TestUniverse;
   let tracker: ChangeTracker.ChangeTracker.ChangeTracker;
   let node: SDK.DOMModel.DOMNode;
-  let widget: Elements.ElementsTreeElement.ElementsTreeWidget;
+  let widget: Elements.DOMTreeElementWidget.DOMTreeElementWidget;
 
   /** Renders a standalone ElementsTreeWidget for `node` that records changes with `tracker`. */
-  function renderWidget(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
-    const widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+  function renderWidget(node: SDK.DOMModel.DOMNode): Elements.DOMTreeElementWidget.DOMTreeElementWidget {
+    const widget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget(undefined, [undefined, tracker]);
     widget.node = node;
     widget.performUpdate();
     return widget;
@@ -2506,7 +2506,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       callback?.(null);
     });
 
-    const childWidget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    const childWidget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget(undefined, [undefined, tracker]);
     childWidget.node = childNode;
     await childWidget.remove();
 
@@ -2539,7 +2539,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       callback?.('Cannot remove node');
     });
 
-    const childWidget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    const childWidget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget(undefined, [undefined, tracker]);
     childWidget.node = childNode;
     await childWidget.remove();
 
@@ -2574,7 +2574,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       callback?.(null);
     });
 
-    const childWidget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    const childWidget = new Elements.DOMTreeElementWidget.DOMTreeElementWidget(undefined, [undefined, tracker]);
     childWidget.isToggledToHidden = node => node.isToggledToHidden();
     childWidget.node = childNode;
     await childWidget.remove();
@@ -2642,7 +2642,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.strictEqual(svgWidget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'feComposite');
   });
 
-  it('renders special whitespace and entities in ElementsTreeElement', () => {
+  it('renders special whitespace and entities in DOMTreeElementWidget', () => {
     const entityNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
       nodeId: 40 as Protocol.DOM.NodeId,
       backendNodeId: 40 as Protocol.DOM.BackendNodeId,
@@ -2733,7 +2733,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
         childNodeCount: 0,
       }],
     });
-    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeWidget.canShowInlineText(node));
+    assert.isTrue(Elements.DOMTreeElementWidget.DOMTreeElementWidget.canShowInlineText(node));
     const feffWidget = renderWidget(node);
 
     const textEl = feffWidget.contentElement.querySelector('.webkit-html-text-node');
@@ -2744,7 +2744,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   });
 
   it('disallows editing text and processing instruction nodes exceeding MaxEditableTextSize', () => {
-    const editableValue = 'a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize);
+    const editableValue = 'a'.repeat(Elements.DOMTreeElementWidget.MaxEditableTextSize);
     const truncatedValue = editableValue + '\u2026';
 
     const editableTextNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
@@ -2775,9 +2775,10 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       childNodeCount: 0,
     });
 
-    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeWidget.canEditTextNode(editableTextNode));
-    assert.isFalse(Elements.ElementsTreeElement.ElementsTreeWidget.canEditTextNode(truncatedTextNode));
-    assert.isFalse(Elements.ElementsTreeElement.ElementsTreeWidget.canEditTextNode(truncatedProcessingInstructionNode));
+    assert.isTrue(Elements.DOMTreeElementWidget.DOMTreeElementWidget.canEditTextNode(editableTextNode));
+    assert.isFalse(Elements.DOMTreeElementWidget.DOMTreeElementWidget.canEditTextNode(truncatedTextNode));
+    assert.isFalse(
+        Elements.DOMTreeElementWidget.DOMTreeElementWidget.canEditTextNode(truncatedProcessingInstructionNode));
 
     const truncatedTextWidget = renderWidget(truncatedTextNode);
     const truncatedPiWidget = renderWidget(truncatedProcessingInstructionNode);

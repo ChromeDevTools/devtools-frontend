@@ -226,7 +226,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(tree);
         const widgetElement = tree.shadowRoot?.querySelector('devtools-widget');
         assert.exists(widgetElement);
-        const widget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(widgetElement) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(widget);
 
         const mockIssue = new IssuesManager.GenericIssue.GenericIssue({
@@ -289,7 +289,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(tree);
         const widgetElement = tree.shadowRoot?.querySelector('devtools-widget');
         assert.exists(widgetElement);
-        const widget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(widgetElement) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(widget);
 
         const mockIssue = new IssuesManager.GenericIssue.GenericIssue({
@@ -426,14 +426,14 @@ describeWithEnvironment('DOMTreeWidget', () => {
   }
 
   function findElementsTreeWidget(domTree: Elements.DOMTreeWidget.DOMTreeWidget,
-                                  node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget|null {
+                                  node: SDK.DOMModel.DOMNode): Elements.DOMTreeElementWidget.DOMTreeElementWidget|null {
     const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
     if (!tree) {
       return null;
     }
     for (const el of tree.getInternalTreeOutlineForTest().contentElement.querySelectorAll('devtools-widget')) {
       const widget = UI.Widget.Widget.get(el);
-      if (widget instanceof Elements.ElementsTreeElement.ElementsTreeWidget && widget.node === node) {
+      if (widget instanceof Elements.DOMTreeElementWidget.DOMTreeElementWidget && widget.node === node) {
         return widget;
       }
     }
@@ -519,8 +519,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const widgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
         assert.exists(widgetElement);
         const widget = UI.Widget.Widget.get(widgetElement);
-        assert.instanceOf(widget, Elements.ElementsTreeElement.ElementsTreeWidget);
-        assert.strictEqual((widget as Elements.ElementsTreeElement.ElementsTreeWidget).node, rootNode);
+        assert.instanceOf(widget, Elements.DOMTreeElementWidget.DOMTreeElementWidget);
+        assert.strictEqual((widget as Elements.DOMTreeElementWidget.DOMTreeElementWidget).node, rootNode);
       } finally {
         domTree.detach();
       }
@@ -703,7 +703,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         const widgetElement = children[0].listItemElement.querySelector('devtools-widget');
         assert.exists(widgetElement);
-        const widget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(widgetElement) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(widget);
         assert.strictEqual(widget.node, rootNode.children()![0]);
       } finally {
@@ -879,7 +879,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.lengthOf(childTreeElements, 2);
         const spanWidgetElement = childTreeElements[0].listItemElement.querySelector('devtools-widget');
         assert.exists(spanWidgetElement);
-        const widget = UI.Widget.Widget.get(spanWidgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(spanWidgetElement) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.strictEqual(widget.node?.nodeName(), 'SPAN');
       } finally {
         domTree.detach();
@@ -940,27 +940,29 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         // Root DIV (depth 0, expandable): 12 * (0 - 1) + 1 = -11.
         const rootWidgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
-        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const rootWidget =
+            UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.strictEqual(rootWidget.computeLeftIndent, -11);
 
         // Section (depth 1, expandable): 12 * (1 - 1) + 1 = 1.
         const sectionTreeElement = rootTreeElements[0].children()[0];
         const sectionWidgetElement = sectionTreeElement.listItemElement.querySelector('devtools-widget');
         const sectionWidget =
-            UI.Widget.Widget.get(sectionWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+            UI.Widget.Widget.get(sectionWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.strictEqual(sectionWidget.computeLeftIndent, 1);
 
         // Span (depth 2, not expandable): 12 * (2 - 1) + 12 = 24.
         const spanTreeElement = sectionTreeElement.children()[0];
         const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
-        const spanWidget = UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const spanWidget =
+            UI.Widget.Widget.get(spanWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.strictEqual(spanWidget.computeLeftIndent, 24);
 
         // Closing DIV (depth 1 in tree hierarchy, not expandable): 12 * (1 - 1) + 12 = 12.
         const closingDivTreeElement = rootTreeElements[0].children()[1];
         const closingDivWidgetElement = closingDivTreeElement.listItemElement.querySelector('devtools-widget');
         const closingDivWidget =
-            UI.Widget.Widget.get(closingDivWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+            UI.Widget.Widget.get(closingDivWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.strictEqual(closingDivWidget.computeLeftIndent, 12);
       } finally {
         domTree.detach();
@@ -1027,7 +1029,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.isTrue(spanTreeElement.listItemElement.classList.contains('hovered'));
 
         const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
-        const spanWidget = UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const spanWidget =
+            UI.Widget.Widget.get(spanWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.isTrue(spanWidget.hovered);
 
         // Clear overlay highlight.
@@ -1208,7 +1211,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       sinon.stub(domModel, 'requestDocument').resolves(null);
       const {domTree} = setupDOMTreeWidget(target);
-      let pWidget: Elements.ElementsTreeElement.ElementsTreeWidget|null = null;
+      let pWidget: Elements.DOMTreeElementWidget.DOMTreeElementWidget|null = null;
 
       try {
         window.getSelection()?.removeAllRanges();
@@ -1483,7 +1486,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const internalTree = tree.getInternalTreeOutlineForTest();
         const selectedWidget =
             UI.Widget.Widget.get(internalTree.selectedTreeElement!.listItemElement.querySelector('devtools-widget')!) as
-            Elements.ElementsTreeElement.ElementsTreeWidget;
+            Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.strictEqual(selectedWidget.node, pNode);
 
         // Press ArrowDown to move the selection to spanNode via the keyboard.
@@ -1725,7 +1728,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
            const rootWidgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
            const rootWidget =
-               UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+               UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
            assert.exists(rootWidget);
            const rootAttrs = rootWidget.contentElement.querySelectorAll('.webkit-html-attribute');
            assert.lengthOf(rootAttrs, 1);
@@ -1733,7 +1736,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
            const pTreeElement = rootTreeElements[0].children()[0];
            const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
-           const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
            assert.exists(pWidget);
            let pAttrs = pWidget.contentElement.querySelectorAll('.webkit-html-attribute');
            assert.lengthOf(pAttrs, 1);
@@ -1801,7 +1804,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
            const internalTree = tree.getInternalTreeOutlineForTest();
            const pTreeElement = internalTree.rootElement().children()[0].children()[0];
            const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
-           const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
            assert.exists(pWidget);
 
            await pWidget.updateComplete;
@@ -1845,7 +1848,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const internalTree = tree.getInternalTreeOutlineForTest();
         const rootTreeElement = internalTree.rootElement().children()[0];
         const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
-        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const rootWidget =
+            UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(rootWidget);
 
         await rootWidget.updateComplete;
@@ -1890,7 +1894,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const internalTree = tree.getInternalTreeOutlineForTest();
         const pTreeElement = internalTree.rootElement().children()[0].children()[0];
         const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
-        const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(pWidget);
 
         const getText = (el: Element): string => el.textContent?.replace(/\u200B/g, '') ?? '';
@@ -1935,7 +1939,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
            const rootTreeElements = internalTree.rootElement().children();
            const rootWidgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
            const rootWidget =
-               UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+               UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
            assert.exists(rootWidget);
            assert.isTrue(rootWidget.isEditing);
            rootWidget.editing?.cancel();
@@ -1949,7 +1953,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
            const spanTreeElement = rootTreeElements[0].children()[0];
            const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
            const spanWidget =
-               UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+               UI.Widget.Widget.get(spanWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
            assert.exists(spanWidget);
            assert.isTrue(spanWidget.isEditing);
            spanWidget.editing?.cancel();
@@ -1996,7 +2000,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const rootTreeElements = internalTree.rootElement().children();
         const pTreeElement = rootTreeElements[0].children()[0];
         const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
-        const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(pWidget);
         const editorContainer = pWidgetElement?.querySelector('.elements-tree-editor');
         assert.exists(editorContainer);
@@ -2107,7 +2111,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
            const rootTreeElement = internalTree.rootElement().children()[0];
            const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
            const rootWidget =
-               UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+               UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
            assert.exists(rootWidget);
 
            // Start inline attribute editing on rootWidget
@@ -2274,7 +2278,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const internalTree = tree.getInternalTreeOutlineForTest();
         const rootTreeElement = internalTree.rootElement().children()[0];
         const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
-        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const rootWidget =
+            UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(rootWidget);
         assert.isTrue(rootWidget.isEditing);
 
@@ -2290,7 +2295,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         const spanTreeElement = rootTreeElement.children()[0];
         const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
-        const spanWidget = UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const spanWidget =
+            UI.Widget.Widget.get(spanWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(spanWidget);
         assert.isTrue(spanWidget.isEditing);
 
@@ -2306,7 +2312,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         const textTreeElement = rootTreeElement.children()[1];
         const textWidgetElement = textTreeElement.listItemElement.querySelector('devtools-widget');
-        const textWidget = UI.Widget.Widget.get(textWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const textWidget =
+            UI.Widget.Widget.get(textWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(textWidget);
         assert.isTrue(textWidget.isEditing);
 
@@ -2332,7 +2339,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         const btnTreeElement = rootTreeElement.children()[2];
         const btnWidgetElement = btnTreeElement.listItemElement.querySelector('devtools-widget');
-        const btnWidget = UI.Widget.Widget.get(btnWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const btnWidget = UI.Widget.Widget.get(btnWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(btnWidget);
         assert.isTrue(btnWidget.isEditing);
         btnWidget.editing?.cancel();
@@ -2374,7 +2381,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const internalTree = tree.getInternalTreeOutlineForTest();
         const rootTreeElement = internalTree.rootElement().children()[0];
         const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
-        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const rootWidget =
+            UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(rootWidget);
 
         domTree.selectDOMNode(rootNode);
@@ -2425,7 +2433,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.isFalse(rootTreeElement.expanded);
 
         const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
-        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const rootWidget =
+            UI.Widget.Widget.get(rootWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(rootWidget);
 
         domTree.selectDOMNode(rootNode);
@@ -2692,7 +2701,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const divTreeElement = rootTreeElements[0];
         assert.exists(divTreeElement);
         const divWidgetElement = divTreeElement.listItemElement.querySelector('devtools-widget');
-        const divWidget = UI.Widget.Widget.get(divWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const divWidget = UI.Widget.Widget.get(divWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(divWidget);
 
         // Wait for the 100ms #decorationsThrottler delay to settle before waiting for tree updates.
@@ -2755,7 +2764,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const divTreeElement = rootTreeElements[0];
         assert.exists(divTreeElement);
         const divWidgetElement = divTreeElement.listItemElement.querySelector('devtools-widget');
-        const divWidget = UI.Widget.Widget.get(divWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const divWidget = UI.Widget.Widget.get(divWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(divWidget);
 
         // Wait for the 100ms #decorationsThrottler delay to settle before waiting for tree updates.
@@ -3058,12 +3067,12 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         const openingWidgetElement = openingDivTreeElement.listItemElement.querySelector('devtools-widget');
         const openingWidget =
-            UI.Widget.Widget.get(openingWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+            UI.Widget.Widget.get(openingWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.isTrue(openingWidget.hovered);
 
         const closingWidgetElement = closingDivTreeElement.listItemElement.querySelector('devtools-widget');
         const closingWidget =
-            UI.Widget.Widget.get(closingWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+            UI.Widget.Widget.get(closingWidgetElement!) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.isFalse(closingWidget.hovered);
 
         // 2. Hover closing tag
@@ -3228,10 +3237,10 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         const openingWidget =
             UI.Widget.Widget.get(openingDivTreeElement.listItemElement.querySelector('devtools-widget')!) as
-            Elements.ElementsTreeElement.ElementsTreeWidget;
+            Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         const closingWidget =
             UI.Widget.Widget.get(closingDivTreeElement.listItemElement.querySelector('devtools-widget')!) as
-            Elements.ElementsTreeElement.ElementsTreeWidget;
+            Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.isFalse(openingWidget.selected);
         assert.isTrue(closingWidget.selected);
         assert.isFalse(openingDivTreeElement.listItemElement.classList.contains('selected'));
@@ -3284,8 +3293,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(devtoolsTree?.shadowRoot);
         const widgetEls = Array.from(devtoolsTree.shadowRoot.querySelectorAll('devtools-widget'));
         const widgets = widgetEls.map(el => UI.Widget.Widget.get(el))
-                            .filter((w): w is Elements.ElementsTreeElement.ElementsTreeWidget =>
-                                        w instanceof Elements.ElementsTreeElement.ElementsTreeWidget);
+                            .filter((w): w is Elements.DOMTreeElementWidget.DOMTreeElementWidget =>
+                                        w instanceof Elements.DOMTreeElementWidget.DOMTreeElementWidget);
         const openingWidget = widgets.find(w => w.node === rootNode && !w.isClosingTag);
         assert.exists(openingWidget);
         assert.isTrue(openingWidget.selected);
@@ -3486,7 +3495,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(devtoolsTree?.shadowRoot);
         const widgetEl = devtoolsTree.shadowRoot.querySelector('devtools-widget');
         assert.exists(widgetEl);
-        const widget = UI.Widget.Widget.get(widgetEl) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(widgetEl) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(widget);
         const updateAdornersSpy = sinon.spy(widget, 'updateAdorners');
 
@@ -3534,7 +3543,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(devtoolsTree?.shadowRoot);
         const widgetEl = devtoolsTree.shadowRoot.querySelector('devtools-widget');
         assert.exists(widgetEl);
-        const widget = UI.Widget.Widget.get(widgetEl) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(widgetEl) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(widget);
         const highlightSpy = sinon.spy(widget, 'highlightAttribute');
 
@@ -3688,7 +3697,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(tree);
         const widgetEl = tree.shadowRoot?.querySelector('devtools-widget');
         assert.exists(widgetEl);
-        const widget = UI.Widget.Widget.get(widgetEl) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        const widget = UI.Widget.Widget.get(widgetEl) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
         assert.exists(widget);
         assert.isTrue(widget.isEditing);
 
@@ -3748,8 +3757,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         assert.exists(devtoolsTree?.shadowRoot);
         const widgetEls = Array.from(devtoolsTree.shadowRoot.querySelectorAll('devtools-widget'));
         const widgets = widgetEls.map(el => UI.Widget.Widget.get(el))
-                            .filter((w): w is Elements.ElementsTreeElement.ElementsTreeWidget =>
-                                        w instanceof Elements.ElementsTreeElement.ElementsTreeWidget);
+                            .filter((w): w is Elements.DOMTreeElementWidget.DOMTreeElementWidget =>
+                                        w instanceof Elements.DOMTreeElementWidget.DOMTreeElementWidget);
         const openingWidget = widgets.find(w => w.node === rootNode && !w.isClosingTag);
         assert.exists(openingWidget);
         const closingWidget = widgets.find(w => w.node === rootNode && w.isClosingTag);
@@ -4188,7 +4197,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
           return;
         }
         for (const el of tree.getInternalTreeOutlineForTest().contentElement.querySelectorAll('devtools-widget')) {
-          const widget = UI.Widget.Widget.get(el) as Elements.ElementsTreeElement.ElementsTreeWidget | undefined;
+          const widget = UI.Widget.Widget.get(el) as Elements.DOMTreeElementWidget.DOMTreeElementWidget | undefined;
           widget?.editing?.cancel();
         }
       }
@@ -5092,7 +5101,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
   it('does not start editing text or processing instruction nodes exceeding MaxEditableTextSize', async () => {
     const {domTree, domModel} = setupDOMTreeWidget(target);
     try {
-      const truncatedValue = 'a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize) + '\u2026';
+      const truncatedValue = 'a'.repeat(Elements.DOMTreeElementWidget.MaxEditableTextSize) + '\u2026';
       const rootNode = createTestDOMTree(domModel, {
         nodeId: 1,
         nodeName: 'DIV',
@@ -5158,10 +5167,11 @@ describeWithEnvironment('DOMTreeWidget', () => {
     return tree.getInternalTreeOutlineForTest();
   }
 
-  function treeWidgetOf(treeElement: UI.TreeOutline.TreeElement): Elements.ElementsTreeElement.ElementsTreeWidget|null {
+  function treeWidgetOf(treeElement: UI.TreeOutline.TreeElement): Elements.DOMTreeElementWidget.DOMTreeElementWidget|
+      null {
     const widgetElement = treeElement.listItemElement.querySelector('devtools-widget');
     const widget = widgetElement ? UI.Widget.Widget.get(widgetElement) : null;
-    return widget instanceof Elements.ElementsTreeElement.ElementsTreeWidget ? widget : null;
+    return widget instanceof Elements.DOMTreeElementWidget.DOMTreeElementWidget ? widget : null;
   }
 
   function findTreeElement(domTree: Elements.DOMTreeWidget.DOMTreeWidget,
@@ -5223,7 +5233,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
     });
   }
 
-  function widgetText(widget: Elements.ElementsTreeElement.ElementsTreeWidget|null): string {
+  function widgetText(widget: Elements.DOMTreeElementWidget.DOMTreeElementWidget|null): string {
     return widget?.contentElement.textContent?.replace(/\u200B/g, '') ?? '';
   }
 

@@ -265,7 +265,7 @@ const UIStrings = {
    */
   reveal: 'Reveal',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMTreeElementWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum TagType {
@@ -461,10 +461,10 @@ function renderTitle(
         return openingTag;
       }
 
-      if (ElementsTreeWidget.canShowInlineText(node)) {
+      if (DOMTreeElementWidget.canShowInlineText(node)) {
         const firstChild = node.firstChild;
         if (!firstChild) {
-          throw new Error('ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.');
+          throw new Error('DOMTreeElementWidget._nodeTitleInfo expects node.firstChild to be defined.');
         }
         const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
         const textContent = Platform.StringUtilities.collapseWhitespace(result.text);
@@ -1156,7 +1156,7 @@ export interface InitialEditState {
   editAsHTMLCallback?: (success: boolean) => void;
 }
 
-export class ElementsTreeWidget extends UI.Widget.Widget {
+export class DOMTreeElementWidget extends UI.Widget.Widget {
   static override readonly INJECT: readonly[typeof IssuesManager.DOMIssuesManager.DOMIssuesManager,
                                             typeof ChangeTracker.ChangeTracker.ChangeTracker] =
       [
@@ -1285,7 +1285,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   #decorationsTooltip = '';
 
   static #adTooltipIdCounter = 0;
-  #adTooltipId = `ad-tooltip-${++ElementsTreeWidget.#adTooltipIdCounter}`;
+  #adTooltipId = `ad-tooltip-${++DOMTreeElementWidget.#adTooltipIdCounter}`;
 
   #updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null = null;
 
@@ -1426,8 +1426,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   constructor(
       element?: HTMLElement,
       [domIssuesManager, changeTracker]:
-          UI.Widget.WidgetDependencies<typeof ElementsTreeWidget>|[IssuesManager.DOMIssuesManager.DOMIssuesManager?,
-                                                                   ChangeTracker.ChangeTracker.ChangeTracker?] = [],
+          UI.Widget.WidgetDependencies<typeof DOMTreeElementWidget>|[IssuesManager.DOMIssuesManager.DOMIssuesManager?,
+                                                                     ChangeTracker.ChangeTracker.ChangeTracker?] = [],
       view: View = DEFAULT_VIEW,
   ) {
     super(element);
@@ -1474,7 +1474,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean {
-    if (node.contentDocument() || node.templateContent() || ElementsTreeWidget.visibleShadowRoots(node).length ||
+    if (node.contentDocument() || node.templateContent() || DOMTreeElementWidget.visibleShadowRoots(node).length ||
         node.hasPseudoElements()) {
       return false;
     }
@@ -1509,9 +1509,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         contextMenu.debugSection().appendSubMenuItem(i18nString(UIStrings.forceState), false, 'force-state');
     for (const pseudoClass of pseudoClasses) {
       const pseudoClassForced = forcedPseudoState ? forcedPseudoState.indexOf(pseudoClass) >= 0 : false;
-      stateMenu.defaultSection().appendCheckboxItem(
-          ':' + pseudoClass, setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced),
-          {checked: pseudoClassForced, jslogContext: pseudoClass});
+      stateMenu.defaultSection().appendCheckboxItem(':' + pseudoClass,
+                                                    setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced),
+                                                    {checked: pseudoClassForced, jslogContext: pseudoClass});
     }
 
     function setPseudoStateCallback(pseudoState: string, enabled: boolean): void {
@@ -1618,15 +1618,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       startingStyleAdornerActive: this.#startingStyleAdornerActive,
       onStartingStyleAdornerClick: this.disableEdits ? () => {} :
                                                        (event: Event) => this.#onStartingStyleAdornerClick(event),
-      onSlotAdornerClick:
-          () => {
-            if (this.node.assignedSlot) {
-              const deferredNode = this.node.assignedSlot.deferredNode;
-              deferredNode.resolve(node => {
-                void Common.Revealer.reveal(node);
-              });
-            }
-          },
+      onSlotAdornerClick: () => {
+        if (this.node.assignedSlot) {
+          const deferredNode = this.node.assignedSlot.deferredNode;
+          deferredNode.resolve(node => {
+            void Common.Revealer.reveal(node);
+          });
+        }
+      },
       topLayerIndex: this.node.topLayerIndex(),
       onViewSourceAdornerClick: this.disableEdits ? () => {} : this.revealHTMLInSources.bind(this),
       onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event) : () => {},
@@ -2339,15 +2338,15 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
 
     if (attributeValue !== undefined) {
-      attributeValueElement.setTextContentTruncatedIfNeeded(
-          attributeValue, i18nString(UIStrings.valueIsTooLargeToEdit));
+      attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue,
+                                                            i18nString(UIStrings.valueIsTooLargeToEdit));
     }
 
     // Remove zero-width spaces that were added by nodeTitleInfo.
     removeZeroWidthSpaceRecursive(attribute);
 
-    const config = new UI.InplaceEditor.Config(
-        this.attributeEditingCommitted.bind(this), this.editingCancelled.bind(this), attributeName);
+    const config = new UI.InplaceEditor.Config(this.attributeEditingCommitted.bind(this),
+                                               this.editingCancelled.bind(this), attributeName);
 
     function postKeyDownFinishHandler(event: Event): string {
       UI.UIUtils.handleElementValueModifications(event, attribute);
@@ -2377,7 +2376,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (textNode.nodeType() === Node.ELEMENT_NODE && textNode.firstChild) {
       textNode = textNode.firstChild;
     }
-    if (!ElementsTreeWidget.canEditTextNode(textNode)) {
+    if (!DOMTreeElementWidget.canEditTextNode(textNode)) {
       return false;
     }
 
@@ -2385,8 +2384,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (container) {
       container.textContent = textNode.nodeValue();
     }  // Strip the CSS or JS highlighting if present.
-    const config = new UI.InplaceEditor.Config(
-        this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this), null);
+    const config = new UI.InplaceEditor.Config(this.textNodeEditingCommitted.bind(this, textNode),
+                                               this.editingCancelled.bind(this), null);
     this.updateEditorHandles(textNodeElement, config);
     const componentSelection = this.element.getComponentSelection();
     componentSelection?.selectAllChildren(textNodeElement);
@@ -2428,7 +2427,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     };
 
     function editingCommitted(
-        this: ElementsTreeWidget,
+        this: DOMTreeElementWidget,
         element: Element,
         newTagName: string,
         oldText: string|null,
@@ -2443,7 +2442,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       this.tagNameEditingCommitted(element, newTagName, oldText, tagName, moveDirection);
     }
 
-    function editingCancelled(this: ElementsTreeWidget, element: Element, tagName: string|null): void {
+    function editingCancelled(this: DOMTreeElementWidget, element: Element, tagName: string|null): void {
       if (!tagNameElement) {
         return;
       }
@@ -2577,21 +2576,21 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     await this.updateComplete;
     this.#editorRef?.focus();
 
-    function resize(this: ElementsTreeWidget): void {
+    function resize(this: DOMTreeElementWidget): void {
       if (this.visibleWidth) {
         this.#editorWidth = this.visibleWidth() - this.#getLeftIndent() - 30;
         this.requestUpdate();
       }
     }
 
-    function commit(this: ElementsTreeWidget): void {
+    function commit(this: DOMTreeElementWidget): void {
       if (this.#editorRef) {
         commitCallback(initialValue, this.#editorRef.editor.state.doc.toString());
       }
       dispose.call(this);
     }
 
-    function dispose(this: ElementsTreeWidget): void {
+    function dispose(this: DOMTreeElementWidget): void {
       if (!this.editing && !this.#editorState) {
         return;
       }
@@ -2620,7 +2619,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.editing = null;
     this.#clearDOMNextUpdate = true;
 
-    function moveToNextAttributeIfNeeded(this: ElementsTreeWidget, error?: string|null): void {
+    function moveToNextAttributeIfNeeded(this: DOMTreeElementWidget, error?: string|null): void {
       if (error) {
         this.editingCancelled(element, attributeName);
       }
@@ -2712,7 +2711,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       moveToNextAttributeIfNeeded.call(self);
     }
 
-    function moveToNextAttributeIfNeeded(this: ElementsTreeWidget): void {
+    function moveToNextAttributeIfNeeded(this: DOMTreeElementWidget): void {
       if (this.node.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
         this.startEditingProcessingInstructionValue();
         return;
@@ -2762,7 +2761,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     // The changeTracker has to be resolved before the widget is detached from the DOM.
     const changeTracker = this.changeTracker;
 
-    function callback(this: ElementsTreeWidget, error?: string|null): void {
+    function callback(this: DOMTreeElementWidget, error?: string|null): void {
       if (!error && oldValue !== newText) {
         Elements.DOMChanges.trackTextNodeEdit(changeTracker, textNode, buildChangeSelector(changeTracker, textNode),
                                               oldValue, newText);
@@ -2882,7 +2881,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     return Promise.all(promises).then(updateDecorationsUI.bind(this));
 
-    function updateDecorationsUI(this: ElementsTreeWidget): void {
+    function updateDecorationsUI(this: DOMTreeElementWidget): void {
       if (!this.isShowing()) {
         return;
       }

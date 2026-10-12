@@ -265,7 +265,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
     const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
     try {
       const node = createTestNode(Node.TEXT_NODE);
-      sinon.stub(node, 'nodeValue').returns('a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize) + '\u2026');
+      sinon.stub(node, 'nodeValue').returns('a'.repeat(Elements.DOMTreeElementWidget.MaxEditableTextSize) + '\u2026');
 
       const textSpan = document.createElement('span');
       textSpan.className = 'webkit-html-text-node';
@@ -288,7 +288,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
     const domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
     try {
       const editableNode = createTestNode(Node.PROCESSING_INSTRUCTION_NODE);
-      sinon.stub(editableNode, 'nodeValue').returns('a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize));
+      sinon.stub(editableNode, 'nodeValue').returns('a'.repeat(Elements.DOMTreeElementWidget.MaxEditableTextSize));
 
       const editableMenu = await domTree.showContextMenu(editableNode, createContextMenuEvent());
       assert.exists(editableMenu);
@@ -300,7 +300,7 @@ describeWithEnvironment('DOMTreeContextMenu', () => {
 
       const truncatedNode = createTestNode(Node.PROCESSING_INSTRUCTION_NODE);
       sinon.stub(truncatedNode, 'nodeValue')
-          .returns('a'.repeat(Elements.ElementsTreeElement.MaxEditableTextSize) + '\u2026');
+          .returns('a'.repeat(Elements.DOMTreeElementWidget.MaxEditableTextSize) + '\u2026');
 
       const truncatedMenu = await domTree.showContextMenu(truncatedNode, createContextMenuEvent());
       assert.exists(truncatedMenu);

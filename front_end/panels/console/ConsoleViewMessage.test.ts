@@ -319,8 +319,8 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.isFalse(tree.classList.contains('elements-tree-nowrap'));
       const widgetElement = tree.shadowRoot.querySelector('devtools-widget');
       assert.exists(widgetElement);
-      const treeWidget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
-      assert.instanceOf(treeWidget, Elements.ElementsTreeElement.ElementsTreeWidget);
+      const treeWidget = UI.Widget.Widget.get(widgetElement) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
+      assert.instanceOf(treeWidget, Elements.DOMTreeElementWidget.DOMTreeElementWidget);
       assert.strictEqual(treeWidget.node, node);
       assert.include(tree.shadowRoot.textContent, 'logged');
       sinon.assert.called(onResize);
@@ -358,8 +358,8 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.exists(tree.shadowRoot);
       const widgetElement = tree.shadowRoot.querySelector('devtools-widget');
       assert.exists(widgetElement);
-      const treeWidget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
-      assert.instanceOf(treeWidget, Elements.ElementsTreeElement.ElementsTreeWidget);
+      const treeWidget = UI.Widget.Widget.get(widgetElement) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
+      assert.instanceOf(treeWidget, Elements.DOMTreeElementWidget.DOMTreeElementWidget);
       assert.strictEqual(treeWidget.node, node);
       assert.include(tree.shadowRoot.textContent, 'logged');
     });

@@ -7,7 +7,7 @@ import './ColorSwatchPopoverIcon.js';
 import './DOMPath.js';
 import './DOMTreeContextMenu.js';
 import './ElementsSidebarPane.js';
-import './ElementsTreeElement.js';
+import './DOMTreeElementWidget.js';
 import './AdoptedStyleSheetTreeElement.js';
 import './DOMTreeWidget.js';
 import './ImagePreviewPopover.js';
@@ -41,11 +41,11 @@ import * as CSSSpecificityBreakdown from './CSSSpecificityBreakdown.js';
 import * as CSSValueTraceView from './CSSValueTraceView.js';
 import * as DOMPath from './DOMPath.js';
 import * as DOMTreeContextMenu from './DOMTreeContextMenu.js';
+import * as DOMTreeElementWidget from './DOMTreeElementWidget.js';
 import * as DOMTreeWidget from './DOMTreeWidget.js';
 import * as ElementsPanel from './ElementsPanel.js';
 import * as ElementsSidebarPane from './ElementsSidebarPane.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
-import * as ElementsTreeElement from './ElementsTreeElement.js';
 import * as EventListenersWidget from './EventListenersWidget.js';
 import * as ImagePreviewPopover from './ImagePreviewPopover.js';
 import * as InspectElementModeController from './InspectElementModeController.js';
@@ -78,11 +78,11 @@ export {
   CSSValueTraceView,
   DOMPath,
   DOMTreeContextMenu,
+  DOMTreeElementWidget,
   DOMTreeWidget,
   ElementsPanel,
   ElementsSidebarPane,
   ElementStatePaneWidget,
-  ElementsTreeElement,
   EventListenersWidget,
   ImagePreviewPopover,
   InspectElementModeController,

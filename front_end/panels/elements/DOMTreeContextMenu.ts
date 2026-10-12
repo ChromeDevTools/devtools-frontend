@@ -9,9 +9,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
 import {canGetJSPath} from './DOMPath.js';
+import {DOMTreeElementWidget} from './DOMTreeElementWidget.js';
 import type {DOMTreeWidget} from './DOMTreeWidget.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {ElementsTreeWidget} from './ElementsTreeElement.js';
 
 const UIStrings = {
   /**
@@ -482,7 +482,7 @@ export async function showContextMenu(
   if (textNode) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.editText),
                                          () => domTreeWidget.startEditingTextNode(domNode), {
-                                           disabled: !ElementsTreeWidget.canEditTextNode(domNode),
+                                           disabled: !DOMTreeElementWidget.canEditTextNode(domNode),
                                            jslogContext: 'edit-text',
                                          });
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
@@ -502,7 +502,7 @@ export async function showContextMenu(
       }
     }
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
-    ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, domNode);
+    DOMTreeElementWidget.populateForcedPseudoStateItems(contextMenu, domNode);
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
     contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
@@ -535,7 +535,7 @@ export async function showContextMenu(
                                          {jslogContext: 'scroll-into-view'});
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode), {
-      disabled: !ElementsTreeWidget.canEditTextNode(domNode),
+      disabled: !DOMTreeElementWidget.canEditTextNode(domNode),
       jslogContext: 'elements.edit-data',
     });
     contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),

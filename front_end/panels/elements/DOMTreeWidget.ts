@@ -54,16 +54,16 @@ import {AdoptedStyleSheetContentsWidget} from './AdoptedStyleSheetTreeElement.js
 import * as ElementsComponents from './components/components.js';
 import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {showContextMenu} from './DOMTreeContextMenu.js';
-import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {
   adornerRef,
   buildChangeSelector,
-  ElementsTreeWidget,
+  DOMTreeElementWidget,
   ForbiddenClosingTagElements,
   handleAdornerKeydown,
   InitialChildrenLimit,
   type InitialEditState,
-} from './ElementsTreeElement.js';
+} from './DOMTreeElementWidget.js';
+import {getElementIssueDetails} from './ElementIssueUtils.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 
@@ -204,11 +204,11 @@ function nodeHasVisibleChildren(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOM
     return false;
   }
   if (node.isIframe() || node.contentDocument() || node.templateContent() ||
-      ElementsTreeWidget.visibleShadowRoots(node).length || node.hasPseudoElements() || node.isInsertionPoint() ||
+      DOMTreeElementWidget.visibleShadowRoots(node).length || node.hasPseudoElements() || node.isInsertionPoint() ||
       node.adoptedStyleSheetsForNode.length) {
     return true;
   }
-  return Boolean(node.childNodeCount()) && !ElementsTreeWidget.canShowInlineText(node);
+  return Boolean(node.childNodeCount()) && !DOMTreeElementWidget.canShowInlineText(node);
 }
 
 function nodeNeedsClosingTag(node: SDK.DOMModel.DOMNode, hasChildren: boolean): boolean {
@@ -218,7 +218,7 @@ function nodeNeedsClosingTag(node: SDK.DOMModel.DOMNode, hasChildren: boolean): 
 
 function getVisibleChildren(node: SDK.DOMModel.DOMNode, showComments = true): SDK.DOMModel.DOMNode[] {
   const children: SDK.DOMModel.DOMNode[] = [];
-  children.push(...ElementsTreeWidget.visibleShadowRoots(node));
+  children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
 
   const contentDocument = node.contentDocument();
   if (contentDocument) {
@@ -723,7 +723,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           @dragleave=${on(onDragLeave)}
           @drop=${on(onDrop)}
           @dragend=${on(onDragEnd)}
-          jslog=${treeItemJslog(undefined, true)}>${UI.Widget.widget(ElementsTreeWidget, {
+          jslog=${treeItemJslog(undefined, true)}>${UI.Widget.widget(DOMTreeElementWidget, {
           node,
           isClosingTag: false,
           renderSelection: false,
@@ -805,7 +805,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                     @dragover=${on(onClosingTagDragOver)}
                     @dragleave=${on(onDragLeave)}
                     @drop=${on(onClosingTagDrop)}
-                    @dragend=${on(onDragEnd)}>${UI.Widget.widget(ElementsTreeWidget, {
+                    @dragend=${on(onDragEnd)}>${UI.Widget.widget(DOMTreeElementWidget, {
                     node,
                     isClosingTag: true,
                     renderSelection: false,
@@ -913,7 +913,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   }
 };
 
-function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DOMNode, widget?: ElementsTreeWidget} {
+function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DOMNode, widget?: DOMTreeElementWidget} {
   let current: Element|null = element;
   while (current) {
     if (current.tagName === 'LI') {
@@ -921,7 +921,7 @@ function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DO
           current.querySelector(':scope > devtools-widget, :scope > .tree-element-title > devtools-widget');
       if (devtoolsWidget) {
         const widget = UI.Widget.Widget.get(devtoolsWidget);
-        if (widget instanceof ElementsTreeWidget) {
+        if (widget instanceof DOMTreeElementWidget) {
           return {node: widget.node, widget};
         }
       }
@@ -2324,7 +2324,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     if (moveDirection) {
       if (newNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-        if (!ElementsTreeWidget.canEditTextNode(newNode)) {
+        if (!DOMTreeElementWidget.canEditTextNode(newNode)) {
           return;
         }
         this.#nodeToEdit = {node: newNode, isProcessingInstruction: true};
@@ -2440,7 +2440,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   startEditingTextNode(node: SDK.DOMModel.DOMNode): void {
-    if (UI.UIUtils.isEditing() || !ElementsTreeWidget.canEditTextNode(node)) {
+    if (UI.UIUtils.isEditing() || !DOMTreeElementWidget.canEditTextNode(node)) {
       return;
     }
     this.#nodeToEdit = {node, isTextNode: true};
@@ -2468,13 +2468,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       }
       this.performUpdate();
     } else if (nodeType === Node.TEXT_NODE) {
-      if (!ElementsTreeWidget.canEditTextNode(node)) {
+      if (!DOMTreeElementWidget.canEditTextNode(node)) {
         return;
       }
       this.#nodeToEdit = {node, isTextNode: true};
       this.performUpdate();
     } else if (nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
-      if (!ElementsTreeWidget.canEditTextNode(node)) {
+      if (!DOMTreeElementWidget.canEditTextNode(node)) {
         return;
       }
       this.#nodeToEdit = {node, isProcessingInstruction: true};

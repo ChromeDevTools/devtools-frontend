@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {EditorHandles} from './ElementsTreeElement.js';
+import type {EditorHandles} from './DOMTreeElementWidget.js';
 
 const {Directives: {ref}, html, render} = Lit;
 

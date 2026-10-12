@@ -37,7 +37,7 @@ describe('Adorner', () => {
     adorner.setAttribute('toggleable', 'true');
 
     // Adorner no longer handles clicks and keydowns automatically.
-    // We simulate the consumer (like ElementsTreeElement) handling logic.
+    // We simulate the consumer (like DOMTreeElementWidget) handling logic.
     const clickListener = () => {
       if (adorner.isActive()) {
         adorner.setAttribute('active', 'false');

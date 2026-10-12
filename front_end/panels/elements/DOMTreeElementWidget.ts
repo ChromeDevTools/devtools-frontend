@@ -1,8 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
@@ -102,7 +100,7 @@ export function buildChangeSelector(tracker: ChangeTracker.ChangeTracker.ChangeT
   return undefined;
 }
 
-const {html, nothing, render, Directives: {classMap, ref, repeat, until}} = Lit;
+const {html, nothing, render, Directives: {classMap, ref, repeat, styleMap, until}} = Lit;
 const {animateOn} = UI.UIUtils;
 
 const UIStrings = {
@@ -356,6 +354,12 @@ export interface ViewInput {
   decorationsTooltip: string;
   indent: number;
   renderSelection?: boolean;
+  /**
+   * When true, the view clears the previously rendered DOM before rendering
+   * (e.g. to restore the attributes structure after inline editing).
+   */
+  clearDOM: boolean;
+  onDblClick: (event: MouseEvent) => void;
 
   editorState: CodeMirror.EditorState|null;
   editorWidth: number|null;
@@ -896,9 +900,14 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     'gutter-container': true,
     hidden: Boolean(input.editorState),
   };
+  if (input.clearDOM) {
+    render(nothing, target);
+  }
   // clang-format off
   render(html`
-    <div ${ref(el => { output.contentElement = el as HTMLElement; })}>
+    <div style=${styleMap({'--indent': `${input.indent}px`})}
+         @dblclick=${input.onDblClick}
+         ${ref(el => { output.contentElement = el as HTMLElement; })}>
       ${input.node ? html`<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(
     input.node,
     input.isClosingTag,
@@ -1146,6 +1155,18 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 };
 
 type View = typeof DEFAULT_VIEW;
+
+interface NewAttributeViewInput {
+  node: SDK.DOMModel.DOMNode;
+}
+
+/**
+ * Renders the placeholder attribute used when the user starts adding a new
+ * attribute via inline editing.
+ */
+const NEW_ATTRIBUTE_VIEW = (input: NewAttributeViewInput, _output: object, target: DocumentFragment): void => {
+  render(renderAttribute({name: ' ', value: ''}, null, false, input.node), target);
+};
 
 export interface InitialEditState {
   attributeName?: string;
@@ -1442,20 +1463,20 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
 
     this.editing = null;
     this.expandAllButtonElement = null;
+  }
 
-    this.contentElement.addEventListener('dblclick', (event: MouseEvent) => {
-      if (!this.node || this.editing || this.isClosingTag) {
-        return;
-      }
-      if (!this.isDOMNodeSelected) {
-        this.selectDOMNode?.(this.node, true);
-        this.isDOMNodeSelected = true;
-      }
-      const target = (event.composedPath()[0] || event.target) as Element;
-      if (this.startEditingTarget(target)) {
-        event.preventDefault();
-      }
-    });
+  #onDblClick(event: MouseEvent): void {
+    if (!this.node || this.editing || this.isClosingTag) {
+      return;
+    }
+    if (!this.isDOMNodeSelected) {
+      this.selectDOMNode?.(this.node, true);
+      this.isDOMNodeSelected = true;
+    }
+    const target = (event.composedPath()[0] || event.target) as Element;
+    if (this.startEditingTarget(target)) {
+      event.preventDefault();
+    }
   }
 
   static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[] {
@@ -1563,10 +1584,8 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
     this.updateDecorations();
-    if (this.#clearDOMNextUpdate) {
-      this.#clearDOMNextUpdate = false;
-      Lit.render(Lit.nothing, this.contentElement, {host: this});
-    }
+    const clearDOM = this.#clearDOMNextUpdate;
+    this.#clearDOMNextUpdate = false;
     const isClosingTag = this.isClosingTag;
     const output: ViewOutput = {};
     this.#view({
@@ -1608,6 +1627,8 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       decorationsTooltip: this.#decorationsTooltip,
       indent: this.#getLeftIndent(),
       renderSelection: this.renderSelection,
+      clearDOM,
+      onDblClick: (event: MouseEvent) => this.#onDblClick(event),
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
       showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
@@ -1978,6 +1999,8 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       descendantDecorations: [],
       decorationsTooltip: '',
       indent: 0,
+      clearDOM: false,
+      onDblClick: () => {},
       editorState: null,
       editorWidth: null,
       issues: [],
@@ -2068,16 +2091,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     } else {
       model.highlightScrollSnapInPersistentOverlay(nodeId);
     }
-  }
-
-  onattach(): void {
-    if (this.#hovered) {
-      this.element.classList.add('hovered');
-      this.requestUpdate();
-    }
-
-    this.updateTitle();
-    this.element.draggable = true;
   }
 
   async onpopulate(): Promise<void> {
@@ -2256,7 +2269,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     // a parent node. Use a temporary span container for the HTML.
     const container = document.createDocumentFragment();
 
-    Lit.render(renderAttribute({name: ' ', value: ''}, null, false, this.node), container);
+    NEW_ATTRIBUTE_VIEW({node: this.node}, {}, container);
     const attr = container.firstElementChild as HTMLElement;
     attr.style.marginLeft = '2px';   // overrides the .editing margin rule
     attr.style.marginRight = '2px';  // overrides the .editing margin rule
@@ -2828,10 +2841,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   }
 
   updateDecorations(): void {
-    // Important to keep the entire tree node row as a clickable area for that
-    // node.
-    this.element.style.setProperty('--indent', this.#getLeftIndent() + 'px');
-
     if (this.isClosingTag) {
       return;
     }

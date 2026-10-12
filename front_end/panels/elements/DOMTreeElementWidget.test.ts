@@ -95,6 +95,8 @@ function getBaseViewInput(): Elements.DOMTreeElementWidget.ViewInput {
     descendantDecorations: [],
     decorationsTooltip: '',
     indent: 0,
+    clearDOM: false,
+    onDblClick: () => {},
     adTooltipId: '',
     editorState: null,
     editorWidth: null,

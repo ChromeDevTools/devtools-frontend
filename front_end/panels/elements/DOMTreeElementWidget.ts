@@ -1156,18 +1156,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
 type View = typeof DEFAULT_VIEW;
 
-interface NewAttributeViewInput {
-  node: SDK.DOMModel.DOMNode;
-}
-
-/**
- * Renders the placeholder attribute used when the user starts adding a new
- * attribute via inline editing.
- */
-const NEW_ATTRIBUTE_VIEW = (input: NewAttributeViewInput, _output: object, target: DocumentFragment): void => {
-  render(renderAttribute({name: ' ', value: ''}, null, false, input.node), target);
-};
-
 export interface InitialEditState {
   attributeName?: string;
   isNewAttribute?: boolean;
@@ -2269,7 +2257,11 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     // a parent node. Use a temporary span container for the HTML.
     const container = document.createDocumentFragment();
 
-    NEW_ATTRIBUTE_VIEW({node: this.node}, {}, container);
+    // The inline editor needs a detached element it can mutate directly, so
+    // this is a one-off render outside of the view until inline editing is
+    // made declarative.
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(renderAttribute({name: ' ', value: ''}, null, false, this.node), container);
     const attr = container.firstElementChild as HTMLElement;
     attr.style.marginLeft = '2px';   // overrides the .editing margin rule
     attr.style.marginRight = '2px';  // overrides the .editing margin rule

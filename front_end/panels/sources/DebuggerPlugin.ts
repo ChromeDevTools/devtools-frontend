@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as Common from '../../core/common/common.js';
@@ -178,6 +176,31 @@ interface BreakpointEditRequest {
   breakpoint: Breakpoints.BreakpointManager.Breakpoint|null;
   location: {lineNumber: number, columnNumber: number}|null;
   isLogpoint?: boolean;
+}
+
+interface BreakpointEditDialogHostViewInput {
+  dialog: BreakpointEditDialog;
+}
+
+function renderBreakpointEditDialogHost(input: BreakpointEditDialogHostViewInput, _output: undefined,
+                                        target: DocumentFragment): void {
+  render(html`<div><devtools-widget>${input.dialog.element}</devtools-widget></div>`, target);
+}
+
+interface MissingDebugFileViewInput {
+  message: Platform.UIString.LocalizedString;
+  onShowRequest?: () => void;
+}
+
+function renderMissingDebugFile(input: MissingDebugFileViewInput, _output: undefined, target: DocumentFragment): void {
+  // clang-format off
+  render(html`<span class="infobar-selectable">${input.message}${input.onShowRequest ? html`<devtools-button
+      style="margin-left: 10px"
+      title=${i18nString(UIStrings.openDeveloperResources)}
+      .variant=${Buttons.Button.Variant.TEXT}
+      .jslogContext=${'show-request'}
+      @click=${input.onShowRequest}>${i18nString(UIStrings.showRequest)}</devtools-button>` : nothing}</span>`, target);
+  // clang-format on
 }
 
 const debuggerPluginForUISourceCode = new Map<Workspace.UISourceCode.UISourceCode, DebuggerPlugin>();
@@ -854,7 +877,6 @@ export class DebuggerPlugin extends Plugin {
     const editor = this.editor as TextEditor.TextEditor.TextEditor;
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const isLogpointForDialog = breakpoint?.isLogpoint() ?? Boolean(isLogpoint);
-    const decorationElement = document.createElement('div');
     const compartment = new CodeMirror.Compartment();
     const dialog = new BreakpointEditDialog();
     dialog.editorLineNumber = line.number - 1;
@@ -889,6 +911,10 @@ export class DebuggerPlugin extends Plugin {
         await this.createNewBreakpoint(line, result.condition, /* enabled */ true, result.isLogpoint);
       }
     };
+    dialog.markAsExternallyManaged();
+    const decorationFragment = document.createDocumentFragment();
+    renderBreakpointEditDialogHost({dialog}, undefined, decorationFragment);
+    const decorationElement = decorationFragment.firstElementChild as HTMLElement;
     editor.dispatch({
       effects: CodeMirror.StateEffect.appendConfig.of(compartment.of(CodeMirror.EditorView.decorations.of(
           CodeMirror.Decoration.set([CodeMirror.Decoration
@@ -921,8 +947,6 @@ export class DebuggerPlugin extends Plugin {
       }
     }, true);
 
-    dialog.markAsExternallyManaged();
-    dialog.show(decorationElement);
     dialog.focus();
     this.activeBreakpointDialog = dialog;
     this.#activeBreakpointEditRequest = breakpointEditRequest;
@@ -1466,21 +1490,17 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     for (const resource of warning.resources) {
-      const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(
-          i18nString(UIStrings.debugFileNotFound, {PH1: Common.ParsedURL.ParsedURL.extractName(resource.resourceUrl)}));
-      if (detailsRow) {
-        const pageResourceKey =
-            SDK.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
-        if (SDK.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
-          const showRequest = UI.UIUtils.createTextButton(i18nString(UIStrings.showRequest), () => {
+      const pageResourceKey =
+          SDK.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
+      const onShowRequest =
+          SDK.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey) ? () => {
             void Common.Revealer.reveal(new SDK.PageResourceLoader.ResourceKey(pageResourceKey));
-          }, {jslogContext: 'show-request', variant: Buttons.Button.Variant.TEXT});
-          showRequest.style.setProperty('margin-left', '10px');
-          showRequest.title = i18nString(UIStrings.openDeveloperResources);
-          detailsRow.appendChild(showRequest);
-        }
-        detailsRow.classList.add('infobar-selectable');
-      }
+          } : undefined;
+      const message =
+          i18nString(UIStrings.debugFileNotFound, {PH1: Common.ParsedURL.ParsedURL.extractName(resource.resourceUrl)});
+      const fragment = document.createDocumentFragment();
+      renderMissingDebugFile({message, onShowRequest}, undefined, fragment);
+      this.missingDebugInfoBar.createDetailsRowMessage(fragment.firstElementChild as HTMLElement);
     }
     this.missingDebugInfoBar.setCloseCallback(() => {
       this.removeInfobar(this.missingDebugInfoBar);

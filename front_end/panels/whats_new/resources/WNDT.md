@@ -1,11 +1,11 @@
 ### [DevTools for agents](mcp)
 
-Configure `--no-javascript-evaluation` or disable execution tools to inspect pages safely without running scripts. Agents can also inspect heap snapshots directly with `query_heapsnapshot` and analyze memory retained by execution contexts.
+Inspect matched rules, inherited styles, pseudo-elements, and `@` rules with the `get_css_styles` tool in Chrome DevTools for agents. You can also manage server flags with a configuration file and parse large performance traces with chunked trace buffer parsing.
 
-### [CPU performance tier overrides and modernized device presets](performance)
+### [Visual position-area editor for CSS anchor positioning](sources)
 
-Configure and dispatch calibrated CPU performance tier overrides over CDP in the Performance panel to test device performance reproducibly. Emulated device presets are now grouped by form factor and updated with modern hardware.
+Click the inline swatch next to a `position-area` declaration in the **Styles** tab to visually select anchor grid regions, configure axis modes, and toggle the `self` keyword. Right-click **popover** adorners in the DOM tree to disambiguate multiple implicit anchors.
 
-### [Edit and resend as fetch in Console](edit-and-resend-as-fetch-in-co)
+### [Web Install manifest diagnostics and ad script provenance](web-install-manifest-diagnosti)
 
-Copy any network request as an editable `fetch()` expression directly into the Console to modify parameters before resending.
+Diagnose Web Install (`navigator.install` and `<install>`) manifest errors in the **Issues** panel with direct links to affected manifests. In the **Application** panel's **Ads** section, use the new **Ad provenance** column to see whether script ancestry or a filter list rule tagged an ad script.

@@ -104,3 +104,10 @@ export const autoFocusOnDebuggerPausedEnabledSettingDescriptor: Common.Settings.
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const autoPrettyPrintMinifiedSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'auto-pretty-print-minified',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

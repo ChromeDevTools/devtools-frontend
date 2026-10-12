@@ -16,6 +16,7 @@ import * as CodeHighlighter from '../../../components/code_highlighter/code_high
 import * as Dialogs from '../../../components/dialogs/dialogs.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import {html, nothing, render, type TemplateResult} from '../../../lit/lit.js';
+import * as SettingsUI from '../../../settings/settings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -438,7 +439,9 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
 
   setCanPrettyPrint(canPrettyPrint: boolean, autoPrettyPrint?: boolean): void {
     this.shouldAutoPrettyPrint = autoPrettyPrint === true &&
-        Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
+        Common.Settings.Settings.instance()
+            .resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor)
+            .get();
     this.#canPrettyPrint = canPrettyPrint;
     this.#updateToolbar();
   }

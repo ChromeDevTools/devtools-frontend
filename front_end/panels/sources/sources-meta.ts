@@ -1853,13 +1853,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.autoFocusOn
                                             ],
                                           });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.automaticallyPrettyPrintMinifiedSources),
-  settingName: 'auto-pretty-print-minified',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

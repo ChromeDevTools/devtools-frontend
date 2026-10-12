@@ -54,6 +54,7 @@ devtools_ui_module("source_frame") {
     "../../../components/dialogs:bundle",
     "../../../kit:bundle",
     "../../../lit:bundle",
+    "../../../settings:bundle",
     "../../../visual_logging:bundle",
   ]
   deps = [ ":css_files" ]

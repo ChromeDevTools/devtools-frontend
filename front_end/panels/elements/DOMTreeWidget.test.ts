@@ -3521,11 +3521,6 @@ describeWithEnvironment('DOMTreeWidget', () => {
         await waitForTreeUpdates();
         sinon.assert.calledOnce(updateAdornersSpy);
 
-        // Subsequent update should flush dirty adorners state.
-        domTree.performUpdate();
-        await waitForTreeUpdates();
-        assert.isFalse(widget.adornersDirty);
-
         // Swapping node on bound widget should not call clearView.
         const clearViewSpy = sinon.spy(widget, 'clearView');
         const otherNode = createTestDOMTree(domModel, {

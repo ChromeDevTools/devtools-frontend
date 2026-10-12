@@ -1921,9 +1921,7 @@ describeWithEnvironment('DOMTreeElementWidget issue management', () => {
       // Double click on tag name
       const tagNameElement = widget.contentElement.querySelector('.webkit-html-tag-name');
       assert.exists(tagNameElement);
-      const tagDblClickEvent = new MouseEvent('dblclick', {bubbles: true});
-      Object.defineProperty(tagDblClickEvent, 'target', {value: tagNameElement});
-      widget.ondblclick(tagDblClickEvent);
+      tagNameElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
       assert.isTrue(widget.isEditing);
       widget.editing?.cancel();
       assert.isFalse(widget.isEditing);
@@ -1931,9 +1929,7 @@ describeWithEnvironment('DOMTreeElementWidget issue management', () => {
       // Double click on attribute
       const attrElement = widget.contentElement.querySelector('.webkit-html-attribute');
       assert.exists(attrElement);
-      const attrDblClickEvent = new MouseEvent('dblclick', {bubbles: true});
-      Object.defineProperty(attrDblClickEvent, 'target', {value: attrElement});
-      widget.ondblclick(attrDblClickEvent);
+      attrElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
       assert.isTrue(widget.isEditing);
       widget.editing?.cancel();
       assert.isFalse(widget.isEditing);

@@ -731,7 +731,6 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           isDOMNodeSelected,
           hovered: isOpeningHovered,
           searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
-          inClipboard: input.isNodeInClipboard?.(node) ?? false,
           computeLeftIndent: computeLeftIndent(depth, isExpandable),
           disableEdits: input.disableEdits ?? false,
           showAIButton: input.showAIButton ?? true,
@@ -740,7 +739,6 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           attributeToHighlight:
               input.attributeToHighlight?.node === node ? input.attributeToHighlight.attribute : null,
           onAttributeHighlighted: input.onAttributeHighlighted,
-          adornersDirty: input.nodesWithDirtyAdorners?.has(node) ?? false,
           adornersUpdateVersion: input.nodeAdornerVersions?.get(node) ?? 0,
           popoverAdornerActive: Boolean(input.forceOpenPopovers?.has(node)),
           onPopoverAdornerToggled: input.onPopoverAdornerToggled,

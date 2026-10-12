@@ -1190,13 +1190,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   onInitialEditCompleted?: () => void;
   attributeToHighlight?: string|null;
   onAttributeHighlighted?: () => void;
-  #adornersDirty = false;
-  get adornersDirty(): boolean {
-    return this.#adornersDirty;
-  }
-  set adornersDirty(dirty: boolean) {
-    this.#adornersDirty = dirty;
-  }
   #adornersUpdateVersion = 0;
   get adornersUpdateVersion(): number {
     return this.#adornersUpdateVersion;
@@ -1211,36 +1204,22 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     }
   }
 
-  expand?: () => void;
-  collapse?: () => void;
-  selectTreeElement?: (omitFocus?: boolean, selectedByUser?: boolean) => boolean | void;
-  expandRecursively?: (maxDepth?: number) => Promise<void>;
-  collapseChildren?: () => void;
-  childCount?: () => number;
-  closingTagElement?: () => Element | null;
-  updateShadowRootDepth?: (depth: number) => void;
   computeLeftIndent?: number|(() => number);
-  setChildrenListElementVisible?: (visible: boolean) => void;
 
   selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
   revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
   showContextMenu?: (event: Event) => void;
-  populateTreeElement?: () => Promise<void>;
   toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
   selectNodeAfterEdit?: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
                          moveDirection?: string) => void;
-  runPendingUpdates?: () => void;
-  focusOutline?: () => void;
   setMultilineEditing?: (multilineEditing: EditorHandles|null, node?: SDK.DOMModel.DOMNode) => void;
   visibleWidth?: () => number;
 
   #view: View;
 
   #searchQuery: string|null = null;
-  #expandedChildrenLimit: number;
   #decorationsThrottler = new Common.Throttler.Throttler(100);
-  inClipboard = false;
   #hovered: boolean;
   editing: EditorHandles|null;
   #editorRef?: TextEditor.TextEditor.TextEditor;
@@ -1249,7 +1228,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   #editAsHtmlMenuOpen = false;
   #editorState: CodeMirror.EditorState|null = null;
   #editorWidth: number|null = null;
-  expandAllButtonElement: UI.TreeOutline.TreeElement|null;
   #highlights: Range[] = [];
 
   #adornersThrottler = new Common.Throttler.Throttler(100);
@@ -1444,13 +1422,9 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     this.#changeTracker = changeTracker;
     this.#view = view;
 
-    this.#expandedChildrenLimit = InitialChildrenLimit;
-
-    this.inClipboard = false;
     this.#hovered = false;
 
     this.editing = null;
-    this.expandAllButtonElement = null;
   }
 
   #onDblClick(event: MouseEvent): void {
@@ -1533,11 +1507,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     }
   }
 
-  animateOnDOMUpdate(): void {
-    const tagName = this.contentElement.querySelector('.webkit-html-tag-name');
-    UI.UIUtils.runCSSAnimationOnce(tagName || this.contentElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
-  }
-
   #clearDOMNextUpdate = false;
 
   #isBound = false;
@@ -1584,7 +1553,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       isXMLMimeType: this.isXMLMimeType,
       updateRecord: this.#updateRecord,
       onHighlightSearchResults: () => this.#highlightSearchResults(),
-      onExpand: () => this.expand?.(),
+      onExpand: () => {},
 
       containerAdornerActive: this.#containerAdornerActive,
       adProvenance: this.node.adProvenance(),
@@ -1659,7 +1628,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
           undefined,
       onAiButtonClick: (ev: Event) => {
         ev.stopPropagation();
-        this.selectTreeElement?.(true, false);
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
         if (action) {
           void action.execute();
@@ -1835,10 +1803,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     UI.UIUtils.runCSSAnimationOnce(animationElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
   }
 
-  isDisplayContents(): boolean {
-    return Boolean(this.#layout?.isContents);
-  }
-
   get isEditing(): boolean {
     return Boolean(this.editing);
   }
@@ -1860,14 +1824,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     this.#clearHighlights();
   }
 
-  setInClipboard(inClipboard: boolean): void {
-    if (this.inClipboard === inClipboard) {
-      return;
-    }
-    this.inClipboard = inClipboard;
-    this.requestUpdate();
-  }
-
   get hovered(): boolean {
     return this.#hovered;
   }
@@ -1881,15 +1837,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  expandedChildrenLimit(): number {
-    return this.#expandedChildrenLimit;
-  }
-
-  setExpandedChildrenLimit(expandedChildrenLimit: number): void {
-    this.#expandedChildrenLimit = expandedChildrenLimit;
-  }
-
-  onTopLayerIndexChanged(): void {
+  #onTopLayerIndexChanged(): void {
     this.requestUpdate();
   }
 
@@ -1907,7 +1855,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
     this.#eventsBound = true;
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
+    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.#onTopLayerIndexChanged, this);
     this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
                                 this);
     this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
@@ -2014,7 +1962,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     if (!this.#eventsBound || !this.#node) {
       return;
     }
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged,
+    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.#onTopLayerIndexChanged,
                                    this);
     this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
                                    this);
@@ -2079,72 +2027,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     } else {
       model.highlightScrollSnapInPersistentOverlay(nodeId);
     }
-  }
-
-  async onpopulate(): Promise<void> {
-    if (this.populateTreeElement) {
-      return await this.populateTreeElement();
-    }
-  }
-
-  onexpand(): void {
-    if (this.isClosingTag) {
-      return;
-    }
-
-    this.updateTitle();
-  }
-
-  oncollapse(): void {
-    if (this.isClosingTag) {
-      return;
-    }
-
-    this.updateTitle();
-  }
-
-  onselect(selectedByUser?: boolean): boolean {
-    if (!this.selectDOMNode) {
-      return false;
-    }
-    this.selectDOMNode(this.node, selectedByUser);
-    if (selectedByUser) {
-      this.node.highlight();
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
-    }
-    this.requestUpdate();
-    return true;
-  }
-
-  onenter(): boolean {
-    // On Enter or Return start editing the first attribute
-    // or create a new attribute on the selected element.
-    if (this.editing) {
-      return false;
-    }
-
-    this.startEditing();
-
-    // prevent a newline from being immediately inserted
-    return true;
-  }
-
-  ondblclick(event: Event): boolean {
-    if (this.editing || this.isClosingTag) {
-      return false;
-    }
-    const target = (event.composedPath()[0] || event.target) as Element;
-    if (this.startEditingTarget(target)) {
-      return false;
-    }
-
-    if (this.#isExpandable && !this.#expanded) {
-      this.expand?.();
-    }
-    return false;
-  }
-  hasEditableNode(): boolean {
-    return !this.node.isShadowRoot() && !this.node.ancestorUserAgentShadowRoot();
   }
 
   private insertInLastAttributePosition(tag: Element, node: Element): void {
@@ -2491,8 +2373,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
 
-    // Hide children item.
-    this.setChildrenListElementVisible?.(false);
     const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
     // Append editor.
     this.#editorState = CodeMirror.EditorState.create({
@@ -2602,13 +2482,10 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       this.editing = null;
       this.#editorState = null;
       this.requestUpdate();
-      // Unhide children item.
-      this.setChildrenListElementVisible?.(true);
 
       if (this.setMultilineEditing) {
         this.setMultilineEditing(null);
       }
-      this.focusOutline?.();
 
       disposeCallback();
     }
@@ -2632,9 +2509,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       if (!moveDirection) {
         return;
       }
-
-      this.runPendingUpdates?.();
-      this.focusOutline?.();
 
       // Search for the attribute's position, and then decide where to move to.
       const attributes = this.node.attributes();
@@ -2788,10 +2662,10 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   private distinctClosingTagElement(): Element|null {
     // FIXME: Improve the Tree Element / Outline Abstraction to prevent crawling the DOM
 
-    // For an expanded element, it will be the last element with class "close"
-    // in the child element list.
+    // For an expanded element, the closing tag is rendered by a separate
+    // widget in the parent tree, so there is nothing to update here.
     if (this.#expanded) {
-      return this.closingTagElement?.() ?? null;
+      return null;
     }
 
     // Remaining cases are single line non-expanded elements with a closing
@@ -2808,17 +2682,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
     this.#updateRecord = updateRecord ?? null;
-    if (this.node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE && this.node.isInShadowTree() &&
-        this.node.shadowRootType()) {
-      let depth = 4;
-      for (let node: (SDK.DOMModel.DOMNode|null) = (this.node as SDK.DOMModel.DOMNode | null); depth && node;
-           node = node.parentNode) {
-        if (node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE) {
-          depth--;
-        }
-      }
-      this.updateShadowRootDepth?.(depth);
-    }
     this.performUpdate();
     this.updateDecorations();
 
@@ -3003,14 +2866,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
 
     this.#highlights = Highlighting.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(
         this.contentElement, matchRanges);
-  }
-
-  editAsHTML(): void {
-    const promise = Common.Revealer.reveal(this.node);
-    void promise.then(() => {
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.edit-as-html');
-      return action.execute();
-    });
   }
 
   updateAdorners(): void {

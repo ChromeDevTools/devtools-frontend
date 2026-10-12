@@ -26,7 +26,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -2022,6 +2022,26 @@ const markIfContinueTo = CodeMirror.EditorView.contentAttributes.compute([contin
 
 // Variable value decorations
 
+interface ValueDecorationViewInput {
+  pairs: Array<[string, SDK.RemoteObject.RemoteObject]>;
+}
+
+function renderValueDecoration(input: ValueDecorationViewInput, _output: undefined, target: DocumentFragment): void {
+  const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+  const renderValue = (value: SDK.RemoteObject.RemoteObject): LitTemplate => {
+    const propertyCount = value.preview ? value.preview.properties.length : 0;
+    const entryCount = value.preview?.entries ? value.preview.entries.length : 0;
+    if (value.preview && propertyCount + entryCount < 10) {
+      return html`<span>${formatter.renderObjectPreview(value.preview)}</span>`;
+    }
+    return ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
+  };
+  // clang-format off
+  render(html`<div class="cm-variableValues">${input.pairs.map(([name, value], index) =>
+      html`${index > 0 ? ', ' : nothing}<span>${name} = ${renderValue(value)}</span>`)}</div>`, target);
+  // clang-format on
+}
+
 export class ValueDecoration extends CodeMirror.WidgetType {
   constructor(readonly pairs: Array<[string, SDK.RemoteObject.RemoteObject]>) {
     super();
@@ -2033,33 +2053,9 @@ export class ValueDecoration extends CodeMirror.WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    const widget = document.createElement('div');
-    widget.classList.add('cm-variableValues');
-    let first = true;
-    for (const [name, value] of this.pairs) {
-      if (first) {
-        first = false;
-      } else {
-        UI.UIUtils.createTextChild(widget, ', ');
-      }
-      const nameValuePair = widget.createChild('span');
-      UI.UIUtils.createTextChild(nameValuePair, name + ' = ');
-      const propertyCount = value.preview ? value.preview.properties.length : 0;
-      const entryCount = value.preview?.entries ? value.preview.entries.length : 0;
-      if (value.preview && propertyCount + entryCount < 10) {
-        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-        render(formatter.renderObjectPreview(value.preview), nameValuePair.createChild('span'));
-      } else {
-        const propertyValue =
-            ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
-        const fragment = document.createDocumentFragment();
-        /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-        render(propertyValue, fragment);
-        nameValuePair.appendChild(fragment);
-      }
-    }
-    return widget;
+    const fragment = document.createDocumentFragment();
+    renderValueDecoration({pairs: this.pairs}, undefined, fragment);
+    return fragment.firstElementChild as HTMLElement;
   }
 }
 

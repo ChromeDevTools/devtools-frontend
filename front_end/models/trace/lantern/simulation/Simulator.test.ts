@@ -444,6 +444,39 @@ describe('DependencyGraph/Simulator', () => {
       assertNodeTiming(result, nodeCached, {startTime: 8, endTime: 16});
       assertNodeTiming(result, nodeReal, {startTime: 8, endTime: 958});
     });
+
+    it('should preserve H2 overflow bytes when a parallel CPU node completes mid-download', () => {
+      const h2Defaults = {protocol: 'h2', connectionId: 1};
+      const nodeA = new NetworkNode(request({startTime: 0, endTime: 1, transferSize: 7300, ...h2Defaults}));
+      const nodeB = new NetworkNode(request({startTime: 1, endTime: 2, transferSize: 36500, ...h2Defaults}));
+      nodeA.addDependent(nodeB);
+
+      const simulator = new Simulator({
+        rtt: 150,
+        throughput: 1e9,
+        serverResponseTimeByOrigin,
+        cpuSlowdownMultiplier: 5,
+        observedThroughput: 1,
+      });
+
+      const resultWithoutCpu = simulator.simulate(nodeA);
+      assert.strictEqual(resultWithoutCpu.nodeTimings.get(nodeB)?.duration, 150);
+
+      const cpuNode = new CPUNode(cpuTask({duration: 50}));
+      nodeA.addDependent(cpuNode);
+
+      const resultWithCpu = simulator.simulate(nodeA);
+      assert.strictEqual(resultWithCpu.nodeTimings.get(nodeB)?.duration, 150);
+
+      // Also verify when the parallel CPU node completes mid-download of the first (unwarmed) H2 request.
+      const rootNode = new CPUNode(cpuTask({duration: 1}));
+      rootNode.addDependent(nodeA);
+      const cpuNodeDuringColdRequest = new CPUNode(cpuTask({duration: 50}));
+      rootNode.addDependent(cpuNodeDuringColdRequest);
+
+      const resultWithCpuDuringColdRequest = simulator.simulate(rootNode);
+      assert.strictEqual(resultWithCpuDuringColdRequest.nodeTimings.get(nodeB)?.duration, 150);
+    });
   });
 
   describe('.simulateTimespan', () => {

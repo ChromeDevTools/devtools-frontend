@@ -59,7 +59,7 @@ describe('Metrics: Lantern LCP', function() {
                        optimisticNodeTimings: fcpResult.optimisticEstimate.nodeTimings.size,
                        pessimisticNodeTimings: fcpResult.pessimisticEstimate.nodeTimings.size,
                      });
-    assert.strictEqual(Math.round(lcpResult.timing), 1109);
+    assert.strictEqual(Math.round(lcpResult.timing), 959);
   });
 
   it('should include image resource when image LCP occurs at the same timestamp as FCP', async function() {

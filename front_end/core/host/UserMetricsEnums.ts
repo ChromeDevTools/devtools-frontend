@@ -633,9 +633,12 @@ export enum IssueCreated {
   'CorsIssue::LocalNetworkAccessPermissionDenied' = 111,
   'SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch' = 112,
   'ElementAccessibilityIssue::InteractiveContentSummaryDescendant' = 113,
-  'CorsIssue::InvalidLocalNetworkAccess' = 114,
+  'GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo' = 114,
+  'GenericIssue::AutofillPolicyControlledFeatureInfo' = 115,
+  'GenericIssue::ManualTextPolicyControlledFeatureInfo' = 116,
+  'CorsIssue::InvalidLocalNetworkAccess' = 118,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 115,
+  MAX_VALUE = 119,
 }
 
 export enum DeveloperResourceLoaded {

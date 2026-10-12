@@ -4046,6 +4046,7 @@ export const knownContextValues: Set<string> = new Set([
   'speak-as',
   'speculative-loads',
   'speedster',
+  'spell-check-custom-dictionary',
   'spread',
   'sq',
   'sr',

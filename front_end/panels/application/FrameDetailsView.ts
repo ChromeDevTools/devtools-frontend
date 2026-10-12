@@ -241,6 +241,24 @@ const UIStrings = {
    * @description Explanation of origin trials in the origin trials section of the frame details view.
    */
   originTrialsExplanation: 'Origin trials give you access to a new or experimental feature',
+  /**
+   * @description Section header in the Frame Details view for the words that the document added to its spell check
+   * custom dictionary (https://github.com/Igalia/explainers/tree/main/spell-check-dictionary).
+   */
+  spellCheckCustomDictionary: 'Spell check custom dictionary',
+  /**
+   * @description Explanation of the spell check custom dictionary section in the Frame Details view
+   */
+  spellCheckCustomDictionaryExplanation:
+      'Words added with `document.spellCheckCustomDictionary.addWords()`. The spell checker doesn’t flag them in this document.',
+  /**
+   * @description Label for the list of words in the spell check custom dictionary section of the Frame Details view
+   */
+  words: 'Words',
+  /**
+   * @description Accessible label for a button that reloads the words in the spell check custom dictionary section
+   */
+  refreshSpellCheckCustomDictionary: 'Refresh spell check custom dictionary',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -261,8 +279,10 @@ export interface FrameDetailsViewInput {
   protocolMonitorExperimentEnabled: boolean;
   trials: Protocol.Page.OriginTrial[]|null;
   securityIsolationInfo: Protocol.Network.SecurityIsolationStatus|null;
+  spellCheckCustomDictionaryWords: string[];
   onRevealInNetwork?: () => void;
   onRevealInSources: () => void;
+  onRefreshSpellCheckCustomDictionary: () => void;
 }
 
 export type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
@@ -280,6 +300,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
+      ${renderSpellCheckCustomDictionary(input.spellCheckCustomDictionaryWords, input.onRefreshSpellCheckCustomDictionary)}
       ${input.permissionsPolicies ?
           widget(ApplicationComponents.PermissionsPolicySection.PermissionsPolicySection, {
              policies: input.permissionsPolicies,
@@ -312,6 +333,43 @@ function renderOriginTrial(trials: Protocol.Page.OriginTrial[]|null): LitTemplat
     </devtools-report-section>
     <devtools-widget class="span-cols" ${widget(OriginTrialTreeView, {data})}>
     </devtools-widget>
+    <devtools-report-divider></devtools-report-divider>`;
+  // clang-format on
+}
+
+function renderSpellCheckCustomDictionary(words: string[], onRefresh: () => void): LitTemplate {
+  if (!words.length) {
+    return nothing;
+  }
+
+  const rows = words.map(word => html`<div>${word}</div>`);
+  // clang-format off
+  return html`
+    <devtools-report-section-header>
+      ${i18nString(UIStrings.spellCheckCustomDictionary)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <span class="report-section">
+        ${i18nString(UIStrings.spellCheckCustomDictionaryExplanation)}
+      </span>
+    </devtools-report-section>
+    <devtools-report-key>${i18nString(UIStrings.words)}</devtools-report-key>
+    <devtools-report-value class="spell-check-custom-dictionary-list"
+        jslog=${VisualLogging.section('spell-check-custom-dictionary')}>
+      <div class="inline-items">
+        <devtools-expandable-list .data=${
+          {rows, title: i18nString(UIStrings.words)} as ExpandableList.ExpandableList.ExpandableListData}>
+        </devtools-expandable-list>
+        <devtools-button
+          .iconName=${'refresh'}
+          .accessibleLabel=${i18nString(UIStrings.refreshSpellCheckCustomDictionary)}
+          .variant=${Buttons.Button.Variant.ICON}
+          .size=${Buttons.Button.Size.SMALL}
+          @click=${onRefresh}
+          jslog=${VisualLogging.action('refresh').track({click: true})}
+        ></devtools-button>
+      </div>
+    </devtools-report-value>
     <devtools-report-divider></devtools-report-divider>`;
   // clang-format on
 }
@@ -827,6 +885,7 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
   #permissionsPolicies: Protocol.Page.PermissionsPolicyFeatureState[]|null = null;
   #linkifier = new Components.Linkifier.Linkifier();
   #adScriptAncestry: Protocol.Network.AdAncestry|null = null;
+  #spellCheckCustomDictionaryWords: string[] = [];
   #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
@@ -865,7 +924,30 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
       this.#trials = trials;
       this.requestUpdate();
     });
+    this.#spellCheckCustomDictionaryWords = [];
+    this.#refreshSpellCheckCustomDictionary();
     this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    // The page can add or remove words at any time and nothing notifies
+    // DevTools, so re-read the dictionary each time the view is shown.
+    this.#refreshSpellCheckCustomDictionary();
+  }
+
+  #refreshSpellCheckCustomDictionary(): void {
+    const frame = this.#frame;
+    if (!frame) {
+      return;
+    }
+    void frame.getSpellCheckCustomDictionary().then(words => {
+      if (frame !== this.#frame) {
+        return;
+      }
+      this.#spellCheckCustomDictionaryWords = words;
+      this.requestUpdate();
+    });
   }
 
   get frame(): SDK.ResourceTreeModel.ResourceTreeFrame|undefined {
@@ -896,6 +978,8 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
       linkTargetDOMNode: this.#linkTargetDOMNode,
       trials: this.#trials,
       securityIsolationInfo: this.#securityIsolationInfo,
+      spellCheckCustomDictionaryWords: this.#spellCheckCustomDictionaryWords,
+      onRefreshSpellCheckCustomDictionary: () => this.#refreshSpellCheckCustomDictionary(),
       onRevealInNetwork: frameRequest ?
           () => {
             const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(

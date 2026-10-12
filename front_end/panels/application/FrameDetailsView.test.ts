@@ -77,6 +77,7 @@ const makeFrame = (target: SDK.Target.Target) => {
       },
     ]),
     getPermissionsPolicyState: () => Promise.resolve(null),
+    getSpellCheckCustomDictionary: async () => [],
     parentFrame: () => null,
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
@@ -262,6 +263,55 @@ report-uri: https://www.example.com/csp`,
     assert.deepEqual(adScriptsText, ['ad-script1.js:1', 'ad-script2.js:1']);
   });
 
+  it('does not render the spell check custom dictionary section when it is empty', async () => {
+    const frame = makeFrame(createTarget());
+    const component = new Application.FrameDetailsView.FrameDetailsReportView();
+    component.frame = frame;
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    assert.notExists(component.contentElement.querySelector('.spell-check-custom-dictionary-list'));
+  });
+
+  it('renders the spell check custom dictionary words', async () => {
+    const frame = makeFrame(createTarget());
+    const getWords = sinon.stub().resolves(['Charmander', 'Pikachu']);
+    frame.getSpellCheckCustomDictionary = getWords;
+    const component = new Application.FrameDetailsView.FrameDetailsReportView();
+    component.frame = frame;
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+    await raf();
+
+    const keys = [...component.contentElement.querySelectorAll('devtools-report-key')].map(k => k.deepInnerText());
+    assert.include(keys, 'Words');
+
+    const list = component.contentElement.querySelector(
+        'devtools-report-value.spell-check-custom-dictionary-list devtools-expandable-list');
+    assert.exists(list);
+    list.shadowRoot!.querySelector('button')!.click();
+    await raf();
+    const words =
+        [...list.shadowRoot!.querySelectorAll('.expandable-list-items > div')].map(word => word.textContent?.trim());
+    assert.deepEqual(words, ['Charmander', 'Pikachu']);
+
+    getWords.resolves(['Pikachu']);
+    const callCount = getWords.callCount;
+    const refreshButton = component.contentElement.querySelector<HTMLElement>(
+        'devtools-report-value.spell-check-custom-dictionary-list devtools-button');
+    assert.exists(refreshButton);
+    refreshButton.click();
+    await component.updateComplete;
+    await raf();
+
+    sinon.assert.callCount(getWords, callCount + 1);
+    const refreshedList = component.contentElement.querySelector(
+        'devtools-report-value.spell-check-custom-dictionary-list devtools-expandable-list');
+    const refreshedWords = [...refreshedList!.shadowRoot!.querySelectorAll('.expandable-list-items > div')].map(
+        word => word.textContent?.trim());
+    assert.deepEqual(refreshedWords, ['Pikachu']);
+  });
+
   it('renders icon buttons fully when narrow', async () => {
     const target = createTarget();
     const frame = makeFrame(target);
@@ -278,8 +328,10 @@ report-uri: https://www.example.com/csp`,
       protocolMonitorExperimentEnabled: false,
       trials: null,
       securityIsolationInfo: null,
+      spellCheckCustomDictionaryWords: [],
       onRevealInNetwork: () => {},
       onRevealInSources: () => {},
+      onRefreshSpellCheckCustomDictionary: () => {},
     };
     Application.FrameDetailsView.DEFAULT_VIEW(input, undefined, container);
 
@@ -302,8 +354,10 @@ report-uri: https://www.example.com/csp`,
       protocolMonitorExperimentEnabled: false,
       trials: null,
       securityIsolationInfo: null,
+      spellCheckCustomDictionaryWords: [],
       onRevealInNetwork: () => {},
       onRevealInSources: () => {},
+      onRefreshSpellCheckCustomDictionary: () => {},
     };
     Application.FrameDetailsView.DEFAULT_VIEW(input, undefined, container);
 

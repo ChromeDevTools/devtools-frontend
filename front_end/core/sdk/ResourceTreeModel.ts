@@ -1097,6 +1097,15 @@ export class ResourceTreeFrame {
     return response.originTrials;
   }
 
+  async getSpellCheckCustomDictionary(): Promise<string[]> {
+    const response =
+        await this.resourceTreeModel().target().pageAgent().invoke_getSpellCheckCustomDictionary({frameId: this.#id});
+    if (response.getError()) {
+      return [];
+    }
+    return response.words;
+  }
+
   setCreationStackTrace(creationStackTraceData: {
     creationStackTrace: Protocol.Runtime.StackTrace|null,
     creationStackTraceTarget: Target,

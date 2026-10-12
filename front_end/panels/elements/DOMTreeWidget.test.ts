@@ -1112,6 +1112,41 @@ describeWithEnvironment('DOMTreeWidget', () => {
          }
        });
 
+    it('removes the node when Delete is pressed with its closing tag selected', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'SECTION', children: [{nodeId: 3, nodeName: 'SPAN'}]},
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.expandRoot = true;
+        const sectionNode = rootNode.children()![0];
+        domTree.setNodeExpanded(sectionNode, true);
+        domTree.performUpdate();
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        domTree.selectDOMNode(sectionNode, /* focus= */ false, /* isClosingTag= */ true);
+        await UI.Widget.Widget.allUpdatesComplete;
+        assert.isTrue(domTree.selectedClosingTag());
+
+        const removeSpy = sinon.spy(sectionNode, 'removeNode');
+        tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'Delete', bubbles: true}));
+        sinon.assert.calledOnce(removeSpy);
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('supports copying paths (CSS path, JS path, XPath, full XPath, outerHTML) and styles in DOMTreeWidget',
        async () => {
          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
@@ -5093,5 +5128,1450 @@ describeWithEnvironment('DOMTreeWidget', () => {
     } finally {
       domTree.detach();
     }
+  });
+
+  // Helpers for the structural tests below. They describe the rendered
+  // <devtools-tree> in the same spirit as the legacy
+  // `ElementsTestRunner.dumpElementsTree` output.
+  function makeNodePayload(nodeId: number, nodeName: string, opts: Partial<Protocol.DOM.Node> = {}): Protocol.DOM.Node {
+    return {
+      nodeId: nodeId as Protocol.DOM.NodeId,
+      backendNodeId: nodeId as Protocol.DOM.BackendNodeId,
+      nodeType: opts.nodeType ?? Node.ELEMENT_NODE,
+      nodeName,
+      localName: opts.localName ?? nodeName.toLowerCase(),
+      nodeValue: opts.nodeValue ?? '',
+      childNodeCount: opts.children?.length ?? opts.childNodeCount ?? 0,
+      children: opts.children ?? [],
+      attributes: opts.attributes ?? [],
+      ...opts,
+    };
+  }
+
+  function makeDocumentPayload(nodeId: number, children: Protocol.DOM.Node[]): Protocol.DOM.Node {
+    return makeNodePayload(nodeId, '#document', {nodeType: Node.DOCUMENT_NODE, localName: '', children});
+  }
+
+  function getInternalTree(domTree: Elements.DOMTreeWidget.DOMTreeWidget): UI.TreeOutline.TreeOutlineInShadow {
+    const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+    assert.exists(tree);
+    return tree.getInternalTreeOutlineForTest();
+  }
+
+  function treeWidgetOf(treeElement: UI.TreeOutline.TreeElement): Elements.ElementsTreeElement.ElementsTreeWidget|null {
+    const widgetElement = treeElement.listItemElement.querySelector('devtools-widget');
+    const widget = widgetElement ? UI.Widget.Widget.get(widgetElement) : null;
+    return widget instanceof Elements.ElementsTreeElement.ElementsTreeWidget ? widget : null;
+  }
+
+  function findTreeElement(domTree: Elements.DOMTreeWidget.DOMTreeWidget,
+                           node: SDK.DOMModel.DOMNode): UI.TreeOutline.TreeElement|null {
+    const visit = (parent: UI.TreeOutline.TreeElement): UI.TreeOutline.TreeElement|null => {
+      for (const child of parent.children()) {
+        const widget = treeWidgetOf(child);
+        if (widget?.node === node && !widget.isClosingTag) {
+          return child;
+        }
+        const found = visit(child);
+        if (found) {
+          return found;
+        }
+      }
+      return null;
+    };
+    return visit(getInternalTree(domTree).rootElement());
+  }
+
+  function requireTreeElement(domTree: Elements.DOMTreeWidget.DOMTreeWidget,
+                              node: SDK.DOMModel.DOMNode): UI.TreeOutline.TreeElement {
+    const treeElement = findTreeElement(domTree, node);
+    assert.exists(treeElement, `Expected a tree element for ${node.nodeNameInCorrectCase()}`);
+    return treeElement;
+  }
+
+  async function expandAndFind(domTree: Elements.DOMTreeWidget.DOMTreeWidget,
+                               node: SDK.DOMModel.DOMNode): Promise<UI.TreeOutline.TreeElement> {
+    domTree.setNodeExpanded(node, true);
+    await waitForTreeUpdates();
+    return requireTreeElement(domTree, node);
+  }
+
+  function describeChildren(treeElement: UI.TreeOutline.TreeElement): string[] {
+    return treeElement.children().map(child => {
+      const li = child.listItemElement;
+      const shortcutTitle = li.querySelector('.elements-tree-shortcut-title');
+      if (shortcutTitle) {
+        return `${shortcutTitle.textContent?.trim()} ${li.textContent?.includes('reveal') ? 'reveal' : ''}`.trim();
+      }
+      if (li.classList.contains('elements-tree-expand-all')) {
+        return `[${li.querySelector('devtools-button')?.textContent?.trim()}]`;
+      }
+      const widget = treeWidgetOf(child);
+      if (!widget) {
+        return '<other>';
+      }
+      const node = widget.node;
+      if (widget.isClosingTag) {
+        return `</${node.nodeNameInCorrectCase()}>`;
+      }
+      if (node.nodeType() === Node.TEXT_NODE) {
+        return `"${node.nodeValue()}"`;
+      }
+      const attrs = node.attributes().map(attr => ` ${attr.name}="${attr.value}"`).join('');
+      return node.nodeType() === Node.ELEMENT_NODE ? `<${node.nodeNameInCorrectCase()}${attrs}>` :
+                                                     node.nodeNameInCorrectCase();
+    });
+  }
+
+  function widgetText(widget: Elements.ElementsTreeElement.ElementsTreeWidget|null): string {
+    return widget?.contentElement.textContent?.replace(/\u200B/g, '') ?? '';
+  }
+
+  describe('DOM structure updates', () => {
+    const pseudoElementCases = [
+      {
+        name: '::checkmark',
+        hostName: 'option',
+        pseudoType: Protocol.DOM.PseudoType.Checkmark,
+        getPseudoElement: (node: SDK.DOMModel.DOMNode) => node.checkmarkPseudoElement(),
+      },
+      {
+        name: '::picker-icon',
+        hostName: 'select',
+        pseudoType: Protocol.DOM.PseudoType.PickerIcon,
+        getPseudoElement: (node: SDK.DOMModel.DOMNode) => node.pickerIconPseudoElement(),
+      },
+      {
+        name: '::interest-button',
+        hostName: 'button',
+        pseudoType: Protocol.DOM.PseudoType.InterestButton,
+        getPseudoElement: (node: SDK.DOMModel.DOMNode) => node.interestButtonPseudoElement(),
+      },
+    ];
+    for (const {name, hostName, pseudoType, getPseudoElement} of pseudoElementCases) {
+      it(`renders the ${name} pseudo element as a child of its originating element`, async () => {
+        const {domTree, domModel} = setupDOMTreeWidget(target);
+        try {
+          const hostNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, hostName, {
+                                                         pseudoElements: [makeNodePayload(2, name, {
+                                                           parentId: 1 as Protocol.DOM.NodeId,
+                                                           pseudoType,
+                                                           pseudoIdentifier: name,
+                                                           nodeValue: '*',
+                                                         })],
+                                                       }));
+          const pseudoNode = getPseudoElement(hostNode);
+          assert.exists(pseudoNode);
+
+          domTree.rootDOMNode = hostNode;
+          domTree.setNodeExpanded(hostNode, true);
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const hostTreeElement = requireTreeElement(domTree, hostNode);
+          assert.isTrue(hostTreeElement.isExpandable());
+          const pseudoTreeElement = requireTreeElement(domTree, pseudoNode);
+          assert.strictEqual(pseudoTreeElement.parent, hostTreeElement);
+          assert.include(widgetText(treeWidgetOf(pseudoTreeElement)), name);
+        } finally {
+          domTree.detach();
+        }
+      });
+    }
+
+    it('updates rendered namespaced attributes on AttrModified and AttrRemoved', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, 'svg', {
+                                                       children: [makeNodePayload(2, 'a', {
+                                                         parentId: 1 as Protocol.DOM.NodeId,
+                                                         attributes: ['id', 'node', 'xlink:href', 'http://localhost'],
+                                                       })],
+                                                     }));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const aNode = rootNode.children()![0];
+        const getAttributeValue = (name: string): string|null => {
+          const widget = findElementsTreeWidget(domTree, aNode);
+          assert.exists(widget);
+          for (const attribute of widget.contentElement.querySelectorAll('.webkit-html-attribute')) {
+            const nameElement = attribute.querySelector('.webkit-html-attribute-name');
+            if (nameElement?.textContent === name) {
+              return attribute.querySelector('.webkit-html-attribute-value')?.textContent?.replace(/\u200B/g, '') ?? '';
+            }
+          }
+          return null;
+        };
+
+        assert.strictEqual(aNode.getAttribute('xlink:href'), 'http://localhost');
+        assert.strictEqual(getAttributeValue('xlink:href'), 'http://localhost');
+
+        domModel.attributeModified(aNode.id, 'xlink:href', 'changed-url');
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.strictEqual(aNode.getAttribute('xlink:href'), 'changed-url');
+        assert.strictEqual(getAttributeValue('xlink:href'), 'changed-url');
+
+        domModel.attributeRemoved(aNode.id, 'xlink:href');
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.isUndefined(aNode.getAttribute('xlink:href'));
+        assert.isNull(getAttributeValue('xlink:href'));
+        assert.strictEqual(getAttributeValue('id'), 'node');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('updates the rendered title when setting an attribute on a non-HTML SVG element', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = SDK.DOMModel.DOMNode.create(
+            domModel, null, false, makeNodePayload(1, 'svg', {
+              children:
+                  [makeNodePayload(2, 'rect', {parentId: 1 as Protocol.DOM.NodeId, attributes: ['width', '100']})],
+            }));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const rectNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        assert.include(widgetText(findElementsTreeWidget(domTree, rectNode)), 'width');
+        assert.notInclude(widgetText(findElementsTreeWidget(domTree, rectNode)), 'viewBox');
+
+        domModel.attributeModified(2 as Protocol.DOM.NodeId, 'viewBox', '0 0 50 50');
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        assert.strictEqual(rectNode.getAttribute('viewBox'), '0 0 50 50');
+        const text = widgetText(findElementsTreeWidget(domTree, rectNode));
+        assert.include(text, 'viewBox');
+        assert.include(text, '0 0 50 50');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('populates children fetched after ChildNodeCountUpdated and keeps the node selectable', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        domTree.selectEnabled = true;
+        sinon.stub(domModel.target().domAgent(), 'invoke_requestChildNodes').callsFake(async payload => {
+          if (payload.nodeId === 3) {
+            // Simulate the backend pushing the children to the model.
+            domModel.setChildNodes(3 as Protocol.DOM.NodeId, [
+              makeNodePayload(4, 'DIV', {parentId: 3 as Protocol.DOM.NodeId}),
+              makeNodePayload(5, 'DIV', {parentId: 3 as Protocol.DOM.NodeId}),
+            ]);
+          }
+          return {getError: () => undefined} as Protocol.ProtocolResponseWithError;
+        });
+
+        // The BODY has children on the backend, but they are not loaded yet.
+        const bodyPayload = {
+          nodeId: 3 as Protocol.DOM.NodeId,
+          parentId: 2 as Protocol.DOM.NodeId,
+          backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'BODY',
+          localName: 'body',
+          nodeValue: '',
+          childNodeCount: 2,
+        } as Protocol.DOM.Node;
+        const rootNode = SDK.DOMModel.DOMNode.create(
+            domModel, null, false,
+            makeDocumentPayload(
+                1, [makeNodePayload(2, 'HTML', {parentId: 1 as Protocol.DOM.NodeId, children: [bodyPayload]})]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const bodyNode = rootNode.children()![0].children()![0];
+        domTree.selectDOMNode(bodyNode);
+        await waitForTreeUpdates();
+        assert.strictEqual(domTree.selectedDOMNode(), bodyNode);
+        assert.isNull(bodyNode.children());
+        assert.strictEqual(bodyNode.childNodeCount(), 2);
+
+        // Any operation that modifies the node, followed by an immediate, synchronous update.
+        domModel.childNodeCountUpdated(bodyNode.id, 3);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        assert.isNull(bodyNode.children());
+        assert.strictEqual(bodyNode.childNodeCount(), 3);
+        let bodyTreeElement = requireTreeElement(domTree, bodyNode);
+        assert.isTrue(bodyTreeElement.isExpandable());
+        assert.isFalse(bodyTreeElement.expanded);
+
+        // Expanding fetches the children and renders them.
+        bodyTreeElement = await expandAndFind(domTree, bodyNode);
+        assert.isTrue(bodyTreeElement.expanded);
+        assert.deepEqual(describeChildren(bodyTreeElement), ['<div>', '<div>', '</body>']);
+
+        domTree.selectDOMNode(bodyNode, true);
+        await waitForTreeUpdates();
+        assert.strictEqual(domTree.selectedDOMNode(), bodyNode);
+        assert.isTrue(requireTreeElement(domTree, bodyNode).listItemElement.classList.contains('selected'));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('expands elements recursively', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        let childPayload =
+            makeNodePayload(10, 'DIV', {parentId: 9 as Protocol.DOM.NodeId, attributes: ['id', 'depth-10']});
+        for (let i = 9; i >= 1; i--) {
+          childPayload = makeNodePayload(
+              i, 'DIV',
+              {parentId: (i - 1) as Protocol.DOM.NodeId, attributes: ['id', `depth-${i}`], children: [childPayload]});
+        }
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(100, [childPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const depth1Node = rootNode.children()![0];
+        assert.isNull(findTreeElement(domTree, domModel.nodeForId(3 as Protocol.DOM.NodeId)!));
+
+        await domTree.expandRecursively(depth1Node);
+        await waitForTreeUpdates();
+
+        let currentNode = depth1Node;
+        let currentTreeElement = requireTreeElement(domTree, depth1Node);
+        for (let i = 1; i < 10; i++) {
+          assert.isTrue(domTree.isNodeExpanded(currentNode), `depth-${i} should be expanded`);
+          assert.isTrue(currentTreeElement.expanded, `depth-${i} tree element should be expanded`);
+          assert.deepEqual(describeChildren(currentTreeElement), [`<div id="depth-${i + 1}">`, '</div>']);
+          currentNode = currentNode.children()![0];
+          currentTreeElement = currentTreeElement.children()[0];
+        }
+        assert.strictEqual(currentNode.getAttribute('id'), 'depth-10');
+        assert.isFalse(currentTreeElement.isExpandable(), 'depth-10 should not be expandable');
+        assert.isFalse(currentTreeElement.expanded, 'depth-10 should not be expanded');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('updates the DOM tree structure upon node insertion', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const containerPayload = makeNodePayload(2, 'DIV', {
+          parentId: 1 as Protocol.DOM.NodeId,
+          attributes: ['id', 'container'],
+          children: [
+            makeNodePayload(3, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child1']}),
+            makeNodePayload(4, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child2']}),
+            makeNodePayload(5, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child3']}),
+          ],
+        });
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [containerPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const containerNode = rootNode.children()![0];
+        await expandAndFind(domTree, containerNode);
+        const containerChildren = (): string[] => describeChildren(requireTreeElement(domTree, containerNode));
+        const insert = async(prevId: number, payload: Protocol.DOM.Node): Promise<void> => {
+          domModel.childNodeInserted(2 as Protocol.DOM.NodeId, prevId as Protocol.DOM.NodeId, payload);
+          domTree.updateModifiedNodes();
+          await waitForTreeUpdates();
+        };
+
+        assert.deepEqual(containerChildren(),
+                         ['<div id="child1">', '<div id="child2">', '<div id="child3">', '</div>']);
+
+        // Insert before first child.
+        await insert(
+            0, makeNodePayload(6, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child-before']}));
+        assert.deepEqual(containerChildren(), [
+          '<div id="child-before">',
+          '<div id="child1">',
+          '<div id="child2">',
+          '<div id="child3">',
+          '</div>',
+        ]);
+
+        // Insert middle child (before child2, after child1).
+        await insert(
+            3, makeNodePayload(7, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child-middle']}));
+        assert.deepEqual(containerChildren(), [
+          '<div id="child-before">',
+          '<div id="child1">',
+          '<div id="child-middle">',
+          '<div id="child2">',
+          '<div id="child3">',
+          '</div>',
+        ]);
+
+        // Append child (after child3).
+        await insert(
+            5, makeNodePayload(8, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child-after']}));
+        assert.deepEqual(containerChildren(), [
+          '<div id="child-before">',
+          '<div id="child1">',
+          '<div id="child-middle">',
+          '<div id="child2">',
+          '<div id="child3">',
+          '<div id="child-after">',
+          '</div>',
+        ]);
+
+        // Append child with a text node, which is rendered inline.
+        await insert(
+            8, makeNodePayload(9, 'DIV', {
+              parentId: 2 as Protocol.DOM.NodeId,
+              attributes: ['id', 'child-with-text', 'style', 'display: none;'],
+              children: [makeNodePayload(
+                  10, '#text', {parentId: 9 as Protocol.DOM.NodeId, nodeType: Node.TEXT_NODE, nodeValue: 'Text'})],
+            }));
+        assert.deepEqual(containerChildren(), [
+          '<div id="child-before">',
+          '<div id="child1">',
+          '<div id="child-middle">',
+          '<div id="child2">',
+          '<div id="child3">',
+          '<div id="child-after">',
+          '<div id="child-with-text" style="display: none;">',
+          '</div>',
+        ]);
+        const childWithTextNode = domModel.nodeForId(9 as Protocol.DOM.NodeId)!;
+        const childWithTextTreeElement = requireTreeElement(domTree, childWithTextNode);
+        assert.isFalse(childWithTextTreeElement.isExpandable());
+        assert.strictEqual(
+            treeWidgetOf(childWithTextTreeElement)?.contentElement.querySelector('.webkit-html-text-node')?.textContent,
+            'Text');
+
+        // Insert first text node into child3.
+        domModel.childNodeInserted(
+            5 as Protocol.DOM.NodeId, 0 as Protocol.DOM.NodeId,
+            makeNodePayload(11, '#text',
+                            {parentId: 5 as Protocol.DOM.NodeId, nodeType: Node.TEXT_NODE, nodeValue: 'First text'}));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        const child3Node = domModel.nodeForId(5 as Protocol.DOM.NodeId)!;
+        const child3TreeElement = requireTreeElement(domTree, child3Node);
+        assert.isFalse(child3TreeElement.isExpandable());
+        assert.strictEqual(
+            treeWidgetOf(child3TreeElement)?.contentElement.querySelector('.webkit-html-text-node')?.textContent,
+            'First text');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('updates the DOM tree structure upon node removal', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const containerPayload = makeNodePayload(2, 'DIV', {
+          parentId: 1 as Protocol.DOM.NodeId,
+          attributes: ['id', 'container'],
+          children: [
+            makeNodePayload(3, 'DIV', {
+              parentId: 2 as Protocol.DOM.NodeId,
+              attributes: ['id', 'child1'],
+              children: [makeNodePayload(
+                  7, '#text', {parentId: 3 as Protocol.DOM.NodeId, nodeType: Node.TEXT_NODE, nodeValue: 'Text'})],
+            }),
+            makeNodePayload(4, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child2']}),
+            makeNodePayload(5, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child3']}),
+            makeNodePayload(6, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child4']}),
+          ],
+        });
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [containerPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const containerNode = rootNode.children()![0];
+        const child1Node = domModel.nodeForId(3 as Protocol.DOM.NodeId)!;
+        const child2Node = domModel.nodeForId(4 as Protocol.DOM.NodeId)!;
+        await expandAndFind(domTree, containerNode);
+        const containerChildren = (): string[] => describeChildren(requireTreeElement(domTree, containerNode));
+        const remove = async(parentId: number, nodeId: number): Promise<void> => {
+          domModel.childNodeRemoved(parentId as Protocol.DOM.NodeId, nodeId as Protocol.DOM.NodeId);
+          domTree.updateModifiedNodes();
+          await waitForTreeUpdates();
+          assert.isNull(domModel.nodeForId(nodeId as Protocol.DOM.NodeId));
+        };
+
+        assert.deepEqual(
+            containerChildren(),
+            ['<div id="child1">', '<div id="child2">', '<div id="child3">', '<div id="child4">', '</div>']);
+        assert.strictEqual(treeWidgetOf(requireTreeElement(domTree, child1Node))
+                               ?.contentElement.querySelector('.webkit-html-text-node')
+                               ?.textContent,
+                           'Text');
+
+        // Remove the inline text node of child1.
+        await remove(3, 7);
+        assert.deepEqual(
+            containerChildren(),
+            ['<div id="child1">', '<div id="child2">', '<div id="child3">', '<div id="child4">', '</div>']);
+        assert.strictEqual(child1Node.childNodeCount(), 0);
+        assert.isNull(treeWidgetOf(requireTreeElement(domTree, child1Node))
+                          ?.contentElement.querySelector('.webkit-html-text-node'));
+
+        // Remove first child.
+        await remove(2, 3);
+        assert.deepEqual(containerChildren(),
+                         ['<div id="child2">', '<div id="child3">', '<div id="child4">', '</div>']);
+        assert.isNull(findTreeElement(domTree, child1Node));
+
+        // Remove middle child (child3).
+        await remove(2, 5);
+        assert.deepEqual(containerChildren(), ['<div id="child2">', '<div id="child4">', '</div>']);
+
+        // Remove last child (child4).
+        await remove(2, 6);
+        assert.deepEqual(containerChildren(), ['<div id="child2">', '</div>']);
+
+        // Remove the only remaining child (child2).
+        await remove(2, 4);
+        assert.deepEqual(containerChildren(), []);
+        assert.isFalse(requireTreeElement(domTree, containerNode).isExpandable());
+        assert.isNull(findTreeElement(domTree, child2Node));
+        assert.isEmpty(containerNode.children() ?? []);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('removes doctype and document element from #document via ChildNodeRemoved without crashing', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [
+                                                       makeNodePayload(2, 'html', {
+                                                         parentId: 1 as Protocol.DOM.NodeId,
+                                                         nodeType: Node.DOCUMENT_TYPE_NODE,
+                                                         publicId: '',
+                                                         systemId: '',
+                                                       }),
+                                                       makeNodePayload(3, 'HTML', {parentId: 1 as Protocol.DOM.NodeId}),
+                                                     ]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const doctypeNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const htmlNode = domModel.nodeForId(3 as Protocol.DOM.NodeId)!;
+        const topLevelNodeIds = (): Array<number|undefined> =>
+            getInternalTree(domTree).rootElement().children().map(child => treeWidgetOf(child)?.node.id);
+        assert.deepEqual(topLevelNodeIds(), [2, 3]);
+        assert.include(widgetText(findElementsTreeWidget(domTree, doctypeNode)), 'DOCTYPE');
+
+        domModel.childNodeRemoved(1 as Protocol.DOM.NodeId, 2 as Protocol.DOM.NodeId);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.isNull(domModel.nodeForId(2 as Protocol.DOM.NodeId));
+        // The doctype tree element must be gone from the rendered tree.
+        assert.deepEqual(topLevelNodeIds(), [3]);
+        assert.isNull(findTreeElement(domTree, doctypeNode));
+        assert.exists(findTreeElement(domTree, htmlNode));
+
+        domModel.childNodeRemoved(1 as Protocol.DOM.NodeId, 3 as Protocol.DOM.NodeId);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.isNull(domModel.nodeForId(3 as Protocol.DOM.NodeId));
+        assert.isEmpty(rootNode.children() ?? []);
+        assert.deepEqual(topLevelNodeIds(), []);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('makes a collapsed element expandable when ChildNodeCountUpdated fires', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = SDK.DOMModel.DOMNode.create(
+            domModel, null, false, makeNodePayload(1, 'BODY', {
+              children: [makeNodePayload(2, 'DIV',
+                                         {parentId: 1 as Protocol.DOM.NodeId, attributes: ['id', 'collapsed-target']})],
+            }));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const childNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        let childTreeElement = requireTreeElement(domTree, childNode);
+        assert.isFalse(childTreeElement.isExpandable());
+        assert.isFalse(childTreeElement.expanded);
+        assert.deepEqual(describeChildren(requireTreeElement(domTree, rootNode)),
+                         ['<div id="collapsed-target">', '</body>']);
+
+        domModel.childNodeCountUpdated(2 as Protocol.DOM.NodeId, 1);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        childTreeElement = requireTreeElement(domTree, childNode);
+        assert.isTrue(childTreeElement.isExpandable());
+        assert.isFalse(childTreeElement.expanded);
+        assert.isFalse(domTree.isNodeExpanded(childNode));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('displays author shadow roots and hides user-agent ones unless show-ua-shadow-dom is enabled', async () => {
+      const setting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        setting.set(false);
+        domTree.omitRootDOMNode = true;
+        const shadowRoot = (nodeId: number, shadowRootType: Protocol.DOM.ShadowRootType): Protocol.DOM.Node =>
+            makeNodePayload(nodeId, '#shadow-root', {
+              parentId: 2 as Protocol.DOM.NodeId,
+              nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+              localName: '',
+              shadowRootType,
+              children: [makeNodePayload(nodeId + 10, '#text', {
+                parentId: nodeId as Protocol.DOM.NodeId,
+                nodeType: Node.TEXT_NODE,
+                localName: '',
+              })],
+            });
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [
+                                                       makeNodePayload(2, 'DIV', {
+                                                         parentId: 1 as Protocol.DOM.NodeId,
+                                                         attributes: ['id', 'container'],
+                                                         shadowRoots: [
+                                                           shadowRoot(3, Protocol.DOM.ShadowRootType.Open),
+                                                           shadowRoot(5, Protocol.DOM.ShadowRootType.Closed),
+                                                           shadowRoot(7, Protocol.DOM.ShadowRootType.UserAgent),
+                                                         ],
+                                                       }),
+                                                     ]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const containerNode = rootNode.children()![0];
+        const containerTreeElement = await expandAndFind(domTree, containerNode);
+        assert.deepEqual(describeChildren(containerTreeElement),
+                         ['#shadow-root (open)', '#shadow-root (closed)', '</div>']);
+        const shadowRootNodes = containerTreeElement.children()
+                                    .map(child => treeWidgetOf(child))
+                                    .filter(widget => widget && !widget.isClosingTag && widget.node.isShadowRoot())
+                                    .map(widget => widget!.node);
+        assert.deepEqual(shadowRootNodes.map(node => node.id), [3, 5]);
+        assert.deepEqual(shadowRootNodes.map(node => node.shadowRootType()),
+                         [Protocol.DOM.ShadowRootType.Open, Protocol.DOM.ShadowRootType.Closed]);
+
+        setting.set(true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+        assert.deepEqual(describeChildren(requireTreeElement(domTree, containerNode)),
+                         ['#shadow-root (open)', '#shadow-root (closed)', '#shadow-root (user-agent)', '</div>']);
+      } finally {
+        setting.set(false);
+        domTree.detach();
+      }
+    });
+
+    it('creates open and closed #shadow-root tree elements when ShadowRootPushed fires', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode =
+            SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, 'BODY', {
+                                          children: [
+                                            makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId}),
+                                            makeNodePayload(3, 'DIV', {parentId: 1 as Protocol.DOM.NodeId}),
+                                          ],
+                                        }));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const openHostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const closedHostNode = domModel.nodeForId(3 as Protocol.DOM.NodeId)!;
+        assert.isFalse(requireTreeElement(domTree, openHostNode).isExpandable());
+        assert.isFalse(requireTreeElement(domTree, closedHostNode).isExpandable());
+
+        domModel.shadowRootPushed(2 as Protocol.DOM.NodeId, makeNodePayload(4, '#shadow-root', {
+                                    parentId: 2 as Protocol.DOM.NodeId,
+                                    nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                                    shadowRootType: Protocol.DOM.ShadowRootType.Open,
+                                  }));
+        domModel.shadowRootPushed(3 as Protocol.DOM.NodeId, makeNodePayload(5, '#shadow-root', {
+                                    parentId: 3 as Protocol.DOM.NodeId,
+                                    nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                                    shadowRootType: Protocol.DOM.ShadowRootType.Closed,
+                                  }));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        const openHostTreeElement = await expandAndFind(domTree, openHostNode);
+        const closedHostTreeElement = await expandAndFind(domTree, closedHostNode);
+        assert.deepEqual(describeChildren(openHostTreeElement), ['#shadow-root (open)', '</div>']);
+        assert.deepEqual(describeChildren(closedHostTreeElement), ['#shadow-root (closed)', '</div>']);
+        assert.strictEqual(treeWidgetOf(openHostTreeElement.children()[0])?.node.nodeNameInCorrectCase(),
+                           '#shadow-root (open)');
+        assert.strictEqual(treeWidgetOf(closedHostTreeElement.children()[0])?.node.nodeNameInCorrectCase(),
+                           '#shadow-root (closed)');
+        assert.strictEqual(widgetText(treeWidgetOf(openHostTreeElement.children()[0])).trim(), '#shadow-root (open)');
+        assert.strictEqual(widgetText(treeWidgetOf(closedHostTreeElement.children()[0])).trim(),
+                           '#shadow-root (closed)');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders shadow host with <slot> and distributed nodes in tree children', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const slotPayload = makeNodePayload(5, 'SLOT', {
+          parentId: 4 as Protocol.DOM.NodeId,
+          distributedNodes:
+              [{nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN', backendNodeId: 3 as Protocol.DOM.BackendNodeId}],
+        });
+        const shadowPayload = makeNodePayload(4, '#shadow-root', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+          shadowRootType: Protocol.DOM.ShadowRootType.Open,
+          children: [slotPayload],
+        });
+        const hostPayload = makeNodePayload(2, 'DIV', {
+          parentId: 1 as Protocol.DOM.NodeId,
+          children: [makeNodePayload(3, 'SPAN', {parentId: 2 as Protocol.DOM.NodeId})],
+          shadowRoots: [shadowPayload],
+        });
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const shadowRootNode = hostNode.shadowRoots()[0];
+        const slotNode = domModel.nodeForId(5 as Protocol.DOM.NodeId)!;
+        const hostTreeElement = await expandAndFind(domTree, hostNode);
+        assert.deepEqual(describeChildren(hostTreeElement), ['#shadow-root (open)', '<span>', '</div>']);
+        const shadowTreeElement = await expandAndFind(domTree, shadowRootNode);
+        assert.deepEqual(describeChildren(shadowTreeElement), ['<slot>']);
+        const slotTreeElement = await expandAndFind(domTree, slotNode);
+
+        assert.isTrue(slotTreeElement.isExpandable());
+        assert.lengthOf(slotNode.distributedNodes(), 1);
+        assert.deepEqual(describeChildren(slotTreeElement), ['\u21AA <span> reveal', '</slot>']);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('refreshes slot links when slot attributes and DistributedNodesUpdated fire', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const slotPayload = makeNodePayload(4, 'SLOT', {
+          parentId: 3 as Protocol.DOM.NodeId,
+          attributes: ['name', 's1'],
+          distributedNodes: [],
+        });
+        const shadowPayload = makeNodePayload(3, '#shadow-root', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+          shadowRootType: Protocol.DOM.ShadowRootType.Open,
+          children: [slotPayload],
+        });
+        const hostPayload =
+            makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, shadowRoots: [shadowPayload]});
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const slotNode = domModel.nodeForId(4 as Protocol.DOM.NodeId)!;
+        await expandAndFind(domTree, hostNode);
+        await expandAndFind(domTree, hostNode.shadowRoots()[0]);
+        let slotTreeElement = await expandAndFind(domTree, slotNode);
+        assert.deepEqual(describeChildren(slotTreeElement), ['</slot>']);
+        assert.include(widgetText(treeWidgetOf(slotTreeElement)), 's1');
+
+        domModel.attributeModified(4 as Protocol.DOM.NodeId, 'name', 's2');
+        domModel.distributedNodesUpdated(4 as Protocol.DOM.NodeId, [
+          {nodeType: Node.ELEMENT_NODE, nodeName: 'DIV', backendNodeId: 10 as Protocol.DOM.BackendNodeId},
+          {nodeType: Node.TEXT_NODE, nodeName: '#text', backendNodeId: 11 as Protocol.DOM.BackendNodeId},
+        ]);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        slotTreeElement = requireTreeElement(domTree, slotNode);
+        assert.strictEqual(slotNode.getAttribute('name'), 's2');
+        assert.include(widgetText(treeWidgetOf(slotTreeElement)), 's2');
+        assert.lengthOf(slotNode.distributedNodes(), 2);
+        assert.deepEqual(describeChildren(slotTreeElement), ['\u21AA <div> reveal', '\u21AA #text reveal', '</slot>']);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('removes child tree element inside a shadow root when ChildNodeRemoved fires', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const shadowPayload = makeNodePayload(3, '#shadow-root', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+          shadowRootType: Protocol.DOM.ShadowRootType.Open,
+          children:
+              [makeNodePayload(4, 'DIV', {parentId: 3 as Protocol.DOM.NodeId, attributes: ['id', 'shadow-child']})],
+        });
+        const hostPayload =
+            makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, shadowRoots: [shadowPayload]});
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const shadowRootNode = hostNode.shadowRoots()[0];
+        const shadowChildNode = domModel.nodeForId(4 as Protocol.DOM.NodeId)!;
+        await expandAndFind(domTree, hostNode);
+        const shadowTreeElement = await expandAndFind(domTree, shadowRootNode);
+        assert.deepEqual(describeChildren(shadowTreeElement), ['<div id="shadow-child">']);
+        assert.exists(findTreeElement(domTree, shadowChildNode));
+
+        domModel.childNodeRemoved(3 as Protocol.DOM.NodeId, 4 as Protocol.DOM.NodeId);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        assert.isNull(domModel.nodeForId(4 as Protocol.DOM.NodeId));
+        assert.isNull(findTreeElement(domTree, shadowChildNode));
+        assert.deepEqual(describeChildren(requireTreeElement(domTree, shadowRootNode)), []);
+        assert.isFalse(requireTreeElement(domTree, shadowRootNode).isExpandable());
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('keeps #shadow-root first and appends new light children last, rendering slot fallback content', async () => {
+      // Mirrors legacy shadow/shadow-host-display-modes.
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const fallbackPayload =
+            makeNodePayload(13, 'DIV', {parentId: 12 as Protocol.DOM.NodeId, attributes: ['id', 'fallbackOldest']});
+        const slotPayload = makeNodePayload(12, 'SLOT', {
+          parentId: 11 as Protocol.DOM.NodeId,
+          attributes: ['name', '.distributeMeToOldest'],
+          distributedNodes: [],
+          children: [fallbackPayload],
+        });
+        const mainPayload = makeNodePayload(11, 'DIV', {
+          parentId: 10 as Protocol.DOM.NodeId,
+          attributes: ['class', 'oldestShadowMain'],
+          children: [slotPayload],
+        });
+        const hostPayload = makeNodePayload(2, 'DIV', {
+          parentId: 1 as Protocol.DOM.NodeId,
+          attributes: ['id', 'shadowHost'],
+          children: [
+            makeNodePayload(3, 'DIV',
+                            {parentId: 2 as Protocol.DOM.NodeId, attributes: ['slot', 'distributeMeToYoungest']}),
+            makeNodePayload(4, 'DIV',
+                            {parentId: 2 as Protocol.DOM.NodeId, attributes: ['slot', 'distributeMeToOldest']}),
+          ],
+        });
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        await expandAndFind(domTree, hostNode);
+        const hostChildren = (): string[] => describeChildren(requireTreeElement(domTree, hostNode));
+        assert.deepEqual(hostChildren(), [
+          '<div slot="distributeMeToYoungest">',
+          '<div slot="distributeMeToOldest">',
+          '</div>',
+        ]);
+
+        domModel.shadowRootPushed(2 as Protocol.DOM.NodeId, makeNodePayload(10, '#shadow-root', {
+                                    parentId: 2 as Protocol.DOM.NodeId,
+                                    nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                                    shadowRootType: Protocol.DOM.ShadowRootType.Open,
+                                    children: [mainPayload],
+                                  }));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        assert.deepEqual(hostChildren(), [
+          '#shadow-root (open)',
+          '<div slot="distributeMeToYoungest">',
+          '<div slot="distributeMeToOldest">',
+          '</div>',
+        ]);
+        const shadowRootNode = hostNode.shadowRoots()[0];
+        const mainNode = domModel.nodeForId(11 as Protocol.DOM.NodeId)!;
+        const slotNode = domModel.nodeForId(12 as Protocol.DOM.NodeId)!;
+        const shadowTreeElement = await expandAndFind(domTree, shadowRootNode);
+        assert.deepEqual(describeChildren(shadowTreeElement), ['<div class="oldestShadowMain">']);
+        const mainTreeElement = await expandAndFind(domTree, mainNode);
+        assert.deepEqual(describeChildren(mainTreeElement), ['<slot name=".distributeMeToOldest">', '</div>']);
+        const slotTreeElement = await expandAndFind(domTree, slotNode);
+        // With no distributed nodes, the slot shows its fallback child and no shortcut links.
+        assert.deepEqual(describeChildren(slotTreeElement), ['<div id="fallbackOldest">', '</slot>']);
+
+        domModel.childNodeInserted(
+            2 as Protocol.DOM.NodeId, 4 as Protocol.DOM.NodeId,
+            makeNodePayload(5, 'DIV',
+                            {parentId: 2 as Protocol.DOM.NodeId, attributes: ['slot', 'distributeMeAsWell_1']}));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.deepEqual(hostChildren(), [
+          '#shadow-root (open)',
+          '<div slot="distributeMeToYoungest">',
+          '<div slot="distributeMeToOldest">',
+          '<div slot="distributeMeAsWell_1">',
+          '</div>',
+        ]);
+
+        domModel.childNodeInserted(
+            2 as Protocol.DOM.NodeId, 5 as Protocol.DOM.NodeId,
+            makeNodePayload(6, 'DIV',
+                            {parentId: 2 as Protocol.DOM.NodeId, attributes: ['slot', 'distributeMeAsWell_2']}));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.deepEqual(hostChildren(), [
+          '#shadow-root (open)',
+          '<div slot="distributeMeToYoungest">',
+          '<div slot="distributeMeToOldest">',
+          '<div slot="distributeMeAsWell_1">',
+          '<div slot="distributeMeAsWell_2">',
+          '</div>',
+        ]);
+        // The shadow subtree stays expanded and keeps rendering the fallback content.
+        assert.strictEqual(treeWidgetOf(requireTreeElement(domTree, hostNode).children()[0])?.node, shadowRootNode);
+        assert.isTrue(requireTreeElement(domTree, shadowRootNode).expanded);
+        assert.deepEqual(describeChildren(requireTreeElement(domTree, slotNode)),
+                         ['<div id="fallbackOldest">', '</slot>']);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    for (const [mode, expectedTitle] of [[Protocol.DOM.ShadowRootType.Open, '#shadow-root (open)'],
+                                         [Protocol.DOM.ShadowRootType.Closed, '#shadow-root (closed)'],
+    ] as const) {
+      it(`inserts a ${mode} #shadow-root before existing light children of an expanded host`, async () => {
+        // Mirrors legacy shadow/create-shadow-root.
+        const {domTree, domModel} = setupDOMTreeWidget(target);
+        try {
+          domTree.omitRootDOMNode = true;
+          const hostPayload = makeNodePayload(2, 'DIV', {
+            parentId: 1 as Protocol.DOM.NodeId,
+            attributes: ['id', 'container'],
+            children: [makeNodePayload(3, 'DIV', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['id', 'child']})],
+          });
+          const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+          domTree.rootDOMNode = rootNode;
+          domTree.performUpdate();
+          await waitForTreeUpdates();
+
+          const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+          const lightChildNode = domModel.nodeForId(3 as Protocol.DOM.NodeId)!;
+          const hostTreeElement = await expandAndFind(domTree, hostNode);
+          assert.deepEqual(describeChildren(hostTreeElement), ['<div id="child">', '</div>']);
+
+          domModel.shadowRootPushed(
+              2 as Protocol.DOM.NodeId, makeNodePayload(4, '#shadow-root', {
+                parentId: 2 as Protocol.DOM.NodeId,
+                nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                shadowRootType: mode,
+                children:
+                    [makeNodePayload(5, 'DIV', {parentId: 4 as Protocol.DOM.NodeId, attributes: ['id', 'shadow-1']})],
+              }));
+          domTree.updateModifiedNodes();
+          await waitForTreeUpdates();
+
+          assert.deepEqual(describeChildren(requireTreeElement(domTree, hostNode)),
+                           [expectedTitle, '<div id="child">', '</div>']);
+          const shadowRootNode = hostNode.shadowRoots()[0];
+          assert.strictEqual(treeWidgetOf(requireTreeElement(domTree, hostNode).children()[0])?.node, shadowRootNode);
+          assert.strictEqual(treeWidgetOf(requireTreeElement(domTree, hostNode).children()[1])?.node, lightChildNode);
+          assert.strictEqual(widgetText(findElementsTreeWidget(domTree, shadowRootNode)).trim(), expectedTitle);
+
+          const shadowTreeElement = await expandAndFind(domTree, shadowRootNode);
+          assert.deepEqual(describeChildren(shadowTreeElement), ['<div id="shadow-1">']);
+          assert.include(widgetText(treeWidgetOf(shadowTreeElement.children()[0])), 'shadow-1');
+        } finally {
+          domTree.detach();
+        }
+      });
+    }
+
+    it('renders slot shortcut links in distributed nodes order and removes them when unassigned', async () => {
+      // Mirrors legacy shadow/shadow-slot-assignment.
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const shadowPayload = makeNodePayload(3, '#shadow-root', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+          shadowRootType: Protocol.DOM.ShadowRootType.Open,
+          children: [
+            makeNodePayload(4, 'SLOT',
+                            {parentId: 3 as Protocol.DOM.NodeId, attributes: ['name', 'slot1'], distributedNodes: []}),
+            makeNodePayload(5, 'SLOT',
+                            {parentId: 3 as Protocol.DOM.NodeId, attributes: ['name', 'slot2'], distributedNodes: []}),
+          ],
+        });
+        const hostPayload = makeNodePayload(
+            2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, attributes: ['id', 'host1'], shadowRoots: [shadowPayload]});
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [hostPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const hostNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const slot1Node = domModel.nodeForId(4 as Protocol.DOM.NodeId)!;
+        const slot2Node = domModel.nodeForId(5 as Protocol.DOM.NodeId)!;
+        await expandAndFind(domTree, hostNode);
+        await expandAndFind(domTree, hostNode.shadowRoots()[0]);
+        await expandAndFind(domTree, slot1Node);
+        await expandAndFind(domTree, slot2Node);
+        const slot1Children = (): string[] => describeChildren(requireTreeElement(domTree, slot1Node));
+        const slot2Children = (): string[] => describeChildren(requireTreeElement(domTree, slot2Node));
+        assert.deepEqual(slot1Children(), ['</slot>']);
+        assert.deepEqual(slot2Children(), ['</slot>']);
+
+        const span = {nodeType: Node.ELEMENT_NODE, nodeName: 'SPAN', backendNodeId: 6 as Protocol.DOM.BackendNodeId};
+        const h1 = {nodeType: Node.ELEMENT_NODE, nodeName: 'H1', backendNodeId: 7 as Protocol.DOM.BackendNodeId};
+        const text = {nodeType: Node.TEXT_NODE, nodeName: '#text', backendNodeId: 8 as Protocol.DOM.BackendNodeId};
+
+        domModel.childNodeInserted(
+            2 as Protocol.DOM.NodeId, 0 as Protocol.DOM.NodeId,
+            makeNodePayload(6, 'SPAN', {parentId: 2 as Protocol.DOM.NodeId, attributes: ['slot', 'slot2']}));
+        domModel.distributedNodesUpdated(5 as Protocol.DOM.NodeId, [span]);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.deepEqual(slot1Children(), ['</slot>']);
+        assert.deepEqual(slot2Children(), ['\u21AA <span> reveal', '</slot>']);
+
+        domModel.distributedNodesUpdated(5 as Protocol.DOM.NodeId, [span, h1, text]);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.deepEqual(slot2Children(),
+                         ['\u21AA <span> reveal', '\u21AA <h1> reveal', '\u21AA #text reveal', '</slot>']);
+
+        // Order follows the distributedNodes order reported by the backend.
+        domModel.distributedNodesUpdated(5 as Protocol.DOM.NodeId, [h1, span]);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.deepEqual(slot2Children(), ['\u21AA <h1> reveal', '\u21AA <span> reveal', '</slot>']);
+
+        // Reassigning to slot1 moves the links over.
+        domModel.distributedNodesUpdated(5 as Protocol.DOM.NodeId, []);
+        domModel.distributedNodesUpdated(4 as Protocol.DOM.NodeId, [span]);
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+        assert.deepEqual(slot2Children(), ['</slot>']);
+        assert.deepEqual(slot1Children(), ['\u21AA <span> reveal', '</slot>']);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('updates the "Show all nodes" label on DOM mutations while paginated and loads all via the button', async () => {
+      // Mirrors legacy elements/elements-panel-limited-children.
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.omitRootDOMNode = true;
+        const children = Array.from({length: 10}, (_, i) => makeNodePayload(10 + i, 'DIV', {
+                                                    parentId: 2 as Protocol.DOM.NodeId,
+                                                    attributes: ['id', `id${i + 1}`],
+                                                    children: [makeNodePayload(30 + i, '#text', {
+                                                      parentId: (10 + i) as Protocol.DOM.NodeId,
+                                                      nodeType: Node.TEXT_NODE,
+                                                      nodeValue: String(i + 1),
+                                                    })],
+                                                  }));
+        const dataPayload =
+            makeNodePayload(2, 'DIV', {parentId: 3 as Protocol.DOM.NodeId, attributes: ['id', 'data'], children});
+        const bodyPayload = makeNodePayload(3, 'BODY', {parentId: 1 as Protocol.DOM.NodeId, children: [dataPayload]});
+        const rootNode = SDK.DOMModel.DOMNode.create(domModel, null, false, makeDocumentPayload(1, [bodyPayload]));
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const dataNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        domTree.setExpandedChildrenLimit(dataNode, 5);
+        await expandAndFind(domTree, dataNode);
+        const dataChildren = (): string[] => describeChildren(requireTreeElement(domTree, dataNode));
+        assert.deepEqual(dataChildren(), [
+          '<div id="id1">',
+          '<div id="id2">',
+          '<div id="id3">',
+          '<div id="id4">',
+          '<div id="id5">',
+          '[Show all nodes (5 more)]',
+          '</div>',
+        ]);
+
+        // Protocol events produced by the legacy insertNode() page function:
+        // append <a>#50, remove #id2, insert <a>#51 before #id1, move #51 to the end, then back before #id1.
+        const anchor = (id: number): Protocol.DOM.Node =>
+            makeNodePayload(id, 'A', {parentId: 2 as Protocol.DOM.NodeId});
+        domModel.childNodeInserted(2 as Protocol.DOM.NodeId, 19 as Protocol.DOM.NodeId, anchor(50));
+        domModel.childNodeRemoved(2 as Protocol.DOM.NodeId, 11 as Protocol.DOM.NodeId);
+        domModel.childNodeInserted(2 as Protocol.DOM.NodeId, 0 as Protocol.DOM.NodeId, anchor(51));
+        domModel.childNodeRemoved(2 as Protocol.DOM.NodeId, 51 as Protocol.DOM.NodeId);
+        domModel.childNodeInserted(2 as Protocol.DOM.NodeId, 50 as Protocol.DOM.NodeId, anchor(51));
+        domModel.childNodeRemoved(2 as Protocol.DOM.NodeId, 51 as Protocol.DOM.NodeId);
+        domModel.childNodeInserted(2 as Protocol.DOM.NodeId, 0 as Protocol.DOM.NodeId, anchor(51));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        assert.deepEqual(dataChildren(), [
+          '<a>',
+          '<div id="id1">',
+          '<div id="id3">',
+          '<div id="id4">',
+          '<div id="id5">',
+          '[Show all nodes (6 more)]',
+          '</div>',
+        ]);
+
+        const expandAllTreeElement =
+            requireTreeElement(domTree, dataNode)
+                .children()
+                .find(child => child.listItemElement.classList.contains('elements-tree-expand-all'));
+        assert.exists(expandAllTreeElement);
+        const button = expandAllTreeElement.listItemElement.querySelector('devtools-button');
+        assert.exists(button);
+        button.click();
+        await waitForTreeUpdates();
+
+        assert.isAtLeast(domTree.expandedChildrenLimit(dataNode), 11);
+        assert.deepEqual(dataChildren(), [
+          '<a>',
+          '<div id="id1">',
+          '<div id="id3">',
+          '<div id="id4">',
+          '<div id="id5">',
+          '<div id="id6">',
+          '<div id="id7">',
+          '<div id="id8">',
+          '<div id="id9">',
+          '<div id="id10">',
+          '<a>',
+          '</div>',
+        ]);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('switches an inline text element to separate child tree elements after a Range split', async () => {
+      // Mirrors legacy elements/modify-chardata (testModifyViaRange).
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const textPayload = makeNodePayload(3, '#text', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          nodeType: Node.TEXT_NODE,
+          nodeValue: 'Lorem ipsum dolor sit amet',
+        });
+        const divPayload = makeNodePayload(
+            2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, attributes: ['id', 'rangenode'], children: [textPayload]});
+        const rootNode =
+            SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, 'BODY', {children: [divPayload]}));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const divNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        let divTreeElement = requireTreeElement(domTree, divNode);
+        // Initially, the single text child is rendered inline in the element title.
+        assert.isFalse(divTreeElement.isExpandable());
+        assert.lengthOf(divTreeElement.children(), 0);
+        assert.strictEqual(
+            treeWidgetOf(divTreeElement)?.contentElement.querySelector('.webkit-html-text-node')?.textContent,
+            'Lorem ipsum dolor sit amet');
+
+        // range.deleteContents() + range.insertNode(span) produce these protocol events.
+        domModel.characterDataModified(3 as Protocol.DOM.NodeId, 'Lorem ipslor sit amet');
+        domModel.characterDataModified(3 as Protocol.DOM.NodeId, 'Lorem ips');
+        domModel.childNodeInserted(
+            2 as Protocol.DOM.NodeId, 3 as Protocol.DOM.NodeId,
+            makeNodePayload(4, '#text',
+                            {parentId: 2 as Protocol.DOM.NodeId, nodeType: Node.TEXT_NODE, nodeValue: 'lor sit amet'}));
+        domModel.childNodeInserted(2 as Protocol.DOM.NodeId, 3 as Protocol.DOM.NodeId, makeNodePayload(5, 'SPAN', {
+                                     parentId: 2 as Protocol.DOM.NodeId,
+                                     children: [makeNodePayload(6, '#text', {
+                                       parentId: 5 as Protocol.DOM.NodeId,
+                                       nodeType: Node.TEXT_NODE,
+                                       nodeValue: 'test',
+                                     })],
+                                   }));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        divTreeElement = requireTreeElement(domTree, divNode);
+        assert.isTrue(divTreeElement.isExpandable());
+        divTreeElement = await expandAndFind(domTree, divNode);
+        assert.isNull(treeWidgetOf(divTreeElement)?.contentElement.querySelector('.webkit-html-text-node'));
+        assert.deepEqual(describeChildren(divTreeElement), ['"Lorem ips"', '<span>', '"lor sit amet"', '</div>']);
+        const spanTreeElement = divTreeElement.children()[1];
+        assert.isFalse(spanTreeElement.isExpandable());
+        assert.strictEqual(
+            treeWidgetOf(spanTreeElement)?.contentElement.querySelector('.webkit-html-text-node')?.textContent, 'test');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('does not fire onSelectedNodeChanged when a child is appended to the parent of the selected node', async () => {
+      // Mirrors legacy elements/node-reselect-on-append-child.
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        domTree.selectEnabled = true;
+        const firstPayload = makeNodePayload(3, 'DIV', {
+          parentId: 2 as Protocol.DOM.NodeId,
+          attributes: ['id', 'first'],
+          children: [makeNodePayload(
+              4, '#text', {parentId: 3 as Protocol.DOM.NodeId, nodeType: Node.TEXT_NODE, nodeValue: 'First Child'})],
+        });
+        const parentPayload = makeNodePayload(2, 'DIV', {parentId: 1 as Protocol.DOM.NodeId, children: [firstPayload]});
+        const rootNode =
+            SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, 'BODY', {children: [parentPayload]}));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const parentNode = domModel.nodeForId(2 as Protocol.DOM.NodeId)!;
+        const firstNode = domModel.nodeForId(3 as Protocol.DOM.NodeId)!;
+        await expandAndFind(domTree, parentNode);
+        domTree.selectDOMNode(firstNode);
+        await waitForTreeUpdates();
+        assert.strictEqual(domTree.selectedDOMNode(), firstNode);
+        assert.isTrue(requireTreeElement(domTree, firstNode).listItemElement.classList.contains('selected'));
+
+        const selectionChanged = sinon.spy();
+        domTree.onSelectedNodeChanged = selectionChanged;
+
+        domModel.childNodeInserted(2 as Protocol.DOM.NodeId, 3 as Protocol.DOM.NodeId,
+                                   makeNodePayload(5, 'DIV', {parentId: 2 as Protocol.DOM.NodeId}));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        // The parent's children were re-rendered...
+        assert.deepEqual(describeChildren(requireTreeElement(domTree, parentNode)),
+                         ['<div id="first">', '<div>', '</div>']);
+        // ...but the selection was preserved without an onSelectedNodeChanged notification.
+        sinon.assert.notCalled(selectionChanged);
+        assert.strictEqual(domTree.selectedDOMNode(), firstNode);
+        assert.isTrue(requireTreeElement(domTree, firstNode).listItemElement.classList.contains('selected'));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('starts dragging the node and hides the overlay highlight on dragstart', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      const hideHighlight = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+      try {
+        const rootNode =
+            SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, 'BODY', {
+                                          children: [
+                                            makeNodePayload(2, 'SPAN', {parentId: 1 as Protocol.DOM.NodeId}),
+                                            makeNodePayload(3, 'P', {parentId: 1 as Protocol.DOM.NodeId}),
+                                          ],
+                                        }));
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const spanNode = rootNode.children()![0];
+        const spanTreeElement = requireTreeElement(domTree, spanNode);
+        assert.isTrue(spanTreeElement.listItemElement.draggable);
+
+        const dataTransfer = new DataTransfer();
+        const setData = sinon.spy(dataTransfer, 'setData');
+        spanTreeElement.listItemElement.dispatchEvent(
+            new DragEvent('dragstart', {dataTransfer, bubbles: true, cancelable: true}));
+        assert.strictEqual(domTree.nodeBeingDragged(), spanNode);
+        sinon.assert.calledOnceWithExactly(setData, 'text/plain', sinon.match.string);
+        assert.include(dataTransfer.getData('text/plain'), '<span>');
+        sinon.assert.calledOnce(hideHighlight);
+      } finally {
+        domTree.detach();
+      }
+    });
+  });
+
+  describe('snapshot mode', () => {
+    // Mirrors the configuration used for DOM snapshots rendered in the AI
+    // assistance chat.
+    function setupSnapshotDOMTreeWidget(target: SDK.Target.Target, {expandRoot = true} = {}):
+        {domTree: Elements.DOMTreeWidget.DOMTreeWidget, domModel: SDK.DOMModel.DOMModel} {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      domTree.selectEnabled = true;
+      domTree.hideGutter = true;
+      domTree.maxTreeDepth = 2;
+      domTree.enableContextMenu = false;
+      domTree.showComments = false;
+      domTree.showAIButton = false;
+      domTree.disableEdits = true;
+      domTree.expandRoot = expandRoot;
+      return {domTree, domModel};
+    }
+
+    it('auto-expands the root node in snapshot mode', async () => {
+      const {domTree, domModel} = setupSnapshotDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'BODY',
+          children: [{nodeId: 2, nodeName: 'DIV'}],
+        });
+        const snapshot = await rootNode.takeSnapshot();
+        domTree.rootDOMNode = snapshot;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        assert.isTrue(domTree.isNodeExpanded(snapshot));
+        const rootTreeElements = getInternalTree(domTree).rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+        assert.strictEqual(treeWidgetOf(rootTreeElements[0])?.node, snapshot);
+        assert.isTrue(rootTreeElements[0].expanded, 'Root element should be expanded in snapshot mode');
+        assert.deepEqual(describeChildren(rootTreeElements[0]), ['<div>', '</body>']);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('limits depth to root + 1 level in snapshot mode', async () => {
+      const {domTree, domModel} = setupSnapshotDOMTreeWidget(target);
+      try {
+        // Root -> Child -> GrandChild
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'BODY',
+          children: [{nodeId: 2, nodeName: 'DIV', children: [{nodeId: 3, nodeName: 'SPAN'}]}],
+        });
+        const snapshot = await rootNode.takeSnapshot();
+        const childSnapshot = snapshot.children()![0];
+        const grandChildSnapshot = childSnapshot.children()![0];
+        assert.strictEqual(grandChildSnapshot.nodeName(), 'SPAN');
+
+        domTree.rootDOMNode = snapshot;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const rootTreeElement = requireTreeElement(domTree, snapshot);
+        assert.isTrue(rootTreeElement.isExpandable(), 'Root should be expandable');
+        const childTreeElement = requireTreeElement(domTree, childSnapshot);
+        assert.isFalse(childTreeElement.isExpandable(), 'Child should NOT be expandable due to depth limit');
+        assert.lengthOf(childTreeElement.children(), 0, 'Child should not have children populated');
+        // No closing tag is rendered for the depth-limited child.
+        assert.deepEqual(describeChildren(rootTreeElement), ['<div>', '</body>']);
+
+        // Explicitly expanding the child does not reveal the grandchild either.
+        domTree.setNodeExpanded(childSnapshot, true);
+        await waitForTreeUpdates();
+        assert.isNull(findTreeElement(domTree, grandChildSnapshot));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('allows ShadowRoot to exceed depth limit', async () => {
+      const {domTree, domModel} = setupSnapshotDOMTreeWidget(target, {expandRoot: false});
+      try {
+        // Root -> ShadowRoot -> Child -> GrandChild
+        const rootNode =
+            SDK.DOMModel.DOMNode.create(domModel, null, false, makeNodePayload(1, 'DIV', {
+                                          shadowRoots: [makeNodePayload(2, '#shadow-root', {
+                                            parentId: 1 as Protocol.DOM.NodeId,
+                                            nodeType: Node.DOCUMENT_FRAGMENT_NODE,
+                                            shadowRootType: Protocol.DOM.ShadowRootType.Open,
+                                            children: [makeNodePayload(3, 'SPAN', {
+                                              parentId: 2 as Protocol.DOM.NodeId,
+                                              children: [makeNodePayload(4, 'B', {parentId: 3 as Protocol.DOM.NodeId})],
+                                            })],
+                                          })],
+                                        }));
+        const snapshot = await rootNode.takeSnapshot();
+        const shadowRootSnapshot = snapshot.shadowRoots()[0];
+        assert.strictEqual(shadowRootSnapshot.nodeName(), '#shadow-root');
+        const childSnapshot = shadowRootSnapshot.children()![0];
+        const grandChildSnapshot = childSnapshot.children()![0];
+
+        domTree.rootDOMNode = snapshot;
+        domTree.setNodeExpanded(snapshot, true);
+        domTree.setNodeExpanded(shadowRootSnapshot, true);
+        domTree.setNodeExpanded(childSnapshot, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const rootTreeElement = requireTreeElement(domTree, snapshot);
+        assert.isTrue(rootTreeElement.isExpandable(), 'Host should be expandable');
+        assert.deepEqual(describeChildren(rootTreeElement), ['#shadow-root (open)', '</div>']);
+
+        const shadowRootTreeElement = requireTreeElement(domTree, shadowRootSnapshot);
+        assert.isTrue(shadowRootTreeElement.isExpandable(), 'ShadowRoot should be expandable (exception)');
+        assert.deepEqual(describeChildren(shadowRootTreeElement), ['<span>']);
+
+        const childTreeElement = requireTreeElement(domTree, childSnapshot);
+        assert.isFalse(childTreeElement.isExpandable(), 'Child inside ShadowRoot should NOT be expandable');
+        assert.isNull(findTreeElement(domTree, grandChildSnapshot));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('disables drag and drop and the context menu for snapshot nodes', async () => {
+      const {domTree, domModel} = setupSnapshotDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'BODY',
+          children: [{nodeId: 2, nodeName: 'DIV'}],
+        });
+        const snapshot = await rootNode.takeSnapshot();
+        const childSnapshot = snapshot.children()![0];
+        domTree.rootDOMNode = snapshot;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const rootTreeElement = requireTreeElement(domTree, snapshot);
+        const childTreeElement = requireTreeElement(domTree, childSnapshot);
+        assert.isFalse(rootTreeElement.listItemElement.draggable);
+        assert.isFalse(childTreeElement.listItemElement.draggable);
+        assert.isFalse(domTree.isValidDragSource(childSnapshot));
+
+        const dataTransfer = new DataTransfer();
+        const setData = sinon.spy(dataTransfer, 'setData');
+        childTreeElement.listItemElement.dispatchEvent(
+            new DragEvent('dragstart', {dataTransfer, bubbles: true, cancelable: true}));
+        assert.isNull(domTree.nodeBeingDragged());
+        sinon.assert.notCalled(setData);
+
+        const contextMenu = await domTree.showContextMenu(
+            childSnapshot, new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+        assert.isUndefined(contextMenu);
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

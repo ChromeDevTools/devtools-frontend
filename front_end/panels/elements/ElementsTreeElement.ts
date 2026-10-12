@@ -68,7 +68,7 @@ import * as Media from '../media/media.js';
 
 import * as ElementsComponents from './components/components.js';
 import {cssPath} from './DOMPath.js';
-import {type ElementsTreeOutline, MappedCharToEntity} from './DOMTreeWidget.js';
+import {MappedCharToEntity} from './DOMTreeWidget.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
@@ -1297,6 +1297,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (this.#updateRecord === updateRecord) {
       return;
     }
+    if (!updateRecord) {
+      // A pending record is consumed by the next update. Keep it if the parent
+      // tree re-renders before that update has happened.
+      return;
+    }
     this.#updateRecord = updateRecord;
     this.requestUpdate();
   }
@@ -1395,8 +1400,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   get issues(): IssuesManager.Issue.Issue[] {
-    // The widget is currently created for non-widget ElementsTreeElement so
-    // the domIssuesManager can be empty, relying on the manual resolution.
+    // The widget may be created without injected dependencies so the
+    // domIssuesManager can be empty, relying on the manual resolution.
     if (!this.#domIssuesManager) {
       const universe = UI.Widget.lookupUniverseForElement(this.contentElement);
       if (universe) {
@@ -1410,8 +1415,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   }
 
   get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker|undefined {
-    // The widget is currently created for non-widget ElementsTreeElement so
-    // the changeTracker can be empty, relying on the manual resolution.
+    // The widget may be created without injected dependencies so the
+    // changeTracker can be empty, relying on the manual resolution.
     // Note that this only works once the widget is attached to the DOM.
     this.#changeTracker ??=
         UI.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
@@ -1915,8 +1920,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   clearView(): void {
     // Update the element to clean up adorner registrations with the
     // ElementsPanel.
-    // We do not change the ElementsTreeElement state in case the
-    // element is bound again.
+    // We do not change the widget state in case the element is bound again.
     this.#view({
       node: null,
       isClosingTag: false,
@@ -3168,401 +3172,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
     this.#startingStyleAdornerActive = !this.#startingStyleAdornerActive;
     this.requestUpdate();
-  }
-}
-export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
-  widget: ElementsTreeWidget;
-  widgetWrapper: HTMLElement;
-  nodeInternal: SDK.DOMModel.DOMNode;
-  #isClosingTag: boolean;
-
-  get tagTypeContext(): TagTypeContext {
-    if (this.#isClosingTag) {
-      return {tagType: TagType.CLOSING};
-    }
-    return {
-      tagType: TagType.OPENING,
-      canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
-    };
-  }
-
-  constructor(
-      node: SDK.DOMModel.DOMNode,
-      isClosingTag?: boolean,
-  ) {
-    super();
-    this.nodeInternal = node;
-    this.#isClosingTag = Boolean(isClosingTag);
-    this.listItemElement.setAttribute(
-        'jslog', `${VisualLogging.treeItem().parent('elementsTreeOutline').track({
-          keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
-          resize: true,
-          drag: true,
-          click: true,
-        })}`);
-    this.listItemElement.setAttribute('data-backend-node-id', String(node.backendNodeId()));
-    this.listItemElement.setAttribute('data-target-id', node.domModel().target().id());
-
-    this.widgetWrapper = document.createElement('div');
-    this.widgetWrapper.style.display = 'contents';
-    this.title = this.widgetWrapper;
-    this.listItemElement.draggable = true;
-    this.widget = new ElementsTreeWidget();
-    this.widget.isClosingTag = this.#isClosingTag;
-    this.widget.node = this.nodeInternal;
-    this.widget.childCount = () => this.childCount();
-    this.widget.expand = () => this.expand();
-    this.widget.collapse = () => this.collapse();
-    this.widget.selectTreeElement = (omitFocus, selectedByUser) => {
-      return this.select(omitFocus, selectedByUser);
-    };
-    this.widget.expandRecursively = () => this.expandRecursively();
-    this.widget.collapseChildren = () => this.collapseChildren();
-    this.widget.closingTagElement = () => {
-      const closers = this.childrenListElement.querySelectorAll('.close');
-      return closers[closers.length - 1] ?? null;
-    };
-    this.widget.updateShadowRootDepth = (depth: number) => {
-      this.childrenListElement.classList.add('shadow-root');
-      if (!depth) {
-        this.childrenListElement.classList.add('shadow-root-deep');
-      } else {
-        this.childrenListElement.classList.add('shadow-root-depth-' + depth);
-      }
-    };
-    this.widget.computeLeftIndent = () => {
-      let treeElement: (UI.TreeOutline.TreeElement|null) = this.parent;
-      let depth = 0;
-      while (treeElement !== null) {
-        depth++;
-        treeElement = treeElement.parent;
-      }
-      return 12 * (depth - 2) + (this.isExpandable() && this.isCollapsible() ? 1 : 12);
-    };
-    this.widget.setChildrenListElementVisible = (visible: boolean) => {
-      if (this.childrenListElement) {
-        if (visible) {
-          this.childrenListElement.style.removeProperty('display');
-        } else {
-          this.childrenListElement.style.display = 'none';
-        }
-      }
-    };
-    this.treeOutline = null;
-    this.widget.element.classList.remove('vbox', 'flex-auto');
-    this.widget.element.style.display = 'contents';
-    this.widget.markAsRoot();
-    this.widget.show(this.widgetWrapper);
-
-    if (this.nodeInternal.retained && !this.isClosingTag()) {
-      this.setLeadingIcons([
-        html`<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`,
-      ]);
-      this.listItemNode.classList.add('detached-elements-detached-node');
-      this.listItemNode.style.setProperty('display', '-webkit-box');
-      this.listItemNode.setAttribute('title', 'Retained Node');
-    }
-
-    if (this.nodeInternal.detached && !this.isClosingTag()) {
-      this.listItemNode.setAttribute('title', 'Detached Tree Node');
-    }
-  }
-
-  highlightSearchResults(searchQuery: string): void {
-    this.widget.highlightSearchResults(searchQuery);
-  }
-  hideSearchHighlights(): void {
-    this.widget.hideSearchHighlights();
-  }
-  copyStyles(): Promise<void> {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    return outline?.domTreeWidget?.copyStyles(this.nodeInternal) ?? Promise.resolve();
-  }
-  setInClipboard(inClipboard: boolean): void {
-    this.widget.setInClipboard(inClipboard);
-    if (this.listItemElement) {
-      this.listItemElement.classList.toggle('in-clipboard', inClipboard);
-    }
-  }
-  get isEditing(): boolean {
-    return this.widget.isEditing;
-  }
-  expandedChildrenLimit(): number {
-    return this.widget.expandedChildrenLimit();
-  }
-
-  setExpandedChildrenLimit(limit: number): void {
-    this.widget.setExpandedChildrenLimit(limit);
-  }
-  highlightAttribute(name: string): void {
-    this.widget.highlightAttribute(name);
-  }
-  startEditing(): boolean|undefined {
-    return this.widget.startEditing();
-  }
-  startEditingAttribute(attribute: Element, elementForSelection: Element): boolean {
-    return this.widget.startEditingAttribute(attribute, elementForSelection);
-  }
-  startEditingTextNode(textNodeElement: Element): boolean {
-    return this.widget.startEditingTextNode(textNodeElement);
-  }
-  editAsHTML(): void {
-    this.widget.editAsHTML();
-  }
-  copyCSSPath(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    outline?.domTreeWidget?.copyCSSPath(this.nodeInternal);
-  }
-  copyJSPath(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    outline?.domTreeWidget?.copyJSPath(this.nodeInternal);
-  }
-  copyXPath(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    outline?.domTreeWidget?.copyXPath(this.nodeInternal);
-  }
-  copyFullXPath(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    outline?.domTreeWidget?.copyFullXPath(this.nodeInternal);
-  }
-  hasEditableNode(): boolean {
-    return this.widget.hasEditableNode();
-  }
-  toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void {
-    this.widget.toggleEditAsHTML(callback, startEditing);
-  }
-
-  get expandAllButtonElement(): UI.TreeOutline.TreeElement|null {
-    return this.widget.expandAllButtonElement;
-  }
-  set expandAllButtonElement(element: UI.TreeOutline.TreeElement|null) {
-    this.widget.expandAllButtonElement = element;
-  }
-
-  node(): SDK.DOMModel.DOMNode {
-    return this.nodeInternal;
-  }
-
-  isClosingTag(): boolean {
-    return this.#isClosingTag;
-  }
-
-  #syncOutlineProperties(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    if (outline) {
-      this.widget.isXMLMimeType = Boolean(outline.isXMLMimeType);
-      this.widget.disableEdits = Boolean(outline.disableEdits);
-      this.widget.showAIButton = Boolean(outline.showAIButton);
-      this.widget.expanded = this.expanded;
-      this.widget.isExpandable = this.isExpandable();
-      this.widget.selected = this.selected;
-      this.widget.isDOMNodeSelected = outline.selectedDOMNode() === this.nodeInternal;
-      this.widget.selectDOMNode = (node, selectedByUser) => {
-        outline.suppressRevealAndSelect = true;
-        outline.selectDOMNode(node, selectedByUser);
-        outline.suppressRevealAndSelect = false;
-      };
-      this.widget.revealInTopLayer = node => outline.revealInTopLayer(node);
-      this.widget.showContextMenu = event => void outline.showContextMenu(this, event);
-      this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-      this.widget.toggleHideElement = node => outline.toggleHideElement(node);
-      this.widget.isToggledToHidden = node => outline.isToggledToHidden(node);
-      this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode, moveDirection) => {
-        outline.domTreeWidget?.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
-      };
-      this.widget.runPendingUpdates = () => outline.runPendingUpdates();
-      this.widget.focusOutline = () => outline.focus();
-      this.widget.setMultilineEditing = (multilineEditing, n) => {
-        outline.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? this.nodeInternal);
-      };
-      this.widget.visibleWidth = () => outline.domTreeWidget?.visibleWidth ?? outline.visibleWidth();
-    }
-  }
-
-  override onattach(): void {
-    this.#syncOutlineProperties();
-    this.widget.onattach();
-  }
-
-  override async onpopulate(): Promise<void> {
-    return await this.widget.onpopulate();
-  }
-
-  override async expandRecursively(): Promise<void> {
-    await this.nodeInternal.getSubtree(100, true);
-    await super.expandRecursively(Number.MAX_VALUE);
-  }
-
-  override onexpand(): void {
-    this.widget.expanded = true;
-    this.widget.isExpandable = this.isExpandable();
-    this.widget.onexpand();
-  }
-
-  override oncollapse(): void {
-    this.widget.expanded = false;
-    this.widget.isExpandable = this.isExpandable();
-    this.widget.oncollapse();
-  }
-
-  override select(omitFocus?: boolean, selectedByUser?: boolean): boolean {
-    if (this.widget.editing) {
-      return false;
-    }
-    return super.select(omitFocus, selectedByUser);
-  }
-
-  override onselect(selectedByUser?: boolean): boolean {
-    this.widget.selected = true;
-    this.#syncOutlineProperties();
-    return this.widget.onselect(selectedByUser);
-  }
-
-  override deselect(): void {
-    super.deselect();
-    this.widget.selected = false;
-    this.#syncOutlineProperties();
-  }
-
-  override ondelete(): boolean {
-    if (!this.treeOutline) {
-      return false;
-    }
-    const startTagTreeElement = (this.treeOutline as ElementsTreeOutline).findTreeElement(this.nodeInternal);
-    startTagTreeElement ? (void (startTagTreeElement as ElementsTreeElement).remove()) : (void this.remove());
-    return true;
-  }
-
-  override onenter(): boolean {
-    this.#syncOutlineProperties();
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    if (outline?.domTreeWidget) {
-      outline.domTreeWidget.startEditing(this.nodeInternal);
-      return true;
-    }
-    return this.widget.onenter();
-  }
-
-  override selectOnMouseDown(event: MouseEvent): void {
-    super.selectOnMouseDown(event);
-
-    if (this.widget.editing) {
-      return;
-    }
-
-    // Prevent selecting the nearest word on double click.
-    if (event.detail >= 2) {
-      event.preventDefault();
-    }
-  }
-
-  override ondblclick(event: Event): boolean {
-    this.#syncOutlineProperties();
-    return this.widget.ondblclick(event);
-  }
-
-  override onbind(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    if (outline && !this.isClosingTag()) {
-      outline.treeElementByNode.set(this.nodeInternal, this);
-    }
-    this.widget.onbind();
-  }
-
-  override onunbind(): void {
-    const outline = this.treeOutline as ElementsTreeOutline | null;
-    if (outline && outline.treeElementByNode.get(this.nodeInternal) === this) {
-      outline.treeElementByNode.delete(this.nodeInternal);
-    }
-    this.widget.onunbind();
-  }
-
-  override ensureSelection(): void {
-    // Selection element is rendered in DEFAULT_VIEW via ElementsTreeWidget.
-  }
-
-  static animateOnDOMUpdate(treeElement: ElementsTreeElement): void {
-    treeElement.widget.animateOnDOMUpdate();
-  }
-
-  static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[] {
-    return ElementsTreeWidget.visibleShadowRoots(node);
-  }
-
-  static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean {
-    return ElementsTreeWidget.canShowInlineText(node);
-  }
-
-  static canEditTextNode(node: SDK.DOMModel.DOMNode): boolean {
-    return ElementsTreeWidget.canEditTextNode(node);
-  }
-
-  static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void {
-    ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, node);
-  }
-
-  set hovered(isHovered: boolean) {
-    this.widget.hovered = isHovered;
-    if (this.listItemElement) {
-      this.listItemElement.classList.toggle('hovered', isHovered);
-    }
-  }
-
-  get hovered(): boolean {
-    return this.widget.hovered;
-  }
-
-  updateAdorners(): void {
-    this.#syncOutlineProperties();
-    this.widget.updateAdorners();
-  }
-
-  get updateComplete(): Promise<void> {
-    return this.widget.updateComplete;
-  }
-
-  requestUpdate(): void {
-    this.#syncOutlineProperties();
-    this.widget.requestUpdate();
-  }
-  updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord|null): void {
-    this.#syncOutlineProperties();
-    this.widget.updateTitle(updateRecord);
-  }
-
-  triggerEditAttribute(attributeName: string): boolean {
-    return this.widget.triggerEditAttribute(attributeName) || false;
-  }
-
-  editingCancelled(element: Element, tagName: string|null): void {
-    this.widget.editingCancelled(element, tagName);
-  }
-
-  updateDecorations(): void {
-    this.widget.updateDecorations();
-  }
-
-  async remove(): Promise<void> {
-    return await this.widget.remove();
-  }
-
-  addNewAttribute(): boolean {
-    return this.widget.addNewAttribute();
-  }
-  startEditingTagName(tagNameElement?: Element): boolean {
-    return this.widget.startEditingTagName(tagNameElement);
-  }
-
-  startEditingProcessingInstructionValue(): boolean|undefined {
-    return this.widget.startEditingProcessingInstructionValue();
-  }
-
-  isDisplayContents(): boolean {
-    return this.widget.isDisplayContents();
-  }
-
-  performUpdate(): void {
-    this.widget.performUpdate();
   }
 }
 

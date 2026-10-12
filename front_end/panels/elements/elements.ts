@@ -9,7 +9,6 @@ import './DOMTreeContextMenu.js';
 import './ElementsSidebarPane.js';
 import './ElementsTreeElement.js';
 import './AdoptedStyleSheetTreeElement.js';
-import './TopLayerContainer.js';
 import './DOMTreeWidget.js';
 import './ImagePreviewPopover.js';
 import './EventListenersWidget.js';
@@ -65,7 +64,6 @@ import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
 import * as StylePropertyUtils from './StylePropertyUtils.js';
 import * as StylesAiCodeCompletionProvider from './StylesAiCodeCompletionProvider.js';
 import * as StylesSidebarPane from './StylesSidebarPane.js';
-import * as TopLayerContainer from './TopLayerContainer.js';
 import * as WebCustomData from './WebCustomData.js';
 
 export {
@@ -103,6 +101,5 @@ export {
   StylePropertyUtils,
   StylesAiCodeCompletionProvider,
   StylesSidebarPane,
-  TopLayerContainer,
   WebCustomData,
 };

@@ -11,7 +11,7 @@ import * as Emulation from '../emulation/emulation.js';
 import {canGetJSPath} from './DOMPath.js';
 import type {DOMTreeWidget} from './DOMTreeWidget.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {ElementsTreeElement} from './ElementsTreeElement.js';
+import {ElementsTreeWidget} from './ElementsTreeElement.js';
 
 const UIStrings = {
   /**
@@ -482,7 +482,7 @@ export async function showContextMenu(
   if (textNode) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.editText),
                                          () => domTreeWidget.startEditingTextNode(domNode), {
-                                           disabled: !ElementsTreeElement.canEditTextNode(domNode),
+                                           disabled: !ElementsTreeWidget.canEditTextNode(domNode),
                                            jslogContext: 'edit-text',
                                          });
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
@@ -502,7 +502,7 @@ export async function showContextMenu(
       }
     }
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
-    ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
+    ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, domNode);
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
     contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
@@ -535,7 +535,7 @@ export async function showContextMenu(
                                          {jslogContext: 'scroll-into-view'});
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode), {
-      disabled: !ElementsTreeElement.canEditTextNode(domNode),
+      disabled: !ElementsTreeWidget.canEditTextNode(domNode),
       jslogContext: 'elements.edit-data',
     });
     contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),

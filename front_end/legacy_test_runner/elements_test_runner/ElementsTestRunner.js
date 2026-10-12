@@ -535,16 +535,14 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
   const origOnSelectedNodeChanged = domTreeWidget.onSelectedNodeChanged;
   domTreeWidget.onSelectedNodeChanged = event => {
     origOnSelectedNodeChanged?.call(domTreeWidget, event);
-    eventTarget.dispatchEventToListeners(Elements.DOMTreeWidget.ElementsTreeOutline.Events.SelectedNodeChanged,
-                                         event.data);
+    eventTarget.dispatchEventToListeners(ElementsTestRunner.TreeOutlineEvents.SelectedNodeChanged, event.data);
   };
   const origOnElementsTreeUpdated = domTreeWidget.onElementsTreeUpdated;
   domTreeWidget.onElementsTreeUpdated = event => {
     origOnElementsTreeUpdated?.call(domTreeWidget, event);
-    eventTarget.dispatchEventToListeners(Elements.DOMTreeWidget.ElementsTreeOutline.Events.ElementsTreeUpdated,
-                                         event.data);
-    Elements.DOMTreeWidget.ElementsTreeOutline.prototype.updateModifiedNodes.call({});
-    Elements.DOMTreeWidget.ElementsTreeOutline.prototype.updateChildren.call({});
+    eventTarget.dispatchEventToListeners(ElementsTestRunner.TreeOutlineEvents.ElementsTreeUpdated, event.data);
+    ElementsTestRunner.treeOutlineHooks.updateModifiedNodes();
+    ElementsTestRunner.treeOutlineHooks.updateChildren();
   };
   shim = {
     runPendingUpdates() {
@@ -607,26 +605,23 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
   return shim;
 };
 
-(function() {
-const OutlineClass = Elements.DOMTreeWidget.ElementsTreeOutline;
-const OutlineProto = OutlineClass.prototype;
-const origUpdateModifiedNodes = OutlineProto.updateModifiedNodes;
-OutlineProto.updateModifiedNodes = function(...args) {
-  if (this instanceof OutlineClass) {
-    return origUpdateModifiedNodes.apply(this, args);
-  }
+/**
+ * Event names dispatched by the tree outline shim returned from
+ * {@link ElementsTestRunner.firstElementsTreeOutline}.
+ */
+ElementsTestRunner.TreeOutlineEvents = {
+  SelectedNodeChanged: 'SelectedNodeChanged',
+  ElementsTreeUpdated: 'ElementsTreeUpdated',
 };
-const origUpdateChildren = OutlineProto.updateChildren;
-OutlineProto.updateChildren = function(...args) {
-  if (this instanceof OutlineClass) {
-    return origUpdateChildren.apply(this, args);
-  }
+
+/**
+ * Sniffer targets invoked by the tree outline shim whenever the DOM tree
+ * finished applying modifications.
+ */
+ElementsTestRunner.treeOutlineHooks = {
+  updateModifiedNodes() {},
+  updateChildren() {},
 };
-const origForDOMModel = OutlineClass.forDOMModel;
-OutlineClass.forDOMModel = function(domModel) {
-  return origForDOMModel.call(this, domModel) || ElementsTestRunner.firstElementsTreeOutline();
-};
-})();
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
   TestRunner.addResult('Filtering styles by: ' + text);
@@ -1020,10 +1015,6 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   }
 
   function print(treeItem, prefix, depth) {
-    // Skip hidden top layer to avoid churn in expectations.
-    if (treeItem instanceof Elements.TopLayerContainer.TopLayerContainer && treeItem.isHidden()) {
-      return;
-    }
     if (!treeItem.root) {
       let expander;
 

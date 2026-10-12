@@ -2,134 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import {PanelUtils} from '../utils/utils.js';
 
 import type {EditorHandles} from './ElementsTreeElement.js';
 
 const {Directives: {ref}, html, render} = Lit;
-
-export class AdoptedStyleSheetSetTreeElement extends UI.TreeOutline.TreeElement {
-  constructor(readonly adoptedStyleSheets: SDK.DOMModel.AdoptedStyleSheet[]) {
-    super('', undefined, 'adopted-style-sheets');
-    const documentElement = this.listItemElement.createChild('span');
-    UI.UIUtils.createTextChild(documentElement, '#adopted-style-sheets');
-    for (const adoptedStyleSheet of adoptedStyleSheets) {
-      this.appendChild(new AdoptedStyleSheetTreeElement(adoptedStyleSheet));
-    }
-  }
-}
-
-export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
-  private eventListener: Common.EventTarget.EventDescriptor|null = null;
-
-  constructor(readonly adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet) {
-    super('', undefined, 'adopted-style-sheet');
-    const header = adoptedStyleSheet.cssModel.styleSheetHeaderForId(adoptedStyleSheet.id);
-    if (header) {
-      AdoptedStyleSheetTreeElement.createContents(header, this);
-    } else {
-      this.eventListener = adoptedStyleSheet.cssModel.addEventListener(
-          SDK.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
-    }
-  }
-
-  onStyleSheetAdded({data: header}: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
-      void {
-    if (header.id === this.adoptedStyleSheet.id) {
-      AdoptedStyleSheetTreeElement.createContents(header, this);
-      this.adoptedStyleSheet.cssModel.removeEventListener(
-          SDK.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
-      this.eventListener = null;
-    }
-  }
-
-  static createContents(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, treeElement: UI.TreeOutline.TreeElement):
-      void {
-    const documentElement = treeElement.listItemElement.createChild('span');
-    const linkText = header.sourceURL;
-    UI.UIUtils.createTextChild(documentElement, '#adopted-style-sheet' + (linkText ? ' (' : ''));
-    if (linkText) {
-      documentElement.appendChild(Components.Linkifier.Linkifier.linkifyURL(linkText, {
-        text: linkText,
-        preventClick: true,
-        showColumnNumber: false,
-      }));
-      UI.UIUtils.createTextChild(documentElement, ')');
-    }
-    treeElement.appendChild(new AdoptedStyleSheetContentsTreeElement(header));
-  }
-
-  highlight(): void {
-    PanelUtils.highlightElement(this.listItemElement);
-  }
-}
-
-export class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeElement {
-  readonly widget: AdoptedStyleSheetContentsWidget;
-  private readonly widgetWrapper: HTMLElement;
-
-  constructor(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader) {
-    super('', undefined, 'adopted-style-sheet-contents');
-    this.widgetWrapper = document.createElement('div');
-    this.widgetWrapper.style.display = 'contents';
-    this.title = this.widgetWrapper;
-
-    this.widget = new AdoptedStyleSheetContentsWidget();
-    this.widget.styleSheetHeader = styleSheetHeader;
-    this.widget.element.classList.remove('vbox', 'flex-auto');
-    this.widget.element.style.display = 'contents';
-    this.widget.markAsRoot();
-    this.widget.show(this.widgetWrapper);
-  }
-
-  override onbind(): void {
-    if (!this.widget.isShowing()) {
-      this.widget.show(this.widgetWrapper);
-    }
-  }
-
-  override onunbind(): void {
-    this.widget.detach();
-  }
-
-  override async onpopulate(): Promise<void> {
-    if (!this.widget.text) {
-      await this.widget.fetchContent();
-    }
-    this.widget.requestUpdate();
-    await this.widget.updateComplete;
-  }
-
-  override ondblclick(event: Event): boolean {
-    if (this.widget.isEditing()) {
-      return false;
-    }
-    this.widget.startEditing(event.target as Element);
-    return false;
-  }
-
-  override onenter(): boolean {
-    if (this.widget.isEditing()) {
-      return false;
-    }
-    void this.widget.startEditing();
-    return true;
-  }
-
-  isEditing(): boolean {
-    return this.widget.isEditing();
-  }
-}
 
 export interface AdoptedStyleSheetContentsViewInput {
   text: string;

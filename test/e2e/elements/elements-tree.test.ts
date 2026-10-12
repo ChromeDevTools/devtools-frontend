@@ -100,7 +100,7 @@ describe('The Elements tab', function() {
        await waitForContentOfSelectedElementsNode(devToolsPage, '<input type=​"text">​');
      });
 
-  it('nodes can be copied in ElementsTreeOutline', async ({devToolsPage, inspectedPage}) => {
+  it('nodes can be copied in the DOM tree', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToHtml(
         `<span id="node-to-copy">This should be <b>copied</b>.</span><div id="paste-here"></div>`);
     await waitForElementsStyleSection(devToolsPage, undefined);

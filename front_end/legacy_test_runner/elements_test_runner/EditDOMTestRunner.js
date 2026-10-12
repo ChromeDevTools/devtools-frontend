@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Elements from '../../panels/elements/elements.js';
-
 /**
  * @file using private properties isn't a Closure violation in tests.
  */
@@ -22,7 +20,7 @@ ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText
           ElementsTestRunner.firstElementsTreeOutline().shadowRoot.getSelection().anchorNode.parentElement;
       editorElement.textContent = attributeText;
       editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
-      TestRunner.addSniffer(Elements.DOMTreeWidget.ElementsTreeOutline.prototype, 'updateModifiedNodes', done);
+      TestRunner.addSniffer(ElementsTestRunner.treeOutlineHooks, 'updateModifiedNodes', done);
     }
   }
 };
@@ -74,7 +72,7 @@ ElementsTestRunner.editNodePartAndRun = function(node, className, newValue, step
   editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
 
   if (useSniffer) {
-    TestRunner.addSniffer(Elements.DOMTreeWidget.ElementsTreeOutline.prototype, 'updateModifiedNodes', step2);
+    TestRunner.addSniffer(ElementsTestRunner.treeOutlineHooks, 'updateModifiedNodes', step2);
   } else {
     TestRunner.deprecatedRunAfterPendingDispatches(step2);
   }

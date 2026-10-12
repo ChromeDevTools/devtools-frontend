@@ -554,7 +554,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     const event = new Event('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const node = new SDK.DOMModel.DOMNode(domModel);
-    Elements.ElementsTreeElement.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, node);
+    Elements.ElementsTreeElement.ElementsTreeWidget.populateForcedPseudoStateItems(contextMenu, node);
 
     const subMenu = findMenuItemWithLabel(contextMenu.debugSection(), 'Force state');
     assert.instanceOf(subMenu, UI.ContextMenu.SubMenu);
@@ -566,6 +566,12 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.assert.calledOnce(buttonProvider.showPane);
   });
 
+  function createTreeWidget(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
+    const widget = new Elements.ElementsTreeElement.ElementsTreeWidget();
+    widget.node = node;
+    return widget;
+  }
+
   it('updates when persistent overlay state changes', async () => {
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel);
@@ -574,14 +580,12 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
+    const widget = createTreeWidget(node);
 
     // Simulate binding to the tree
-    treeElement.onbind();
+    widget.onbind();
 
-    const requestUpdateSpy = sinon.spy(treeElement.widget, 'requestUpdate');
+    const requestUpdateSpy = sinon.spy(widget, 'requestUpdate');
 
     // Trigger event
     node.dispatchEventToListeners(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, {enabled: true});
@@ -589,7 +593,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.assert.calledOnce(requestUpdateSpy);
 
     // Simulate unbinding
-    treeElement.onunbind();
+    widget.onunbind();
     requestUpdateSpy.resetHistory();
 
     // Trigger event again
@@ -606,13 +610,11 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
+    const widget = createTreeWidget(node);
 
     // Simulate binding to the tree
-    treeElement.onbind();
-    const requestUpdateSpy = sinon.spy(treeElement.widget, 'requestUpdate');
+    widget.onbind();
+    const requestUpdateSpy = sinon.spy(widget, 'requestUpdate');
 
     // Trigger event
     node.dispatchEventToListeners(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, {enabled: true});
@@ -620,7 +622,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.assert.calledOnce(requestUpdateSpy);
 
     // Simulate unbinding
-    treeElement.onunbind();
+    widget.onunbind();
     requestUpdateSpy.resetHistory();
 
     // Trigger event again
@@ -647,20 +649,18 @@ describeWithEnvironment('ElementsTreeElement', () => {
         highlight: () => {},
       },
     } as unknown as SDK.DOMModel.DOMNodeShortcut;
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
 
     sinon.stub(node, 'hasAssignedSlot').returns(true);
     sinon.stub(node, 'assignedSlot').value(shortcut);
 
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
+    const widget = createTreeWidget(node);
     // Simulate binding to the tree
-    treeElement.onbind();
+    widget.onbind();
 
-    treeElement.requestUpdate();
-    await treeElement.updateComplete;
+    widget.requestUpdate();
+    await widget.updateComplete;
 
-    const adorner = treeElement.widget.contentElement.querySelector('devtools-adorner');
+    const adorner = widget.contentElement.querySelector('devtools-adorner');
     assert.exists(adorner);
     assert.strictEqual(adorner.name, 'slot');
   });
@@ -677,17 +677,14 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeName').returns('DIV');
     node.id = 1 as Protocol.DOM.NodeId;
 
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-
     sinon.stub(node, 'affectedByStartingStyles').returns(true);
 
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
-    treeElement.onbind();
-    treeElement.requestUpdate();
-    await treeElement.updateComplete;
+    const widget = createTreeWidget(node);
+    widget.onbind();
+    widget.requestUpdate();
+    await widget.updateComplete;
 
-    const adorner = treeElement.widget.contentElement.querySelector('.starting-style');
+    const adorner = widget.contentElement.querySelector('.starting-style');
     assert.exists(adorner);
 
     const forceSpy = sinon.spy(cssModel, 'forceStartingStyle');
@@ -716,17 +713,15 @@ describeWithEnvironment('ElementsTreeElement', () => {
        };
        const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
 
-       const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-       const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-       treeElement.treeOutline = treeOutline;
-       treeElement.onbind();
+       const widget = createTreeWidget(node);
+       widget.onbind();
 
        // Render the element initially
-       treeElement.requestUpdate();
-       await treeElement.updateComplete;
+       widget.requestUpdate();
+       await widget.updateComplete;
 
        // The attribute container DOM initially contains zero-width spaces (inserted for wrapping by rendering)
-       const attributeElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute');
+       const attributeElement = widget.contentElement.querySelector('.webkit-html-attribute');
        assert.exists(attributeElement);
 
        // Count initial zero-width spaces
@@ -734,25 +729,25 @@ describeWithEnvironment('ElementsTreeElement', () => {
        assert.isAbove(initialSpacesCount, 0);
 
        // Start in-place editing of the attribute
-       const editStarted = treeElement.triggerEditAttribute('autofill-information');
+       const editStarted = widget.triggerEditAttribute('autofill-information');
        assert.isTrue(editStarted);
 
        // Verify that starting edit stripped the zero-width spaces from the attribute element
        assert.notInclude(attributeElement.textContent, '\u200B');
 
        // While editing is active, call performUpdate (or hover, etc.) which would re-render
-       treeElement.requestUpdate();
-       await treeElement.updateComplete;
+       widget.requestUpdate();
+       await widget.updateComplete;
 
        // Verify that the attribute element STILL does not contain zero-width spaces.
        assert.notInclude(attributeElement.textContent, '\u200B');
 
        // Cancel the editing session and clean up
-       treeElement.editingCancelled(attributeElement, 'autofill-information');
-       await treeElement.updateComplete;
+       widget.editingCancelled(attributeElement, 'autofill-information');
+       await widget.updateComplete;
 
        // Re-query the newly rendered attribute element from the DOM
-       const finalAttributeElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute');
+       const finalAttributeElement = widget.contentElement.querySelector('.webkit-html-attribute');
        assert.exists(finalAttributeElement);
 
        // After cancelling, the element is restored, and the zero-width spaces should be restored back to initial count
@@ -778,19 +773,17 @@ describeWithEnvironment('ElementsTreeElement', () => {
     };
     const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
 
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
-    treeElement.onbind();
+    const widget = createTreeWidget(node);
+    widget.onbind();
 
-    treeElement.requestUpdate();
-    await treeElement.updateComplete;
+    widget.requestUpdate();
+    await widget.updateComplete;
 
-    const attributeElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute');
+    const attributeElement = widget.contentElement.querySelector('.webkit-html-attribute');
     assert.exists(attributeElement);
     assert.isNull(attributeElement.querySelector('.webkit-html-attribute-value'));
 
-    const editStarted = treeElement.triggerEditAttribute('disabled');
+    const editStarted = widget.triggerEditAttribute('disabled');
     assert.isTrue(editStarted);
   });
 
@@ -811,16 +804,14 @@ describeWithEnvironment('ElementsTreeElement', () => {
     };
     const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
 
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
-    treeElement.onbind();
+    const widget = createTreeWidget(node);
+    widget.onbind();
 
-    treeElement.requestUpdate();
-    await treeElement.updateComplete;
+    widget.requestUpdate();
+    await widget.updateComplete;
 
-    treeElement.widget.isDOMNodeSelected = true;
-    const editStarted = treeElement.widget.startEditing();
+    widget.isDOMNodeSelected = true;
+    const editStarted = widget.startEditing();
     assert.isTrue(editStarted);
   });
 
@@ -845,12 +836,10 @@ describeWithEnvironment('ElementsTreeElement', () => {
     // Stub resolveURL to return the URL as-is, which triggers DevTools linkification logic.
     sinon.stub(node, 'resolveURL').callsFake(url => Platform.DevToolsPath.urlString`${url}`);
 
-    const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
-    treeElement.performUpdate();
+    const widget = createTreeWidget(node);
+    widget.performUpdate();
 
-    const attributeElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute');
+    const attributeElement = widget.contentElement.querySelector('.webkit-html-attribute');
     assert.exists(attributeElement);
     const attributeValueElement = attributeElement.querySelector('.webkit-html-attribute-value');
     assert.exists(attributeValueElement);
@@ -866,16 +855,16 @@ describeWithEnvironment('ElementsTreeElement', () => {
     assert.strictEqual(cleanActualText, expectedTrimmedUrlClean);
 
     // Start editing the 'href' attribute.
-    const editStarted = treeElement.triggerEditAttribute('href');
+    const editStarted = widget.triggerEditAttribute('href');
     assert.isTrue(editStarted);
     // When editing, the full, untrimmed value should be displayed without zero-width spaces.
     assert.strictEqual(attributeValueElement.textContent?.trim(), longDataUrl);
 
     // Cancel editing.
-    treeElement.editingCancelled(attributeElement, 'href');
+    widget.editingCancelled(attributeElement, 'href');
 
     // The value should be trimmed again.
-    const attributeElementAfterCancel = treeElement.widget.contentElement.querySelector('.webkit-html-attribute');
+    const attributeElementAfterCancel = widget.contentElement.querySelector('.webkit-html-attribute');
     assert.exists(attributeElementAfterCancel);
     const attributeValueElementAfterCancel = attributeElementAfterCancel.querySelector('.webkit-html-attribute-value');
     assert.exists(attributeValueElementAfterCancel);
@@ -894,18 +883,16 @@ describeWithEnvironment('ElementsTreeElement', () => {
       assert.exists(domModel);
     });
 
-    function renderTreeNode(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeElement {
-      const treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-      const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-      treeElement.treeOutline = treeOutline;
-      treeElement.performUpdate();
-      return treeElement;
+    function renderTreeNode(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
+      const widget = createTreeWidget(node);
+      widget.performUpdate();
+      return widget;
     }
 
-    function getLinkOutputs(treeElement: Elements.ElementsTreeElement.ElementsTreeElement):
+    function getLinkOutputs(widget: Elements.ElementsTreeElement.ElementsTreeWidget):
         Array<{text: string, href: string}> {
       const linkElements =
-          Array.from(treeElement.widget.contentElement.querySelectorAll('.webkit-html-attribute-value .devtools-link'));
+          Array.from(widget.contentElement.querySelectorAll('.webkit-html-attribute-value .devtools-link'));
       assert.isNotEmpty(linkElements, 'Expected to find .devtools-link elements');
 
       return linkElements.map(link => {
@@ -983,7 +970,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
       assert.lengthOf(links, 1);
       assert.deepEqual(links[0], {text: 'http://example.com', href: 'http://example.com'});
 
-      const attributeValueElement = treeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
+      const attributeValueElement = treeElement.contentElement.querySelector('.webkit-html-attribute-value');
       const linkElement = attributeValueElement?.querySelector('.devtools-link');
       assert.strictEqual(linkElement?.tagName.toLowerCase(), 'devtools-link');
     });
@@ -1028,14 +1015,14 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
       // Removing 'type' shifts 'src' into the first attribute slot (previously ValueType.UNKNOWN).
       domModel.attributeRemoved(node.id, 'type');
-      treeElement.updateTitle();
+      treeElement.performUpdate();
       assert.deepEqual(getLinkOutputs(treeElement), [{text: 'app.js', href: 'http://example.com/app.js'}]);
 
       // Replacing 'src' with a plain attribute transitions the slot from ValueType.SRC back to ValueType.UNKNOWN.
       domModel.attributeRemoved(node.id, 'src');
       domModel.attributeModified(node.id, 'type', 'module');
-      treeElement.updateTitle();
-      const attrValue = treeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
+      treeElement.performUpdate();
+      const attrValue = treeElement.contentElement.querySelector('.webkit-html-attribute-value');
       assert.strictEqual(attrValue?.textContent?.replace(/\u200B/g, ''), 'module');
 
       // Also verify IMG transitions between plain attributes and srcset (ValueType.SRCSET).
@@ -1054,7 +1041,7 @@ describeWithEnvironment('ElementsTreeElement', () => {
       assert.lengthOf(getLinkOutputs(imgTreeElement), 2);
 
       domModel.attributeRemoved(imgNode.id, 'data-srcset');
-      imgTreeElement.updateTitle();
+      imgTreeElement.performUpdate();
       assert.lengthOf(getLinkOutputs(imgTreeElement), 2);
     });
   });
@@ -1062,14 +1049,11 @@ describeWithEnvironment('ElementsTreeElement', () => {
 
 describeWithEnvironment('ElementsTreeElement highlighting', () => {
   let domModel: SDK.DOMModel.DOMModel;
-  let treeOutline: Elements.DOMTreeWidget.ElementsTreeOutline;
+  let domTree: Elements.DOMTreeWidget.DOMTreeWidget;
   let containerNode: SDK.DOMModel.DOMNode;
   let attrTestNode: SDK.DOMModel.DOMNode;
   let childTestNode: SDK.DOMModel.DOMNode;
   let textTestNode: SDK.DOMModel.DOMNode;
-  let attrTestTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
-  let childTestTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
-  let textTestTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
   let nodeId = 0;
 
   function createDOMNodePayload(name: string, attrs: Record<string, string> = {}): Protocol.DOM.Node {
@@ -1113,6 +1097,28 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     };
   }
 
+  // Updating DOMTreeWidget renders the outer devtools-tree element. The child
+  // ElementsTreeWidgets schedule their own updates once they are connected, so
+  // yield a tick between the two rounds of widget updates.
+  async function waitForTreeUpdates(): Promise<void> {
+    await UI.Widget.Widget.allUpdatesComplete;
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await UI.Widget.Widget.allUpdatesComplete;
+  }
+
+  function findWidget(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
+    const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+    assert.exists(tree);
+    for (const el of tree.getInternalTreeOutlineForTest().contentElement.querySelectorAll('devtools-widget')) {
+      const widget = UI.Widget.Widget.get(el);
+      if (widget instanceof Elements.ElementsTreeElement.ElementsTreeWidget && widget.node === node &&
+          !widget.isClosingTag) {
+        return widget;
+      }
+    }
+    assert.fail(`No ElementsTreeWidget rendered for ${node.nodeName()}`);
+  }
+
   beforeEach(async () => {
     const universe = new TestUniverse();
     setTestUniverseForWidgets(universe);
@@ -1121,6 +1127,7 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
     const target = universe.createTarget();
     domModel = target.model(SDK.DOMModel.DOMModel)!;
+    sinon.stub(domModel, 'requestDocument').resolves(null);
 
     const containerPayload = createDOMNodePayload('div', {id: 'container'});
     const attrTestPayload = createDOMNodePayload('div', {id: 'attrTest', attrFoo: 'foo'});
@@ -1134,336 +1141,215 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     childTestNode = containerNode.children()![1];
     textTestNode = containerNode.children()![2];
 
-    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    treeOutline.wireToDOMModel(domModel);
-
-    const containerTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(containerNode);
-    attrTestTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(attrTestNode);
-    containerTreeElement.appendChild(attrTestTreeElement);
-    childTestTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childTestNode);
-    containerTreeElement.appendChild(childTestTreeElement);
-    textTestTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textTestNode);
-    containerTreeElement.appendChild(textTestTreeElement);
-    treeOutline.appendChild(containerTreeElement);
-
-    treeOutline.setVisible(true);
-    renderElementIntoDOM(treeOutline.element);
-    containerTreeElement.expand();
+    domTree = new Elements.DOMTreeWidget.DOMTreeWidget();
+    domTree.markAsRoot();
+    renderElementIntoDOM(domTree);
+    domTree.modelAdded(domModel);
+    domTree.rootDOMNode = containerNode;
+    domTree.setNodeExpanded(containerNode, true);
+    domTree.performUpdate();
+    await waitForTreeUpdates();
   });
 
   afterEach(async () => {
-    attrTestTreeElement?.hideSearchHighlights();
-    treeOutline.removeChildren();
-    treeOutline.setVisible(false);
+    domTree.detach();
     await UI.Widget.Widget.allUpdatesComplete;
     Highlighting.HighlightManager.HighlightManager.removeInstance();
   });
 
-  let stub: sinon.SinonStub<[], void>|undefined;
-  async function waitForHighlights(element: Elements.ElementsTreeElement.ElementsTreeElement) {
-    stub?.restore();
-    return await new Promise(resolve => {
-      stub = sinon.stub(treeOutline, 'updateModifiedNodes');
-      stub.callsFake(async () => {
-        stub?.wrappedMethod.call(treeOutline);
-        await element.updateComplete;
-        resolve(element.widget.contentElement.querySelectorAll('.dom-update-highlight').length);
-      });
-    });
+  /** Flushes pending DOM mutations into the tree and counts the update highlights rendered for `node`. */
+  async function highlightsFor(node: SDK.DOMModel.DOMNode): Promise<number> {
+    domTree.updateModifiedNodes();
+    await waitForTreeUpdates();
+    return findWidget(node).contentElement.querySelectorAll('.dom-update-highlight').length;
+  }
+
+  /**
+   * Appends `payload` as the only child of `parent` and re-renders the tree.
+   * The parent stays collapsed unless `expand` is set, mirroring a node whose
+   * children have not been revealed yet.
+   */
+  async function appendChild(parent: SDK.DOMModel.DOMNode, payload: Protocol.DOM.Node,
+                             {expand = false} = {}): Promise<SDK.DOMModel.DOMNode> {
+    parent.setChildrenPayload([payload]);
+    const child = parent.children()![0];
+    if (expand) {
+      domTree.setNodeExpanded(parent, true);
+    }
+    domTree.performUpdate();
+    await waitForTreeUpdates();
+    return child;
   }
 
   it('highlights attribute value change', async () => {
-    const highlights = waitForHighlights(attrTestTreeElement);
     domModel.attributeModified(attrTestNode.id, 'attrFoo', 'bar');
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(attrTestNode), 1);
   });
 
   it('highlights attribute set to empty', async () => {
-    const highlights = waitForHighlights(attrTestTreeElement);
     domModel.attributeModified(attrTestNode.id, 'attrFoo', '');
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(attrTestNode), 1);
   });
 
   it('highlights new attribute', async () => {
-    const highlights = waitForHighlights(attrTestTreeElement);
     domModel.attributeModified(attrTestNode.id, 'attrBar', 'bar');
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(attrTestNode), 1);
   });
 
   it('highlights attribute removal', async () => {
-    const highlights = waitForHighlights(attrTestTreeElement);
     domModel.attributeRemoved(attrTestNode.id, 'attrFoo');
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(attrTestNode), 1);
   });
 
   it('highlights appending child to an empty node', async () => {
-    const highlights = waitForHighlights(childTestTreeElement);
     const child1Payload = createDOMNodePayload('span', {id: 'child1'});
     const child1Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child1Payload);
     child1Node.parentNode = childTestNode;
     domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, child1Node);
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(childTestNode), 1);
   });
 
-  it('highlights appending child to an expanded node', async () => {
-    childTestTreeElement.expand();
-    const child1Payload = createDOMNodePayload('span', {id: 'child1'});
-    const child1Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child1Payload);
-    child1Node.parentNode = childTestNode;
-    childTestNode.setChildrenPayload([child1Payload]);
-    const child1TreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(child1Node);
-    childTestTreeElement.appendChild(child1TreeElement);
+  it('renders the appended child without highlighting the tag of an expanded node', async () => {
+    const child1Node = await appendChild(childTestNode, createDOMNodePayload('span', {id: 'child1'}), {expand: true});
+    assert.isTrue(domTree.isNodeExpanded(childTestNode));
 
-    const highlights = waitForHighlights(childTestTreeElement);
-    const child2Payload = createDOMNodePayload('span', {id: 'child2'});
-    const child2Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child2Payload);
-    child2Node.parentNode = childTestNode;
-    domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, child2Node);
-    assert.strictEqual(await highlights, 1);
+    domModel.childNodeInserted(childTestNode.id, child1Node.id, createDOMNodePayload('span', {id: 'child2'}));
+    // The children are visible, so the parent tag is not highlighted.
+    assert.strictEqual(await highlightsFor(childTestNode), 0);
+    const child2Node = childTestNode.children()![1];
+    assert.strictEqual(child2Node.getAttribute('id'), 'child2');
+    assert.exists(findWidget(child2Node));
   });
 
   it('highlights child removal', async () => {
-    const child1Payload = createDOMNodePayload('span', {id: 'child1'});
-    const child1Node = SDK.DOMModel.DOMNode.create(domModel, childTestNode.ownerDocument, false, child1Payload);
-    child1Node.parentNode = childTestNode;
-    childTestNode.setChildrenPayload([child1Payload]);
-    const child1TreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(child1Node);
-    childTestTreeElement.appendChild(child1TreeElement);
+    const child1Node = await appendChild(childTestNode, createDOMNodePayload('span', {id: 'child1'}));
 
-    const highlights = waitForHighlights(childTestTreeElement);
     domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeRemoved, {node: child1Node, parent: childTestNode});
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(childTestNode), 1);
   });
 
   it('highlights setting text content', async () => {
-    const highlights = waitForHighlights(textTestTreeElement);
     const textNodePayload = createTextNodePayload('Text');
     const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
     textNode.parentNode = textTestNode;
     domModel.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, textNode);
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(textTestNode), 1);
   });
 
   it('highlights changing text node content', async () => {
-    const textNodePayload = createTextNodePayload('Text');
-    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
-    textTestNode.setChildrenPayload([textNodePayload]);
-    textNode.parentNode = textTestNode;
-    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
-    textTestTreeElement.appendChild(textNodeTreeElement);
+    const textNode = await appendChild(textTestNode, createTextNodePayload('Text'));
 
-    const highlights = waitForHighlights(textTestTreeElement);
     domModel.characterDataModified(textNode.id, 'Changed');
-    assert.strictEqual(await highlights, 2);
+    // The inline text and the parent tag are both highlighted.
+    assert.strictEqual(await highlightsFor(textTestNode), 2);
   });
 
   it('highlights removing a text node', async () => {
-    const textNodePayload = createTextNodePayload('Text');
-    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
-    textNode.parentNode = textTestNode;
-    textTestNode.setChildrenPayload([textNodePayload]);
-    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
-    textTestTreeElement.appendChild(textNodeTreeElement);
+    const textNode = await appendChild(textTestNode, createTextNodePayload('Text'));
 
-    const highlights = waitForHighlights(textTestTreeElement);
     domModel.childNodeRemoved(textTestNode.id, textNode.id);
-    assert.strictEqual(await highlights, 1);
+    assert.strictEqual(await highlightsFor(textTestNode), 1);
   });
 
   it('highlights clearing text node content', async () => {
-    const textNodePayload = createTextNodePayload('Text');
-    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
-    textTestNode.setChildrenPayload([textNodePayload]);
-    textNode.parentNode = textTestNode;
-    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
-    textTestTreeElement.appendChild(textNodeTreeElement);
+    const textNode = await appendChild(textTestNode, createTextNodePayload('Text'));
 
-    const highlights = waitForHighlights(textTestTreeElement);
     domModel.characterDataModified(textNode.id, '');
-    assert.strictEqual(await highlights, 2);
+    // The inline text and the parent tag are both highlighted.
+    assert.strictEqual(await highlightsFor(textTestNode), 2);
   });
 
   it('highlights changing processing instruction node content', async () => {
-    const piPayload = createProcessingInstructionPayload('pi-target', 'pi-data');
-    const piNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, piPayload);
-    textTestNode.setChildrenPayload([piPayload]);
-    piNode.parentNode = textTestNode;
-    const piTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(piNode);
-    textTestTreeElement.appendChild(piTreeElement);
+    const piNode = await appendChild(textTestNode, createProcessingInstructionPayload('pi-target', 'pi-data'));
 
-    const highlights = waitForHighlights(textTestTreeElement);
     domModel.characterDataModified(piNode.id, 'Changed');
-    assert.strictEqual(await highlights, 1);
+    // The processing instruction is the only child, so its collapsed parent is highlighted.
+    assert.strictEqual(await highlightsFor(textTestNode), 1);
   });
 
-  it('edits a processing instruction node', async () => {
-    const piPayload = createProcessingInstructionPayload('pi-target', 'pi-data');
-    const piNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, piPayload);
-    textTestNode.setChildrenPayload([piPayload]);
-    piNode.parentNode = textTestNode;
-
-    const setNodeValueSpy = sinon.spy(piNode, 'setNodeValue');
+  async function editNodeValueByDoubleClick(node: SDK.DOMModel.DOMNode, valueSelector: string, expectedText: string,
+                                            newText: string): Promise<void> {
+    const setNodeValueSpy = sinon.spy(node, 'setNodeValue');
     sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
 
-    const piTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(piNode);
-    assert.exists(piTreeElement);
-    textTestTreeElement.appendChild(piTreeElement);
+    domTree.selectDOMNode(node, true);
+    await waitForTreeUpdates();
 
-    await textTestTreeElement.onpopulate();
+    const widget = findWidget(node);
+    const valueElement = widget.contentElement.querySelector<HTMLElement>(valueSelector);
+    assert.exists(valueElement);
 
-    treeOutline.selectDOMNode(piNode, true);
-    await piTreeElement.updateComplete;
+    // Start editing by double clicking the value.
+    valueElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true, cancelable: true, composed: true}));
+    assert.isTrue(widget.isEditing);
+    assert.strictEqual(valueElement.textContent, expectedText);
 
-    const piElementDOM =
-        piTreeElement.widget.contentElement.querySelector('.webkit-html-processing-instruction-value') as HTMLElement;
-    assert.exists(piElementDOM);
-
-    // Start editing by calling ondblclick
-    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
-    Object.defineProperty(event, 'target', {value: piElementDOM});
-    assert.isFalse(piTreeElement.ondblclick(event));
-
-    assert.isTrue(piTreeElement.isEditing);
-
-    assert.strictEqual(piElementDOM.textContent, 'pi-data');
-
-    // The inplace editor is now active on piElementDOM.
-    piElementDOM.textContent = 'New Data';
+    // The inplace editor is now active on valueElement.
+    valueElement.textContent = newText;
 
     // The commit is triggered by blur or enter.
-    piElementDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
-
-    assert.isFalse(piTreeElement.isEditing);
+    valueElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
+    assert.isFalse(widget.isEditing);
 
     sinon.assert.calledOnce(setNodeValueSpy);
-    sinon.assert.calledWith(setNodeValueSpy, 'New Data');
+    sinon.assert.calledWith(setNodeValueSpy, newText);
+  }
+
+  it('edits a processing instruction node', async () => {
+    const piNode =
+        await appendChild(textTestNode, createProcessingInstructionPayload('pi-target', 'pi-data'), {expand: true});
+    await editNodeValueByDoubleClick(piNode, '.webkit-html-processing-instruction-value', 'pi-data', 'New Data');
   });
 
   it('edits a processing instruction node without data', async () => {
-    const piPayload = createProcessingInstructionPayload('pi-target', '');
-    const piNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, piPayload);
-    textTestNode.setChildrenPayload([piPayload]);
-    piNode.parentNode = textTestNode;
-
-    const setNodeValueSpy = sinon.spy(piNode, 'setNodeValue');
-    sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
-
-    const piTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(piNode);
-    assert.exists(piTreeElement);
-    textTestTreeElement.appendChild(piTreeElement);
-
-    await textTestTreeElement.onpopulate();
-
-    treeOutline.selectDOMNode(piNode, true);
-    await piTreeElement.updateComplete;
-
-    const piElementDOM =
-        piTreeElement.widget.contentElement.querySelector('.webkit-html-processing-instruction-value') as HTMLElement;
-    assert.exists(piElementDOM);
-
-    // Start editing by calling ondblclick
-    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
-    Object.defineProperty(event, 'target', {value: piElementDOM});
-    assert.isFalse(piTreeElement.ondblclick(event));
-
-    assert.isTrue(piTreeElement.isEditing);
-
-    assert.strictEqual(piElementDOM.textContent, '');
-
-    // The inplace editor is now active on piElementDOM.
-    piElementDOM.textContent = 'New Data';
-
-    // The commit is triggered by blur or enter.
-    piElementDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
-
-    assert.isFalse(piTreeElement.isEditing);
-
-    sinon.assert.calledOnce(setNodeValueSpy);
-    sinon.assert.calledWith(setNodeValueSpy, 'New Data');
-  });
-
-  it('does not highlight when panel is hidden', async () => {
-    treeOutline.setVisible(false);
-    attrTestNode.setAttribute('attrFoo', 'bar');
-    let highlights = waitForHighlights(attrTestTreeElement);
-    domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: attrTestNode, name: 'attrFoo'});
-    assert.strictEqual(await highlights, 0);
-
-    treeOutline.setVisible(true);
-    highlights = waitForHighlights(attrTestTreeElement);
-    attrTestNode.setAttribute('attrFoo', 'baz');
-    domModel.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: attrTestNode, name: 'attrFoo'});
-    assert.strictEqual(await highlights, 1);
+    const piNode = await appendChild(textTestNode, createProcessingInstructionPayload('pi-target', ''), {expand: true});
+    await editNodeValueByDoubleClick(piNode, '.webkit-html-processing-instruction-value', '', 'New Data');
   });
 
   it('edits a text node', async () => {
     const longText = 'This is a long text that is longer than 80 characters to ensure that the text node is ' +
         'not rendered inline and the parent element is expandable.';
-    const textNodePayload = createTextNodePayload(longText);
-    const textNode = SDK.DOMModel.DOMNode.create(domModel, textTestNode.ownerDocument, false, textNodePayload);
-    textTestNode.setChildrenPayload([textNodePayload]);
-    textNode.parentNode = textTestNode;
+    const textNode = await appendChild(textTestNode, createTextNodePayload(longText), {expand: true});
+    await editNodeValueByDoubleClick(textNode, '.webkit-html-text-node', longText, 'New Text');
+  });
 
-    const setNodeValueSpy = sinon.spy(textNode, 'setNodeValue');
-    sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+  it('defers highlighting while hidden and highlights once shown', async () => {
+    domTree.detach();
+    domModel.attributeModified(attrTestNode.id, 'attrFoo', 'bar');
+    // The change is recorded but not flushed while the tree is hidden.
+    assert.isTrue(domTree.updateRecordsForTest().has(attrTestNode));
 
-    const textNodeTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(textNode);
-    assert.exists(textNodeTreeElement);
-    textTestTreeElement.appendChild(textNodeTreeElement);
-
-    await textTestTreeElement.onpopulate();
-
-    treeOutline.selectDOMNode(textNode, true);
-    await textNodeTreeElement.updateComplete;
-
-    const textElementDOM =
-        textNodeTreeElement.widget.contentElement.querySelector('.webkit-html-text-node') as HTMLElement;
-    assert.exists(textElementDOM);
-
-    // Start editing by calling ondblclick
-    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
-    Object.defineProperty(event, 'target', {value: textElementDOM});
-    assert.isFalse(textNodeTreeElement.ondblclick(event));
-
-    assert.isTrue(textNodeTreeElement.isEditing);
-
-    assert.strictEqual(textElementDOM.textContent, longText);
-
-    // The inplace editor is now active on textElementDOM.
-    textElementDOM.textContent = 'New Text';
-
-    // The commit is triggered by blur or enter.
-    textElementDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
-
-    assert.isFalse(textNodeTreeElement.isEditing);
-
-    sinon.assert.calledOnce(setNodeValueSpy);
-    sinon.assert.calledWith(setNodeValueSpy, 'New Text');
+    renderElementIntoDOM(domTree);
+    await waitForTreeUpdates();
+    assert.isFalse(domTree.updateRecordsForTest().has(attrTestNode));
+    assert.lengthOf(findWidget(attrTestNode).contentElement.querySelectorAll('.dom-update-highlight'), 1);
   });
 
   it('highlights search results in ordered text ranges', async () => {
-    attrTestTreeElement.highlightSearchResults('foo');
-    await attrTestTreeElement.widget.updateComplete;
+    const widget = findWidget(attrTestNode);
+    widget.highlightSearchResults('foo');
+    await widget.updateComplete;
     const highlight = CSS.highlights.get('highlighted-search-result');
     assert.exists(highlight);
     assert.deepEqual(Array.from(highlight).map(range => range.toString()), ['Foo', 'foo']);
   });
 
   it('hides search highlights and clears searchQuery without resurrecting on update', async () => {
-    attrTestTreeElement.highlightSearchResults('foo');
-    await attrTestTreeElement.widget.updateComplete;
+    const widget = findWidget(attrTestNode);
+    widget.highlightSearchResults('foo');
+    await widget.updateComplete;
     let highlight = CSS.highlights.get('highlighted-search-result');
     assert.exists(highlight);
     assert.strictEqual(highlight.size, 2);
 
-    attrTestTreeElement.hideSearchHighlights();
-    await attrTestTreeElement.widget.updateComplete;
-    assert.isNull(attrTestTreeElement.widget.searchQuery);
+    widget.hideSearchHighlights();
+    await widget.updateComplete;
+    assert.isNull(widget.searchQuery);
     highlight = CSS.highlights.get('highlighted-search-result');
     assert.strictEqual(highlight?.size ?? 0, 0);
 
-    attrTestTreeElement.widget.requestUpdate();
-    await attrTestTreeElement.widget.updateComplete;
+    widget.requestUpdate();
+    await widget.updateComplete;
     highlight = CSS.highlights.get('highlighted-search-result');
     assert.strictEqual(highlight?.size ?? 0, 0);
   });
@@ -1472,9 +1358,18 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
 describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
   let target: SDK.Target.Target;
   let domModel: SDK.DOMModel.DOMModel;
-  let treeOutline: Elements.DOMTreeWidget.ElementsTreeOutline;
   let node: SDK.DOMModel.DOMNode;
-  let treeElement: Elements.ElementsTreeElement.ElementsTreeElement;
+  let widget: Elements.ElementsTreeElement.ElementsTreeWidget;
+
+  /** Creates the widget the way DOMTreeWidget renders snapshot trees: edits disabled, no AI button. */
+  function createSnapshotWidget(node: SDK.DOMModel.DOMNode,
+                                disableEdits = true): Elements.ElementsTreeElement.ElementsTreeWidget {
+    const widget = new Elements.ElementsTreeElement.ElementsTreeWidget();
+    widget.disableEdits = disableEdits;
+    widget.showAIButton = false;
+    widget.node = node;
+    return widget;
+  }
 
   beforeEach(() => {
     const universe = new TestUniverse();
@@ -1492,13 +1387,7 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     sinon.stub(node, 'adProvenance').returns({} as Protocol.Network.AdProvenance);
     sinon.stub(node, 'isMediaNode').returns(true);
 
-    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
-        /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
-        /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true);
-    treeOutline.wireToDOMModel(domModel);
-
-    treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
+    widget = createSnapshotWidget(node);
   });
 
   it('Ask AI button is not present', async () => {
@@ -1526,16 +1415,9 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     const nodeSnapshot = snapshot.children()?.[0];
     assert.exists(nodeSnapshot);
 
-    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
-        /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
-        /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ true);
-    treeOutline.wireToDOMModel(domModel);
-
-    treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(nodeSnapshot);
-    treeElement.treeOutline = treeOutline;
-
-    treeElement.hovered = true;
-    treeElement.select();
+    widget = createSnapshotWidget(nodeSnapshot);
+    widget.hovered = true;
+    widget.selected = true;
 
     // Mock the action availability
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
@@ -1545,10 +1427,10 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
       execute: () => {},
     } as unknown as UI.ActionRegistration.Action);
 
-    treeElement.requestUpdate();
-    await treeElement.updateComplete;
+    widget.requestUpdate();
+    await widget.updateComplete;
 
-    const aiButton = treeElement.widget.contentElement.querySelector('devtools-floating-button');
+    const aiButton = widget.contentElement.querySelector('devtools-floating-button');
     assert.isNull(aiButton, 'Ask AI button should not be present in snapshot mode');
   });
 
@@ -1588,11 +1470,11 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     });
 
     it('media adorner click is no-op', async () => {
-      treeElement.updateAdorners();
-      treeElement.requestUpdate();
-      await treeElement.updateComplete;
+      widget.updateAdorners();
+      widget.requestUpdate();
+      await widget.updateComplete;
 
-      const adorners = treeElement.widget.contentElement.querySelectorAll('devtools-adorner');
+      const adorners = widget.contentElement.querySelectorAll('devtools-adorner');
       const mediaAdorner = Array.from(adorners).find(a => a.name === 'media');
       assert.exists(mediaAdorner);
 
@@ -1604,11 +1486,11 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     });
 
     it('popover adorner click is no-op', async () => {
-      treeElement.updateAdorners();
-      treeElement.requestUpdate();
-      await treeElement.updateComplete;
+      widget.updateAdorners();
+      widget.requestUpdate();
+      await widget.updateComplete;
 
-      const adorners = treeElement.widget.contentElement.querySelectorAll('devtools-adorner');
+      const adorners = widget.contentElement.querySelectorAll('devtools-adorner');
       const popoverAdorner = Array.from(adorners).find(a => a.name === 'popover');
       assert.exists(popoverAdorner);
 
@@ -1622,11 +1504,11 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
       const originalDevToolsAllowInterestForcing = Root.Runtime.hostConfig.devToolsAllowInterestForcing;
       Root.Runtime.hostConfig.devToolsAllowInterestForcing = {enabled: true};
 
-      treeElement.updateAdorners();
-      treeElement.requestUpdate();
-      await treeElement.updateComplete;
+      widget.updateAdorners();
+      widget.requestUpdate();
+      await widget.updateComplete;
 
-      const adorners = treeElement.widget.contentElement.querySelectorAll('devtools-adorner');
+      const adorners = widget.contentElement.querySelectorAll('devtools-adorner');
       const interestAdorner = Array.from(adorners).find(a => a.name === 'interest');
       assert.exists(interestAdorner);
 
@@ -1639,26 +1521,26 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     });
 
     it('top-layer adorner click is no-op', async () => {
-      treeElement.updateAdorners();
-      treeElement.requestUpdate();
-      await treeElement.updateComplete;
+      widget.updateAdorners();
+      widget.requestUpdate();
+      await widget.updateComplete;
 
-      const adorners = treeElement.widget.contentElement.querySelectorAll('devtools-adorner');
+      const adorners = widget.contentElement.querySelectorAll('devtools-adorner');
       const topLayerAdorner = Array.from(adorners).find(a => a.name === 'top-layer');
       assert.exists(topLayerAdorner);
 
-      const revealSpy =
-          sinon.spy((treeElement.treeOutline as Elements.DOMTreeWidget.ElementsTreeOutline)!, 'revealInTopLayer');
+      const revealInTopLayer = sinon.stub();
+      widget.revealInTopLayer = revealInTopLayer;
       topLayerAdorner!.dispatchEvent(new Event('click'));
-      sinon.assert.notCalled(revealSpy);
+      sinon.assert.notCalled(revealInTopLayer);
     });
 
     it('starting-style adorner click is no-op', async () => {
-      treeElement.updateAdorners();
-      treeElement.requestUpdate();
-      await treeElement.updateComplete;
+      widget.updateAdorners();
+      widget.requestUpdate();
+      await widget.updateComplete;
 
-      const adorners = treeElement.widget.contentElement.querySelectorAll('devtools-adorner');
+      const adorners = widget.contentElement.querySelectorAll('devtools-adorner');
       const startingStyleAdorner = Array.from(adorners).find(a => a.name === 'starting-style');
       assert.exists(startingStyleAdorner);
 
@@ -1668,11 +1550,11 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     });
 
     it('slot adorner click works', async () => {
-      treeElement.updateAdorners();
-      treeElement.requestUpdate();
-      await treeElement.updateComplete;
+      widget.updateAdorners();
+      widget.requestUpdate();
+      await widget.updateComplete;
 
-      const adorners = treeElement.widget.contentElement.querySelectorAll('devtools-adorner');
+      const adorners = widget.contentElement.querySelectorAll('devtools-adorner');
       const slotAdorner = Array.from(adorners).find(a => a.name === 'slot');
       assert.exists(slotAdorner);
 
@@ -1732,20 +1614,14 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
 
     sinon.stub(node, 'attributes').returns([{name: 'interestfor', value: 'my-tooltip'}] as SDK.DOMModel.Attribute[]);
 
-    treeOutline = new Elements.DOMTreeWidget.ElementsTreeOutline(
-        /* omitRootDOMNode */ false, /* selectEnabled */ true, /* hideGutter */ false, /* maxTreeDepth */ 2,
-        /* enableContextMenu */ false, /* showComments */ false, /* showAIButton */ false, /* disableEdits */ false);
-    treeOutline.wireToDOMModel(domModel);
+    widget = createSnapshotWidget(node, /* disableEdits= */ false);
+    widget.onbind();
 
-    treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
-    treeElement.onbind();
+    widget.updateAdorners();
+    widget.requestUpdate();
+    await widget.updateComplete;
 
-    treeElement.updateAdorners();
-    treeElement.requestUpdate();
-    await treeElement.updateComplete;
-
-    const adorners = treeElement.widget.contentElement.querySelectorAll<Adorners.Adorner.Adorner>('devtools-adorner');
+    const adorners = widget.contentElement.querySelectorAll<Adorners.Adorner.Adorner>('devtools-adorner');
     const interestAdorner = Array.from(adorners).find(a => a.name === 'interest');
     assert.exists(interestAdorner);
 
@@ -1756,30 +1632,6 @@ describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
     // Restore
     Root.Runtime.hostConfig.devToolsAllowInterestForcing = originalDevToolsAllowInterestForcing;
   });
-
-  describe('ondelete', () => {
-    it('returns false if treeOutline is not set', () => {
-      const treeElementNoOutline = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-      assert.isFalse(treeElementNoOutline.ondelete());
-    });
-
-    it('calls remove on tree element for node', () => {
-      const removeSpy = sinon.spy(treeElement, 'remove');
-      const handled = treeElement.ondelete();
-      assert.isTrue(handled);
-      sinon.assert.calledOnce(removeSpy);
-    });
-
-    it('calls remove on start tag tree element when ondelete is called on closing tag', () => {
-      treeElement.onbind();
-      const closingTagTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, true);
-      closingTagTreeElement.treeOutline = treeOutline;
-      const removeSpy = sinon.spy(treeElement, 'remove');
-      const handled = closingTagTreeElement.ondelete();
-      assert.isTrue(handled);
-      sinon.assert.calledOnce(removeSpy);
-    });
-  });
 });
 
 describeWithEnvironment('ElementsTreeElement issue management', () => {
@@ -1789,8 +1641,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
   let domIssuesManager: IssuesManager.DOMIssuesManager.DOMIssuesManager;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
   let labelNode: SDK.DOMModel.DOMNode;
-  let outline: Elements.DOMTreeWidget.ElementsTreeOutline;
-  let testTreeElement: Elements.ElementsTreeElement.ElementsTreeElement;
+  let widget: Elements.ElementsTreeElement.ElementsTreeWidget;
   let mockModel: SDK.IssuesModel.IssuesModel;
 
   beforeEach(() => {
@@ -1829,17 +1680,19 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     labelNode = rootNode.children()![0];
     assert.isNotNull(labelNode);
 
-    outline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    outline.wireToDOMModel(testDomModel);
-    outline.setVisible(true);
-    renderElementIntoDOM(outline.element);
-    testTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(labelNode, false);
-    outline.appendChild(testTreeElement);
-    testTreeElement.widget.performUpdate();
+    widget = new Elements.ElementsTreeElement.ElementsTreeWidget();
+    widget.node = labelNode;
+    widget.markAsRoot();
+    renderElementIntoDOM(widget);
+    widget.performUpdate();
 
     sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(labelNode);
 
     mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+  });
+
+  afterEach(() => {
+    widget.detach();
   });
 
   it('adds generic tag issue to tree element and highlights tag name', async () => {
@@ -1857,7 +1710,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isTrue(tagElement.classList.contains('violating-element'));
     assert.deepEqual(domIssuesManager.issuesForNode(labelNode), [issue]);
   });
@@ -1878,7 +1731,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isTrue(tagElement.classList.contains('violating-element'));
     assert.deepEqual(domIssuesManager.issuesForNode(labelNode), [issue]);
   });
@@ -1899,7 +1752,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const attrElement = testTreeElement.widget.contentElement.querySelector('.webkit-html-attribute-name');
+    const attrElement = widget.contentElement.querySelector('.webkit-html-attribute-name');
     assert.isNotNull(attrElement);
     assert.isTrue(attrElement!.classList.contains('violating-element'));
     assert.include(domIssuesManager.issuesForNode(labelNode), issue);
@@ -1915,7 +1768,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isFalse(tagElement.classList.contains('violating-element'));
   });
 
@@ -1934,7 +1787,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isTrue(tagElement.classList.contains('violating-element'));
 
     issue.setHidden(true);
@@ -1959,7 +1812,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isFalse(tagElement.classList.contains('violating-element'));
 
     issue.setHidden(false);
@@ -1984,13 +1837,12 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED,
                                            {issuesModel: mockModel, issue: preHiddenIssue});
     await new Promise(resolve => setTimeout(resolve, 0));
-    const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
+    const tagElement = widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isFalse(tagElement.classList.contains('violating-element'));
   });
 
   describe('in-place editing', () => {
     it('supports starting in-place editing, adding attributes, and cancelling in ElementsTreeWidget', async () => {
-      const widget = testTreeElement.widget;
       widget.isDOMNodeSelected = true;
 
       const startEditingSpy = sinon.spy(widget, 'startEditing');
@@ -2013,7 +1865,6 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     });
 
     it('supports editing tag name and starting attribute editing on an existing attribute', async () => {
-      const widget = testTreeElement.widget;
       widget.isDOMNodeSelected = true;
 
       // 1. Start editing tag name
@@ -2035,7 +1886,6 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     });
 
     it('cancels tag name editing when the new tag name is empty', () => {
-      const widget = testTreeElement.widget;
       const setNodeNameStub = sinon.stub(labelNode, 'setNodeName');
       const editingCancelledSpy = sinon.spy(widget, 'editingCancelled');
 
@@ -2050,7 +1900,6 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     });
 
     it('records a renamed tag without a selectNodeAfterEdit hook', () => {
-      const widget = testTreeElement.widget;
       widget.selectNodeAfterEdit = undefined;
       const recordActionStub = sinon.stub(Badges.UserBadges.instance(), 'recordAction');
       sinon.stub(labelNode, 'setNodeName').callsFake((_name, callback) => callback?.(null, labelNode));
@@ -2065,7 +1914,6 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     });
 
     it('supports double click on tag name or attribute to initiate editing', async () => {
-      const widget = testTreeElement.widget;
       widget.isDOMNodeSelected = true;
 
       // Double click on tag name
@@ -2089,32 +1937,7 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
       assert.isFalse(widget.isEditing);
     });
 
-    it('does not abort in-place editing on second double-click on expandable node', async () => {
-      testTreeElement.setExpandable(true);
-      testTreeElement.select();
-      assert.isFalse(testTreeElement.expanded);
-
-      const widget = testTreeElement.widget;
-      const attrElement = widget.contentElement.querySelector('.webkit-html-attribute');
-      assert.exists(attrElement);
-
-      // First double-click starts editing
-      const firstDblClick = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
-      attrElement.dispatchEvent(firstDblClick);
-      assert.isTrue(widget.isEditing);
-      assert.isFalse(testTreeElement.expanded);
-
-      // Second double-click on editor must not steal focus and abort editing
-      const secondDblClick = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
-      attrElement.dispatchEvent(secondDblClick);
-      assert.isTrue(widget.isEditing);
-
-      widget.editing?.cancel();
-      assert.isFalse(widget.isEditing);
-    });
-
     it('adds and commits a new attribute without duplicating attribute elements', async () => {
-      const widget = testTreeElement.widget;
       widget.isDOMNodeSelected = true;
 
       // Check initial attribute count
@@ -2408,8 +2231,15 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   let universe: TestUniverse;
   let tracker: ChangeTracker.ChangeTracker.ChangeTracker;
   let node: SDK.DOMModel.DOMNode;
-  let treeElement: Elements.ElementsTreeElement.ElementsTreeElement;
-  let outline: Elements.DOMTreeWidget.ElementsTreeOutline;
+  let widget: Elements.ElementsTreeElement.ElementsTreeWidget;
+
+  /** Renders a standalone ElementsTreeWidget for `node` that records changes with `tracker`. */
+  function renderWidget(node: SDK.DOMModel.DOMNode): Elements.ElementsTreeElement.ElementsTreeWidget {
+    const widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    widget.node = node;
+    widget.performUpdate();
+    return widget;
+  }
 
   /**
    * `ChangeTracker` records changes on comment threads in `CommentManager`.
@@ -2424,39 +2254,38 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
 
   /** Types `newText` into the attribute that is currently edited in place and commits it. */
   function commitEditedAttribute(newText: string): void {
-    const editedAttribute = treeElement.widget.contentElement.querySelector('.webkit-html-attribute.editing');
+    const editedAttribute = widget.contentElement.querySelector('.webkit-html-attribute.editing');
     assert.exists(editedAttribute);
     editedAttribute.textContent = newText;
-    treeElement.widget.editing?.commit();
+    widget.editing?.commit();
   }
 
   /** Starts in-place editing of the tag name, types `newTagName` and commits it. */
   function editTagName(newTagName: string): void {
-    assert.isTrue(treeElement.widget.startEditingTagName());
-    const tagNameElement = treeElement.widget.contentElement.querySelector('.webkit-html-tag-name');
+    assert.isTrue(widget.startEditingTagName());
+    const tagNameElement = widget.contentElement.querySelector('.webkit-html-tag-name');
     assert.exists(tagNameElement);
     tagNameElement.textContent = newTagName;
-    treeElement.widget.editing?.commit();
+    widget.editing?.commit();
   }
 
   /** Starts in-place editing of the inline text node, types `newText` and commits it. */
   function editInlineTextNode(newText: string): void {
-    const textNodeElement = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+    const textNodeElement = widget.contentElement.querySelector('.webkit-html-text-node');
     assert.exists(textNodeElement);
-    assert.isTrue(treeElement.widget.startEditingTextNode(textNodeElement));
+    assert.isTrue(widget.startEditingTextNode(textNodeElement));
     textNodeElement.textContent = newText;
-    treeElement.widget.editing?.commit();
+    widget.editing?.commit();
   }
 
   /** Starts editing the node as HTML and waits for the multiline editor to be rendered. */
   async function startEditingAsHTML(): Promise<TextEditor.TextEditor.TextEditor> {
-    treeElement.toggleEditAsHTML();
+    widget.toggleEditAsHTML();
     // `toggleEditAsHTML` reads the outer HTML asynchronously before it creates the editor.
     await new Promise(resolve => setTimeout(resolve, 0));
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const editor =
-        treeElement.widget.contentElement.querySelector<TextEditor.TextEditor.TextEditor>('devtools-text-editor');
+    const editor = widget.contentElement.querySelector<TextEditor.TextEditor.TextEditor>('devtools-text-editor');
     assert.exists(editor);
     return editor;
   }
@@ -2464,7 +2293,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   /** Replaces the content of the multiline HTML editor with `newHTML` and commits it. */
   function commitEditedHTML(editor: TextEditor.TextEditor.TextEditor, newHTML: string): void {
     editor.dispatch({changes: {from: 0, to: editor.state.doc.length, insert: newHTML}});
-    treeElement.widget.editing?.commit();
+    widget.editing?.commit();
   }
 
   beforeEach(() => {
@@ -2506,19 +2335,13 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     assert.isNotNull(rootNode);
     node = rootNode;
 
-    outline = new Elements.DOMTreeWidget.ElementsTreeOutline();
-    treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, false);
-    treeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
-    treeElement.widget.node = node;
-    treeElement.widget.selectTreeElement = (omitFocus, selectedByUser) => treeElement.select(omitFocus, selectedByUser);
-    outline.appendChild(treeElement);
-    treeElement.widget.performUpdate();
+    widget = renderWidget(node);
   });
 
   it('records a change when adding a new attribute', () => {
     sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
 
-    assert.isTrue(treeElement.widget.addNewAttribute());
+    assert.isTrue(widget.addNewAttribute());
     commitEditedAttribute('data-test="value"');
 
     assert.strictEqual(lastChange(), 'Added attribute data-test="value"');
@@ -2528,7 +2351,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   it('records a change when modifying an existing attribute', () => {
     sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
 
-    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    assert.isTrue(widget.triggerEditAttribute('class'));
     commitEditedAttribute('class="container active"');
 
     assert.strictEqual(lastChange(), 'Changed attribute "class" from "container" to "container active"');
@@ -2538,7 +2361,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   it('records a change when renaming an existing attribute', () => {
     sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
 
-    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    assert.isTrue(widget.triggerEditAttribute('class'));
     commitEditedAttribute('foo="container"');
 
     assert.strictEqual(lastChange(), 'Renamed attribute "class" to "foo"');
@@ -2548,7 +2371,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   it('records a change when renaming and modifying an existing attribute', () => {
     sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
 
-    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    assert.isTrue(widget.triggerEditAttribute('class'));
     commitEditedAttribute('foo="bar"');
 
     assert.strictEqual(lastChange(), 'Renamed attribute "class"="container" to "foo"="bar"');
@@ -2558,7 +2381,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   it('records a change when deleting an attribute', () => {
     sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.(null));
 
-    assert.isTrue(treeElement.widget.triggerEditAttribute('class'));
+    assert.isTrue(widget.triggerEditAttribute('class'));
     commitEditedAttribute('');
 
     assert.strictEqual(lastChange(), 'Removed attribute "class"');
@@ -2568,7 +2391,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
   it('does not record a change when setAttribute fails with an error', () => {
     sinon.stub(node, 'setAttribute').callsFake((_name, _text, callback) => callback?.('Invalid attribute name syntax'));
 
-    assert.isTrue(treeElement.widget.addNewAttribute());
+    assert.isTrue(widget.addNewAttribute());
     commitEditedAttribute('invalid<attr>=1');
 
     assert.isUndefined(lastChange());
@@ -2580,7 +2403,7 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
     sinon.stub(node, 'setNodeName').callsFake((_name, callback) => {
       callbackCaptured = callback;
     });
-    treeElement.widget.selectNodeAfterEdit = sinon.stub().returns(null);
+    widget.selectNodeAfterEdit = sinon.stub().returns(null);
 
     editTagName('section');
 
@@ -2683,10 +2506,9 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       callback?.(null);
     });
 
-    const childTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childNode, false);
-    childTreeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
-    childTreeElement.widget.node = childNode;
-    await childTreeElement.widget.remove();
+    const childWidget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    childWidget.node = childNode;
+    await childWidget.remove();
 
     assert.strictEqual(lastChange(), 'Removed node <span>');
     assert.strictEqual(lastChangeBackendNodeId(), 11);
@@ -2717,10 +2539,9 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       callback?.('Cannot remove node');
     });
 
-    const childTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childNode, false);
-    childTreeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
-    childTreeElement.widget.node = childNode;
-    await childTreeElement.widget.remove();
+    const childWidget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    childWidget.node = childNode;
+    await childWidget.remove();
 
     assert.isUndefined(lastChange());
     assert.isEmpty(universe.commentManager.getCommentThreads());
@@ -2753,11 +2574,10 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       callback?.(null);
     });
 
-    const childTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(childNode, false);
-    childTreeElement.widget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
-    childTreeElement.widget.isToggledToHidden = node => node.isToggledToHidden();
-    childTreeElement.widget.node = childNode;
-    await childTreeElement.widget.remove();
+    const childWidget = new Elements.ElementsTreeElement.ElementsTreeWidget(undefined, [undefined, tracker]);
+    childWidget.isToggledToHidden = node => node.isToggledToHidden();
+    childWidget.node = childNode;
+    await childWidget.remove();
 
     sinon.assert.calledOnce(toggleHideStub);
     const threads = universe.commentManager.getCommentThreads();
@@ -2786,12 +2606,10 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
         childNodeCount: 0,
       }],
     });
-    const bidiTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(bidiNode, false);
-    outline.appendChild(bidiTreeElement);
-    bidiTreeElement.widget.performUpdate();
+    const bidiWidget = renderWidget(bidiNode);
 
-    const attrVal = bidiTreeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
-    const textEl = bidiTreeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+    const attrVal = bidiWidget.contentElement.querySelector('.webkit-html-attribute-value');
+    const textEl = bidiWidget.contentElement.querySelector('.webkit-html-text-node');
     assert.strictEqual(attrVal?.textContent?.replace(/\u200B/g, '').trim(), 'اختبار النص العربي');
     assert.strictEqual(textEl?.textContent, 'טקסט בעברית');
   });
@@ -2815,17 +2633,13 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       nodeValue: '',
       childNodeCount: 0,
     });
-    const htmlEl = new Elements.ElementsTreeElement.ElementsTreeElement(htmlNode, false);
-    const svgEl = new Elements.ElementsTreeElement.ElementsTreeElement(svgNode, false);
-    outline.appendChild(htmlEl);
-    outline.appendChild(svgEl);
-    htmlEl.widget.performUpdate();
-    svgEl.widget.performUpdate();
+    const htmlWidget = renderWidget(htmlNode);
+    const svgWidget = renderWidget(svgNode);
 
     assert.strictEqual(htmlNode.nodeNameInCorrectCase(), 'div');
     assert.strictEqual(svgNode.nodeNameInCorrectCase(), 'feComposite');
-    assert.strictEqual(htmlEl.widget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'div');
-    assert.strictEqual(svgEl.widget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'feComposite');
+    assert.strictEqual(htmlWidget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'div');
+    assert.strictEqual(svgWidget.contentElement.querySelector('.webkit-html-tag-name')?.textContent, 'feComposite');
   });
 
   it('renders special whitespace and entities in ElementsTreeElement', () => {
@@ -2848,12 +2662,10 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
         childNodeCount: 0,
       }],
     });
-    const entityEl = new Elements.ElementsTreeElement.ElementsTreeElement(entityNode, false);
-    outline.appendChild(entityEl);
-    entityEl.widget.performUpdate();
+    const entityWidget = renderWidget(entityNode);
 
-    const entities = Array.from(entityEl.widget.contentElement.querySelectorAll('.webkit-html-entity-value'))
-                         .map(el => el.textContent);
+    const entities =
+        Array.from(entityWidget.contentElement.querySelectorAll('.webkit-html-entity-value')).map(el => el.textContent);
     assert.deepEqual(entities, ['&nbsp;', '&shy;', '&#xFEFF;', '&ZeroWidthSpace;']);
   });
 
@@ -2883,12 +2695,10 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
         childNodeCount: 0,
       }],
     });
-    const bidiTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(bidiNode, false);
-    outline.appendChild(bidiTreeElement);
-    bidiTreeElement.widget.performUpdate();
+    const bidiWidget = renderWidget(bidiNode);
 
-    const attrVal = bidiTreeElement.widget.contentElement.querySelector('.webkit-html-attribute-value');
-    const textEl = bidiTreeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+    const attrVal = bidiWidget.contentElement.querySelector('.webkit-html-attribute-value');
+    const textEl = bidiWidget.contentElement.querySelector('.webkit-html-text-node');
     assert.strictEqual(attrVal?.textContent?.replace(/\u200B/g, ''), expectedValue);
     assert.strictEqual(textEl?.textContent, expectedValue);
     assert.notInclude(attrVal?.textContent ?? '', '\u200C');
@@ -2923,48 +2733,14 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
         childNodeCount: 0,
       }],
     });
-    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeElement.canShowInlineText(node));
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node, false);
-    outline.appendChild(treeElement);
-    treeElement.widget.performUpdate();
+    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeWidget.canShowInlineText(node));
+    const feffWidget = renderWidget(node);
 
-    const textEl = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+    const textEl = feffWidget.contentElement.querySelector('.webkit-html-text-node');
     assert.strictEqual(textEl?.textContent, '&#xFEFF;');
     assert.strictEqual(textEl?.querySelector('.webkit-html-entity-value')?.textContent, '&#xFEFF;');
-    assert.strictEqual(treeElement.widget.contentElement.textContent?.replace(/\u200B/g, '').replace(/\s+/g, ''),
+    assert.strictEqual(feffWidget.contentElement.textContent?.replace(/\u200B/g, '').replace(/\s+/g, ''),
                        '<divid="replacement-character">&#xFEFF;</div>');
-  });
-
-  it('updates inline <style> ElementsTreeElement title when CharacterDataModified fires', () => {
-    outline.wireToDOMModel(testDomModel);
-    const styleNode = SDK.DOMModel.DOMNode.create(testDomModel, null, false, {
-      nodeId: 50 as Protocol.DOM.NodeId,
-      backendNodeId: 50 as Protocol.DOM.BackendNodeId,
-      nodeType: Node.ELEMENT_NODE,
-      nodeName: 'STYLE',
-      localName: 'style',
-      nodeValue: '',
-      childNodeCount: 1,
-      children: [{
-        nodeId: 51 as Protocol.DOM.NodeId,
-        parentId: 50 as Protocol.DOM.NodeId,
-        backendNodeId: 51 as Protocol.DOM.BackendNodeId,
-        nodeType: Node.TEXT_NODE,
-        nodeName: '#text',
-        localName: '',
-        nodeValue: 'body { color: red; }',
-        childNodeCount: 0,
-      }],
-    });
-    outline.rootDOMNode = styleNode;
-    const styleEl = outline.findTreeElement(styleNode)!;
-    styleEl.widget.performUpdate();
-    assert.include(styleEl.widget.contentElement.textContent, 'body { color: red; }');
-
-    testDomModel.characterDataModified(51 as Protocol.DOM.NodeId, 'body { color: blue; }');
-    outline.runPendingUpdates();
-    styleEl.widget.performUpdate();
-    assert.include(styleEl.widget.contentElement.textContent, 'body { color: blue; }');
   });
 
   it('disallows editing text and processing instruction nodes exceeding MaxEditableTextSize', () => {
@@ -2999,25 +2775,19 @@ describeWithEnvironment('ElementsTreeElement Change Tracking', () => {
       childNodeCount: 0,
     });
 
-    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeElement.canEditTextNode(editableTextNode));
-    assert.isFalse(Elements.ElementsTreeElement.ElementsTreeElement.canEditTextNode(truncatedTextNode));
-    assert.isFalse(
-        Elements.ElementsTreeElement.ElementsTreeElement.canEditTextNode(truncatedProcessingInstructionNode));
+    assert.isTrue(Elements.ElementsTreeElement.ElementsTreeWidget.canEditTextNode(editableTextNode));
+    assert.isFalse(Elements.ElementsTreeElement.ElementsTreeWidget.canEditTextNode(truncatedTextNode));
+    assert.isFalse(Elements.ElementsTreeElement.ElementsTreeWidget.canEditTextNode(truncatedProcessingInstructionNode));
 
-    const truncatedTextEl = new Elements.ElementsTreeElement.ElementsTreeElement(truncatedTextNode, false);
-    const truncatedPiEl =
-        new Elements.ElementsTreeElement.ElementsTreeElement(truncatedProcessingInstructionNode, false);
-    outline.appendChild(truncatedTextEl);
-    outline.appendChild(truncatedPiEl);
-    truncatedTextEl.widget.performUpdate();
-    truncatedPiEl.widget.performUpdate();
+    const truncatedTextWidget = renderWidget(truncatedTextNode);
+    const truncatedPiWidget = renderWidget(truncatedProcessingInstructionNode);
 
-    const textSpan = truncatedTextEl.widget.contentElement.querySelector('.webkit-html-text-node');
+    const textSpan = truncatedTextWidget.contentElement.querySelector('.webkit-html-text-node');
     assert.exists(textSpan);
-    assert.isFalse(truncatedTextEl.widget.startEditingTextNode(textSpan));
-    assert.isNull(truncatedTextEl.widget.editing);
+    assert.isFalse(truncatedTextWidget.startEditingTextNode(textSpan));
+    assert.isNull(truncatedTextWidget.editing);
 
-    assert.isFalse(truncatedPiEl.startEditingProcessingInstructionValue());
-    assert.isNull(truncatedPiEl.widget.editing);
+    assert.isFalse(truncatedPiWidget.startEditingProcessingInstructionValue());
+    assert.isNull(truncatedPiWidget.editing);
   });
 });

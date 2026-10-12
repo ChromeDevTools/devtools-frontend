@@ -669,7 +669,7 @@ export class MainImpl {
 
   #redispatchClipboardEvent(event: Event): void {
     const eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true, composed: true});
-    // @ts-expect-error Used in ElementsTreeOutline
+    // @ts-expect-error Used in DOMTreeWidget
     eventCopy['original'] = event;
     const document = event.target && (event.target as HTMLElement).ownerDocument;
     const target = document ? UI.DOMUtilities.deepActiveElement(document) : null;

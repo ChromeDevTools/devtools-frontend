@@ -324,8 +324,6 @@ describeWithEnvironment('ElementsPanel', () => {
     selectedNode.resolveToObject = mockResolveToObject;
 
     // Mock out a few things in the UI that's not necessary for this test.
-    const animateOnDOMUpdate = sinon.mock().atLeast(1).returns(undefined);
-    Elements.ElementsTreeElement.ElementsTreeElement.animateOnDOMUpdate = animateOnDOMUpdate;
     const stylesSidebarPaneUpdate = sinon.mock().atLeast(1).returns(undefined);
     panel.stylesWidget.performUpdate = stylesSidebarPaneUpdate;
 

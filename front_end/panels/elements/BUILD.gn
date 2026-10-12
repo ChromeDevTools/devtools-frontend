@@ -58,7 +58,6 @@ devtools_ui_module("elements") {
     "PropertiesWidget.ts",
     "PropertyNameCategories.ts",
     "PropertyRenderer.ts",
-    "ShortcutTreeElement.ts",
     "StandaloneStylesContainer.ts",
     "StyleEditorWidget.ts",
     "StylePropertiesSection.ts",
@@ -68,7 +67,6 @@ devtools_ui_module("elements") {
     "StylesAiCodeCompletionProvider.ts",
     "StylesContainer.ts",
     "StylesSidebarPane.ts",
-    "TopLayerContainer.ts",
     "WebCustomData.ts",
   ]
 
@@ -186,7 +184,6 @@ devtools_ui_module("unittests") {
     "ElementStatePaneWidget.test.ts",
     "ElementsPanel.test.ts",
     "ElementsTreeElement.test.ts",
-    "ElementsTreeOutline.test.ts",
     "EventListenersWidget.test.ts",
     "ImagePreviewPopover.test.ts",
     "InspectElementModeController.test.ts",

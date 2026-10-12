@@ -65,158 +65,6 @@
   padding: 0;
 }
 
-.elements-disclosure li {
-  /** Keep margin-left & padding-left in sync with ElementsTreeElements.updateDecorations **/
-  padding: var(--sys-size-1) 0 0 var(--sys-size-7);
-  margin-left: calc(-1 * var(--sys-size-2));
-  word-break: normal;
-  position: relative;
-  min-height: 15px;
-  line-height: 1.36;
-  min-width: 200px;
-}
-
-.elements-disclosure li::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  left: calc(var(--indent) * -1);
-  width: var(--indent);
-}
-
-.elements-disclosure li.parent {
-  display: flex;
-}
-
-.elements-disclosure li .tree-element-title {
-  display: contents;
-}
-
-.elements-disclosure li.parent:not(.always-parent) {
-  /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  margin-left: calc(-1 * var(--sys-size-6));
-}
-
-.elements-disclosure li .ai-button-container {
-  display: none;
-  margin-left: 1ch;
-  overflow: visible;
-  max-height: var(--sys-size-6);
-  vertical-align: top;
-  margin-top: calc(-1 * var(--sys-size-1));
-  position: absolute;
-  right: var(--sys-size-3);
-  bottom: 5px;
-  z-index: 999;
-}
-
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.hovered .ai-button-container {
-  display: inline-flex;
-}
-
-.elements-disclosure li .selected-hint::before {
-  font-style: italic;
-  content: " == $0";
-  opacity: 0%;
-  position: absolute;
-  white-space: pre;
-}
-
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .selected-hint::before {
-  position: static;
-  opacity: 60%;
-}
-
-.elements-disclosure li.parent:not(.always-parent)::before {
-  box-sizing: border-box;
-  user-select: none;
-  mask-image: var(--image-file-arrow-collapse);
-  height: var(--sys-size-7);
-  width: var(--sys-size-7);
-  content: "\A0\A0";
-  color: transparent;
-  text-shadow: none;
-  margin: -3px var(--sys-size-2) 0 -3px;
-  background-color: var(--icon-default);
-}
-
-.elements-disclosure li.parent.expanded::before {
-  mask-image: var(--image-file-arrow-drop-down);
-}
-
-.elements-disclosure li .selection {
-  display: none;
-  z-index: -1;
-}
-
-.elements-disclosure li.selected .selection {
-  display: block;
-}
-
-.elements-disclosure li.elements-drag-over .selection {
-  display: block;
-  margin-top: calc(-1 * var(--sys-size-2));
-  border-top: var(--sys-size-2) solid var(--sys-color-primary);
-}
-
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
-  background-color: var(--sys-color-neutral-container);
-}
-
-.elements-disclosure li.hovered:not(.selected) .selection {
-  display: block;
-  left: 3px;
-  right: 3px;
-  background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: 5px;
-}
-
-.elements-disclosure li .webkit-html-tag.close {
-  margin-left: calc(-1 * var(--sys-size-6));
-}
-
-.elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus-visible .highlight > * {
-  background: var(--sys-color-state-focus-highlight);
-  border-radius: var(--sys-size-2);
-  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-}
-
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
-  background-color: var(--sys-color-tonal-container);
-}
-
-.elements-disclosure ol {
-  list-style-type: none;
-  /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  padding-inline-start: var(--sys-size-6);
-  margin: 0;
-}
-
-.elements-disclosure ol.children {
-  display: none;
-  min-width: 100%;
-}
-
-.elements-disclosure ol.children.expanded {
-  display: inline-block;
-}
-
-.elements-disclosure > ol {
-  position: relative;
-  margin: 0;
-  min-width: 100%;
-  min-height: 100%;
-  padding-left: var(--sys-size-2);
-}
-
-.elements-disclosure li.in-clipboard .highlight {
-  outline: var(--sys-size-1) dotted var(--sys-color-divider);
-}
-
-.elements-tree-outline ol.shadow-root-deep {
-  background-color: transparent;
-}
-
 .elements-tree-editor {
   box-shadow: var(--drop-shadow);
   margin-right: var(--sys-size-3);
@@ -261,8 +109,7 @@ select {
   white-space: nowrap;
 }
 
-.elements-tree-nowrap,
-.elements-tree-nowrap .li {
+.elements-tree-nowrap {
   white-space: pre !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -314,18 +161,8 @@ select {
   padding-left: var(--sys-size-2);
 }
 
-.elements-tree-shortcut-title,
-.elements-tree-shortcut-link {
+.elements-tree-shortcut-title {
   color: var(--sys-color-token-subtle);
-}
-
-.elements-disclosure .gutter-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 15px;
-  height: 15px;
-  z-index: 1;
 }
 
 .elements-hide-gutter .gutter-container {
@@ -341,13 +178,9 @@ select {
   height: var(--sys-size-8);
 }
 
-.elements-disclosure li.selected .gutter-container:not(.has-decorations) > devtools-icon {
-  visibility: visible;
-}
 /** Guide line */
 
 li.hovered:not(.always-parent) + ol.children,
-.elements-tree-outline ol.shadow-root,
 li.selected:not(.always-parent) + ol.children {
   background: linear-gradient(to right, var(--override-indentation-level-border-color), var(--override-indentation-level-border-color) 0.5px, transparent 0);
   background-position-x: 5px;
@@ -359,12 +192,8 @@ li.selected:not(.always-parent) + ol.children {
   --override-indentation-level-border-color: var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
+li.hovered:not(.always-parent) + ol.children {
   --override-indentation-level-border-color: color-mix(in srgb, var(--ref-palette-neutral0) 10%, transparent);
-}
-
-.elements-tree-outline ol.shadow-root {
-  --override-indentation-level-border-color: var(--ref-palette-orange95);
 }
 
 @media (forced-colors: active) {
@@ -431,10 +260,6 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   padding: var(--sys-size-3) var(--sys-size-6);
   text-align: center;
   width: 100%;
-}
-
-.elements-tree-show-all.hidden {
-  display: none;
 }
 
 /* Declarative View Styles (<devtools-tree>) */

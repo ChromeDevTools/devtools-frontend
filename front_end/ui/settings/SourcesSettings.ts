@@ -111,3 +111,10 @@ export const autoPrettyPrintMinifiedSettingDescriptor: Common.Settings.SettingDe
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const allowScrollPastEofSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'allow-scroll-past-eof',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

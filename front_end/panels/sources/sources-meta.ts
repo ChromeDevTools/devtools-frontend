@@ -1868,13 +1868,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.autoPrettyP
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.allowScrollPastEofSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.allowScrollingPastEndOfFile),
-  settingName: 'allow-scroll-past-eof',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

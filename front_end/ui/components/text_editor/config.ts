@@ -308,7 +308,7 @@ export const showWhitespace: DynamicSetting<string> =
     });
 
 export const allowScrollPastEof: DynamicSetting<boolean> =
-    DynamicSetting.bool('allow-scroll-past-eof', CM.scrollPastEnd());
+    DynamicSetting.bool(SettingsUI.SourcesSettings.allowScrollPastEofSettingDescriptor, CM.scrollPastEnd());
 
 const cachedIndentUnit: Record<string, CM.Extension> = Object.create(null);
 

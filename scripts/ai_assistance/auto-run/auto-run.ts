@@ -486,6 +486,7 @@ function recordTaskFailure(
     runId: RunId,
     durationSeconds: number,
     taskStatuses: TaskStatus[],
+    toolCallCount?: number,
 ) {
   uploadTaskCompleted({
     taskId,
@@ -496,6 +497,7 @@ function recordTaskFailure(
     score: null,
     durationSeconds,
     tokens: {},
+    metrics: {toolCallCount},
   });
   taskStatuses.push({taskId, status: 'FAILED', score: null});
 }
@@ -697,6 +699,7 @@ async function main() {
 
   const taskStatuses: TaskStatus[] = [];
   const taskDurations = new Map<string, number>();
+  const taskToolCallCounts = new Map<TaskId, number>();
 
   const executionResults = userArgs.parallel ?
       await runInParallel(examples, logger, userArgs, runId, taskStatuses, taskDurations) :
@@ -728,6 +731,7 @@ async function main() {
       runId,
       taskStatuses,
       taskDurations,
+      taskToolCallCounts,
       logger,
     });
   }
@@ -785,6 +789,7 @@ async function main() {
               score,
               durationSeconds,
               tokens: {},
+              metrics: {toolCallCount: taskToolCallCounts.get(taskId)},
             });
             taskStatuses.push({taskId, status, score});
           }
@@ -800,7 +805,7 @@ async function main() {
           for (const taskId of allTaskIds) {
             uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, errorMessage);
             const durationSeconds = taskDurations.get(taskId) ?? 0.0;
-            recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
+            recordTaskFailure(taskId, runId, durationSeconds, taskStatuses, taskToolCallCounts.get(taskId));
           }
         }
       }
@@ -814,7 +819,7 @@ async function main() {
         for (const taskId of allTaskIds) {
           uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, notFoundMessage);
           const durationSeconds = taskDurations.get(taskId) ?? 0.0;
-          recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
+          recordTaskFailure(taskId, runId, durationSeconds, taskStatuses, taskToolCallCounts.get(taskId));
         }
       }
     }
@@ -824,6 +829,7 @@ async function main() {
     const totalTasks = taskStatuses.length;
     const failedTasks = taskStatuses.filter(t => t.status === 'FAILED').length;
     const passedTasks = totalTasks - failedTasks;
+    const totalToolCalls = Array.from(taskToolCallCounts.values()).reduce((sum, count) => sum + count, 0);
     const runStatus = (graderFailed || failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
 
     logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
@@ -839,6 +845,9 @@ async function main() {
       totalTasks,
       passedTasks,
       failedTasks,
+      metrics: {
+        totalToolCalls,
+      },
     });
   }
 
@@ -865,6 +874,7 @@ interface EvalRunContext {
   gradeTargetDir?: string;
   taskStatuses: TaskStatus[];
   taskDurations: Map<TaskId, number>;
+  taskToolCallCounts: Map<TaskId, number>;
   logger: Logger;
 }
 
@@ -914,6 +924,11 @@ function writeOutput(options: WriteOutputOptions) {
 
   for (const trajectory of trajectories) {
     const evalOutputPath = exportEvalTrajectory(ctx, trajectory);
+    const toolCallCount = trajectory.data.reduce(
+        (sum, turn) => sum + turn.tool_calls.length,
+        0,
+    );
+    ctx.taskToolCallCounts.set(trajectory.metadata.task_id, toolCallCount);
 
     if (!userArgs.upload) {
       continue;
@@ -1010,7 +1025,7 @@ function formatVerificationStderr(ctx: EvalRunContext, taskId: TaskId): string {
  * to the in-memory run summary.
  */
 function recordTaskCompletion(ctx: EvalRunContext, taskId: TaskId, allUploadsSucceeded: boolean): void {
-  const {runId, taskDurations, taskStatuses, trajectoriesByTaskId} = ctx;
+  const {runId, taskDurations, taskStatuses, taskToolCallCounts, trajectoriesByTaskId} = ctx;
   const matchingTrajectories = trajectoriesByTaskId.get(taskId) ?? [];
   const hasError = matchingTrajectories.some(e => Boolean(e.error) ||
                                                  Boolean(e.assertionFailures && e.assertionFailures.length > 0));
@@ -1030,6 +1045,7 @@ function recordTaskCompletion(ctx: EvalRunContext, taskId: TaskId, allUploadsSuc
     score,
     durationSeconds,
     tokens: {},
+    metrics: {toolCallCount: taskToolCallCounts.get(taskId)},
   });
   taskStatuses.push({taskId, status, score});
 }

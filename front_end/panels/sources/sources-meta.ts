@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -1883,13 +1884,9 @@ SettingsUI.SettingUIRegistration.register(SettingsUI.SourcesSettings.allowScroll
   ],
 });
 
-Common.Settings.registerSettingExtension({
+SettingsUI.SettingUIRegistration.register(Bindings.DebuggerWorkspaceBinding.wasmAutoSteppingSettingDescriptor, {
   category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.LOCAL,
   title: i18nLazyString(UIStrings.wasmAutoStepping),
-  settingName: 'wasm-auto-stepping',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
   options: [
     {
       value: true,

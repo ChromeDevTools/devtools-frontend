@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -27,6 +27,13 @@ import {
   SymbolizedErrorObject,
   UnparsableError,
 } from './SymbolizedError.js';
+
+export const wasmAutoSteppingSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'wasm-auto-stepping',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.LOCAL,
+};
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>,
                                                  DebuggerLocationUpdater {
@@ -540,7 +547,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const {callFrames: [frame]} = debuggerPausedDetails;
     const functionLocation = frame.functionLocation();
     if (!autoSteppingContext || debuggerPausedDetails.reason !== Protocol.Debugger.PausedEventReason.Step ||
-        !functionLocation || !this.#settings.moduleSetting('wasm-auto-stepping').get() ||
+        !functionLocation || !this.#settings.resolve(wasmAutoSteppingSettingDescriptor).get() ||
         !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }

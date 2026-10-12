@@ -19,7 +19,7 @@ import {
 import {
   firstValueFrom,
   from,
-  map,
+  mergeMap,
   race,
   timer,
 } from '../../third_party/rxjs/rxjs.js';
@@ -199,6 +199,9 @@ export abstract class BrowserLauncher {
       protocol === 'webDriverBiDi' &&
       usePipe
     ) {
+      await this.cleanUserDataDir(launchArgs.userDataDir, {
+        isTemp: launchArgs.isTempUserDataDir,
+      });
       throw new Error(
         'Pipe connections are not supported with Firefox and WebDriver BiDi',
       );
@@ -261,6 +264,7 @@ export abstract class BrowserLauncher {
             networkEnabled,
             idGenerator,
             logger: options.logger,
+            wsOptions: options.wsOptions,
           },
         );
       } else {
@@ -279,6 +283,7 @@ export abstract class BrowserLauncher {
             slowMo,
             idGenerator,
             logger: options.logger,
+            wsOptions: options.wsOptions,
           });
         }
 
@@ -412,7 +417,7 @@ export abstract class BrowserLauncher {
         race(
           from(browserProcess.hasClosed()),
           timer(5000).pipe(
-            map(() => {
+            mergeMap(() => {
               return from(browserProcess.close());
             }),
           ),

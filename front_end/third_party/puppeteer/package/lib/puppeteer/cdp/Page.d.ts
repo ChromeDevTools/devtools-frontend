@@ -23,7 +23,7 @@ import type { Viewport } from '../common/Viewport.js';
 import type { Realm } from '../index-browser.js';
 import { CdpCDPSession } from './CdpSession.js';
 import { Coverage } from './Coverage.js';
-import type { CdpFrame } from './Frame.js';
+import { CdpFrame } from './Frame.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import type { NetworkConditions } from './NetworkManager.js';
 import { CdpScreenRecording } from './ScreenRecording.js';

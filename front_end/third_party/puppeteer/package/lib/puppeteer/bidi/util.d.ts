@@ -5,6 +5,7 @@
  */
 import type * as Bidi from 'webdriver-bidi-protocol';
 import type { Frame } from '../api/Frame.js';
+import type { WebWorker } from '../api/WebWorker.js';
 import { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { ConsoleMessageLocation, ConsoleMessageType } from '../common/ConsoleMessage.js';
 import type { BidiElementHandle } from './bidi.js';
@@ -23,7 +24,7 @@ export declare function getStackTraceLocations(stackTrace?: Bidi.Script.StackTra
 /**
  * @internal
  */
-export declare function getConsoleMessage(entry: Bidi.Log.ConsoleLogEntry, args: Array<BidiJSHandle<unknown> | BidiElementHandle<Node>>, frame?: Frame, targetId?: string): ConsoleMessage;
+export declare function getConsoleMessage(entry: Bidi.Log.ConsoleLogEntry, args: Array<BidiJSHandle<unknown> | BidiElementHandle<Node>>, frame?: Frame, targetId?: string, worker?: WebWorker): ConsoleMessage;
 /**
  * @internal
  */

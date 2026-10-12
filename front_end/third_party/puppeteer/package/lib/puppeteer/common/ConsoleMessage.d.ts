@@ -6,6 +6,8 @@
 import type { Protocol } from 'devtools-protocol';
 import type { Frame } from '../api/Frame.js';
 import type { JSHandle } from '../api/JSHandle.js';
+import type { Page } from '../api/Page.js';
+import type { WebWorker } from '../api/WebWorker.js';
 /**
  * @public
  */
@@ -37,7 +39,28 @@ export declare class ConsoleMessage {
     /**
      * @internal
      */
-    constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[], frame?: Frame, rawStackTrace?: Protocol.Runtime.StackTrace, targetId?: string);
+    constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[], frame?: Frame, rawStackTrace?: Protocol.Runtime.StackTrace, targetId?: string, worker?: WebWorker);
+    /**
+     * The {@link WebWorker} that initiated the console message, or `null` if the
+     * message originated from a frame.
+     *
+     * @public
+     */
+    worker(): WebWorker | null;
+    /**
+     * The {@link Page} that the console message originated from, or `null` if the
+     * message originated from a worker or outside of a frame context.
+     *
+     * @public
+     */
+    page(): Page | null;
+    /**
+     * The {@link Frame} that initiated the console message, or `null` if the
+     * message originated from a worker.
+     *
+     * @public
+     */
+    frame(): Frame | null;
     /**
      * The type of the console message.
      */

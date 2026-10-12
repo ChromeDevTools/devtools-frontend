@@ -50,6 +50,12 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+import * as Bidi from 'webdriver-bidi-protocol';
 import { Realm } from '../api/Realm.js';
 import { WebWorkerEvent } from '../api/WebWorker.js';
 import { ARIAQueryHandler } from '../common/AriaQueryHandler.js';
@@ -119,8 +125,8 @@ export class BidiRealm extends Realm {
             PuppeteerURL.INTERNAL_URL);
         let responsePromise;
         const resultOwnership = returnByValue
-            ? "none" /* Bidi.Script.ResultOwnership.None */
-            : "root" /* Bidi.Script.ResultOwnership.Root */;
+            ? Bidi.Script.ResultOwnership.None
+            : Bidi.Script.ResultOwnership.Root;
         const serializationOptions = returnByValue
             ? {}
             : {
@@ -334,7 +340,7 @@ export class BidiWorkerRealm extends BidiRealm {
                 const args = entry.args.map(arg => {
                     return this.createHandle(arg);
                 });
-                const message = getConsoleMessage(entry, args, undefined, this.realm.id);
+                const message = getConsoleMessage(entry, args, undefined, this.realm.id, this.#worker);
                 this.#worker.emit(WebWorkerEvent.Console, message);
             }
         });

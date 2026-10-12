@@ -4,12 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
+import type { Frame } from '../api/Frame.js';
 import type { JSHandle } from '../api/JSHandle.js';
+import type { WebWorker } from '../api/WebWorker.js';
 import { ConsoleMessage, type ConsoleMessageType } from '../common/ConsoleMessage.js';
 /**
  * @internal
  */
-export declare function createConsoleMessage(event: Protocol.Runtime.ConsoleAPICalledEvent, values: JSHandle[], targetId?: string): ConsoleMessage;
+export declare function createConsoleMessage(event: Protocol.Runtime.ConsoleAPICalledEvent, values: JSHandle[], targetId?: string, frame?: Frame, worker?: WebWorker): ConsoleMessage;
 /**
  * @internal
  */

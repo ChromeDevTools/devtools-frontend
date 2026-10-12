@@ -1531,6 +1531,27 @@ export declare interface ConnectOptions {
 export declare class ConsoleMessage {
   
   /**
+   * The {@link WebWorker} that initiated the console message, or `null` if the
+   * message originated from a frame.
+   *
+   * @public
+   */
+  worker(): WebWorker | null;
+  /**
+   * The {@link Page} that the console message originated from, or `null` if the
+   * message originated from a worker or outside of a frame context.
+   *
+   * @public
+   */
+  page(): Page | null;
+  /**
+   * The {@link Frame} that initiated the console message, or `null` if the
+   * message originated from a worker.
+   *
+   * @public
+   */
+  frame(): Frame | null;
+  /**
    * The type of the console message.
    */
   type(): ConsoleMessageType;
@@ -4021,6 +4042,21 @@ export declare abstract class HTTPRequest {
    */
   abstract headers(): Record<string, string>;
   /**
+   * Converts the request to a Fetch API Request instance.
+   *
+   * @remarks
+   *
+   * Headers are copied to the new Request instance. The request URL and
+   * method are preserved. The body is built from
+   * {@link HTTPRequest.fetchPostData} when the request has post data,
+   * otherwise the Request is created without a body. For `GET` and
+   * `HEAD` requests the body is always omitted, as required by the
+   * Fetch API.
+   *
+   * @returns A promise which resolves to a Fetch API Request object.
+   */
+  asFetchRequest(): Promise<Request>;
+  /**
    * A matching `HTTPResponse` object, or null if the response has not
    * been received yet.
    */
@@ -4251,6 +4287,19 @@ export declare abstract class HTTPResponse {
    * `JSON.parse`.
    */
   json(): Promise<any>;
+  /**
+   * Converts the response to a Fetch API Response instance.
+   *
+   * @remarks
+   *
+   * Headers are copied to the new Response instance, with multi-line
+   * `set-cookie` headers parsed into individual header entries.
+   * For responses with null body statuses (101, 204, 205, 304), the body is
+   * omitted.
+   *
+   * @returns A promise which resolves to a Fetch API Response object.
+   */
+  asFetchResponse(): Promise<Response>;
   /**
    * A matching {@link HTTPRequest} object.
    */
@@ -7141,6 +7190,26 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * // → true
    * await page.evaluate(() => matchMedia('(color-gamut: rec2020)').matches);
    * // → false
+   *
+   * await page.emulateMediaFeatures([
+   *   {name: 'prefers-contrast', value: 'more'},
+   * ]);
+   * await page.evaluate(() => matchMedia('(prefers-contrast: more)').matches);
+   * // → true
+   *
+   * await page.emulateMediaFeatures([
+   *   {name: 'forced-colors', value: 'active'},
+   * ]);
+   * await page.evaluate(() => matchMedia('(forced-colors: active)').matches);
+   * // → true
+   *
+   * await page.emulateMediaFeatures([
+   *   {name: 'prefers-reduced-transparency', value: 'reduce'},
+   * ]);
+   * await page.evaluate(() => {
+   *   return matchMedia('(prefers-reduced-transparency: reduce)').matches;
+   * });
+   * // → true
    * ```
    */
   abstract emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
@@ -10374,6 +10443,14 @@ export declare interface WsOptions {
    * @defaultValue `30_000`
    */
   keepAliveIntervalMs?: number;
+  /**
+   * Maximum size in bytes of a single message received from the browser.
+   * Messages exceeding it close the connection. Raise it when a protocol
+   * response, such as a large PDF, does not fit.
+   *
+   * @defaultValue `256 * 1024 * 1024`
+   */
+  maxPayload?: number;
 }
 
 export {};

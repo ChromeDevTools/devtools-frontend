@@ -403,11 +403,19 @@ let EmulationManager = (() => {
             });
         }
         get #emulateMediaFeatures() { return _private_emulateMediaFeatures_descriptor.value; }
+        static #supportedMediaFeatures = new Set([
+            'prefers-color-scheme',
+            'prefers-reduced-motion',
+            'prefers-contrast',
+            'prefers-reduced-transparency',
+            'color-gamut',
+            'forced-colors',
+        ]);
         async emulateMediaFeatures(features) {
             if (Array.isArray(features)) {
                 for (const mediaFeature of features) {
                     const name = mediaFeature.name;
-                    assert(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
+                    assert(EmulationManager.#supportedMediaFeatures.has(name), 'Unsupported media feature: ' + name);
                 }
             }
             await this.#mediaFeaturesState.setState({

@@ -89,6 +89,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import * as Bidi from 'webdriver-bidi-protocol';
 import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { Page, } from '../api/Page.js';
 import { Coverage } from '../cdp/Coverage.js';
@@ -392,11 +393,11 @@ let BidiPage = (() => {
                 const screenOrientation = viewport
                     ? viewport.isLandscape
                         ? {
-                            natural: "landscape" /* Bidi.Emulation.ScreenOrientationNatural.Landscape */,
+                            natural: Bidi.Emulation.ScreenOrientationNatural.Landscape,
                             type: 'landscape-primary',
                         }
                         : {
-                            natural: "portrait" /* Bidi.Emulation.ScreenOrientationNatural.Portrait */,
+                            natural: Bidi.Emulation.ScreenOrientationNatural.Portrait,
                             type: 'portrait-primary',
                         }
                     : null;
@@ -620,7 +621,7 @@ let BidiPage = (() => {
         }
         #requestInterception;
         async setRequestInterception(enable) {
-            this.#requestInterception = await this.#toggleInterception(["beforeRequestSent" /* Bidi.Network.InterceptPhase.BeforeRequestSent */], this.#requestInterception, enable);
+            this.#requestInterception = await this.#toggleInterception([Bidi.Network.InterceptPhase.BeforeRequestSent], this.#requestInterception, enable);
         }
         /**
          * @internal
@@ -634,7 +635,7 @@ let BidiPage = (() => {
         _credentials = null;
         #authInterception;
         async authenticate(credentials) {
-            this.#authInterception = await this.#toggleInterception(["authRequired" /* Bidi.Network.InterceptPhase.AuthRequired */], this.#authInterception, Boolean(credentials));
+            this.#authInterception = await this.#toggleInterception([Bidi.Network.InterceptPhase.AuthRequired], this.#authInterception, Boolean(credentials));
             this._credentials = credentials;
         }
         async #toggleInterception(phases, interception, expected) {
@@ -960,13 +961,13 @@ function convertCookiesSameSiteBiDiToCdp(sameSite) {
 export function convertCookiesSameSiteCdpToBiDi(sameSite) {
     switch (sameSite) {
         case 'Strict':
-            return "strict" /* Bidi.Network.SameSite.Strict */;
+            return Bidi.Network.SameSite.Strict;
         case 'Lax':
-            return "lax" /* Bidi.Network.SameSite.Lax */;
+            return Bidi.Network.SameSite.Lax;
         case 'None':
-            return "none" /* Bidi.Network.SameSite.None */;
+            return Bidi.Network.SameSite.None;
         default:
-            return "default" /* Bidi.Network.SameSite.Default */;
+            return Bidi.Network.SameSite.Default;
     }
 }
 export function convertCookiesExpiryCdpToBiDi(expiry) {

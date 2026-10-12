@@ -41,6 +41,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
+import * as Bidi from 'webdriver-bidi-protocol';
 import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, race, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';
@@ -318,7 +319,7 @@ let BidiFrame = (() => {
                 //
                 // Related: https://bugzilla.mozilla.org/show_bug.cgi?id=1846601
                 this.browsingContext
-                    .navigate(url, "interactive" /* Bidi.BrowsingContext.ReadinessState.Interactive */)
+                    .navigate(url, Bidi.BrowsingContext.ReadinessState.Interactive)
                     .catch(error => {
                     if (isErrorLike(error) &&
                         error.message.includes('net::ERR_HTTP_RESPONSE_CODE_FAILURE')) {

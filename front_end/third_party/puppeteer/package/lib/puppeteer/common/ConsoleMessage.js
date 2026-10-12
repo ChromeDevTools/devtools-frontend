@@ -15,10 +15,11 @@ export class ConsoleMessage {
     #frame;
     #rawStackTrace;
     #targetId;
+    #worker;
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace, targetId) {
+    constructor(type, text, args, stackTraceLocations, frame, rawStackTrace, targetId, worker) {
         this.#type = type;
         this.#text = text;
         this.#args = args;
@@ -26,6 +27,34 @@ export class ConsoleMessage {
         this.#frame = frame;
         this.#rawStackTrace = rawStackTrace;
         this.#targetId = targetId;
+        this.#worker = worker;
+    }
+    /**
+     * The {@link WebWorker} that initiated the console message, or `null` if the
+     * message originated from a frame.
+     *
+     * @public
+     */
+    worker() {
+        return this.#worker ?? null;
+    }
+    /**
+     * The {@link Page} that the console message originated from, or `null` if the
+     * message originated from a worker or outside of a frame context.
+     *
+     * @public
+     */
+    page() {
+        return this.#frame?.page() ?? null;
+    }
+    /**
+     * The {@link Frame} that initiated the console message, or `null` if the
+     * message originated from a worker.
+     *
+     * @public
+     */
+    frame() {
+        return this.#frame ?? null;
     }
     /**
      * The type of the console message.

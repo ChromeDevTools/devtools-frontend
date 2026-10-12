@@ -5,6 +5,7 @@
  */
 import { Browser as BrowserBase, } from '../api/Browser.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { Deferred } from '../util/Deferred.js';
 import { DisposableStack } from '../util/disposable.js';
@@ -409,8 +410,16 @@ export class CdpBrowser extends BrowserBase {
         return version.userAgent;
     }
     async close() {
-        await this.#closeCallback.call(null);
-        await this.disconnect();
+        try {
+            await this.#closeCallback.call(null);
+        }
+        catch (error) {
+            // Fail silently.
+            this.logger?.(DEBUG_PREFIXES.error)?.(error);
+        }
+        finally {
+            await this.disconnect();
+        }
     }
     disconnect() {
         this.#targetManager.dispose();

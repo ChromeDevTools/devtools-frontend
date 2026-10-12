@@ -7,7 +7,7 @@ import { accessSync, constants, existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Browser as InstalledBrowser, CDP_WEBSOCKET_ENDPOINT_REGEX, launch, TimeoutError as BrowsersTimeoutError, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, computeExecutablePath, } from '@puppeteer/browsers';
-import { firstValueFrom, from, map, race, timer, } from '../../third_party/rxjs/rxjs.js';
+import { firstValueFrom, from, mergeMap, race, timer, } from '../../third_party/rxjs/rxjs.js';
 import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import { assertSupportedUrlRestrictions } from '../common/BrowserConnector.js';
@@ -118,6 +118,9 @@ export class BrowserLauncher {
         if (this.#browser === 'firefox' &&
             protocol === 'webDriverBiDi' &&
             usePipe) {
+            await this.cleanUserDataDir(launchArgs.userDataDir, {
+                isTemp: launchArgs.isTempUserDataDir,
+            });
             throw new Error('Pipe connections are not supported with Firefox and WebDriver BiDi');
         }
         let removeTempUserDataDirOnExit;
@@ -171,6 +174,7 @@ export class BrowserLauncher {
                     networkEnabled,
                     idGenerator,
                     logger: options.logger,
+                    wsOptions: options.wsOptions,
                 });
             }
             else {
@@ -190,6 +194,7 @@ export class BrowserLauncher {
                         slowMo,
                         idGenerator,
                         logger: options.logger,
+                        wsOptions: options.wsOptions,
                     });
                 }
                 if (protocol === 'webDriverBiDi') {
@@ -261,7 +266,7 @@ export class BrowserLauncher {
         }
         else {
             // Wait for a possible graceful shutdown.
-            await firstValueFrom(race(from(browserProcess.hasClosed()), timer(5000).pipe(map(() => {
+            await firstValueFrom(race(from(browserProcess.hasClosed()), timer(5000).pipe(mergeMap(() => {
                 return from(browserProcess.close());
             }))));
         }

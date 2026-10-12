@@ -37,6 +37,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+import * as Bidi from 'webdriver-bidi-protocol';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed, throwIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
@@ -95,8 +96,8 @@ let UserPrompt = (() => {
             return this.closed;
         }
         get handled() {
-            if (this.info.handler === "accept" /* Bidi.Session.UserPromptHandlerType.Accept */ ||
-                this.info.handler === "dismiss" /* Bidi.Session.UserPromptHandlerType.Dismiss */) {
+            if (this.info.handler === Bidi.Session.UserPromptHandlerType.Accept ||
+                this.info.handler === Bidi.Session.UserPromptHandlerType.Dismiss) {
                 return true;
             }
             return this.#result !== undefined;

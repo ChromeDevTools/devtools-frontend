@@ -96,6 +96,19 @@ export declare abstract class HTTPResponse {
      */
     json(): Promise<any>;
     /**
+     * Converts the response to a Fetch API Response instance.
+     *
+     * @remarks
+     *
+     * Headers are copied to the new Response instance, with multi-line
+     * `set-cookie` headers parsed into individual header entries.
+     * For responses with null body statuses (101, 204, 205, 304), the body is
+     * omitted.
+     *
+     * @returns A promise which resolves to a Fetch API Response object.
+     */
+    asFetchResponse(): Promise<Response>;
+    /**
      * A matching {@link HTTPRequest} object.
      */
     abstract request(): HTTPRequest;

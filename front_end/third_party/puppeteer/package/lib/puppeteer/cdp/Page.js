@@ -78,6 +78,7 @@ import { isTargetClosedError } from './Connection.js';
 import { Coverage } from './Coverage.js';
 import { CdpDialog } from './Dialog.js';
 import { EmulationManager } from './EmulationManager.js';
+import { CdpFrame } from './Frame.js';
 import { FrameManager } from './FrameManager.js';
 import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
@@ -461,7 +462,7 @@ export class CdpPage extends Page {
             });
         }
         if (source !== 'worker') {
-            this.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }], undefined, stackTrace, this.#primaryTarget._targetId));
+            this.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(level), text, [], [{ url, lineNumber }], undefined, stackTrace, this.#primaryTarget._targetId, undefined));
         }
     }
     mainFrame() {
@@ -736,7 +737,11 @@ export class CdpPage extends Page {
         if (world.environment.client instanceof CdpCDPSession) {
             targetId = world.environment.client.target()._targetId;
         }
-        this.emit("console" /* PageEvent.Console */, createConsoleMessage(event, values, targetId));
+        let frame;
+        if (world.environment instanceof CdpFrame) {
+            frame = world.environment;
+        }
+        this.emit("console" /* PageEvent.Console */, createConsoleMessage(event, values, targetId, frame));
     }
     async #onBindingCalled(world, event) {
         let payload;

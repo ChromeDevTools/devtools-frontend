@@ -3,6 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import * as Bidi from 'webdriver-bidi-protocol';
 import { Keyboard, Mouse, MouseButton, Touchscreen, } from '../api/Input.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { TouchError } from '../common/Errors.js';
@@ -544,7 +545,7 @@ class BidiTouchHandle {
                 type: SourceActionsType.Pointer,
                 id: this.#bidiId,
                 parameters: {
-                    pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
+                    pointerType: Bidi.Input.PointerType.Touch,
                 },
                 actions: [
                     {
@@ -571,7 +572,7 @@ class BidiTouchHandle {
                 type: SourceActionsType.Pointer,
                 id: this.#bidiId,
                 parameters: {
-                    pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
+                    pointerType: Bidi.Input.PointerType.Touch,
                 },
                 actions: [
                     {
@@ -590,7 +591,7 @@ class BidiTouchHandle {
                 type: SourceActionsType.Pointer,
                 id: this.#bidiId,
                 parameters: {
-                    pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
+                    pointerType: Bidi.Input.PointerType.Touch,
                 },
                 actions: [
                     {

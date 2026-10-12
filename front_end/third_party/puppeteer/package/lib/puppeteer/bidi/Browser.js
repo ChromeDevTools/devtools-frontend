@@ -41,6 +41,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
+import * as Bidi from 'webdriver-bidi-protocol';
 import { Browser, } from '../api/Browser.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { ProtocolError, UnsupportedOperation } from '../common/Errors.js';
@@ -93,7 +94,7 @@ let BidiBrowser = (() => {
                     // Capabilities that come from Puppeteer's API take precedence.
                     acceptInsecureCerts: opts.acceptInsecureCerts,
                     unhandledPromptBehavior: {
-                        default: "ignore" /* Bidi.Session.UserPromptHandlerType.Ignore */,
+                        default: Bidi.Session.UserPromptHandlerType.Ignore,
                     },
                     webSocketUrl: true,
                     // Puppeteer with WebDriver BiDi does not support prerendering
@@ -115,7 +116,7 @@ let BidiBrowser = (() => {
                 }
                 return true;
             }));
-            await Promise.all(["request" /* Bidi.Network.DataType.Request */, "response" /* Bidi.Network.DataType.Response */].map(
+            await Promise.all([Bidi.Network.DataType.Request, Bidi.Network.DataType.Response].map(
             // Data collectors might be not implemented for specific data type, so create them
             // separately and ignore protocol errors.
             async (dataType) => {
@@ -222,6 +223,12 @@ let BidiBrowser = (() => {
             }
             try {
                 await this.#browserCore.close();
+            }
+            catch (error) {
+                // Fail silently.
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+            }
+            try {
                 await this.#closeCallback?.call(null);
             }
             catch (error) {

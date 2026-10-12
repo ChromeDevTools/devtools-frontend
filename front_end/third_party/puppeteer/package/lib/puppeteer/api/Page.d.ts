@@ -1828,6 +1828,26 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * // → true
      * await page.evaluate(() => matchMedia('(color-gamut: rec2020)').matches);
      * // → false
+     *
+     * await page.emulateMediaFeatures([
+     *   {name: 'prefers-contrast', value: 'more'},
+     * ]);
+     * await page.evaluate(() => matchMedia('(prefers-contrast: more)').matches);
+     * // → true
+     *
+     * await page.emulateMediaFeatures([
+     *   {name: 'forced-colors', value: 'active'},
+     * ]);
+     * await page.evaluate(() => matchMedia('(forced-colors: active)').matches);
+     * // → true
+     *
+     * await page.emulateMediaFeatures([
+     *   {name: 'prefers-reduced-transparency', value: 'reduce'},
+     * ]);
+     * await page.evaluate(() => {
+     *   return matchMedia('(prefers-reduced-transparency: reduce)').matches;
+     * });
+     * // → true
      * ```
      */
     abstract emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;

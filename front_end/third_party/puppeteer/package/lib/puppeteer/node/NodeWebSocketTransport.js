@@ -14,6 +14,12 @@ import { packageVersion } from '../util/version.js';
  */
 export const DEFAULT_KEEP_ALIVE_INTERVAL_MS = 30_000;
 /**
+ * Largest message accepted from the browser unless `maxPayload` is set.
+ *
+ * @internal
+ */
+export const DEFAULT_MAX_PAYLOAD_BYTES = 256 * 1024 * 1024;
+/**
  * @internal
  */
 export class NodeWebSocketTransport {
@@ -23,7 +29,7 @@ export class NodeWebSocketTransport {
                 followRedirects: true,
                 perMessageDeflate: false,
                 allowSynchronousEvents: false,
-                maxPayload: 256 * 1024 * 1024, // 256Mb
+                maxPayload: options.maxPayload ?? DEFAULT_MAX_PAYLOAD_BYTES,
                 headers: {
                     'User-Agent': `Puppeteer ${packageVersion}`,
                     ...headers,

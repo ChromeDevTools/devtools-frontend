@@ -55,6 +55,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import * as Bidi from 'webdriver-bidi-protocol';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { DisposableStack } from '../util/disposable.js';
@@ -92,7 +93,7 @@ export class ExposableFunction {
             type: 'channel',
             value: {
                 channel: this.#channel,
-                ownership: "root" /* Bidi.Script.ResultOwnership.Root */,
+                ownership: Bidi.Script.ResultOwnership.Root,
             },
         };
         const connectionEmitter = this.#disposables.use(new EventEmitter(connection, this.#logger));

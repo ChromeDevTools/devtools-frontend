@@ -228,6 +228,21 @@ export declare abstract class HTTPRequest {
      */
     abstract headers(): Record<string, string>;
     /**
+     * Converts the request to a Fetch API Request instance.
+     *
+     * @remarks
+     *
+     * Headers are copied to the new Request instance. The request URL and
+     * method are preserved. The body is built from
+     * {@link HTTPRequest.fetchPostData} when the request has post data,
+     * otherwise the Request is created without a body. For `GET` and
+     * `HEAD` requests the body is always omitted, as required by the
+     * Fetch API.
+     *
+     * @returns A promise which resolves to a Fetch API Request object.
+     */
+    asFetchRequest(): Promise<Request>;
+    /**
      * A matching `HTTPResponse` object, or null if the response has not
      * been received yet.
      */

@@ -9,7 +9,7 @@ import { assert } from '../util/assert.js';
 /**
  * @internal
  */
-export function createConsoleMessage(event, values, targetId) {
+export function createConsoleMessage(event, values, targetId, frame, worker) {
     const textTokens = [];
     // eslint-disable-next-line max-len -- The comment is long.
     // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
@@ -26,7 +26,7 @@ export function createConsoleMessage(event, values, targetId) {
             });
         }
     }
-    return new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, undefined, event.stackTrace, targetId);
+    return new ConsoleMessage(convertConsoleMessageLevel(event.type), textTokens.join(' '), values, stackTraceLocations, frame, event.stackTrace, targetId, worker);
 }
 /**
  * @internal

@@ -37,6 +37,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+import * as Bidi from 'webdriver-bidi-protocol';
 import { ProtocolError, UnsupportedOperation } from '../../common/Errors.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed } from '../../util/decorators.js';
@@ -244,7 +245,7 @@ let Request = (() => {
             if (!this.#requestBodyPromise) {
                 this.#requestBodyPromise = (async () => {
                     const data = await this.#session.send('network.getData', {
-                        dataType: "request" /* Bidi.Network.DataType.Request */,
+                        dataType: Bidi.Network.DataType.Request,
                         request: this.id,
                     });
                     if (data.result.bytes.type === 'string') {
@@ -261,7 +262,7 @@ let Request = (() => {
                 this.#responseContentPromise = (async () => {
                     try {
                         const data = await this.#session.send('network.getData', {
-                            dataType: "response" /* Bidi.Network.DataType.Response */,
+                            dataType: Bidi.Network.DataType.Response,
                             request: this.id,
                         });
                         return stringToTypedArray(data.result.bytes.value, data.result.bytes.type === 'base64');

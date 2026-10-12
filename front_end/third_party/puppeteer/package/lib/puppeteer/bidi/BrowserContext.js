@@ -89,6 +89,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import * as Bidi from 'webdriver-bidi-protocol';
 import { WEB_PERMISSION_TO_PROTOCOL_PERMISSION } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
@@ -236,8 +237,8 @@ let BidiBrowserContext = (() => {
             try {
                 const _guard = __addDisposableResource(env_1, await this.waitForScreenshotOperations(), false);
                 const type = options?.type === 'window'
-                    ? "window" /* Bidi.BrowsingContext.CreateType.Window */
-                    : "tab" /* Bidi.BrowsingContext.CreateType.Tab */;
+                    ? Bidi.BrowsingContext.CreateType.Window
+                    : Bidi.BrowsingContext.CreateType.Tab;
                 const context = await this.userContext.createBrowsingContext(type, {
                     background: options?.background,
                 });
@@ -303,8 +304,8 @@ let BidiBrowserContext = (() => {
                 const result = this.userContext.setPermissions(origin, {
                     name: permission,
                 }, permissionsSet.has(permission)
-                    ? "granted" /* Bidi.Permissions.PermissionState.Granted */
-                    : "denied" /* Bidi.Permissions.PermissionState.Denied */);
+                    ? Bidi.Permissions.PermissionState.Granted
+                    : Bidi.Permissions.PermissionState.Denied);
                 this.#overrides.push({ origin, permission });
                 // TODO: some permissions are outdated and setting them to denied does
                 // not work.
@@ -340,7 +341,7 @@ let BidiBrowserContext = (() => {
                 return this.userContext
                     .setPermissions(origin, {
                     name: permission,
-                }, "prompt" /* Bidi.Permissions.PermissionState.Prompt */)
+                }, Bidi.Permissions.PermissionState.Prompt)
                     .catch(error => {
                     this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 });

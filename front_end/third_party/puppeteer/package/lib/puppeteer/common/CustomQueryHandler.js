@@ -101,7 +101,7 @@ export class CustomQueryHandlerRegistry {
      * Unregisters all custom query handlers.
      */
     clear() {
-        for (const [registerScript] of this.#handlers) {
+        for (const [registerScript] of this.#handlers.values()) {
             scriptInjector.pop(registerScript);
         }
         this.#handlers.clear();

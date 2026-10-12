@@ -23,4 +23,5 @@ export declare function assertSupportedUrlRestrictions(options: {
 export declare function _connectToBrowser(options: ConnectOptions & {
     logger: Logger;
 }): Promise<Browser>;
+export declare function getWSEndpointURL(browserURL: string): string;
 //# sourceMappingURL=BrowserConnector.d.ts.map

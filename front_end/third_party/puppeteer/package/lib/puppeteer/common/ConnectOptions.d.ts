@@ -59,6 +59,14 @@ export interface WsOptions {
      * @defaultValue `30_000`
      */
     keepAliveIntervalMs?: number;
+    /**
+     * Maximum size in bytes of a single message received from the browser.
+     * Messages exceeding it close the connection. Raise it when a protocol
+     * response, such as a large PDF, does not fit.
+     *
+     * @defaultValue `256 * 1024 * 1024`
+     */
+    maxPayload?: number;
 }
 /**
  * Generic browser options that can be passed when launching any browser or when

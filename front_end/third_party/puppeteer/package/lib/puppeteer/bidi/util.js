@@ -45,7 +45,7 @@ export function getStackTraceLocations(stackTrace) {
 /**
  * @internal
  */
-export function getConsoleMessage(entry, args, frame, targetId) {
+export function getConsoleMessage(entry, args, frame, targetId, worker) {
     const text = args
         .reduce((value, arg) => {
         const parsedValue = arg instanceof BidiJSHandle && arg.isPrimitiveValue
@@ -54,7 +54,7 @@ export function getConsoleMessage(entry, args, frame, targetId) {
         return `${value} ${parsedValue}`;
     }, '')
         .slice(1);
-    return new ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace), frame, undefined, targetId);
+    return new ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace), frame, undefined, targetId, worker);
 }
 /**
  * @internal

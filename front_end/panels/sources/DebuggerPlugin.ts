@@ -4,6 +4,8 @@
 
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/components/tooltips/tooltips.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -21,11 +23,10 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -1858,6 +1859,22 @@ const breakpointMarkers = CodeMirror.StateField.define<BreakpointDecoration>({
        CodeMirror.lineNumberMarkers.from(field, deco => deco.gutter)],
 });
 
+interface BreakpointInlineMarkerViewInput {
+  className: string;
+  onClick: (event: MouseEvent) => void;
+  onContextMenu: (event: MouseEvent) => void;
+}
+
+function renderBreakpointInlineMarker(input: BreakpointInlineMarkerViewInput, _output: undefined,
+                                      target: DocumentFragment): void {
+  // clang-format off
+  render(html`<span class=${input.className}
+                    jslog=${VisualLogging.breakpointMarker().track({click: true})}
+                    @click=${input.onClick}
+                    @contextmenu=${input.onContextMenu}></span>`, target);
+  // clang-format on
+}
+
 export class BreakpointInlineMarker extends CodeMirror.WidgetType {
   class: string;
 
@@ -1880,23 +1897,44 @@ export class BreakpointInlineMarker extends CodeMirror.WidgetType {
   }
 
   toDOM(): HTMLElement {
-    const span = document.createElement('span');
-    span.className = this.class;
-    span.setAttribute('jslog', `${VisualLogging.breakpointMarker().track({click: true})}`);
-    span.addEventListener('click', (event: MouseEvent) => {
-      this.parent.onInlineBreakpointMarkerClick(event, this.breakpoint);
-      event.consume();
-    });
-    span.addEventListener('contextmenu', (event: MouseEvent) => {
-      this.parent.onInlineBreakpointMarkerContextMenu(event, this.breakpoint);
-      event.consume();
-    });
-    return span;
+    const fragment = document.createDocumentFragment();
+    renderBreakpointInlineMarker({
+      className: this.class,
+      onClick: (event: MouseEvent) => {
+        this.parent.onInlineBreakpointMarkerClick(event, this.breakpoint);
+        event.consume();
+      },
+      onContextMenu: (event: MouseEvent) => {
+        this.parent.onInlineBreakpointMarkerContextMenu(event, this.breakpoint);
+        event.consume();
+      },
+    },
+                                 undefined, fragment);
+    return fragment.firstElementChild as HTMLElement;
   }
 
   override ignoreEvent(): boolean {
     return true;
   }
+}
+
+interface BreakpointGutterMarkerViewInput {
+  lineNumber: string;
+  condition?: Breakpoints.BreakpointManager.UserCondition;
+  tooltipId?: string;
+}
+
+function renderBreakpointGutterMarker(input: BreakpointGutterMarkerViewInput, _output: undefined,
+                                      target: DocumentFragment): void {
+  // We want {display: block} so it uses all of the space.
+  // clang-format off
+  const lineNumber = html`<div jslog=${VisualLogging.breakpointMarker().track({click: true})}
+                               aria-details=${input.tooltipId ?? nothing}>${input.lineNumber}</div>`;
+  render(input.condition && input.tooltipId ?
+      html`<div>${lineNumber}<devtools-tooltip id=${input.tooltipId} jslogcontext="breakpoint-tooltip">${
+          input.condition}</devtools-tooltip></div>` :
+      lineNumber, target);
+  // clang-format on
 }
 
 export class BreakpointGutterMarker extends CodeMirror.GutterMarker {
@@ -1919,26 +1957,14 @@ export class BreakpointGutterMarker extends CodeMirror.GutterMarker {
   }
 
   override toDOM(view: CodeMirror.EditorView): Node {
-    const div = document.createElement('div');  // We want {display: block} so it uses all of the space.
-    div.setAttribute('jslog', `${VisualLogging.breakpointMarker().track({click: true})}`);
     const line = view.state.doc.lineAt(this.#position).number;
     const formatNumber = view.state.facet(SourceFrame.SourceFrame.LINE_NUMBER_FORMATTER);
-    div.textContent = formatNumber(line, view.state);
-    if (!this.condition) {
-      return div;
-    }
-    const container = document.createElement('div');
-    const id = `cm-breakpoint-tooltip-${BreakpointGutterMarker.nextTooltipId++}`;
-    div.setAttribute('aria-details', id);
-    container.appendChild(div);
-    const tooltip = new Tooltips.Tooltip.Tooltip({
-      id,
-      anchor: div,
-      jslogContext: 'breakpoint-tooltip',
-    });
-    tooltip.append(this.condition);
-    container.appendChild(tooltip);
-    return container;
+    const condition = this.condition;
+    const tooltipId = condition ? `cm-breakpoint-tooltip-${BreakpointGutterMarker.nextTooltipId++}` : undefined;
+    const fragment = document.createDocumentFragment();
+    renderBreakpointGutterMarker({lineNumber: formatNumber(line, view.state), condition, tooltipId}, undefined,
+                                 fragment);
+    return fragment.firstElementChild as HTMLElement;
   }
 }
 

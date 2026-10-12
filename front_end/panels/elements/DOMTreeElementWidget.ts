@@ -100,8 +100,9 @@ export function buildChangeSelector(tracker: ChangeTracker.ChangeTracker.ChangeT
   return undefined;
 }
 
-const {html, nothing, render, Directives: {classMap, ref, repeat, styleMap, until}} = Lit;
+const {html, nothing, render, Directives: {classMap, ifDefined, ref, repeat, styleMap, until}} = Lit;
 const {animateOn} = UI.UIUtils;
+const {RegisteredAdorners} = ElementsComponents.AdornerManager;
 
 const UIStrings = {
   /**
@@ -831,6 +832,45 @@ function renderTag(node: SDK.DOMModel.DOMNode, tagName: string, isClosingTag: bo
       attributes.map(attr => html` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 
+interface AdornerTemplateInput {
+  name: ElementsComponents.AdornerManager.RegisteredAdorners;
+  /** Body of the adorner. Defaults to the adorner name. */
+  content?: Lit.LitTemplate;
+  ariaLabel?: string;
+  /** Additional CSS classes. `clickable` is added automatically for interactive adorners. */
+  classes?: string;
+  /** Makes the adorner a focusable button that reacts to click and, by default, Enter/Space. */
+  onClick?: (event: Event) => void;
+  /** Set to false for adorners that must only react to mouse input. */
+  keyboardActivatable?: boolean;
+  onMouseDown?: (event: Event) => void;
+  /** When defined, the adorner is toggleable and reflects this state. */
+  active?: boolean;
+}
+
+function renderAdorner(adorner: AdornerTemplateInput): Lit.LitTemplate {
+  const interactive = Boolean(adorner.onClick);
+  const toggleable = adorner.active !== undefined;
+  const classes = [adorner.classes, interactive ? 'clickable' : undefined].filter(Boolean).join(' ');
+  const onKeyDown =
+      adorner.onClick && adorner.keyboardActivatable !== false ? handleAdornerKeydown(adorner.onClick) : nothing;
+  // clang-format off
+  return html`<devtools-adorner
+      class=${classes}
+      role=${ifDefined(interactive ? 'button' : undefined)}
+      tabindex=${ifDefined(interactive ? 0 : undefined)}
+      toggleable=${ifDefined(toggleable ? 'true' : undefined)}
+      active=${ifDefined(adorner.active)}
+      .name=${adorner.name}
+      jslog=${VisualLogging.adorner(adorner.name).track({click: true})}
+      aria-label=${ifDefined(adorner.ariaLabel)}
+      @click=${adorner.onClick ?? nothing}
+      @keydown=${onKeyDown}
+      @mousedown=${adorner.onMouseDown ?? nothing}
+      ${adornerRef()}>${adorner.content ?? html`<span>${adorner.name}</span>`}</devtools-adorner>`;
+  // clang-format on
+}
+
 function maybeRenderAdAdorner(input: ViewInput): Lit.TemplateResult|typeof nothing {
   if (!input.adProvenance) {
     return nothing;
@@ -841,10 +881,10 @@ function maybeRenderAdAdorner(input: ViewInput): Lit.TemplateResult|typeof nothi
     <devtools-adorner
       aria-details=${input.adTooltipId}
       aria-label=${i18nString(UIStrings.thisElementWasIdentifiedAsAnAd)}
-      .name=${ElementsComponents.AdornerManager.RegisteredAdorners.AD}
-      jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.AD)}
+      .name=${RegisteredAdorners.AD}
+      jslog=${VisualLogging.adorner(RegisteredAdorners.AD)}
       ${adornerRef()}>
-      <span>${ElementsComponents.AdornerManager.RegisteredAdorners.AD}</span>
+      <span>${RegisteredAdorners.AD}</span>
     </devtools-adorner>
 
     <!--
@@ -933,195 +973,102 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       </div>
       ${hasAdorners ? html`<div class="adorner-container ${(input.editorState) ? 'hidden' : ''}">
         ${maybeRenderAdAdorner(input)}
-        ${input.showViewSourceAdorner ? html`<devtools-adorner
-          class="clickable"
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE).track({ click: true })}
-          aria-label=${i18nString(UIStrings.viewSourceCode)}
-          @click=${input.onViewSourceAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onViewSourceAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
-        </devtools-adorner>` : nothing}
-        ${input.showCustomElementAdorner ? html`<devtools-adorner
-          class="custom-element clickable"
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT).track({ click: true })}
-          aria-label=${i18nString(UIStrings.showCustomElementDefinition)}
-          @click=${input.onCustomElementAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onCustomElementAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}</span>
-        </devtools-adorner>` : nothing}
-        ${input.showContainerAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          toggleable=true
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER).track({ click: true })}
-          active=${input.containerAdornerActive}
-          aria-label=${input.containerAdornerActive ? i18nString(UIStrings.enableContainer) : i18nString(UIStrings.disableContainer)}
-          @click=${input.onContainerAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onContainerAdornerClick)}
-          ${adornerRef()}>
-          <span class="adorner-with-icon">
+        ${input.showViewSourceAdorner ? renderAdorner({
+          name: RegisteredAdorners.VIEW_SOURCE,
+          ariaLabel: i18nString(UIStrings.viewSourceCode),
+          onClick: input.onViewSourceAdornerClick,
+        }) : nothing}
+        ${input.showCustomElementAdorner ? renderAdorner({
+          name: RegisteredAdorners.CUSTOM_ELEMENT,
+          classes: 'custom-element',
+          ariaLabel: i18nString(UIStrings.showCustomElementDefinition),
+          onClick: input.onCustomElementAdornerClick,
+        }) : nothing}
+        ${input.showContainerAdorner ? renderAdorner({
+          name: RegisteredAdorners.CONTAINER,
+          active: input.containerAdornerActive,
+          ariaLabel: input.containerAdornerActive ? i18nString(UIStrings.enableContainer) : i18nString(UIStrings.disableContainer),
+          onClick: input.onContainerAdornerClick,
+          content: html`<span class="adorner-with-icon">
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
-          </span>
-        </devtools-adorner>`: nothing}
-        ${input.showFlexAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          toggleable=true
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.FLEX}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.FLEX).track({ click: true })}
-          active=${input.flexAdornerActive}
-          aria-label=${input.flexAdornerActive ? i18nString(UIStrings.disableFlexMode) : i18nString(UIStrings.enableFlexMode)}
-          @click=${input.onFlexAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onFlexAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.FLEX}</span>
-        </devtools-adorner>`: nothing}
-        ${input.showGridAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          toggleable=true
-          tabindex=0
-          .name=${input.isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents.AdornerManager.RegisteredAdorners.GRID}
-          jslog=${VisualLogging.adorner(input.isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents.AdornerManager.RegisteredAdorners.GRID).track({ click: true })}
-          active=${input.gridAdornerActive}
-          aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridMode) : i18nString(UIStrings.enableGridMode)}
-          @click=${input.onGridAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
-          ${adornerRef()}>
-          <span>${input.isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents.AdornerManager.RegisteredAdorners.GRID}</span>
-        </devtools-adorner>`: nothing}
-        ${input.showGridLanesAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          toggleable=true
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES).track({ click: true })}
-          active=${input.gridAdornerActive}
-          aria-label=${input.gridAdornerActive ? i18nString(UIStrings.disableGridLanesMode) : i18nString(UIStrings.enableGridLanesMode)}
-          @click=${input.onGridAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.GRID_LANES}</span>
-        </devtools-adorner>`: nothing}
-        ${input.showMediaAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA).track({ click: true })}
-          aria-label=${i18nString(UIStrings.openMediaPanel)}
-          @click=${input.onMediaAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onMediaAdornerClick)}
-          ${adornerRef()}>
-          <span class="adorner-with-icon">
-            ${ElementsComponents.AdornerManager.RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
-          </span>
-        </devtools-adorner>`: nothing}
-        ${input.showPopoverAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          toggleable=true
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER).track({ click: true })}
-          active=${input.popoverAdornerActive}
-          aria-label=${input.popoverAdornerActive ? i18nString(UIStrings.stopForceOpenPopover) : i18nString(UIStrings.forceOpenPopover)}
-          @click=${input.onPopoverAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onPopoverAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER}</span>
-        </devtools-adorner>`: nothing}
-        ${input.showInterestAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          toggleable=true
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.INTEREST}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.INTEREST).track({ click: true })}
-          active=${input.interestAdornerActive}
-          aria-label=${input.interestAdornerActive ? i18nString(UIStrings.stopForceShowInterest) : i18nString(UIStrings.forceShowInterest)}
-          @click=${input.onInterestAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onInterestAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.INTEREST}</span>
-        </devtools-adorner>`: nothing}
-        ${input.showTopLayerAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER).track({ click: true })}
-          aria-label=${i18nString(UIStrings.reveal)}
-          @click=${input.onTopLayerAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onTopLayerAdornerClick)}
-          ${adornerRef()}>
-          <span class="adorner-with-icon">
+          </span>`,
+        }) : nothing}
+        ${input.showFlexAdorner ? renderAdorner({
+          name: RegisteredAdorners.FLEX,
+          active: input.flexAdornerActive,
+          ariaLabel: input.flexAdornerActive ? i18nString(UIStrings.disableFlexMode) : i18nString(UIStrings.enableFlexMode),
+          onClick: input.onFlexAdornerClick,
+        }) : nothing}
+        ${input.showGridAdorner ? renderAdorner({
+          name: input.isSubgrid ? RegisteredAdorners.SUBGRID : RegisteredAdorners.GRID,
+          active: input.gridAdornerActive,
+          ariaLabel: input.gridAdornerActive ? i18nString(UIStrings.disableGridMode) : i18nString(UIStrings.enableGridMode),
+          onClick: input.onGridAdornerClick,
+        }) : nothing}
+        ${input.showGridLanesAdorner ? renderAdorner({
+          name: RegisteredAdorners.GRID_LANES,
+          active: input.gridAdornerActive,
+          ariaLabel: input.gridAdornerActive ? i18nString(UIStrings.disableGridLanesMode) : i18nString(UIStrings.enableGridLanesMode),
+          onClick: input.onGridAdornerClick,
+        }) : nothing}
+        ${input.showMediaAdorner ? renderAdorner({
+          name: RegisteredAdorners.MEDIA,
+          ariaLabel: i18nString(UIStrings.openMediaPanel),
+          onClick: input.onMediaAdornerClick,
+          content: html`<span class="adorner-with-icon">
+            ${RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
+          </span>`,
+        }) : nothing}
+        ${input.showPopoverAdorner ? renderAdorner({
+          name: RegisteredAdorners.POPOVER,
+          active: input.popoverAdornerActive,
+          ariaLabel: input.popoverAdornerActive ? i18nString(UIStrings.stopForceOpenPopover) : i18nString(UIStrings.forceOpenPopover),
+          onClick: input.onPopoverAdornerClick,
+        }) : nothing}
+        ${input.showInterestAdorner ? renderAdorner({
+          name: RegisteredAdorners.INTEREST,
+          active: input.interestAdornerActive,
+          ariaLabel: input.interestAdornerActive ? i18nString(UIStrings.stopForceShowInterest) : i18nString(UIStrings.forceShowInterest),
+          onClick: input.onInterestAdornerClick,
+        }) : nothing}
+        ${input.showTopLayerAdorner ? renderAdorner({
+          name: RegisteredAdorners.TOP_LAYER,
+          ariaLabel: i18nString(UIStrings.reveal),
+          onClick: input.onTopLayerAdornerClick,
+          content: html`<span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
-          </span>
-        </devtools-adorner>`: nothing}
-        ${input.showStartingStyleAdorner ? html`<devtools-adorner
-          class="starting-style clickable"
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({ click: true })}
-          active=${input.startingStyleAdornerActive}
-          toggleable=true
-          aria-label=${input.startingStyleAdornerActive ? i18nString(UIStrings.disableStartingStyle) : i18nString(UIStrings.enableStartingStyle)}
-          @click=${input.onStartingStyleAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onStartingStyleAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE}</span>
-        </devtools-adorner>` : nothing}
-        ${input.showScrollAdorner ? html`<devtools-adorner
-          class="scroll"
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL).track({ click: true })}
-          aria-label=${i18nString(UIStrings.elementHasScrollableOverflow)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL}</span>
-        </devtools-adorner>` : nothing}
-        ${input.showSlotAdorner ? html`<devtools-adorner
-          class=clickable
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SLOT}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SLOT).track({ click: true })}
-          @click=${input.onSlotAdornerClick}
-          @mousedown=${(e: Event) => e.stopPropagation()}
-          ${adornerRef()}>
-          <span class="adorner-with-icon">
+          </span>`,
+        }) : nothing}
+        ${input.showStartingStyleAdorner ? renderAdorner({
+          name: RegisteredAdorners.STARTING_STYLE,
+          classes: 'starting-style',
+          active: input.startingStyleAdornerActive,
+          ariaLabel: input.startingStyleAdornerActive ? i18nString(UIStrings.disableStartingStyle) : i18nString(UIStrings.enableStartingStyle),
+          onClick: input.onStartingStyleAdornerClick,
+        }) : nothing}
+        ${input.showScrollAdorner ? renderAdorner({
+          name: RegisteredAdorners.SCROLL,
+          classes: 'scroll',
+          ariaLabel: i18nString(UIStrings.elementHasScrollableOverflow),
+        }) : nothing}
+        ${input.showSlotAdorner ? renderAdorner({
+          name: RegisteredAdorners.SLOT,
+          onClick: input.onSlotAdornerClick,
+          keyboardActivatable: false,
+          onMouseDown: (e: Event) => e.stopPropagation(),
+          content: html`<span class="adorner-with-icon">
             <devtools-icon name="select-element"></devtools-icon>
-            <span>${ElementsComponents.AdornerManager.RegisteredAdorners.SLOT}</span>
-          </span>
-        </devtools-adorner>`: nothing}
-        ${input.showScrollSnapAdorner ? html`<devtools-adorner
-          class="scroll-snap clickable"
-          role=button
-          tabindex=0
-          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({ click: true })}
-          active=${input.scrollSnapAdornerActive}
-          toggleable=true
-          aria-label=${input.scrollSnapAdornerActive ? i18nString(UIStrings.disableScrollSnap) : i18nString(UIStrings.enableScrollSnap)}
-          @click=${input.onScrollSnapAdornerClick}
-          @keydown=${handleAdornerKeydown(input.onScrollSnapAdornerClick)}
-          ${adornerRef()}>
-          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
-        </devtools-adorner>` : nothing}
+            <span>${RegisteredAdorners.SLOT}</span>
+          </span>`,
+        }) : nothing}
+        ${input.showScrollSnapAdorner ? renderAdorner({
+          name: RegisteredAdorners.SCROLL_SNAP,
+          classes: 'scroll-snap',
+          active: input.scrollSnapAdornerActive,
+          ariaLabel: input.scrollSnapAdornerActive ? i18nString(UIStrings.disableScrollSnap) : i18nString(UIStrings.enableScrollSnap),
+          onClick: input.onScrollSnapAdornerClick,
+        }) : nothing}
       </div>`: nothing}
       ${input.isSelected && input.canInspect ? html`
         <span class="selected-hint ${input.editorState ? 'hidden' : ''}" title=${i18nString(UIStrings.useSInTheConsoleToReferToThis, { PH1: '$0' })} aria-hidden="true"></span>

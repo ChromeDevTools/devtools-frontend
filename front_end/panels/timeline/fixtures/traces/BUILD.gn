@@ -26,6 +26,7 @@ copy_to_gen("traces") {
     "cls-single-frame.json.gz",
     "cls-with-iframes.json.gz",
     "collapsible-tracks.json.gz",
+    "cross-origin-redirect.json.gz",
     "crux.json.gz",
     "display-item-list-instant-snapshot.json.gz",
     "dom-size-long.json.gz",

@@ -56,6 +56,10 @@ not found in other traces:
 1. A sourcemap in the metadata array with a 'chrome-extension' protocol.
 2. 'V8SourceRundownSourcesScriptCatchupEvent' traces that have a 'chrome-extension' protocol with associated source text.
 
+### cross-origin-redirect.json.gz
+
+A trace of a navigation to `http://127.0.0.1:54321/docs/start?foo=bar` that responds with a 301 redirect to `http://localhost:54322/final`. Because the redirect crosses origins, Chromium scrubs the pre-redirect URL in the renderer's `ResourceSendRequest` trace event to its origin (`http://127.0.0.1:54321/`).
+
 ### display-item-list-instant-snapshot.json.gz
 
 A `cc::DisplayItemList:snapshot` instant event extracted from a trace recorded on a minimal page with advanced

@@ -526,6 +526,33 @@ describe('NetworkAnalyzer', () => {
       assert.isOk(mainDocument);
       assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
     });
+
+    it('should match redirect request when cross-origin redirect URL path was scrubbed to origin in trace',
+       async function() {
+         const parsedTrace = await TraceLoader.traceEngine(this, 'cross-origin-redirect.json.gz');
+         const trace = toLanternTrace(parsedTrace.traceEvents);
+         const crossOriginRequests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace.data);
+
+         // The navigation requested `http://127.0.0.1:54321/docs/start?foo=bar`, which redirected 301 to
+         // `http://localhost:54322/final`. Chromium scrubs the cross-origin pre-redirect URL in the trace to
+         // `http://127.0.0.1:54321/`.
+         const rootRequest =
+             NetworkAnalyzer.findResourceForUrl(crossOriginRequests, 'http://127.0.0.1:54321/docs/start?foo=bar');
+         assert.isOk(rootRequest);
+         assert.strictEqual(rootRequest.url, 'http://127.0.0.1:54321/');
+
+         const finalDocument = NetworkAnalyzer.resolveRedirects(rootRequest);
+         assert.strictEqual(finalDocument.url, 'http://localhost:54322/final');
+
+         const graph = Trace.LanternComputationData.createGraph(crossOriginRequests, trace, parsedTrace.data, {
+           requestedUrl: 'http://127.0.0.1:54321/docs/start?foo=bar',
+           mainDocumentUrl: 'http://localhost:54322/final',
+         });
+         if (graph.type !== 'network') {
+           assert.fail('Expected network node');
+         }
+         assert.strictEqual(graph.request.url, 'http://127.0.0.1:54321/');
+       });
   });
 
   describe('#resolveRedirects', () => {

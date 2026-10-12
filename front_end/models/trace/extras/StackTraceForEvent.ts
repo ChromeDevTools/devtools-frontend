@@ -8,8 +8,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export const stackTraceForEventInTrace:
-    Map<Handlers.Types.HandlerData, Map<Types.Events.Event, Protocol.Runtime.StackTrace>> =
-        new Map<Handlers.Types.HandlerData, Map<Types.Events.Event, Protocol.Runtime.StackTrace>>();
+    WeakMap<Handlers.Types.HandlerData, Map<Types.Events.Event, Protocol.Runtime.StackTrace>> = new WeakMap();
 
 export function clearCacheForTrace(data: Handlers.Types.HandlerData): void {
   stackTraceForEventInTrace.delete(data);

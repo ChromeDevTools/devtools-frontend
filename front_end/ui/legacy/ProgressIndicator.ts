@@ -8,6 +8,7 @@ import progressIndicatorStyles from './progressIndicator.css.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class ProgressIndicator extends HTMLElement implements Common.Progress.Progress {
+  static readonly observedAttributes = ['label', 'total-work', 'worked'] as const;
   readonly #shadowRoot: ShadowRoot;
   readonly #contentElement: Element;
   #labelElement: Element;
@@ -25,6 +26,23 @@ export class ProgressIndicator extends HTMLElement implements Common.Progress.Pr
     this.#labelElement = this.#contentElement.createChild('div', 'title');
     this.#progressElement = this.#contentElement.createChild('progress');
     this.#progressElement.value = 0;
+  }
+
+  // Attributes initialize or update the underlying properties without reflecting subsequent property mutations back.
+  attributeChangedCallback(name: string, _oldValue: string|null, newValue: string|null): void {
+    if (name === 'label') {
+      this.title = newValue ?? '';
+    } else if (name === 'total-work') {
+      const value = Number(newValue);
+      if (Number.isFinite(value)) {
+        this.totalWork = value;
+      }
+    } else if (name === 'worked') {
+      const value = Number(newValue);
+      if (Number.isFinite(value)) {
+        this.worked = value;
+      }
+    }
   }
 
   connectedCallback(): void {

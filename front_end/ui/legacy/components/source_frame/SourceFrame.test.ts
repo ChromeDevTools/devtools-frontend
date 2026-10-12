@@ -15,6 +15,7 @@ import {
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
+import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
 import {render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
@@ -149,6 +150,29 @@ describeWithEnvironment('SourceFrame', () => {
                        '(module\n  (func $bar (;0;) (export \"bar\") (result i32)\n    i32.const 2\n  )\n)');
 
     sourceFrame.detach();
+  });
+
+  it('passes textEditor and onKeyDown handler to injected view function', () => {
+    const view = createViewFunctionStub(SourceFrame.SourceFrame.SourceFrameImpl);
+    const sourceFrame = new SourceFrame.SourceFrame.SourceFrameImpl(
+        async () => TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA, {}, undefined, view);
+
+    assert.strictEqual(view.input.textEditor, sourceFrame.textEditor);
+
+    const nonPreventedStopPropagationSpy = sinon.spy();
+    const nonPreventedEvent = new KeyboardEvent('keydown', {cancelable: true});
+    nonPreventedEvent.stopPropagation = nonPreventedStopPropagationSpy;
+    view.input.onKeyDown(nonPreventedEvent);
+    sinon.assert.notCalled(nonPreventedStopPropagationSpy);
+
+    const stopPropagationSpy = sinon.spy();
+    const defaultPreventedEvent = new KeyboardEvent('keydown', {cancelable: true});
+    defaultPreventedEvent.preventDefault();
+    defaultPreventedEvent.stopPropagation = stopPropagationSpy;
+    view.input.onKeyDown(defaultPreventedEvent);
+    sinon.assert.calledOnce(stopPropagationSpy);
+
+    sourceFrame.disposeView();
   });
 
   describe('toolbarItems', () => {

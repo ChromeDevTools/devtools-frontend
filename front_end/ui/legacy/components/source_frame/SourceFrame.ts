@@ -121,7 +121,18 @@ export const LINE_NUMBER_FORMATTER: CodeMirror.Facet<FormatFn, FormatFn> = CodeM
   },
 });
 
-const SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW = (input: SourceFrameToolbar, _output: object, target: HTMLElement): void => {
+interface SourceFrameToolbarViewInput {
+  canPrettyPrint: boolean;
+  pretty: boolean;
+  prettyToggleEnabled: boolean;
+  sourcePositionText: string;
+  loading: boolean;
+  onPrettyToggleClick: () => void;
+}
+
+type ToolbarView = (input: SourceFrameToolbarViewInput, output: undefined, target: HTMLElement) => void;
+
+const SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW: ToolbarView = (input, _output, target): void => {
   // clang-format off
   render(html`
     <devtools-button
@@ -133,13 +144,18 @@ const SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW = (input: SourceFrameToolbar, _output: o
       jslog=${VisualLogging.toggle().track({click: true}).context('pretty-print')}
       @click=${input.onPrettyToggleClick}></devtools-button>
     <div class="toolbar-text">${input.sourcePositionText}</div>
-    ${input.loading ? html`<div><devtools-progress
-      .title=${i18nString(UIStrings.loading)} .totalWork=${100} .worked=${1}></devtools-progress></div>` : nothing}`, target);
+    ${input.loading ? html`
+      <div>
+        <devtools-progress label=${i18nString(UIStrings.loading)}
+                           total-work="100"
+                           worked="1">
+        </devtools-progress>
+      </div>` : nothing}`, target);
   // clang-format on
 };
 
 class SourceFrameToolbar extends UI.Widget.Widget {
-  readonly #view: typeof SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW;
+  readonly #view: ToolbarView;
   canPrettyPrint = false;
   pretty = false;
   prettyToggleEnabled = true;
@@ -147,30 +163,41 @@ class SourceFrameToolbar extends UI.Widget.Widget {
   loading = false;
   onPrettyToggleClick: () => void = (): void => {};
 
-  constructor(element?: HTMLElement, view = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: ToolbarView = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
-    // eslint-disable-next-line @devtools/no-imperative-dom-api
-    this.element.style.display = 'contents';
     this.performUpdate();
   }
 
   override performUpdate(): void {
-    this.#view(this, {}, this.contentElement);
+    this.#view({
+      canPrettyPrint: this.canPrettyPrint,
+      pretty: this.pretty,
+      prettyToggleEnabled: this.prettyToggleEnabled,
+      sourcePositionText: this.sourcePositionText,
+      loading: this.loading,
+      onPrettyToggleClick: this.onPrettyToggleClick,
+    },
+               undefined, this.contentElement);
   }
 }
 
-const SOURCE_FRAME_DEFAULT_VIEW =
-    (input: {textEditor: TextEditor.TextEditor.TextEditor, onKeyDown: (event: KeyboardEvent) => void}, _output: object,
-     target: HTMLElement): void => {
-      // clang-format off
-      render(html`
-        <div style="display: contents" @keydown=${input.onKeyDown}>
-          ${input.textEditor}
-        </div>
-      `, target);
-      // clang-format on
-    };
+export interface ViewInput {
+  textEditor: TextEditor.TextEditor.TextEditor;
+  onKeyDown: (event: KeyboardEvent) => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target): void => {
+  // clang-format off
+  render(html`
+    <div style="display: contents" @keydown=${input.onKeyDown}>
+      ${input.textEditor}
+    </div>
+  `, target);
+  // clang-format on
+};
 
 const SourceFrameImplBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.View.SimpleView> =
     Common.ObjectWrapper.eventMixin(
@@ -180,6 +207,7 @@ const SourceFrameImplBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI
 export class SourceFrameImpl extends SourceFrameImplBase implements UI.SearchableView.Searchable,
                                                                     UI.SearchableView.Replaceable,
                                                                     UI.SearchableView.SearchTarget, Transformer {
+  readonly #view: View;
   private readonly lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>;
   private prettyInternal: boolean;
   private rawContent: string|CodeMirror.Text|null;
@@ -200,7 +228,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   private searchRegex: UI.SearchableView.SearchRegexResult|null;
   private loadError: boolean;
   #sourcePositionText = '';
-  #toolbarWidget = new SourceFrameToolbar();
+  #toolbarWidget?: SourceFrameToolbar;
   private searchableView: UI.SearchableView.SearchResultsListener|null;
   private editable: boolean;
   private positionToReveal: {
@@ -218,12 +246,13 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
 
   constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
-              private readonly options: SourceFrameOptions = {}, element?: HTMLElement) {
+              private readonly options: SourceFrameOptions = {}, element?: HTMLElement, view: View = DEFAULT_VIEW) {
     // @ts-expect-error
     super(...(element ? [element] : []), {
       title: i18nString(UIStrings.source),
       viewId: 'source',
     });
+    this.#view = view;
 
     this.lazyContent = lazyContent;
 
@@ -266,7 +295,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   }
 
   override performUpdate(): void {
-    SOURCE_FRAME_DEFAULT_VIEW({
+    this.#view({
       textEditor: this.textEditorInternal,
       onKeyDown: (event: KeyboardEvent) => {
         if (event.defaultPrevented) {
@@ -274,11 +303,14 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
         }
       },
     },
-                              {}, this.element);
+               undefined, this.element);
     this.#updateToolbar();
   }
 
   #updateToolbar(): void {
+    if (!this.#toolbarWidget) {
+      return;
+    }
     Object.assign(this.#toolbarWidget, {
       canPrettyPrint: this.#canPrettyPrint,
       pretty: this.prettyInternal,
@@ -571,11 +603,11 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   }
 
   override async toolbarItems(): Promise<TemplateResult> {
-    return html`${widget(element => {
+    return html`<devtools-widget style="display: contents" ${widget(element => {
       this.#toolbarWidget = new SourceFrameToolbar(element);
       this.#updateToolbar();
       return this.#toolbarWidget;
-    })}`;
+    })}></devtools-widget>`;
   }
 
   get loaded(): boolean {

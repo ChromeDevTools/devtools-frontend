@@ -57,7 +57,7 @@ import {appendStyle, deepActiveElement, rangeOfWord} from './DOMUtilities.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
 import {InspectorView} from './InspectorView.js';
-import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
+import {KeyboardShortcut} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
 import {Tooltip} from './Tooltip.js';
 import * as WidgetUtils from './Widget.js';
@@ -1025,51 +1025,6 @@ export function createInput(className?: string, type?: string, jslogContext?: st
         'jslog', `${VisualLogging.textField().track({keydown: 'Enter', change: true}).context(jslogContext)}`);
   }
   return element;
-}
-
-export function createHistoryInput(type = 'search', className?: string): HTMLInputElement {
-  const history = [''];
-  let historyPosition = 0;
-
-  const historyInput = document.createElement('input');
-  historyInput.type = type;
-  if (className) {
-    historyInput.className = className;
-  }
-  historyInput.addEventListener('input', onInput, false);
-  historyInput.addEventListener('keydown', onKeydown, false);
-  return historyInput;
-
-  function onInput(_event: Event): void {
-    if (history.length === historyPosition + 1) {
-      history[historyPosition] = historyInput.value;
-    }
-  }
-
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.keyCode === Keys.Up.code) {
-      if (historyPosition > 0) {
-        historyPosition--;
-        historyInput.value = history[historyPosition];
-        historyInput.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
-      }
-      event.consume(true);
-    } else if (event.keyCode === Keys.Down.code) {
-      if (historyPosition < history.length - 1) {
-        historyPosition++;
-        historyInput.value = history[historyPosition];
-        historyInput.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
-      }
-      event.consume(true);
-    } else if (event.keyCode === Keys.Enter.code) {
-      if (history.length > 1 && history[history.length - 2] === historyInput.value) {
-        return;
-      }
-      history[history.length - 1] = historyInput.value;
-      historyPosition = history.length - 1;
-      history.push('');
-    }
-  }
 }
 
 export function createSelect(

@@ -13,8 +13,12 @@ type ViewFunctionLike = ((input: any, output: any, target: HTMLElement) => void)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ((input: any, output: any, target: DocumentFragment) => void);
 
+// Check `Parameters<Head>['length'] extends 3` because in TypeScript a function with fewer parameters
+// (such as SourceFrameImpl's 0-argument `lazyContent: () => Promise<...>`) is assignable to `ViewFunctionLike`.
 type FindViewFunction<ParametersT extends readonly unknown[]> = ParametersT extends [infer Head, ...infer Tail] ?
-    Head extends ViewFunctionLike ? Head : FindViewFunction<Tail>:
+    Head extends ViewFunctionLike ?
+    Parameters<Head>['length'] extends 3 ? Head : FindViewFunction<Tail>:
+    FindViewFunction<Tail>:
     never;
 
 type ViewFunction<WidgetConstructorT extends WidgetConstructor> =

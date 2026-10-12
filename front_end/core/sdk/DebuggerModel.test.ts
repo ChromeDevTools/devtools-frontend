@@ -458,6 +458,104 @@ describe('DebuggerModel', () => {
     });
   });
 
+  describe('step context', () => {
+    const CALL_FRAME: Protocol.Debugger.CallFrame = {
+      callFrameId: '0' as Protocol.Debugger.CallFrameId,
+      functionName: 'foo',
+      functionLocation: {scriptId: SCRIPT_ID_ONE, lineNumber: 0, columnNumber: 0},
+      location: {scriptId: SCRIPT_ID_ONE, lineNumber: 0, columnNumber: 5},
+      url: 'http://localhost/foo.js',
+      scopeChain: [],
+      this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+      canBeRestarted: false,
+    };
+
+    async function setUpTarget() {
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Debugger.enable',
+                                   () => ({debuggerId: 'debugger-id' as Protocol.Runtime.UniqueDebuggerId}));
+      const stepOver = sinon.stub().returns({});
+      connection.setSuccessHandler('Debugger.stepOver', stepOver);
+      const resume = sinon.stub().returns({});
+      connection.setSuccessHandler('Debugger.resume', resume);
+      const target = universe.createTarget({connection});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.exists(debuggerModel);
+      if (!debuggerModel.isReadyToPause()) {
+        await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+      }
+      connection.dispatchEvent('Debugger.scriptParsed', {
+        scriptId: SCRIPT_ID_ONE,
+        url: 'http://localhost/foo.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 1,
+        endColumn: 10,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+        sourceMapURL: undefined,
+        hasSourceURL: false,
+        length: 10,
+      },
+                               target.sessionId);
+
+      debuggerModel.setComputeAutoStepCallback(null);
+      const contexts: Array<SDK.DebuggerModel.StepContext|null> = [];
+      debuggerModel.setBeforePausedCallback(async (_details, context) => {
+        contexts.push(context);
+        return null;
+      });
+
+      const pause = async (reason: Protocol.Debugger.PausedEventReason) => {
+        const paused = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerPaused);
+        connection.dispatchEvent('Debugger.paused', {callFrames: [CALL_FRAME], reason}, target.sessionId);
+        await paused;
+      };
+      const pauseOnInstrumentation = async () => {
+        const resumed = new Promise<void>(resolve => resume.callsFake(() => {
+          resolve();
+          return {};
+        }));
+        connection.dispatchEvent('Debugger.paused', {
+          callFrames: [],
+          reason: Protocol.Debugger.PausedEventReason.Instrumentation,
+          data: {scriptId: SCRIPT_ID_TWO},
+        },
+                                 target.sessionId);
+        await resumed;
+      };
+
+      return {debuggerModel, stepOver, contexts, pause, pauseOnInstrumentation};
+    }
+
+    it('keeps the step context across instrumentation pauses', async () => {
+      const {debuggerModel, stepOver, contexts, pause, pauseOnInstrumentation} = await setUpTarget();
+      await pause(Protocol.Debugger.PausedEventReason.Other);
+
+      await debuggerModel.stepOver();
+      sinon.assert.calledOnce(stepOver);
+      await pauseOnInstrumentation();
+      await pause(Protocol.Debugger.PausedEventReason.Step);
+
+      assert.lengthOf(contexts, 2);
+      const [, context] = contexts;
+      assert.strictEqual(context?.mode, SDK.DebuggerModel.StepMode.STEP_OVER);
+      assert.lengthOf(context?.callFrames ?? [], 1);
+    });
+
+    it('clears the step context when the user resumes', async () => {
+      const {debuggerModel, contexts, pause} = await setUpTarget();
+      await pause(Protocol.Debugger.PausedEventReason.Other);
+
+      await debuggerModel.stepOver();
+      debuggerModel.resume();
+      await pause(Protocol.Debugger.PausedEventReason.Other);
+
+      assert.deepEqual(contexts, [null, null]);
+    });
+  });
+
   describe('ignoring sourcemaps', () => {
     it('ignores sourcemaps when DWARF symbols are present', () => {
       const connection = new MockCDPConnection();

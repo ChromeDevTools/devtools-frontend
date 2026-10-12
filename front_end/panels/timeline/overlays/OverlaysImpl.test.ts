@@ -413,6 +413,78 @@ describeWithEnvironment('Overlays', () => {
       assert.isTrue(outlineStillVisible, 'The ENTRY_OUTLINE should be visible');
     });
 
+    it('positions a COMMENT_PIN element over its entry with the same bounds as an ENTRY_OUTLINE', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+      const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+      const outline = overlays.add({type: 'ENTRY_OUTLINE', entry: event, outlineReason: 'ERROR'});
+      const commentPin = overlays.add({type: 'COMMENT_PIN', entry: event, commentThreadId: 'thread-1'});
+      await overlays.update();
+
+      const outlineElement = overlays.elementForOverlay(outline);
+      const commentPinElement = overlays.elementForOverlay(commentPin);
+      assert.isOk(outlineElement);
+      assert.isOk(commentPinElement);
+      assert.strictEqual(commentPinElement.style.display, 'block');
+      assert.strictEqual(commentPinElement.style.left, outlineElement.style.left);
+      assert.strictEqual(commentPinElement.style.top, outlineElement.style.top);
+      assert.strictEqual(commentPinElement.style.width, outlineElement.style.width);
+      assert.strictEqual(commentPinElement.style.height, outlineElement.style.height);
+    });
+
+    it('renders the COMMENT_PIN element as an empty box', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+      const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+      const commentPin = overlays.add({type: 'COMMENT_PIN', entry: event, commentThreadId: 'thread-1'});
+      await overlays.update();
+
+      const commentPinElement = overlays.elementForOverlay(commentPin);
+      assert.isOk(commentPinElement);
+      assert.strictEqual(commentPinElement.childElementCount, 0);
+    });
+
+    it('hides the COMMENT_PIN element when its entry is outside the visible window', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+      const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+      const commentPin = overlays.add({type: 'COMMENT_PIN', entry: event, commentThreadId: 'thread-1'});
+      await overlays.update();
+      const commentPinElement = overlays.elementForOverlay(commentPin);
+      assert.isOk(commentPinElement);
+      assert.strictEqual(commentPinElement.style.display, 'block');
+
+      const {endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
+      overlays.updateVisibleWindow(Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+          Trace.Types.Timing.Micro(endTime + 1_000), Trace.Types.Timing.Micro(endTime + 10_000)));
+      await overlays.update();
+
+      assert.strictEqual(commentPinElement.style.display, 'none');
+    });
+
+    it('dispatches OverlaysUpdated once per update() after positioning overlay elements', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+      const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+      // Two overlays, so a dispatch inside the per-overlay loop fires twice.
+      overlays.add({type: 'ENTRY_OUTLINE', entry: event, outlineReason: 'ERROR'});
+      const commentPin = overlays.add({type: 'COMMENT_PIN', entry: event, commentThreadId: 'thread-1'});
+
+      const displayAtDispatch: Array<string|undefined> = [];
+      overlays.addEventListener(Overlays.Overlays.OverlaysUpdated.eventName, () => {
+        displayAtDispatch.push(overlays.elementForOverlay(commentPin)?.style.display);
+      });
+      await overlays.update();
+      assert.deepEqual(displayAtDispatch, ['block']);
+
+      await overlays.update();
+      assert.deepEqual(displayAtDispatch, ['block', 'block']);
+    });
+
     it('only ever renders a single selected overlay', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
@@ -1445,87 +1517,6 @@ describeWithEnvironment('Overlays', () => {
       };
       const context = Overlays.Overlays.jsLogContext(overlay);
       assert.strictEqual(context, 'timeline.overlays.comment-pin');
-    });
-  });
-
-  describe('Comment Pin Overlay', () => {
-    it('creates an accessible comment pin overlay element with badge and thread id', async () => {
-      const container = document.createElement('div');
-      const mainFlameChartsContainer = document.createElement('div');
-      const networkFlameChartsContainer = document.createElement('div');
-      renderElementIntoDOM(container, {allowMultipleChildren: true});
-      renderElementIntoDOM(mainFlameChartsContainer, {allowMultipleChildren: true});
-      renderElementIntoDOM(networkFlameChartsContainer, {allowMultipleChildren: true});
-      const charts = createCharts();
-      const overlays = new Overlays.Overlays.Overlays({
-        container,
-        flameChartsContainers: {
-          main: mainFlameChartsContainer,
-          network: networkFlameChartsContainer,
-        },
-        charts,
-        entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
-      });
-
-      const testEvent = makeInstantEvent('test-event', 0);
-      const overlay: Trace.Types.Overlays.CommentPin = {
-        type: 'COMMENT_PIN',
-        entry: testEvent,
-        commentThreadId: 'thread-test-pin-1',
-      };
-
-      const addedOverlay = overlays.add(overlay);
-      await overlays.update();
-      const element = overlays.elementForOverlay(addedOverlay);
-      assert.isNotNull(element);
-      assert.isTrue(element?.classList.contains('overlay-type-COMMENT_PIN'));
-
-      const pin = element?.querySelector('.comment-pin');
-      assert.isNotNull(pin);
-      assert.strictEqual(pin?.getAttribute('role'), 'button');
-      assert.strictEqual(pin?.getAttribute('tabindex'), '0');
-      assert.isNotNull(pin?.querySelector('.comment-cursor'));
-    });
-
-    it('dispatches CommentPinClick when the pin is clicked', async () => {
-      const container = document.createElement('div');
-      const mainFlameChartsContainer = document.createElement('div');
-      const networkFlameChartsContainer = document.createElement('div');
-      renderElementIntoDOM(container, {allowMultipleChildren: true});
-      renderElementIntoDOM(mainFlameChartsContainer, {allowMultipleChildren: true});
-      renderElementIntoDOM(networkFlameChartsContainer, {allowMultipleChildren: true});
-      const charts = createCharts();
-      const overlays = new Overlays.Overlays.Overlays({
-        container,
-        flameChartsContainers: {
-          main: mainFlameChartsContainer,
-          network: networkFlameChartsContainer,
-        },
-        charts,
-        entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
-      });
-
-      const testEvent = makeInstantEvent('test-event', 0);
-      const overlay: Trace.Types.Overlays.CommentPin = {
-        type: 'COMMENT_PIN',
-        entry: testEvent,
-        commentThreadId: 'thread-test-pin-1',
-      };
-
-      overlays.add(overlay);
-      await overlays.update();
-      const element = overlays.elementForOverlay(overlay);
-      const pin = element?.querySelector('.comment-pin') as HTMLElement;
-      assert.isNotNull(pin);
-
-      const clickEventPromise = new Promise<Overlays.Overlays.CommentPinClick>(resolve => {
-        overlays.addEventListener(Overlays.Overlays.CommentPinClick.eventName, event => {
-          resolve(event as Overlays.Overlays.CommentPinClick);
-        }, {once: true});
-      });
-      pin.click();
-      const dispatchedEvent = await clickEventPromise;
-      assert.strictEqual(dispatchedEvent.overlay.commentThreadId, 'thread-test-pin-1');
     });
   });
 

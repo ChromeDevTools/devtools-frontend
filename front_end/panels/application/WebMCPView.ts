@@ -600,19 +600,19 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 <devtools-widget
                   id=${TabId.DETAILS}
                   ?selected=${Directives.live(input.selectedTab === TabId.DETAILS)}
-                  title=${i18nString(UIStrings.toolDetails)}
+                  label=${i18nString(UIStrings.toolDetails)}
                   ${widget(ToolDetailsWidget, {tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false})}>
                 </devtools-widget>
                 <devtools-widget
                   id=${TabId.INPUT}
                   ?selected=${Directives.live(input.selectedTab === TabId.INPUT)}
-                  title=${i18nString(UIStrings.input)}
+                  label=${i18nString(UIStrings.input)}
                   ${widget(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${TabId.OUTPUT}
                   ?selected=${Directives.live(input.selectedTab === TabId.OUTPUT)}
-                  title=${i18nString(UIStrings.output)}
+                  label=${i18nString(UIStrings.output)}
                   ${widget(PayloadWidget, {
                           valueObject: input.selectedCall?.result?.output,
                           errorText: input.selectedCall?.result?.errorText,

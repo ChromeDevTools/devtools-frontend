@@ -222,7 +222,40 @@ describe('TabbedEditorContainer', () => {
 
       Sources.TabbedEditorContainer.DEFAULT_VIEW(input, undefined, container);
       await raf();
+      const activeTabElement = container.querySelector('#tab-active');
+      assert.exists(activeTabElement);
+      assert.isFalse(activeTabElement.hasAttribute('title'));
+      assert.strictEqual(activeTabElement.getAttribute('label'), 'active.js');
+      assert.strictEqual(activeTabElement.getAttribute('tab-tooltip'), 'active.js');
       await assertScreenshot('sources/tabbed-editor-container-tabs.png');
+    });
+
+    it('renders tab content elements with label and tab-tooltip instead of title', async () => {
+      const host = new UI.Widget.Widget();
+      renderElementIntoDOM(host, {includeCommonStyles: true});
+
+      const networkUrl = urlString`https://example.com/foo.js`;
+      const {uiSourceCode} = createContentProviderUISourceCode({
+        url: networkUrl,
+        mimeType: 'text/javascript',
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe: testUniverse,
+      });
+
+      tabbedEditorContainer.showFile(uiSourceCode);
+      assert.lengthOf(viewStub.input.openTabs, 1);
+      assert.strictEqual(viewStub.input.openTabs[0].title, 'foo.js');
+      assert.strictEqual(viewStub.input.openTabs[0].tooltip, 'https://example.com/foo.js');
+
+      Sources.TabbedEditorContainer.DEFAULT_VIEW(viewStub.input, undefined, host.contentElement);
+      await raf();
+
+      const tabId = viewStub.input.openTabs[0].tabId;
+      const tabContentElement = host.contentElement.querySelector(`#${tabId}`);
+      assert.exists(tabContentElement);
+      assert.isFalse(tabContentElement.hasAttribute('title'));
+      assert.strictEqual(tabContentElement.getAttribute('label'), 'foo.js');
+      assert.strictEqual(tabContentElement.getAttribute('tab-tooltip'), 'https://example.com/foo.js');
     });
 
     it('keeps selected tab when persistence binding is created', async () => {

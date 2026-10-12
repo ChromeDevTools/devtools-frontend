@@ -9,6 +9,7 @@ group("ai_evals") {
   testonly = true
   deps = [
     ":eval_tests",
+    ":harness_library",
     ":test_inputs",
     "network",
   ]
@@ -38,6 +39,7 @@ ts_e2e_library("harness_library") {
     "../e2e/conductor:implementation",
     "../e2e/shared",
     "../shared",
+    "helpers",
     "report",
   ]
 }
@@ -48,8 +50,5 @@ generated_file("test_inputs") {
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 
-  deps = [
-    ":eval_tests",
-    "network",
-  ]
+  deps = [ ":eval_tests" ]
 }

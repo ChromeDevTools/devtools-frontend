@@ -117,6 +117,7 @@ export async function findRelavantFiles(targets, rootDir) {
       '**/third_party/**',
       'build/**',
       'buildtools/**',
+      'test/ai_evals/eval_data/**',
     ],
   });
 }

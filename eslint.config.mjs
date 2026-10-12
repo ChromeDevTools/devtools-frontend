@@ -61,6 +61,7 @@ export default defineConfig([
     'scripts/deps/tests/fixtures',
     'scripts/gn_deps_verifier/tests/fixtures',
     'test/**/fixtures/',
+    'test/ai_evals/eval_data/',
     'test/e2e/**/*.js',
     'test/shared/**/*.js',
     'extensions/cxx_debugging/tests/inputs/',

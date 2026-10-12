@@ -14,7 +14,7 @@ import {
 } from '../e2e/helpers/ai-assistance-helpers.js';
 import {navigateToNetworkTab} from '../e2e/helpers/network-helpers.js';
 
-import {findAndSetContext} from './helpers/ai_eval-helpers.js';
+import {findAndSetContext, setupAndRunEvalApp, stopEvalApp} from './helpers/ai_eval-helpers.js';
 
 describe('DevTools AI Smoke Test', () => {
   setup({
@@ -71,5 +71,22 @@ describe('DevTools AI Smoke Test', () => {
 
        assert.isTrue(matchingContextInfo.hasContext, 'Expected getMatchingFlavorContext to return a resolved context');
        assert.strictEqual(matchingContextInfo.requestName, 'headers-and-payload.html');
+     });
+
+  it('sets up and runs the atelier-living app for cls-dynamic-element-shift and navigates to initialUrl',
+     async ({inspectedPage}) => {
+       const app = await setupAndRunEvalApp('', 'cls-dynamic-element-shift');
+       try {
+         assert.strictEqual(app.config.baseApp, 'atelier-living');
+         assert.strictEqual(app.config.initialUrl, 'http://localhost:3000/checkout/order-summary');
+         const output = await app.waitForOutput(/localhost:\d+/i);
+         assert.match(output, /localhost:\d+/i, 'Expected console output to indicate the app has started on localhost');
+
+         await inspectedPage.page.goto(app.config.initialUrl!, {waitUntil: 'networkidle0'});
+         const title = await inspectedPage.page.title();
+         assert.include(title, 'Atelier Living');
+       } finally {
+         await stopEvalApp(app);
+       }
      });
 });

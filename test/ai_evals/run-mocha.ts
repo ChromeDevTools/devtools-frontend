@@ -10,7 +10,10 @@ import {SOURCE_ROOT} from '../conductor/paths.js';
 import {loadTests, TestConfig} from '../conductor/test_config.js';
 import {run} from '../shared/run-mocha.js';
 
+import {validateEvalEnvironment} from './helpers/eval-environment.js';
 import {devtoolsAiEvalTestInterface} from './mocha-interface.js';
+
+validateEvalEnvironment({exitOnError: true});
 
 // Returns true if the provided Chrome binary path points to the "Chrome for
 // Testing" (CfT) binary, which lives in third_party/chrome.

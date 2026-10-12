@@ -14,6 +14,7 @@ import {type BrowserSettings, type BrowserWrapper, Launcher} from '../e2e/shared
 import type {DevToolsPage} from '../e2e/shared/DevToolsPage.js';
 import {InspectedPage} from '../e2e/shared/InspectedPage.js';
 
+import {getDefaultOtaAccount} from './helpers/eval-environment.js';
 import {EvalLogger} from './report/eval-logger.js';
 import {finalizeEvalTask, handleTaskFailure} from './report/eval-task-recorder.js';
 import {
@@ -149,7 +150,11 @@ export class AiEvalStateProvider extends StateProvider {
   }
 
   override async launchBrowser(settings: BrowserSettings): Promise<BrowserWrapper> {
-    return await Launcher.browserSetup({...settings, chromeUsername: TestConfig.otaUsername}, StateProvider.serverPort);
+    return await Launcher.browserSetup({
+      ...settings,
+      chromeUsername: TestConfig.otaUsername ?? getDefaultOtaAccount(),
+    },
+                                       StateProvider.serverPort);
   }
 
   override async browsingContext(browser: BrowserWrapper): Promise<puppeteer.BrowserContext> {

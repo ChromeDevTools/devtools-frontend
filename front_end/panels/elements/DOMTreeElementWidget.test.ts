@@ -40,69 +40,6 @@ import * as PanelsCommon from '../common/common.js';
 
 import * as Elements from './elements.js';
 
-function getBaseViewInput(): Elements.DOMTreeElementWidget.ViewInput {
-  return {
-    node: null,
-    isClosingTag: false,
-    expanded: false,
-    isExpandable: false,
-    isXMLMimeType: false,
-    updateRecord: null,
-    onHighlightSearchResults: () => {},
-    onExpand: () => {},
-    containerAdornerActive: false,
-    showContainerAdorner: false,
-    showFlexAdorner: false,
-    flexAdornerActive: false,
-    showGridAdorner: false,
-    showGridLanesAdorner: false,
-    showMediaAdorner: false,
-    showPopoverAdorner: false,
-    showInterestAdorner: false,
-    showTopLayerAdorner: false,
-    gridAdornerActive: false,
-    popoverAdornerActive: false,
-    interestAdornerActive: false,
-    isSubgrid: false,
-    showViewSourceAdorner: false,
-    showScrollAdorner: false,
-    showScrollSnapAdorner: false,
-    scrollSnapAdornerActive: false,
-    showSlotAdorner: false,
-    showCustomElementAdorner: false,
-    showStartingStyleAdorner: false,
-    startingStyleAdornerActive: false,
-    onStartingStyleAdornerClick: () => {},
-    onSlotAdornerClick: () => {},
-    onCustomElementAdornerClick: () => {},
-    topLayerIndex: -1,
-    onViewSourceAdornerClick: () => {},
-    onGutterClick: () => {},
-    onContainerAdornerClick: () => {},
-    onFlexAdornerClick: () => {},
-    onGridAdornerClick: () => {},
-    onMediaAdornerClick: () => {},
-    onPopoverAdornerClick: () => {},
-    onInterestAdornerClick: () => {},
-    onScrollSnapAdornerClick: () => {},
-    onTopLayerAdornerClick: () => {},
-    isHovered: false,
-    isSelected: false,
-    canInspect: false,
-    showAiButton: false,
-    onAiButtonClick: () => {},
-    decorations: [],
-    descendantDecorations: [],
-    decorationsTooltip: '',
-    indent: 0,
-    clearDOM: false,
-    onDblClick: () => {},
-    adTooltipId: '',
-    editorState: null,
-    editorWidth: null,
-  };
-}
-
 describe('DOMTreeElementWidget', () => {
   describe('convertUnicodeCharsToHTMLEntities', () => {
     it('converts unicode characters to HTML entities', () => {
@@ -195,7 +132,7 @@ describe('DOMTreeElementWidget', () => {
       {title: 'Descendant 1', color: 'green'},
     ];
     Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-      ...getBaseViewInput(),
+      ...Elements.DOMTreeElementWidget.emptyViewInput(),
       decorations,
       descendantDecorations,
       decorationsTooltip: 'Title',
@@ -246,7 +183,7 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         adTooltipId: 'ad-tooltip-test',
         target,
         adProvenance: {},
@@ -266,7 +203,7 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         adTooltipId: 'ad-tooltip-test',
         target,
         adProvenance: {filterlistRule: '||ads.com^'},
@@ -304,7 +241,7 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
 
       // Render the view.
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         adTooltipId: 'ad-tooltip-test',
         target,
         adProvenance: {
@@ -359,7 +296,7 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
       sinon.stub(domModel, 'getElementByRelation').resolves(undefined);
 
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         node,
       },
                                                  {}, domTarget);
@@ -399,7 +336,7 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
       const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(fakeLink);
 
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         node,
       },
                                                  {}, domTarget);
@@ -449,7 +386,7 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
       const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(fakeLink);
 
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         node,
       },
                                                  {}, domTarget);
@@ -1571,7 +1508,7 @@ describeWithEnvironment('DOMTreeElementWidget in Snapshot Mode', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         isSelected: true,
         canInspect: true,
       },
@@ -1585,7 +1522,7 @@ describeWithEnvironment('DOMTreeElementWidget in Snapshot Mode', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         isSelected: true,
         canInspect: false,
       },
@@ -1599,7 +1536,7 @@ describeWithEnvironment('DOMTreeElementWidget in Snapshot Mode', () => {
       const domTarget = document.createElement('div');
       renderElementIntoDOM(domTarget);
       Elements.DOMTreeElementWidget.DEFAULT_VIEW({
-        ...getBaseViewInput(),
+        ...Elements.DOMTreeElementWidget.emptyViewInput(),
         isSelected: false,
         canInspect: true,
       },

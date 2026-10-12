@@ -371,6 +371,74 @@ export interface ViewOutput {
   editorRef?: TextEditor.TextEditor.TextEditor;
 }
 
+/**
+ * A view input that renders no node and no adorners. The widget renders it
+ * when it is unbound so that its adorners get deregistered from the
+ * ElementsPanel; tests use it as a baseline to override individual fields.
+ */
+export function emptyViewInput(): ViewInput {
+  return {
+    node: null,
+    isClosingTag: false,
+    expanded: false,
+    isExpandable: false,
+    isXMLMimeType: false,
+    updateRecord: null,
+    onHighlightSearchResults: () => {},
+    onExpand: () => {},
+    containerAdornerActive: false,
+    flexAdornerActive: false,
+    gridAdornerActive: false,
+    popoverAdornerActive: false,
+    interestAdornerActive: false,
+    adTooltipId: '',
+    showContainerAdorner: false,
+    showFlexAdorner: false,
+    showGridAdorner: false,
+    showGridLanesAdorner: false,
+    showMediaAdorner: false,
+    showPopoverAdorner: false,
+    showInterestAdorner: false,
+    showTopLayerAdorner: false,
+    isSubgrid: false,
+    showViewSourceAdorner: false,
+    showScrollAdorner: false,
+    showScrollSnapAdorner: false,
+    topLayerIndex: -1,
+    scrollSnapAdornerActive: false,
+    onGutterClick: () => {},
+    onContainerAdornerClick: () => {},
+    onFlexAdornerClick: () => {},
+    onGridAdornerClick: () => {},
+    onMediaAdornerClick: () => {},
+    onPopoverAdornerClick: () => {},
+    onInterestAdornerClick: () => {},
+    onScrollSnapAdornerClick: () => {},
+    onTopLayerAdornerClick: () => {},
+    onViewSourceAdornerClick: () => {},
+    onSlotAdornerClick: () => {},
+    showSlotAdorner: false,
+    showCustomElementAdorner: false,
+    onCustomElementAdornerClick: () => {},
+    showStartingStyleAdorner: false,
+    startingStyleAdornerActive: false,
+    onStartingStyleAdornerClick: () => {},
+    isHovered: false,
+    isSelected: false,
+    canInspect: false,
+    showAiButton: false,
+    onAiButtonClick: () => {},
+    decorations: [],
+    descendantDecorations: [],
+    decorationsTooltip: '',
+    indent: 0,
+    clearDOM: false,
+    onDblClick: () => {},
+    editorState: null,
+    editorWidth: null,
+  };
+}
+
 export function adornerRef(): DirectiveResult {
   let adorner: Adorners.Adorner.Adorner|undefined;
   return ref(el => {
@@ -1123,7 +1191,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   #changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker;
 
   #node!: SDK.DOMModel.DOMNode;
-  #eventsBound = false;
+  #nodeEventListeners: Common.EventTarget.EventDescriptor[] = [];
   #isClosingTag = false;
   #expanded = false;
   #isExpandable = false;
@@ -1178,9 +1246,13 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   #highlights: Range[] = [];
 
   #adornersThrottler = new Common.Throttler.Throttler(100);
-  #containerAdornerActive = false;
-  #flexAdornerActive = false;
-  #gridAdornerActive = false;
+  // Whether the corresponding persistent overlay is currently shown for the node.
+  #overlayActive: Record<OverlayKind, boolean> = {
+    container: false,
+    flex: false,
+    grid: false,
+    scrollSnap: false,
+  };
   #popoverAdornerActive = false;
   get popoverAdornerActive(): boolean {
     return this.#popoverAdornerActive;
@@ -1210,7 +1282,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   onPopoverAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
   onInterestAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
 
-  #scrollSnapAdornerActive = false;
   #startingStyleAdornerActive = false;
   #layout: SDK.CSSModel.LayoutProperties|null = null;
 
@@ -1340,7 +1411,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       const universe = UI.Widget.lookupUniverseForElement(this.contentElement);
       if (universe) {
         this.#domIssuesManager = universe.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
-        if (this.#eventsBound && this.#node?.id) {
+        if (this.#nodeEventListeners.length && this.#node?.id) {
           this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
         }
       }
@@ -1502,14 +1573,14 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       onHighlightSearchResults: () => this.#highlightSearchResults(),
       onExpand: () => {},
 
-      containerAdornerActive: this.#containerAdornerActive,
+      containerAdornerActive: this.#overlayActive.container,
       adProvenance: this.node.adProvenance(),
       adTooltipId: this.#adTooltipId,
       target: this.node.domModel().target(),
       showContainerAdorner: Boolean(this.#layout?.containerType) && !isClosingTag,
       containerType: this.#layout?.containerType,
       showFlexAdorner: Boolean(this.#layout?.isFlex) && !isClosingTag,
-      flexAdornerActive: this.#flexAdornerActive,
+      flexAdornerActive: this.#overlayActive.flex,
       showGridAdorner: Boolean(this.#layout?.isGrid) && !isClosingTag,
       showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !isClosingTag,
       showMediaAdorner: this.node.isMediaNode() && !isClosingTag,
@@ -1518,7 +1589,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
           Boolean(this.node.attributes().find(attr => attr.name === 'interesttarget' || attr.name === 'interestfor')) &&
           !isClosingTag,
       showTopLayerAdorner: this.node.topLayerIndex() !== -1 && !isClosingTag,
-      gridAdornerActive: this.#gridAdornerActive,
+      gridAdornerActive: this.#overlayActive.grid,
       popoverAdornerActive: this.#popoverAdornerActive,
       interestAdornerActive: this.#interestAdornerActive,
       isSubgrid: Boolean(this.#layout?.isSubgrid),
@@ -1534,7 +1605,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       clearDOM,
       onDblClick: (event: MouseEvent) => this.#onDblClick(event),
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
-      scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
+      scrollSnapAdornerActive: this.#overlayActive.scrollSnap,
       showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
       showCustomElementAdorner: this.node.isCustomElement() && !isClosingTag,
       onCustomElementAdornerClick: this.disableEdits ? () => {} :
@@ -1554,9 +1625,10 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       topLayerIndex: this.node.topLayerIndex(),
       onViewSourceAdornerClick: this.disableEdits ? () => {} : this.revealHTMLInSources.bind(this),
       onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event) : () => {},
-      onContainerAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onContainerAdornerClick(event),
-      onFlexAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onFlexAdornerClick(event),
-      onGridAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onGridAdornerClick(event),
+      onContainerAdornerClick: this.disableEdits ? () => {} :
+                                                   (event: Event) => this.#togglePersistentOverlay('container', event),
+      onFlexAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#togglePersistentOverlay('flex', event),
+      onGridAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#togglePersistentOverlay('grid', event),
       onMediaAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onMediaAdornerClick(event),
       onPopoverAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onPopoverAdornerClick(event),
       onInterestAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onInterestAdornerClick(event),
@@ -1660,7 +1732,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     }
   }
 
-  #onContainerAdornerClick(event: Event): void {
+  #togglePersistentOverlay(kind: PersistentOverlay, event: Event): void {
     event.stopPropagation();
     const node = this.node;
     const nodeId = node.id;
@@ -1668,53 +1740,17 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
     const model = node.domModel().overlayModel();
-    if (model.isHighlightedContainerQueryInPersistentOverlay(nodeId)) {
-      model.hideContainerQueryInPersistentOverlay(nodeId);
-      this.#containerAdornerActive = false;
+    const overlay = PERSISTENT_OVERLAYS[kind];
+    const enable = !overlay.isHighlighted(model, nodeId);
+    if (enable) {
+      overlay.highlight(model, nodeId);
     } else {
-      model.highlightContainerQueryInPersistentOverlay(nodeId);
-      this.#containerAdornerActive = true;
+      overlay.hide(model, nodeId);
+    }
+    this.#overlayActive[kind] = enable;
+    // Grid overlays only count towards the badge when the element is a subgrid.
+    if (enable && (kind !== 'grid' || this.#layout?.isSubgrid)) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-    }
-    void this.updateAdorners();
-  }
-
-  #onFlexAdornerClick(event: Event): void {
-    event.stopPropagation();
-    const node = this.node;
-    const nodeId = node.id;
-    if (!nodeId) {
-      return;
-    }
-    const model = node.domModel().overlayModel();
-    if (model.isHighlightedFlexContainerInPersistentOverlay(nodeId)) {
-      model.hideFlexContainerInPersistentOverlay(nodeId);
-      this.#flexAdornerActive = false;
-    } else {
-      model.highlightFlexContainerInPersistentOverlay(nodeId);
-      this.#flexAdornerActive = true;
-      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-    }
-    void this.updateAdorners();
-  }
-
-  #onGridAdornerClick(event: Event): void {
-    event.stopPropagation();
-    const node = this.node;
-    const nodeId = node.id;
-    if (!nodeId) {
-      return;
-    }
-    const model = node.domModel().overlayModel();
-    if (model.isHighlightedGridInPersistentOverlay(nodeId)) {
-      model.hideGridInPersistentOverlay(nodeId);
-      this.#gridAdornerActive = false;
-    } else {
-      model.highlightGridInPersistentOverlay(nodeId);
-      this.#gridAdornerActive = true;
-      if (this.#layout?.isSubgrid) {
-        Badges.UserBadges.instance().recordAction(Badges.BadgeAction.MODERN_DOM_BADGE_CLICKED);
-      }
     }
     void this.updateAdorners();
   }
@@ -1784,10 +1820,6 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #onTopLayerIndexChanged(): void {
-    this.requestUpdate();
-  }
-
   onbind(): void {
     if (this.#isBound) {
       return;
@@ -1798,25 +1830,28 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   }
 
   #bindEvents(): void {
-    if (!this.#isBound || this.#isClosingTag || !this.#node || this.#eventsBound) {
+    if (!this.#isBound || this.#isClosingTag || !this.#node || this.#nodeEventListeners.length) {
       return;
     }
-    this.#eventsBound = true;
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.#onTopLayerIndexChanged, this);
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
-                                this);
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
-                                this);
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
-                                this.#onPersistentContainerQueryOverlayStateChanged, this);
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
-                                this.#onPersistentFlexContainerOverlayStateChanged, this);
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
-                                this.#onPersistentGridOverlayStateChanged, this);
-    this.#node.addEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-                                this.#onPersistentScrollSnapOverlayStateChanged, this);
-    if (this.#domIssuesManager && this.#node.id) {
-      this.#domIssuesManager.subscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
+    const {DOMNodeEvents} = SDK.DOMModel;
+    const node = this.#node;
+    const updateAdorners = (): void => void this.#updateAdorners();
+    const setOverlayActive = (kind: OverlayKind) =>
+        (event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>) => {
+          this.#overlayActive[kind] = event.data.enabled;
+          this.requestUpdate();
+        };
+    this.#nodeEventListeners = [
+      node.addEventListener(DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.requestUpdate, this),
+      node.addEventListener(DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, updateAdorners),
+      node.addEventListener(DOMNodeEvents.AD_RELATED_STATE_UPDATED, updateAdorners),
+      node.addEventListener(DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, setOverlayActive('container')),
+      node.addEventListener(DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, setOverlayActive('flex')),
+      node.addEventListener(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, setOverlayActive('grid')),
+      node.addEventListener(DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, setOverlayActive('scrollSnap')),
+    ];
+    if (this.#domIssuesManager && node.id) {
+      this.#domIssuesManager.subscribeByNodeId(node.id, this.#onDOMIssueUpdated);
     }
   }
 
@@ -1824,71 +1859,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     // Update the element to clean up adorner registrations with the
     // ElementsPanel.
     // We do not change the widget state in case the element is bound again.
-    this.#view({
-      node: null,
-      isClosingTag: false,
-      expanded: false,
-      isExpandable: false,
-      isXMLMimeType: false,
-      updateRecord: null,
-      onHighlightSearchResults: () => {},
-      onExpand: () => {},
-      containerAdornerActive: false,
-      adProvenance: undefined,
-      target: undefined,
-      adTooltipId: '',
-      showContainerAdorner: false,
-      containerType: this.#layout?.containerType,
-      showFlexAdorner: false,
-      flexAdornerActive: false,
-      showGridAdorner: false,
-      showGridLanesAdorner: false,
-      showMediaAdorner: false,
-      showPopoverAdorner: false,
-      showInterestAdorner: false,
-      showTopLayerAdorner: false,
-      gridAdornerActive: false,
-      popoverAdornerActive: false,
-      interestAdornerActive: false,
-      isSubgrid: false,
-      showViewSourceAdorner: false,
-      showScrollAdorner: false,
-      showScrollSnapAdorner: false,
-      scrollSnapAdornerActive: false,
-      showSlotAdorner: false,
-      showCustomElementAdorner: false,
-      showStartingStyleAdorner: false,
-      startingStyleAdornerActive: false,
-      onStartingStyleAdornerClick: () => {},
-      onSlotAdornerClick: () => {},
-      onCustomElementAdornerClick: () => {},
-      topLayerIndex: -1,
-      onViewSourceAdornerClick: () => {},
-      onGutterClick: () => {},
-      onContainerAdornerClick: () => {},
-      onFlexAdornerClick: () => {},
-      onGridAdornerClick: () => {},
-      onMediaAdornerClick: () => {},
-      onPopoverAdornerClick: () => {},
-      onInterestAdornerClick: () => {},
-      onScrollSnapAdornerClick: () => {},
-      onTopLayerAdornerClick: () => {},
-      isHovered: false,
-      isSelected: false,
-      canInspect: false,
-      showAiButton: false,
-      onAiButtonClick: () => {},
-      decorations: [],
-      descendantDecorations: [],
-      decorationsTooltip: '',
-      indent: 0,
-      clearDOM: false,
-      onDblClick: () => {},
-      editorState: null,
-      editorWidth: null,
-      issues: [],
-    },
-               {}, this.contentElement);
+    this.#view(emptyViewInput(), {}, this.contentElement);
   }
 
   onunbind(): void {
@@ -1906,60 +1877,19 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
   #unbindEvents(): void {
     this.#implicitAnchorCandidatesPromise = null;
     this.#activePopoverInvokerId = null;
-    if (!this.#eventsBound || !this.#node) {
+    if (!this.#nodeEventListeners.length || !this.#node) {
       return;
     }
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.#onTopLayerIndexChanged,
-                                   this);
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated,
-                                   this);
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated,
-                                   this);
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
-                                   this.#onPersistentContainerQueryOverlayStateChanged, this);
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
-                                   this.#onPersistentFlexContainerOverlayStateChanged, this);
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
-                                   this.#onPersistentGridOverlayStateChanged, this);
-    this.#node.removeEventListener(SDK.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
-                                   this.#onPersistentScrollSnapOverlayStateChanged, this);
+    Common.EventTarget.removeEventListeners(this.#nodeEventListeners);
+    this.#nodeEventListeners = [];
     if (this.#domIssuesManager && this.#node.id) {
       this.#domIssuesManager.unsubscribeByNodeId(this.#node.id, this.#onDOMIssueUpdated);
     }
-    this.#eventsBound = false;
   }
 
   #onDOMIssueUpdated = (): void => {
     this.performUpdate();
   };
-
-  #onScrollableFlagUpdated(): void {
-    void this.#updateAdorners();
-  }
-
-  #onAdRelatedStateUpdated(): void {
-    void this.#updateAdorners();
-  }
-
-  #onPersistentContainerQueryOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
-    this.#containerAdornerActive = event.data.enabled;
-    this.requestUpdate();
-  }
-
-  #onPersistentFlexContainerOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
-    this.#flexAdornerActive = event.data.enabled;
-    this.requestUpdate();
-  }
-
-  #onPersistentGridOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
-    this.#gridAdornerActive = event.data.enabled;
-    this.requestUpdate();
-  }
-
-  #onPersistentScrollSnapOverlayStateChanged(event: Common.EventTarget.EventTargetEvent<{enabled: boolean}>): void {
-    this.#scrollSnapAdornerActive = event.data.enabled;
-    this.requestUpdate();
-  }
 
   #onScrollSnapAdornerClick(event: Event): void {
     event.stopPropagation();
@@ -1969,7 +1899,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
     const model = node.domModel().overlayModel();
-    if (this.#scrollSnapAdornerActive) {
+    if (this.#overlayActive.scrollSnap) {
       model.hideScrollSnapInPersistentOverlay(nodeId);
     } else {
       model.highlightScrollSnapInPersistentOverlay(nodeId);
@@ -3021,6 +2951,34 @@ export interface EditorHandles {
   cancel: () => void;
   resize: () => void;
 }
+
+type PersistentOverlay = 'container'|'flex'|'grid';
+/** Overlays whose adorner reflects whether the overlay is currently shown. */
+type OverlayKind = PersistentOverlay|'scrollSnap';
+
+interface PersistentOverlayOperations {
+  isHighlighted(model: SDK.OverlayModel.OverlayModel, nodeId: Protocol.DOM.NodeId): boolean;
+  highlight(model: SDK.OverlayModel.OverlayModel, nodeId: Protocol.DOM.NodeId): void;
+  hide(model: SDK.OverlayModel.OverlayModel, nodeId: Protocol.DOM.NodeId): void;
+}
+
+const PERSISTENT_OVERLAYS: Record<PersistentOverlay, PersistentOverlayOperations> = {
+  container: {
+    isHighlighted: (model, nodeId) => model.isHighlightedContainerQueryInPersistentOverlay(nodeId),
+    highlight: (model, nodeId) => model.highlightContainerQueryInPersistentOverlay(nodeId),
+    hide: (model, nodeId) => model.hideContainerQueryInPersistentOverlay(nodeId),
+  },
+  flex: {
+    isHighlighted: (model, nodeId) => model.isHighlightedFlexContainerInPersistentOverlay(nodeId),
+    highlight: (model, nodeId) => model.highlightFlexContainerInPersistentOverlay(nodeId),
+    hide: (model, nodeId) => model.hideFlexContainerInPersistentOverlay(nodeId),
+  },
+  grid: {
+    isHighlighted: (model, nodeId) => model.isHighlightedGridInPersistentOverlay(nodeId),
+    highlight: (model, nodeId) => model.highlightGridInPersistentOverlay(nodeId),
+    hide: (model, nodeId) => model.hideGridInPersistentOverlay(nodeId),
+  },
+};
 
 /**
  * As a privacy measure we are logging elements tree outline as a flat list where every tree item is a

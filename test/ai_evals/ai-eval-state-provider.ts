@@ -166,14 +166,56 @@ export class AiEvalStateProvider extends StateProvider {
     return new InspectedPage(page, serverPort);
   }
 
-  override async createState(suite: Mocha.Suite): Promise<AiEvalState> {
-    const baseState = await super.createState(suite);
-    let evalConfig: AiEvalConfig|undefined;
+  #resolveEvalConfig(suite: Mocha.Suite): AiEvalConfig|undefined {
     for (let currentSuite: Mocha.Suite|undefined = suite; currentSuite; currentSuite = currentSuite.parent) {
-      evalConfig = this.#suiteToEvalConfig.get(currentSuite);
+      const evalConfig = this.#suiteToEvalConfig.get(currentSuite);
       if (evalConfig) {
-        break;
+        return evalConfig;
       }
+    }
+    return undefined;
+  }
+
+  #recordPreparationFailure(evalConfig: AiEvalConfig, startTime: number, error: unknown): void {
+    const normalizedError = error instanceof Error ? error : new Error(String(error));
+    const errorMessage = this.#logger.formatError(normalizedError);
+    this.#logger.taskError(evalConfig.taskId, errorMessage);
+    handleTaskFailure({
+      runId: this.#runId,
+      taskId: evalConfig.taskId,
+      label: evalConfig.label,
+      phase: 'Preparation',
+      durationSeconds: Number(((performance.now() - startTime) / 1000).toFixed(2)),
+      logger: this.#logger,
+      taskStatuses: this.#taskStatuses,
+      errorMessage,
+    });
+  }
+
+  override async prepareSuite(suite: Mocha.Suite): Promise<void> {
+    const startTime = performance.now();
+    try {
+      await super.prepareSuite(suite);
+    } catch (error) {
+      const evalConfig = this.#resolveEvalConfig(suite);
+      if (evalConfig) {
+        this.#recordPreparationFailure(evalConfig, startTime, error);
+      }
+      throw error;
+    }
+  }
+
+  override async createState(suite: Mocha.Suite): Promise<AiEvalState> {
+    const startTime = performance.now();
+    const evalConfig = this.#resolveEvalConfig(suite);
+    let baseState: E2EState;
+    try {
+      baseState = await super.createState(suite);
+    } catch (error) {
+      if (evalConfig) {
+        this.#recordPreparationFailure(evalConfig, startTime, error);
+      }
+      throw error;
     }
     const evalTask = new EvalTaskHandle(
         evalConfig ?? {label: suite.title, taskId: suite.title},

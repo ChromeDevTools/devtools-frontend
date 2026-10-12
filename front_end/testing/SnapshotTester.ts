@@ -5,6 +5,8 @@
 /**
  * Asserts two strings are equal, and logs the first differing line if not equal.
  */
+
+import type * as Mocha from 'mocha';
 function assertSnapshotContent(actual: string, expected: string): void {
   if (actual !== expected) {
     const actualLines = actual.split('\n');

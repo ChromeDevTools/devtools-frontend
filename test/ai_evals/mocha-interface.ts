@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Mocha from 'mocha';
+
 import {createMochaInterface} from '../conductor/mocha-interface.js';
 
 import {type AiEvalState, AiEvalStateProvider} from './ai-eval-state-provider.js';

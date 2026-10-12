@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as Mocha from 'mocha';
+import {describe, it} from 'mocha';
 
 import {
   checkForDuplicateTests,

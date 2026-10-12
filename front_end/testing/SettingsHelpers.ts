@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {afterEach, beforeEach} from 'mocha';
+
 import * as Common from '../core/common/common.js';
 
 function createSettingValue(category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,

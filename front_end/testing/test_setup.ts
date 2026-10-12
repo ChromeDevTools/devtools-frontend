@@ -9,6 +9,7 @@
 
 import '../third_party/chromium/ahem/ahem.js';
 
+import {afterEach, before, beforeEach} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../core/common/common.js';

@@ -717,6 +717,7 @@ export default function(config: any): void {
       '/locales': `/base/${targetDir}/front_end/core/i18n/locales`,
       '/front_end': `/base/${targetDir}/front_end`,
       '/chai': `/base/${devToolsRoot}/node_modules/chai`,
+      '/mocha': `/base/${targetDir}/test/unit`,
       '/sinon': `/base/${devToolsRoot}/node_modules/sinon`,
     },
 

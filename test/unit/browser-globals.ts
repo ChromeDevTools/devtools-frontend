@@ -48,7 +48,7 @@ declare global {
     __karma__: Karma;
     mocha: BrowserMocha;
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    Mocha: MochaGlobalsNamespace;
+    Mocha: typeof Mocha&MochaGlobalsNamespace;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __coverage__?: unknown;
   }

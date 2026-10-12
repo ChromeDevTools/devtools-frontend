@@ -117,26 +117,45 @@ export function getContentType(filePath: string): string {
   return 'text/plain; charset=utf-8';
 }
 
+const MAX_UPLOAD_ATTEMPTS = 3;
+
 /**
  * Uploads a local file to GCS using system gcloud CLI.
  */
 function uploadFileToGCS(localFilePath: string, destination: string, contentType?: string): boolean {
   console.log(`[GCS] Preparing upload of ${localFilePath} to ${destination}`);
+  const type = contentType ?? getContentType(destination);
+  const command = [
+    'gcloud storage cp',
+    '--quiet',
+    `--content-type="${type}"`,
+    `"${localFilePath}"`,
+    `"${destination}"`,
+  ].join(' ');
 
-  try {
-    const type = contentType ?? getContentType(destination);
-    const command = `gcloud storage cp --content-type="${type}" "${localFilePath}" "${destination}"`;
-    execSync(command, {
-      stdio: 'inherit',
-    });
-
-    console.log('[GCS] ✅ Upload successful!');
-    return true;
-  } catch (error) {
-    console.error(`[GCS] ❌ Failed to upload to ${destination}. Ensure you are logged in via 'gcloud auth login'.`);
-    console.error(error);
-    return false;
+  for (let attempt = 1; attempt <= MAX_UPLOAD_ATTEMPTS; attempt++) {
+    try {
+      execSync(command, {
+        env: {
+          ...process.env,
+          CLOUDSDK_STORAGE_PROCESS_COUNT: '1',
+          CLOUDSDK_STORAGE_THREAD_COUNT: '1',
+        },
+        stdio: ['ignore', 'inherit', 'inherit'],
+        timeout: 30_000,
+      });
+      console.log('[GCS] ✅ Upload successful!');
+      return true;
+    } catch (error) {
+      if (attempt < MAX_UPLOAD_ATTEMPTS) {
+        console.warn(`[GCS] ⚠️ Upload attempt ${attempt}/${MAX_UPLOAD_ATTEMPTS} failed for ${destination}; retrying...`);
+        continue;
+      }
+      console.error(`[GCS] ❌ Failed to upload to ${destination}. Ensure you are logged in via 'gcloud auth login'.`);
+      console.error(error);
+    }
   }
+  return false;
 }
 
 /**

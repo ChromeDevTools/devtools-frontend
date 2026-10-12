@@ -129,20 +129,29 @@ export class Launcher {
   static async browserSetup(settings: BrowserSettings, serverPort: number): Promise<BrowserWrapper> {
     const browser = await Launcher.launchChrome(settings, serverPort);
     setupBrowserProcessIO(browser);
-    const wrapper = new BrowserWrapper(browser);
-    if (settings.extensions && settings.extensions.length > 0) {
-      for (const extPath of settings.extensions) {
-        await wrapper.browser.installExtension(extPath, {
-          enabledInIncognito: true,
-        });
+    try {
+      const wrapper = new BrowserWrapper(browser);
+      if (settings.extensions && settings.extensions.length > 0) {
+        for (const extPath of settings.extensions) {
+          await wrapper.browser.installExtension(extPath, {
+            enabledInIncognito: true,
+          });
+        }
       }
+      if (settings.chromeUsername) {
+        const loginPage = await wrapper.browser.newPage();
+        try {
+          await chromeLogin(loginPage, settings.chromeUsername);
+          await configureDevToolsPreferences(loginPage);
+        } finally {
+          await loginPage.close().catch(() => {});
+        }
+      }
+      return wrapper;
+    } catch (error) {
+      await browser.close().catch(() => {});
+      throw error;
     }
-    if (settings.chromeUsername) {
-      const loginPage = await wrapper.browser.newPage();
-      await chromeLogin(loginPage, settings.chromeUsername);
-      await configureDevToolsPreferences(loginPage);
-    }
-    return wrapper;
   }
 
   static async launchChrome(settings: BrowserSettings, serverPort: number): Promise<puppeteer.Browser> {

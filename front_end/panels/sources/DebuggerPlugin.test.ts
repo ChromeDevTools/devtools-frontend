@@ -15,7 +15,9 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {spyCall} from '../../testing/ExpectStubCall.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
@@ -1097,6 +1099,60 @@ globalThis.foo = bar + baz;
 
       propRequest.hide?.();
       assert.isNull(editor.editor.contentDOM.querySelector('.cm-evaluatedExpression'));
+      plugin.dispose();
+    });
+  });
+
+  describeWithEnvironment('breakpoint gutter markers', () => {
+    it('updates the condition tooltip when the condition of a breakpoint is edited', async () => {
+      const backend = new MockDebuggerBackend();
+      const {breakpointManager} = backend.universe;
+      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+          .returns(backend.universe.debuggerWorkspaceBinding);
+      sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+      sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+      sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance')
+          .returns(sinon.createStubInstance(UI.ShortcutRegistry.ShortcutRegistry, {
+            getShortcutListener: () => {},
+          }));
+      sinon.stub(Sources.SourcesPanel.SourcesPanel, 'instance')
+          .returns(sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
+      sinon.stub(Breakpoints.BreakpointManager.BreakpointManager, 'instance').returns(breakpointManager);
+
+      const source = 'const x = 1;\nconsole.log(x);\n';
+      const {uiSourceCode} = createContentProviderUISourceCode({
+        url: urlString`http://example.com/script.js`,
+        mimeType: 'text/javascript',
+        content: source,
+        universe: backend.universe,
+      });
+      const breakpoint = await breakpointManager.setBreakpoint(
+          uiSourceCode, 1, 0, 'x === 1' as Breakpoints.BreakpointManager.UserCondition, /* enabled */ true,
+          /* isLogpoint */ false, Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
+      assert.exists(breakpoint);
+
+      const plugin = new Sources.DebuggerPlugin.DebuggerPlugin(uiSourceCode, {
+        editorLocationToUILocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+        uiLocationToEditorLocation: (lineNumber: number, columnNumber?: number) =>
+            ({lineNumber, columnNumber: columnNumber ?? 0}),
+      });
+      const editor =
+          new TextEditor.TextEditor.TextEditor(makeState(source, [CodeMirror.lineNumbers(), plugin.editorExtension()]));
+      renderElementIntoDOM(editor);
+      const conditionTooltipText = () =>
+          editor.editor.dom.querySelector('.cm-breakpoint-conditional devtools-tooltip')?.textContent;
+
+      let breakpointDecorationsDispatched = spyCall(editor, 'dispatch');
+      plugin.editorInitialized(editor);
+      await breakpointDecorationsDispatched;
+      assert.strictEqual(conditionTooltipText(), 'x === 1');
+
+      breakpointDecorationsDispatched = spyCall(editor, 'dispatch');
+      breakpoint.setCondition('x === 2' as Breakpoints.BreakpointManager.UserCondition, /* isLogpoint */ false);
+      await breakpointDecorationsDispatched;
+      assert.strictEqual(conditionTooltipText(), 'x === 2');
+
       plugin.dispose();
     });
   });

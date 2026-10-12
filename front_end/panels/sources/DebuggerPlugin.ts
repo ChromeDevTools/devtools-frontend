@@ -1913,7 +1913,9 @@ class BreakpointGutterMarker extends CodeMirror.GutterMarker {
   }
 
   override eq(other: BreakpointGutterMarker): boolean {
-    return other.elementClass === this.elementClass;
+    // The condition is rendered into the tooltip, so it has to be part of the
+    // equality check. Otherwise CodeMirror keeps the stale DOM around.
+    return other.elementClass === this.elementClass && other.condition === this.condition;
   }
 
   override toDOM(view: CodeMirror.EditorView): Node {

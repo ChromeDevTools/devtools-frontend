@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
-
 /*
  * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
  * Copyright (C) 2008 Matt Lilek <webkit@mattlilek.com>
@@ -931,6 +929,36 @@ function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DO
   return {};
 }
 
+interface IssuePopoverViewInput {
+  issues: DOMTreeElementWidget['issues'];
+}
+
+/**
+ * Renders the content of the popover shown when hovering an element or
+ * attribute that has associated issues.
+ */
+const ISSUE_POPOVER_VIEW = (input: IssuePopoverViewInput, _output: object, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <div class="squiggles-content">
+      ${input.issues.map(issue => {
+        const elementIssueDetails = getElementIssueDetails(issue);
+        if (!elementIssueDetails) {
+          return nothing;
+        }
+        const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
+        const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
+        return html`
+          <div class="squiggles-content-item">
+            <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
+            <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
+            <span>${elementIssueDetails.tooltip}</span>
+          </div>`;
+      })}
+    </div>`, target);
+  // clang-format on
+};
+
 /**
  * Presenter for the DOM tree shown in the Elements panel. Renders the tree
  * declaratively via `<devtools-tree>` and `ElementsTreeWidget`.
@@ -1204,25 +1232,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         box: hoveredNode.boxInWindow(),
         show: async (popover: UI.GlassPane.GlassPane) => {
           popover.setIgnoreLeftMargin(true);
-          // clang-format off
-          render(html`
-            <div class="squiggles-content">
-              ${issues.map(issue => {
-            const elementIssueDetails = getElementIssueDetails(issue);
-            if (!elementIssueDetails) {
-              return nothing;
-            }
-            const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
-            return html`
-                  <div class="squiggles-content-item">
-                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
-                  <span>${elementIssueDetails.tooltip}</span>
-                  </div>`;
-          })}
-            </div>`, popover.contentElement);
-          // clang-format on
+          ISSUE_POPOVER_VIEW({issues}, {}, popover.contentElement);
           return true;
         },
       };

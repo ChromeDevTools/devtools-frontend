@@ -514,6 +514,9 @@ function resetSettings() {
 // ../../front_end/ui/settings/SourcesSettings.ts
 var SourcesSettings_exports = {};
 __export(SourcesSettings_exports, {
+  allowScrollPastEofSettingDescriptor: () => allowScrollPastEofSettingDescriptor,
+  autoFocusOnDebuggerPausedEnabledSettingDescriptor: () => autoFocusOnDebuggerPausedEnabledSettingDescriptor,
+  autoPrettyPrintMinifiedSettingDescriptor: () => autoPrettyPrintMinifiedSettingDescriptor,
   autoRevealInNavigatorSettingDescriptor: () => autoRevealInNavigatorSettingDescriptor,
   inlineVariableValuesSettingDescriptor: () => inlineVariableValuesSettingDescriptor,
   navigatorGroupByAuthoredSettingDescriptor: () => navigatorGroupByAuthoredSettingDescriptor,
@@ -606,6 +609,24 @@ var sourcesWordWrapSettingDescriptor = {
 };
 var inlineVariableValuesSettingDescriptor = {
   name: "inline-variable-values",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var autoFocusOnDebuggerPausedEnabledSettingDescriptor = {
+  name: "auto-focus-on-debugger-paused-enabled",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var autoPrettyPrintMinifiedSettingDescriptor = {
+  name: "auto-pretty-print-minified",
+  type: Common9.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common9.Settings.SettingStorageType.SYNCED
+};
+var allowScrollPastEofSettingDescriptor = {
+  name: "allow-scroll-past-eof",
   type: Common9.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   storageType: Common9.Settings.SettingStorageType.SYNCED

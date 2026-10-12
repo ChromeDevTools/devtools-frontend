@@ -14520,35 +14520,23 @@ __export(SkillRegistry_exports, {
   SKILLS: () => SKILLS
 });
 
-// gen/front_end/models/ai_assistance/skills/accessibility.skill.js
+// gen/front_end/models/ai_assistance/skills/lighthouse.skill.js
 var skill = {
-  "name": "accessibility",
-  "description": "Accessibility audits, running Lighthouse accessibility audits and reports, ARIA properties, accessible tree inspection, color contrast, and screen reader semantics.",
+  "name": "lighthouse",
+  "description": "Analyzing an active Lighthouse report context, running Lighthouse reports and audits (performance, accessibility, best practices, Search Engine Optimization (SEO)), accessibility audits, ARIA properties, accessible tree inspection, color contrast, and screen reader semantics. Not for general page performance measurement without a Lighthouse report; use the performance skill for that.",
   "allowedTools": [
+    "runLighthouse",
     "getLighthouseAudits",
     "resolveDevtoolsNodePath",
     "getStyles",
     "getElementAccessibilityDetails",
-    "runLighthouse",
     "executeJavaScript"
   ],
-  "instructions": 'You are an expert accessibility debugging assistant.\n\n# Tools & Workflow\n\n1. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails`)**:\n   - For inspecting an element, ALWAYS call `getElementAccessibilityDetails` on its backend node ID.\n   - It retrieves the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Use `getStyles` on the backend node ID to inspect layout, color contrast, or font properties.\n\n2. **Lighthouse Accessibility Audits (`getLighthouseAudits` & `runLighthouse`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer questions about failing accessibility audits, you must first call `getLighthouseAudits` with `categoryId: \'accessibility\'` to fetch the full details. Never reply using only the initial summary.\n   - If the user asks for a Lighthouse audit or report (such as recording a report or checking accessibility scores), or if audits are needed:\n     - If an active Lighthouse report context already exists and no fresh audit is requested, query it via `getLighthouseAudits` with `categoryId: \'accessibility\'`.\n     - If no active report exists or a fresh audit is requested, use `runLighthouse` with `categoryId: \'accessibility\'`:\n       - Use `"navigation"` mode for full page-load audits.\n       - Use `"snapshot"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n       - Use `"timespan"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n   - When an audit references failing elements by DevTools node path (e.g. `"1,HTML,1,BODY,2,BUTTON"`), use `resolveDevtoolsNodePath` to resolve the path to a `backendNodeId`, then call `getElementAccessibilityDetails` or `getStyles`.\n\n3. **Dynamic Interaction Verification (`executeJavaScript`)**:\n   - Use `executeJavaScript` only to trigger keyboard events, dispatch focus changes, or simulate user interactions when testing dynamic accessibility behaviors.'
-};
-
-// gen/front_end/models/ai_assistance/skills/lighthouse.skill.js
-var skill2 = {
-  "name": "lighthouse",
-  "description": "Running Lighthouse reports and audits when the user explicitly asks for Lighthouse, a Lighthouse score, or a multi-category audit (accessibility, best practices, Search Engine Optimization (SEO)). Not for general page performance measurement; use the performance skill for that.",
-  "allowedTools": [
-    "runLighthouse",
-    "getLighthouseAudits",
-    "resolveDevtoolsNodePath"
-  ],
-  "instructions": "You are an expert web quality and audit assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer questions about failing audits or how to improve a score, you must first call `getLighthouseAudits` for the relevant category to fetch the full details. Never reply using only the initial summary.\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report or multiple categories, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID.\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n\n2. **Resolving Node References (`resolveDevtoolsNodePath`)**:\n   - When an audit references failing elements by DevTools node path (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), use `resolveDevtoolsNodePath` to resolve the path to a `backendNodeId` to identify the failing element (or inspect it using tools from other skills if active).\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data. Never fabricate audit scores or results.\n- For performance-only questions (e.g. loading speed, Core Web Vitals), do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
+  "instructions": "You are an expert web quality, Lighthouse audit, and accessibility debugging assistant integrated into Chrome DevTools.\nYour role is to evaluate websites using Lighthouse audits across performance, accessibility, best practices, and SEO, and to inspect live DOM elements for accessibility and styling fixes.\n\n# Tools & Workflow\n\n1. **Lighthouse Audits (`runLighthouse` & `getLighthouseAudits`)**:\n   - The Lighthouse report context contains only category scores and failing audit titles. To answer any question about a Lighthouse run, failing audits, or how to improve a score, you MUST call `getLighthouseAudits` for the relevant category to fetch the full audit details. Never reply using only the initial summary.\n   - If an active Lighthouse report context already exists and no fresh audit is requested:\n     - To inspect the entire report, multiple categories, or general opportunities to improve the score, call `getLighthouseAudits` with `categoryId: 'all'`.\n     - For a specific category, call `getLighthouseAudits` with the corresponding category ID (e.g. `'performance'`, `'accessibility'`, `'best-practices'`, `'seo'`).\n   - If no active report exists or a fresh audit is requested, call `runLighthouse`:\n     - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.\n     - For a single category, pass that category ID (e.g. `'accessibility'`).\n     - Execution mode:\n       - Use `\"navigation\"` mode for full page-load audits (default for full site reviews).\n       - Use `\"snapshot\"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n       - Use `\"timespan\"` mode for user interaction flows.\n       - Always honor explicit mode requests from the user.\n     - **CRITICAL**: `runLighthouse` only records the report and returns `\"Lighthouse audit completed\"` without audit details. Immediately after `runLighthouse` completes, you MUST call `getLighthouseAudits` (with the matching `categoryId`) to retrieve the audit results before responding.\n\n2. **Resolving & Inspecting Failing Audit Elements (`resolveDevtoolsNodePath`, `getStyles`, `getElementAccessibilityDetails`)**:\n   - `getLighthouseAudits` only returns static HTML snippets and DevTools `node path` strings (e.g. `\"1,HTML,1,BODY,2,BUTTON\"`), not live CSS rules, rendered dimensions, or accessibility tree state.\n   - Whenever failing audits reference specific page elements by `node path` (excluding document-level `\"1,HTML\"` landmark checks) and those elements have not yet been resolved and inspected in the conversation:\n     1. Deduplicate `node path` strings first so an element referenced across multiple failing audits is only resolved once.\n     2. You MUST call `resolveDevtoolsNodePath` for each unique failing element's `node path` to obtain its `backendNodeId`. Never guess `backendNodeId` numbers; only pass `backendNodeId` values provided by the active context or returned by `resolveDevtoolsNodePath`.\n     3. You MUST then inspect those `backendNodeId`s using dedicated tools before answering:\n        - Call `getStyles` on the `backendNodeId` for sizing/layout audits (such as `unsized-images` to find the actual rendered CSS `width` and `height`), color contrast, or link styling (`link-in-text-block`).\n        - Call `getElementAccessibilityDetails` on the `backendNodeId` for accessibility, ARIA, role, or accessible name audits (such as `button-name`).\n   - Never guess CSS dimensions, styles, or ARIA properties from the static HTML snippet alone, and never use `executeJavaScript` (`document.querySelector`) as a substitute for `resolveDevtoolsNodePath`, `getStyles`, or `getElementAccessibilityDetails`.\n\n3. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails` & `getStyles`)**:\n   - When inspecting a selected DOM element for accessibility, ALWAYS call `getElementAccessibilityDetails` on its `backendNodeId` to retrieve the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Call `getStyles` on the `backendNodeId` to inspect layout, color contrast, or font properties when relevant.\n\n4. **Supplementary DOM & Dynamic Interaction Checks (`executeJavaScript`)**:\n   - Only after calling `resolveDevtoolsNodePath`, `getStyles`, and `getElementAccessibilityDetails` on failing elements with a `node path`, you may use `executeJavaScript` if you need supplementary DOM state not available from single-node tools (such as `<head>` `<meta>` tags, `document.body.children` for `<main>` landmarks, parent element computed styles, or pseudo-element styles) or to test dynamic keyboard/focus interactions.\n\n# Considerations\n\n- Base all analysis on empirical Lighthouse audit data and live element inspection. Never fabricate audit scores or results.\n- For performance-only questions (e.g. loading speed, Core Web Vitals) when no Lighthouse report is active, do not run Lighthouse unless the user mentions Lighthouse or a Lighthouse score. Record a performance trace with the performance skill instead.\n- When summarizing a full Lighthouse run, highlight overall category scores first, then detail failing audits (score < 90)."
 };
 
 // gen/front_end/models/ai_assistance/skills/network.skill.js
-var skill3 = {
+var skill2 = {
   "name": "network",
   "description": "Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.",
   "allowedTools": [
@@ -14559,7 +14547,7 @@ var skill3 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
-var skill4 = {
+var skill3 = {
   "name": "performance",
   "description": "Default skill for any page performance question. Measuring, testing, or debugging how fast a page loads or responds, Core Web Vitals (LCP, INP, CLS), recording performance traces, and trace analysis.",
   "allowedTools": [
@@ -14577,7 +14565,7 @@ var skill4 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/sources.skill.js
-var skill5 = {
+var skill4 = {
   "name": "sources",
   "description": "Analyzing workspace sources, inspecting code files, reading script contents, and viewing files in the workspace.",
   "allowedTools": [
@@ -14588,7 +14576,7 @@ var skill5 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/storage.skill.js
-var skill6 = {
+var skill5 = {
   "name": "storage",
   "description": "Inspect, understand, and audit the state stored in browser storage (LocalStorage, SessionStorage) and cookies.",
   "allowedTools": [
@@ -14603,7 +14591,7 @@ var skill6 = {
 };
 
 // gen/front_end/models/ai_assistance/skills/styling.skill.js
-var skill7 = {
+var skill6 = {
   "name": "styling",
   "description": "CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
   "allowedTools": [
@@ -14615,20 +14603,18 @@ var skill7 = {
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
 var SKILLS = {
-  styling: skill7,
-  network: skill3,
-  accessibility: skill,
-  performance: skill4,
-  storage: skill6,
-  sources: skill5,
-  lighthouse: skill2
+  styling: skill6,
+  network: skill2,
+  performance: skill3,
+  storage: skill5,
+  sources: skill4,
+  lighthouse: skill
 };
 
 // ../../front_end/models/ai_assistance/AiAgent2.ts
 var SKILL_DISPLAY_NAMES = {
   styling: "CSS and styling",
   network: "Network requests",
-  accessibility: "Accessibility",
   performance: "Performance",
   storage: "Storage",
   sources: "Sources",
@@ -14814,7 +14800,7 @@ QUERY: ${query}`;
     if (unloadedSkills.length === 0) {
       return enhancedQuery;
     }
-    const skillsManifest = unloadedSkills.map(([name, skill8]) => `- ${name}: ${skill8.description}`).join("\n");
+    const skillsManifest = unloadedSkills.map(([name, skill7]) => `- ${name}: ${skill7.description}`).join("\n");
     return `Available skills that are not yet loaded:
 ${skillsManifest}
 

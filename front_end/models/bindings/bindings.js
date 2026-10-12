@@ -5605,8 +5605,10 @@ var ModelData = class {
 var DebuggerWorkspaceBinding_exports = {};
 __export(DebuggerWorkspaceBinding_exports, {
   DebuggerWorkspaceBinding: () => DebuggerWorkspaceBinding,
-  Location: () => Location
+  Location: () => Location,
+  wasmAutoSteppingSettingDescriptor: () => wasmAutoSteppingSettingDescriptor
 });
+import * as Common11 from "../../core/common/common.js";
 import * as Platform6 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
 import * as SDK12 from "../../core/sdk/sdk.js";
@@ -5638,6 +5640,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
       true
       /* isServiceProject */
     );
+    NetworkProject.setTargetForProject(this.#project, debuggerModel.target());
     this.#eventListeners = [
       debuggerModel.addEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
       debuggerModel.addEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
@@ -5657,12 +5660,15 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   }
   static scriptForUISourceCode(uiSourceCode) {
     for (const defaultScriptMapping of defaultScriptMappings) {
-      const script = defaultScriptMapping.#uiSourceCodeToScript.get(uiSourceCode);
-      if (script !== void 0) {
+      const script = defaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+      if (script !== null) {
         return script;
       }
     }
     return null;
+  }
+  scriptForUISourceCode(uiSourceCode) {
+    return this.#uiSourceCodeToScript.get(uiSourceCode) ?? null;
   }
   uiSourceCodeForScript(script) {
     return this.#scriptToUISourceCode.get(script) ?? null;
@@ -6297,6 +6303,12 @@ var Events2 = /* @__PURE__ */ ((Events3) => {
 })(Events2 || {});
 
 // ../../front_end/models/bindings/DebuggerWorkspaceBinding.ts
+var wasmAutoSteppingSettingDescriptor = {
+  name: "wasm-auto-stepping",
+  type: Common11.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common11.Settings.SettingStorageType.LOCAL
+};
 var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   resourceMapping;
   #debuggerModelToData;
@@ -6654,6 +6666,10 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const scripts = /* @__PURE__ */ new Set();
     this.pluginManager.scriptsForUISourceCode(uiSourceCode).forEach((script) => scripts.add(script));
     for (const modelData of this.#debuggerModelToData.values()) {
+      const defaultScript = modelData.defaultMapping.scriptForUISourceCode(uiSourceCode);
+      if (defaultScript) {
+        scripts.add(defaultScript);
+      }
       const resourceScriptFile = modelData.getResourceScriptMapping().scriptFile(uiSourceCode);
       if (resourceScriptFile?.script) {
         scripts.add(resourceScriptFile.script);
@@ -6702,7 +6718,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     const autoSteppingContext = context?.mode === SDK12.DebuggerModel.StepMode.STEP_OVER ? context.callFrames[0]?.functionLocation() : null;
     const { callFrames: [frame] } = debuggerPausedDetails;
     const functionLocation = frame.functionLocation();
-    if (!autoSteppingContext || debuggerPausedDetails.reason !== Debugger.PausedEventReason.Step || !functionLocation || !this.#settings.moduleSetting("wasm-auto-stepping").get() || !this.pluginManager.hasPluginForScript(frame.script)) {
+    if (!autoSteppingContext || debuggerPausedDetails.reason !== Debugger.PausedEventReason.Step || !functionLocation || !this.#settings.resolve(wasmAutoSteppingSettingDescriptor).get() || !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }
     const uiLocation = await this.pluginManager.rawLocationToUILocation(frame.location());
@@ -6735,7 +6751,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
 var ModelData2 = class {
   #debuggerModel;
   #debuggerWorkspaceBinding;
-  #defaultMapping;
+  defaultMapping;
   #resourceMapping;
   #resourceScriptMapping;
   compilerMapping;
@@ -6744,7 +6760,7 @@ var ModelData2 = class {
     this.#debuggerModel = debuggerModel;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     const { workspace } = debuggerWorkspaceBinding.resourceMapping;
-    this.#defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this.defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this.#resourceMapping = debuggerWorkspaceBinding.resourceMapping;
     this.#resourceScriptMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this.compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
@@ -6774,28 +6790,28 @@ var ModelData2 = class {
   #nonCompilerRawLocationToUILocation(rawLocation) {
     let uiLocation = this.#resourceScriptMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this.#resourceMapping.jsLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || this.#defaultMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.defaultMapping.rawLocationToUILocation(rawLocation);
     return uiLocation;
   }
   uiSourceCodeForScript(script) {
     let uiSourceCode = null;
     uiSourceCode = uiSourceCode || this.#resourceScriptMapping.uiSourceCodeForScript(script);
     uiSourceCode = uiSourceCode || this.#resourceMapping.uiSourceCodeForScript(script);
-    uiSourceCode = uiSourceCode || this.#defaultMapping.uiSourceCodeForScript(script);
+    uiSourceCode = uiSourceCode || this.defaultMapping.uiSourceCodeForScript(script);
     return uiSourceCode;
   }
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber = 0) {
     let locations = this.compilerMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ? locations : this.#resourceScriptMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ? locations : this.#resourceMapping.uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
-    locations = locations.length ? locations : this.#defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    locations = locations.length ? locations : this.defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     return locations;
   }
   uiLocationRangeToRawLocationRanges(uiSourceCode, textRange) {
     let ranges = this.compilerMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     ranges ??= this.#resourceScriptMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     ranges ??= this.#resourceMapping.uiLocationRangeToJSLocationRanges(uiSourceCode, textRange);
-    ranges ??= this.#defaultMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
+    ranges ??= this.defaultMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     return ranges;
   }
   async functionBoundsAtRawLocation(rawLocation) {
@@ -6831,7 +6847,7 @@ var ModelData2 = class {
     this.#debuggerModel.setBeforePausedCallback(null);
     this.compilerMapping.dispose();
     this.#resourceScriptMapping.dispose();
-    this.#defaultMapping.dispose();
+    this.defaultMapping.dispose();
   }
   getResourceScriptMapping() {
     return this.#resourceScriptMapping;
@@ -6920,7 +6936,7 @@ __export(FileUtils_exports, {
   ChunkedFileReader: () => ChunkedFileReader,
   FileOutputStream: () => FileOutputStream
 });
-import * as Common11 from "../../core/common/common.js";
+import * as Common12 from "../../core/common/common.js";
 import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as Workspace19 from "../workspace/workspace.js";
 var ChunkedFileReader = class {
@@ -6951,7 +6967,7 @@ var ChunkedFileReader = class {
     }
     if (this.#file?.type.endsWith("gzip")) {
       const fileStream = this.#file.stream();
-      const stream = Common11.Gzip.decompressStream(fileStream);
+      const stream = Common12.Gzip.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
     }
     this.#output = output;
@@ -7400,7 +7416,7 @@ var ResourceMapping_exports = {};
 __export(ResourceMapping_exports, {
   ResourceMapping: () => ResourceMapping
 });
-import * as Common12 from "../../core/common/common.js";
+import * as Common13 from "../../core/common/common.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
 import * as TextUtils9 from "../../core/text_utils/text_utils.js";
 import * as Formatter2 from "../formatter/formatter.js";
@@ -7755,16 +7771,16 @@ var ModelInfo2 = class {
   }
   acceptsResource(resource) {
     const resourceType = resource.resourceType();
-    if (resourceType !== Common12.ResourceType.resourceTypes.Image && resourceType !== Common12.ResourceType.resourceTypes.Font && resourceType !== Common12.ResourceType.resourceTypes.Document && resourceType !== Common12.ResourceType.resourceTypes.Manifest && resourceType !== Common12.ResourceType.resourceTypes.Fetch && resourceType !== Common12.ResourceType.resourceTypes.XHR) {
+    if (resourceType !== Common13.ResourceType.resourceTypes.Image && resourceType !== Common13.ResourceType.resourceTypes.Font && resourceType !== Common13.ResourceType.resourceTypes.Document && resourceType !== Common13.ResourceType.resourceTypes.Manifest && resourceType !== Common13.ResourceType.resourceTypes.Fetch && resourceType !== Common13.ResourceType.resourceTypes.XHR) {
       return false;
     }
-    if (resourceType === Common12.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
+    if (resourceType === Common13.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
       return false;
     }
-    if (resourceType === Common12.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
+    if (resourceType === Common13.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
       return false;
     }
-    if ((resourceType === Common12.ResourceType.resourceTypes.Image || resourceType === Common12.ResourceType.resourceTypes.Font) && Common12.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
+    if ((resourceType === Common13.ResourceType.resourceTypes.Image || resourceType === Common13.ResourceType.resourceTypes.Font) && Common13.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
       return false;
     }
     return true;
@@ -7814,7 +7830,7 @@ var ModelInfo2 = class {
     this.#bindings.clear();
   }
   dispose() {
-    Common12.EventTarget.removeEventListeners(this.#eventListeners);
+    Common13.EventTarget.removeEventListeners(this.#eventListeners);
     for (const binding of this.#bindings.values()) {
       binding.dispose();
     }

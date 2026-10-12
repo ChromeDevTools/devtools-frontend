@@ -82,4 +82,22 @@ export const inlineVariableValuesSettingDescriptor = {
     defaultValue: true,
     storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
 };
+export const autoFocusOnDebuggerPausedEnabledSettingDescriptor = {
+    name: 'auto-focus-on-debugger-paused-enabled',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const autoPrettyPrintMinifiedSettingDescriptor = {
+    name: 'auto-pretty-print-minified',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
+export const allowScrollPastEofSettingDescriptor = {
+    name: 'allow-scroll-past-eof',
+    type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
+    defaultValue: true,
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=SourcesSettings.js.map

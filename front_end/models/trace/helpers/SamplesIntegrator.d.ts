@@ -50,7 +50,9 @@ export declare class SamplesIntegrator {
     static showNativeName(name: string, runtimeCallStatsEnabled: boolean): boolean;
     static nativeGroup(nativeName: string): SamplesIntegrator.NativeGroups | null;
     static isNativeRuntimeFrame(frame: Protocol.Runtime.CallFrame): boolean;
-    static filterStackFrames(stack: Types.Events.SyntheticProfileCall[], engineConfig: Types.Configuration.Configuration): void;
+    static filterStackFrames<T extends {
+        callFrame: Protocol.Runtime.CallFrame;
+    }>(stack: T[], engineConfig: Types.Configuration.Configuration): void;
     static createFakeTraceFromCpuProfile(profile: Protocol.Profiler.Profile, tid: Types.Events.ThreadID): Types.File.TraceFile;
     static extractCpuProfileFromFakeTrace(traceEvents: readonly Types.Events.Event[]): Protocol.Profiler.Profile;
 }

@@ -92,6 +92,9 @@
       "path": "../../../lit/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../settings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../visual_logging/bundle-tsconfig.ref.json"
     }
   ]

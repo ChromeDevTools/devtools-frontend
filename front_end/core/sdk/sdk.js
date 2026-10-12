@@ -22823,8 +22823,9 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
   }
   /**
    * @returns the outlined parts of the authored function at the position: the hidden generated functions whose
-   *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}).
-   *          Includes the outlined part the position itself is in, if any. Sorted by start position.
+   *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}),
+   *          but not within a nested authored function. Includes the outlined part the position itself is in, if
+   *          any. Sorted by start position.
    */
   outlinedFunctionRanges(generatedLine, generatedColumn) {
     const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
@@ -22832,16 +22833,16 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
     if (!functionScope) {
       return [];
     }
-    const isWithinFunction = (scope) => scope !== void 0 && (scope === functionScope || isWithinFunction(scope.parent));
     const result = [];
-    (function walk(ranges) {
+    const walk = (ranges) => {
       for (const range of ranges) {
-        if (range.isStackFrame && range.isHidden && isWithinFunction(range.originalScope)) {
+        if (range.isStackFrame && range.isHidden && range.originalScope && this.#findFunctionScopeInOriginalScopeChain(range.originalScope) === functionScope) {
           result.push({ start: range.start, end: range.end });
         }
         walk(range.children);
       }
-    })(this.#generatedRanges);
+    };
+    walk(this.#generatedRanges);
     return result;
   }
   /**

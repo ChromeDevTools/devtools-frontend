@@ -15,6 +15,7 @@ import * as CodeHighlighter from '../../../components/code_highlighter/code_high
 import * as Dialogs from '../../../components/dialogs/dialogs.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import { html, nothing, render } from '../../../lit/lit.js';
+import * as SettingsUI from '../../../settings/settings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 const { widget } = UI.Widget;
@@ -361,7 +362,9 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     }
     setCanPrettyPrint(canPrettyPrint, autoPrettyPrint) {
         this.shouldAutoPrettyPrint = autoPrettyPrint === true &&
-            Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
+            Common.Settings.Settings.instance()
+                .resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor)
+                .get();
         this.#canPrettyPrint = canPrettyPrint;
         this.#updateToolbar();
     }

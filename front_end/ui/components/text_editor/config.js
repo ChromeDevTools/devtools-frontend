@@ -250,7 +250,7 @@ export const showWhitespace = new DynamicSetting(SettingsUI.SourcesSettings.show
     }
     return empty;
 });
-export const allowScrollPastEof = DynamicSetting.bool('allow-scroll-past-eof', CM.scrollPastEnd());
+export const allowScrollPastEof = DynamicSetting.bool(SettingsUI.SourcesSettings.allowScrollPastEofSettingDescriptor, CM.scrollPastEnd());
 const cachedIndentUnit = Object.create(null);
 function getIndentUnit(indent) {
     let value = cachedIndentUnit[indent];

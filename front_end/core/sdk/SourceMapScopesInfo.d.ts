@@ -85,8 +85,9 @@ export declare class SourceMapScopesInfo {
     inlinedCalleeRanges(generatedLine: number, generatedColumn: number): PositionRange[];
     /**
      * @returns the outlined parts of the authored function at the position: the hidden generated functions whose
-     *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}).
-     *          Includes the outlined part the position itself is in, if any. Sorted by start position.
+     *          original scope lies within that function's original scope (see {@link GeneratedFrameKind.OUTLINED}),
+     *          but not within a nested authored function. Includes the outlined part the position itself is in, if
+     *          any. Sorted by start position.
      */
     outlinedFunctionRanges(generatedLine: number, generatedColumn: number): PositionRange[];
     /**

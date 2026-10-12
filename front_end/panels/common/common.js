@@ -2576,11 +2576,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return Boolean(extension?.isAllowedOnTarget(url));
   }
   extensionAllowedOnScript(script, portOrExtension) {
-    if (script.hasSourceURL) {
-      const embedderName = script.embedderName();
-      if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
-        return false;
-      }
+    const embedderName = script.embedderName();
+    if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+      return false;
+    }
+    if (script.hasSourceURL || !script.contentURL()) {
       return this.extensionAllowedOnTarget(script.target(), portOrExtension);
     }
     return this.extensionAllowedOnURL(script.contentURL(), portOrExtension) && this.extensionAllowedOnTarget(script.target(), portOrExtension);
@@ -2610,6 +2610,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
           const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? void 0;
           return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
         }
+      } else if (contentProvider.project().isServiceProject()) {
+        return false;
       }
     }
     if (!this.extensionAllowedOnURL(contentProvider.contentURL(), portOrExtension)) {

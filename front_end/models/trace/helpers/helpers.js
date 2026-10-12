@@ -4250,71 +4250,88 @@ var SamplesIntegrator = class _SamplesIntegrator {
     return calls;
   }
   /**
-   * Given a synthetic profile call, returns an array of profile calls
-   * representing the stack trace that profile call belongs to based on
-   * its nodeId. The input profile call will be at the top of the
-   * returned stack (last position), meaning that any other frames that
-   * were effectively above it are omitted.
-   * @param profileCall
-   * @param overrideTimeStamp a custom timestamp to use for the returned
-   * profile calls. If not defined, the timestamp of the input
-   * profileCall is used instead. This param is useful for example when
-   * creating the profile calls for a sample with a trace id, since the
-   * timestamp of the corresponding trace event should be used instead
-   * of the sample's.
+   * Given a synthetic profile call, returns the profile nodes of the
+   * stack trace that profile call belongs to based on its nodeId,
+   * ordered from the bottom of the stack to the top. The root node is
+   * omitted. The node of the input profile call will be at the top of
+   * the returned stack (last position), meaning that any other frames
+   * that were effectively above it are omitted.
    */
-  #makeProfileCallsForStack(profileCall, overrideTimeStamp) {
-    let node = this.#profileModel.nodeById(profileCall.nodeId);
+  #stackNodesForProfileCall(profileCall) {
+    const sampledNode = this.#profileModel.nodeById(profileCall.nodeId);
+    let node = sampledNode;
     const isGarbageCollection = node?.id === this.#profileModel.gcNode?.id;
     if (isGarbageCollection) {
       node = this.#nodeForGC.get(profileCall) || null;
     }
-    if (!node) {
+    if (!sampledNode || !node) {
       return [];
     }
-    const callFrames = new Array(node.depth + 1 + Number(isGarbageCollection));
-    let i = callFrames.length - 1;
+    const nodes = new Array(node.depth + 1 + Number(isGarbageCollection));
+    let i = nodes.length - 1;
     if (isGarbageCollection) {
-      callFrames[i--] = profileCall;
+      nodes[i--] = sampledNode;
     }
-    while (node) {
-      callFrames[i--] = makeProfileCall(
-        node,
-        profileCall.profileId,
-        profileCall.sampleIndex,
-        overrideTimeStamp ?? profileCall.ts,
-        this.#processId,
-        this.#threadId
-      );
+    while (node && i >= 0) {
+      nodes[i--] = node;
       node = node.parent;
     }
-    return callFrames;
+    return nodes;
   }
-  #getStackForSampleTraceId(traceId, timestamp) {
+  /**
+   * Returns a profile call for the node sampled with the given trace id,
+   * or null if the profile has no node for it.
+   */
+  #callForSampleTraceId(traceId, timestamp) {
     const nodeId = this.#profileModel.traceIds?.[traceId];
     const node = nodeId && this.#profileModel.nodeById(nodeId);
-    const maybeCallForTraceId = node && makeProfileCall(node, this.#profileId, -1, timestamp, this.#processId, this.#threadId);
-    if (!maybeCallForTraceId) {
+    if (!node) {
       return null;
     }
+    const callForTraceId = makeProfileCall(node, this.#profileId, -1, timestamp, this.#processId, this.#threadId);
     if (this.#engineConfig.debugMode) {
-      this.jsSampleEvents.push(this.#makeJSSampleEvent(maybeCallForTraceId, timestamp, traceId));
+      this.jsSampleEvents.push(this.#makeJSSampleEvent(callForTraceId, timestamp, traceId));
     }
-    return this.#makeProfileCallsForStack(maybeCallForTraceId);
+    return callForTraceId;
   }
   /**
    * Update tracked stack using this event's call stack.
    */
   #extractStackTrace(event) {
-    let stackTrace = this.#currentJSStack;
-    if (Types4.Events.isProfileCall(event)) {
-      stackTrace = this.#makeProfileCallsForStack(event);
-    }
     const traceId = extractSampleTraceId(event);
-    const maybeCallForTraceId = traceId && this.#getStackForSampleTraceId(traceId, event.ts);
-    if (maybeCallForTraceId) {
-      stackTrace = maybeCallForTraceId;
+    const callForTraceId = traceId ? this.#callForSampleTraceId(traceId, event.ts) : null;
+    const stackSource = callForTraceId ?? (Types4.Events.isProfileCall(event) ? event : null);
+    if (!stackSource) {
+      this.#mergeWithCurrentStack(event, this.#currentJSStack);
+      return;
     }
+    const stackNodes = this.#stackNodesForProfileCall(stackSource);
+    let i = this.#mergeWithCurrentStack(event, stackNodes);
+    for (; i < stackNodes.length; ++i) {
+      const node = stackNodes[i];
+      if (node.id === this.#profileModel.programNode?.id || node.id === this.#profileModel.root?.id || node.id === this.#profileModel.idleNode?.id || node.id === this.#profileModel.gcNode?.id) {
+        continue;
+      }
+      const call = makeProfileCall(
+        node,
+        stackSource.profileId,
+        stackSource.sampleIndex,
+        stackSource.ts,
+        this.#processId,
+        this.#threadId
+      );
+      this.#currentJSStack.push(call);
+      this.#constructedProfileCalls.push(call);
+    }
+  }
+  /**
+   * Merges the given stack with the tracked stack: the durations of
+   * the shared frames are extended to cover the event, and the tracked
+   * stack is truncated where the two stacks differ.
+   * @returns the index of the first frame in the given stack that is
+   * not shared with the tracked stack.
+   */
+  #mergeWithCurrentStack(event, stackTrace) {
     _SamplesIntegrator.filterStackFrames(stackTrace, this.#engineConfig);
     const endTime = event.ts + (event.dur || 0);
     const minFrames = Math.min(stackTrace.length, this.#currentJSStack.length);
@@ -4328,14 +4345,7 @@ var SamplesIntegrator = class _SamplesIntegrator {
       this.#currentJSStack[i].dur = Types4.Timing.Micro(Math.max(this.#currentJSStack[i].dur || 0, endTime - this.#currentJSStack[i].ts));
     }
     this.#truncateJSStack(i, event.ts);
-    for (; i < stackTrace.length; ++i) {
-      const call = stackTrace[i];
-      if (call.nodeId === this.#profileModel.programNode?.id || call.nodeId === this.#profileModel.root?.id || call.nodeId === this.#profileModel.idleNode?.id || call.nodeId === this.#profileModel.gcNode?.id) {
-        continue;
-      }
-      this.#currentJSStack.push(call);
-      this.#constructedProfileCalls.push(call);
-    }
+    return i;
   }
   /**
    * When a call stack that differs from the one we are tracking has
@@ -4370,7 +4380,7 @@ var SamplesIntegrator = class _SamplesIntegrator {
       name: Types4.Events.Name.JS_SAMPLE,
       cat: "devtools.timeline",
       args: {
-        data: { traceId, stackTrace: this.#makeProfileCallsForStack(call).map((e) => e.callFrame) }
+        data: { traceId, stackTrace: this.#stackNodesForProfileCall(call).map((node) => node.callFrame) }
       },
       ph: Types4.Events.Phase.INSTANT,
       ts: timestamp,

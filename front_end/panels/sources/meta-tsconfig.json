@@ -72,6 +72,9 @@
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/bindings/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/breakpoints/bundle-tsconfig.ref.json"
     },
     {

@@ -1991,7 +1991,7 @@ var showWhitespace = new DynamicSetting(SettingsUI.SourcesSettings.showWhitespac
   }
   return empty;
 });
-var allowScrollPastEof = DynamicSetting.bool("allow-scroll-past-eof", CM3.scrollPastEnd());
+var allowScrollPastEof = DynamicSetting.bool(SettingsUI.SourcesSettings.allowScrollPastEofSettingDescriptor, CM3.scrollPastEnd());
 var cachedIndentUnit = /* @__PURE__ */ Object.create(null);
 function getIndentUnit(indent) {
   let value = cachedIndentUnit[indent];

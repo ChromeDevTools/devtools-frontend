@@ -1,4 +1,4 @@
-export type SkillName = 'styling' | 'network' | 'accessibility' | 'performance' | 'storage' | 'sources' | 'lighthouse';
+export type SkillName = 'styling' | 'network' | 'performance' | 'storage' | 'sources' | 'lighthouse';
 export interface Skill {
     name: SkillName;
     description: string;

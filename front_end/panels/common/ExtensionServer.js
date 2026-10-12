@@ -798,13 +798,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         return Boolean(extension?.isAllowedOnTarget(url));
     }
     extensionAllowedOnScript(script, portOrExtension) {
-        if (script.hasSourceURL) {
-            // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
-            // We'll add a proper field in the future and will replace it then.
-            const embedderName = script.embedderName();
-            if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
-                return false;
-            }
+        // TODO(542925220): embedderName is a terrible proxy, but currently V8 stores the original URL only in there.
+        // We'll add a proper field in the future and will replace it then.
+        const embedderName = script.embedderName();
+        if (embedderName && URL.canParse(embedderName) && !this.extensionAllowedOnURL(embedderName, portOrExtension)) {
+            return false;
+        }
+        // Scripts with a sourceURL comment carry a page-chosen URL, and anonymous scripts (e.g. eval
+        // without sourceURL) carry none. An empty URL must not reach extensionAllowedOnURL, because
+        // isAllowedOnTarget() would silently fall back to the primary page's URL. For both cases we
+        // can only check the embedderName (above) and the target the script runs in.
+        if (script.hasSourceURL || !script.contentURL()) {
             return this.extensionAllowedOnTarget(script.target(), portOrExtension);
         }
         return this.extensionAllowedOnURL(script.contentURL(), portOrExtension) &&
@@ -834,6 +838,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
                     const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
                     return !uiSourceCodeTarget || this.extensionAllowedOnTarget(uiSourceCodeTarget, portOrExtension);
                 }
+            }
+            else if (contentProvider.project().isServiceProject()) {
+                // Service projects (debugger:///VM scripts, source map stubs) use synthetic URLs that can't be
+                // checked against the host policy. Without a backing script to check instead, fail closed.
+                return false;
             }
         }
         // 2. Standard Policy: Both URL and Target must be allowed

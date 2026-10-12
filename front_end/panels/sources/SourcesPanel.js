@@ -400,7 +400,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         const debuggerModel = event.data;
         const details = debuggerModel.debuggerPausedDetails();
         if (!this.#paused &&
-            Common.Settings.Settings.instance().moduleSetting('auto-focus-on-debugger-paused-enabled').get()) {
+            Common.Settings.Settings.instance()
+                .resolve(Settings.SourcesSettings.autoFocusOnDebuggerPausedEnabledSettingDescriptor)
+                .get()) {
             void this.setAsCurrentPanel();
         }
         if (UI.Context.Context.instance().flavor(SDK.Target.Target) === debuggerModel.target()) {
@@ -962,7 +964,9 @@ export class SourcesPanel extends UI.Panel.Panel {
         this.editorView.showBoth(true);
     }
     revealDebuggerSidebar() {
-        if (!Common.Settings.Settings.instance().moduleSetting('auto-focus-on-debugger-paused-enabled').get()) {
+        if (!Common.Settings.Settings.instance()
+            .resolve(Settings.SourcesSettings.autoFocusOnDebuggerPausedEnabledSettingDescriptor)
+            .get()) {
             return;
         }
         void this.setAsCurrentPanel();
@@ -1110,7 +1114,9 @@ export class UISourceCodeRevealer {
 }
 export class DebuggerPausedDetailsRevealer {
     async reveal(_object) {
-        if (Common.Settings.Settings.instance().moduleSetting('auto-focus-on-debugger-paused-enabled').get()) {
+        if (Common.Settings.Settings.instance()
+            .resolve(Settings.SourcesSettings.autoFocusOnDebuggerPausedEnabledSettingDescriptor)
+            .get()) {
             return await SourcesPanel.instance().setAsCurrentPanel();
         }
     }

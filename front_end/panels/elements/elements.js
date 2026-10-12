@@ -21970,7 +21970,8 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   #maxTreeDepth;
   #enableContextMenu = true;
   #showHTMLCommentsSetting = Common12.Settings.Settings.instance().resolve(SettingsUI5.ElementsSettings.showHTMLCommentsSettingDescriptor);
-  #showComments = this.#showHTMLCommentsSetting.get();
+  #lastObservedShowHTMLCommentsSetting = this.#showHTMLCommentsSetting.get();
+  #showComments = this.#lastObservedShowHTMLCommentsSetting;
   #showAIButton = true;
   #disableEdits = false;
   #expandRoot = false;
@@ -22385,7 +22386,8 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     domModel.removeEventListener(SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this);
   }
   #onShowHTMLCommentsChange() {
-    this.#showComments = this.#showHTMLCommentsSetting.get();
+    this.#lastObservedShowHTMLCommentsSetting = this.#showHTMLCommentsSetting.get();
+    this.#showComments = this.#lastObservedShowHTMLCommentsSetting;
     this.#validateSelectedNode();
     const selectedNode = this.selectedDOMNode();
     if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.#showComments) {
@@ -23583,7 +23585,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   wasShown() {
     super.wasShown();
     this.#registerGlobalListeners();
-    if (this.#showComments !== this.#showHTMLCommentsSetting.get()) {
+    if (this.#lastObservedShowHTMLCommentsSetting !== this.#showHTMLCommentsSetting.get()) {
       this.#onShowHTMLCommentsChange();
       return;
     }

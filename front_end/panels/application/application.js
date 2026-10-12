@@ -8906,6 +8906,7 @@ var emptyWidget_css_default = `/*
 // ../../front_end/panels/application/preloading/PreloadingView.ts
 import * as UI11 from "../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html7, render as render7 } from "../../ui/lit/lit.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PreloadingComponents from "./preloading/components/components.js";
 import * as PreloadingHelper from "./preloading/helper/helper.js";
@@ -9128,7 +9129,7 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
   ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
   ruleSetGridContainerRef = createRef();
   ruleSetDetailsRef;
-  shouldPrettyPrint = Common8.Settings.Settings.instance().moduleSetting("auto-pretty-print-minified").get();
+  shouldPrettyPrint = Common8.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor).get();
   constructor(model) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(emptyWidget_css_default, preloadingView_css_default);
@@ -12821,7 +12822,7 @@ import * as SDK22 from "../../core/sdk/sdk.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import { Icon, Link } from "../../ui/kit/kit.js";
 import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as SettingsUI2 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI27 from "../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
@@ -15972,7 +15973,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     );
     cookiesCheckbox.classList.add("cookies-row");
     const includeThirdPartyCookiesRow = rightColumn.createChild("div", "include-third-party-cookies-row");
-    this.includeThirdPartyCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(
+    this.includeThirdPartyCookiesCheckbox = SettingsUI2.SettingsUI.createSettingCheckbox(
       i18nString26(UIStrings26.thirdPartyCookies),
       this.includeThirdPartyCookiesSetting
     );
@@ -16067,7 +16068,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     if (!setting) {
       throw new Error(`Missing setting for storage type: ${settingName}`);
     }
-    const checkbox = SettingsUI.SettingsUI.createSettingCheckbox(title, setting);
+    const checkbox = SettingsUI2.SettingsUI.createSettingCheckbox(title, setting);
     if (className) {
       checkbox.classList.add(className);
     }

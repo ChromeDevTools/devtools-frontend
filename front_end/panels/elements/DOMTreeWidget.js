@@ -792,7 +792,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     #maxTreeDepth;
     #enableContextMenu = true;
     #showHTMLCommentsSetting = Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showHTMLCommentsSettingDescriptor);
-    #showComments = this.#showHTMLCommentsSetting.get();
+    #lastObservedShowHTMLCommentsSetting = this.#showHTMLCommentsSetting.get();
+    #showComments = this.#lastObservedShowHTMLCommentsSetting;
     #showAIButton = true;
     #disableEdits = false;
     #expandRoot = false;
@@ -1189,7 +1190,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this);
     }
     #onShowHTMLCommentsChange() {
-        this.#showComments = this.#showHTMLCommentsSetting.get();
+        this.#lastObservedShowHTMLCommentsSetting = this.#showHTMLCommentsSetting.get();
+        this.#showComments = this.#lastObservedShowHTMLCommentsSetting;
         this.#validateSelectedNode();
         const selectedNode = this.selectedDOMNode();
         if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.#showComments) {
@@ -2376,7 +2378,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         this.#registerGlobalListeners();
-        if (this.#showComments !== this.#showHTMLCommentsSetting.get()) {
+        if (this.#lastObservedShowHTMLCommentsSetting !== this.#showHTMLCommentsSetting.get()) {
             // The setting changed while the tree was hidden.
             this.#onShowHTMLCommentsChange();
             return;

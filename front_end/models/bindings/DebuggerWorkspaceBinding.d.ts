@@ -1,3 +1,4 @@
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
@@ -9,6 +10,7 @@ import { type LiveLocation, type LiveLocationPool, LiveLocationWithPool } from '
 import type { DebuggerLocationUpdater, ResourceMapping } from './ResourceMapping.js';
 import { type ResourceScriptFile } from './ResourceScriptMapping.js';
 import { type SymbolizedError } from './SymbolizedError.js';
+export declare const wasmAutoSteppingSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>, DebuggerLocationUpdater {
     #private;
     readonly resourceMapping: ResourceMapping;

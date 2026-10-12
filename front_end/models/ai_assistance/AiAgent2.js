@@ -18,7 +18,6 @@ import { ToolRegistry } from './tools/ToolRegistry.js';
 const SKILL_DISPLAY_NAMES = {
     styling: 'CSS and styling',
     network: 'Network requests',
-    accessibility: 'Accessibility',
     performance: 'Performance',
     storage: 'Storage',
     sources: 'Sources',

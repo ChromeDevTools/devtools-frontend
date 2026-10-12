@@ -15,6 +15,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../../ui/lit/lit.js';
+import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingComponents from './components/components.js';
 import * as PreloadingHelper from './helper/helper.js';
@@ -181,7 +182,9 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
     ruleSetGridContainerRef = createRef();
     ruleSetDetailsRef;
-    shouldPrettyPrint = Common.Settings.Settings.instance().moduleSetting('auto-pretty-print-minified').get();
+    shouldPrettyPrint = Common.Settings.Settings.instance()
+        .resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor)
+        .get();
     constructor(model) {
         super({ useShadowDom: true });
         this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);

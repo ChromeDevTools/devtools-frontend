@@ -13,3 +13,6 @@ export declare const textEditorCodeFoldingSettingDescriptor: Common.Settings.Set
 export declare const showWhitespacesInEditorSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const sourcesWordWrapSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const inlineVariableValuesSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const autoFocusOnDebuggerPausedEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const autoPrettyPrintMinifiedSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const allowScrollPastEofSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

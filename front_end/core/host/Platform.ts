@@ -69,3 +69,40 @@ export function fontFamily(): string {
 export function setFontFamilyForTests(family: string): void {
   _fontFamily = family;
 }
+
+let _isRemoteDevtoolsFrontend: boolean|undefined;
+let _locationForTest: string|undefined;
+
+export function setLocationForTest(url: string|undefined): void {
+  _locationForTest = url;
+  _isRemoteDevtoolsFrontend = undefined;
+  _isCustomDevtoolsFrontend = undefined;
+}
+
+export function isRemoteDevtoolsFrontend(): boolean {
+  if (typeof _isRemoteDevtoolsFrontend === 'undefined') {
+    const location = (globalThis as unknown as {location?: {toString(): string}}).location;
+    const url = _locationForTest ?? (location ? location.toString() : '');
+    _isRemoteDevtoolsFrontend = url.startsWith('devtools://devtools-remote/');
+  }
+  return _isRemoteDevtoolsFrontend ?? false;
+}
+
+let _isCustomDevtoolsFrontend: boolean|undefined;
+
+export function isCustomDevtoolsFrontend(): boolean {
+  if (typeof _isCustomDevtoolsFrontend === 'undefined') {
+    const location = (globalThis as unknown as {location?: {toString(): string}}).location;
+    const url = _locationForTest ?? (location ? location.toString() : '');
+    _isCustomDevtoolsFrontend = url.startsWith('devtools://devtools/custom/');
+  }
+  return _isCustomDevtoolsFrontend ?? false;
+}
+
+export function setIsRemoteDevtoolsFrontendForTest(isRemote: boolean|undefined): void {
+  _isRemoteDevtoolsFrontend = isRemote;
+}
+
+export function setIsCustomDevtoolsFrontendForTest(isCustom: boolean|undefined): void {
+  _isCustomDevtoolsFrontend = isCustom;
+}

@@ -144,15 +144,6 @@ const WINDOW_LOCAL_STORAGE: Common.Settings.SettingsBackingStore = {
   clear: () => window.localStorage.clear(),
 };
 
-let isCustomDevtoolsFrontendInternal: boolean;
-
-function isCustomDevtoolsFrontend(): boolean {
-  if (typeof isCustomDevtoolsFrontendInternal === 'undefined') {
-    isCustomDevtoolsFrontendInternal = window.location.toString().startsWith('devtools://devtools/custom/');
-  }
-  return isCustomDevtoolsFrontendInternal;
-}
-
 export class MainImpl {
   #readyForTestPromise = Promise.withResolvers<void>();
   #veStartPromise!: Promise<void>;
@@ -309,11 +300,12 @@ export class MainImpl {
   } {
     this.#initializeExperiments();
     let storagePrefix = '';
-    if (isCustomDevtoolsFrontend()) {
+    if (Host.Platform.isCustomDevtoolsFrontend()) {
       storagePrefix = '__custom__';
-    } else if (
-        !Root.Runtime.Runtime.queryParam('can_dock') && Boolean(Root.Runtime.Runtime.queryParam('debugFrontend')) &&
-        !Host.InspectorFrontendHost.isUnderTest()) {
+    } else if (Host.Platform.isRemoteDevtoolsFrontend()) {
+      storagePrefix = '__remote__';
+    } else if (!Root.Runtime.Runtime.queryParam('can_dock') &&
+               Boolean(Root.Runtime.Runtime.queryParam('debugFrontend')) && !Host.InspectorFrontendHost.isUnderTest()) {
       storagePrefix = '__bundled__';
     }
 

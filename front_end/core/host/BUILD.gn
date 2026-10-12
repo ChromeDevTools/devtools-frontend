@@ -79,6 +79,7 @@ devtools_foundation_module("foundation_unittests") {
     "DispatchHttpRequestClient.test.ts",
     "GcaClient.test.ts",
     "GdpClient.test.ts",
+    "Platform.test.ts",
   ]
 
   ts_deps = [

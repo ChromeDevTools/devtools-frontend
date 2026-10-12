@@ -13003,6 +13003,11 @@ export namespace Network {
      * Total number of bytes received for this request.
      */
     encodedDataLength: number;
+    /**
+     * Size of the response body before removing content encodings.
+     * Includes cached bodies, but excludes headers and transfer framing.
+     */
+    encodedBodyLength?: number;
   }
 
   /**
@@ -14835,8 +14840,6 @@ export namespace Page {
     Rewriter = 'rewriter',
     ScreenWakeLock = 'screen-wake-lock',
     Serial = 'serial',
-    SharedStorage = 'shared-storage',
-    SharedStorageSelectUrl = 'shared-storage-select-url',
     SmartCard = 'smart-card',
     SpeakerSelection = 'speaker-selection',
     StorageAccess = 'storage-access',

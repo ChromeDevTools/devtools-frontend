@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as UI from './legacy.js';
 
@@ -273,6 +274,61 @@ describeWithEnvironment('SearchableView', () => {
       replaceAllButton.click();
       sinon.assert.calledOnceWithExactly(replaceable.replaceAllWith as sinon.SinonSpy, sinon.match({query: 'old'}),
                                          'new');
+    });
+  });
+
+  describe('presenter with view stub', () => {
+    it('passes state to view and updates on toggles, match counts, and visibility changes', () => {
+      const searchable = createSearchable();
+      searchable.supportsMatchCounts = () => true;
+      const searchInputElement = document.createElement('input');
+      const replaceInputElement = document.createElement('input');
+      const footerElementContainer = document.createElement('div');
+      const view = createViewFunctionStub(UI.SearchableView.SearchableView, {
+        searchInputElement,
+        replaceInputElement,
+        footerElementContainer,
+      });
+
+      const searchableView = new UI.SearchableView.SearchableView(searchable, null, undefined, undefined, view);
+      assert.isFalse(view.input.searchIsVisible);
+      assert.isFalse(view.input.replaceable);
+      assert.isTrue(view.input.supportsCaseSensitive);
+      assert.isTrue(view.input.supportsWholeWord);
+      assert.isTrue(view.input.supportsRegex);
+
+      searchableView.setPlaceholder('Custom placeholder', 'Custom aria label');
+      assert.strictEqual(view.input.placeholder, 'Custom placeholder');
+      assert.strictEqual(view.input.searchAriaLabel, 'Custom aria label');
+
+      searchableView.replaceable = true;
+      searchableView.showSearchField();
+      assert.isTrue(view.input.searchIsVisible);
+      assert.isTrue(view.input.replaceable);
+      assert.isFalse(view.input.secondRowVisible);
+
+      view.input.onToggleReplace();
+      assert.isTrue(view.input.secondRowVisible);
+
+      searchInputElement.value = 'query';
+      view.input.onSearchKeyDown(new KeyboardEvent('keydown', {key: 'Enter'}));
+      searchableView.updateSearchMatchesCount(3);
+      assert.strictEqual(view.input.matchesText, '3 matches');
+      assert.isTrue(view.input.navEnabled);
+      assert.isTrue(view.input.replaceEnabled);
+
+      searchableView.updateCurrentMatchIndex(1);
+      assert.strictEqual(view.input.matchesText, '2 of 3');
+
+      view.input.onToggleCaseSensitive();
+      assert.isTrue(view.input.caseSensitiveToggled);
+      view.input.onToggleWholeWord();
+      assert.isTrue(view.input.wholeWordToggled);
+      view.input.onToggleRegex();
+      assert.isTrue(view.input.regexToggled);
+
+      view.input.onCloseClick();
+      assert.isFalse(view.input.searchIsVisible);
     });
   });
 

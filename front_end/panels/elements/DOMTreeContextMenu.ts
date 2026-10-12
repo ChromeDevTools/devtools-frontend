@@ -378,9 +378,9 @@ export async function populateNodeContextMenu(
                        {jslogContext: 'elements.copy-styles'});
   }
   if (!isShadowRoot) {
-    section.appendItem(i18nString(UIStrings.copyXpath), () => domTreeWidget.copyXPath(domNode),
+    section.appendItem(i18nString(UIStrings.copyXpath), () => void domTreeWidget.copyXPath(domNode),
                        {jslogContext: 'copy-xpath'});
-    section.appendItem(i18nString(UIStrings.copyFullXpath), () => domTreeWidget.copyFullXPath(domNode),
+    section.appendItem(i18nString(UIStrings.copyFullXpath), () => void domTreeWidget.copyFullXPath(domNode),
                        {jslogContext: 'copy-full-xpath'});
   }
 

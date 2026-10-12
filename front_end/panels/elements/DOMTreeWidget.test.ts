@@ -1161,7 +1161,14 @@ describeWithEnvironment('DOMTreeWidget', () => {
              nodeId: 1,
              nodeName: 'DIV',
              children: [
-               {nodeId: 2, nodeName: 'P', attributes: ['id', 'test-p']},
+               {
+                 nodeId: 2,
+                 nodeName: 'P',
+                 attributes: ['id', 'test-p'],
+                 children: [
+                   {nodeId: 3, nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: ' Bar'},
+                 ],
+               },
              ],
            });
            domTree.rootDOMNode = rootNode;
@@ -1171,6 +1178,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
            await UI.Widget.Widget.allUpdatesComplete;
 
            const pNode = rootNode.children()![0];
+           const textNode = pNode.children()![0];
            const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
 
            // 1. Copy CSS path
@@ -1184,13 +1192,23 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
            // 3. Copy XPath
            copyTextStub.resetHistory();
-           domTree.copyXPath(pNode);
+           await domTree.copyXPath(pNode);
            sinon.assert.calledWith(copyTextStub, '//*[@id="test-p"]');
 
            // 4. Copy full XPath
            copyTextStub.resetHistory();
-           domTree.copyFullXPath(pNode);
+           await domTree.copyFullXPath(pNode);
            sinon.assert.calledWith(copyTextStub, sinon.match('/p'));
+
+           // 4b. Copy XPath and full XPath for a text node with leading whitespace sibling in live DOM
+           sinon.stub(textNode, 'callFunction').resolves({value: 2});
+           copyTextStub.resetHistory();
+           await domTree.copyXPath(textNode);
+           sinon.assert.calledWith(copyTextStub, '//*[@id="test-p"]/text()[2]');
+
+           copyTextStub.resetHistory();
+           await domTree.copyFullXPath(textNode);
+           sinon.assert.calledWith(copyTextStub, '/div/p/text()[2]');
 
            // 5. Copy outer HTML
            copyTextStub.resetHistory();

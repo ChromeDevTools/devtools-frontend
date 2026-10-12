@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -356,7 +357,7 @@ describeWithEnvironment('DOMPath', () => {
     ]);
   });
 
-  it('computes xPath with and without optimization for nested elements, sibling indices, and IDs', () => {
+  it('computes xPath with and without optimization for nested elements, sibling indices, and IDs', async () => {
     const docNode = createDOMNode({
       nodeType: Node.DOCUMENT_NODE,
       nodeName: '#document',
@@ -392,21 +393,75 @@ describeWithEnvironment('DOMPath', () => {
     const [firstSpan, secondSpan, commentNode] = secondDiv.children()!;
     const textNode = secondSpan.children()![0];
 
-    assert.strictEqual(Elements.DOMPath.xPath(docNode, true), '/');
-    assert.strictEqual(Elements.DOMPath.xPath(firstDiv, false), '/html/body/div[1]');
-    assert.strictEqual(Elements.DOMPath.xPath(firstDiv, true), '/html/body/div[1]');
-    assert.strictEqual(Elements.DOMPath.xPath(secondDiv, false), '/html/body/div[2]');
-    assert.strictEqual(Elements.DOMPath.xPath(secondDiv, true), '//*[@id="anchor-id"]');
-    assert.strictEqual(Elements.DOMPath.xPath(firstSpan, false), '/html/body/div[2]/span[1]');
-    assert.strictEqual(Elements.DOMPath.xPath(firstSpan, true), '//*[@id="anchor-id"]/span[1]');
-    assert.strictEqual(Elements.DOMPath.xPath(secondSpan, false), '/html/body/div[2]/span[2]');
-    assert.strictEqual(Elements.DOMPath.xPath(secondSpan, true), '//*[@id="anchor-id"]/span[2]');
-    assert.strictEqual(Elements.DOMPath.xPath(textNode, false), '/html/body/div[2]/span[2]/text()');
-    assert.strictEqual(Elements.DOMPath.xPath(textNode, true), '//*[@id="anchor-id"]/span[2]/text()');
-    assert.strictEqual(Elements.DOMPath.xPath(commentNode, true), '//*[@id="anchor-id"]/comment()');
+    assert.strictEqual(await Elements.DOMPath.xPath(docNode, true), '/');
+    assert.strictEqual(await Elements.DOMPath.xPath(firstDiv, false), '/html/body/div[1]');
+    assert.strictEqual(await Elements.DOMPath.xPath(firstDiv, true), '/html/body/div[1]');
+    assert.strictEqual(await Elements.DOMPath.xPath(secondDiv, false), '/html/body/div[2]');
+    assert.strictEqual(await Elements.DOMPath.xPath(secondDiv, true), '//*[@id="anchor-id"]');
+    assert.strictEqual(await Elements.DOMPath.xPath(firstSpan, false), '/html/body/div[2]/span[1]');
+    assert.strictEqual(await Elements.DOMPath.xPath(firstSpan, true), '//*[@id="anchor-id"]/span[1]');
+    assert.strictEqual(await Elements.DOMPath.xPath(secondSpan, false), '/html/body/div[2]/span[2]');
+    assert.strictEqual(await Elements.DOMPath.xPath(secondSpan, true), '//*[@id="anchor-id"]/span[2]');
+    assert.strictEqual(await Elements.DOMPath.xPath(textNode, false), '/html/body/div[2]/span[2]/text()');
+    assert.strictEqual(await Elements.DOMPath.xPath(textNode, true), '//*[@id="anchor-id"]/span[2]/text()');
+    assert.strictEqual(await Elements.DOMPath.xPath(commentNode, true), '//*[@id="anchor-id"]/comment()');
   });
 
-  it('computes jsPath and xPath for nodes inside nested shadow roots', () => {
+  it('computes xPath text()[n] accounting for whitespace-only text siblings in the live DOM', async () => {
+    // In DOMModel (with default includeWhitespace: "none"), the leading "\n" text node is omitted,
+    // so the DIV only has STRONG and the " Bar" text node as children.
+    const docNode = createDOMNode({
+      nodeType: Node.DOCUMENT_NODE,
+      nodeName: '#document',
+      children: [{
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'HTML',
+        children: [{
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'BODY',
+          children: [{
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'DIV',
+            attributes: {id: 'info'},
+            children: [
+              {
+                nodeType: Node.ELEMENT_NODE,
+                nodeName: 'STRONG',
+                children: [{nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: 'Foo:'}],
+              },
+              {nodeType: Node.TEXT_NODE, nodeName: '#text', nodeValue: ' Bar'},
+            ],
+          }],
+        }],
+      }],
+    });
+
+    const divNode = docNode.children()![0].children()![0].children()![0];
+    const [strongNode, barTextNode] = divNode.children()!;
+    const fooTextNode = strongNode.children()![0];
+
+    // Build the corresponding real DOM structure containing the leading whitespace-only text node
+    // (`<div>\n<strong>Foo:</strong> Bar</div>`) and execute the page function passed to `callFunction`
+    // against the live DOM nodes.
+    const liveDiv = document.createElement('div');
+    liveDiv.innerHTML = '\n<strong>Foo:</strong> Bar';
+    const liveBarText = liveDiv.childNodes[2];
+    const liveFooText = liveDiv.querySelector('strong')!.firstChild!;
+
+    sinon.stub(barTextNode, 'callFunction').callsFake(async fn => {
+      return {value: (fn as (this: Node) => unknown).call(liveBarText) as never};
+    });
+    sinon.stub(fooTextNode, 'callFunction').callsFake(async fn => {
+      return {value: (fn as (this: Node) => unknown).call(liveFooText) as never};
+    });
+
+    assert.strictEqual(await Elements.DOMPath.xPath(barTextNode, false), '/html/body/div/text()[2]');
+    assert.strictEqual(await Elements.DOMPath.xPath(barTextNode, true), '//*[@id="info"]/text()[2]');
+    assert.strictEqual(await Elements.DOMPath.xPath(fooTextNode, false), '/html/body/div/strong/text()');
+    assert.strictEqual(await Elements.DOMPath.xPath(fooTextNode, true), '//*[@id="info"]/strong/text()');
+  });
+
+  it('computes jsPath and xPath for nodes inside nested shadow roots', async () => {
     const innerShadow = Object.assign(buildPayload({
                                         nodeType: Node.DOCUMENT_FRAGMENT_NODE,
                                         nodeName: '#document-fragment',
@@ -454,11 +509,11 @@ describeWithEnvironment('DOMPath', () => {
     assert.strictEqual(
         Elements.DOMPath.jsPath(deepChild, true),
         'document.querySelector("#outer-host").shadowRoot.querySelector("#inner-host").shadowRoot.querySelector("#deep-shadow-target > b")');
-    assert.strictEqual(Elements.DOMPath.xPath(deepTarget, true), '//*[@id="deep-shadow-target"]');
-    assert.strictEqual(Elements.DOMPath.xPath(deepChild, true), '//*[@id="deep-shadow-target"]/b');
+    assert.strictEqual(await Elements.DOMPath.xPath(deepTarget, true), '//*[@id="deep-shadow-target"]');
+    assert.strictEqual(await Elements.DOMPath.xPath(deepChild, true), '//*[@id="deep-shadow-target"]/b');
   });
 
-  it('computes xPath text()[n] across mixed text/CDATA siblings and document-level comment()[n]', () => {
+  it('computes xPath text()[n] across mixed text/CDATA siblings and document-level comment()[n]', async () => {
     // Mirrors legacy elements/node-xpath (resources/node-xpath.xhtml).
     const doc = createDOMNode({
       nodeType: Node.DOCUMENT_NODE,
@@ -523,11 +578,14 @@ describeWithEnvironment('DOMPath', () => {
     });
 
     const lines: string[] = [];
-    const dump = (node: SDK.DOMModel.DOMNode) => {
-      lines.push(`${node.nodeName()} - ${Elements.DOMPath.xPath(node, true)} - ${Elements.DOMPath.xPath(node, false)}`);
-      node.children()?.forEach(dump);
+    const dump = async (node: SDK.DOMModel.DOMNode) => {
+      lines.push(`${node.nodeName()} - ${await Elements.DOMPath.xPath(node, true)} - ${
+          await Elements.DOMPath.xPath(node, false)}`);
+      for (const child of node.children() ?? []) {
+        await dump(child);
+      }
     };
-    dump(doc);
+    await dump(doc);
 
     assert.deepEqual(lines, [
       '#document - / - /',
@@ -551,7 +609,7 @@ describeWithEnvironment('DOMPath', () => {
     ]);
   });
 
-  it('computes non-optimized xPath and jsPath across shadow boundaries', () => {
+  it('computes non-optimized xPath and jsPath across shadow boundaries', async () => {
     // Mirrors legacy elements/shadow/inspect-deep-shadow-element.
     function shadowTree(targetTag: string, targetId: string): Protocol.DOM.Node {
       return Object.assign(buildPayload({
@@ -609,10 +667,10 @@ describeWithEnvironment('DOMPath', () => {
     assert.strictEqual(target.getAttribute('id'), 'shadow');
     assert.strictEqual(targetOpen.getAttribute('id'), 'shadow-open');
 
-    assert.strictEqual(Elements.DOMPath.xPath(target, false), '/html/body/div/div/div//div/div/span');
+    assert.strictEqual(await Elements.DOMPath.xPath(target, false), '/html/body/div/div/div//div/div/span');
     assert.strictEqual(Elements.DOMPath.jsPath(target, false),
                        'document.querySelector("div#host").shadowRoot.querySelector("span#shadow")');
-    assert.strictEqual(Elements.DOMPath.xPath(targetOpen, false), '/html/body/div/div/span//div/div/span');
+    assert.strictEqual(await Elements.DOMPath.xPath(targetOpen, false), '/html/body/div/div/span//div/div/span');
     assert.strictEqual(Elements.DOMPath.jsPath(targetOpen, false),
                        'document.querySelector("span#hostOpen").shadowRoot.querySelector("span#shadow-open")');
   });

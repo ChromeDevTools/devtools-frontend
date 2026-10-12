@@ -2582,12 +2582,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(node, true));
   }
 
-  copyXPath(node: SDK.DOMModel.DOMNode, optimized = true): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(node, optimized));
+  async copyXPath(node: SDK.DOMModel.DOMNode, optimized = true): Promise<void> {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(await xPath(node, optimized));
   }
 
-  copyFullXPath(node: SDK.DOMModel.DOMNode): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(node, false));
+  async copyFullXPath(node: SDK.DOMModel.DOMNode): Promise<void> {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(await xPath(node, false));
   }
 
   async copyStyles(node: SDK.DOMModel.DOMNode): Promise<void> {

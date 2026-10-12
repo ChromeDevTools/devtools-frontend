@@ -180,7 +180,7 @@ describe('DOMTreeElementWidget', () => {
     target.style.height = '20px';
     const style = document.createElement('style');
     // FIXME: styles are currently external to DOMTreeElementWidget.
-    style.innerText = Elements.DOMTreeWidget.elementsTreeOutlineStyles;
+    style.innerText = Elements.DOMTreeWidget.domTreeWidgetStyles;
     target.append(style);
     renderElementIntoDOM(target, {
       includeCommonStyles: true,

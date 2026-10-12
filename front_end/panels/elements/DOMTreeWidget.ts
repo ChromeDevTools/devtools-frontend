@@ -63,8 +63,8 @@ import {
   InitialChildrenLimit,
   type InitialEditState,
 } from './DOMTreeElementWidget.js';
+import domTreeWidgetStyles from './domTreeWidget.css.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
-import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 
 const {html, nothing, render, Directives: {classMap, ifDefined, repeat, styleMap}} = Lit;
@@ -97,7 +97,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMTreeWidget.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-export {elementsTreeOutlineStyles};
+export {domTreeWidgetStyles};
 
 interface ViewInput {
   domTreeWidget?: DOMTreeWidget;
@@ -849,7 +849,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   // clang-format off
   render(html`
     <style>${UI.inspectorCommonStyles}</style>
-    <style>${elementsTreeOutlineStyles}</style>
+    <style>${domTreeWidgetStyles}</style>
     <style>${CodeHighlighter.codeHighlighterStyles}</style>
     <div class=${disclosureClasses} style=${disclosureStyles}>
       <devtools-tree
@@ -865,7 +865,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
         @mouseleave=${input.onLeave}
         .template=${html`
           <style>${UI.inspectorCommonStyles}</style>
-          <style>${elementsTreeOutlineStyles}</style>
+          <style>${domTreeWidgetStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
           <ul role="tree" class="elements-tree-outline source-code ${input.wrap ? '' : 'elements-tree-nowrap'} ${input.hideGutter ? 'elements-hide-gutter' : ''} ${isSingleNode ? 'single-node' : ''}" aria-label=${i18nString(UIStrings.pageDom)}>
             ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ?

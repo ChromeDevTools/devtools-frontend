@@ -1858,7 +1858,7 @@ const breakpointMarkers = CodeMirror.StateField.define<BreakpointDecoration>({
        CodeMirror.lineNumberMarkers.from(field, deco => deco.gutter)],
 });
 
-class BreakpointInlineMarker extends CodeMirror.WidgetType {
+export class BreakpointInlineMarker extends CodeMirror.WidgetType {
   class: string;
 
   constructor(readonly breakpoint: Breakpoints.BreakpointManager.Breakpoint|null, readonly parent: DebuggerPlugin) {
@@ -1899,7 +1899,7 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
   }
 }
 
-class BreakpointGutterMarker extends CodeMirror.GutterMarker {
+export class BreakpointGutterMarker extends CodeMirror.GutterMarker {
   static nextTooltipId = 0;
   readonly #position: number;
   readonly condition: Breakpoints.BreakpointManager.UserCondition|undefined;
@@ -1996,7 +1996,7 @@ const markIfContinueTo = CodeMirror.EditorView.contentAttributes.compute([contin
 
 // Variable value decorations
 
-class ValueDecoration extends CodeMirror.WidgetType {
+export class ValueDecoration extends CodeMirror.WidgetType {
   constructor(readonly pairs: Array<[string, SDK.RemoteObject.RemoteObject]>) {
     super();
   }

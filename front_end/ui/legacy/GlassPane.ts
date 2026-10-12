@@ -368,7 +368,7 @@ export const enum MarginBehavior {
   NO_MARGIN = 'NoMargin',
 }
 
-const containers = new Map<Document, Element>();
+const containers = new WeakMap<Document, Element>();
 const panes = new Set<GlassPane>();
 
 /** Exported for layout tests. **/

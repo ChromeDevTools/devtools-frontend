@@ -68,17 +68,17 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const vertexPositionAttributes = new Map<WebGLProgram, number>();
+const vertexPositionAttributes = new WeakMap<WebGLProgram, number>();
 
-const vertexColorAttributes = new Map<WebGLProgram, number>();
+const vertexColorAttributes = new WeakMap<WebGLProgram, number>();
 
-const textureCoordAttributes = new Map<WebGLProgram, number>();
+const textureCoordAttributes = new WeakMap<WebGLProgram, number>();
 
-const uniformMatrixLocations = new Map<WebGLProgram, WebGLUniformLocation|null>();
+const uniformMatrixLocations = new WeakMap<WebGLProgram, WebGLUniformLocation|null>();
 
-const uniformSamplerLocations = new Map<WebGLProgram, WebGLUniformLocation|null>();
+const uniformSamplerLocations = new WeakMap<WebGLProgram, WebGLUniformLocation|null>();
 
-const imageForTexture = new Map<WebGLTexture, HTMLImageElement>();
+const imageForTexture = new WeakMap<WebGLTexture, HTMLImageElement>();
 
 export interface ViewInput {
   panelToolbar: UI.Toolbar.Toolbar;

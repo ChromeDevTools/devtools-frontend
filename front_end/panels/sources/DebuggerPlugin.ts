@@ -203,7 +203,7 @@ function renderMissingDebugFile(input: MissingDebugFileViewInput, _output: undef
   // clang-format on
 }
 
-const debuggerPluginForUISourceCode = new Map<Workspace.UISourceCode.UISourceCode, DebuggerPlugin>();
+const debuggerPluginForUISourceCode = new WeakMap<Workspace.UISourceCode.UISourceCode, DebuggerPlugin>();
 
 export class DebuggerPlugin extends Plugin {
   private editor: TextEditor.TextEditor.TextEditor|undefined = undefined;

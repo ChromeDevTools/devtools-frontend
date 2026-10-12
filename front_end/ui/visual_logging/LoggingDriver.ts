@@ -106,8 +106,8 @@ export async function stopLogging(): Promise<void> {
   resizeObserver.disconnect();
   intersectionObserver.disconnect();
   documents.length = 0;
-  viewportRects.clear();
-  resizeListeners.clear();
+  viewportRects = new WeakMap();
+  resizeListeners = new WeakMap();
   processingThrottler = noOpThrottler;
   pendingResize.clear();
   pendingChange.clear();
@@ -141,8 +141,8 @@ export function scheduleProcessing(): void {
   void processingThrottler.schedule(() => RenderCoordinator.read('processForLogging', process));
 }
 
-const viewportRects = new Map<Document, DOMRect>();
-const resizeListeners = new Map<Document, () => void>();
+let viewportRects = new WeakMap<Document, DOMRect>();
+let resizeListeners = new WeakMap<Document, () => void>();
 const viewportRectFor = (element: Element): DOMRect => {
   const ownerDocument = element.ownerDocument;
   const viewportRect = viewportRects.get(ownerDocument) ||

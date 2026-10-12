@@ -6,7 +6,7 @@ import * as RenderCoordinator from '../render_coordinator/render_coordinator.js'
 
 export type RenderCallback = () => (void|Promise<void>);
 
-const requests = new Map<HTMLElement, {callback: RenderCallback, promise: Promise<void>}>();
+const requests = new WeakMap<HTMLElement, {callback: RenderCallback, promise: Promise<void>}>();
 const active = new Set<HTMLElement>();
 
 export function scheduleRender(component: HTMLElement, callback: RenderCallback): Promise<void> {

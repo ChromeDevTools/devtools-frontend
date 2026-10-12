@@ -3,14 +3,13 @@
 // found in the LICENSE file.
 
 import {createMochaInterface} from '../conductor/mocha-interface.js';
-import type {E2EState} from '../e2e/conductor/state-provider.js';
 
-import {AiEvalStateProvider} from './ai-eval-state-provider.js';
+import {type AiEvalState, AiEvalStateProvider} from './ai-eval-state-provider.js';
 
 export const devtoolsAiEvalTestInterface: {
   (rootSuite: Mocha.Suite): void,
   description: string,
-} = createMochaInterface<E2EState, E2E.SuiteSettings>({
+} = createMochaInterface<AiEvalState, E2E.SuiteSettings>({
   description: 'DevTools AI Eval test interface',
   stateProvider: AiEvalStateProvider.instance,
 });

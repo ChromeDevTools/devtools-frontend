@@ -32,7 +32,7 @@ export interface FinalizeTaskOptions {
 export interface HandleTaskFailureOptions {
   runId: string;
   taskId: string;
-  phase: 'Preparation'|'Execution';
+  phase: 'Preparation'|'Execution'|'Finalization';
   durationSeconds: number;
   logger: EvalLogger;
   taskStatuses: TaskStatus[];

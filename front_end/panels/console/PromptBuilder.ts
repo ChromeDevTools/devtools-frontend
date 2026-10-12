@@ -68,9 +68,12 @@ export class PromptBuilder {
     const firstNewline = text.indexOf('\n');
     if (text.length > MAX_CODE_SIZE && (firstNewline < 0 || firstNewline > MAX_CODE_SIZE)) {
       // Use formatter
-      const settings = runtimeModel.target().targetManager().settings;
+      const indent = runtimeModel.target()
+                         .targetManager()
+                         .settings.resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
+                         .get();
       const {formattedContent, formattedMapping} = await Formatter.ScriptFormatter.formatScriptContent(
-          settings, mappedLocation?.uiSourceCode.mimeType() ?? 'text/javascript', text);
+          mappedLocation?.uiSourceCode.mimeType() ?? 'text/javascript', text, indent);
       const [lineNumber, columnNumber] =
           formattedMapping.originalToFormatted(mappedLocation?.lineNumber ?? 0, mappedLocation?.columnNumber ?? 0);
       return {text: formattedContent, columnNumber, lineNumber};

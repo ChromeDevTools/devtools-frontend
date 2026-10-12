@@ -30,25 +30,24 @@ export interface FormattedContent {
   formattedMapping: FormatterSourceMapping;
 }
 
-export async function format(settings: Common.Settings.Settings, contentType: Common.ResourceType.ResourceType,
-                             mimeType: string, content: string, indent?: string): Promise<FormattedContent> {
+export async function format(contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
+                             indent: string): Promise<FormattedContent> {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
-    return await formatScriptContent(settings, mimeType, content, indent);
+    return await formatScriptContent(mimeType, content, indent);
   }
 
   return {formattedContent: content, formattedMapping: new IdentityFormatterSourceMapping()};
 }
 
-export async function formatScriptContent(settings: Common.Settings.Settings, mimeType: string, content: string,
-                                          indent?: string): Promise<FormattedContent> {
-  const indentString = indent ?? settings.moduleSetting('text-editor-indent').get();
+export async function formatScriptContent(mimeType: string, content: string,
+                                          indent: string): Promise<FormattedContent> {
   const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
 
   const pool = formatterWorkerPool();
 
   let formatResult: FormatterActions.FormatResult = {content: originalContent, mapping: {original: [], formatted: []}};
   try {
-    formatResult = await pool.format(mimeType, originalContent, indentString);
+    formatResult = await pool.format(mimeType, originalContent, indent);
   } catch {
   }
   const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(originalContent);

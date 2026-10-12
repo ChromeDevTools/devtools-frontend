@@ -259,7 +259,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
     Common.Settings.Settings.instance()
-        .moduleSetting('text-editor-indent')
+        .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
         .addChangeListener(this.#textEditorIndentChanged, this);
 
     this.performUpdate();
@@ -292,7 +292,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
 
   override disposeView(): void {
     Common.Settings.Settings.instance()
-        .moduleSetting('text-editor-indent')
+        .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
         .removeChangeListener(this.#textEditorIndentChanged, this);
   }
 
@@ -467,8 +467,9 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       const content =
           this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || '';
       this.textEditor.state = this.placeholderEditorState(i18nString(UIStrings.formatting));
-      const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(Common.Settings.Settings.instance(),
-                                                                             this.contentType, content);
+      const indent =
+          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+      const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(this.contentType, content, indent);
       this.formattedMap = formatInfo.formattedMapping;
       await this.setContent(formatInfo.formattedContent);
       this.prettyBaseDoc = textEditor.state.doc;

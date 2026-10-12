@@ -152,9 +152,9 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
 
       assert.strictEqual(editor.state.facet(CodeMirror.indentUnit), '    ');
-      Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('\t');
+      Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).set('\t');
       assert.strictEqual(editor.state.facet(CodeMirror.indentUnit), '\t');
-      Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('    ');
+      Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).set('    ');
     });
 
     it('does not treat dashes as word chars in CSS', () => {

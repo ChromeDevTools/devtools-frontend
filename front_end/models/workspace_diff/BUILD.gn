@@ -14,6 +14,7 @@ devtools_foundation_module("workspace_diff") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../models/formatter:bundle",
     "../../models/persistence:bundle",

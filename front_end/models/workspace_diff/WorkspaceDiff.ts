@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as FormatterModule from '../formatter/formatter.js';
@@ -297,11 +298,12 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
       return null;
     }
 
-    baseline = (await FormatterModule.ScriptFormatter.format(this.#settings, this.#uiSourceCode.contentType(),
-                                                             this.#uiSourceCode.mimeType(), baseline))
+    const indent = this.#settings.resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+    baseline = (await FormatterModule.ScriptFormatter.format(this.#uiSourceCode.contentType(),
+                                                             this.#uiSourceCode.mimeType(), baseline, indent))
                    .formattedContent;
     const formatCurrentResult = await FormatterModule.ScriptFormatter.format(
-        this.#settings, this.#uiSourceCode.contentType(), this.#uiSourceCode.mimeType(), current);
+        this.#uiSourceCode.contentType(), this.#uiSourceCode.mimeType(), current, indent);
     current = formatCurrentResult.formattedContent;
     const formattedCurrentMapping = formatCurrentResult.formattedMapping;
     const reNewline = /\r\n?|\n/;

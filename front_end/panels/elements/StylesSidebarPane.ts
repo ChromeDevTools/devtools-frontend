@@ -280,7 +280,9 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     super(computedStyleModel, {delegatesFocus: true, useShadowDom: true, classes: ['flex-none']});
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPaneStyles);
-    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);
+    Common.Settings.Settings.instance()
+        .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
+        .addChangeListener(this.requestUpdate, this);
     Common.Settings.Settings.instance()
         .resolve(SettingsUI.ElementsSettings.collapseNonContributingCSSRulesSettingDescriptor)
         .addChangeListener(this.updateCollapsedSectionsSetting, this);

@@ -346,3 +346,10 @@ export const preserveNetworkLogSettingDescriptor: Common.Settings.SettingDescrip
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const textEditorIndentSettingDescriptor: Common.Settings.SettingDescriptor<string> = {
+  name: 'text-editor-indent',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: '    ',
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

@@ -20,7 +20,7 @@ import {
   ScopeRemoteObject,
 } from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
-import {customFormattersSettingDescriptor} from './SDKSettings.js';
+import {customFormattersSettingDescriptor, textEditorIndentSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target, Type} from './Target.js';
 
 export class RuntimeModel extends SDKModel<EventTypes> {
@@ -303,8 +303,11 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       return;
     }
 
-    const indent =
-        this.target().targetManager().context.get(Common.Settings.Settings).moduleSetting('text-editor-indent').get();
+    const indent = this.target()
+                       .targetManager()
+                       .context.get(Common.Settings.Settings)
+                       .resolve(textEditorIndentSettingDescriptor)
+                       .get();
     void object
         .callFunctionJSON(toStringForClipboard, [{
                             value: {

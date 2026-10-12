@@ -206,7 +206,7 @@ describeWithEnvironment('StylesPropertySection', () => {
   });
 
   it('properly renders ancestor rules', async () => {
-    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
+    Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).set('  ');
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
@@ -321,7 +321,7 @@ describeWithEnvironment('StylesPropertySection', () => {
   });
 
   it('renders braces correctly with a non-style-rule section', async () => {
-    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
+    Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).set('  ');
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
@@ -663,7 +663,7 @@ describeWithEnvironment('StylesPropertySection', () => {
   });
 
   it('renders ancestor rules with rich sub-selectors and specificity tooltips when parent rule is found', async () => {
-    Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
+    Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).set('  ');
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);

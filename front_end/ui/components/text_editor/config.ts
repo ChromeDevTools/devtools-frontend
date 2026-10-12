@@ -6,6 +6,7 @@
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 import {Icon} from '../../kit/kit.js';
@@ -248,7 +249,8 @@ function preservedLength(ch: CM.ChangeDesc): number {
 function detectIndentation(doc: CM.Text): string {
   const lines = doc.iterLines(1, Math.min(doc.lines + 1, LINES_TO_SCAN_FOR_INDENTATION_GUESSING));
   const indentUnit = TextUtils.TextUtils.detectIndentation(lines);
-  return indentUnit ?? Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+  return indentUnit ??
+      Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
 }
 
 export const autoDetectIndent: DynamicSetting<boolean> =
@@ -320,7 +322,8 @@ function getIndentUnit(indent: string): CM.Extension {
   return value;
 }
 
-export const indentUnit: DynamicSetting<string> = new DynamicSetting<string>('text-editor-indent', getIndentUnit);
+export const indentUnit: DynamicSetting<string> =
+    new DynamicSetting<string>(SDK.SDKSettings.textEditorIndentSettingDescriptor, getIndentUnit);
 
 export const domWordWrap: DynamicSetting<boolean> =
     DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM.EditorView.lineWrapping);

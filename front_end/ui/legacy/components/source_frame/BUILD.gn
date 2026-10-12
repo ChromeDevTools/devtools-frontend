@@ -90,6 +90,8 @@ devtools_entrypoint("meta") {
   ts_deps = [
     "../../../../core/common:bundle",
     "../../../../core/i18n:bundle",
+    "../../../../core/sdk:bundle",
+    "../../../settings:bundle",
   ]
 
   visibility = [ "../../../../entrypoints/*" ]

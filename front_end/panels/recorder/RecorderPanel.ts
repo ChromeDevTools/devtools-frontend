@@ -832,7 +832,8 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
       this.#setCurrentPage(Pages.ALL_RECORDINGS_PAGE);
     }
 
-    const textEditorIndent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+    const textEditorIndent =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
     this.#builtInConverters = Object.freeze([
       new Converters.JSONConverter.JSONConverter(textEditorIndent),
       new Converters.PuppeteerReplayConverter.PuppeteerReplayConverter(textEditorIndent),

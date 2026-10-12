@@ -12,7 +12,7 @@ Response body:
 {}
 
 Response status: 200
-Network request status: pending
+Network request status: finished
 
 Request timing:
 Queued at (timestamp): 0 s
@@ -33,7 +33,7 @@ Content:
   },
   {
     "title": "Response",
-    "text": "Response headers:\nContent-Type: application/json\n\nResponse body:\n{}\n\nResponse status: 200\nNetwork request status: pending\n"
+    "text": "Response headers:\nContent-Type: application/json\n\nResponse body:\n{}\n\nResponse status: 200\nNetwork request status: finished\n"
   },
   {
     "title": "Timing",

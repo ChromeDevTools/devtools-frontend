@@ -64,6 +64,7 @@ describe('RequestContext', function() {
       responseHeaders: [{name: 'Content-Type', value: 'application/json'}],
       requestHeaders: [{name: 'Accept', value: 'application/json'}],
       statusCode: 200,
+      finished: true,
       contentData: () =>
           Promise.resolve(new TextUtils.ContentData.ContentData('{}', false, 'application/json', 'utf-8')),
     });
@@ -84,6 +85,7 @@ describe('RequestContext', function() {
       responseHeaders: [{name: 'Content-Type', value: 'application/json'}],
       requestHeaders: [{name: 'Accept', value: 'application/json'}],
       statusCode: 200,
+      finished: true,
       contentData: () =>
           Promise.resolve(new TextUtils.ContentData.ContentData('{}', false, 'application/json', 'utf-8')),
     });
@@ -108,6 +110,7 @@ describe('RequestContext', function() {
       ],
       requestHeaders: [{name: 'Accept', value: 'application/json'}],
       statusCode: 200,
+      finished: true,
       contentData: () => Promise.resolve(
           new TextUtils.ContentData.ContentData('{"secret":"leak"}', false, 'application/json', 'utf-8')),
     });
@@ -137,6 +140,7 @@ describe('RequestContext', function() {
          ],
          requestHeaders: [{name: 'Accept', value: 'application/json'}],
          statusCode: 200,
+         finished: true,
          contentData: () => Promise.resolve(
              new TextUtils.ContentData.ContentData('{"secret":"leak"}', false, 'application/json', 'utf-8')),
        });
@@ -162,6 +166,7 @@ describe('RequestContext', function() {
       documentURL: 'https://example.com/index.html',
       isImportedHar: true,
       statusCode: 200,
+      finished: true,
       responseHeaders: [{name: 'Content-Type', value: 'application/json'}],
       contentData: () =>
           Promise.resolve(new TextUtils.ContentData.ContentData('{"har":"data"}', false, 'application/json', 'utf-8')),
@@ -183,6 +188,7 @@ describe('RequestContext', function() {
       documentURL: 'https://example.com/index.html',
       isImportedHar: true,
       statusCode: 200,
+      finished: true,
       responseHeaders: [{name: 'Content-Type', value: 'application/json'}],
       contentData: () => Promise.resolve(
           new TextUtils.ContentData.ContentData('{"secret":"leak"}', false, 'application/json', 'utf-8')),

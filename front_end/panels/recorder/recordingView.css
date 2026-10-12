@@ -167,7 +167,7 @@
     font-family: inherit;
     field-sizing: content;
     font-size: var(--sys-typescale-headline3-size);
-    line-height: 22px;
+    line-height: var(--sys-typescale-headline3-line-height);
     letter-spacing: 0.02em;
     padding: var(--sys-size-1) var(--sys-size-3);
     border: var(--sys-size-1) solid transparent;

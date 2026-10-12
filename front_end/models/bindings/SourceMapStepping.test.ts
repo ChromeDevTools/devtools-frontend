@@ -284,6 +284,49 @@ describe('SourceMapStepping', () => {
                        'Debugger.stepOver');
   });
 
+  it('presents pauses on the same original location in another inlined call', async () => {
+    //    original index.ts          generated index.js
+    //
+    //  0: function F() {            function F(){
+    //  1:   G();                    b();                <- inlined G
+    //  2:   G();                    b();                <- inlined G
+    //  3: }                         }
+    //  4: function G() {
+    //  5:   b();
+    //  6: }
+    const builder = new ScopesCodec.ScopeInfoBuilder();
+    builder.startSource()
+        .startScope(0, 0, {kind: 'global', key: 'global'})
+        .startScope(0, 12, {kind: 'function', name: 'F', key: 'F', isStackFrame: true})
+        .endScope(3, 1)
+        .startScope(4, 12, {kind: 'function', name: 'G', key: 'G', isStackFrame: true})
+        .endScope(6, 1)
+        .endScope(7, 0)
+        .endSource();
+    builder.startRange(0, 0, {scopeKey: 'global'})
+        .startRange(0, 12, {scopeKey: 'F', isStackFrame: true})
+        .startRange(1, 0, {scopeKey: 'G', callSite: {sourceIndex: 0, line: 1, column: 2}})
+        .endRange(1, 4)
+        .startRange(2, 0, {scopeKey: 'G', callSite: {sourceIndex: 0, line: 2, column: 2}})
+        .endRange(2, 4)
+        .endRange(3, 1)
+        .endRange(4, 0);
+    const mappings =
+        encodeSourceMap(['0:0 => index.ts:0:0', '1:0 => index.ts:5:2', '2:0 => index.ts:5:2', '3:0 => index.ts:3:0']);
+    const script = await backend.addScript(
+        target, {url: 'http://example.com/index.js', content: 'function F(){\nb();\nb();\n}\n'}, {
+          url: 'http://example.com/index.js.map',
+          content: ScopesCodec.encode(builder.build(), mappings as ScopesCodec.SourceMapJson) as
+              SDK.SourceMap.SourceMapV3,
+        });
+    await pauseAndWait([frame(script, 1, 0)]);
+    await step(() => debuggerModel.stepOver());
+
+    // 2:0 maps to the same original location as 1:0, but it's in the second call of `G`.
+    await pauseAndWait([frame(script, 2, 0)], Protocol.Debugger.PausedEventReason.Step);
+    assert.lengthOf(requests, 1);
+  });
+
   it('computes the logical depth without outlined frames on top of the stack', async () => {
     const script = await addScript({outlined: true});
     await pauseAndWait([frame(script, 9, 0), frame(script, 4, 3, '1'), frame(script, 1, 0, '2')]);

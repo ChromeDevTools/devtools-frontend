@@ -104,6 +104,24 @@ export function inlinedFunctionRanges(frame: SDK.DebuggerModel.CallFrame): SDK.D
   return position && range ? toLocationRanges(position, [range]) : [];
 }
 
+/**
+ * @returns true iff both frames are paused in the same call of an inlined function (or both aren't in any). Separate
+ *          calls of the same function are inlined into separate generated ranges.
+ */
+function isSameInlinedCall(a: SDK.DebuggerModel.CallFrame, b: SDK.DebuggerModel.CallFrame): boolean {
+  const range = (frame: SDK.DebuggerModel.CallFrame): SDK.SourceMapScopesInfo.PositionRange|null => {
+    const position = scopedPosition(frame);
+    return position?.sourceMap.inlinedFunctionRange(position.line, position.column) ?? null;
+  };
+  const rangeA = range(a);
+  const rangeB = range(b);
+  if (!rangeA || !rangeB) {
+    return rangeA === rangeB;
+  }
+  return a.script === b.script && SDK.SourceMapScopesInfo.comparePositions(rangeA.start, rangeB.start) === 0 &&
+      SDK.SourceMapScopesInfo.comparePositions(rangeA.end, rangeB.end) === 0;
+}
+
 /** @returns the bodies of the functions inlined into the logical function that {@link frame} is paused in. */
 export function inlinedCalleeRanges(frame: SDK.DebuggerModel.CallFrame): SDK.DebuggerModel.LocationRange[] {
   const position = scopedPosition(frame);
@@ -157,9 +175,11 @@ export async function nextAutoStep(
     case SDK.DebuggerModel.StepMode.STEP_OVER: {
       const startDepth = logicalDepth(start);
       const depth = logicalDepth(frames);
-      if (isUnmapped(frames[0]) || (depth === startDepth && isSameOriginalLocation(frames[0], start[0]))) {
-        // Unmapped code, or still on the same original location (the skip list only covers the generated ranges that
-        // contain the start position): keep stepping over.
+      if (isUnmapped(frames[0]) ||
+          (depth === startDepth && isSameOriginalLocation(frames[0], start[0]) &&
+           isSameInlinedCall(frames[0], start[0]))) {
+        // Unmapped code, or still on the same original location in the same (inlined) call (the skip list only covers
+        // the generated ranges that contain the start position): keep stepping over.
         return await computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, frames);
       }
       return null;

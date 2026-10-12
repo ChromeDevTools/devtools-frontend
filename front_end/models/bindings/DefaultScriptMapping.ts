@@ -10,6 +10,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import type {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+import {NetworkProject} from './NetworkProject.js';
 
 export class DefaultScriptMapping implements DebuggerSourceMapping {
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
@@ -26,6 +27,7 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     this.#project =
         new ContentProviderBasedProject(workspace, 'debugger:' + debuggerModel.target().id(),
                                         Workspace.Workspace.projectTypes.Debugger, '', true /* isServiceProject */);
+    NetworkProject.setTargetForProject(this.#project, debuggerModel.target());
     this.#eventListeners = [
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
@@ -44,12 +46,16 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
 
   static scriptForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
     for (const defaultScriptMapping of defaultScriptMappings) {
-      const script = defaultScriptMapping.#uiSourceCodeToScript.get(uiSourceCode);
-      if (script !== undefined) {
+      const script = defaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+      if (script !== null) {
         return script;
       }
     }
     return null;
+  }
+
+  scriptForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
+    return this.#uiSourceCodeToScript.get(uiSourceCode) ?? null;
   }
 
   uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {

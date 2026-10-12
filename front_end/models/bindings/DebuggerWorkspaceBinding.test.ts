@@ -292,4 +292,21 @@ describe('DebuggerWorkspaceBinding', () => {
       });
     });
   });
+
+  it('returns the backing script for DefaultScriptMapping debugger:// UISourceCodes in scriptsForUISourceCode',
+     async () => {
+       const backend = new MockDebuggerBackend();
+       const {debuggerWorkspaceBinding, workspace} = backend.universe;
+       const target =
+           backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
+       const script = await backend.addScript(
+           target, {url: urlString`http://example.com/script.js`, content: 'console.log(1);'}, null);
+
+       const vmUrl = Bindings.DefaultScriptMapping.DefaultScriptMapping.createV8ScriptURL(script);
+       const vmUISourceCode = workspace.uiSourceCodeForURL(vmUrl);
+       assert.exists(vmUISourceCode);
+
+       assert.deepEqual(debuggerWorkspaceBinding.scriptsForUISourceCode(vmUISourceCode), [script]);
+       assert.strictEqual(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(vmUISourceCode), target);
+     });
 });

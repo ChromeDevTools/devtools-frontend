@@ -246,6 +246,10 @@ export class TrajectoryBuilder {
     this.#options = options;
   }
 
+  hasSteps(): boolean {
+    return this.#steps.length > 0;
+  }
+
   addSteps(steps: Step[]): this {
     for (const step of steps) {
       this.addStep(step);

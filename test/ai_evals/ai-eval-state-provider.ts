@@ -47,6 +47,7 @@ export class EvalTaskHandle {
   readonly #devToolsPage: DevToolsPage;
   readonly #logger: EvalLogger;
   hasFailed = false;
+  failureError?: string;
 
   constructor(config: AiEvalConfig, devToolsPage: DevToolsPage, logger: EvalLogger, isConfigured = true) {
     this.taskId = config.taskId;
@@ -185,7 +186,8 @@ export class AiEvalStateProvider extends StateProvider {
     const evalTask = (state as AiEvalState | undefined)?.evalTask;
     if (evalTask?.isConfigured) {
       evalTask.hasFailed = true;
-      this.#logger.taskError(evalTask.taskId, this.#logger.formatError(error));
+      evalTask.failureError = this.#logger.formatError(error);
+      this.#logger.taskError(evalTask.taskId, evalTask.failureError);
     }
     return await super.onTestError(state, error);
   }
@@ -195,14 +197,16 @@ export class AiEvalStateProvider extends StateProvider {
     try {
       if (evalTask?.isConfigured) {
         const durationSeconds = Number(((performance.now() - evalTask.startTime) / 1000).toFixed(2));
-        if (evalTask.hasFailed) {
+        if (evalTask.hasFailed && !evalTask.trajectoryBuilder.hasSteps()) {
           handleTaskFailure({
             runId: this.#runId,
             taskId: evalTask.taskId,
+            label: evalTask.label,
             phase: 'Execution',
             durationSeconds,
             logger: this.#logger,
             taskStatuses: this.#taskStatuses,
+            errorMessage: evalTask.failureError,
           });
         } else {
           try {
@@ -215,16 +219,21 @@ export class AiEvalStateProvider extends StateProvider {
               durationSeconds,
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
+              hasError: evalTask.hasFailed,
+              errorMessage: evalTask.failureError,
             });
           } catch (err) {
-            this.#logger.taskError(evalTask.taskId, this.#logger.formatError(err as Error));
+            const errorMessage = this.#logger.formatError(err as Error);
+            this.#logger.taskError(evalTask.taskId, errorMessage);
             handleTaskFailure({
               runId: this.#runId,
               taskId: evalTask.taskId,
+              label: evalTask.label,
               phase: 'Finalization',
               durationSeconds,
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
+              errorMessage,
             });
           }
         }

@@ -26,16 +26,41 @@ export interface FinalizeTaskOptions {
   logger: EvalLogger;
   taskStatuses: TaskStatus[];
   hasError?: boolean;
+  errorMessage?: string;
   customScore?: number;
 }
 
 export interface HandleTaskFailureOptions {
   runId: string;
   taskId: string;
+  label?: string;
   phase: 'Preparation'|'Execution'|'Finalization';
   durationSeconds: number;
   logger: EvalLogger;
   taskStatuses: TaskStatus[];
+  errorMessage?: string;
+}
+
+/**
+ * Summarises the outcome of a task's verification step for the
+ * verification_stdout.log artifact.
+ */
+export function formatVerificationStdout(taskId: string, label: string, hasError: boolean): string {
+  return [
+    `[Verification] Task: ${taskId}`,
+    `[Verification] Target: ${label}`,
+    `[Verification] Result: ${hasError ? 'FAILED' : 'PASSED'}`,
+    '',
+  ].join('\n');
+}
+
+/**
+ * Formats the error and assertion failures of a task for the
+ * verification_stderr.log artifact. Returns an empty string when the
+ * task did not fail.
+ */
+export function formatVerificationStderr(errorMessage?: string): string {
+  return errorMessage ? `[Error]: ${errorMessage}\n` : '';
 }
 
 /**
@@ -62,13 +87,15 @@ export function recordTaskFailure(
 /**
  * Handles a task failure during preparation or execution.
  * Logs the failure and immediately uploads diagnostic logs
- * (`agent_logs/agent.log` and `agent_logs/agent_stderr.log`) before sealing `eval_task_completed.marker`.
+ * (`agent_logs/agent.log`, `agent_logs/agent_stderr.log`, and `verification/*`) before sealing `eval_task_completed.marker`.
  */
 export function handleTaskFailure(options: HandleTaskFailureOptions): void {
-  const {runId, taskId, phase, durationSeconds, logger, taskStatuses} = options;
+  const {runId, taskId, label = taskId, phase, durationSeconds, logger, taskStatuses, errorMessage} = options;
   logger.append(`[Task ${taskId}] ${phase} failed (${durationSeconds}s)`);
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
+  uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(taskId, label, true));
+  uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(errorMessage));
   recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
 }
 
@@ -79,9 +106,12 @@ export function handleTaskFailure(options: HandleTaskFailureOptions): void {
 export function uploadTaskArtifacts(
     runId: string,
     taskId: string,
+    label: string,
     logger: EvalLogger,
     trajectory: Trajectory,
     evalOutputPath: string,
+    hasError = false,
+    errorMessage?: string,
     ): boolean {
   const trajectoryUploaded = uploadTaskFile(
       runId,
@@ -93,8 +123,13 @@ export function uploadTaskArtifacts(
   const chatLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.CHAT_LOG, formatChatLog(trajectory));
   const agentStderrUploaded =
       uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
+  const verificationStdoutUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT,
+                                                       formatVerificationStdout(taskId, label, hasError));
+  const verificationStderrUploaded =
+      uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(errorMessage));
 
-  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded;
+  return trajectoryUploaded && agentLogUploaded && chatLogUploaded && agentStderrUploaded &&
+      verificationStdoutUploaded && verificationStderrUploaded;
 }
 
 /**
@@ -143,12 +178,14 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     logger,
     taskStatuses,
     hasError = false,
+    errorMessage,
     customScore,
   } = options;
 
   logger.append(`[Task ${taskId}] Finished execution (${durationSeconds}s)`);
   const evalOutputPath = exportEvalTrajectory(trajectory, label, outputDir);
-  const allUploadsSucceeded = uploadTaskArtifacts(runId, taskId, logger, trajectory, evalOutputPath);
+  const allUploadsSucceeded =
+      uploadTaskArtifacts(runId, taskId, label, logger, trajectory, evalOutputPath, hasError, errorMessage);
   recordTaskCompletion(taskId, runId, durationSeconds, taskStatuses, allUploadsSucceeded, hasError, customScore);
 
   return evalOutputPath;

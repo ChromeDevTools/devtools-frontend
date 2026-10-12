@@ -35,6 +35,8 @@ export const TaskOutputFile = {
   CHAT_LOG: 'agent_logs/chat_log.txt',
   AGENT_STDERR: 'agent_logs/agent_stderr.log',
   GRADER_LOG: 'grader_output/grader.log',
+  VERIFICATION_STDOUT: 'verification/verification_stdout.log',
+  VERIFICATION_STDERR: 'verification/verification_stderr.log',
 } as const;
 export type TaskOutputFile = (typeof TaskOutputFile)[keyof typeof TaskOutputFile];
 

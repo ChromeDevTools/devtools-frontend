@@ -120,6 +120,36 @@ export function getContentType(filePath: string): string {
 }
 
 const MAX_UPLOAD_ATTEMPTS = 3;
+const TOKEN_CACHE_TTL_MS = 45 * 60 * 1000;
+
+let cachedAccessToken: {token: string, expiresAt: number}|undefined;
+
+/**
+ * Retrieves an OAuth access token for Google Cloud Storage via `luci-auth`.
+ * On gLinux/Cloudtop workstations this uses `/usr/bin/sso-cred-helper` (`gcert`)
+ * and on LUCI bots it uses the ambient `LUCI_CONTEXT` service account, avoiding
+ * the need for manual `gcloud auth login`.
+ */
+function getGcsAccessToken(forceRefresh = false): string|undefined {
+  const now = Date.now();
+  if (!forceRefresh && cachedAccessToken && now < cachedAccessToken.expiresAt) {
+    return cachedAccessToken.token;
+  }
+  try {
+    const token = execSync('luci-auth token -scopes https://www.googleapis.com/auth/devstorage.read_write', {
+                    encoding: 'utf-8',
+                    stdio: ['ignore', 'pipe', 'ignore'],
+                    timeout: 5_000,
+                  }).trim();
+    if (token) {
+      cachedAccessToken = {token, expiresAt: now + TOKEN_CACHE_TTL_MS};
+      return token;
+    }
+  } catch {
+    // Fall back to default gcloud credentials if luci-auth is unavailable.
+  }
+  return undefined;
+}
 
 /**
  * Uploads a local file to GCS using system gcloud CLI.
@@ -136,12 +166,14 @@ function uploadFileToGCS(localFilePath: string, destination: string, contentType
   ].join(' ');
 
   for (let attempt = 1; attempt <= MAX_UPLOAD_ATTEMPTS; attempt++) {
+    const accessToken = getGcsAccessToken(attempt > 1);
     try {
       execSync(command, {
         env: {
           ...process.env,
           CLOUDSDK_STORAGE_PROCESS_COUNT: '1',
           CLOUDSDK_STORAGE_THREAD_COUNT: '1',
+          ...(accessToken ? {CLOUDSDK_AUTH_ACCESS_TOKEN: accessToken} : {}),
         },
         stdio: ['ignore', 'inherit', 'inherit'],
         timeout: 30_000,
@@ -153,7 +185,8 @@ function uploadFileToGCS(localFilePath: string, destination: string, contentType
         console.warn(`[GCS] ⚠️ Upload attempt ${attempt}/${MAX_UPLOAD_ATTEMPTS} failed for ${destination}; retrying...`);
         continue;
       }
-      console.error(`[GCS] ❌ Failed to upload to ${destination}. Ensure you are logged in via 'gcloud auth login'.`);
+      console.error(`[GCS] ❌ Failed to upload to ${
+          destination}. Ensure you have a valid 'gcert' session or 'gcloud auth login'.`);
       console.error(error);
     }
   }

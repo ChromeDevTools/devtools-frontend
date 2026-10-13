@@ -35,6 +35,14 @@ async function getRequestRowInfo(devToolsPage: DevToolsPage, name: string) {
   return {status: statusColumn[index], time: timeColumn[index], type: typeColumn[index]};
 }
 
+async function getRequestRows(devToolsPage: DevToolsPage) {
+  return await devToolsPage.evaluate(() => {
+    const statusColumn = Array.from(document.querySelectorAll('.status-column'), node => node.textContent);
+    const nameColumn = Array.from(document.querySelectorAll('.name-column'), node => node.textContent);
+    return nameColumn.map((name, index) => ({name, status: statusColumn[index]}));
+  });
+}
+
 describe('The Network Tab', function() {
   // See byte formatting in front_end/core/i18n/ByteUtilities.ts
   const formatKbSize = (value: number) => {
@@ -274,11 +282,14 @@ describe('The Network Tab', function() {
     await waitForSomeRequestsToAppear(devToolsPage, 1);
 
     // We need to wait for the network log to update.
-    await devToolsPage.waitForFunction(async () => {
+    await devToolsPage.waitForFunction(async logger => {
+      // Log all rows so that a timeout reveals the actual state of the
+      // sendBeacon row(s).
+      logger.log(`Request rows: ${JSON.stringify(await getRequestRows(devToolsPage))}`);
       const {status} = await getRequestRowInfo(devToolsPage, 'sendBeacon');
       // Depending on timing of the reporting, the status information (404) might reach DevTools in time.
       return (status === '(unknown)' || status === '404Not Found');
-    });
+    }, undefined, 'Waiting for the preserved sendBeacon request to show status (unknown) or 404');
   });
 
   it('repeats xhr request on "r" shortcut when the request is focused', async ({devToolsPage, inspectedPage}) => {

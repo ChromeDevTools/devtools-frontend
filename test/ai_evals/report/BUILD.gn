@@ -9,6 +9,9 @@ node_ts_library("report") {
     "eval-logger.ts",
     "eval-task-recorder.ts",
     "gcs-upload.ts",
+    "gemini.ts",
+    "instructions.ts",
     "trajectory-builder.ts",
   ]
+  ts_deps = [ "../../conductor:implementation" ]
 }

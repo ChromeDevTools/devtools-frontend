@@ -16683,6 +16683,13 @@ export namespace Page {
     content: binary;
   }
 
+  export interface SetInputVisualizationRequest {
+    /**
+     * Whether to enable click visualization.
+     */
+    clicks?: boolean;
+  }
+
   export interface DomContentEventFiredEvent {
     timestamp: Network.MonotonicTime;
   }

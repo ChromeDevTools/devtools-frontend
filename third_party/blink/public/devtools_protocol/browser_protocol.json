@@ -13570,6 +13570,7 @@
                 {
                     "name": "resolveBlob",
                     "description": "Return UUID of Blob object specified by a remote object id.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "objectId",
@@ -25055,6 +25056,19 @@
                             "name": "content",
                             "description": "The annotated page content as a base64 encoded protobuf.\nThe format is defined by the `AnnotatedPageContent` message in\ncomponents/optimization_guide/proto/features/common_quality_data.proto",
                             "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "name": "setInputVisualization",
+                    "description": "Configures input visualization on the page.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "clicks",
+                            "description": "Whether to enable click visualization.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 }

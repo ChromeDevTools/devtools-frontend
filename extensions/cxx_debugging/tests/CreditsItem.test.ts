@@ -6,6 +6,7 @@ import '../src/CreditsItem.js';
 
 import {assert} from 'chai';
 import {html, render, type TemplateResult} from 'lit-html';
+import {describe, it} from 'mocha';
 
 import type {CreditsItem, CreditsItemData} from '../src/CreditsItem.js';
 

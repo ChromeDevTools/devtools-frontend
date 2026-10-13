@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describe} from 'mocha';
 import {createRequire} from 'node:module';
 
 import {loadTests} from './cxx-debugging-extension-helpers.js';

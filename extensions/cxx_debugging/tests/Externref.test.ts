@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {Debugger} from './RealBackend.js';
 import {createWorkerPlugin, makeURL, nonNull} from './TestUtils.js';

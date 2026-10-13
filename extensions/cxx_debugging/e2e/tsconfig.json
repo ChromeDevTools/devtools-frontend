@@ -13,7 +13,7 @@
       "puppeteer": ["../../../node_modules/puppeteer/lib/types.d.ts"],
       "*": ["../../../node_modules/@types/*/index.d.ts"]
     },
-    "types": ["mocha"]
+    "types": []
   },
   "files": [
     "TestDriver.ts",

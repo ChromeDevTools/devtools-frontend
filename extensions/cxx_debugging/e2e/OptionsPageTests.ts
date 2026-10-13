@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it, setup} from 'mocha';
 
 import {CXX_DEBUGGING_EXTENSION_PATH} from './cxx-debugging-extension-helpers.js';
 

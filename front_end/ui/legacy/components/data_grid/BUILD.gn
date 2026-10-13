@@ -70,6 +70,7 @@ devtools_ui_module("unittests") {
   ts_deps = [
     ":bundle",
     "../..:bundle",
+    "../../../../core/common:bundle",
     "../../../../core/i18n:bundle",
     "../../../../testing",
     "../../../components/render_coordinator:bundle",

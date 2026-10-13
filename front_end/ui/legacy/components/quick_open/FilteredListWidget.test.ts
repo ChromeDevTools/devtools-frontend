@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import {renderElementIntoDOM, setColorScheme} from '../../../../testing/DOMHelpers.js';
 import {createFakeSetting} from '../../../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import * as SettingsUI from '../../../settings/settings.js';
@@ -48,6 +49,62 @@ describe('FilteredListWidget', () => {
   setupLocaleHooks();
   beforeEach(() => {
     sinon.reset();
+  });
+
+  describe('focus indicator', () => {
+    afterEach(() => setColorScheme('light'));
+
+    for (const theme of ['light', 'dark'] as const) {
+      it(`has at least 3:1 contrast in the ${theme} theme`, async () => {
+        setColorScheme(theme);
+        const provider = createCommandMenuProvider(['first setting', 'second setting']);
+        sinon.stub(provider, 'attach');
+        const widget = new QuickOpen.FilteredListWidget.FilteredListWidget(provider, [], () => undefined);
+        renderElementIntoDOM(widget, {width: 400, height: 200});
+        // Match the surface of the dialog that contains Quick Open.
+        widget.contentElement.style.backgroundColor = 'var(--sys-color-cdt-base-container)';
+        await widget.setQuery('');
+        await new Promise(resolve => window.setTimeout(resolve, 0));
+
+        const outsideInput = document.createElement('input');
+        renderElementIntoDOM(outsideInput, {allowMultipleChildren: true});
+        outsideInput.focus();
+        const selected = widget.contentElement.querySelector('.filtered-list-widget-item.selected');
+        const unselected = widget.contentElement.querySelector('.filtered-list-widget-item:not(.selected)');
+        assert.exists(selected);
+        assert.exists(unselected);
+        assert.strictEqual(getComputedStyle(selected).outlineStyle, 'none');
+        widget.focus();
+        assert.isTrue(widget.contentElement.matches(':focus-within'));
+        const style = getComputedStyle(selected);
+        assert.strictEqual(style.outlineStyle, 'solid');
+        assert.strictEqual(style.outlineWidth, '2px');
+        assert.strictEqual(style.outlineOffset, '-2px');
+        assert.strictEqual(getComputedStyle(unselected).outlineStyle, 'none');
+
+        const outline = Common.Color.parse(style.outlineColor);
+        const surface = Common.Color.parse(getComputedStyle(widget.contentElement).backgroundColor);
+        const selection = Common.Color.parse(style.backgroundColor);
+        assert.exists(outline);
+        assert.exists(surface);
+        assert.exists(selection);
+        const surfaceRGBA = surface.asLegacyColor().rgba();
+        const selectionRGBA = Common.ColorUtils.blendColors(selection.asLegacyColor().rgba(), surfaceRGBA);
+        for (const background of [surfaceRGBA, selectionRGBA]) {
+          assert.isAtLeast(Common.ColorUtils.contrastRatio(outline.asLegacyColor().rgba(), background), 3);
+        }
+
+        widget.contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+        assert.isFalse(selected.classList.contains('selected'));
+        assert.isTrue(unselected.classList.contains('selected'));
+        assert.strictEqual(getComputedStyle(selected).outlineStyle, 'none');
+        assert.strictEqual(getComputedStyle(unselected).outlineStyle, 'solid');
+
+        outsideInput.focus();
+        assert.isTrue(unselected.classList.contains('selected'));
+        assert.strictEqual(getComputedStyle(unselected).outlineStyle, 'none');
+      });
+    }
   });
 
   it('set query to select item and type Enter', async () => {

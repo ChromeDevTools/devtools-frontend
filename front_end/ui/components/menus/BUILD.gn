@@ -48,6 +48,7 @@ devtools_ui_module("unittests") {
 
   ts_deps = [
     ":bundle",
+    "../../../core/common:bundle",
     "../../../testing",
     "../../lit:bundle",
     "../dialogs:bundle",

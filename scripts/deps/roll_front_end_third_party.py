@@ -4,24 +4,27 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import urllib.request
-import tarfile
+import argparse
+import json
 import os
 import re
-import subprocess
-import json
 import shutil
-from pkg_resources import parse_version
-import argparse
+import subprocess
+import tarfile
+import urllib.request
 
 DEVTOOLS_PATH = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+def parse_version(version):
+    return tuple(int(x) for x in version.split('-')[0].split('.'))
+
+
 def get_start_and_end_endex_for_gn_var(content, variable):
     startIndex = None
     endIndex = None
-    startPattern = re.compile(r'\s*' + variable + '\s*=\s*\[\s*')
+    startPattern = re.compile(r'\s*' + variable + r'\s*=\s*\[\s*')
     endPattern = re.compile(r'\s*\]\s*')
     for i, line in enumerate(content):
         if startPattern.match(line):

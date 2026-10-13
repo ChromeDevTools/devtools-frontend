@@ -695,7 +695,7 @@ export class TimelineUIUtils {
     const unsafeEventArgs = event.args as Record<string, any>;
     // TODO(40287735): update this code with type-safe data checks.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const unsafeEventData = event.args?.data as Record<string, any>;
+    const unsafeEventData = unsafeEventArgs?.data as Record<string, any>;
 
     switch (event.name) {
       case Trace.Types.Events.Name.PAINT_IMAGE:
@@ -1004,7 +1004,7 @@ export class TimelineUIUtils {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const unsafeEventArgs = event.args as Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const unsafeEventData = event.args?.data as Record<string, any>;
+    const unsafeEventData = unsafeEventArgs?.data as Record<string, any>;
     const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event) ?? null;
     const initiatorFor = parsedTrace.data.Initiators.initiatorToEvents.get(event) ?? null;
 

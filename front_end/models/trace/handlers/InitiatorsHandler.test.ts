@@ -44,14 +44,14 @@ describe('InitiatorsHandler', () => {
       if (!initiator) {
         throw new Error('Did not find expected initiator for recalcStyleEvent');
       }
-      assert.isTrue(Trace.Types.Events.isScheduleStyleRecalculation(initiator));
+      assert(Trace.Types.Events.isScheduleStyleRecalculation(initiator));
       assert.strictEqual(
           recalcStyleEvent.args.beginData?.frame,
           '25D2F12F1818C70B5BD4325CC9ACD8FF',
       );
       assert.strictEqual(
           recalcStyleEvent.args.beginData?.frame,
-          initiator.args?.data?.frame,
+          initiator.args.data?.frame,
       );
     });
 

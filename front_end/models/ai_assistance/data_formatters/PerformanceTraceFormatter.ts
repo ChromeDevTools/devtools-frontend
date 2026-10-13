@@ -472,8 +472,9 @@ export class PerformanceTraceFormatter {
       description: this.#getSerializeBottomUpRootNodeFormat(limit),
       empty: 'no activity',
       cb: async insightSet => {
+        const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
         const rootNode = AIQueries.mainThreadActivityBottomUpSingleNavigation(
-            insightSet.navigation?.args.data?.navigationId,
+            navigationId,
             insightSet.bounds,
             parsedTrace,
         );
@@ -519,8 +520,8 @@ export class PerformanceTraceFormatter {
       title: 'Longest tasks',
       empty: 'none',
       cb: async insightSet => {
-        const longestTaskTrees =
-            AIQueries.longestTasks(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace, 3);
+        const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+        const longestTaskTrees = AIQueries.longestTasks(navigationId, insightSet.bounds, parsedTrace, 3);
         if (!longestTaskTrees?.length) {
           return null;
         }
@@ -585,7 +586,7 @@ export class PerformanceTraceFormatter {
     if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
       const safeUrl = filteredUrl(event, this.#parsedTrace);
       if (safeUrl !== event.args.data.url) {
-        return Trace.Name.forEntry({
+        const syntheticEvent: Trace.Types.Events.SyntheticNetworkRequest = {
           ...event,
           args: {
             ...event.args,
@@ -594,7 +595,8 @@ export class PerformanceTraceFormatter {
               url: safeUrl,
             },
           },
-        });
+        };
+        return Trace.Name.forEntry(syntheticEvent);
       }
     }
     return Trace.Name.forEntry(event);
@@ -609,8 +611,9 @@ export class PerformanceTraceFormatter {
 
     const insightSet = this.#parsedTrace.insights?.values().find(
         insightSet => Trace.Helpers.Timing.boundsIncludeTimeRange({bounds, timeRange: insightSet.bounds}));
+    const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet?.navigation);
     const topDownTree = AIQueries.mainThreadActivityTopDown(
-        insightSet?.navigation?.args.data?.navigationId,
+        navigationId,
         bounds,
         this.#parsedTrace,
     );

@@ -89,7 +89,8 @@ export class AIQueries {
     const threads: Trace.Handlers.Threads.ThreadData[] = [];
     if (parsedTrace.insights) {
       for (const insightSet of parsedTrace.insights?.values()) {
-        const thread = this.findMainThread(insightSet.navigation?.args.data?.navigationId, parsedTrace);
+        const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+        const thread = this.findMainThread(navigationId, parsedTrace);
         if (thread) {
           threads.push(thread);
         }

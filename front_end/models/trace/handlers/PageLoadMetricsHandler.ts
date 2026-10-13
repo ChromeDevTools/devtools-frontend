@@ -281,15 +281,16 @@ function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNa
     const {navigationsByNavigationId, softNavigationsById} = metaHandlerData();
 
     let navigation;
-    if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
-        event.args.data?.performanceTimelineNavigationId) {
-      navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+    if (Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
+      const navigationId = event.args.data?.performanceTimelineNavigationId;
+      navigation = navigationId ? softNavigationsById.get(navigationId) : undefined;
       if (!navigation) {
         // The most recent soft navigation must have been before the trace started.
         return null;
       }
-    } else if (Types.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
-      navigation = softNavigationsById.get(event.args.context.performanceTimelineNavigationId);
+    } else if (Types.Events.isSoftFirstContentfulPaint(event)) {
+      const navigationId = event.args.context?.performanceTimelineNavigationId;
+      navigation = navigationId ? softNavigationsById.get(navigationId) : undefined;
       if (!navigation) {
         // The most recent soft navigation must have been before the trace started.
         return null;
@@ -299,7 +300,6 @@ function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNa
       if (!navigationId) {
         throw new Error(`Trace event unexpectedly had no navigation ID: ${JSON.stringify(event, null, 2)}`);
       }
-
       navigation = navigationsByNavigationId.get(navigationId);
     }
 

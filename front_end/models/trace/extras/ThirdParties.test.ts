@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -12,7 +13,7 @@ function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.EntitySum
   return summaries.map(s => {
     const uniqueUrls = new Set<string>();
     s.relatedEvents.forEach(e => {
-      const url = e.args?.data?.url;
+      const url = Trace.Handlers.Helpers.getNonResolvedURL(e);
       if (url) {
         uniqueUrls.add(url);
       }
@@ -22,6 +23,7 @@ function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.EntitySum
 }
 
 describe('ThirdParties', function() {
+  setupLocaleHooks();
   describe('summarizeByThirdParty', function() {
     it('full trace bounds', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');

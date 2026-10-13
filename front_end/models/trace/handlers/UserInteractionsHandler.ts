@@ -93,7 +93,7 @@ export function handleEvent(event: Types.Events.Event): void {
   // From this point on we want to find events that represent interactions.
   // These events are always start events - those are the ones that contain all
   // the metadata about the interaction.
-  if (!event.args.data || !Types.Events.isEventTimingStart(event)) {
+  if (!Types.Events.isEventTimingStart(event) || !event.args.data) {
     return;
   }
   const {duration, interactionId} = event.args.data;

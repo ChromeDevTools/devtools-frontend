@@ -196,7 +196,7 @@ export function handleEvent(event: Types.Events.Event): void {
     const viewportWidth = rectAsArray[2];
     const viewportHeight = rectAsArray[5];
     viewportRect = {x: viewportX, y: viewportY, width: viewportWidth, height: viewportHeight};
-    devicePixelRatio = event.args.data.dpr;
+    devicePixelRatio = event.args.data.dpr ?? null;
   }
 
   // The TracingStartedInBrowser event includes the data on which frames are

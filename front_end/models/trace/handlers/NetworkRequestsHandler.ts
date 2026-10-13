@@ -349,7 +349,7 @@ export async function finalize(): Promise<void> {
       const TCPMsHeader = request.receiveResponse.args.data.headers.find(h => h.name === 'X-TCPMs');
       const TCPMs = TCPMsHeader ? Math.max(0, parseInt(TCPMsHeader.value, 10)) : 0;
 
-      if (request.receiveResponse.args.data.protocol.startsWith('h3')) {
+      if (request.receiveResponse.args.data.protocol?.startsWith('h3')) {
         timing.connectStart = 0 as Types.Timing.Milli;
         timing.connectEnd = TCPMs as Types.Timing.Milli;
       } else {
@@ -701,7 +701,7 @@ function createSyntheticWebSocketConnection(
       data: {
         identifier: mainEvent.args.data.identifier,
         priority: Protocol.Network.ResourcePriority.Low,
-        url: mainEvent.args.data.url || '',
+        url: startEvent ? startEvent.args.data.url : '',
       },
     },
   };

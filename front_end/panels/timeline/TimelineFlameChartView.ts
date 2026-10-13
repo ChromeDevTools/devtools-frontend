@@ -628,32 +628,30 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     const fieldMetricResultsByNavigationId = new Map<string, Trace.Insights.Common.CrUXFieldMetricResults|null>();
     for (const insightSet of insights.values()) {
-      if (insightSet.navigation?.args.data?.navigationId) {
+      const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+      if (navigationId) {
         fieldMetricResultsByNavigationId.set(
-            insightSet.navigation.args.data.navigationId,
-            Trace.Insights.Common.getFieldMetricsForInsightSet(
-                insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
+            navigationId,
+            Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata,
+                                                               CrUXManager.CrUXManager.instance().getSelectedScope()));
       }
     }
 
     for (const marker of this.#markers) {
       for (const event of marker.entries) {
-        const navigationId = event.args?.data?.navigationId;
-        if (!navigationId) {
-          continue;
-        }
+        let navigationId: string|undefined;
+        let fieldMetricResult: Trace.Types.Overlays.TimingsMarkerFieldResult|null|undefined;
 
-        const fieldMetricResults = fieldMetricResultsByNavigationId.get(navigationId);
-        if (!fieldMetricResults) {
-          continue;
-        }
-
-        let fieldMetricResult;
-        if (event.name === Trace.Types.Events.Name.MARK_FCP) {
-          fieldMetricResult = fieldMetricResults.fcp;
-        } else if (event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE) {
-          fieldMetricResult = fieldMetricResults.lcp;
-          // Ignoring soft-nav LCP on purpose.
+        if (Trace.Types.Events.isFirstContentfulPaint(event)) {
+          navigationId = event.args?.data?.navigationId;
+          if (navigationId) {
+            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.fcp;
+          }
+        } else if (Trace.Types.Events.isLargestContentfulPaintCandidate(event)) {
+          navigationId = event.args?.data?.navigationId;
+          if (navigationId) {
+            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.lcp;
+          }
         }
 
         if (!fieldMetricResult) {

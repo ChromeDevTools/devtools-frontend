@@ -129,7 +129,7 @@ describe('PageLoadMetricsHandler', function() {
     }
     function assertMetricNavigationId(
         metric: Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricScore, navigationId: string) {
-      assert.strictEqual(metric.navigation?.args.data?.navigationId, navigationId);
+      assert.strictEqual(Trace.Helpers.Trace.navigationIDForEvent(metric.navigation), navigationId);
     }
     const firstNavigationId = '05059ACF683224E6FC7E344F544A4050';
     const secondNavigationId = '550FC08C662EF691E1535F305CBC0FCA';

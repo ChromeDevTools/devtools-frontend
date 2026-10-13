@@ -468,7 +468,7 @@ export class TraceProcessor extends EventTarget {
         logger?.start(`insights:${name}`);
         const model = insight.generateInsight(data, context);
         model.frameId = context.frameId;
-        const navId = context.navigation?.args.data?.navigationId;
+        const navId = Helpers.Trace.navigationIDForEvent(context.navigation);
         if (navId) {
           model.navigation = context.navigation;
         }

@@ -82,7 +82,8 @@ export function getInsightSetOrError(
       throw new Error('expected navigationId');
     }
 
-    insightSet = insights.values().find(insightSet => insightSet.navigation?.args.data?.navigationId === navigationId);
+    insightSet = insights.values().find(
+        insightSet => Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation) === navigationId);
 
     if (!insightSet) {
       throw new Error(`Could not find Insights for navigation ${

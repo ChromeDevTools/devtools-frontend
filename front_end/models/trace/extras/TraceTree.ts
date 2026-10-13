@@ -724,8 +724,13 @@ export function eventStackFrame(event: Types.Events.Event): Protocol.Runtime.Cal
   if (Types.Events.isProfileCall(event)) {
     return event.callFrame;
   }
-  const topFrame = event.args?.data?.stackTrace?.[0];
-  if (!topFrame) {
+  const data = Helpers.Trace.getEventDataObject(event);
+  const stackTrace = data && Array.isArray(data.stackTrace) ? data.stackTrace : null;
+  if (!stackTrace || stackTrace.length === 0) {
+    return null;
+  }
+  const topFrame = stackTrace[0];
+  if (!topFrame || typeof topFrame !== 'object') {
     return null;
   }
   return {...topFrame, scriptId: String(topFrame.scriptId) as Protocol.Runtime.ScriptId};

@@ -4,6 +4,7 @@
 
 import type * as Platform from '../../../core/platform/platform.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import type {TraceEventsForNetworkRequest} from './NetworkRequestsHandler.js';
@@ -54,8 +55,10 @@ export function getNonResolvedURL(
     return entry.args.data.styleSheetUrl as Platform.DevToolsPath.UrlString;
   }
 
-  if (entry.args?.data?.stackTrace && entry.args.data.stackTrace.length > 0) {
-    return entry.args.data.stackTrace[0].url as Platform.DevToolsPath.UrlString;
+  const data = Helpers.Trace.getEventDataObject(entry);
+  if (data && Array.isArray(data.stackTrace) && data.stackTrace.length > 0 &&
+      typeof data.stackTrace[0]?.url === 'string') {
+    return data.stackTrace[0].url as Platform.DevToolsPath.UrlString;
   }
 
   // ParseHTML events store the URL under beginData, not data.
@@ -78,13 +81,13 @@ export function getNonResolvedURL(
   }
 
   // For all other events, try to see if the URL is provided, else return null.
-  if (entry.args?.data?.url) {
-    return entry.args.data.url as Platform.DevToolsPath.UrlString;
+  if (data && typeof data.url === 'string' && data.url) {
+    return data.url as Platform.DevToolsPath.UrlString;
   }
 
   // Many events don't have a url, but are associated with a request. Use the
   // request's url.
-  const requestId = (entry.args?.data as {requestId?: string})?.requestId;
+  const requestId = data && typeof data.requestId === 'string' ? data.requestId : undefined;
   if (handlerData && requestId) {
     const url = handlerData.NetworkRequests.byId.get(requestId)?.args.data.url;
     if (url) {

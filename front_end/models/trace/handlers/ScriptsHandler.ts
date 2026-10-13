@@ -18,7 +18,7 @@ export interface ScriptsData {
 }
 
 export interface Script {
-  isolate: string;
+  isolate: string|number;
   scriptId: Protocol.Runtime.ScriptId;
   frame: string;
   ts: Types.Timing.Micro;
@@ -44,7 +44,7 @@ type GeneratedFileSizes = {
 }|{files: Record<string, number>, unmappedBytes: number, totalBytes: number};
 
 let scriptById = new Map<string, Script>();
-let frameIdByIsolate = new Map<string, string>();
+let frameIdByIsolate = new Map<string|number, string>();
 
 export function deps(): HandlerName[] {
   return ['Meta', 'NetworkRequests'];

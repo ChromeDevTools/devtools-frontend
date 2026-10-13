@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 /**
@@ -47,10 +48,7 @@ function getState(frameId: string): InvalidationsStatePerFrame {
 }
 
 function getFrameId(event: Types.Events.Event): string|null {
-  if (Types.Events.isRecalcStyle(event) || Types.Events.isLayout(event)) {
-    return event.args.beginData?.frame ?? null;
-  }
-  return event.args?.data?.frame ?? null;
+  return Helpers.Trace.frameIDForEvent(event);
 }
 
 function addInvalidationToEvent(

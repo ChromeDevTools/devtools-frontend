@@ -193,9 +193,9 @@ export const DEFAULT_VIEW: View =
 
 function findInsightSet(insightSets: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|undefined):
     Trace.Insights.Types.InsightSet|undefined {
-  return insightSets?.values().find(
-      insightSet =>
-          navigationId ? navigationId === insightSet.navigation?.args.data?.navigationId : !insightSet.navigation);
+  return insightSets?.values().find(insightSet => navigationId ?
+                                        navigationId === Helpers.Trace.navigationIDForEvent(insightSet.navigation) :
+                                        !insightSet.navigation);
 }
 
 function renderLayoutShiftDetails(

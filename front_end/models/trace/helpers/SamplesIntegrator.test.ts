@@ -7,11 +7,13 @@ import {describe, it} from 'mocha';
 
 import type * as Protocol from '../../../generated/protocol.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {allThreadEntriesInTrace, makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('SamplesIntegrator', function() {
+  setupLocaleHooks();
   const scriptId = 'Peperoni' as Protocol.Runtime.ScriptId;
   const url = '';
   const lineNumber = -1;
@@ -274,7 +276,7 @@ describe('SamplesIntegrator', function() {
       const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500);
       const v8Run = makeCompleteEvent('v8.run', 10, 490);
       const consoleTimeStamp =
-          makeInstantEvent(Trace.Types.Events.Name.TIME_STAMP, 350) as Trace.Types.Events.ConsoleTimeStamp;
+          makeInstantEvent(Trace.Types.Events.Name.TIME_STAMP, 350) as unknown as Trace.Types.Events.ConsoleTimeStamp;
       consoleTimeStamp.args = {data: {message: 'A timestamp', sampleTraceId: traceId}};
       const traceEvents = [evaluateScript, v8Run, consoleTimeStamp];
       const constructedCalls = integrator.buildProfileCalls(traceEvents);

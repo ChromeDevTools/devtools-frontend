@@ -18,6 +18,14 @@ interface MatchingPairableAsyncEvents {
   instant?: Types.Events.PairableAsyncInstant[];
 }
 
+export function getEventDataObject(event: Types.Events.Event): Record<string, unknown>|null {
+  if (!event.args || !('data' in event.args) || typeof event.args.data !== 'object' || !event.args.data ||
+      Array.isArray(event.args.data)) {
+    return null;
+  }
+  return event.args.data as Record<string, unknown>;
+}
+
 /**
  * Extracts the raw stack trace in known trace events. Most likely than
  * not you want to use `getZeroIndexedStackTraceForEvent`, which returns
@@ -31,11 +39,12 @@ interface MatchingPairableAsyncEvents {
  * use the @see Trace.Extras.StackTraceForEvent util.
  */
 export function stackTraceInEvent(event: Types.Events.Event): Types.Events.CallFrame[]|null {
-  if (event.args?.data?.stackTrace) {
-    return event.args.data.stackTrace;
+  const data = getEventDataObject(event);
+  if (data?.stackTrace && Array.isArray(data.stackTrace)) {
+    return data.stackTrace as Types.Events.CallFrame[];
   }
-  if (event.args?.stackTrace) {
-    return event.args.stackTrace;
+  if (event.args && 'stackTrace' in event.args && Array.isArray(event.args.stackTrace)) {
+    return event.args.stackTrace as Types.Events.CallFrame[];
   }
   if (Types.Events.isRecalcStyle(event)) {
     return event.args.beginData?.stackTrace || null;
@@ -614,16 +623,17 @@ function getRawLineAndColumnNumbersForEvent(event: Types.Events.Event): {
   lineNumber?: number,
   columnNumber?: number,
 } {
-  if (!event.args?.data) {
+  const data = getEventDataObject(event);
+  if (!data) {
     return {};
   }
   let lineNumber: number|undefined = undefined;
   let columnNumber: number|undefined = undefined;
-  if ('lineNumber' in event.args.data && typeof event.args.data.lineNumber === 'number') {
-    lineNumber = event.args.data.lineNumber;
+  if ('lineNumber' in data && typeof data.lineNumber === 'number') {
+    lineNumber = data.lineNumber;
   }
-  if ('columnNumber' in event.args.data && typeof event.args.data.columnNumber === 'number') {
-    columnNumber = event.args.data.columnNumber;
+  if ('columnNumber' in data && typeof data.columnNumber === 'number') {
+    columnNumber = data.columnNumber;
   }
 
   return {lineNumber, columnNumber};
@@ -642,12 +652,22 @@ export function frameIDForEvent(event: Types.Events.Event): string|null {
     return event.args.beginData.frame;
   }
   // Otherwise, we expect frame to be in args.data
-  if (event.args?.data?.frame) {
-    return event.args.data.frame;
+  const data = getEventDataObject(event);
+  if (data && 'frame' in data && typeof data.frame === 'string') {
+    return data.frame;
   }
-
-  // No known frame for this event.
   return null;
+}
+
+export function navigationIDForEvent(event?: Types.Events.Event): string|undefined {
+  if (!event) {
+    return undefined;
+  }
+  const data = getEventDataObject(event);
+  if (data && 'navigationId' in data && typeof data.navigationId === 'string') {
+    return data.navigationId;
+  }
+  return undefined;
 }
 
 const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
@@ -831,7 +851,14 @@ export function extractSampleTraceId(event: Types.Events.Event): number|null {
     const beginData = event.args['beginData'] as {sampleTraceId?: number};
     return beginData.sampleTraceId ?? null;
   }
-  return event.args?.sampleTraceId ?? event.args?.data?.sampleTraceId ?? null;
+  if ('sampleTraceId' in event.args && typeof event.args.sampleTraceId === 'number') {
+    return event.args.sampleTraceId;
+  }
+  const data = getEventDataObject(event);
+  if (data && 'sampleTraceId' in data && typeof data.sampleTraceId === 'number') {
+    return data.sampleTraceId;
+  }
+  return null;
 }
 
 /**

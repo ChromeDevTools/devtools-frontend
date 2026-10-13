@@ -60,7 +60,7 @@ async function generateInsightWithOverrides(testContext: Mocha.Context, override
 
   if (overrides.loadingAttr !== undefined) {
     const lcpEventIndex = traceEvents.findIndex(event => {
-      return Types.Events.isAnyLargestContentfulPaintCandidate(event) &&
+      return Types.Events.isLargestContentfulPaintCandidate(event) &&
           event.args.data?.navigationId === seedNavigationId && event.args.data?.nodeId === seedLcpNodeId;
     });
     if (lcpEventIndex === -1) {
@@ -68,7 +68,7 @@ async function generateInsightWithOverrides(testContext: Mocha.Context, override
     }
 
     const lcpEvent = structuredClone(traceEvents[lcpEventIndex]);
-    assert(Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent));
+    assert(Types.Events.isLargestContentfulPaintCandidate(lcpEvent));
     if (!lcpEvent.args.data) {
       throw new Error('missing LCP candidate data');
     }

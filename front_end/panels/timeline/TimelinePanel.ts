@@ -3162,7 +3162,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
    * 3. Flash the Insight with the highlight colour we use in other panels.
    */
   revealInsight(insightModel: Trace.Insights.Types.InsightModel): void {
-    const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
+    const insightSetKey =
+        Trace.Helpers.Trace.navigationIDForEvent(insightModel.navigation) ?? Trace.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({model: insightModel, insightSetKey}, {highlightInsight: true});
   }
 

@@ -306,7 +306,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
     it('maps to the authored script when a trace event from the new engine with a stack trace is provided',
        async function() {
          const functionCallEvent = makeCompleteEvent('FunctionCall', 10, 100);
-         functionCallEvent.args = ({
+         const args = {
            data: {
              stackTrace: [{
                functionName: 'test',
@@ -316,7 +316,8 @@ describeWithEnvironment('TimelineUIUtils', function() {
                columnNumber: 0,
              }],
            },
-         });
+         };
+         functionCallEvent.args = args as unknown as Trace.Types.Events.Args;
          const linkifier = new Components.Linkifier.Linkifier();
          const node =
              Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
@@ -1642,7 +1643,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
         ...makeInstantEvent(Trace.Types.Events.Name.MARK_FIRST_PAINT, 0),
         name: Trace.Types.Events.Name.MARK_FIRST_PAINT,
         ph: Trace.Types.Events.Phase.MARK,
-        args: {frame: 'main-frame-id'},
+        args: {frame: 'main-frame-id', data: {navigationId: 'test-nav-id'}},
       };
       assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markFirstPaint));
     });
@@ -1652,7 +1653,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
         ...makeInstantEvent(Trace.Types.Events.Name.MARK_FCP, 0),
         name: Trace.Types.Events.Name.MARK_FCP,
         ph: Trace.Types.Events.Phase.MARK,
-        args: {frame: 'main-frame-id'},
+        args: {frame: 'main-frame-id', data: {navigationId: 'test-nav-id'}},
       };
       assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markFCPEvent));
     });
@@ -1662,7 +1663,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
         ...makeInstantEvent(Trace.Types.Events.Name.MARK_FCP, 0),
         name: Trace.Types.Events.Name.MARK_FCP,
         ph: Trace.Types.Events.Phase.MARK,
-        args: {frame: 'not-the-main-frame'},
+        args: {frame: 'not-the-main-frame', data: {navigationId: 'test-nav-id'}},
       };
       assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markFCPEvent));
     });

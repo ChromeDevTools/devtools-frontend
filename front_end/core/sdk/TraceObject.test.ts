@@ -19,9 +19,7 @@ describe('TraceObject', () => {
         pid: Trace.Types.Events.ProcessID(1),
         tid: Trace.Types.Events.ThreadID(4),
         ts: Trace.Types.Timing.Micro(5e7),
-        args: {
-          data: {frame: '0xA'},
-        },
+        args: {},
       };
 
       const traceEvents = [event];

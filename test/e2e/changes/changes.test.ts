@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {veImpressionForChangesPanel} from '../helpers/changes-helpers.js';
 import {editCSSProperty} from '../helpers/elements-helpers.js';
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';

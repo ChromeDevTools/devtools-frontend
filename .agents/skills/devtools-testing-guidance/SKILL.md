@@ -49,4 +49,5 @@ Use E2E tests to verify real end-to-end user stories and user journeys.
   - Verifying full user journeys across DevTools panels and drawers.
   - Complex UI behaviors that require extensive user interaction setup and benefit from a complete DevTools frontend page connected to an inspected target page over CDP.
 - **Location:** Defined in `test/e2e/` (e.g. `test/e2e/console/console-log.test.ts`).
-- **BUILD.gn**: test file should be added to `ts_e2e_library(ts_e2e_library)` target in the corresponding `BUILD.gn` file. And `node_ts_library` in `test/e2e/BUILD.gn` for its dependencies.
+- **Test functions:** import `describe`, `it` and `setup` from `test/e2e/conductor/mocha-interface.ts` (e.g. `import {describe, it} from '../conductor/mocha-interface.js';`). They are not available as globals.
+- **BUILD.gn**: test file should be added to the `node_ts_library` target in the corresponding `BUILD.gn` file, which needs `"../conductor:implementation"` in its `ts_deps`. And `node_ts_library` in `test/e2e/BUILD.gn` for its dependencies.

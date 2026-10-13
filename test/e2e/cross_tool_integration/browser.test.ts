@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 

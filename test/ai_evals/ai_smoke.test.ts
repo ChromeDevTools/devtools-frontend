@@ -15,6 +15,7 @@ import {
 import {navigateToNetworkTab} from '../e2e/helpers/network-helpers.js';
 
 import {findAndSetContext, setupAndRunEvalApp, stopEvalApp} from './helpers/ai_eval-helpers.js';
+import {describe, it, setup} from './mocha-interface.js';
 
 describe('DevTools AI Smoke Test', () => {
   setup({

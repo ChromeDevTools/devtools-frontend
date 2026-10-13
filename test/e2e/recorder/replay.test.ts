@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type {Target} from 'puppeteer-core';
 
 import type {AssertedEventType, StepType} from '../../../front_end/panels/recorder/models/Schema.js';
-import {expectError} from '../../conductor/events.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   clickSelectButtonItem,
   onReplayFinished,
@@ -19,12 +19,6 @@ describe('Recorder', function() {
   if (this.timeout() !== 0) {
     this.timeout(40000);
   }
-
-  setup(() => {
-    // The error is not an indication of the test failure. We should
-    // rely on test result with retries.
-    expectError(/Replay error Waiting failed/);
-  });
 
   describe('Replay', () => {
     it('should navigate to the url of the first section', async ({inspectedPage, devToolsPage}) => {

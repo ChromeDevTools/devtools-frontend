@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {CONSOLE_ALL_MESSAGES_SELECTOR, navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {
   waitForContentOfSelectedElementsNode,

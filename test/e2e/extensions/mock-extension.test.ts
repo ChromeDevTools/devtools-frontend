@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import * as path from 'node:path';
 
 import {SOURCE_ROOT} from '../../conductor/paths.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 
 describe('Mock Extension Loading', () => {
   // Path to the dummy extension in its new home

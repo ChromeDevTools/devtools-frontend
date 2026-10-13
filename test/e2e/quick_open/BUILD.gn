@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("quick_open") {
+node_ts_library("quick_open") {
   sources = [
     "QuickOpen.test.ts",
     "with_experiment.test.ts",
@@ -12,6 +12,7 @@ ts_e2e_library("quick_open") {
 
   ts_deps = [
     "../../shared",
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

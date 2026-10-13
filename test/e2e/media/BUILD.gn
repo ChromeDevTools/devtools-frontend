@@ -4,10 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("media") {
+node_ts_library("media") {
   sources = [ "media-tab.test.ts" ]
 
   ts_deps = [
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

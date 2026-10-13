@@ -4,14 +4,11 @@
 /// <reference types="../../../extension-api/ExtensionAPI.d.ts" />
 
 import {assert} from 'chai';
-import {
-  describe,
-  it,
-} from 'mocha';
 import type * as puppeteer from 'puppeteer-core';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {expectError} from '../../conductor/events.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   loadExtension,
 } from '../helpers/extension-helpers.js';

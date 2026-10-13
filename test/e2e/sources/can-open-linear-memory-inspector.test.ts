@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
 import {
   addBreakpointForLine,

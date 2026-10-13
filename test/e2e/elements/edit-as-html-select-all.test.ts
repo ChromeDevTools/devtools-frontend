@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {findSubMenuEntryItem, waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {expandSelectedNodeRecursively} from '../helpers/elements-helpers.js';
 

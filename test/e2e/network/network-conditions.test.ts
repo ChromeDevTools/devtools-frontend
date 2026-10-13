@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';

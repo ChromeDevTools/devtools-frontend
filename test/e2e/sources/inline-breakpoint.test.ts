@@ -5,6 +5,7 @@
 import {
   step,
 } from '../../shared/helper.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   addBreakpointForLine,
   disableInlineBreakpointForLine,

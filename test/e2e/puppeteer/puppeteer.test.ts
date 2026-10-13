@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
+
 describe('Puppeteer', () => {
   it('should connect to the browser via DevTools own connection', async ({browser, devToolsPage}) => {
     const version = await browser.browser.version();

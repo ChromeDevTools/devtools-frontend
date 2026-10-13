@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TEST_HTML_FILE = 'window-controls';

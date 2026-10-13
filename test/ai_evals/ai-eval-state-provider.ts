@@ -9,7 +9,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type * as AiAssistance from '../../front_end/panels/ai_assistance/ai_assistance.js';
 import {TestConfig} from '../conductor/test_config.js';
-import {type E2EState, StateProvider} from '../e2e/conductor/state-provider.js';
+import {type E2EState, StateProvider, type SuiteSettings} from '../e2e/conductor/state-provider.js';
 import {type BrowserSettings, type BrowserWrapper, Launcher} from '../e2e/shared/BrowserWrapper.js';
 import type {DevToolsPage} from '../e2e/shared/DevToolsPage.js';
 import {InspectedPage} from '../e2e/shared/InspectedPage.js';
@@ -76,18 +76,10 @@ export interface AiEvalState extends E2EState {
   evalTask: EvalTaskHandle;
 }
 
-declare global {
-  namespace Mocha {
-    interface HookFunction {
-      (fn: E2E.SuiteSettings&{evalConfig?: AiEvalConfig}): void;
-    }
-  }
-  namespace E2E {
-    interface State {
-      evalTask: EvalTaskHandle;
-    }
-  }
-}
+/**
+ * Settings that AI eval suites can register via `setup()`.
+ */
+export type AiEvalSuiteSettings = SuiteSettings&{evalConfig?: AiEvalConfig};
 
 export class AiEvalStateProvider extends StateProvider {
   static override instance: AiEvalStateProvider = new AiEvalStateProvider();
@@ -99,8 +91,7 @@ export class AiEvalStateProvider extends StateProvider {
   #taskStatuses: TaskStatus[] = [];
   #taskToolCallCounts = new Map<string, number>();
 
-  override registerSuiteSettings(suite: Mocha.Suite,
-                                 suiteSettings: E2E.SuiteSettings&{evalConfig?: AiEvalConfig}): void {
+  override registerSuiteSettings(suite: Mocha.Suite, suiteSettings: AiEvalSuiteSettings): void {
     super.registerSuiteSettings(suite, suiteSettings);
     if (suiteSettings.evalConfig) {
       this.#suiteToEvalConfig.set(suite, suiteSettings.evalConfig);

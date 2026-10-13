@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../../e2e/conductor/mocha-interface.js';
+
 describe('multiple', () => {
   it('run1', () => {
     assert.strictEqual(1 + 1, 2, 'Math works');

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
   openNetworkTab,

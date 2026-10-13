@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', function() {

@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../ai-eval-state-provider.js';
-
 import {openNetworkTab} from '../../e2e/helpers/network-helpers.js';
 import {findAndSetContext} from '../helpers/ai_eval-helpers.js';
+import {describe, it, setup} from '../mocha-interface.js';
 
 describe('Network AI Eval: server-error-5xx', function() {
   this.timeout(180_000);

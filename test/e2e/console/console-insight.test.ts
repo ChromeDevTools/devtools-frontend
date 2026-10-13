@@ -7,6 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type * as Root from '../../../front_end/core/root/root.js';
 import type * as Console from '../../../front_end/panels/console/console.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   clickOnContextMenu,
   CONSOLE_TAB_SELECTOR,

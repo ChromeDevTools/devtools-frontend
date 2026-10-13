@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   openFileWithQuickOpen,
 } from '../helpers/quick_open-helpers.js';

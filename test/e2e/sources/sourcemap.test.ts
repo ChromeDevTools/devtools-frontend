@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,

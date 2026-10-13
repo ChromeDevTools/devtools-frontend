@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {navigateToIssuesTab} from '../helpers/issues-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';

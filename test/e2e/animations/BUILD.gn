@@ -4,10 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("animations") {
+node_ts_library("animations") {
   sources = [ "animations.test.ts" ]
 
   ts_deps = [
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

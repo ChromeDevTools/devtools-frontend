@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {setIgnoreListPattern, toggleIgnoreListing} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,

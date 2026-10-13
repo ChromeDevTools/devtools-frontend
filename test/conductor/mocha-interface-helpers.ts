@@ -9,12 +9,12 @@ import {dumpCollectedErrors} from './events.js';
 import {ScreenshotError} from './screenshot-error.js';
 import {TestConfig} from './test_config.js';
 
-declare global {
-  namespace Mocha {
-    export interface Test {
-      realDuration?: number;
-    }
-  }
+/**
+ * A Mocha test that also records how long the test body took to execute,
+ * excluding the time spent on creating the test state.
+ */
+export interface TimedTest extends Mocha.Test {
+  realDuration?: number;
 }
 
 export interface TestStateProvider<TState = unknown, TSuiteSettings = unknown> {
@@ -34,7 +34,7 @@ export interface TestStateProvider<TState = unknown, TSuiteSettings = unknown> {
   onTestError?: (state: TState|undefined, error: Error) => Promise<Error>;
 }
 
-export type TestCallback<TState = void> = (this: Mocha.Context|void, state: TState) => PromiseLike<unknown>;
+export type TestCallback<TState = void> = (this: Mocha.Context|void, state: TState) => unknown;
 
 export class InstrumentedTestFunction<TState = unknown> {
   /**
@@ -80,7 +80,7 @@ export class InstrumentedTestFunction<TState = unknown> {
                                                          (this.fn as TestCallback<TState>).call(undefined, this.state));
 
     if (context.test) {
-      (context.test as Mocha.Test).realDuration = Math.ceil(performance.now() - start);
+      (context.test as TimedTest).realDuration = Math.ceil(performance.now() - start);
     }
 
     return testResult;

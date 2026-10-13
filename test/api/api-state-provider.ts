@@ -41,7 +41,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
 
   async createState(suite: Mocha.Suite): Promise<API.State> {
     await this.prepareSuite(suite);
-    const browserWrapper = suite.browser;
+    const browserWrapper = StateProvider.instance.browserForSuite(suite);
     if (!browserWrapper || !browserWrapper.connected) {
       throw new Error('Browser disconnected unexpectedly');
     }

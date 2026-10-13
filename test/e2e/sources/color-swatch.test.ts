@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {shiftClickColorSwatch} from '../helpers/elements-helpers.js';
 import {openFileInEditor, openFileInSourcesPanel} from '../helpers/sources-helpers.js';

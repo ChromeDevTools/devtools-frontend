@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {addBreakpointForLine, DEBUGGER_PAUSED_EVENT, openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';

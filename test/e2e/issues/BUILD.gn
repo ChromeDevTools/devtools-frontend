@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("issues") {
+node_ts_library("issues") {
   sources = [
     "bounce-tracking-issues.test.ts",
     "client-hint-issues.test.ts",
@@ -33,6 +33,7 @@ ts_e2e_library("issues") {
   ]
   ts_deps = [
     "../../shared",
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

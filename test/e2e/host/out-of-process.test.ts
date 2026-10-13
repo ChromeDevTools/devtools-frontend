@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
+
 describe('The Host browser', () => {
   it('resolves .test domains to localhost and OOPIFs work as intended', async ({inspectedPage, browser}) => {
     await inspectedPage.goToResourceWithCustomHost('devtools.test', 'host/page-with-oopif.html');

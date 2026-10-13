@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {createNewSnippet, getOpenSources, openSnippetsSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';

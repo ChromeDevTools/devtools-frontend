@@ -28,8 +28,6 @@ ts_library("mocha-adapter-browser") {
 }
 
 node_ts_library("karma") {
-  inputs = typescript_puppeteer_types_inputs
-
   sources = [ "karma.conf.ts" ]
   ts_deps = [
     "../../front_end/testing:test_id_generation",

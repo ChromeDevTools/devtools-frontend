@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it, setup} from 'mocha';
 import type {ElementHandle} from 'puppeteer-core';
 import {TestConfig} from 'test/conductor/test_config.js';
+import {describe, it, setup} from 'test/e2e/conductor/mocha-interface.js';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,

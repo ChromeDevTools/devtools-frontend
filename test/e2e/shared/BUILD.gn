@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("shared") {
+node_ts_library("shared") {
   testonly = false
   ts_deps = [
     "../../../front_end/core/root:bundle",

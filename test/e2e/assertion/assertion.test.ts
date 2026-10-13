@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {expectedErrors} from '../../conductor/events.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 
 describe('Assertions', function() {
   it('console.assert', async ({devToolsPage, inspectedPage}) => {

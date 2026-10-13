@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
 

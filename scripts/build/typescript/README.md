@@ -59,7 +59,13 @@ ts_library("my_feature") {
   Specifies the execution environment for scripts/tools running in Node.js. Allowed value is `"node"`. Omitting the flag implies running in the browser.
 
 - **`additional_type_definitions`** (`list(string)`, optional):
-  List of additional `.d.ts` definition files required for type-checking this target (e.g. `test/e2e/types.d.ts`).
+  List of additional `.d.ts` definition files required for type-checking this target (e.g. `node_modules/@types/estree/index.d.ts`).
+
+- **`inputs`** (`list(string)`, optional):
+  Files other than the sources that type-checking reads, such as type definitions from `node_modules` (e.g. `typescript_yargs_types_inputs`). Declaring them makes incremental and remote builds correct.
+
+- **`public_inputs`** (`list(string)`, optional):
+  Like `inputs`, but dependents inherit them as inputs as well, directly and transitively through `ts_deps`. Use this for type definitions that the library exposes in its public API, e.g. `//test/conductor:implementation` exposes the Mocha and Puppeteer types to all test targets.
 
 - **`rootdir`** (`string`, optional):
   Custom root directory for resolving source paths if sources reside in a subfolder. Defaults to `"."`.

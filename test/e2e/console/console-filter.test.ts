@@ -8,6 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   step,
 } from '../../shared/helper.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   closeConsoleSidebar,
   CONSOLE_MESSAGE_WRAPPER_SELECTOR,

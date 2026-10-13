@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 

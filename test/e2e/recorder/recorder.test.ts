@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type {Page} from 'puppeteer-core';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   changeNetworkConditions,
   fillCreateRecordingForm,

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {expandIssue, navigateToIssuesTab, revealViolatingSourcesLines} from '../helpers/issues-helpers.js';
 import {waitForHighlightedLine} from '../helpers/sources-helpers.js';
 

@@ -76,6 +76,27 @@ Current limitations when using VSCode for e2e tests:
   and the test helpers), not to Chrome.
 - VSCode debugging only works with headless mode.
 
+## Defining tests
+
+E2E tests use Mocha, but `describe`, `it` and `setup` are not available as
+globals. Import them from the e2e test interface instead:
+
+```ts
+import {describe, it, setup} from '../conductor/mocha-interface.js';
+
+describe('The Console Tab', () => {
+  setup({enabledFeatures: ['MyFeature']});
+
+  it('shows logged messages', async ({devToolsPage, inspectedPage}) => {
+    // ...
+  });
+});
+```
+
+The test body receives the `devToolsPage`, `inspectedPage` and `browser` to use
+in the test. The `node_ts_library` that contains the test needs
+`"../conductor:implementation"` in its `ts_deps`.
+
 ## General implementation details
 
 To that end, the "what" from the "how" are separate in end-to-end tests. The "what" is the actual end-to-end test. The "how" are functions in [helpers](helpers/) that implement the interaction with DevTools to perform a particular action.

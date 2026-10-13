@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   ACTIVE_STARTING_STYLE_ADORNER_SELECTOR,
   expandSelectedNodeRecursively,

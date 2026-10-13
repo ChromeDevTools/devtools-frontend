@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("performance") {
+node_ts_library("performance") {
   sources = [
     "landing-page.test.ts",
     "multiple-traces.test.ts",
@@ -19,6 +19,7 @@ ts_e2e_library("performance") {
   ]
   ts_deps = [
     "../../conductor:implementation",
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

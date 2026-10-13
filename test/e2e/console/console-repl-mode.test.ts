@@ -5,6 +5,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   CONSOLE_TAB_SELECTOR,
   CONSOLE_TOOLTIP_SELECTOR,

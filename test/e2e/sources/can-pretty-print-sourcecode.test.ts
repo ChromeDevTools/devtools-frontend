@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {step} from '../../shared/helper.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {elementContainsTextWithSelector} from '../helpers/network-helpers.js';
 import {openGoToLineQuickOpen} from '../helpers/quick_open-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';

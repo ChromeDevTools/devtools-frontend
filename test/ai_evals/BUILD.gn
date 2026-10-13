@@ -15,7 +15,7 @@ group("ai_evals") {
   ]
 }
 
-ts_e2e_library("eval_tests") {
+node_ts_library("eval_tests") {
   sources = [ "ai_smoke.test.ts" ]
   ts_deps = [
     ":harness_library",
@@ -26,7 +26,7 @@ ts_e2e_library("eval_tests") {
   ]
 }
 
-ts_e2e_library("harness_library") {
+node_ts_library("harness_library") {
   sources = [
     "ai-eval-state-provider.ts",
     "mocha-interface.ts",

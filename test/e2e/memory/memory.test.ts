@@ -8,6 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   step,
 } from '../../shared/helper.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,

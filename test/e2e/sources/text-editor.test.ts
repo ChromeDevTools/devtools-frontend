@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import type * as TextEditor from '../../../front_end/ui/components/text_editor/text_editor.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('text editor', () => {

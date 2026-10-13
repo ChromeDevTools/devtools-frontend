@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {expandSelectedNodeRecursively, goToResourceAndWaitForStyleSection} from '../helpers/elements-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';

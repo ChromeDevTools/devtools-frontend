@@ -9,7 +9,6 @@ node_ts_library("report") {
 
   ts_deps = [
     "../../conductor:implementation",
-    "../../shared",
     "../helpers",
   ]
 }

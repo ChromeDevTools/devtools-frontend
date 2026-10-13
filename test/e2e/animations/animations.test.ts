@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {veImpressionForAnimationsPanel} from '../helpers/animations-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import {expectVeEvents, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';

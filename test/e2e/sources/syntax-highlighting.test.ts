@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {

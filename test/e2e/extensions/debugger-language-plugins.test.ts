@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {expectError} from '../../conductor/events.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,

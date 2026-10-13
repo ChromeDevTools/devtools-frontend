@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {matchStringArray} from '../../shared/helper.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   assertIssueTitle,
   expandIssue,

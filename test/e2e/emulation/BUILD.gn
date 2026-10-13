@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("emulation") {
+node_ts_library("emulation") {
   sources = [
     "custom-device-ua-clear.test.ts",
     "custom-devices.test.ts",
@@ -14,6 +14,7 @@ ts_e2e_library("emulation") {
     "responsive.test.ts",
   ]
   ts_deps = [
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

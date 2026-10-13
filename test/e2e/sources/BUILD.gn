@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("sources") {
+node_ts_library("sources") {
   sources = [
     "authored-deployed-grouping.test.ts",
     "breakpoint-csp-violations.test.ts",
@@ -56,6 +56,7 @@ ts_e2e_library("sources") {
     "../../../front_end/ui/components/text_editor:bundle",
     "../../conductor:implementation",
     "../../shared",
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

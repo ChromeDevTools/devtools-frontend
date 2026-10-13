@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {platform} from '../../conductor/platform.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {

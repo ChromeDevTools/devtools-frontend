@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../../../e2e/conductor/mocha-interface.js';
 import {
   navigateToPerformanceTab,
   uploadTraceFile,

@@ -16,7 +16,12 @@ import {
   DEFAULT_BROWSER_SETTINGS,
   Launcher,
 } from '../shared/BrowserWrapper.js';
-import {DEFAULT_DEVTOOLS_SETTINGS, type DevToolsPage, setupDevToolsPage} from '../shared/DevToolsPage.js';
+import {
+  DEFAULT_DEVTOOLS_SETTINGS,
+  type DevToolsPage,
+  type DevtoolsSettings,
+  setupDevToolsPage,
+} from '../shared/DevToolsPage.js';
 import {type InspectedPage, setupInspectedPage} from '../shared/InspectedPage.js';
 
 const DEFAULT_SETTINGS = {
@@ -24,8 +29,33 @@ const DEFAULT_SETTINGS = {
   ...DEFAULT_DEVTOOLS_SETTINGS,
 };
 
-export interface E2EState extends E2E.State {
+export type HarnessSettings = BrowserSettings&DevtoolsSettings;
+
+/**
+ * Settings that a suite can register via `setup()`. They are merged with the
+ * default harness settings.
+ */
+export type SuiteSettings = Partial<HarnessSettings>;
+
+/**
+ * The state that e2e tests receive as the argument of their test body.
+ */
+export interface State {
+  devToolsPage: DevToolsPage;
+  inspectedPage: InspectedPage;
+  browser: BrowserWrapper;
+}
+
+export interface E2EState extends State {
   browsingContext: puppeteer.BrowserContext;
+}
+
+/**
+ * The ResultsDB reporter reads the state of the last test from the suite to
+ * collect the DevTools screenshot log.
+ */
+interface SuiteWithState extends Mocha.Suite {
+  state?: E2EState;
 }
 
 export interface ScreenshotState {
@@ -79,15 +109,15 @@ export async function screenshotError(state: ScreenshotState, error: Error): Pro
   return error;
 }
 
-export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSettings> {
+export class StateProvider implements TestStateProvider<E2EState, SuiteSettings> {
   static instance: StateProvider = new StateProvider();
   static serverPort: number;
 
   /**
    * This provides a mapping whenever we have called the
-   * {@link Mocha.setup | setup()} function with custom settings.
+   * `setup()` function with custom settings.
    */
-  #suiteToSettingsMap = new WeakMap<Mocha.Suite, E2E.SuiteSettings>();
+  #suiteToSettingsMap = new WeakMap<Mocha.Suite, SuiteSettings>();
   /**
    * This provides a quick link between suite and browser with
    * the correct setting allowing us to skip some check
@@ -105,7 +135,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
   protected constructor() {
   }
 
-  registerSuiteSettings(suite: Mocha.Suite, suiteSettings: E2E.SuiteSettings): void {
+  registerSuiteSettings(suite: Mocha.Suite, suiteSettings: SuiteSettings): void {
     this.#suiteToSettingsMap.set(suite, suiteSettings);
   }
 
@@ -135,10 +165,9 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
       browser = await this.launchBrowser(browserSettings);
       this.settingToBrowser.set(browserKey, browser);
     }
-    this.#suiteToBrowser.set(suite, browser);
     // Suite needs to be aware of the browser instance to be able to create the
     // full state for the tests
-    suite.browser = browser;
+    this.#suiteToBrowser.set(suite, browser);
   }
 
   async resolveBrowser(suite?: Mocha.Suite): Promise<void> {
@@ -147,10 +176,17 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     }
   }
 
+  /**
+   * Returns the browser that {@link prepareSuite} prepared for the suite.
+   */
+  browserForSuite(suite: Mocha.Suite): BrowserWrapper|undefined {
+    return this.#suiteToBrowser.get(suite);
+  }
+
   async createState(suite: Mocha.Suite): Promise<E2EState> {
     const settings = this.#getSettings(suite);
-    const browser = suite.browser;
-    if (!browser.connected) {
+    const browser = this.#suiteToBrowser.get(suite);
+    if (!browser?.connected) {
       throw new Error('Browser disconnected unexpectedly');
     }
 
@@ -165,7 +201,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     };
     // Suite needs to be aware of the full state to be able to capture
     // screenshots on failures
-    suite.state = state;
+    (suite as SuiteWithState).state = state;
     return state;
   }
 
@@ -177,7 +213,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     return await browser.createBrowserContext();
   }
 
-  async devToolsPage(inspectedPage: InspectedPage, settings: E2E.HarnessSettings): Promise<DevToolsPage> {
+  async devToolsPage(inspectedPage: InspectedPage, settings: HarnessSettings): Promise<DevToolsPage> {
     return await setupDevToolsPage(inspectedPage, settings);
   }
 
@@ -208,7 +244,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     return await screenshotError(state, error);
   }
 
-  #getSettings(suite: Mocha.Suite): E2E.HarnessSettings {
+  #getSettings(suite: Mocha.Suite): HarnessSettings {
     const settings = this.#suiteToSettingsMap.get(suite);
     if (settings) {
       return mergeSettings(settings, DEFAULT_SETTINGS);
@@ -235,7 +271,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
   }
 }
 
-export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E2E.HarnessSettings {
+export function mergeSettings(s1: SuiteSettings, s2: HarnessSettings): HarnessSettings {
   function mergeAsSet<T>(arr1?: T[], arr2?: T[]) {
     return Array.from(new Set(arr1 ?? []).union(new Set(arr2 ?? [])));
   }

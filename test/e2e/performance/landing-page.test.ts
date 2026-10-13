@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {tabExistsInDrawer} from '../helpers/cross-tool-helper.js';
 import {

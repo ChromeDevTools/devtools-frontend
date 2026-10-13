@@ -4,6 +4,7 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   navigateToApplicationTab,
   navigateToServiceWorkers,

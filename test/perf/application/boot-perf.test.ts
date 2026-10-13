@@ -4,6 +4,7 @@
 
 import {performance} from 'node:perf_hooks';
 
+import {describe, it} from '../../e2e/conductor/mocha-interface.js';
 import {measurements} from '../report/report.js';
 
 describe('Boot performance', () => {

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {setupAndRunEvalApp, stopEvalApp} from '../helpers/ai_eval-helpers.js';
+import {describe, it} from '../mocha-interface.js';
 
 describe('Network AI Eval: failing-request', function() {
   this.timeout(120_000);

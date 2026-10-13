@@ -4,13 +4,14 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("coverage") {
+node_ts_library("coverage") {
   sources = [
     "coverage-with-source-map.test.ts",
     "coverage.test.ts",
   ]
 
   ts_deps = [
+    "../conductor:implementation",
     "../helpers",
     "../shared",
   ]

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {
   openDeviceToolbar,

@@ -4,8 +4,8 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("puppeteer") {
+node_ts_library("puppeteer") {
   sources = [ "puppeteer.test.ts" ]
 
-  ts_deps = [ "../shared" ]
+  ts_deps = [ "../conductor:implementation" ]
 }

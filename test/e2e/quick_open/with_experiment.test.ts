@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {readQuickOpenResults, typeIntoQuickOpen} from '../helpers/quick_open-helpers.js';
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';

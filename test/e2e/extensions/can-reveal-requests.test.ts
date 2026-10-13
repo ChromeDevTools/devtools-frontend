@@ -10,6 +10,7 @@ import {assert} from 'chai';
 // to declare some type, and it gets stripped at runtime.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
 import {getTextFilterContent, waitForNetworkTab} from '../helpers/network-helpers.js';
 

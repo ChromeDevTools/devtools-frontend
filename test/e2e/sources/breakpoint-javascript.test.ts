@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,

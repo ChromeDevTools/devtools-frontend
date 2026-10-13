@@ -7,6 +7,7 @@ import * as path from 'node:path';
 
 import {expectError} from '../../conductor/events.js';
 import {GEN_DIR} from '../../conductor/paths.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   loadTraceAndWaitToFullyRender,
   navigateToPerformanceTab,

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 
 // Ideally we want to have all panels within this list,

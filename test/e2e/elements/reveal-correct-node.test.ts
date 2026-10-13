@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {step} from '../../shared/helper.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {navigateToConsoleTab, typeIntoConsole} from '../helpers/console-helpers.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {

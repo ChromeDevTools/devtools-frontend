@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import type * as Host from '../../../front_end/core/host/host.js';
 import type * as Root from '../../../front_end/core/root/root.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
 

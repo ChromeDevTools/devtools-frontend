@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR,
   CONSOLE_TAB_SELECTOR,

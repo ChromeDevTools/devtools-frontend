@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';

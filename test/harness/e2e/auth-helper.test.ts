@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {TestConfig} from '../../conductor/test_config.js';
+import {describe, it} from '../../e2e/conductor/mocha-interface.js';
 import {chromeLogin, getOtaPassword, typeTextIn} from '../../e2e/shared/auth-helper.js';
 import {DEFAULT_BROWSER_SETTINGS, Launcher} from '../../e2e/shared/BrowserWrapper.js';
 

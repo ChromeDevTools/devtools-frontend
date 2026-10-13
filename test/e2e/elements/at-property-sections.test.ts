@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   ELEMENTS_PANEL_SELECTOR,
   getStyleRule,

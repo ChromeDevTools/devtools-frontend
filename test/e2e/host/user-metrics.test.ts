@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {CONSOLE_MESSAGES_SELECTOR, navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {

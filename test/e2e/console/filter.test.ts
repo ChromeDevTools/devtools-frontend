@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR,
   deleteConsoleMessagesFilter,

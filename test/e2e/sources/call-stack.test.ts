@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {getCallFrameNames, PAUSE_INDICATOR_SELECTOR} from '../helpers/sources-helpers.js';
 
 describe('Sources', () => {

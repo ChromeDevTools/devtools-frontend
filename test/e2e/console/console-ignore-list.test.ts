@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   replacePuppeteerUrl,
 } from '../../shared/helper.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   navigateToConsoleTab,
 } from '../helpers/console-helpers.js';

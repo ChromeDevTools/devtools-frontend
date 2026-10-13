@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it, setup} from 'mocha';
+import {describe, it, setup} from 'test/e2e/conductor/mocha-interface.js';
 import {
   addBreakpointForLine,
   openFileInEditor,

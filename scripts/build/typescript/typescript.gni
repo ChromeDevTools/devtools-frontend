@@ -94,6 +94,11 @@ import("./typescript_vars.gni")
 #    causing Ninja to prune recompilation of :module_b_checked.
 
 # Defines a TypeScript library target using tsc v7+.
+#
+# Files that tsc reads besides the sources, e.g. type definitions from
+# node_modules, have to be listed in `inputs`. List them in `public_inputs`
+# instead if the library exposes them in its public API: dependents then
+# inherit them as inputs, directly and transitively through `ts_deps`.
 template("ts_library") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
@@ -388,6 +393,9 @@ template("ts_library") {
     if (defined(invoker.inputs)) {
       inputs += invoker.inputs
     }
+    if (defined(invoker.public_inputs)) {
+      inputs += invoker.public_inputs
+    }
 
     if (_has_handwritten_dts) {
       inputs += _copied_dts_outputs
@@ -450,6 +458,9 @@ template("ts_library") {
     }
     public_inputs = filter_include(_dts_outputs, [ "*.d.ts" ]) +
                     _copied_dts_outputs + [ _tsconfig_ref_file ]
+    if (defined(invoker.public_inputs)) {
+      public_inputs += invoker.public_inputs
+    }
     if (defined(invoker.public_deps)) {
       public_deps += invoker.public_deps
     }
@@ -520,29 +531,9 @@ template("node_ts_library") {
                              "deps",
                              "data_deps",
                              "public_deps",
+                             "public_inputs",
                              "additional_type_definitions",
                              "ts_deps",
-                           ])
-  }
-}
-
-template("ts_e2e_library") {
-  node_ts_library(target_name) {
-    additional_type_definitions =
-        [ devtools_location_prepend + "test/e2e/types.d.ts" ]
-    inputs = typescript_test_types_inputs + typescript_puppeteer_types_inputs
-    if (defined(invoker.inputs)) {
-      inputs += invoker.inputs
-    }
-    forward_variables_from(invoker,
-                           [
-                             "sources",
-                             "visibility",
-                             "deps",
-                             "data_deps",
-                             "public_deps",
-                             "ts_deps",
-                             "testonly",
                            ])
   }
 }

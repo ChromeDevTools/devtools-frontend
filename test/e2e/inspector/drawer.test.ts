@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 

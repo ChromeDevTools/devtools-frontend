@@ -4,8 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-ts_e2e_library("security") {
+node_ts_library("security") {
   sources = [ "security.test.ts" ]
 
-  ts_deps = [ "../helpers" ]
+  ts_deps = [
+    "../conductor:implementation",
+    "../helpers",
+  ]
 }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {expectError} from '../../conductor/events.js';
+import {describe, it, setup} from '../conductor/mocha-interface.js';
 import {
   navigateToApplicationTab,
   navigateToServiceWorkers,

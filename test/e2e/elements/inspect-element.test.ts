@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {CONSOLE_PROMPT_SELECTOR, CONSOLE_TAB_SELECTOR, typeIntoConsole} from '../helpers/console-helpers.js';
 import {
   waitForElementsStyleSection,

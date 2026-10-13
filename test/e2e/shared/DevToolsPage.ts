@@ -25,6 +25,15 @@ interface DevToolsReloadParams {
   panel?: string;
 }
 
+/**
+ * The DevTools window with the events collected by
+ * {@link DevToolsPage.installEventListener}.
+ */
+interface WindowWithPendingEvents extends Window {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __pendingEvents?: Map<string, Event[]>;
+}
+
 let heapSnapshotCounter = 0;
 export class DevToolsPage extends PageWrapper {
   screenshotLog: Record<string, string> = {};
@@ -256,12 +265,14 @@ export class DevToolsPage extends PageWrapper {
 
   installEventListener(eventType: string): Promise<void> {
     return this.page.evaluate(eventType => {
-      window.__pendingEvents = window.__pendingEvents || new Map();
+      const pageWindow = window as WindowWithPendingEvents;
+      const pendingEvents = pageWindow.__pendingEvents ?? new Map<string, Event[]>();
+      pageWindow.__pendingEvents = pendingEvents;
       window.addEventListener(eventType, (e: Event) => {
-        let events = window.__pendingEvents.get(eventType);
+        let events = pendingEvents.get(eventType);
         if (!events) {
           events = [];
-          window.__pendingEvents.set(eventType, events);
+          pendingEvents.set(eventType, events);
         }
         events.push(e);
       });
@@ -270,12 +281,13 @@ export class DevToolsPage extends PageWrapper {
 
   getPendingEvents(eventType: string): Promise<Event[]|undefined> {
     return this.page.evaluate(eventType => {
-      if (!('__pendingEvents' in window)) {
+      const pendingEvents = (window as WindowWithPendingEvents).__pendingEvents;
+      if (!pendingEvents) {
         return;
       }
-      const pendingEvents = window.__pendingEvents.get(eventType);
-      window.__pendingEvents.set(eventType, []);
-      return pendingEvents;
+      const events = pendingEvents.get(eventType);
+      pendingEvents.set(eventType, []);
+      return events;
     }, eventType);
   }
 

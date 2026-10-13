@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import type {StepType} from '../../../front_end/panels/recorder/models/Schema.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {
   clickSelectButtonItem,
   createAndStartRecording,

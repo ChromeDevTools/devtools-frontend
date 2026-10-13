@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {platform} from '../../conductor/platform.js';
+import {describe, it} from '../conductor/mocha-interface.js';
 import {executionLineHighlighted, PAUSE_INDICATOR_SELECTOR} from '../helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 

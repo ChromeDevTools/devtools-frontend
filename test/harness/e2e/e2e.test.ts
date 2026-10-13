@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../../e2e/conductor/mocha-interface.js';
+
 describe('Test Harness E2E Fixture', () => {
   it('should run a basic e2e test successfully', async ({devToolsPage}) => {
     assert.isNotNull(devToolsPage, 'devToolsPage should be available');

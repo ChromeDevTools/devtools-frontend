@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {
   clickNthChildOfSelectedElementNode,

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {describe, it} from '../conductor/mocha-interface.js';
 import {focusConsolePrompt, getCurrentConsoleMessages, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {

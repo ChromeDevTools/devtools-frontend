@@ -82,7 +82,7 @@ describe('CSSMatchedStyles', () => {
 
     it('should correctly compute the value of an expression that uses a variable', async () => {
       await testCssValueEquals('--foo', 'active-foo');
-      await testCssValueEquals('--baz', 'active-baz');
+      await testCssValueEquals('--baz', 'active-baz !important');
       await testCssValueEquals('--does-not-exist', null);
       await testCssValueEquals('--dark', 'darkgrey');
       await testCssValueEquals('--light', 'lightgrey');

@@ -51,6 +51,39 @@ describeWithEnvironment('SplitWidget', () => {
     assert.isFalse(widget.isVertical());
   });
 
+  it('stacks the widgets when an auto-oriented split widget is narrow', () => {
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+    const setContainerSize = (width: number, height: number): void => {
+      container.style.width = `${width}px`;
+      container.style.height = `${height}px`;
+    };
+
+    setContainerSize(360, 500);
+    const parent = new UI.Widget.VBox();
+    parent.markAsRoot();
+    parent.show(container);
+    const widget = new SplitWidget(true, true);
+    widget.show(parent.element);
+    widget.setAutoAdjustOrientation(true);
+    assert.isFalse(widget.isVertical(), 'narrow and tall');
+
+    setContainerSize(1000, 300);
+    parent.doResize();
+    assert.isTrue(widget.isVertical(), 'wide');
+
+    setContainerSize(500, 400);
+    parent.doResize();
+    assert.isTrue(widget.isVertical(), 'narrow but even shorter');
+
+    setContainerSize(360, 500);
+    parent.doResize();
+    assert.isFalse(widget.isVertical(), 'narrow and tall again');
+
+    parent.detach();
+  });
+
   it('can be instantiated from the template', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);

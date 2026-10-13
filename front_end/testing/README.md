@@ -104,4 +104,4 @@ const snapshotTester = new SnapshotTester(this, import.meta);
 
 Then inside a test, call `snapshotTester.assert(this, output)`. For an example, see SnapshotTester.test.ts.
 
-To update snapshots, run `npm run test -- --on-diff=update ...`
+To update snapshots, run `./dt test --on-diff=update ...`

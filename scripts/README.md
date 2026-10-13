@@ -23,4 +23,4 @@ The newer scripts such as for testing and hosted mode are written in Node.js, wh
 
 ### Node.js scripts
 
-The easiest way to run the node.js scripts is to use `npm run` which displays all the commands. For more information on the specific `npm run` commands, take a look at the primary devtools front-end readme (`../readme.md`).
+The easiest way to run the node.js scripts is to use `./dt` which displays all the commands. For more information on the specific `./dt` commands, take a look at the primary devtools front-end readme (`../readme.md`).

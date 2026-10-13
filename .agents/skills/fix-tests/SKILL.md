@@ -22,7 +22,7 @@ First, create and start two sub-agents simultaneously. One called 'local-repro' 
 
 ### Local reproduction (local-repro)
 
-- Use command: `npm run test -- --repeat=<count> path/to/foo.test.ts:exact_test_id` to locally run the tests repeatedly. Both E2E and unit tests support this. Use the exact test ID printed in the test runner output (usually the suite and test names with spaces replaced by underscores). Do not use `--grep` or a `bash` script with a `for` loop.
+- Use command: `./dt test --repeat=<count> path/to/foo.test.ts:exact_test_id` to locally run the tests repeatedly. Both E2E and unit tests support this. Use the exact test ID printed in the test runner output (usually the suite and test names with spaces replaced by underscores). Do not use `--grep` or a `bash` script with a `for` loop.
 - First run the test three times to note how long the test runs (on average).
 - Then run the test continuously for 4 minutes, while noting any failures and failure rates. If the failure rate is still 0% after that, assume the problem does not reproduce locally.
 - After the local test run completes, then show the results in a table. For example:

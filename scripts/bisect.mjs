@@ -69,7 +69,7 @@ const args = [
   '--verify-range',
   '--not-interactive',
   '-c',
-  `npm run test -- ${test} --chrome-binary="%p"`,
+  `vpython3 scripts/tools/dt.py test ${test} --chrome-binary="%p"`,
 ];
 
 if (dry) {

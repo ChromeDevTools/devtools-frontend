@@ -76,7 +76,9 @@ with open(GENERATED_LOCATION, mode="w+") as f:
     f.write("// found in the LICENSE file.\n")
     f.write("\n")
     f.write("// This file is auto-generated, do not edit manually.\n")
-    f.write("// Re-generate with: npm run generate-protocol-resources\n")
+    f.write(
+        "// Re-generate with: scripts/tools/dt.py generate-protocol-resources\n"
+    )
     f.write("\n")
     f.write("export const UIStrings = {\n")
     for name, ui_string in ui_strings.items():

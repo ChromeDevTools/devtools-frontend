@@ -39,13 +39,13 @@ autoninja -C out/Default test/ai_evals:ai_evals
 AI Evals tests (uses the default team OTA account from `eval_data/ota_account.txt`):
 
 ```bash
-npm run test test/ai_evals
+./dt test test/ai_evals
 ```
 
 To override with a custom OTA account:
 
 ```bash
-npm run test test/ai_evals -- --ota-username your_ota_account@gmail.com
+./dt test test/ai_evals --ota-username your_ota_account@gmail.com
 ```
 
 Harness tests:

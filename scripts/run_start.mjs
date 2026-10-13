@@ -122,7 +122,7 @@ const argv = yargs(hideBin(process.argv))
     ['unstable-features', 'enable-features', 'disable-features'],
     'Feature options:',
   )
-  .usage('npm start -- [options] [urls...]')
+  .usage('scripts/tools/dt.py start [options] [urls...]')
   .help('help')
   .version(false)
   .parseSync();

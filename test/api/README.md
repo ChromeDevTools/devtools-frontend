@@ -43,37 +43,37 @@ describe('Suite with custom hostConfig', () => {
 
 ## Running API tests
 
-Note that `npm run test -- front_end` runs unit tests as well. To run API tests specifically, specify a glob matching `.test.api.ts` files:
+Note that `./dt test front_end` runs unit tests as well. To run API tests specifically, specify a glob matching `.test.api.ts` files:
 
 ```bash
-npm run test -- "front_end/**/*.test.api.ts"
+./dt test "front_end/**/*.test.api.ts"
 ```
 
 To run a specific API test file:
 
 ```bash
-npm run test -- front_end/foundation/Universe.test.api.ts
+./dt test front_end/foundation/Universe.test.api.ts
 ```
 
 To use `out/Debug` instead of the default `out/Default` target directory:
 
 ```bash
-npm run test -- -t Debug "front_end/**/*.test.api.ts"
+./dt test -t Debug "front_end/**/*.test.api.ts"
 ```
 
 To run API tests in **debug mode**:
 
 ```bash
-npm run test -- --debug "front_end/**/*.test.api.ts"
+./dt test --debug "front_end/**/*.test.api.ts"
 ```
 
-Check the output of `npm run test -- --help` for an overview of all available options.
+Check the output of `./dt test --help` for an overview of all available options.
 
 ## Debugging API tests
 
 You can debug the API test process by inspecting the Node.js process that executes the test suite.
 
-Passing `--debug` to `npm run test` starts the Node.js runner with inspector support enabled (`--inspect`). You can attach to the process by:
+Passing `--debug` to `./dt test` starts the Node.js runner with inspector support enabled (`--inspect`). You can attach to the process by:
 
 1. Opening `chrome://inspect` in Chrome.
 2. Clicking **Inspect** under the Target (Node.js) section or clicking the Node.js icon in any open DevTools window.

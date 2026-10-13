@@ -6,8 +6,8 @@
 """
 Use this script to update node_modules instead of
 running npm install manually. To upgrade a dependency, change the version
-number in package.json below and run this script, which can be done with `npm run
-install-deps` locally.
+number in package.json below and run this script, which can be done with
+`scripts/tools/dt.py install-deps` locally.
 """
 
 import os

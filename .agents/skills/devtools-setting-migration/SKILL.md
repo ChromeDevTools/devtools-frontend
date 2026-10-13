@@ -144,7 +144,7 @@ const setting = Common.Settings.Settings.instance().resolve(preserveConsoleLogSe
 
 ### Step 6: Verify Changes
 1. Run `autoninja -C out/Default` to check GN build.
-2. Run `npm run lint` to check style and formatting rules.
+2. Run `./dt lint` to check style and formatting rules.
 3. Run relevant unit tests for the modified module.
 
 ---

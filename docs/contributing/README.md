@@ -157,9 +157,9 @@ be accepted.
 If your patch is finished, we have a few helpful tools to make sure your patch looks good.
 
 As part of the presubmit check, we will automatically run these. You can also run specific
-presubmit checks by using our `npm` commands:
+presubmit checks by using our `./dt` commands:
 
-*   `npm run lint` to perform [ESLint](http://eslint.org) and [Stylelint](http://stylelint.io)
+*   `./dt lint` to perform [ESLint](http://eslint.org) and [Stylelint](http://stylelint.io)
     checks.
 
 To run these presubmit checks without uploading, you can run `git cl presubmit --upload`.
@@ -252,7 +252,7 @@ If reviewers will ask you to change something in your code, follow these steps:
 2. Run `gsync client`.
 3. Optionally, pull latest changes and rebase them with: `git pull --rebase origin main`.
 4. Commit locally to your branch.
-5. Run the linters on your code (e.g. style, coding conventions) via `npm run lint`.
+5. Run the linters on your code (e.g. style, coding conventions) via `./dt lint`.
 6. Finally, upload everything to the server again with `git cl upload`.
 7. Once complete, add a comment similar to "comments addressed, please take a look".
    Without a comment, reviewers will not know about your new patchset.

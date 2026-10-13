@@ -27,8 +27,17 @@ To build, follow these steps:
 ```bash
 cd devtools-frontend
 gclient sync
-npm run build
+./dt build
 ```
+
+Scripts from `package.json` are run with `./dt <script> [args]` (on Windows:
+`.\dt <script> [args]`), a launcher for `scripts/tools/dt.py`. Run it without arguments
+to list the available scripts. Arguments after the script name are passed to the script
+as is, so no `--` is needed.
+
+`npm run <script> -- [args]` works too if you have npm installed, e.g.
+`npm run test -- foo` is the same as `./dt test foo`. AI agents should use `./dt`, not
+`npm run`.
 
 The resulting build artifacts can be found in `out/Default/gen/front_end`.
 
@@ -37,7 +46,7 @@ build directory). You can pass `-t <name>` (or `--target=<name>`) to use a diffe
 target. For example
 
 ```bash
-npm run build -- -t Debug
+./dt build -t Debug
 ```
 
 will build in `out/Debug` instead of `out/Default`. If the directory doesn't exist,
@@ -51,14 +60,14 @@ to `false`:
 gn gen out/Fast --args="devtools_bundle=false"
 ```
 
-and use `npm run build -- -t Fast` to build this target.
+and use `./dt build -t Fast` to build this target.
 
 ### Rebuilding automatically
 
 You can use
 
 ```bash
-npm run build -- --watch
+./dt build --watch
 ```
 
 to have the build script watch for changes in source files and automatically trigger
@@ -96,7 +105,7 @@ if you encounter any errors.
 
 ### Using a `.env` file for default script options
 
-Many scripts, like `npm run build` and `npm start`, accept command-line flags to configure their behavior (e.g., `-t <target>`, `--browser=<name>`).
+Many scripts, like `build` and `start`, accept command-line flags to configure their behavior (e.g., `-t <target>`, `--browser=<name>`).
 
 To avoid typing these flags every time, you can set your preferred defaults in a .env file at the root of the devtools-frontend directory.
 
@@ -106,13 +115,13 @@ The `.env.template` file lists all supported variables. Copy it to `.env` to get
 cp .env.template .env
 ```
 
-As mentioned earlier, you might create a fast build target. Instead of always typing `npm run build -- -t Fast`, to remove the flag repetition you simple run `npm run build` you can set the following variable in your `.env` file:
+As mentioned earlier, you might create a fast build target. Instead of always typing `./dt build -t Fast`, to remove the flag repetition you simple run `./dt build` you can set the following variable in your `.env` file:
 
 ```shell
 DEVTOOLS_TARGET=Fast
 ```
 
-Another example - by default running `npm start` auto-opens DevTools for new Tabs.
+Another example - by default running `./dt start` auto-opens DevTools for new Tabs.
 You may want to disable this so fewer pop-up happen while debugging, usually done via `--no-open` flag. Or with `.env` set the following value:
 
 ```shell
@@ -154,43 +163,43 @@ You can run a [build](#Build) of DevTools frontend in a pre-built Chrome or Chro
 - Use the downloaded Chrome for Testing binary in `third_party/chrome`.
 - Use the latest Chrome Canary. This includes any DevTools features that are only available in regular Chrome builds (`is_official_build` + `is_chrome_branded`), such as GenAI-related features.
 
-#### Using `npm start` script (recommended)
+#### Using the `start` script (recommended)
 
 With Chromium 136, we added (back) a `start` script that can be used to easily launch DevTools with pre-built [Chrome
 for Testing](https://developer.chrome.com/blog/chrome-for-testing) or [Chrome Canary](https://www.google.com/chrome/canary/).
 It'll also take care of automatically enabling/disabling experimental features that are actively being worked on. Use
 
 ```bash
-npm start
+./dt start
 ```
 
 to build DevTools front-end in `out/Default` (you can change this to `out/foo` by passing `--target=foo` if needed),
 and open Chrome for Testing (in `third_party/chrome`) with the custom DevTools front-end. This will also monitor the
 source files for changes while Chrome is running and automatically trigger a rebuild whenever source files change.
 
-By default, `npm start` will automatically open DevTools for every new tab, you can use
+By default, `./dt start` will automatically open DevTools for every new tab, you can use
 
 ```bash
-npm start -- --no-open
+./dt start --no-open
 ```
 
 to disable this behavior. You can also use
 
 ```bash
-npm start -- --browser=canary
+./dt start --browser=canary
 ```
 
 to run in Chrome Canary instead of Chrome for Testing; this requires you to install Chrome Canary manually first
 (Googlers can install `google-chrome-canary` on gLinux). And finally use
 
 ```bash
-npm start -- http://www.example.com
+./dt start http://www.example.com
 ```
 
 to automatically open `http://www.example.com` in the newly spawned Chrome tab. Use
 
 ```bash
-npm start -- --verbose
+./dt start --verbose
 ```
 
 to enable verbose logging, which among other things, also prints all output from Chrome to the terminal, which is
@@ -198,38 +207,38 @@ otherwise suppressed.
 
 ##### Controlling the feature set
 
-By default `npm start` will enable a bunch of experimental features (related to DevTools) that are considered ready for teamfood.
+By default `./dt start` will enable a bunch of experimental features (related to DevTools) that are considered ready for teamfood.
 To also enable experimental features that aren't yet considered sufficiently stable to enable them by default for the team, run:
 
 ```bash
 # Long version
-npm start -- --unstable-features
+./dt start --unstable-features
 
 # Short version
-npm start -- -u
+./dt start -u
 ```
 
 Just like with Chrome itself, you can also control the set of enabled and disabled features using
 
 ```bash
-npm start -- --enable-features=DevToolsWellKnown
-npm start -- --disable-features=DevToolsWellKnown --enable-features=DevToolsFreestyler:multimodal/true
+./dt start --enable-features=DevToolsWellKnown
+./dt start --disable-features=DevToolsWellKnown --enable-features=DevToolsFreestyler:multimodal/true
 ```
 
 which you can use to override the default feature set.
 
 ##### Remote debugging
 
-The `npm start` command also supports launching Chrome for remote debugging via
+The `./dt start` command also supports launching Chrome for remote debugging via
 
 ```bash
-npm start -- --remote-debugging-port=9222
+./dt start --remote-debugging-port=9222
 ```
 
 or
 
 ```bash
-npm start -- --browser=canary --remote-debugging-port=9222 --user-data-dir=\`mktemp -d`
+./dt start --browser=canary --remote-debugging-port=9222 --user-data-dir=\`mktemp -d`
 ```
 
 Note that you have to also pass the `--user-data-dir` and point it to a non-standard profile directory (a freshly created
@@ -362,22 +371,22 @@ out/Default/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/
 afterwards, which can be quite a bit faster than building and linking the full
 Chromium binary.
 
-Alternatively you can use `npm start` from the DevTools sub folder (`third_party/devtools-frontend/src/`) with the browser set to `chromium`.
+Alternatively you can use `./dt start` from the DevTools sub folder (`third_party/devtools-frontend/src/`) with the browser set to `chromium`.
 This will tell the command that you are in a Chromium checkout and try to find the correct browser executable path to resolve.
 Or alternately you can use a `.env` file, see [set up here](#using-a-env-file-for-default-script-options).
 
 ```bash
 cd third_party/devtools-frontend/src/
-npm start -- --browser=chromium
+./dt start --browser=chromium
 ```
 
 ### Testing
 
-To run the test suite, use `npm test` from within the DevTools front-end folder:
+To run the test suite, use `./dt test` from within the DevTools front-end folder:
 
 ```bash
 cd third_party/devtools-frontend/src
-npm test
+./dt test
 ```
 
 ### Juggling the git submodules

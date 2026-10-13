@@ -94,7 +94,7 @@ function applyDiffToBuildFile(
     ].join('\n');
     throw new Error(
         `Mismatch in ${targetLabel} (${relBuildFile}):\n${details}\n\n` +
-            `Run \`npm run check-gn -- --all\` to automatically fix this.`,
+            `Run \`scripts/tools/dt.py check-gn --all\` to automatically fix this.`,
     );
   }
 

@@ -82,7 +82,7 @@ function findAndSortTests(dir: string): string[] {
 }
 
 function runTestCommand(files: string[]): boolean {
-  const command = `npm run test -- ${files.join(' ')}`;
+  const command = `vpython3 scripts/tools/dt.py test ${files.join(' ')}`;
   if (options.dumpOutput) {
     debugLog('Executing command:\n', command);
   }

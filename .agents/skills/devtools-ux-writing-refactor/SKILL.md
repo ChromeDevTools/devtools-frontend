@@ -10,10 +10,9 @@ Use this skill when addressing a single UX writing refactoring task (one module 
 
 ## 0. Environment setup (avoid PATH errors)
 
-In DevTools Linux workspaces, `depot_tools` and `node`/`npm` may not be in `PATH` in non-interactive agent shells. Before you run Git, `gclient`, `npm`, or `git cl` commands, ensure that your environment is set up:
+In DevTools Linux workspaces, `depot_tools` may not be in `PATH` in non-interactive agent shells. Before you run Git, `gclient`, `./dt`, or `git cl` commands, ensure that your environment is set up:
 ```bash
 export PATH=$HOME/depot_tools:$PATH
-source ~/.nvm/nvm.sh  # Or export PATH=$(pwd)/third_party/node/linux/node-linux-x64/bin:$PATH
 ```
 
 ## 1. Pre-flight issue check and target scope
@@ -103,14 +102,14 @@ Don’t finish an edit without running the linter and test suite. In DevTools, i
    Unit test files (`*.test.ts`) alongside the implementation often assert exact UIString values (such as error messages or warnings). When you refactor a string, check sibling `*.test.ts` files for assertions that match the old string value, and update them to prevent test failures.
 2. **Run the linter and auto-fix errors**
    ```bash
-   npm run lint -- <folder_path>
+   ./dt lint <folder_path>
    ```
 3. **Run unit tests**
-   You MUST run the full test suite using `npm run test` to verify that no cross-module regressions, e2e test failures, or snapshot regressions occurred. Do not only run a subset of tests:
+   You MUST run the full test suite using `./dt test` to verify that no cross-module regressions, e2e test failures, or snapshot regressions occurred. Do not only run a subset of tests:
    ```bash
-   npm run test
+   ./dt test
    ```
-   *(Optionally, you may run `npm run test -- <folder_path>` first for rapid initial feedback during iterative development, but running `npm run test` for full test suite coverage is required before completing the task.)*
+   *(Optionally, you may run `./dt test <folder_path>` first for rapid initial feedback during iterative development, but running `./dt test` for full test suite coverage is required before completing the task.)*
 4. **Run presubmit checks**
    Ensure that you commit or stage all changes before you run presubmit checks:
    ```bash

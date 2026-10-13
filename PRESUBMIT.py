@@ -13,6 +13,7 @@ for more details about the presubmit API built into gcl.
 `git cl presubmit -v -v` to debug presubmit checks.
 """
 
+import json
 import re
 import sys
 import six
@@ -211,6 +212,27 @@ def CheckESBuildVersion(input_api, output_api):
                                 output_api,
                                 script_path,
                                 message='ESBuild version')
+
+
+def CheckPackageJsonScriptsDontCallNpm(input_api, output_api):
+    """`scripts/tools/dt.py` runs the scripts in package.json without npm, so
+    they must not call it either."""
+    package_json = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                          'package.json')
+    if not _GetAffectedFiles(input_api, [package_json], ['D'], []):
+        return []
+
+    with open(package_json, encoding='utf-8') as f:
+        scripts = json.load(f).get('scripts', {})
+    # `npm`/`npx` not part of a longer name (`npm_test.js`, `npm-run-all`,
+    # `npm.skia.org`) or directory (`scripts/npm/`).
+    return [
+        output_api.PresubmitError(
+            'package.json script "%s" runs npm, which scripts/tools/dt.py '
+            'does not use. Inline the command instead: %s' % (name, command))
+        for name, command in scripts.items()
+        if re.search(r'(?<![\w.-])(npm|npx)(?![\w./-])', command)
+    ]
 
 
 def CheckBuildGN(input_api, output_api):
@@ -429,7 +451,7 @@ def CheckNodeModules(input_api, output_api):
         if not Path(file_path).is_file():
             results.extend([
                 output_api.PresubmitError(
-                    "node_modules/%s is missing. Use `npm run install-deps` to re-create it."
+                    "node_modules/%s is missing. Use `scripts/tools/dt.py install-deps` to re-create it."
                     % file)
             ])
 

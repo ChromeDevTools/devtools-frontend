@@ -162,10 +162,10 @@ Foundation tests must pass in both Node.js and Browser runtimes.
 
 ### Run in Node.js
 ```bash
-npm test -- front_end/core/sdk/NetworkManager.test.ts --node-unit-tests
+./dt test front_end/core/sdk/NetworkManager.test.ts --node-unit-tests
 ```
 
 ### Run in Browser
 ```bash
-npm test -- front_end/core/sdk/NetworkManager.test.ts
+./dt test front_end/core/sdk/NetworkManager.test.ts
 ```

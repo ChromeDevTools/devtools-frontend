@@ -16,17 +16,21 @@ out the individual guides below:
 - [API Testing Guide](./api/README.md)
 - [Performance Testing Guide](./perf/README.md)
 
+The scripts defined in `package.json` are run with `./dt <script> [args]`
+(on Windows: `.\dt <script> [args]`). Arguments after the script
+name are passed through as is, so no `--` is needed.
+
 You can use
 
 ```bash
-npm test
+./dt test
 ```
 
 to run all tests in the devtools frontend repo. You can also run just a
 subset of tests like this:
 
 ```bash
-npm test \
+./dt test \
    front_end/core/common/Color.test.ts \
    front_end/core/sdk
 ```
@@ -40,7 +44,7 @@ For guidance on choosing the appropriate test suite when writing new tests, see 
 
 ### Obtaining code coverage
 
-We can collect code coverage for the source code that is tested: `npm run test -- --coverage`. This is available for
+We can collect code coverage for the source code that is tested: `./dt test --coverage`. This is available for
 unit tests.
 
 The code coverage output is written to `/karma-coverage` in the repository root. The
@@ -59,7 +63,7 @@ third_party/blink/tools/run_web_tests.py -t Default http/tests/devtools
 To debug a failing layout test we can run
 
 ```bash
-npm run debug-webtest -- http/tests/devtools/<path>/<to>/<test>.js
+./dt debug-webtest http/tests/devtools/<path>/<to>/<test>.js
 ```
 
 The script supports either default DevTools checkout inside the chromium tree or side-by-side checkouts of chromium and
@@ -132,14 +136,14 @@ which are also run as part of the [presubmit checks](#Presubmit-checks).
 You can use
 
 ```bash
-npm run lint
+./dt lint
 ```
 
 to execute all lint checks, or
 
 ```bash
-npm run lint -- '**/*.ts'
-npm run lint -- '**/*.css'
+./dt lint '**/*.ts'
+./dt lint '**/*.css'
 ```
 
 to execute only the lint checks for TypeScript or CSS files respectively. By default this will fix all issues
@@ -202,7 +206,7 @@ Note that despite the bot name all kinds of tests are supported.
 To reproduce a flaky test locally, use the exact test ID printed in the test runner output and the `--repeat=X` command line flag:
 
 ```sh
-npm run test -- --repeat=20 test/e2e/sources/navigator-view.test.ts:can_show_newly_created_snippets_show_up_in_command_menu
+./dt test --repeat=20 test/e2e/sources/navigator-view.test.ts:can_show_newly_created_snippets_show_up_in_command_menu
 ```
 
 To see if certain tests are flaky you can use the E2E stressor bots (despite the name, these bots also support unit tests). Open a CL with your test changes and run the following command specifying your test file:
@@ -260,7 +264,7 @@ affected() {
   if [ -z "$affected" ]; then
     return
   fi
-  npm run test -- "${affected[@]}" $@
+  ./dt test "${affected[@]}" $@
 }
 
 ```

@@ -87,6 +87,6 @@ export function formatFailedTestsSummary(failedTestIds: Iterable<string>): strin
   if (ids.length === 0) {
     return '';
   }
-  return `\nFailed tests (${ids.length}):\n${ids.map(id => `  ${id}`).join('\n')}\n\nTo rerun:\n  npm run test -- ${
-      ids.join(' ')}\n\n`;
+  return `\nFailed tests (${ids.length}):\n${
+      ids.map(id => `  ${id}`).join('\n')}\n\nTo rerun:\n  scripts/tools/dt.py test ${ids.join(' ')}\n\n`;
 }

@@ -69,11 +69,11 @@ Always detect the execution environment first to run tests successfully:
 
 *   **Detection**: Triggered if the workspace path starts with `/google/cog/` or
     `/google/src/`.
-*   **Why it is required**: Raw commands like `npm run test` or `autoninja` fail
+*   **Why it is required**: Raw commands like `./dt test` or `autoninja` fail
     because they lack Google cloudtop/virtualization wrapper configurations.
 *   **Resolution Steps**:
 
-    1.  Do not run `npm run test` or standard `autoninja` directly.
+    1.  Do not run `./dt test` or standard `autoninja` directly.
     2.  Leverage the Google-specific Cider testing script to compile and run
         tests in the cloud workspace:
 
@@ -107,7 +107,7 @@ Always detect the execution environment first to run tests successfully:
         3.  Execute the tests:
 
             ```bash
-            npm run test -- front_end/panels/application/IndexedDBViews.test.ts
+            ./dt test front_end/panels/application/IndexedDBViews.test.ts
             ```
 
 ### Scenario C: ESLint TS Module Resolution Failure (ERR_UNKNOWN_FILE_EXTENSION)
@@ -121,7 +121,7 @@ Always detect the execution environment first to run tests successfully:
         parse the rules:
 
         ```bash
-        npm run build
+        ./dt build
         ```
 
 ### Scenario D: Screenshot Test Fails (Visual Diffs > 0%)
@@ -141,4 +141,3 @@ Always detect the execution environment first to run tests successfully:
 1.  ❓ **Coverage**: Did I cover all classes in the file, or only the main one?
 2.  ❓ **Stability**: Can the tests run repeatedly without flakiness?
 3.  ❓ **Integrations**: Did I verify that the component mounts correctly?
-

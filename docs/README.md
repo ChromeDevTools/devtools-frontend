@@ -71,7 +71,7 @@ below.**
 
 Formats all code using clang-format.
 
-`npm test`
+`./dt test`
 
 Runs all tests on DevTools code.
 

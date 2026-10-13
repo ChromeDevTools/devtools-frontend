@@ -36,8 +36,8 @@ class DevToolsTestHarness(unittest.TestCase):
 
     def run_test_with_rdb(self, cmd_args):
         cmd = [
-            "npm", "run", "rdb", "--", "vpython3", "third_party/node/node.py",
-            "--output"
+            "vpython3", "scripts/tools/dt.py", "rdb", "vpython3",
+            "third_party/node/node.py", "--output"
         ] + cmd_args
         process = subprocess.Popen(cmd,
                                    stderr=subprocess.PIPE,
@@ -792,8 +792,8 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertIn("test/harness/unit/errors.test.ts:block_2:run_3", stdout)
         self.assertIn("To rerun:", stdout)
         self.assertIn(
-            "npm run test -- test/harness/unit/errors.test.ts:block_2:run_3",
-            stdout)
+            "scripts/tools/dt.py test "
+            "test/harness/unit/errors.test.ts:block_2:run_3", stdout)
 
     def test_e2e_failure_summary(self):
         abs_test_file = self._resolve_test_file(
@@ -807,8 +807,8 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertIn("test/harness/e2e/errors.test.ts:block_2:run_3", stdout)
         self.assertIn("To rerun:", stdout)
         self.assertIn(
-            "npm run test -- test/harness/e2e/errors.test.ts:block_2:run_3",
-            stdout)
+            "scripts/tools/dt.py test "
+            "test/harness/e2e/errors.test.ts:block_2:run_3", stdout)
 
     def test_ai_evals_auth_helper(self):
         abs_test_file = self._resolve_test_file(

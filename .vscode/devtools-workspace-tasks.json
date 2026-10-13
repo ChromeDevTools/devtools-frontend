@@ -5,7 +5,7 @@
     {
       "label": "1-build_Debug",
       "type": "shell",
-      "command": "npm run build",
+      "command": "vpython3 scripts/tools/dt.py build",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -60,7 +60,7 @@
     {
       "label": "Run unit tests",
       "type": "shell",
-      "command": "npm run test -- --target=${input:target} ${input:testFile}",
+      "command": "vpython3 scripts/tools/dt.py test --target=${input:target} ${input:testFile}",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -75,7 +75,7 @@
     {
       "label": "Run DevTools Test at Cursor",
       "type": "shell",
-      "command": "TEST_ID=$(vpython3 third_party/node/node.py --output --no-warnings scripts/get_test_id.ts \"${file}\" ${lineNumber} 1) || exit 1; if [ -z \"$TEST_ID\" ]; then echo \"Failed to compute test ID (empty output)\"; exit 1; fi; npm test -- \"$TEST_ID\"",
+      "command": "TEST_ID=$(vpython3 third_party/node/node.py --output --no-warnings scripts/get_test_id.ts \"${file}\" ${lineNumber} 1) || exit 1; if [ -z \"$TEST_ID\" ]; then echo \"Failed to compute test ID (empty output)\"; exit 1; fi; vpython3 scripts/tools/dt.py test \"$TEST_ID\"",
       "presentation": {
         "echo": true,
         "reveal": "always",

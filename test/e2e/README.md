@@ -13,35 +13,35 @@ The tests therefore have a dual purpose:
 
 ## Running E2E tests
 
-The end-to-end tests are implicitly run as part of `npm run test`,
+The end-to-end tests are implicitly run as part of `./dt test`,
 but that also runs all the other test suites. To run only
 **all end-to-end tests**, use:
 
 ```bash
-npm run test test/e2e
+./dt test test/e2e
 ```
 
 To use `out/Debug` instead of the default `out/Default` target
 directory, use:
 
 ```bash
-npm run test -- -t Debug test/e2e
+./dt test -t Debug test/e2e
 ```
 
 To run the end-to-end tests in **debug mode**, use:
 
 ```bash
-npm run test -- --debug test/e2e
+./dt test --debug test/e2e
 ```
 
 To run only **specific end-to-end tests** from a single `.test.ts`
 file, say `console-log.test.ts` for example, use:
 
 ```bash
-npm run test test/e2e/console/console-log.test.ts
+./dt test test/e2e/console/console-log.test.ts
 ```
 
-Check the output of `npm run test -- --help` for an overview of
+Check the output of `./dt test --help` for an overview of
 all options.
 
 ## Debugging E2E tests

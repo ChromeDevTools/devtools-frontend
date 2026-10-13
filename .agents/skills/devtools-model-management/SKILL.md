@@ -9,7 +9,7 @@ This guide outlines the standard procedure for creating a new model or migrating
 
 ## 0. Preparation (Before you start)
 *   **Baseline:** Run existing tests for the code you are moving to ensure they pass *before* you touch anything.
-    *   `npm run test -- front_end/<old_location>`
+    *   `./dt test front_end/<old_location>`
 *   **Impact Analysis:** Search for usages of the class/file to understand the scope of refactoring.
     *   `grep -r "ClassName" front_end/`
 
@@ -44,10 +44,10 @@ The build system does not auto-detect new modules. You must manually register th
 
 ## 5. Verification Checklist
 1.  **Build:** `autoninja -C out/Default` (Ensures BUILD.gn and GRD files are correct).
-2.  **Lint:** `npm run lint` (Checks style and formatting).
+2.  **Lint:** `./dt lint` (Checks style and formatting).
 3.  **Test:**
-    *   `npm run test -- front_end/models/<model_name>` (New tests).
-    *   `npm run test -- front_end/<old_location>` (Regression check for previous owner).
+    *   `./dt test front_end/models/<model_name>` (New tests).
+    *   `./dt test front_end/<old_location>` (Regression check for previous owner).
 
 ## Common Pitfalls
 *   **Circular Dependencies:** Occur when internal files import from the directory's own barrel file.

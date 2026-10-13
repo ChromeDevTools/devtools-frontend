@@ -11,49 +11,49 @@ naming convention `Foo.test.ts` for `Foo.ts`.
 
 ## Running unit tests
 
-The unit tests are implicitly run as part of `npm run test`,
+The unit tests are implicitly run as part of `./dt test`,
 but that also runs all the other test suites. To run only
 **all unit tests**, use:
 
 ```bash
-npm run test front_end
+./dt test front_end
 ```
 
 To use `out/Debug` instead of the default `out/Default` target
 directory, use:
 
 ```bash
-npm run test -- -t Debug front_end
+./dt test -t Debug front_end
 ```
 
 To run the unit tests in **debug mode**, use:
 
 ```bash
-npm run test -- --debug front_end
+./dt test --debug front_end
 ```
 
 To run only **specific unit tests** from a single `.test.ts`
 file, say `SourcesView.test.ts` for example, use:
 
 ```bash
-npm run test front_end/panels/sources/SourcesView.test.ts
+./dt test front_end/panels/sources/SourcesView.test.ts
 ```
 
 To run only **foundation unit tests in Node** use `--node-unit-tests flag`:
 
 ```bash
-npm run test front_end -- --node-unit-tests
+./dt test front_end --node-unit-tests
 ```
 
-Check the output of `npm run test -- --help` for an overview of
+Check the output of `./dt test --help` for an overview of
 all options.
 
 ### Running a subset of unit tests
 
-If you want to run a specific unit test, you can use the exact test ID printed in the console output when a test fails or when you run the tests. You can pass this test ID to `npm run test` to run only that specific test without modifying the code.
+If you want to run a specific unit test, you can use the exact test ID printed in the console output when a test fails or when you run the tests. You can pass this test ID to `./dt test` to run only that specific test without modifying the code.
 
 ```bash
-npm run test front_end/panels/sources/SourcesView.test.ts:the_test_suite_that_you_want_to_run:a_test_that_would_run
+./dt test front_end/panels/sources/SourcesView.test.ts:the_test_suite_that_you_want_to_run:a_test_that_would_run
 ```
 
 ## Writing unit tests
@@ -71,7 +71,7 @@ documentation for details on various available helpers.
 To debug unit tests with DevTools, start the test runner like this
 
 ```bash
-npm run test -- --debug front_end
+./dt test --debug front_end
 ```
 
 and optionally pass the (relative) path to the `.test.ts` file that
@@ -139,7 +139,7 @@ they are reported as passing without actually capturing any screenshots.
 When you need to update a screenshot because you have purposefully changed the UI:
 
 ```sh
-npm run test -- $TESTPATH --on-diff=update
+./dt test $TESTPATH --on-diff=update
 ```
 
 ### Generating and/or updating screenshots via CQ bots

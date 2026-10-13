@@ -6,17 +6,17 @@
       "request": "launch",
       "name": "Run current test file",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "test", "--", "${file}"]
+      "runtimeExecutable": "vpython3",
+      "runtimeArgs": ["scripts/tools/dt.py", "test", "${file}"]
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Debug current test file",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "vpython3",
       "console": "integratedTerminal",
-      "runtimeArgs": ["run", "test", "--", "--debug", "${file}"],
+      "runtimeArgs": ["scripts/tools/dt.py", "test", "--debug", "${file}"],
       "env": {
         "VSCODE_DEBUGGER": true
       }

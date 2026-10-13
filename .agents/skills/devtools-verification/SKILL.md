@@ -1,15 +1,19 @@
 ---
 name: devtools-verification
-description: "MANDATORY: Activate this skill ANY TIME you need to build the project, run tests, or verify code health in DevTools. You MUST use this skill before executing commands like npm test, npm run build, autoninja, or linters, as it contains critical, repository-specific instructions on how to correctly format these commands, filter test runs, and interpret failures."
+description: "MANDATORY: Activate this skill ANY TIME you need to build the project, run tests, or verify code health in DevTools. You MUST use this skill before executing commands like ./dt test, ./dt build, autoninja, or linters (never run these through npm or npx), as it contains critical, repository-specific instructions on how to correctly format these commands, filter test runs, and interpret failures."
 ---
 
 # Instructions on how to verify your changes
 
+## Running scripts
+
+Run the scripts from the root `package.json` (`test`, `lint`, `build`, `start`, and so on) with `./dt <script> [args]` from the repository root (on Windows: `.\dt <script> [args]`). Don't use `npm run`, `npm test`, or `npx` for them. Run `./dt` without arguments to list the available scripts. Arguments after the script name are passed to the script as is, so don't add a `--` separator.
+
 ## Testing
 
-- To test a file, you can run `npm run test -- <FILEPATH>` where `FILEPATH` is a path to a `*.test.ts` file, relative to the working directory.
+- To test a file, you can run `./dt test <FILEPATH>` where `FILEPATH` is a path to a `*.test.ts` file, relative to the working directory.
 - Test files are usually defined alongside their implementation. So if you are working on `front_end/panels/timeline/TimelinePanel.ts`, you would expect the test file to be defined in `front_end/panels/timeline/TimelinePanel.test.ts`.
-- You can also test an entire directory. For example, `npm run test -- front_end/models/trace` will run all tests in that directory.
+- You can also test an entire directory. For example, `./dt test front_end/models/trace` will run all tests in that directory.
 
 ## Building & compiling
 
@@ -17,8 +21,8 @@ description: "MANDATORY: Activate this skill ANY TIME you need to build the proj
 
 ## Linting
 
-- `npm run lint` will execute ESLint and StyleLint. It will report any violations and automatically fix them where possible.
-- To run the linter on a specific file or directory, you can run `npm run lint -- <PATH>` where `PATH` is a path to a file or directory. This will also automatically fix violations where possible.
+- `./dt lint` will execute ESLint and StyleLint. It will report any violations and automatically fix them where possible.
+- To run the linter on a specific file or directory, you can run `./dt lint <PATH>` where `PATH` is a path to a file or directory. This will also automatically fix violations where possible.
 
 ## Fetching Tryjob Results, Failure Logs, & Screenshot Goldens
 

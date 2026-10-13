@@ -30,7 +30,7 @@ const argv = yargs(hideBin(process.argv))
                    default: false,
                    description: 'Monitor for changes and automatically rebuild',
                  })
-                 .usage('npm run build -- [options]')
+                 .usage('scripts/tools/dt.py build [options]')
                  .help('help')
                  .version(false)
                  .parseSync();

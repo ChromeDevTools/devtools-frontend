@@ -120,10 +120,10 @@ Once it's working, it's a good idea to manually experiment with the new Insight 
 
 ## Debugging & Local Development
 
-To test the AI code, you must be running DevTools in a branded Chrome (e.g. official Chrome Canary) and be signed in. You can use the `npm start` with a canary flag in this repository to run against Chromium, or by running Chrome Canary and pointing it to your local DevTools:
+To test the AI code, you must be running DevTools in a branded Chrome (e.g. official Chrome Canary) and be signed in. You can use the `./dt start` command with a canary flag in this repository to run against Chromium, or by running Chrome Canary and pointing it to your local DevTools:
 
 ```
-npm start -- --browser=canary
+./dt start --browser=canary
 ```
 
 or

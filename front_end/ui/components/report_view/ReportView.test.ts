@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {getElementWithinComponent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {html, render} from '../../lit/lit.js';

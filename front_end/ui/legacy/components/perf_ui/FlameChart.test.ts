@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Common from '../../../../core/common/common.js';

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';

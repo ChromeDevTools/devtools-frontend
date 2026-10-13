@@ -5,6 +5,7 @@
 import './data_grid.js';
 
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';

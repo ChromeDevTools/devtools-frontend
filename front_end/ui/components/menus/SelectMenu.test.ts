@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {

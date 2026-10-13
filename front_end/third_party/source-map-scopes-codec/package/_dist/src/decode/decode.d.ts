@@ -11,7 +11,9 @@ import type { DecodedScopeInfo, Position, SourceMap } from "../scopes.js";
  *   - Encountering ORIGINAL_SCOPE_VARIABLES items outside a surrounding scope START/END.
  *   - Encountering GENERATED_RANGE_BINDINGS items outside a surrounding range START/END.
  *   - Miss-matches between the number of variables in a scope vs the number of value expressions in the ranges.
+ *   - GENERATED_RANGE_SUBRANGE_BINDING items whose variable index is out of bounds of the range's bindings.
  *   - Out-of-bound indices into the "names" array.
+ *   - Index source maps with sections that are index source maps themselves.
  */ export declare const enum DecodeMode {
   STRICT = 1,
   LAX = 2

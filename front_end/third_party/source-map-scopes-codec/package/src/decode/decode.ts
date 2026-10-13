@@ -34,7 +34,9 @@ import { TokenIterator } from "../vlq.js";
  *   - Encountering ORIGINAL_SCOPE_VARIABLES items outside a surrounding scope START/END.
  *   - Encountering GENERATED_RANGE_BINDINGS items outside a surrounding range START/END.
  *   - Miss-matches between the number of variables in a scope vs the number of value expressions in the ranges.
+ *   - GENERATED_RANGE_SUBRANGE_BINDING items whose variable index is out of bounds of the range's bindings.
  *   - Out-of-bound indices into the "names" array.
+ *   - Index source maps with sections that are index source maps themselves.
  */
 export const enum DecodeMode {
   STRICT = 1,
@@ -99,10 +101,20 @@ function decodeIndexMap(
   };
 
   for (const section of sourceMap.sections) {
-    const { scopes, ranges, hasVariableAndBindingInfo } = decode(section.map, {
-      ...options,
-      generatedOffset: section.offset,
-    });
+    // Per spec, a section's "map" is a regular source map; nested index maps
+    // are not allowed. Don't recurse, so maliciously deep nesting can't
+    // overflow the stack.
+    if ("sections" in section.map) {
+      if (options.mode === DecodeMode.STRICT) {
+        throw new Error("Index source map sections must not be index maps");
+      }
+      continue;
+    }
+
+    const { scopes, ranges, hasVariableAndBindingInfo } = decodeMap(
+      section.map,
+      { ...options, generatedOffset: section.offset },
+    );
     for (const scope of scopes) scopeInfo.scopes.push(scope);
     for (const range of ranges) scopeInfo.ranges.push(range);
     scopeInfo.hasVariableAndBindingInfo ||= hasVariableAndBindingInfo;
@@ -622,6 +634,16 @@ class Decoder {
     if (!subRangeBindings) return;
 
     for (const [variableIndex, bindings] of subRangeBindings) {
+      // Sub-range bindings can only refine an existing binding from the
+      // GENERATED_RANGE_BINDINGS item. Writing to an arbitrary (attacker
+      // controlled) index would turn `range.values` into a huge sparse array.
+      if (variableIndex < 0 || variableIndex >= range.values.length) {
+        this.#throwInStrictMode(
+          "GENERATED_RANGE_SUBRANGE_BINDING variable index out of bounds",
+        );
+        continue;
+      }
+
       const value = range.values[variableIndex];
       const subRanges: SubRangeBinding[] = [];
       range.values[variableIndex] = subRanges;

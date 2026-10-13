@@ -11,7 +11,7 @@ export const enum Tag {
   GENERATED_RANGE_BINDINGS = 0x6,
   GENERATED_RANGE_SUBRANGE_BINDING = 0x7,
   GENERATED_RANGE_CALL_SITE = 0x8,
-  VENDOR_EXTENSION = 0x63,
+  VENDOR_EXTENSION = 0x15,
 }
 
 export const enum EncodedTag {
@@ -23,7 +23,7 @@ export const enum EncodedTag {
   GENERATED_RANGE_BINDINGS = "G", // 0x6
   GENERATED_RANGE_SUBRANGE_BINDING = "H", // 0x7
   GENERATED_RANGE_CALL_SITE = "I", // 0x8
-  VENDOR_EXTENSION = "/", //  0x63
+  VENDOR_EXTENSION = "V", // 0x15
 }
 
 export const enum OriginalScopeFlags {

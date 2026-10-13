@@ -10,7 +10,7 @@ export var Tag = /*#__PURE__*/ function(Tag) {
   Tag[Tag["GENERATED_RANGE_BINDINGS"] = 6] = "GENERATED_RANGE_BINDINGS";
   Tag[Tag["GENERATED_RANGE_SUBRANGE_BINDING"] = 7] = "GENERATED_RANGE_SUBRANGE_BINDING";
   Tag[Tag["GENERATED_RANGE_CALL_SITE"] = 8] = "GENERATED_RANGE_CALL_SITE";
-  Tag[Tag["VENDOR_EXTENSION"] = 99] = "VENDOR_EXTENSION";
+  Tag[Tag["VENDOR_EXTENSION"] = 21] = "VENDOR_EXTENSION";
   return Tag;
 }({});
 export var EncodedTag = /*#__PURE__*/ function(EncodedTag) {
@@ -22,7 +22,7 @@ export var EncodedTag = /*#__PURE__*/ function(EncodedTag) {
   EncodedTag["GENERATED_RANGE_BINDINGS"] = "G";
   EncodedTag["GENERATED_RANGE_SUBRANGE_BINDING"] = "H";
   EncodedTag["GENERATED_RANGE_CALL_SITE"] = "I";
-  EncodedTag["VENDOR_EXTENSION"] = "/";
+  EncodedTag["VENDOR_EXTENSION"] = "V";
   return EncodedTag;
 }({});
 export var OriginalScopeFlags = /*#__PURE__*/ function(OriginalScopeFlags) {

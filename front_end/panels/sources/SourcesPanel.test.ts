@@ -21,6 +21,7 @@ import {
   createContentProviderUISourceCode,
   createFileSystemUISourceCode,
 } from '../../testing/UISourceCodeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
@@ -258,6 +259,23 @@ describeWithEnvironment('SourcesPanel', () => {
       sources.handleBeforeUnload(event);
 
       sinon.assert.notCalled(uiSourceCodesSpy);
+    });
+  });
+
+  describe('QuickSourceView', () => {
+    it('passes sourcesView to view when shown in wrapper and clears it when hidden', () => {
+      setUpEnvironment();
+      const panel = Sources.SourcesPanel.SourcesPanel.instance({forceNew: true});
+      const view = createViewFunctionStub(Sources.SourcesPanel.QuickSourceView);
+      const quickSourceView = new Sources.SourcesPanel.QuickSourceView(view);
+
+      assert.isNull(view.input.sourcesView);
+
+      quickSourceView.showViewInWrapper();
+      assert.strictEqual(view.input.sourcesView, panel.sourcesView());
+
+      quickSourceView.hideViewInWrapper();
+      assert.isNull(view.input.sourcesView);
     });
   });
 });

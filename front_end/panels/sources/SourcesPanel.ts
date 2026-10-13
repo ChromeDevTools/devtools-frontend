@@ -48,6 +48,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -59,6 +60,8 @@ import sourcesPanelStyles from './sourcesPanel.css.js';
 import {type EditorClosedEvent, Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
+
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -396,7 +399,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(SourcesPanel, this);
     super.wasShown();
-    if (UI.Context.Context.instance().flavor(QuickSourceView)) {
+    const wrapperView = UI.Context.Context.instance().flavor(QuickSourceView);
+    if (wrapperView) {
+      wrapperView.hideViewInWrapper();
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
@@ -1460,12 +1465,40 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
+export interface QuickSourceViewInput {
+  sourcesView: SourcesView|null;
+}
+
+export type QuickSourceViewFunc = (input: QuickSourceViewInput, output: undefined, target: HTMLElement) => void;
+
+export const QUICK_SOURCE_DEFAULT_VIEW: QuickSourceViewFunc = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <div class="sources-view-wrapper vbox flex-auto">
+      ${input.sourcesView ? widget(UI.Widget.WrapperWidget, {widget: input.sourcesView}) : nothing}
+    </div>
+  `, target);
+  // clang-format on
+};
+
 export class QuickSourceView extends UI.Widget.VBox {
-  private readonly view: SourcesView;
-  constructor() {
+  readonly #sourcesView: SourcesView;
+  readonly #view: QuickSourceViewFunc;
+  #showInWrapper = false;
+
+  constructor(view: QuickSourceViewFunc = QUICK_SOURCE_DEFAULT_VIEW) {
     super({jslog: `${VisualLogging.panel('sources.quick').track({resize: true})}`});
-    this.element.classList.add('sources-view-wrapper');
-    this.view = SourcesPanel.instance().sourcesView();
+    this.#view = view;
+    this.#sourcesView = SourcesPanel.instance().sourcesView();
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {sourcesView: this.#showInWrapper ? this.#sourcesView : null},
+        undefined,
+        this.contentElement,
+    );
   }
 
   override wasShown(): void {
@@ -1489,6 +1522,12 @@ export class QuickSourceView extends UI.Widget.VBox {
   }
 
   showViewInWrapper(): void {
-    this.view.show(this.element);
+    this.#showInWrapper = true;
+    this.performUpdate();
+  }
+
+  hideViewInWrapper(): void {
+    this.#showInWrapper = false;
+    this.performUpdate();
   }
 }

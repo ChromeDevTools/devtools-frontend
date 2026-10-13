@@ -490,17 +490,9 @@ function formatCandidateLabel(node: SDK.DOMModel.DOMNode): string {
   return label;
 }
 
-function renderTitle(
-    node: SDK.DOMModel.DOMNode,
-    isClosingTag: boolean,
-    expanded: boolean,
-    isExpandable: boolean,
-    isXMLMimeType: boolean,
-    updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null,
-    onUpdateSearchHighlight: () => void,
-    onExpand: () => void,
-    issues?: IssuesManager.Issue.Issue[],
-    ): Lit.LitTemplate {
+function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTemplate {
+  const {isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, issues} = input;
+  const {onHighlightSearchResults, onExpand} = input;
   switch (node.nodeType()) {
     case Node.ATTRIBUTE_NODE:
       return renderAttribute({name: node.name as string, value: node.value as string}, updateRecord, true, node,
@@ -522,6 +514,9 @@ function renderTitle(
       }
 
       const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord, issues);
+      // The closing tag rendered on the same line as the opening tag.
+      const renderClosingTag = (): Lit.LitTemplate =>
+          renderTag(node, tagName, true, expanded, false, updateRecord, issues);
 
       if (isExpandable) {
         if (!expanded) {
@@ -529,7 +524,7 @@ function renderTitle(
               {clickHandler: onExpand} as
               ElementsComponents.ElementsTreeExpandButton
                   .ElementsTreeExpandButtonData}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
+                  >…</span>\u200B${renderClosingTag()}`;
         }
         return openingTag;
       }
@@ -552,12 +547,11 @@ function renderTitle(
         return html`${openingTag}<span class="webkit-html-text-node" jslog=${
             VisualLogging.value('text-node').track({change: true, dblclick: true})} ${
             animateOn(Boolean((updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified())),
-                      DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${
-            renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
+                      DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderClosingTag()}`;
       }
 
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
-        return html`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
+        return html`${openingTag}${renderClosingTag()}`;
       }
       return openingTag;
     }
@@ -568,7 +562,7 @@ function renderTitle(
         const highlightNode = ref(el => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, '');
-            void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/javascript').then(onUpdateSearchHighlight);
+            void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/javascript').then(onHighlightSearchResults);
           }
         });
         return html`<span class="webkit-html-text-node webkit-html-js-node" jslog=${
@@ -579,7 +573,7 @@ function renderTitle(
         const highlightNode = ref(el => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, '');
-            void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/css').then(onUpdateSearchHighlight);
+            void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/css').then(onHighlightSearchResults);
           }
         });
         return html`<span class="webkit-html-text-node webkit-html-css-node" jslog=${
@@ -1016,17 +1010,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     <div style=${styleMap({'--indent': `${input.indent}px`})}
          @dblclick=${input.onDblClick}
          ${ref(el => { output.contentElement = el as HTMLElement; })}>
-      ${input.node ? html`<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(
-    input.node,
-    input.isClosingTag,
-    input.expanded,
-    input.isExpandable,
-    input.isXMLMimeType,
-    input.updateRecord,
-    input.onHighlightSearchResults,
-    input.onExpand,
-    input.issues,
-  )}</span>` : nothing}
+      ${input.node ? html`<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(input.node, input)}</span>` : nothing}
       ${input.renderSelection !== false ? html`<div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing}
       <div class=${classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
@@ -1178,6 +1162,89 @@ export interface InitialEditState {
   isTextNode?: boolean;
   isEditAsHTML?: boolean;
   editAsHTMLCallback?: (success: boolean) => void;
+}
+
+interface EditAsHTMLCallbacks {
+  commit: () => void;
+  cancel: () => void;
+  onFocusOut: (event: FocusEvent) => void;
+  /** Notified when the editor's own context menu opens and closes. */
+  onContextMenuToggled: (open: boolean) => void;
+}
+
+/**
+ * Creates the CodeMirror state for the Edit as HTML editor: HTML language
+ * support, Mod+Enter / Escape to commit / cancel, and a context menu whose
+ * "Select all" spans the whole document.
+ */
+function createEditAsHTMLState(initialValue: string, callbacks: EditAsHTMLCallbacks): CodeMirror.EditorState {
+  return CodeMirror.EditorState.create({
+    doc: initialValue,
+    extensions: [
+      CodeMirror.keymap.of([
+        {
+          key: 'Mod-Enter',
+          run: () => {
+            callbacks.commit();
+            return true;
+          },
+        },
+        {
+          key: 'Escape',
+          run: () => {
+            callbacks.cancel();
+            return true;
+          },
+        },
+      ]),
+      TextEditor.Config.baseConfiguration(initialValue),
+      TextEditor.Config.closeBrackets.instance(),
+      TextEditor.Config.autocompletion.instance(),
+      CodeMirror.html.html({autoCloseTags: false, selfClosingTags: true}),
+      TextEditor.Config.domWordWrap.instance(),
+      CodeMirror.EditorView.theme({
+        '&.cm-editor': {maxHeight: '300px'},
+        '.cm-scroller': {overflowY: 'auto'},
+      }),
+      CodeMirror.EditorView.domEventHandlers({
+        focusout: callbacks.onFocusOut,
+        contextmenu: (event, view) => {
+          // The editor virtualizes its content, so the browser's native
+          // "Select all" only reaches the rendered lines. Show a menu whose
+          // "Select all" spans the whole document, like Ctrl/Cmd+A.
+          event.consume(true);
+          const {from, to, empty} = view.state.selection.main;
+          const copy = (): void =>
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(view.state.sliceDoc(from, to));
+          const contextMenu = new UI.ContextMenu.ContextMenu(event, {
+            onSoftMenuClosed: () => callbacks.onContextMenuToggled(false),
+          });
+          contextMenu.clipboardSection().appendItem(i18nString(UIStrings.cut), () => {
+            copy();
+            view.dispatch({changes: {from, to, insert: ''}});
+            view.focus();
+          }, {disabled: empty, jslogContext: 'cut'});
+          contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), () => {
+            copy();
+            view.focus();
+          }, {disabled: empty, jslogContext: 'copy'});
+          contextMenu.clipboardSection().appendItem(i18nString(UIStrings.paste), () => {
+            void navigator.clipboard.readText().then(text => {
+              view.dispatch(view.state.replaceSelection(text));
+              view.focus();
+            });
+          }, {jslogContext: 'paste'});
+          contextMenu.editSection().appendItem(i18nString(UIStrings.selectAll), () => {
+            view.dispatch({selection: {anchor: 0, head: view.state.doc.length}});
+            view.focus();
+          }, {jslogContext: 'select-all'});
+          callbacks.onContextMenuToggled(true);
+          void contextMenu.show();
+          return true;
+        },
+      }),
+    ],
+  });
 }
 
 export class DOMTreeElementWidget extends UI.Widget.Widget {
@@ -1562,6 +1629,9 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     const clearDOM = this.#clearDOMNextUpdate;
     this.#clearDOMNextUpdate = false;
     const isClosingTag = this.isClosingTag;
+    // Handlers for interactions that are disabled in read-only trees.
+    const editable = <T extends unknown[]>(handler: (...args: T) => unknown): (...args: T) => void =>
+        this.disableEdits ? () => {} : (...args: T) => void handler.apply(this, args);
     const output: ViewOutput = {};
     this.#view({
       node: this.node,
@@ -1608,12 +1678,10 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       scrollSnapAdornerActive: this.#overlayActive.scrollSnap,
       showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
       showCustomElementAdorner: this.node.isCustomElement() && !isClosingTag,
-      onCustomElementAdornerClick: this.disableEdits ? () => {} :
-                                                       (event: Event) => void this.#onCustomElementAdornerClick(event),
+      onCustomElementAdornerClick: editable(this.#onCustomElementAdornerClick),
       showStartingStyleAdorner: this.node.affectedByStartingStyles() && !isClosingTag,
       startingStyleAdornerActive: this.#startingStyleAdornerActive,
-      onStartingStyleAdornerClick: this.disableEdits ? () => {} :
-                                                       (event: Event) => this.#onStartingStyleAdornerClick(event),
+      onStartingStyleAdornerClick: editable(this.#onStartingStyleAdornerClick),
       onSlotAdornerClick: () => {
         if (this.node.assignedSlot) {
           const deferredNode = this.node.assignedSlot.deferredNode;
@@ -1623,20 +1691,16 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
         }
       },
       topLayerIndex: this.node.topLayerIndex(),
-      onViewSourceAdornerClick: this.disableEdits ? () => {} : this.revealHTMLInSources.bind(this),
+      onViewSourceAdornerClick: editable(this.revealHTMLInSources),
       onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event) : () => {},
-      onContainerAdornerClick: this.disableEdits ? () => {} :
-                                                   (event: Event) => this.#togglePersistentOverlay('container', event),
-      onFlexAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#togglePersistentOverlay('flex', event),
-      onGridAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#togglePersistentOverlay('grid', event),
-      onMediaAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onMediaAdornerClick(event),
-      onPopoverAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onPopoverAdornerClick(event),
-      onInterestAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onInterestAdornerClick(event),
-      onScrollSnapAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onScrollSnapAdornerClick(event),
-      onTopLayerAdornerClick: this.disableEdits ? () => {} :
-                                                  () => {
-                                                    this.revealInTopLayer?.(this.node);
-                                                  },
+      onContainerAdornerClick: editable((event: Event) => this.#togglePersistentOverlay('container', event)),
+      onFlexAdornerClick: editable((event: Event) => this.#togglePersistentOverlay('flex', event)),
+      onGridAdornerClick: editable((event: Event) => this.#togglePersistentOverlay('grid', event)),
+      onMediaAdornerClick: editable(this.#onMediaAdornerClick),
+      onPopoverAdornerClick: editable(this.#onPopoverAdornerClick),
+      onInterestAdornerClick: editable(this.#onInterestAdornerClick),
+      onScrollSnapAdornerClick: editable(this.#onScrollSnapAdornerClick),
+      onTopLayerAdornerClick: editable(() => this.revealInTopLayer?.(this.node)),
       isHovered: this.#hovered,
       isSelected: this.#selected,
       canInspect: this.node.canInspectNode(),
@@ -2157,12 +2221,10 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     return true;
   }
 
-  startEditingTagName(tagNameElement?: Element): boolean {
+  startEditingTagName(element?: Element): boolean {
+    const tagNameElement = element ?? this.contentElement.querySelector('.webkit-html-tag-name');
     if (!tagNameElement) {
-      tagNameElement = this.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
-      if (!tagNameElement) {
-        return false;
-      }
+      return false;
     }
 
     const tagName = tagNameElement.textContent;
@@ -2176,11 +2238,11 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
 
     const closingTagElement = this.distinctClosingTagElement();
 
-    function keyupListener(): void {
-      if (closingTagElement && tagNameElement) {
+    const keyupListener = (): void => {
+      if (closingTagElement) {
         closingTagElement.textContent = '</' + tagNameElement.textContent + '>';
       }
-    }
+    };
 
     const keydownListener = (event: Event): void => {
       if ((event as KeyboardEvent).key !== ' ') {
@@ -2190,36 +2252,26 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       event.consume(true);
     };
 
-    function editingCommitted(
-        this: DOMTreeElementWidget,
-        element: Element,
-        newTagName: string,
-        oldText: string|null,
-        tagName: string|null,
-        moveDirection: string,
-        ): void {
-      if (!tagNameElement) {
-        return;
-      }
+    const removeListeners = (): void => {
       tagNameElement.removeEventListener('keyup', keyupListener, false);
       tagNameElement.removeEventListener('keydown', keydownListener, false);
-      this.tagNameEditingCommitted(element, newTagName, oldText, tagName, moveDirection);
-    }
+    };
 
-    function editingCancelled(this: DOMTreeElementWidget, element: Element, tagName: string|null): void {
-      if (!tagNameElement) {
-        return;
-      }
-      tagNameElement.removeEventListener('keyup', keyupListener, false);
-      tagNameElement.removeEventListener('keydown', keydownListener, false);
+    const editingCommitted = (element: Element, newTagName: string, oldText: string|null, tagName: string|null,
+                              moveDirection: string): void => {
+      removeListeners();
+      this.tagNameEditingCommitted(element, newTagName, oldText, tagName, moveDirection);
+    };
+
+    const editingCancelled = (element: Element, tagName: string|null): void => {
+      removeListeners();
       this.editingCancelled(element, tagName);
-    }
+    };
 
     tagNameElement.addEventListener('keyup', keyupListener, false);
     tagNameElement.addEventListener('keydown', keydownListener, false);
 
-    const config =
-        new UI.InplaceEditor.Config<string|null>(editingCommitted.bind(this), editingCancelled.bind(this), tagName);
+    const config = new UI.InplaceEditor.Config<string|null>(editingCommitted, editingCancelled, tagName);
     this.updateEditorHandles(tagNameElement, config);
     const componentSelection = this.element.getComponentSelection();
     componentSelection?.selectAllChildren(tagNameElement);
@@ -2251,108 +2303,15 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     }
 
     const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
-    // Append editor.
-    this.#editorState = CodeMirror.EditorState.create({
-      doc: initialValue,
-      extensions: [
-        CodeMirror.keymap.of([
-          {
-            key: 'Mod-Enter',
-            run: () => {
-              this.editing?.commit();
-              return true;
-            },
-          },
-          {
-            key: 'Escape',
-            run: () => {
-              this.editing?.cancel();
-              return true;
-            },
-          },
-        ]),
-        TextEditor.Config.baseConfiguration(initialValue),
-        TextEditor.Config.closeBrackets.instance(),
-        TextEditor.Config.autocompletion.instance(),
-        CodeMirror.html.html({autoCloseTags: false, selfClosingTags: true}),
-        TextEditor.Config.domWordWrap.instance(),
-        CodeMirror.EditorView.theme({
-          '&.cm-editor': {maxHeight: '300px'},
-          '.cm-scroller': {overflowY: 'auto'},
-        }),
-        CodeMirror.EditorView.domEventHandlers({
-          focusout: event => {
-            if (!this.#editorRef || this.#editAsHtmlMenuOpen) {
-              return;
-            }
-            // The relatedTarget is null when no element gains focus, e.g. switching windows.
-            const relatedTarget = (event.relatedTarget as Node | null);
-            if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef) &&
-                !relatedTarget.isSelfOrDescendant(this.contentElement)) {
-              this.editing?.commit();
-            }
-          },
-          contextmenu: (event, view) => {
-            // The editor virtualizes its content, so the browser's native
-            // "Select all" only reaches the rendered lines. Show a menu whose
-            // "Select all" spans the whole document, like Ctrl/Cmd+A.
-            event.consume(true);
-            const {from, to, empty} = view.state.selection.main;
-            const copy = (): void =>
-                Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(view.state.sliceDoc(from, to));
-            const contextMenu = new UI.ContextMenu.ContextMenu(event, {
-              onSoftMenuClosed: () => {
-                this.#editAsHtmlMenuOpen = false;
-              },
-            });
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.cut), () => {
-              copy();
-              view.dispatch({changes: {from, to, insert: ''}});
-              view.focus();
-            }, {disabled: empty, jslogContext: 'cut'});
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), () => {
-              copy();
-              view.focus();
-            }, {disabled: empty, jslogContext: 'copy'});
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.paste), () => {
-              void navigator.clipboard.readText().then(text => {
-                view.dispatch(view.state.replaceSelection(text));
-                view.focus();
-              });
-            }, {jslogContext: 'paste'});
-            contextMenu.editSection().appendItem(i18nString(UIStrings.selectAll), () => {
-              view.dispatch({selection: {anchor: 0, head: view.state.doc.length}});
-              view.focus();
-            }, {jslogContext: 'select-all'});
-            this.#editAsHtmlMenuOpen = true;
-            void contextMenu.show();
-            return true;
-          },
-        }),
-      ],
-    });
-    this.requestUpdate();
-    resize.call(this);
-    this.editing = {commit: commit.bind(this), cancel: dispose.bind(this), resize: resize.bind(this)};
-    this.setMultilineEditing?.(this.editing, this.node);
-    await this.updateComplete;
-    this.#editorRef?.focus();
 
-    function resize(this: DOMTreeElementWidget): void {
+    const resize = (): void => {
       if (this.visibleWidth) {
         this.#editorWidth = this.visibleWidth() - this.#getLeftIndent() - 30;
         this.requestUpdate();
       }
-    }
+    };
 
-    function commit(this: DOMTreeElementWidget): void {
-      if (this.#editorRef) {
-        commitCallback(initialValue, this.#editorRef.editor.state.doc.toString());
-      }
-      dispose.call(this);
-    }
-
-    function dispose(this: DOMTreeElementWidget): void {
+    const dispose = (): void => {
       if (!this.editing && !this.#editorState) {
         return;
       }
@@ -2365,7 +2324,40 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       }
 
       disposeCallback();
-    }
+    };
+
+    const commit = (): void => {
+      if (this.#editorRef) {
+        commitCallback(initialValue, this.#editorRef.editor.state.doc.toString());
+      }
+      dispose();
+    };
+
+    // Append editor.
+    this.#editorState = createEditAsHTMLState(initialValue, {
+      commit: () => this.editing?.commit(),
+      cancel: () => this.editing?.cancel(),
+      onFocusOut: event => {
+        if (!this.#editorRef || this.#editAsHtmlMenuOpen) {
+          return;
+        }
+        // The relatedTarget is null when no element gains focus, e.g. switching windows.
+        const relatedTarget = (event.relatedTarget as Node | null);
+        if (relatedTarget && !relatedTarget.isSelfOrDescendant(this.#editorRef) &&
+            !relatedTarget.isSelfOrDescendant(this.contentElement)) {
+          this.editing?.commit();
+        }
+      },
+      onContextMenuToggled: open => {
+        this.#editAsHtmlMenuOpen = open;
+      },
+    });
+    this.requestUpdate();
+    resize();
+    this.editing = {commit, cancel: dispose, resize};
+    this.setMultilineEditing?.(this.editing, this.node);
+    await this.updateComplete;
+    this.#editorRef?.focus();
   }
 
   private attributeEditingCommitted(
@@ -2378,7 +2370,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     this.editing = null;
     this.#clearDOMNextUpdate = true;
 
-    function moveToNextAttributeIfNeeded(this: DOMTreeElementWidget, error?: string|null): void {
+    const moveToNextAttributeIfNeeded = (error?: string|null): void => {
       if (error) {
         this.editingCancelled(element, attributeName);
       }
@@ -2426,7 +2418,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
           this.startEditingTagName();
         }
       }
-    }
+    };
 
     if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
       const edit = {attributeName, oldText, newText};
@@ -2438,13 +2430,13 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
                                                  buildChangeSelector(changeTracker, this.node), edit);
           Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
         }
-        moveToNextAttributeIfNeeded.call(this, error);
+        moveToNextAttributeIfNeeded(error);
       });
       return;
     }
 
     this.updateTitle();
-    moveToNextAttributeIfNeeded.call(this);
+    moveToNextAttributeIfNeeded();
   }
 
   private tagNameEditingCommitted(
@@ -2455,19 +2447,8 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       moveDirection: string,
       ): void {
     this.editing = null;
-    const self = this;
 
-    function cancel(): void {
-      const closingTagElement = self.distinctClosingTagElement();
-      if (closingTagElement) {
-        closingTagElement.textContent = '</' + tagName + '>';
-      }
-
-      self.editingCancelled(element, tagName);
-      moveToNextAttributeIfNeeded.call(self);
-    }
-
-    function moveToNextAttributeIfNeeded(this: DOMTreeElementWidget): void {
+    const moveToNextAttributeIfNeeded = (): void => {
       if (this.node.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
         this.startEditingProcessingInstructionValue();
         return;
@@ -2484,7 +2465,17 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       } else {
         this.addNewAttribute();
       }
-    }
+    };
+
+    const cancel = (): void => {
+      const closingTagElement = this.distinctClosingTagElement();
+      if (closingTagElement) {
+        closingTagElement.textContent = '</' + tagName + '>';
+      }
+
+      this.editingCancelled(element, tagName);
+      moveToNextAttributeIfNeeded();
+    };
 
     newText = newText.trim();
     if (!newText || newText === oldText) {
@@ -2517,15 +2508,14 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
     // The changeTracker has to be resolved before the widget is detached from the DOM.
     const changeTracker = this.changeTracker;
 
-    function callback(this: DOMTreeElementWidget, error?: string|null): void {
+    textNode.setNodeValue(newText, (error?: string|null) => {
       if (!error && oldValue !== newText) {
         Elements.DOMChanges.trackTextNodeEdit(changeTracker, textNode, buildChangeSelector(changeTracker, textNode),
                                               oldValue, newText);
       }
       this.#clearDOMNextUpdate = true;
       this.updateTitle();
-    }
-    textNode.setNodeValue(newText, callback.bind(this));
+    });
   }
 
   editingCancelled(_element: Element, _tagName: string|null): void {
@@ -2620,9 +2610,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       (n === node ? decorations : descendantDecorations).push(decoration);
     }
 
-    return Promise.all(promises).then(updateDecorationsUI.bind(this));
-
-    function updateDecorationsUI(this: DOMTreeElementWidget): void {
+    const updateDecorationsUI = (): void => {
       if (!this.isShowing()) {
         return;
       }
@@ -2652,7 +2640,9 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       }
       this.#decorationsTooltip = tooltip.join('\n');
       this.requestUpdate();
-    }
+    };
+
+    return Promise.all(promises).then(updateDecorationsUI);
   }
 
   async remove(): Promise<void> {
@@ -2687,11 +2677,10 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       return;
     }
 
-    function selectNode(error: string|null): void {
-      if (callback) {
-        callback(!error);
-      }
-    }
+    const node = this.node;
+    const selectNode = (error: string|null): void => {
+      callback?.(!error);
+    };
 
     const commitChange = (initialValue: string, value: string): void => {
       if (initialValue !== value) {
@@ -2707,15 +2696,12 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       }
     };
 
-    function disposeCallback(): void {
-      if (callback) {
-        callback(false);
-      }
-    }
+    const disposeCallback = (): void => {
+      callback?.(false);
+    };
 
-    const node = this.node;
     void node.getOuterHTML()
-        .then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback))
+        .then(outerHTML => this.startEditingAsHTML(commitChange, disposeCallback, outerHTML))
         .catch(disposeCallback);
   }
 

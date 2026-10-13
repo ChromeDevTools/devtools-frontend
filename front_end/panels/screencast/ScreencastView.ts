@@ -379,19 +379,19 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
   readonly #view: View;
   #viewOutput: ViewOutput;
 
-  private readonly screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel;
-  private domModel: SDK.DOMModel.DOMModel|null;
-  private readonly overlayModel: SDK.OverlayModel.OverlayModel|null;
-  private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
-  private networkManager: SDK.NetworkManager.NetworkManager|null;
-  private readonly inputModel: InputModel|null;
+  #screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;
+  private domModel: SDK.DOMModel.DOMModel|null = null;
+  private overlayModel: SDK.OverlayModel.OverlayModel|null = null;
+  private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null = null;
+  private networkManager: SDK.NetworkManager.NetworkManager|null = null;
+  private inputModel: InputModel|null = null;
   private shortcuts: Record<number, (arg0?: Event|undefined) => boolean>;
   private scrollOffsetX: number;
   private scrollOffsetY: number;
   private screenZoom: number;
   private screenOffsetTop: number;
   private pageScaleFactor: number;
-  private imageElement!: HTMLImageElement;
+  private imageElement: HTMLImageElement;
   private imageZoom: number;
   private model!: Protocol.DOM.BoxModel|null;
   private highlightConfig!: Protocol.Overlay.HighlightConfig|null;
@@ -419,21 +419,17 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
   #progressPercent = 0;
   #elementTitleData: ElementTitleData = {visible: false};
 
-  constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel, element?: HTMLElement,
-              view: View = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
     this.#viewOutput = {};
-    this.screenCaptureModel = screenCaptureModel;
-    this.domModel = screenCaptureModel.target().model(SDK.DOMModel.DOMModel);
-    this.overlayModel = screenCaptureModel.target().model(SDK.OverlayModel.OverlayModel);
-    this.resourceTreeModel = screenCaptureModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-    this.networkManager = screenCaptureModel.target().model(SDK.NetworkManager.NetworkManager);
-    this.inputModel = screenCaptureModel.target().model(InputModel);
 
     this.setMinimumSize(150, 150);
 
+    this.imageElement = new Image();
     this.shortcuts = {};
+    this.shortcuts[UI.KeyboardShortcut.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl.value)] =
+        this.focusNavigationBar.bind(this);
     this.scrollOffsetX = 0;
     this.scrollOffsetY = 0;
     this.screenZoom = 1;
@@ -442,23 +438,64 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
     this.imageZoom = 1;
   }
 
-  initialize(): void {
-    this.createNavigationBar();
-    this.imageElement = new Image();
-    this.shortcuts[UI.KeyboardShortcut.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl.value)] =
-        this.focusNavigationBar.bind(this);
-    SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.onSuspendStateChange, this);
-    this.updateGlasspane();
+  get screenCaptureModel(): SDK.ScreenCaptureModel.ScreenCaptureModel|undefined {
+    return this.#screenCaptureModel;
   }
 
-  override wasShown(): void {
-    super.wasShown();
+  set screenCaptureModel(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel|undefined) {
+    if (this.#screenCaptureModel === screenCaptureModel) {
+      return;
+    }
+    this.stopCasting();
+    this.#cleanup();
+    this.#screenCaptureModel = screenCaptureModel;
+    if (screenCaptureModel) {
+      this.domModel = screenCaptureModel.target().model(SDK.DOMModel.DOMModel);
+      this.overlayModel = screenCaptureModel.target().model(SDK.OverlayModel.OverlayModel);
+      this.resourceTreeModel = screenCaptureModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+      this.networkManager = screenCaptureModel.target().model(SDK.NetworkManager.NetworkManager);
+      this.inputModel = screenCaptureModel.target().model(InputModel);
+      this.createNavigationBar();
+      this.updateGlasspane();
+      if (this.isShowing()) {
+        this.#scheduleCasting();
+      }
+    } else {
+      this.domModel = null;
+      this.overlayModel = null;
+      this.resourceTreeModel = null;
+      this.networkManager = null;
+      this.inputModel = null;
+    }
+  }
+
+  #scheduleCasting(): void {
     if (this.deferredCasting) {
       clearTimeout(this.deferredCasting);
       delete this.deferredCasting;
     }
     this.deferredCasting = window.setTimeout(this.startCasting.bind(this), 100);
+  }
+
+  #cleanup(): void {
+    this.navigationProgressBar?.dispose();
+    this.navigationProgressBar = undefined;
+    if (this.resourceTreeModel) {
+      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+                                                 this.requestNavigationHistoryEvent, this);
+      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded,
+                                                 this.requestNavigationHistoryEvent, this);
+      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigatedWithinDocument,
+                                                 this.onFrameNavigated, this);
+    }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    SDK.TargetManager.TargetManager.instance().addEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
+                                                                this.onSuspendStateChange, this);
+    this.updateGlasspane();
+    this.#scheduleCasting();
     this.requestUpdate();
   }
 
@@ -497,24 +534,23 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
 
   override willHide(): void {
     super.willHide();
+    if (this.deferredCasting) {
+      clearTimeout(this.deferredCasting);
+      delete this.deferredCasting;
+    }
     this.stopCasting();
+    SDK.TargetManager.TargetManager.instance().removeEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
+                                                                   this.onSuspendStateChange, this);
   }
 
   override onDetach(): void {
-    this.navigationProgressBar?.dispose();
-    SDK.TargetManager.TargetManager.instance().removeEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
-                                                                   this.onSuspendStateChange, this);
-    if (this.resourceTreeModel) {
-      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-                                                 this.requestNavigationHistoryEvent, this);
-      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded,
-                                                 this.requestNavigationHistoryEvent, this);
-      this.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigatedWithinDocument,
-                                                 this.onFrameNavigated, this);
-    }
+    this.#cleanup();
   }
 
   private async startCasting(): Promise<void> {
+    if (!this.#screenCaptureModel) {
+      return;
+    }
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
@@ -533,7 +569,7 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
     dimensions.width *= window.devicePixelRatio;
     dimensions.height *= window.devicePixelRatio;
     // Note: startScreencast width and height are expected to be integers so must be floored.
-    this.screencastOperationId = await this.screenCaptureModel.startScreencast(
+    this.screencastOperationId = await this.#screenCaptureModel.startScreencast(
         Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this.screencastFrame.bind(this),
         this.screencastVisibilityChanged.bind(this));
@@ -543,10 +579,10 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
   }
 
   private stopCasting(): void {
-    if (!this.screencastOperationId) {
+    if (!this.screencastOperationId || !this.#screenCaptureModel) {
       return;
     }
-    this.screenCaptureModel.stopScreencast(this.screencastOperationId);
+    this.#screenCaptureModel.stopScreencast(this.screencastOperationId);
     this.screencastOperationId = undefined;
     this.isCasting = false;
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
@@ -720,13 +756,8 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
   }
 
   override onResize(): void {
-    if (this.deferredCasting) {
-      clearTimeout(this.deferredCasting);
-      delete this.deferredCasting;
-    }
-
     this.stopCasting();
-    this.deferredCasting = window.setTimeout(this.startCasting.bind(this), 100);
+    this.#scheduleCasting();
   }
 
   highlightInOverlay(data: SDK.OverlayModel.HighlightData, config: Protocol.Overlay.HighlightConfig|null): void {

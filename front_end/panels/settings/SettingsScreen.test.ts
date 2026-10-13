@@ -6,11 +6,16 @@ import {assert} from 'chai';
 import {it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
@@ -19,6 +24,121 @@ import * as Settings from './settings.js';
 
 const {urlString} = Platform.DevToolsPath;
 const {EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW, ExperimentsSettingsTab} = Settings.SettingsScreen;
+
+describe('SettingsScreen', () => {
+  setupLocaleHooks();
+  setupRuntimeHooks();
+
+  const tabIds = ['preferences', 'keybinds'] as const;
+
+  function setup() {
+    const tabLinks = new Map<string, HTMLAnchorElement>();
+    const universe = new TestUniverse();
+    setTestUniverseForWidgets(universe);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(universe.settings);
+    const zoomManager = sinon.createStubInstance(UI.ZoomManager.ZoomManager);
+    zoomManager.zoomFactor.returns(1);
+    zoomManager.cssToDIP.callsFake(value => value);
+    zoomManager.dipToCSS.callsFake(value => value);
+    sinon.stub(UI.ZoomManager.ZoomManager, 'instance').returns(zoomManager);
+    sinon.stub(UI.DockController.DockController, 'instance').returns(new UI.DockController.DockController(false));
+    sinon.stub(UI.UIUserMetrics.UIUserMetrics, 'instance').returns(new UI.UIUserMetrics.UIUserMetrics());
+
+    for (const id of tabIds) {
+      UI.ViewManager.registerViewExtension({
+        id,
+        location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
+        title: () => i18n.i18n.lockedString(id),
+        commandPrompt: () => i18n.i18n.lockedString(id),
+        async loadView() {
+          const widget = new UI.Widget.Widget();
+          const link = document.createElement('a');
+          link.href = 'https://example.com/';
+          link.textContent = 'Learn more';
+          tabLinks.set(id, link);
+          widget.contentElement.appendChild(link);
+          widget.setDefaultFocusedElement(link);
+          return widget;
+        },
+      });
+    }
+    UI.ViewManager.ViewManager.instance({forceNew: true, universe});
+    Settings.SettingsScreen.SettingsScreen.instance({forceNew: true});
+    return {tabLinks};
+  }
+
+  afterEach(() => {
+    Settings.SettingsScreen.SettingsScreen.removeInstanceForTesting();
+    UI.InspectorView.InspectorView.removeInstance();
+    UI.ViewManager.ViewManager.removeInstance();
+    UI.ViewManager.resetViewRegistration();
+  });
+
+  it('exposes settings tabs in a named non-modal dialog', async () => {
+    const {tabLinks} = setup();
+    for (const name of tabIds) {
+      await Settings.SettingsScreen.SettingsScreen.showSettingsScreen({name, focusTabHeader: true});
+
+      const dialog = UI.Dialog.Dialog.getInstance();
+      assert.exists(dialog);
+      assert.isTrue(dialog.isShowing());
+      assert.strictEqual(dialog.contentElement.getAttribute('role'), 'dialog');
+      assert.strictEqual(dialog.contentElement.getAttribute('aria-label'), 'Settings');
+      assert.isNull(dialog.contentElement.getAttribute('aria-modal'));
+
+      const focusedTab = UI.DOMUtilities.deepActiveElement(document);
+      assert.exists(focusedTab);
+      assert.strictEqual(focusedTab.getAttribute('role'), 'tab');
+      assert.strictEqual(focusedTab.getAttribute('aria-selected'), 'true');
+      assert.strictEqual(focusedTab.getAttribute('aria-label'), name);
+
+      await Settings.SettingsScreen.SettingsScreen.showSettingsScreen({name});
+      const focusedControl = UI.DOMUtilities.deepActiveElement(document);
+      const expectedLink = tabLinks.get(name);
+      assert.exists(expectedLink);
+      assert.strictEqual(focusedControl, expectedLink);
+    }
+  });
+
+  it('preserves modal semantics for dialogs stacked over settings', async () => {
+    setup();
+    await Settings.SettingsScreen.SettingsScreen.showSettingsScreen();
+    const settingsDialog = UI.Dialog.Dialog.getInstance();
+    assert.exists(settingsDialog);
+
+    const modalDialog = new UI.Dialog.Dialog();
+    modalDialog.show(undefined, true);
+
+    assert.strictEqual(modalDialog.contentElement.getAttribute('role'), 'dialog');
+    assert.strictEqual(modalDialog.contentElement.getAttribute('aria-modal'), 'true');
+    assert.isTrue(settingsDialog.isShowing());
+
+    modalDialog.hide();
+    assert.strictEqual(UI.Dialog.Dialog.getInstance(), settingsDialog);
+  });
+
+  it('closes on Escape and restores focus', async () => {
+    setup();
+    const opener = document.createElement('button');
+    renderElementIntoDOM(opener);
+    opener.focus();
+
+    await Settings.SettingsScreen.SettingsScreen.showSettingsScreen({focusTabHeader: true});
+    const dialog = UI.Dialog.Dialog.getInstance();
+    assert.exists(dialog);
+
+    dialog.contentElement.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Escape',
+      keyCode: UI.KeyboardShortcut.Keys.Esc.code,
+      bubbles: true,
+      composed: true,
+    }));
+
+    assert.isFalse(dialog.isShowing());
+    assert.isFalse(UI.Dialog.Dialog.hasInstance());
+    assert.strictEqual(UI.DOMUtilities.deepActiveElement(document), opener);
+  });
+});
 
 function setupExperiments() {
   Root.Runtime.experiments.clearForTest();

@@ -81,7 +81,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let settingsScreenInstance: SettingsScreen;
+let settingsScreenInstance: SettingsScreen|undefined;
 
 function createSettingsCard(heading: Common.UIString.LocalizedString, ...content: HTMLElement[]): Card {
   const card = document.createElement('devtools-card');
@@ -139,6 +139,10 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     return settingsScreenInstance;
   }
 
+  static removeInstanceForTesting(): void {
+    settingsScreenInstance = undefined;
+  }
+
   private static revealSettingsScreen(): SettingsScreen {
     const settingsScreen = SettingsScreen.instance();
     if (settingsScreen.isShowing()) {
@@ -147,6 +151,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
     settingsScreen.reportTabOnReveal = true;
     const dialog = new UI.Dialog.Dialog('settings');
+    dialog.setAriaLabel(i18nString(UIStrings.settings));
     dialog.contentElement.removeAttribute('aria-modal');
     dialog.contentElement.tabIndex = -1;
     dialog.addCloseButton();

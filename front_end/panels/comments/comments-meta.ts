@@ -35,7 +35,7 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.comments),
   commandPrompt: i18nLazyString(UIStrings.showComments),
   order: 105,
-  persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
+  persistence: UI.ViewManager.ViewPersistence.TRANSIENT,
   condition: config => Boolean(config?.devToolsComments?.enabled),
   async loadView(universe) {
     const Comments = await loadCommentsModule();

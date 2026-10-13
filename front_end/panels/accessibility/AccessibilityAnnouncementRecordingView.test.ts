@@ -7,16 +7,21 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Accessibility from './accessibility.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
   const {
@@ -30,12 +35,24 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     AnnouncementApi,
     RecordTypeFilter,
     buildCsvContent,
+    parseFirstCallSite,
   } = Accessibility.AccessibilityAnnouncementRecordingView;
 
   let target: SDK.Target.Target;
   let view: Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView|undefined;
 
   beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace,
+    });
     const connection = new MockCDPConnection();
     connection.setSuccessHandler('Page.addScriptToEvaluateOnNewDocument',
                                  () => ({
@@ -1727,6 +1744,271 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       const deselectedInput = await viewStub.nextInput;
       assert.isNull(deselectedInput.selectedAnnouncement);
       assert.isNull(view.selectedAnnouncementForTest());
+    });
+  });
+
+  describe('parseFirstCallSite', () => {
+    it('returns null for empty or header-only stack strings', async () => {
+      assert.isNull(await parseFirstCallSite(target, ''));
+      assert.isNull(await parseFirstCallSite(target, 'Error'));
+      assert.isNull(await parseFirstCallSite(target, 'Error: Something went wrong'));
+    });
+
+    it('returns null when all frames are internal recorder or ariaNotify frames', async () => {
+      const {project: internalProject} = createContentProviderUISourceCode({
+        url: urlString`http://localhost/internal.js`,
+        mimeType: 'text/javascript',
+        projectId: 'internal-project',
+      });
+      const {project: polyfillProject} = createContentProviderUISourceCode({
+        url: urlString`http://localhost/polyfill.js`,
+        mimeType: 'text/javascript',
+        projectId: 'polyfill-project',
+      });
+
+      try {
+        const internalStack = [
+          'Error',
+          `    at ${BINDING_NAME} (http://localhost/internal.js:10:5)`,
+          '    at Element.ariaNotify (http://localhost/polyfill.js:20:10)',
+          '    at HTMLButtonElement.wrapped (<anonymous>:351:19)',
+        ].join('\n');
+        assert.isNull(await parseFirstCallSite(target, internalStack));
+      } finally {
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(internalProject);
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(polyfillProject);
+      }
+    });
+
+    it('extracts URL and 0-based line and column numbers from a named V8 call frame', async () => {
+      const {uiSourceCode, project} = createContentProviderUISourceCode({
+        url: urlString`http://localhost/script.js`,
+        mimeType: 'text/javascript',
+      });
+
+      try {
+        const stack = [
+          'Error',
+          '    at Element.ariaNotify (<anonymous>:351:19)',
+          '    at triggerAlert (http://localhost/script.js:42:15)',
+          '    at HTMLButtonElement.onclick (http://localhost/index.html:10:3)',
+        ].join('\n');
+        const callSite = await parseFirstCallSite(target, stack);
+        assert.isNotNull(callSite);
+        assert.strictEqual(callSite.uiSourceCode, uiSourceCode);
+        assert.strictEqual(callSite.lineNumber, 41);
+        assert.strictEqual(callSite.columnNumber, 14);
+      } finally {
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      }
+    });
+
+    it('extracts coordinates from an anonymous caller frame without parentheses', async () => {
+      const {uiSourceCode, project} = createContentProviderUISourceCode({
+        url: urlString`http://localhost/script.js`,
+        mimeType: 'text/javascript',
+      });
+
+      try {
+        const stack = 'Error\n    at http://localhost/script.js:10:5';
+        const callSite = await parseFirstCallSite(target, stack);
+        assert.isNotNull(callSite);
+        assert.strictEqual(callSite.uiSourceCode, uiSourceCode);
+        assert.strictEqual(callSite.lineNumber, 9);
+        assert.strictEqual(callSite.columnNumber, 4);
+      } finally {
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      }
+    });
+
+    it('handles URLs with port numbers, query parameters, and file:// protocol', async () => {
+      const {uiSourceCode: appSourceCode, project: appProject} = createContentProviderUISourceCode({
+        url: urlString`https://localhost:8080/app.js?v=123`,
+        mimeType: 'text/javascript',
+        projectId: 'app-project',
+      });
+      const {uiSourceCode: fileSourceCode, project: fileProject} = createContentProviderUISourceCode({
+        url: urlString`file:///Users/dev/project/test.js`,
+        mimeType: 'text/javascript',
+        projectId: 'file-project',
+      });
+
+      try {
+        const portAndQueryStack = 'Error\n    at notify (https://localhost:8080/app.js?v=123:100:25)';
+        const appCallSite = await parseFirstCallSite(target, portAndQueryStack);
+        assert.isNotNull(appCallSite);
+        assert.strictEqual(appCallSite.uiSourceCode, appSourceCode);
+        assert.strictEqual(appCallSite.lineNumber, 99);
+        assert.strictEqual(appCallSite.columnNumber, 24);
+
+        const fileUrlStack = 'Error\n    at runTest (file:///Users/dev/project/test.js:7:2)';
+        const fileCallSite = await parseFirstCallSite(target, fileUrlStack);
+        assert.isNotNull(fileCallSite);
+        assert.strictEqual(fileCallSite.uiSourceCode, fileSourceCode);
+        assert.strictEqual(fileCallSite.lineNumber, 6);
+        assert.strictEqual(fileCallSite.columnNumber, 1);
+      } finally {
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(appProject);
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(fileProject);
+      }
+    });
+  });
+
+  describe('Source Code Navigation', () => {
+    it('reveals 0-indexed UILocation in Sources when a JS-triggered announcement with a mapped UISourceCode is selected',
+       async () => {
+         const {uiSourceCode, project} = createContentProviderUISourceCode({
+           url: urlString`http://localhost:8080/script.js`,
+           mimeType: 'text/javascript',
+         });
+
+         try {
+           const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+           const viewStub = createViewFunctionStub(
+               Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
+           view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(
+               undefined, viewStub);
+           renderElementIntoDOM(view);
+
+           const input = await viewStub.nextInput;
+           const jsAnnouncement: Accessibility.AccessibilityAnnouncementRecordingView.A11yAnnouncement = {
+             api: AnnouncementApi.JS_TRIGGERED,
+             message: 'Order confirmed',
+             politeness: 'assertive',
+             element: '<button id="submit">Submit</button>',
+             stack: [
+               'Error',
+               '    at Element.ariaNotify (<anonymous>:351:19)',
+               '    at confirmOrder (http://localhost:8080/script.js:42:15)',
+             ].join('\n'),
+             time: 1000,
+           };
+
+           input.onSelectAnnouncement(jsAnnouncement);
+           await viewStub.nextInput;
+           await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+               .pendingLiveLocationChangesPromise();
+
+           sinon.assert.calledOnce(revealStub);
+           const revealedLocation = revealStub.firstCall.firstArg as Workspace.UISourceCode.UILocation;
+           assert.instanceOf(revealedLocation, Workspace.UISourceCode.UILocation);
+           assert.strictEqual(revealedLocation.uiSourceCode, uiSourceCode);
+           assert.strictEqual(revealedLocation.lineNumber, 41);
+           assert.strictEqual(revealedLocation.columnNumber, 14);
+         } finally {
+           Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+         }
+       });
+
+    it('triggers source navigation when announcement-selected is dispatched via ObjectWrapper on the list view',
+       async () => {
+         const {uiSourceCode, project} = createContentProviderUISourceCode({
+           url: urlString`http://localhost/app.js`,
+           mimeType: 'text/javascript',
+         });
+
+         try {
+           const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+           view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+           renderElementIntoDOM(view);
+           await view.updateComplete;
+
+           const listWidgetEl = view.contentElement.querySelector('devtools-widget');
+           assert.exists(listWidgetEl);
+           const listView = UI.Widget.Widget.get(listWidgetEl) as
+               Accessibility.AccessibilityAnnouncementRecordingListView.AccessibilityAnnouncementRecordingListView;
+           assert.exists(listView);
+
+           const jsAnnouncement: Accessibility.AccessibilityAnnouncementRecordingView.A11yAnnouncement = {
+             api: AnnouncementApi.JS_TRIGGERED,
+             message: 'Saved changes',
+             politeness: 'polite',
+             element: 'document',
+             stack: 'Error\n    at save (http://localhost/app.js:10:5)',
+             time: 2000,
+           };
+
+           listView.dispatchEventToListeners(
+               Accessibility.AccessibilityAnnouncementRecordingListView.AccessibilityAnnouncementRecordingListView
+                   .Events.ANNOUNCEMENT_SELECTED,
+               jsAnnouncement);
+           await view.updateComplete;
+           await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+               .pendingLiveLocationChangesPromise();
+
+           sinon.assert.calledOnce(revealStub);
+           const revealedLocation = revealStub.firstCall.firstArg as Workspace.UISourceCode.UILocation;
+           assert.strictEqual(revealedLocation.uiSourceCode, uiSourceCode);
+           assert.strictEqual(revealedLocation.lineNumber, 9);
+           assert.strictEqual(revealedLocation.columnNumber, 4);
+         } finally {
+           Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+         }
+       });
+
+    it('does not call reveal when the script URL is not loaded in WorkspaceImpl', async () => {
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+
+      await view.revealSourceForAnnouncementForTest({
+        api: AnnouncementApi.JS_TRIGGERED,
+        message: 'Unmapped script announcement',
+        politeness: 'polite',
+        element: 'document',
+        stack: 'Error\n    at unknownScript (http://localhost/unmapped.js:12:4)',
+        time: 1000,
+      });
+
+      sinon.assert.notCalled(revealStub);
+    });
+
+    it('does not navigate to Sources when an ARIA_LIVE announcement row is selected', async () => {
+      const {project} = createContentProviderUISourceCode({
+        url: urlString`http://localhost/script.js`,
+        mimeType: 'text/javascript',
+      });
+
+      try {
+        const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+        const viewStub = createViewFunctionStub(
+            Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView);
+        view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView(
+            undefined, viewStub);
+        renderElementIntoDOM(view);
+
+        const input = await viewStub.nextInput;
+        const ariaLiveAnnouncement: Accessibility.AccessibilityAnnouncementRecordingView.A11yAnnouncement = {
+          api: AnnouncementApi.ARIA_LIVE,
+          message: 'Live region updated',
+          politeness: 'polite',
+          element: '<div aria-live="polite">Live region updated</div>',
+          stack: 'Error\n    at mutateDom (http://localhost/script.js:42:15)',
+          time: 1000,
+        };
+
+        input.onSelectAnnouncement(ariaLiveAnnouncement);
+        const updatedInput = await viewStub.nextInput;
+
+        assert.strictEqual(updatedInput.selectedAnnouncement, ariaLiveAnnouncement);
+        sinon.assert.notCalled(revealStub);
+      } finally {
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      }
+    });
+
+    it('does not call reveal when a JS_TRIGGERED announcement lacks a stack trace', async () => {
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+
+      await view.revealSourceForAnnouncementForTest({
+        api: AnnouncementApi.JS_TRIGGERED,
+        message: 'No stack announcement',
+        politeness: 'polite',
+        element: 'document',
+        time: 1000,
+      });
+
+      sinon.assert.notCalled(revealStub);
     });
   });
 });

@@ -40,6 +40,8 @@ devtools_ui_module("accessibility") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../models/bindings:bundle",
+    "../../models/workspace:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
@@ -97,6 +99,8 @@ devtools_ui_module("unittests") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../models/bindings:bundle",
+    "../../models/workspace:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
   ]

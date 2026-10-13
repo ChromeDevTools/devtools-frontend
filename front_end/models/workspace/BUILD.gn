@@ -43,6 +43,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../foundation/*",
     "../../legacy_test_runner/*",
+    "../../panels/accessibility/*",
     "../../panels/ai_assistance/*",
     "../../panels/application/*",
     "../../panels/changes/*",

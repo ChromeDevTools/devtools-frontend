@@ -20,6 +20,7 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {
+  createTarget,
   deinitializeGlobalVars,
   initializeGlobalVars,
   registerNoopActions,
@@ -611,6 +612,81 @@ describe('TimelinePanel', function() {
     assert.isOk(parsedTrace);
     assert.isTrue(Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace));
   });
+
+  it('uses primaryPageTarget and scriptUrl for departed frames and does not retry failed source map loads',
+     async function() {
+       const primaryTarget = createTarget({targetManager});
+       try {
+         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json');
+         // Add a cross-origin //# sourceURL= to verify #createSourceMapResolver uses
+         // script.url rather than script.sourceUrl as initiator.initiatorUrl.
+         const eventsWithSpoofedSourceUrl = traceEvents.map(event => {
+           if (Trace.Types.Events.isRundownScript(event)) {
+             return {
+               ...event,
+               args: {
+                 ...event.args,
+                 data: {
+                   ...event.args.data,
+                   hasSourceUrl: true,
+                   sourceUrl: 'https://spoofed-origin.example.com/spoofed.js',
+                 },
+               },
+             };
+           }
+           return event;
+         });
+         const loadResourceStub = resourceLoader.loadResource as sinon.SinonStub;
+         loadResourceStub.rejects(new Error('CSP violation'));
+
+         timeline['setState'](Timeline.TimelinePanel.State.RECORDING);
+         await timeline.loadingStarted();
+         await timeline.loadingComplete(eventsWithSpoofedSourceUrl as Trace.Types.Events.Event[], null, metadata);
+
+         // http://localhost:8080/source.map.json was already attempted during #createSourceMapResolver,
+         // so #retainSourceMapsForEnhancedTrace must not retry it after it failed.
+         sinon.assert.calledOnce(loadResourceStub);
+         assert.strictEqual(loadResourceStub.firstCall.args[0], 'http://localhost:8080/source.map.json');
+         const initiator = loadResourceStub.firstCall.args[1] as SDK.PageResourceLoader.PageResourceLoadInitiator;
+         assert.strictEqual(initiator.target, primaryTarget,
+                            'Expected initiator.target to be primaryPageTarget, not null');
+         assert.strictEqual(initiator.initiatorUrl, 'http://localhost:8080/index.html');
+       } finally {
+         primaryTarget.dispose('test');
+       }
+     });
+
+  it('uses primaryPageTarget in retainSourceMapsForEnhancedTrace for scripts skipped by ScriptsHandler',
+     async function() {
+       const primaryTarget = createTarget({targetManager});
+       try {
+         const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'enhanced-traces.json');
+         // Filter out the RundownScriptCompiled event that associates a script with a frame so that ScriptsHandler
+         // skips source map resolution, leaving the unassociated-frame scripts to #retainSourceMapsForEnhancedTrace.
+         const eventsWithoutAssociatedFrameScript = traceEvents.filter(event => {
+           return !(Trace.Types.Events.isRundownScriptCompiled(event) &&
+                    event.args?.data?.frame === '21D58E83A5C17916277166140F6A464B');
+         });
+         const loadResourceStub = resourceLoader.loadResource as sinon.SinonStub;
+         loadResourceStub.resolves({
+           content: JSON.stringify({version: 3, sources: [], names: [], mappings: ''}),
+         });
+
+         timeline['setState'](Timeline.TimelinePanel.State.RECORDING);
+         await timeline.loadingStarted();
+         await timeline.loadingComplete(eventsWithoutAssociatedFrameScript as Trace.Types.Events.Event[], null,
+                                        metadata ?? {});
+
+         sinon.assert.calledOnce(loadResourceStub);
+         assert.strictEqual(loadResourceStub.firstCall.args[0], 'http://localhost:8080/source.map.json');
+         const initiator = loadResourceStub.firstCall.args[1] as SDK.PageResourceLoader.PageResourceLoadInitiator;
+         assert.strictEqual(initiator.target, primaryTarget,
+                            'Expected initiator.target to be primaryPageTarget, not null');
+         assert.strictEqual(initiator.initiatorUrl, 'http://localhost:8080/index.html');
+       } finally {
+         primaryTarget.dispose('test');
+       }
+     });
 
   describe('console.profile confirmation dialog', () => {
     it('loads CPU profile when user accepts confirmation dialog', async function() {

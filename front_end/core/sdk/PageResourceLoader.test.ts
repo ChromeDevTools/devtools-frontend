@@ -256,6 +256,7 @@ describe('PageResourceLoader', () => {
 });
 
 describe('PageResourceLoader', () => {
+  setupLocaleHooks();
   setupRuntimeHooks();
   setupSettingsHooks();
 
@@ -666,6 +667,193 @@ describe('PageResourceLoader', () => {
       sinon.assert.notCalled(loadHostBindingsStub);
     });
 
+    it('falls back to mainFrame for same-origin detached frame and blocks host-bindings fallback', async () => {
+      const {loader, settings, targetManager} = setup();
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
+      const frameConnection = new MockCDPConnection();
+      const requestedFrameIdsForSecurity: Array<Protocol.Page.FrameId|undefined> = [];
+      const requestedFrameIdsForNetwork: Array<Protocol.Page.FrameId|undefined> = [];
+
+      frameConnection.setHandler('Network.getSecurityIsolationStatus', params => {
+        requestedFrameIdsForSecurity.push(params?.frameId);
+        return {result: {status: {csp: []}}};
+      });
+      frameConnection.setHandler('Network.loadNetworkResource', params => {
+        requestedFrameIdsForNetwork.push(params?.frameId);
+        return {
+          error: {
+            code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+            message: 'Failed to load in target',
+          },
+        };
+      });
+
+      const mainFrameTarget = createTarget({
+        id: 'main' as Protocol.Target.TargetID,
+        connection: frameConnection,
+        targetManager,
+        url: 'https://example.com',
+      });
+      const resourceTreeModel = mainFrameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+      sinon.stub(resourceTreeModel, 'mainFrame').get(() => ({
+                                                       id: 'main-frame-123' as Protocol.Page.FrameId,
+                                                       securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
+                                                           'https://example.com'),
+                                                     }));
+      sinon.stub(resourceTreeModel, 'frameForId').returns(null);
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+      const detachedInitiator = {
+        target: null,
+        frameId: 'detached-frame-123' as Protocol.Page.FrameId,
+        initiatorUrl: urlString`https://example.com/script.js`,
+      };
+      try {
+        await loader.loadResource(urlString`https://example.com/script.js.map`, detachedInitiator);
+        assert.fail('Expected loadResource to throw');
+      } catch (e) {
+        assert.strictEqual(e.message, 'Failed to load in target');
+      }
+
+      assert.deepEqual(requestedFrameIdsForSecurity, ['main-frame-123' as Protocol.Page.FrameId]);
+      assert.deepEqual(requestedFrameIdsForNetwork, ['main-frame-123' as Protocol.Page.FrameId]);
+      sinon.assert.notCalled(loadHostBindingsStub);
+    });
+
+    it('rejects cross-origin detached or unassociated frames without calling target or host bindings', async () => {
+      const {loader, settings, targetManager} = setup();
+      settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
+      const frameConnection = new MockCDPConnection();
+      const loadNetworkResourceSpy = sinon.spy();
+      frameConnection.setHandler('Network.loadNetworkResource', loadNetworkResourceSpy);
+
+      const mainFrameTarget = createTarget({
+        id: 'main' as Protocol.Target.TargetID,
+        connection: frameConnection,
+        targetManager,
+        url: 'https://example.com',
+      });
+      const resourceTreeModel = mainFrameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+      sinon.stub(resourceTreeModel, 'mainFrame').get(() => ({
+                                                       id: 'main-frame-123' as Protocol.Page.FrameId,
+                                                       securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
+                                                           'https://example.com'),
+                                                     }));
+      sinon.stub(resourceTreeModel, 'frameForId').returns(null);
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+      for (const initiator of [{
+             target: null,
+             frameId: 'detached-frame-123' as Protocol.Page.FrameId,
+             initiatorUrl: urlString`https://cross-origin.com/script.js`,
+           },
+                               {
+                                 target: mainFrameTarget,
+                                 frameId: '' as Protocol.Page.FrameId,
+                                 initiatorUrl: urlString`https://cross-origin.com/script.js`,
+                               },
+      ]) {
+        try {
+          await loader.loadResource(urlString`https://cross-origin.com/script.js.map`, initiator);
+          assert.fail('Expected loadResource to throw');
+        } catch (e) {
+          assert.strictEqual(e.message, 'Can’t load resource for an unavailable cross-origin frame');
+        }
+      }
+
+      sinon.assert.notCalled(loadNetworkResourceSpy);
+      sinon.assert.notCalled(loadHostBindingsStub);
+    });
+
+    it('loads cross-origin script resources for a service-worker child target via the parent page main frame',
+       async () => {
+         const {loader, settings, targetManager} = setup();
+         settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor).set(false);
+         const frameConnection = new MockCDPConnection();
+         const requestedFrameIdsForSecurity: Array<Protocol.Page.FrameId|undefined> = [];
+         const requestedFrameIdsForNetwork: Array<Protocol.Page.FrameId|undefined> = [];
+
+         frameConnection.setHandler('Network.getSecurityIsolationStatus', params => {
+           requestedFrameIdsForSecurity.push(params?.frameId);
+           return {result: {status: {csp: []}}};
+         });
+         frameConnection.setHandler('Network.loadNetworkResource', params => {
+           requestedFrameIdsForNetwork.push(params?.frameId);
+           return {
+             result: {
+               resource: {
+                 success: true,
+                 stream: 'stream-1' as Protocol.IO.StreamHandle,
+               },
+             },
+           };
+         });
+         let contentToRead: string|null = '{"version":3}';
+         frameConnection.setHandler('IO.read', () => {
+           const data = contentToRead;
+           contentToRead = null;
+           return {
+             result: {
+               data: data ?? '',
+               eof: data === null,
+             },
+           };
+         });
+         frameConnection.setHandler('IO.close', () => ({result: {}}));
+
+         const mainFrameTarget = createTarget({
+           id: 'main' as Protocol.Target.TargetID,
+           connection: frameConnection,
+           targetManager,
+           url: 'https://example.com',
+         });
+         const resourceTreeModel = mainFrameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+         sinon.stub(resourceTreeModel, 'mainFrame')
+             .get(() => ({
+                    id: 'main-frame-123' as Protocol.Page.FrameId,
+                    securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+                  }));
+
+         const swTarget = createTarget({
+           targetManager,
+           parentTarget: mainFrameTarget,
+           type: SDK.Target.Type.ServiceWorker,
+           url: 'https://example.com/sw.js',
+         });
+
+         const result = await loader.loadResource(urlString`https://cdn.example.org/workbox-sw.js.map`, {
+           target: swTarget,
+           frameId: null,
+           initiatorUrl: urlString`https://cdn.example.org/workbox-sw.js`,
+         });
+
+         assert.strictEqual(result.content, '{"version":3}');
+         assert.deepEqual(requestedFrameIdsForSecurity, ['main-frame-123' as Protocol.Page.FrameId]);
+         assert.deepEqual(requestedFrameIdsForNetwork, ['main-frame-123' as Protocol.Page.FrameId]);
+       });
+
+    it('fails closed for HTTP(S) resource when no target is available', async () => {
+      const {loader} = setup();
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+      try {
+        await loader.loadResource(urlString`https://example.com/script.js.map`, {
+          target: null,
+          frameId: 'detached-frame-123' as Protocol.Page.FrameId,
+          initiatorUrl: urlString`https://example.com/script.js`,
+        });
+        assert.fail('Expected loadResource to throw');
+      } catch (e) {
+        assert.strictEqual(e.message, 'Can’t load http(s) resource without a target');
+      }
+
+      sinon.assert.notCalled(loadHostBindingsStub);
+    });
   });
 });
 

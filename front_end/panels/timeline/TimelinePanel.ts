@@ -2659,19 +2659,38 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     });
   }
 
+  #getDebuggerModelForFrameId(): Map<string, SDK.DebuggerModel.DebuggerModel> {
+    const debuggerModelForFrameId = new Map<string, SDK.DebuggerModel.DebuggerModel>();
+    for (const target of this.#targetManager.targets()) {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      if (!debuggerModel) {
+        continue;
+      }
+
+      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      const activeFrameIds = (resourceModel?.frames() ?? []).map(frame => frame.id);
+      for (const frameId of activeFrameIds) {
+        debuggerModelForFrameId.set(frameId, debuggerModel);
+      }
+    }
+    return debuggerModelForFrameId;
+  }
+
   /**
    * Store source maps on trace metadata (but just the non-data url ones).
    *
    * Many raw source maps are already in memory, but there are some cases where they may
-   * not be and have to be fetched here:
-   *
-   * 1. If the trace processor (via `#createSourceMapResolver`) never fetched it,
-   *    due to `ScriptHandler` skipping the script if it could not find an associated frame.
-   * 2. If the initial fetch failed (perhaps the failure was intermittent and a
-   *    subsequent attempt will work).
+   * not be and have to be fetched here (e.g., if the trace processor via
+   * `#createSourceMapResolver` never fetched it due to `ScriptsHandler` skipping the
+   * script when it could not find an associated frame). Source maps whose fetch was
+   * already started during `#createSourceMapResolver` or earlier in this retention
+   * pass (tracked in `sourceMapPromisesByUrl`) reuse the existing promise.
    */
   async #retainSourceMapsForEnhancedTrace(
-      parsedTrace: Trace.TraceModel.ParsedTrace, metadata: Trace.Types.File.MetaData): Promise<void> {
+      parsedTrace: Trace.TraceModel.ParsedTrace, metadata: Trace.Types.File.MetaData,
+      sourceMapPromisesByUrl: Map<Platform.DevToolsPath.UrlString, Promise<SDK.SourceMap.SourceMapV3|null>>):
+      Promise<void> {
+    const debuggerModelForFrameId = this.#getDebuggerModelForFrameId();
     const handleScript = async(script: Trace.Handlers.ModelHandlers.Scripts.Script): Promise<void> => {
       if (script.sourceMapUrlElided) {
         if (metadata.sourceMaps?.find(m => m.url === script.url)) {
@@ -2689,7 +2708,21 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
         return;
       }
 
-      if (metadata.sourceMaps?.find(m => m.sourceMapUrl === script.sourceMapUrl)) {
+      // Skip scripts without a network or document URL (e.g. dynamically evaluated
+      // scripts), as their source maps cannot be stored in metadata.sourceMaps.
+      if (!script.url) {
+        return;
+      }
+
+      // Resolve relative sourceMapUrl values (for scripts skipped by ScriptsHandler)
+      // against the script URL before deduplicating or loading.
+      const sourceMapUrl =
+          Common.ParsedURL.ParsedURL.completeURL(script.url as Platform.DevToolsPath.UrlString, script.sourceMapUrl);
+      if (!sourceMapUrl) {
+        return;
+      }
+
+      if (metadata.sourceMaps?.find(m => m.sourceMapUrl === sourceMapUrl)) {
         return;
       }
 
@@ -2697,19 +2730,26 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
       // which means the raw source map is present (assuming `script.sourceMap` is too).
       let rawSourceMap = script.sourceMap?.json();
 
-      // If the raw map is not present for some reason, fetch it again.
-      if (!rawSourceMap && !script.sourceMapUrlElided) {
-        const initiator = {
-          target: null,
-          frameId: script.frame as Protocol.Page.FrameId,
-          initiatorUrl: script.url as Platform.DevToolsPath.UrlString,
-        };
-        rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(
-            this.#resourceLoader, script.sourceMapUrl as Platform.DevToolsPath.UrlString, initiator);
+      // If the raw map is not present, reuse an existing fetch from #createSourceMapResolver
+      // or start a new one using the frame's target (or primaryPageTarget fallback) so CSP is enforced.
+      if (!rawSourceMap) {
+        let payloadPromise = sourceMapPromisesByUrl.get(sourceMapUrl);
+        if (!payloadPromise) {
+          // Resolve the frame's target or fall back to primaryPageTarget so CSP is enforced.
+          const target = debuggerModelForFrameId.get(script.frame)?.target() ?? this.#targetManager.primaryPageTarget();
+          const initiator: SDK.PageResourceLoader.PageResourceLoadInitiator = {
+            target,
+            frameId: script.frame as Protocol.Page.FrameId,
+            initiatorUrl: script.url as Platform.DevToolsPath.UrlString,
+          };
+          payloadPromise = SDK.SourceMapManager.tryLoadSourceMap(this.#resourceLoader, sourceMapUrl, initiator);
+          sourceMapPromisesByUrl.set(sourceMapUrl, payloadPromise);
+        }
+        rawSourceMap = (await payloadPromise) ?? undefined;
       }
 
-      if (script.url && rawSourceMap) {
-        metadata.sourceMaps?.push({url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap});
+      if (rawSourceMap && !metadata.sourceMaps?.find(m => m.sourceMapUrl === sourceMapUrl)) {
+        metadata.sourceMaps?.push({url: script.url, sourceMapUrl, sourceMap: rawSourceMap});
       }
     };
 
@@ -2729,21 +2769,13 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
     await Promise.race([Promise.allSettled(promises), timeout]);
   }
 
-  #createSourceMapResolver(isFreshRecording: boolean, metadata: Trace.Types.File.MetaData|null):
+  #createSourceMapResolver(isFreshRecording: boolean, metadata: Trace.Types.File.MetaData|null,
+                           sourceMapPromisesByUrl:
+                               Map<Platform.DevToolsPath.UrlString, Promise<SDK.SourceMap.SourceMapV3|null>>):
       Trace.Types.Configuration.ParseOptions['resolveSourceMap'] {
-    const debuggerModelForFrameId = new Map<string, SDK.DebuggerModel.DebuggerModel>();
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-      if (!debuggerModel) {
-        continue;
-      }
-
-      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      const activeFrameIds = (resourceModel?.frames() ?? []).map(frame => frame.id);
-      for (const frameId of activeFrameIds) {
-        debuggerModelForFrameId.set(frameId, debuggerModel);
-      }
-    }
+    const debuggerModelForFrameId = this.#getDebuggerModelForFrameId();
+    const resourceLoader = this.#resourceLoader;
+    const targetManager = this.#targetManager;
 
     async function getExistingSourceMap(frame: string, scriptId: string, scriptUrl: Platform.DevToolsPath.UrlString):
         Promise<SDK.SourceMap.SourceMap|undefined> {
@@ -2811,13 +2843,24 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
       // non-final navigations during the trace will never have their source maps
       // fetched by the debugger model. That's only ever done here.
 
-      const initiator = {
-        target: debuggerModelForFrameId.get(frame)?.target() ?? null,
-        frameId: frame,
-        initiatorUrl: sourceUrl,
-      };
-      const payload = await SDK.SourceMapManager.tryLoadSourceMap(
-          TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
+      // Reuse any in-flight or completed fetch for the same sourceMapUrl across trace
+      // parsing and #retainSourceMapsForEnhancedTrace so duplicate or failed fetches
+      // are not repeated.
+      let payloadPromise = sourceMapPromisesByUrl.get(sourceMapUrl);
+      if (!payloadPromise) {
+        // Fall back to primaryPageTarget for departed frames so the page's CSP is enforced.
+        const target = debuggerModelForFrameId.get(frame)?.target() ?? targetManager.primaryPageTarget();
+        const initiator: SDK.PageResourceLoader.PageResourceLoadInitiator = {
+          target,
+          frameId: frame,
+          // Use scriptUrl (the script's actual network/document URL) rather than sourceUrl
+          // (which can be overridden by an untrusted //# sourceURL= comment).
+          initiatorUrl: scriptUrl,
+        };
+        payloadPromise = SDK.SourceMapManager.tryLoadSourceMap(resourceLoader, sourceMapUrl, initiator);
+        sourceMapPromisesByUrl.set(sourceMapUrl, payloadPromise);
+      }
+      const payload = await payloadPromise;
       return payload ?
           new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload, Common.Console.Console.instance()) :
           null;
@@ -2873,10 +2916,13 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
+    // Share in-flight and completed source map fetch promises between trace parsing
+    // and enhanced-trace retention so duplicate URLs and failed loads are not retried.
+    const sourceMapPromisesByUrl = new Map<Platform.DevToolsPath.UrlString, Promise<SDK.SourceMap.SourceMapV3|null>>();
     const config: Trace.Types.Configuration.ParseOptions = {
       metadata: metadata ?? undefined,
       isFreshRecording,
-      resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
+      resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata, sourceMapPromisesByUrl),
       isCPUProfile: metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE,
     };
 
@@ -2904,7 +2950,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
       const traceIndex = this.#traceEngineModel.lastTraceIndex();
       const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
       if (parsedTrace) {
-        await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata);
+        await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata, sourceMapPromisesByUrl);
         await this.#retainResourceContentsForEnhancedTrace(parsedTrace, metadata);
       }
     }

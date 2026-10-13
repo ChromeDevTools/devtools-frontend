@@ -66,7 +66,6 @@ import * as Media from '../media/media.js';
 
 import * as ElementsComponents from './components/components.js';
 import {cssPath} from './DOMPath.js';
-import {MappedCharToEntity} from './DOMTreeWidget.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
@@ -2910,6 +2909,29 @@ export const ForbiddenClosingTagElements: Set<string> = new Set<string>([
 /** These tags we do not allow editing their tag name. **/
 export const EditTagBlocklist: Set<string> = new Set<string>(['html', 'head', 'body']);
 
+// clang-format off
+export const MappedCharToEntity: Map<string, string> = new Map<string, string>([
+  ['\xA0', 'nbsp'],
+  ['\xAD', 'shy'],
+  ['\u2002', 'ensp'],
+  ['\u2003', 'emsp'],
+  ['\u2009', 'thinsp'],
+  ['\u200A', 'hairsp'],
+  ['\u200B', 'ZeroWidthSpace'],
+  ['\u200C', 'zwnj'],
+  ['\u200D', 'zwj'],
+  ['\u200E', 'lrm'],
+  ['\u200F', 'rlm'],
+  ['\u202A', '#x202A'],
+  ['\u202B', '#x202B'],
+  ['\u202C', '#x202C'],
+  ['\u202D', '#x202D'],
+  ['\u202E', '#x202E'],
+  ['\u2060', 'NoBreak'],
+  ['\uFEFF', '#xFEFF'],
+]);
+// clang-format on
+
 export function convertUnicodeCharsToHTMLEntities(text: string): {
   text: string,
   entityRanges: TextUtils.TextRange.SourceRange[],
@@ -2917,12 +2939,11 @@ export function convertUnicodeCharsToHTMLEntities(text: string): {
   let result = '';
   let lastIndexAfterEntity = 0;
   const entityRanges = [];
-  const charToEntity = MappedCharToEntity;
   for (let i = 0, size = text.length; i < size; ++i) {
     const char = text.charAt(i);
-    if (charToEntity.has(char)) {
+    if (MappedCharToEntity.has(char)) {
       result += text.substring(lastIndexAfterEntity, i);
-      const entityValue = '&' + charToEntity.get(char) + ';';
+      const entityValue = '&' + MappedCharToEntity.get(char) + ';';
       entityRanges.push(new TextUtils.TextRange.SourceRange(result.length, entityValue.length));
       result += entityValue;
       lastIndexAfterEntity = i + 1;

@@ -292,6 +292,25 @@ function isAncestorOf(ancestor: SDK.DOMModel.DOMNode, descendant: SDK.DOMModel.D
   return false;
 }
 
+/**
+ * Returns the closest sibling of `node` that is part of `visibleChildren`,
+ * preferring following siblings over preceding ones.
+ */
+function findVisibleSibling(node: SDK.DOMModel.DOMNode, visibleChildren: SDK.DOMModel.DOMNode[]): SDK.DOMModel.DOMNode|
+    null {
+  for (let candidate = node.nextSibling; candidate; candidate = candidate.nextSibling) {
+    if (visibleChildren.includes(candidate)) {
+      return candidate;
+    }
+  }
+  for (let candidate = node.previousSibling; candidate; candidate = candidate.previousSibling) {
+    if (visibleChildren.includes(candidate)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
 function computeLeftIndent(depth: number, isExpandable: boolean): number {
   return 12 * (depth - 1) + (isExpandable ? 1 : 12);
 }
@@ -1080,7 +1099,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #currentHighlightedNode: SDK.DOMModel.DOMNode|null = null;
-  #wiredDOMModels = new Set<SDK.DOMModel.DOMModel>();
+  #domModelListeners = new Map<SDK.DOMModel.DOMModel, Common.EventTarget.EventDescriptor[]>();
   #topLayerShortcutsByDocument = new WeakMap<SDK.DOMModel.DOMDocument, SDK.DOMModel.DOMNodeShortcut[]>();
   #topLayerContainerExpandedByDocument = new WeakMap<SDK.DOMModel.DOMDocument, boolean>();
   #topLayerShortcutExpanded = new WeakMap<SDK.DOMModel.DOMNodeShortcut, boolean>();
@@ -1248,14 +1267,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   #onDocumentUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): void {
     const domModel = event.data;
+    this.#resetTreeState();
+    if (domModel.existingDocument()) {
+      this.rootDOMNode = domModel.existingDocument();
+    }
+  }
+
+  /** Forgets selection, expansion and pending changes, e.g. when the document is replaced. */
+  #resetTreeState(): void {
     this.#selectedDOMNode = null;
     this.#selectedClosingTag = false;
     this.#expandedNodes.clear();
     this.#currentHighlightedNode = null;
     this.#updateRecords.clear();
-    if (domModel.existingDocument()) {
-      this.rootDOMNode = domModel.existingDocument();
-    }
   }
 
   #updateModifiedNodesTimeout?: number;
@@ -1270,6 +1294,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#updateModifiedNodesTimeout = window.setTimeout(this.updateModifiedNodes.bind(this), 50);
   }
 
+  #cancelPendingModifiedNodesUpdate(): void {
+    if (this.#updateModifiedNodesTimeout) {
+      clearTimeout(this.#updateModifiedNodesTimeout);
+      this.#updateModifiedNodesTimeout = undefined;
+    }
+  }
+
+  /** Drops changes that have been recorded but not rendered yet, e.g. when the tree is hidden. */
+  #discardPendingUpdates(): void {
+    this.#cancelPendingModifiedNodesUpdate();
+    this.#updateRecords.clear();
+  }
+
   #onNodeInserted(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     const node = event.data;
     if (node.parentNode) {
@@ -1280,21 +1317,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   #findNextNodeOnRemoval(node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
     const visibleChildren = parent ? getVisibleChildren(parent, this.#showComments) : [];
-    if (visibleChildren.length > 0) {
-      let candidate: SDK.DOMModel.DOMNode|null = node.nextSibling;
-      while (candidate) {
-        if (visibleChildren.includes(candidate)) {
-          return candidate;
-        }
-        candidate = candidate.nextSibling;
-      }
-      candidate = node.previousSibling;
-      while (candidate) {
-        if (visibleChildren.includes(candidate)) {
-          return candidate;
-        }
-        candidate = candidate.previousSibling;
-      }
+    const sibling = findVisibleSibling(node, visibleChildren);
+    if (sibling) {
+      return sibling;
     }
     if (parent) {
       if (parent.nodeType() === Node.DOCUMENT_NODE) {
@@ -1318,47 +1343,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#updateModifiedNodesSoon();
   }
 
-  #onAttrModified(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
-    const {node, name} = event.data;
-    this.#addUpdateRecord(node).attributeModified(name);
-    this.#updateModifiedNodesSoon();
-  }
-
-  #onAttrRemoved(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
-    const {node, name} = event.data;
-    this.#addUpdateRecord(node).attributeRemoved(name);
-    this.#updateModifiedNodesSoon();
-  }
-
   #onCharacterDataModified(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     const node = event.data;
     this.#addUpdateRecord(node).charDataModified();
     if (node.parentNode && node.parentNode.firstChild === node.parentNode.lastChild) {
       this.#addUpdateRecord(node.parentNode).childrenModified();
     }
-    this.#updateModifiedNodesSoon();
-  }
-
-  #onChildNodeCountUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
-    const node = event.data;
-    this.#addUpdateRecord(node).childrenModified();
-    this.#updateModifiedNodesSoon();
-  }
-
-  #onAdoptedStyleSheetsModified(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
-    const node = event.data;
-    this.#addUpdateRecord(node).childrenModified();
-    this.#updateModifiedNodesSoon();
-  }
-
-  #onDistributedNodesChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
-    const node = event.data;
-    this.#addUpdateRecord(node).childrenModified();
-    this.#updateModifiedNodesSoon();
-  }
-
-  #onDocumentURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMDocument>): void {
-    this.#addUpdateRecord(event.data).charDataModified();
     this.#updateModifiedNodesSoon();
   }
 
@@ -1371,53 +1361,57 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   updateModifiedNodes(): void {
-    if (this.#updateModifiedNodesTimeout) {
-      clearTimeout(this.#updateModifiedNodesTimeout);
-      this.#updateModifiedNodesTimeout = undefined;
-    }
+    this.#cancelPendingModifiedNodesUpdate();
     this.#validateSelectedNode();
     this.performUpdate();
   }
 
   #wireDOMModel(domModel: SDK.DOMModel.DOMModel): void {
-    domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this);
-    domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this.#onNodeInserted, this);
-    domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this.#onNodeRemoved, this);
-    domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this.#onAttrModified, this);
-    domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this.#onAttrRemoved, this);
-    domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this.#onCharacterDataModified, this);
-    domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onChildNodeCountUpdated, this);
-    domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onMarkersChanged, this);
-    domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onAdoptedStyleSheetsModified, this);
-    domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
-    domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.#onDistributedNodesChanged, this);
-    domModel.addEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.#onDocumentURLChanged, this);
-    domModel.addEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this);
+    const {Events} = SDK.DOMModel;
+    // Records a change for the event's node and schedules a re-render.
+    const recordAndUpdate = (record: (node: SDK.DOMModel.DOMNode) => void) =>
+        (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
+          record(event.data);
+          this.#updateModifiedNodesSoon();
+        };
+    const recordAttributeAndUpdate = (record: (node: SDK.DOMModel.DOMNode, name: string) => void) =>
+        (event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void => {
+          record(event.data.node, event.data.name);
+          this.#updateModifiedNodesSoon();
+        };
+    const listeners: Common.EventTarget.EventDescriptor[] = [
+      domModel.addEventListener(Events.DocumentUpdated, this.#onDocumentUpdated, this),
+      domModel.addEventListener(Events.NodeInserted, this.#onNodeInserted, this),
+      domModel.addEventListener(Events.NodeRemoved, this.#onNodeRemoved, this),
+      domModel.addEventListener(
+          Events.AttrModified,
+          recordAttributeAndUpdate((node, name) => this.#addUpdateRecord(node).attributeModified(name))),
+      domModel.addEventListener(
+          Events.AttrRemoved,
+          recordAttributeAndUpdate((node, name) => this.#addUpdateRecord(node).attributeRemoved(name))),
+      domModel.addEventListener(Events.CharacterDataModified, this.#onCharacterDataModified, this),
+      domModel.addEventListener(Events.ChildNodeCountUpdated,
+                                recordAndUpdate(node => this.#addUpdateRecord(node).childrenModified())),
+      domModel.addEventListener(Events.MarkersChanged, this.#onMarkersChanged, this),
+      domModel.addEventListener(Events.AdoptedStyleSheetsModified,
+                                recordAndUpdate(node => this.#addUpdateRecord(node).childrenModified())),
+      domModel.addEventListener(Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this),
+      domModel.addEventListener(Events.DistributedNodesChanged,
+                                recordAndUpdate(node => this.#addUpdateRecord(node).childrenModified())),
+      domModel.addEventListener(Events.DocumentURLChanged,
+                                recordAndUpdate(node => this.#addUpdateRecord(node).charDataModified())),
+      domModel.addEventListener(Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this),
+    ];
     const cssModel = domModel.target().model(SDK.CSSModel.CSSModel);
     if (cssModel) {
-      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.requestUpdate, this);
+      listeners.push(cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.requestUpdate, this));
     }
+    this.#domModelListeners.set(domModel, listeners);
   }
 
   #unwireDOMModel(domModel: SDK.DOMModel.DOMModel): void {
-    const cssModel = domModel.target().model(SDK.CSSModel.CSSModel);
-    if (cssModel) {
-      cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.requestUpdate, this);
-    }
-    domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this.#onNodeInserted, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this.#onNodeRemoved, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this.#onAttrModified, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this.#onAttrRemoved, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this.#onCharacterDataModified, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onChildNodeCountUpdated, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onMarkersChanged, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onAdoptedStyleSheetsModified,
-                                 this);
-    domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.#onDistributedNodesChanged, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.#onDocumentURLChanged, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this);
+    Common.EventTarget.removeEventListeners(this.#domModelListeners.get(domModel) ?? []);
+    this.#domModelListeners.delete(domModel);
   }
 
   #onShowHTMLCommentsChange(): void {
@@ -1466,18 +1460,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         const ancestor = ancestors[i];
         const child = ancestors[i + 1] || node;
         this.#expandedNodes.add(ancestor);
-        const visibleChildren = getVisibleChildren(ancestor, this.#showComments);
-        const childIndex = visibleChildren.indexOf(child);
-        if (childIndex !== -1 && childIndex >= this.expandedChildrenLimit(ancestor)) {
-          this.setExpandedChildrenLimit(ancestor, childIndex + 1);
-        }
+        this.#ensureChildVisible(ancestor, child);
         if (!ancestor.children() && ancestor.childNodeCount()) {
           void ancestor.getChildNodes(() => {
-            const visibleChildren = getVisibleChildren(ancestor, this.#showComments);
-            const childIndex = visibleChildren.indexOf(child);
-            if (childIndex !== -1 && childIndex >= this.expandedChildrenLimit(ancestor)) {
-              this.setExpandedChildrenLimit(ancestor, childIndex + 1);
-            }
+            this.#ensureChildVisible(ancestor, child);
             this.performUpdate();
           });
         }
@@ -1492,14 +1478,26 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#selectedClosingTag = selectClosingTag;
     this.#clearHighlightedNode();
     if (!isSameNode) {
-      this.onSelectedNodeChanged(
-          {data: {node, focus: Boolean(focus)}} as
-          Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>);
+      this.#notifySelectedNodeChanged(node, Boolean(focus));
     }
     this.performUpdate();
     if (focus) {
       this.focus();
     }
+  }
+
+  /** Raises the children limit of `ancestor` if `child` is paginated away. */
+  #ensureChildVisible(ancestor: SDK.DOMModel.DOMNode, child: SDK.DOMModel.DOMNode): void {
+    const childIndex = getVisibleChildren(ancestor, this.#showComments).indexOf(child);
+    if (childIndex !== -1 && childIndex >= this.expandedChildrenLimit(ancestor)) {
+      this.setExpandedChildrenLimit(ancestor, childIndex + 1);
+    }
+  }
+
+  #notifySelectedNodeChanged(node: SDK.DOMModel.DOMNode|null, focus: boolean): void {
+    this.onSelectedNodeChanged(
+        {data: {node, focus}} as
+        Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>);
   }
 
   highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
@@ -1699,29 +1697,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       if (parent.children() !== null || parent.childNodeCount() === 0 || parent.isIframe()) {
         const visibleChildren = getVisibleChildren(parent, this.#showComments);
         if (!visibleChildren.includes(current)) {
-          let sibling: SDK.DOMModel.DOMNode|null = null;
-          let candidate: SDK.DOMModel.DOMNode|null = current.nextSibling;
-          while (candidate) {
-            if (visibleChildren.includes(candidate)) {
-              sibling = candidate;
-              break;
-            }
-            candidate = candidate.nextSibling;
-          }
-          if (!sibling) {
-            candidate = current.previousSibling;
-            while (candidate) {
-              if (visibleChildren.includes(candidate)) {
-                sibling = candidate;
-                break;
-              }
-              candidate = candidate.previousSibling;
-            }
-          }
-          if (sibling) {
-            return this.#findValidSelectedNode(sibling);
-          }
-          return this.#findValidSelectedNode(parent);
+          const sibling = findVisibleSibling(current, visibleChildren);
+          return this.#findValidSelectedNode(sibling ?? parent);
         }
       }
       fallback = parent;
@@ -1750,19 +1727,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       this.#selectedDOMNode = validNode;
       this.#selectedClosingTag = false;
       this.#clearHighlightedNode();
-      this.onSelectedNodeChanged(
-          {data: {node: validNode, focus: false}} as
-          Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>);
+      this.#notifySelectedNodeChanged(validNode, false);
     } else if (this.#selectedClosingTag && !this.#hasClosingTag(this.#selectedDOMNode)) {
       this.#selectedClosingTag = false;
     }
   }
 
   override performUpdate(): void {
-    if (this.#updateModifiedNodesTimeout) {
-      clearTimeout(this.#updateModifiedNodesTimeout);
-      this.#updateModifiedNodesTimeout = undefined;
-    }
+    this.#cancelPendingModifiedNodesUpdate();
     this.#validateSelectedNode();
     const updatedNodes = [...this.#updateRecords.keys()];
     this.#view({
@@ -1942,40 +1914,44 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   modelAdded(domModel: SDK.DOMModel.DOMModel): void {
-    if (!this.#wiredDOMModels.has(domModel)) {
-      this.#wiredDOMModels.add(domModel);
+    if (!this.#domModelListeners.has(domModel)) {
       this.#wireDOMModel(domModel);
     }
-    if (this.isShowing() && !domModel.parentModel() &&
-        (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel)) {
-      if (domModel.existingDocument()) {
-        this.rootDOMNode = domModel.existingDocument();
-        this.onDocumentUpdated(domModel);
-      } else {
-        void domModel.requestDocument().then(document => {
-          if (document && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
-            this.rootDOMNode = document;
-            this.onDocumentUpdated(domModel);
-          }
-        });
-      }
+    if (this.isShowing() && !domModel.parentModel()) {
+      this.#adoptDocument(domModel);
     }
     this.performUpdate();
   }
 
   modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
-    if (this.#wiredDOMModels.has(domModel)) {
-      this.#wiredDOMModels.delete(domModel);
-      this.#unwireDOMModel(domModel);
-    }
+    this.#unwireDOMModel(domModel);
     if (this.#rootDOMNode?.domModel() === domModel) {
       this.#rootDOMNode = null;
-      this.#selectedDOMNode = null;
-      this.#selectedClosingTag = false;
-      this.#expandedNodes.clear();
-      this.#updateRecords.clear();
+      this.#resetTreeState();
     }
     this.performUpdate();
+  }
+
+  /**
+   * Makes the document of `domModel` the root of the tree, requesting it
+   * first if it has not been fetched yet.
+   */
+  #adoptDocument(domModel: SDK.DOMModel.DOMModel): void {
+    if (this.rootDOMNode?.domModel() === domModel) {
+      return;
+    }
+    const existingDocument = domModel.existingDocument();
+    if (existingDocument) {
+      this.rootDOMNode = existingDocument;
+      this.onDocumentUpdated(domModel);
+      return;
+    }
+    void domModel.requestDocument().then(document => {
+      if (document && this.isShowing() && this.#domModelListeners.has(domModel)) {
+        this.rootDOMNode = document;
+        this.onDocumentUpdated(domModel);
+      }
+    });
   }
 
   expand(): void {
@@ -1996,9 +1972,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#selectedDOMNode = node;
     this.#selectedClosingTag = false;
     this.#clearHighlightedNode();
-    this.onSelectedNodeChanged(
-        {data: {node, focus: false}} as
-        Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>);
+    this.#notifySelectedNodeChanged(node, false);
     this.performUpdate();
   }
 
@@ -2098,11 +2072,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#unregisterGlobalListeners();
     this.#imagePreviewPopover?.hide();
     this.#issuePopoverHelper?.hidePopover();
-    if (this.#updateModifiedNodesTimeout) {
-      clearTimeout(this.#updateModifiedNodesTimeout);
-      this.#updateModifiedNodesTimeout = undefined;
-    }
-    this.#updateRecords.clear();
+    this.#discardPendingUpdates();
     if (this.#multilineEditing) {
       this.#multilineEditing.cancel();
     }
@@ -2493,28 +2463,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
 
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
-      const wasExpanded = this.isNodeExpanded(node);
       if (event.key === 'ArrowUp' && node.previousSibling) {
-        node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
-          if (!error && newNode) {
-            const changeTracker = this.changeTracker;
-            Elements.DOMChanges.trackNodeMove(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
-                                              /* directionUp= */ true);
-          }
-          this.selectNodeAfterEdit(wasExpanded, error, newNode);
-        });
+        this.#moveNodeAmongSiblings(node, node.previousSibling, /* directionUp= */ true);
         event.consume(true);
         return true;
       }
       if (event.key === 'ArrowDown' && node.nextSibling) {
-        node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
-          if (!error && newNode) {
-            const changeTracker = this.changeTracker;
-            Elements.DOMChanges.trackNodeMove(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
-                                              /* directionUp= */ false);
-          }
-          this.selectNodeAfterEdit(wasExpanded, error, newNode);
-        });
+        this.#moveNodeAmongSiblings(node, node.nextSibling.nextSibling, /* directionUp= */ false);
         event.consume(true);
         return true;
       }
@@ -2545,6 +2500,23 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
 
     return false;
+  }
+
+  /** Moves `node` within its parent so that it ends up right before `anchor` (or last, if `anchor` is null). */
+  #moveNodeAmongSiblings(node: SDK.DOMModel.DOMNode, anchor: SDK.DOMModel.DOMNode|null, directionUp: boolean): void {
+    const parentNode = node.parentNode;
+    if (!parentNode) {
+      return;
+    }
+    const wasExpanded = this.isNodeExpanded(node);
+    node.moveTo(parentNode, anchor, (error, newNode) => {
+      if (!error && newNode) {
+        const changeTracker = this.changeTracker;
+        Elements.DOMChanges.trackNodeMove(changeTracker, newNode, buildChangeSelector(changeTracker, newNode),
+                                          directionUp);
+      }
+      this.selectNodeAfterEdit(wasExpanded, error, newNode);
+    });
   }
 
   #clipboardData: ClipboardData|null = null;
@@ -2761,20 +2733,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   override wasHidden(): void {
     super.wasHidden();
-    if (this.#updateModifiedNodesTimeout) {
-      clearTimeout(this.#updateModifiedNodesTimeout);
-      this.#updateModifiedNodesTimeout = undefined;
-    }
-    this.#updateRecords.clear();
+    this.#discardPendingUpdates();
   }
 
   override detach(overrideHideOnDetach?: boolean): void {
     super.detach(overrideHideOnDetach);
-    if (this.#updateModifiedNodesTimeout) {
-      clearTimeout(this.#updateModifiedNodesTimeout);
-      this.#updateModifiedNodesTimeout = undefined;
-    }
-    this.#updateRecords.clear();
+    this.#discardPendingUpdates();
   }
 
   hideImagePreview(): void {
@@ -2797,49 +2761,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     // different (e.g. OOPIF) DOM model than the scoped main one.
     const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
     for (const domModel of domModels) {
-      if (domModel.parentModel() || !this.#wiredDOMModels.has(domModel)) {
-        continue;
-      }
-      if (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel) {
-        if (domModel.existingDocument()) {
-          this.rootDOMNode = domModel.existingDocument();
-          this.onDocumentUpdated(domModel);
-        } else {
-          void domModel.requestDocument().then(document => {
-            if (document && this.isShowing() && this.#wiredDOMModels.has(domModel)) {
-              this.rootDOMNode = document;
-              this.onDocumentUpdated(domModel);
-            }
-          });
-        }
+      if (!domModel.parentModel() && this.#domModelListeners.has(domModel)) {
+        this.#adoptDocument(domModel);
       }
     }
     super.show(parentElement, insertBefore, suppressOrphanWidgetError);
   }
 }
-
-// clang-format off
-export const MappedCharToEntity: Map<string, string> = new Map<string, string>([
-  ['\xA0', 'nbsp'],
-  ['\xAD', 'shy'],
-  ['\u2002', 'ensp'],
-  ['\u2003', 'emsp'],
-  ['\u2009', 'thinsp'],
-  ['\u200A', 'hairsp'],
-  ['\u200B', 'ZeroWidthSpace'],
-  ['\u200C', 'zwnj'],
-  ['\u200D', 'zwj'],
-  ['\u200E', 'lrm'],
-  ['\u200F', 'rlm'],
-  ['\u202A', '#x202A'],
-  ['\u202B', '#x202B'],
-  ['\u202C', '#x202C'],
-  ['\u202D', '#x202D'],
-  ['\u202E', '#x202E'],
-  ['\u2060', 'NoBreak'],
-  ['\uFEFF', '#xFEFF'],
-]);
-// clang-format on
 
 export interface MultilineEditorController {
   cancel: () => void;

@@ -314,6 +314,10 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
+  get longClickable(): boolean {
+    return Boolean(this.#props.longClickable);
+  }
+
   set longClickable(longClickable: boolean) {
     this.#props.longClickable = longClickable;
     this.#render();
@@ -360,7 +364,11 @@ export class Button extends HTMLElement {
 
   #render(): void {
     const nodes = this.#slotRef.value?.assignedNodes();
-    const isEmpty = !Boolean(nodes?.length);
+    const isEmpty =
+        nodes?.every(
+            node => node instanceof Button || (node.nodeType === Node.TEXT_NODE && !node.textContent?.trim()),
+            ) ??
+        true;
     if (!this.#props.variant) {
       throw new Error('Button requires a variant to be defined');
     }

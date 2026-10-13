@@ -1879,6 +1879,7 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
 
   let setEnabled: (enabled: boolean) => void;
   let toggled: () => void;
+  let longClickController: LongClickController|null = null;
   function actionEnabledChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
     setEnabled(event.data);
   }
@@ -1887,6 +1888,8 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
     if (!e || !(e instanceof Buttons.Button.Button)) {
       action.removeEventListener(ActionRegistration.Events.ENABLED, actionEnabledChanged);
       action.removeEventListener(ActionRegistration.Events.TOGGLED, toggled);
+      longClickController?.dispose();
+      longClickController = null;
       return;
     }
 
@@ -1902,13 +1905,115 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
     const jslogContext = action.id();
     const toggledIconName = action.toggledIcon() ?? iconName;
     const toggleType = action.toggleWithRedColor() ? Buttons.Button.ToggleType.RED : Buttons.Button.ToggleType.PRIMARY;
-    if (e.childNodes.length) {
+    const hasContentChildren = Array.from(e.childNodes)
+                                   .some(node => !(node instanceof Buttons.Button.Button) &&
+                                             (node.nodeType !== Node.TEXT_NODE || Boolean(node.textContent?.trim())));
+
+    const updateLongClickOptions = (): void => {
+      const optionButtons = Array.from(e.querySelectorAll('devtools-button'));
+      if (optionButtons.length > 0 && (!toggleable || action.toggled())) {
+        if (!longClickController) {
+          longClickController = new LongClickController(e, showOptions);
+          e.longClickable = true;
+        }
+      } else if (longClickController) {
+        longClickController.dispose();
+        longClickController = null;
+        e.longClickable = false;
+      }
+    };
+
+    function showOptions(): void {
+      if (!(e instanceof Buttons.Button.Button)) {
+        return;
+      }
+      let buttons = [...e.querySelectorAll('devtools-button'), e];
+
+      const document = e.ownerDocument;
+      document.documentElement.addEventListener('mouseup', mouseUp, false);
+
+      const optionsGlassPane = new GlassPane();
+      optionsGlassPane.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
+      optionsGlassPane.show(document);
+      const optionsBar = optionsGlassPane.contentElement.createChild('devtools-toolbar');
+      optionsBar.floating = true;
+      const buttonHeight = 26;
+
+      const hostButtonPosition = e.boxInWindow().relativeToElement(GlassPane.container(document));
+      const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document.documentElement.offsetHeight;
+
+      if (topNotBottom) {
+        buttons = buttons.reverse();
+      }
+
+      optionsBar.style.height = (buttonHeight * buttons.length) + 'px';
+      if (topNotBottom) {
+        optionsBar.style.top = (hostButtonPosition.y - 5) + 'px';
+      } else {
+        optionsBar.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
+      }
+      optionsBar.style.left = (hostButtonPosition.x - 5) + 'px';
+
+      const buttonClones: Buttons.Button.Button[] = [];
+      for (const button of buttons) {
+        const clone = button.cloneNode(false) as Buttons.Button.Button;
+        clone.longClickable = false;
+        clone.classList.add('toolbar-button');
+        clone.addEventListener('mousemove', mouseOver, false);
+        clone.addEventListener('mouseout', mouseOut, false);
+        optionsBar.appendChild(clone);
+        buttonClones.push(clone);
+      }
+      const hostButtonIndex = topNotBottom ? 0 : buttons.length - 1;
+      buttonClones[hostButtonIndex].classList.add('emulate-active');
+
+      function mouseOver(ev: Event): void {
+        if ((ev as MouseEvent).which !== 1) {
+          return;
+        }
+        if (ev.target instanceof HTMLElement) {
+          const buttonElement = ev.target.enclosingNodeOrSelfWithClass('toolbar-button');
+          buttonElement?.classList.add('emulate-active');
+        }
+      }
+
+      function mouseOut(ev: Event): void {
+        if ((ev as MouseEvent).which !== 1) {
+          return;
+        }
+        if (ev.target instanceof HTMLElement) {
+          const buttonElement = ev.target.enclosingNodeOrSelfWithClass('toolbar-button');
+          buttonElement?.classList.remove('emulate-active');
+        }
+      }
+
+      function mouseUp(ev: Event): void {
+        if ((ev as MouseEvent).which !== 1) {
+          return;
+        }
+        optionsGlassPane.hide();
+        document.documentElement.removeEventListener('mouseup', mouseUp, false);
+
+        for (let i = 0; i < buttonClones.length; ++i) {
+          if (buttonClones[i].classList.contains('emulate-active')) {
+            buttonClones[i].classList.remove('emulate-active');
+            buttons[i].click();
+            break;
+          }
+        }
+      }
+    }
+
+    if (hasContentChildren) {
       e.jslogContext = jslogContext;
+      updateLongClickOptions();
     } else if (toggleable) {
       toggled = () => {
         e.toggled = action.toggled();
+        updateLongClickOptions();
         if (action.title()) {
-          e.title = action.title();
+          ARIAUtils.setLabel(e, action.title());
+          e.accessibleLabel = action.title();
           Tooltip.installWithActionBinding(e, action.title(), action.id());
         }
       };
@@ -1916,17 +2021,28 @@ export function bindToAction(actionName: string): ReturnType<typeof Directives.r
       e.data = {
         jslogContext,
         title,
+        accessibleLabel: title,
         variant: Buttons.Button.Variant.ICON_TOGGLE,
         iconName,
         toggledIconName,
         toggleType,
         toggled: action.toggled(),
+        toggleOnClick: false,
       };
       toggled();
     } else if (iconName) {
-      e.data = {iconName, jslogContext, title, variant: Buttons.Button.Variant.ICON};
+      e.data = {iconName, jslogContext, title, accessibleLabel: title, variant: Buttons.Button.Variant.ICON};
+      if (title) {
+        ARIAUtils.setLabel(e, title);
+        Tooltip.installWithActionBinding(e, title, action.id());
+      }
+      updateLongClickOptions();
     } else {
-      e.data = {jslogContext, title, variant: Buttons.Button.Variant.TEXT};
+      e.data = {jslogContext, title, accessibleLabel: title, variant: Buttons.Button.Variant.TEXT};
+      if (title) {
+        ARIAUtils.setLabel(e, title);
+      }
+      updateLongClickOptions();
     }
     setEnabled(action.enabled());
     e.onclick = () => action.execute();

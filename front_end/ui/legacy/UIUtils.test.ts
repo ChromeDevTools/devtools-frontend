@@ -11,8 +11,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
-import type * as Buttons from '../components/buttons/buttons.js';
+import * as Buttons from '../components/buttons/buttons.js';
 import * as Lit from '../lit/lit.js';
 
 import * as UI from './legacy.js';
@@ -118,9 +119,14 @@ describe('UIUtils', () => {
   });
 
   describe('bindToAction', () => {
-    const actionId = 'mock.action.bind.to.action';
+    setupLocaleHooks();
+    setupSettingsHooks();
 
-    before(() => {
+    const actionId = 'mock.action.bind.to.action';
+    const toggleActionId = 'mock.toggle.action.bind.to.action';
+
+    beforeEach(() => {
+      UI.GlassPane.GlassPane.setContainer(document.body);
       const mockHandleAction = sinon.stub();
       UI.ActionRegistration.registerActionExtension({
         actionId,
@@ -128,6 +134,23 @@ describe('UIUtils', () => {
         title: i18n.i18n.lockedLazyString('Mock action for bindToAction'),
         loadActionDelegate: async () => ({handleAction: mockHandleAction}),
       });
+      UI.ActionRegistration.registerActionExtension({
+        actionId: toggleActionId,
+        category: UI.ActionRegistration.ActionCategory.GLOBAL,
+        title: i18n.i18n.lockedLazyString('Mock toggle action for bindToAction'),
+        iconClass: UI.ActionRegistration.IconClass.LARGEICON_PAUSE,
+        toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_RESUME,
+        toggleable: true,
+        loadActionDelegate: async () => ({handleAction: mockHandleAction}),
+      });
+      const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+      UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
+    });
+
+    afterEach(() => {
+      UI.ActionRegistration.reset();
+      UI.ActionRegistry.ActionRegistry.reset();
+      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
     });
 
     function setup() {
@@ -148,6 +171,7 @@ describe('UIUtils', () => {
       const {button, action} = setup();
       const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
       assert.strictEqual(innerButton.title, action.title());
+      assert.strictEqual(button.getAttribute('aria-label'), action.title());
       assert.strictEqual(button.disabled, !action.enabled());
     });
 
@@ -169,6 +193,62 @@ describe('UIUtils', () => {
 
       assert.isFalse(button.isConnected);
       sinon.assert.calledWith(spy, UI.ActionRegistration.Events.ENABLED);
+    });
+
+    it('supports child devtools-buttons as long-press options when toggled', () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      try {
+        const {bindToAction} = UI.UIUtils;
+        const container = document.createElement('div');
+        renderElementIntoDOM(container);
+        const buttonRef = Lit.Directives.createRef<Buttons.Button.Button>();
+        const onOptionClick = sinon.spy();
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(toggleActionId);
+        action.setToggled(false);
+
+        // clang-format off
+        Lit.render(html`
+          <devtools-button ${Lit.Directives.ref(buttonRef)} ${bindToAction(toggleActionId)}>
+            <devtools-button title="Alternative option"
+                             .iconName=${'stop'}
+                             .variant=${Buttons.Button.Variant.TOOLBAR}
+                             @click=${onOptionClick}></devtools-button>
+          </devtools-button>`, container);
+        // clang-format on
+
+        const button = buttonRef.value;
+        assert.exists(button);
+        assert.isFalse(button.longClickable);
+
+        action.setToggled(true);
+        assert.isTrue(button.longClickable);
+
+        button.dispatchEvent(new PointerEvent('pointerdown', {button: 0}));
+        clock.runAll();
+
+        const floatingToolbar = Array.from(document.body.children)
+                                    .map(el => el.shadowRoot?.querySelector('devtools-toolbar[floating]'))
+                                    .find(Boolean);
+        assert.exists(floatingToolbar);
+        const optionClones = floatingToolbar.querySelectorAll('devtools-button');
+        assert.lengthOf(optionClones, 2);
+
+        const altClone = Array.from(optionClones).find(b => b.title === 'Alternative option');
+        assert.exists(altClone);
+        for (const clone of optionClones) {
+          clone.classList.remove('emulate-active');
+        }
+        altClone.dispatchEvent(new MouseEvent('mousemove', {bubbles: true, which: 1} as MouseEventInit));
+        assert.isTrue(altClone.classList.contains('emulate-active'));
+
+        document.documentElement.dispatchEvent(new MouseEvent('mouseup', {bubbles: true, which: 1} as MouseEventInit));
+        sinon.assert.calledOnce(onOptionClick);
+
+        action.setToggled(false);
+        assert.isFalse(button.longClickable);
+      } finally {
+        clock.restore();
+      }
     });
   });
 

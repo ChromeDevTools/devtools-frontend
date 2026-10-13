@@ -60,7 +60,7 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
     this.registerRequiredCSS(miniMapStyles);
     this.element.classList.add('timeline-minimap', 'no-trace-active');
     this.#breadcrumbsUI = new TimelineComponents.BreadcrumbsUI.BreadcrumbsUI();
-    this.element.prepend(this.#breadcrumbsUI);
+    this.#breadcrumbsUI.show(this.element);
 
     this.#overviewComponent.show(this.element);
 
@@ -82,12 +82,10 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
       this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE);
     });
 
-    this.#breadcrumbsUI.addEventListener(TimelineComponents.BreadcrumbsUI.BreadcrumbActivatedEvent.eventName, event => {
-      const {breadcrumb, childBreadcrumbsRemoved} =
-          (event as TimelineComponents.BreadcrumbsUI.BreadcrumbActivatedEvent);
-      this.#activateBreadcrumb(
-          breadcrumb, {removeChildBreadcrumbs: Boolean(childBreadcrumbsRemoved), updateVisibleWindow: true});
-    });
+    this.#breadcrumbsUI.onBreadcrumbActivated = (breadcrumb, childBreadcrumbsRemoved) => {
+      this.#activateBreadcrumb(breadcrumb,
+                               {removeChildBreadcrumbs: childBreadcrumbsRemoved, updateVisibleWindow: true});
+    };
     this.#overviewComponent.enableCreateBreadcrumbsButton();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
@@ -211,10 +209,8 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
 
     const addedBreadcrumb = this.breadcrumbs.add(newVisibleTraceWindow);
 
-    this.#breadcrumbsUI.data = {
-      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
-      activeBreadcrumb: addedBreadcrumb,
-    };
+    this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+    this.#breadcrumbsUI.activeBreadcrumb = addedBreadcrumb;
   }
 
   highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicro, withBracket = false): void {
@@ -238,10 +234,8 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
 
     this.breadcrumbs.setActiveBreadcrumb(breadcrumb, options);
     // Only the initial breadcrumb is passed in because breadcrumbs are stored in a linked list and breadcrumbsUI component iterates through them
-    this.#breadcrumbsUI.data = {
-      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
-      activeBreadcrumb: breadcrumb,
-    };
+    this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+    this.#breadcrumbsUI.activeBreadcrumb = breadcrumb;
   }
 
   reset(): void {
@@ -323,9 +317,7 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
       lastBreadcrumb = lastBreadcrumb.child;
     }
 
-    this.#breadcrumbsUI.data = {
-      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
-      activeBreadcrumb: lastBreadcrumb,
-    };
+    this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+    this.#breadcrumbsUI.activeBreadcrumb = lastBreadcrumb;
   }
 }

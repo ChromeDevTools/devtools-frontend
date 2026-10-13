@@ -4,7 +4,6 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -28,20 +27,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/BreadcrumbsUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * `initialBreadcrumb` is the first breadcrumb in the breadcrumbs linked list. Since
- * breadcrumbs are a linked list, the first breadcrumb is enough to be able to iterate through all of them.
- *
- * `activeBreadcrumb` is the currently active breadcrumb that the timeline is limited to.
- **/
-export interface BreadcrumbsUIData {
-  initialBreadcrumb: Trace.Types.File.Breadcrumb;
-  activeBreadcrumb: Trace.Types.File.Breadcrumb;
-}
-
 export interface ViewInput {
   initialBreadcrumb: Trace.Types.File.Breadcrumb|null;
   activeBreadcrumb: Trace.Types.File.Breadcrumb|null;
+  showBreadcrumbs: boolean;
   onBreadcrumbClick: (breadcrumb: Trace.Types.File.Breadcrumb) => void;
   onBreadcrumbContextMenu: (event: Event, breadcrumb: Trace.Types.File.Breadcrumb) => void;
 }
@@ -52,54 +41,71 @@ export interface ViewOutput {
 
 type View = typeof DEFAULT_VIEW;
 
-export class BreadcrumbActivatedEvent extends Event {
-  static readonly eventName = 'breadcrumbactivated';
-
-  constructor(public breadcrumb: Trace.Types.File.Breadcrumb, public childBreadcrumbsRemoved?: boolean) {
-    super(BreadcrumbActivatedEvent.eventName);
-  }
-}
-
-export class BreadcrumbsUI extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #view: View = DEFAULT_VIEW;
+export class BreadcrumbsUI extends UI.Widget.Widget {
+  readonly #view: View;
   readonly #viewOutput: ViewOutput = {};
   #initialBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
   #activeBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
+  #showBreadcrumbs = false;
 
-  set data(data: BreadcrumbsUIData) {
-    this.#initialBreadcrumb = data.initialBreadcrumb;
-    this.#activeBreadcrumb = data.activeBreadcrumb;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.performUpdate);
+  onBreadcrumbActivated?: (breadcrumb: Trace.Types.File.Breadcrumb, childBreadcrumbsRemoved: boolean) => void;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  set initialBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb|null) {
+    this.#initialBreadcrumb = breadcrumb;
+    this.requestUpdate();
+  }
+
+  set activeBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb|null) {
+    this.#activeBreadcrumb = breadcrumb;
+    this.requestUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   #activateBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb): void {
     this.#activeBreadcrumb = breadcrumb;
-    this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb));
+    this.onBreadcrumbActivated?.(breadcrumb, false);
   }
 
   #onContextMenu(event: Event, breadcrumb: Trace.Types.File.Breadcrumb): void {
     const menu = new UI.ContextMenu.ContextMenu(event);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.activateBreadcrumb), () => {
-      this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb));
+      this.onBreadcrumbActivated?.(breadcrumb, false);
     });
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeChildBreadcrumbs), () => {
-      this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb, true));
+      this.onBreadcrumbActivated?.(breadcrumb, true);
     });
 
     void menu.show();
   }
 
-  performUpdate(): void {
+  override performUpdate(): void {
+    if (this.#initialBreadcrumb === null) {
+      // The container is removed, so it starts hidden again next time.
+      this.#showBreadcrumbs = false;
+    } else if (this.#initialBreadcrumb.child) {
+      // Display Breadcrumbs after at least one was created. Once shown, they
+      // stay shown even if the user goes back to a single breadcrumb.
+      this.#showBreadcrumbs = true;
+    }
     const input: ViewInput = {
       initialBreadcrumb: this.#initialBreadcrumb,
       activeBreadcrumb: this.#activeBreadcrumb,
+      showBreadcrumbs: this.#showBreadcrumbs,
       onBreadcrumbClick: breadcrumb => this.#activateBreadcrumb(breadcrumb),
       onBreadcrumbContextMenu: (event, breadcrumb) => this.#onContextMenu(event, breadcrumb),
     };
-    this.#view(input, this.#viewOutput, this.#shadow);
+    this.#view(input, this.#viewOutput, this.contentElement);
     if (this.#initialBreadcrumb?.child) {
       // If we have >1 crumbs ensure the last one is visible by scrolling the container.
       this.#viewOutput.scrollToEnd?.();
@@ -125,49 +131,40 @@ function scrollLastCrumbIntoView(container: HTMLElement): void {
   });
 }
 
-// `target` also accepts a DocumentFragment while BreadcrumbsUI still renders into its shadow root.
-export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment): void => {
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const renderElement = (breadcrumb: Trace.Types.File.Breadcrumb, index: number): Lit.LitTemplate => {
     const breadcrumbRange = Trace.Helpers.Timing.microToMilli(breadcrumb.window.range);
     // clang-format off
-        return html`
-          <div class="breadcrumb" @contextmenu=${(event: Event) => input.onBreadcrumbContextMenu(event, breadcrumb)} @click=${() => input.onBreadcrumbClick(breadcrumb)}
-          jslog=${VisualLogging.item('timeline.breadcrumb-select').track({click: true, resize: true})}>
-           <span class="${(breadcrumb === input.activeBreadcrumb) ? 'active-breadcrumb' : ''} range">
-            ${(index === 0) ?
-              `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` :
-              `${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)}`}
-            </span>
-          </div>
-          ${breadcrumb.child !== null ?
-            html`
-            <devtools-icon name="chevron-right" class="medium"></devtools-icon>`
-            : ''}
-      `;
+    return html`
+      <div class="breadcrumb" @contextmenu=${(event: Event) => input.onBreadcrumbContextMenu(event, breadcrumb)} @click=${() => input.onBreadcrumbClick(breadcrumb)}
+      jslog=${VisualLogging.item('timeline.breadcrumb-select').track({ click: true, resize: true })}>
+       <span class="${(breadcrumb === input.activeBreadcrumb) ? 'active-breadcrumb' : ''} range">
+        ${(index === 0) ?
+        `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` :
+        `${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)}`}
+        </span>
+      </div>
+      ${breadcrumb.child !== null ?
+        html`
+        <devtools-icon name="chevron-right" class="medium"></devtools-icon>`
+        : ''}
+    `;
     // clang-format on
   };
 
   // clang-format off
-      render(html`
-        <style>${breadcrumbsUIStyles}</style>
-        ${input.initialBreadcrumb === null ? Lit.nothing : html`<div
-            class=${Lit.Directives.classMap({breadcrumbs: true, visible: Boolean(input.initialBreadcrumb.child)})}
-            jslog=${VisualLogging.section('breadcrumbs')}
-            ${Lit.Directives.ref(el => {
-              if (el instanceof HTMLElement) {
-                output.scrollToEnd = () => scrollLastCrumbIntoView(el);
-              }
-            })}>
-          ${flattenBreadcrumbs(input.initialBreadcrumb).map((breadcrumb, index) => renderElement(breadcrumb, index))}
-        </div>`}
-      `, target);
+  render(html`
+    <style>${breadcrumbsUIStyles}</style>
+    ${input.initialBreadcrumb === null ? Lit.nothing : html`<div
+        class=${Lit.Directives.classMap({ breadcrumbs: true, visible: input.showBreadcrumbs })}
+        jslog=${VisualLogging.section('breadcrumbs')}
+        ${Lit.Directives.ref(el => {
+    if (el instanceof HTMLElement) {
+      output.scrollToEnd = () => scrollLastCrumbIntoView(el);
+    }
+  })}>
+      ${flattenBreadcrumbs(input.initialBreadcrumb).map((breadcrumb, index) => renderElement(breadcrumb, index))}
+    </div>`}
+  `, target);
   // clang-format on
 };
-
-customElements.define('devtools-breadcrumbs-ui', BreadcrumbsUI);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-breadcrumbs-ui': BreadcrumbsUI;
-  }
-}

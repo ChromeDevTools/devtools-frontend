@@ -2594,6 +2594,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
       const initialCSS = '.button { color: blue; }';
 
       const {domTree} = setupDOMTreeWidget(target);
+      domTree.selectEnabled = true;
 
       try {
         const rootNode = createTestDOMTree(domModel, {
@@ -2668,6 +2669,15 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.selectDOMNode(adoptedSheet);
         await waitForTreeUpdates();
         assert.isTrue(domTree.isAdoptedStyleSheetsExpanded(rootNode));
+        assert.isNull(domTree.selectedDOMNode());
+        assert.isTrue(
+            tree.shadowRoot?.querySelector('.elements-tree-adopted-style-sheet')?.classList.contains('selected'));
+
+        // 5. Selecting a DOM node deselects the adopted style sheet
+        domTree.selectDOMNode(rootNode.children()![0]);
+        await waitForTreeUpdates();
+        assert.isFalse(
+            tree.shadowRoot?.querySelector('.elements-tree-adopted-style-sheet')?.classList.contains('selected'));
       } finally {
         domTree.detach();
       }

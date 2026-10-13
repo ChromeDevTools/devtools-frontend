@@ -1153,9 +1153,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
                                                                   SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED,
                                                                   this.#highlightNode, this, {scoped: true});
-      SDK.TargetManager.TargetManager.instance().addModelListener(SDK.OverlayModel.OverlayModel,
-                                                                  SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
-                                                                  this.#clearHighlightedNode, this, {scoped: true});
+      SDK.TargetManager.TargetManager.instance().addModelListener(
+          SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
+          this.#onInspectModeWillBeToggled, this, {scoped: true});
     }
   }
 
@@ -1169,7 +1169,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, this.#highlightNode, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.OverlayModel.OverlayModel,
                                                                    SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
-                                                                   this.#clearHighlightedNode, this);
+                                                                   this.#onInspectModeWillBeToggled, this);
   }
 
   // TODO: Move imagePreviewPopover and issuePopoverHelper to the view once declarative versions exist.
@@ -1417,8 +1417,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     const selectedNode = this.selectedDOMNode();
     if (selectedNode && selectedNode.nodeType() === Node.COMMENT_NODE && !this.#showComments) {
       this.selectDOMNode(selectedNode.parentNode);
+    } else {
+      this.performUpdate();
     }
-    this.performUpdate();
   }
 
   #highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
@@ -1428,9 +1429,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     });
   }
 
+  #onInspectModeWillBeToggled(): void {
+    this.#clearHighlightedNode();
+    this.performUpdate();
+  }
+
+  // Callers render themselves, so that an entry point renders only once.
   #clearHighlightedNode(): void {
     this.#currentHighlightedNode = null;
-    this.performUpdate();
   }
 
   selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean,
@@ -1485,7 +1491,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #ensureChildVisible(ancestor: SDK.DOMModel.DOMNode, child: SDK.DOMModel.DOMNode): void {
     const childIndex = getVisibleChildren(ancestor, this).indexOf(child);
     if (childIndex !== -1 && childIndex >= this.expandedChildrenLimit(ancestor)) {
-      this.setExpandedChildrenLimit(ancestor, childIndex + 1);
+      this.#expandedChildrenLimitByNode.set(ancestor, childIndex + 1);
     }
   }
 
@@ -1496,9 +1502,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void {
-    this.selectDOMNode(node);
     this.#attributeToHighlight = {node, attribute};
-    this.performUpdate();
+    this.selectDOMNode(node);
   }
 
   get wrap(): boolean {
@@ -1580,7 +1585,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       const visibleChildren = getVisibleChildren(n, this);
       if (visibleChildren.length) {
         if (visibleChildren.length > this.expandedChildrenLimit(n)) {
-          this.setExpandedChildrenLimit(n, visibleChildren.length);
+          this.#expandedChildrenLimitByNode.set(n, visibleChildren.length);
         }
         await Promise.all(visibleChildren.map(child => expand(child, depth + 1)));
       }
@@ -1852,7 +1857,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onSelectTopLayerContainer: (_doc: SDK.DOMModel.DOMDocument) => {
         this.#selectedTopLayerShortcut = null;
         this.selectDOMNode(null);
-        this.performUpdate();
       },
       isTopLayerShortcutExpanded: (shortcut: SDK.DOMModel.DOMNodeShortcut) => this.isTopLayerShortcutExpanded(shortcut),
       onToggleTopLayerShortcutExpanded: (shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean) =>
@@ -1867,7 +1871,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             this.selectDOMNode(node, true);
           }
         });
-        this.performUpdate();
       },
       onRevealTopLayerShortcut: (shortcut: SDK.DOMModel.DOMNodeShortcut) => {
         shortcut.deferredNode.resolve(node => {
@@ -1883,17 +1886,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onSelectAdoptedStyleSheets: (_node: SDK.DOMModel.DOMNode) => {
         this.#selectedAdoptedStyleSheet = null;
         this.selectDOMNode(null);
-        this.performUpdate();
       },
       isAdoptedStyleSheetExpanded: (sheet: SDK.DOMModel.AdoptedStyleSheet) => this.isAdoptedStyleSheetExpanded(sheet),
       onToggleAdoptedStyleSheetExpanded: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) =>
           this.setAdoptedStyleSheetExpanded(sheet, expanded),
       selectedAdoptedStyleSheet: this.#selectedAdoptedStyleSheet,
-      onSelectAdoptedStyleSheet: (sheet: SDK.DOMModel.AdoptedStyleSheet) => {
-        this.#selectedAdoptedStyleSheet = sheet;
-        this.selectDOMNode(null);
-        this.performUpdate();
-      },
+      onSelectAdoptedStyleSheet: (sheet: SDK.DOMModel.AdoptedStyleSheet) => this.#selectAdoptedStyleSheet(sheet),
       expandedChildrenLimit: (node: SDK.DOMModel.DOMNode) => this.expandedChildrenLimit(node),
       onExpandAllChildren: (node: SDK.DOMModel.DOMNode) => this.expandAllChildren(node),
       updateRecordForNode: (node: SDK.DOMModel.DOMNode) => this.#updateRecords.get(node) ?? null,
@@ -1983,8 +1981,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#searchMatchQuery = query ?? null;
     if (this.selectedDOMNode() !== node) {
       this.selectDOMNode(node, /* focus= */ false);
+    } else {
+      this.performUpdate();
     }
-    this.performUpdate();
   }
 
   hideMatchHighlights(node: SDK.DOMModel.DOMNode): void {
@@ -2385,9 +2384,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     for (let current: (SDK.DOMModel.DOMNode|null) = parent; current; current = current.parentNode) {
       this.#expandedNodes.add(current);
     }
-    this.setAdoptedStyleSheetsExpanded(parent, true);
-    this.#selectedAdoptedStyleSheet = adoptedStyleSheet;
+    this.#adoptedStyleSheetsExpandedByNode.set(parent, true);
+    this.#selectAdoptedStyleSheet(adoptedStyleSheet);
+  }
+
+  #selectAdoptedStyleSheet(sheet: SDK.DOMModel.AdoptedStyleSheet): void {
+    // Clear the DOM node selection first: selectDOMNode() also resets the
+    // selected adopted style sheet.
     this.selectDOMNode(null);
+    this.#selectedAdoptedStyleSheet = sheet;
     this.performUpdate();
   }
 

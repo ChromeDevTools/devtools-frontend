@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
@@ -44,10 +43,12 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Geometry from '../../ui/geometry/geometry.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -60,6 +61,7 @@ import {type EditorClosedEvent, Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
+const {bindToAction} = UI.UIUtils;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -172,6 +174,165 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const primitiveRemoteObjectTypes = new Set(['number', 'boolean', 'bigint', 'undefined']);
 let sourcesPanelInstance: SourcesPanel;
 
+interface SplitWidgetSetting {
+  vertical?: UI.SplitWidget.SettingForOrientation;
+  horizontal?: UI.SplitWidget.SettingForOrientation;
+}
+
+function isSidebarOpenInSplitSetting(settingName: string, isVertical: boolean): boolean {
+  const state = Common.Settings.Settings.instance().createSetting<SplitWidgetSetting>(settingName, {}).get();
+  const orientationState = isVertical ? state.vertical : state.horizontal;
+  const showMode = orientationState?.showMode ?? (isVertical ? state.horizontal?.showMode : state.vertical?.showMode);
+  return showMode !== UI.SplitWidget.ShowMode.ONLY_MAIN;
+}
+
+function setSidebarOpenInSplitSetting(settingName: string, isVertical: boolean, open: boolean): void {
+  const setting = Common.Settings.Settings.instance().createSetting<SplitWidgetSetting>(settingName, {});
+  const state = setting.get() || {};
+  const showMode = open ? UI.SplitWidget.ShowMode.BOTH : UI.SplitWidget.ShowMode.ONLY_MAIN;
+  const currentOrientationState =
+      (isVertical ? state.vertical : state.horizontal) || {} as UI.SplitWidget.SettingForOrientation;
+  currentOrientationState.showMode = showMode;
+  const otherOrientationState =
+      (isVertical ? state.horizontal : state.vertical) || {} as UI.SplitWidget.SettingForOrientation;
+  otherOrientationState.showMode = showMode;
+  if (isVertical) {
+    state.vertical = currentOrientationState;
+    state.horizontal = otherOrientationState;
+  } else {
+    state.horizontal = currentOrientationState;
+    state.vertical = otherOrientationState;
+  }
+  setting.set(state);
+}
+
+export interface ViewInput {
+  isVertical: boolean;
+  isNavigatorSidebarOpen: boolean;
+  isDebuggerSidebarOpen: boolean;
+  isTraceApp: boolean;
+  navigatorTabbedPane: UI.TabbedPane.TabbedPane;
+  sourcesView: SourcesView|null;
+  debuggerPausedMessage: DebuggerPausedMessage;
+  sidebarPaneStackWidget: UI.Widget.AnyWidget|null;
+  debuggerSidebarTabbedPane: UI.TabbedPane.TabbedPane|null;
+  onNavigatorSplitChange: (event: CustomEvent<string>) => void;
+  onDebuggerSplitChange: (event: CustomEvent<string>) => void;
+  onTerminateExecution: () => void;
+  onLongResume: () => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${sourcesPanelStyles}</style>
+    <devtools-split-view
+        class="widget split-widget ${input.isVertical ? '' : 'sources-split-view-vertical'}"
+        direction=${input.isVertical ? 'column' : 'row'}
+        sidebar-position="second"
+        name="sources-panel-split-view-state"
+        sidebar-initial-size="225"
+        show=${!input.isTraceApp && input.isDebuggerSidebarOpen ? 'both' : 'main'}
+        @change=${input.onDebuggerSplitChange}>
+      <devtools-split-view
+          slot="main"
+          direction="column"
+          sidebar-position="first"
+          name="sources-panel-navigator-split-view-state"
+          sidebar-initial-size="225"
+          show=${input.isNavigatorSidebarOpen ? 'both' : 'main'}
+          @change=${input.onNavigatorSplitChange}>
+        <devtools-widget
+            slot="sidebar"
+            ${widget(UI.Widget.WrapperWidget, {
+              widget: input.isNavigatorSidebarOpen ? input.navigatorTabbedPane : null,
+            })}>
+        </devtools-widget>
+        <devtools-widget
+            slot="main"
+            ${widget(UI.Widget.WrapperWidget, {widget: input.sourcesView})}>
+        </devtools-widget>
+      </devtools-split-view>
+      ${!input.isTraceApp && input.sidebarPaneStackWidget ? (input.isVertical ? html`
+        <devtools-widget
+            slot="sidebar"
+            ${widget(UI.Widget.VBox, {
+              minimumSize: new Geometry.Size(minToolbarWidth, 25),
+            })}>
+          ${renderDebugPaneContent(input)}
+        </devtools-widget>
+      ` : html`
+        <devtools-split-view
+            slot="sidebar"
+            direction="column"
+            sidebar-position="second"
+            name="sources-panel-debugger-sidebar-split-view-state"
+            sidebar-initial-size="0.5">
+          <devtools-widget
+              slot="main"
+              ${widget(UI.Widget.VBox, {
+                minimumSize: new Geometry.Size(minToolbarWidth, 25),
+              })}>
+            ${renderDebugPaneContent(input)}
+          </devtools-widget>
+          ${input.debuggerSidebarTabbedPane ? html`
+            <devtools-widget
+                slot="sidebar"
+                ${widget(UI.Widget.WrapperWidget, {widget: input.debuggerSidebarTabbedPane})}>
+            </devtools-widget>
+          ` : nothing}
+        </devtools-split-view>
+      `) : nothing}
+    </devtools-split-view>
+  `, target);
+  // clang-format on
+};
+
+function renderDebugPaneContent(input: ViewInput): LitTemplate {
+  // clang-format off
+  return html`
+    ${input.isDebuggerSidebarOpen ? html`
+      <devtools-toolbar
+          class="scripts-debug-toolbar"
+          jslog=${VisualLogging.toolbar('debug').track({
+            keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space',
+          })}>
+        <devtools-button ${bindToAction('debugger.toggle-pause')}>
+          <devtools-button
+              .iconName=${'stop'}
+              .variant=${Buttons.Button.Variant.TOOLBAR}
+              .title=${i18nString(UIStrings.terminateCurrentJavascriptCall)}
+              @click=${input.onTerminateExecution}>
+          </devtools-button>
+          <devtools-button
+              .iconName=${'play'}
+              .variant=${Buttons.Button.Variant.TOOLBAR}
+              .title=${i18nString(UIStrings.resumeWithAllPausesBlockedForMs)}
+              @click=${input.onLongResume}>
+          </devtools-button>
+        </devtools-button>
+        <devtools-button ${bindToAction('debugger.step-over')}></devtools-button>
+        <devtools-button ${bindToAction('debugger.step-into')}></devtools-button>
+        <devtools-button ${bindToAction('debugger.step-out')}></devtools-button>
+        <devtools-button ${bindToAction('debugger.step')}></devtools-button>
+        <div class="toolbar-divider"></div>
+        <devtools-button ${bindToAction('debugger.toggle-breakpoints-active')}></devtools-button>
+      </devtools-toolbar>
+    ` : nothing}
+    <devtools-widget
+        class="flex-none"
+        ${widget(UI.Widget.WrapperWidget, {widget: input.debuggerPausedMessage})}>
+    </devtools-widget>
+    <devtools-widget
+        class="flex-auto"
+        ${widget(UI.Widget.WrapperWidget, {widget: input.sidebarPaneStackWidget})}>
+    </devtools-widget>
+  `;
+  // clang-format on
+}
+
 export class SourcesPanel extends UI.Panel.Panel implements
     UI.ContextMenu.Provider<Workspace.UISourceCode.UISourceCode|Workspace.UISourceCode.UILocation|
                             SDK.RemoteObject.RemoteObject|SDK.NetworkRequest.NetworkRequest|UISourceCodeFrame>,
@@ -182,19 +343,19 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private readonly watchSidebarPane: UI.View.View;
   private sidebarPaneStack?: UI.ViewManager.StackLocation;
 
+  readonly #view: View;
   readonly #togglePauseAction: UI.ActionRegistration.Action;
   readonly #stepOverAction: UI.ActionRegistration.Action;
   readonly #stepIntoAction: UI.ActionRegistration.Action;
   readonly #stepOutAction: UI.ActionRegistration.Action;
   readonly #stepAction: UI.ActionRegistration.Action;
   readonly #toggleBreakpointsActiveAction: UI.ActionRegistration.Action;
-  readonly #debugToolbar: UI.Toolbar.Toolbar;
   readonly #debuggerPausedMessage: DebuggerPausedMessage;
   #overlayLoggables?: {debuggerPausedMessage: object, resumeButton: object, stepOverButton: object};
   #isVertical = true;
+  #isNavigatorSidebarOpen: boolean;
+  #isDebuggerSidebarOpen: boolean;
   #showSourcesViewInWrapper = false;
-  #splitWidget: UI.SplitWidget.SplitWidget;
-  #editorView: UI.SplitWidget.SplitWidget;
   #sourcesView: SourcesView;
   private threadsSidebarPane: UI.View.View|null;
   readonly #callstackPane: CallStackSidebarPane;
@@ -203,12 +364,11 @@ export class SourcesPanel extends UI.Panel.Panel implements
   #switchToPausedTargetTimeout?: number;
   #extensionSidebarPanesContainer?: UI.View.ViewLocation;
   #debuggerSidebarTabbedLocation: UI.View.TabbedViewLocation|null = null;
-  #sidebarPaneView?: UI.Widget.VBox|UI.SplitWidget.SplitWidget;
   #lastPausedTarget: WeakRef<SDK.Target.Target>|null = null;
 
-  constructor() {
+  constructor(view: View = DEFAULT_VIEW) {
     super('sources');
-    this.registerRequiredCSS(sourcesPanelStyles);
+    this.#view = view;
 
     new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.Folder],
                                  i18nString(UIStrings.dropWorkspaceFolderHere), this.#handleDrop.bind(this));
@@ -222,26 +382,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#toggleBreakpointsActiveAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('debugger.toggle-breakpoints-active');
 
-    this.#debugToolbar = this.#createDebugToolbar();
     this.#debuggerPausedMessage =
         new DebuggerPausedMessage(undefined, [SDK.EventBreakpointsModel.EventBreakpointsManager.instance()]);
-
-    const initialDebugSidebarWidth = 225;
-    this.#splitWidget =
-        new UI.SplitWidget.SplitWidget(true, true, 'sources-panel-split-view-state', initialDebugSidebarWidth);
-    this.#splitWidget.show(this.element);
-    if (Root.Runtime.Runtime.isTraceApp()) {
-      this.#splitWidget.hideSidebar();
-    } else {
-      this.#splitWidget.enableShowModeSaving();
-    }
-
-    // Create scripts navigator
-    const initialNavigatorWidth = 225;
-    this.#editorView =
-        new UI.SplitWidget.SplitWidget(true, false, 'sources-panel-navigator-split-view-state', initialNavigatorWidth);
-    this.#editorView.enableShowModeSaving();
-    this.#splitWidget.setMainWidget(this.#editorView);
 
     // Create navigator tabbed pane with toolbar.
     this.navigatorTabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
@@ -259,8 +401,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
     navigatorMenuButton.title = i18nString(UIStrings.moreOptions);
     tabbedPane.rightToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(navigatorMenuButton));
 
-    this.#editorView.setSidebarWidget(tabbedPane);
-
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener(Events.EDITOR_SELECTED, this.#editorSelected.bind(this));
     this.#sourcesView.addEventListener(Events.EDITOR_CLOSED, this.#editorClosed.bind(this));
@@ -271,17 +411,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
     this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
-    this.#sourcesView.isNavigatorSidebarOpen = this.#editorView.sidebarIsShowing();
-    this.#sourcesView.isDebuggerSidebarOpen = this.#splitWidget.sidebarIsShowing();
-
-    this.#editorView.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
-      this.#sourcesView.isNavigatorSidebarOpen = this.#editorView.sidebarIsShowing();
-    });
-
-    this.#splitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
-      this.#sourcesView.isDebuggerSidebarOpen = this.#splitWidget.sidebarIsShowing();
-    });
-    this.#editorView.setMainWidget(this.#sourcesView);
+    this.#isNavigatorSidebarOpen = isSidebarOpenInSplitSetting('sources-panel-navigator-split-view-state', true);
+    this.#isDebuggerSidebarOpen = isSidebarOpenInSplitSetting('sources-panel-split-view-state', this.#isVertical);
+    this.#sourcesView.isNavigatorSidebarOpen = this.#isNavigatorSidebarOpen;
+    this.#sourcesView.isDebuggerSidebarOpen = this.#isDebuggerSidebarOpen;
 
     this.threadsSidebarPane = null;
     this.watchSidebarPane = UI.ViewManager.ViewManager.instance().view('sources.watch');
@@ -319,6 +452,52 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#lastModificationTime = -Infinity;
   }
 
+  #setNavigatorSidebarOpen(isOpen: boolean): void {
+    if (this.#isNavigatorSidebarOpen === isOpen) {
+      return;
+    }
+    this.#isNavigatorSidebarOpen = isOpen;
+    setSidebarOpenInSplitSetting('sources-panel-navigator-split-view-state', true, isOpen);
+    this.#sourcesView.isNavigatorSidebarOpen = isOpen;
+    this.performUpdate();
+  }
+
+  #setDebuggerSidebarOpen(isOpen: boolean): void {
+    if (this.#isDebuggerSidebarOpen === isOpen) {
+      return;
+    }
+    this.#isDebuggerSidebarOpen = isOpen;
+    setSidebarOpenInSplitSetting('sources-panel-split-view-state', this.#isVertical, isOpen);
+    this.#sourcesView.isDebuggerSidebarOpen = isOpen;
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          isVertical: this.#isVertical,
+          isNavigatorSidebarOpen: this.#isNavigatorSidebarOpen,
+          isDebuggerSidebarOpen: this.#isDebuggerSidebarOpen,
+          isTraceApp: Root.Runtime.Runtime.isTraceApp(),
+          navigatorTabbedPane: this.navigatorTabbedLocation.tabbedPane(),
+          sourcesView: this.#showSourcesViewInWrapper ? null : this.#sourcesView,
+          debuggerPausedMessage: this.#debuggerPausedMessage,
+          sidebarPaneStackWidget: this.sidebarPaneStack?.widget() ?? null,
+          debuggerSidebarTabbedPane: this.#debuggerSidebarTabbedLocation?.tabbedPane() ?? null,
+          onNavigatorSplitChange: (event: CustomEvent<string>) => {
+            this.#setNavigatorSidebarOpen(event.detail === UI.SplitWidget.ShowMode.BOTH);
+          },
+          onDebuggerSplitChange: (event: CustomEvent<string>) => {
+            this.#setDebuggerSidebarOpen(event.detail === UI.SplitWidget.ShowMode.BOTH);
+          },
+          onTerminateExecution: this.#terminateExecution.bind(this),
+          onLongResume: this.#longResume.bind(this),
+        },
+        undefined,
+        this.contentElement,
+    );
+  }
+
   static instance(opts: {
     forceNew: boolean|null,
   }|undefined = {forceNew: null}): SourcesPanel {
@@ -341,11 +520,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     panel.#showSourcesViewInWrapper = showInWrapper;
-    if (showInWrapper) {
-      panel.#sourcesView.detach();
-    } else {
-      panel.#editorView.setMainWidget(panel.#sourcesView);
-    }
+    panel.performUpdate();
   }
 
   targetAdded(_target: SDK.Target.Target): void {
@@ -446,15 +621,15 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   toggleNavigatorSidebar(): void {
-    const isOpen = this.#editorView.toggleSidebar();
-    this.#sourcesView.isNavigatorSidebarOpen = isOpen;
+    const isOpen = !this.#isNavigatorSidebarOpen;
+    this.#setNavigatorSidebarOpen(isOpen);
     UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
                                               i18nString(UIStrings.navigatorHidden));
   }
 
   toggleDebuggerSidebar(): void {
-    const isOpen = this.#splitWidget.toggleSidebar();
-    this.#sourcesView.isDebuggerSidebarOpen = isOpen;
+    const isOpen = !this.#isDebuggerSidebarOpen;
+    this.#setDebuggerSidebarOpen(isOpen);
     UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
                                               i18nString(UIStrings.debuggerHidden));
     this.sidebarPaneStack?.notifyVisibilityChanged(isOpen);
@@ -610,8 +785,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
         navigatorView.revealUISourceCode(uiSourceCode, true);
         this.navigatorTabbedLocation.tabbedPane().selectTab(view.viewId(), true);
         if (!skipReveal) {
-          this.#editorView.showBoth(true);
-          this.#sourcesView.isNavigatorSidebarOpen = true;
+          this.#setNavigatorSidebarOpen(true);
           navigatorView.focus();
         }
         break;
@@ -874,35 +1048,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#sourcesView.toggleBreakpointsActiveState(active);
   }
 
-  #createDebugToolbar(): UI.Toolbar.Toolbar {
-    const debugToolbar = document.createElement('devtools-toolbar');
-    debugToolbar.classList.add('scripts-debug-toolbar');
-    debugToolbar.setAttribute(
-        'jslog',
-        `${VisualLogging.toolbar('debug').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
-
-    const longResumeButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'play');
-    longResumeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#longResume, this);
-    const terminateExecutionButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.terminateCurrentJavascriptCall), 'stop');
-    terminateExecutionButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#terminateExecution, this);
-    const pauseActionButton = UI.Toolbar.Toolbar.createLongPressActionButton(
-        this.#togglePauseAction, [terminateExecutionButton, longResumeButton], []);
-    pauseActionButton.toggleOnClick(false);
-    debugToolbar.appendToolbarItem(pauseActionButton);
-
-    debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#stepOverAction));
-    debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#stepIntoAction));
-    debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#stepOutAction));
-    debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#stepAction));
-
-    debugToolbar.appendSeparator();
-    debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#toggleBreakpointsActiveAction));
-
-    return debugToolbar;
-  }
-
   appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu,
                         target: Workspace.UISourceCode.UISourceCode|Workspace.UISourceCode.UILocation|
                         SDK.RemoteObject.RemoteObject|SDK.NetworkRequest.NetworkRequest|UISourceCodeFrame): void {
@@ -1141,7 +1286,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   #revealNavigatorSidebar(): void {
     void this.setAsCurrentPanel();
-    this.#editorView.showBoth(true);
+    this.#setNavigatorSidebarOpen(true);
   }
 
   #revealDebuggerSidebar(): void {
@@ -1151,18 +1296,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     void this.setAsCurrentPanel();
-    this.#splitWidget.showBoth(true);
-  }
-
-  #renderDebugPaneContent(): UI.Widget.VBox {
-    const vbox = new UI.Widget.VBox();
-    vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
-    vbox.element.appendChild(this.#debugToolbar);
-    this.#debuggerPausedMessage.show(vbox.element);
-    if (this.sidebarPaneStack) {
-      this.sidebarPaneStack.widget().show(vbox.element);
-    }
-    return vbox;
+    this.#setDebuggerSidebarOpen(true);
   }
 
   #updateSidebarPosition(force = false): void {
@@ -1177,7 +1311,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       vertically = this.element.offsetWidth < 680;
     }
 
-    if (!force && this.#sidebarPaneView && vertically === !this.#isVertical) {
+    if (!force && vertically === !this.#isVertical) {
       return;
     }
 
@@ -1186,17 +1320,13 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }  // We can't reparent extension iframes.
 
-    if (this.#sidebarPaneView) {
-      this.#sidebarPaneView.detach();
-    }
-
     this.#isVertical = !vertically;
-    this.#splitWidget.setVertical(!vertically);
-    this.#splitWidget.element.classList.toggle('sources-split-view-vertical', vertically);
-
+    this.#isDebuggerSidebarOpen = isSidebarOpenInSplitSetting('sources-panel-split-view-state', this.#isVertical);
+    this.#sourcesView.isDebuggerSidebarOpen = this.#isDebuggerSidebarOpen;
     SourcesPanel.updateResizerAndSidebarButtons(this);
 
     if (Root.Runtime.Runtime.isTraceApp()) {
+      this.performUpdate();
       return;
     }
 
@@ -1212,10 +1342,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const jsBreakpoints = UI.ViewManager.ViewManager.instance().view('sources.js-breakpoints');
     const scopeChainView = UI.ViewManager.ViewManager.instance().view('sources.scope-chain');
 
-    if (this.#debuggerSidebarTabbedLocation) {
-      this.#splitWidget.uninstallResizer(this.#debuggerSidebarTabbedLocation.tabbedPane().headerElement());
-      this.#debuggerSidebarTabbedLocation = null;
-    }
+    this.#debuggerSidebarTabbedLocation = null;
 
     if (!vertically) {
       // Populate the rest of the stack.
@@ -1224,28 +1351,18 @@ export class SourcesPanel extends UI.Panel.Panel implements
       void this.sidebarPaneStack.showView(scopeChainView);
       void this.sidebarPaneStack.showView(this.#callstackPane);
       this.#extensionSidebarPanesContainer = this.sidebarPaneStack;
-      this.#splitWidget.uninstallResizer(this.#debugToolbar);
-      this.#sidebarPaneView = this.#renderDebugPaneContent();
     } else {
-      const splitWidget =
-          new UI.SplitWidget.SplitWidget(true, true, 'sources-panel-debugger-sidebar-split-view-state', 0.5);
-      splitWidget.setMainWidget(this.#renderDebugPaneContent());
-
       // Populate the left stack.
       void this.sidebarPaneStack.showView(jsBreakpoints);
       void this.sidebarPaneStack.showView(this.#callstackPane);
 
       const tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
           this.#revealDebuggerSidebar.bind(this), 'sources-panel-debugger-sidebar');
-      splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
-      this.#splitWidget.installResizer(tabbedLocation.tabbedPane().headerElement());
-      this.#splitWidget.installResizer(this.#debugToolbar);
       tabbedLocation.appendView(scopeChainView);
       tabbedLocation.appendView(this.watchSidebarPane);
       tabbedLocation.appendApplicableItems('sources.sidebar-tabs');
       this.#extensionSidebarPanesContainer = tabbedLocation;
       this.#debuggerSidebarTabbedLocation = tabbedLocation;
-      this.#sidebarPaneView = splitWidget;
     }
 
     this.sidebarPaneStack.appendApplicableItems('sources.sidebar-bottom');
@@ -1254,7 +1371,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       this.#addExtensionSidebarPane(extensionSidebarPanes[i]);
     }
 
-    this.#splitWidget.setSidebarWidget(this.#sidebarPaneView);
+    this.performUpdate();
   }
 
   setAsCurrentPanel(): Promise<void> {

@@ -928,7 +928,7 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
                            const autoAdjustOrientation = element.getAttribute('direction') === 'auto';
                            const secondIsSidebar = element.getAttribute('sidebar-position') === 'second';
                            const settingName = element.getAttribute('name') ?? undefined;
-                           const sidebarSize = parseInt(element.getAttribute('sidebar-initial-size') || '', 10);
+                           const sidebarSize = parseFloat(element.getAttribute('sidebar-initial-size') || '');
                            const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : undefined;
                            const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : undefined;
 

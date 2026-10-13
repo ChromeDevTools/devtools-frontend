@@ -1456,7 +1456,7 @@ Node.prototype.removeChildren = function(): void {
 };
 
 export interface WrapperWidgetParams {
-  widget: AnyWidget;
+  widget: AnyWidget|null;
 }
 
 export class WrapperWidget extends Widget {
@@ -1481,6 +1481,10 @@ export class WrapperWidget extends Widget {
       this.#widget.show(this.element, undefined, /* suppressOrphanWidgetError */ true);
     }
   }
+  override calculateConstraints(): Geometry.Constraints {
+    return this.#widget ? this.#widget.constraints() : super.calculateConstraints();
+  }
+
   override focus(): void {
     if (this.#widget) {
       this.#widget.focus();

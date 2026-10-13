@@ -48,3 +48,8 @@
 .navigator-tabbed-pane {
   background-color: var(--sys-color-cdt-base-container);
 }
+
+devtools-split-view {
+  flex: auto;
+  height: 100%;
+}

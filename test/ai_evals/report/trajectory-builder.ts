@@ -316,6 +316,34 @@ export class TrajectoryBuilder {
   }
 }
 
+export function getMarkdownConversation(example: Trajectory): string {
+  let markdown = '';
+  for (const turn of example.data ?? []) {
+    if (turn.role === 'user') {
+      markdown += '## REQUEST FROM CLIENT:\n';
+      if (turn.content?.length) {
+        markdown += `### QUERY:\n${turn.content.join('\n')}\n`;
+      }
+    } else {
+      markdown += '## RESPONSE FROM SERVER:\n';
+      if (turn.content?.length) {
+        markdown += `### EXPLANATION:\n${turn.content.join('\n')}\n`;
+      }
+      if (turn.tool_calls?.length) {
+        const calls = turn.tool_calls.map(tc => tc.name).join(', ');
+        markdown += `### FUNCTION CALL REQUESTS:\n${calls}\n`;
+        for (const tc of turn.tool_calls) {
+          if (tc.result) {
+            markdown += `### FUNCTION CALL RESPONSE FOR ${tc.name}:\n${JSON.stringify(tc.result)}\n`;
+          }
+        }
+      }
+    }
+    markdown += '\n';
+  }
+  return markdown;
+}
+
 /**
  * Formats a trajectory into a clean, human-readable plaintext chat log.
  * Shows user queries, agent explanations, and any tool calls/results.

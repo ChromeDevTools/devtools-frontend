@@ -317,7 +317,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
              }],
            },
          };
-         functionCallEvent.args = args as unknown as Trace.Types.Events.Args;
+         functionCallEvent.args = args;
          const linkifier = new Components.Linkifier.Linkifier();
          const node =
              Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);

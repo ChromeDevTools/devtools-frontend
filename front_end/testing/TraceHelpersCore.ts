@@ -214,6 +214,32 @@ export function makeInstantEvent(
 }
 
 /**
+ * Builds a mock ConsoleTimeStamp.
+ */
+export function makeConsoleTimeStamp(
+    message: string,
+    tsMicroseconds: number,
+    data: Partial<Trace.Types.Events.ConsoleTimeStamp['args']['data']> = {},
+    pid = 0,
+    tid = 0,
+    ): Trace.Types.Events.ConsoleTimeStamp {
+  return {
+    args: {
+      data: {
+        message,
+        ...data,
+      },
+    },
+    cat: 'devtools.timeline',
+    name: Trace.Types.Events.Name.TIME_STAMP,
+    ph: Trace.Types.Events.Phase.INSTANT,
+    pid: Trace.Types.Events.ProcessID(pid),
+    tid: Trace.Types.Events.ThreadID(tid),
+    ts: Trace.Types.Timing.Micro(tsMicroseconds),
+  };
+}
+
+/**
  * Builds a mock Begin.
  */
 export function makeBeginEvent(name: string, ts: number, cat = '*', pid = 0, tid = 0): Trace.Types.Events.Begin {

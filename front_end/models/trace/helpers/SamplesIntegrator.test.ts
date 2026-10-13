@@ -8,7 +8,11 @@ import {describe, it} from 'mocha';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
-import {allThreadEntriesInTrace, makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpersCore.js';
+import {
+  allThreadEntriesInTrace,
+  makeCompleteEvent,
+  makeConsoleTimeStamp,
+} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -275,9 +279,7 @@ describe('SamplesIntegrator', function() {
       const integrator = new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
       const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500);
       const v8Run = makeCompleteEvent('v8.run', 10, 490);
-      const consoleTimeStamp =
-          makeInstantEvent(Trace.Types.Events.Name.TIME_STAMP, 350) as unknown as Trace.Types.Events.ConsoleTimeStamp;
-      consoleTimeStamp.args = {data: {message: 'A timestamp', sampleTraceId: traceId}};
+      const consoleTimeStamp = makeConsoleTimeStamp('A timestamp', 350, {sampleTraceId: traceId});
       const traceEvents = [evaluateScript, v8Run, consoleTimeStamp];
       const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.lengthOf(constructedCalls, 4);

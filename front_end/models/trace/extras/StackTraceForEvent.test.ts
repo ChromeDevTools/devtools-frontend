@@ -11,7 +11,7 @@ import {
   allThreadEntriesInTrace,
   getBaseTraceHandlerData,
   makeCompleteEvent,
-  makeInstantEvent,
+  makeConsoleTimeStamp,
   makeMockRendererHandlerData,
   makeProfileCall,
 } from '../../../testing/TraceHelpersCore.js';
@@ -228,8 +228,6 @@ describe('StackTraceForTraceEvent', function() {
     const extensionEntryStart = 0;
     const extensionEntryEnd = 100;
     const entryName = 'Entry';
-    const timestamp = makeInstantEvent(Trace.Types.Events.Name.TIME_STAMP, extensionEntryEnd, '', pid, tid) as
-        unknown as Trace.Types.Events.ConsoleTimeStamp;
     const extensionData = {
       color: 'tertiary-dark',
       frame: 'frame',
@@ -239,7 +237,7 @@ describe('StackTraceForTraceEvent', function() {
       start: extensionEntryStart,
       track: 'track',
     };
-    timestamp.args = {data: extensionData};
+    const timestamp = makeConsoleTimeStamp(entryName, extensionEntryEnd, extensionData, pid, tid);
     const parsedTrace = parsedTraceFromEvents([profileCall, timestamp]);
 
     const mockExtensionEntry = {

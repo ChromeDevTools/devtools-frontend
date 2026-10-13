@@ -639,19 +639,12 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
 
     for (const marker of this.#markers) {
       for (const event of marker.entries) {
-        let navigationId: string|undefined;
         let fieldMetricResult: Trace.Types.Overlays.TimingsMarkerFieldResult|null|undefined;
 
         if (Trace.Types.Events.isFirstContentfulPaint(event)) {
-          navigationId = event.args?.data?.navigationId;
-          if (navigationId) {
-            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.fcp;
-          }
+          fieldMetricResult = fieldMetricResultsByNavigationId.get(event.args.data.navigationId)?.fcp;
         } else if (Trace.Types.Events.isLargestContentfulPaintCandidate(event)) {
-          navigationId = event.args?.data?.navigationId;
-          if (navigationId) {
-            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.lcp;
-          }
+          fieldMetricResult = fieldMetricResultsByNavigationId.get(event.args.data.navigationId)?.lcp;
         }
 
         if (!fieldMetricResult) {

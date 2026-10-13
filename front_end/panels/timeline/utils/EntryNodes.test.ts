@@ -281,6 +281,10 @@ describeWithEnvironment('EntryNodes', function() {
       const connection = new MockCDPConnection();
       // Create a mock target, dom model, document and node, using the ID of 2 to match with the event above
       const target = createTarget({connection});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+      resourceTreeModel.frameAttached('main-frame' as Protocol.Page.FrameId, null);
+
       const domModel = target.model(SDK.DOMModel.DOMModel);
       assert.exists(domModel);
       const documentNode = {nodeId: nodeId(1)};
@@ -299,6 +303,41 @@ describeWithEnvironment('EntryNodes', function() {
       assert.isNotNull(result);
       const entries = Array.from(result.entries());
       assert.deepEqual(entries, [[backendNodeId(2), domNode]]);
+    });
+
+    it('returns an empty map if the event specifies a frame that does not exist in ResourceTreeModel', async () => {
+      const layoutEvent: Trace.Types.Events.Layout = {
+        ...makeCompleteEvent(Trace.Types.Events.Name.LAYOUT, 0, 1000),
+        name: Trace.Types.Events.Name.LAYOUT,
+        args: {
+          beginData: {
+            frame: 'unknown-frame',
+            dirtyObjects: 1,
+            totalObjects: 1,
+            partialLayout: false,
+          },
+          endData: {
+            layoutRoots: [{
+              nodeId: 2 as Protocol.DOM.BackendNodeId,
+              depth: 1,
+              quads: [],
+            }],
+          },
+        },
+      };
+
+      const connection = new MockCDPConnection();
+      const target = createTarget({connection});
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+      resourceTreeModel.frameAttached('main-frame' as Protocol.Page.FrameId, null);
+
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const result = await Utils.EntryNodes.relatedDOMNodesForEvent(dummyParsedTrace, layoutEvent);
+      assert.isNotNull(result);
+      assert.deepEqual(Array.from(result.entries()), []);
     });
   });
 });

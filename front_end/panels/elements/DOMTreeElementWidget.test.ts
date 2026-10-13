@@ -541,6 +541,29 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
     sinon.assert.notCalled(requestUpdateSpy);
   });
 
+  it('expands the node when the expand button of a collapsed element is clicked', async () => {
+    const target = createTarget();
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(domModel);
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
+    sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
+    sinon.stub(node, 'nodeName').returns('DIV');
+    const widget = createTreeWidget(node);
+    widget.isExpandable = true;
+    widget.expanded = false;
+    const expandNode = sinon.spy();
+    widget.expandNode = expandNode;
+    widget.onbind();
+    await widget.updateComplete;
+
+    const expandButton = widget.contentElement.querySelector('devtools-elements-tree-expand-button');
+    assert.exists(expandButton);
+    expandButton.shadowRoot?.querySelector('button')?.click();
+
+    sinon.assert.calledOnce(expandNode);
+  });
+
   it('updates when persistent scroll snap overlay state changes', async () => {
     const target = createTarget();
     const domModel = target.model(SDK.DOMModel.DOMModel);

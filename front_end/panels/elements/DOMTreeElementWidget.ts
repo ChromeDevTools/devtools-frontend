@@ -1288,6 +1288,8 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
 
   computeLeftIndent?: number|(() => number);
 
+  /** Expands the node in the parent tree. Invoked by the `…` button of a collapsed element. */
+  expandNode?: () => void;
   selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
   revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
   showContextMenu?: (event: Event) => void;
@@ -1641,7 +1643,7 @@ export class DOMTreeElementWidget extends UI.Widget.Widget {
       isXMLMimeType: this.isXMLMimeType,
       updateRecord: this.#updateRecord,
       onHighlightSearchResults: () => this.#highlightSearchResults(),
-      onExpand: () => {},
+      onExpand: () => this.expandNode?.(),
 
       containerAdornerActive: this.#overlayActive.container,
       adProvenance: this.node.adProvenance(),

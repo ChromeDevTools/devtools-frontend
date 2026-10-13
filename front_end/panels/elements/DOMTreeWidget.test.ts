@@ -629,6 +629,34 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('expands a collapsed node when its expand button is clicked', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [{nodeId: 2, nodeName: 'SPAN'}],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+        assert.isFalse(domTree.isNodeExpanded(rootNode));
+
+        const devtoolsTree = domTree.contentElement.querySelector('devtools-tree');
+        assert.exists(devtoolsTree?.shadowRoot);
+        const widgetEl = devtoolsTree.shadowRoot.querySelector('devtools-widget');
+        assert.exists(widgetEl);
+        const widget = UI.Widget.Widget.get(widgetEl) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
+        const expandButton = widget.contentElement.querySelector('devtools-elements-tree-expand-button');
+        assert.exists(expandButton);
+        expandButton.shadowRoot?.querySelector('button')?.click();
+
+        assert.isTrue(domTree.isNodeExpanded(rootNode));
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('collapses children of a node', async () => {
       const {domTree, domModel} = setupDOMTreeWidget(target);
       try {

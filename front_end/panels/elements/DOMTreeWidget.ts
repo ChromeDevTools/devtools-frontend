@@ -744,6 +744,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           onPopoverAdornerToggled: input.onPopoverAdornerToggled,
           interestAdornerActive: Boolean(input.forceOpenInterests?.has(node)),
           onInterestAdornerToggled: input.onInterestAdornerToggled,
+          expandNode: isCollapsible ? () => input.onExpand?.(node, true) : undefined,
           revealInTopLayer: (n: SDK.DOMModel.DOMNode) => input.domTreeWidget?.revealInTopLayer(n),
           setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
           visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,

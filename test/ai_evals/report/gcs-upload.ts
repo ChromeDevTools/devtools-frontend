@@ -54,10 +54,11 @@ export interface TaskCompletedPayload {
   runId: string;
   /** Execution status: 'PASSED' on success, 'FAILED' on error or timeout. */
   status: string;
-  /** Task evaluation score from 0.0 (failure) to 1.0 (success). Defaults to 1.0 for completed tasks without inline assertions. */
-  score: number;
+  /** Task evaluation score from 0.0 to 1.0 when graded, or null if ungraded or execution failed. */
+  score: number|null;
   durationSeconds: number;
   tokens?: Record<string, unknown>;
+  metrics?: {toolCallCount?: number};
 }
 
 export interface RunCompletedPayload {
@@ -69,13 +70,14 @@ export interface RunCompletedPayload {
   totalTasks: number;
   passedTasks: number;
   failedTasks: number;
+  metrics: {totalToolCalls: number};
 }
 
 /** Record of a completed task's execution outcome and score. Each task corresponds to an evaluation trajectory. */
 export interface TaskStatus {
   taskId: string;
   status: string;
-  score: number;
+  score: number|null;
 }
 
 /**
@@ -289,6 +291,9 @@ export function uploadTaskCompleted(payload: TaskCompletedPayload): boolean {
     score: payload.score,
     duration_seconds: payload.durationSeconds,
     tokens: payload.tokens ?? {},
+    metrics: {
+      tool_calls: payload.metrics?.toolCallCount ?? 0,
+    },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(
       JSON.stringify(jsonContent, null, 2),
@@ -326,6 +331,9 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     total_tasks: payload.totalTasks,
     passed_tasks: payload.passedTasks,
     failed_tasks: payload.failedTasks,
+    metrics: {
+      total_tool_calls: payload.metrics.totalToolCalls,
+    },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(
       JSON.stringify(jsonContent, null, 2),

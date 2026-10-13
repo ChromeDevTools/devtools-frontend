@@ -54,7 +54,7 @@ export class EvalTaskHandle {
     this.taskId = config.taskId;
     this.label = config.label;
     this.isConfigured = isConfigured;
-    this.trajectoryBuilder = new TrajectoryBuilder({autoRunExampleId: this.taskId});
+    this.trajectoryBuilder = new TrajectoryBuilder({taskId: this.taskId});
     this.#devToolsPage = devToolsPage;
     this.#logger = logger;
   }
@@ -97,6 +97,7 @@ export class AiEvalStateProvider extends StateProvider {
   #tempOutputDir = '';
   #logger = new EvalLogger();
   #taskStatuses: TaskStatus[] = [];
+  #taskToolCallCounts = new Map<string, number>();
 
   override registerSuiteSettings(suite: Mocha.Suite,
                                  suiteSettings: E2E.SuiteSettings&{evalConfig?: AiEvalConfig}): void {
@@ -112,6 +113,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#tempOutputDir = createTempEvalDir();
     this.#logger = new EvalLogger();
     this.#taskStatuses = [];
+    this.#taskToolCallCounts = new Map();
     this.#logger.append(`Evaluation run started for ${this.#runId} at ${this.#runStartTimestamp}`);
     uploadRunStarted({
       project: PROJECT_ID,
@@ -130,6 +132,7 @@ export class AiEvalStateProvider extends StateProvider {
     const totalTasks = this.#taskStatuses.length;
     const failedTasks = this.#taskStatuses.filter(t => t.status === 'FAILED').length;
     const passedTasks = totalTasks - failedTasks;
+    const totalToolCalls = Array.from(this.#taskToolCallCounts.values()).reduce((sum, count) => sum + count, 0);
     const status = (failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
     this.#logger.append(`Total tasks: ${totalTasks}, Passed: ${passedTasks}, Failed: ${failedTasks}`);
     this.#logger.append(`Run completed with status: ${status}`);
@@ -143,6 +146,9 @@ export class AiEvalStateProvider extends StateProvider {
       totalTasks,
       passedTasks,
       failedTasks,
+      metrics: {
+        totalToolCalls,
+      },
     });
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
       fs.rmSync(this.#tempOutputDir, {recursive: true, force: true});
@@ -266,6 +272,7 @@ export class AiEvalStateProvider extends StateProvider {
               durationSeconds,
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
+              taskToolCallCounts: this.#taskToolCallCounts,
               hasError: evalTask.hasFailed,
               errorMessage: evalTask.failureError,
             });
@@ -281,6 +288,7 @@ export class AiEvalStateProvider extends StateProvider {
               logger: this.#logger,
               taskStatuses: this.#taskStatuses,
               errorMessage,
+              toolCallCount: this.#taskToolCallCounts.get(evalTask.taskId),
             });
           }
         }

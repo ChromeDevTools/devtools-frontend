@@ -49,10 +49,19 @@ export interface Turn {
 }
 
 export interface TrajectoryMetadata {
+  /**
+   * Deterministic identifier for this trajectory session (`<15-char-hash>-<index>`,
+   * e.g. `'07a8fb33eca1976-0'`), used in HTML reports and `.eval.json` filenames.
+   */
   session_id: string;
+  /** LLM model identifier resolved by AIDA (e.g. `'gemini-2.5-pro'`). */
   model: string;
   chrome_version: string;
-  auto_run_example_id?: string;
+  /**
+   * Identifies the eval task that produced this trajectory (e.g. `'coffee-alchemy'`).
+   * Matches `task_id` in `eval_task_completed.json` and the GCS `tasks/<taskId>/` directory.
+   */
+  task_id: string;
 }
 
 export interface Trajectory {
@@ -105,7 +114,7 @@ export type RawExample = Step;
 
 export interface TrajectoryBuilderOptions {
   sessionId?: string;
-  autoRunExampleId?: string;
+  taskId?: string;
 }
 
 /**
@@ -113,7 +122,7 @@ export interface TrajectoryBuilderOptions {
  */
 function buildTrajectory(
     sessionId: string,
-    autoRunExampleId: string,
+    taskId: string,
     steps: Step[],
     ): Trajectory {
   const firstStep = steps[0];
@@ -128,7 +137,7 @@ function buildTrajectory(
       session_id: sessionId,
       model: modelData.modelId ?? '',
       chrome_version: chromeVersion,
-      auto_run_example_id: autoRunExampleId,
+      task_id: taskId,
     },
     data: buildTurns(steps),
   };
@@ -280,8 +289,8 @@ export class TrajectoryBuilder {
    */
   build(): Trajectory {
     const sessionId = this.#options.sessionId ?? createDefaultSessionId(this.#steps);
-    const autoRunExampleId = this.#options.autoRunExampleId ?? '';
-    return buildTrajectory(sessionId, autoRunExampleId, this.#steps);
+    const taskId = this.#options.taskId ?? '';
+    return buildTrajectory(sessionId, taskId, this.#steps);
   }
 
   /**

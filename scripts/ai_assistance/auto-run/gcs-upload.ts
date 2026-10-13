@@ -351,7 +351,7 @@ export function uploadRunCompleted(payload: RunCompletedPayload): boolean {
     passed_tasks: payload.passedTasks,
     failed_tasks: payload.failedTasks,
     metrics: {
-      totalToolCalls: payload.metrics.totalToolCalls,
+      total_tool_calls: payload.metrics.totalToolCalls,
     },
   };
   const jsonUploaded = uploadTemporaryContentToGCS(

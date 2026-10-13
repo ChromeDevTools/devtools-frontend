@@ -16,6 +16,8 @@ import {
   type Trajectory,
 } from './trajectory-builder.js';
 
+export const PASS_SCORE_THRESHOLD = 0.7;
+
 export interface FinalizeTaskOptions {
   runId: string;
   taskId: string;
@@ -25,9 +27,10 @@ export interface FinalizeTaskOptions {
   durationSeconds: number;
   logger: EvalLogger;
   taskStatuses: TaskStatus[];
+  taskToolCallCounts: Map<string, number>;
   hasError?: boolean;
   errorMessage?: string;
-  customScore?: number;
+  customScore?: number|null;
 }
 
 export interface HandleTaskFailureOptions {
@@ -39,6 +42,7 @@ export interface HandleTaskFailureOptions {
   logger: EvalLogger;
   taskStatuses: TaskStatus[];
   errorMessage?: string;
+  toolCallCount?: number;
 }
 
 /**
@@ -71,17 +75,19 @@ export function recordTaskFailure(
     runId: string,
     durationSeconds: number,
     taskStatuses: TaskStatus[],
+    toolCallCount?: number,
     ): void {
   uploadTaskCompleted({
     taskId,
     runId,
     status: 'FAILED',
-    // Failed tasks receive 0.0 as they encountered an error or timeout prior to completing.
-    score: 0.0,
+    // Failed tasks receive null as they encountered an error or timeout prior to completing or grading.
+    score: null,
     durationSeconds,
     tokens: {},
+    metrics: {toolCallCount},
   });
-  taskStatuses.push({taskId, status: 'FAILED', score: 0.0});
+  taskStatuses.push({taskId, status: 'FAILED', score: null});
 }
 
 /**
@@ -90,13 +96,23 @@ export function recordTaskFailure(
  * (`agent_logs/agent.log`, `agent_logs/agent_stderr.log`, and `verification/*`) before sealing `eval_task_completed.marker`.
  */
 export function handleTaskFailure(options: HandleTaskFailureOptions): void {
-  const {runId, taskId, label = taskId, phase, durationSeconds, logger, taskStatuses, errorMessage} = options;
+  const {
+    runId,
+    taskId,
+    label = taskId,
+    phase,
+    durationSeconds,
+    logger,
+    taskStatuses,
+    errorMessage,
+    toolCallCount,
+  } = options;
   logger.append(`[Task ${taskId}] ${phase} failed (${durationSeconds}s)`);
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_LOG, logger.getTaskLogContent(taskId));
   uploadTaskContent(runId, taskId, TaskOutputFile.AGENT_STDERR, logger.getTaskStderrContent(taskId));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDOUT, formatVerificationStdout(taskId, label, true));
   uploadTaskContent(runId, taskId, TaskOutputFile.VERIFICATION_STDERR, formatVerificationStderr(errorMessage));
-  recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
+  recordTaskFailure(taskId, runId, durationSeconds, taskStatuses, toolCallCount);
 }
 
 /**
@@ -143,13 +159,14 @@ export function recordTaskCompletion(
     taskStatuses: TaskStatus[],
     allUploadsSucceeded: boolean,
     hasError = false,
-    customScore?: number,
+    customScore?: number|null,
+    toolCallCount?: number,
     ): void {
-  const baseScore = customScore ?? (hasError ? 0.0 : 1.0);
-  const score = allUploadsSucceeded ? baseScore : 0.0;
-  // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
-  // FAILED if upload failed, assertion failures occurred, or score is 0.0).
-  const status = (!allUploadsSucceeded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+  // Only report a numeric score if a custom/grader score was computed and execution/upload succeeded;
+  // otherwise emit null so ungraded tasks or execution failures do not skew averages.
+  const score = (!allUploadsSucceeded || hasError) ? null : (customScore ?? null);
+  const status =
+      (!allUploadsSucceeded || hasError || (score !== null && score < PASS_SCORE_THRESHOLD)) ? 'FAILED' : 'PASSED';
 
   uploadTaskCompleted({
     taskId,
@@ -158,6 +175,7 @@ export function recordTaskCompletion(
     score,
     durationSeconds,
     tokens: {},
+    metrics: {toolCallCount},
   });
   taskStatuses.push({taskId, status, score});
 }
@@ -177,6 +195,7 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     durationSeconds,
     logger,
     taskStatuses,
+    taskToolCallCounts,
     hasError = false,
     errorMessage,
     customScore,
@@ -184,9 +203,15 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
 
   logger.append(`[Task ${taskId}] Finished execution (${durationSeconds}s)`);
   const evalOutputPath = exportEvalTrajectory(trajectory, label, outputDir);
+  const toolCallCount = trajectory.data.reduce(
+      (sum, turn) => sum + turn.tool_calls.length,
+      0,
+  );
+  taskToolCallCounts.set(taskId, toolCallCount);
   const allUploadsSucceeded =
       uploadTaskArtifacts(runId, taskId, label, logger, trajectory, evalOutputPath, hasError, errorMessage);
-  recordTaskCompletion(taskId, runId, durationSeconds, taskStatuses, allUploadsSucceeded, hasError, customScore);
+  recordTaskCompletion(taskId, runId, durationSeconds, taskStatuses, allUploadsSucceeded, hasError, customScore,
+                       toolCallCount);
 
   return evalOutputPath;
 }

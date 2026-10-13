@@ -27,7 +27,48 @@
   .toolbar-left {
     display: flex;
     align-items: center;
-    gap: var(--sys-size-3);
+    height: 100%;
+    gap: var(--sys-size-8);
+    padding-left: var(--sys-size-3);
+  }
+
+  .tab-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 var(--sys-size-2);
+    border: none;
+    background: transparent;
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body4-size);
+    font-weight: var(--ref-typeface-weight-regular);
+    cursor: pointer;
+  }
+
+  .tab-button:hover {
+    color: var(--sys-color-on-surface);
+  }
+
+  .tab-button:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(-1 * var(--sys-size-2));
+  }
+
+  .tab-button.active {
+    color: var(--sys-color-primary);
+    font-weight: var(--ref-typeface-weight-bold);
+  }
+
+  .tab-button.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--sys-size-2);
+    background-color: var(--sys-color-primary);
+    border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0 0;
   }
 
   .toolbar-button {

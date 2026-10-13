@@ -3362,6 +3362,13 @@
       status: "experimental",
     },
     {
+      // Fires a "focusreset" event at a Document during "update the rendering"
+      // when its focused element was removed and focus was not explicitly
+      // moved since. https://github.com/whatwg/html/pull/13050
+      name: "FocusResetEvent",
+      status: "experimental",
+    },
+    {
       // Respects explicit outline colors for focus rings in dark mode and uses
       // an off-white default. https://issues.chromium.org/issues/480978106
       name: "FocusRingRespectExplicitOutlineColorInDarkMode",
@@ -3604,17 +3611,18 @@
     {
       name: "GlobalPrivacyControl",
       implied_by: [
-        "GlobalPrivacyControlForce",
-        "GlobalPrivacyControlTest"
+        "GlobalPrivacyControlApi",
+        "GlobalPrivacyControlForce"
       ],
       base_feature: "none",
     },
     {
-      name: "GlobalPrivacyControlForce",
+      // Gates the navigator.globalPrivacyControl JavaScript API.
+      name: "GlobalPrivacyControlApi",
+      status: "experimental",
     },
     {
-      name: "GlobalPrivacyControlTest",
-      status: "experimental",
+      name: "GlobalPrivacyControlForce",
     },
     {
       name: "GraphemeClusterBoundsCheck",
@@ -4649,7 +4657,7 @@
     },
     {
       name: "OfflineAudioContextIncrementalRendering",
-      status: "test",
+      status: "experimental",
     },
     {
       name: "OffscreenCanvasGetContextAttributes",
@@ -5674,12 +5682,6 @@
       status: "stable",
     },
     {
-      // Killswitch M151.
-      name: "ScrollingContentsCullRectOnScrollNode",
-      implied_by: ["MergeStickyLayers"],
-      status: "stable",
-    },
-    {
       // https://github.com/w3c/csswg-drafts/issues/9576
       name: "ScrollIntoViewAlignAuto",
       status: "experimental",
@@ -6525,6 +6527,12 @@
       // Enabled in M153, safe to remove in M155.
       // https://issues.chromium.org/issues/539754135
       name: "TargetRangesForBackwardDeletionUnit",
+      status: "stable",
+    },
+    {
+      // Kill switch for releasing directly focused temporal input hosts on blur.
+      // See crbug.com/541316137.
+      name: "TemporalInputHostBlur",
       status: "stable",
     },
     // For unit tests.
@@ -7543,7 +7551,7 @@
     },
     {
       name: "WebTransportReliability",
-      status: "experimental",
+      status: "stable",
       base_feature: "none",
     },
     {

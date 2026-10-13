@@ -18,8 +18,8 @@ function invalidationDataForTestAssertion(invalidation: Trace.Types.Events.Inval
   return {
     nodeId: invalidation.args.data.nodeId,
     nodeName: invalidation.args.data.nodeName,
-    reason: invalidation.args.data.reason,
-    stackTrace: invalidation.args.data.stackTrace,
+    reason: 'reason' in invalidation.args.data ? invalidation.args.data.reason : undefined,
+    stackTrace: 'stackTrace' in invalidation.args.data ? invalidation.args.data.stackTrace : undefined,
   };
 }
 

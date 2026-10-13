@@ -244,7 +244,8 @@ export interface SchedulePostMessage extends Instant {
   name: Name.SCHEDULE_POST_MESSAGE;
   args: Args&{
     data: {
-      traceId: string,
+      /** Landed in Chrome M124 (Feb 2024, crrev.com/c/5297395); marked optional so the engine supports earlier traces. */
+      traceId?: string,
       stackTrace?: CallFrame[],
       sampleTraceId?: number,
     },
@@ -698,10 +699,6 @@ export interface NavigationStart extends Mark {
        * date that do not have this field present.
        */
       isOutermostMainFrame?: boolean,
-      /**
-       * @deprecated use documentLoaderURL for navigation events URLs
-       */
-      url?: string,
     },
   };
 }
@@ -797,10 +794,11 @@ export interface LargestContentfulPaintCandidate extends Mark {
     frame: string,
     data: {
       candidateIndex: number,
-      isOutermostMainFrame: boolean,
       isMainFrame: boolean,
       navigationId: string,
       nodeId: Protocol.DOM.BackendNodeId,
+      /** Landed in Chrome M116 (May 2023, crrev.com/c/3625434); marked optional so the engine supports earlier traces. */
+      isOutermostMainFrame?: boolean,
       loadingAttr?: string,
       size?: number,
       type?: string,
@@ -816,10 +814,11 @@ export interface LargestContentfulPaintCandidateForSoftNavigation extends Mark {
     frame: string,
     data: {
       candidateIndex: number,
-      isOutermostMainFrame: boolean,
       isMainFrame: boolean,
       nodeId: Protocol.DOM.BackendNodeId,
       performanceTimelineNavigationId: number,
+      /** Landed in Chrome M116 (May 2023, crrev.com/c/3625434); marked optional so the engine supports earlier traces. */
+      isOutermostMainFrame?: boolean,
       loadingAttr?: string,
       size?: number,
       type?: string,
@@ -904,7 +903,6 @@ export interface UpdateCounters extends Instant {
       documents?: number,
       jsEventListeners?: number,
       nodes?: number,
-      gpuMemoryLimitKB?: number,
     },
   };
 }
@@ -1286,7 +1284,6 @@ export interface ScheduleStyleInvalidationTracking extends Instant {
       nodeId: Protocol.DOM.BackendNodeId,
       invalidationSet?: string,
       invalidatedSelectorId?: string,
-      reason?: LayoutInvalidationReason,
       changedClass?: string,
       changedAttribute?: string,
       changedId?: string,
@@ -1331,8 +1328,6 @@ export interface StyleInvalidatorInvalidationTracking extends Instant {
       reason: string,
       invalidationList: Array<{id: string, classes?: string[]}>,
       nodeName?: string,
-      extraData?: string,
-      stackTrace?: CallFrame[],
       // eslint-disable-next-line @typescript-eslint/naming-convention
       selectors?: Array<{selector: string, style_sheet_id: string}>,
     },
@@ -1374,9 +1369,9 @@ export type MetaCharsetDisposition = 'found-in-first-1024-bytes'|'found-after-fi
 export interface MetaCharsetCheck extends Instant {
   name: Name.META_CHARSET_CHECK;
   args: Args&{
-    data: {
-      frame: string,
-      disposition: MetaCharsetDisposition,
+    data?: {
+      frame?: string,
+      disposition?: MetaCharsetDisposition,
     },
   };
 }
@@ -1405,9 +1400,6 @@ export interface ScheduleStyleRecalculation extends Instant {
   args: Args&{
     data: {
       frame: string,
-      reason?: StyleRecalcInvalidationReason,
-      subtree?: boolean,
-      nodeId?: Protocol.DOM.BackendNodeId,
       stackTrace?: CallFrame[],
       sampleTraceId?: number,
     },
@@ -2987,14 +2979,21 @@ export function isV8Compile(event: Event): event is V8Compile {
 export interface FunctionCall extends Complete {
   name: Name.FUNCTION_CALL;
   args: Args&{
-    data?: Partial<CallFrame>& {
+    data?: {
+      columnNumber?: number,
       frame?: string,
+      functionName?: string,
+      /** Changed from number to string in M142 (Sep 2025, crrev.com/c/6990800); see https://crbug.com/447654178. */
       isolate?: string|number,
-      // Blink C++ emits integer script IDs in internal locations, but the trace buffer serializer
-      // stringifies them with String::Number(location->ScriptId()), so trace events in the wild have string scriptId.
-      scriptId?: string,
-      // Always present in traces since M135 (Feb 2025, crrev.com/c/6300647); marked optional so the engine supports earlier traces.
+      lineNumber?: number,
+      /** Always present in traces since M135 (Feb 2025, crrev.com/c/6300647); marked optional so the engine supports earlier traces. */
       sampleTraceId?: number,
+      /**
+       * Blink C++ emits integer script IDs in internal locations, but the trace buffer serializer
+       * stringifies them with String::Number(location->ScriptId()), so trace events in the wild have string scriptId.
+       */
+      scriptId?: string,
+      url?: string,
     },
   };
 }

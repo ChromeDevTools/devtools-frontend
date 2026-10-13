@@ -1049,7 +1049,7 @@ export class TimelineUIUtils {
     }
 
     if (Trace.Types.Events.isNavigationStart(event)) {
-      url = (event.args.data?.documentLoaderURL ?? event.args.data?.url) as Platform.DevToolsPath.UrlString;
+      url = event.args.data?.documentLoaderURL as Platform.DevToolsPath.UrlString;
       if (url) {
         contentHelper.appendElementRow(i18nString(UIStrings.url), LegacyComponents.Linkifier.Linkifier.linkifyURL(url));
       }

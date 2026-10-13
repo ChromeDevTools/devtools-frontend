@@ -207,7 +207,8 @@ export function generateInvalidationsList(
   for (const invalidation of invalidations) {
     backendNodeIds.add(invalidation.args.data.nodeId);
 
-    let reason = invalidation.args.data.reason || 'unknown';
+    let reason = ('reason' in invalidation.args.data && invalidation.args.data.reason) ? invalidation.args.data.reason :
+                                                                                         'unknown';
 
     // ScheduleStyle events do not always have a reason, but if they tell us
     // via their data what changed, we can update the reason that we show to

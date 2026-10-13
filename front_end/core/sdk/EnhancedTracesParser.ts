@@ -36,7 +36,7 @@ export interface RundownScriptCompiled extends EventBase {
       url: string,
       /**
        * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
-       * New traces use string instead. See https://crbug.com/447654178.
+       * New traces (since M142, Sep 2025, crrev.com/c/6990800) use string instead. See https://crbug.com/447654178.
        */
       isolate: string|number,
       /** AKA V8ContextToken. https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/inspector/inspector_trace_events.cc;l=1229;drc=3c88f61e18b043e70c225d8d57c77832a85e7f58 */
@@ -61,7 +61,7 @@ export interface RundownScript extends EventBase {
     data: {
       /**
        * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
-       * New traces use string instead. See https://crbug.com/447654178.
+       * New traces (since M142, Sep 2025, crrev.com/c/6990800) use string instead. See https://crbug.com/447654178.
        */
       isolate: string|number,
       executionContextId: Protocol.Runtime.ExecutionContextId,
@@ -91,7 +91,11 @@ export interface RundownScriptSource extends EventBase {
   name: 'ScriptCatchup'|'LargeScriptCatchup'|'TooLargeScriptCatchup';
   args: {
     data: {
-      isolate: number,
+      /**
+       * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
+       * New traces (since M142, Sep 2025, crrev.com/c/6990800) use string instead. See https://crbug.com/447654178.
+       */
+      isolate: string|number,
       scriptId: number,
       length?: number,
       sourceText?: string,
@@ -124,7 +128,7 @@ interface FunctionCall extends EventBase {
       scriptId: Protocol.Runtime.ScriptId,
       /**
        * Older traces were a number, but this is an unsigned 64 bit value, so that was a bug.
-       * New traces use string instead. See https://crbug.com/447654178.
+       * New traces (since M142, Sep 2025, crrev.com/c/6990800) use string instead. See https://crbug.com/447654178.
        */
       isolate?: string|number,
     },

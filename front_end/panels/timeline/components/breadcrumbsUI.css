@@ -12,6 +12,10 @@
   overflow: scroll hidden;
 }
 
+.breadcrumbs.visible {
+  display: flex;
+}
+
 .breadcrumbs::-webkit-scrollbar {
   display: none;
 }

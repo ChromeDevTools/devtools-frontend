@@ -169,6 +169,16 @@ describe('NetworkRequestFormatter', () => {
       sinon.assert.notCalled(requestContentData);
     });
 
+    it('reads the body of an unfinished request that has a content data provider', async () => {
+      const unfinishedRequest = createNetworkRequest({
+        contentData: new TextUtils.ContentData.ContentData('{"a":1}', false, 'application/json'),
+      });
+
+      const result = await NetworkRequestFormatter.NetworkRequestFormatter.formatBody('test:', unfinishedRequest, 100);
+
+      assert.strictEqual(result, 'test:\n{"a":1}');
+    });
+
     it('handles empty response correctly', async () => {
       fakeRequest.requestContentData = (): Promise<TextUtils.ContentData.ContentDataOrError> => {
         return Promise.resolve(new TextUtils.ContentData.ContentData('', false, ''));

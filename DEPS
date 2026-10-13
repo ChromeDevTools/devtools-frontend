@@ -18,7 +18,7 @@ vars = {
   'buildtools_revision': '8790f824690e131a78f36e80ecc05a9272f061c8',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'a842f8a072b00ac96c3ddd70aaafc01bb43fff1c',
+  'depot_tools_revision': '96b9c092c0cdaa9f1ec87b0af777ec85977dee91',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'b8141806c6b0382b0b741d5c23d45c85168644e6',
@@ -65,7 +65,7 @@ vars = {
   'cpython3_version': 'version:3@3.11.9.chromium.38',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:7062c4f8a81f14ed840f6c6d1bbef63be5fabaae',
+  'siso_version': 'git_revision:b521b230cb7c56c821235e498285cf8e548a73ee',
 
   # Fetches the AI Evals testing data.
   'checkout_devtools_ai_evals': False,

@@ -644,12 +644,11 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   async #callFrameChanged(): Promise<void> {
     const frameFlavor = UI.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
-    if (!frameFlavor?.frame.uiSourceCode) {
+    const uiLocation = frameFlavor?.frame.toUiLocation(this.workspace);
+    if (!uiLocation) {
       return;
     }
 
-    const uiLocation = new Workspace.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line,
-                                                             frameFlavor.frame.column);
     if (window.performance.now() - this.#lastModificationTime < lastModificationTimeout) {
       return;
     }

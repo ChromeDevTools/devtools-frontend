@@ -74,5 +74,6 @@ devtools_foundation_module("foundation_unittests") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",
+    "../workspace:bundle",
   ]
 }

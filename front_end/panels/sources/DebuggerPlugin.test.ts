@@ -20,6 +20,7 @@ import {createTarget, deinitializeGlobalVars, describeWithEnvironment} from '../
 import {expectCalled, spyCall} from '../../testing/ExpectStubCall.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {stubFrame} from '../../testing/StackTraceHelpers.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -653,7 +654,8 @@ describeWithEnvironment('ScopeMappingsCache', () => {
     const cache = new Sources.DebuggerPlugin.ScopeMappingsCache(uiSourceCode);
     const compute = sinon.stub<[], Promise<Sources.DebuggerPlugin.ScopeMapping[]>>().resolves(scopeMappings);
     const sdkFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-    const frame = StackTrace.StackTrace.DebuggableFrameFlavor.for({sdkFrame, line: 0, column: 0});
+    const frame = StackTrace.StackTrace.DebuggableFrameFlavor.for(stubFrame<StackTrace.StackTrace.DebuggableFrame>(
+                                                                      {sdkFrame, line: 0, column: 0}));
     return {uiSourceCode, cache, compute, sdkFrame, frame};
   }
 
@@ -670,7 +672,9 @@ describeWithEnvironment('ScopeMappingsCache', () => {
     await cache.get(frame, compute);
 
     // E.g. a source map got attached and the frame now points somewhere else.
-    const retranslatedFrame = StackTrace.StackTrace.DebuggableFrameFlavor.for({sdkFrame, line: 5, column: 2});
+    const retranslatedFrame =
+        StackTrace.StackTrace.DebuggableFrameFlavor.for(stubFrame<StackTrace.StackTrace.DebuggableFrame>(
+                                                            {sdkFrame, line: 5, column: 2}));
     assert.notStrictEqual(retranslatedFrame, frame);
     await cache.get(retranslatedFrame, compute);
 
@@ -1062,7 +1066,9 @@ globalThis.foo = bar + baz;
 
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
       sinon.stub(debuggerModel, 'isPaused').returns(true);
-      const frameFlavor = StackTrace.StackTrace.DebuggableFrameFlavor.for({sdkFrame: callFrame, line: 0, column: 23});
+      const frameFlavor =
+          StackTrace.StackTrace.DebuggableFrameFlavor.for(stubFrame<StackTrace.StackTrace.DebuggableFrame>(
+                                                              {sdkFrame: callFrame, line: 0, column: 23}));
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
       UI.Context.Context.instance().setFlavor(StackTrace.StackTrace.DebuggableFrameFlavor, frameFlavor);
 

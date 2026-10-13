@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
@@ -95,6 +96,12 @@ export class FrameImpl implements StackTrace.StackTrace.Frame {
     this.rawName = rawName;
     this.isWasm = isWasm;
     this.isInline = isInline;
+  }
+
+  toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation|null {
+    const uiSourceCode = this.uiSourceCode ??
+        (this.url ? workspace.uiSourceCodeForURL(this.url as Platform.DevToolsPath.UrlString) : null);
+    return uiSourceCode?.uiLocation(this.line, this.column) ?? null;
   }
 }
 
@@ -299,6 +306,10 @@ export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedEr
   get promiseIndex(): number|undefined {
     return this.#locationInfo?.promiseIndex;
   }
+
+  toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation|null {
+    return this.#frame.toUiLocation(workspace);
+  }
 }
 
 /**
@@ -394,5 +405,9 @@ export class DebuggableFrameImpl implements StackTrace.StackTrace.DebuggableFram
 
   get sdkFrame(): SDK.DebuggerModel.CallFrame {
     return this.#sdkFrame;
+  }
+
+  toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation|null {
+    return this.#frame.toUiLocation(workspace);
   }
 }

@@ -7,17 +7,17 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {protocolCallFrame} from '../../testing/StackTraceHelpers.js';
+import {protocolCallFrame, stubFrame} from '../../testing/StackTraceHelpers.js';
 
 import * as StackTrace from './stack_trace.js';
 
 describe('DebuggableFrameFlavor for', () => {
   it('returns the exact same instance for subsequent identical (deep equal) DebuggableFrames', () => {
-    const frameTemplate: StackTrace.StackTrace.DebuggableFrame = {
+    const frameTemplate = stubFrame<StackTrace.StackTrace.DebuggableFrame>({
       line: 20,
       column: 10,
       sdkFrame: sinon.createStubInstance(SDK.DebuggerModel.CallFrame),
-    };
+    });
 
     assert.strictEqual(
         StackTrace.StackTrace.DebuggableFrameFlavor.for({...frameTemplate}),
@@ -25,11 +25,11 @@ describe('DebuggableFrameFlavor for', () => {
   });
 
   it('returns a different instance if the same DebuggableFrame object changes', () => {
-    const frame = {
+    const frame = stubFrame<StackTrace.StackTrace.DebuggableFrame>({
       line: 20,
       column: 10,
       sdkFrame: sinon.createStubInstance(SDK.DebuggerModel.CallFrame),
-    } satisfies StackTrace.StackTrace.DebuggableFrame;
+    });
     const flavor1 = StackTrace.StackTrace.DebuggableFrameFlavor.for(frame);
 
     const flavor2 = StackTrace.StackTrace.DebuggableFrameFlavor.for({...frame, line: 30});

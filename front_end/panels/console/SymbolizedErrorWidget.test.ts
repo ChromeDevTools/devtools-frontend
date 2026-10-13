@@ -15,7 +15,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
-import {StubParsedErrorStackTrace} from '../../testing/StackTraceHelpers.js';
+import {stubFrame, StubParsedErrorStackTrace} from '../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -80,7 +80,8 @@ describe('SymbolizedErrorWidget', function() {
   });
 
   it('renders an error with a cause and various types of frames', async () => {
-    const evalOrigin = {name: '<anonymous>', url: 'http://example.com/b.js', line: 1, column: 1};
+    const evalOrigin = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>(
+        {name: '<anonymous>', url: 'http://example.com/b.js', line: 1, column: 1});
     const cause = stubSymbolizedError('Error: cause error', [
       {name: 'eval', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin},
       {name: 'bar', url: 'http://example.com/b.js', line: 1, column: 1},
@@ -293,11 +294,12 @@ Caused by: Error: cause error
   });
 
   it('correctly renders a complex nested eval stack trace', async () => {
-    const evalCallerOrigin = {name: 'evalCaller', url: 'http://example.com/index.html', line: 10, column: 44};
-    const level1Eval =
-        {name: '<anonymous>', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin: evalCallerOrigin};
-    const level2Eval =
-        {name: '<anonymous>', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin: level1Eval};
+    const evalCallerOrigin = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>(
+        {name: 'evalCaller', url: 'http://example.com/index.html', line: 10, column: 44});
+    const level1Eval = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>(
+        {name: '<anonymous>', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin: evalCallerOrigin});
+    const level2Eval = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>(
+        {name: '<anonymous>', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin: level1Eval});
 
     const frame1 = {name: 'end', url: '<anonymous>', line: 0, column: 22, isEval: true, evalOrigin: level2Eval};
     const frame2 = {name: 'eval', url: '<anonymous>', line: 0, column: 43, isEval: true, evalOrigin: level2Eval};
@@ -329,7 +331,8 @@ Caused by: Error: cause error
   });
 
   it('correctly renders a WASM frame inside an eval origin (without uiSourceCode)', async () => {
-    const wasmOrigin = {name: 'wasmFunc', url: 'http://example.com/a.wasm', line: 0, column: 0xabc, isWasm: true};
+    const wasmOrigin = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>(
+        {name: 'wasmFunc', url: 'http://example.com/a.wasm', line: 0, column: 0xabc, isWasm: true});
     const errorWithoutSource = stubSymbolizedError('Error: wasm eval error', [
       {name: 'eval', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin: wasmOrigin},
     ]);
@@ -368,14 +371,14 @@ Caused by: Error: cause error
 
     mockUiSourceCode.uiLocation = () => uiLocation;
 
-    const wasmOrigin = {
+    const wasmOrigin = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>({
       name: 'wasmFunc',
       url: 'http://example.com/a.wasm',
       line: 0,
       column: 0xabc,
       isWasm: true,
       uiSourceCode: mockUiSourceCode,
-    };
+    });
     const errorWithSource = stubSymbolizedError('Error: wasm eval error', [
       {name: 'eval', url: '<anonymous>', line: 0, column: 0, isEval: true, evalOrigin: wasmOrigin},
     ]);
@@ -436,13 +439,13 @@ Caused by: Error: cause error
   });
 
   it('prefers rawName over name when rendering the function name', async () => {
-    const mockFrame = {
+    const mockFrame = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>({
       name: 'translatedName',
       rawName: 'originalName',
       line: 0,
       column: 0,
       url: 'http://example.com/a.js',
-    } as unknown as StackTrace.StackTrace.ParsedErrorStackFrame;
+    });
 
     const mockStackTrace = {
       syncFragment: {
@@ -476,14 +479,14 @@ Caused by: Error: cause error
   });
 
   it('prefers name over rawName when rendering the function name if isInline is true', async () => {
-    const mockFrame = {
+    const mockFrame = stubFrame<StackTrace.StackTrace.ParsedErrorStackFrame>({
       name: 'translatedName',
       rawName: 'originalName',
       line: 0,
       column: 0,
       url: 'http://example.com/a.js',
       isInline: true,
-    } as unknown as StackTrace.StackTrace.ParsedErrorStackFrame;
+    });
 
     const mockStackTrace = {
       syncFragment: {

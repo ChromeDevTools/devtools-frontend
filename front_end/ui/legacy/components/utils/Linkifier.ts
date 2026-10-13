@@ -393,14 +393,14 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       omitLineAndRenderColumnAsHex: frame.isWasm,
     };
     const fallbackAnchor = Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, fallbackOptions);
-    if (!frame.uiSourceCode) {
+    const uiLocation = frame.toUiLocation(Workspace.Workspace.WorkspaceImpl.instance());
+    if (!uiLocation) {
       const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance())
                                  .isUserIgnoreListedURL(frame.url as Platform.DevToolsPath.UrlString);
       fallbackAnchor.classList.toggle('ignore-list-link', isIgnoreListed);
       return fallbackAnchor;
     }
 
-    const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column);
     return Linkifier.linkifyUILocation(uiLocation, options);
   }
 

@@ -22,6 +22,25 @@ import * as Security from './security.js';
 
 const {urlString} = Platform.DevToolsPath;
 
+function createSecurityDetails(overrides: Partial<Protocol.Network.SecurityDetails> = {}):
+    Protocol.Network.SecurityDetails {
+  return {
+    protocol: 'TLS 1.3',
+    keyExchange: '',
+    cipher: 'AES_128_GCM',
+    certificateId: 0 as Protocol.Security.CertificateId,
+    subjectName: 'example.com',
+    sanList: [],
+    issuer: 'Test CA',
+    validFrom: 0,
+    validTo: 1,
+    signedCertificateTimestampList: [],
+    certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
+    encryptedClientHello: false,
+    ...overrides,
+  };
+}
+
 describe('createHighlightedUrl', () => {
   it('renders a URL without a scheme separator as plain text', () => {
     const highlightedUrl =
@@ -53,21 +72,7 @@ describeWithEnvironment('SecurityOriginView', () => {
       Security.SecurityPanel.OriginState {
     return {
       securityState: Protocol.Security.SecurityState.Secure,
-      securityDetails: {
-        protocol: 'TLS 1.3',
-        keyExchange: '',
-        cipher: 'AES_128_GCM',
-        certificateId: 0 as Protocol.Security.CertificateId,
-        subjectName: 'example.com',
-        sanList: [],
-        issuer: 'Test CA',
-        validFrom: 0,
-        validTo: 1,
-        signedCertificateTimestampList: [],
-        certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
-        encryptedClientHello: false,
-        ...securityDetails,
-      },
+      securityDetails: createSecurityDetails(securityDetails),
       loadedFromCache: false,
     };
   }
@@ -86,20 +91,10 @@ describeWithEnvironment('SecurityOriginView', () => {
     const securityStateSection = querySelectorErrorOnMissing(view.element, '.security-state-section');
     assert.include(securityStateSection.textContent, 'No security information');
 
-    const securityDetails: Protocol.Network.SecurityDetails = {
+    const securityDetails = createSecurityDetails({
       protocol: 'TLS 1.3',
-      keyExchange: '',
-      cipher: 'AES_128_GCM',
-      certificateId: 0 as Protocol.Security.CertificateId,
       subjectName: 'foo.bar',
-      sanList: [],
-      issuer: 'Test CA',
-      validFrom: 0,
-      validTo: 1,
-      signedCertificateTimestampList: [],
-      certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
-      encryptedClientHello: false,
-    };
+    });
     view.setSecurityState(Protocol.Security.SecurityState.Secure, securityDetails);
 
     assert.notExists(view.element.querySelector('.security-state-section'));
@@ -549,20 +544,6 @@ describeWithEnvironment('SecurityOriginView', () => {
 
     it('renders when security details are available', () => {
       const originState = createOriginState();
-      originState.securityDetails = {
-        protocol: 'TLS 1.3',
-        keyExchange: '',
-        cipher: 'AES_128_GCM',
-        certificateId: 0 as Protocol.Security.CertificateId,
-        subjectName: 'example.com',
-        sanList: [],
-        issuer: 'Test CA',
-        validFrom: 0,
-        validTo: 1,
-        signedCertificateTimestampList: [],
-        certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Unknown,
-        encryptedClientHello: false,
-      };
       const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, originState);
 
       assert.deepEqual(getNoteTexts(view), ['The security details above are from the first inspected response']);
@@ -621,7 +602,8 @@ describeWithEnvironment('SecurityOriginView', () => {
   });
 
   it('renders an empty SAN', () => {
-    const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+    const view =
+        new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState({sanList: []}));
 
     const sanElement = view.element.querySelector('.san');
     assert.instanceOf(sanElement, HTMLElement);
@@ -799,6 +781,34 @@ describeWithEnvironment('SecurityPanel', () => {
     const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebar, 'clearOrigins');
     navigate(getMainFrame(target));
     sinon.assert.calledOnce(sidebarTreeClearSpy);
+  });
+
+  it('shows Certificate Transparency compliance when an origin is selected', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    const request = createNetworkRequest({
+      url: 'https://foo.test/',
+      documentURL: 'https://foo.test',
+      frameId: '0',
+      loaderId: '0',
+    });
+    request.setSecurityState(Protocol.Security.SecurityState.Secure);
+    request.setSecurityDetails(createSecurityDetails({
+      signedCertificateTimestampList: [],
+      certificateTransparencyCompliance: Protocol.Network.CertificateTransparencyCompliance.Compliant,
+    }));
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+
+    securityPanel.sidebar.selectedOrigin = urlString`https://foo.test`;
+
+    const originView = securityPanel.visibleView;
+    assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
+    const section = querySelectorErrorOnMissing(originView.contentElement, '.certificate-transparency-section');
+    const note = querySelectorErrorOnMissing(section, '.origin-view-section-notes');
+    assert.strictEqual(note.textContent, 'This request complies with Chrome’s Certificate Transparency policy');
   });
 
   it('preserves the selected origin when the panel is hidden and shown again', async () => {

@@ -356,4 +356,85 @@ describe('TimeRangeOverlay', () => {
     const {rangeContainer} = getRenderedElements(component);
     assert.isFalse(rangeContainer.classList.contains('labelHidden'));
   });
+
+  it('clears the left margin when the label moves from the left edge straight to the right edge', async () => {
+    const {component, overlayElement} =
+        await renderPositionedOverlay({left: -200, width: 400, label: 'label', duration: DURATION});
+    const {rangeContainer} = getRenderedElements(component);
+    assert.strictEqual(rangeContainer.style.marginLeft, '209px');
+
+    overlayElement.style.left = `${CANVAS_WIDTH_PX - 200}px`;
+    component.updateLabelPositioning();
+
+    assert.isTrue(rangeContainer.classList.contains('offScreenRight'));
+    assert.isFalse(rangeContainer.classList.contains('offScreenLeft'));
+    assert.strictEqual(rangeContainer.style.marginLeft, '0px');
+    assert.strictEqual(rangeContainer.style.marginRight, '209px');
+  });
+
+  it('clears the right margin when the label moves from the right edge straight to the left edge', async () => {
+    const {component, overlayElement} =
+        await renderPositionedOverlay({left: CANVAS_WIDTH_PX - 200, width: 400, label: 'label', duration: DURATION});
+    const {rangeContainer} = getRenderedElements(component);
+    assert.strictEqual(rangeContainer.style.marginRight, '209px');
+
+    overlayElement.style.left = '-200px';
+    component.updateLabelPositioning();
+
+    assert.isTrue(rangeContainer.classList.contains('offScreenLeft'));
+    assert.isFalse(rangeContainer.classList.contains('offScreenRight'));
+    assert.strictEqual(rangeContainer.style.marginLeft, '209px');
+    assert.strictEqual(rangeContainer.style.marginRight, '0px');
+  });
+
+  it('keeps the label pinned when it is repositioned again with the range just past the left edge', async () => {
+    const {component} = await renderPositionedOverlay({left: -5, width: 400, label: 'label', duration: DURATION});
+    const {rangeContainer} = getRenderedElements(component);
+    assert.isTrue(rangeContainer.classList.contains('offScreenLeft'));
+    // The margin is the 5px the range extends past the canvas, plus 9px of scrollbar padding.
+    assert.strictEqual(rangeContainer.style.marginLeft, '14px');
+
+    // Nothing has moved, so repositioning must give the same result.
+    component.updateLabelPositioning();
+
+    assert.isTrue(rangeContainer.classList.contains('offScreenLeft'));
+    assert.strictEqual(rangeContainer.style.marginLeft, '14px');
+  });
+
+  it('positions the label against a canvasRect that has moved without changing size', async () => {
+    const {component, canvas} =
+        await renderPositionedOverlay({left: -200, width: 400, label: 'label', duration: DURATION});
+    const {rangeContainer} = getRenderedElements(component);
+    assert.strictEqual(rangeContainer.style.marginLeft, '209px');
+
+    const canvasRect = canvas.getBoundingClientRect();
+    component.canvasRect = new DOMRect(canvasRect.x + 50, canvasRect.y, canvasRect.width, canvasRect.height);
+    component.updateLabelPositioning();
+
+    assert.isTrue(rangeContainer.classList.contains('offScreenLeft'));
+    // The canvas now starts 250px after the range, plus 9px of scrollbar padding.
+    assert.strictEqual(rangeContainer.style.marginLeft, '259px');
+    // Wait for any requested update, so that it does not run after the test
+    // has removed the locale.
+    await component.updateComplete;
+  });
+
+  it('centres the label on the visible part of the canvas when the range extends past both edges', async () => {
+    const {component, canvas} =
+        await renderPositionedOverlay({left: -200, width: CANVAS_WIDTH_PX + 400, label: 'label', duration: DURATION});
+    const {rangeContainer, labelBox} = getRenderedElements(component);
+    assert.isFalse(rangeContainer.classList.contains('offScreenLeft'));
+    assert.isFalse(rangeContainer.classList.contains('offScreenRight'));
+    // Each margin is the 200px the range extends past that edge, plus 9px of scrollbar padding.
+    assert.strictEqual(rangeContainer.style.marginLeft, '209px');
+    assert.strictEqual(rangeContainer.style.marginRight, '209px');
+
+    const canvasRect = canvas.getBoundingClientRect();
+    const labelRect = labelBox.getBoundingClientRect();
+    assert.isAtLeast(labelRect.left, canvasRect.left);
+    assert.isAtMost(labelRect.right, canvasRect.right);
+    const labelCentre = labelRect.left + labelRect.width / 2;
+    const canvasCentre = canvasRect.left + canvasRect.width / 2;
+    assert.closeTo(labelCentre, canvasCentre, 1);
+  });
 });

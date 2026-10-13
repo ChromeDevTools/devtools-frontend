@@ -51,8 +51,8 @@ export interface ViewOutput {
    * Moves the label as required to keep it on screen, and hides it if the
    * visible part of the range is too narrow. Returns true once the label has
    * been measured, including when it is hidden. Returns false, without
-   * changing anything, if the duration text has no width to measure against,
-   * or if the view has not rendered yet.
+   * positioning the label, if the duration text has no width to measure
+   * against, or if the view has not rendered yet.
    */
   positionLabel: (options: PositionLabelOptions) => boolean;
 }
@@ -96,6 +96,11 @@ function applyLabelPosition(overlay: HTMLElement, rangeContainer: HTMLElement, d
   // values and label positioning from the left hand side in order to be
   // consistent on both edges of the UI.
   const paddingForScrollbar = 9;
+  // Clear the margins from the last call before measuring. The range
+  // container stretches to the width of the overlay, so a leftover margin
+  // narrows it, which changes where the label is measured to be. Clearing
+  // first also means only the margin for the current edge is applied below.
+  rangeContainer.style.margin = '0px';
   const overlayRect = overlay.getBoundingClientRect();
 
   const labelRect = rangeContainer.getBoundingClientRect();
@@ -118,7 +123,6 @@ function applyLabelPosition(overlay: HTMLElement, rangeContainer: HTMLElement, d
   const newLabelX = overlayRect.x + labelLeftMarginToCenter;
 
   const labelOffLeftOfScreen = newLabelX < canvasRect.x;
-  rangeContainer.classList.toggle('offScreenLeft', labelOffLeftOfScreen);
 
   // Check if label is off the RHS of the screen.
   const rightBound = canvasRect.x + canvasRect.width;
@@ -126,26 +130,30 @@ function applyLabelPosition(overlay: HTMLElement, rangeContainer: HTMLElement, d
   // label, and then the width of the label.
   const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
   const labelOffRightOfScreen = labelRightEdge > rightBound;
-  rangeContainer.classList.toggle('offScreenRight', labelOffRightOfScreen);
+
+  // If the label is off both edges, the range covers the whole canvas, so
+  // centre the label on the visible part instead of pinning it to one edge.
+  // Applying both margins below shrinks the range container to the visible
+  // part, and setting neither alignment class centres the label within it.
+  rangeContainer.classList.toggle('offScreenLeft', labelOffLeftOfScreen && !labelOffRightOfScreen);
+  rangeContainer.classList.toggle('offScreenRight', labelOffRightOfScreen && !labelOffLeftOfScreen);
 
   if (labelOffLeftOfScreen) {
     // If the label is off the left of the screen, we adjust by the
     // difference between the X that represents the start of the canvas, and
-    // the X that represents the start of the overlay.
-    // We then take the absolute value of this - because if the canvas starts
+    // the X that represents the start of the overlay. The overlay starts
+    // before the canvas, so this difference is positive: if the canvas starts
     // at 0, and the overlay is -200px, we have to adjust the label by +200.
     // Add on 9 pixels to pad from the left; this is the width of the sidebar
     // on the RHS so we match it so the label is equally padded on either
     // side.
     rangeContainer.style.marginLeft = `${Math.abs(canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
-  } else if (labelOffRightOfScreen) {
+  }
+  if (labelOffRightOfScreen) {
     // If the label is off the right of the screen, we adjust by adding the
     // right margin equal to the difference between the right edge of the
     // overlay and the right edge of the canvas.
     rangeContainer.style.marginRight = `${overlayRect.right - canvasRect.right + paddingForScrollbar}px`;
-  } else {
-    // Keep the label central.
-    rangeContainer.style.margin = '0px';
   }
   return true;
 }
@@ -274,7 +282,9 @@ export class TimeRangeOverlay extends UI.Widget.Widget {
     if (rect === null) {
       return;
     }
-    if (this.#canvasRect && this.#canvasRect.width === rect.width && this.#canvasRect.height === rect.height) {
+    // Positioning only uses `x` and `width`, so a rect that only changes `y`
+    // or `height` is ignored.
+    if (this.#canvasRect && this.#canvasRect.x === rect.x && this.#canvasRect.width === rect.width) {
       return;
     }
     this.#canvasRect = rect;

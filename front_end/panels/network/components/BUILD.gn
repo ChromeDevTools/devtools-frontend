@@ -72,6 +72,7 @@ devtools_ui_module("unittests") {
   testonly = true
   sources = [
     "DirectSocketConnectionView.test.ts",
+    "EditableSpan.test.ts",
     "HeaderSectionRow.test.ts",
     "RequestHeaderSection.test.ts",
     "RequestTrustTokensView.test.ts",

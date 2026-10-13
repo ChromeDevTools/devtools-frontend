@@ -168,14 +168,14 @@ const cssPathStep = function (node, optimized, isTargetNode) {
     }
     return new Step(result, false);
 };
-export const xPath = function (node, optimized) {
+export const xPath = async function (node, optimized) {
     if (node.nodeType() === Node.DOCUMENT_NODE) {
         return '/';
     }
     const steps = [];
     let contextNode = node;
     while (contextNode) {
-        const step = xPathValue(contextNode, optimized);
+        const step = await xPathValue(contextNode, optimized);
         if (!step) {
             break;
         } // Error - bail out early.
@@ -188,9 +188,9 @@ export const xPath = function (node, optimized) {
     steps.reverse();
     return (steps.length && steps[0].optimized ? '' : '/') + steps.join('/');
 };
-const xPathValue = function (node, optimized) {
+const xPathValue = async function (node, optimized) {
     let ownValue;
-    const ownIndex = xPathIndex(node);
+    const ownIndex = await xPathIndex(node);
     if (ownIndex === -1) {
         return null;
     } // Error.
@@ -226,7 +226,33 @@ const xPathValue = function (node, optimized) {
     }
     return new Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
-const xPathIndex = function (node) {
+function getTextNodeXPathIndexInPage() {
+    const siblings = this.parentNode?.childNodes;
+    if (!siblings) {
+        return 0;
+    }
+    let hasSimilarElements = false;
+    let ownIndex = 1;
+    let foundIndex = -1;
+    for (let i = 0; i < siblings.length; ++i) {
+        const sibling = siblings[i];
+        if (sibling.nodeType !== Node.TEXT_NODE && sibling.nodeType !== Node.CDATA_SECTION_NODE) {
+            continue;
+        }
+        if (sibling === this) {
+            foundIndex = ownIndex;
+        }
+        else {
+            hasSimilarElements = true;
+        }
+        ++ownIndex;
+    }
+    if (foundIndex === -1) {
+        return -1;
+    }
+    return hasSimilarElements ? foundIndex : 0;
+}
+const xPathIndex = async function (node) {
     /**
      * Returns -1 in case of error, 0 if no siblings matching the same expression,
      * <XPath index among the same expression-matching sibling nodes> otherwise.
@@ -245,6 +271,12 @@ const xPathIndex = function (node) {
         const leftType = left.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : left.nodeType();
         const rightType = right.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : right.nodeType();
         return leftType === rightType;
+    }
+    if (node.nodeType() === Node.TEXT_NODE || node.nodeType() === Node.CDATA_SECTION_NODE) {
+        const response = await node.callFunction(getTextNodeXPathIndexInPage);
+        if (response !== null && response.value !== -1) {
+            return response.value;
+        }
     }
     const siblings = node.parentNode ? node.parentNode.children() : null;
     if (!siblings) {

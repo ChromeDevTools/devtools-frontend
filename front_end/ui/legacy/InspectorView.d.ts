@@ -36,9 +36,10 @@ export declare class InspectorView extends VBox implements ViewLocationResolver 
     private focusRestorer?;
     private ownerSplitWidget?;
     private reloadRequiredInfobar?;
-    constructor();
+    constructor(element?: HTMLElement);
     static instance(opts?: {
-        forceNew: boolean | null;
+        forceNew?: boolean | null;
+        element?: HTMLElement;
     } | undefined): InspectorView;
     static maybeGetInspectorViewInstance(): InspectorView | null;
     static removeInstance(): void;

@@ -1832,8 +1832,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -2941,7 +2939,7 @@ var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.
     if (!actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID2)) {
       return;
     }
-    const action7 = actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID2);
+    const action8 = actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID2);
     if (!this.aiButtonContainer) {
       this.aiButtonContainer = this.listItemElement.createChild("span", "ai-button-container");
       const icon = AiAssistance.AiUtils.getIconName();
@@ -2950,13 +2948,13 @@ var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.
         const item4 = storageItemProvider();
         if (item4) {
           UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item4);
-          void action7.execute();
+          void action8.execute();
         }
       };
       Lit.render(html`
             <devtools-floating-button
               icon-name=${icon}
-              title=${action7.title()}
+              title=${action8.title()}
               jslogcontext="ask-ai"
               @click=${onClick}
               @mousedown=${(ev) => ev.stopPropagation()}>
@@ -5645,11 +5643,6 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
     const isSiteAllowed = this.#model.isSiteVisible(site);
     if (isSiteAllowed && !isElementPresent) {
       this.appendChild(siteTreeElement);
-      const children = [...siteTreeElement.children()];
-      siteTreeElement.removeChildren();
-      for (const child of children) {
-        siteTreeElement.appendChild(child);
-      }
     } else if (!isSiteAllowed && isElementPresent) {
       this.removeChild(siteTreeElement);
     }
@@ -6715,7 +6708,24 @@ var UIStrings7 = {
   /**
    * @description Explanation of origin trials in the origin trials section of the frame details view.
    */
-  originTrialsExplanation: "Origin trials give you access to a new or experimental feature"
+  originTrialsExplanation: "Origin trials give you access to a new or experimental feature",
+  /**
+   * @description Section header in the Frame Details view for the words that the document added to its spell check
+   * custom dictionary (https://github.com/Igalia/explainers/tree/main/spell-check-dictionary).
+   */
+  spellCheckCustomDictionary: "Spell check custom dictionary",
+  /**
+   * @description Explanation of the spell check custom dictionary section in the Frame Details view
+   */
+  spellCheckCustomDictionaryExplanation: "Words added with `document.spellCheckCustomDictionary.addWords()`. The spell checker doesn\u2019t flag them in this document.",
+  /**
+   * @description Label for the list of words in the spell check custom dictionary section of the Frame Details view
+   */
+  words: "Words",
+  /**
+   * @description Accessible label for a button that reloads the words in the spell check custom dictionary section
+   */
+  refreshSpellCheckCustomDictionary: "Refresh spell check custom dictionary"
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/application/FrameDetailsView.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
@@ -6731,6 +6741,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       ${renderIsolationSection(input)}
       ${renderApiAvailabilitySection(input.frame)}
       ${renderOriginTrial(input.trials)}
+      ${renderSpellCheckCustomDictionary(input.spellCheckCustomDictionaryWords, input.onRefreshSpellCheckCustomDictionary)}
       ${input.permissionsPolicies ? widget3(ApplicationComponents4.PermissionsPolicySection.PermissionsPolicySection, {
     policies: input.permissionsPolicies,
     showDetails: false
@@ -6759,6 +6770,38 @@ function renderOriginTrial(trials) {
     </devtools-report-section>
     <devtools-widget class="span-cols" ${widget3(OriginTrialTreeView, { data })}>
     </devtools-widget>
+    <devtools-report-divider></devtools-report-divider>`;
+}
+function renderSpellCheckCustomDictionary(words, onRefresh) {
+  if (!words.length) {
+    return nothing3;
+  }
+  const rows = words.map((word) => html5`<div>${word}</div>`);
+  return html5`
+    <devtools-report-section-header>
+      ${i18nString7(UIStrings7.spellCheckCustomDictionary)}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <span class="report-section">
+        ${i18nString7(UIStrings7.spellCheckCustomDictionaryExplanation)}
+      </span>
+    </devtools-report-section>
+    <devtools-report-key>${i18nString7(UIStrings7.words)}</devtools-report-key>
+    <devtools-report-value class="spell-check-custom-dictionary-list"
+        jslog=${VisualLogging3.section("spell-check-custom-dictionary")}>
+      <div class="inline-items">
+        <devtools-expandable-list .data=${{ rows, title: i18nString7(UIStrings7.words) }}>
+        </devtools-expandable-list>
+        <devtools-button
+          .iconName=${"refresh"}
+          .accessibleLabel=${i18nString7(UIStrings7.refreshSpellCheckCustomDictionary)}
+          .variant=${Buttons3.Button.Variant.ICON}
+          .size=${Buttons3.Button.Size.SMALL}
+          @click=${onRefresh}
+          jslog=${VisualLogging3.action("refresh").track({ click: true })}
+        ></devtools-button>
+      </div>
+    </devtools-report-value>
     <devtools-report-divider></devtools-report-divider>`;
 }
 function renderDocumentSection(input) {
@@ -7189,6 +7232,7 @@ var FrameDetailsReportView = class extends UI8.Widget.Widget {
   #permissionsPolicies = null;
   #linkifier = new Components2.Linkifier.Linkifier();
   #adScriptAncestry = null;
+  #spellCheckCustomDictionaryWords = [];
   #view;
   constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
@@ -7221,7 +7265,26 @@ var FrameDetailsReportView = class extends UI8.Widget.Widget {
       this.#trials = trials;
       this.requestUpdate();
     });
+    this.#spellCheckCustomDictionaryWords = [];
+    this.#refreshSpellCheckCustomDictionary();
     this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#refreshSpellCheckCustomDictionary();
+  }
+  #refreshSpellCheckCustomDictionary() {
+    const frame = this.#frame;
+    if (!frame) {
+      return;
+    }
+    void frame.getSpellCheckCustomDictionary().then((words) => {
+      if (frame !== this.#frame) {
+        return;
+      }
+      this.#spellCheckCustomDictionaryWords = words;
+      this.requestUpdate();
+    });
   }
   get frame() {
     return this.#frame;
@@ -7248,6 +7311,8 @@ var FrameDetailsReportView = class extends UI8.Widget.Widget {
       linkTargetDOMNode: this.#linkTargetDOMNode,
       trials: this.#trials,
       securityIsolationInfo: this.#securityIsolationInfo,
+      spellCheckCustomDictionaryWords: this.#spellCheckCustomDictionaryWords,
+      onRefreshSpellCheckCustomDictionary: () => this.#refreshSpellCheckCustomDictionary(),
       onRevealInNetwork: frameRequest ? () => {
         const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           frameRequest,
@@ -9287,7 +9352,7 @@ function applyFilterText(filterText, rows) {
   return rows.filter((row) => {
     const attempt = row.pipeline.getOriginallyTriggered();
     const url = attempt.key.url.toLowerCase();
-    const action7 = PreloadingComponents.PreloadingString.capitalizedAction(
+    const action8 = PreloadingComponents.PreloadingString.capitalizedAction(
       attempt.action
     ).toLowerCase();
     const status = PreloadingUIUtils.status(attempt.status).toLowerCase();
@@ -9301,13 +9366,13 @@ function applyFilterText(filterText, rows) {
         case "url":
           return url.includes(searchText);
         case "action":
-          return action7.includes(searchText);
+          return action8.includes(searchText);
         case "status": {
           const statusValues = searchText.split(",");
           return statusValues.some((v) => status.includes(v));
         }
         case void 0:
-          return url.includes(searchText) || action7.includes(searchText) || status.includes(searchText);
+          return url.includes(searchText) || action8.includes(searchText) || status.includes(searchText);
         default:
           return false;
       }
@@ -13413,13 +13478,13 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     if (this.isAiButtonEnabled() && UI21.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       this.#updateAiAssistanceContext(cookie);
       if (UI21.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
-        const action7 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
+        const action8 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString21(UIStrings21.startAChat));
         submenu.defaultSection().appendItem(
           i18nString21(UIStrings21.explainCookie),
-          () => action7.execute({ prompt: "What is the purpose of this cookie?" }),
-          { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
+          () => action8.execute({ prompt: "What is the purpose of this cookie?" }),
+          { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
         );
       }
     }
@@ -15119,13 +15184,13 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
       this.#setAiStorageContext(item4);
-      const action7 = actionRegistry.getAction(openAiAssistanceId);
-      const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
+      const action8 = actionRegistry.getAction(openAiAssistanceId);
+      const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
       submenu.defaultSection().appendAction(openAiAssistanceId, i18nString24(UIStrings24.startAChat));
       submenu.defaultSection().appendItem(
         i18nString24(UIStrings24.explainItem),
-        () => action7.execute({ prompt: "Explain this storage item." }),
-        { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" }
+        () => action8.execute({ prompt: "Explain this storage item." }),
+        { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".storage" }
       );
     }
   }
@@ -17408,19 +17473,19 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                 <devtools-widget
                   id=${"webmcp.tool-details" /* DETAILS */}
                   ?selected=${Directives7.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
-                  title=${i18nString28(UIStrings28.toolDetails)}
+                  label=${i18nString28(UIStrings28.toolDetails)}
                   ${widget11(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-inputs" /* INPUT */}
                   ?selected=${Directives7.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
-                  title=${i18nString28(UIStrings28.input)}
+                  label=${i18nString28(UIStrings28.input)}
                   ${widget11(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-outputs" /* OUTPUT */}
                   ?selected=${Directives7.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
-                  title=${i18nString28(UIStrings28.output)}
+                  label=${i18nString28(UIStrings28.output)}
                   ${widget11(PayloadWidget, {
     valueObject: input.selectedCall?.result?.output,
     errorText: input.selectedCall?.result?.errorText,
@@ -19751,13 +19816,13 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
       if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action7 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
+        const action8 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
         submenu.defaultSection().appendItem(
           i18nString29(UIStrings29.explainStorage),
-          () => action7.execute({ prompt: "What is the purpose of this storage bucket?" }),
-          { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" }
+          () => action8.execute({ prompt: "What is the purpose of this storage bucket?" }),
+          { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".storage" }
         );
       }
     }
@@ -19864,13 +19929,13 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
       if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action7 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
+        const action8 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
         submenu.defaultSection().appendItem(
           i18nString29(UIStrings29.explainCookies),
-          () => action7.execute({ prompt: "What is the purpose of these cookies?" }),
-          { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
+          () => action8.execute({ prompt: "What is the purpose of these cookies?" }),
+          { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
         );
       }
     }

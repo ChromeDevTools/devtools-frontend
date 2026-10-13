@@ -851,7 +851,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         }
     }
     appendRemoteObjectItems(contextMenu, remoteObject) {
-        const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+        const indent = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
         const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
         function getObjectTitle() {
             if (remoteObject.type === 'wasm') {

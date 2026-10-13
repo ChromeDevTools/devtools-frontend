@@ -42,6 +42,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private readonly extensionAPITestHook?;
     private themeChangeHandlers;
     private readonly recorderViewPortMap;
+    private userAgentOverrideOwner;
     private constructor();
     get isEnabledForTest(): boolean;
     dispose(): void;
@@ -104,6 +105,12 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
      */
     private lookupAllowedUISourceCode;
     private extensionAllowedOnTarget;
+    /**
+     * Checks whether the extension associated with the port is registered and has
+     * no enterprise runtime_blocked_hosts restrictions. Returns true if permitted,
+     * false if blocked or if the extension is not registered.
+     */
+    private checkBlockedHosts;
     private onReload;
     private onEvaluateOnInspectedPage;
     private sanitizeHarEntry;
@@ -150,6 +157,14 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
      * when omitted, all extension headers are cleared unconditionally.
      */
     private clearExtensionHeaders;
+    /**
+     * Reset the extension-set user agent override when the extension that
+     * installed it is no longer allowed on the inspected URL (or
+     * unconditionally, when no URL is given). The override lives in the
+     * MultitargetNetworkManager singleton and would otherwise fan out to every
+     * future target even after the owning extension's authority ended.
+     */
+    private clearExtensionUserAgentOverride;
     /**
      * Collect all extension-injected headers into a single object and push
      * them to the network layer.

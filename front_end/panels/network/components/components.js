@@ -3213,8 +3213,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";

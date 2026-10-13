@@ -1912,6 +1912,7 @@ export class DataGridNode {
         if (child.parent !== this) {
             throw new Error('removeChild: Node is not a child of this node.');
         }
+        const hadFocus = this.dataGrid?.element.hasFocus() ?? false;
         if (this.dataGrid) {
             this.dataGrid.updateSelectionBeforeRemoval(child, false);
         }
@@ -1920,6 +1921,9 @@ export class DataGridNode {
         Platform.ArrayUtilities.removeElement(this.children, child, true);
         if (this.children.length <= 0) {
             this.setHasChildren(false);
+        }
+        if (hadFocus && this.dataGrid && !this.dataGrid.element.hasFocus()) {
+            this.dataGrid.element.focus();
         }
     }
     removeChildren() {

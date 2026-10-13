@@ -102,12 +102,14 @@ export declare class EventReferenceClick extends Event {
     constructor(event: Trace.Types.Events.Event);
 }
 /**
- * Dispatched when a comment pin overlay on a flame chart entry is clicked.
+ * Dispatched synchronously at the end of every `update()`, after all overlay
+ * elements have been positioned. Code that positions its own elements relative
+ * to overlay elements, such as the Performance panel comment pins, listens for
+ * it to follow panning and zooming.
  */
-export declare class CommentPinClick extends Event {
-    overlay: Trace.Types.Overlays.CommentPin;
-    static readonly eventName = "commentpinclick";
-    constructor(overlay: Trace.Types.Overlays.CommentPin);
+export declare class OverlaysUpdated extends Event {
+    static readonly eventName = "overlaysupdated";
+    constructor();
 }
 /**
  * This class manages all the overlays that get drawn onto the performance
@@ -148,8 +150,9 @@ export declare class Overlays extends EventTarget {
      */
     overlaysForEntry(entry: Trace.Types.Overlays.OverlayEntry): Trace.Types.Overlays.Overlay[];
     /**
-     * Used for debugging and testing. Do not mutate the element directly using
-     * this method.
+     * Returns the DOM element rendered for the overlay, or null if the overlay
+     * has no element. Callers may read the element's position and size, but
+     * must not mutate it, because `update()` overwrites its styles.
      */
     elementForOverlay(overlay: Trace.Types.Overlays.Overlay): HTMLElement | null;
     /**

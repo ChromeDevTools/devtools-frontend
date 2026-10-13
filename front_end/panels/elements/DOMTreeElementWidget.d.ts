@@ -93,6 +93,12 @@ export interface ViewInput {
     decorationsTooltip: string;
     indent: number;
     renderSelection?: boolean;
+    /**
+     * When true, the view clears the previously rendered DOM before rendering
+     * (e.g. to restore the attributes structure after inline editing).
+     */
+    clearDOM: boolean;
+    onDblClick: (event: MouseEvent) => void;
     editorState: CodeMirror.EditorState | null;
     editorWidth: number | null;
 }
@@ -100,6 +106,12 @@ export interface ViewOutput {
     contentElement?: HTMLElement;
     editorRef?: TextEditor.TextEditor.TextEditor;
 }
+/**
+ * A view input that renders no node and no adorners. The widget renders it
+ * when it is unbound so that its adorners get deregistered from the
+ * ElementsPanel; tests use it as a baseline to override individual fields.
+ */
+export declare function emptyViewInput(): ViewInput;
 export declare function adornerRef(): DirectiveResult;
 export interface Decoration {
     title: string;
@@ -116,7 +128,7 @@ export interface InitialEditState {
     isEditAsHTML?: boolean;
     editAsHTMLCallback?: (success: boolean) => void;
 }
-export declare class ElementsTreeWidget extends UI.Widget.Widget {
+export declare class DOMTreeElementWidget extends UI.Widget.Widget {
     #private;
     static readonly INJECT: readonly [
         typeof IssuesManager.DOMIssuesManager.DOMIssuesManager,
@@ -131,34 +143,20 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     onInitialEditCompleted?: () => void;
     attributeToHighlight?: string | null;
     onAttributeHighlighted?: () => void;
-    get adornersDirty(): boolean;
-    set adornersDirty(dirty: boolean);
     get adornersUpdateVersion(): number;
     set adornersUpdateVersion(version: number);
-    expand?: () => void;
-    collapse?: () => void;
-    selectTreeElement?: (omitFocus?: boolean, selectedByUser?: boolean) => boolean | void;
-    expandRecursively?: (maxDepth?: number) => Promise<void>;
-    collapseChildren?: () => void;
-    childCount?: () => number;
-    closingTagElement?: () => Element | null;
-    updateShadowRootDepth?: (depth: number) => void;
     computeLeftIndent?: number | (() => number);
-    setChildrenListElementVisible?: (visible: boolean) => void;
+    /** Expands the node in the parent tree. Invoked by the `…` button of a collapsed element. */
+    expandNode?: () => void;
     selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
     revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
     showContextMenu?: (event: Event) => void;
-    populateTreeElement?: () => Promise<void>;
     toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
     selectNodeAfterEdit?: (wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null, moveDirection?: string) => void;
-    runPendingUpdates?: () => void;
-    focusOutline?: () => void;
     setMultilineEditing?: (multilineEditing: EditorHandles | null, node?: SDK.DOMModel.DOMNode) => void;
     visibleWidth?: () => number;
-    inClipboard: boolean;
     editing: EditorHandles | null;
-    expandAllButtonElement: UI.TreeOutline.TreeElement | null;
     get popoverAdornerActive(): boolean;
     set popoverAdornerActive(active: boolean);
     get interestAdornerActive(): boolean;
@@ -182,39 +180,26 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     get tagTypeContext(): TagTypeContext;
     get issues(): IssuesManager.Issue.Issue[];
     get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker | undefined;
-    constructor(element?: HTMLElement, [domIssuesManager, changeTracker]?: UI.Widget.WidgetDependencies<typeof ElementsTreeWidget> | [
+    constructor(element?: HTMLElement, [domIssuesManager, changeTracker]?: UI.Widget.WidgetDependencies<typeof DOMTreeElementWidget> | [
         IssuesManager.DOMIssuesManager.DOMIssuesManager?,
         ChangeTracker.ChangeTracker.ChangeTracker?
     ], view?: View);
     static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
     static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;
+    static canEditTextNode(node: SDK.DOMModel.DOMNode): boolean;
     static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
-    animateOnDOMUpdate(): void;
     wasShown(): void;
     willHide(): void;
     performUpdate(): void;
     highlightAttribute(attributeName: string): void;
-    isDisplayContents(): boolean;
     get isEditing(): boolean;
     highlightSearchResults(searchQuery: string): void;
     hideSearchHighlights(): void;
-    setInClipboard(inClipboard: boolean): void;
     get hovered(): boolean;
     set hovered(isHovered: boolean);
-    expandedChildrenLimit(): number;
-    setExpandedChildrenLimit(expandedChildrenLimit: number): void;
-    onTopLayerIndexChanged(): void;
     onbind(): void;
     clearView(): void;
     onunbind(): void;
-    onattach(): void;
-    onpopulate(): Promise<void>;
-    onexpand(): void;
-    oncollapse(): void;
-    onselect(selectedByUser?: boolean): boolean;
-    onenter(): boolean;
-    ondblclick(event: Event): boolean;
-    hasEditableNode(): boolean;
     private insertInLastAttributePosition;
     private startEditingTarget;
     private revealHTMLInSources;
@@ -225,7 +210,7 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     triggerEditAttribute(attributeName: string): boolean | undefined;
     startEditingAttribute(attribute: Element, elementForSelection: Element): boolean;
     startEditingTextNode(textNodeElement: Element): boolean;
-    startEditingTagName(tagNameElement?: Element): boolean;
+    startEditingTagName(element?: Element): boolean;
     private updateEditorHandles;
     private startEditingAsHTML;
     private attributeEditingCommitted;
@@ -237,74 +222,10 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     updateDecorations(): void;
     remove(): Promise<void>;
     toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void;
-    editAsHTML(): void;
     updateAdorners(): void;
-}
-export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
-    #private;
-    widget: ElementsTreeWidget;
-    widgetWrapper: HTMLElement;
-    nodeInternal: SDK.DOMModel.DOMNode;
-    get tagTypeContext(): TagTypeContext;
-    constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean);
-    highlightSearchResults(searchQuery: string): void;
-    hideSearchHighlights(): void;
-    copyStyles(): Promise<void>;
-    setInClipboard(inClipboard: boolean): void;
-    get isEditing(): boolean;
-    expandedChildrenLimit(): number;
-    setExpandedChildrenLimit(limit: number): void;
-    highlightAttribute(name: string): void;
-    startEditing(): boolean | undefined;
-    startEditingAttribute(attribute: Element, elementForSelection: Element): boolean;
-    startEditingTextNode(textNodeElement: Element): boolean;
-    editAsHTML(): void;
-    copyCSSPath(): void;
-    copyJSPath(): void;
-    copyXPath(): void;
-    copyFullXPath(): void;
-    hasEditableNode(): boolean;
-    toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void;
-    get expandAllButtonElement(): UI.TreeOutline.TreeElement | null;
-    set expandAllButtonElement(element: UI.TreeOutline.TreeElement | null);
-    node(): SDK.DOMModel.DOMNode;
-    isClosingTag(): boolean;
-    onattach(): void;
-    onpopulate(): Promise<void>;
-    expandRecursively(): Promise<void>;
-    onexpand(): void;
-    oncollapse(): void;
-    select(omitFocus?: boolean, selectedByUser?: boolean): boolean;
-    onselect(selectedByUser?: boolean): boolean;
-    deselect(): void;
-    ondelete(): boolean;
-    onenter(): boolean;
-    selectOnMouseDown(event: MouseEvent): void;
-    ondblclick(event: Event): boolean;
-    onbind(): void;
-    onunbind(): void;
-    ensureSelection(): void;
-    static animateOnDOMUpdate(treeElement: ElementsTreeElement): void;
-    static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[];
-    static canShowInlineText(node: SDK.DOMModel.DOMNode): boolean;
-    static populateForcedPseudoStateItems(contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void;
-    set hovered(isHovered: boolean);
-    get hovered(): boolean;
-    updateAdorners(): void;
-    get updateComplete(): Promise<void>;
-    requestUpdate(): void;
-    updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord | null): void;
-    triggerEditAttribute(attributeName: string): boolean;
-    editingCancelled(element: Element, tagName: string | null): void;
-    updateDecorations(): void;
-    remove(): Promise<void>;
-    addNewAttribute(): boolean;
-    startEditingTagName(tagNameElement?: Element): boolean;
-    startEditingProcessingInstructionValue(): boolean | undefined;
-    isDisplayContents(): boolean;
-    performUpdate(): void;
 }
 export declare const InitialChildrenLimit = 500;
+export declare const MaxEditableTextSize = 10000;
 /**
  * A union of HTML4 and HTML5-Draft elements that explicitly
  * or implicitly (for HTML5) forbid the closing tag.

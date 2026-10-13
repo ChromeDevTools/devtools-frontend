@@ -3,7 +3,7 @@ import type * as Platform from '../core/platform/platform.js';
 import type * as UI from '../ui/legacy/legacy.js';
 type WidgetConstructor = Platform.Constructor.AbstractConstructor<UI.Widget.AnyWidget | HTMLElement>;
 type ViewFunctionLike = ((input: any, output: any, target: HTMLElement) => void) | ((input: any, output: any, target: DocumentFragment) => void);
-type FindViewFunction<ParametersT extends readonly unknown[]> = ParametersT extends [infer Head, ...infer Tail] ? Head extends ViewFunctionLike ? Head : FindViewFunction<Tail> : never;
+type FindViewFunction<ParametersT extends readonly unknown[]> = ParametersT extends [infer Head, ...infer Tail] ? Head extends ViewFunctionLike ? Parameters<Head>['length'] extends 3 ? Head : FindViewFunction<Tail> : FindViewFunction<Tail> : never;
 type ViewFunction<WidgetConstructorT extends WidgetConstructor> = FindViewFunction<Required<ConstructorParameters<WidgetConstructorT>>>;
 type ViewFunctionParameters<WidgetConstructorT extends WidgetConstructor> = Parameters<ViewFunction<WidgetConstructorT>>;
 type ViewInput<WidgetConstructorT extends WidgetConstructor> = ViewFunctionParameters<WidgetConstructorT>[0];

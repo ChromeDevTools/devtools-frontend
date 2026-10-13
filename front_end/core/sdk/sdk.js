@@ -1866,8 +1866,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -16579,6 +16577,7 @@ __export(SDKSettings_exports, {
   showMetricsRulersSettingDescriptor: () => showMetricsRulersSettingDescriptor,
   showPaintRectsSettingDescriptor: () => showPaintRectsSettingDescriptor,
   showScrollBottleneckRectsSettingDescriptor: () => showScrollBottleneckRectsSettingDescriptor,
+  textEditorIndentSettingDescriptor: () => textEditorIndentSettingDescriptor,
   touchSettingDescriptor: () => touchSettingDescriptor,
   webpFormatDisabledSettingDescriptor: () => webpFormatDisabledSettingDescriptor
 });
@@ -18904,7 +18903,7 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
       return true;
     }
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
-    const indentation = this.ownerStyle.cssText ? this.detectIndentation(this.ownerStyle.cssText) : this.ownerStyle.cssModel().target().targetManager().settings.moduleSetting("text-editor-indent").get();
+    const indentation = this.ownerStyle.cssText ? this.detectIndentation(this.ownerStyle.cssText) : this.ownerStyle.cssModel().target().targetManager().settings.resolve(textEditorIndentSettingDescriptor).get();
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : "";
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || "");
     const newStyleText = text.replaceRange(range, Platform3.StringUtilities.sprintf(";%s;", propertyText));
@@ -21540,7 +21539,7 @@ var DOMInheritanceCascade = class {
         }
       )
     ]);
-    const decl = ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree));
+    const decl = ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree)).filter((node) => node.name !== "Important");
     const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : "";
     const hasUnresolvedSubstitutions = decl.length > 0 && matching.hasUnresolvedSubstitutionsRange(decl[0], decl[decl.length - 1]);
     const computedText = hasUnresolvedSubstitutions ? null : declText;
@@ -21976,7 +21975,9 @@ function validateStartBeforeEnd(ranges) {
 }
 function createScopeFrom(range, parent) {
   return {
-    ...range,
+    start: range.start,
+    end: range.end,
+    name: typeof range.name === "string" ? range.name : String(range.name ?? ""),
     kind: "Function",
     isStackFrame: true,
     parent,
@@ -28287,6 +28288,12 @@ var preserveNetworkLogSettingDescriptor = {
   type: Common18.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
+var textEditorIndentSettingDescriptor = {
+  name: "text-editor-indent",
+  type: Common18.Settings.SettingType.ENUM,
+  defaultValue: "    ",
+  storageType: Common18.Settings.SettingStorageType.SYNCED
+};
 
 // ../../front_end/core/sdk/ConsoleModel.ts
 var UIStrings6 = {
@@ -32281,6 +32288,13 @@ var ResourceTreeFrame = class {
     }
     return response.originTrials;
   }
+  async getSpellCheckCustomDictionary() {
+    const response = await this.resourceTreeModel().target().pageAgent().invoke_getSpellCheckCustomDictionary({ frameId: this.#id });
+    if (response.getError()) {
+      return [];
+    }
+    return response.words;
+  }
   setCreationStackTrace(creationStackTraceData) {
     this.#creationStackTrace = creationStackTraceData.creationStackTrace;
     this.#creationStackTraceTarget = creationStackTraceData.creationStackTraceTarget;
@@ -33178,6 +33192,10 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   }
   resume() {
     this.#stepContext = null;
+    this.#resumeBackend();
+  }
+  /** Resumes without touching the step context. */
+  #resumeBackend() {
     void this.agent.invoke_resume({ terminateOnResume: false });
     this.#isPausing = false;
   }
@@ -33327,7 +33345,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       if (this.#synchronizeBreakpointsCallback && script) {
         await this.#synchronizeBreakpointsCallback(script);
       }
-      this.resume();
+      this.#resumeBackend();
       return;
     }
     if (this.#skipAllPausesSetting.get()) {
@@ -34496,7 +34514,7 @@ var RuntimeModel = class extends SDKModel {
       );
       return;
     }
-    const indent = this.target().targetManager().context.get(Common26.Settings.Settings).moduleSetting("text-editor-indent").get();
+    const indent = this.target().targetManager().context.get(Common26.Settings.Settings).resolve(textEditorIndentSettingDescriptor).get();
     void object.callFunctionJSON(toStringForClipboard, [{
       value: {
         subtype: object.subtype,

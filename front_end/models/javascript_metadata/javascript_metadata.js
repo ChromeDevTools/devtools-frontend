@@ -6734,10 +6734,6 @@ var NativeFunctions = [
     signatures: [["rangeOffset", "data", "?dataOffset", "?size"]]
   },
   {
-    name: "copyElementImageToTexture",
-    signatures: [["source", "destination"]]
-  },
-  {
     name: "drawElementImageToTexture",
     signatures: [["source", "destination"]]
   },
@@ -6828,10 +6824,6 @@ var NativeFunctions = [
   {
     name: "drawingBufferToneMapping",
     signatures: [["?toneMapping"]]
-  },
-  {
-    name: "texElementImage2D",
-    signatures: [["target", "internalformat", "element", "?config"]]
   },
   {
     name: "texElementSubImage2D",
@@ -7128,38 +7120,6 @@ var NativeFunctions = [
   {
     name: "SmartCardError",
     signatures: [["message", "options"]]
-  },
-  {
-    name: "contributeToHistogram",
-    signatures: [["contribution"]]
-  },
-  {
-    name: "enableDebugMode",
-    signatures: [["?options"]]
-  },
-  {
-    name: "SharedStorageAppendMethod",
-    signatures: [["key", "value", "?options"]]
-  },
-  {
-    name: "SharedStorageClearMethod",
-    signatures: [["?options"]]
-  },
-  {
-    name: "SharedStorageDeleteMethod",
-    signatures: [["key", "?options"]]
-  },
-  {
-    name: "SharedStorageSetMethod",
-    signatures: [["key", "value", "?options"]]
-  },
-  {
-    name: "selectURL",
-    signatures: [["name", "urls", "?options"]]
-  },
-  {
-    name: "run",
-    signatures: [["name", "?options"]]
   },
   {
     name: "BarcodeDetector",
@@ -8736,10 +8696,6 @@ var NativeFunctions = [
   {
     name: "setReportEventDataForAutomaticBeacons",
     signatures: [["event"]]
-  },
-  {
-    name: "setSharedStorageContext",
-    signatures: [["contextString"]]
   },
   {
     name: "CloseWatcher",

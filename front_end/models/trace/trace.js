@@ -2031,8 +2031,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -3176,15 +3174,6 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
   } else if (request.args.data.initiator?.fetchType === "fetch") {
     resourceType = "Fetch";
   }
-  let resourceSize = request.args.data.decodedBodyLength ?? 0;
-  if (url.protocol === "data:" && resourceSize === 0) {
-    const commaIndex = url.pathname.indexOf(",");
-    if (url.pathname.substring(0, commaIndex).includes(";base64")) {
-      resourceSize = atob(url.pathname.substring(commaIndex + 1)).length;
-    } else {
-      resourceSize = url.pathname.length - commaIndex - 1;
-    }
-  }
   const hasExplicitRenderBlocking = request.rawSourceEvent.args.data.renderBlocking !== void 0 || request.args.data.renderBlocking !== "non_blocking";
   const renderBlocking = hasExplicitRenderBlocking ? request.args.data.renderBlocking : void 0;
   return {
@@ -3201,7 +3190,7 @@ function createLanternRequest(parsedTrace, workerThreads, request) {
     responseHeadersEndTime: request.args.data.syntheticData.downloadStart / 1e3,
     networkEndTime: request.args.data.syntheticData.finishTime / 1e3,
     transferSize: request.args.data.encodedDataLength,
-    resourceSize,
+    resourceSize: request.args.data.decodedBodyLength ?? 0,
     fromDiskCache: request.args.data.syntheticData.isDiskCached,
     fromMemoryCache: request.args.data.syntheticData.isMemoryCached,
     isLinkPreload: request.args.data.isLinkPreload,
@@ -3302,8 +3291,8 @@ function createNetworkRequests(trace, data, startTime = 0, endTime = Number.POSI
       redirectedRequest.responseHeadersEndTime = redirectedRequest.networkEndTime;
       redirectedRequest.timing = {
         requestTime: redirectedRequest.networkRequestTime / 1e3,
-        receiveHeadersStart: redirectedRequest.responseHeadersEndTime,
-        receiveHeadersEnd: redirectedRequest.responseHeadersEndTime,
+        receiveHeadersStart: redirectedRequest.responseHeadersEndTime - redirectedRequest.networkRequestTime,
+        receiveHeadersEnd: redirectedRequest.responseHeadersEndTime - redirectedRequest.networkRequestTime,
         proxyStart: -1,
         proxyEnd: -1,
         dnsStart: -1,
@@ -3328,6 +3317,9 @@ function createNetworkRequests(trace, data, startTime = 0, endTime = Number.POSI
       redirectedRequest.transferSize = 400;
       requestChain.push(redirectedRequest);
       lanternRequests.push(redirectedRequest);
+    }
+    if (requestChain.length) {
+      request.rendererStartTime = requestChain[requestChain.length - 1].networkEndTime;
     }
     requestChain.push(request);
     lanternRequests.push(request);

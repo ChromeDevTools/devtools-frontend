@@ -41,12 +41,29 @@ const MINIMUM_WASTED_MS = 50;
  * Given a simulation's nodeTimings, return an object with the nodes/timing keyed by network URL
  */
 function getNodesAndTimingByRequestId(nodeTimings) {
+    const timingByNodeId = new Map();
+    for (const [node, nodeTiming] of nodeTimings) {
+        timingByNodeId.set(node.id, nodeTiming);
+    }
     const requestIdToNode = new Map();
     for (const [node, nodeTiming] of nodeTimings) {
-        if (node.type !== 'network') {
+        if (node.type !== 'network' || node.request.redirectDestination) {
             continue;
         }
-        requestIdToNode.set(node.request.requestId, { node, nodeTiming });
+        let duration = nodeTiming.duration;
+        let startTime = nodeTiming.startTime;
+        for (const redirect of node.request.redirects ?? []) {
+            const redirectTiming = timingByNodeId.get(redirect.requestId);
+            if (redirectTiming) {
+                duration += redirectTiming.duration;
+                startTime = Math.min(startTime, redirectTiming.startTime);
+            }
+        }
+        const backendRequestId = node.request.rawRequest?.args.data.requestId ?? node.request.requestId;
+        requestIdToNode.set(backendRequestId, {
+            node,
+            nodeTiming: { startTime, endTime: nodeTiming.endTime, duration },
+        });
     }
     return requestIdToNode;
 }
@@ -91,14 +108,17 @@ function computeSavings(data, context, renderBlockingRequests) {
             continue;
         }
         const { node, nodeTiming } = nodeAndTiming;
-        // Mark this node and all its dependents as deferrable
+        // Mark this node, any redirects leading to it, and all its dependents as deferrable
+        for (const redirect of node.request.redirects ?? []) {
+            deferredNodeIds.add(redirect.requestId);
+        }
         node.traverse(node => deferredNodeIds.add(node.id));
         // "wastedMs" is the download time of the network request, responseReceived - requestSent
         const wastedMs = Math.round(nodeTiming.duration);
         if (wastedMs < MINIMUM_WASTED_MS) {
             continue;
         }
-        requestIdToWastedMs.set(node.id, wastedMs);
+        requestIdToWastedMs.set(request.args.data.requestId, wastedMs);
     }
     if (requestIdToWastedMs.size) {
         metricSavings.FCP = estimateSavingsWithGraphs(deferredNodeIds, context.lantern);

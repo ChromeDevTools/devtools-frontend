@@ -598,8 +598,11 @@ export declare enum IssueCreated {
     'CorsIssue::LocalNetworkAccessPermissionDenied' = 111,
     'SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch' = 112,
     'ElementAccessibilityIssue::InteractiveContentSummaryDescendant' = 113,
-    'CorsIssue::InvalidLocalNetworkAccess' = 114,
-    MAX_VALUE = 115
+    'GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo' = 114,
+    'GenericIssue::AutofillPolicyControlledFeatureInfo' = 115,
+    'GenericIssue::ManualTextPolicyControlledFeatureInfo' = 116,
+    'CorsIssue::InvalidLocalNetworkAccess' = 118,
+    MAX_VALUE = 119
 }
 export declare enum DeveloperResourceLoaded {
     LOAD_THROUGH_PAGE_VIA_TARGET = 0,

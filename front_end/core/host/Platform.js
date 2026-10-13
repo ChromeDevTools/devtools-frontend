@@ -55,4 +55,34 @@ export function fontFamily() {
 export function setFontFamilyForTests(family) {
     _fontFamily = family;
 }
+let _isRemoteDevtoolsFrontend;
+let _locationForTest;
+export function setLocationForTest(url) {
+    _locationForTest = url;
+    _isRemoteDevtoolsFrontend = undefined;
+    _isCustomDevtoolsFrontend = undefined;
+}
+export function isRemoteDevtoolsFrontend() {
+    if (typeof _isRemoteDevtoolsFrontend === 'undefined') {
+        const location = globalThis.location;
+        const url = _locationForTest ?? (location ? location.toString() : '');
+        _isRemoteDevtoolsFrontend = url.startsWith('devtools://devtools-remote/');
+    }
+    return _isRemoteDevtoolsFrontend ?? false;
+}
+let _isCustomDevtoolsFrontend;
+export function isCustomDevtoolsFrontend() {
+    if (typeof _isCustomDevtoolsFrontend === 'undefined') {
+        const location = globalThis.location;
+        const url = _locationForTest ?? (location ? location.toString() : '');
+        _isCustomDevtoolsFrontend = url.startsWith('devtools://devtools/custom/');
+    }
+    return _isCustomDevtoolsFrontend ?? false;
+}
+export function setIsRemoteDevtoolsFrontendForTest(isRemote) {
+    _isRemoteDevtoolsFrontend = isRemote;
+}
+export function setIsCustomDevtoolsFrontendForTest(isCustom) {
+    _isCustomDevtoolsFrontend = isCustom;
+}
 //# sourceMappingURL=Platform.js.map

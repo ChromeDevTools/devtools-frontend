@@ -291,4 +291,10 @@ export const preserveNetworkLogSettingDescriptor = {
     type: "boolean" /* Common.Settings.SettingType.BOOLEAN */,
     defaultValue: false,
 };
+export const textEditorIndentSettingDescriptor = {
+    name: 'text-editor-indent',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: '    ',
+    storageType: "Synced" /* Common.Settings.SettingStorageType.SYNCED */,
+};
 //# sourceMappingURL=SDKSettings.js.map

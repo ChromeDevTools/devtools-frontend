@@ -7,8 +7,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 import { canGetJSPath } from './DOMPath.js';
+import { DOMTreeElementWidget } from './DOMTreeElementWidget.js';
 import { ElementsPanel } from './ElementsPanel.js';
-import { ElementsTreeElement } from './ElementsTreeElement.js';
 const UIStrings = {
     /**
      * @description A context menu item to store a value as a global variable the Elements Panel
@@ -352,8 +352,8 @@ export async function populateNodeContextMenu(contextMenu, domTreeWidget, domNod
         section.appendItem(i18nString(UIStrings.copyStyles), () => void domTreeWidget.copyStyles(domNode), { jslogContext: 'elements.copy-styles' });
     }
     if (!isShadowRoot) {
-        section.appendItem(i18nString(UIStrings.copyXpath), () => domTreeWidget.copyXPath(domNode), { jslogContext: 'copy-xpath' });
-        section.appendItem(i18nString(UIStrings.copyFullXpath), () => domTreeWidget.copyFullXPath(domNode), { jslogContext: 'copy-full-xpath' });
+        section.appendItem(i18nString(UIStrings.copyXpath), () => void domTreeWidget.copyXPath(domNode), { jslogContext: 'copy-xpath' });
+        section.appendItem(i18nString(UIStrings.copyFullXpath), () => void domTreeWidget.copyFullXPath(domNode), { jslogContext: 'copy-full-xpath' });
     }
     menuItem = copyMenu.clipboardSection().appendItem(i18nString(UIStrings.copyElement), () => domTreeWidget.performCopyOrCut(false, domNode, true), { jslogContext: 'copy-element' });
     menuItem.setShortcut(createShortcut('C', modifier));
@@ -417,7 +417,10 @@ export async function showContextMenu(domTreeWidget, domNode, event) {
     const commentNode = node.enclosingNodeOrSelfWithClass?.('webkit-html-comment');
     contextMenu.saveSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), () => void domNode.saveNodeToTempVariable(), { jslogContext: 'store-as-global-variable' });
     if (textNode) {
-        contextMenu.editSection().appendItem(i18nString(UIStrings.editText), () => domTreeWidget.startEditingTextNode(domNode), { jslogContext: 'edit-text' });
+        contextMenu.editSection().appendItem(i18nString(UIStrings.editText), () => domTreeWidget.startEditingTextNode(domNode), {
+            disabled: !DOMTreeElementWidget.canEditTextNode(domNode),
+            jslogContext: 'edit-text',
+        });
         await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
     }
     else if (isTag) {
@@ -432,7 +435,7 @@ export async function showContextMenu(domTreeWidget, domNode, event) {
             }
         }
         await populateNodeContextMenu(contextMenu, domTreeWidget, domNode);
-        ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
+        DOMTreeElementWidget.populateForcedPseudoStateItems(contextMenu, domNode);
         contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: 'scroll-into-view' });
         contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
             await domNode.focus();
@@ -457,7 +460,10 @@ export async function showContextMenu(domTreeWidget, domNode, event) {
         contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: 'scroll-into-view' });
     }
     else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-        contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode), { jslogContext: 'elements.edit-data' });
+        contextMenu.editSection().appendItem(i18nString(UIStrings.editData), () => domTreeWidget.startEditing(domNode), {
+            disabled: !DOMTreeElementWidget.canEditTextNode(domNode),
+            jslogContext: 'elements.edit-data',
+        });
         contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement), () => domTreeWidget.duplicateNode(domNode), {
             disabled: domNode.isInShadowTree(),
             jslogContext: 'elements.duplicate-element',

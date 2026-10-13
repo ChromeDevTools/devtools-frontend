@@ -51,3 +51,4 @@ export declare const consoleUserActivationEvalSettingDescriptor: Common.Settings
 export declare const monitoringXHREnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const disablePausedStateOverlaySettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const preserveNetworkLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const textEditorIndentSettingDescriptor: Common.Settings.SettingDescriptor<string>;

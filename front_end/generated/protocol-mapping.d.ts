@@ -4583,6 +4583,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.Page.GetAnnotatedPageContentResponse;
     };
     /**
+     * Configures input visualization on the page.
+     */
+    'Page.setInputVisualization': {
+      paramsType: [Protocol.Page.SetInputVisualizationRequest?];
+      returnType: void;
+    };
+    /**
      * Disable collecting and reporting metrics.
      */
     'Performance.disable': {

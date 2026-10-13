@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 import { Icon } from '../../kit/kit.js';
@@ -203,7 +204,8 @@ function preservedLength(ch) {
 function detectIndentation(doc) {
     const lines = doc.iterLines(1, Math.min(doc.lines + 1, LINES_TO_SCAN_FOR_INDENTATION_GUESSING));
     const indentUnit = TextUtils.TextUtils.detectIndentation(lines);
-    return indentUnit ?? Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+    return indentUnit ??
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
 }
 export const autoDetectIndent = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorAutoDetectIndentSettingDescriptor, AutoDetectIndent);
 function matcher(decorator) {
@@ -259,7 +261,7 @@ function getIndentUnit(indent) {
     }
     return value;
 }
-export const indentUnit = new DynamicSetting('text-editor-indent', getIndentUnit);
+export const indentUnit = new DynamicSetting(SDK.SDKSettings.textEditorIndentSettingDescriptor, getIndentUnit);
 export const domWordWrap = DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 export const sourcesWordWrap = DynamicSetting.bool(SettingsUI.SourcesSettings.sourcesWordWrapSettingDescriptor, CM.EditorView.lineWrapping);
 function detectLineSeparator(text) {

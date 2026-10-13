@@ -408,6 +408,10 @@ export class DebuggerModel extends SDKModel {
     }
     resume() {
         this.#stepContext = null;
+        this.#resumeBackend();
+    }
+    /** Resumes without touching the step context. */
+    #resumeBackend() {
         void this.agent.invoke_resume({ terminateOnResume: false });
         this.#isPausing = false;
     }
@@ -559,7 +563,8 @@ export class DebuggerModel extends SDKModel {
             if (this.#synchronizeBreakpointsCallback && script) {
                 await this.#synchronizeBreakpointsCallback(script);
             }
-            this.resume();
+            // V8 continues an in-progress step after an instrumentation pause, so keep the step context.
+            this.#resumeBackend();
             return;
         }
         if (this.#skipAllPausesSetting.get()) {

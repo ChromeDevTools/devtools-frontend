@@ -16,8 +16,8 @@ import * as Bindings from "../bindings/bindings.js";
 import * as Formatter from "../formatter/formatter.js";
 import * as Workspace from "../workspace/workspace.js";
 var inputCache = /* @__PURE__ */ new WeakMap();
-async function prepareInput(uiSourceCode, content, settings) {
-  const formattedContent = await format(uiSourceCode, content, settings);
+async function prepareInput(uiSourceCode, content) {
+  const formattedContent = await format(uiSourceCode, content);
   const text = new TextUtils.Text.Text(formattedContent ? formattedContent.formattedContent : content);
   let performanceData = uiSourceCode.getDecorationData(Workspace.UISourceCode.DecoratorType.PERFORMANCE);
   if (formattedContent && performanceData) {
@@ -27,12 +27,12 @@ async function prepareInput(uiSourceCode, content, settings) {
   }
   return { text, formattedContent, performanceData };
 }
-async function prepareInputAndCache(uiSourceCode, content, settings) {
+async function prepareInputAndCache(uiSourceCode, content) {
   let cachedPromise = inputCache.get(uiSourceCode);
   if (cachedPromise) {
     return await cachedPromise;
   }
-  cachedPromise = prepareInput(uiSourceCode, content, settings);
+  cachedPromise = prepareInput(uiSourceCode, content);
   inputCache.set(uiSourceCode, cachedPromise);
   return await cachedPromise;
 }
@@ -166,13 +166,13 @@ async function getFunctionCodeFromLocation(target, url, line, column, debuggerWo
   }
   return await getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options);
 }
-async function format(uiSourceCode, content, settings) {
+async function format(uiSourceCode, content) {
   const contentType = uiSourceCode.contentType();
   const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) && TextUtils.TextUtils.isMinified(content);
   if (!shouldFormat) {
     return null;
   }
-  return await Formatter.ScriptFormatter.formatScriptContent(settings, contentType.canonicalMimeType(), content, "	");
+  return await Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, "	");
 }
 async function getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options) {
   const functionBounds = await debuggerWorkspaceBinding.functionBoundsAtRawLocation(rawLocation);
@@ -184,8 +184,7 @@ async function getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBind
   if (!content) {
     return null;
   }
-  const settings = rawLocation.debuggerModel.target().targetManager().settings;
-  const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content, settings);
+  const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content);
   return createFunctionCode(inputData, functionBounds, options);
 }
 
@@ -2010,8 +2009,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";

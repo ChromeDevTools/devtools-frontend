@@ -2436,10 +2436,15 @@ function isStarterBadgeEnabled() {
 var Platform_exports = {};
 __export(Platform_exports, {
   fontFamily: () => fontFamily,
+  isCustomDevtoolsFrontend: () => isCustomDevtoolsFrontend,
   isMac: () => isMac,
+  isRemoteDevtoolsFrontend: () => isRemoteDevtoolsFrontend,
   isWin: () => isWin,
   platform: () => platform,
   setFontFamilyForTests: () => setFontFamilyForTests,
+  setIsCustomDevtoolsFrontendForTest: () => setIsCustomDevtoolsFrontendForTest,
+  setIsRemoteDevtoolsFrontendForTest: () => setIsRemoteDevtoolsFrontendForTest,
+  setLocationForTest: () => setLocationForTest,
   setPlatformForTests: () => setPlatformForTests
 });
 var _platform;
@@ -2488,6 +2493,36 @@ function fontFamily() {
 }
 function setFontFamilyForTests(family) {
   _fontFamily = family;
+}
+var _isRemoteDevtoolsFrontend;
+var _locationForTest;
+function setLocationForTest(url) {
+  _locationForTest = url;
+  _isRemoteDevtoolsFrontend = void 0;
+  _isCustomDevtoolsFrontend = void 0;
+}
+function isRemoteDevtoolsFrontend() {
+  if (typeof _isRemoteDevtoolsFrontend === "undefined") {
+    const location = globalThis.location;
+    const url = _locationForTest ?? (location ? location.toString() : "");
+    _isRemoteDevtoolsFrontend = url.startsWith("devtools://devtools-remote/");
+  }
+  return _isRemoteDevtoolsFrontend ?? false;
+}
+var _isCustomDevtoolsFrontend;
+function isCustomDevtoolsFrontend() {
+  if (typeof _isCustomDevtoolsFrontend === "undefined") {
+    const location = globalThis.location;
+    const url = _locationForTest ?? (location ? location.toString() : "");
+    _isCustomDevtoolsFrontend = url.startsWith("devtools://devtools/custom/");
+  }
+  return _isCustomDevtoolsFrontend ?? false;
+}
+function setIsRemoteDevtoolsFrontendForTest(isRemote) {
+  _isRemoteDevtoolsFrontend = isRemote;
+}
+function setIsCustomDevtoolsFrontendForTest(isCustom) {
+  _isCustomDevtoolsFrontend = isCustom;
 }
 
 // ../../front_end/core/host/UserMetrics.ts
@@ -3115,8 +3150,11 @@ var IssueCreated = /* @__PURE__ */ ((IssueCreated3) => {
   IssueCreated3[IssueCreated3["CorsIssue::LocalNetworkAccessPermissionDenied"] = 111] = "CorsIssue::LocalNetworkAccessPermissionDenied";
   IssueCreated3[IssueCreated3["SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch"] = 112] = "SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch";
   IssueCreated3[IssueCreated3["ElementAccessibilityIssue::InteractiveContentSummaryDescendant"] = 113] = "ElementAccessibilityIssue::InteractiveContentSummaryDescendant";
-  IssueCreated3[IssueCreated3["CorsIssue::InvalidLocalNetworkAccess"] = 114] = "CorsIssue::InvalidLocalNetworkAccess";
-  IssueCreated3[IssueCreated3["MAX_VALUE"] = 115] = "MAX_VALUE";
+  IssueCreated3[IssueCreated3["GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo"] = 114] = "GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo";
+  IssueCreated3[IssueCreated3["GenericIssue::AutofillPolicyControlledFeatureInfo"] = 115] = "GenericIssue::AutofillPolicyControlledFeatureInfo";
+  IssueCreated3[IssueCreated3["GenericIssue::ManualTextPolicyControlledFeatureInfo"] = 116] = "GenericIssue::ManualTextPolicyControlledFeatureInfo";
+  IssueCreated3[IssueCreated3["CorsIssue::InvalidLocalNetworkAccess"] = 118] = "CorsIssue::InvalidLocalNetworkAccess";
+  IssueCreated3[IssueCreated3["MAX_VALUE"] = 119] = "MAX_VALUE";
   return IssueCreated3;
 })(IssueCreated || {});
 var DeveloperResourceLoaded = /* @__PURE__ */ ((DeveloperResourceLoaded3) => {

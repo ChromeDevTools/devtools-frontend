@@ -315,7 +315,9 @@ class Simulator {
             requestedAt: timingData.startTime,
             shouldUpdateCache: true,
         });
-        const calculation = connection.simulateDownloadUntil(request.transferSize - timingData.bytesDownloaded, {
+        const bytesToDownload = request.transferSize - timingData.bytesDownloaded;
+        const h2OverflowBytesUsed = connection.isMultiplexed() ? Math.min(bytesToDownload, connection.h2OverflowBytesDownloaded) : 0;
+        const calculation = connection.simulateDownloadUntil(bytesToDownload, {
             dnsResolutionTime,
             timeAlreadyElapsed: timingData.timeElapsed,
             maximumTimeToElapse: timePeriodLength - timingData.timeElapsedOvershoot,
@@ -330,7 +332,7 @@ class Simulator {
         else {
             timingData.timeElapsed += calculation.timeElapsed;
             timingData.timeElapsedOvershoot += calculation.timeElapsed - timePeriodLength;
-            timingData.bytesDownloaded += calculation.bytesDownloaded;
+            timingData.bytesDownloaded += calculation.bytesDownloaded + h2OverflowBytesUsed;
         }
     }
     computeFinalNodeTimings() {

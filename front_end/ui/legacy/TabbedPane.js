@@ -1479,11 +1479,16 @@ const tabSuffixElements = new WeakMap();
  *
  * ```html
  * <devtools-tabbed-pane>
- *   <div id="tab1" title="Tab 1">Content 1</div>
+ *   <div id="tab1" label="Tab 1" tab-tooltip="Full Tab 1 description">Content 1</div>
  *   <devtools-icon slot="icon-tab1" name="warning"></devtools-icon>
  *   <span slot="suffix-tab1">*</span>
  * </devtools-tabbed-pane>
  * ```
+ *
+ * The tab label is read from `label` (falling back to `title`, which is
+ * deprecated for this purpose because it leaks a native tooltip onto the tab
+ * content). An optional `tab-tooltip` attribute sets the tooltip (`title`)
+ * shown on the tab header.
  *
  * Children with `slot="icon-<tab id>"` and `slot="suffix-<tab id>"` are shown
  * before and after the title in the header of that tab.
@@ -1587,7 +1592,16 @@ export class TabbedPaneElement extends WidgetElement {
         for (const child of nodes) {
             this.#tabObserver.observe(child, {
                 attributes: true,
-                attributeFilter: ['title', 'jslogcontext', 'selected', 'disabled', 'closeable', 'uncloseable'],
+                attributeFilter: [
+                    'label',
+                    'title',
+                    'tab-tooltip',
+                    'jslogcontext',
+                    'selected',
+                    'disabled',
+                    'closeable',
+                    'uncloseable',
+                ],
             });
         }
     }
@@ -1604,7 +1618,8 @@ export class TabbedPaneElement extends WidgetElement {
         const nodes = this.#getTabNodes(widget);
         for (const child of nodes) {
             const id = child.id;
-            const title = child.getAttribute('title') || '';
+            const title = child.getAttribute('label') || child.getAttribute('title') || '';
+            const tabTooltip = child.getAttribute('tab-tooltip') ?? undefined;
             const jslogContext = child.getAttribute('jslogcontext') || undefined;
             const selected = child.hasAttribute('selected');
             const enabled = !child.hasAttribute('disabled');
@@ -1618,6 +1633,7 @@ export class TabbedPaneElement extends WidgetElement {
                 id,
                 title,
                 view,
+                tabTooltip,
                 jslogContext,
                 selected,
                 enabled,

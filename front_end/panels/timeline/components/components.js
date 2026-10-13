@@ -2244,8 +2244,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -8504,10 +8502,10 @@ var LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
       <!-- Taking advantage of web component slots allows us to render updates in the lit templates defined in the
       main component. This should be more performant and doesn't require us to inject live metrics styles twice. -->
       <slot name="interactions-log-content" id="interactions" ?selected=${live2(input.selectedTab === "interactions")}
-            title=${i18nString12(UIStrings13.interactions)} jslogcontext="timeline.landing.interactions-log">
+            label=${i18nString12(UIStrings13.interactions)} jslogcontext="timeline.landing.interactions-log">
       </slot>
       <slot name="layout-shifts-log-content" id="layout-shifts" ?selected=${live2(input.selectedTab === "layout-shifts")}
-            title=${i18nString12(UIStrings13.layoutShifts)} jslogcontext="timeline.landing.layout-shifts-log">
+            label=${i18nString12(UIStrings13.layoutShifts)} jslogcontext="timeline.landing.layout-shifts-log">
       </slot>
     </devtools-tabbed-pane>
   `, target);

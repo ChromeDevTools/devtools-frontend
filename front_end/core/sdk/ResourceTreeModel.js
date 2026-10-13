@@ -898,6 +898,13 @@ export class ResourceTreeFrame {
         }
         return response.originTrials;
     }
+    async getSpellCheckCustomDictionary() {
+        const response = await this.resourceTreeModel().target().pageAgent().invoke_getSpellCheckCustomDictionary({ frameId: this.#id });
+        if (response.getError()) {
+            return [];
+        }
+        return response.words;
+    }
     setCreationStackTrace(creationStackTraceData) {
         this.#creationStackTrace = creationStackTraceData.creationStackTrace;
         this.#creationStackTraceTarget = creationStackTraceData.creationStackTraceTarget;

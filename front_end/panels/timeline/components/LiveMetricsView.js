@@ -1111,10 +1111,10 @@ const LIVE_METRICS_LOGS_VIEW = (input, output, target) => {
       <!-- Taking advantage of web component slots allows us to render updates in the lit templates defined in the
       main component. This should be more performant and doesn't require us to inject live metrics styles twice. -->
       <slot name="interactions-log-content" id="interactions" ?selected=${live(input.selectedTab === 'interactions')}
-            title=${i18nString(UIStrings.interactions)} jslogcontext="timeline.landing.interactions-log">
+            label=${i18nString(UIStrings.interactions)} jslogcontext="timeline.landing.interactions-log">
       </slot>
       <slot name="layout-shifts-log-content" id="layout-shifts" ?selected=${live(input.selectedTab === 'layout-shifts')}
-            title=${i18nString(UIStrings.layoutShifts)} jslogcontext="timeline.landing.layout-shifts-log">
+            label=${i18nString(UIStrings.layoutShifts)} jslogcontext="timeline.landing.layout-shifts-log">
       </slot>
     </devtools-tabbed-pane>
   `, target);

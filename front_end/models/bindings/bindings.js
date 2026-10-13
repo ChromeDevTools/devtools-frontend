@@ -3542,8 +3542,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -6144,6 +6142,18 @@ function inlinedFunctionRanges(frame) {
   const range = position?.sourceMap.inlinedFunctionRange(position.line, position.column);
   return position && range ? toLocationRanges(position, [range]) : [];
 }
+function isSameInlinedCall(a, b) {
+  const range = (frame) => {
+    const position = scopedPosition(frame);
+    return position?.sourceMap.inlinedFunctionRange(position.line, position.column) ?? null;
+  };
+  const rangeA = range(a);
+  const rangeB = range(b);
+  if (!rangeA || !rangeB) {
+    return rangeA === rangeB;
+  }
+  return a.script === b.script && SDK10.SourceMapScopesInfo.comparePositions(rangeA.start, rangeB.start) === 0 && SDK10.SourceMapScopesInfo.comparePositions(rangeA.end, rangeB.end) === 0;
+}
 function inlinedCalleeRanges(frame) {
   const position = scopedPosition(frame);
   return position ? toLocationRanges(position, position.sourceMap.inlinedCalleeRanges(position.line, position.column)) : [];
@@ -6174,7 +6184,7 @@ async function nextAutoStep(details, context, computeAutoStep) {
     case SDK10.DebuggerModel.StepMode.STEP_OVER: {
       const startDepth = logicalDepth(start);
       const depth = logicalDepth(frames);
-      if (isUnmapped(frames[0]) || depth === startDepth && isSameOriginalLocation(frames[0], start[0])) {
+      if (isUnmapped(frames[0]) || depth === startDepth && isSameOriginalLocation(frames[0], start[0]) && isSameInlinedCall(frames[0], start[0])) {
         return await computeAutoStep(SDK10.DebuggerModel.StepMode.STEP_OVER, frames);
       }
       return null;

@@ -2110,8 +2110,6 @@ export var Page;
         PermissionsPolicyFeature["Rewriter"] = "rewriter";
         PermissionsPolicyFeature["ScreenWakeLock"] = "screen-wake-lock";
         PermissionsPolicyFeature["Serial"] = "serial";
-        PermissionsPolicyFeature["SharedStorage"] = "shared-storage";
-        PermissionsPolicyFeature["SharedStorageSelectUrl"] = "shared-storage-select-url";
         PermissionsPolicyFeature["SmartCard"] = "smart-card";
         PermissionsPolicyFeature["SpeakerSelection"] = "speaker-selection";
         PermissionsPolicyFeature["StorageAccess"] = "storage-access";

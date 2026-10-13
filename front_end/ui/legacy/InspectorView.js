@@ -148,8 +148,8 @@ export class InspectorView extends VBox {
     #drawerShowModeBeforeDockSideChange = null;
     #drawerMinimizedBeforeDockSideChange = null;
     #statusBarContainer;
-    constructor() {
-        super();
+    constructor(element) {
+        super(element);
         GlassPane.setContainer(this.element);
         this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
         // DevTools sidebar is a vertical split of main tab bar panels and a drawer.
@@ -247,9 +247,9 @@ export class InspectorView extends VBox {
         this.#drawerView.restoreMinimizedStateFromSettings();
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, element } = opts;
         if (!inspectorViewInstance || forceNew) {
-            inspectorViewInstance = new InspectorView();
+            inspectorViewInstance = new InspectorView(element);
         }
         return inspectorViewInstance;
     }
@@ -613,17 +613,17 @@ export class InspectorView extends VBox {
         this.ownerSplitWidget = splitWidget;
     }
     ownerSplit() {
-        return this.ownerSplitWidget || null;
+        if (this.ownerSplitWidget) {
+            return this.ownerSplitWidget;
+        }
+        const parent = this.parentWidget();
+        return parent instanceof SplitWidget ? parent : null;
     }
     minimize() {
-        if (this.ownerSplitWidget) {
-            this.ownerSplitWidget.setSidebarMinimized(true);
-        }
+        this.ownerSplit()?.setSidebarMinimized(true);
     }
     restore() {
-        if (this.ownerSplitWidget) {
-            this.ownerSplitWidget.setSidebarMinimized(false);
-        }
+        this.ownerSplit()?.setSidebarMinimized(false);
     }
     displayDebuggedTabReloadRequiredWarning(message) {
         if (!this.#debuggedTabReloadRequiredInfobar) {

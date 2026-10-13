@@ -19,6 +19,12 @@ export interface EventTypes {
 }
 export type FormatFn = (lineNo: number, state: CodeMirror.EditorState) => string;
 export declare const LINE_NUMBER_FORMATTER: CodeMirror.Facet<FormatFn, FormatFn>;
+export interface ViewInput {
+    textEditor: TextEditor.TextEditor.TextEditor;
+    onKeyDown: (event: KeyboardEvent) => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 declare const SourceFrameImplBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.View.SimpleView>;
 export declare class SourceFrameImpl extends SourceFrameImplBase implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, UI.SearchableView.SearchTarget, Transformer {
     #private;
@@ -49,7 +55,7 @@ export declare class SourceFrameImpl extends SourceFrameImplBase implements UI.S
     private wasmDisassemblyInternal;
     contentSet: boolean;
     private selfXssWarningDisabledSetting;
-    constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>, options?: SourceFrameOptions, element?: HTMLElement);
+    constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>, options?: SourceFrameOptions, element?: HTMLElement, view?: View);
     performUpdate(): void;
     disposeView(): void;
     private placeholderEditorState;

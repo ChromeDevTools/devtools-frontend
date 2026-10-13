@@ -12054,6 +12054,11 @@ export declare namespace Network {
          * Total number of bytes received for this request.
          */
         encodedDataLength: number;
+        /**
+         * Size of the response body before removing content encodings.
+         * Includes cached bodies, but excludes headers and transfer framing.
+         */
+        encodedBodyLength?: number;
     }
     /**
      * Fired if request ended up loading from cache.
@@ -13762,8 +13767,6 @@ export declare namespace Page {
         Rewriter = "rewriter",
         ScreenWakeLock = "screen-wake-lock",
         Serial = "serial",
-        SharedStorage = "shared-storage",
-        SharedStorageSelectUrl = "shared-storage-select-url",
         SmartCard = "smart-card",
         SpeakerSelection = "speaker-selection",
         StorageAccess = "storage-access",
@@ -15475,6 +15478,12 @@ export declare namespace Page {
          * components/optimization_guide/proto/features/common_quality_data.proto
          */
         content: binary;
+    }
+    interface SetInputVisualizationRequest {
+        /**
+         * Whether to enable click visualization.
+         */
+        clicks?: boolean;
     }
     interface DomContentEventFiredEvent {
         timestamp: Network.MonotonicTime;

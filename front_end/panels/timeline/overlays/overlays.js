@@ -8,11 +8,11 @@ var __export = (target, all) => {
 var OverlaysImpl_exports = {};
 __export(OverlaysImpl_exports, {
   AnnotationOverlayActionEvent: () => AnnotationOverlayActionEvent,
-  CommentPinClick: () => CommentPinClick,
   ConsentDialogVisibilityChange: () => ConsentDialogVisibilityChange,
   EntryLabelMouseClick: () => EntryLabelMouseClick,
   EventReferenceClick: () => EventReferenceClick,
   Overlays: () => Overlays,
+  OverlaysUpdated: () => OverlaysUpdated,
   TimeRangeMouseOutEvent: () => TimeRangeMouseOutEvent,
   TimeRangeMouseOverEvent: () => TimeRangeMouseOverEvent,
   chartForEntry: () => chartForEntry,
@@ -52,11 +52,7 @@ var UIStrings = {
   /**
    * @description Text for the page scope option that selects the entire origin instead of its specific URL in the Performance panel.
    */
-  originOption: "Origin",
-  /**
-   * @description Accessible label for the comment pin overlay button on a flame chart entry.
-   */
-  commentPin: "Comment"
+  originOption: "Origin"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/overlays/OverlaysImpl.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -179,13 +175,11 @@ var EventReferenceClick = class _EventReferenceClick extends Event {
   event;
   static eventName = "eventreferenceclick";
 };
-var CommentPinClick = class _CommentPinClick extends Event {
-  constructor(overlay) {
-    super(_CommentPinClick.eventName, { composed: true, bubbles: true });
-    this.overlay = overlay;
+var OverlaysUpdated = class _OverlaysUpdated extends Event {
+  static eventName = "overlaysupdated";
+  constructor() {
+    super(_OverlaysUpdated.eventName);
   }
-  overlay;
-  static eventName = "commentpinclick";
 };
 var Overlays = class extends EventTarget {
   /**
@@ -350,8 +344,9 @@ var Overlays = class extends EventTarget {
     return matches;
   }
   /**
-   * Used for debugging and testing. Do not mutate the element directly using
-   * this method.
+   * Returns the DOM element rendered for the overlay, or null if the overlay
+   * has no element. Callers may read the element's position and size, but
+   * must not mutate it, because `update()` overwrites its styles.
    */
   elementForOverlay(overlay) {
     return this.#overlaysToElements.get(overlay) ?? null;
@@ -471,6 +466,7 @@ var Overlays = class extends EventTarget {
     if (timeRangeOverlays.length > 1) {
       this.#positionOverlappingTimeRangeLabels(timeRangeOverlays);
     }
+    this.dispatchEvent(new OverlaysUpdated());
   }
   /**
    * If any time-range overlays overlap, we try to adjust their horizontal
@@ -1154,26 +1150,6 @@ var Overlays = class extends EventTarget {
         return overlayElement;
       }
       case "COMMENT_PIN": {
-        const pin = document.createElement("div");
-        pin.classList.add("comment-pin");
-        pin.setAttribute("role", "button");
-        pin.setAttribute("tabindex", "0");
-        UI.ARIAUtils.setLabel(pin, i18nString(UIStrings.commentPin));
-        const cursor = document.createElement("div");
-        cursor.classList.add("comment-cursor");
-        pin.appendChild(cursor);
-        const handleActivation = (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          this.dispatchEvent(new CommentPinClick(overlay));
-        };
-        pin.addEventListener("click", handleActivation);
-        pin.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            handleActivation(event);
-          }
-        });
-        overlayElement.appendChild(pin);
         return overlayElement;
       }
       default: {

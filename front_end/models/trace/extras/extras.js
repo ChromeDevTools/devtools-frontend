@@ -810,21 +810,45 @@ var BottomUpRootNode = class extends Node {
     const eventGroupIdCallback = this.eventGroupIdCallback;
     const forceGroupIdCallback = this.forceGroupIdCallback;
     const idToIsCacheHit = /* @__PURE__ */ new Map();
+    const profileCallIdByCallFrame = /* @__PURE__ */ new Map();
+    const groupedIdsByEventId = /* @__PURE__ */ new Map();
+    const nodeIdForEvent = (e) => {
+      let id;
+      if (Types4.Events.isProfileCall(e)) {
+        const cachedId = profileCallIdByCallFrame.get(e.callFrame);
+        if (cachedId === void 0) {
+          id = generateEventID(e);
+          profileCallIdByCallFrame.set(e.callFrame, id);
+        } else {
+          id = cachedId;
+        }
+      } else {
+        id = generateEventID(e);
+      }
+      if (!forceGroupIdCallback || !eventGroupIdCallback) {
+        return id;
+      }
+      const groupId = eventGroupIdCallback(e);
+      let groupedIds = groupedIdsByEventId.get(id);
+      if (!groupedIds) {
+        groupedIds = /* @__PURE__ */ new Map();
+        groupedIdsByEventId.set(id, groupedIds);
+      }
+      let groupedId = groupedIds.get(groupId);
+      if (groupedId === void 0) {
+        groupedId = `${id}-${groupId}`;
+        groupedIds.set(groupId, groupedId);
+      }
+      return groupedId;
+    };
     for (const e of this.events) {
       if (Types4.Events.isReceivedDataEvent(e) && e.name === "ResourceReceiveResponse") {
-        let id = generateEventID(e);
-        if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
-          id = `${id}-${this.eventGroupIdCallback(e)}`;
-        }
-        idToIsCacheHit.set(id, e.args.data.fromCache || false);
+        idToIsCacheHit.set(nodeIdForEvent(e), e.args.data.fromCache || false);
       }
     }
     const sumTransferSizeOfInstantEvent = (e) => {
       if (Types4.Events.isReceivedDataEvent(e)) {
-        let id = generateEventID(e);
-        if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
-          id = `${id}-${this.eventGroupIdCallback(e)}`;
-        }
+        const id = nodeIdForEvent(e);
         let node = nodeById.get(id);
         if (!node) {
           node = new BottomUpNode(root, id, e, false, root);
@@ -863,10 +887,7 @@ var BottomUpRootNode = class extends Node {
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      let id = generateEventID(e);
-      if (forceGroupIdCallback && eventGroupIdCallback) {
-        id = `${id}-${eventGroupIdCallback(e)}`;
-      }
+      const id = nodeIdForEvent(e);
       idStack.push(id);
       const noNodeOnStack = !totalTimeById.has(id);
       if (noNodeOnStack) {

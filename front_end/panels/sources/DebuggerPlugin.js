@@ -1,7 +1,7 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/components/tooltips/tooltips.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -18,11 +18,10 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { render } from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AddDebugInfoURLDialog } from './AddSourceMapURLDialog.js';
@@ -156,6 +155,19 @@ const MAX_POSSIBLE_BREAKPOINT_LINE = 2500;
 // Limits on inline variable view computation.
 const MAX_CODE_SIZE_FOR_VALUE_DECORATIONS = 10000;
 const MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS = 500;
+function renderBreakpointEditDialogHost(input, _output, target) {
+    render(html `<div><devtools-widget>${input.dialog.element}</devtools-widget></div>`, target);
+}
+function renderMissingDebugFile(input, _output, target) {
+    // clang-format off
+    render(html `<span class="infobar-selectable">${input.message}${input.onShowRequest ? html `<devtools-button
+      style="margin-left: 10px"
+      title=${i18nString(UIStrings.openDeveloperResources)}
+      .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+      .jslogContext=${'show-request'}
+      @click=${input.onShowRequest}>${i18nString(UIStrings.showRequest)}</devtools-button>` : nothing}</span>`, target);
+    // clang-format on
+}
 const debuggerPluginForUISourceCode = new Map();
 export class DebuggerPlugin extends Plugin {
     transformer;
@@ -727,7 +739,6 @@ export class DebuggerPlugin extends Plugin {
         const editor = this.editor;
         const oldCondition = breakpoint ? breakpoint.condition() : '';
         const isLogpointForDialog = breakpoint?.isLogpoint() ?? Boolean(isLogpoint);
-        const decorationElement = document.createElement('div');
         const compartment = new CodeMirror.Compartment();
         const dialog = new BreakpointEditDialog();
         dialog.editorLineNumber = line.number - 1;
@@ -760,6 +771,10 @@ export class DebuggerPlugin extends Plugin {
                 await this.createNewBreakpoint(line, result.condition, /* enabled */ true, result.isLogpoint);
             }
         };
+        dialog.markAsExternallyManaged();
+        const decorationFragment = document.createDocumentFragment();
+        renderBreakpointEditDialogHost({ dialog }, undefined, decorationFragment);
+        const decorationElement = decorationFragment.firstElementChild;
         editor.dispatch({
             effects: CodeMirror.StateEffect.appendConfig.of(compartment.of(CodeMirror.EditorView.decorations.of(CodeMirror.Decoration.set([CodeMirror.Decoration
                     .widget({
@@ -791,8 +806,6 @@ export class DebuggerPlugin extends Plugin {
                 }, 200);
             }
         }, true);
-        dialog.markAsExternallyManaged();
-        dialog.show(decorationElement);
         dialog.focus();
         this.activeBreakpointDialog = dialog;
         this.#activeBreakpointEditRequest = breakpointEditRequest;
@@ -1260,19 +1273,14 @@ export class DebuggerPlugin extends Plugin {
             return;
         }
         for (const resource of warning.resources) {
-            const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(i18nString(UIStrings.debugFileNotFound, { PH1: Common.ParsedURL.ParsedURL.extractName(resource.resourceUrl) }));
-            if (detailsRow) {
-                const pageResourceKey = SDK.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
-                if (SDK.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
-                    const showRequest = UI.UIUtils.createTextButton(i18nString(UIStrings.showRequest), () => {
-                        void Common.Revealer.reveal(new SDK.PageResourceLoader.ResourceKey(pageResourceKey));
-                    }, { jslogContext: 'show-request', variant: "text" /* Buttons.Button.Variant.TEXT */ });
-                    showRequest.style.setProperty('margin-left', '10px');
-                    showRequest.title = i18nString(UIStrings.openDeveloperResources);
-                    detailsRow.appendChild(showRequest);
-                }
-                detailsRow.classList.add('infobar-selectable');
-            }
+            const pageResourceKey = SDK.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
+            const onShowRequest = SDK.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey) ? () => {
+                void Common.Revealer.reveal(new SDK.PageResourceLoader.ResourceKey(pageResourceKey));
+            } : undefined;
+            const message = i18nString(UIStrings.debugFileNotFound, { PH1: Common.ParsedURL.ParsedURL.extractName(resource.resourceUrl) });
+            const fragment = document.createDocumentFragment();
+            renderMissingDebugFile({ message, onShowRequest }, undefined, fragment);
+            this.missingDebugInfoBar.createDetailsRowMessage(fragment.firstElementChild);
         }
         this.missingDebugInfoBar.setCloseCallback(() => {
             this.removeInfobar(this.missingDebugInfoBar);
@@ -1586,7 +1594,15 @@ const breakpointMarkers = CodeMirror.StateField.define({
     provide: field => [CodeMirror.EditorView.decorations.from(field, deco => deco.content),
         CodeMirror.lineNumberMarkers.from(field, deco => deco.gutter)],
 });
-class BreakpointInlineMarker extends CodeMirror.WidgetType {
+function renderBreakpointInlineMarker(input, _output, target) {
+    // clang-format off
+    render(html `<span class=${input.className}
+                    jslog=${VisualLogging.breakpointMarker().track({ click: true })}
+                    @click=${input.onClick}
+                    @contextmenu=${input.onContextMenu}></span>`, target);
+    // clang-format on
+}
+export class BreakpointInlineMarker extends CodeMirror.WidgetType {
     breakpoint;
     parent;
     class;
@@ -1610,24 +1626,35 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
         return other.class === this.class && other.breakpoint === this.breakpoint;
     }
     toDOM() {
-        const span = document.createElement('span');
-        span.className = this.class;
-        span.setAttribute('jslog', `${VisualLogging.breakpointMarker().track({ click: true })}`);
-        span.addEventListener('click', (event) => {
-            this.parent.onInlineBreakpointMarkerClick(event, this.breakpoint);
-            event.consume();
-        });
-        span.addEventListener('contextmenu', (event) => {
-            this.parent.onInlineBreakpointMarkerContextMenu(event, this.breakpoint);
-            event.consume();
-        });
-        return span;
+        const fragment = document.createDocumentFragment();
+        renderBreakpointInlineMarker({
+            className: this.class,
+            onClick: (event) => {
+                this.parent.onInlineBreakpointMarkerClick(event, this.breakpoint);
+                event.consume();
+            },
+            onContextMenu: (event) => {
+                this.parent.onInlineBreakpointMarkerContextMenu(event, this.breakpoint);
+                event.consume();
+            },
+        }, undefined, fragment);
+        return fragment.firstElementChild;
     }
     ignoreEvent() {
         return true;
     }
 }
-class BreakpointGutterMarker extends CodeMirror.GutterMarker {
+function renderBreakpointGutterMarker(input, _output, target) {
+    // We want {display: block} so it uses all of the space.
+    // clang-format off
+    const lineNumber = html `<div jslog=${VisualLogging.breakpointMarker().track({ click: true })}
+                               aria-details=${input.tooltipId ?? nothing}>${input.lineNumber}</div>`;
+    render(input.condition && input.tooltipId ?
+        html `<div>${lineNumber}<devtools-tooltip id=${input.tooltipId} jslogcontext="breakpoint-tooltip">${input.condition}</devtools-tooltip></div>` :
+        lineNumber, target);
+    // clang-format on
+}
+export class BreakpointGutterMarker extends CodeMirror.GutterMarker {
     elementClass;
     static nextTooltipId = 0;
     #position;
@@ -1639,29 +1666,18 @@ class BreakpointGutterMarker extends CodeMirror.GutterMarker {
         this.condition = condition;
     }
     eq(other) {
-        return other.elementClass === this.elementClass;
+        // The condition is rendered into the tooltip, so it has to be part of the
+        // equality check. Otherwise CodeMirror keeps the stale DOM around.
+        return other.elementClass === this.elementClass && other.condition === this.condition;
     }
     toDOM(view) {
-        const div = document.createElement('div'); // We want {display: block} so it uses all of the space.
-        div.setAttribute('jslog', `${VisualLogging.breakpointMarker().track({ click: true })}`);
         const line = view.state.doc.lineAt(this.#position).number;
         const formatNumber = view.state.facet(SourceFrame.SourceFrame.LINE_NUMBER_FORMATTER);
-        div.textContent = formatNumber(line, view.state);
-        if (!this.condition) {
-            return div;
-        }
-        const container = document.createElement('div');
-        const id = `cm-breakpoint-tooltip-${BreakpointGutterMarker.nextTooltipId++}`;
-        div.setAttribute('aria-details', id);
-        container.appendChild(div);
-        const tooltip = new Tooltips.Tooltip.Tooltip({
-            id,
-            anchor: div,
-            jslogContext: 'breakpoint-tooltip',
-        });
-        tooltip.append(this.condition);
-        container.appendChild(tooltip);
-        return container;
+        const condition = this.condition;
+        const tooltipId = condition ? `cm-breakpoint-tooltip-${BreakpointGutterMarker.nextTooltipId++}` : undefined;
+        const fragment = document.createDocumentFragment();
+        renderBreakpointGutterMarker({ lineNumber: formatNumber(line, view.state), condition, tooltipId }, undefined, fragment);
+        return fragment.firstElementChild;
     }
 }
 function mostSpecificBreakpoint(a, b) {
@@ -1704,8 +1720,21 @@ const noMarkers = {}, hasContinueMarkers = {
 const markIfContinueTo = CodeMirror.EditorView.contentAttributes.compute([continueToMarkers.field], state => {
     return state.field(continueToMarkers.field).size ? hasContinueMarkers : noMarkers;
 });
-// Variable value decorations
-class ValueDecoration extends CodeMirror.WidgetType {
+function renderValueDecoration(input, _output, target) {
+    const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+    const renderValue = (value) => {
+        const propertyCount = value.preview ? value.preview.properties.length : 0;
+        const entryCount = value.preview?.entries ? value.preview.entries.length : 0;
+        if (value.preview && propertyCount + entryCount < 10) {
+            return html `<span>${formatter.renderObjectPreview(value.preview)}</span>`;
+        }
+        return ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
+    };
+    // clang-format off
+    render(html `<div class="cm-variableValues">${input.pairs.map(([name, value], index) => html `${index > 0 ? ', ' : nothing}<span>${name} = ${renderValue(value)}</span>`)}</div>`, target);
+    // clang-format on
+}
+export class ValueDecoration extends CodeMirror.WidgetType {
     pairs;
     constructor(pairs) {
         super();
@@ -1716,34 +1745,9 @@ class ValueDecoration extends CodeMirror.WidgetType {
             this.pairs.every((p, i) => p[0] === other.pairs[i][0] && p[1] === other.pairs[i][1]);
     }
     toDOM() {
-        const formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-        const widget = document.createElement('div');
-        widget.classList.add('cm-variableValues');
-        let first = true;
-        for (const [name, value] of this.pairs) {
-            if (first) {
-                first = false;
-            }
-            else {
-                UI.UIUtils.createTextChild(widget, ', ');
-            }
-            const nameValuePair = widget.createChild('span');
-            UI.UIUtils.createTextChild(nameValuePair, name + ' = ');
-            const propertyCount = value.preview ? value.preview.properties.length : 0;
-            const entryCount = value.preview?.entries ? value.preview.entries.length : 0;
-            if (value.preview && propertyCount + entryCount < 10) {
-                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-                render(formatter.renderObjectPreview(value.preview), nameValuePair.createChild('span'));
-            }
-            else {
-                const propertyValue = ObjectUI.ObjectPropertiesSection.renderPropertyValue(value, /* wasThrown */ false, /* showPreview */ false);
-                const fragment = document.createDocumentFragment();
-                /* eslint-disable-next-line  @devtools/no-lit-render-outside-of-view */
-                render(propertyValue, fragment);
-                nameValuePair.appendChild(fragment);
-            }
-        }
-        return widget;
+        const fragment = document.createDocumentFragment();
+        renderValueDecoration({ pairs: this.pairs }, undefined, fragment);
+        return fragment.firstElementChild;
     }
 }
 const valueDecorations = defineStatefulDecoration();

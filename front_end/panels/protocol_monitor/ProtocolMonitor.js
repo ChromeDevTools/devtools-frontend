@@ -571,7 +571,7 @@ const INFO_WIDGET_VIEW = (input, _output, target) => {
     render(html `
     <devtools-tabbed-pane>${input.type === undefined ? html `
       <devtools-widget
-          id="request" title=${i18nString(UIStrings.request)}
+          id="request" label=${i18nString(UIStrings.request)}
           ?selected=${input.selectedTab === 'request'} disabled
           ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noMessageSelected),
@@ -579,7 +579,7 @@ const INFO_WIDGET_VIEW = (input, _output, target) => {
     })}>
       </devtools-widget>
       <devtools-widget
-          id="response" title=${i18nString(UIStrings.response)}
+          id="response" label=${i18nString(UIStrings.response)}
           ?selected=${input.selectedTab === 'response'}
           ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noMessageSelected),
@@ -587,12 +587,12 @@ const INFO_WIDGET_VIEW = (input, _output, target) => {
     })}>
       </devtools-widget>` : html `
       <devtools-widget
-          id="request" title=${i18nString(UIStrings.request)}
+          id="request" label=${i18nString(UIStrings.request)}
           ?selected=${input.selectedTab === 'request'} ?disabled=${input.type !== 'sent'}
           ${widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.request })}>
       </devtools-widget>
       <devtools-widget
-          id="response" title=${i18nString(UIStrings.response)}
+          id="response" label=${i18nString(UIStrings.response)}
           ?selected=${input.selectedTab === 'response'}
           ${widget(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.response })}>
       </devtools-widget>`}

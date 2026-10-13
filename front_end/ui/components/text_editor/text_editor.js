@@ -1561,6 +1561,7 @@ __export(config_exports, {
 });
 import * as Common3 from "../../../core/common/common.js";
 import * as i18n9 from "../../../core/i18n/i18n.js";
+import * as SDK from "../../../core/sdk/sdk.js";
 import * as TextUtils from "../../../core/text_utils/text_utils.js";
 import * as CM3 from "../../../third_party/codemirror.next/codemirror.next.js";
 import { Icon } from "../../kit/kit.js";
@@ -1942,7 +1943,7 @@ function preservedLength(ch) {
 function detectIndentation(doc) {
   const lines = doc.iterLines(1, Math.min(doc.lines + 1, LINES_TO_SCAN_FOR_INDENTATION_GUESSING));
   const indentUnit3 = TextUtils.TextUtils.detectIndentation(lines);
-  return indentUnit3 ?? Common3.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+  return indentUnit3 ?? Common3.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
 }
 var autoDetectIndent = DynamicSetting.bool(SettingsUI.SourcesSettings.textEditorAutoDetectIndentSettingDescriptor, AutoDetectIndent);
 function matcher(decorator) {
@@ -2000,7 +2001,7 @@ function getIndentUnit(indent) {
   }
   return value;
 }
-var indentUnit2 = new DynamicSetting("text-editor-indent", getIndentUnit);
+var indentUnit2 = new DynamicSetting(SDK.SDKSettings.textEditorIndentSettingDescriptor, getIndentUnit);
 var domWordWrap = DynamicSetting.bool(SettingsUI.ElementsSettings.domWordWrapSettingDescriptor, CM3.EditorView.lineWrapping);
 var sourcesWordWrap = DynamicSetting.bool(SettingsUI.SourcesSettings.sourcesWordWrapSettingDescriptor, CM3.EditorView.lineWrapping);
 function detectLineSeparator(text) {
@@ -3482,7 +3483,7 @@ __export(javascript_exports, {
   isExpressionComplete: () => isExpressionComplete,
   javascriptCompletionSource: () => javascriptCompletionSource
 });
-import * as SDK from "../../../core/sdk/sdk.js";
+import * as SDK2 from "../../../core/sdk/sdk.js";
 import * as Bindings from "../../../models/bindings/bindings.js";
 import * as Formatter from "../../../models/formatter/formatter.js";
 import * as JavaScriptMetaData from "../../../models/javascript_metadata/javascript_metadata.js";
@@ -3800,7 +3801,7 @@ var SPAN_IDENT = /^#?(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u
 var SPAN_SINGLE_QUOTE = /^\'(\\.|[^\\'\n])*'?$/;
 var SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
 function getExecutionContext() {
-  return UI8.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  return UI8.Context.Context.instance().flavor(SDK2.RuntimeModel.ExecutionContext);
 }
 async function evaluateExpression(context, expression, group, substituteNames = true, target) {
   const callFrame = target ? target.callFrame : context.debuggerModel.selectedCallFrame();
@@ -3844,11 +3845,11 @@ var PropertyCache = class _PropertyCache {
   #cache = /* @__PURE__ */ new Map();
   constructor(targetManager) {
     const clear = () => this.#cache.clear();
-    targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, clear);
-    UI8.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
-    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, clear);
-    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, clear);
-    targetManager.addModelListener(SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.CallFrameSelected, clear);
+    targetManager.addModelListener(SDK2.ConsoleModel.ConsoleModel, SDK2.ConsoleModel.Events.CommandEvaluated, clear);
+    UI8.Context.Context.instance().addFlavorChangeListener(SDK2.RuntimeModel.ExecutionContext, clear);
+    targetManager.addModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerResumed, clear);
+    targetManager.addModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.DebuggerPaused, clear);
+    targetManager.addModelListener(SDK2.DebuggerModel.DebuggerModel, SDK2.DebuggerModel.Events.CallFrameSelected, clear);
   }
   get(expression) {
     return this.#cache.get(expression);
@@ -3862,7 +3863,7 @@ var PropertyCache = class _PropertyCache {
     }, maxCacheAge);
   }
   static instance() {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const targetManager = SDK2.TargetManager.TargetManager.instance();
     let cache = cacheByTargetManager.get(targetManager);
     if (!cache) {
       cache = new _PropertyCache(targetManager);
@@ -3888,7 +3889,7 @@ async function maybeCompleteKeysFromMap(objectVariable, target) {
   if (!maybeRetrieveKeys) {
     return result;
   }
-  const properties = SDK.RemoteObject.RemoteArray.objectAsArray(maybeRetrieveKeys);
+  const properties = SDK2.RemoteObject.RemoteArray.objectAsArray(maybeRetrieveKeys);
   const numProperties = properties.length();
   for (let i = 0; i < numProperties; i++) {
     result.add({
@@ -4035,7 +4036,7 @@ async function completeExpressionGlobal() {
   return await fetchNames;
 }
 async function isExpressionComplete(expression) {
-  const currentExecutionContext = UI8.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  const currentExecutionContext = UI8.Context.Context.instance().flavor(SDK2.RuntimeModel.ExecutionContext);
   if (!currentExecutionContext) {
     return true;
   }
@@ -4291,7 +4292,7 @@ async function getArgumentsForBoundFunction(object) {
     return null;
   }
   const originalSignatures = await getArgumentsForFunctionValue(target, () => Promise.resolve(thisValue));
-  const boundArgsLength = SDK.RemoteObject.RemoteObject.arrayLength(args);
+  const boundArgsLength = SDK2.RemoteObject.RemoteObject.arrayLength(args);
   if (!originalSignatures) {
     return null;
   }

@@ -630,9 +630,12 @@ export var IssueCreated;
     IssueCreated[IssueCreated["CorsIssue::LocalNetworkAccessPermissionDenied"] = 111] = "CorsIssue::LocalNetworkAccessPermissionDenied";
     IssueCreated[IssueCreated["SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch"] = 112] = "SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch";
     IssueCreated[IssueCreated["ElementAccessibilityIssue::InteractiveContentSummaryDescendant"] = 113] = "ElementAccessibilityIssue::InteractiveContentSummaryDescendant";
-    IssueCreated[IssueCreated["CorsIssue::InvalidLocalNetworkAccess"] = 114] = "CorsIssue::InvalidLocalNetworkAccess";
+    IssueCreated[IssueCreated["GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo"] = 114] = "GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo";
+    IssueCreated[IssueCreated["GenericIssue::AutofillPolicyControlledFeatureInfo"] = 115] = "GenericIssue::AutofillPolicyControlledFeatureInfo";
+    IssueCreated[IssueCreated["GenericIssue::ManualTextPolicyControlledFeatureInfo"] = 116] = "GenericIssue::ManualTextPolicyControlledFeatureInfo";
+    IssueCreated[IssueCreated["CorsIssue::InvalidLocalNetworkAccess"] = 118] = "CorsIssue::InvalidLocalNetworkAccess";
     /* eslint-enable @typescript-eslint/naming-convention */
-    IssueCreated[IssueCreated["MAX_VALUE"] = 115] = "MAX_VALUE";
+    IssueCreated[IssueCreated["MAX_VALUE"] = 119] = "MAX_VALUE";
 })(IssueCreated || (IssueCreated = {}));
 export var DeveloperResourceLoaded;
 (function (DeveloperResourceLoaded) {

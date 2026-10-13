@@ -72,7 +72,7 @@ class TCPConnection {
      */
     simulateDownloadUntil(bytesToDownload, options) {
         const { timeAlreadyElapsed = 0, maximumTimeToElapse = Infinity, dnsResolutionTime = 0 } = options || {};
-        if (this.warmed && this.multiplexed) {
+        if (this.multiplexed) {
             bytesToDownload -= this.h2OverflowBytesDownloaded;
         }
         const twoWayLatency = this.rtt;

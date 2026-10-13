@@ -1836,8 +1836,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -4765,11 +4763,8 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
   }
   async #getSourceText() {
     if (this.#shouldPrettyPrint && this.#ruleSet?.sourceText !== void 0) {
-      const formattedResult = await Formatter.ScriptFormatter.formatScriptContent(
-        SDK5.TargetManager.TargetManager.instance().settings,
-        "application/json",
-        this.#ruleSet.sourceText
-      );
+      const indent = SDK5.TargetManager.TargetManager.instance().settings.resolve(SDK5.SDKSettings.textEditorIndentSettingDescriptor).get();
+      const formattedResult = await Formatter.ScriptFormatter.formatScriptContent("application/json", this.#ruleSet.sourceText, indent);
       return formattedResult.formattedContent;
     }
     return this.#ruleSet?.sourceText || "";

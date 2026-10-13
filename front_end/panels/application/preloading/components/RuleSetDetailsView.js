@@ -98,7 +98,10 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
     }
     async #getSourceText() {
         if (this.#shouldPrettyPrint && this.#ruleSet?.sourceText !== undefined) {
-            const formattedResult = await Formatter.ScriptFormatter.formatScriptContent(SDK.TargetManager.TargetManager.instance().settings, 'application/json', this.#ruleSet.sourceText);
+            const indent = SDK.TargetManager.TargetManager.instance()
+                .settings.resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
+                .get();
+            const formattedResult = await Formatter.ScriptFormatter.formatScriptContent('application/json', this.#ruleSet.sourceText, indent);
             return formattedResult.formattedContent;
         }
         return this.#ruleSet?.sourceText || '';

@@ -994,12 +994,6 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
       model.emulate(model.type(), model.device(), mode, scale);
     }
   }
-  getPrettyFitZoomPercentage() {
-    return !this.model ? "" : `${(this.model.fitScale() * 100).toFixed(0)}`;
-  }
-  getPrettyZoomPercentage() {
-    return !this.model ? "" : `${(this.model.scale() * 100).toFixed(0)}`;
-  }
   restore() {
     if (!this.model) {
       return;

@@ -1,25 +1,56 @@
 import './Toolbar.js';
 import { VBox } from './Widget.js';
+export interface ViewInput {
+    searchIsVisible: boolean;
+    replaceable: boolean;
+    secondRowVisible: boolean;
+    placeholder: string;
+    searchAriaLabel?: string;
+    supportsCaseSensitive: boolean;
+    caseSensitiveToggled: boolean;
+    supportsWholeWord: boolean;
+    wholeWordToggled: boolean;
+    supportsRegex: boolean;
+    regexToggled: boolean;
+    matchesText: string;
+    matchesAriaLabel: string;
+    navEnabled: boolean;
+    replaceEnabled: boolean;
+    onToggleReplace: () => void;
+    onSearchKeyDown: (event: KeyboardEvent) => void;
+    onSearchInput: () => void;
+    onClearSearchInput: () => void;
+    onReplaceKeyDown: (event: KeyboardEvent) => void;
+    onClearReplaceInput: () => void;
+    onToggleCaseSensitive: () => void;
+    onToggleWholeWord: () => void;
+    onToggleRegex: () => void;
+    onPrevClick: () => void;
+    onNextClick: () => void;
+    onCloseClick: () => void;
+    onReplaceClick: () => void;
+    onReplaceAllClick: () => void;
+}
+export interface ViewOutput {
+    searchInputElement?: HTMLInputElement;
+    replaceInputElement?: HTMLInputElement;
+    footerElementContainer?: HTMLElement;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class SearchableView extends VBox implements SearchResultsListener {
     #private;
     replaceProvider: Replaceable | null;
-    private readonly footerElementContainer;
-    private readonly footerElement;
-    private replaceToggleButton;
-    private searchInputElement;
-    private matchesElement;
-    private matchesElementValue;
-    private searchNavigationPrevElement;
-    private searchNavigationNextElement;
-    private readonly replaceInputElement;
-    private replaceButtonElement;
-    private replaceAllButtonElement;
     minimalSearchQuerySize: number;
     private searchIsVisible?;
     private currentQuery?;
     private valueChangedTimeoutId?;
-    constructor(element?: HTMLElement);
-    constructor(searchable: Searchable, replaceable: Replaceable | null, settingName?: string, element?: HTMLElement);
+    constructor(element?: HTMLElement, view?: View);
+    constructor(searchable: Searchable, replaceable: Replaceable | null, settingName?: string, element?: HTMLElement, view?: View);
+    private get footerElementContainer();
+    private get searchInputElement();
+    private get replaceInputElement();
+    performUpdate(): void;
     get searchProvider(): Searchable;
     set searchProvider(searchable: Searchable);
     get searchTarget(): SearchTarget | null;
@@ -45,7 +76,6 @@ export declare class SearchableView extends VBox implements SearchResultsListene
     handleFindPreviousShortcut(): boolean;
     handleFindShortcut(): boolean;
     handleCancelSearchShortcut(): boolean;
-    private updateSearchNavigationButtonState;
     private updateSearchMatchesCountAndCurrentMatchIndex;
     showSearchField(): void;
     private updateReplaceVisibility;

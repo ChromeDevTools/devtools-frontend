@@ -2853,12 +2853,7 @@ async function makeSourceCodeWidget(widgetData) {
   let code = widgetData.data.code;
   if (TextUtils.TextUtils.isMinified(code)) {
     const canonicalMimeType = uiSourceCode?.contentType().canonicalMimeType() || "text/javascript";
-    const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-      Common3.Settings.Settings.instance(),
-      canonicalMimeType,
-      code,
-      "  "
-    );
+    const formatted = await Formatter.ScriptFormatter.formatScriptContent(canonicalMimeType, code, "  ");
     code = formatted.formattedContent;
   }
   const renderedWidget = html5`
@@ -5531,8 +5526,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";

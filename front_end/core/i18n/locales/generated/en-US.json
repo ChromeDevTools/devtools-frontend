@@ -1355,9 +1355,6 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
   },
-  "generated/Deprecation.ts | SharedStorage": {
-    "message": "The Shared Storage API is deprecated and will be removed in a future release."
-  },
   "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
     "message": "document.requestStorageAccessFor is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details."
   },
@@ -5078,6 +5075,9 @@
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "This frame is considered an ad frame because its parent frame is an ad frame"
   },
+  "panels/application/FrameDetailsView.ts | refreshSpellCheckCustomDictionary": {
+    "message": "Refresh spell check custom dictionary"
+  },
   "panels/application/FrameDetailsView.ts | reportingTo": {
     "message": "reporting to"
   },
@@ -5105,6 +5105,12 @@
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer constructor is available but SABs can’t be transferred via postMessage"
   },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionary": {
+    "message": "Spell check custom dictionary"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionaryExplanation": {
+    "message": "Words added with document.spellCheckCustomDictionary.addWords(). The spell checker doesn’t flag them in this document."
+  },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "The frame’s scheme is insecure"
   },
@@ -5131,6 +5137,9 @@
   },
   "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ will require cross-origin isolated context in the future"
+  },
+  "panels/application/FrameDetailsView.ts | words": {
+    "message": "Words"
   },
   "panels/application/FrameDetailsView.ts | yes": {
     "message": "Yes"
@@ -7901,6 +7910,117 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "Wrap these items"
   },
+  "panels/elements/DOMTreeElementWidget.ts | children": {
+    "message": "Children:"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | copy": {
+    "message": "Copy"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | creatorAdScriptAncestry": {
+    "message": "Creator ad script ancestry"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | cut": {
+    "message": "Cut"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableContainer": {
+    "message": "Disable container overlay"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableFlexMode": {
+    "message": "Disable flex mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridLanesMode": {
+    "message": "Disable grid-lanes mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridMode": {
+    "message": "Disable grid mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableScrollSnap": {
+    "message": "Disable scroll-snap overlay"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableStartingStyle": {
+    "message": "Disable @starting-style mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | elementHasScrollableOverflow": {
+    "message": "This element has a scrollable overflow"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableContainer": {
+    "message": "Enable container overlay"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableFlexMode": {
+    "message": "Enable flex mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridLanesMode": {
+    "message": "Enable grid-lanes mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridMode": {
+    "message": "Enable grid mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableScrollSnap": {
+    "message": "Enable scroll-snap overlay"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableStartingStyle": {
+    "message": "Enable @starting-style mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | filterListRule": {
+    "message": "Filter list rule"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceOpenPopover": {
+    "message": "Keep this popover open"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceShowInterest": {
+    "message": "Trigger interest on this element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceState": {
+    "message": "Force state"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | noProvenanceAvailable": {
+    "message": "No provenance data is available"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | openMediaPanel": {
+    "message": "Jump to Media panel"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | paste": {
+    "message": "Paste"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | reveal": {
+    "message": "Reveal"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | rootScriptFilterListRule": {
+    "message": "Root script filter list rule"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | selectAll": {
+    "message": "Select all"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCommandForTarget": {
+    "message": "Show element associated with the commandfor attribute"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCustomElementDefinition": {
+    "message": "Show custom element definition"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showInterestTarget": {
+    "message": "Show element associated with the interesttarget attribute"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showPopoverTarget": {
+    "message": "Show element associated with the popovertarget attribute"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceOpenPopover": {
+    "message": "Stop keeping this popover open"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceShowInterest": {
+    "message": "Cancel interest on this element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "This element was identified as an ad"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | useSInTheConsoleToReferToThis": {
+    "message": "Use {PH1} in the console to refer to this element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | valueIsTooLargeToEdit": {
+    "message": "<value is too large to edit>"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | viewSourceCode": {
+    "message": "View source code"
+  },
   "panels/elements/DOMTreeWidget.ts | pageDom": {
     "message": "Page DOM"
   },
@@ -8186,117 +8306,6 @@
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Toggle element state"
   },
-  "panels/elements/ElementsTreeElement.ts | children": {
-    "message": "Children:"
-  },
-  "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "Copy"
-  },
-  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
-    "message": "Creator ad script ancestry"
-  },
-  "panels/elements/ElementsTreeElement.ts | cut": {
-    "message": "Cut"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableContainer": {
-    "message": "Disable container overlay"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
-    "message": "Disable flex mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
-    "message": "Disable grid-lanes mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
-    "message": "Disable grid mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
-    "message": "Disable scroll-snap overlay"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
-    "message": "Disable @starting-style mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
-    "message": "This element has a scrollable overflow"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableContainer": {
-    "message": "Enable container overlay"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
-    "message": "Enable flex mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
-    "message": "Enable grid-lanes mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
-    "message": "Enable grid mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
-    "message": "Enable scroll-snap overlay"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
-    "message": "Enable @starting-style mode"
-  },
-  "panels/elements/ElementsTreeElement.ts | filterListRule": {
-    "message": "Filter list rule"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
-    "message": "Keep this popover open"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
-    "message": "Trigger interest on this element"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceState": {
-    "message": "Force state"
-  },
-  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
-    "message": "No provenance data is available"
-  },
-  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
-    "message": "Jump to Media panel"
-  },
-  "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "Paste"
-  },
-  "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "Reveal"
-  },
-  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
-    "message": "Root script filter list rule"
-  },
-  "panels/elements/ElementsTreeElement.ts | selectAll": {
-    "message": "Select all"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Show element associated with the commandfor attribute"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
-    "message": "Show custom element definition"
-  },
-  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Show element associated with the interesttarget attribute"
-  },
-  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Show element associated with the popovertarget attribute"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
-    "message": "Stop keeping this popover open"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
-    "message": "Cancel interest on this element"
-  },
-  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
-    "message": "This element was identified as an ad"
-  },
-  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
-    "message": "Use {PH1} in the console to refer to this element"
-  },
-  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
-    "message": "<value is too large to edit>"
-  },
-  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
-    "message": "View source code"
-  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "All"
   },
@@ -8398,9 +8407,6 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS property value: {PH1}"
-  },
-  "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "reveal"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "Collapse expanded rule"
@@ -13239,7 +13245,7 @@
     "message": "active mixed content"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "All resources on this page are served securely."
+    "message": "All resources on this page are served securely"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "all served securely"
@@ -13257,7 +13263,7 @@
     "message": "Certificate Transparency"
   },
   "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
-    "message": "Chrome has determined that this site could be fake or fraudulent."
+    "message": "Chrome has determined that this site could be fake or fraudulent"
   },
   "panels/security/SecurityPanel.ts | cipher": {
     "message": "Cipher"
@@ -13284,10 +13290,10 @@
     "message": "Hide full details"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Info"
@@ -13323,7 +13329,7 @@
     "message": "non-secure form"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
-    "message": "No security details are available for this origin."
+    "message": "No security details are available for this origin"
   },
   "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "No security information"
@@ -13353,10 +13359,10 @@
     "message": "Public-Key-Pinning bypassed"
   },
   "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
-    "message": "Public-Key-Pinning was bypassed by a local root certificate."
+    "message": "Public-Key-Pinning was bypassed by a local root certificate"
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "Reload the page to record requests for HTTP resources."
+    "message": "Reload the page to record requests for HTTP resources"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "Resources"
@@ -13410,73 +13416,73 @@
     "message": "Subject Alternative Name missing"
   },
   "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
-    "message": "The certificate chain for this site contains a certificate signed using SHA-1."
+    "message": "The certificate chain for this site contains a certificate signed using SHA-1"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "The certificate for this site doesn’t contain a Subject Alternative Name extension containing a domain name or IP address."
+    "message": "The certificate for this site doesn’t contain a Subject Alternative Name extension containing a domain name or IP address"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
-    "message": "The certificate for this site expires in less than 48 hours and needs to be renewed."
+    "message": "The certificate for this site expires in less than 48 hours and needs to be renewed"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
-    "message": "The connection to this site is encrypted and authenticated using {PH1}, {PH2}, and {PH3}."
+    "message": "The connection to this site is encrypted and authenticated using {PH1}, {PH2}, and {PH3}"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "The connection to this site is using a valid, trusted server certificate issued by {PH1}."
+    "message": "The connection to this site is using a valid, trusted server certificate issued by {PH1}"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
-    "message": "The security details above are from the first inspected response."
+    "message": "The security details above are from the first inspected response"
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note this is different from the signature in the certificate.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "This is an error page."
+    "message": "This is an error page"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
-    "message": "This origin is a non-HTTPS secure origin."
+    "message": "This origin is a non-HTTPS secure origin"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "This page has a non-HTTPS secure origin."
+    "message": "This page has a non-HTTPS secure origin"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "This page includes a form with a non-secure action attribute."
+    "message": "This page includes a form with a non-secure action attribute"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "This page includes HTTP resources."
+    "message": "This page includes HTTP resources"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "This page includes resources that were loaded with certificate errors."
+    "message": "This page includes resources that were loaded with certificate errors"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "This page is dangerous (flagged by Google Safe Browsing)."
+    "message": "This page is dangerous (flagged by Google Safe Browsing)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "This page is insecure (unencrypted HTTP)."
+    "message": "This page is insecure (unencrypted HTTP)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "This page is suspicious"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "This page is suspicious (flagged by Chrome)."
+    "message": "This page is suspicious (flagged by Chrome)"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "This request complies with Chrome’s Certificate Transparency policy."
+    "message": "This request complies with Chrome’s Certificate Transparency policy"
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "This request doesn’t comply with Chrome’s Certificate Transparency policy."
+    "message": "This request doesn’t comply with Chrome’s Certificate Transparency policy"
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "This response was loaded from cache. Some security details might be missing."
   },
   "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
-    "message": "This site is missing a valid, trusted certificate ({PH1})."
+    "message": "This site is missing a valid, trusted certificate ({PH1})"
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "This site’s hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "To check this page’s status, visit g.co/safebrowsingstatus."
+    "message": "To check this page’s status, visit g.co/safebrowsingstatus"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "unknown"
@@ -13503,16 +13509,16 @@
     "message": "View requests in Network panel"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site."
+    "message": "You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "You have recently allowed non-secure content (such as scripts or iframes) to run on this site."
+    "message": "You have recently allowed non-secure content (such as scripts or iframes) to run on this site"
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "Your connection to this origin isn’t secure."
+    "message": "Your connection to this origin isn’t secure"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Your page requested non-secure resources that were blocked."
+    "message": "Your page requested non-secure resources that were blocked"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Main origin"
@@ -16495,9 +16501,6 @@
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Time range"
-  },
-  "panels/timeline/overlays/OverlaysImpl.ts | commentPin": {
-    "message": "Comment"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} - Field ({PH2})"

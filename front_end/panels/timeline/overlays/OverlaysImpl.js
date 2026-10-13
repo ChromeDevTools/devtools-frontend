@@ -33,10 +33,6 @@ const UIStrings = {
      * @description Text for the page scope option that selects the entire origin instead of its specific URL in the Performance panel.
      */
     originOption: 'Origin',
-    /**
-     * @description Accessible label for the comment pin overlay button on a flame chart entry.
-     */
-    commentPin: 'Comment',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/OverlaysImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -173,14 +169,15 @@ export class EventReferenceClick extends Event {
     }
 }
 /**
- * Dispatched when a comment pin overlay on a flame chart entry is clicked.
+ * Dispatched synchronously at the end of every `update()`, after all overlay
+ * elements have been positioned. Code that positions its own elements relative
+ * to overlay elements, such as the Performance panel comment pins, listens for
+ * it to follow panning and zooming.
  */
-export class CommentPinClick extends Event {
-    overlay;
-    static eventName = 'commentpinclick';
-    constructor(overlay) {
-        super(CommentPinClick.eventName, { composed: true, bubbles: true });
-        this.overlay = overlay;
+export class OverlaysUpdated extends Event {
+    static eventName = 'overlaysupdated';
+    constructor() {
+        super(OverlaysUpdated.eventName);
     }
 }
 /**
@@ -368,8 +365,9 @@ export class Overlays extends EventTarget {
         return matches;
     }
     /**
-     * Used for debugging and testing. Do not mutate the element directly using
-     * this method.
+     * Returns the DOM element rendered for the overlay, or null if the overlay
+     * has no element. Callers may read the element's position and size, but
+     * must not mutate it, because `update()` overwrites its styles.
      */
     elementForOverlay(overlay) {
         return this.#overlaysToElements.get(overlay) ?? null;
@@ -497,6 +495,7 @@ export class Overlays extends EventTarget {
         if (timeRangeOverlays.length > 1) { // If there are 0 or 1 overlays, they can't overlap
             this.#positionOverlappingTimeRangeLabels(timeRangeOverlays);
         }
+        this.dispatchEvent(new OverlaysUpdated());
     }
     /**
      * If any time-range overlays overlap, we try to adjust their horizontal
@@ -1344,26 +1343,8 @@ export class Overlays extends EventTarget {
                 return overlayElement;
             }
             case 'COMMENT_PIN': {
-                const pin = document.createElement('div');
-                pin.classList.add('comment-pin');
-                pin.setAttribute('role', 'button');
-                pin.setAttribute('tabindex', '0');
-                UI.ARIAUtils.setLabel(pin, i18nString(UIStrings.commentPin));
-                const cursor = document.createElement('div');
-                cursor.classList.add('comment-cursor');
-                pin.appendChild(cursor);
-                const handleActivation = (event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    this.dispatchEvent(new CommentPinClick(overlay));
-                };
-                pin.addEventListener('click', handleActivation);
-                pin.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        handleActivation(event);
-                    }
-                });
-                overlayElement.appendChild(pin);
+                // The element is an empty box sized to the entry. The shared comments
+                // overlay draws the pin, highlight and popup relative to it.
                 return overlayElement;
             }
             default: {

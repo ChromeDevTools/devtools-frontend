@@ -20,8 +20,10 @@ export interface FrameDetailsViewInput {
     protocolMonitorExperimentEnabled: boolean;
     trials: Protocol.Page.OriginTrial[] | null;
     securityIsolationInfo: Protocol.Network.SecurityIsolationStatus | null;
+    spellCheckCustomDictionaryWords: string[];
     onRevealInNetwork?: () => void;
     onRevealInSources: () => void;
+    onRefreshSpellCheckCustomDictionary: () => void;
 }
 export type View = (input: FrameDetailsViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
@@ -29,6 +31,7 @@ export declare class FrameDetailsReportView extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);
     set frame(frame: SDK.ResourceTreeModel.ResourceTreeFrame);
+    wasShown(): void;
     get frame(): SDK.ResourceTreeModel.ResourceTreeFrame | undefined;
     performUpdate(): Promise<void>;
 }

@@ -3,7 +3,7 @@ export declare const fullQualifiedSelector: (node: SDK.DOMModel.DOMNode, justSel
 export declare const cssPath: (node: SDK.DOMModel.DOMNode, optimized?: boolean) => string;
 export declare const canGetJSPath: (node: SDK.DOMModel.DOMNode) => boolean;
 export declare const jsPath: (node: SDK.DOMModel.DOMNode, optimized?: boolean) => string;
-export declare const xPath: (node: SDK.DOMModel.DOMNode, optimized?: boolean) => string;
+export declare const xPath: (node: SDK.DOMModel.DOMNode, optimized?: boolean) => Promise<string>;
 export declare class Step {
     value: string;
     optimized: boolean;

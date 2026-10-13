@@ -7,8 +7,8 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Workspace from '../workspace/workspace.js';
 const inputCache = new WeakMap();
-async function prepareInput(uiSourceCode, content, settings) {
-    const formattedContent = await format(uiSourceCode, content, settings);
+async function prepareInput(uiSourceCode, content) {
+    const formattedContent = await format(uiSourceCode, content);
     const text = new TextUtils.Text.Text(formattedContent ? formattedContent.formattedContent : content);
     let performanceData = uiSourceCode.getDecorationData("performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */);
     // Map profile data to the formatted view of the text.
@@ -20,12 +20,12 @@ async function prepareInput(uiSourceCode, content, settings) {
     return { text, formattedContent, performanceData };
 }
 /** Formatting and parsing line endings for Text is expensive, so cache it. */
-async function prepareInputAndCache(uiSourceCode, content, settings) {
+async function prepareInputAndCache(uiSourceCode, content) {
     let cachedPromise = inputCache.get(uiSourceCode);
     if (cachedPromise) {
         return await cachedPromise;
     }
-    cachedPromise = prepareInput(uiSourceCode, content, settings);
+    cachedPromise = prepareInput(uiSourceCode, content);
     inputCache.set(uiSourceCode, cachedPromise);
     return await cachedPromise;
 }
@@ -173,14 +173,14 @@ export async function getFunctionCodeFromLocation(target, url, line, column, deb
     }
     return await getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options);
 }
-async function format(uiSourceCode, content, settings) {
+async function format(uiSourceCode, content) {
     const contentType = uiSourceCode.contentType();
     const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) &&
         TextUtils.TextUtils.isMinified(content);
     if (!shouldFormat) {
         return null;
     }
-    return await Formatter.ScriptFormatter.formatScriptContent(settings, contentType.canonicalMimeType(), content, '\t');
+    return await Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, '\t');
 }
 /**
  * Returns a {@link FunctionCode} for the given raw location.
@@ -195,8 +195,7 @@ export async function getFunctionCodeFromRawLocation(rawLocation, debuggerWorksp
     if (!content) {
         return null;
     }
-    const settings = rawLocation.debuggerModel.target().targetManager().settings;
-    const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content, settings);
+    const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content);
     return createFunctionCode(inputData, functionBounds, options);
 }
 //# sourceMappingURL=FunctionCodeResolver.js.map

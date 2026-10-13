@@ -57,6 +57,9 @@
   ],
   "references": [
     {
+      "path": "harness_library-tsconfig.ref.json"
+    },
+    {
       "path": "../../front_end/core/sdk/bundle-tsconfig.ref.json"
     },
     {

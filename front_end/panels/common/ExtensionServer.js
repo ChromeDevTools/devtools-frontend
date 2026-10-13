@@ -138,6 +138,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     themeChangeHandlers = new Map();
     recorderViewPortMap;
     #pendingExtensions = [];
+    // Origin of the extension that currently owns the extension-set user agent
+    // override in MultitargetNetworkManager, if any.
+    userAgentOverrideOwner = null;
     constructor() {
         super();
         this.clientObjects = new Map();
@@ -205,9 +208,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
         // Set up by this.initExtensions in the constructor.
         SDK.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().removeEventListener("UserAgentChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED */, this.#onUserAgentChanged, this);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
         window.removeEventListener('message', this.onWindowMessage, false);
     }
+    #onUserAgentChanged = () => {
+        this.userAgentOverrideOwner = null;
+    };
     #onThemeChange = () => {
         const themeName = ThemeSupport.ThemeSupport.instance().themeName();
         for (const port of this.themeChangeHandlers.values()) {
@@ -342,11 +349,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (message.command !== "registerRecorderExtensionPlugin" /* Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin */) {
             return this.status.E_BADARG('command', `expected ${"registerRecorderExtensionPlugin" /* Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin */}`);
         }
-        const extensionOrigin = this.getExtensionOrigin(_shared_port);
-        const extension = this.registeredExtensions.get(extensionOrigin);
-        if (!extension || extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+        if (!this.checkBlockedHosts(_shared_port)) {
             return this.status.E_FAILED('Permission denied');
         }
+        const extensionOrigin = this.getExtensionOrigin(_shared_port);
         const { pluginName, mediaType, port, capabilities } = message;
         const recorderPluginManager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
         recorderPluginManager.addPlugin(new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, recorderPluginManager, mediaType));
@@ -421,11 +427,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (this.clientObjects.has(id)) {
             return this.status.E_EXISTS(id);
         }
-        const extensionOrigin = this.getExtensionOrigin(port);
-        const extension = this.registeredExtensions.get(extensionOrigin);
-        if (!extension || extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+        if (!this.checkBlockedHosts(port)) {
             return this.status.E_FAILED('Permission denied');
         }
+        const extensionOrigin = this.getExtensionOrigin(port);
         const pagePath = ExtensionServer.expandResourcePath(extensionOrigin, message.pagePath);
         if (pagePath === undefined) {
             return this.status.E_BADARG('pagePath', 'Resources paths cannot point to non-extension resources');
@@ -453,6 +458,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         this.requests = new Map();
         this.clearExtensionHeaders(event.data.inspectedURL());
+        this.clearExtensionUserAgentOverride(event.data.inspectedURL());
         this.enableExtensions();
         const url = event.data.inspectedURL();
         this.postNotification("inspected-url-changed" /* Extensions.ExtensionAPI.PrivateAPI.Events.InspectedURLChanged */, [url]);
@@ -528,20 +534,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (message.command !== "addRequestHeaders" /* Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders */) {
             return this.status.E_BADARG('command', `expected ${"addRequestHeaders" /* Extensions.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders */}`);
         }
-        // Use the authenticated port origin instead of the caller-supplied extensionId to
-        // prevent one extension from manipulating another extension's header set.
-        const id = this.getExtensionOrigin(port);
-        const extension = this.registeredExtensions.get(id);
-        if (!extension) {
-            return this.status.E_FAILED('Permission denied');
-        }
         // Refuse the request if the extension has any runtime_blocked_hosts policy entries.
         // MultitargetNetworkManager fans out setExtraHTTPHeaders to every attached network
         // agent (including OOPIF/subframe targets), so there is no safe per-target URL check
         // here. Blocking the call when blocked hosts exist is the minimal safe mitigation.
-        if (extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+        if (!this.checkBlockedHosts(port)) {
             return this.status.E_FAILED('Permission denied');
         }
+        // Use the authenticated port origin instead of the caller-supplied extensionId to
+        // prevent one extension from manipulating another extension's header set.
+        const id = this.getExtensionOrigin(port);
         let extensionHeaders = this.extraHeaders.get(id);
         if (!extensionHeaders) {
             extensionHeaders = new Map();
@@ -886,6 +888,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.extensionAllowedOnURL(target.inspectedURL(), portOrExtension);
     }
+    /**
+     * Checks whether the extension associated with the port is registered and has
+     * no enterprise runtime_blocked_hosts restrictions. Returns true if permitted,
+     * false if blocked or if the extension is not registered.
+     */
+    checkBlockedHosts(port) {
+        const origin = extensionOrigins.get(port);
+        const extension = origin && this.registeredExtensions.get(origin);
+        return Boolean(extension && extension.hostsPolicy.runtimeBlockedHosts.length === 0);
+    }
     onReload(message, port) {
         if (message.command !== "Reload" /* Extensions.ExtensionAPI.PrivateAPI.Commands.Reload */) {
             return this.status.E_BADARG('command', `expected ${"Reload" /* Extensions.ExtensionAPI.PrivateAPI.Commands.Reload */}`);
@@ -903,10 +915,26 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (!this.extensionAllowedOnTarget(target, port)) {
             return this.status.E_FAILED('Permission denied');
         }
-        // Apply the UA override only after confirming the extension is allowed on this target,
-        // so that extensions blocked by runtime_blocked_hosts cannot override the UA for the
-        // primary page (and, via singleton persistence, for future targets that attach later).
-        SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(typeof options.userAgent === 'string' ? options.userAgent : '', null);
+        const userAgent = typeof options.userAgent === 'string' ? options.userAgent : '';
+        const extensionOrigin = this.getExtensionOrigin(port);
+        if (userAgent) {
+            // Mirror onAddRequestHeaders: the UA override is stored in the process-wide
+            // MultitargetNetworkManager singleton, fans out to every attached network
+            // agent (including OOPIF/subframe targets) and is re-sent to every future
+            // target, so no per-target URL check can make it safe for extensions
+            // restricted by runtime_blocked_hosts. Refuse outright in that case.
+            if (!this.checkBlockedHosts(port)) {
+                return this.status.E_FAILED('Permission denied');
+            }
+            SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent, null);
+            // Set the owner after setUserAgentOverride, which synchronously dispatches
+            // USER_AGENT_CHANGED and resets userAgentOverrideOwner via #onUserAgentChanged.
+            this.userAgentOverrideOwner = extensionOrigin;
+        }
+        else if (this.userAgentOverrideOwner === extensionOrigin) {
+            this.userAgentOverrideOwner = null;
+            SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride('', null);
+        }
         resourceTreeModel?.reloadPage(Boolean(options.ignoreCache), injectedScript);
         return this.status.OK();
     }
@@ -1234,6 +1262,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         this.registerSubscriptionHandler("panel-objectSelected-" /* Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected */ + 'elements', onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
         this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
         SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
+        SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("UserAgentChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED */, this.#onUserAgentChanged, this);
     }
     notifyResourceAdded(event) {
         const uiSourceCode = event.data;
@@ -1546,6 +1575,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     disableExtensions() {
         this.extensionsEnabled = false;
         this.clearExtensionHeaders();
+        this.clearExtensionUserAgentOverride();
     }
     enableExtensions() {
         this.extensionsEnabled = true;
@@ -1576,6 +1606,23 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         if (cleared) {
             this.syncExtraHeaders();
+        }
+    }
+    /**
+     * Reset the extension-set user agent override when the extension that
+     * installed it is no longer allowed on the inspected URL (or
+     * unconditionally, when no URL is given). The override lives in the
+     * MultitargetNetworkManager singleton and would otherwise fan out to every
+     * future target even after the owning extension's authority ended.
+     */
+    clearExtensionUserAgentOverride(inspectedURL) {
+        if (!this.userAgentOverrideOwner) {
+            return;
+        }
+        const extension = this.registeredExtensions.get(this.userAgentOverrideOwner);
+        if (!this.extensionsEnabled || !inspectedURL || !extension || !extension.isAllowedOnTarget(inspectedURL)) {
+            this.userAgentOverrideOwner = null;
+            SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride('', null);
         }
     }
     /**

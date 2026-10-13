@@ -113,8 +113,13 @@ const SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW = (input, _output, target) => {
       jslog=${VisualLogging.toggle().track({ click: true }).context('pretty-print')}
       @click=${input.onPrettyToggleClick}></devtools-button>
     <div class="toolbar-text">${input.sourcePositionText}</div>
-    ${input.loading ? html `<div><devtools-progress
-      .title=${i18nString(UIStrings.loading)} .totalWork=${100} .worked=${1}></devtools-progress></div>` : nothing}`, target);
+    ${input.loading ? html `
+      <div>
+        <devtools-progress label=${i18nString(UIStrings.loading)}
+                           total-work="100"
+                           worked="1">
+        </devtools-progress>
+      </div>` : nothing}`, target);
     // clang-format on
 };
 class SourceFrameToolbar extends UI.Widget.Widget {
@@ -128,26 +133,32 @@ class SourceFrameToolbar extends UI.Widget.Widget {
     constructor(element, view = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
         super(element);
         this.#view = view;
-        // eslint-disable-next-line @devtools/no-imperative-dom-api
-        this.element.style.display = 'contents';
         this.performUpdate();
     }
     performUpdate() {
-        this.#view(this, {}, this.contentElement);
+        this.#view({
+            canPrettyPrint: this.canPrettyPrint,
+            pretty: this.pretty,
+            prettyToggleEnabled: this.prettyToggleEnabled,
+            sourcePositionText: this.sourcePositionText,
+            loading: this.loading,
+            onPrettyToggleClick: this.onPrettyToggleClick,
+        }, undefined, this.contentElement);
     }
 }
-const SOURCE_FRAME_DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
-        <div style="display: contents" @keydown=${input.onKeyDown}>
-          ${input.textEditor}
-        </div>
-      `, target);
+    <div style="display: contents" @keydown=${input.onKeyDown}>
+      ${input.textEditor}
+    </div>
+  `, target);
     // clang-format on
 };
 const SourceFrameImplBase = Common.ObjectWrapper.eventMixin(UI.View.SimpleView);
 export class SourceFrameImpl extends SourceFrameImplBase {
     options;
+    #view;
     lazyContent;
     prettyInternal;
     rawContent;
@@ -168,7 +179,7 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     searchRegex;
     loadError;
     #sourcePositionText = '';
-    #toolbarWidget = new SourceFrameToolbar();
+    #toolbarWidget;
     searchableView;
     editable;
     positionToReveal;
@@ -180,13 +191,14 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     wasmDisassemblyInternal;
     contentSet;
     selfXssWarningDisabledSetting;
-    constructor(lazyContent, options = {}, element) {
+    constructor(lazyContent, options = {}, element, view = DEFAULT_VIEW) {
         // @ts-expect-error
         super(...(element ? [element] : []), {
             title: i18nString(UIStrings.source),
             viewId: 'source',
         });
         this.options = options;
+        this.#view = view;
         this.lazyContent = lazyContent;
         this.prettyInternal = false;
         this.rawContent = null;
@@ -212,22 +224,25 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.contentSet = false;
         this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting('disable-self-xss-warning', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
         Common.Settings.Settings.instance()
-            .moduleSetting('text-editor-indent')
+            .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
             .addChangeListener(this.#textEditorIndentChanged, this);
         this.performUpdate();
     }
     performUpdate() {
-        SOURCE_FRAME_DEFAULT_VIEW({
+        this.#view({
             textEditor: this.textEditorInternal,
             onKeyDown: (event) => {
                 if (event.defaultPrevented) {
                     event.stopPropagation();
                 }
             },
-        }, {}, this.element);
+        }, undefined, this.element);
         this.#updateToolbar();
     }
     #updateToolbar() {
+        if (!this.#toolbarWidget) {
+            return;
+        }
         Object.assign(this.#toolbarWidget, {
             canPrettyPrint: this.#canPrettyPrint,
             pretty: this.prettyInternal,
@@ -240,7 +255,7 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     }
     disposeView() {
         Common.Settings.Settings.instance()
-            .moduleSetting('text-editor-indent')
+            .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
             .removeChangeListener(this.#textEditorIndentChanged, this);
     }
     async #textEditorIndentChanged() {
@@ -386,7 +401,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         if (this.prettyInternal) {
             const content = this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || '';
             this.textEditor.state = this.placeholderEditorState(i18nString(UIStrings.formatting));
-            const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(Common.Settings.Settings.instance(), this.contentType, content);
+            const indent = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+            const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(this.contentType, content, indent);
             this.formattedMap = formatInfo.formattedMapping;
             await this.setContent(formatInfo.formattedContent);
             this.prettyBaseDoc = textEditor.state.doc;
@@ -477,11 +493,11 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.clearPositionToReveal();
     }
     async toolbarItems() {
-        return html `${widget(element => {
+        return html `<devtools-widget style="display: contents" ${widget(element => {
             this.#toolbarWidget = new SourceFrameToolbar(element);
             this.#updateToolbar();
             return this.#toolbarWidget;
-        })}`;
+        })}></devtools-widget>`;
     }
     get loaded() {
         return this.loadedInternal;

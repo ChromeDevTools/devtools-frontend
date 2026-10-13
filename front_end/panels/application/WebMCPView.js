@@ -510,19 +510,19 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 <devtools-widget
                   id=${"webmcp.tool-details" /* TabId.DETAILS */}
                   ?selected=${Directives.live(input.selectedTab === "webmcp.tool-details" /* TabId.DETAILS */)}
-                  title=${i18nString(UIStrings.toolDetails)}
+                  label=${i18nString(UIStrings.toolDetails)}
                   ${widget(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-inputs" /* TabId.INPUT */}
                   ?selected=${Directives.live(input.selectedTab === "webmcp.call-inputs" /* TabId.INPUT */)}
-                  title=${i18nString(UIStrings.input)}
+                  label=${i18nString(UIStrings.input)}
                   ${widget(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-outputs" /* TabId.OUTPUT */}
                   ?selected=${Directives.live(input.selectedTab === "webmcp.call-outputs" /* TabId.OUTPUT */)}
-                  title=${i18nString(UIStrings.output)}
+                  label=${i18nString(UIStrings.output)}
                   ${widget(PayloadWidget, {
         valueObject: input.selectedCall?.result?.output,
         errorText: input.selectedCall?.result?.errorText,

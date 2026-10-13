@@ -51,7 +51,8 @@
     "../../../../../../front_end/core/host/AidaGcaTranslation.test.ts",
     "../../../../../../front_end/core/host/DispatchHttpRequestClient.test.ts",
     "../../../../../../front_end/core/host/GcaClient.test.ts",
-    "../../../../../../front_end/core/host/GdpClient.test.ts"
+    "../../../../../../front_end/core/host/GdpClient.test.ts",
+    "../../../../../../front_end/core/host/Platform.test.ts"
   ],
   "references": [
     {

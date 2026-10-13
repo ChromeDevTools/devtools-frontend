@@ -1784,7 +1784,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   const renderTracks = (property, trackName, idPrefix) => property instanceof TrackProperty && property.entries !== null ? property.entries.map(
     // clang-format off
     (track, i) => html3`
-              <div id=track-${idPrefix}-${i} title=${i18nString4(UIStrings4.trackNumber, { PH1: trackName, PH2: i + 1 })}>
+              <div id=track-${idPrefix}-${i} label=${i18nString4(UIStrings4.trackNumber, { PH1: trackName, PH2: i + 1 })}>
                 <div class="widget vbox media-attributes-view">
                   ${Object.entries(track).map(([name, data]) => renderAttribute(
       typeof data === "object" ? html3`${widget2((e) => new SourceFrame2.JSONView.JSONView(
@@ -1819,7 +1819,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       ${renderProperty(input.properties["kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */])}
     </div>
     <devtools-tabbed-pane>
-      <div id=decoder-properties title=${i18nString4(UIStrings4.videoDecoderProperties)}>
+      <div id=decoder-properties label=${i18nString4(UIStrings4.videoDecoderProperties)}>
         <div class="widget vbox media-attributes-view">
           ${renderProperty(input.properties["kVideoDecoderName" /* VIDEO_DECODER_NAME */])}
           ${renderProperty(input.properties["kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */])}
@@ -1831,7 +1831,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       ${renderTracks(input.properties["kVideoTracks" /* VIDEO_TRACKS */], i18nString4(UIStrings4.track), "video")}
     </devtools-tabbed-pane>
     <devtools-tabbed-pane>
-      <div id=decoder-properties title=${i18nString4(UIStrings4.audioDecoderProperties)}>
+      <div id=decoder-properties label=${i18nString4(UIStrings4.audioDecoderProperties)}>
         <div class="widget vbox media-attributes-view">
           ${renderProperty(input.properties["kAudioDecoderName" /* AUDIO_DECODER_NAME */])}
           ${renderProperty(input.properties["kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */])}
@@ -1842,7 +1842,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </devtools-tabbed-pane>
     ${input.properties["kTextTracks" /* TEXT_TRACKS */] instanceof TrackProperty && input.properties["kTextTracks" /* TEXT_TRACKS */].entries !== null ? html3`
         <devtools-tabbed-pane>
-          ${input.properties["kTextTracks" /* TEXT_TRACKS */].entries.length === 0 ? html3`<div id=_placeholder title=${i18nString4(UIStrings4.noTextTracks)}></div>` : renderTracks(input.properties["kTextTracks" /* TEXT_TRACKS */], i18nString4(UIStrings4.textTrack), "text")}
+          ${input.properties["kTextTracks" /* TEXT_TRACKS */].entries.length === 0 ? html3`<div id=_placeholder label=${i18nString4(UIStrings4.noTextTracks)}></div>` : renderTracks(input.properties["kTextTracks" /* TEXT_TRACKS */], i18nString4(UIStrings4.textTrack), "text")}
         </devtools-tabbed-pane>` : nothing2}
     `,
     // clang-format on

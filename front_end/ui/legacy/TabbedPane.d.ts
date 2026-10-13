@@ -225,11 +225,16 @@ export interface TabbedPaneTabDelegate {
  *
  * ```html
  * <devtools-tabbed-pane>
- *   <div id="tab1" title="Tab 1">Content 1</div>
+ *   <div id="tab1" label="Tab 1" tab-tooltip="Full Tab 1 description">Content 1</div>
  *   <devtools-icon slot="icon-tab1" name="warning"></devtools-icon>
  *   <span slot="suffix-tab1">*</span>
  * </devtools-tabbed-pane>
  * ```
+ *
+ * The tab label is read from `label` (falling back to `title`, which is
+ * deprecated for this purpose because it leaks a native tooltip onto the tab
+ * content). An optional `tab-tooltip` attribute sets the tooltip (`title`)
+ * shown on the tab header.
  *
  * Children with `slot="icon-<tab id>"` and `slot="suffix-<tab id>"` are shown
  * before and after the title in the header of that tab.

@@ -335,22 +335,56 @@ export class BottomUpRootNode extends Node {
         const eventGroupIdCallback = this.eventGroupIdCallback;
         const forceGroupIdCallback = this.forceGroupIdCallback;
         const idToIsCacheHit = new Map();
+        // Node IDs are cached so that every event with the same ID reuses one
+        // string. Building a new ID string per event, and hashing it again on
+        // each Map lookup, is a large part of the cost of this loop on big
+        // traces.
+        const profileCallIdByCallFrame = new Map();
+        // Grouped IDs are looked up by ID and then by group ID, because keying a
+        // flat Map by `${id}-${groupId}` would build a new string per event.
+        const groupedIdsByEventId = new Map();
+        const nodeIdForEvent = (e) => {
+            let id;
+            if (Types.Events.isProfileCall(e)) {
+                // Profile calls for the same frame share one callFrame object, and
+                // their ID only depends on its fields.
+                const cachedId = profileCallIdByCallFrame.get(e.callFrame);
+                if (cachedId === undefined) {
+                    id = generateEventID(e);
+                    profileCallIdByCallFrame.set(e.callFrame, id);
+                }
+                else {
+                    id = cachedId;
+                }
+            }
+            else {
+                id = generateEventID(e);
+            }
+            if (!forceGroupIdCallback || !eventGroupIdCallback) {
+                return id;
+            }
+            const groupId = eventGroupIdCallback(e);
+            let groupedIds = groupedIdsByEventId.get(id);
+            if (!groupedIds) {
+                groupedIds = new Map();
+                groupedIdsByEventId.set(id, groupedIds);
+            }
+            let groupedId = groupedIds.get(groupId);
+            if (groupedId === undefined) {
+                groupedId = `${id}-${groupId}`;
+                groupedIds.set(groupId, groupedId);
+            }
+            return groupedId;
+        };
         for (const e of this.events) {
             if (Types.Events.isReceivedDataEvent(e) && e.name === 'ResourceReceiveResponse') {
-                let id = generateEventID(e);
-                if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
-                    id = `${id}-${this.eventGroupIdCallback(e)}`;
-                }
-                idToIsCacheHit.set(id, e.args.data.fromCache || false);
+                idToIsCacheHit.set(nodeIdForEvent(e), e.args.data.fromCache || false);
             }
         }
         // encodedDataLength is provided solely on instant events.
         const sumTransferSizeOfInstantEvent = (e) => {
             if (Types.Events.isReceivedDataEvent(e)) {
-                let id = generateEventID(e);
-                if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
-                    id = `${id}-${this.eventGroupIdCallback(e)}`;
-                }
+                const id = nodeIdForEvent(e);
                 let node = nodeById.get(id);
                 if (!node) {
                     node = new BottomUpNode(root, id, e, false, root);
@@ -400,10 +434,7 @@ export class BottomUpRootNode extends Node {
             const duration = actualEndTime - Math.max(currentStartTime, startTime);
             selfTimeStack[selfTimeStack.length - 1] -= duration;
             selfTimeStack.push(duration);
-            let id = generateEventID(e);
-            if (forceGroupIdCallback && eventGroupIdCallback) {
-                id = `${id}-${eventGroupIdCallback(e)}`;
-            }
+            const id = nodeIdForEvent(e);
             idStack.push(id);
             // For an event 'X' that contains another event 'X' (resolving to the same node
             // id), we need to measure `totalTime` from the start of the outermost 'X' to

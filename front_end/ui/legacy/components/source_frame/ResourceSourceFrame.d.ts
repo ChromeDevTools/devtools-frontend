@@ -16,7 +16,7 @@ export interface ViewInput {
     toolbarItems: LitTemplate;
     placeholder: string;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class SearchableContainer extends UI.Widget.VBox {
     #private;

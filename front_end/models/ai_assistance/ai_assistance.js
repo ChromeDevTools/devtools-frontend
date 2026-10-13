@@ -2379,8 +2379,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -4455,7 +4453,6 @@ var ExecuteJavaScript_exports = {};
 __export(ExecuteJavaScript_exports, {
   ExecuteJavaScriptTool: () => ExecuteJavaScriptTool
 });
-import * as Common4 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
 import * as i18n4 from "../../core/i18n/i18n.js";
 import * as Root3 from "../../core/root/root.js";
@@ -4472,8 +4469,6 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
   static async validateAndFormatCode(code) {
     try {
       const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        Common4.Settings.Settings.instance(),
         "text/javascript",
         code,
         "  "
@@ -5325,7 +5320,7 @@ var PerformanceInsightFormatter_exports = {};
 __export(PerformanceInsightFormatter_exports, {
   PerformanceInsightFormatter: () => PerformanceInsightFormatter
 });
-import * as Common5 from "../../core/common/common.js";
+import * as Common4 from "../../core/common/common.js";
 import * as Trace5 from "../trace/trace.js";
 
 // ../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.ts
@@ -7297,7 +7292,7 @@ Duplication grouped by Node modules: ${filesFormatted}`;
     for (const font of insight.fonts) {
       let fontName = font.name;
       if (!fontName) {
-        const url = new Common5.ParsedURL.ParsedURL(this.#traceFormatter.formatRequestUrl(font.request));
+        const url = new Common4.ParsedURL.ParsedURL(this.#traceFormatter.formatRequestUrl(font.request));
         fontName = url.isValid ? url.lastPathComponent : "(not available)";
       }
       output += `
@@ -11061,7 +11056,7 @@ var SelectTraceEventByKey_exports = {};
 __export(SelectTraceEventByKey_exports, {
   SelectTraceEventByKeyTool: () => SelectTraceEventByKeyTool
 });
-import * as Common6 from "../../core/common/common.js";
+import * as Common5 from "../../core/common/common.js";
 import * as Host28 from "../../core/host/host.js";
 import * as i18n46 from "../../core/i18n/i18n.js";
 import * as SDK23 from "../../core/sdk/sdk.js";
@@ -11104,7 +11099,7 @@ var SelectTraceEventByKeyTool = class {
     }
     const revealable = new SDK23.TraceObject.RevealableEvent(event);
     try {
-      await Common6.Revealer.reveal(revealable);
+      await Common5.Revealer.reveal(revealable);
     } catch {
     }
     return {
@@ -12741,7 +12736,7 @@ var PerformanceAgent_exports = {};
 __export(PerformanceAgent_exports, {
   PerformanceAgent: () => PerformanceAgent
 });
-import * as Common7 from "../../core/common/common.js";
+import * as Common6 from "../../core/common/common.js";
 import * as Host33 from "../../core/host/host.js";
 import * as i18n56 from "../../core/i18n/i18n.js";
 import * as Root11 from "../../core/root/root.js";
@@ -13704,7 +13699,7 @@ ${result}`,
           return { error: "Invalid eventKey" };
         }
         const revealable = new SDK27.TraceObject.RevealableEvent(event);
-        await Common7.Revealer.reveal(revealable);
+        await Common6.Revealer.reveal(revealable);
         return {
           result: { success: true },
           widgets: [{
@@ -13746,7 +13741,7 @@ __export(StorageAgent_exports, {
   isSamePageOrigin: () => isSamePageOrigin,
   resolveDOMStorages: () => resolveDOMStorages2
 });
-import * as Common8 from "../../core/common/common.js";
+import * as Common7 from "../../core/common/common.js";
 import * as Host34 from "../../core/host/host.js";
 import * as i18n58 from "../../core/i18n/i18n.js";
 import * as Root12 from "../../core/root/root.js";
@@ -14216,7 +14211,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
   static #formatContext(item) {
     const primaryTargetOrigin = `Primary target: ${item.primaryTargetOrigin}`;
     if (item instanceof CookieItem) {
-      const parsedURL = Common8.ParsedURL.ParsedURL.fromString(item.origin);
+      const parsedURL = Common7.ParsedURL.ParsedURL.fromString(item.origin);
       const domain = parsedURL ? parsedURL.host : item.origin;
       return `${primaryTargetOrigin}
 User-selected Context: Cookies${item.isGenericContext ? "" : `
@@ -14977,7 +14972,7 @@ __export(AiHistoryStorage_exports, {
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
-import * as Common9 from "../../core/common/common.js";
+import * as Common8 from "../../core/common/common.js";
 import * as Root15 from "../../core/root/root.js";
 var ConversationType = /* @__PURE__ */ ((ConversationType2) => {
   ConversationType2["NONE"] = "none";
@@ -14997,13 +14992,13 @@ var Events = /* @__PURE__ */ ((Events4) => {
   Events4["HISTORY_DELETED"] = "AiHistoryDeleted";
   return Events4;
 })(Events || {});
-var AiHistoryStorage = class _AiHistoryStorage extends Common9.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common8.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
   #recentPromptsSetting;
-  #mutex = new Common9.Mutex.Mutex();
+  #mutex = new Common8.Mutex.Mutex();
   #maxStorageSize;
-  constructor(settings = Common9.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+  constructor(settings = Common8.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
     this.#historySetting = settings.createSetting("ai-assistance-history-entries", []);
     this.#imageHistorySettings = settings.createSetting(
@@ -15150,7 +15145,7 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common9.ObjectWrapper.Obj
         _AiHistoryStorage,
         new _AiHistoryStorage(
           // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-          settings ?? Common9.Settings.Settings.instance(),
+          settings ?? Common8.Settings.Settings.instance(),
           maxStorageSize
         )
       );
@@ -15651,14 +15646,14 @@ __export(AiSetting_exports, {
   AiSetting: () => AiSetting,
   Events: () => Events2
 });
-import * as Common10 from "../../core/common/common.js";
+import * as Common9 from "../../core/common/common.js";
 import * as Host38 from "../../core/host/host.js";
 import * as Root17 from "../../core/root/root.js";
 var Events2 = /* @__PURE__ */ ((Events4) => {
   Events4["CHANGED"] = "Changed";
   return Events4;
 })(Events2 || {});
-var AiSetting = class extends Common10.ObjectWrapper.ObjectWrapper {
+var AiSetting = class extends Common9.ObjectWrapper.ObjectWrapper {
   #setting;
   #descriptor;
   #hostConfigTracker;
@@ -15731,15 +15726,15 @@ var AiSetting = class extends Common10.ObjectWrapper.ObjectWrapper {
   }
   get unavailable() {
     const availability = this.#descriptor.isAvailable(Root17.Runtime.hostConfig);
-    return availability.status === Common10.Settings.SettingAvailability.UNAVAILABLE;
+    return availability.status === Common9.Settings.SettingAvailability.UNAVAILABLE;
   }
   get disabled() {
     const availability = this.#descriptor.isAvailable(Root17.Runtime.hostConfig);
-    return availability.status === Common10.Settings.SettingAvailability.DISABLED;
+    return availability.status === Common9.Settings.SettingAvailability.DISABLED;
   }
   get disabledReasons() {
     const availability = this.#descriptor.isAvailable(Root17.Runtime.hostConfig);
-    if (availability.status === Common10.Settings.SettingAvailability.DISABLED) {
+    if (availability.status === Common9.Settings.SettingAvailability.DISABLED) {
       return availability.reason;
     }
     return [];
@@ -15780,7 +15775,7 @@ __export(BuiltInAi_exports, {
   Events: () => Events3,
   LanguageModelAvailability: () => LanguageModelAvailability
 });
-import * as Common11 from "../../core/common/common.js";
+import * as Common10 from "../../core/common/common.js";
 import * as Host39 from "../../core/host/host.js";
 import * as Root18 from "../../core/root/root.js";
 var LanguageModelAvailability = /* @__PURE__ */ ((LanguageModelAvailability2) => {
@@ -15791,7 +15786,7 @@ var LanguageModelAvailability = /* @__PURE__ */ ((LanguageModelAvailability2) =>
   LanguageModelAvailability2["DISABLED"] = "disabled";
   return LanguageModelAvailability2;
 })(LanguageModelAvailability || {});
-var BuiltInAi = class _BuiltInAi extends Common11.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;

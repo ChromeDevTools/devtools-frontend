@@ -94,15 +94,7 @@ export class RootTreeElement extends ApplicationPanelTreeElement {
         const isElementPresent = this.indexOfChild(siteTreeElement) >= 0;
         const isSiteAllowed = this.#model.isSiteVisible(site);
         if (isSiteAllowed && !isElementPresent) {
-            // Appending a child element that already has children requires a workaround of
-            // detaching and repopulating them so that the selection background color UI works.
-            // TODO(crbug.com/486866983): Can this fix safely be moved to Treeoutline.ts?
             this.appendChild(siteTreeElement);
-            const children = [...siteTreeElement.children()];
-            siteTreeElement.removeChildren();
-            for (const child of children) {
-                siteTreeElement.appendChild(child);
-            }
         }
         else if (!isSiteAllowed && isElementPresent) {
             this.removeChild(siteTreeElement);

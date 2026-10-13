@@ -60,8 +60,11 @@ function validateStartBeforeEnd(ranges) {
     }
 }
 function createScopeFrom(range, parent) {
+    // Copy only known fields: ranges can come from extensions and may carry extra properties.
     return {
-        ...range,
+        start: range.start,
+        end: range.end,
+        name: typeof range.name === 'string' ? range.name : String(range.name ?? ''),
         kind: 'Function',
         isStackFrame: true,
         parent,

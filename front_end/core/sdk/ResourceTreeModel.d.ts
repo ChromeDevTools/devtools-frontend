@@ -222,6 +222,7 @@ export declare class ResourceTreeFrame {
     highlight(): Promise<void>;
     getPermissionsPolicyState(): Promise<Protocol.Page.PermissionsPolicyFeatureState[] | null>;
     getOriginTrials(): Promise<Protocol.Page.OriginTrial[]>;
+    getSpellCheckCustomDictionary(): Promise<string[]>;
     setCreationStackTrace(creationStackTraceData: {
         creationStackTrace: Protocol.Runtime.StackTrace | null;
         creationStackTraceTarget: Target;

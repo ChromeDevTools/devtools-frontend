@@ -5,24 +5,9 @@ var LanternError = class extends Error {
 // ../../front_end/models/trace/lantern/core/NetworkAnalyzer.ts
 var UrlUtils = class {
   /**
-   * There is fancy URL rewriting logic for the chrome://settings page that we need to work around.
-   * Why? Special handling was added by Chrome team to allow a pushState transition between chrome:// pages.
-   * As a result, the network URL (chrome://chrome/settings/) doesn't match the final document URL (chrome://settings/).
-   */
-  static rewriteChromeInternalUrl(url) {
-    if (!url?.startsWith("chrome://")) {
-      return url;
-    }
-    if (url.endsWith("/")) {
-      url = url.replace(/\/$/, "");
-    }
-    return url.replace(/^chrome:\/\/chrome\//, "chrome://");
-  }
-  /**
    * Determine if url1 equals url2, ignoring URL fragments.
    */
   static equalWithExcludedFragments(url1, url2) {
-    [url1, url2] = [url1, url2].map(this.rewriteChromeInternalUrl);
     try {
       const urla = new URL(url1);
       urla.hash = "";
@@ -359,7 +344,7 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     const timeBoundaries = records.reduce(
       (boundaries, request) => {
         const scheme = request.parsedURL?.scheme;
-        if (scheme === "data" || request.failed || !request.finished || request.statusCode > 300 || !request.transferSize) {
+        if (scheme === "data" || request.fromDiskCache || request.fromMemoryCache || request.failed || !request.finished || request.statusCode > 300 || !request.transferSize) {
           return boundaries;
         }
         totalBytes += request.transferSize;
@@ -388,6 +373,9 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
         }
       }
     });
+    if (!totalDuration) {
+      return null;
+    }
     return totalBytes * 8 / totalDuration;
   }
   static computeRTTAndServerResponseTime(records) {
@@ -402,6 +390,11 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
       const rttForOrigin = rttByOrigin.get(origin) || minimumRtt;
       additionalRttByOrigin.set(origin, rttForOrigin - minimumRtt);
       serverResponseTimeByOrigin.set(origin, summary.median);
+    }
+    for (const [origin, rttForOrigin] of rttByOrigin.entries()) {
+      if (!additionalRttByOrigin.has(origin)) {
+        additionalRttByOrigin.set(origin, rttForOrigin - minimumRtt);
+      }
     }
     return {
       rtt: minimumRtt,

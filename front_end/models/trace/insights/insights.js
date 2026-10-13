@@ -1820,8 +1820,6 @@ var Page;
     PermissionsPolicyFeature2["Rewriter"] = "rewriter";
     PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
     PermissionsPolicyFeature2["Serial"] = "serial";
-    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
-    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
     PermissionsPolicyFeature2["SmartCard"] = "smart-card";
     PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
     PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
@@ -3140,10 +3138,11 @@ function estimateSavingsWithGraphs(wastedBytesByRequestId, simulator, graph) {
   const simulationBeforeChanges = simulator.simulate(graph);
   const originalTransferSizes = /* @__PURE__ */ new Map();
   graph.traverse((node) => {
-    if (node.type !== "network") {
+    if (node.type !== "network" || node.request.redirectDestination) {
       return;
     }
-    const wastedBytes = wastedBytesByRequestId.get(node.request.requestId);
+    const backendRequestId = node.request.rawRequest?.args.data.requestId ?? node.request.requestId;
+    const wastedBytes = wastedBytesByRequestId.get(backendRequestId);
     if (!wastedBytes) {
       return;
     }
@@ -6415,12 +6414,29 @@ function isRenderBlockingInsight(insight) {
 }
 var MINIMUM_WASTED_MS = 50;
 function getNodesAndTimingByRequestId(nodeTimings) {
+  const timingByNodeId = /* @__PURE__ */ new Map();
+  for (const [node, nodeTiming] of nodeTimings) {
+    timingByNodeId.set(node.id, nodeTiming);
+  }
   const requestIdToNode = /* @__PURE__ */ new Map();
   for (const [node, nodeTiming] of nodeTimings) {
-    if (node.type !== "network") {
+    if (node.type !== "network" || node.request.redirectDestination) {
       continue;
     }
-    requestIdToNode.set(node.request.requestId, { node, nodeTiming });
+    let duration = nodeTiming.duration;
+    let startTime = nodeTiming.startTime;
+    for (const redirect of node.request.redirects ?? []) {
+      const redirectTiming = timingByNodeId.get(redirect.requestId);
+      if (redirectTiming) {
+        duration += redirectTiming.duration;
+        startTime = Math.min(startTime, redirectTiming.startTime);
+      }
+    }
+    const backendRequestId = node.request.rawRequest?.args.data.requestId ?? node.request.requestId;
+    requestIdToNode.set(backendRequestId, {
+      node,
+      nodeTiming: { startTime, endTime: nodeTiming.endTime, duration }
+    });
   }
   return requestIdToNode;
 }
@@ -6464,12 +6480,15 @@ function computeSavings(data, context, renderBlockingRequests) {
       continue;
     }
     const { node, nodeTiming } = nodeAndTiming;
+    for (const redirect of node.request.redirects ?? []) {
+      deferredNodeIds.add(redirect.requestId);
+    }
     node.traverse((node2) => deferredNodeIds.add(node2.id));
     const wastedMs = Math.round(nodeTiming.duration);
     if (wastedMs < MINIMUM_WASTED_MS) {
       continue;
     }
-    requestIdToWastedMs.set(node.id, wastedMs);
+    requestIdToWastedMs.set(request.args.data.requestId, wastedMs);
   }
   if (requestIdToWastedMs.size) {
     metricSavings.FCP = estimateSavingsWithGraphs2(deferredNodeIds, context.lantern);

@@ -1,7 +1,6 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
@@ -19,9 +18,7 @@ export class ExecuteJavaScriptTool {
     description = 'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
     static async validateAndFormatCode(code) {
         try {
-            const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-            Common.Settings.Settings.instance(), 'text/javascript', code, '  ');
+            const formatted = await Formatter.ScriptFormatter.formatScriptContent('text/javascript', code, '  ');
             const formattedCode = formatted.formattedContent;
             const lines = formattedCode.split('\n');
             const maxLineLen = Math.max(...lines.map(line => line.length));

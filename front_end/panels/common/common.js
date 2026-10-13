@@ -1771,6 +1771,9 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   themeChangeHandlers = /* @__PURE__ */ new Map();
   recorderViewPortMap;
   #pendingExtensions = [];
+  // Origin of the extension that currently owns the extension-set user agent
+  // override in MultitargetNetworkManager, if any.
+  userAgentOverrideOwner = null;
   constructor() {
     super();
     this.clientObjects = /* @__PURE__ */ new Map();
@@ -1913,6 +1916,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       this.inspectedURLChanged,
       this
     );
+    SDK3.NetworkManager.MultitargetNetworkManager.instance().removeEventListener(
+      SDK3.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED,
+      this.#onUserAgentChanged,
+      this
+    );
     Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
       Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId,
       this.setInspectedTabId,
@@ -1920,6 +1928,9 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     );
     window.removeEventListener("message", this.onWindowMessage, false);
   }
+  #onUserAgentChanged = () => {
+    this.userAgentOverrideOwner = null;
+  };
   #onThemeChange = () => {
     const themeName = ThemeSupport.ThemeSupport.instance().themeName();
     for (const port of this.themeChangeHandlers.values()) {
@@ -2089,11 +2100,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin}`
       );
     }
-    const extensionOrigin = this.getExtensionOrigin(_shared_port);
-    const extension = this.registeredExtensions.get(extensionOrigin);
-    if (!extension || extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+    if (!this.checkBlockedHosts(_shared_port)) {
       return this.status.E_FAILED("Permission denied");
     }
+    const extensionOrigin = this.getExtensionOrigin(_shared_port);
     const { pluginName, mediaType, port, capabilities } = message;
     const recorderPluginManager = Extensions2.RecorderPluginManager.RecorderPluginManager.instance();
     recorderPluginManager.addPlugin(new Extensions2.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
@@ -2187,11 +2197,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (this.clientObjects.has(id)) {
       return this.status.E_EXISTS(id);
     }
-    const extensionOrigin = this.getExtensionOrigin(port);
-    const extension = this.registeredExtensions.get(extensionOrigin);
-    if (!extension || extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+    if (!this.checkBlockedHosts(port)) {
       return this.status.E_FAILED("Permission denied");
     }
+    const extensionOrigin = this.getExtensionOrigin(port);
     const pagePath = _ExtensionServer.expandResourcePath(extensionOrigin, message.pagePath);
     if (pagePath === void 0) {
       return this.status.E_BADARG("pagePath", "Resources paths cannot point to non-extension resources");
@@ -2219,6 +2228,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     this.requests = /* @__PURE__ */ new Map();
     this.clearExtensionHeaders(event.data.inspectedURL());
+    this.clearExtensionUserAgentOverride(event.data.inspectedURL());
     this.enableExtensions();
     const url = event.data.inspectedURL();
     this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.InspectedURLChanged, [url]);
@@ -2296,14 +2306,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders}`
       );
     }
+    if (!this.checkBlockedHosts(port)) {
+      return this.status.E_FAILED("Permission denied");
+    }
     const id = this.getExtensionOrigin(port);
-    const extension = this.registeredExtensions.get(id);
-    if (!extension) {
-      return this.status.E_FAILED("Permission denied");
-    }
-    if (extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
-      return this.status.E_FAILED("Permission denied");
-    }
     let extensionHeaders = this.extraHeaders.get(id);
     if (!extensionHeaders) {
       extensionHeaders = /* @__PURE__ */ new Map();
@@ -2650,6 +2656,16 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     return this.extensionAllowedOnURL(target.inspectedURL(), portOrExtension);
   }
+  /**
+   * Checks whether the extension associated with the port is registered and has
+   * no enterprise runtime_blocked_hosts restrictions. Returns true if permitted,
+   * false if blocked or if the extension is not registered.
+   */
+  checkBlockedHosts(port) {
+    const origin = extensionOrigins.get(port);
+    const extension = origin && this.registeredExtensions.get(origin);
+    return Boolean(extension && extension.hostsPolicy.runtimeBlockedHosts.length === 0);
+  }
   onReload(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.Reload) {
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.Reload}`);
@@ -2667,10 +2683,18 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!this.extensionAllowedOnTarget(target, port)) {
       return this.status.E_FAILED("Permission denied");
     }
-    SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
-      typeof options.userAgent === "string" ? options.userAgent : "",
-      null
-    );
+    const userAgent = typeof options.userAgent === "string" ? options.userAgent : "";
+    const extensionOrigin = this.getExtensionOrigin(port);
+    if (userAgent) {
+      if (!this.checkBlockedHosts(port)) {
+        return this.status.E_FAILED("Permission denied");
+      }
+      SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent, null);
+      this.userAgentOverrideOwner = extensionOrigin;
+    } else if (this.userAgentOverrideOwner === extensionOrigin) {
+      this.userAgentOverrideOwner = null;
+      SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride("", null);
+    }
     resourceTreeModel?.reloadPage(Boolean(options.ignoreCache), injectedScript);
     return this.status.OK();
   }
@@ -3040,6 +3064,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       this.inspectedURLChanged,
       this
     );
+    SDK3.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
+      SDK3.NetworkManager.MultitargetNetworkManager.Events.USER_AGENT_CHANGED,
+      this.#onUserAgentChanged,
+      this
+    );
   }
   notifyResourceAdded(event) {
     const uiSourceCode = event.data;
@@ -3392,6 +3421,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   disableExtensions() {
     this.extensionsEnabled = false;
     this.clearExtensionHeaders();
+    this.clearExtensionUserAgentOverride();
   }
   enableExtensions() {
     this.extensionsEnabled = true;
@@ -3421,6 +3451,23 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     if (cleared) {
       this.syncExtraHeaders();
+    }
+  }
+  /**
+   * Reset the extension-set user agent override when the extension that
+   * installed it is no longer allowed on the inspected URL (or
+   * unconditionally, when no URL is given). The override lives in the
+   * MultitargetNetworkManager singleton and would otherwise fan out to every
+   * future target even after the owning extension's authority ended.
+   */
+  clearExtensionUserAgentOverride(inspectedURL) {
+    if (!this.userAgentOverrideOwner) {
+      return;
+    }
+    const extension = this.registeredExtensions.get(this.userAgentOverrideOwner);
+    if (!this.extensionsEnabled || !inspectedURL || !extension || !extension.isAllowedOnTarget(inspectedURL)) {
+      this.userAgentOverrideOwner = null;
+      SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride("", null);
     }
   }
   /**

@@ -88,7 +88,6 @@ export declare function createTextButton(text: string, clickHandler?: ((arg0: Ev
     icon?: string;
 }): Buttons.Button.Button;
 export declare function createInput(className?: string, type?: string, jslogContext?: string): HTMLInputElement;
-export declare function createHistoryInput(type?: string, className?: string): HTMLInputElement;
 export declare function createSelect(name: string, options: string[] | Array<Map<string, string[]>> | Set<string>): HTMLSelectElement;
 export declare function createOption(title: string, value?: string, jslogContext?: string): HTMLOptionElement;
 export declare function createLabel(title: string, className?: string, associatedControl?: Element): Element;

@@ -1,7 +1,9 @@
 import type * as Common from '../../core/common/common.js';
 export declare class ProgressIndicator extends HTMLElement implements Common.Progress.Progress {
     #private;
+    static readonly observedAttributes: readonly ['label', 'total-work', 'worked'];
     constructor();
+    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
     connectedCallback(): void;
     set done(done: boolean);
     get done(): boolean;

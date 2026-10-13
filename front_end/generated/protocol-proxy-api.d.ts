@@ -2258,6 +2258,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Return UUID of Blob object specified by a remote object id.
+     * @deprecated
      */
     invoke_resolveBlob(params: Protocol.IO.ResolveBlobRequest): Promise<Protocol.IO.ResolveBlobResponse>;
 
@@ -3687,6 +3688,11 @@ declare namespace ProtocolProxyApi {
      * This is an experimental command that is subject to change.
      */
     invoke_getAnnotatedPageContent(params: Protocol.Page.GetAnnotatedPageContentRequest): Promise<Protocol.Page.GetAnnotatedPageContentResponse>;
+
+    /**
+     * Configures input visualization on the page.
+     */
+    invoke_setInputVisualization(params: Protocol.Page.SetInputVisualizationRequest): Promise<Protocol.ProtocolResponseWithError>;
 
   }
   export interface PageDispatcher {

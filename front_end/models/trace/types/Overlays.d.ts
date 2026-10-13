@@ -111,9 +111,10 @@ export interface BottomInfoBar {
     };
 }
 /**
- * Represents an active comment pin anchored to a flame chart entry.
- * Links to a CommentThread by ID in CommentManager, rendering a pin icon and
- * outline highlight over the trace event.
+ * Marks a flame chart entry that has a comment thread, linked by ID to a
+ * CommentThread in CommentManager. The overlay renders an invisible box sized
+ * to the entry. The shared comments overlay draws the pin, highlight and popup
+ * relative to that box.
  */
 export interface CommentPin {
     type: 'COMMENT_PIN';

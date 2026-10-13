@@ -9,3 +9,8 @@ export declare function isWin(): boolean;
 export declare function setPlatformForTests(platform: string): void;
 export declare function fontFamily(): string;
 export declare function setFontFamilyForTests(family: string): void;
+export declare function setLocationForTest(url: string | undefined): void;
+export declare function isRemoteDevtoolsFrontend(): boolean;
+export declare function isCustomDevtoolsFrontend(): boolean;
+export declare function setIsRemoteDevtoolsFrontendForTest(isRemote: boolean | undefined): void;
+export declare function setIsCustomDevtoolsFrontendForTest(isCustom: boolean | undefined): void;

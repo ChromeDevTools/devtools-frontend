@@ -5,6 +5,7 @@ import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as FormatterActions from '../../entrypoints/formatter_actions/formatter_actions.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
@@ -262,7 +263,8 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
             return;
         }
         const content = TextUtils.ContentData.ContentData.textOr(contentDataOrError, '');
-        const { formattedContent, formattedMapping } = await Formatter.ScriptFormatter.format(Common.Settings.Settings.instance(), this.#uiSourceCode.contentType(), this.contentType, content);
+        const indent = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+        const { formattedContent, formattedMapping } = await Formatter.ScriptFormatter.format(this.#uiSourceCode.contentType(), this.contentType, content, indent);
         if (this.#uiSourceCode.workingCopy() === formattedContent) {
             return;
         }

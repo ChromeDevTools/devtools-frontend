@@ -104,7 +104,7 @@ export class SearchableContainer extends UI.Widget.VBox {
     #view;
     #toolbarItems = nothing;
     constructor(resource, contentType, element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true });
+        super(element);
         this.#view = view;
         const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
         this.#sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
@@ -121,7 +121,7 @@ export class SearchableContainer extends UI.Widget.VBox {
             sourceFrame: this.#sourceFrame,
             toolbarItems: this.#toolbarItems,
             placeholder: i18nString(UIStrings.find),
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     async revealPosition(position) {
         this.#sourceFrame.revealPosition(position, true);

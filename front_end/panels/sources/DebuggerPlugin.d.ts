@@ -1,3 +1,4 @@
+import '../../ui/components/tooltips/tooltips.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
@@ -89,6 +90,30 @@ export declare class DebuggerPlugin extends Plugin {
 }
 export declare class BreakpointLocationRevealer implements Common.Revealer.Revealer<Breakpoints.BreakpointManager.BreakpointLocation> {
     reveal(breakpointLocation: Breakpoints.BreakpointManager.BreakpointLocation, omitFocus?: boolean | undefined): Promise<void>;
+}
+export declare class BreakpointInlineMarker extends CodeMirror.WidgetType {
+    readonly breakpoint: Breakpoints.BreakpointManager.Breakpoint | null;
+    readonly parent: DebuggerPlugin;
+    class: string;
+    constructor(breakpoint: Breakpoints.BreakpointManager.Breakpoint | null, parent: DebuggerPlugin);
+    eq(other: BreakpointInlineMarker): boolean;
+    toDOM(): HTMLElement;
+    ignoreEvent(): boolean;
+}
+export declare class BreakpointGutterMarker extends CodeMirror.GutterMarker {
+    #private;
+    readonly elementClass: string;
+    static nextTooltipId: number;
+    readonly condition: Breakpoints.BreakpointManager.UserCondition | undefined;
+    constructor(elementClass: string, position: number, condition?: Breakpoints.BreakpointManager.UserCondition);
+    eq(other: BreakpointGutterMarker): boolean;
+    toDOM(view: CodeMirror.EditorView): Node;
+}
+export declare class ValueDecoration extends CodeMirror.WidgetType {
+    readonly pairs: Array<[string, SDK.RemoteObject.RemoteObject]>;
+    constructor(pairs: Array<[string, SDK.RemoteObject.RemoteObject]>);
+    eq(other: ValueDecoration): boolean;
+    toDOM(): HTMLElement;
 }
 export declare function getVariableNamesByLine(editorState: CodeMirror.EditorState, fromPos: number, toPos: number, currentPos: number, useOriginalScopes?: boolean): Array<{
     line: number;

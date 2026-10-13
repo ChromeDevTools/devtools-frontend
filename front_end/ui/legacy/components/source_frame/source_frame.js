@@ -14,7 +14,7 @@ import * as TextUtils5 from "../../../../core/text_utils/text_utils.js";
 // ../../front_end/ui/legacy/components/source_frame/ResourceSourceFrame.ts
 var ResourceSourceFrame_exports = {};
 __export(ResourceSourceFrame_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   ResourceSourceFrame: () => ResourceSourceFrame,
   SearchableContainer: () => SearchableContainer
 });
@@ -49,6 +49,7 @@ var resourceSourceFrame_css_default = `/*
 // ../../front_end/ui/legacy/components/source_frame/SourceFrame.ts
 var SourceFrame_exports = {};
 __export(SourceFrame_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   Events: () => Events,
   LINE_NUMBER_FORMATTER: () => LINE_NUMBER_FORMATTER,
   SourceFrameImpl: () => SourceFrameImpl,
@@ -168,8 +169,13 @@ var SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW = (input, _output, target) => {
       jslog=${VisualLogging.toggle().track({ click: true }).context("pretty-print")}
       @click=${input.onPrettyToggleClick}></devtools-button>
     <div class="toolbar-text">${input.sourcePositionText}</div>
-    ${input.loading ? html`<div><devtools-progress
-      .title=${i18nString(UIStrings.loading)} .totalWork=${100} .worked=${1}></devtools-progress></div>` : nothing}`, target);
+    ${input.loading ? html`
+      <div>
+        <devtools-progress label=${i18nString(UIStrings.loading)}
+                           total-work="100"
+                           worked="1">
+        </devtools-progress>
+      </div>` : nothing}`, target);
 };
 var SourceFrameToolbar = class extends UI.Widget.Widget {
   #view;
@@ -183,30 +189,41 @@ var SourceFrameToolbar = class extends UI.Widget.Widget {
   constructor(element, view = SOURCE_FRAME_TOOLBAR_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
-    this.element.style.display = "contents";
     this.performUpdate();
   }
   performUpdate() {
-    this.#view(this, {}, this.contentElement);
+    this.#view(
+      {
+        canPrettyPrint: this.canPrettyPrint,
+        pretty: this.pretty,
+        prettyToggleEnabled: this.prettyToggleEnabled,
+        sourcePositionText: this.sourcePositionText,
+        loading: this.loading,
+        onPrettyToggleClick: this.onPrettyToggleClick
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-var SOURCE_FRAME_DEFAULT_VIEW = (input, _output, target) => {
+var DEFAULT_VIEW = (input, _output, target) => {
   render(html`
-        <div style="display: contents" @keydown=${input.onKeyDown}>
-          ${input.textEditor}
-        </div>
-      `, target);
+    <div style="display: contents" @keydown=${input.onKeyDown}>
+      ${input.textEditor}
+    </div>
+  `, target);
 };
 var SourceFrameImplBase = Common.ObjectWrapper.eventMixin(
   UI.View.SimpleView
 );
 var SourceFrameImpl = class extends SourceFrameImplBase {
-  constructor(lazyContent, options = {}, element) {
+  constructor(lazyContent, options = {}, element, view = DEFAULT_VIEW) {
     super(...element ? [element] : [], {
       title: i18nString(UIStrings.source),
       viewId: "source"
     });
     this.options = options;
+    this.#view = view;
     this.lazyContent = lazyContent;
     this.prettyInternal = false;
     this.rawContent = null;
@@ -235,10 +252,11 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
       false,
       Common.Settings.SettingStorageType.SYNCED
     );
-    Common.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.#textEditorIndentChanged, this);
+    Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).addChangeListener(this.#textEditorIndentChanged, this);
     this.performUpdate();
   }
   options;
+  #view;
   lazyContent;
   prettyInternal;
   rawContent;
@@ -259,7 +277,7 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
   searchRegex;
   loadError;
   #sourcePositionText = "";
-  #toolbarWidget = new SourceFrameToolbar();
+  #toolbarWidget;
   searchableView;
   editable;
   positionToReveal;
@@ -272,7 +290,7 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
   contentSet;
   selfXssWarningDisabledSetting;
   performUpdate() {
-    SOURCE_FRAME_DEFAULT_VIEW(
+    this.#view(
       {
         textEditor: this.textEditorInternal,
         onKeyDown: (event) => {
@@ -281,12 +299,15 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
           }
         }
       },
-      {},
+      void 0,
       this.element
     );
     this.#updateToolbar();
   }
   #updateToolbar() {
+    if (!this.#toolbarWidget) {
+      return;
+    }
     Object.assign(this.#toolbarWidget, {
       canPrettyPrint: this.#canPrettyPrint,
       pretty: this.prettyInternal,
@@ -298,7 +319,7 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
     this.#toolbarWidget.performUpdate();
   }
   disposeView() {
-    Common.Settings.Settings.instance().moduleSetting("text-editor-indent").removeChangeListener(this.#textEditorIndentChanged, this);
+    Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).removeChangeListener(this.#textEditorIndentChanged, this);
   }
   async #textEditorIndentChanged() {
     if (this.prettyInternal) {
@@ -434,11 +455,8 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
     if (this.prettyInternal) {
       const content = this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || "";
       this.textEditor.state = this.placeholderEditorState(i18nString(UIStrings.formatting));
-      const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(
-        Common.Settings.Settings.instance(),
-        this.contentType,
-        content
-      );
+      const indent = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+      const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(this.contentType, content, indent);
       this.formattedMap = formatInfo.formattedMapping;
       await this.setContent(formatInfo.formattedContent);
       this.prettyBaseDoc = textEditor.state.doc;
@@ -530,11 +548,11 @@ var SourceFrameImpl = class extends SourceFrameImplBase {
     this.clearPositionToReveal();
   }
   async toolbarItems() {
-    return html`${widget((element) => {
+    return html`<devtools-widget style="display: contents" ${widget((element) => {
       this.#toolbarWidget = new SourceFrameToolbar(element);
       this.#updateToolbar();
       return this.#toolbarWidget;
-    })}`;
+    })}></devtools-widget>`;
   }
   get loaded() {
     return this.loadedInternal;
@@ -1243,7 +1261,7 @@ var ResourceSourceFrame = class extends SourceFrameImpl {
     contextMenu.appendApplicableItems(this.#resource);
   }
 };
-var DEFAULT_VIEW = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, _output, target) => {
   render2(
     html2`
     <style>${resourceSourceFrame_css_default}</style>
@@ -1265,8 +1283,8 @@ var SearchableContainer = class extends UI2.Widget.VBox {
   #sourceFrame;
   #view;
   #toolbarItems = nothing2;
-  constructor(resource, contentType, element, view = DEFAULT_VIEW) {
-    super(element, { useShadowDom: true });
+  constructor(resource, contentType, element, view = DEFAULT_VIEW2) {
+    super(element);
     this.#view = view;
     const simpleContentType = Common2.ResourceType.ResourceType.simplifyContentType(contentType);
     this.#sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
@@ -1289,7 +1307,7 @@ var SearchableContainer = class extends UI2.Widget.VBox {
         toolbarItems: this.#toolbarItems,
         placeholder: i18nString2(UIStrings2.find)
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
@@ -1509,7 +1527,7 @@ var StreamingResourceSourceFrame = class extends ResourceSourceFrame {
 // ../../front_end/ui/legacy/components/source_frame/FontView.ts
 var FontView_exports = {};
 __export(FontView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   FontView: () => FontView
 });
 import * as i18n5 from "../../../../core/i18n/i18n.js";
@@ -1551,7 +1569,7 @@ var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/source_frame/Font
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var FONT_PREVIEW_LINES = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "nopqrstuvwxyz", "1234567890"];
 var MEASURE_FONT_SIZE = 50;
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   let dummyEl;
   render3(html3`
     <style>${fontView_css_default}</style>
@@ -1585,7 +1603,7 @@ var FontView = class extends UI4.View.SimpleView {
   #previewFontSize = "";
   #previewVisible = false;
   #contentLoaded = false;
-  constructor(mimeType, contentProvider, view = DEFAULT_VIEW2) {
+  constructor(mimeType, contentProvider, view = DEFAULT_VIEW3) {
     super({
       title: i18nString3(UIStrings3.font),
       viewId: "font",
@@ -1674,7 +1692,7 @@ var fontId = 0;
 // ../../front_end/ui/legacy/components/source_frame/ImageView.ts
 var ImageView_exports = {};
 __export(ImageView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   Events: () => Events2,
   ImageView: () => ImageView
 });
@@ -1779,7 +1797,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/source_frame/ImageView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   render4(html4`
     <style>${imageView_css_default}</style>
     <div class="image">
@@ -1837,7 +1855,7 @@ var ImageView = class extends ImageViewBase {
   #isUnavailable = false;
   #loadPromise;
   #loadResolve;
-  constructor(mimeType, contentProvider, view = DEFAULT_VIEW3) {
+  constructor(mimeType, contentProvider, view = DEFAULT_VIEW4) {
     super({
       title: i18nString4(UIStrings4.image),
       viewId: "image",
@@ -2103,7 +2121,7 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/source_frame/JSONView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(input.parsedJSON.data);
   const titleText = input.parsedJSON.prefix + obj.description + input.parsedJSON.suffix;
   const title = html5`<span>${titleText}</span>`;
@@ -2133,7 +2151,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
   objectTree = null;
   search;
   view;
-  constructor(parsedJSON, startCollapsed, element, view = DEFAULT_VIEW4) {
+  constructor(parsedJSON, startCollapsed, element, view = DEFAULT_VIEW5) {
     super(element);
     this.#parsedJSON = parsedJSON;
     this.startCollapsed = Boolean(startCollapsed);
@@ -2366,7 +2384,7 @@ import * as UI8 from "../../legacy.js";
 // ../../front_end/ui/legacy/components/source_frame/XMLView.ts
 var XMLView_exports = {};
 __export(XMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   XMLTreeViewModel: () => XMLTreeViewModel,
   XMLTreeViewNode: () => XMLTreeViewNode,
   XMLView: () => XMLView
@@ -2526,7 +2544,7 @@ function htmlView(treeNode) {
   }
   return Lit.nothing;
 }
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   function highlight(node, closeTag) {
     let highlights = "";
     let selected = "";
@@ -2668,7 +2686,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   #treeViewModel;
   #view;
   #nextJump;
-  constructor(target, view = DEFAULT_VIEW5) {
+  constructor(target, view = DEFAULT_VIEW6) {
     super(target);
     this.#view = view;
   }

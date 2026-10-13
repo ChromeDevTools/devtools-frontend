@@ -4071,6 +4071,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "speak-as",
   "speculative-loads",
   "speedster",
+  "spell-check-custom-dictionary",
   "spread",
   "sq",
   "sr",

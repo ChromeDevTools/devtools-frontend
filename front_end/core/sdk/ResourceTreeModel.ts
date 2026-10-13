@@ -210,6 +210,11 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   frameNavigated(framePayload: Protocol.Page.Frame, type: Protocol.Page.NavigationType|undefined): void {
+    this.#frameNavigated(framePayload, type, /* isDocumentOpened */ false);
+  }
+
+  #frameNavigated(framePayload: Protocol.Page.Frame, type: Protocol.Page.NavigationType|undefined,
+                  isDocumentOpened: boolean): void {
     const sameTargetParentFrame =
         framePayload.parentId ? (this.framesInternal.get(framePayload.parentId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
@@ -246,6 +251,23 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       this.dispatchEventToListeners(Events.ResourceAdded, resources[i]);
     }
 
+    // The document resource is normally added once the Network domain reports
+    // the document request as finished. Clients that run without the Network
+    // domain never get it, so inline scripts and styles can't be mapped to the
+    // document. Unless the request is still in flight, add the document
+    // resource right away, like `addFramesRecursively()` does for loaded frames.
+    // Documents created by `document.open()` have no request of their own and
+    // their content is not available.
+    const networkManager = this.target().model(NetworkManager);
+    if (!frame.getResourcesMap().get(framePayload.url as Platform.DevToolsPath.UrlString) &&
+        (isDocumentOpened || !networkManager?.requestForLoaderId(framePayload.loaderId))) {
+      const frameResource = this.createResourceFromFramePayload(
+          framePayload, framePayload.url as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.Document,
+          framePayload.mimeType, null, null);
+      frameResource.isGenerated = isDocumentOpened;
+      frame.addResource(frameResource);
+    }
+
     this.updateSecurityOrigins();
     void this.updateStorageKeys();
 
@@ -266,17 +288,10 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   documentOpened(framePayload: Protocol.Page.Frame): void {
-    this.frameNavigated(framePayload, undefined);
+    this.#frameNavigated(framePayload, undefined, /* isDocumentOpened */ true);
     const frame = this.framesInternal.get(framePayload.id);
     if (frame) {
       this.dispatchEventToListeners(Events.DocumentOpened, frame);
-      if (!frame.getResourcesMap().get(framePayload.url)) {
-        const frameResource = this.createResourceFromFramePayload(
-            framePayload, framePayload.url as Platform.DevToolsPath.UrlString,
-            Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
-        frameResource.isGenerated = true;
-        frame.addResource(frameResource);
-      }
     }
   }
 

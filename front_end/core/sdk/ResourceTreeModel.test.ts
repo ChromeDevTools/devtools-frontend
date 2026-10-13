@@ -12,6 +12,8 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   addChildFrame,
   createResource,
+  FRAME,
+  getEffectivePayload,
   getInitializedResourceTreeModel,
   getMainFrame,
   LOADER_ID,
@@ -22,6 +24,7 @@ import {
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
@@ -144,6 +147,76 @@ describe('ResourceTreeModel', () => {
     assert.strictEqual(await storageKeyAdded, testKey);
     assert.strictEqual(await mainFrame.getStorageKey(false), testKey);
     assert.strictEqual(manager.mainStorageKey(), testKey);
+  });
+
+  it('adds the document resource on navigation', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const mainFrame = getMainFrame(target);
+    const url = urlString`http://example.com/page.html`;
+
+    const resourceAdded = sinon.spy();
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, resourceAdded);
+    navigate(mainFrame, {url, loaderId: 'loader-2' as Protocol.Network.LoaderId, mimeType: 'text/html'});
+
+    const resource = mainFrame.resourceForURL(url);
+    assert.exists(resource);
+    assert.isNull(resource.request);
+    assert.strictEqual(resource.resourceType(), Common.ResourceType.resourceTypes.Document);
+    assert.strictEqual(resource.mimeType, 'text/html');
+    assert.strictEqual(resource.frameId, mainFrame.id);
+    assert.strictEqual(resource.loaderId, 'loader-2');
+    assert.isFalse(resource.isGenerated);
+    sinon.assert.calledOnceWithExactly(resourceAdded, sinon.match({data: resource}));
+  });
+
+  it('adds a generated document resource when the document is opened', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const mainFrame = getMainFrame(target);
+    const url = urlString`http://example.com/page.html`;
+
+    const resourceAdded = sinon.spy();
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, resourceAdded);
+    resourceTreeModel.documentOpened(getEffectivePayload(mainFrame.id, FRAME, {url}));
+
+    const resource = mainFrame.resourceForURL(url);
+    assert.exists(resource);
+    assert.isTrue(resource.isGenerated);
+    sinon.assert.calledOnceWithExactly(resourceAdded, sinon.match({data: resource}));
+  });
+
+  it('adds a generated document resource when the document is opened with a tracked request', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const mainFrame = getMainFrame(target);
+    const url = urlString`http://example.com/page.html`;
+    sinon.stub(SDK.NetworkManager.NetworkManager.prototype, 'requestForLoaderId')
+        .returns(sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest));
+
+    resourceTreeModel.documentOpened(getEffectivePayload(mainFrame.id, FRAME, {url}));
+
+    const resource = mainFrame.resourceForURL(url);
+    assert.exists(resource);
+    assert.isTrue(resource.isGenerated);
+  });
+
+  it('does not add the document resource on navigation while the document request is in flight', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const mainFrame = getMainFrame(target);
+    const url = urlString`http://example.com/page.html`;
+    const loaderId = 'loader-2' as Protocol.Network.LoaderId;
+    const requestForLoaderId = sinon.stub(SDK.NetworkManager.NetworkManager.prototype, 'requestForLoaderId')
+                                   .returns(sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest));
+
+    const resourceAdded = sinon.spy();
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, resourceAdded);
+    navigate(mainFrame, {url, loaderId});
+
+    sinon.assert.calledWithExactly(requestForLoaderId, loaderId);
+    assert.isNull(mainFrame.resourceForURL(url));
+    sinon.assert.notCalled(resourceAdded);
   });
 
   function getResourceTreeModel(target: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeModel {

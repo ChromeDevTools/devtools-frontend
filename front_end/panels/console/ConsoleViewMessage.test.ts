@@ -245,6 +245,66 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       assert.isFalse(section.objectTree.readOnly);
     });
 
+    it('opens the DOM node context menu and stops propagation when right-clicking a logged node', async () => {
+      const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+      UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
+
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(runtimeModel);
+      assert.exists(domModel);
+
+      const node = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+        attributes: ['id', 'logged'],
+        childNodeCount: 0,
+      });
+      const pushObjectAsNodeToFrontend = sinon.stub(domModel, 'pushObjectAsNodeToFrontend').resolves(node);
+
+      const remoteObject = runtimeModel.createRemoteObject({
+        type: Protocol.Runtime.RemoteObjectType.Object,
+        subtype: Protocol.Runtime.RemoteObjectSubtype.Node,
+        className: 'HTMLDivElement',
+        description: 'div#logged',
+        objectId: '1' as Protocol.Runtime.RemoteObjectId,
+      });
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Info,
+          '',
+          {parameters: [remoteObject]},
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const messageElement = message.toMessageElement();
+      renderElementIntoDOM(messageElement);
+      await pushObjectAsNodeToFrontend.firstCall.returnValue;
+      await raf();
+
+      const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const appendApplicableItemsSpy = sinon.spy(UI.ContextMenu.ContextMenu.prototype, 'appendApplicableItems');
+
+      const treeHost = messageElement.querySelector('.console-message-text span > div');
+      assert.exists(treeHost?.shadowRoot);
+      const treeItem = treeHost.shadowRoot.querySelector('li');
+      assert.exists(treeItem);
+
+      const event = new MouseEvent('contextmenu', {bubbles: true, cancelable: true, composed: true});
+      const stopPropagationSpy = sinon.spy(event, 'stopPropagation');
+      treeItem.dispatchEvent(event);
+
+      await raf();
+      sinon.assert.called(stopPropagationSpy);
+      sinon.assert.calledWith(appendApplicableItemsSpy, node);
+      sinon.assert.calledOnce(showSpy);
+    });
+
     it('formats console.dir(document.__proto__) without exception', async () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);

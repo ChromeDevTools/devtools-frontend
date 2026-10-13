@@ -2648,6 +2648,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     super.detach(overrideHideOnDetach);
     this.#visible = false;
     this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED, this.#highlightNode, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.OverlayModel.OverlayModel,
+                                                                   SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
+                                                                   this.#clearHighlightedNode, this);
     if (this.#updateModifiedNodesTimeout) {
       clearTimeout(this.#updateModifiedNodesTimeout);
       this.#updateModifiedNodesTimeout = undefined;
@@ -2762,6 +2767,9 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     this.elementInternal.addEventListener('mousedown', this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener('mousemove', this.onmousemove.bind(this), false);
     this.elementInternal.addEventListener('mouseleave', this.onmouseleave.bind(this), false);
+    if (this.enableContextMenu && !this.domTreeWidget) {
+      this.elementInternal.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
+    }
 
     if (!this.disableEdits) {
       this.elementInternal.addEventListener('dragstart', this.ondragstart.bind(this), false);
@@ -3267,7 +3275,33 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     }
   }
 
-  showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void = () => {};
+  #standaloneDOMTreeWidget?: DOMTreeWidget;
+
+  private contextMenuEventFired(event: MouseEvent): void {
+    if ((this.domTreeWidget && this.domTreeWidget !== this.#standaloneDOMTreeWidget) || !this.enableContextMenu) {
+      return;
+    }
+    const treeElement = this.treeElementFromEventInternal(event);
+    if (treeElement instanceof ElementsTreeElement) {
+      this.showContextMenu(treeElement, event);
+    }
+  }
+
+  showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void = (treeElement: ElementsTreeElement,
+                                                                               event: Event): void => {
+    if (!this.enableContextMenu || !(event instanceof MouseEvent)) {
+      return;
+    }
+    if (!this.#standaloneDOMTreeWidget) {
+      this.#standaloneDOMTreeWidget = new DOMTreeWidget(undefined, (_input, output) => {
+        output.elementsTreeOutline = this;
+      });
+      this.#standaloneDOMTreeWidget.performUpdate();
+      this.#standaloneDOMTreeWidget.detach();
+      this.domTreeWidget = this.#standaloneDOMTreeWidget;
+    }
+    void this.#standaloneDOMTreeWidget.showContextMenu(treeElement.node(), event, treeElement.widget);
+  };
 
   runPendingUpdates(): void {
     this.updateModifiedNodes();

@@ -12,7 +12,7 @@ import {data as workersData} from './WorkersHandler.js';
 
 export interface WarningsData {
   // Tracks warnings keyed by the event.
-  perEvent: Map<Types.Events.Event, Warning[]>;
+  perEvent: WeakMap<Types.Events.Event, Warning[]>;
   // The same data in reverse: for each type of warning, track the events.
   // Useful if we need to enumerate events by type of issue
   perWarning: Map<Warning, Types.Events.Event[]>;
@@ -20,7 +20,7 @@ export interface WarningsData {
 
 export type Warning = 'LONG_TASK'|'IDLE_CALLBACK_OVER_TIME'|'FORCED_REFLOW'|'LONG_INTERACTION';
 
-let warningsPerEvent: WarningsData['perEvent'] = new Map();
+let warningsPerEvent: WarningsData['perEvent'] = new WeakMap();
 let eventsPerWarning: WarningsData['perWarning'] = new Map();
 
 /**
@@ -47,7 +47,7 @@ export const FORCED_REFLOW_THRESHOLD: Types.Timing.Micro = Helpers.Timing.milliT
 export const LONG_MAIN_THREAD_TASK_THRESHOLD: Types.Timing.Micro = Helpers.Timing.milliToMicro(Types.Timing.Milli(50));
 
 export function reset(): void {
-  warningsPerEvent = new Map();
+  warningsPerEvent = new WeakMap();
   eventsPerWarning = new Map();
   allEventsStack = [];
   jsInvokeStack = [];

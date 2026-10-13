@@ -407,7 +407,8 @@ describe('generatePreconnectCandidates', () => {
   setupLocaleHooks();
   const mockParsedTrace = {
     NetworkRequests: {
-      incompleteInitiator: new Map<Trace.Types.Events.SyntheticNetworkRequest, Trace.Types.Events.Event>(),
+      incompleteInitiator:
+          new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, Trace.Types.Events.SyntheticNetworkRequest>(),
       byTime: [] as Trace.Types.Events.SyntheticNetworkRequest[],
       byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
@@ -483,7 +484,6 @@ describe('generatePreconnectCandidates', () => {
   } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
 
   beforeEach(() => {
-    mockParsedTrace.NetworkRequests.incompleteInitiator.clear();
     mockParsedTrace.NetworkRequests.byTime.length = 0;
     mockParsedTrace.NetworkRequests.byId.clear();
     mockParsedTrace.NetworkRequests.linkPreconnectEvents.length = 0;

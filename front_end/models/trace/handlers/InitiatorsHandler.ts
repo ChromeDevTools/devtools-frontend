@@ -21,10 +21,10 @@ let lastRecalcByFrame = new Map<string, Types.Events.RecalcStyle>();
 
 // These two maps store the same data but in different directions.
 // For a given event, tell me what its initiator was. An event can only have one initiator.
-let eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
+let eventToInitiatorMap = new WeakMap<Types.Events.Event, Types.Events.Event>();
 // For a given event, tell me what events it initiated. An event can initiate
 // multiple events, hence why the value for this map is an array.
-let initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
+let initiatorToEventsMap = new WeakMap<Types.Events.Event, Types.Events.Event[]>();
 
 let timerInstallEventsById = new Map<number, Types.Events.TimerInstall>();
 let requestIdleCallbackEventsById = new Map<number, Types.Events.RequestIdleCallback>();
@@ -37,8 +37,8 @@ export function reset(): void {
   lastInvalidationEventForFrame = new Map();
   lastRecalcByFrame = new Map();
   timerInstallEventsById = new Map();
-  eventToInitiatorMap = new Map();
-  initiatorToEventsMap = new Map();
+  eventToInitiatorMap = new WeakMap();
+  initiatorToEventsMap = new WeakMap();
   requestIdleCallbackEventsById = new Map();
   webSocketCreateEventsById = new Map();
   schedulePostTaskCallbackEventsById = new Map();
@@ -177,8 +177,8 @@ export async function finalize(): Promise<void> {
 }
 
 export interface InitiatorsData {
-  eventToInitiator: Map<Types.Events.Event, Types.Events.Event>;
-  initiatorToEvents: Map<Types.Events.Event, Types.Events.Event[]>;
+  eventToInitiator: WeakMap<Types.Events.Event, Types.Events.Event>;
+  initiatorToEvents: WeakMap<Types.Events.Event, Types.Events.Event[]>;
 }
 
 export function data(): InitiatorsData {

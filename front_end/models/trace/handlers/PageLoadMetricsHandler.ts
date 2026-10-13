@@ -41,7 +41,7 @@ let metricScoresByFrameId = new Map<FrameId, Map<AnyNavigationStart, Map<MetricN
 let allMarkerEvents: Types.Events.PageLoadEvent[] = [];
 
 // Grouped by navigation to make it easier for insights to scope checks.
-let metaCharsetCheckEventsByNavigation = new Map<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>();
+let metaCharsetCheckEventsByNavigation = new WeakMap<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>();
 let metaCharsetCheckEventsArray: Types.Events.MetaCharsetCheck[] = [];
 
 export function reset(): void {
@@ -49,7 +49,7 @@ export function reset(): void {
   pageLoadEventsArray = [];
   allMarkerEvents = [];
   selectedLCPCandidateEvents = new Set();
-  metaCharsetCheckEventsByNavigation = new Map();
+  metaCharsetCheckEventsByNavigation = new WeakMap();
   metaCharsetCheckEventsArray = [];
 }
 
@@ -491,7 +491,7 @@ export interface PageLoadMetricsData {
   /**
    * MetaCharsetCheck events grouped by navigation.
    */
-  metaCharsetCheckEventsByNavigation: Map<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>;
+  metaCharsetCheckEventsByNavigation: WeakMap<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>;
 }
 
 export function data(): PageLoadMetricsData {

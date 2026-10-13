@@ -8,7 +8,7 @@ import type {HandlerName} from './types.js';
 
 export interface Data {
   animationFrames: Types.Events.SyntheticAnimationFramePair[];
-  presentationForFrame: Map<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>;
+  presentationForFrame: WeakMap<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>;
 }
 
 function threadKey(data: Types.Events.Event): string {
@@ -25,13 +25,14 @@ let animationFramePresentations = new Map<string, Types.Events.AnimationFramePre
 // The final list of animation frames that we return.
 let animationFrames: Types.Events.SyntheticAnimationFramePair[] = [];
 
-let presentationForFrame = new Map<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>();
+let presentationForFrame =
+    new WeakMap<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>();
 
 export function reset(): void {
   animationFrameStarts = new Map();
   animationFrameEnds = new Map();
   animationFrames = [];
-  presentationForFrame = new Map();
+  presentationForFrame = new WeakMap();
   animationFramePresentations = new Map();
   isEnabled = false;
 }

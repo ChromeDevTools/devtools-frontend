@@ -39,11 +39,11 @@ let paintImageByLazyPixelRef = new Map<number, Types.Events.PaintImage>();
 // These are currently only DecodeImage and ResizeImage events, but the type is
 // deliberately generic as in the future we might want to add more events that
 // have a relationship to a individual PaintImage event.
-let eventToPaintImage = new Map<Types.Events.Event, Types.Events.PaintImage>();
+let eventToPaintImage = new WeakMap<Types.Events.Event, Types.Events.PaintImage>();
 
 let urlToPaintImage = new Map<string, Types.Events.PaintImage[]>();
 
-let paintEventToCorrectedDisplaySize = new Map<Types.Events.PaintImage, {width: number, height: number}>();
+let paintEventToCorrectedDisplaySize = new WeakMap<Types.Events.PaintImage, {width: number, height: number}>();
 
 let didCorrectForHostDpr = false;
 
@@ -51,9 +51,9 @@ export function reset(): void {
   paintImageEvents = new Map();
   decodeLazyPixelRefEvents = new Map();
   paintImageByLazyPixelRef = new Map();
-  eventToPaintImage = new Map();
+  eventToPaintImage = new WeakMap();
   urlToPaintImage = new Map();
-  paintEventToCorrectedDisplaySize = new Map();
+  paintEventToCorrectedDisplaySize = new WeakMap();
   didCorrectForHostDpr = false;
 }
 
@@ -165,9 +165,9 @@ export async function finalize(options: FinalizeOptions): Promise<void> {
 
 export interface ImagePaintData {
   paintImageByDrawLazyPixelRef: Map<number, Types.Events.PaintImage>;
-  paintImageForEvent: Map<Types.Events.Event, Types.Events.PaintImage>;
+  paintImageForEvent: WeakMap<Types.Events.Event, Types.Events.PaintImage>;
   paintImageEventForUrl: Map<string, Types.Events.PaintImage[]>;
-  paintEventToCorrectedDisplaySize: Map<Types.Events.PaintImage, {width: number, height: number}>;
+  paintEventToCorrectedDisplaySize: WeakMap<Types.Events.PaintImage, {width: number, height: number}>;
   /** Go read the comment in finalize(). */
   didCorrectForHostDpr: boolean;
 }

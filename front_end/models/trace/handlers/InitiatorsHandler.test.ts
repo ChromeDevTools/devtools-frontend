@@ -9,13 +9,22 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('InitiatorsHandler', () => {
+  beforeEach(() => {
+    Trace.Handlers.ModelHandlers.AsyncJSCalls.reset();
+    Trace.Handlers.ModelHandlers.Flows.reset();
+    Trace.Handlers.ModelHandlers.Initiators.reset();
+  });
+
   describe('for web-dev-with-commit trace', () => {
     let traceEvents: readonly Trace.Types.Events.Event[];
-    let eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>;
+    let eventToInitiator: WeakMap<Trace.Types.Events.Event, Trace.Types.Events.Event>;
 
     before(async function() {
       Trace.Handlers.ModelHandlers.Initiators.reset();
-      traceEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+      traceEvents = await TraceLoader.rawEvents(
+          this,
+          'web-dev-with-commit.json.gz',
+      );
       for (const event of traceEvents) {
         Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
       }
@@ -25,7 +34,7 @@ describe('InitiatorsHandler', () => {
 
     it('for an RecalcStyle event it sets the initiator to the previous ScheduledStyleRecalculation event', () => {
       const recalcStyleEvent = traceEvents.find(event => {
-        return Trace.Types.Events.isRecalcStyle(event) && event.ts === 122411039965;
+        return (Trace.Types.Events.isRecalcStyle(event) && event.ts === 122411039965);
       });
       if (!recalcStyleEvent || !Trace.Types.Events.isRecalcStyle(recalcStyleEvent)) {
         throw new Error('Could not find layout tree event.');
@@ -35,8 +44,14 @@ describe('InitiatorsHandler', () => {
         throw new Error('Did not find expected initiator for recalcStyleEvent');
       }
       assert.isTrue(Trace.Types.Events.isScheduleStyleRecalculation(initiator));
-      assert.strictEqual(recalcStyleEvent.args.beginData?.frame, '25D2F12F1818C70B5BD4325CC9ACD8FF');
-      assert.strictEqual(recalcStyleEvent.args.beginData?.frame, initiator.args?.data?.frame);
+      assert.strictEqual(
+          recalcStyleEvent.args.beginData?.frame,
+          '25D2F12F1818C70B5BD4325CC9ACD8FF',
+      );
+      assert.strictEqual(
+          recalcStyleEvent.args.beginData?.frame,
+          initiator.args?.data?.frame,
+      );
     });
 
     it('for a Layout event it sets the initiator to the last InvalidateLayout event on that frame', () => {
@@ -75,87 +90,135 @@ describe('InitiatorsHandler', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
     before(async function() {
-      parsedTrace = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+      parsedTrace = await TraceLoader.traceEngine(
+          this,
+          'async-js-calls.json.gz',
+      );
     });
 
     it('sets an initiator relationship between a requestAnimationFrame and the scheduled FunctionCall', () => {
       const requestAnimationFrameCall =
-          allThreadEntriesInTrace(parsedTrace)
-              .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame');
+          allThreadEntriesInTrace(
+              parsedTrace,
+              )
+              .find(
+                  e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame',
+              );
       if (!requestAnimationFrameCall) {
         throw new Error('Could not find requestAnimationFrame call');
       }
       const functionCallEvent =
           allThreadEntriesInTrace(parsedTrace)
-              .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestAnimationFrameCall.ts);
+              .find(
+                  e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestAnimationFrameCall.ts,
+              );
       if (!functionCallEvent) {
         throw new Error('Could not find FunctionCall event');
       }
 
-      assert.strictEqual(parsedTrace.data.Initiators.eventToInitiator.get(functionCallEvent),
-                         requestAnimationFrameCall);
-      assert.deepEqual(parsedTrace.data.Initiators.initiatorToEvents.get(requestAnimationFrameCall),
-                       [functionCallEvent]);
+      assert.strictEqual(
+          parsedTrace.data.Initiators.eventToInitiator.get(functionCallEvent),
+          requestAnimationFrameCall,
+      );
+      assert.deepEqual(
+          parsedTrace.data.Initiators.initiatorToEvents.get(
+              requestAnimationFrameCall,
+              ),
+          [functionCallEvent],
+      );
     });
 
     it('sets an initiator relationship between a setTimeout and the scheduled FunctionCall', () => {
       const setTimeoutCall =
           allThreadEntriesInTrace(parsedTrace)
-              .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
+              .filter(
+                  e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout',
+                  )
               .at(-1);
       if (!setTimeoutCall) {
         throw new Error('Could not find setTimeout call');
       }
       const functionCallEvent = allThreadEntriesInTrace(parsedTrace)
-                                    .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts);
+                                    .find(
+                                        e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts,
+                                    );
       if (!functionCallEvent) {
         throw new Error('Could not find FunctionCall event');
       }
 
-      assert.strictEqual(parsedTrace.data.Initiators.eventToInitiator.get(functionCallEvent), setTimeoutCall);
-      assert.deepEqual(parsedTrace.data.Initiators.initiatorToEvents.get(setTimeoutCall), [functionCallEvent]);
+      assert.strictEqual(
+          parsedTrace.data.Initiators.eventToInitiator.get(functionCallEvent),
+          setTimeoutCall,
+      );
+      assert.deepEqual(
+          parsedTrace.data.Initiators.initiatorToEvents.get(setTimeoutCall),
+          [functionCallEvent],
+      );
     });
 
     it('sets an initiator relationship between a requestIdleCallback and the scheduled FunctionCall', () => {
       const requestIdleCallback =
           allThreadEntriesInTrace(parsedTrace)
-              .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback');
+              .find(
+                  e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback',
+              );
       if (!requestIdleCallback) {
         throw new Error('Could not find requestIdleCallback call');
       }
       const functionCallEvent = allThreadEntriesInTrace(parsedTrace)
-                                    .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallback.ts);
+                                    .find(
+                                        e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallback.ts,
+                                    );
       if (!functionCallEvent) {
         throw new Error('Could not find FunctionCall event');
       }
 
-      assert.strictEqual(parsedTrace.data.Initiators.eventToInitiator.get(functionCallEvent), requestIdleCallback);
-      assert.deepEqual(parsedTrace.data.Initiators.initiatorToEvents.get(requestIdleCallback), [functionCallEvent]);
+      assert.strictEqual(
+          parsedTrace.data.Initiators.eventToInitiator.get(functionCallEvent),
+          requestIdleCallback,
+      );
+      assert.deepEqual(
+          parsedTrace.data.Initiators.initiatorToEvents.get(requestIdleCallback),
+          [functionCallEvent],
+      );
     });
 
     it('sets an initiator relationship between a console.createTask and the scheduled task.run', () => {
       const schedulerFuntion =
           allThreadEntriesInTrace(parsedTrace)
-              .find(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'startExample');
+              .find(
+                  e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'startExample',
+              );
       if (!schedulerFuntion) {
         throw new Error('Could not find scheduler function call');
       }
       const consoleRunTask = allThreadEntriesInTrace(parsedTrace)
-                                 .find(e => Trace.Types.Events.isConsoleRunTask(e) && e.ts > schedulerFuntion.ts);
+                                 .find(
+                                     e => Trace.Types.Events.isConsoleRunTask(e) && e.ts > schedulerFuntion.ts,
+                                 );
       assert.exists(consoleRunTask);
-      assert.strictEqual(parsedTrace.data.Initiators.eventToInitiator.get(consoleRunTask), schedulerFuntion);
-      assert.deepEqual(parsedTrace.data.Initiators.initiatorToEvents.get(schedulerFuntion), [consoleRunTask]);
+      assert.strictEqual(
+          parsedTrace.data.Initiators.eventToInitiator.get(consoleRunTask),
+          schedulerFuntion,
+      );
+      assert.deepEqual(
+          parsedTrace.data.Initiators.initiatorToEvents.get(schedulerFuntion),
+          [consoleRunTask],
+      );
     });
   });
 
   describe('for timer-initiators trace', () => {
     let traceEvents: readonly Trace.Types.Events.Event[];
-    let eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>;
-    let initiatorToEvents: Map<Trace.Types.Events.Event, Trace.Types.Events.Event[]>;
+    let eventToInitiator: WeakMap<Trace.Types.Events.Event, Trace.Types.Events.Event>;
+    let initiatorToEvents: WeakMap<Trace.Types.Events.Event, Trace.Types.Events.Event[]>;
 
     before(async function() {
       Trace.Handlers.ModelHandlers.Initiators.reset();
-      traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
+      traceEvents = await TraceLoader.rawEvents(
+          this,
+          'timer-initiators.json.gz',
+      );
       for (const event of traceEvents) {
         Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
       }
@@ -170,34 +233,50 @@ describe('InitiatorsHandler', () => {
       if (!timerFireEvent) {
         throw new Error('Could not find TimerFire event');
       }
-      const timerInstallEvent = traceEvents.find(Trace.Types.Events.isTimerInstall);
+      const timerInstallEvent = traceEvents.find(
+          Trace.Types.Events.isTimerInstall,
+      );
       if (!timerInstallEvent) {
         throw new Error('Could not find TimerInstall event');
       }
 
-      assert.strictEqual(eventToInitiator.get(timerFireEvent), timerInstallEvent);
-      assert.deepEqual(initiatorToEvents.get(timerInstallEvent), [timerFireEvent]);
+      assert.strictEqual(
+          eventToInitiator.get(timerFireEvent),
+          timerInstallEvent,
+      );
+      assert.deepEqual(initiatorToEvents.get(timerInstallEvent), [
+        timerFireEvent,
+      ]);
     });
 
     it('for a FireIdleCallback event sets the initiator to the RequestIdleCallback', () => {
-      const fireIdleCallbackEvent = traceEvents.find(Trace.Types.Events.isFireIdleCallback);
+      const fireIdleCallbackEvent = traceEvents.find(
+          Trace.Types.Events.isFireIdleCallback,
+      );
       if (!fireIdleCallbackEvent) {
         throw new Error('Could not find FireIdleCallback event');
       }
-      const requestIdleCallbackEvent = traceEvents.find(Trace.Types.Events.isRequestIdleCallback);
+      const requestIdleCallbackEvent = traceEvents.find(
+          Trace.Types.Events.isRequestIdleCallback,
+      );
       if (!requestIdleCallbackEvent) {
         throw new Error('Could not find RequestIdleCallback event');
       }
 
-      assert.strictEqual(eventToInitiator.get(fireIdleCallbackEvent), requestIdleCallbackEvent);
-      assert.deepEqual(initiatorToEvents.get(requestIdleCallbackEvent), [fireIdleCallbackEvent]);
+      assert.strictEqual(
+          eventToInitiator.get(fireIdleCallbackEvent),
+          requestIdleCallbackEvent,
+      );
+      assert.deepEqual(initiatorToEvents.get(requestIdleCallbackEvent), [
+        fireIdleCallbackEvent,
+      ]);
     });
   });
 
   describe('for web-sockets trace', () => {
     let traceEvents: readonly Trace.Types.Events.Event[];
-    let eventToInitiator: Map<Trace.Types.Events.Event, Trace.Types.Events.Event>;
-    let initiatorToEvents: Map<Trace.Types.Events.Event, Trace.Types.Events.Event[]>;
+    let eventToInitiator: WeakMap<Trace.Types.Events.Event, Trace.Types.Events.Event>;
+    let initiatorToEvents: WeakMap<Trace.Types.Events.Event, Trace.Types.Events.Event[]>;
 
     before(async function() {
       Trace.Handlers.ModelHandlers.Initiators.reset();
@@ -212,43 +291,65 @@ describe('InitiatorsHandler', () => {
     });
 
     it('for a WebSocketSendHandshakeRequest the initiator is the WebSocketCreate event', () => {
-      const webSocketCreateEvent = traceEvents.find(Trace.Types.Events.isWebSocketCreate);
+      const webSocketCreateEvent = traceEvents.find(
+          Trace.Types.Events.isWebSocketCreate,
+      );
       if (!webSocketCreateEvent) {
         throw new Error('Could not fnd WebSocketCreateEvent');
       }
 
-      const webSocketSendHandshakeRequestEvent = traceEvents.find(Trace.Types.Events.isWebSocketSendHandshakeRequest);
+      const webSocketSendHandshakeRequestEvent = traceEvents.find(
+          Trace.Types.Events.isWebSocketSendHandshakeRequest,
+      );
       if (!webSocketSendHandshakeRequestEvent) {
         throw new Error('Could not find WebSocketSendHandshakeRequest');
       }
 
-      assert.strictEqual(eventToInitiator.get(webSocketSendHandshakeRequestEvent), webSocketCreateEvent);
+      assert.strictEqual(
+          eventToInitiator.get(webSocketSendHandshakeRequestEvent),
+          webSocketCreateEvent,
+      );
     });
 
     it('for a WebSocketReceiveHandshakeResponse the initiator is the WebSocketCreate event', () => {
-      const webSocketCreateEvent = traceEvents.find(Trace.Types.Events.isWebSocketCreate);
+      const webSocketCreateEvent = traceEvents.find(
+          Trace.Types.Events.isWebSocketCreate,
+      );
       if (!webSocketCreateEvent) {
         throw new Error('Could not fnd WebSocketCreateEvent');
       }
 
-      const webSocketReceieveHandshakeResponseEvent =
-          traceEvents.find(Trace.Types.Events.isWebSocketReceiveHandshakeResponse);
+      const webSocketReceieveHandshakeResponseEvent = traceEvents.find(
+          Trace.Types.Events.isWebSocketReceiveHandshakeResponse,
+      );
       if (!webSocketReceieveHandshakeResponseEvent) {
-        throw new Error('Could not find WebSocketReceiveHandshakeResponse event');
+        throw new Error(
+            'Could not find WebSocketReceiveHandshakeResponse event',
+        );
       }
-      const webSocketSendHandshakeRequestEvent = traceEvents.find(Trace.Types.Events.isWebSocketSendHandshakeRequest);
+      const webSocketSendHandshakeRequestEvent = traceEvents.find(
+          Trace.Types.Events.isWebSocketSendHandshakeRequest,
+      );
       if (!webSocketSendHandshakeRequestEvent) {
         throw new Error('Could not find WebSocketSendHandshakeRequest');
       }
 
-      assert.strictEqual(eventToInitiator.get(webSocketReceieveHandshakeResponseEvent), webSocketCreateEvent);
-      assert.deepEqual(initiatorToEvents.get(webSocketCreateEvent),
-                       [webSocketSendHandshakeRequestEvent, webSocketReceieveHandshakeResponseEvent]);
+      assert.strictEqual(
+          eventToInitiator.get(webSocketReceieveHandshakeResponseEvent),
+          webSocketCreateEvent,
+      );
+      assert.deepEqual(initiatorToEvents.get(webSocketCreateEvent), [
+        webSocketSendHandshakeRequestEvent,
+        webSocketReceieveHandshakeResponseEvent,
+      ]);
     });
   });
 
   it('for a PostMessage Handler event the initiator is the PostMessage Dispatch event', async function() {
-    const traceEvents = await TraceLoader.rawEvents(this, 'postmessage-initiators.json.gz');
+    const traceEvents = await TraceLoader.rawEvents(
+        this,
+        'postmessage-initiators.json.gz',
+    );
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Flows.handleEvent(event);
       Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
@@ -257,36 +358,65 @@ describe('InitiatorsHandler', () => {
     await Trace.Handlers.ModelHandlers.Initiators.finalize();
     const {eventToInitiator, initiatorToEvents} = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const schedulePostMessageEvent = traceEvents.find(Trace.Types.Events.isSchedulePostMessage);
+    const schedulePostMessageEvent = traceEvents.find(
+        Trace.Types.Events.isSchedulePostMessage,
+    );
     if (!schedulePostMessageEvent) {
       throw new Error('Could not find schedulePostMessageEvent event');
     }
 
-    const handlePostMessageEvent = traceEvents.find(Trace.Types.Events.isHandlePostMessage);
+    const handlePostMessageEvent = traceEvents.find(
+        Trace.Types.Events.isHandlePostMessage,
+    );
     if (!handlePostMessageEvent) {
       throw new Error('Could not find handlePostMessageEvent event');
     }
 
-    assert.strictEqual(eventToInitiator.get(handlePostMessageEvent), schedulePostMessageEvent);
-    assert.deepEqual(initiatorToEvents.get(schedulePostMessageEvent), [handlePostMessageEvent]);
+    assert.strictEqual(
+        eventToInitiator.get(handlePostMessageEvent),
+        schedulePostMessageEvent,
+    );
+    assert.deepEqual(initiatorToEvents.get(schedulePostMessageEvent), [
+      handlePostMessageEvent,
+    ]);
   });
 
   it('pairs the postTask-scheduled tasks with their scheduling initiators', async function() {
-    const traceEvents = await TraceLoader.rawEvents(this, 'scheduler-post-task.json.gz');
+    const traceEvents = await TraceLoader.rawEvents(
+        this,
+        'scheduler-post-task.json.gz',
+    );
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
     await Trace.Handlers.ModelHandlers.Initiators.finalize();
     const {eventToInitiator, initiatorToEvents} = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const scheduleEvents = traceEvents.filter(Trace.Types.Events.isSchedulePostTaskCallback);
-    assert.isNotEmpty(scheduleEvents, 'Could not find SchedulePostTaskCallback events');
-    const runEvents = traceEvents.filter(Trace.Types.Events.isRunPostTaskCallback);
+    const scheduleEvents = traceEvents.filter(
+        Trace.Types.Events.isSchedulePostTaskCallback,
+    );
+    assert.isNotEmpty(
+        scheduleEvents,
+        'Could not find SchedulePostTaskCallback events',
+    );
+    const runEvents = traceEvents.filter(
+        Trace.Types.Events.isRunPostTaskCallback,
+    );
     assert.isNotEmpty(runEvents, 'Could not find RunPostTaskCallback events');
-    const cancelEvents = traceEvents.filter(Trace.Types.Events.isAbortPostTaskCallback);
-    assert.isNotEmpty(cancelEvents, 'Could not find AbortPostTaskCallback events');
+    const cancelEvents = traceEvents.filter(
+        Trace.Types.Events.isAbortPostTaskCallback,
+    );
+    assert.isNotEmpty(
+        cancelEvents,
+        'Could not find AbortPostTaskCallback events',
+    );
 
-    assert.containsAllKeys(initiatorToEvents, scheduleEvents, 'Not all schedule events in initiators');
+    for (const scheduleEvent of scheduleEvents) {
+      assert.isTrue(
+          initiatorToEvents.has(scheduleEvent),
+          'Not all schedule events in initiators',
+      );
+    }
 
     // All end events have a SchedulePostTaskCallback initiator.
     for (const endEvent of [...runEvents, ...cancelEvents]) {
@@ -305,9 +435,12 @@ describe('InitiatorsHandler', () => {
         return false;
       }
 
-      return endEvents.some(Trace.Types.Events.isRunPostTaskCallback) &&
-          endEvents.some(Trace.Types.Events.isAbortPostTaskCallback);
+      return (endEvents.some(Trace.Types.Events.isRunPostTaskCallback) &&
+              endEvents.some(Trace.Types.Events.isAbortPostTaskCallback));
     });
-    assert(doubleEvents, 'initiator with both run and cancel initiated events not found');
+    assert(
+        doubleEvents,
+        'initiator with both run and cancel initiated events not found',
+    );
   });
 });

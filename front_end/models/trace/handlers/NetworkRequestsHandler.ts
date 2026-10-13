@@ -61,7 +61,7 @@ interface NetworkRequestData {
    * This is because backend trace events have some bugs which means the initiators are not always accurate.
    * See crrev.com/c/7032169 for context.
    */
-  incompleteInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
+  incompleteInitiator: WeakMap<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
   webSocket: WebSocketTraceData[];
   entityMappings: HandlerHelpers.EntityMappings;
   linkPreconnectEvents: Types.Events.LinkPreconnect[];
@@ -77,7 +77,7 @@ let requestsByTime: Types.Events.SyntheticNetworkRequest[] = [];
 let requestIdsByURL = new Map<string, string[]>();
 
 let networkRequestEventByInitiatorUrl = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
-let eventToInitiatorMap = new Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>();
+let eventToInitiatorMap = new WeakMap<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>();
 
 /**
  * These are to store ThirdParty data relationships between entities and events. To reduce iterating through data
@@ -129,7 +129,7 @@ export function reset(): void {
   requestMap = new Map();
   requestsByTime = [];
   networkRequestEventByInitiatorUrl = new Map();
-  eventToInitiatorMap = new Map();
+  eventToInitiatorMap = new WeakMap();
   webSocketData = new Map();
   requestIdsByURL = new Map();
   entityMappings = {

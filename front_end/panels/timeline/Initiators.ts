@@ -104,7 +104,7 @@ function findInitiatorDataPredecessors(
 
 function findInitiatorDataDirectSuccessors(
     selectedEvent: Trace.Types.Events.Event,
-    initiatorToEvents: Map<Trace.Types.Events.Event, Trace.Types.Events.Event[]>,
+    initiatorToEvents: WeakMap<Trace.Types.Events.Event, Trace.Types.Events.Event[]>,
     ): readonly InitiatorData[] {
   const initiatorsData: InitiatorData[] = [];
 

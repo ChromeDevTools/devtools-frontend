@@ -27,7 +27,7 @@ function addMetaCharsetCheckEvent(
     disposition: Trace.Types.Events.MetaCharsetDisposition,
     ): void {
   const eventsByNavigation = data.PageLoadMetrics.metaCharsetCheckEventsByNavigation as
-      Map<Trace.Types.Events.NavigationStart, Trace.Types.Events.MetaCharsetCheck[]>;
+      WeakMap<Trace.Types.Events.NavigationStart, Trace.Types.Events.MetaCharsetCheck[]>;
   const events = eventsByNavigation.get(context.navigation) ?? [];
   events.push({
     name: Trace.Types.Events.Name.META_CHARSET_CHECK,

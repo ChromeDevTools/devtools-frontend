@@ -10,7 +10,7 @@ import type {HandlerName} from './types.js';
 
 let paintEvents: Types.Events.Paint[] = [];
 let snapshotEvents: Types.Events.DisplayItemListSnapshot[] = [];
-let paintToSnapshotMap = new Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>();
+let paintToSnapshotMap = new WeakMap<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>();
 
 let lastPaintForLayerId: Record<number, Types.Events.Paint> = {};
 
@@ -24,7 +24,7 @@ let relevantEvents: RelevantLayerTreeEvent[] = [];
 export function reset(): void {
   paintEvents = [];
   snapshotEvents = [];
-  paintToSnapshotMap = new Map();
+  paintToSnapshotMap = new WeakMap();
 
   lastPaintForLayerId = {};
   currentMainFrameLayerTreeId = null;
@@ -107,7 +107,7 @@ export async function finalize(): Promise<void> {
 export interface LayerTreeData {
   paints: Types.Events.Paint[];
   snapshots: Types.Events.DisplayItemListSnapshot[];
-  paintsToSnapshots: Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>;
+  paintsToSnapshots: WeakMap<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>;
 }
 
 export function data(): LayerTreeData {

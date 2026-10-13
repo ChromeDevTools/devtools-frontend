@@ -11,19 +11,20 @@ import {data as rendererHandlerData} from './RendererHandler.js';
 let schedulerToRunEntryPoints: Map<Types.Events.Event, Types.Events.Event[]> =
     new Map<Types.Events.Event, Types.Events.Event[]>();
 
-let taskScheduleForTaskRunEvent: Map<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled> =
-    new Map<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled>();
-let asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}> =
-    new Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}>();
+let taskScheduleForTaskRunEvent: WeakMap<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled> =
+    new WeakMap<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled>();
+let asyncCallToScheduler:
+    WeakMap<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}> =
+        new WeakMap<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}>();
 
-let runEntryPointToScheduler: Map<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}> =
-    new Map<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}>();
+let runEntryPointToScheduler: WeakMap<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}> =
+    new WeakMap<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}>();
 
 export function reset(): void {
   schedulerToRunEntryPoints = new Map();
-  asyncCallToScheduler = new Map();
-  taskScheduleForTaskRunEvent = new Map();
-  runEntryPointToScheduler = new Map();
+  asyncCallToScheduler = new WeakMap();
+  taskScheduleForTaskRunEvent = new WeakMap();
+  runEntryPointToScheduler = new WeakMap();
 }
 
 export function handleEvent(_: Types.Events.Event): void {

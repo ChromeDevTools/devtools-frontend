@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it, setup} from 'mocha';
 
+import {describe, type InspectedPage, it, setup} from '../../../test/api/mocha-interface.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Formatter from '../../models/formatter/formatter.js';
@@ -25,7 +25,7 @@ function createSourceMapUrl(builder: ScopesCodec.ScopeInfoBuilder, textMap: stri
 }
 
 async function setupScriptAndPause(
-    inspectedPage: API.InspectedPage,
+    inspectedPage: InspectedPage,
     debuggerModel: SDK.DebuggerModel.DebuggerModel,
     code: string,
     builder: ScopesCodec.ScopeInfoBuilder,

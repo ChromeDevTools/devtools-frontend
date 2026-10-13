@@ -77,6 +77,7 @@ devtools_api_test_module("api_tests") {
 
   ts_deps = [
     ":bundle",
+    "../../../test/api",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/formatter:bundle",

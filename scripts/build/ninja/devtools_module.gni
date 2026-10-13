@@ -46,30 +46,12 @@ template("devtools_module") {
   }
 }
 
+# API tests (`*.test.api.ts`). They import `describe`, `it` and `setup` from
+# test/api/mocha-interface.ts, so the target needs `test/api` in its `ts_deps`.
 template("devtools_api_test_module") {
   devtools_base_module(target_name) {
     testonly = true
-    forward_variables_from(invoker,
-                           "*",
-                           [
-                             "additional_type_definitions",
-                             "testonly",
-                             "ts_deps",
-                           ])
-    if (defined(invoker.additional_type_definitions)) {
-      additional_type_definitions = invoker.additional_type_definitions
-    } else {
-      additional_type_definitions = []
-    }
-    additional_type_definitions +=
-        [ devtools_location_prepend + "test/api/types.d.ts" ]
-
-    if (defined(invoker.ts_deps)) {
-      ts_deps = invoker.ts_deps
-    } else {
-      ts_deps = []
-    }
-    ts_deps += [ devtools_location_prepend + "test/api:test_interface_types" ]
+    forward_variables_from(invoker, "*", [ "testonly" ])
   }
 }
 

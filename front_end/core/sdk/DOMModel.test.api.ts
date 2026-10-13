@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
+import {describe, type InspectedPage, it} from '../../../test/api/mocha-interface.js';
 import {waitForTarget} from '../../testing/TargetHelpers.js';
 import type * as Common from '../common/common.js';
 
@@ -711,7 +711,7 @@ describe('DOMModel setOuterHTML and undo/redo edits', () => {
   /**
    * Returns the same signature as `modelChildSignature`, but computed from the live DOM of the inspected page.
    */
-  async function pageChildSignature(inspectedPage: API.InspectedPage, selector: string): Promise<string[]> {
+  async function pageChildSignature(inspectedPage: InspectedPage, selector: string): Promise<string[]> {
     return await inspectedPage.evaluate((selector: string) => {
       const element = document.querySelector(selector);
       if (!element) {

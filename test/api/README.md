@@ -6,9 +6,15 @@ This directory hosts the API tests for DevTools. These tests run DevTools SDK an
 
 ## Writing API tests
 
+`describe`, `it` and `setup` are not available as globals. Import them from
+[mocha-interface.ts](./mocha-interface.ts) and add `test/api` to the `ts_deps`
+of the `devtools_api_test_module` that contains the test.
+
 Each test receives a state object containing `{inspectedPage, universe}` as its first parameter:
 
 ```ts
+import {describe, it} from '../../../test/api/mocha-interface.js';
+
 describe('My API Test', () => {
   it('runs against inspected page', async ({inspectedPage, universe}) => {
     await inspectedPage.goToHtml('<h1>Hello World</h1>');

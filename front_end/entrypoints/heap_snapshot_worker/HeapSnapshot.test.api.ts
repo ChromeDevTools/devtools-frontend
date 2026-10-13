@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
+import {describe, it, type State} from '../../../test/api/mocha-interface.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
@@ -14,8 +14,7 @@ import * as HeapSnapshotWorker from './heap_snapshot_worker.js';
  * Takes a heap snapshot of the inspected page over CDP and parses it into a
  * `JSHeapSnapshot`, just like the heap snapshot worker does in production.
  */
-async function takeHeapSnapshot(universe: API.State['universe']):
-    Promise<HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot> {
+async function takeHeapSnapshot(universe: State['universe']): Promise<HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot> {
   const primaryTarget = universe.targetManager.primaryPageTarget();
   assert.isNotNull(primaryTarget);
 
@@ -49,7 +48,7 @@ interface ContextFixture {
   analysis: HeapSnapshotModel.HeapSnapshotModel.ContextAnalysisResult;
 }
 
-async function loadContextFixture({inspectedPage, universe}: API.State): Promise<ContextFixture> {
+async function loadContextFixture({inspectedPage, universe}: State): Promise<ContextFixture> {
   // The page loads every fixture as its own external script. The analysis keys
   // scopes by the script's resource URL, so inline scripts would all collapse
   // into the page URL and become indistinguishable.

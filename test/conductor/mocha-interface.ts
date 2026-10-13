@@ -85,9 +85,10 @@ export type SetupFunction<TSuiteSettings> = (settings: TSuiteSettings) => void;
  * A Mocha interface that is passed to Mocha as the `ui` option, together with
  * the functions to define tests for it.
  *
- * Test files import `describe`, `it` and `setup` from the module that created
- * the interface. Those functions forward to the definitions that are in effect
- * for the file or suite that Mocha is currently loading.
+ * The interface does not install any globals. Test files import `describe`,
+ * `it` and `setup` from the module that created the interface instead. Those
+ * functions forward to the definitions that are in effect for the file or
+ * suite that Mocha is currently loading.
  */
 export interface MochaInterface<TState, TSuiteSettings> {
   (rootSuite: Mocha.Suite): void;
@@ -145,13 +146,15 @@ export function createMochaInterface<
           if (mocha.options.delay) {
             context.run = defaultImplementation.runWithSuite(rootSuite);
           }
-          // The definitions are still installed on the Mocha `context` (the
-          // global object) for the tests that don't import them yet.
-          mochaGlobals = context as unknown as CustomMochaGlobals<TState, TSuiteSettings>;
-          mochaGlobals.describe = customDescribe(
-              defaultImplementation.suite,
-              file,
-          );
+          // The definitions are deliberately not installed on the Mocha
+          // `context` (the global object), so that test files have to import
+          // them explicitly.
+          mochaGlobals = {
+            describe: customDescribe(
+                defaultImplementation.suite,
+                file,
+                ),
+          };
         },
     );
 

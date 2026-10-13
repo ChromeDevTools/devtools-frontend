@@ -5,19 +5,39 @@
 import type * as Mocha from 'mocha';
 import type * as puppeteer from 'puppeteer-core';
 
+import type * as Foundation from '../../front_end/foundation/foundation.js';
 import {deinitializeGlobalLocaleVars, initializeGlobalLocaleVars} from '../../front_end/testing/LocaleHelpers.js';
+import type {InspectedPage} from '../conductor/inspected_page.js';
 import type {TestStateProvider} from '../conductor/mocha-interface-helpers.js';
 import {StateProvider} from '../e2e/conductor/state-provider.js';
-import {type InspectedPage, setupInspectedPage} from '../e2e/shared/InspectedPage.js';
+import {type InspectedPage as E2EInspectedPage, setupInspectedPage} from '../e2e/shared/InspectedPage.js';
 
 import {createTargetUniverse} from './TargetUniverse.js';
 
-export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteSettings> {
-  static instance: ApiStateProvider = new ApiStateProvider();
-  #suiteToSettingsMap = new WeakMap<Mocha.Suite, API.SuiteSettings>();
-  #stateToCleanupMap = new WeakMap<API.State, () => void>();
+export type {InspectedPage};
 
-  registerSuiteSettings(suite: Mocha.Suite, suiteSettings: API.SuiteSettings): void {
+/**
+ * Settings that a suite can register via `setup()`.
+ */
+export interface SuiteSettings {
+  creationOptions?: Partial<Foundation.Universe.CreationOptions>;
+  targetUrl?: string;
+}
+
+/**
+ * The state that API tests receive as the argument of their test body.
+ */
+export interface State {
+  inspectedPage: InspectedPage;
+  universe: Foundation.Universe.Universe;
+}
+
+export class ApiStateProvider implements TestStateProvider<State, SuiteSettings> {
+  static instance: ApiStateProvider = new ApiStateProvider();
+  #suiteToSettingsMap = new WeakMap<Mocha.Suite, SuiteSettings>();
+  #stateToCleanupMap = new WeakMap<State, () => void>();
+
+  registerSuiteSettings(suite: Mocha.Suite, suiteSettings: SuiteSettings): void {
     this.#suiteToSettingsMap.set(suite, suiteSettings);
   }
 
@@ -31,15 +51,15 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     }
   }
 
-  #getSettings(suite: Mocha.Suite): API.SuiteSettings|undefined {
+  #getSettings(suite: Mocha.Suite): SuiteSettings|undefined {
     return this.#suiteToSettingsMap.get(suite);
   }
 
-  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number): Promise<InspectedPage> {
+  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number): Promise<E2EInspectedPage> {
     return await setupInspectedPage(context, serverPort);
   }
 
-  async createState(suite: Mocha.Suite): Promise<API.State> {
+  async createState(suite: Mocha.Suite): Promise<State> {
     await this.prepareSuite(suite);
     const browserWrapper = StateProvider.instance.browserForSuite(suite);
     if (!browserWrapper || !browserWrapper.connected) {
@@ -58,7 +78,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     await initializeGlobalLocaleVars();
     const targetUniverse = await createTargetUniverse(session, settings?.creationOptions);
 
-    const state: API.State = {
+    const state: State = {
       inspectedPage,
       universe: targetUniverse.universe,
     };
@@ -66,7 +86,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     return state;
   }
 
-  async cleanupState(state: API.State): Promise<void> {
+  async cleanupState(state: State): Promise<void> {
     try {
       const cleanup = this.#stateToCleanupMap.get(state);
       this.#stateToCleanupMap.delete(state);

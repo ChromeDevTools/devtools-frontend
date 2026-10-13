@@ -37,7 +37,8 @@ Use API tests for integration tests that verify business logic requiring more co
   - Tests that require extensive CDP mock setup.
   - Verifying the "foundational layer" of DevTools models against a real browser/web page.
 - **Location:** Defined in `front_end/` with `.test.api.ts` extension (e.g. `Universe.test.api.ts`).
-- **BUILD.gn**: test file should be added to `devtools_api_test_module("api_tests")` target in the corresponding `BUILD.gn` file.
+- **Test functions:** import `describe`, `it` and `setup` from `test/api/mocha-interface.ts`. They are not available as globals.
+- **BUILD.gn**: test file should be added to `devtools_api_test_module("api_tests")` target in the corresponding `BUILD.gn` file, which needs `test/api` in its `ts_deps`.
 
 ---
 

@@ -343,7 +343,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     }
   }
 
-  #resolveFrameTarget(initiator: PageResourceLoadInitiator, hasExplicitTarget: boolean): {
+  #resolveFrameTarget(initiator: PageResourceLoadInitiator): {
     frameTarget: Target|null,
     frameId: Protocol.Page.FrameId|null,
     initiatorFrameId: Protocol.Page.FrameId|null,
@@ -367,6 +367,14 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       candidateFrameId = parentFrameId;
     }
 
+    if (frameTarget && frameTarget !== initiator.target && !candidateFrameId) {
+      // The initiator is a non-frame target (e.g. a service worker or a shared worker) that is not
+      // owned by any single frame. Don't attribute the load to the page's main frame, as the browser
+      // would then issue the request with the main frame's origin and credentials. Load through the
+      // initiator's own target instead, where the browser attributes the request to the worker's origin.
+      return {frameTarget: initiator.target, frameId: null, initiatorFrameId: null, usedFallbackMainFrame: false};
+    }
+
     // Keep candidateFrameId only if ResourceTreeModel has not populated frames yet
     // (mainFrame is null) or if candidateFrameId still exists in the active frame tree.
     let validFrameId: Protocol.Page.FrameId|null = null;
@@ -376,19 +384,11 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       }
     }
 
-    // Walking up from a worker target without parentFrameId (such as a ServiceWorker
-    // or SharedWorker) to its parent page target is the normal worker loading path,
-    // not a missing-frame fallback.
-    let walkedUpFromWorker = false;
-    if (hasExplicitTarget && frameTarget !== initiator.target && !candidateFrameId) {
-      walkedUpFromWorker = true;
-    }
-
     // Track whether we had to fall back to the main frame because the initiator's
     // frame was missing or detached, so dispatchLoad can verify same-origin before
     // issuing a network load in the main frame's context.
     let usedFallbackMainFrame = false;
-    if (!validFrameId && mainFrameId && !walkedUpFromWorker) {
+    if (!validFrameId && mainFrameId) {
       usedFallbackMainFrame = true;
     }
 
@@ -462,8 +462,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       // directive is present. A null/error response keeps the guard armed so that a
       // detached-frame or protocol-error path cannot fall through to loadFromHostBindings.
       let mustEnforceCSP = isHttp;
-      const {frameTarget, frameId, initiatorFrameId, usedFallbackMainFrame} =
-          this.#resolveFrameTarget(initiator, hasExplicitTarget);
+      const {frameTarget, frameId, initiatorFrameId, usedFallbackMainFrame} = this.#resolveFrameTarget(initiator);
       // Do not execute network loads under mainFrame.id (which uses the main frame's origin,
       // cookies, and CSP) if a detached frame's initiatorUrl is cross-origin with the main frame.
       if (usedFallbackMainFrame && !this.#isInitiatorUrlSameOriginWithMainFrame(initiator, frameTarget)) {

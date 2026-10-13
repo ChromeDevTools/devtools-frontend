@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 
 import type * as Protocol from '../../generated/protocol.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';

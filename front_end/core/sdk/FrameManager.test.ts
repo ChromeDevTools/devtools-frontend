@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 
 import type * as Protocol from '../../generated/protocol.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';

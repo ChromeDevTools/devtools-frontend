@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {after, describe, it} from 'mocha';
 
 import * as i18n from './i18n.js';
 

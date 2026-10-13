@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {beforeEach, it} from 'mocha';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import type * as FormatterActions from '../formatter_actions/formatter_actions.js';
 

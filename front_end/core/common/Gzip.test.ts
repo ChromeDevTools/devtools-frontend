@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import * as Common from './common.js';
 

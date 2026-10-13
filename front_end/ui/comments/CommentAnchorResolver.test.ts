@@ -404,6 +404,24 @@ describeWithEnvironment('CommentAnchorResolver', () => {
 
       assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(link));
     });
+
+    it('excludes elements inside a Dialog (e.g. Settings or Command Menu across shadow DOM) from commenting', () => {
+      const dialog = document.createElement('div');
+      dialog.setAttribute('jslog', 'Dialog; context: settings; track: resize, keydown: Escape');
+
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({mode: 'open'});
+      const treeItem = document.createElement('div');
+      treeItem.setAttribute('jslog', 'TreeItem; context: setting-item');
+      treeItem.textContent = 'Enable setting';
+      shadow.appendChild(treeItem);
+      dialog.appendChild(host);
+      container.appendChild(dialog);
+
+      assert.isTrue(Comments.CommentAnchorResolver.hasDisallowedCommentAncestor(treeItem));
+      assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(treeItem));
+      assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(dialog));
+    });
   });
 
   describe('resolveCommentAnchor', () => {

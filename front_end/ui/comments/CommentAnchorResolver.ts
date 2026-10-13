@@ -21,6 +21,7 @@ const DISALLOWED_COMMENT_TARGETS = new Set<number>([
   VisualLogging.VisualElements.Resizer,
   VisualLogging.VisualElements.Menu,
   VisualLogging.VisualElements.Popover,
+  VisualLogging.VisualElements.Dialog,
   // Minor controls and toolbars
   VisualLogging.VisualElements.Link,
   VisualLogging.VisualElements.Section,
@@ -40,6 +41,7 @@ const DISALLOWED_COMMENT_ANCESTORS = new Set<number>([
   VisualLogging.VisualElements.Toolbar,
   VisualLogging.VisualElements.Menu,
   VisualLogging.VisualElements.Popover,
+  VisualLogging.VisualElements.Dialog,
   VisualLogging.VisualElements.PanelTabHeader,
 ]);
 

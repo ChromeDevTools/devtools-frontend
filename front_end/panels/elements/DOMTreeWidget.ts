@@ -98,82 +98,83 @@ export type View = (input: ViewInput, output: undefined, target: HTMLElement) =>
 export {domTreeWidgetStyles};
 
 interface ViewInput {
-  domTreeWidget?: DOMTreeWidget;
   rootDOMNode: SDK.DOMModel.DOMNode|null;
   omitRootDOMNode: boolean;
   selectEnabled: boolean;
   hideGutter: boolean;
   maxTreeDepth?: number;
-  showComments?: boolean;
-  showAIButton?: boolean;
-  disableEdits?: boolean;
-  expandRoot?: boolean;
+  showComments: boolean;
+  showAIButton: boolean;
+  disableEdits: boolean;
   maxRowsShown?: number;
   wrap: boolean;
   showSelectionOnKeyboardFocus: boolean;
   deindentSingleNode: boolean;
   currentHighlightedNode: SDK.DOMModel.DOMNode|null;
-  hoveredNode?: SDK.DOMModel.DOMNode|null;
-  hoveredClosingTag?: boolean;
-  searchMatchNode?: SDK.DOMModel.DOMNode|null;
-  searchMatchQuery?: string|null;
+  hoveredNode: SDK.DOMModel.DOMNode|null;
+  hoveredClosingTag: boolean;
+  searchMatchNode: SDK.DOMModel.DOMNode|null;
+  searchMatchQuery: string|null;
 
   selectedNode: SDK.DOMModel.DOMNode|null;
-  selectedClosingTag?: boolean;
+  selectedClosingTag: boolean;
 
-  onSelect?: (node: SDK.DOMModel.DOMNode, isClosingTag?: boolean, selectedByUser?: boolean) => void;
-  onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
-  onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
-  onClearMaxRows?: () => void;
-  onHoverNode?: (node: SDK.DOMModel.DOMNode|null, showInfo?: boolean, isClosingTag?: boolean) => void;
-  onLeave?: () => void;
-  onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
-  onKeyDown?: (event: KeyboardEvent) => void;
-  isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
-  isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
-  isNodeInClipboard?: (node: SDK.DOMModel.DOMNode) => boolean;
-  onCopyOrCut?: (isCut: boolean, event: Event) => void;
-  onPaste?: (event: Event) => void;
-  onSelectNodeAfterEdit?: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
-                           moveDirection?: string) => void;
-  nodeToEdit?: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null;
-  onInitialEditCompleted?: () => void;
-  attributeToHighlight?: {node: SDK.DOMModel.DOMNode, attribute: string}|null;
-  onAttributeHighlighted?: () => void;
-  nodesWithDirtyAdorners?: Set<SDK.DOMModel.DOMNode>;
-  nodeAdornerVersions?: WeakMap<SDK.DOMModel.DOMNode, number>;
-  onDirtyAdornersUpdated?: () => void;
-  forceOpenPopovers?: WeakSet<SDK.DOMModel.DOMNode>;
-  onPopoverAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
-  forceOpenInterests?: WeakSet<SDK.DOMModel.DOMNode>;
-  onInterestAdornerToggled?: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
-  multilineEditingNode?: SDK.DOMModel.DOMNode|null;
-  dragOverNode?: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null;
-  isValidDragSource?: (node: SDK.DOMModel.DOMNode) => boolean;
-  onDragStart?: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) => boolean;
-  onDragOver?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => boolean;
-  onDragLeave?: (event: DragEvent) => void;
-  onDrop?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => void;
-  onDragEnd?: (event: DragEvent) => void;
-  getTopLayerShortcuts?: (doc: SDK.DOMModel.DOMDocument) => SDK.DOMModel.DOMNodeShortcut[];
-  isTopLayerExpanded?: (doc: SDK.DOMModel.DOMDocument) => boolean;
-  onToggleTopLayerExpanded?: (doc: SDK.DOMModel.DOMDocument, expanded: boolean) => void;
-  onSelectTopLayerContainer?: (doc: SDK.DOMModel.DOMDocument) => void;
-  isTopLayerShortcutExpanded?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => boolean;
-  onToggleTopLayerShortcutExpanded?: (shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean) => void;
-  selectedTopLayerShortcut?: SDK.DOMModel.DOMNodeShortcut|null;
-  onSelectTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
-  onRevealTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
-  isAdoptedStyleSheetsExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
-  onToggleAdoptedStyleSheetsExpanded?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
-  onSelectAdoptedStyleSheets?: (node: SDK.DOMModel.DOMNode) => void;
-  isAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => boolean;
-  onToggleAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) => void;
-  selectedAdoptedStyleSheet?: SDK.DOMModel.AdoptedStyleSheet|null;
-  onSelectAdoptedStyleSheet?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => void;
-  expandedChildrenLimit?: (node: SDK.DOMModel.DOMNode) => number;
-  onExpandAllChildren?: (node: SDK.DOMModel.DOMNode) => void;
-  updateRecordForNode?: (node: SDK.DOMModel.DOMNode) => Elements.ElementUpdateRecord.ElementUpdateRecord | null;
+  onSelect: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, selectedByUser: boolean) => void;
+  onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+  onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
+  onClearMaxRows: () => void;
+  onHoverNode: (node: SDK.DOMModel.DOMNode|null, showInfo: boolean, isClosingTag: boolean) => void;
+  onLeave: () => void;
+  onToggleHideElement: (node: SDK.DOMModel.DOMNode) => Promise<void>;
+  onKeyDown: (event: KeyboardEvent) => void;
+  isToggledToHidden: (node: SDK.DOMModel.DOMNode) => boolean;
+  isNodeExpanded: (node: SDK.DOMModel.DOMNode) => boolean;
+  isNodeInClipboard: (node: SDK.DOMModel.DOMNode) => boolean;
+  onCopyOrCut: (isCut: boolean, event: Event) => void;
+  onPaste: (event: Event) => void;
+  onSelectNodeAfterEdit: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
+                          moveDirection?: string) => void;
+  nodeToEdit: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null;
+  onInitialEditCompleted: () => void;
+  attributeToHighlight: {node: SDK.DOMModel.DOMNode, attribute: string}|null;
+  onAttributeHighlighted: () => void;
+  nodesWithDirtyAdorners: Set<SDK.DOMModel.DOMNode>;
+  nodeAdornerVersions: WeakMap<SDK.DOMModel.DOMNode, number>;
+  onDirtyAdornersUpdated: () => void;
+  forceOpenPopovers: WeakSet<SDK.DOMModel.DOMNode>;
+  onPopoverAdornerToggled: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
+  forceOpenInterests: WeakSet<SDK.DOMModel.DOMNode>;
+  onInterestAdornerToggled: (node: SDK.DOMModel.DOMNode, active: boolean) => void;
+  multilineEditingNode: SDK.DOMModel.DOMNode|null;
+  onSetMultilineEditing: (editing: MultilineEditorController|null, node: SDK.DOMModel.DOMNode) => void;
+  onRevealInTopLayer: (node: SDK.DOMModel.DOMNode) => void;
+  visibleWidth: () => number;
+  dragOverNode: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null;
+  isValidDragSource: (node: SDK.DOMModel.DOMNode) => boolean;
+  onDragStart: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) => boolean;
+  onDragOver: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => boolean;
+  onDragLeave: (event: DragEvent) => void;
+  onDrop: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => void;
+  onDragEnd: (event: DragEvent) => void;
+  getTopLayerShortcuts: (doc: SDK.DOMModel.DOMDocument) => SDK.DOMModel.DOMNodeShortcut[];
+  isTopLayerExpanded: (doc: SDK.DOMModel.DOMDocument) => boolean;
+  onToggleTopLayerExpanded: (doc: SDK.DOMModel.DOMDocument, expanded: boolean) => void;
+  onSelectTopLayerContainer: (doc: SDK.DOMModel.DOMDocument) => void;
+  isTopLayerShortcutExpanded: (shortcut: SDK.DOMModel.DOMNodeShortcut) => boolean;
+  onToggleTopLayerShortcutExpanded: (shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean) => void;
+  selectedTopLayerShortcut: SDK.DOMModel.DOMNodeShortcut|null;
+  onSelectTopLayerShortcut: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
+  onRevealTopLayerShortcut: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
+  isAdoptedStyleSheetsExpanded: (node: SDK.DOMModel.DOMNode) => boolean;
+  onToggleAdoptedStyleSheetsExpanded: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+  onSelectAdoptedStyleSheets: (node: SDK.DOMModel.DOMNode) => void;
+  isAdoptedStyleSheetExpanded: (sheet: SDK.DOMModel.AdoptedStyleSheet) => boolean;
+  onToggleAdoptedStyleSheetExpanded: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) => void;
+  selectedAdoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet|null;
+  onSelectAdoptedStyleSheet: (sheet: SDK.DOMModel.AdoptedStyleSheet) => void;
+  expandedChildrenLimit: (node: SDK.DOMModel.DOMNode) => number;
+  onExpandAllChildren: (node: SDK.DOMModel.DOMNode) => void;
+  updateRecordForNode: (node: SDK.DOMModel.DOMNode) => Elements.ElementUpdateRecord.ElementUpdateRecord | null;
 }
 
 function isMaxDepthReached(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOMModel.DOMNode|null, maxTreeDepth?: number,
@@ -196,9 +197,11 @@ function isMaxDepthReached(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOMModel
   return depth >= maxTreeDepth;
 }
 
-function nodeHasVisibleChildren(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOMModel.DOMNode|null = null,
-                                maxTreeDepth?: number, omitRootDOMNode?: boolean): boolean {
-  if (isMaxDepthReached(node, rootDOMNode, maxTreeDepth, omitRootDOMNode)) {
+/** The settings that determine which nodes the tree shows. Both the view input and the presenter satisfy it. */
+type TreeOptions = Pick<ViewInput, 'rootDOMNode'|'maxTreeDepth'|'omitRootDOMNode'|'showComments'>;
+
+function nodeHasVisibleChildren(node: SDK.DOMModel.DOMNode, options: TreeOptions): boolean {
+  if (isMaxDepthReached(node, options.rootDOMNode, options.maxTreeDepth, options.omitRootDOMNode)) {
     return false;
   }
   if (node.isIframe() || node.contentDocument() || node.templateContent() ||
@@ -214,7 +217,19 @@ function nodeNeedsClosingTag(node: SDK.DOMModel.DOMNode, hasChildren: boolean): 
       !ForbiddenClosingTagElements.has(node.nodeName().toLowerCase()) && !node.pseudoType();
 }
 
-function getVisibleChildren(node: SDK.DOMModel.DOMNode, showComments = true): SDK.DOMModel.DOMNode[] {
+/** Children of the document element (e.g. `<html>`) are always shown expanded. */
+function isNotCollapsible(node: SDK.DOMModel.DOMNode): boolean {
+  return node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE &&
+      !node.parentNode.parentNode;
+}
+
+function isBeingEditedAsHTML(state: Pick<ViewInput, 'multilineEditingNode'|'nodeToEdit'>,
+                             node: SDK.DOMModel.DOMNode): boolean {
+  return state.multilineEditingNode === node ||
+      (state.nodeToEdit?.node === node && Boolean(state.nodeToEdit.isEditAsHTML));
+}
+
+function getVisibleChildren(node: SDK.DOMModel.DOMNode, {showComments}: TreeOptions): SDK.DOMModel.DOMNode[] {
   const children: SDK.DOMModel.DOMNode[] = [];
   children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
 
@@ -311,6 +326,18 @@ function findVisibleSibling(node: SDK.DOMModel.DOMNode, visibleChildren: SDK.DOM
   return null;
 }
 
+/** How a node is laid out in the tree: whether it has children, is expanded, and which children are shown. */
+interface NodeShape {
+  isEditingAsHTML: boolean;
+  hasChildren: boolean;
+  isCollapsible: boolean;
+  isExpanded: boolean;
+  /** The children that are rendered, i.e. the visible ones up to the node's children limit. */
+  children: SDK.DOMModel.DOMNode[];
+  remainingChildrenCount: number;
+  needsClosingTag: boolean;
+}
+
 function computeLeftIndent(depth: number, isExpandable: boolean): number {
   return 12 * (depth - 1) + (isExpandable ? 1 : 12);
 }
@@ -321,8 +348,8 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   const rootDOMNode = input.rootDOMNode;
   if (rootDOMNode) {
     if (input.omitRootDOMNode) {
-      allRootNodes = getVisibleChildren(rootDOMNode, input.showComments ?? true);
-      const rootLimit = input.expandedChildrenLimit ? input.expandedChildrenLimit(rootDOMNode) : InitialChildrenLimit;
+      allRootNodes = getVisibleChildren(rootDOMNode, input);
+      const rootLimit = input.expandedChildrenLimit(rootDOMNode);
       rootNodes = allRootNodes.slice(0, rootLimit);
     } else {
       rootNodes = [rootDOMNode];
@@ -340,21 +367,21 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
 
   const renderShortcut = (shortcut: SDK.DOMModel.DOMNodeShortcut, shortcutDepth: number): Lit.LitTemplate => {
     const hasShortcutChildren = shortcut.childShortcuts.length > 0;
-    const isShortcutExpanded = Boolean(input.isTopLayerShortcutExpanded?.(shortcut));
+    const isShortcutExpanded = input.isTopLayerShortcutExpanded(shortcut);
     const isShortcutSelected = input.selectedTopLayerShortcut === shortcut;
     let title = shortcut.nodeName.toLowerCase();
     if (shortcut.nodeType === Node.ELEMENT_NODE) {
       title = '<' + title + '>';
     }
     const onShortcutExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      input.onToggleTopLayerShortcutExpanded?.(shortcut, event.detail.expanded);
+      input.onToggleTopLayerShortcutExpanded(shortcut, event.detail.expanded);
     };
     const onShortcutSelect = (): void => {
-      input.onSelectTopLayerShortcut?.(shortcut);
+      input.onSelectTopLayerShortcut(shortcut);
     };
     const onReveal = (event: Event): void => {
       event.stopPropagation();
-      input.onRevealTopLayerShortcut?.(shortcut);
+      input.onRevealTopLayerShortcut(shortcut);
     };
     const onShortcutMouseMove = (event: MouseEvent): void => {
       event.stopPropagation();
@@ -406,16 +433,16 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
 
   const renderTopLayerContainer =
       (doc: SDK.DOMModel.DOMDocument, containerDepth: number): Lit.LitTemplate|typeof nothing => {
-        const shortcuts = input.getTopLayerShortcuts?.(doc) ?? [];
+        const shortcuts = input.getTopLayerShortcuts(doc);
         if (shortcuts.length === 0) {
           return nothing;
         }
-        const isTopLayerExpanded = Boolean(input.isTopLayerExpanded?.(doc));
+        const isTopLayerExpanded = input.isTopLayerExpanded(doc);
         const onTopLayerExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-          input.onToggleTopLayerExpanded?.(doc, event.detail.expanded);
+          input.onToggleTopLayerExpanded(doc, event.detail.expanded);
         };
         const onTopLayerSelect = (): void => {
-          input.onSelectTopLayerContainer?.(doc);
+          input.onSelectTopLayerContainer(doc);
         };
 
         // clang-format off
@@ -439,13 +466,13 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   const renderAdoptedStyleSheet = (sheet: SDK.DOMModel.AdoptedStyleSheet, depth: number): Lit.LitTemplate => {
     const header = sheet.cssModel.styleSheetHeaderForId(sheet.id);
     const linkText = header?.sourceURL;
-    const isExpanded = Boolean(input.isAdoptedStyleSheetExpanded?.(sheet));
+    const isExpanded = input.isAdoptedStyleSheetExpanded(sheet);
     const isSelected = input.selectedAdoptedStyleSheet === sheet;
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      input.onToggleAdoptedStyleSheetExpanded?.(sheet, event.detail.expanded);
+      input.onToggleAdoptedStyleSheetExpanded(sheet, event.detail.expanded);
     };
     const onSelect = (): void => {
-      input.onSelectAdoptedStyleSheet?.(sheet);
+      input.onSelectAdoptedStyleSheet(sheet);
     };
 
     // clang-format off
@@ -485,12 +512,12 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
     if (!sheets || sheets.length === 0) {
       return nothing;
     }
-    const isExpanded = Boolean(input.isAdoptedStyleSheetsExpanded?.(node));
+    const isExpanded = input.isAdoptedStyleSheetsExpanded(node);
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      input.onToggleAdoptedStyleSheetsExpanded?.(node, event.detail.expanded);
+      input.onToggleAdoptedStyleSheetsExpanded(node, event.detail.expanded);
     };
     const onSelect = (): void => {
-      input.onSelectAdoptedStyleSheets?.(node);
+      input.onSelectAdoptedStyleSheets(node);
     };
 
     // clang-format off
@@ -513,26 +540,34 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
     // clang-format on
   };
 
-  const isNodeExpanded = (node: SDK.DOMModel.DOMNode, isEditingAsHTML: boolean): boolean => {
-    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE &&
-        node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
-    const isCollapsible = !isEditingAsHTML && !isNotCollapsible;
-    return !isCollapsible ||
-        Boolean((input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
-                (input.isNodeExpanded ? input.isNodeExpanded(node) :
-                                        (input.expandRoot &&
-                                         (node === input.rootDOMNode ||
-                                          (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
+  const resolveNodeShape = (node: SDK.DOMModel.DOMNode): NodeShape => {
+    const editingAsHTML = isBeingEditedAsHTML(input, node);
+    const hasChildren = !editingAsHTML && nodeHasVisibleChildren(node, input);
+    const isCollapsible = !editingAsHTML && !isNotCollapsible(node);
+    const isExpanded = !isCollapsible ||
+        Boolean(input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
+        input.isNodeExpanded(node);
+    const allChildren = hasChildren && isExpanded ? getVisibleChildren(node, input) : [];
+    const children = allChildren.slice(0, input.expandedChildrenLimit(node));
+    return {
+      isEditingAsHTML: editingAsHTML,
+      hasChildren,
+      isCollapsible,
+      isExpanded,
+      children,
+      remainingChildrenCount: allChildren.length - children.length,
+      needsClosingTag: nodeNeedsClosingTag(node, hasChildren),
+    };
   };
 
   const countTopLayerRows = (doc: SDK.DOMModel.DOMDocument): number => {
-    const shortcuts = input.getTopLayerShortcuts?.(doc) ?? [];
+    const shortcuts = input.getTopLayerShortcuts(doc);
     if (shortcuts.length === 0) {
       return 0;
     }
     const countShortcutRows = (shortcut: SDK.DOMModel.DOMNodeShortcut): number => {
       let shortcutRows = 1;
-      if (shortcut.childShortcuts.length > 0 && input.isTopLayerShortcutExpanded?.(shortcut)) {
+      if (shortcut.childShortcuts.length > 0 && input.isTopLayerShortcutExpanded(shortcut)) {
         for (const child of shortcut.childShortcuts) {
           shortcutRows += countShortcutRows(child);
         }
@@ -540,7 +575,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
       return shortcutRows;
     };
     let rows = 1;
-    if (input.isTopLayerExpanded?.(doc)) {
+    if (input.isTopLayerExpanded(doc)) {
       for (const shortcut of shortcuts) {
         rows += countShortcutRows(shortcut);
       }
@@ -554,10 +589,10 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
       return 0;
     }
     let rows = 1;  // The "#adopted-style-sheets" container
-    if (input.isAdoptedStyleSheetsExpanded?.(node)) {
+    if (input.isAdoptedStyleSheetsExpanded(node)) {
       for (const sheet of sheets) {
         rows += 1;  // The sheet row
-        if (input.isAdoptedStyleSheetExpanded?.(sheet) && sheet.cssModel.styleSheetHeaderForId(sheet.id)) {
+        if (input.isAdoptedStyleSheetExpanded(sheet) && sheet.cssModel.styleSheetHeaderForId(sheet.id)) {
           rows += 1;  // The AdoptedStyleSheetContentsWidget row
         }
       }
@@ -567,25 +602,19 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
 
   const countVisibleRowsForNode = (node: SDK.DOMModel.DOMNode): number => {
     let rows = 1;
-    const isEditingAsHTML = input.multilineEditingNode === node ||
-        (input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML));
-    const hasChildren =
-        !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
-    if (hasChildren && isNodeExpanded(node, isEditingAsHTML)) {
+    const shape = resolveNodeShape(node);
+    if (shape.hasChildren && shape.isExpanded) {
       rows += countAdoptedStyleSheetsRows(node);
-      const allVisibleChildren = getVisibleChildren(node, input.showComments ?? true);
-      const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
-      const children = allVisibleChildren.slice(0, limit);
-      for (const child of children) {
+      for (const child of shape.children) {
         rows += countVisibleRowsForNode(child);
       }
-      if (allVisibleChildren.length > children.length) {
+      if (shape.remainingChildrenCount > 0) {
         rows += 1;
       }
       if (node instanceof SDK.DOMModel.DOMDocument) {
         rows += countTopLayerRows(node);
       }
-      if (nodeNeedsClosingTag(node, hasChildren)) {
+      if (shape.needsClosingTag) {
         rows += 1;
       }
     }
@@ -617,68 +646,48 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
     const isSelected = Boolean(input.selectEnabled) && isDOMNodeSelected;
     const isOpeningHovered =
         (input.currentHighlightedNode === node) || (input.hoveredNode === node && !input.hoveredClosingTag);
-    const isClosingHovered = input.hoveredNode === node && Boolean(input.hoveredClosingTag);
-    const isEditingAsHTML = input.multilineEditingNode === node ||
-        (input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML));
-    const hasChildren =
-        !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
-    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE &&
-        node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
-    const isCollapsible = !isEditingAsHTML && !isNotCollapsible;
-    const isExpanded = isNodeExpanded(node, isEditingAsHTML);
+    const isClosingHovered = input.hoveredNode === node && input.hoveredClosingTag;
+    const {isEditingAsHTML, hasChildren, isCollapsible, isExpanded, children, remainingChildrenCount, needsClosingTag} =
+        resolveNodeShape(node);
     const isExpandable = hasChildren && isCollapsible;
-    const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
-    const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
-    const children = allVisibleChildren.slice(0, limit);
-    const remainingChildrenCount = allVisibleChildren.length - children.length;
-    const needsClosingTag = nodeNeedsClosingTag(node, hasChildren);
-
-    const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
 
     const onSelect = (isClosingTag = false, selectedByUser = false): void => {
-      input.onSelect?.(node, isClosingTag, selectedByUser);
+      input.onSelect(node, isClosingTag, selectedByUser);
     };
 
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      if (isEditingAsHTML || !isCollapsible) {
+      if (!isCollapsible) {
         return;
       }
-      input.onExpand?.(node, event.detail.expanded);
+      input.onExpand(node, event.detail.expanded);
     };
 
     const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
     const isClosingTagDragOver = input.dragOverNode?.node === node && Boolean(input.dragOverNode.isClosingTag);
-    const isDraggable = !input.disableEdits && Boolean(input.isValidDragSource?.(node));
+    const isDraggable = !input.disableEdits && input.isValidDragSource(node);
 
     const classes = classMap({
       selected: isSelected && !input.selectedClosingTag,
       hovered: isOpeningHovered,
-      'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
+      'in-clipboard': input.isNodeInClipboard(node),
       'elements-drag-over': isDragOver,
       'always-parent': !isCollapsible && !isEditingAsHTML,
     });
 
-    const onOpeningMouseMove = (event: MouseEvent): void => {
+    // The opening and the closing tag are separate rows that report the
+    // same node with a different `isClosingTag`.
+    const onMouseMove = (isClosingTag: boolean) => (event: MouseEvent): void => {
       const currentTarget = event.currentTarget as Element | null;
       if (currentTarget && (event.target as Element).closest('li[role="treeitem"]') !== currentTarget) {
         return;
       }
       const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
-      input.onHoverNode?.(node, showInfo, /* isClosingTag= */ false);
-    };
-
-    const onClosingMouseMove = (event: MouseEvent): void => {
-      const currentTarget = event.currentTarget as Element | null;
-      if (currentTarget && (event.target as Element).closest('li[role="treeitem"]') !== currentTarget) {
-        return;
-      }
-      const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
-      input.onHoverNode?.(node, showInfo, /* isClosingTag= */ true);
+      input.onHoverNode(node, showInfo, isClosingTag);
     };
 
     const onContextMenu = (event: MouseEvent): void => {
       event.stopPropagation();
-      input.onContextMenu?.(node, event);
+      input.onContextMenu(node, event);
     };
 
     const onDragStart = (event: DragEvent): void => {
@@ -687,37 +696,27 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
       // Only use the row's own content, not the nested child rows.
       const textContent = currentTarget?.querySelector(':scope > devtools-widget')?.textContent ||
           currentTarget?.textContent || undefined;
-      input.onDragStart?.(node, event, textContent);
+      input.onDragStart(node, event, textContent);
     };
 
-    const onDragOver = (event: DragEvent): void => {
+    const onDragOver = (isClosingTag: boolean) => (event: DragEvent): void => {
       event.stopPropagation();
-      input.onDragOver?.(node, /* isClosingTag= */ false, event);
-    };
-
-    const onClosingTagDragOver = (event: DragEvent): void => {
-      event.stopPropagation();
-      input.onDragOver?.(node, /* isClosingTag= */ true, event);
+      input.onDragOver(node, isClosingTag, event);
     };
 
     const onDragLeave = (event: DragEvent): void => {
       event.stopPropagation();
-      input.onDragLeave?.(event);
+      input.onDragLeave(event);
     };
 
-    const onDrop = (event: DragEvent): void => {
+    const onDrop = (isClosingTag: boolean) => (event: DragEvent): void => {
       event.stopPropagation();
-      input.onDrop?.(node, /* isClosingTag= */ false, event);
-    };
-
-    const onClosingTagDrop = (event: DragEvent): void => {
-      event.stopPropagation();
-      input.onDrop?.(node, /* isClosingTag= */ true, event);
+      input.onDrop(node, isClosingTag, event);
     };
 
     const onDragEnd = (event: DragEvent): void => {
       event.stopPropagation();
-      input.onDragEnd?.(event);
+      input.onDragEnd(event);
     };
 
     // clang-format off
@@ -733,12 +732,12 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           draggable=${isDraggable ? 'true' : 'false'}
           @select=${on((event: UI.TreeOutline.TreeViewElement.SelectEvent) => onSelect(false, Boolean(event.detail?.selectedByUser)))}
           @expand=${on(onExpand)}
-          @mousemove=${on(onOpeningMouseMove)}
+          @mousemove=${on(onMouseMove(/* isClosingTag= */ false))}
           @contextmenu=${on(onContextMenu)}
           @dragstart=${on(onDragStart)}
-          @dragover=${on(onDragOver)}
+          @dragover=${on(onDragOver(/* isClosingTag= */ false))}
           @dragleave=${on(onDragLeave)}
-          @drop=${on(onDrop)}
+          @drop=${on(onDrop(/* isClosingTag= */ false))}
           @dragend=${on(onDragEnd)}
           jslog=${treeItemJslog(undefined, true)}>${UI.Widget.widget(DOMTreeElementWidget, {
           node,
@@ -749,38 +748,38 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
           selected: isSelected && !input.selectedClosingTag,
           isDOMNodeSelected,
           hovered: isOpeningHovered,
-          searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
+          searchQuery: input.searchMatchNode === node ? input.searchMatchQuery : null,
           computeLeftIndent: computeLeftIndent(depth, isExpandable),
-          disableEdits: input.disableEdits ?? false,
-          showAIButton: input.showAIButton ?? true,
+          disableEdits: input.disableEdits,
+          showAIButton: input.showAIButton,
           initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
           onInitialEditCompleted: input.onInitialEditCompleted,
           attributeToHighlight:
               input.attributeToHighlight?.node === node ? input.attributeToHighlight.attribute : null,
           onAttributeHighlighted: input.onAttributeHighlighted,
-          adornersUpdateVersion: input.nodeAdornerVersions?.get(node) ?? 0,
-          popoverAdornerActive: Boolean(input.forceOpenPopovers?.has(node)),
+          adornersUpdateVersion: input.nodeAdornerVersions.get(node) ?? 0,
+          popoverAdornerActive: input.forceOpenPopovers.has(node),
           onPopoverAdornerToggled: input.onPopoverAdornerToggled,
-          interestAdornerActive: Boolean(input.forceOpenInterests?.has(node)),
+          interestAdornerActive: input.forceOpenInterests.has(node),
           onInterestAdornerToggled: input.onInterestAdornerToggled,
-          expandNode: isCollapsible ? () => input.onExpand?.(node, true) : undefined,
-          revealInTopLayer: (n: SDK.DOMModel.DOMNode) => input.domTreeWidget?.revealInTopLayer(n),
-          setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
-          visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
-          selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, false, selectedByUser),
+          expandNode: isCollapsible ? () => input.onExpand(node, true) : undefined,
+          revealInTopLayer: input.onRevealInTopLayer,
+          setMultilineEditing: (multilineEditing, n) => input.onSetMultilineEditing(multilineEditing, n ?? node),
+          visibleWidth: input.visibleWidth,
+          selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect(n, false, Boolean(selectedByUser)),
           selectNodeAfterEdit: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null, moveDirection?: string) => {
-            input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
+            input.onSelectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
           },
           toggleHideElement: (n: SDK.DOMModel.DOMNode) => {
-            return input.onToggleHideElement?.(n) ?? Promise.resolve();
+            return input.onToggleHideElement(n) ?? Promise.resolve();
           },
-          isToggledToHidden: (n: SDK.DOMModel.DOMNode) => input.isToggledToHidden?.(n) ?? false,
+          isToggledToHidden: (n: SDK.DOMModel.DOMNode) => input.isToggledToHidden(n) ?? false,
           showContextMenu: (event: Event) => {
             if (event instanceof MouseEvent) {
-              input.onContextMenu?.(node, event);
+              input.onContextMenu(node, event);
             }
           },
-          updateRecord: input.updateRecordForNode?.(node) ?? null,
+          updateRecord: input.updateRecordForNode(node) ?? null,
         })}${hasChildren ? html`<ul role="group">
             ${isExpanded && !isEditingAsHTML ? html`
               ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing}
@@ -795,7 +794,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                       title=${i18nString(UIStrings.showAllNodesDMore, {PH1: remainingChildrenCount})}
                       @click=${on((event: Event) => {
                         event.stopPropagation();
-                        input.onExpandAllChildren?.(node);
+                        input.onExpandAllChildren(node);
                       })}>${i18nString(UIStrings.showAllNodesDMore, {PH1: remainingChildrenCount})}</devtools-button></li>
               ` : nothing}
               ${node.isInsertionPoint() ? node.distributedNodes().map(distributedNode => renderShortcut(distributedNode, depth + 1)) : nothing}
@@ -805,9 +804,9 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                     data-backend-node-id=${ifDefined(node.backendNodeId())}
                     data-target-id=${ifDefined(node.domModel().target().id())}
                     selectable=${input.selectEnabled ? 'true' : 'false'}
-                    ?selected=${isSelected && Boolean(input.selectedClosingTag)}
+                    ?selected=${isSelected && input.selectedClosingTag}
                     class=${classMap({
-                      selected: isSelected && Boolean(input.selectedClosingTag),
+                      selected: isSelected && input.selectedClosingTag,
                       hovered: isClosingHovered,
                       'elements-drag-over': isClosingTagDragOver,
                     })}
@@ -816,29 +815,29 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                     jslog=${treeItemJslog(undefined, true)}
                     @select=${on((event: UI.TreeOutline.TreeViewElement.SelectEvent) => onSelect(true, Boolean(event.detail?.selectedByUser)))}
                     @contextmenu=${on(onContextMenu)}
-                    @mousemove=${on(onClosingMouseMove)}
+                    @mousemove=${on(onMouseMove(/* isClosingTag= */ true))}
                     @dragstart=${on(onDragStart)}
-                    @dragover=${on(onClosingTagDragOver)}
+                    @dragover=${on(onDragOver(/* isClosingTag= */ true))}
                     @dragleave=${on(onDragLeave)}
-                    @drop=${on(onClosingTagDrop)}
+                    @drop=${on(onDrop(/* isClosingTag= */ true))}
                     @dragend=${on(onDragEnd)}>${UI.Widget.widget(DOMTreeElementWidget, {
                     node,
                     isClosingTag: true,
                     renderSelection: false,
                     expanded: false,
                     isExpandable: false,
-                    selected: isSelected && Boolean(input.selectedClosingTag),
+                    selected: isSelected && input.selectedClosingTag,
                     isDOMNodeSelected,
                     hovered: isClosingHovered,
                     computeLeftIndent: computeLeftIndent(depth + 1, false),
-                    disableEdits: input.disableEdits ?? false,
+                    disableEdits: input.disableEdits,
                     showAIButton: false,
                     showContextMenu: (event: Event) => {
                       if (event instanceof MouseEvent) {
-                        input.onContextMenu?.(node, event);
+                        input.onContextMenu(node, event);
                       }
                     },
-                    updateRecord: input.updateRecordForNode?.(node) ?? null,
+                    updateRecord: input.updateRecordForNode(node) ?? null,
                   })}</li>
               ` : nothing}
             ` : nothing}
@@ -848,8 +847,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   };
 
   const isSingleNode =
-      Boolean(input.deindentSingleNode && rootNodes.length === 1 &&
-              !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode));
+      Boolean(input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input));
   const disclosureClasses = classMap({
     'elements-disclosure': true,
     'single-node': isSingleNode,
@@ -875,9 +873,9 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
         @enter=${(event: Event) => event.preventDefault()}
         @keydown=${input.onKeyDown}
-        @clipboard-copy=${(event: Event) => input.onCopyOrCut?.(false, event)}
-        @clipboard-cut=${(event: Event) => input.onCopyOrCut?.(true, event)}
-        @clipboard-paste=${(event: Event) => input.onPaste?.(event)}
+        @clipboard-copy=${(event: Event) => input.onCopyOrCut(false, event)}
+        @clipboard-cut=${(event: Event) => input.onCopyOrCut(true, event)}
+        @clipboard-paste=${(event: Event) => input.onPaste(event)}
         @mouseleave=${input.onLeave}
         .template=${html`
           <style>${UI.inspectorCommonStyles}</style>
@@ -903,7 +901,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                     title=${i18nString(UIStrings.showAllNodesDMore, {PH1: remaining})}
                     @click=${on((event: Event) => {
                       event.stopPropagation();
-                      input.onExpandAllChildren?.(root);
+                      input.onExpandAllChildren(root);
                     })}>${i18nString(UIStrings.showAllNodesDMore, {PH1: remaining})}</devtools-button></li>
               `;
             })() : nothing}
@@ -924,8 +922,8 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
   `, target);
   // clang-format on
 
-  if (input.nodesWithDirtyAdorners && input.nodesWithDirtyAdorners.size > 0) {
-    input.onDirtyAdornersUpdated?.();
+  if (input.nodesWithDirtyAdorners.size > 0) {
+    input.onDirtyAdornersUpdated();
   }
 };
 
@@ -1012,9 +1010,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#expandedNodes.add(node);
     const expandChildren = (): void => {
       for (const child of node.children() ?? []) {
-        const isNotCollapsible = child.nodeType() === Node.ELEMENT_NODE &&
-            child.parentNode?.nodeType() === Node.DOCUMENT_NODE && !child.parentNode.parentNode;
-        if (isNotCollapsible || (this.#expandRoot && this.omitRootDOMNode)) {
+        if (isNotCollapsible(child) || (this.#expandRoot && this.omitRootDOMNode)) {
           this.setNodeExpanded(child, true);
         }
       }
@@ -1316,7 +1312,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #findNextNodeOnRemoval(node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
-    const visibleChildren = parent ? getVisibleChildren(parent, this.#showComments) : [];
+    const visibleChildren = parent ? getVisibleChildren(parent, this) : [];
     const sibling = findVisibleSibling(node, visibleChildren);
     if (sibling) {
       return sibling;
@@ -1447,8 +1443,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     this.#selectedAdoptedStyleSheet = null;
     if (node?.nodeType() === Node.TEXT_NODE && node.parentNode &&
-        (!nodeHasVisibleChildren(node.parentNode, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode) ||
-         !getVisibleChildren(node.parentNode, this.#showComments).includes(node))) {
+        (!nodeHasVisibleChildren(node.parentNode, this) || !getVisibleChildren(node.parentNode, this).includes(node))) {
       node = node.parentNode;
     }
     if (node) {
@@ -1468,7 +1463,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           });
         }
       }
-      if (isClosingTag && nodeHasVisibleChildren(node, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
+      if (isClosingTag && nodeHasVisibleChildren(node, this)) {
         this.#expandedNodes.add(node);
       }
     }
@@ -1488,7 +1483,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   /** Raises the children limit of `ancestor` if `child` is paginated away. */
   #ensureChildVisible(ancestor: SDK.DOMModel.DOMNode, child: SDK.DOMModel.DOMNode): void {
-    const childIndex = getVisibleChildren(ancestor, this.#showComments).indexOf(child);
+    const childIndex = getVisibleChildren(ancestor, this).indexOf(child);
     if (childIndex !== -1 && childIndex >= this.expandedChildrenLimit(ancestor)) {
       this.setExpandedChildrenLimit(ancestor, childIndex + 1);
     }
@@ -1546,12 +1541,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   isNodeExpanded(node: SDK.DOMModel.DOMNode): boolean {
-    const isNotCollapsible = node.nodeType() === Node.ELEMENT_NODE &&
-        node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode;
-    if (isNotCollapsible) {
-      return true;
-    }
-    return this.#expandedNodes.has(node);
+    return isNotCollapsible(node) || this.#expandedNodes.has(node);
   }
 
   expandedChildrenLimit(node: SDK.DOMModel.DOMNode): number {
@@ -1568,7 +1558,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   expandAllChildren(node: SDK.DOMModel.DOMNode): void {
     const currentLimit = this.expandedChildrenLimit(node);
-    const visibleChildren = getVisibleChildren(node, this.#showComments);
+    const visibleChildren = getVisibleChildren(node, this);
     this.setExpandedChildrenLimit(node, Math.max(visibleChildren.length, currentLimit + InitialChildrenLimit));
   }
 
@@ -1584,10 +1574,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           (n === node || n.childNodeCount() || n.isIframe() || n.nodeType() === Node.DOCUMENT_NODE)) {
         await n.getSubtree(100, true);
       }
-      if (nodeHasVisibleChildren(n, this.rootDOMNode, this.maxTreeDepth, this.omitRootDOMNode)) {
+      if (nodeHasVisibleChildren(n, this)) {
         this.#expandedNodes.add(n);
       }
-      const visibleChildren = getVisibleChildren(n, this.#showComments);
+      const visibleChildren = getVisibleChildren(n, this);
       if (visibleChildren.length) {
         if (visibleChildren.length > this.expandedChildrenLimit(n)) {
           this.setExpandedChildrenLimit(n, visibleChildren.length);
@@ -1601,7 +1591,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   collapseChildren(node: SDK.DOMModel.DOMNode): void {
     const collapse = (n: SDK.DOMModel.DOMNode): void => {
-      for (const child of getVisibleChildren(n, this.#showComments)) {
+      for (const child of getVisibleChildren(n, this)) {
         if (this.#expandedNodes.delete(child)) {
           collapse(child);
         }
@@ -1695,7 +1685,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         return fallback ?? this.#rootDOMNode;
       }
       if (parent.children() !== null || parent.childNodeCount() === 0 || parent.isIframe()) {
-        const visibleChildren = getVisibleChildren(parent, this.#showComments);
+        const visibleChildren = getVisibleChildren(parent, this);
         if (!visibleChildren.includes(current)) {
           const sibling = findVisibleSibling(current, visibleChildren);
           return this.#findValidSelectedNode(sibling ?? parent);
@@ -1708,12 +1698,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #hasClosingTag(node: SDK.DOMModel.DOMNode): boolean {
-    const isEditingAsHTML = this.#multilineEditingNode === node ||
-        (this.#nodeToEdit?.node === node && Boolean(this.#nodeToEdit.isEditAsHTML));
-    if (isEditingAsHTML || !this.isNodeExpanded(node)) {
+    const editingAsHTML =
+        isBeingEditedAsHTML({multilineEditingNode: this.#multilineEditingNode, nodeToEdit: this.#nodeToEdit}, node);
+    if (editingAsHTML || !this.isNodeExpanded(node)) {
       return false;
     }
-    const hasChildren = nodeHasVisibleChildren(node, this.#rootDOMNode, this.#maxTreeDepth, this.omitRootDOMNode);
+    const hasChildren = nodeHasVisibleChildren(node, this);
     return nodeNeedsClosingTag(node, hasChildren);
   }
 
@@ -1738,7 +1728,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#validateSelectedNode();
     const updatedNodes = [...this.#updateRecords.keys()];
     this.#view({
-      domTreeWidget: this,
       rootDOMNode: this.#rootDOMNode,
       omitRootDOMNode: this.omitRootDOMNode,
       selectEnabled: this.selectEnabled,
@@ -1747,7 +1736,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       showComments: this.#showComments,
       showAIButton: this.#showAIButton,
       disableEdits: this.#disableEdits,
-      expandRoot: this.#expandRoot,
       wrap: this.#wrap,
       maxRowsShown: this.#maxRows,
       onClearMaxRows: () => {
@@ -1843,6 +1831,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.performUpdate();
       },
       multilineEditingNode: this.#multilineEditingNode,
+      onSetMultilineEditing: (editing: MultilineEditorController|null, node: SDK.DOMModel.DOMNode) =>
+          this.setMultilineEditing(editing, node),
+      onRevealInTopLayer: (node: SDK.DOMModel.DOMNode) => this.revealInTopLayer(node),
+      visibleWidth: () => this.visibleWidth,
       dragOverNode: this.#dragOverNode,
       isValidDragSource: (node: SDK.DOMModel.DOMNode) => this.isValidDragSource(node),
       onDragStart: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) =>

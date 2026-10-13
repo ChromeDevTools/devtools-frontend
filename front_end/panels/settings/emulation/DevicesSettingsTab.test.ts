@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';

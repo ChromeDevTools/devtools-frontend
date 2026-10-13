@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';

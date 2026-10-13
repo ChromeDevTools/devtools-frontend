@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {after, before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as i18n from '../../core/i18n/i18n.js';

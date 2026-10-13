@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {before, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';

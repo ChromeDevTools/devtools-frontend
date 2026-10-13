@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {it} from 'mocha';
+
 import * as Host from '../../../core/host/host.js';
 import type * as Root from '../../../core/root/root.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';

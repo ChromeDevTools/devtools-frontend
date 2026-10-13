@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import type * as Common from '../../core/common/common.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';

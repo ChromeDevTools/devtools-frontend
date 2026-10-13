@@ -45,7 +45,6 @@ import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
@@ -92,10 +91,6 @@ const UIStrings = {
    * @description Tooltip text that appears when hovering over the terminate execution button in the Sources panel.
    */
   terminateCurrentJavascriptCall: 'Terminate current JavaScript call',
-  /**
-   * @description Text in Sources panel.
-   */
-  pauseOnCaughtExceptions: 'Pause on caught exceptions',
   /**
    * @description A context menu item in the Sources panel.
    */
@@ -194,9 +189,10 @@ export class SourcesPanel extends UI.Panel.Panel implements
   readonly #stepAction: UI.ActionRegistration.Action;
   readonly #toggleBreakpointsActiveAction: UI.ActionRegistration.Action;
   readonly #debugToolbar: UI.Toolbar.Toolbar;
-  readonly #debugToolbarDrawer: HTMLDivElement;
   readonly #debuggerPausedMessage: DebuggerPausedMessage;
   #overlayLoggables?: {debuggerPausedMessage: object, resumeButton: object, stepOverButton: object};
+  #isVertical = true;
+  #showSourcesViewInWrapper = false;
   #splitWidget: UI.SplitWidget.SplitWidget;
   #editorView: UI.SplitWidget.SplitWidget;
   #sourcesView: SourcesView;
@@ -205,8 +201,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
   #lastModificationTime: number;
   #paused?: boolean;
   #switchToPausedTargetTimeout?: number;
-  #tabbedLocationHeader?: Element|null;
   #extensionSidebarPanesContainer?: UI.View.ViewLocation;
+  #debuggerSidebarTabbedLocation: UI.View.TabbedViewLocation|null = null;
   #sidebarPaneView?: UI.Widget.VBox|UI.SplitWidget.SplitWidget;
   #lastPausedTarget: WeakRef<SDK.Target.Target>|null = null;
 
@@ -227,7 +223,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
         UI.ActionRegistry.ActionRegistry.instance().getAction('debugger.toggle-breakpoints-active');
 
     this.#debugToolbar = this.#createDebugToolbar();
-    this.#debugToolbarDrawer = this.#createDebugToolbarDrawer();
     this.#debuggerPausedMessage =
         new DebuggerPausedMessage(undefined, [SDK.EventBreakpointsModel.EventBreakpointsManager.instance()]);
 
@@ -264,19 +259,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     navigatorMenuButton.title = i18nString(UIStrings.moreOptions);
     tabbedPane.rightToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(navigatorMenuButton));
 
-    if (UI.ViewManager.ViewManager.instance().hasViewsForLocation('run-view-sidebar')) {
-      const navigatorSplitWidget =
-          new UI.SplitWidget.SplitWidget(false, true, 'source-panel-navigator-sidebar-split-view-state');
-      navigatorSplitWidget.setMainWidget(tabbedPane);
-      const runViewTabbedPane = UI.ViewManager.ViewManager.instance()
-                                    .createTabbedLocation(this.#revealNavigatorSidebar.bind(this), 'run-view-sidebar')
-                                    .tabbedPane();
-      navigatorSplitWidget.setSidebarWidget(runViewTabbedPane);
-      navigatorSplitWidget.installResizer(runViewTabbedPane.headerElement());
-      this.#editorView.setSidebarWidget(navigatorSplitWidget);
-    } else {
-      this.#editorView.setSidebarWidget(tabbedPane);
-    }
+    this.#editorView.setSidebarWidget(tabbedPane);
 
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener(Events.EDITOR_SELECTED, this.#editorSelected.bind(this));
@@ -306,8 +289,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     Common.Settings.Settings.instance()
         .resolve(Settings.MainSettings.sidebarPositionSettingDescriptor)
-        .addChangeListener(this.#updateSidebarPosition.bind(this));
-    this.#updateSidebarPosition();
+        .addChangeListener(() => this.#updateSidebarPosition());
+    this.#updateSidebarPosition(true);
 
     void this.#updateDebuggerButtonsAndStatus();
 
@@ -350,7 +333,19 @@ export class SourcesPanel extends UI.Panel.Panel implements
   static updateResizerAndSidebarButtons(panel: SourcesPanel): void {
     const isInWrapper = Boolean(UI.Context.Context.instance().flavor(QuickSourceView)) &&
         !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
-    panel.#sourcesView.setLayoutMode(panel.#splitWidget.isVertical(), isInWrapper);
+    panel.#sourcesView.setLayoutMode(panel.#isVertical, isInWrapper);
+  }
+
+  static setShowSourcesViewInWrapper(panel: SourcesPanel, showInWrapper: boolean): void {
+    if (panel.#showSourcesViewInWrapper === showInWrapper) {
+      return;
+    }
+    panel.#showSourcesViewInWrapper = showInWrapper;
+    if (showInWrapper) {
+      panel.#sourcesView.detach();
+    } else {
+      panel.#editorView.setMainWidget(panel.#sourcesView);
+    }
   }
 
   targetAdded(_target: SDK.Target.Target): void {
@@ -365,7 +360,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       this.threadsSidebarPane = UI.ViewManager.ViewManager.instance().view('sources.threads');
       if (this.sidebarPaneStack && this.threadsSidebarPane) {
         this.sidebarPaneStack.appendView(this.threadsSidebarPane,
-                                         this.#splitWidget.isVertical() ? this.watchSidebarPane : this.#callstackPane);
+                                         this.#isVertical ? this.watchSidebarPane : this.#callstackPane);
       }
     }
   }
@@ -405,7 +400,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
       SourcesPanel.updateResizerAndSidebarButtons(this);
     }
-    this.#editorView.setMainWidget(this.#sourcesView);
+    SourcesPanel.setShowSourcesViewInWrapper(this, false);
     this.#callstackPane.requestUpdate();
   }
 
@@ -442,7 +437,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   override onResize(): void {
     if (Common.Settings.Settings.instance().resolve(Settings.MainSettings.sidebarPositionSettingDescriptor).get() ===
         'auto') {
-      this.element.window().requestAnimationFrame(this.#updateSidebarPosition.bind(this));
+      this.element.window().requestAnimationFrame(() => this.#updateSidebarPosition());
     }  // Do not force layout.
   }
 
@@ -452,12 +447,14 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   toggleNavigatorSidebar(): void {
     const isOpen = this.#editorView.toggleSidebar();
+    this.#sourcesView.isNavigatorSidebarOpen = isOpen;
     UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.navigatorShown) :
                                               i18nString(UIStrings.navigatorHidden));
   }
 
   toggleDebuggerSidebar(): void {
     const isOpen = this.#splitWidget.toggleSidebar();
+    this.#sourcesView.isDebuggerSidebarOpen = isOpen;
     UI.ARIAUtils.LiveAnnouncer.alert(isOpen ? i18nString(UIStrings.debuggerShown) :
                                               i18nString(UIStrings.debuggerHidden));
     this.sidebarPaneStack?.notifyVisibilityChanged(isOpen);
@@ -614,6 +611,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
         this.navigatorTabbedLocation.tabbedPane().selectTab(view.viewId(), true);
         if (!skipReveal) {
           this.#editorView.showBoth(true);
+          this.#sourcesView.isNavigatorSidebarOpen = true;
           navigatorView.focus();
         }
         break;
@@ -733,7 +731,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   #editorSelected(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
     UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-    if (this.#editorView.mainWidget() &&
+    if (!this.#showSourcesViewInWrapper &&
         Common.Settings.Settings.instance()
             .resolve(Settings.SourcesSettings.autoRevealInNavigatorSettingDescriptor)
             .get()) {
@@ -903,18 +901,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
     debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#toggleBreakpointsActiveAction));
 
     return debugToolbar;
-  }
-
-  #createDebugToolbarDrawer(): HTMLDivElement {
-    const debugToolbarDrawer = document.createElement('div');
-    debugToolbarDrawer.classList.add('scripts-debug-toolbar-drawer');
-
-    const label = i18nString(UIStrings.pauseOnCaughtExceptions);
-    const setting =
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
-    debugToolbarDrawer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(label, setting));
-
-    return debugToolbarDrawer;
   }
 
   appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu,
@@ -1168,7 +1154,18 @@ export class SourcesPanel extends UI.Panel.Panel implements
     this.#splitWidget.showBoth(true);
   }
 
-  #updateSidebarPosition(): void {
+  #renderDebugPaneContent(): UI.Widget.VBox {
+    const vbox = new UI.Widget.VBox();
+    vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
+    vbox.element.appendChild(this.#debugToolbar);
+    this.#debuggerPausedMessage.show(vbox.element);
+    if (this.sidebarPaneStack) {
+      this.sidebarPaneStack.widget().show(vbox.element);
+    }
+    return vbox;
+  }
+
+  #updateSidebarPosition(force = false): void {
     let vertically;
     const position =
         Common.Settings.Settings.instance().resolve(Settings.MainSettings.sidebarPositionSettingDescriptor).get();
@@ -1177,14 +1174,15 @@ export class SourcesPanel extends UI.Panel.Panel implements
     } else if (position === 'bottom') {
       vertically = true;
     } else {
-      vertically = this.#splitWidget.element.offsetWidth < 680;
+      vertically = this.element.offsetWidth < 680;
     }
 
-    if (this.#sidebarPaneView && vertically === !this.#splitWidget.isVertical()) {
+    if (!force && this.#sidebarPaneView && vertically === !this.#isVertical) {
       return;
     }
 
-    if (this.#sidebarPaneView?.shouldHideOnDetach()) {
+    if (this.sidebarPaneStack?.widget().shouldHideOnDetach() ||
+        this.#debuggerSidebarTabbedLocation?.tabbedPane().shouldHideOnDetach()) {
       return;
     }  // We can't reparent extension iframes.
 
@@ -1192,6 +1190,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       this.#sidebarPaneView.detach();
     }
 
+    this.#isVertical = !vertically;
     this.#splitWidget.setVertical(!vertically);
     this.#splitWidget.element.classList.toggle('sources-split-view-vertical', vertically);
 
@@ -1201,17 +1200,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
 
-    // Create vertical box with stack.
-    const vbox = new UI.Widget.VBox();
-    vbox.element.appendChild(this.#debugToolbar);
-    vbox.element.appendChild(this.#debugToolbarDrawer);
-
-    vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
     this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation(
         this.#revealDebuggerSidebar.bind(this), undefined, 'debug');
     this.sidebarPaneStack.widget().element.classList.add('y-overflow-only');
-    this.sidebarPaneStack.widget().show(vbox.element);
-    this.#debuggerPausedMessage.show(this.sidebarPaneStack.widget().element);
     this.sidebarPaneStack.appendApplicableItems('sources.sidebar-top');
 
     if (this.threadsSidebarPane) {
@@ -1221,9 +1212,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const jsBreakpoints = UI.ViewManager.ViewManager.instance().view('sources.js-breakpoints');
     const scopeChainView = UI.ViewManager.ViewManager.instance().view('sources.scope-chain');
 
-    if (this.#tabbedLocationHeader) {
-      this.#splitWidget.uninstallResizer(this.#tabbedLocationHeader);
-      this.#tabbedLocationHeader = null;
+    if (this.#debuggerSidebarTabbedLocation) {
+      this.#splitWidget.uninstallResizer(this.#debuggerSidebarTabbedLocation.tabbedPane().headerElement());
+      this.#debuggerSidebarTabbedLocation = null;
     }
 
     if (!vertically) {
@@ -1233,12 +1224,12 @@ export class SourcesPanel extends UI.Panel.Panel implements
       void this.sidebarPaneStack.showView(scopeChainView);
       void this.sidebarPaneStack.showView(this.#callstackPane);
       this.#extensionSidebarPanesContainer = this.sidebarPaneStack;
-      this.#sidebarPaneView = vbox;
       this.#splitWidget.uninstallResizer(this.#debugToolbar);
+      this.#sidebarPaneView = this.#renderDebugPaneContent();
     } else {
       const splitWidget =
           new UI.SplitWidget.SplitWidget(true, true, 'sources-panel-debugger-sidebar-split-view-state', 0.5);
-      splitWidget.setMainWidget(vbox);
+      splitWidget.setMainWidget(this.#renderDebugPaneContent());
 
       // Populate the left stack.
       void this.sidebarPaneStack.showView(jsBreakpoints);
@@ -1247,13 +1238,13 @@ export class SourcesPanel extends UI.Panel.Panel implements
       const tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
           this.#revealDebuggerSidebar.bind(this), 'sources-panel-debugger-sidebar');
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
-      this.#tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
-      this.#splitWidget.installResizer(this.#tabbedLocationHeader);
+      this.#splitWidget.installResizer(tabbedLocation.tabbedPane().headerElement());
       this.#splitWidget.installResizer(this.#debugToolbar);
       tabbedLocation.appendView(scopeChainView);
       tabbedLocation.appendView(this.watchSidebarPane);
       tabbedLocation.appendApplicableItems('sources.sidebar-tabs');
       this.#extensionSidebarPanesContainer = tabbedLocation;
+      this.#debuggerSidebarTabbedLocation = tabbedLocation;
       this.#sidebarPaneView = splitWidget;
     }
 
@@ -1522,6 +1513,7 @@ export class QuickSourceView extends UI.Widget.VBox {
   }
 
   showViewInWrapper(): void {
+    SourcesPanel.setShowSourcesViewInWrapper(SourcesPanel.instance(), true);
     this.#showInWrapper = true;
     this.performUpdate();
   }
@@ -1529,5 +1521,6 @@ export class QuickSourceView extends UI.Widget.VBox {
   hideViewInWrapper(): void {
     this.#showInWrapper = false;
     this.performUpdate();
+    SourcesPanel.setShowSourcesViewInWrapper(SourcesPanel.instance(), false);
   }
 }

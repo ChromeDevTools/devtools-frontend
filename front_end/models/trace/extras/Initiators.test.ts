@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {before, describe, it} from 'mocha';
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import type * as Handlers from '../handlers/handlers.js';

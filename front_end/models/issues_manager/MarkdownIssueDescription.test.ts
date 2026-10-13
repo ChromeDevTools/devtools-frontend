@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 

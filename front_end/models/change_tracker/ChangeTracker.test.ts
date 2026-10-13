@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import * as CommentManager from '../comment_manager/comment_manager.js';

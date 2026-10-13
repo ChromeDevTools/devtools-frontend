@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';

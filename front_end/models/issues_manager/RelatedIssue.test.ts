@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';

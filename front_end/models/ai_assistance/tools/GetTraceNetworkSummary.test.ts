@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 import * as sinon from 'sinon';
 
 import * as Tracing from '../../../services/tracing/tracing.js';

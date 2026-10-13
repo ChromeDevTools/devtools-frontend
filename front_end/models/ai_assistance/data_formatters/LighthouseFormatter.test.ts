@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import type * as Lighthouse from '../../lighthouse/lighthouse.js';

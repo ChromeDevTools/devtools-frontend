@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {before, beforeEach, describe, it} from 'mocha';
 
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';

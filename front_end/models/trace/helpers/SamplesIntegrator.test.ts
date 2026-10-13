@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import type * as Protocol from '../../../generated/protocol.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';

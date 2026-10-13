@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';

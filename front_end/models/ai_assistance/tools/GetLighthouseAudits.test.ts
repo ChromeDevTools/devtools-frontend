@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {assertIsError, assertIsResult} from '../../../testing/AiAssistanceHelpers.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';

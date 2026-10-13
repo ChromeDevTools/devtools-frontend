@@ -62,7 +62,7 @@ describe('RunLighthouseTool', () => {
 
   describe('handler', () => {
     it('runs dynamic audits for a specified category and mode', async () => {
-      const recordingStub = sinon.stub().resolves(mockReport);
+      const recordingStub = sinon.stub().resolves({status: 'completed', report: mockReport});
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         runLighthouse: recordingStub,
       };
@@ -82,7 +82,7 @@ describe('RunLighthouseTool', () => {
     });
 
     it('runs audits across all categories when categoryId is "all"', async () => {
-      const recordingStub = sinon.stub().resolves(mockReport);
+      const recordingStub = sinon.stub().resolves({status: 'completed', report: mockReport});
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         runLighthouse: recordingStub,
       };
@@ -101,7 +101,7 @@ describe('RunLighthouseTool', () => {
     });
 
     it('defaults to snapshot mode when mode is omitted', async () => {
-      const recordingStub = sinon.stub().resolves(mockReport);
+      const recordingStub = sinon.stub().resolves({status: 'completed', report: mockReport});
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         runLighthouse: recordingStub,
       };
@@ -119,14 +119,25 @@ describe('RunLighthouseTool', () => {
       });
     });
 
-    it('returns error when runLighthouse returns null', async () => {
-      const recordingStub = sinon.stub().resolves(null);
+    it('returns error when the run fails', async () => {
+      const recordingStub = sinon.stub().resolves({status: 'failed'});
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         runLighthouse: recordingStub,
       };
       const result = await tool.handler({explanation: 're-audit', categoryId: 'accessibility'}, context);
       assertIsError(result);
       assert.strictEqual(result.error, 'Error: Failed to record new audits.');
+    });
+
+    it('tells the model not to retry when the user cancels the run', async () => {
+      const recordingStub = sinon.stub().resolves({status: 'cancelled'});
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
+        runLighthouse: recordingStub,
+      };
+      const result = await tool.handler({explanation: 're-audit', categoryId: 'accessibility'}, context);
+      assertIsError(result);
+      assert.strictEqual(result.error,
+                         'The user cancelled the Lighthouse audit. Do not run it again unless the user asks you to.');
     });
 
     it('returns error when runLighthouse rejects', async () => {

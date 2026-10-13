@@ -82,7 +82,7 @@ export interface AiAgent2Options extends ExecuteJsAgentOptions {
    * Supplies the origin lock state for the conversation.
    */
   originLock: () => OriginLockState;
-  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
   performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 }
 
@@ -201,8 +201,7 @@ export class AiAgent2 extends AiAgent<unknown> {
   #changes: ChangeManager;
   #execJs: typeof executeJsCode;
   readonly #originLock: () => OriginLockState;
-  readonly #lighthouseRecording?:
-      (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  readonly #lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
   readonly #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 
   get options(): RequestOptions {
@@ -443,7 +442,7 @@ User query: ${enhancedQuery}`;
           getTarget: () => this.#getTarget(),
           getOriginLock: () => this.#originLock(),
           getLighthouseReport: () => (this.context instanceof LighthouseContext ? this.context.getItem() : null),
-          runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? null),
+          runLighthouse: async overrides => await (this.#lighthouseRecording?.(overrides) ?? {status: 'failed'}),
           getPerformanceTraceContext: () => (this.context instanceof PerformanceTraceContext ? this.context : null),
           performanceRecordAndReload: this.#performanceRecordAndReload,
           disableLogging: () => {

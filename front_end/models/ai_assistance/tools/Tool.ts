@@ -201,7 +201,7 @@ export interface LighthouseReportCapability {
  * Capability for tools that trigger new Lighthouse audit runs.
  */
 export interface LighthouseRecordingCapability {
-  runLighthouse(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  runLighthouse(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.RunTypes.RunResult>;
 }
 
 /**

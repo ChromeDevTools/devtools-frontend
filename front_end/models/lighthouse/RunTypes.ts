@@ -5,6 +5,8 @@ import type * as Common from '../../core/common/common.js';
 import type * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 
+import type {ReportJSON} from './LighthouseReporterTypes.js';
+
 export type CategoryId = 'performance'|'accessibility'|'best-practices'|'seo'|'agentic-browsing';
 export type RunMode = 'navigation'|'timespan'|'snapshot';
 
@@ -42,3 +44,17 @@ export interface RunOverrides {
   mode?: RunMode;
   isAIControlled?: boolean;
 }
+
+/**
+ * The outcome of a Lighthouse run started from outside the Lighthouse panel.
+ * `cancelled` means the user cancelled the run; `failed` covers every other
+ * error.
+ */
+export type RunResult = {
+  status: 'completed',
+  report: ReportJSON,
+}|{
+  status: 'cancelled',
+}|{
+  status: 'failed',
+};

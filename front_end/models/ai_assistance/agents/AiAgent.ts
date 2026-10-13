@@ -337,7 +337,7 @@ export interface AgentOptions {
   onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   history?: Host.AidaClient.Content[];
   allowedOrigin?: () => AllowedOriginResult;
-  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
   targetManager?: SDK.TargetManager.TargetManager;
 }
 

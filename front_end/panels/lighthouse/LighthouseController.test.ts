@@ -123,4 +123,34 @@ describeWithEnvironment('LighthouseController', () => {
       assert.deepEqual(controller.getCurrentRun()?.categoryIDs, ['accessibility']);
     });
   });
+
+  describe('error recovery', () => {
+    it('rejects startLighthouse when the run fails to start, and starts the next run', async () => {
+      const protocolService = sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService);
+      protocolService.attach.onFirstCall().rejects(new Error('attach failed'));
+      const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
+
+      const startError = await controller.startLighthouse({mode: 'snapshot'}).then(() => null, (err: unknown) => err);
+      assert.instanceOf(startError, Error);
+      assert.strictEqual(startError.message, 'attach failed');
+
+      await controller.startLighthouse({mode: 'snapshot'});
+      assert.exists(controller.getCurrentRun());
+    });
+
+    it('resolves cancelLighthouse after a run failed to start', async () => {
+      const protocolService = sinon.createStubInstance(Lighthouse.LighthouseProtocolService.ProtocolService);
+      protocolService.attach.rejects(new Error('attach failed'));
+      const controller = new Lighthouse.LighthouseController.LighthouseController(protocolService);
+
+      const startError = await controller.startLighthouse({mode: 'snapshot'}).then(() => null, (err: unknown) => err);
+      assert.instanceOf(startError, Error);
+
+      const cancelOutcome = await Promise.race([
+        controller.cancelLighthouse().then(() => 'resolved'),
+        new Promise(resolve => setTimeout(() => resolve('pending'), 0)),
+      ]);
+      assert.strictEqual(cancelOutcome, 'resolved');
+    });
+  });
 });

@@ -913,8 +913,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return await TimelinePanel.TimelinePanel.TimelinePanel.executeRecordAndReload();
   }
 
-  async #handleLighthouseRun(overrides?: LHModel.RunTypes.RunOverrides):
-      Promise<LHModel.ReporterTypes.ReportJSON|null> {
+  async #handleLighthouseRun(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.RunTypes.RunResult> {
     return await LighthousePanel.LighthousePanel.LighthousePanel.executeLighthouseRecording({
       isAIControlled: true,
       ...overrides,

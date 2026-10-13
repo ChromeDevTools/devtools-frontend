@@ -910,7 +910,7 @@ describe('AiAgent2', () => {
       categories: {},
       audits: {},
     } as unknown as LHModel.ReporterTypes.ReportJSON;
-    const runLighthouseStub = sinon.stub().resolves(mockReport);
+    const runLighthouseStub = sinon.stub().resolves({status: 'completed', report: mockReport});
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -952,8 +952,11 @@ describe('AiAgent2', () => {
         functionCalls: [{name: 'runLighthouse', args: {explanation: 'run', categoryId: 'accessibility'}}],
       }],
     ]);
-    const agent = new AiAssistance.AiAgent2.AiAgent2(
-        {aidaClient, lighthouseRecording: sinon.stub().resolves(mockReport), originLock: defaultOriginLock});
+    const agent = new AiAssistance.AiAgent2.AiAgent2({
+      aidaClient,
+      lighthouseRecording: sinon.stub().resolves({status: 'completed', report: mockReport}),
+      originLock: defaultOriginLock,
+    });
 
     await Array.fromAsync(agent.run('query', {selected: null}));
 
@@ -1042,7 +1045,7 @@ describe('AiAgent2', () => {
       categories: {},
       audits: {},
     } as unknown as LHModel.ReporterTypes.ReportJSON;
-    const runLighthouseStub = sinon.stub().resolves(mockReport);
+    const runLighthouseStub = sinon.stub().resolves({status: 'completed', report: mockReport});
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -1085,7 +1088,7 @@ describe('AiAgent2', () => {
       categories: {},
       audits: {},
     } as unknown as LHModel.ReporterTypes.ReportJSON;
-    const runLighthouseStub = sinon.stub().resolves(mockReport);
+    const runLighthouseStub = sinon.stub().resolves({status: 'completed', report: mockReport});
     const aidaClient = mockAidaClient([
       [{
         explanation: '',

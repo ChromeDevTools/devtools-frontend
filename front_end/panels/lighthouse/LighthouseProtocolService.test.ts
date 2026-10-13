@@ -132,6 +132,38 @@ describeWithEnvironment('LighthouseProtocolService', () => {
     }
   });
 
+  it('rejects requests that are still waiting for the worker when detached', async () => {
+    // Mock Worker to avoid starting a real Lighthouse worker.
+    const mockWorker = new EventTarget() as unknown as Worker;
+    mockWorker.postMessage = sinon.stub() as unknown as typeof mockWorker.postMessage;
+    mockWorker.terminate = sinon.stub() as unknown as typeof mockWorker.terminate;
+    sinon.stub(globalThis, 'Worker').returns(mockWorker);
+
+    connection.setSuccessHandler('Target.attachToTarget',
+                                 () => ({sessionId: 'mock-session-id' as Protocol.Target.SessionID}));
+    const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
+    await service.attach(urlString`https://example.com/page`);
+
+    // Start collecting results. The request waits for the worker to report that it is ready.
+    const requestOutcome = service
+                               .collectLighthouseResults({
+                                 inspectedURL: urlString`https://example.com`,
+                                 categoryIDs: ['accessibility'],
+                                 flags: {formFactor: 'mobile', mode: 'snapshot'},
+                               })
+                               .then(() => 'resolved', (err: unknown) => err);
+
+    // The user cancels while the worker is still loading.
+    const detachPromise = service.detach();
+    mockWorker.dispatchEvent(new MessageEvent('message', {data: 'workerReady'}));
+    await detachPromise;
+
+    const pending = new Promise(resolve => setTimeout(() => resolve('pending'), 0));
+    const outcome = await Promise.race([requestOutcome, pending]);
+
+    assert.instanceOf(outcome, Lighthouse.LighthouseProtocolService.CancelledError);
+  });
+
   it('auto-accepts same-origin dialogs and blocks cross-origin dialogs', async () => {
     sinon.stub(primaryTarget, 'inspectedURL').returns(urlString`https://example.com/page`);
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();

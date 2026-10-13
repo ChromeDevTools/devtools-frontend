@@ -153,17 +153,17 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   async handleCompleteRun(overrides?: LighthouseModel.RunTypes.RunOverrides):
-      Promise<{report: LighthouseModel.ReporterTypes.ReportJSON | null}> {
+      Promise<LighthouseModel.RunTypes.RunResult> {
     try {
       await this.controller.startLighthouse(overrides);
       this.renderStatusView();
       const {lhr, artifacts} = await this.controller.collectLighthouseResults();
       this.buildReportUI(lhr, artifacts);
-      return {report: lhr};
+      return {status: 'completed', report: lhr};
     } catch (err) {
       this.handleError(err);
       UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
-      return {report: null};
+      return err instanceof CancelledError ? {status: 'cancelled'} : {status: 'failed'};
     }
   }
 
@@ -406,12 +406,11 @@ export class LighthousePanel extends UI.Panel.Panel {
 
   static async executeLighthouseRecording(
       overrides?: LighthouseModel.RunTypes.RunOverrides,
-      ): Promise<LighthouseModel.ReporterTypes.ReportJSON|null> {
+      ): Promise<LighthouseModel.RunTypes.RunResult> {
     const panel = LighthousePanel.instance();
     await UI.ViewManager.ViewManager.instance().showView('lighthouse');
 
-    const {report} = await panel.handleCompleteRun(overrides);
-    return report;
+    return await panel.handleCompleteRun(overrides);
   }
 }
 

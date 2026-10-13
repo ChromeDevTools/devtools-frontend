@@ -73,18 +73,21 @@ export class RunLighthouseTool implements
     const mode = params.mode ?? 'snapshot';
     try {
       // Passing undefined for categoryIds instructs the Lighthouse runner to audit all categories supported by the mode when isAIControlled is true.
-      const report = await context.runLighthouse({
+      const result = await context.runLighthouse({
         mode,
         categoryIds: params.categoryId === 'all' ? undefined : [params.categoryId],
         isAIControlled: true,
       });
-      if (!report) {
+      if (result.status === 'cancelled') {
+        return {error: 'The user cancelled the Lighthouse audit. Do not run it again unless the user asks you to.'};
+      }
+      if (result.status === 'failed') {
         return {error: 'Error: Failed to record new audits.'};
       }
 
       return {
         // No widgets are returned here; LighthouseContext.getWidgets() provides the report widget.
-        context: new LighthouseContext(report),
+        context: new LighthouseContext(result.report),
         description: 'Lighthouse audit completed',
       };
     } catch (err) {

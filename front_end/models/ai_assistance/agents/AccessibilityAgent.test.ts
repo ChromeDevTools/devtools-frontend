@@ -383,7 +383,7 @@ describe('AccessibilityAgent', () => {
         rpcGlobalId: 123,
       },
     }]]);
-    const lighthouseRecording = sinon.stub().resolves(mockReport);
+    const lighthouseRecording = sinon.stub().resolves({status: 'completed', report: mockReport});
     const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
       aidaClient,
       lighthouseRecording,
@@ -405,6 +405,45 @@ describe('AccessibilityAgent', () => {
     assert.lengthOf(actionResponse.widgets, 1);
     assert.strictEqual(actionResponse.widgets[0].name, 'LIGHTHOUSE_REPORT');
     assert.deepEqual(actionResponse.widgets[0].data, {report: mockReport, snapshotReport: true});
+  });
+
+  it('tells the model not to retry when the user cancels runAccessibilityAudits', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'runAccessibilityAudits', args: {explanation: 'testing'}}],
+    }]]);
+    const lighthouseRecording = sinon.stub().resolves({status: 'cancelled'});
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+      lighthouseRecording,
+    });
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(
+        actionResponse.output,
+        'The user cancelled the accessibility audits. Do not run them again unless the user asks you to.');
+    assert.isUndefined(actionResponse.widgets);
+  });
+
+  it('reports a failure when runAccessibilityAudits fails', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'runAccessibilityAudits', args: {explanation: 'testing'}}],
+    }]]);
+    const lighthouseRecording = sinon.stub().resolves({status: 'failed'});
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+      lighthouseRecording,
+    });
+    const context = new AiAssistance.LighthouseContext.LighthouseContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Failed to run accessibility audits.');
   });
 
   function createExtensionScope() {
@@ -497,7 +536,7 @@ describe('AccessibilityAgent', () => {
       explanation: '',
       functionCalls: [{name: 'runAccessibilityAudits', args: {explanation: 'testing'}}],
     }]]);
-    const lighthouseRecording = sinon.stub().resolves(mockReport);
+    const lighthouseRecording = sinon.stub().resolves({status: 'completed', report: mockReport});
     const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
       aidaClient,
       lighthouseRecording,

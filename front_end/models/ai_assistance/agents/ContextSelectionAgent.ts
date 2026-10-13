@@ -106,8 +106,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
   readonly #performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
   readonly #onInspectElement?: () => Promise<SDK.DOMModel.DOMNode|null>;
   readonly #networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-  readonly #lighthouseRecording?:
-      (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+  readonly #lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
   #allowedOrigin: () => AllowedOriginResult;
   readonly #networkLog: Logs.NetworkLog.NetworkLog;
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
@@ -439,14 +438,19 @@ export class ContextSelectionAgent extends AiAgent<never> {
         const mode = parseLighthouseMode(params.mode);
         debugLog(`Recording with Lighthouse; runMode=${mode}`);
         const result = await this.#lighthouseRecording({mode});
-        if (!result) {
+        if (result.status === 'cancelled') {
+          return {
+            error: 'The user cancelled the Lighthouse audit. Do not run it again unless the user asks you to.',
+          };
+        }
+        if (result.status === 'failed') {
           return {error: 'Failed to generate Lighthouse report.'};
         }
 
         return {
-          context: new LighthouseContext(result),
+          context: new LighthouseContext(result.report),
           description: 'User has selected a Lighthouse report',
-          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report: result}}],
+          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report: result.report}}],
         };
       },
     });

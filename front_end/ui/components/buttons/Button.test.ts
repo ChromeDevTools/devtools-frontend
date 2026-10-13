@@ -264,6 +264,65 @@ describe('Button', () => {
     assert.strictEqual(innerButton.getAttribute('aria-label'), 'test-label');
   });
 
+  describe('jslogContext', () => {
+    function getInnerButton(button: Buttons.Button.Button): HTMLButtonElement {
+      const innerButton = button.shadowRoot?.querySelector('button');
+      assert.instanceOf(innerButton, HTMLButtonElement);
+      return innerButton;
+    }
+
+    it('renders a new inner button with the new jslog when jslogContext changes', () => {
+      const button = renderButton({variant: Buttons.Button.Variant.PRIMARY, jslogContext: 'copy'});
+      const firstInnerButton = getInnerButton(button);
+      assert.strictEqual(firstInnerButton.getAttribute('jslog'), 'Action; track: click; context: copy');
+
+      button.jslogContext = 'cancel';
+
+      const secondInnerButton = getInnerButton(button);
+      assert.notStrictEqual(firstInnerButton, secondInnerButton);
+      assert.strictEqual(secondInnerButton.getAttribute('jslog'), 'Action; track: click; context: cancel');
+      assert.isFalse(firstInnerButton.isConnected);
+    });
+
+    it('keeps the inner button when other properties change', () => {
+      const button = renderButton({variant: Buttons.Button.Variant.PRIMARY, jslogContext: 'copy'});
+      const firstInnerButton = getInnerButton(button);
+
+      button.disabled = true;
+      button.jslogContext = 'copy';
+
+      assert.strictEqual(getInnerButton(button), firstInnerButton);
+    });
+
+    it('keeps the slotted content after the inner button is replaced', () => {
+      const button = renderButton({variant: Buttons.Button.Variant.PRIMARY, jslogContext: 'copy'}, 'Copy');
+
+      button.jslogContext = 'cancel';
+
+      const slot = getInnerButton(button).querySelector('slot');
+      assert.instanceOf(slot, HTMLSlotElement);
+      assert.strictEqual(slot.assignedNodes().map(node => node.textContent).join(''), 'Copy');
+    });
+
+    it('moves focus to the new inner button when the focused inner button is replaced', () => {
+      const button = renderButton({variant: Buttons.Button.Variant.PRIMARY, jslogContext: 'copy'});
+      button.focus();
+      assert.strictEqual(button.shadowRoot?.activeElement, getInnerButton(button));
+
+      button.jslogContext = 'cancel';
+
+      assert.strictEqual(button.shadowRoot?.activeElement, getInnerButton(button));
+    });
+
+    it('does not focus the button when an unfocused inner button is replaced', () => {
+      const button = renderButton({variant: Buttons.Button.Variant.PRIMARY, jslogContext: 'copy'});
+
+      button.jslogContext = 'cancel';
+
+      assert.isNull(button.shadowRoot?.activeElement);
+    });
+  });
+
   describe('in forms', () => {
     function renderForm(data: Buttons.Button.ButtonData = {
       variant: Buttons.Button.Variant.PRIMARY,

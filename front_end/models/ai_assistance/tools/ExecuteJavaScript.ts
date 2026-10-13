@@ -85,27 +85,28 @@ export class ExecuteJavaScriptTool implements
   readonly description: string =
       'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
 
+  /**
+   * Formats the code and checks it against the size limits. This method does
+   * not check syntax: if formatting fails, the formatter returns the original
+   * code, and running it on the page reports any SyntaxError to the model.
+   */
   static async validateAndFormatCode(code: string): Promise<{formattedCode?: string, error?: string}> {
-    try {
-      const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-          'text/javascript',
-          code,
-          '  ',
-      );
-      const formattedCode = formatted.formattedContent;
-      const violations = describeSizeLimitViolations(formattedCode);
-      if (violations.length > 0) {
-        return {
-          error: [
-            'Error: The code was not run because it exceeds size limits after formatting (indented with 2 spaces):',
-            ...violations,
-          ].join('\n'),
-        };
-      }
-      return {formattedCode};
-    } catch {
-      return {error: 'Error: JavaScript code snippet contains invalid syntax.'};
+    const formatted = await Formatter.ScriptFormatter.formatScriptContent(
+        'text/javascript',
+        code,
+        '  ',
+    );
+    const formattedCode = formatted.formattedContent;
+    const violations = describeSizeLimitViolations(formattedCode);
+    if (violations.length > 0) {
+      return {
+        error: [
+          'Error: The code was not run because it exceeds size limits after formatting (indented with 2 spaces):',
+          ...violations,
+        ].join('\n'),
+      };
     }
+    return {formattedCode};
   }
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ExecuteJavaScriptArgs> = {

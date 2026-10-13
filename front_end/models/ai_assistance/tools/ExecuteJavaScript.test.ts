@@ -354,6 +354,13 @@ describe('ExecuteJavaScriptTool', () => {
       assert.isUndefined(result.error);
     });
 
+    it('returns the original code when the formatter fails', async () => {
+      formatStub.rejects(new Error('Unexpected token'));
+      const result = await validateAndFormatCode('const a = ;');
+      assert.isUndefined(result.error);
+      assert.strictEqual(result.formattedCode, 'const a = ;');
+    });
+
     const SIZE_ERROR_HEADER =
         'Error: The code was not run because it exceeds size limits after formatting (indented with 2 spaces):';
     const LONG_LINES_ADVICE = '- Lines longer than 120 characters. Break them into shorter lines, ' +

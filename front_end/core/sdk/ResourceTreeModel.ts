@@ -32,6 +32,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   #pendingReloadOptions: {
     ignoreCache: (boolean|undefined),
     scriptToEvaluateOnLoad: (string|undefined),
+    loaderId: Protocol.Network.LoaderId,
   }|null = null;
   #reloadSuspensionCount = 0;
   isInterstitialShowing = false;
@@ -434,7 +435,15 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this.#reloadSuspensionCount--;
     console.assert(this.#reloadSuspensionCount >= 0, 'Unbalanced call to ResourceTreeModel.resumeReload()');
     if (!this.#reloadSuspensionCount && this.#pendingReloadOptions) {
-      const {ignoreCache, scriptToEvaluateOnLoad} = this.#pendingReloadOptions;
+      const {ignoreCache, scriptToEvaluateOnLoad, loaderId} = this.#pendingReloadOptions;
+      // A deferred reload (and its scriptToEvaluateOnLoad) only applies to the
+      // document it was requested against. If the main frame has since
+      // navigated to another document, drop the stale request instead of
+      // replaying it against the new document.
+      if (loaderId !== this.mainFrame?.loaderId) {
+        this.#pendingReloadOptions = null;
+        return;
+      }
       this.reloadPage(ignoreCache, scriptToEvaluateOnLoad);
     }
   }
@@ -449,7 +458,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       this.dispatchEventToListeners(Events.PageReloadRequested, this);
     }
     if (this.#reloadSuspensionCount) {
-      this.#pendingReloadOptions = {ignoreCache, scriptToEvaluateOnLoad};
+      this.#pendingReloadOptions = {ignoreCache, scriptToEvaluateOnLoad, loaderId};
       return;
     }
     this.#pendingReloadOptions = null;

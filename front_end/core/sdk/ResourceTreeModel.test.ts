@@ -175,6 +175,47 @@ describe('ResourceTreeModel', () => {
         reload.args[0], [{ignoreCache: undefined, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined}]);
   });
 
+  it('issues a deferred reload once reloading is resumed if the document did not change', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const reload = sinon.spy(target.pageAgent(), 'invoke_reload');
+
+    resourceTreeModel.suspendReload();
+    resourceTreeModel.reloadPage(true, 'console.log("injected")');
+    sinon.assert.notCalled(reload);
+
+    resourceTreeModel.resumeReload();
+    sinon.assert.calledOnce(reload);
+    assert.deepEqual(reload.args[0],
+                     [{ignoreCache: true, loaderId: LOADER_ID, scriptToEvaluateOnLoad: 'console.log("injected")'}]);
+  });
+
+  it('drops a deferred reload if the main frame navigated while reloading was suspended', async () => {
+    const target = universe.createTarget({connection});
+    const resourceTreeModel = await getInitializedResourceTreeModel(target);
+    const reload = sinon.spy(target.pageAgent(), 'invoke_reload');
+
+    resourceTreeModel.suspendReload();
+    resourceTreeModel.reloadPage(true, 'console.log("injected")');
+    sinon.assert.notCalled(reload);
+
+    // Cross-document navigation to a different origin while the reload is pending.
+    navigate(getMainFrame(target), {
+      url: 'https://other.example.com/',
+      securityOrigin: 'https://other.example.com',
+      loaderId: 'OTHER_LOADER_ID' as Protocol.Network.LoaderId,
+    });
+    assert.strictEqual(resourceTreeModel.mainFrame?.loaderId, 'OTHER_LOADER_ID');
+
+    resourceTreeModel.resumeReload();
+    sinon.assert.notCalled(reload);
+
+    // The stale request must not linger: a later suspend/resume cycle must not replay it either.
+    resourceTreeModel.suspendReload();
+    resourceTreeModel.resumeReload();
+    sinon.assert.notCalled(reload);
+  });
+
   it('resourceForURL can find resource', async () => {
     const target = universe.createTarget({connection});
     await getInitializedResourceTreeModel(target);

@@ -969,6 +969,46 @@ describe('AiAgent2', () => {
     ]);
   });
 
+  it('does not run calls after a ContextTool call and records them as not executed', async () => {
+    const mockReport = {
+      finalDisplayedUrl: 'https://example.com',
+      categories: {},
+      audits: {},
+    } as unknown as LHModel.ReporterTypes.ReportJSON;
+    const aidaClient = mockAidaClient([
+      [{explanation: '', functionCalls: [{name: 'learnSkills', args: {skills: ['lighthouse']}}]}],
+      [{
+        explanation: '',
+        functionCalls: [
+          {name: 'runLighthouse', args: {explanation: 'run', categoryId: 'accessibility'}},
+          {name: 'getLighthouseAudits', args: {categoryId: 'accessibility'}},
+        ],
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2(
+        {aidaClient, lighthouseRecording: sinon.stub().resolves(mockReport), originLock: defaultOriginLock});
+    const getLighthouseAuditsTool = AiAssistance.ToolRegistry.ToolRegistry.get('getLighthouseAudits');
+    assert.exists(getLighthouseAuditsTool);
+    const getLighthouseAuditsSpy = sinon.spy(getLighthouseAuditsTool, 'handler');
+
+    const responses = await Array.fromAsync(agent.run('query', {selected: null}));
+
+    assert.exists(responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.CONTEXT_CHANGE));
+    sinon.assert.notCalled(getLighthouseAuditsSpy);
+    assert.deepEqual(agent.history.at(-1), {
+      role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
+      parts: [
+        {functionResponse: {name: 'runLighthouse', response: {result: 'Lighthouse audit completed'}}},
+        {
+          functionResponse: {
+            name: 'getLighthouseAudits',
+            response: {result: 'Not executed: the conversation switched to a new context before this call ran.'},
+          },
+        },
+      ],
+    });
+  });
+
   it('returns null for getLighthouseReport when context is not LighthouseContext', async () => {
     const aidaClient = mockAidaClient([
       [{

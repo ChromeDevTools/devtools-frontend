@@ -108,7 +108,7 @@ Every event for one tool call carries the same `callId`. `stepForCall(callId)` r
 | `QUERYING` | S1 | `step = S2`. S2 is not committed because `parts` is not empty. | `[S0, S1]` |
 | `ANSWER` | S2 | Appends an `AnswerPart`. | `[S0, S1, answer]` |
 
-`commitStep()` only checks the last part. This relies on all events for one call arriving before the events for the next call, which holds because the agent runs tool calls one at a time.
+`commitStep()` only checks the last part. This relies on all events for one call arriving before the events for the next call, which holds because `AiAgent#runFunctionCalls()` runs the calls in a model response one at a time.
 
 ## Step states
 
@@ -122,6 +122,8 @@ Each `Step` has a `state` (`StepState` in `components/ChatMessage.ts`):
 | `completed` | A `CONTEXT`, `THOUGHT`, `ACTION`, `CONTEXT_CHANGE` or `ANSWER` event arrives, or the user answers the approval prompt. | A checkmark. |
 
 A `THOUGHT` marks the step as completed before the tool runs, so the badge shows a checkmark while the tool is still running. If the run fails with an error other than an abort while the last step is still `in_progress`, the panel removes that step.
+
+A failed tool call does not fail the run. An unknown tool name, an error result, or an error thrown by the handler arrives as an `ACTION` whose `output` holds the error, so the step is `completed` and the agent runs the next call.
 
 Separately, the conversation-level `isLoading` flag is `true` from when the user submits a query until the agent finishes. While it is `true`, the walkthrough toggle button in the last `ChatMessage` shows a spinner. This spinner gives continuous feedback that the agent is working, even when every step already shows a checkmark.
 

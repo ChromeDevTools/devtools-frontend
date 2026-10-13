@@ -4,7 +4,7 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "lib": ["esnext"],
-    "types": ["node", "mocha"]
+    "types": ["node"]
   },
   "exclude": ["tests/fixtures/**/*"]
 }

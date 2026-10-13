@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describe, it} from 'mocha';
+
 describe('screenshot test with diff', () => {
   it('should fail with screenshot diff', async () => {
     const doc = window.document;

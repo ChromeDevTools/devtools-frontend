@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 describe('block_1', function() {
   it('run_1', () => {

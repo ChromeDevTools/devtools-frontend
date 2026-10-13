@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {before, describe, it} from 'mocha';
 import * as path from 'node:path';
 
 import {GnBuildFile} from '../../gn_ast/gn_ast.ts';

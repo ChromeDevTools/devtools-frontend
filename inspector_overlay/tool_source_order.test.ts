@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {getLabelType, getPositionFromLabelType, LabelTypes} from './tool_source_order.js';
 

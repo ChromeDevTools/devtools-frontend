@@ -4,6 +4,7 @@
 
 import parser from '@typescript-eslint/parser';
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {isLitHtmlRenderCall, isLitHtmlTemplateCall} from '../lib/utils/lit.ts';
 

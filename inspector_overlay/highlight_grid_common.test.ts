@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
 
 import type {Position} from './common.js';
 import {drawLayoutGridHighlight, type GridHighlight} from './highlight_grid_common.js';

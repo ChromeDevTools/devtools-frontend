@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {waitForTarget} from '../../testing/TargetHelpers.js';
 import type * as Common from '../common/common.js';

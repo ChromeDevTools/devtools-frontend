@@ -4,6 +4,7 @@
 
 import tsParser from '@typescript-eslint/parser';
 import {RuleTester} from '@typescript-eslint/rule-tester';
+import {after} from 'mocha';
 
 // Add the mocha hooks to the rule tester.
 RuleTester.afterAll = after;

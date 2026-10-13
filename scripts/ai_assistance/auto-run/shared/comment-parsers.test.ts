@@ -8,6 +8,7 @@
  * Run these with `npm run auto-run:test` from `scripts/ai_assistance` folder.
  */
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 import {parseComment, parseFollowUps} from './comment-parsers.ts';
 

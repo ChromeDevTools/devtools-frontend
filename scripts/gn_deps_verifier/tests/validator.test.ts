@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {afterEach, describe, it} from 'mocha';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 

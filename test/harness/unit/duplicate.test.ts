@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {describe, it} from 'mocha';
 
 describe('unit', () => {
   it('should run a basic unit test successfully', () => {

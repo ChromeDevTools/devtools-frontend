@@ -3,7 +3,7 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "lib": ["esnext"],
-    "types": ["node", "mocha"],
+    "types": ["node"],
     "rootDir": ".",
     "checkJs": true,
     "noEmit": true,

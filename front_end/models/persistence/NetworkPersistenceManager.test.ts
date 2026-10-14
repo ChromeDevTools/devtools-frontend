@@ -243,6 +243,40 @@ describe('NetworkPersistenceManager', () => {
     assert.deepEqual(patterns, expected);
   });
 
+  it('preserves repeated slashes in override paths on every platform', async () => {
+    const target = createTarget();
+    sinon.stub(target.fetchAgent(), 'invoke_enable');
+    const manager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    assert.strictEqual(manager.rawPathFromUrl(urlString`https://example.com/folder//client.js`),
+                       'example.com/folder/%2Fclient.js');
+    assert.strictEqual(manager.encodedPathFromUrl(urlString`https://example.com/folder//client.js`),
+                       'example.com/folder/%252Fclient.js');
+    assert.strictEqual(manager.rawPathFromUrl(urlString`https://example.com///client.js`),
+                       'example.com/%2F%2Fclient.js');
+    assert.strictEqual(manager.rawPathFromUrl(urlString`https://example.com/folder/%2Fclient.js`),
+                       'example.com/folder/%252Fclient.js');
+  });
+
+  it('preserves repeated slashes in interception patterns', async () => {
+    SDK.NetworkManager.MultitargetNetworkManager.dispose();
+    const target = createTarget();
+    const manager = await createWorkspaceProject(urlString`file:///path/to/overrides`, [
+      {name: 'client.js', path: 'www.example.com//', content: 'override'},
+      {name: 'client.js', path: 'www.example.com/folder//bar/', content: 'override'},
+      {name: 'client.js', path: 'file:////path//', content: 'override'},
+    ]);
+    const stub = sinon.stub(target.fetchAgent(), 'invoke_enable');
+
+    await manager.updateInterceptionPatternsForTests();
+
+    assert.deepEqual(stub.lastCall.args[0].patterns, [
+      {urlPattern: 'http?://www.example.com//client.js', requestStage: Protocol.Fetch.RequestStage.Response},
+      {urlPattern: 'http?://www.example.com/folder//bar/client.js', requestStage: Protocol.Fetch.RequestStage.Response},
+      {urlPattern: 'file:////path//client.js', requestStage: Protocol.Fetch.RequestStage.Response},
+    ]);
+  });
+
   it('recognizes forbidden network URLs', () => {
     assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`chrome://version`));
@@ -591,6 +625,36 @@ describe('NetworkPersistenceManager', () => {
         encoded: 'www.example.com/hello/foo/bar',
       },
       {
+        url: 'http://www.example.com/hello//client.js',
+        raw: 'www.example.com/hello/%2Fclient.js',
+        encoded: 'www.example.com/hello/%252Fclient.js',
+      },
+      {
+        url: 'http://www.example.com///client.js',
+        raw: 'www.example.com/%2F%2Fclient.js',
+        encoded: 'www.example.com/%252F%252Fclient.js',
+      },
+      {
+        url: 'http://www.example.com/hello//',
+        raw: 'www.example.com/hello/%2Findex.html',
+        encoded: 'www.example.com/hello/%252Findex.html',
+      },
+      {
+        url: 'http://www.example.com/hello//?query=/value',
+        raw: 'www.example.com/hello/%2F?query=%2Fvalue',
+        encoded: 'www.example.com/hello/%252F%3Fquery=%252Fvalue',
+      },
+      {
+        url: 'http://www.example.com/hello/%2Fclient.js',
+        raw: 'www.example.com/hello/%252Fclient.js',
+        encoded: 'www.example.com/hello/%25252Fclient.js',
+      },
+      {
+        url: 'file:////path//client.js',
+        raw: 'file:/%2Fpath/%2Fclient.js',
+        encoded: 'file:/%252Fpath/%252Fclient.js',
+      },
+      {
         url: 'http://www.example.com/.',
         raw: 'www.example.com/%2E',
         encoded: 'www.example.com/%252E',
@@ -681,13 +745,13 @@ describe('NetworkPersistenceManager', () => {
       },
       {
         url: 'http://example.com///foo.js',
-        raw: 'example.com/foo.js',
-        encoded: 'example.com/foo.js',
+        raw: 'example.com/%2F%2Ffoo.js',
+        encoded: 'example.com/%252F%252Ffoo.js',
       },
       {
         url: 'http://example.com///',
-        raw: 'example.com/index.html',
-        encoded: 'example.com/index.html',
+        raw: 'example.com/%2F%2Findex.html',
+        encoded: 'example.com/%252F%252Findex.html',
       },
       // Very long file names.
       {

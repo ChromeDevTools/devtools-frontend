@@ -58,6 +58,28 @@ describe('CompilerScriptMapping', () => {
             });
       });
 
+  /**
+   * Holds back loading the source map at `url` until the returned function is called,
+   * so that source maps can finish loading out of parse order. Calling the returned
+   * function also restores `loadResource`.
+   */
+  const delaySourceMapLoad = (url: string): () => void => {
+    const {promise: sourceMapLoadReleased, resolve} = Promise.withResolvers<void>();
+    const {pageResourceLoader} = backend.universe;
+    const loadResource = pageResourceLoader.loadResource.bind(pageResourceLoader);
+    const loadResourceStub =
+        sinon.stub(pageResourceLoader, 'loadResource').callsFake(async (resourceUrl, initiator) => {
+          if (resourceUrl === url) {
+            await sourceMapLoadReleased;
+          }
+          return await loadResource(resourceUrl, initiator);
+        });
+    return () => {
+      loadResourceStub.restore();
+      resolve();
+    };
+  };
+
   it('creates UISourceCodes with the correct content type', async () => {
     const target = backend.createTarget();
 
@@ -646,6 +668,111 @@ describe('CompilerScriptMapping', () => {
           await debuggerWorkspaceBinding.rawLocationToUILocation(
               originalScript.debuggerModel.createRawLocation(originalScript, 0, 0)),
           originalLibUISourceCode.uiLocation(0, 0));
+    });
+
+    it('supports script replacement when source maps finish loading out of order', async () => {
+      // When DevTools attaches to a page where a script replaced code of an earlier script
+      // (e.g. on hot reload), the scripts are reported in parse order, but the small source
+      // map of the replacement script sometimes finishes loading before the large source map
+      // of the original bundle. The replacement script must keep mapping to `app.js` regardless.
+      const target = backend.createTarget();
+      const sourceRoot = 'webpack:///src';
+
+      const bundleScriptInfo = {
+        url: 'http://example.com/bundle.js',
+        content: 'const f = console.log;\nf("Hello from the original bundle");',
+      };
+      const bundleSourceMapInfo = {
+        url: `${bundleScriptInfo.url}.map`,
+        content: encodeSourceMap(
+            [
+              '0:0 => lib.js:0:0',
+              'lib.js: const f = console.log;',
+              '1:0 => app.js:0:0',
+              'app.js: f("Hello from the original bundle")',
+            ],
+            sourceRoot),
+      };
+      const replacementScriptInfo = {
+        url: 'http://example.com/replacement.js',
+        content: 'f("Hello from the replacement");',
+      };
+      const replacementSourceMapInfo = {
+        url: `${replacementScriptInfo.url}.map`,
+        content: encodeSourceMap(['0:0 => app.js:0:0', 'app.js: f("Hello from the replacement")'], sourceRoot),
+      };
+
+      const loadBundleSourceMap = delaySourceMapLoad(bundleSourceMapInfo.url);
+
+      const bundleScriptPromise = backend.addScript(target, bundleScriptInfo, bundleSourceMapInfo);
+      const [replacementAppUISourceCode, replacementScript] = await Promise.all([
+        waitForUISourceCodeAdded(`${sourceRoot}/app.js`, target),
+        backend.addScript(target, replacementScriptInfo, replacementSourceMapInfo),
+      ]);
+
+      const [libUISourceCode, bundleScript] = await Promise.all([
+        waitForUISourceCodeAdded(`${sourceRoot}/lib.js`, target),
+        bundleScriptPromise,
+        loadBundleSourceMap(),
+      ]);
+
+      // The replacement script still maps to `app.js`...
+      assert.strictEqual(workspace.uiSourceCodeForURL(urlString`${sourceRoot}/app.js`), replacementAppUISourceCode);
+      assert.deepEqual(await debuggerWorkspaceBinding.rawLocationToUILocation(
+                           replacementScript.debuggerModel.createRawLocation(replacementScript, 0, 0)),
+                       replacementAppUISourceCode.uiLocation(0, 0));
+      assert.deepEqual(await debuggerWorkspaceBinding.uiLocationToRawLocations(replacementAppUISourceCode, 0, 0), [
+        replacementScript.debuggerModel.createRawLocation(replacementScript, 0, 0),
+      ]);
+
+      // ...the stale `app.js` mapping of `bundle.js` is not used...
+      const {uiSourceCode} = (await debuggerWorkspaceBinding.rawLocationToUILocation(
+          bundleScript.debuggerModel.createRawLocation(bundleScript, 1, 0)))!;
+      assert.notStrictEqual(uiSourceCode, replacementAppUISourceCode);
+
+      // ...while `bundle.js` still maps to `lib.js`.
+      assert.deepEqual(await debuggerWorkspaceBinding.rawLocationToUILocation(
+                           bundleScript.debuggerModel.createRawLocation(bundleScript, 0, 0)),
+                       libUISourceCode.uiLocation(0, 0));
+    });
+
+    it('shares UISourceCodes with compatible source maps that finish loading out of order', async () => {
+      const target = backend.createTarget();
+      const sourceRoot = 'webpack:///src';
+
+      const route1ScriptInfo = {
+        url: 'http://example.com/route1.js',
+        content: 'function f(x){}\nf(1)',
+      };
+      const route1SourceMapInfo = {
+        url: `${route1ScriptInfo.url}.map`,
+        content: encodeSourceMap(['0:0 => shared.js:0:0', '1:0 => route1.js:0:0'], sourceRoot),
+      };
+      const route2ScriptInfo = {
+        url: 'http://example.com/route2.js',
+        content: 'function f(x){}\nf(2)',
+      };
+      const route2SourceMapInfo = {
+        url: `${route2ScriptInfo.url}.map`,
+        content: encodeSourceMap(['0:0 => shared.js:0:0', '1:0 => route2.js:0:0'], sourceRoot),
+      };
+
+      const loadRoute1SourceMap = delaySourceMapLoad(route1SourceMapInfo.url);
+
+      const route1ScriptPromise = backend.addScript(target, route1ScriptInfo, route1SourceMapInfo);
+      const [, route2Script] = await Promise.all([
+        waitForUISourceCodeAdded(`${sourceRoot}/shared.js`, target),
+        backend.addScript(target, route2ScriptInfo, route2SourceMapInfo),
+      ]);
+
+      const [sharedUISourceCode, route1Script] = await Promise.all([
+        waitForUISourceCodeAdded(`${sourceRoot}/shared.js`, target),
+        route1ScriptPromise,
+        loadRoute1SourceMap(),
+      ]);
+
+      const sharedLocations = await debuggerWorkspaceBinding.uiLocationToRawLocations(sharedUISourceCode, 0, 0);
+      assert.sameMembers(sharedLocations.map(location => location.script()), [route1Script, route2Script]);
     });
   });
 

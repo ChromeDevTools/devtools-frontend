@@ -140,11 +140,30 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
       }
     }
 
-    // Just remove and readd all scripts to ensure their URLs are reflected correctly.
-    for (const script of Array.from(this.#scriptToUISourceCode.keys())) {
+    // `//# sourceURL=` annotations are resolved relative to the inspected URL, so remove and
+    // readd the scripts whose resolved URL changed to ensure their URLs are reflected correctly.
+    // All other scripts are left alone, since re-adding them is expensive for pages with many scripts.
+    const scripts = Array.from(this.#scriptToUISourceCode)
+                        .filter(([script, uiSourceCode]) => this.#resolvedSourceURLChanged(script, uiSourceCode))
+                        .map(([script]) => script);
+    for (const script of scripts) {
       this.removeScripts([script]);
       this.addScript(script);
     }
+  }
+
+  /**
+   * Whether `uiSourceCode` no longer reflects the `//# sourceURL=` annotation of `script` when
+   * resolved against the current inspected URL. Scripts without such an annotation are not
+   * affected by changes to the inspected URL.
+   */
+  #resolvedSourceURLChanged(script: SDK.Script.Script, uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    if (!script.hasSourceURL) {
+      return false;
+    }
+    const url =
+        SDK.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), script.sourceURL);
+    return url !== uiSourceCode.url() || !this.#isTrustworthySourceURL(script, url);
   }
 
   async functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location):

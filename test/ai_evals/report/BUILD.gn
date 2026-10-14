@@ -5,6 +5,8 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("report") {
+  inputs = typescript_js_rouge_types_inputs
+
   sources = [
     "eval-logger.ts",
     "eval-task-recorder.ts",

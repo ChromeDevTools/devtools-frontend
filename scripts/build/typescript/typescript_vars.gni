@@ -193,6 +193,13 @@ typescript_diff_types_inputs = [
   devtools_location_prepend + "node_modules/diff/package.json",
 ]
 
+typescript_js_rouge_types_inputs = [
+  devtools_location_prepend + "node_modules/js-rouge/dist/constants.d.ts",
+  devtools_location_prepend + "node_modules/js-rouge/dist/rouge.d.ts",
+  devtools_location_prepend + "node_modules/js-rouge/dist/utils.d.ts",
+  devtools_location_prepend + "node_modules/js-rouge/package.json",
+]
+
 typescript_puppeteer_types_inputs = [
   devtools_location_prepend + "node_modules/puppeteer-core/package.json",
   devtools_location_prepend + "node_modules/devtools-protocol/package.json",

@@ -146,8 +146,8 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     const scripts = Array.from(this.#scriptToUISourceCode)
                         .filter(([script, uiSourceCode]) => this.#resolvedSourceURLChanged(script, uiSourceCode))
                         .map(([script]) => script);
+    this.removeScripts(scripts);
     for (const script of scripts) {
-      this.removeScripts([script]);
       this.addScript(script);
     }
   }

@@ -1387,7 +1387,8 @@ export class BezierRenderer extends BezierRendererBase {
     });
     const bezierText = document.createElement('span');
     render(html`${nodes}`, bezierText);
-    new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText});
+    new BezierPopoverIcon(
+        {treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText, match, context});
     const iconAndTextContainer = document.createElement('span');
     iconAndTextContainer.classList.add('bezier-icon-and-text');
     iconAndTextContainer.append(icon);

@@ -628,7 +628,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         'cubic-bezier(0.1, 0.2, 0.3, 0.4)',
       ];
       const text = () => `--x: ${parts.join(' ')}`;
-      const {valueElement, edit, commit} = renderEditable('--x', parts.join(' '));
+      // The colors and the bezier editor are the only renderers that edit this value.
+      const {valueElement, edit, commit} = renderEditable('--x', parts.join(' '), {checkSplicing: true});
       await Promise.all(colorSchemes.returnValues);
 
       const swatches = valueElement.querySelectorAll('devtools-color-swatch');

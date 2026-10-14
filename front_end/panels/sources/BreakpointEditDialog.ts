@@ -1,7 +1,6 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
@@ -147,8 +146,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                      i18nString(UIStrings.learnMoreOnBreakpointTypes)}</devtools-link>
     </div>
     `,
-      // clang-format on
-      target);
+         // clang-format on
+         target, {container: {attributes: {tabindex: -1}}});
 };
 
 export class BreakpointEditDialog extends UI.Widget.Widget {
@@ -166,15 +165,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   #state?: CodeMirror.EditorState;
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super({
+    super(target, {
       jslog: `${VisualLogging.dialog('edit-breakpoint')}`,
       useShadowDom: true,
       delegatesFocus: true,
       classes: ['sources-edit-breakpoint-dialog'],
     });
     this.#view = view;
-
-    this.element.tabIndex = -1;
   }
 
   get editorLineNumber(): number {

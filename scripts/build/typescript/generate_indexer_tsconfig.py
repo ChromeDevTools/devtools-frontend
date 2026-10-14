@@ -102,7 +102,7 @@ def main():
     tsconfig['compilerOptions']['rootDir'] = root_dir
     tsconfig['compilerOptions']['rootDirs'] = [root_dir, '.']
     tsconfig['compilerOptions']['moduleResolution'] = 'bundler'
-    tsconfig['compilerOptions']['types'] = ['mocha']
+    tsconfig['compilerOptions']['types'] = []
     tsconfig['compilerOptions']['typeRoots'] = [
         get_relative_path_from_output_directory(
             path.join(opts.front_end_directory, 'node_modules', '@types')),

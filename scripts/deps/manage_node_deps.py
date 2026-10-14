@@ -184,9 +184,15 @@ def fixChaiExports():
         pkg_json.truncate()
 
 
-def apply_patches():
-    patch_path = "scripts/deps/node_module_patches/karma-mocha.patch"
+NODE_MODULE_PATCHES = [
+    "scripts/deps/node_module_patches/karma-mocha.patch",
+    # Removes the global declarations of the Mocha test interface (`describe`,
+    # `it`, ...). Tests have to import them explicitly instead.
+    "scripts/deps/node_module_patches/types-mocha.patch",
+]
 
+
+def apply_patch(patch_path):
     cwd = devtools_paths.devtools_root_path()
     env = os.environ.copy()
 
@@ -204,6 +210,10 @@ def apply_patches():
 
     # If it's neither applicable nor already applied, run it for real to report the error.
     return exec_command(["git", "apply", patch_path])
+
+
+def apply_patches():
+    return any(apply_patch(patch_path) for patch_path in NODE_MODULE_PATCHES)
 
 
 def check_npm_version():

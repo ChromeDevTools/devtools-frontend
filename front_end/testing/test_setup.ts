@@ -27,17 +27,16 @@ import {
   stopTrackingAsyncActivity,
 } from './TrackAsyncOperations.js';
 
-declare global {
-  namespace Mocha {
-    interface Suite {
-      hasOnly?: () => boolean;
-    }
+/**
+ * `hasOnly` is not part of Mocha's public API.
+ */
+interface SuiteWithHasOnly extends Mocha.Suite {
+  hasOnly?: () => boolean;
+}
 
-    interface Test {
-      // Custom extension: attached in beforeEach to signal to Karma that exclusive tests (e.g. it.only) are being run.
-      hasExclusiveTests?: boolean;
-    }
-  }
+interface TestWithExclusiveTests extends Mocha.Test {
+  // Custom extension: attached in beforeEach to signal to Karma that exclusive tests (e.g. it.only) are being run.
+  hasExclusiveTests?: boolean;
 }
 
 async function setupTestFont() {
@@ -61,8 +60,10 @@ before(async function() {
 });
 
 beforeEach(async function(this: Mocha.Context) {
-  if (this.currentTest) {
-    this.currentTest.hasExclusiveTests = this.currentTest.parent?.hasOnly?.();
+  const currentTest: TestWithExclusiveTests|undefined = this.currentTest;
+  if (currentTest) {
+    const parent: SuiteWithHasOnly|undefined = currentTest.parent;
+    currentTest.hasExclusiveTests = parent?.hasOnly?.();
   }
 
   stopTrackingAsyncActivity();

@@ -53,7 +53,7 @@ ts_library("my_feature") {
   Non-TypeScript build dependencies such as asset generators, copy actions, or CSS compilation targets that must complete before compiling this library.
 
 - **`testonly`** (`boolean`, optional):
-  Set to `true` for unit tests and test helpers (`testonly = true`). Compiling with `testonly = true` automatically includes type definitions for Mocha, Chai, Sinon, and Node.
+  Set to `true` for unit tests and test helpers (`testonly = true`). Compiling with `testonly = true` adds the type definitions of Mocha, Chai and Sinon to the inputs of the target. They are not declared globally: tests import `describe`, `it`, etc. from `mocha` (or from the Mocha interface of their test suite).
 
 - **`runs_in`** (`string`, optional):
   Specifies the execution environment for scripts/tools running in Node.js. Allowed value is `"node"`. Omitting the flag implies running in the browser.

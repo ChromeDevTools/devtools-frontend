@@ -11,6 +11,7 @@ import {
   pruneSuite,
 } from '../../front_end/testing/MochaHelpers.js';
 
+import {karmaWindow} from './browser-globals.js';
 import {installDevtoolsBdd} from './mocha-interface.js';
 
 interface KarmaResult {
@@ -45,17 +46,19 @@ interface TestExt extends Mocha.Runnable {
   type?: string;
 }
 
-const karma = window.__karma__;
-const mocha = window.mocha;
+const karma = karmaWindow.__karma__;
+const mocha = karmaWindow.mocha;
 
 const karmaMochaConfig = karma.config.mocha || {};
 const mochaConfig: Record<string, unknown> = {
-  ui: 'bdd',
   ...karmaMochaConfig,
 };
 // Remove opts mocha does not support.
 delete mochaConfig.expose;
 delete mochaConfig.require;
+// The interface is installed by `installDevtoolsBdd()`. Setting it up via the
+// `ui` option would install `describe`, `it`, ... on the global object.
+delete mochaConfig.ui;
 
 mochaConfig.reporter = function() {};
 mocha.setup(mochaConfig);
@@ -132,7 +135,7 @@ karma.start = () => {
   duplicateTests(mocha.suite, karma.config.repetitions);
 
   const runner = mocha.run(() => {
-    karma.complete({coverage: window.__coverage__});
+    karma.complete({coverage: karmaWindow.__coverage__});
   });
 
   runner.on('start', () => {

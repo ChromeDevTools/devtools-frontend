@@ -42,14 +42,18 @@ export interface MochaGlobalsNamespace {
   };
 }
 
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __karma__: Karma;
-    mocha: BrowserMocha;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    Mocha: typeof Mocha&MochaGlobalsNamespace;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __coverage__?: unknown;
-  }
+/**
+ * The window of the Karma context page with the globals that Karma and the
+ * Mocha browser bundle install.
+ */
+export interface KarmaWindow extends Window {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __karma__: Karma;
+  mocha: BrowserMocha;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Mocha: typeof Mocha&MochaGlobalsNamespace;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __coverage__?: unknown;
 }
+
+export const karmaWindow: KarmaWindow = window as unknown as KarmaWindow;

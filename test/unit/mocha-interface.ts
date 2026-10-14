@@ -2,14 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './browser-globals.js';
-
 import type * as Mocha from 'mocha';
 
-export function installDevtoolsBdd(): void {
-  const mochaGlobal = window.Mocha;
+import {karmaWindow} from './browser-globals.js';
 
-  const karmaConfig = window.__karma__.config;
+/**
+ * Receives the BDD functions (`describe`, `it`, ...) instead of the global
+ * object. Tests import them from 'mocha', which the import map resolves to this
+ * module, and the exports below forward to the functions on this context.
+ */
+const mochaContext = {} as Mocha.MochaGlobals;
+
+export function installDevtoolsBdd(): void {
+  const mochaGlobal = karmaWindow.Mocha;
+
+  const karmaConfig = karmaWindow.__karma__.config;
 
   const checkoutRoot = karmaConfig.checkoutRoot as string;
   const pathSeparator = karmaConfig.pathSeparator as string;
@@ -85,21 +92,24 @@ export function installDevtoolsBdd(): void {
       });
     });
   };
-  window.mocha.ui('devtools-bdd');
+  // `mocha.ui()` would install the interface on the global object, bind it to
+  // the private context instead.
+  mochaGlobal.prototype.ui.call(karmaWindow.mocha, 'devtools-bdd');
+  karmaWindow.mocha.suite.emit('pre-require', mochaContext, '', karmaWindow.mocha);
 }
 
-export const after: Mocha.HookFunction<Mocha.Hook> = window.Mocha.after;
-export const afterEach: Mocha.HookFunction<Mocha.Hook> = window.Mocha.afterEach;
-export const before: Mocha.HookFunction<Mocha.Hook> = window.Mocha.before;
-export const beforeEach: Mocha.HookFunction<Mocha.Hook> = window.Mocha.beforeEach;
-export const describe: Mocha.SuiteFunction = window.Mocha.describe;
-export const it: Mocha.TestFunction = window.Mocha.it;
-export const run: () => void = window.Mocha.run;
-export const setup: Mocha.HookFunction = window.Mocha.setup;
-export const suite: Mocha.SuiteFunction = window.Mocha.suite;
-export const suiteSetup: Mocha.HookFunction = window.Mocha.suiteSetup;
-export const suiteTeardown: Mocha.HookFunction = window.Mocha.suiteTeardown;
-export const teardown: Mocha.HookFunction = window.Mocha.teardown;
-export const test: Mocha.TestFunction = window.Mocha.test;
-export const xdescribe: Mocha.PendingSuiteFunction = window.Mocha.xdescribe;
-export const xit: Mocha.PendingTestFunction = window.Mocha.xit;
+export const after: Mocha.HookFunction<Mocha.Hook> = karmaWindow.Mocha.after;
+export const afterEach: Mocha.HookFunction<Mocha.Hook> = karmaWindow.Mocha.afterEach;
+export const before: Mocha.HookFunction<Mocha.Hook> = karmaWindow.Mocha.before;
+export const beforeEach: Mocha.HookFunction<Mocha.Hook> = karmaWindow.Mocha.beforeEach;
+export const describe: Mocha.SuiteFunction = karmaWindow.Mocha.describe;
+export const it: Mocha.TestFunction = karmaWindow.Mocha.it;
+export const run: () => void = karmaWindow.Mocha.run;
+export const setup: Mocha.HookFunction = karmaWindow.Mocha.setup;
+export const suite: Mocha.SuiteFunction = karmaWindow.Mocha.suite;
+export const suiteSetup: Mocha.HookFunction = karmaWindow.Mocha.suiteSetup;
+export const suiteTeardown: Mocha.HookFunction = karmaWindow.Mocha.suiteTeardown;
+export const teardown: Mocha.HookFunction = karmaWindow.Mocha.teardown;
+export const test: Mocha.TestFunction = karmaWindow.Mocha.test;
+export const xdescribe: Mocha.PendingSuiteFunction = karmaWindow.Mocha.xdescribe;
+export const xit: Mocha.PendingTestFunction = karmaWindow.Mocha.xit;

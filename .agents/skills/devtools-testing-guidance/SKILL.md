@@ -22,6 +22,7 @@ Use unit tests for isolated testing of individual functions, classes, models, he
   - Use `TestUniverse` (and foundation test helpers) for easy, isolated setup of required dependencies and models.
   - For testing UI widgets, use stubbed view functions and screenshot assertions rather than spinning up heavy DOM/browser infrastructure.
 - **Location:** Co-located next to their implementation files (e.g. `TimelinePanel.ts` and `TimelinePanel.test.ts`).
+- **Test functions:** import `describe`, `it`, `beforeEach`, etc. from `mocha` (e.g. `import {describe, it} from 'mocha';`). They are not available as globals.
 - **BUILD.gn**: test file should be added to `devtools_ui_module("unittests")` or `devtools_foundation_module("foundation_unittests")` target in the corresponding `BUILD.gn` file.
 
 ---

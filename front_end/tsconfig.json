@@ -27,7 +27,7 @@
         }
       }
     ],
-    "types": ["mocha"]
+    "types": []
   },
   "exclude": [
     "devtools_compatibility.js",

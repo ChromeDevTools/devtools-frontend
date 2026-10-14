@@ -63,6 +63,14 @@ the file that they are testing, with `.test.ts` extension instead of
 `.ts`. For example, the unit tests for `Foo.ts` will end up in a file
 `Foo.test.ts` next to it.
 
+Mocha's `describe`, `it`, `beforeEach`, etc. are not available as globals.
+Import them from `mocha` like any other module:
+
+```ts
+import {assert} from 'chai';
+import {beforeEach, describe, it} from 'mocha';
+```
+
 Checkout the [Unit Testing Helpers](../../front_end/testing/README.md)
 documentation for details on various available helpers.
 

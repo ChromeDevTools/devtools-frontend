@@ -70,6 +70,11 @@ export class FrameImpl {
         this.isWasm = isWasm;
         this.isInline = isInline;
     }
+    toUiLocation(workspace) {
+        const uiSourceCode = this.uiSourceCode ??
+            (this.url ? workspace.uiSourceCodeForURL(this.url) : null);
+        return uiSourceCode?.uiLocation(this.line, this.column) ?? null;
+    }
 }
 /**
  * Drops HIDDEN nodes and merges each OUTLINED node with its callers into one group of logical frames.
@@ -245,6 +250,9 @@ export class ParsedErrorStackFrameImpl {
     get promiseIndex() {
         return this.#locationInfo?.promiseIndex;
     }
+    toUiLocation(workspace) {
+        return this.#frame.toUiLocation(workspace);
+    }
 }
 /**
  * A DebuggableFragmentImpl wraps an existing FragmentImpl. This is important: We can pause at the
@@ -327,6 +335,9 @@ export class DebuggableFrameImpl {
     }
     get sdkFrame() {
         return this.#sdkFrame;
+    }
+    toUiLocation(workspace) {
+        return this.#frame.toUiLocation(workspace);
     }
 }
 //# sourceMappingURL=StackTraceImpl.js.map

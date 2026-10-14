@@ -1,3 +1,4 @@
+import type * as Mocha from 'mocha';
 import type * as Protocol from '../generated/protocol.js';
 import * as Trace from '../models/trace/trace.js';
 interface ParsedTraceAndModel {

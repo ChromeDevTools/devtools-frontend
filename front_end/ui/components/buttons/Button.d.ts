@@ -108,6 +108,7 @@ export declare class Button extends HTMLElement {
     set spinner(spinner: boolean);
     get jslogContext(): string | undefined;
     set jslogContext(jslogContext: string | undefined);
+    get longClickable(): boolean;
     set longClickable(longClickable: boolean);
     set inverseColorTheme(inverseColorTheme: boolean);
     connectedCallback(): void;

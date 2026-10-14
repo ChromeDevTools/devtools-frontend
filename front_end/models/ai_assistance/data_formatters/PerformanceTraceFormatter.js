@@ -390,7 +390,8 @@ export class PerformanceTraceFormatter {
             description: this.#getSerializeBottomUpRootNodeFormat(limit),
             empty: 'no activity',
             cb: async (insightSet) => {
-                const rootNode = AIQueries.mainThreadActivityBottomUpSingleNavigation(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace);
+                const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+                const rootNode = AIQueries.mainThreadActivityBottomUpSingleNavigation(navigationId, insightSet.bounds, parsedTrace);
                 return rootNode ? await this.#serializeBottomUpRootNode(rootNode, limit) : null;
             },
         });
@@ -427,7 +428,8 @@ export class PerformanceTraceFormatter {
             title: 'Longest tasks',
             empty: 'none',
             cb: async (insightSet) => {
-                const longestTaskTrees = AIQueries.longestTasks(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace, 3);
+                const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+                const longestTaskTrees = AIQueries.longestTasks(navigationId, insightSet.bounds, parsedTrace, 3);
                 if (!longestTaskTrees?.length) {
                     return null;
                 }
@@ -482,7 +484,7 @@ export class PerformanceTraceFormatter {
         if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
             const safeUrl = filteredUrl(event, this.#parsedTrace);
             if (safeUrl !== event.args.data.url) {
-                return Trace.Name.forEntry({
+                const syntheticEvent = {
                     ...event,
                     args: {
                         ...event.args,
@@ -491,7 +493,8 @@ export class PerformanceTraceFormatter {
                             url: safeUrl,
                         },
                     },
-                });
+                };
+                return Trace.Name.forEntry(syntheticEvent);
             }
         }
         return Trace.Name.forEntry(event);
@@ -502,7 +505,8 @@ export class PerformanceTraceFormatter {
         }
         const results = [];
         const insightSet = this.#parsedTrace.insights?.values().find(insightSet => Trace.Helpers.Timing.boundsIncludeTimeRange({ bounds, timeRange: insightSet.bounds }));
-        const topDownTree = AIQueries.mainThreadActivityTopDown(insightSet?.navigation?.args.data?.navigationId, bounds, this.#parsedTrace);
+        const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet?.navigation);
+        const topDownTree = AIQueries.mainThreadActivityTopDown(navigationId, bounds, this.#parsedTrace);
         if (topDownTree) {
             results.push('# Top-down main thread summary');
             results.push(await this.formatCallTree(topDownTree, 2 /* headerLevel */));

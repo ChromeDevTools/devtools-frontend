@@ -1,9 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * Asserts two strings are equal, and logs the first differing line if not equal.
- */
 function assertSnapshotContent(actual, expected) {
     if (actual !== expected) {
         const actualLines = actual.split('\n');
@@ -13,7 +10,7 @@ function assertSnapshotContent(actual, expected) {
             const expectedLine = expectedLines.at(i);
             if (actualLine !== expectedLine) {
                 const firstDifference = `First differing line:\nexpected: ${expectedLine}\nactual:   ${actualLine}`;
-                throw new Error(`snapshot assertion failed! to update snapshot, run \`npm run test -- --on-diff=update ...\`\n\n${firstDifference}`);
+                throw new Error(`snapshot assertion failed! to update snapshot, run \`scripts/tools/dt.py test --on-diff=update ...\`\n\n${firstDifference}`);
             }
         }
     }
@@ -76,7 +73,7 @@ class BaseSnapshotTester {
             if (BaseSnapshotTester.#updateMode) {
                 return;
             }
-            throw new Error(`snapshot assertion failed! new snapshot found (${title}), must run \`npm run test -- --on-diff=update ...\` to accept it.`);
+            throw new Error(`snapshot assertion failed! new snapshot found (${title}), must run \`scripts/tools/dt.py test --on-diff=update ...\` to accept it.`);
         }
         const isDifferent = actual !== expected;
         if (isDifferent && !BaseSnapshotTester.#updateMode) {

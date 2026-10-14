@@ -37,7 +37,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SettingsUI from '../../settings/settings.js';
 let themeSupportInstance;
-const themeValueByTargetByName = new Map();
+let themeValueByTargetByName = new WeakMap();
 export class ThemeSupport extends EventTarget {
     setting;
     #themeName = 'default';
@@ -95,10 +95,11 @@ export class ThemeSupport extends EventTarget {
         // per-target caching of computed values. Here we attempt to locate the particular computed
         // value cache for the target element. If no target was specified we use the default computed root,
         // which belongs to the documentElement.
-        let themeValueByName = themeValueByTargetByName.get(target);
+        const targetElement = target ?? document.documentElement;
+        let themeValueByName = themeValueByTargetByName.get(targetElement);
         if (!themeValueByName) {
             themeValueByName = new Map();
-            themeValueByTargetByName.set(target, themeValueByName);
+            themeValueByTargetByName.set(targetElement, themeValueByName);
         }
         // Since theme changes trigger a reload, we can avoid repeatedly looking up color values
         // dynamically. Instead we can look up the first time and cache them for future use,
@@ -151,11 +152,11 @@ export class ThemeSupport extends EventTarget {
             document.documentElement.classList.toggle('baseline-grayscale', true);
         }
         // In the event the theme changes we need to clear caches and notify subscribers.
-        themeValueByTargetByName.clear();
+        themeValueByTargetByName = new WeakMap();
         this.dispatchEvent(new ThemeChangeEvent());
     }
     static clearThemeCache() {
-        themeValueByTargetByName.clear();
+        themeValueByTargetByName = new WeakMap();
     }
     fetchColorsAndApplyHostTheme() {
         for (const document of this.#documentsToTheme) {

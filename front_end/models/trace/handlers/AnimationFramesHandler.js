@@ -15,12 +15,12 @@ let animationFrameEnds = new Map();
 let animationFramePresentations = new Map();
 // The final list of animation frames that we return.
 let animationFrames = [];
-let presentationForFrame = new Map();
+let presentationForFrame = new WeakMap();
 export function reset() {
     animationFrameStarts = new Map();
     animationFrameEnds = new Map();
     animationFrames = [];
-    presentationForFrame = new Map();
+    presentationForFrame = new WeakMap();
     animationFramePresentations = new Map();
     isEnabled = false;
 }

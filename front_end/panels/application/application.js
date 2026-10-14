@@ -3219,6 +3219,14 @@ var UIStrings = {
    */
   computedAppId: "Computed app ID",
   /**
+   * @description Label for the Bundle ID of an Isolated Web App in the manifest view of the Application panel.
+   */
+  bundleId: "Bundle ID",
+  /**
+   * @description Label for the parent app name of a Sub-App in the manifest view of the Application panel.
+   */
+  parentAppName: "Parent app name",
+  /**
    * @description Tooltip text explaining what the app ID is used for in the manifest view of the Application panel.
    */
   appIdExplainer: "This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed",
@@ -3602,7 +3610,7 @@ function renderErrors(warnings, manifestErrors, imageErrors, output) {
     </div>`;
 }
 function renderIdentity(identityData, onCopy, output) {
-  const { name, shortName, description, appId, recommendedId, hasId } = identityData;
+  const { name, shortName, description, appId, recommendedId, bundleId, parentAppName, hasId } = identityData;
   return html2`${renderSectionHeader(i18nString(UIStrings.identity), output)}
   <div class="report-section" jslog=${VisualLogging.section("identity")}>
     <devtools-report-key>${i18nString(UIStrings.name)}</devtools-report-key>
@@ -3637,6 +3645,14 @@ function renderIdentity(identityData, onCopy, output) {
   })}
         </div>` : nothing}
       </devtools-report-value>` : nothing}
+    ${bundleId ? html2`
+      <devtools-report-key>${i18nString(UIStrings.bundleId)}</devtools-report-key>
+      <devtools-report-value>${bundleId}</devtools-report-value>
+    ` : nothing}
+    ${parentAppName ? html2`
+      <devtools-report-key>${i18nString(UIStrings.parentAppName)}</devtools-report-key>
+      <devtools-report-value>${parentAppName}</devtools-report-value>
+    ` : nothing}
     </div>`;
 }
 function renderPresentation(presentationData, output) {
@@ -4125,6 +4141,8 @@ var AppManifestView = class extends AppManifestViewBase {
     const appIdResponse = this.appIdResponse;
     const appId = appIdResponse?.appId || null;
     const recommendedId = appIdResponse?.recommendedId || null;
+    const bundleId = appIdResponse?.bundleId || null;
+    const parentAppName = appIdResponse?.parentAppName || null;
     if ((!data || data === "{}") && !errors.length) {
       this.view({ isEmpty: true }, this.output, this.contentElement);
       this.dispatchEventToListeners("ManifestDetected" /* MANIFEST_DETECTED */, false);
@@ -4139,7 +4157,7 @@ var AppManifestView = class extends AppManifestViewBase {
       data = data.slice(1);
     }
     const parsedManifest = JSON.parse(data);
-    const identityData = this.processIdentity(parsedManifest, appId, recommendedId);
+    const identityData = this.processIdentity(parsedManifest, appId, recommendedId, bundleId, parentAppName);
     const presentationData = this.processPresentation(parsedManifest, url);
     const protocolHandlersData = this.processProtocolHandlers(parsedManifest, url);
     const iconsData = await this.processIcons(parsedManifest, url);
@@ -4381,7 +4399,7 @@ var AppManifestView = class extends AppManifestViewBase {
       await this.overlayModel.toggleWindowControlsToolbar(this.wcoToolbarEnabled);
     }
   }
-  processIdentity(parsedManifest, appId, recommendedId) {
+  processIdentity(parsedManifest, appId, recommendedId, bundleId, parentAppName) {
     const description = this.stringProperty(parsedManifest, "description");
     const warnings = [];
     if (description.length > 300) {
@@ -4393,6 +4411,8 @@ var AppManifestView = class extends AppManifestViewBase {
       description: this.stringProperty(parsedManifest, "description"),
       appId,
       recommendedId,
+      bundleId,
+      parentAppName,
       hasId: Boolean(this.stringProperty(parsedManifest, "id")),
       warnings
     };
@@ -11335,7 +11355,7 @@ var serviceWorkersView_css_default = `/*
 
 .service-worker-subtitle {
   padding-left: var(--sys-size-7);
-  line-height: 14px;
+  line-height: var(--sys-typescale-body4-line-height);
   color: var(--sys-color-state-disabled);
 }
 

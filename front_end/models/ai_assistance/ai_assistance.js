@@ -4455,36 +4455,65 @@ __export(ExecuteJavaScript_exports, {
 });
 import * as Host3 from "../../core/host/host.js";
 import * as i18n4 from "../../core/i18n/i18n.js";
+import * as Platform4 from "../../core/platform/platform.js";
 import * as Root3 from "../../core/root/root.js";
 import * as Formatter from "../formatter/formatter.js";
 var lockedString2 = i18n4.i18n.lockedString;
 var MAX_FORMATTED_LINES = 40;
 var MAX_LINE_LENGTH = 120;
 var MAX_TOTAL_CHARACTERS = 2500;
+var MAX_LONG_LINES_REPORTED = 3;
+var LONG_LINE_PREVIEW_LENGTH = 60;
+function describeSizeLimitViolations(formattedCode) {
+  const violations = [];
+  const lines = formattedCode.split("\n");
+  if (lines.length > MAX_FORMATTED_LINES) {
+    violations.push(`- The code is ${lines.length} lines (max ${MAX_FORMATTED_LINES}). Split the logic into smaller calls and return intermediate results in \`data\`.`);
+  }
+  const longLines = lines.map((line, index) => ({ lineNumber: index + 1, line })).filter(({ line }) => line.length > MAX_LINE_LENGTH);
+  if (longLines.length > 0) {
+    violations.push(`- Lines longer than ${MAX_LINE_LENGTH} characters. Break them into shorter lines, for example by splitting long strings or selectors with concatenation, or by putting arguments on separate lines:`);
+    for (const { lineNumber, line } of longLines.slice(0, MAX_LONG_LINES_REPORTED)) {
+      const preview = Platform4.StringUtilities.trimEndWithMaxLength(line.trimStart(), LONG_LINE_PREVIEW_LENGTH);
+      violations.push(`  - Line ${lineNumber} is ${line.length} characters: \`${preview}\``);
+    }
+    const unreportedCount = longLines.length - MAX_LONG_LINES_REPORTED;
+    if (unreportedCount > 0) {
+      violations.push(`  - ${unreportedCount} more ${unreportedCount === 1 ? "line" : "lines"} not shown.`);
+    }
+  }
+  if (formattedCode.length > MAX_TOTAL_CHARACTERS) {
+    violations.push(`- The code is ${formattedCode.length} characters (max ${MAX_TOTAL_CHARACTERS}). Remove unneeded code or split the logic into smaller calls.`);
+  }
+  return violations;
+}
 var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
   name = "executeJavaScript" /* EXECUTE_JAVASCRIPT */;
   permissionPrompt = "allow-once" /* ALLOW_ONCE */;
   permissionTitle = lockedString2("Allow running JavaScript on the page?");
   description = "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.";
+  /**
+   * Formats the code and checks it against the size limits. This method does
+   * not check syntax: if formatting fails, the formatter returns the original
+   * code, and running it on the page reports any SyntaxError to the model.
+   */
   static async validateAndFormatCode(code) {
-    try {
-      const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-        "text/javascript",
-        code,
-        "  "
-      );
-      const formattedCode = formatted.formattedContent;
-      const lines = formattedCode.split("\n");
-      const maxLineLen = Math.max(...lines.map((line) => line.length));
-      if (lines.length > MAX_FORMATTED_LINES || maxLineLen > MAX_LINE_LENGTH || formattedCode.length > MAX_TOTAL_CHARACTERS) {
-        return {
-          error: `Error: JavaScript code exceeds maximum allowed size (max ${MAX_FORMATTED_LINES} formatted lines, ${MAX_LINE_LENGTH} chars/line, ${MAX_TOTAL_CHARACTERS} total chars). Please split your logic into smaller function calls.`
-        };
-      }
-      return { formattedCode };
-    } catch {
-      return { error: "Error: JavaScript code snippet contains invalid syntax." };
+    const formatted = await Formatter.ScriptFormatter.formatScriptContent(
+      "text/javascript",
+      code,
+      "  "
+    );
+    const formattedCode = formatted.formattedContent;
+    const violations = describeSizeLimitViolations(formattedCode);
+    if (violations.length > 0) {
+      return {
+        error: [
+          "Error: The code was not run because it exceeds size limits after formatting (indented with 2 spaces):",
+          ...violations
+        ].join("\n")
+      };
     }
+    return { formattedCode };
   }
   parameters = {
     type: Host3.AidaClient.ParametersTypes.OBJECT,
@@ -4501,7 +4530,7 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
 * $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Variables from previous function calls are not available in subsequent calls.
-* **CRITICAL** Keep code concise (max 40 lines and 2,500 characters). Split complex logic into multiple steps.
+* **CRITICAL** Keep code concise (max 40 lines, 120 characters per line, and 2,500 characters). Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
 
 For example, to query DOM elements:
@@ -5394,7 +5423,8 @@ var AIQueries = class {
     const threads = [];
     if (parsedTrace.insights) {
       for (const insightSet of parsedTrace.insights?.values()) {
-        const thread = this.findMainThread(insightSet.navigation?.args.data?.navigationId, parsedTrace);
+        const navigationId = Trace3.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+        const thread = this.findMainThread(navigationId, parsedTrace);
         if (thread) {
           threads.push(thread);
         }
@@ -5527,6 +5557,10 @@ var NetworkRequestFormatter = class _NetworkRequestFormatter {
     );
   }
   static async formatBody(title, request, maxBodySize) {
+    if (!request.finished) {
+      return `${title}
+<not available: the request has not finished loading>`;
+    }
     const data = await request.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(data)) {
       return "";
@@ -6203,8 +6237,9 @@ var PerformanceTraceFormatter = class {
       description: this.#getSerializeBottomUpRootNodeFormat(limit),
       empty: "no activity",
       cb: async (insightSet) => {
+        const navigationId = Trace4.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
         const rootNode = AIQueries.mainThreadActivityBottomUpSingleNavigation(
-          insightSet.navigation?.args.data?.navigationId,
+          navigationId,
           insightSet.bounds,
           parsedTrace
         );
@@ -6242,7 +6277,8 @@ var PerformanceTraceFormatter = class {
       title: "Longest tasks",
       empty: "none",
       cb: async (insightSet) => {
-        const longestTaskTrees = AIQueries.longestTasks(insightSet.navigation?.args.data?.navigationId, insightSet.bounds, parsedTrace, 3);
+        const navigationId = Trace4.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+        const longestTaskTrees = AIQueries.longestTasks(navigationId, insightSet.bounds, parsedTrace, 3);
         if (!longestTaskTrees?.length) {
           return null;
         }
@@ -6292,7 +6328,7 @@ var PerformanceTraceFormatter = class {
     if (Trace4.Types.Events.isSyntheticNetworkRequest(event)) {
       const safeUrl = filteredUrl(event, this.#parsedTrace);
       if (safeUrl !== event.args.data.url) {
-        return Trace4.Name.forEntry({
+        const syntheticEvent = {
           ...event,
           args: {
             ...event.args,
@@ -6301,7 +6337,8 @@ var PerformanceTraceFormatter = class {
               url: safeUrl
             }
           }
-        });
+        };
+        return Trace4.Name.forEntry(syntheticEvent);
       }
     }
     return Trace4.Name.forEntry(event);
@@ -6314,8 +6351,9 @@ var PerformanceTraceFormatter = class {
     const insightSet = this.#parsedTrace.insights?.values().find(
       (insightSet2) => Trace4.Helpers.Timing.boundsIncludeTimeRange({ bounds, timeRange: insightSet2.bounds })
     );
+    const navigationId = Trace4.Helpers.Trace.navigationIDForEvent(insightSet?.navigation);
     const topDownTree = AIQueries.mainThreadActivityTopDown(
-      insightSet?.navigation?.args.data?.navigationId,
+      navigationId,
       bounds,
       this.#parsedTrace
     );
@@ -8538,7 +8576,7 @@ __export(GetStorageValues_exports, {
 });
 import * as Host13 from "../../core/host/host.js";
 import * as i18n22 from "../../core/i18n/i18n.js";
-import * as Platform4 from "../../core/platform/platform.js";
+import * as Platform5 from "../../core/platform/platform.js";
 import * as SDK13 from "../../core/sdk/sdk.js";
 var lockedString10 = i18n22.i18n.lockedString;
 var MAX_NUM_CHAR_LENGTH2 = 1e4;
@@ -8588,7 +8626,7 @@ var GetStorageValuesTool = class {
         title = lockedString10("Reading session storage values");
         break;
       default:
-        Platform4.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
+        Platform5.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
     }
     return {
       title,
@@ -9374,7 +9412,7 @@ __export(ListStorageKeys_exports, {
 });
 import * as Host23 from "../../core/host/host.js";
 import * as i18n40 from "../../core/i18n/i18n.js";
-import * as Platform5 from "../../core/platform/platform.js";
+import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK18 from "../../core/sdk/sdk.js";
 var lockedString19 = i18n40.i18n.lockedString;
 var ListStorageKeysTool = class {
@@ -9416,7 +9454,7 @@ var ListStorageKeysTool = class {
         title = lockedString19("Reading session storage keys");
         break;
       default:
-        Platform5.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
+        Platform6.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
     }
     return {
       title,
@@ -14958,7 +14996,7 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Host37 from "../../core/host/host.js";
-import * as Platform6 from "../../core/platform/platform.js";
+import * as Platform7 from "../../core/platform/platform.js";
 import * as Root16 from "../../core/root/root.js";
 import * as SDK30 from "../../core/sdk/sdk.js";
 
@@ -15162,8 +15200,8 @@ var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
 var ALLOWED_PAGE_NAVIGATIONS = [
-  Platform6.DevToolsPath.urlString`about:blank`,
-  Platform6.DevToolsPath.urlString`chrome://terms`
+  Platform7.DevToolsPath.urlString`about:blank`,
+  Platform7.DevToolsPath.urlString`chrome://terms`
 ];
 function generateContextDetailsMarkdown(details) {
   const detailsMarkdown = [];
@@ -15483,7 +15521,7 @@ ${item.text.trim()}`);
       case "none" /* NONE */:
         return new ContextSelectionAgent(options);
       default:
-        Platform6.assertNever(type, "Unknown conversation type");
+        Platform7.assertNever(type, "Unknown conversation type");
     }
   }
   async *run(initialQuery, options = {}) {

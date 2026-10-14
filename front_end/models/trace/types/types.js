@@ -244,6 +244,7 @@ __export(TraceEvents_exports, {
   isInvalidationTracking: () => isInvalidationTracking,
   isJSInvocationEvent: () => isJSInvocationEvent,
   isJSSample: () => isJSSample,
+  isLargestContentfulPaintCandidate: () => isLargestContentfulPaintCandidate,
   isLargestImagePaintCandidate: () => isLargestImagePaintCandidate,
   isLargestTextPaintCandidate: () => isLargestTextPaintCandidate,
   isLayerTreeHostImplSnapshot: () => isLayerTreeHostImplSnapshot,
@@ -526,10 +527,14 @@ function isSyntheticBased(event) {
 function isJSSample(event) {
   return event.name === "JSSample" /* JS_SAMPLE */;
 }
+function hasSyntheticPairEvents(event) {
+  if (!event.args || !("data" in event.args) || typeof event.args.data !== "object" || !event.args.data) {
+    return false;
+  }
+  return "beginEvent" in event.args.data && "endEvent" in event.args.data;
+}
 function isSyntheticInteraction(event) {
-  return Boolean(
-    "interactionId" in event && event.args?.data && "beginEvent" in event.args.data && "endEvent" in event.args.data
-  );
+  return "interactionId" in event && hasSyntheticPairEvents(event);
 }
 function isDrawFrame(event) {
   return event.name === "DrawFrame" /* DRAW_FRAME */ && event.ph === "I" /* INSTANT */;
@@ -680,11 +685,7 @@ function isSyntheticAnimation(event) {
   if (event.name !== "Animation" || !event.cat.includes("devtools.timeline")) {
     return false;
   }
-  const data = event.args?.data;
-  if (!data) {
-    return false;
-  }
-  return "beginEvent" in data && "endEvent" in data;
+  return hasSyntheticPairEvents(event);
 }
 function isLayoutShift(event) {
   return event.name === "LayoutShift" /* LAYOUT_SHIFT */;
@@ -700,6 +701,9 @@ function isSoftFirstContentfulPaint(event) {
 }
 function isAnyFirstContentfulPaint(event) {
   return event.name === "firstContentfulPaint" /* MARK_FCP */ || event.name === "SyntheticSoftFirstContentfulPaint" /* MARK_SOFT_FCP */;
+}
+function isLargestContentfulPaintCandidate(event) {
+  return event.name === "largestContentfulPaint::Candidate" /* MARK_LCP_CANDIDATE */;
 }
 function isAnyLargestContentfulPaintCandidate(event) {
   return event.name === "largestContentfulPaint::Candidate" /* MARK_LCP_CANDIDATE */ || event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;
@@ -795,21 +799,13 @@ function isSyntheticUserTiming(event) {
   if (event.cat !== "blink.user_timing") {
     return false;
   }
-  const data = event.args?.data;
-  if (!data) {
-    return false;
-  }
-  return "beginEvent" in data && "endEvent" in data;
+  return hasSyntheticPairEvents(event);
 }
 function isSyntheticConsoleTiming(event) {
   if (event.cat !== "blink.console") {
     return false;
   }
-  const data = event.args?.data;
-  if (!data) {
-    return false;
-  }
-  return "beginEvent" in data && "endEvent" in data;
+  return hasSyntheticPairEvents(event);
 }
 function isUserTiming(event) {
   return event.cat === "blink.user_timing";

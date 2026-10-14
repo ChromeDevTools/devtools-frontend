@@ -1,4 +1,8 @@
 /**
+ * Asserts two strings are equal, and logs the first differing line if not equal.
+ */
+import type * as Mocha from 'mocha';
+/**
  * Provides snapshot testing for karma unit tests.
  * See README.md for more.
  *

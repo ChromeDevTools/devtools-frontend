@@ -1,3 +1,4 @@
+import type * as Mocha from 'mocha';
 import * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as Timeline from '../panels/timeline/timeline.js';

@@ -411,6 +411,10 @@ var FrameImpl = class {
     this.isWasm = isWasm;
     this.isInline = isInline;
   }
+  toUiLocation(workspace) {
+    const uiSourceCode = this.uiSourceCode ?? (this.url ? workspace.uiSourceCodeForURL(this.url) : null);
+    return uiSourceCode?.uiLocation(this.line, this.column) ?? null;
+  }
 };
 function consolidate(callStack) {
   const result = [];
@@ -568,6 +572,9 @@ var ParsedErrorStackFrameImpl = class {
   get promiseIndex() {
     return this.#locationInfo?.promiseIndex;
   }
+  toUiLocation(workspace) {
+    return this.#frame.toUiLocation(workspace);
+  }
 };
 var DebuggableFragmentImpl = class {
   constructor(fragment, callFrames) {
@@ -639,6 +646,9 @@ var DebuggableFrameImpl = class {
   }
   get sdkFrame() {
     return this.#sdkFrame;
+  }
+  toUiLocation(workspace) {
+    return this.#frame.toUiLocation(workspace);
   }
 };
 

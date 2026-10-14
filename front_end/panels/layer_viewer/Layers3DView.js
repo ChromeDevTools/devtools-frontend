@@ -53,12 +53,12 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const vertexPositionAttributes = new Map();
-const vertexColorAttributes = new Map();
-const textureCoordAttributes = new Map();
-const uniformMatrixLocations = new Map();
-const uniformSamplerLocations = new Map();
-const imageForTexture = new Map();
+const vertexPositionAttributes = new WeakMap();
+const vertexColorAttributes = new WeakMap();
+const textureCoordAttributes = new WeakMap();
+const uniformMatrixLocations = new WeakMap();
+const uniformSamplerLocations = new WeakMap();
+const imageForTexture = new WeakMap();
 export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format off
     render(html `<style>

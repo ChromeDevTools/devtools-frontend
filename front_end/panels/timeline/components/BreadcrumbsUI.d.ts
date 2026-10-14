@@ -1,26 +1,24 @@
 import * as Trace from '../../../models/trace/trace.js';
-/**
- * `initialBreadcrumb` is the first breadcrumb in the breadcrumbs linked list. Since
- * breadcrumbs are a linked list, the first breadcrumb is enough to be able to iterate through all of them.
- *
- * `activeBreadcrumb` is the currently active breadcrumb that the timeline is limited to.
- **/
-export interface BreadcrumbsUIData {
-    initialBreadcrumb: Trace.Types.File.Breadcrumb;
-    activeBreadcrumb: Trace.Types.File.Breadcrumb;
+import * as UI from '../../../ui/legacy/legacy.js';
+export interface ViewInput {
+    initialBreadcrumb: Trace.Types.File.Breadcrumb | null;
+    activeBreadcrumb: Trace.Types.File.Breadcrumb | null;
+    showBreadcrumbs: boolean;
+    onBreadcrumbClick: (breadcrumb: Trace.Types.File.Breadcrumb) => void;
+    onBreadcrumbContextMenu: (event: Event, breadcrumb: Trace.Types.File.Breadcrumb) => void;
 }
-export declare class BreadcrumbActivatedEvent extends Event {
-    breadcrumb: Trace.Types.File.Breadcrumb;
-    childBreadcrumbsRemoved?: boolean | undefined;
-    static readonly eventName = "breadcrumbactivated";
-    constructor(breadcrumb: Trace.Types.File.Breadcrumb, childBreadcrumbsRemoved?: boolean | undefined);
+export interface ViewOutput {
+    scrollToEnd?: () => void;
 }
-export declare class BreadcrumbsUI extends HTMLElement {
+type View = typeof DEFAULT_VIEW;
+export declare class BreadcrumbsUI extends UI.Widget.Widget {
     #private;
-    set data(data: BreadcrumbsUIData);
+    onBreadcrumbActivated?: (breadcrumb: Trace.Types.File.Breadcrumb, childBreadcrumbsRemoved: boolean) => void;
+    constructor(element?: HTMLElement, view?: View);
+    set initialBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb | null);
+    set activeBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb | null);
+    wasShown(): void;
+    performUpdate(): void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-breadcrumbs-ui': BreadcrumbsUI;
-    }
-}
+export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export {};

@@ -11,6 +11,11 @@ export declare class ExecuteJavaScriptTool implements DataTool<ExecuteJavaScript
     readonly permissionPrompt: PermissionPrompt;
     readonly permissionTitle: string;
     readonly description: string;
+    /**
+     * Formats the code and checks it against the size limits. This method does
+     * not check syntax: if formatting fails, the formatter returns the original
+     * code, and running it on the page reports any SyntaxError to the model.
+     */
     static validateAndFormatCode(code: string): Promise<{
         formattedCode?: string;
         error?: string;

@@ -79,7 +79,7 @@ export default `/*
 
 .service-worker-subtitle {
   padding-left: var(--sys-size-7);
-  line-height: 14px;
+  line-height: var(--sys-typescale-body4-line-height);
   color: var(--sys-color-state-disabled);
 }
 

@@ -15,10 +15,10 @@ let lastInvalidationEventForFrame = new Map();
 let lastRecalcByFrame = new Map();
 // These two maps store the same data but in different directions.
 // For a given event, tell me what its initiator was. An event can only have one initiator.
-let eventToInitiatorMap = new Map();
+let eventToInitiatorMap = new WeakMap();
 // For a given event, tell me what events it initiated. An event can initiate
 // multiple events, hence why the value for this map is an array.
-let initiatorToEventsMap = new Map();
+let initiatorToEventsMap = new WeakMap();
 let timerInstallEventsById = new Map();
 let requestIdleCallbackEventsById = new Map();
 let webSocketCreateEventsById = new Map();
@@ -28,8 +28,8 @@ export function reset() {
     lastInvalidationEventForFrame = new Map();
     lastRecalcByFrame = new Map();
     timerInstallEventsById = new Map();
-    eventToInitiatorMap = new Map();
-    initiatorToEventsMap = new Map();
+    eventToInitiatorMap = new WeakMap();
+    initiatorToEventsMap = new WeakMap();
     requestIdleCallbackEventsById = new Map();
     webSocketCreateEventsById = new Map();
     schedulePostTaskCallbackEventsById = new Map();

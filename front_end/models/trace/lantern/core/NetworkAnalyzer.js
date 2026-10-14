@@ -456,7 +456,19 @@ class NetworkAnalyzer {
     }
     static findResourceForUrl(records, resourceUrl) {
         // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
-        return records.find(request => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl));
+        const exactMatch = records.find(request => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl));
+        if (exactMatch) {
+            return exactMatch;
+        }
+        // Cross-origin redirects in renderer trace events have their pre-redirect URL path scrubbed to the origin.
+        try {
+            const originUrl = `${new URL(resourceUrl).origin}/`;
+            return records.find(request => Boolean(request.redirectDestination) && originUrl.startsWith(request.url) &&
+                UrlUtils.equalWithExcludedFragments(request.url, originUrl));
+        }
+        catch {
+            return undefined;
+        }
     }
     static findLastDocumentForUrl(records, resourceUrl) {
         // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first

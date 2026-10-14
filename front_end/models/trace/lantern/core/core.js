@@ -413,9 +413,20 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     };
   }
   static findResourceForUrl(records, resourceUrl) {
-    return records.find(
+    const exactMatch = records.find(
       (request) => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl)
     );
+    if (exactMatch) {
+      return exactMatch;
+    }
+    try {
+      const originUrl = `${new URL(resourceUrl).origin}/`;
+      return records.find(
+        (request) => Boolean(request.redirectDestination) && originUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, originUrl)
+      );
+    } catch {
+      return void 0;
+    }
   }
   static findLastDocumentForUrl(records, resourceUrl) {
     const matchingRequests = records.filter(

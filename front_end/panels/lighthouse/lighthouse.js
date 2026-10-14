@@ -3940,6 +3940,7 @@ import * as Common2 from "../../core/common/common.js";
 import * as i18n3 from "../../core/i18n/i18n.js";
 import * as ProtocolClient from "../../core/protocol_client/protocol_client.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
+import * as LiveMetrics from "../../models/live-metrics/live-metrics.js";
 var lastId = 1;
 var CancelledError = class extends Error {
   constructor() {
@@ -3971,6 +3972,7 @@ var ProtocolService = class {
   #pendingRequests = /* @__PURE__ */ new Map();
   async attach(inspectedURL) {
     const parsedInitialOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(inspectedURL);
+    await LiveMetrics.LiveMetrics.instance().disable();
     await SDK2.TargetManager.TargetManager.instance().suspendAllTargets();
     const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -4072,6 +4074,7 @@ var ProtocolService = class {
       await oldRootTarget.targetAgent().invoke_detachFromTarget({ sessionId: this.mainSessionId });
     }
     await SDK2.TargetManager.TargetManager.instance().resumeAllTargets();
+    await LiveMetrics.LiveMetrics.instance().enable();
     this.removeDialogHandler?.();
   }
   registerStatusCallback(callback) {

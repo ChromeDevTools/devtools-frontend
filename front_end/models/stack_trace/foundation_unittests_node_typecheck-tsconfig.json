@@ -71,6 +71,9 @@
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../workspace/bundle-tsconfig.ref.json"
     }
   ]
 }

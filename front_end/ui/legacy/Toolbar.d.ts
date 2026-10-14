@@ -55,7 +55,6 @@ export declare class Toolbar extends HTMLElement {
     set wrappable(wrappable: boolean);
     hasCompactLayout(): boolean;
     setCompactLayout(enable: boolean): void;
-    static createLongPressActionButton(action: Action, toggledOptions: ToolbarButton[], untoggledOptions: ToolbarButton[]): ToolbarButton;
     static createActionButton(action: Action, options?: ToolbarButtonOptions): ToolbarButton;
     static createActionButton(actionId: string, options?: ToolbarButtonOptions): ToolbarButton;
     empty(): boolean;

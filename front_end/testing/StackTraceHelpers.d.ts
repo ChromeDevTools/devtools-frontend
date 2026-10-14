@@ -2,6 +2,11 @@ import * as Common from '../core/common/common.js';
 import * as Protocol from '../generated/protocol.js';
 import type * as StackTrace from '../models/stack_trace/stack_trace.js';
 /**
+ * Turns a plain frame object into a `StackTrace.Frame` (or any subtype) by adding a `toUiLocation` implementation
+ * that mirrors the production one.
+ */
+export declare function stubFrame<T extends StackTrace.StackTrace.Frame>(frame: Omit<T, 'toUiLocation'>): T;
+/**
  * Easily create `Protocol.Runtime.CallFrame`s by passing a string of the format: `<url>:<scriptId>:<name>:<line>:<column>`
  */
 export declare function protocolCallFrame(descriptor: string): Protocol.Runtime.CallFrame;
@@ -9,7 +14,7 @@ export declare function protocolCallFrame(descriptor: string): Protocol.Runtime.
  * Easily create `Protocol.Debugger.CallFrame`s by passing a string of the format: `<url>:<scriptId>:<name>:<line>:<column>`
  */
 export declare function debuggerCallFrame(descriptor: string): Protocol.Debugger.CallFrame;
-export declare function stringifyFrame(frame: StackTrace.StackTrace.Frame): string;
+export declare function stringifyFrame(frame: Pick<StackTrace.StackTrace.Frame, 'url' | 'uiSourceCode' | 'name' | 'line' | 'column'>): string;
 export declare function stringifyFragment(fragment: StackTrace.StackTrace.Fragment): string;
 export declare function stringifyAsyncFragment(fragment: StackTrace.StackTrace.AsyncFragment): string;
 export declare function stringifyStackTrace(stackTrace: StackTrace.StackTrace.StackTrace): string;

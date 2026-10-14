@@ -39,6 +39,7 @@ export declare class FrameImpl implements StackTrace.StackTrace.Frame {
     readonly isWasm?: boolean;
     readonly isInline?: boolean;
     constructor(url: string | undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode | undefined, name: string | undefined, line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo, rawName?: string, isWasm?: boolean, isInline?: boolean);
+    toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation | null;
 }
 /** A frame of a fragment after outlined frames were merged with their callers. */
 export interface LogicalFrame {
@@ -92,6 +93,7 @@ export declare class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.
     get typeName(): string | undefined;
     get methodName(): string | undefined;
     get promiseIndex(): number | undefined;
+    toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation | null;
 }
 /**
  * A DebuggableFragmentImpl wraps an existing FragmentImpl. This is important: We can pause at the
@@ -123,4 +125,5 @@ export declare class DebuggableFrameImpl implements StackTrace.StackTrace.Debugg
     get isWasm(): boolean | undefined;
     get isInline(): boolean | undefined;
     get sdkFrame(): SDK.DebuggerModel.CallFrame;
+    toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation | null;
 }

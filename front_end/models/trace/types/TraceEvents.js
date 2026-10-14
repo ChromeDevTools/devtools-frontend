@@ -253,8 +253,14 @@ export function isSyntheticBased(event) {
 export function isJSSample(event) {
     return event.name === Name.JS_SAMPLE;
 }
+function hasSyntheticPairEvents(event) {
+    if (!event.args || !('data' in event.args) || typeof event.args.data !== 'object' || !event.args.data) {
+        return false;
+    }
+    return 'beginEvent' in event.args.data && 'endEvent' in event.args.data;
+}
 export function isSyntheticInteraction(event) {
-    return Boolean('interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
+    return 'interactionId' in event && hasSyntheticPairEvents(event);
 }
 export function isDrawFrame(event) {
     // The extra check for INSTANT here is because in the past DrawFrame events had an ASYNC_NESTABLE_START and ASYNC_NESTABLE_END pair. We don't want to support those old events, so we have to check we are dealing with an instant event.
@@ -412,11 +418,7 @@ export function isSyntheticAnimation(event) {
     if (event.name !== 'Animation' || !event.cat.includes('devtools.timeline')) {
         return false;
     }
-    const data = event.args?.data;
-    if (!data) {
-        return false;
-    }
-    return 'beginEvent' in data && 'endEvent' in data;
+    return hasSyntheticPairEvents(event);
 }
 export function isLayoutShift(event) {
     return event.name === Name.LAYOUT_SHIFT;
@@ -432,6 +434,9 @@ export function isSoftFirstContentfulPaint(event) {
 }
 export function isAnyFirstContentfulPaint(event) {
     return event.name === Name.MARK_FCP || event.name === Name.MARK_SOFT_FCP;
+}
+export function isLargestContentfulPaintCandidate(event) {
+    return event.name === Name.MARK_LCP_CANDIDATE;
 }
 export function isAnyLargestContentfulPaintCandidate(event) {
     return event.name === Name.MARK_LCP_CANDIDATE || event.name === Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
@@ -530,21 +535,13 @@ export function isSyntheticUserTiming(event) {
     if (event.cat !== 'blink.user_timing') {
         return false;
     }
-    const data = event.args?.data;
-    if (!data) {
-        return false;
-    }
-    return 'beginEvent' in data && 'endEvent' in data;
+    return hasSyntheticPairEvents(event);
 }
 export function isSyntheticConsoleTiming(event) {
     if (event.cat !== 'blink.console') {
         return false;
     }
-    const data = event.args?.data;
-    if (!data) {
-        return false;
-    }
-    return 'beginEvent' in data && 'endEvent' in data;
+    return hasSyntheticPairEvents(event);
 }
 export function isUserTiming(event) {
     return event.cat === 'blink.user_timing';

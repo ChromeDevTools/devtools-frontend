@@ -36,6 +36,10 @@ export default `/*
   width: fit-content;
 }
 
+::slotted(devtools-button) {
+  display: none;
+}
+
 button {
   --hover-layer-color: var(--sys-color-state-hover-on-subtle);
   --active-layer-color: var(--sys-color-state-ripple-neutral-on-subtle);

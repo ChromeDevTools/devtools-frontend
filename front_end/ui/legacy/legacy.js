@@ -3774,6 +3774,9 @@ var WrapperWidget = class extends Widget {
       );
     }
   }
+  calculateConstraints() {
+    return this.#widget ? this.#widget.constraints() : super.calculateConstraints();
+  }
   focus() {
     if (this.#widget) {
       this.#widget.focus();
@@ -4398,15 +4401,14 @@ var SplitWidget = class extends SplitWidgetBase {
     return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
   }
   #maybeAutoAdjustOrientation() {
-    if (this.#autoAdjustOrientation) {
-      const width = this.isVertical() ? this.#totalSizeCSS : this.#totalSizeOtherDimensionCSS;
-      const height = this.isVertical() ? this.#totalSizeOtherDimensionCSS : this.#totalSizeCSS;
-      if (width <= 600 && height >= 600) {
-        this.setVertical(false);
-      } else {
-        this.setVertical(true);
-      }
+    if (!this.#autoAdjustOrientation) {
+      return;
     }
+    const { width, height } = this.contentElement.getBoundingClientRect();
+    if (!width || !height) {
+      return;
+    }
+    this.setVertical(width > 600 || height < width);
   }
   #onResizeStart() {
     this.#resizeStartSizeDIP = this.#sidebarSizeDIP;
@@ -4569,7 +4571,7 @@ var SplitWidgetElement = class extends WidgetElement {
       const autoAdjustOrientation = element.getAttribute("direction") === "auto";
       const secondIsSidebar = element.getAttribute("sidebar-position") === "second";
       const settingName = element.getAttribute("name") ?? void 0;
-      const sidebarSize = parseInt(element.getAttribute("sidebar-initial-size") || "", 10);
+      const sidebarSize = parseFloat(element.getAttribute("sidebar-initial-size") || "");
       const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
       const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
       const widget2 = new SplitWidget(
@@ -13419,93 +13421,6 @@ var Toolbar = class _Toolbar extends HTMLElement {
       item8.setCompactLayout(enable);
     }
   }
-  static createLongPressActionButton(action6, toggledOptions, untoggledOptions) {
-    const button = _Toolbar.createActionButton(action6);
-    const mainButtonClone = _Toolbar.createActionButton(action6);
-    let longClickController = null;
-    let longClickButtons = null;
-    action6.addEventListener("Toggled" /* TOGGLED */, updateOptions);
-    updateOptions();
-    return button;
-    function updateOptions() {
-      const buttons = action6.toggled() ? toggledOptions || null : untoggledOptions || null;
-      if (buttons?.length) {
-        if (!longClickController) {
-          longClickController = new LongClickController(button.element, showOptions);
-          button.setLongClickable(true);
-          longClickButtons = buttons;
-        }
-      } else if (longClickController) {
-        longClickController.dispose();
-        longClickController = null;
-        button.setLongClickable(false);
-        longClickButtons = null;
-      }
-    }
-    function showOptions() {
-      let buttons = longClickButtons ? longClickButtons.slice() : [];
-      buttons.push(mainButtonClone);
-      const document2 = button.element.ownerDocument;
-      document2.documentElement.addEventListener("mouseup", mouseUp, false);
-      const optionsGlassPane = new GlassPane();
-      optionsGlassPane.setPointerEventsBehavior("BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */);
-      optionsGlassPane.show(document2);
-      const optionsBar = optionsGlassPane.contentElement.createChild("devtools-toolbar");
-      optionsBar.floating = true;
-      const buttonHeight = 26;
-      const hostButtonPosition = button.element.boxInWindow().relativeToElement(GlassPane.container(document2));
-      const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document2.documentElement.offsetHeight;
-      if (topNotBottom) {
-        buttons = buttons.reverse();
-      }
-      optionsBar.style.height = buttonHeight * buttons.length + "px";
-      if (topNotBottom) {
-        optionsBar.style.top = hostButtonPosition.y - 5 + "px";
-      } else {
-        optionsBar.style.top = hostButtonPosition.y - buttonHeight * (buttons.length - 1) - 6 + "px";
-      }
-      optionsBar.style.left = hostButtonPosition.x - 5 + "px";
-      for (let i = 0; i < buttons.length; ++i) {
-        buttons[i].element.addEventListener("mousemove", mouseOver, false);
-        buttons[i].element.addEventListener("mouseout", mouseOut, false);
-        optionsBar.appendToolbarItem(buttons[i]);
-      }
-      const hostButtonIndex = topNotBottom ? 0 : buttons.length - 1;
-      buttons[hostButtonIndex].element.classList.add("emulate-active");
-      function mouseOver(e) {
-        if (e.which !== 1) {
-          return;
-        }
-        if (e.target instanceof HTMLElement) {
-          const buttonElement = e.target.enclosingNodeOrSelfWithClass("toolbar-button");
-          buttonElement.classList.add("emulate-active");
-        }
-      }
-      function mouseOut(e) {
-        if (e.which !== 1) {
-          return;
-        }
-        if (e.target instanceof HTMLElement) {
-          const buttonElement = e.target.enclosingNodeOrSelfWithClass("toolbar-button");
-          buttonElement.classList.remove("emulate-active");
-        }
-      }
-      function mouseUp(e) {
-        if (e.which !== 1) {
-          return;
-        }
-        optionsGlassPane.hide();
-        document2.documentElement.removeEventListener("mouseup", mouseUp, false);
-        for (let i = 0; i < buttons.length; ++i) {
-          if (buttons[i].element.classList.contains("emulate-active")) {
-            buttons[i].element.classList.remove("emulate-active");
-            buttons[i].clicked(e);
-            break;
-          }
-        }
-      }
-    }
-  }
   static createActionButton(actionOrActionId, options = {}) {
     const action6 = typeof actionOrActionId === "string" ? ActionRegistry.instance().getAction(actionOrActionId) : actionOrActionId;
     const button = action6.toggleable() ? makeToggle() : makeButton();
@@ -17523,6 +17438,7 @@ function bindToAction(actionName) {
   const action6 = ActionRegistry.instance().getAction(actionName);
   let setEnabled;
   let toggled;
+  let longClickController = null;
   function actionEnabledChanged(event) {
     setEnabled(event.data);
   }
@@ -17530,6 +17446,8 @@ function bindToAction(actionName) {
     if (!e || !(e instanceof Buttons6.Button.Button)) {
       action6.removeEventListener("Enabled" /* ENABLED */, actionEnabledChanged);
       action6.removeEventListener("Toggled" /* TOGGLED */, toggled);
+      longClickController?.dispose();
+      longClickController = null;
       return;
     }
     setEnabled = (enabled) => {
@@ -17542,13 +17460,100 @@ function bindToAction(actionName) {
     const jslogContext = action6.id();
     const toggledIconName = action6.toggledIcon() ?? iconName;
     const toggleType = action6.toggleWithRedColor() ? Buttons6.Button.ToggleType.RED : Buttons6.Button.ToggleType.PRIMARY;
-    if (e.childNodes.length) {
+    const hasContentChildren = Array.from(e.childNodes).some((node) => !(node instanceof Buttons6.Button.Button) && (node.nodeType !== Node.TEXT_NODE || Boolean(node.textContent?.trim())));
+    const updateLongClickOptions = () => {
+      const optionButtons = Array.from(e.querySelectorAll("devtools-button"));
+      if (optionButtons.length > 0 && (!toggleable || action6.toggled())) {
+        if (!longClickController) {
+          longClickController = new LongClickController(e, showOptions);
+          e.longClickable = true;
+        }
+      } else if (longClickController) {
+        longClickController.dispose();
+        longClickController = null;
+        e.longClickable = false;
+      }
+    };
+    function showOptions() {
+      if (!(e instanceof Buttons6.Button.Button)) {
+        return;
+      }
+      let buttons = [...e.querySelectorAll("devtools-button"), e];
+      const document2 = e.ownerDocument;
+      document2.documentElement.addEventListener("mouseup", mouseUp, false);
+      const optionsGlassPane = new GlassPane();
+      optionsGlassPane.setPointerEventsBehavior("BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */);
+      optionsGlassPane.show(document2);
+      const optionsBar = optionsGlassPane.contentElement.createChild("devtools-toolbar");
+      optionsBar.floating = true;
+      const buttonHeight = 26;
+      const hostButtonPosition = e.boxInWindow().relativeToElement(GlassPane.container(document2));
+      const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document2.documentElement.offsetHeight;
+      if (topNotBottom) {
+        buttons = buttons.reverse();
+      }
+      optionsBar.style.height = buttonHeight * buttons.length + "px";
+      if (topNotBottom) {
+        optionsBar.style.top = hostButtonPosition.y - 5 + "px";
+      } else {
+        optionsBar.style.top = hostButtonPosition.y - buttonHeight * (buttons.length - 1) - 6 + "px";
+      }
+      optionsBar.style.left = hostButtonPosition.x - 5 + "px";
+      const buttonClones = [];
+      for (const button of buttons) {
+        const clone = button.cloneNode(false);
+        clone.longClickable = false;
+        clone.classList.add("toolbar-button");
+        clone.addEventListener("mousemove", mouseOver, false);
+        clone.addEventListener("mouseout", mouseOut, false);
+        optionsBar.appendChild(clone);
+        buttonClones.push(clone);
+      }
+      const hostButtonIndex = topNotBottom ? 0 : buttons.length - 1;
+      buttonClones[hostButtonIndex].classList.add("emulate-active");
+      function mouseOver(ev) {
+        if (ev.which !== 1) {
+          return;
+        }
+        if (ev.target instanceof HTMLElement) {
+          const buttonElement = ev.target.enclosingNodeOrSelfWithClass("toolbar-button");
+          buttonElement?.classList.add("emulate-active");
+        }
+      }
+      function mouseOut(ev) {
+        if (ev.which !== 1) {
+          return;
+        }
+        if (ev.target instanceof HTMLElement) {
+          const buttonElement = ev.target.enclosingNodeOrSelfWithClass("toolbar-button");
+          buttonElement?.classList.remove("emulate-active");
+        }
+      }
+      function mouseUp(ev) {
+        if (ev.which !== 1) {
+          return;
+        }
+        optionsGlassPane.hide();
+        document2.documentElement.removeEventListener("mouseup", mouseUp, false);
+        for (let i = 0; i < buttonClones.length; ++i) {
+          if (buttonClones[i].classList.contains("emulate-active")) {
+            buttonClones[i].classList.remove("emulate-active");
+            buttons[i].click();
+            break;
+          }
+        }
+      }
+    }
+    if (hasContentChildren) {
       e.jslogContext = jslogContext;
+      updateLongClickOptions();
     } else if (toggleable) {
       toggled = () => {
         e.toggled = action6.toggled();
+        updateLongClickOptions();
         if (action6.title()) {
-          e.title = action6.title();
+          setLabel(e, action6.title());
+          e.accessibleLabel = action6.title();
           Tooltip.installWithActionBinding(e, action6.title(), action6.id());
         }
       };
@@ -17556,17 +17561,28 @@ function bindToAction(actionName) {
       e.data = {
         jslogContext,
         title,
+        accessibleLabel: title,
         variant: Buttons6.Button.Variant.ICON_TOGGLE,
         iconName,
         toggledIconName,
         toggleType,
-        toggled: action6.toggled()
+        toggled: action6.toggled(),
+        toggleOnClick: false
       };
       toggled();
     } else if (iconName) {
-      e.data = { iconName, jslogContext, title, variant: Buttons6.Button.Variant.ICON };
+      e.data = { iconName, jslogContext, title, accessibleLabel: title, variant: Buttons6.Button.Variant.ICON };
+      if (title) {
+        setLabel(e, title);
+        Tooltip.installWithActionBinding(e, title, action6.id());
+      }
+      updateLongClickOptions();
     } else {
-      e.data = { jslogContext, title, variant: Buttons6.Button.Variant.TEXT };
+      e.data = { jslogContext, title, accessibleLabel: title, variant: Buttons6.Button.Variant.TEXT };
+      if (title) {
+        setLabel(e, title);
+      }
+      updateLongClickOptions();
     }
     setEnabled(action6.enabled());
     e.onclick = () => action6.execute();
@@ -17799,16 +17815,22 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   static findCorrespondingElement(sourceElement, sourceRootElement, targetRootElement) {
     let currentElement = sourceElement;
     const childIndexesOnPathToRoot = [];
-    while (currentElement?.parentElement && currentElement !== sourceRootElement) {
-      childIndexesOnPathToRoot.push([...currentElement.parentElement.children].indexOf(currentElement));
+    while (currentElement.parentElement && currentElement !== sourceRootElement) {
+      let childIndex = 0;
+      let sibling = currentElement.previousElementSibling;
+      while (sibling) {
+        childIndex++;
+        sibling = sibling.previousElementSibling;
+      }
+      childIndexesOnPathToRoot.push(childIndex);
       currentElement = currentElement.parentElement;
     }
-    if (!currentElement) {
+    if (currentElement !== sourceRootElement) {
       return null;
     }
     let targetElement = targetRootElement;
     for (const index of childIndexesOnPathToRoot.reverse()) {
-      targetElement = targetElement.children[index];
+      targetElement = targetElement?.children[index] ?? null;
     }
     return targetElement;
   }
@@ -18261,7 +18283,7 @@ var MarginBehavior = /* @__PURE__ */ ((MarginBehavior2) => {
   MarginBehavior2["NO_MARGIN"] = "NoMargin";
   return MarginBehavior2;
 })(MarginBehavior || {});
-var containers = /* @__PURE__ */ new Map();
+var containers = /* @__PURE__ */ new WeakMap();
 var panes = /* @__PURE__ */ new Set();
 var GlassPanePanes = panes;
 

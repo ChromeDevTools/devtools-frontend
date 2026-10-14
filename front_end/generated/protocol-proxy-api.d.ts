@@ -4,7 +4,7 @@
 
 /**
  * This file is auto-generated, do not edit manually. *
- * Re-generate with: npm run generate-protocol-resources.
+ * Re-generate with: scripts/tools/dt.py generate-protocol-resources.
  */
 
 

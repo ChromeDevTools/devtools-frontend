@@ -279,7 +279,7 @@ export class ParsedURL {
         // 8 - ?fragment
         const schemeRegex = /([A-Za-z][A-Za-z0-9+.-]*):\/\//;
         const userRegex = /(?:([A-Za-z0-9\-._~%!$&'()*+,;=:]*)@)?/;
-        const hostRegex = /((?:\[::\d?\])|(?:[^\s\/:]*))/;
+        const hostRegex = /((?:\[[0-9a-fA-F:.]*:[0-9a-fA-F:.]*\])|(?:[^\s\/:]*))/;
         const portRegex = /(?::([\d]+))?/;
         const pathRegex = /(\/[^#?]*)?/;
         const queryRegex = /(?:\?([^#]*))?/;

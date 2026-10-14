@@ -15,6 +15,7 @@ __export(helpers_exports, {
   makeUpEntity: () => makeUpEntity
 });
 import * as ThirdPartyWeb from "../../../third_party/third-party-web/third-party-web.js";
+import * as Helpers from "../helpers/helpers.js";
 import * as Types from "../types/types.js";
 function getEntityForEvent(event, entityMappings3) {
   const url = getNonResolvedURL(event);
@@ -44,8 +45,9 @@ function getNonResolvedURL(entry, handlerData) {
   if (Types.Events.isParseAuthorStyleSheetEvent(entry) && entry.args) {
     return entry.args.data.styleSheetUrl;
   }
-  if (entry.args?.data?.stackTrace && entry.args.data.stackTrace.length > 0) {
-    return entry.args.data.stackTrace[0].url;
+  const data30 = Helpers.Trace.getEventDataObject(entry);
+  if (data30 && Array.isArray(data30.stackTrace) && data30.stackTrace.length > 0 && typeof data30.stackTrace[0]?.url === "string") {
+    return data30.stackTrace[0].url;
   }
   if (Types.Events.isParseHTML(entry)) {
     return entry.args.beginData.url;
@@ -60,10 +62,10 @@ function getNonResolvedURL(entry, handlerData) {
       return paintEvent ? getNonResolvedURL(paintEvent, handlerData) : null;
     }
   }
-  if (entry.args?.data?.url) {
-    return entry.args.data.url;
+  if (data30 && typeof data30.url === "string" && data30.url) {
+    return data30.url;
   }
-  const requestId = entry.args?.data?.requestId;
+  const requestId = data30 && typeof data30.requestId === "string" ? data30.requestId : void 0;
   if (handlerData && requestId) {
     const url = handlerData.NetworkRequests.byId.get(requestId)?.args.data.url;
     if (url) {
@@ -203,7 +205,7 @@ __export(AnimationFramesHandler_exports, {
   handleUserConfig: () => handleUserConfig,
   reset: () => reset
 });
-import * as Helpers from "../helpers/helpers.js";
+import * as Helpers2 from "../helpers/helpers.js";
 import * as Types2 from "../types/types.js";
 function threadKey(data30) {
   return `${data30.pid}-${data30.tid}`;
@@ -212,12 +214,12 @@ var animationFrameStarts = /* @__PURE__ */ new Map();
 var animationFrameEnds = /* @__PURE__ */ new Map();
 var animationFramePresentations = /* @__PURE__ */ new Map();
 var animationFrames = [];
-var presentationForFrame = /* @__PURE__ */ new Map();
+var presentationForFrame = /* @__PURE__ */ new WeakMap();
 function reset() {
   animationFrameStarts = /* @__PURE__ */ new Map();
   animationFrameEnds = /* @__PURE__ */ new Map();
   animationFrames = [];
-  presentationForFrame = /* @__PURE__ */ new Map();
+  presentationForFrame = /* @__PURE__ */ new WeakMap();
   animationFramePresentations = /* @__PURE__ */ new Map();
   isEnabled = false;
 }
@@ -249,15 +251,15 @@ async function finalize() {
     if (!endEvents) {
       continue;
     }
-    Helpers.Trace.sortTraceEventsInPlace(startEvents);
-    Helpers.Trace.sortTraceEventsInPlace(endEvents);
+    Helpers2.Trace.sortTraceEventsInPlace(startEvents);
+    Helpers2.Trace.sortTraceEventsInPlace(endEvents);
     for (let i = 0; i < startEvents.length; i++) {
       const endEvent = endEvents.at(i);
       if (!endEvent) {
         break;
       }
       const startEvent = startEvents[i];
-      const syntheticEvent = Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      const syntheticEvent = Helpers2.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
         rawSourceEvent: startEvent,
         ...startEvent,
         dur: Types2.Timing.Micro(endEvent.ts - startEvent.ts),
@@ -297,7 +299,7 @@ __export(AnimationHandler_exports, {
   handleEvent: () => handleEvent2,
   reset: () => reset2
 });
-import * as Helpers2 from "../helpers/helpers.js";
+import * as Helpers3 from "../helpers/helpers.js";
 import * as Types3 from "../types/types.js";
 var animations = [];
 var animationsSyntheticEvents = [];
@@ -312,7 +314,7 @@ function handleEvent2(event) {
   }
 }
 async function finalize2() {
-  const syntheticEvents2 = Helpers2.Trace.createMatchedSortedSyntheticEvents(animations);
+  const syntheticEvents2 = Helpers3.Trace.createMatchedSortedSyntheticEvents(animations);
   animationsSyntheticEvents.push(...syntheticEvents2);
 }
 function data2() {
@@ -463,7 +465,7 @@ __export(RendererHandler_exports, {
   sanitizeThreads: () => sanitizeThreads
 });
 import * as Platform5 from "../../../core/platform/platform.js";
-import * as Helpers6 from "../helpers/helpers.js";
+import * as Helpers7 from "../helpers/helpers.js";
 import * as Types8 from "../types/types.js";
 
 // ../../front_end/models/trace/handlers/MetaHandler.ts
@@ -476,7 +478,7 @@ __export(MetaHandler_exports, {
   reset: () => reset4
 });
 import * as Platform2 from "../../../core/platform/platform.js";
-import * as Helpers3 from "../helpers/helpers.js";
+import * as Helpers4 from "../helpers/helpers.js";
 import * as Types5 from "../types/types.js";
 var config = Types5.Configuration.defaults();
 function handleUserConfig2(userConfig) {
@@ -602,7 +604,7 @@ function handleEvent4(event) {
     const viewportWidth = rectAsArray[2];
     const viewportHeight = rectAsArray[5];
     viewportRect = { x: viewportX, y: viewportY, width: viewportWidth, height: viewportHeight };
-    devicePixelRatio = event.args.data.dpr;
+    devicePixelRatio = event.args.data.dpr ?? null;
   }
   if (Types5.Events.isTracingStartedInBrowser(event)) {
     traceStartedTimeFromTracingStartedEvent = event.ts;
@@ -733,7 +735,7 @@ async function finalize4(options) {
     }
   }
   const firstMainFrameNav = mainFrameNavigations.at(0);
-  const firstNavTimeThreshold = Helpers3.Timing.secondsToMicro(Types5.Timing.Seconds(0.5));
+  const firstNavTimeThreshold = Helpers4.Timing.secondsToMicro(Types5.Timing.Seconds(0.5));
   if (firstMainFrameNav) {
     const navigationIsWithinThreshold = firstMainFrameNav.ts - traceBounds.min < firstNavTimeThreshold;
     if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL && navigationIsWithinThreshold) {
@@ -3631,7 +3633,7 @@ var Runtime;
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/models/trace/handlers/NetworkRequestsHandler.ts
-import * as Helpers4 from "../helpers/helpers.js";
+import * as Helpers5 from "../helpers/helpers.js";
 import * as Types6 from "../types/types.js";
 var MILLISECONDS_TO_MICROSECONDS = 1e3;
 var SECONDS_TO_MICROSECONDS = 1e6;
@@ -3642,7 +3644,7 @@ var requestsById = /* @__PURE__ */ new Map();
 var requestsByTime = [];
 var requestIdsByURL = /* @__PURE__ */ new Map();
 var networkRequestEventByInitiatorUrl = /* @__PURE__ */ new Map();
-var eventToInitiatorMap = /* @__PURE__ */ new Map();
+var eventToInitiatorMap = /* @__PURE__ */ new WeakMap();
 var entityMappings = {
   eventsByEntity: /* @__PURE__ */ new Map(),
   entityByEvent: /* @__PURE__ */ new Map(),
@@ -3678,7 +3680,7 @@ function reset5() {
   requestMap = /* @__PURE__ */ new Map();
   requestsByTime = [];
   networkRequestEventByInitiatorUrl = /* @__PURE__ */ new Map();
-  eventToInitiatorMap = /* @__PURE__ */ new Map();
+  eventToInitiatorMap = /* @__PURE__ */ new WeakMap();
   webSocketData = /* @__PURE__ */ new Map();
   requestIdsByURL = /* @__PURE__ */ new Map();
   entityMappings = {
@@ -3802,7 +3804,7 @@ async function finalize5() {
     let lrServerResponseTime;
     if (isLightrider && request.receiveResponse?.args.data.headers) {
       timing = {
-        requestTime: Helpers4.Timing.microToSeconds(request.sendRequests.at(0)?.ts ?? 0),
+        requestTime: Helpers5.Timing.microToSeconds(request.sendRequests.at(0)?.ts ?? 0),
         connectEnd: 0,
         connectStart: 0,
         dnsEnd: 0,
@@ -3823,7 +3825,7 @@ async function finalize5() {
       };
       const TCPMsHeader = request.receiveResponse.args.data.headers.find((h) => h.name === "X-TCPMs");
       const TCPMs = TCPMsHeader ? Math.max(0, parseInt(TCPMsHeader.value, 10)) : 0;
-      if (request.receiveResponse.args.data.protocol.startsWith("h3")) {
+      if (request.receiveResponse.args.data.protocol?.startsWith("h3")) {
         timing.connectStart = 0;
         timing.connectEnd = TCPMs;
       } else {
@@ -3881,10 +3883,10 @@ async function finalize5() {
     const { encodedDataLength, decodedBodyLength } = request.resourceFinish ? request.resourceFinish.args.data : { encodedDataLength: 0, decodedBodyLength: 0 };
     const parsedUrl = new URL(url);
     const isHttps = parsedUrl.protocol === "https:";
-    const requestingFrameUrl = Helpers4.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || "";
+    const requestingFrameUrl = Helpers5.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || "";
     const preloadRenderBlockingStatusChange = request.preloadRenderBlockingStatusChange?.at(-1)?.args.data.renderBlocking;
     const isRenderBlocking = preloadRenderBlockingStatusChange ?? sendRequestIsRenderBlocking ?? "non_blocking";
-    const networkEvent = Helpers4.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const networkEvent = Helpers5.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       rawSourceEvent: finalSendRequest,
       args: {
         data: {
@@ -3964,7 +3966,7 @@ async function finalize5() {
     requestsForUrl.push(networkEvent.args.data.requestId);
     requestIdsByURL.set(networkEvent.args.data.url, requestsForUrl);
     addNetworkRequestToEntityMapping(networkEvent, entityMappings, request);
-    const initiatorUrl = networkEvent.args.data.initiator?.url || Helpers4.Trace.getStackTraceTopCallFrameInEventPayload(networkEvent)?.url;
+    const initiatorUrl = networkEvent.args.data.initiator?.url || Helpers5.Trace.getStackTraceTopCallFrameInEventPayload(networkEvent)?.url;
     if (initiatorUrl) {
       const events = networkRequestEventByInitiatorUrl.get(initiatorUrl) ?? [];
       events.push(networkEvent);
@@ -4036,7 +4038,7 @@ function createSyntheticWebSocketConnection(startEvent, endEvent, firstRecordedE
       data: {
         identifier: mainEvent.args.data.identifier,
         priority: Network.ResourcePriority.Low,
-        url: mainEvent.args.data.url || ""
+        url: startEvent ? startEvent.args.data.url : ""
       }
     }
   };
@@ -4053,7 +4055,7 @@ __export(SamplesHandler_exports, {
 });
 import * as Platform4 from "../../../core/platform/platform.js";
 import * as CPUProfile from "../../cpu_profile/cpu_profile.js";
-import * as Helpers5 from "../helpers/helpers.js";
+import * as Helpers6 from "../helpers/helpers.js";
 import * as Types7 from "../types/types.js";
 var profilesInProcess = /* @__PURE__ */ new Map();
 var entryToNode = /* @__PURE__ */ new Map();
@@ -4081,12 +4083,12 @@ function parseCPUProfileData(parseOptions) {
           if (threadId === void 0) {
             return;
           }
-          const ts = Helpers5.Timing.milliToMicro(Types7.Timing.Milli(timeStampMilliseconds));
+          const ts = Helpers6.Timing.milliToMicro(Types7.Timing.Milli(timeStampMilliseconds));
           const nodeId = node.id;
-          const profileCall = Helpers5.Trace.makeProfileCall(node, selectedProfileId, sampleIndex, ts, processId, threadId);
+          const profileCall = Helpers6.Trace.makeProfileCall(node, selectedProfileId, sampleIndex, ts, processId, threadId);
           finalizedData.profileCalls.push(profileCall);
           indexStack.push(finalizedData.profileCalls.length - 1);
-          const traceEntryNode = Helpers5.TreeHelpers.makeEmptyTraceEntryNode(profileCall, nodeId);
+          const traceEntryNode = Helpers6.TreeHelpers.makeEmptyTraceEntryNode(profileCall, nodeId);
           entryToNode.set(profileCall, traceEntryNode);
           traceEntryNode.depth = depth;
           if (indexStack.length === 1) {
@@ -4104,8 +4106,8 @@ function parseCPUProfileData(parseOptions) {
           if (callFrame === void 0 || ts === void 0 || pid === void 0 || selectedProfileId === void 0 || tid === void 0 || traceEntryNode === void 0) {
             return;
           }
-          const dur = Helpers5.Timing.milliToMicro(Types7.Timing.Milli(durMs));
-          const selfTime = Helpers5.Timing.milliToMicro(Types7.Timing.Milli(selfTimeMs));
+          const dur = Helpers6.Timing.milliToMicro(Types7.Timing.Milli(durMs));
+          const selfTime = Helpers6.Timing.milliToMicro(Types7.Timing.Milli(selfTimeMs));
           profileCall.dur = dur;
           traceEntryNode.selfTime = selfTime;
           const parentIndex = indexStack.at(-1);
@@ -4135,7 +4137,7 @@ function parseCPUProfileData(parseOptions) {
       }
       const indexStack = [];
       const profileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(chosenData.rawProfile);
-      const profileTree = Helpers5.TreeHelpers.makeEmptyTraceEntryTree();
+      const profileTree = Helpers6.TreeHelpers.makeEmptyTraceEntryTree();
       profileTree.maxDepth = profileModel.maxDepth;
       const selectedProfileId = chosen.id;
       const finalizedData = {
@@ -4444,11 +4446,11 @@ function buildHierarchy(processes2, options) {
   }
   for (const [pid, process] of processes2) {
     for (const [tid, thread] of process.threads) {
-      Helpers6.Trace.sortTraceEventsInPlace(thread.entries);
+      Helpers7.Trace.sortTraceEventsInPlace(thread.entries);
       const samplesDataForThread = samplesData.profilesInProcess.get(pid)?.get(tid);
       if (samplesDataForThread) {
         const cpuProfile = samplesDataForThread.parsedProfile;
-        const samplesIntegrator = cpuProfile && new Helpers6.SamplesIntegrator.SamplesIntegrator(
+        const samplesIntegrator = cpuProfile && new Helpers7.SamplesIntegrator.SamplesIntegrator(
           cpuProfile,
           samplesDataForThread.profileId,
           pid,
@@ -4457,19 +4459,19 @@ function buildHierarchy(processes2, options) {
         );
         const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
         if (samplesIntegrator && profileCalls) {
-          thread.entries = Helpers6.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+          thread.entries = Helpers7.Trace.mergeEventsInOrder(thread.entries, profileCalls);
           thread.profileCalls = profileCalls;
           const jsSamples = samplesIntegrator.jsSampleEvents;
           if (jsSamples.length) {
-            thread.entries = Helpers6.Trace.mergeEventsInOrder(thread.entries, jsSamples);
+            thread.entries = Helpers7.Trace.mergeEventsInOrder(thread.entries, jsSamples);
           }
         }
       }
       if (!thread.entries.length) {
-        thread.tree = Helpers6.TreeHelpers.makeEmptyTraceEntryTree();
+        thread.tree = Helpers7.TreeHelpers.makeEmptyTraceEntryTree();
         continue;
       }
-      const treeData = Helpers6.TreeHelpers.treify(thread.entries, options);
+      const treeData = Helpers7.TreeHelpers.treify(thread.entries, options);
       thread.tree = treeData.tree;
       for (const [entry, node] of treeData.entryToNode) {
         entryToNode2.set(entry, node);
@@ -4507,14 +4509,14 @@ function deps3() {
 
 // ../../front_end/models/trace/handlers/AsyncJSCallsHandler.ts
 var schedulerToRunEntryPoints = /* @__PURE__ */ new Map();
-var taskScheduleForTaskRunEvent = /* @__PURE__ */ new Map();
-var asyncCallToScheduler = /* @__PURE__ */ new Map();
-var runEntryPointToScheduler = /* @__PURE__ */ new Map();
+var taskScheduleForTaskRunEvent = /* @__PURE__ */ new WeakMap();
+var asyncCallToScheduler = /* @__PURE__ */ new WeakMap();
+var runEntryPointToScheduler = /* @__PURE__ */ new WeakMap();
 function reset8() {
   schedulerToRunEntryPoints = /* @__PURE__ */ new Map();
-  asyncCallToScheduler = /* @__PURE__ */ new Map();
-  taskScheduleForTaskRunEvent = /* @__PURE__ */ new Map();
-  runEntryPointToScheduler = /* @__PURE__ */ new Map();
+  asyncCallToScheduler = /* @__PURE__ */ new WeakMap();
+  taskScheduleForTaskRunEvent = /* @__PURE__ */ new WeakMap();
+  runEntryPointToScheduler = /* @__PURE__ */ new WeakMap();
 }
 function handleEvent8(_) {
 }
@@ -4657,7 +4659,7 @@ __export(ExtensionTraceDataHandler_exports, {
   handleEvent: () => handleEvent11,
   reset: () => reset11
 });
-import * as Helpers8 from "../helpers/helpers.js";
+import * as Helpers9 from "../helpers/helpers.js";
 import * as Types12 from "../types/types.js";
 
 // ../../front_end/models/trace/handlers/UserTimingsHandler.ts
@@ -4669,7 +4671,7 @@ __export(UserTimingsHandler_exports, {
   reset: () => reset10,
   userTimingComparator: () => userTimingComparator
 });
-import * as Helpers7 from "../helpers/helpers.js";
+import * as Helpers8 from "../helpers/helpers.js";
 import * as Types11 from "../types/types.js";
 var syntheticEvents = [];
 var measureTraceByTraceId = /* @__PURE__ */ new Map();
@@ -4740,7 +4742,7 @@ function getEventTrack(event) {
   if (event.cat === "blink.user_timing") {
     const detailString = event.args.data.beginEvent.args?.detail;
     if (detailString) {
-      const details = Helpers7.Trace.parseDevtoolsDetails(detailString, "devtools");
+      const details = Helpers8.Trace.parseDevtoolsDetails(detailString, "devtools");
       if (details && "track" in details) {
         return details.track;
       }
@@ -4754,7 +4756,7 @@ function getEventTrack(event) {
 function userTimingComparator(a, b, originalIndex) {
   const { start: aStart, end: aEnd } = getEventTimings(a);
   const { start: bStart, end: bEnd } = getEventTimings(b);
-  const timeDifference = Helpers7.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
+  const timeDifference = Helpers8.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
   if (timeDifference) {
     return timeDifference;
   }
@@ -4790,7 +4792,7 @@ function handleEvent10(event) {
 }
 async function finalize10() {
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
-  syntheticEvents = Helpers7.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
+  syntheticEvents = Helpers8.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   const syntheticIndex = new Map(syntheticEvents.map((e, i) => [e, i]));
   syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, syntheticIndex));
   const timestampIndex = new Map(timestampEvents.map((e, i) => [e, i]));
@@ -4829,11 +4831,11 @@ async function finalize11() {
 function createExtensionFlameChartEntries() {
   const pairedMeasures = data10().performanceMeasures;
   const marks = data10().performanceMarks;
-  const mergedRawExtensionEvents = Helpers8.Trace.mergeEventsInOrder(pairedMeasures, marks);
+  const mergedRawExtensionEvents = Helpers9.Trace.mergeEventsInOrder(pairedMeasures, marks);
   extractPerformanceAPIExtensionEntries(mergedRawExtensionEvents);
   extractConsoleAPIExtensionEntries();
-  Helpers8.Trace.sortTraceEventsInPlace(extensionTrackEntries);
-  Helpers8.Extensions.buildTrackDataFromExtensionEntries(extensionTrackEntries, extensionTrackData, entryToNode3);
+  Helpers9.Trace.sortTraceEventsInPlace(extensionTrackEntries);
+  Helpers9.Extensions.buildTrackDataFromExtensionEntries(extensionTrackEntries, extensionTrackData, entryToNode3);
 }
 function extractConsoleAPIExtensionEntries() {
   const consoleTimeStamps = data10().timestampEvents;
@@ -4868,7 +4870,7 @@ function extractConsoleAPIExtensionEntries() {
         ts: entryStartTime,
         ph: Types12.Events.Phase.COMPLETE
       };
-      const extensionEntry = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredExtensionEntry);
+      const extensionEntry = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredExtensionEntry);
       extensionTrackEntries.push(extensionEntry);
       continue;
     }
@@ -4881,7 +4883,7 @@ function extractConsoleAPIExtensionEntries() {
       dur: Types12.Timing.Micro(entryEndTime - entryStartTime),
       rawSourceEvent: currentTimeStamp
     };
-    const syntheticTimeStamp = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(
+    const syntheticTimeStamp = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(
       unregisteredSyntheticTimeStamp
     );
     syntheticConsoleEntriesForTimingsTrack.push(syntheticTimeStamp);
@@ -4906,14 +4908,14 @@ function extractPerformanceAPIExtensionEntries(timings) {
       rawSourceEvent: Types12.Events.isSyntheticUserTiming(timing) ? timing.rawSourceEvent : timing
     };
     if (Types12.Extensions.isExtensionPayloadMarker(devtoolsObj)) {
-      const extensionMarker = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(
+      const extensionMarker = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(
         extensionSyntheticEntry
       );
       extensionMarkers.push(extensionMarker);
       continue;
     }
     if (Types12.Extensions.isExtensionEntryObj(extensionSyntheticEntry.devtoolsObj)) {
-      const extensionTrackEntry = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(
+      const extensionTrackEntry = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(
         extensionSyntheticEntry
       );
       extensionTrackEntries.push(extensionTrackEntry);
@@ -4926,7 +4928,7 @@ function extensionDataInPerformanceTiming(timing) {
   if (!timingDetail) {
     return { devtoolsObj: null, userDetail: null };
   }
-  const devtoolsObj = Helpers8.Trace.parseDevtoolsDetails(timingDetail, "devtools");
+  const devtoolsObj = Helpers9.Trace.parseDevtoolsDetails(timingDetail, "devtools");
   let userDetail = null;
   try {
     userDetail = JSON.parse(timingDetail);
@@ -4982,7 +4984,7 @@ __export(FramesHandler_exports, {
   reset: () => reset13
 });
 import * as Platform8 from "../../../core/platform/platform.js";
-import * as Helpers10 from "../helpers/helpers.js";
+import * as Helpers11 from "../helpers/helpers.js";
 import * as Types14 from "../types/types.js";
 
 // ../../front_end/models/trace/handlers/LayerTreeHandler.ts
@@ -4994,11 +4996,11 @@ __export(LayerTreeHandler_exports, {
   handleEvent: () => handleEvent12,
   reset: () => reset12
 });
-import * as Helpers9 from "../helpers/helpers.js";
+import * as Helpers10 from "../helpers/helpers.js";
 import * as Types13 from "../types/types.js";
 var paintEvents = [];
 var snapshotEvents = [];
-var paintToSnapshotMap = /* @__PURE__ */ new Map();
+var paintToSnapshotMap = /* @__PURE__ */ new WeakMap();
 var lastPaintForLayerId = {};
 var currentMainFrameLayerTreeId = null;
 var updateLayerEvents = [];
@@ -5006,7 +5008,7 @@ var relevantEvents = [];
 function reset12() {
   paintEvents = [];
   snapshotEvents = [];
-  paintToSnapshotMap = /* @__PURE__ */ new Map();
+  paintToSnapshotMap = /* @__PURE__ */ new WeakMap();
   lastPaintForLayerId = {};
   currentMainFrameLayerTreeId = null;
   updateLayerEvents = [];
@@ -5019,7 +5021,7 @@ function handleEvent12(event) {
 }
 async function finalize12() {
   const metaData = data4();
-  Helpers9.Trace.sortTraceEventsInPlace(relevantEvents);
+  Helpers10.Trace.sortTraceEventsInPlace(relevantEvents);
   for (const event of relevantEvents) {
     if (Types13.Events.isSetLayerId(event)) {
       if (metaData.mainFrameId !== event.args.data.frame) {
@@ -5190,7 +5192,7 @@ function handleEvent13(event) {
   }
 }
 async function finalize13() {
-  Helpers10.Trace.sortTraceEventsInPlace(relevantFrameEvents);
+  Helpers11.Trace.sortTraceEventsInPlace(relevantFrameEvents);
   const modelForTrace = new TimelineFrameModel(
     relevantFrameEvents,
     data7(),
@@ -5585,7 +5587,7 @@ __export(GPUHandler_exports, {
   handleEvent: () => handleEvent14,
   reset: () => reset14
 });
-import * as Helpers11 from "../helpers/helpers.js";
+import * as Helpers12 from "../helpers/helpers.js";
 import * as Types15 from "../types/types.js";
 var eventsInProcessThread = /* @__PURE__ */ new Map();
 var mainGPUThreadTasks = [];
@@ -5597,7 +5599,7 @@ function handleEvent14(event) {
   if (!Types15.Events.isGPUTask(event)) {
     return;
   }
-  Helpers11.Trace.addEventToProcessThread(event, eventsInProcessThread);
+  Helpers12.Trace.addEventToProcessThread(event, eventsInProcessThread);
 }
 async function finalize14() {
   const { gpuProcessId: gpuProcessId2, gpuThreadId: gpuThreadId2 } = data4();
@@ -5628,17 +5630,17 @@ import * as Types16 from "../types/types.js";
 var paintImageEvents = /* @__PURE__ */ new Map();
 var decodeLazyPixelRefEvents = /* @__PURE__ */ new Map();
 var paintImageByLazyPixelRef = /* @__PURE__ */ new Map();
-var eventToPaintImage = /* @__PURE__ */ new Map();
+var eventToPaintImage = /* @__PURE__ */ new WeakMap();
 var urlToPaintImage = /* @__PURE__ */ new Map();
-var paintEventToCorrectedDisplaySize = /* @__PURE__ */ new Map();
+var paintEventToCorrectedDisplaySize = /* @__PURE__ */ new WeakMap();
 var didCorrectForHostDpr = false;
 function reset15() {
   paintImageEvents = /* @__PURE__ */ new Map();
   decodeLazyPixelRefEvents = /* @__PURE__ */ new Map();
   paintImageByLazyPixelRef = /* @__PURE__ */ new Map();
-  eventToPaintImage = /* @__PURE__ */ new Map();
+  eventToPaintImage = /* @__PURE__ */ new WeakMap();
   urlToPaintImage = /* @__PURE__ */ new Map();
-  paintEventToCorrectedDisplaySize = /* @__PURE__ */ new Map();
+  paintEventToCorrectedDisplaySize = /* @__PURE__ */ new WeakMap();
   didCorrectForHostDpr = false;
 }
 function handleEvent15(event) {
@@ -5726,13 +5728,13 @@ __export(InitiatorsHandler_exports, {
   handleEvent: () => handleEvent16,
   reset: () => reset16
 });
-import * as Helpers12 from "../helpers/helpers.js";
+import * as Helpers13 from "../helpers/helpers.js";
 import * as Types17 from "../types/types.js";
 var lastScheduleStyleRecalcByFrame = /* @__PURE__ */ new Map();
 var lastInvalidationEventForFrame = /* @__PURE__ */ new Map();
 var lastRecalcByFrame = /* @__PURE__ */ new Map();
-var eventToInitiatorMap2 = /* @__PURE__ */ new Map();
-var initiatorToEventsMap = /* @__PURE__ */ new Map();
+var eventToInitiatorMap2 = /* @__PURE__ */ new WeakMap();
+var initiatorToEventsMap = /* @__PURE__ */ new WeakMap();
 var timerInstallEventsById = /* @__PURE__ */ new Map();
 var requestIdleCallbackEventsById = /* @__PURE__ */ new Map();
 var webSocketCreateEventsById = /* @__PURE__ */ new Map();
@@ -5742,8 +5744,8 @@ function reset16() {
   lastInvalidationEventForFrame = /* @__PURE__ */ new Map();
   lastRecalcByFrame = /* @__PURE__ */ new Map();
   timerInstallEventsById = /* @__PURE__ */ new Map();
-  eventToInitiatorMap2 = /* @__PURE__ */ new Map();
-  initiatorToEventsMap = /* @__PURE__ */ new Map();
+  eventToInitiatorMap2 = /* @__PURE__ */ new WeakMap();
+  initiatorToEventsMap = /* @__PURE__ */ new WeakMap();
   requestIdleCallbackEventsById = /* @__PURE__ */ new Map();
   webSocketCreateEventsById = /* @__PURE__ */ new Map();
   schedulePostTaskCallbackEventsById = /* @__PURE__ */ new Map();
@@ -5773,7 +5775,7 @@ function handleEvent16(event) {
     if (!lastInvalidationEventForFrame.has(event.args.data.frame)) {
       const lastRecalcStyleForFrame = lastRecalcByFrame.get(event.args.data.frame);
       if (lastRecalcStyleForFrame) {
-        const { endTime } = Helpers12.Timing.eventTimingsMicroSeconds(lastRecalcStyleForFrame);
+        const { endTime } = Helpers13.Timing.eventTimingsMicroSeconds(lastRecalcStyleForFrame);
         const initiatorOfRecalcStyle = eventToInitiatorMap2.get(lastRecalcStyleForFrame);
         if (initiatorOfRecalcStyle && endTime && endTime > event.ts) {
           invalidationInitiator = initiatorOfRecalcStyle;
@@ -5866,6 +5868,7 @@ __export(InvalidationsHandler_exports, {
   handleUserConfig: () => handleUserConfig4,
   reset: () => reset17
 });
+import * as Helpers14 from "../helpers/helpers.js";
 import * as Types18 from "../types/types.js";
 var frameStateByFrame = /* @__PURE__ */ new Map();
 var maxInvalidationsPerEvent = null;
@@ -5891,10 +5894,7 @@ function getState(frameId) {
   return frameState;
 }
 function getFrameId(event) {
-  if (Types18.Events.isRecalcStyle(event) || Types18.Events.isLayout(event)) {
-    return event.args.beginData?.frame ?? null;
-  }
-  return event.args?.data?.frame ?? null;
+  return Helpers14.Trace.frameIDForEvent(event);
 }
 function addInvalidationToEvent(frameState, event, invalidation) {
   const existingInvalidations = frameState.invalidationsForEvent.get(event) || [];
@@ -6005,18 +6005,18 @@ __export(PageLoadMetricsHandler_exports, {
   scoreClassificationForTotalBlockingTime: () => scoreClassificationForTotalBlockingTime
 });
 import * as Platform10 from "../../../core/platform/platform.js";
-import * as Helpers13 from "../helpers/helpers.js";
+import * as Helpers15 from "../helpers/helpers.js";
 import * as Types19 from "../types/types.js";
 var metricScoresByFrameId = /* @__PURE__ */ new Map();
 var allMarkerEvents = [];
-var metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new Map();
+var metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new WeakMap();
 var metaCharsetCheckEventsArray = [];
 function reset18() {
   metricScoresByFrameId = /* @__PURE__ */ new Map();
   pageLoadEventsArray = [];
   allMarkerEvents = [];
   selectedLCPCandidateEvents = /* @__PURE__ */ new Set();
-  metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new Map();
+  metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new WeakMap();
   metaCharsetCheckEventsArray = [];
 }
 var enableSoftNavigation = true;
@@ -6038,7 +6038,7 @@ function handleEvent18(event) {
   }
   pageLoadEventsArray.push(event);
   if (Types19.Events.isSoftNavigationStart(event) && event.args?.context?.firstContentfulPaint) {
-    const syntheticSoftFcpEvent = Helpers13.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const syntheticSoftFcpEvent = Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       name: Types19.Events.Name.MARK_SOFT_FCP,
       ph: Types19.Events.Phase.MARK,
       rawSourceEvent: event,
@@ -6106,7 +6106,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       timing: ttiValue
     };
     storeMetricScore(frameId, navigation, tti);
-    const tbtValue = Helpers13.Timing.milliToMicro(Types19.Timing.Milli(event.args.args.total_blocking_time_ms));
+    const tbtValue = Helpers15.Timing.milliToMicro(Types19.Timing.Milli(event.args.args.total_blocking_time_ms));
     const tbt = {
       event,
       metricName: "TBT" /* TBT */,
@@ -6196,13 +6196,15 @@ function getNavigationForPageLoadEvent(event) {
   if (Types19.Events.isAnyFirstContentfulPaint(event) || Types19.Events.isAnyLargestContentfulPaintCandidate(event) || Types19.Events.isFirstPaint(event)) {
     const { navigationsByNavigationId: navigationsByNavigationId2, softNavigationsById: softNavigationsById2 } = data4();
     let navigation;
-    if (event.name === Types19.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION && event.args.data?.performanceTimelineNavigationId) {
-      navigation = softNavigationsById2.get(event.args.data.performanceTimelineNavigationId);
+    if (Types19.Events.isSoftLargestContentfulPaintCandidate(event)) {
+      const navigationId = event.args.data?.performanceTimelineNavigationId;
+      navigation = navigationId ? softNavigationsById2.get(navigationId) : void 0;
       if (!navigation) {
         return null;
       }
-    } else if (Types19.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
-      navigation = softNavigationsById2.get(event.args.context.performanceTimelineNavigationId);
+    } else if (Types19.Events.isSoftFirstContentfulPaint(event)) {
+      const navigationId = event.args.context?.performanceTimelineNavigationId;
+      navigation = navigationId ? softNavigationsById2.get(navigationId) : void 0;
       if (!navigation) {
         return null;
       }
@@ -6225,7 +6227,7 @@ function getNavigationForPageLoadEvent(event) {
   if (Types19.Events.isMarkDOMContent(event) || Types19.Events.isInteractiveTime(event) || Types19.Events.isLayoutShift(event) || Types19.Events.isMarkLoad(event)) {
     const frameId = getFrameIdForPageLoadEvent(event);
     const { navigationsByFrameId: navigationsByFrameId2 } = data4();
-    return Helpers13.Trace.getNavigationForTraceEvent(event, frameId, navigationsByFrameId2);
+    return Helpers15.Trace.getNavigationForTraceEvent(event, frameId, navigationsByFrameId2);
   }
   if (Types19.Events.isNavigationStart(event)) {
     return null;
@@ -6233,8 +6235,8 @@ function getNavigationForPageLoadEvent(event) {
   return Platform10.assertNever(event, `Unexpected event type: ${event}`);
 }
 function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds) {
-  const FCP_GOOD_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(1.8));
-  const FCP_MEDIUM_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(3));
+  const FCP_GOOD_TIMING = Helpers15.Timing.secondsToMicro(Types19.Timing.Seconds(1.8));
+  const FCP_MEDIUM_TIMING = Helpers15.Timing.secondsToMicro(Types19.Timing.Seconds(3));
   let scoreClassification = "bad" /* BAD */;
   if (fcpScoreInMicroseconds <= FCP_MEDIUM_TIMING) {
     scoreClassification = "ok" /* OK */;
@@ -6245,8 +6247,8 @@ function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds) {
   return scoreClassification;
 }
 function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds) {
-  const TTI_GOOD_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(3.8));
-  const TTI_MEDIUM_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(7.3));
+  const TTI_GOOD_TIMING = Helpers15.Timing.secondsToMicro(Types19.Timing.Seconds(3.8));
+  const TTI_MEDIUM_TIMING = Helpers15.Timing.secondsToMicro(Types19.Timing.Seconds(7.3));
   let scoreClassification = "bad" /* BAD */;
   if (ttiTimeInMicroseconds <= TTI_MEDIUM_TIMING) {
     scoreClassification = "ok" /* OK */;
@@ -6257,8 +6259,8 @@ function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds) {
   return scoreClassification;
 }
 function scoreClassificationForLargestContentfulPaint(lcpTimeInMicroseconds) {
-  const LCP_GOOD_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(2.5));
-  const LCP_MEDIUM_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(4));
+  const LCP_GOOD_TIMING = Helpers15.Timing.secondsToMicro(Types19.Timing.Seconds(2.5));
+  const LCP_MEDIUM_TIMING = Helpers15.Timing.secondsToMicro(Types19.Timing.Seconds(4));
   let scoreClassification = "bad" /* BAD */;
   if (lcpTimeInMicroseconds <= LCP_MEDIUM_TIMING) {
     scoreClassification = "ok" /* OK */;
@@ -6272,8 +6274,8 @@ function scoreClassificationForDOMContentLoaded(_dclTimeInMicroseconds) {
   return "unclassified" /* UNCLASSIFIED */;
 }
 function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds) {
-  const TBT_GOOD_TIMING = Helpers13.Timing.milliToMicro(Types19.Timing.Milli(200));
-  const TBT_MEDIUM_TIMING = Helpers13.Timing.milliToMicro(Types19.Timing.Milli(600));
+  const TBT_GOOD_TIMING = Helpers15.Timing.milliToMicro(Types19.Timing.Milli(200));
+  const TBT_MEDIUM_TIMING = Helpers15.Timing.milliToMicro(Types19.Timing.Milli(600));
   let scoreClassification = "bad" /* BAD */;
   if (tbtTimeInMicroseconds <= TBT_MEDIUM_TIMING) {
     scoreClassification = "ok" /* OK */;
@@ -6312,7 +6314,7 @@ async function finalize18() {
     if (!frameId) {
       continue;
     }
-    const navigation = Helpers13.Trace.getNavigationForTraceEvent(metaCharsetCheckEvent, frameId, navigationsByFrameId2);
+    const navigation = Helpers15.Trace.getNavigationForTraceEvent(metaCharsetCheckEvent, frameId, navigationsByFrameId2);
     if (!navigation) {
       continue;
     }
@@ -6464,7 +6466,7 @@ __export(LayoutShiftsHandler_exports, {
   scoreClassificationForLayoutShift: () => scoreClassificationForLayoutShift
 });
 import * as Platform12 from "../../../core/platform/platform.js";
-import * as Helpers15 from "../helpers/helpers.js";
+import * as Helpers17 from "../helpers/helpers.js";
 import * as Types23 from "../types/types.js";
 
 // ../../front_end/models/trace/handlers/ScreenshotsHandler.ts
@@ -6477,7 +6479,7 @@ __export(ScreenshotsHandler_exports, {
   reset: () => reset21,
   screenshotImageDataUri: () => screenshotImageDataUri
 });
-import * as Helpers14 from "../helpers/helpers.js";
+import * as Helpers16 from "../helpers/helpers.js";
 import * as Types22 from "../types/types.js";
 var legacyScreenshotEvents = [];
 var modernScreenshotEvents = [];
@@ -6497,7 +6499,7 @@ function handleEvent21(event) {
 async function finalize21() {
   for (const snapshotEvent of legacyScreenshotEvents) {
     const { cat, name, ph, pid, tid } = snapshotEvent;
-    const syntheticEvent = Helpers14.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const syntheticEvent = Helpers16.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       rawSourceEvent: snapshotEvent,
       cat,
       name,
@@ -6530,8 +6532,8 @@ function deps12() {
 }
 
 // ../../front_end/models/trace/handlers/LayoutShiftsHandler.ts
-var MAX_CLUSTER_DURATION = Helpers15.Timing.milliToMicro(Types23.Timing.Milli(5e3));
-var MAX_SHIFT_TIME_DELTA = Helpers15.Timing.milliToMicro(Types23.Timing.Milli(1e3));
+var MAX_CLUSTER_DURATION = Helpers17.Timing.milliToMicro(Types23.Timing.Milli(5e3));
+var MAX_SHIFT_TIME_DELTA = Helpers17.Timing.milliToMicro(Types23.Timing.Milli(1e3));
 var layoutShiftEvents = [];
 var layoutInvalidationEvents = [];
 var scheduleStyleInvalidationEvents = [];
@@ -6628,12 +6630,12 @@ function updateTraceWindowMax(traceWindow, newMax) {
 function findScreenshots(timestamp) {
   const data30 = data21();
   if (data30.screenshots) {
-    const before = Helpers15.Trace.findPreviousEventBeforeTimestamp(data30.screenshots, timestamp);
+    const before = Helpers17.Trace.findPreviousEventBeforeTimestamp(data30.screenshots, timestamp);
     const after = before ? data30.screenshots[data30.screenshots.indexOf(before) + 1] : null;
     return { before, after };
   }
   if (data30.legacySyntheticScreenshots) {
-    const before = Helpers15.Trace.findPreviousEventBeforeTimestamp(data30.legacySyntheticScreenshots, timestamp);
+    const before = Helpers17.Trace.findPreviousEventBeforeTimestamp(data30.legacySyntheticScreenshots, timestamp);
     const after = before ? data30.legacySyntheticScreenshots[data30.legacySyntheticScreenshots.indexOf(before) + 1] : null;
     return { before, after };
   }
@@ -6728,7 +6730,7 @@ async function buildLayoutShiftsClusters() {
       } else {
         navigationId = Types23.Events.NO_NAVIGATION;
       }
-      clusters.push(Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      clusters.push(Helpers17.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
         name: "SyntheticLayoutShiftCluster",
         // Will be replaced by the worst layout shift in the next for loop.
         rawSourceEvent: event,
@@ -6756,7 +6758,7 @@ async function buildLayoutShiftsClusters() {
     if (!event.args.data) {
       continue;
     }
-    const shift = Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const shift = Helpers17.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       rawSourceEvent: event,
       ...event,
       name: Types23.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
@@ -6839,7 +6841,7 @@ async function buildLayoutShiftsClusters() {
       cluster.rawSourceEvent = worstShiftEvent.rawSourceEvent;
     }
     cluster.ts = cluster.events[0].ts;
-    const lastShiftTimings = Helpers15.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
+    const lastShiftTimings = Helpers17.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
     cluster.dur = Types23.Timing.Micro(lastShiftTimings.endTime - cluster.events[0].ts + MAX_SHIFT_TIME_DELTA);
     if (weightedScore > sessionMaxScore) {
       clsWindowID = windowID;
@@ -7289,13 +7291,13 @@ __export(UserInteractionsHandler_exports, {
   scoreClassificationForInteractionToNextPaint: () => scoreClassificationForInteractionToNextPaint
 });
 import * as Platform15 from "../../../core/platform/platform.js";
-import * as Helpers16 from "../helpers/helpers.js";
+import * as Helpers18 from "../helpers/helpers.js";
 import * as Types28 from "../types/types.js";
 var beginCommitCompositorFrameEvents = [];
 var parseMetaViewportEvents = [];
-var LONG_INTERACTION_THRESHOLD = Helpers16.Timing.milliToMicro(Types28.Timing.Milli(200));
+var LONG_INTERACTION_THRESHOLD = Helpers18.Timing.milliToMicro(Types28.Timing.Milli(200));
 var INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
-var INP_MEDIUM_TIMING = Helpers16.Timing.milliToMicro(Types28.Timing.Milli(500));
+var INP_MEDIUM_TIMING = Helpers18.Timing.milliToMicro(Types28.Timing.Milli(500));
 var longestInteractionEvent = null;
 var interactionEvents = [];
 var interactionEventsWithNoNesting = [];
@@ -7325,7 +7327,7 @@ function handleEvent27(event) {
   if (Types28.Events.isEventTimingEnd(event)) {
     eventTimingEndEventsForInteractions.push(event);
   }
-  if (!event.args.data || !Types28.Events.isEventTimingStart(event)) {
+  if (!Types28.Events.isEventTimingStart(event) || !event.args.data) {
     return;
   }
   const { duration, interactionId } = event.args.data;
@@ -7411,7 +7413,7 @@ async function finalize27() {
   const beginAndEndEvents = Platform15.ArrayUtilities.mergeOrdered(
     eventTimingStartEventsForInteractions,
     eventTimingEndEventsForInteractions,
-    Helpers16.Trace.eventTimeComparator
+    Helpers18.Trace.eventTimeComparator
   );
   const beginEventById = /* @__PURE__ */ new Map();
   for (const event of beginAndEndEvents) {
@@ -7430,15 +7432,15 @@ async function finalize27() {
         continue;
       }
       const processingStartRelativeToTraceTime = Types28.Timing.Micro(
-        Helpers16.Timing.milliToMicro(processingStart) - Helpers16.Timing.milliToMicro(timeStamp) + beginEvent.ts
+        Helpers18.Timing.milliToMicro(processingStart) - Helpers18.Timing.milliToMicro(timeStamp) + beginEvent.ts
       );
       const processingEndRelativeToTraceTime = Types28.Timing.Micro(
-        Helpers16.Timing.milliToMicro(processingEnd) - Helpers16.Timing.milliToMicro(timeStamp) + beginEvent.ts
+        Helpers18.Timing.milliToMicro(processingEnd) - Helpers18.Timing.milliToMicro(timeStamp) + beginEvent.ts
       );
       const frameId = beginEvent.args.frame ?? beginEvent.args.data.frame ?? "";
-      const navigation = Helpers16.Trace.getNavigationForTraceEvent(beginEvent, frameId, navigationsByFrameId2);
+      const navigation = Helpers18.Trace.getNavigationForTraceEvent(beginEvent, frameId, navigationsByFrameId2);
       const navigationId = navigation?.args.data?.navigationId;
-      const interactionEvent = Helpers16.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      const interactionEvent = Helpers18.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
         // Use the start event to define the common fields.
         rawSourceEvent: beginEvent,
         cat: beginEvent.cat,
@@ -7469,7 +7471,7 @@ async function finalize27() {
       interactionEvents.push(interactionEvent);
     }
   }
-  Helpers16.Trace.sortTraceEventsInPlace(interactionEvents);
+  Helpers18.Trace.sortTraceEventsInPlace(interactionEvents);
   interactionEventsWithNoNesting.push(...removeNestedInteractionsAndSetProcessingTime(interactionEvents));
   for (const interactionEvent of interactionEventsWithNoNesting) {
     if (!longestInteractionEvent || longestInteractionEvent.dur < interactionEvent.dur) {
@@ -7514,7 +7516,7 @@ __export(WarningsHandler_exports, {
   reset: () => reset29
 });
 import * as Platform16 from "../../../core/platform/platform.js";
-import * as Helpers17 from "../helpers/helpers.js";
+import * as Helpers19 from "../helpers/helpers.js";
 import * as Types30 from "../types/types.js";
 
 // ../../front_end/models/trace/handlers/WorkersHandler.ts
@@ -7557,16 +7559,16 @@ function data28() {
 }
 
 // ../../front_end/models/trace/handlers/WarningsHandler.ts
-var warningsPerEvent = /* @__PURE__ */ new Map();
+var warningsPerEvent = /* @__PURE__ */ new WeakMap();
 var eventsPerWarning = /* @__PURE__ */ new Map();
 var allEventsStack = [];
 var jsInvokeStack = [];
 var taskReflowEvents = [];
 var longTaskEvents = [];
-var FORCED_REFLOW_THRESHOLD = Helpers17.Timing.milliToMicro(Types30.Timing.Milli(30));
-var LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers17.Timing.milliToMicro(Types30.Timing.Milli(50));
+var FORCED_REFLOW_THRESHOLD = Helpers19.Timing.milliToMicro(Types30.Timing.Milli(30));
+var LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers19.Timing.milliToMicro(Types30.Timing.Milli(50));
 function reset29() {
-  warningsPerEvent = /* @__PURE__ */ new Map();
+  warningsPerEvent = /* @__PURE__ */ new WeakMap();
   eventsPerWarning = /* @__PURE__ */ new Map();
   allEventsStack = [];
   jsInvokeStack = [];
@@ -7584,14 +7586,14 @@ function storeWarning(event, warning) {
 function handleEvent29(event) {
   processForcedReflowWarning(event);
   if (event.name === Types30.Events.Name.RUN_TASK) {
-    const { duration } = Helpers17.Timing.eventTimingsMicroSeconds(event);
+    const { duration } = Helpers19.Timing.eventTimingsMicroSeconds(event);
     if (duration > LONG_MAIN_THREAD_TASK_THRESHOLD) {
       longTaskEvents.push(event);
     }
     return;
   }
   if (Types30.Events.isFireIdleCallback(event)) {
-    const { duration } = Helpers17.Timing.eventTimingsMilliSeconds(event);
+    const { duration } = Helpers19.Timing.eventTimingsMilliSeconds(event);
     if (duration > event.args.data.allottedMilliseconds) {
       storeWarning(event, "IDLE_CALLBACK_OVER_TIME");
     }

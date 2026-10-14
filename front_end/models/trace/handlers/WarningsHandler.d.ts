@@ -1,7 +1,7 @@
 import * as Types from '../types/types.js';
 import type { HandlerName } from './types.js';
 export interface WarningsData {
-    perEvent: Map<Types.Events.Event, Warning[]>;
+    perEvent: WeakMap<Types.Events.Event, Warning[]>;
     perWarning: Map<Warning, Types.Events.Event[]>;
 }
 export type Warning = 'LONG_TASK' | 'IDLE_CALLBACK_OVER_TIME' | 'FORCED_REFLOW' | 'LONG_INTERACTION';

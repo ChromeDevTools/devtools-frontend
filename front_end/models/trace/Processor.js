@@ -25,21 +25,19 @@ export class TraceParseProgressEvent extends Event {
 }
 /**
  * Parsing a trace can take time. On large traces we see a breakdown of time like so:
- *   - handleEvent() loop:  ~20%
- *   - finalize() loop:     ~60%
- *   - shallowClone calls:  ~20%
+ *   - handleEvent() loop:  ~25%
+ *   - finalize() loop:     ~75%
  * The numbers below are set so we can report a progress percentage of [0...1]
  */
 var ProgressPhase;
 (function (ProgressPhase) {
-    ProgressPhase[ProgressPhase["HANDLE_EVENT"] = 0.2] = "HANDLE_EVENT";
-    ProgressPhase[ProgressPhase["FINALIZE"] = 0.8] = "FINALIZE";
-    ProgressPhase[ProgressPhase["CLONE"] = 1] = "CLONE";
+    ProgressPhase[ProgressPhase["HANDLE_EVENT"] = 0.25] = "HANDLE_EVENT";
+    ProgressPhase[ProgressPhase["FINALIZE"] = 1] = "FINALIZE";
 })(ProgressPhase || (ProgressPhase = {}));
 function calculateProgress(value, phase) {
-    // Finalize values should be [0.2...0.8]
-    if (phase === 0.8 /* ProgressPhase.FINALIZE */) {
-        return (value * (0.8 /* ProgressPhase.FINALIZE */ - 0.2 /* ProgressPhase.HANDLE_EVENT */)) + 0.2 /* ProgressPhase.HANDLE_EVENT */;
+    // Finalize values should be [0.25...1].
+    if (phase === 1 /* ProgressPhase.FINALIZE */) {
+        return (value * (1 /* ProgressPhase.FINALIZE */ - 0.25 /* ProgressPhase.HANDLE_EVENT */)) + 0.25 /* ProgressPhase.HANDLE_EVENT */;
     }
     return value * phase;
 }
@@ -191,7 +189,7 @@ export class TraceProcessor extends EventTarget {
             // Every so often we take a break just to render.
             if (options.yieldToMain !== false && i % eventsPerChunk === 0 && i) {
                 // Take the opportunity to provide status update events.
-                const percent = calculateProgress(i / traceEvents.length, 0.2 /* ProgressPhase.HANDLE_EVENT */);
+                const percent = calculateProgress(i / traceEvents.length, 0.25 /* ProgressPhase.HANDLE_EVENT */);
                 this.dispatchEvent(new TraceParseProgressEvent({ percent }));
                 // TODO(paulirish): consider using `scheduler.yield()` or `scheduler.postTask(() => {}, {priority: 'user-blocking'})`
                 await new Promise(resolve => setTimeout(resolve, 0));
@@ -219,7 +217,7 @@ export class TraceProcessor extends EventTarget {
                 await handler.finalize(finalizeOptions);
                 options.logger?.end(`parse:${name}:finalize`);
             }
-            const percent = calculateProgress(i / sortedHandlers.length, 0.8 /* ProgressPhase.FINALIZE */);
+            const percent = calculateProgress(i / sortedHandlers.length, 1 /* ProgressPhase.FINALIZE */);
             this.dispatchEvent(new TraceParseProgressEvent({ percent }));
         }
         options.logger?.start('parse:handler.data()');
@@ -228,7 +226,7 @@ export class TraceProcessor extends EventTarget {
             Object.assign(parsedTrace, { [name]: handler.data() });
         }
         options.logger?.end('parse:handler.data()');
-        this.dispatchEvent(new TraceParseProgressEvent({ percent: 1 /* ProgressPhase.CLONE */ }));
+        this.dispatchEvent(new TraceParseProgressEvent({ percent: 1 /* ProgressPhase.FINALIZE */ }));
         this.#data = parsedTrace;
     }
     get data() {
@@ -409,7 +407,7 @@ export class TraceProcessor extends EventTarget {
                 logger?.start(`insights:${name}`);
                 const model = insight.generateInsight(data, context);
                 model.frameId = context.frameId;
-                const navId = context.navigation?.args.data?.navigationId;
+                const navId = Helpers.Trace.navigationIDForEvent(context.navigation);
                 if (navId) {
                     model.navigation = context.navigation;
                 }

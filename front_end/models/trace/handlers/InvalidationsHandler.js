@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 const frameStateByFrame = new Map();
 let maxInvalidationsPerEvent = null;
@@ -26,10 +27,7 @@ function getState(frameId) {
     return frameState;
 }
 function getFrameId(event) {
-    if (Types.Events.isRecalcStyle(event) || Types.Events.isLayout(event)) {
-        return event.args.beginData?.frame ?? null;
-    }
-    return event.args?.data?.frame ?? null;
+    return Helpers.Trace.frameIDForEvent(event);
 }
 function addInvalidationToEvent(frameState, event, invalidation) {
     const existingInvalidations = frameState.invalidationsForEvent.get(event) || [];

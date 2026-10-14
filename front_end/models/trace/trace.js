@@ -3416,8 +3416,8 @@ var TraceParseProgressEvent = class _TraceParseProgressEvent extends Event {
   static eventName = "traceparseprogress";
 };
 function calculateProgress(value, phase) {
-  if (phase === 0.8 /* FINALIZE */) {
-    return value * (0.8 /* FINALIZE */ - 0.2 /* HANDLE_EVENT */) + 0.2 /* HANDLE_EVENT */;
+  if (phase === 1 /* FINALIZE */) {
+    return value * (1 /* FINALIZE */ - 0.25 /* HANDLE_EVENT */) + 0.25 /* HANDLE_EVENT */;
   }
   return value * phase;
 }
@@ -3539,7 +3539,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
     const handleEventFns = sortedHandlers.map(([, handler]) => handler.handleEvent);
     for (let i = 0; i < traceEvents.length; ++i) {
       if (options.yieldToMain !== false && i % eventsPerChunk === 0 && i) {
-        const percent = calculateProgress(i / traceEvents.length, 0.2 /* HANDLE_EVENT */);
+        const percent = calculateProgress(i / traceEvents.length, 0.25 /* HANDLE_EVENT */);
         this.dispatchEvent(new TraceParseProgressEvent({ percent }));
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
@@ -3563,7 +3563,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
         await handler.finalize(finalizeOptions);
         options.logger?.end(`parse:${name}:finalize`);
       }
-      const percent = calculateProgress(i / sortedHandlers.length, 0.8 /* FINALIZE */);
+      const percent = calculateProgress(i / sortedHandlers.length, 1 /* FINALIZE */);
       this.dispatchEvent(new TraceParseProgressEvent({ percent }));
     }
     options.logger?.start("parse:handler.data()");
@@ -3572,7 +3572,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
       Object.assign(parsedTrace, { [name]: handler.data() });
     }
     options.logger?.end("parse:handler.data()");
-    this.dispatchEvent(new TraceParseProgressEvent({ percent: 1 /* CLONE */ }));
+    this.dispatchEvent(new TraceParseProgressEvent({ percent: 1 /* FINALIZE */ }));
     this.#data = parsedTrace;
   }
   get data() {
@@ -3737,7 +3737,7 @@ var TraceProcessor = class _TraceProcessor extends EventTarget {
         logger?.start(`insights:${name}`);
         const model = insight.generateInsight(data, context);
         model.frameId = context.frameId;
-        const navId = context.navigation?.args.data?.navigationId;
+        const navId = Helpers4.Trace.navigationIDForEvent(context.navigation);
         if (navId) {
           model.navigation = context.navigation;
         }

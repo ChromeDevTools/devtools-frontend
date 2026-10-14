@@ -48,7 +48,7 @@ export interface PageLoadMetricsData {
     /**
      * MetaCharsetCheck events grouped by navigation.
      */
-    metaCharsetCheckEventsByNavigation: Map<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>;
+    metaCharsetCheckEventsByNavigation: WeakMap<AnyNavigationStart, Types.Events.MetaCharsetCheck[]>;
 }
 export declare function data(): PageLoadMetricsData;
 export declare function deps(): HandlerName[];

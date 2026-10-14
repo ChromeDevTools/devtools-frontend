@@ -6,7 +6,7 @@ import * as Types from '../types/types.js';
 import { data as metaHandlerData } from './MetaHandler.js';
 let paintEvents = [];
 let snapshotEvents = [];
-let paintToSnapshotMap = new Map();
+let paintToSnapshotMap = new WeakMap();
 let lastPaintForLayerId = {};
 let currentMainFrameLayerTreeId = null;
 let updateLayerEvents = [];
@@ -14,7 +14,7 @@ let relevantEvents = [];
 export function reset() {
     paintEvents = [];
     snapshotEvents = [];
-    paintToSnapshotMap = new Map();
+    paintToSnapshotMap = new WeakMap();
     lastPaintForLayerId = {};
     currentMainFrameLayerTreeId = null;
     updateLayerEvents = [];

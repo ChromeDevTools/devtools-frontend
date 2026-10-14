@@ -44,6 +44,15 @@ export interface Frame {
      * behavior.
      */
     readonly isInline?: boolean;
+    /**
+     * Creates a UILocation for this frame's `line` and `column`.
+     *
+     * Uses `uiSourceCode` if it's set. Otherwise, looks up a UISourceCode for
+     * `url` in the given `workspace`.
+     *
+     * @returns null if neither `uiSourceCode` nor a UISourceCode for `url` is available.
+     */
+    toUiLocation(workspace: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UILocation | null;
 }
 export interface ParsedErrorStackFrame extends Frame {
     readonly isAsync?: boolean;

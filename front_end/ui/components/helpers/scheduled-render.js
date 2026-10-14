@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
-const requests = new Map();
+const requests = new WeakMap();
 const active = new Set();
 export function scheduleRender(component, callback) {
     const request = requests.get(component);

@@ -504,27 +504,26 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         }
         const fieldMetricResultsByNavigationId = new Map();
         for (const insightSet of insights.values()) {
-            if (insightSet.navigation?.args.data?.navigationId) {
-                fieldMetricResultsByNavigationId.set(insightSet.navigation.args.data.navigationId, Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
+            const navigationId = Trace.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+            if (navigationId) {
+                fieldMetricResultsByNavigationId.set(navigationId, Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, metadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
             }
         }
         for (const marker of this.#markers) {
             for (const event of marker.entries) {
-                const navigationId = event.args?.data?.navigationId;
-                if (!navigationId) {
-                    continue;
-                }
-                const fieldMetricResults = fieldMetricResultsByNavigationId.get(navigationId);
-                if (!fieldMetricResults) {
-                    continue;
-                }
+                let navigationId;
                 let fieldMetricResult;
-                if (event.name === Trace.Types.Events.Name.MARK_FCP) {
-                    fieldMetricResult = fieldMetricResults.fcp;
+                if (Trace.Types.Events.isFirstContentfulPaint(event)) {
+                    navigationId = event.args?.data?.navigationId;
+                    if (navigationId) {
+                        fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.fcp;
+                    }
                 }
-                else if (event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE) {
-                    fieldMetricResult = fieldMetricResults.lcp;
-                    // Ignoring soft-nav LCP on purpose.
+                else if (Trace.Types.Events.isLargestContentfulPaintCandidate(event)) {
+                    navigationId = event.args?.data?.navigationId;
+                    if (navigationId) {
+                        fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.lcp;
+                    }
                 }
                 if (!fieldMetricResult) {
                     continue;

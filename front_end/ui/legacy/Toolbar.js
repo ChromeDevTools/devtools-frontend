@@ -14,11 +14,10 @@ import * as SettingUIRegistration from '../settings/settings.js';
 import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { ContextMenu } from './ContextMenu.js';
-import { GlassPane } from './GlassPane.js';
 import { TextPrompt } from './TextPrompt.js';
 import toolbarStyles from './toolbar.css.js';
 import { Tooltip } from './Tooltip.js';
-import { bindCheckbox, CheckboxLabel, LongClickController } from './UIUtils.js';
+import { bindCheckbox, CheckboxLabel } from './UIUtils.js';
 import { Widget } from './Widget.js';
 const UIStrings = {
     /**
@@ -155,95 +154,6 @@ export class Toolbar extends HTMLElement {
         this.compactLayout = enable;
         for (const item of this.items) {
             item.setCompactLayout(enable);
-        }
-    }
-    static createLongPressActionButton(action, toggledOptions, untoggledOptions) {
-        const button = Toolbar.createActionButton(action);
-        const mainButtonClone = Toolbar.createActionButton(action);
-        let longClickController = null;
-        let longClickButtons = null;
-        action.addEventListener("Toggled" /* ActionEvents.TOGGLED */, updateOptions);
-        updateOptions();
-        return button;
-        function updateOptions() {
-            const buttons = action.toggled() ? (toggledOptions || null) : (untoggledOptions || null);
-            if (buttons?.length) {
-                if (!longClickController) {
-                    longClickController = new LongClickController(button.element, showOptions);
-                    button.setLongClickable(true);
-                    longClickButtons = buttons;
-                }
-            }
-            else if (longClickController) {
-                longClickController.dispose();
-                longClickController = null;
-                button.setLongClickable(false);
-                longClickButtons = null;
-            }
-        }
-        function showOptions() {
-            let buttons = longClickButtons ? longClickButtons.slice() : [];
-            buttons.push(mainButtonClone);
-            const document = button.element.ownerDocument;
-            document.documentElement.addEventListener('mouseup', mouseUp, false);
-            const optionsGlassPane = new GlassPane();
-            optionsGlassPane.setPointerEventsBehavior("BlockedByGlassPane" /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */);
-            optionsGlassPane.show(document);
-            const optionsBar = optionsGlassPane.contentElement.createChild('devtools-toolbar');
-            optionsBar.floating = true;
-            const buttonHeight = 26;
-            const hostButtonPosition = button.element.boxInWindow().relativeToElement(GlassPane.container(document));
-            const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document.documentElement.offsetHeight;
-            if (topNotBottom) {
-                buttons = buttons.reverse();
-            }
-            optionsBar.style.height = (buttonHeight * buttons.length) + 'px';
-            if (topNotBottom) {
-                optionsBar.style.top = (hostButtonPosition.y - 5) + 'px';
-            }
-            else {
-                optionsBar.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
-            }
-            optionsBar.style.left = (hostButtonPosition.x - 5) + 'px';
-            for (let i = 0; i < buttons.length; ++i) {
-                buttons[i].element.addEventListener('mousemove', mouseOver, false);
-                buttons[i].element.addEventListener('mouseout', mouseOut, false);
-                optionsBar.appendToolbarItem(buttons[i]);
-            }
-            const hostButtonIndex = topNotBottom ? 0 : buttons.length - 1;
-            buttons[hostButtonIndex].element.classList.add('emulate-active');
-            function mouseOver(e) {
-                if (e.which !== 1) {
-                    return;
-                }
-                if (e.target instanceof HTMLElement) {
-                    const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-button');
-                    buttonElement.classList.add('emulate-active');
-                }
-            }
-            function mouseOut(e) {
-                if (e.which !== 1) {
-                    return;
-                }
-                if (e.target instanceof HTMLElement) {
-                    const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-button');
-                    buttonElement.classList.remove('emulate-active');
-                }
-            }
-            function mouseUp(e) {
-                if (e.which !== 1) {
-                    return;
-                }
-                optionsGlassPane.hide();
-                document.documentElement.removeEventListener('mouseup', mouseUp, false);
-                for (let i = 0; i < buttons.length; ++i) {
-                    if (buttons[i].element.classList.contains('emulate-active')) {
-                        buttons[i].element.classList.remove('emulate-active');
-                        buttons[i].clicked(e);
-                        break;
-                    }
-                }
-            }
         }
     }
     static createActionButton(actionOrActionId, options = {}) {

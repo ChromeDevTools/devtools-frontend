@@ -233,6 +233,7 @@ export declare const MaxEditableTextSize = 10000;
 export declare const ForbiddenClosingTagElements: Set<string>;
 /** These tags we do not allow editing their tag name. **/
 export declare const EditTagBlocklist: Set<string>;
+export declare const MappedCharToEntity: Map<string, string>;
 export declare function convertUnicodeCharsToHTMLEntities(text: string): {
     text: string;
     entityRanges: TextUtils.TextRange.SourceRange[];

@@ -6,14 +6,14 @@ import * as Types from '../types/types.js';
 import { data as flowsHandlerData } from './FlowsHandler.js';
 import { data as rendererHandlerData } from './RendererHandler.js';
 let schedulerToRunEntryPoints = new Map();
-let taskScheduleForTaskRunEvent = new Map();
-let asyncCallToScheduler = new Map();
-let runEntryPointToScheduler = new Map();
+let taskScheduleForTaskRunEvent = new WeakMap();
+let asyncCallToScheduler = new WeakMap();
+let runEntryPointToScheduler = new WeakMap();
 export function reset() {
     schedulerToRunEntryPoints = new Map();
-    asyncCallToScheduler = new Map();
-    taskScheduleForTaskRunEvent = new Map();
-    runEntryPointToScheduler = new Map();
+    asyncCallToScheduler = new WeakMap();
+    taskScheduleForTaskRunEvent = new WeakMap();
+    runEntryPointToScheduler = new WeakMap();
 }
 export function handleEvent(_) {
 }

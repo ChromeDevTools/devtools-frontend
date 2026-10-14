@@ -21539,7 +21539,7 @@ var DOMInheritanceCascade = class {
         }
       )
     ]);
-    const decl = ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree)).filter((node) => node.name !== "Important");
+    const decl = ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree));
     const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : "";
     const hasUnresolvedSubstitutions = decl.length > 0 && matching.hasUnresolvedSubstitutionsRange(decl[0], decl[decl.length - 1]);
     const computedText = hasUnresolvedSubstitutions ? null : declText;
@@ -24501,7 +24501,18 @@ var UIStrings4 = {
   /**
    * @description Error message for canceled source map loads.
    */
-  loadCanceledDueToReloadOf: "Load canceled due to reload of inspected page"
+  loadCanceledDueToReloadOf: "Load canceled due to reload of inspected page",
+  /**
+   * @description Error message in the Developer resources panel when DevTools refuses to load a
+   * resource (e.g. a source map) for a frame that is no longer available and is cross-origin with
+   * the page.
+   */
+  crossOriginFrameLoadBlocked: "Can\u2019t load resource for an unavailable cross-origin frame",
+  /**
+   * @description Error message in the Developer resources panel when an http(s) resource cannot be
+   * loaded because no target is available.
+   */
+  noTargetForHttpLoad: "Can\u2019t load http(s) resource without a target"
 };
 var str_4 = i18n7.i18n.registerUIStrings("core/sdk/PageResourceLoader.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -24657,20 +24668,31 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     if (isExtensionInitiator(initiator)) {
       throw new Error("Invalid initiator");
     }
-    const key = _PageResourceLoader.makeKey(url, initiator);
+    const hasExplicitTarget = Boolean(initiator.target);
+    let effectiveInitiator = initiator;
+    if (!initiator.target) {
+      const primaryTarget = this.#targetManager.primaryPageTarget();
+      if (primaryTarget) {
+        effectiveInitiator = {
+          ...initiator,
+          target: primaryTarget
+        };
+      }
+    }
+    const key = _PageResourceLoader.makeKey(url, effectiveInitiator);
     const pageResource = {
       success: null,
       size: null,
       duration: null,
       url,
-      initiator
+      initiator: effectiveInitiator
     };
     this.#pageResources.set(key, pageResource);
     this.dispatchEventToListeners("Update" /* UPDATE */);
     const startTime = performance.now();
     try {
-      await this.acquireLoadSlot(initiator.target);
-      const resultPromise = this.dispatchLoad(url, initiator, isBinary);
+      await this.acquireLoadSlot(effectiveInitiator.target);
+      const resultPromise = this.dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
       const result = await resultPromise;
       pageResource.errorMessage = result.errorDescription.message;
       pageResource.success = result.success;
@@ -24689,7 +24711,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       throw e;
     } finally {
       pageResource.duration = performance.now() - startTime;
-      this.releaseLoadSlot(initiator.target);
+      this.releaseLoadSlot(effectiveInitiator.target);
       this.dispatchEventToListeners("Update" /* UPDATE */);
     }
   }
@@ -24700,18 +24722,49 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       parentFrameId = parentFrameId ?? frameTarget.targetInfo()?.parentFrameId ?? null;
       frameTarget = frameTarget.parentTarget();
     }
-    const frameId = initiator.frameId ?? parentFrameId ?? frameTarget?.model(ResourceTreeModel)?.mainFrame?.id ?? null;
-    return { frameTarget, frameId };
+    const resourceTreeModel = frameTarget?.model(ResourceTreeModel);
+    const mainFrameId = resourceTreeModel?.mainFrame?.id ?? null;
+    let candidateFrameId = null;
+    if (initiator.frameId) {
+      candidateFrameId = initiator.frameId;
+    } else if (parentFrameId) {
+      candidateFrameId = parentFrameId;
+    }
+    if (frameTarget && frameTarget !== initiator.target && !candidateFrameId) {
+      return { frameTarget: initiator.target, frameId: null, initiatorFrameId: null, usedFallbackMainFrame: false };
+    }
+    let validFrameId = null;
+    if (candidateFrameId) {
+      if (!resourceTreeModel?.mainFrame || resourceTreeModel.frameForId(candidateFrameId)) {
+        validFrameId = candidateFrameId;
+      }
+    }
+    let usedFallbackMainFrame = false;
+    if (!validFrameId && mainFrameId) {
+      usedFallbackMainFrame = true;
+    }
+    const frameId = validFrameId ?? mainFrameId;
+    return { frameTarget, frameId, initiatorFrameId: candidateFrameId, usedFallbackMainFrame };
   }
-  #isSameOriginWithPrimaryPage(frameTarget, frameId) {
+  #isSameOriginWithPrimaryPage(hasExplicitTarget, frameTarget, initiatorFrameId) {
+    if (!hasExplicitTarget) {
+      return false;
+    }
     const primaryFrame = this.#targetManager.primaryPageTarget()?.model(ResourceTreeModel)?.mainFrame;
-    const initiatorFrame = frameId ? frameTarget?.model(ResourceTreeModel)?.frameForId(frameId) : null;
+    const initiatorFrame = initiatorFrameId ? frameTarget?.model(ResourceTreeModel)?.frameForId(initiatorFrameId) : null;
     if (!primaryFrame || !initiatorFrame) {
       return false;
     }
     return initiatorFrame.securityOrigin().isSameOriginWith(primaryFrame.securityOrigin());
   }
-  async dispatchLoad(url, initiator, isBinary) {
+  #isInitiatorUrlSameOriginWithMainFrame(initiator, frameTarget) {
+    const mainFrame = frameTarget?.model(ResourceTreeModel)?.mainFrame;
+    if (!mainFrame || !initiator.initiatorUrl) {
+      return false;
+    }
+    return mainFrame.securityOrigin().isSameOriginWith(SecurityOrigin.create(initiator.initiatorUrl));
+  }
+  async dispatchLoad(url, initiator, isBinary, hasExplicitTarget) {
     if (isExtensionInitiator(initiator)) {
       throw new Error("Invalid initiator");
     }
@@ -24720,12 +24773,24 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       return await this.#loadOverride(url);
     }
     const parsedURL = new Common12.ParsedURL.ParsedURL(url);
-    const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target;
+    const isHttp = Boolean(parsedURL && (parsedURL.scheme === "http" || parsedURL.scheme === "https"));
+    const loadThroughTarget = this.getLoadThroughTargetSetting().get();
+    const eligibleForLoadFromTarget = Boolean(loadThroughTarget && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target);
     Host3.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
-    if (eligibleForLoadFromTarget) {
-      const isHttp = parsedURL.scheme === "http" || parsedURL.scheme === "https";
+    if (eligibleForLoadFromTarget && initiator.target) {
       let mustEnforceCSP = isHttp;
-      const { frameTarget, frameId } = this.#resolveFrameTarget(initiator);
+      const { frameTarget, frameId, initiatorFrameId, usedFallbackMainFrame } = this.#resolveFrameTarget(initiator);
+      if (usedFallbackMainFrame && !this.#isInitiatorUrlSameOriginWithMainFrame(initiator, frameTarget)) {
+        Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
+        return {
+          success: false,
+          content: "",
+          errorDescription: {
+            statusCode: 0,
+            message: i18nString4(UIStrings4.crossOriginFrameLoadBlocked)
+          }
+        };
+      }
       if (isHttp && frameTarget) {
         const networkManager = frameTarget.model(NetworkManager);
         if (networkManager) {
@@ -24742,7 +24807,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       } catch (e) {
         if (e instanceof Error) {
           Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE);
-          if (mustEnforceCSP || !this.#isSameOriginWithPrimaryPage(frameTarget, frameId) || e.message.includes("CSP violation")) {
+          if (mustEnforceCSP || !this.#isSameOriginWithPrimaryPage(hasExplicitTarget, frameTarget, initiatorFrameId) || e.message.includes("CSP violation")) {
             return {
               success: false,
               content: "",
@@ -24756,8 +24821,18 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       }
       Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK);
     } else {
-      const code = this.getLoadThroughTargetSetting().get() ? Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL : Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
+      const code = loadThroughTarget ? Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_PROTOCOL : Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_PER_OVERRIDE;
       Host3.userMetrics.developerResourceLoaded(code);
+      if (loadThroughTarget && isHttp && !initiator.target) {
+        return {
+          success: false,
+          content: "",
+          errorDescription: {
+            statusCode: 0,
+            message: i18nString4(UIStrings4.noTargetForHttpLoad)
+          }
+        };
+      }
     }
     const result = await this.loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
@@ -31522,6 +31597,14 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     return frame;
   }
   frameNavigated(framePayload, type) {
+    this.#frameNavigated(
+      framePayload,
+      type,
+      /* isDocumentOpened */
+      false
+    );
+  }
+  #frameNavigated(framePayload, type, isDocumentOpened) {
     const sameTargetParentFrame = framePayload.parentId ? this.framesInternal.get(framePayload.parentId) || null : null;
     if (!this.#cachedResourcesProcessed && sameTargetParentFrame) {
       return;
@@ -31550,6 +31633,19 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     for (let i = 0; i < resources.length; ++i) {
       this.dispatchEventToListeners("ResourceAdded" /* ResourceAdded */, resources[i]);
     }
+    const networkManager = this.target().model(NetworkManager);
+    if (!frame.getResourcesMap().get(framePayload.url) && (isDocumentOpened || !networkManager?.requestForLoaderId(framePayload.loaderId))) {
+      const frameResource = this.createResourceFromFramePayload(
+        framePayload,
+        framePayload.url,
+        Common23.ResourceType.resourceTypes.Document,
+        framePayload.mimeType,
+        null,
+        null
+      );
+      frameResource.isGenerated = isDocumentOpened;
+      frame.addResource(frameResource);
+    }
     this.updateSecurityOrigins();
     void this.updateStorageKeys();
     if (frame.backForwardCacheDetails.restoredFromCache) {
@@ -31567,22 +31663,15 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
   }
   documentOpened(framePayload) {
-    this.frameNavigated(framePayload, void 0);
+    this.#frameNavigated(
+      framePayload,
+      void 0,
+      /* isDocumentOpened */
+      true
+    );
     const frame = this.framesInternal.get(framePayload.id);
     if (frame) {
       this.dispatchEventToListeners("DocumentOpened" /* DocumentOpened */, frame);
-      if (!frame.getResourcesMap().get(framePayload.url)) {
-        const frameResource = this.createResourceFromFramePayload(
-          framePayload,
-          framePayload.url,
-          Common23.ResourceType.resourceTypes.Document,
-          framePayload.mimeType,
-          null,
-          null
-        );
-        frameResource.isGenerated = true;
-        frame.addResource(frameResource);
-      }
     }
   }
   navigatedWithinDocument(frameId, url) {
@@ -31739,7 +31828,11 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     this.#reloadSuspensionCount--;
     console.assert(this.#reloadSuspensionCount >= 0, "Unbalanced call to ResourceTreeModel.resumeReload()");
     if (!this.#reloadSuspensionCount && this.#pendingReloadOptions) {
-      const { ignoreCache, scriptToEvaluateOnLoad } = this.#pendingReloadOptions;
+      const { ignoreCache, scriptToEvaluateOnLoad, loaderId } = this.#pendingReloadOptions;
+      if (loaderId !== this.mainFrame?.loaderId) {
+        this.#pendingReloadOptions = null;
+        return;
+      }
       this.reloadPage(ignoreCache, scriptToEvaluateOnLoad);
     }
   }
@@ -31752,7 +31845,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       this.dispatchEventToListeners("PageReloadRequested" /* PageReloadRequested */, this);
     }
     if (this.#reloadSuspensionCount) {
-      this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad };
+      this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad, loaderId };
       return;
     }
     this.#pendingReloadOptions = null;

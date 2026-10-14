@@ -5865,10 +5865,23 @@ var ResourceScriptMapping = class {
         return;
       }
     }
-    for (const script of Array.from(this.#scriptToUISourceCode.keys())) {
+    const scripts = Array.from(this.#scriptToUISourceCode).filter(([script, uiSourceCode]) => this.#resolvedSourceURLChanged(script, uiSourceCode)).map(([script]) => script);
+    for (const script of scripts) {
       this.removeScripts([script]);
       this.addScript(script);
     }
+  }
+  /**
+   * Whether `uiSourceCode` no longer reflects the `//# sourceURL=` annotation of `script` when
+   * resolved against the current inspected URL. Scripts without such an annotation are not
+   * affected by changes to the inspected URL.
+   */
+  #resolvedSourceURLChanged(script, uiSourceCode) {
+    if (!script.hasSourceURL) {
+      return false;
+    }
+    const url = SDK9.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), script.sourceURL);
+    return url !== uiSourceCode.url() || !this.#isTrustworthySourceURL(script, url);
   }
   async functionBoundsAtRawLocation(rawLocation) {
     const script = rawLocation.script();

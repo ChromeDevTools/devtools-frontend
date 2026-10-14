@@ -6,6 +6,7 @@
  * loads and injects all *.js files it finds.
  */
 import '../third_party/chromium/ahem/ahem.js';
+import { afterEach, before, beforeEach } from 'mocha';
 import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';

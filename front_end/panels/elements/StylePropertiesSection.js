@@ -261,7 +261,7 @@ export class StylePropertiesSection {
             this.titleElement.classList.add('hidden');
             this.updateAncestorRuleList();
         }
-        if (rule) {
+        if (rule instanceof SDK.CSSRule.CSSStyleRule) {
             const newRuleButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
             newRuleButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.onNewRuleClick, this);
             newRuleButton.setSize("MICRO" /* Buttons.Button.Size.MICRO */);

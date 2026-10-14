@@ -2336,14 +2336,13 @@ var CountersGraph = class extends UI.Widget.VBox {
       if (!counters) {
         return;
       }
-      for (const name in counters) {
+      const counterKeys = ["jsHeapSizeUsed", "documents", "nodes", "jsEventListeners"];
+      for (const name of counterKeys) {
         const counter = this.countersByName.get(name);
-        if (counter) {
+        const value = counters[name];
+        if (counter && typeof value === "number") {
           const { startTime } = Trace11.Helpers.Timing.eventTimingsMilliSeconds(event);
-          counter.appendSample(
-            startTime,
-            counters[name]
-          );
+          counter.appendSample(startTime, value);
         }
       }
       if (typeof counters.gpuMemoryLimitKB !== "undefined") {
@@ -8275,7 +8274,7 @@ var TimelineMiniMap = class extends TimelineMiniMapBase {
     this.registerRequiredCSS(timelineMiniMap_css_default);
     this.element.classList.add("timeline-minimap", "no-trace-active");
     this.#breadcrumbsUI = new TimelineComponents2.BreadcrumbsUI.BreadcrumbsUI();
-    this.element.prepend(this.#breadcrumbsUI);
+    this.#breadcrumbsUI.show(this.element);
     this.#overviewComponent.show(this.element);
     this.#overviewComponent.addEventListener(PerfUI10.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED, (event) => {
       this.#onOverviewPanelWindowChanged(event);
@@ -8292,13 +8291,12 @@ var TimelineMiniMap = class extends TimelineMiniMapBase {
     this.#overviewComponent.addEventListener(PerfUI10.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE, () => {
       this.dispatchEventToListeners(PerfUI10.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE);
     });
-    this.#breadcrumbsUI.addEventListener(TimelineComponents2.BreadcrumbsUI.BreadcrumbActivatedEvent.eventName, (event) => {
-      const { breadcrumb, childBreadcrumbsRemoved } = event;
+    this.#breadcrumbsUI.onBreadcrumbActivated = (breadcrumb, childBreadcrumbsRemoved) => {
       this.#activateBreadcrumb(
         breadcrumb,
-        { removeChildBreadcrumbs: Boolean(childBreadcrumbsRemoved), updateVisibleWindow: true }
+        { removeChildBreadcrumbs: childBreadcrumbsRemoved, updateVisibleWindow: true }
       );
-    });
+    };
     this.#overviewComponent.enableCreateBreadcrumbsButton();
     TraceBounds7.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
     const state = TraceBounds7.TraceBounds.BoundsManager.instance().state();
@@ -8386,10 +8384,8 @@ var TimelineMiniMap = class extends TimelineMiniMapBase {
     };
     const newVisibleTraceWindow = Trace17.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
     const addedBreadcrumb = this.breadcrumbs.add(newVisibleTraceWindow);
-    this.#breadcrumbsUI.data = {
-      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
-      activeBreadcrumb: addedBreadcrumb
-    };
+    this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+    this.#breadcrumbsUI.activeBreadcrumb = addedBreadcrumb;
   }
   highlightBounds(bounds, withBracket = false) {
     this.#overviewComponent.highlightBounds(bounds, withBracket);
@@ -8407,10 +8403,8 @@ var TimelineMiniMap = class extends TimelineMiniMapBase {
       return;
     }
     this.breadcrumbs.setActiveBreadcrumb(breadcrumb, options);
-    this.#breadcrumbsUI.data = {
-      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
-      activeBreadcrumb: breadcrumb
-    };
+    this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+    this.#breadcrumbsUI.activeBreadcrumb = breadcrumb;
   }
   reset() {
     this.#data = null;
@@ -8472,10 +8466,8 @@ var TimelineMiniMap = class extends TimelineMiniMapBase {
     while (lastBreadcrumb.child !== null) {
       lastBreadcrumb = lastBreadcrumb.child;
     }
-    this.#breadcrumbsUI.data = {
-      initialBreadcrumb: this.breadcrumbs.initialBreadcrumb,
-      activeBreadcrumb: lastBreadcrumb
-    };
+    this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+    this.#breadcrumbsUI.activeBreadcrumb = lastBreadcrumb;
   }
 };
 
@@ -11239,18 +11231,33 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       }, 0);
     });
   }
+  #getDebuggerModelForFrameId() {
+    const debuggerModelForFrameId = /* @__PURE__ */ new Map();
+    for (const target of this.#targetManager.targets()) {
+      const debuggerModel = target.model(SDK7.DebuggerModel.DebuggerModel);
+      if (!debuggerModel) {
+        continue;
+      }
+      const resourceModel = target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
+      const activeFrameIds = (resourceModel?.frames() ?? []).map((frame) => frame.id);
+      for (const frameId of activeFrameIds) {
+        debuggerModelForFrameId.set(frameId, debuggerModel);
+      }
+    }
+    return debuggerModelForFrameId;
+  }
   /**
    * Store source maps on trace metadata (but just the non-data url ones).
    *
    * Many raw source maps are already in memory, but there are some cases where they may
-   * not be and have to be fetched here:
-   *
-   * 1. If the trace processor (via `#createSourceMapResolver`) never fetched it,
-   *    due to `ScriptHandler` skipping the script if it could not find an associated frame.
-   * 2. If the initial fetch failed (perhaps the failure was intermittent and a
-   *    subsequent attempt will work).
+   * not be and have to be fetched here (e.g., if the trace processor via
+   * `#createSourceMapResolver` never fetched it due to `ScriptsHandler` skipping the
+   * script when it could not find an associated frame). Source maps whose fetch was
+   * already started during `#createSourceMapResolver` or earlier in this retention
+   * pass (tracked in `sourceMapPromisesByUrl`) reuse the existing promise.
    */
-  async #retainSourceMapsForEnhancedTrace(parsedTrace, metadata) {
+  async #retainSourceMapsForEnhancedTrace(parsedTrace, metadata, sourceMapPromisesByUrl) {
+    const debuggerModelForFrameId = this.#getDebuggerModelForFrameId();
     const handleScript = async (script) => {
       if (script.sourceMapUrlElided) {
         if (metadata.sourceMaps?.find((m) => m.url === script.url)) {
@@ -11265,24 +11272,33 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       if (!script.sourceMapUrl || script.sourceMapUrl.startsWith("data:")) {
         return;
       }
-      if (metadata.sourceMaps?.find((m) => m.sourceMapUrl === script.sourceMapUrl)) {
+      if (!script.url) {
+        return;
+      }
+      const sourceMapUrl = Common10.ParsedURL.ParsedURL.completeURL(script.url, script.sourceMapUrl);
+      if (!sourceMapUrl) {
+        return;
+      }
+      if (metadata.sourceMaps?.find((m) => m.sourceMapUrl === sourceMapUrl)) {
         return;
       }
       let rawSourceMap = script.sourceMap?.json();
-      if (!rawSourceMap && !script.sourceMapUrlElided) {
-        const initiator = {
-          target: null,
-          frameId: script.frame,
-          initiatorUrl: script.url
-        };
-        rawSourceMap = await SDK7.SourceMapManager.tryLoadSourceMap(
-          this.#resourceLoader,
-          script.sourceMapUrl,
-          initiator
-        );
+      if (!rawSourceMap) {
+        let payloadPromise = sourceMapPromisesByUrl.get(sourceMapUrl);
+        if (!payloadPromise) {
+          const target = debuggerModelForFrameId.get(script.frame)?.target() ?? this.#targetManager.primaryPageTarget();
+          const initiator = {
+            target,
+            frameId: script.frame,
+            initiatorUrl: script.url
+          };
+          payloadPromise = SDK7.SourceMapManager.tryLoadSourceMap(this.#resourceLoader, sourceMapUrl, initiator);
+          sourceMapPromisesByUrl.set(sourceMapUrl, payloadPromise);
+        }
+        rawSourceMap = await payloadPromise ?? void 0;
       }
-      if (script.url && rawSourceMap) {
-        metadata.sourceMaps?.push({ url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap });
+      if (rawSourceMap && !metadata.sourceMaps?.find((m) => m.sourceMapUrl === sourceMapUrl)) {
+        metadata.sourceMaps?.push({ url: script.url, sourceMapUrl, sourceMap: rawSourceMap });
       }
     };
     metadata.sourceMaps = [];
@@ -11296,19 +11312,10 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     const timeout = new Promise((resolve) => setTimeout(resolve, SOURCE_MAP_LOAD_TIMEOUT_MS));
     await Promise.race([Promise.allSettled(promises), timeout]);
   }
-  #createSourceMapResolver(isFreshRecording, metadata) {
-    const debuggerModelForFrameId = /* @__PURE__ */ new Map();
-    for (const target of SDK7.TargetManager.TargetManager.instance().targets()) {
-      const debuggerModel = target.model(SDK7.DebuggerModel.DebuggerModel);
-      if (!debuggerModel) {
-        continue;
-      }
-      const resourceModel = target.model(SDK7.ResourceTreeModel.ResourceTreeModel);
-      const activeFrameIds = (resourceModel?.frames() ?? []).map((frame) => frame.id);
-      for (const frameId of activeFrameIds) {
-        debuggerModelForFrameId.set(frameId, debuggerModel);
-      }
-    }
+  #createSourceMapResolver(isFreshRecording, metadata, sourceMapPromisesByUrl) {
+    const debuggerModelForFrameId = this.#getDebuggerModelForFrameId();
+    const resourceLoader = this.#resourceLoader;
+    const targetManager = this.#targetManager;
     async function getExistingSourceMap(frame, scriptId, scriptUrl) {
       const debuggerModel = debuggerModelForFrameId.get(frame);
       if (!debuggerModel) {
@@ -11357,16 +11364,20 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       if (!sourceUrl) {
         return null;
       }
-      const initiator = {
-        target: debuggerModelForFrameId.get(frame)?.target() ?? null,
-        frameId: frame,
-        initiatorUrl: sourceUrl
-      };
-      const payload = await SDK7.SourceMapManager.tryLoadSourceMap(
-        _TimelinePanel.instance().#resourceLoader,
-        sourceMapUrl,
-        initiator
-      );
+      let payloadPromise = sourceMapPromisesByUrl.get(sourceMapUrl);
+      if (!payloadPromise) {
+        const target = debuggerModelForFrameId.get(frame)?.target() ?? targetManager.primaryPageTarget();
+        const initiator = {
+          target,
+          frameId: frame,
+          // Use scriptUrl (the script's actual network/document URL) rather than sourceUrl
+          // (which can be overridden by an untrusted //# sourceURL= comment).
+          initiatorUrl: scriptUrl
+        };
+        payloadPromise = SDK7.SourceMapManager.tryLoadSourceMap(resourceLoader, sourceMapUrl, initiator);
+        sourceMapPromisesByUrl.set(sourceMapUrl, payloadPromise);
+      }
+      const payload = await payloadPromise;
       return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload, Common10.Console.Console.instance()) : null;
     }
     const timeout = new Promise((resolve) => setTimeout(() => resolve(null), SOURCE_MAP_LOAD_TIMEOUT_MS));
@@ -11404,10 +11415,11 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     }
   }
   async #executeNewTrace(collectedEvents, isFreshRecording, metadata) {
+    const sourceMapPromisesByUrl = /* @__PURE__ */ new Map();
     const config = {
       metadata: metadata ?? void 0,
       isFreshRecording,
-      resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
+      resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata, sourceMapPromisesByUrl),
       isCPUProfile: metadata?.dataOrigin === Trace21.Types.File.DataOrigin.CPU_PROFILE
     };
     if (window.location.href.includes("devtools/bundled") || window.location.search.includes("debugFrontend")) {
@@ -11427,7 +11439,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
       const traceIndex = this.#traceEngineModel.lastTraceIndex();
       const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
       if (parsedTrace) {
-        await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata);
+        await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata, sourceMapPromisesByUrl);
         await this.#retainResourceContentsForEnhancedTrace(parsedTrace, metadata);
       }
     }
@@ -11605,7 +11617,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
    * 3. Flash the Insight with the highlight colour we use in other panels.
    */
   revealInsight(insightModel) {
-    const insightSetKey = insightModel.navigation?.args.data?.navigationId ?? Trace21.Types.Events.NO_NAVIGATION;
+    const insightSetKey = Trace21.Helpers.Trace.navigationIDForEvent(insightModel.navigation) ?? Trace21.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({ model: insightModel, insightSetKey }, { highlightInsight: true });
   }
   revealCoreVitals(revealable) {
@@ -12353,7 +12365,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     let details = null;
     let detailsText;
     const unsafeEventArgs = event.args;
-    const unsafeEventData = event.args?.data;
+    const unsafeEventData = unsafeEventArgs?.data;
     switch (event.name) {
       case Trace22.Types.Events.Name.PAINT_IMAGE:
       case Trace22.Types.Events.Name.DECODE_IMAGE:
@@ -12624,7 +12636,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     const color = isMarker ? _TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
     contentHelper.addSection(_TimelineUIUtils.eventTitle(event), color, event);
     const unsafeEventArgs = event.args;
-    const unsafeEventData = event.args?.data;
+    const unsafeEventData = unsafeEventArgs?.data;
     const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event) ?? null;
     const initiatorFor = parsedTrace.data.Initiators.initiatorToEvents.get(event) ?? null;
     let url = null;
@@ -19307,9 +19319,10 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     }
     const fieldMetricResultsByNavigationId = /* @__PURE__ */ new Map();
     for (const insightSet of insights.values()) {
-      if (insightSet.navigation?.args.data?.navigationId) {
+      const navigationId = Trace32.Helpers.Trace.navigationIDForEvent(insightSet.navigation);
+      if (navigationId) {
         fieldMetricResultsByNavigationId.set(
-          insightSet.navigation.args.data.navigationId,
+          navigationId,
           Trace32.Insights.Common.getFieldMetricsForInsightSet(
             insightSet,
             metadata,
@@ -19320,19 +19333,18 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     }
     for (const marker of this.#markers) {
       for (const event of marker.entries) {
-        const navigationId = event.args?.data?.navigationId;
-        if (!navigationId) {
-          continue;
-        }
-        const fieldMetricResults = fieldMetricResultsByNavigationId.get(navigationId);
-        if (!fieldMetricResults) {
-          continue;
-        }
+        let navigationId;
         let fieldMetricResult;
-        if (event.name === Trace32.Types.Events.Name.MARK_FCP) {
-          fieldMetricResult = fieldMetricResults.fcp;
-        } else if (event.name === Trace32.Types.Events.Name.MARK_LCP_CANDIDATE) {
-          fieldMetricResult = fieldMetricResults.lcp;
+        if (Trace32.Types.Events.isFirstContentfulPaint(event)) {
+          navigationId = event.args?.data?.navigationId;
+          if (navigationId) {
+            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.fcp;
+          }
+        } else if (Trace32.Types.Events.isLargestContentfulPaintCandidate(event)) {
+          navigationId = event.args?.data?.navigationId;
+          if (navigationId) {
+            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.lcp;
+          }
         }
         if (!fieldMetricResult) {
           continue;

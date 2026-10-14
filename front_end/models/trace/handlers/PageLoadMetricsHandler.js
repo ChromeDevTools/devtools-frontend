@@ -30,14 +30,14 @@ let metricScoresByFrameId = new Map();
  */
 let allMarkerEvents = [];
 // Grouped by navigation to make it easier for insights to scope checks.
-let metaCharsetCheckEventsByNavigation = new Map();
+let metaCharsetCheckEventsByNavigation = new WeakMap();
 let metaCharsetCheckEventsArray = [];
 export function reset() {
     metricScoresByFrameId = new Map();
     pageLoadEventsArray = [];
     allMarkerEvents = [];
     selectedLCPCandidateEvents = new Set();
-    metaCharsetCheckEventsByNavigation = new Map();
+    metaCharsetCheckEventsByNavigation = new WeakMap();
     metaCharsetCheckEventsArray = [];
 }
 let enableSoftNavigation = true;
@@ -247,16 +247,17 @@ function getNavigationForPageLoadEvent(event) {
         Types.Events.isFirstPaint(event)) {
         const { navigationsByNavigationId, softNavigationsById } = metaHandlerData();
         let navigation;
-        if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
-            event.args.data?.performanceTimelineNavigationId) {
-            navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+        if (Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
+            const navigationId = event.args.data?.performanceTimelineNavigationId;
+            navigation = navigationId ? softNavigationsById.get(navigationId) : undefined;
             if (!navigation) {
                 // The most recent soft navigation must have been before the trace started.
                 return null;
             }
         }
-        else if (Types.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
-            navigation = softNavigationsById.get(event.args.context.performanceTimelineNavigationId);
+        else if (Types.Events.isSoftFirstContentfulPaint(event)) {
+            const navigationId = event.args.context?.performanceTimelineNavigationId;
+            navigation = navigationId ? softNavigationsById.get(navigationId) : undefined;
             if (!navigation) {
                 // The most recent soft navigation must have been before the trace started.
                 return null;

@@ -6,7 +6,7 @@ export declare function finalize(): Promise<void>;
 export interface LayerTreeData {
     paints: Types.Events.Paint[];
     snapshots: Types.Events.DisplayItemListSnapshot[];
-    paintsToSnapshots: Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>;
+    paintsToSnapshots: WeakMap<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>;
 }
 export declare function data(): LayerTreeData;
 export declare function deps(): HandlerName[];

@@ -62,6 +62,8 @@ interface IdentitySectionData {
     description: string;
     appId: string | null;
     recommendedId: string | null;
+    bundleId?: string | null;
+    parentAppName?: string | null;
     hasId: boolean;
     warnings: Platform.UIString.LocalizedString[];
 }

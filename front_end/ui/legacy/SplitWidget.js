@@ -621,16 +621,16 @@ export class SplitWidget extends SplitWidgetBase {
         return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
     }
     #maybeAutoAdjustOrientation() {
-        if (this.#autoAdjustOrientation) {
-            const width = this.isVertical() ? this.#totalSizeCSS : this.#totalSizeOtherDimensionCSS;
-            const height = this.isVertical() ? this.#totalSizeOtherDimensionCSS : this.#totalSizeCSS;
-            if (width <= 600 && height >= 600) {
-                this.setVertical(false);
-            }
-            else {
-                this.setVertical(true);
-            }
+        if (!this.#autoAdjustOrientation) {
+            return;
         }
+        const { width, height } = this.contentElement.getBoundingClientRect();
+        if (!width || !height) {
+            return;
+        }
+        // Side by side, narrow split widgets leave too little room for the main widget. Stack the
+        // widgets instead, unless there is even less vertical room.
+        this.setVertical(width > 600 || height < width);
     }
     #onResizeStart() {
         this.#resizeStartSizeDIP = this.#sidebarSizeDIP;
@@ -798,7 +798,7 @@ export class SplitWidgetElement extends WidgetElement {
             const autoAdjustOrientation = element.getAttribute('direction') === 'auto';
             const secondIsSidebar = element.getAttribute('sidebar-position') === 'second';
             const settingName = element.getAttribute('name') ?? undefined;
-            const sidebarSize = parseInt(element.getAttribute('sidebar-initial-size') || '', 10);
+            const sidebarSize = parseFloat(element.getAttribute('sidebar-initial-size') || '');
             const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : undefined;
             const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : undefined;
             const widget = new SplitWidget(vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, 

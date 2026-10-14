@@ -1191,6 +1191,9 @@ export class WrapperWidget extends Widget {
             this.#widget.show(this.element, undefined, /* suppressOrphanWidgetError */ true);
         }
     }
+    calculateConstraints() {
+        return this.#widget ? this.#widget.constraints() : super.calculateConstraints();
+    }
     focus() {
         if (this.#widget) {
             this.#widget.focus();

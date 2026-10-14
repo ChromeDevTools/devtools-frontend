@@ -1236,12 +1236,12 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/layer_viewer/Layers3DView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var vertexPositionAttributes = /* @__PURE__ */ new Map();
-var vertexColorAttributes = /* @__PURE__ */ new Map();
-var textureCoordAttributes = /* @__PURE__ */ new Map();
-var uniformMatrixLocations = /* @__PURE__ */ new Map();
-var uniformSamplerLocations = /* @__PURE__ */ new Map();
-var imageForTexture = /* @__PURE__ */ new Map();
+var vertexPositionAttributes = /* @__PURE__ */ new WeakMap();
+var vertexColorAttributes = /* @__PURE__ */ new WeakMap();
+var textureCoordAttributes = /* @__PURE__ */ new WeakMap();
+var uniformMatrixLocations = /* @__PURE__ */ new WeakMap();
+var uniformSamplerLocations = /* @__PURE__ */ new WeakMap();
+var imageForTexture = /* @__PURE__ */ new WeakMap();
 var DEFAULT_VIEW3 = (input, output, target) => {
   render3(
     html3`<style>

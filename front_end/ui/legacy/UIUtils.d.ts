@@ -281,7 +281,7 @@ export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     protected updateNode(_node: Node, _attributeName: string | null): void;
     protected addNodes(_nodes: NodeList | Node[]): void;
     protected removeNodes(_nodes: NodeList | Node[]): void;
-    static findCorrespondingElement(sourceElement: HTMLElement, sourceRootElement: HTMLElement, targetRootElement: Element): Element | null;
+    static findCorrespondingElement(sourceElement: Element, sourceRootElement: Element, targetRootElement: Element): Element | null;
 }
 /**
  * @param text Text to copy to clipboard

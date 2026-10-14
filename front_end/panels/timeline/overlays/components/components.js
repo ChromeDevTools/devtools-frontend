@@ -1366,6 +1366,7 @@ function visibleOverlayWidth(overlayRect, canvasRect) {
 function applyLabelPosition(overlay, rangeContainer, durationBox, options) {
   const { canvasRect, hideLabelIfTooNarrow } = options;
   const paddingForScrollbar = 9;
+  rangeContainer.style.margin = "0px";
   const overlayRect = overlay.getBoundingClientRect();
   const labelRect = rangeContainer.getBoundingClientRect();
   const visibleWidth = visibleOverlayWidth(overlayRect, canvasRect) - paddingForScrollbar;
@@ -1381,17 +1382,16 @@ function applyLabelPosition(overlay, rangeContainer, durationBox, options) {
   const labelLeftMarginToCenter = (overlayRect.width - labelRect.width) / 2;
   const newLabelX = overlayRect.x + labelLeftMarginToCenter;
   const labelOffLeftOfScreen = newLabelX < canvasRect.x;
-  rangeContainer.classList.toggle("offScreenLeft", labelOffLeftOfScreen);
   const rightBound = canvasRect.x + canvasRect.width;
   const labelRightEdge = overlayRect.x + labelLeftMarginToCenter + labelRect.width;
   const labelOffRightOfScreen = labelRightEdge > rightBound;
-  rangeContainer.classList.toggle("offScreenRight", labelOffRightOfScreen);
+  rangeContainer.classList.toggle("offScreenLeft", labelOffLeftOfScreen && !labelOffRightOfScreen);
+  rangeContainer.classList.toggle("offScreenRight", labelOffRightOfScreen && !labelOffLeftOfScreen);
   if (labelOffLeftOfScreen) {
     rangeContainer.style.marginLeft = `${Math.abs(canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
-  } else if (labelOffRightOfScreen) {
+  }
+  if (labelOffRightOfScreen) {
     rangeContainer.style.marginRight = `${overlayRect.right - canvasRect.right + paddingForScrollbar}px`;
-  } else {
-    rangeContainer.style.margin = "0px";
   }
   return true;
 }
@@ -1501,7 +1501,7 @@ var TimeRangeOverlay = class extends UI2.Widget.Widget {
     if (rect === null) {
       return;
     }
-    if (this.#canvasRect && this.#canvasRect.width === rect.width && this.#canvasRect.height === rect.height) {
+    if (this.#canvasRect && this.#canvasRect.x === rect.x && this.#canvasRect.width === rect.width) {
       return;
     }
     this.#canvasRect = rect;

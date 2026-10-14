@@ -172,6 +172,11 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     highlightEntry(entryIndex: number): void;
     hideHighlight(): void;
     private createCandyStripePattern;
+    /**
+     * Synchronizes canvas backing store resolution and CSS layout dimensions with the current container size and device pixel ratio.
+     * Backing store dimensions and CSS layout properties are updated independently to avoid reallocating GPU buffers during panning
+     * while keeping CSS dimensions in sync when browser zoom changes.
+     */
     private resetCanvas;
     windowChanged(startTime: number, endTime: number, animate: boolean): void;
     updateRangeSelection(startTime: number, endTime: number): void;
@@ -577,6 +582,10 @@ export interface FlameChartDataProvider {
     canJumpToEntry(entryIndex: number): boolean;
     entryTitle(entryIndex: number): string | null;
     entryFont(entryIndex: number): string | null;
+    /**
+     * Return empty string '' if the entry has no generic background fill and
+     * should be skipped during batch drawing (e.g. for custom-decorated entries).
+     */
     entryColor(entryIndex: number): string;
     decorateEntry(entryIndex: number, context: CanvasRenderingContext2D, text: string | null, barX: number, barY: number, barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number, transformColor?: (color: string) => string): boolean;
     forceDecoration(entryIndex: number): boolean;

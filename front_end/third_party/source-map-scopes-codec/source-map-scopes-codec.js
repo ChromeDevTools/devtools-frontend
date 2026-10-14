@@ -8,7 +8,7 @@ var Tag = /* @__PURE__ */ (function(Tag2) {
   Tag2[Tag2["GENERATED_RANGE_BINDINGS"] = 6] = "GENERATED_RANGE_BINDINGS";
   Tag2[Tag2["GENERATED_RANGE_SUBRANGE_BINDING"] = 7] = "GENERATED_RANGE_SUBRANGE_BINDING";
   Tag2[Tag2["GENERATED_RANGE_CALL_SITE"] = 8] = "GENERATED_RANGE_CALL_SITE";
-  Tag2[Tag2["VENDOR_EXTENSION"] = 99] = "VENDOR_EXTENSION";
+  Tag2[Tag2["VENDOR_EXTENSION"] = 21] = "VENDOR_EXTENSION";
   return Tag2;
 })({});
 var EncodedTag = /* @__PURE__ */ (function(EncodedTag2) {
@@ -20,7 +20,7 @@ var EncodedTag = /* @__PURE__ */ (function(EncodedTag2) {
   EncodedTag2["GENERATED_RANGE_BINDINGS"] = "G";
   EncodedTag2["GENERATED_RANGE_SUBRANGE_BINDING"] = "H";
   EncodedTag2["GENERATED_RANGE_CALL_SITE"] = "I";
-  EncodedTag2["VENDOR_EXTENSION"] = "/";
+  EncodedTag2["VENDOR_EXTENSION"] = "V";
   return EncodedTag2;
 })({});
 var OriginalScopeFlags = /* @__PURE__ */ (function(OriginalScopeFlags2) {
@@ -457,7 +457,13 @@ function decodeIndexMap(sourceMap, options) {
     hasVariableAndBindingInfo: false
   };
   for (const section of sourceMap.sections) {
-    const { scopes, ranges, hasVariableAndBindingInfo } = decode(section.map, {
+    if ("sections" in section.map) {
+      if (options.mode === 1) {
+        throw new Error("Index source map sections must not be index maps");
+      }
+      continue;
+    }
+    const { scopes, ranges, hasVariableAndBindingInfo } = decodeMap(section.map, {
       ...options,
       generatedOffset: section.offset
     });
@@ -856,6 +862,10 @@ var Decoder = class {
     const subRangeBindings = this.#subRangeBindingsForRange.get(range);
     if (!subRangeBindings) return;
     for (const [variableIndex, bindings] of subRangeBindings) {
+      if (variableIndex < 0 || variableIndex >= range.values.length) {
+        this.#throwInStrictMode("GENERATED_RANGE_SUBRANGE_BINDING variable index out of bounds");
+        continue;
+      }
       const value = range.values[variableIndex];
       const subRanges = [];
       range.values[variableIndex] = subRanges;

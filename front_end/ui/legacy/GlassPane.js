@@ -301,7 +301,7 @@ export var MarginBehavior;
     MarginBehavior["DEFAULT_MARGIN"] = "DefaultMargin";
     MarginBehavior["NO_MARGIN"] = "NoMargin";
 })(MarginBehavior || (MarginBehavior = {}));
-const containers = new Map();
+const containers = new WeakMap();
 const panes = new Set();
 /** Exported for layout tests. **/
 export const GlassPanePanes = panes;

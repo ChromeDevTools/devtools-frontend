@@ -2,7 +2,7 @@ import * as Types from '../types/types.js';
 import type { HandlerName } from './types.js';
 export interface Data {
     animationFrames: Types.Events.SyntheticAnimationFramePair[];
-    presentationForFrame: Map<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>;
+    presentationForFrame: WeakMap<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>;
 }
 export declare function reset(): void;
 export declare function handleUserConfig(config: Types.Configuration.Configuration): void;

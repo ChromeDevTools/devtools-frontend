@@ -767,12 +767,12 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       omitLineAndRenderColumnAsHex: frame.isWasm
     };
     const fallbackAnchor = _Linkifier.linkifyURL(frame.url, fallbackOptions);
-    if (!frame.uiSourceCode) {
+    const uiLocation = frame.toUiLocation(Workspace.Workspace.WorkspaceImpl.instance());
+    if (!uiLocation) {
       const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance()).isUserIgnoreListedURL(frame.url);
       fallbackAnchor.classList.toggle("ignore-list-link", isIgnoreListed);
       return fallbackAnchor;
     }
-    const uiLocation = frame.uiSourceCode.uiLocation(frame.line, frame.column);
     return _Linkifier.linkifyUILocation(uiLocation, options);
   }
   linkifyStackTraceTopFrame(target, stackTrace) {

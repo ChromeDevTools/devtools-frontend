@@ -162,7 +162,7 @@ export function handleEvent(event) {
         const viewportWidth = rectAsArray[2];
         const viewportHeight = rectAsArray[5];
         viewportRect = { x: viewportX, y: viewportY, width: viewportWidth, height: viewportHeight };
-        devicePixelRatio = event.args.data.dpr;
+        devicePixelRatio = event.args.data.dpr ?? null;
     }
     // The TracingStartedInBrowser event includes the data on which frames are
     // in scope at the start of the trace. We use this to identify the frame with

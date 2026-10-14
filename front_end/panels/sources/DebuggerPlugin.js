@@ -168,7 +168,7 @@ function renderMissingDebugFile(input, _output, target) {
       @click=${input.onShowRequest}>${i18nString(UIStrings.showRequest)}</devtools-button>` : nothing}</span>`, target);
     // clang-format on
 }
-const debuggerPluginForUISourceCode = new Map();
+const debuggerPluginForUISourceCode = new WeakMap();
 export class DebuggerPlugin extends Plugin {
     transformer;
     editor = undefined;

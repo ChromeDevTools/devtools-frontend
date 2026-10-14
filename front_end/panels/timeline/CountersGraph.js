@@ -140,11 +140,13 @@ export class CountersGraph extends UI.Widget.VBox {
             if (!counters) {
                 return;
             }
-            for (const name in counters) {
+            const counterKeys = ['jsHeapSizeUsed', 'documents', 'nodes', 'jsEventListeners'];
+            for (const name of counterKeys) {
                 const counter = this.countersByName.get(name);
-                if (counter) {
+                const value = counters[name];
+                if (counter && typeof value === 'number') {
                     const { startTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
-                    counter.appendSample(startTime, counters[name]);
+                    counter.appendSample(startTime, value);
                 }
             }
             if (typeof counters.gpuMemoryLimitKB !== 'undefined') {

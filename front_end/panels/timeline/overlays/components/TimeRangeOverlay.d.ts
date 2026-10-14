@@ -29,8 +29,8 @@ export interface ViewOutput {
      * Moves the label as required to keep it on screen, and hides it if the
      * visible part of the range is too narrow. Returns true once the label has
      * been measured, including when it is hidden. Returns false, without
-     * changing anything, if the duration text has no width to measure against,
-     * or if the view has not rendered yet.
+     * positioning the label, if the duration text has no width to measure
+     * against, or if the view has not rendered yet.
      */
     positionLabel: (options: PositionLabelOptions) => boolean;
 }

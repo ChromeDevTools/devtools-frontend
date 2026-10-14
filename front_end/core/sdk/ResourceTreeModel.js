@@ -174,6 +174,9 @@ export class ResourceTreeModel extends SDKModel {
         return frame;
     }
     frameNavigated(framePayload, type) {
+        this.#frameNavigated(framePayload, type, /* isDocumentOpened */ false);
+    }
+    #frameNavigated(framePayload, type, isDocumentOpened) {
         const sameTargetParentFrame = framePayload.parentId ? (this.framesInternal.get(framePayload.parentId) || null) : null;
         // Do nothing unless cached resource tree is processed - it will overwrite everything.
         if (!this.#cachedResourcesProcessed && sameTargetParentFrame) {
@@ -205,6 +208,20 @@ export class ResourceTreeModel extends SDKModel {
         for (let i = 0; i < resources.length; ++i) {
             this.dispatchEventToListeners(Events.ResourceAdded, resources[i]);
         }
+        // The document resource is normally added once the Network domain reports
+        // the document request as finished. Clients that run without the Network
+        // domain never get it, so inline scripts and styles can't be mapped to the
+        // document. Unless the request is still in flight, add the document
+        // resource right away, like `addFramesRecursively()` does for loaded frames.
+        // Documents created by `document.open()` have no request of their own and
+        // their content is not available.
+        const networkManager = this.target().model(NetworkManager);
+        if (!frame.getResourcesMap().get(framePayload.url) &&
+            (isDocumentOpened || !networkManager?.requestForLoaderId(framePayload.loaderId))) {
+            const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+            frameResource.isGenerated = isDocumentOpened;
+            frame.addResource(frameResource);
+        }
         this.updateSecurityOrigins();
         void this.updateStorageKeys();
         if (frame.backForwardCacheDetails.restoredFromCache) {
@@ -222,15 +239,10 @@ export class ResourceTreeModel extends SDKModel {
         }
     }
     documentOpened(framePayload) {
-        this.frameNavigated(framePayload, undefined);
+        this.#frameNavigated(framePayload, undefined, /* isDocumentOpened */ true);
         const frame = this.framesInternal.get(framePayload.id);
         if (frame) {
             this.dispatchEventToListeners(Events.DocumentOpened, frame);
-            if (!frame.getResourcesMap().get(framePayload.url)) {
-                const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
-                frameResource.isGenerated = true;
-                frame.addResource(frameResource);
-            }
         }
     }
     navigatedWithinDocument(frameId, url) {
@@ -356,7 +368,15 @@ export class ResourceTreeModel extends SDKModel {
         this.#reloadSuspensionCount--;
         console.assert(this.#reloadSuspensionCount >= 0, 'Unbalanced call to ResourceTreeModel.resumeReload()');
         if (!this.#reloadSuspensionCount && this.#pendingReloadOptions) {
-            const { ignoreCache, scriptToEvaluateOnLoad } = this.#pendingReloadOptions;
+            const { ignoreCache, scriptToEvaluateOnLoad, loaderId } = this.#pendingReloadOptions;
+            // A deferred reload (and its scriptToEvaluateOnLoad) only applies to the
+            // document it was requested against. If the main frame has since
+            // navigated to another document, drop the stale request instead of
+            // replaying it against the new document.
+            if (loaderId !== this.mainFrame?.loaderId) {
+                this.#pendingReloadOptions = null;
+                return;
+            }
             this.reloadPage(ignoreCache, scriptToEvaluateOnLoad);
         }
     }
@@ -370,7 +390,7 @@ export class ResourceTreeModel extends SDKModel {
             this.dispatchEventToListeners(Events.PageReloadRequested, this);
         }
         if (this.#reloadSuspensionCount) {
-            this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad };
+            this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad, loaderId };
             return;
         }
         this.#pendingReloadOptions = null;

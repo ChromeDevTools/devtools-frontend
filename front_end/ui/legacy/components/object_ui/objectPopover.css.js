@@ -37,7 +37,7 @@ export default `/*
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: auto;
   width: 100%;
-  height: calc(100% - 13px);
+  height: calc(100% - 22px);
 }
 
 .object-popover-container {

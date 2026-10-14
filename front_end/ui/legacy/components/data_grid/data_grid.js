@@ -3856,13 +3856,16 @@ function nodeMixin(base) {
       }
     }
     #onRowMouseEvent(event) {
+      if (!(event.target instanceof Element) || !(event.currentTarget instanceof HTMLElement)) {
+        return;
+      }
       const targetInConfigRow = UI3.UIUtils.HTMLElementWithLightDOMTemplate.findCorrespondingElement(
         event.target,
         event.currentTarget,
         this.#configElement
       );
       if (!targetInConfigRow) {
-        throw new Error("Cell click event target not found in the data grid");
+        return;
       }
       if (targetInConfigRow instanceof HTMLElement) {
         targetInConfigRow?.dispatchEvent(new MouseEvent(event.type, { bubbles: true, composed: true }));

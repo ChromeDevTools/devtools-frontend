@@ -3373,6 +3373,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "query",
   "query-string",
   "question",
+  "queued",
   "quick-open",
   "quick-open.show",
   "quick-open.show-command-menu",
@@ -3766,6 +3767,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "sensors",
   "sensors.manage-locations",
   "sensors.reset-device-orientiation",
+  "sent",
   "serif",
   "serious",
   "server",
@@ -5980,8 +5982,8 @@ async function stopLogging() {
   resizeObserver.disconnect();
   intersectionObserver.disconnect();
   documents.length = 0;
-  viewportRects.clear();
-  resizeListeners.clear();
+  viewportRects = /* @__PURE__ */ new WeakMap();
+  resizeListeners = /* @__PURE__ */ new WeakMap();
   processingThrottler = noOpThrottler;
   pendingResize.clear();
   pendingChange.clear();
@@ -6010,8 +6012,8 @@ function scheduleProcessing() {
   }
   void processingThrottler.schedule(() => RenderCoordinator.read("processForLogging", process));
 }
-var viewportRects = /* @__PURE__ */ new Map();
-var resizeListeners = /* @__PURE__ */ new Map();
+var viewportRects = /* @__PURE__ */ new WeakMap();
+var resizeListeners = /* @__PURE__ */ new WeakMap();
 var viewportRectFor = (element) => {
   const ownerDocument = element.ownerDocument;
   const viewportRect = viewportRects.get(ownerDocument) || new DOMRect(0, 0, ownerDocument.defaultView?.innerWidth || 0, ownerDocument.defaultView?.innerHeight || 0);

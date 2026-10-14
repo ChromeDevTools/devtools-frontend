@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-export const stackTraceForEventInTrace = new Map();
+export const stackTraceForEventInTrace = new WeakMap();
 export function clearCacheForTrace(data) {
     stackTraceForEventInTrace.delete(data);
 }

@@ -1,6 +1,7 @@
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
+export declare function getEventDataObject(event: Types.Events.Event): Record<string, unknown> | null;
 /**
  * Extracts the raw stack trace in known trace events. Most likely than
  * not you want to use `getZeroIndexedStackTraceForEvent`, which returns
@@ -89,6 +90,7 @@ export declare function rawCallFrameForEntry(entry: Types.Events.Event): Protoco
  */
 export declare function makeZeroBasedCallFrame(callFrame: Types.Events.CallFrame): Types.Events.CallFrame;
 export declare function frameIDForEvent(event: Types.Events.Event): string | null;
+export declare function navigationIDForEvent(event?: Types.Events.Event): string | undefined;
 export declare function isTopLevelEvent(event: Types.Events.Event): boolean;
 export declare function isExtensionUrl(url: string): boolean;
 export declare function findRecalcStyleEvents(events: Types.Events.Event[], startTime: Types.Timing.Micro, endTime?: Types.Timing.Micro): Types.Events.RecalcStyle[];

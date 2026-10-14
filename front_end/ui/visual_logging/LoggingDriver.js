@@ -86,8 +86,8 @@ export async function stopLogging() {
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
     documents.length = 0;
-    viewportRects.clear();
-    resizeListeners.clear();
+    viewportRects = new WeakMap();
+    resizeListeners = new WeakMap();
     processingThrottler = noOpThrottler;
     pendingResize.clear();
     pendingChange.clear();
@@ -116,8 +116,8 @@ export function scheduleProcessing() {
     }
     void processingThrottler.schedule(() => RenderCoordinator.read('processForLogging', process));
 }
-const viewportRects = new Map();
-const resizeListeners = new Map();
+let viewportRects = new WeakMap();
+let resizeListeners = new WeakMap();
 const viewportRectFor = (element) => {
     const ownerDocument = element.ownerDocument;
     const viewportRect = viewportRects.get(ownerDocument) ||

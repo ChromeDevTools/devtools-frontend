@@ -338,7 +338,7 @@ var timelineGrid_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineGrid.css")} */`;
 
 // ../../front_end/ui/legacy/components/perf_ui/TimelineGrid.ts
-var labelMap = /* @__PURE__ */ new Map();
+var labelMap = /* @__PURE__ */ new WeakMap();
 var TimelineGrid = class _TimelineGrid {
   element;
   #dividersElement;
@@ -704,11 +704,15 @@ var FlameChart = class extends FlameChartBase {
    */
   #entryTitleCache = /* @__PURE__ */ new Map();
   /**
-   * Tracks the previous window device pixel ratio.
-   * When the ratio changes (e.g. browser zoom changes), subpixel font metrics can shift,
-   * requiring #entryTitleCache to be invalidated.
+   * Tracks the previous canvas backing store and style layout properties.
+   * Backing store dimensions and CSS layout properties are updated independently to avoid reallocating
+   * GPU buffers during panning while keeping CSS dimensions in sync when browser zoom changes.
    */
-  #lastDpr = 0;
+  #lastCanvasDimensions = {
+    dpr: 0,
+    styleWidth: 0,
+    styleHeight: 0
+  };
   #boundOnThemeChanged = this.#onThemeChanged.bind(this);
   constructor(dataProvider, flameChartDelegate, optionalConfig = {}) {
     super({ useShadowDom: true });
@@ -970,18 +974,36 @@ var FlameChart = class extends FlameChartBase {
     }
     return ctx.createPattern(candyStripeCanvas, "repeat");
   }
+  /**
+   * Synchronizes canvas backing store resolution and CSS layout dimensions with the current container size and device pixel ratio.
+   * Backing store dimensions and CSS layout properties are updated independently to avoid reallocating GPU buffers during panning
+   * while keeping CSS dimensions in sync when browser zoom changes.
+   */
   resetCanvas() {
     const ratio = window.devicePixelRatio;
-    if (this.#lastDpr !== ratio) {
+    if (this.#lastCanvasDimensions.dpr !== ratio) {
       this.#entryTitleCache.clear();
-      this.#lastDpr = ratio;
+      this.#urlTruncations.names.clear();
+      this.#lastCanvasDimensions.dpr = ratio;
     }
     const width = Math.round(this.offsetWidth * ratio);
     const height = Math.round(this.offsetHeight * ratio);
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.canvas.style.width = `${width / ratio}px`;
-    this.canvas.style.height = `${height / ratio}px`;
+    if (this.canvas.width !== width) {
+      this.canvas.width = width;
+    }
+    if (this.canvas.height !== height) {
+      this.canvas.height = height;
+    }
+    const styleWidth = width / ratio;
+    if (this.#lastCanvasDimensions.styleWidth !== styleWidth) {
+      this.canvas.style.width = `${styleWidth}px`;
+      this.#lastCanvasDimensions.styleWidth = styleWidth;
+    }
+    const styleHeight = height / ratio;
+    if (this.#lastCanvasDimensions.styleHeight !== styleHeight) {
+      this.canvas.style.height = `${styleHeight}px`;
+      this.#lastCanvasDimensions.styleHeight = styleHeight;
+    }
   }
   windowChanged(startTime, endTime, animate) {
     this.flameChartDelegate.windowChanged(startTime, endTime, animate);
@@ -2262,12 +2284,11 @@ var FlameChart = class extends FlameChartBase {
     const canvasWidth = this.offsetWidth;
     const canvasHeight = this.offsetHeight;
     const context = this.context;
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     context.save();
     const ratio = window.devicePixelRatio;
     const top = this.chartViewport.scrollOffset();
     context.scale(ratio, ratio);
-    context.fillStyle = "rgba(0, 0, 0, 0)";
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.translate(0, -top);
     context.font = this.#font;
     const { markerIndices, drawBatches, titleIndices } = this.getDrawBatches(context, timelineData);
@@ -2494,8 +2515,7 @@ var FlameChart = class extends FlameChartBase {
     const entryStartTime = entryStartTimes[entryIndex];
     const barXStart = this.timeToPositionClipped(entryStartTime);
     const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
-    const barWidth = Math.max(barXEnd - barXStart, 1);
-    return barWidth;
+    return Math.max(barXEnd - barXStart, 1);
   }
   /**
    * Preprocess the data to be drawn to speed the rendering time.
@@ -2567,6 +2587,9 @@ var FlameChart = class extends FlameChartBase {
         lastDrawOffset = barX;
         if (this.entryColorsCache) {
           const color = this.getColorForEntry(entryIndex);
+          if (!color) {
+            continue;
+          }
           const outline = this.#shouldOutlineEvent(entryIndex);
           const key = getOrMakeKey(color, outline);
           let batch = drawBatches.get(key);

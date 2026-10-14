@@ -1590,6 +1590,7 @@ export function bindToAction(actionName) {
     const action = ActionRegistry.instance().getAction(actionName);
     let setEnabled;
     let toggled;
+    let longClickController = null;
     function actionEnabledChanged(event) {
         setEnabled(event.data);
     }
@@ -1597,6 +1598,8 @@ export function bindToAction(actionName) {
         if (!e || !(e instanceof Buttons.Button.Button)) {
             action.removeEventListener("Enabled" /* ActionRegistration.Events.ENABLED */, actionEnabledChanged);
             action.removeEventListener("Toggled" /* ActionRegistration.Events.TOGGLED */, toggled);
+            longClickController?.dispose();
+            longClickController = null;
             return;
         }
         setEnabled = enabled => {
@@ -1609,14 +1612,105 @@ export function bindToAction(actionName) {
         const jslogContext = action.id();
         const toggledIconName = action.toggledIcon() ?? iconName;
         const toggleType = action.toggleWithRedColor() ? "red-toggle" /* Buttons.Button.ToggleType.RED */ : "primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */;
-        if (e.childNodes.length) {
+        const hasContentChildren = Array.from(e.childNodes)
+            .some(node => !(node instanceof Buttons.Button.Button) &&
+            (node.nodeType !== Node.TEXT_NODE || Boolean(node.textContent?.trim())));
+        const updateLongClickOptions = () => {
+            const optionButtons = Array.from(e.querySelectorAll('devtools-button'));
+            if (optionButtons.length > 0 && (!toggleable || action.toggled())) {
+                if (!longClickController) {
+                    longClickController = new LongClickController(e, showOptions);
+                    e.longClickable = true;
+                }
+            }
+            else if (longClickController) {
+                longClickController.dispose();
+                longClickController = null;
+                e.longClickable = false;
+            }
+        };
+        function showOptions() {
+            if (!(e instanceof Buttons.Button.Button)) {
+                return;
+            }
+            let buttons = [...e.querySelectorAll('devtools-button'), e];
+            const document = e.ownerDocument;
+            document.documentElement.addEventListener('mouseup', mouseUp, false);
+            const optionsGlassPane = new GlassPane();
+            optionsGlassPane.setPointerEventsBehavior("BlockedByGlassPane" /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */);
+            optionsGlassPane.show(document);
+            const optionsBar = optionsGlassPane.contentElement.createChild('devtools-toolbar');
+            optionsBar.floating = true;
+            const buttonHeight = 26;
+            const hostButtonPosition = e.boxInWindow().relativeToElement(GlassPane.container(document));
+            const topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document.documentElement.offsetHeight;
+            if (topNotBottom) {
+                buttons = buttons.reverse();
+            }
+            optionsBar.style.height = (buttonHeight * buttons.length) + 'px';
+            if (topNotBottom) {
+                optionsBar.style.top = (hostButtonPosition.y - 5) + 'px';
+            }
+            else {
+                optionsBar.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
+            }
+            optionsBar.style.left = (hostButtonPosition.x - 5) + 'px';
+            const buttonClones = [];
+            for (const button of buttons) {
+                const clone = button.cloneNode(false);
+                clone.longClickable = false;
+                clone.classList.add('toolbar-button');
+                clone.addEventListener('mousemove', mouseOver, false);
+                clone.addEventListener('mouseout', mouseOut, false);
+                optionsBar.appendChild(clone);
+                buttonClones.push(clone);
+            }
+            const hostButtonIndex = topNotBottom ? 0 : buttons.length - 1;
+            buttonClones[hostButtonIndex].classList.add('emulate-active');
+            function mouseOver(ev) {
+                if (ev.which !== 1) {
+                    return;
+                }
+                if (ev.target instanceof HTMLElement) {
+                    const buttonElement = ev.target.enclosingNodeOrSelfWithClass('toolbar-button');
+                    buttonElement?.classList.add('emulate-active');
+                }
+            }
+            function mouseOut(ev) {
+                if (ev.which !== 1) {
+                    return;
+                }
+                if (ev.target instanceof HTMLElement) {
+                    const buttonElement = ev.target.enclosingNodeOrSelfWithClass('toolbar-button');
+                    buttonElement?.classList.remove('emulate-active');
+                }
+            }
+            function mouseUp(ev) {
+                if (ev.which !== 1) {
+                    return;
+                }
+                optionsGlassPane.hide();
+                document.documentElement.removeEventListener('mouseup', mouseUp, false);
+                for (let i = 0; i < buttonClones.length; ++i) {
+                    if (buttonClones[i].classList.contains('emulate-active')) {
+                        buttonClones[i].classList.remove('emulate-active');
+                        buttons[i].click();
+                        break;
+                    }
+                }
+            }
+        }
+        if (hasContentChildren) {
             e.jslogContext = jslogContext;
+            updateLongClickOptions();
         }
         else if (toggleable) {
             toggled = () => {
                 e.toggled = action.toggled();
+                updateLongClickOptions();
                 if (action.title()) {
-                    e.title = action.title();
+                    ARIAUtils.setLabel(e, action.title());
+                    e.accessibleLabel = action.title();
                     Tooltip.installWithActionBinding(e, action.title(), action.id());
                 }
             };
@@ -1624,19 +1718,30 @@ export function bindToAction(actionName) {
             e.data = {
                 jslogContext,
                 title,
+                accessibleLabel: title,
                 variant: "icon_toggle" /* Buttons.Button.Variant.ICON_TOGGLE */,
                 iconName,
                 toggledIconName,
                 toggleType,
                 toggled: action.toggled(),
+                toggleOnClick: false,
             };
             toggled();
         }
         else if (iconName) {
-            e.data = { iconName, jslogContext, title, variant: "icon" /* Buttons.Button.Variant.ICON */ };
+            e.data = { iconName, jslogContext, title, accessibleLabel: title, variant: "icon" /* Buttons.Button.Variant.ICON */ };
+            if (title) {
+                ARIAUtils.setLabel(e, title);
+                Tooltip.installWithActionBinding(e, title, action.id());
+            }
+            updateLongClickOptions();
         }
         else {
-            e.data = { jslogContext, title, variant: "text" /* Buttons.Button.Variant.TEXT */ };
+            e.data = { jslogContext, title, accessibleLabel: title, variant: "text" /* Buttons.Button.Variant.TEXT */ };
+            if (title) {
+                ARIAUtils.setLabel(e, title);
+            }
+            updateLongClickOptions();
         }
         setEnabled(action.enabled());
         e.onclick = () => action.execute();
@@ -1877,16 +1982,22 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     static findCorrespondingElement(sourceElement, sourceRootElement, targetRootElement) {
         let currentElement = sourceElement;
         const childIndexesOnPathToRoot = [];
-        while (currentElement?.parentElement && currentElement !== sourceRootElement) {
-            childIndexesOnPathToRoot.push([...currentElement.parentElement.children].indexOf(currentElement));
+        while (currentElement.parentElement && currentElement !== sourceRootElement) {
+            let childIndex = 0;
+            let sibling = currentElement.previousElementSibling;
+            while (sibling) {
+                childIndex++;
+                sibling = sibling.previousElementSibling;
+            }
+            childIndexesOnPathToRoot.push(childIndex);
             currentElement = currentElement.parentElement;
         }
-        if (!currentElement) {
+        if (currentElement !== sourceRootElement) {
             return null;
         }
         let targetElement = targetRootElement;
         for (const index of childIndexesOnPathToRoot.reverse()) {
-            targetElement = targetElement.children[index];
+            targetElement = targetElement?.children[index] ?? null;
         }
         return targetElement;
     }

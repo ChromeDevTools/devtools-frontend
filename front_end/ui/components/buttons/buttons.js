@@ -50,6 +50,10 @@ var button_css_default = `/*
   width: fit-content;
 }
 
+::slotted(devtools-button) {
+  display: none;
+}
+
 button {
   --hover-layer-color: var(--sys-color-state-hover-on-subtle);
   --active-layer-color: var(--sys-color-state-ripple-neutral-on-subtle);
@@ -426,7 +430,7 @@ var ToggleType = /* @__PURE__ */ ((ToggleType2) => {
   ToggleType2["RED"] = "red-toggle";
   return ToggleType2;
 })(ToggleType || {});
-var Button = class extends HTMLElement {
+var Button = class _Button extends HTMLElement {
   static formAssociated = true;
   #shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
   #boundOnClick = this.#onClick.bind(this);
@@ -589,6 +593,9 @@ var Button = class extends HTMLElement {
     this.#props.jslogContext = jslogContext;
     this.#render();
   }
+  get longClickable() {
+    return Boolean(this.#props.longClickable);
+  }
   set longClickable(longClickable) {
     this.#props.longClickable = longClickable;
     this.#render();
@@ -629,7 +636,9 @@ var Button = class extends HTMLElement {
   }
   #render() {
     const nodes = this.#slotRef.value?.assignedNodes();
-    const isEmpty = !Boolean(nodes?.length);
+    const isEmpty = nodes?.every(
+      (node) => node instanceof _Button || node.nodeType === Node.TEXT_NODE && !node.textContent?.trim()
+    ) ?? true;
     if (!this.#props.variant) {
       throw new Error("Button requires a variant to be defined");
     }

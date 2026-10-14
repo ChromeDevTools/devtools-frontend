@@ -41,7 +41,7 @@ __export(scheduled_render_exports, {
   scheduleRender: () => scheduleRender
 });
 import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
-var requests = /* @__PURE__ */ new Map();
+var requests = /* @__PURE__ */ new WeakMap();
 var active = /* @__PURE__ */ new Set();
 function scheduleRender(component, callback) {
   const request = requests.get(component);

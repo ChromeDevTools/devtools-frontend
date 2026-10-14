@@ -154,7 +154,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 function findInsightSet(insightSets, navigationId) {
-    return insightSets?.values().find(insightSet => navigationId ? navigationId === insightSet.navigation?.args.data?.navigationId : !insightSet.navigation);
+    return insightSets?.values().find(insightSet => navigationId ?
+        navigationId === Helpers.Trace.navigationIDForEvent(insightSet.navigation) :
+        !insightSet.navigation);
 }
 function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFreshRecording, onEventClick) {
     if (!insightSets) {

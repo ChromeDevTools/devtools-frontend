@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import { afterEach, beforeEach } from 'mocha';
 import * as i18n from '../core/i18n/i18n.js';
 import EnUsLocaleData from '../core/i18n/locales/en-US.json' with { type: 'json' };
 export async function initializeGlobalLocaleVars() {

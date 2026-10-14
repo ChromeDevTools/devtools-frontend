@@ -31,17 +31,17 @@ let paintImageByLazyPixelRef = new Map();
 // These are currently only DecodeImage and ResizeImage events, but the type is
 // deliberately generic as in the future we might want to add more events that
 // have a relationship to a individual PaintImage event.
-let eventToPaintImage = new Map();
+let eventToPaintImage = new WeakMap();
 let urlToPaintImage = new Map();
-let paintEventToCorrectedDisplaySize = new Map();
+let paintEventToCorrectedDisplaySize = new WeakMap();
 let didCorrectForHostDpr = false;
 export function reset() {
     paintImageEvents = new Map();
     decodeLazyPixelRefEvents = new Map();
     paintImageByLazyPixelRef = new Map();
-    eventToPaintImage = new Map();
+    eventToPaintImage = new WeakMap();
     urlToPaintImage = new Map();
-    paintEventToCorrectedDisplaySize = new Map();
+    paintEventToCorrectedDisplaySize = new WeakMap();
     didCorrectForHostDpr = false;
 }
 export function handleEvent(event) {

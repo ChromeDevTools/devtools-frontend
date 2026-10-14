@@ -6,6 +6,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 import { SyntheticEventsManager } from './SyntheticEvents.js';
 import { eventTimingsMicroSeconds } from './Timing.js';
+export function getEventDataObject(event) {
+    if (!event.args || !('data' in event.args) || typeof event.args.data !== 'object' || !event.args.data ||
+        Array.isArray(event.args.data)) {
+        return null;
+    }
+    return event.args.data;
+}
 /**
  * Extracts the raw stack trace in known trace events. Most likely than
  * not you want to use `getZeroIndexedStackTraceForEvent`, which returns
@@ -19,10 +26,11 @@ import { eventTimingsMicroSeconds } from './Timing.js';
  * use the @see Trace.Extras.StackTraceForEvent util.
  */
 export function stackTraceInEvent(event) {
-    if (event.args?.data?.stackTrace) {
-        return event.args.data.stackTrace;
+    const data = getEventDataObject(event);
+    if (data?.stackTrace && Array.isArray(data.stackTrace)) {
+        return data.stackTrace;
     }
-    if (event.args?.stackTrace) {
+    if (event.args && 'stackTrace' in event.args && Array.isArray(event.args.stackTrace)) {
         return event.args.stackTrace;
     }
     if (Types.Events.isRecalcStyle(event)) {
@@ -531,16 +539,17 @@ export function makeZeroBasedCallFrame(callFrame) {
  * @see {@link getZeroIndexedLineAndColumnForEvent}
  **/
 function getRawLineAndColumnNumbersForEvent(event) {
-    if (!event.args?.data) {
+    const data = getEventDataObject(event);
+    if (!data) {
         return {};
     }
     let lineNumber = undefined;
     let columnNumber = undefined;
-    if ('lineNumber' in event.args.data && typeof event.args.data.lineNumber === 'number') {
-        lineNumber = event.args.data.lineNumber;
+    if ('lineNumber' in data && typeof data.lineNumber === 'number') {
+        lineNumber = data.lineNumber;
     }
-    if ('columnNumber' in event.args.data && typeof event.args.data.columnNumber === 'number') {
-        columnNumber = event.args.data.columnNumber;
+    if ('columnNumber' in data && typeof data.columnNumber === 'number') {
+        columnNumber = data.columnNumber;
     }
     return { lineNumber, columnNumber };
 }
@@ -557,11 +566,21 @@ export function frameIDForEvent(event) {
         return event.args.beginData.frame;
     }
     // Otherwise, we expect frame to be in args.data
-    if (event.args?.data?.frame) {
-        return event.args.data.frame;
+    const data = getEventDataObject(event);
+    if (data && 'frame' in data && typeof data.frame === 'string') {
+        return data.frame;
     }
-    // No known frame for this event.
     return null;
+}
+export function navigationIDForEvent(event) {
+    if (!event) {
+        return undefined;
+    }
+    const data = getEventDataObject(event);
+    if (data && 'navigationId' in data && typeof data.navigationId === 'string') {
+        return data.navigationId;
+    }
+    return undefined;
 }
 const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
 export function isTopLevelEvent(event) {
@@ -711,7 +730,14 @@ export function extractSampleTraceId(event) {
         const beginData = event.args['beginData'];
         return beginData.sampleTraceId ?? null;
     }
-    return event.args?.sampleTraceId ?? event.args?.data?.sampleTraceId ?? null;
+    if ('sampleTraceId' in event.args && typeof event.args.sampleTraceId === 'number') {
+        return event.args.sampleTraceId;
+    }
+    const data = getEventDataObject(event);
+    if (data && 'sampleTraceId' in data && typeof data.sampleTraceId === 'number') {
+        return data.sampleTraceId;
+    }
+    return null;
 }
 /**
  * This exactly matches Trace.Styles.visibleTypes. See the runtime verification in maybeInitStylesMap.

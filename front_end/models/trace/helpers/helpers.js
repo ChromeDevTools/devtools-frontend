@@ -30,6 +30,7 @@ __export(Trace_exports, {
   findRecalcStyleEvents: () => findRecalcStyleEvents,
   forEachEvent: () => forEachEvent,
   frameIDForEvent: () => frameIDForEvent,
+  getEventDataObject: () => getEventDataObject,
   getNavigationForTraceEvent: () => getNavigationForTraceEvent,
   getStackTraceTopCallFrameInEventPayload: () => getStackTraceTopCallFrameInEventPayload,
   getSyntheticId: () => getSyntheticId,
@@ -41,6 +42,7 @@ __export(Trace_exports, {
   makeProfileCall: () => makeProfileCall,
   makeZeroBasedCallFrame: () => makeZeroBasedCallFrame,
   mergeEventsInOrder: () => mergeEventsInOrder,
+  navigationIDForEvent: () => navigationIDForEvent,
   parseDevtoolsDetails: () => parseDevtoolsDetails,
   rawCallFrameForEntry: () => rawCallFrameForEntry,
   sortTraceEventsInPlace: () => sortTraceEventsInPlace,
@@ -175,7 +177,7 @@ var microToMilli = (value) => Types.Timing.Milli(value / 1e3);
 var microToSeconds = (value) => Types.Timing.Seconds(value / 1e3 / 1e3);
 function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
   let eventTimeStamp = event.ts - traceBounds.min;
-  if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION && event.args?.data?.performanceTimelineNavigationId) {
+  if (Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
     const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
     if (navigationForEvent) {
       eventTimeStamp = event.ts - navigationForEvent.ts;
@@ -190,15 +192,21 @@ function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, naviga
     if (navigationForEvent) {
       eventTimeStamp = event.ts - navigationForEvent.ts;
     }
-  } else if (event.args?.data?.navigationId) {
-    const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
-    if (navigationForEvent) {
-      eventTimeStamp = event.ts - navigationForEvent.ts;
-    }
-  } else if (event.args?.data?.frame) {
-    const navigationForEvent = getNavigationForTraceEvent(event, event.args.data.frame, navigationsByFrameId);
-    if (navigationForEvent) {
-      eventTimeStamp = event.ts - navigationForEvent.ts;
+  } else {
+    const navigationId = navigationIDForEvent(event);
+    if (navigationId) {
+      const navigationForEvent = navigationsByNavigationId.get(navigationId);
+      if (navigationForEvent) {
+        eventTimeStamp = event.ts - navigationForEvent.ts;
+      }
+    } else {
+      const frameId = frameIDForEvent(event);
+      if (frameId) {
+        const navigationForEvent = getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
+        if (navigationForEvent) {
+          eventTimeStamp = event.ts - navigationForEvent.ts;
+        }
+      }
     }
   }
   return Types.Timing.Micro(eventTimeStamp);
@@ -340,11 +348,18 @@ function windowsEqual(w1, w2) {
 }
 
 // ../../front_end/models/trace/helpers/Trace.ts
-function stackTraceInEvent(event) {
-  if (event.args?.data?.stackTrace) {
-    return event.args.data.stackTrace;
+function getEventDataObject(event) {
+  if (!event.args || !("data" in event.args) || typeof event.args.data !== "object" || !event.args.data || Array.isArray(event.args.data)) {
+    return null;
   }
-  if (event.args?.stackTrace) {
+  return event.args.data;
+}
+function stackTraceInEvent(event) {
+  const data = getEventDataObject(event);
+  if (data?.stackTrace && Array.isArray(data.stackTrace)) {
+    return data.stackTrace;
+  }
+  if (event.args && "stackTrace" in event.args && Array.isArray(event.args.stackTrace)) {
     return event.args.stackTrace;
   }
   if (Types2.Events.isRecalcStyle(event)) {
@@ -354,11 +369,11 @@ function stackTraceInEvent(event) {
     return event.args.beginData.stackTrace ?? null;
   }
   if (Types2.Events.isFunctionCall(event)) {
-    const data = event.args.data;
-    if (!data) {
+    const data2 = event.args.data;
+    if (!data2) {
       return null;
     }
-    const { columnNumber, lineNumber, url, scriptId, functionName } = data;
+    const { columnNumber, lineNumber, url, scriptId, functionName } = data2;
     if (lineNumber === void 0 || functionName === void 0 || columnNumber === void 0 || scriptId === void 0 || url === void 0) {
       return null;
     }
@@ -723,16 +738,17 @@ function makeZeroBasedCallFrame(callFrame) {
   return normalizedCallFrame;
 }
 function getRawLineAndColumnNumbersForEvent(event) {
-  if (!event.args?.data) {
+  const data = getEventDataObject(event);
+  if (!data) {
     return {};
   }
   let lineNumber = void 0;
   let columnNumber = void 0;
-  if ("lineNumber" in event.args.data && typeof event.args.data.lineNumber === "number") {
-    lineNumber = event.args.data.lineNumber;
+  if ("lineNumber" in data && typeof data.lineNumber === "number") {
+    lineNumber = data.lineNumber;
   }
-  if ("columnNumber" in event.args.data && typeof event.args.data.columnNumber === "number") {
-    columnNumber = event.args.data.columnNumber;
+  if ("columnNumber" in data && typeof data.columnNumber === "number") {
+    columnNumber = data.columnNumber;
   }
   return { lineNumber, columnNumber };
 }
@@ -740,10 +756,21 @@ function frameIDForEvent(event) {
   if (event.args && "beginData" in event.args && typeof event.args.beginData === "object" && event.args.beginData !== null && "frame" in event.args.beginData && typeof event.args.beginData.frame === "string") {
     return event.args.beginData.frame;
   }
-  if (event.args?.data?.frame) {
-    return event.args.data.frame;
+  const data = getEventDataObject(event);
+  if (data && "frame" in data && typeof data.frame === "string") {
+    return data.frame;
   }
   return null;
+}
+function navigationIDForEvent(event) {
+  if (!event) {
+    return void 0;
+  }
+  const data = getEventDataObject(event);
+  if (data && "navigationId" in data && typeof data.navigationId === "string") {
+    return data.navigationId;
+  }
+  return void 0;
 }
 var DevToolsTimelineEventCategory = "disabled-by-default-devtools.timeline";
 function isTopLevelEvent(event) {
@@ -848,7 +875,14 @@ function extractSampleTraceId(event) {
     const beginData = event.args["beginData"];
     return beginData.sampleTraceId ?? null;
   }
-  return event.args?.sampleTraceId ?? event.args?.data?.sampleTraceId ?? null;
+  if ("sampleTraceId" in event.args && typeof event.args.sampleTraceId === "number") {
+    return event.args.sampleTraceId;
+  }
+  const data = getEventDataObject(event);
+  if (data && "sampleTraceId" in data && typeof data.sampleTraceId === "number") {
+    return data.sampleTraceId;
+  }
+  return null;
 }
 var VISIBLE_TRACE_EVENT_TYPES = /* @__PURE__ */ new Set([
   Types2.Events.Name.ABORT_POST_TASK_CALLBACK,

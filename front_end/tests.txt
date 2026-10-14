@@ -577,6 +577,7 @@ panels/network/RequestTimingView.test.js
 panels/network/ResourceDirectSocketChunkView.test.js
 panels/network/ShowMoreDetailsWidget.test.js
 panels/network/components/DirectSocketConnectionView.test.js
+panels/network/components/EditableSpan.test.js
 panels/network/components/HeaderSectionRow.test.js
 panels/network/components/RequestHeaderSection.test.js
 panels/network/components/RequestTrustTokensView.test.js

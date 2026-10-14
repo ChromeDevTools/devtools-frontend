@@ -66,7 +66,7 @@ __export(StackTraceForEvent_exports, {
 });
 import * as Helpers from "../helpers/helpers.js";
 import * as Types from "../types/types.js";
-var stackTraceForEventInTrace = /* @__PURE__ */ new Map();
+var stackTraceForEventInTrace = /* @__PURE__ */ new WeakMap();
 function clearCacheForTrace(data) {
   stackTraceForEventInTrace.delete(data);
 }
@@ -1072,8 +1072,13 @@ function eventStackFrame(event) {
   if (Types4.Events.isProfileCall(event)) {
     return event.callFrame;
   }
-  const topFrame = event.args?.data?.stackTrace?.[0];
-  if (!topFrame) {
+  const data = Helpers3.Trace.getEventDataObject(event);
+  const stackTrace = data && Array.isArray(data.stackTrace) ? data.stackTrace : null;
+  if (!stackTrace || stackTrace.length === 0) {
+    return null;
+  }
+  const topFrame = stackTrace[0];
+  if (!topFrame || typeof topFrame !== "object") {
     return null;
   }
   return { ...topFrame, scriptId: String(topFrame.scriptId) };

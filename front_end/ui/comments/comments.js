@@ -45,6 +45,7 @@ var DISALLOWED_COMMENT_TARGETS = /* @__PURE__ */ new Set([
   VisualLogging.VisualElements.Resizer,
   VisualLogging.VisualElements.Menu,
   VisualLogging.VisualElements.Popover,
+  VisualLogging.VisualElements.Dialog,
   // Minor controls and toolbars
   VisualLogging.VisualElements.Link,
   VisualLogging.VisualElements.Section,
@@ -63,6 +64,7 @@ var DISALLOWED_COMMENT_ANCESTORS = /* @__PURE__ */ new Set([
   VisualLogging.VisualElements.Toolbar,
   VisualLogging.VisualElements.Menu,
   VisualLogging.VisualElements.Popover,
+  VisualLogging.VisualElements.Dialog,
   VisualLogging.VisualElements.PanelTabHeader
 ]);
 function closestAcrossShadow(element, selector) {

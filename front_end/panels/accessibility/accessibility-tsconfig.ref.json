@@ -50,6 +50,12 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../../models/bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {

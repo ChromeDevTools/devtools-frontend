@@ -1458,7 +1458,7 @@ export function getWidgetSignature(widget) {
         case 'PERFORMANCE_TRACE':
             return `${widget.name}`;
         case 'PERF_INSIGHT':
-            return `${widget.name}:${widget.data.insight}:${widget.data.insightData.insightKey}:${widget.data.insightData.navigation?.args?.data?.navigationId ?? 'no-nav-id'}`;
+            return `${widget.name}:${widget.data.insight}:${widget.data.insightData.insightKey}:${Trace.Helpers.Trace.navigationIDForEvent(widget.data.insightData.navigation) ?? 'no-nav-id'}`;
         case 'TIMELINE_RANGE_SUMMARY':
             return `${widget.name}:${widget.data.track}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
         case 'BOTTOM_UP_TREE':

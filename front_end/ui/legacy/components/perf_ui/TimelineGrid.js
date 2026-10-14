@@ -6,7 +6,7 @@ import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import { DEFAULT_FONT_SIZE, getFontFamilyForCanvas } from './Font.js';
 import timelineGridStyles from './timelineGrid.css.js';
-const labelMap = new Map();
+const labelMap = new WeakMap();
 export class TimelineGrid {
     element;
     #dividersElement;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
-import { getNavigationForTraceEvent } from './Trace.js';
+import { frameIDForEvent, getNavigationForTraceEvent, navigationIDForEvent } from './Trace.js';
 export const milliToMicro = (value) => Types.Timing.Micro(value * 1000);
 export const secondsToMilli = (value) => Types.Timing.Milli(value * 1000);
 export const secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
@@ -11,8 +11,7 @@ export const microToMilli = (value) => Types.Timing.Milli(value / 1000);
 export const microToSeconds = (value) => Types.Timing.Seconds(value / 1000 / 1000);
 export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
     let eventTimeStamp = event.ts - traceBounds.min;
-    if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
-        event.args?.data?.performanceTimelineNavigationId) {
+    if (Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
         const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
         if (navigationForEvent) {
             eventTimeStamp = event.ts - navigationForEvent.ts;
@@ -30,16 +29,22 @@ export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds,
             eventTimeStamp = event.ts - navigationForEvent.ts;
         }
     }
-    else if (event.args?.data?.navigationId) {
-        const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
-        if (navigationForEvent) {
-            eventTimeStamp = event.ts - navigationForEvent.ts;
+    else {
+        const navigationId = navigationIDForEvent(event);
+        if (navigationId) {
+            const navigationForEvent = navigationsByNavigationId.get(navigationId);
+            if (navigationForEvent) {
+                eventTimeStamp = event.ts - navigationForEvent.ts;
+            }
         }
-    }
-    else if (event.args?.data?.frame) {
-        const navigationForEvent = getNavigationForTraceEvent(event, event.args.data.frame, navigationsByFrameId);
-        if (navigationForEvent) {
-            eventTimeStamp = event.ts - navigationForEvent.ts;
+        else {
+            const frameId = frameIDForEvent(event);
+            if (frameId) {
+                const navigationForEvent = getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
+                if (navigationForEvent) {
+                    eventTimeStamp = event.ts - navigationForEvent.ts;
+                }
+            }
         }
     }
     return Types.Timing.Micro(eventTimeStamp);

@@ -91,6 +91,9 @@
       "path": "../../models/lighthouse/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/live-metrics/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/workspace/bundle-tsconfig.ref.json"
     },
     {

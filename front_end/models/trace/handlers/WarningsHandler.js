@@ -6,7 +6,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import { data as userInteractionsHandlerData } from './UserInteractionsHandler.js';
 import { data as workersData } from './WorkersHandler.js';
-let warningsPerEvent = new Map();
+let warningsPerEvent = new WeakMap();
 let eventsPerWarning = new Map();
 /**
  * Tracks the stack formed by nested trace events up to a given point
@@ -29,7 +29,7 @@ let longTaskEvents = [];
 export const FORCED_REFLOW_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(30));
 export const LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(50));
 export function reset() {
-    warningsPerEvent = new Map();
+    warningsPerEvent = new WeakMap();
     eventsPerWarning = new Map();
     allEventsStack = [];
     jsInvokeStack = [];

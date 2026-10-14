@@ -7,7 +7,7 @@ export interface ScriptsData {
     scripts: Script[];
 }
 export interface Script {
-    isolate: string;
+    isolate: string | number;
     scriptId: Protocol.Runtime.ScriptId;
     frame: string;
     ts: Types.Timing.Micro;

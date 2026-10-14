@@ -3046,7 +3046,7 @@ function getWidgetSignature(widget5) {
     case "PERFORMANCE_TRACE":
       return `${widget5.name}`;
     case "PERF_INSIGHT":
-      return `${widget5.name}:${widget5.data.insight}:${widget5.data.insightData.insightKey}:${widget5.data.insightData.navigation?.args?.data?.navigationId ?? "no-nav-id"}`;
+      return `${widget5.name}:${widget5.data.insight}:${widget5.data.insightData.insightKey}:${Trace2.Helpers.Trace.navigationIDForEvent(widget5.data.insightData.navigation) ?? "no-nav-id"}`;
     case "TIMELINE_RANGE_SUMMARY":
       return `${widget5.name}:${widget5.data.track}:${widget5.data.bounds.min}-${widget5.data.bounds.max}`;
     case "BOTTOM_UP_TREE":

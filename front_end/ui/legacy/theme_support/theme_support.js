@@ -4,7 +4,7 @@ import * as Host from "../../../core/host/host.js";
 import * as Root from "../../../core/root/root.js";
 import * as SettingsUI from "../../settings/settings.js";
 var themeSupportInstance;
-var themeValueByTargetByName = /* @__PURE__ */ new Map();
+var themeValueByTargetByName = /* @__PURE__ */ new WeakMap();
 var ThemeSupport = class _ThemeSupport extends EventTarget {
   constructor(setting) {
     super();
@@ -61,10 +61,11 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     this.#fetchColorsAndApplyHostTheme(document2);
   }
   getComputedValue(propertyName, target = null) {
-    let themeValueByName = themeValueByTargetByName.get(target);
+    const targetElement = target ?? document.documentElement;
+    let themeValueByName = themeValueByTargetByName.get(targetElement);
     if (!themeValueByName) {
       themeValueByName = /* @__PURE__ */ new Map();
-      themeValueByTargetByName.set(target, themeValueByName);
+      themeValueByTargetByName.set(targetElement, themeValueByName);
     }
     let themeValue = themeValueByName.get(propertyName);
     if (!themeValue) {
@@ -104,11 +105,11 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     } else {
       document2.documentElement.classList.toggle("baseline-grayscale", true);
     }
-    themeValueByTargetByName.clear();
+    themeValueByTargetByName = /* @__PURE__ */ new WeakMap();
     this.dispatchEvent(new ThemeChangeEvent());
   }
   static clearThemeCache() {
-    themeValueByTargetByName.clear();
+    themeValueByTargetByName = /* @__PURE__ */ new WeakMap();
   }
   fetchColorsAndApplyHostTheme() {
     for (const document2 of this.#documentsToTheme) {

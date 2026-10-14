@@ -1,3 +1,4 @@
+import type * as Mocha from 'mocha';
 import * as Trace from '../models/trace/trace.js';
 export declare function processTrace(context: Mocha.Suite | Mocha.Context, traceFile: string): Promise<Trace.TraceModel.ParsedTrace & {
     insights: Trace.Insights.Types.TraceInsightSets;

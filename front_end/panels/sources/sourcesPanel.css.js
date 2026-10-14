@@ -38,37 +38,11 @@ export default `/*
 }
 
 .scripts-debug-toolbar {
-  position: absolute;
-  top: 0;
-  width: 100%;
+  flex: 0 0 auto;
   background-color: var(--app-color-toolbar-background);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 1;
-}
-
-.scripts-debug-toolbar-drawer {
-  flex: 0 0 52px;
-  transition: margin-top 0.1s ease-in-out;
-  margin-top: -26px;
-  padding-top: 25px;
-  background-color: var(--sys-color-cdt-base-container);
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.scripts-debug-toolbar-drawer.expanded {
-  margin-top: 0;
-}
-
-.scripts-debug-toolbar-drawer > devtools-checkbox {
-  display: none;
-  padding-left: 3px;
-  height: var(--sys-size-12);
-}
-
-.scripts-debug-toolbar-drawer.expanded > devtools-checkbox {
-  display: flex;
 }
 
 .y-overflow-only {
@@ -76,12 +50,13 @@ export default `/*
   background-color: var(--sys-color-cdt-base-container);
 }
 
-.cursor-auto {
-  cursor: auto;
-}
-
 .navigator-tabbed-pane {
   background-color: var(--sys-color-cdt-base-container);
+}
+
+devtools-split-view {
+  flex: auto;
+  height: 100%;
 }
 
 /*# sourceURL=${import.meta.resolve('./sourcesPanel.css')} */`;

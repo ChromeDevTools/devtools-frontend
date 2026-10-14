@@ -9,35 +9,54 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.breadcrumbs {
-  display: none;
-  align-items: center;
-  height: 29px;
-  padding: 3px;
-  overflow: scroll hidden;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    /* The widget root defaults to \\'flex: auto\\'; don't take space from the overview pane. */
+    flex: none;
+  }
 
-.breadcrumbs::-webkit-scrollbar {
-  display: none;
-}
+  .breadcrumbs {
+    display: none;
+    align-items: center;
+    height: 29px;
+    padding: 3px;
+    overflow: scroll hidden;
+    /* Keep the pre-widget (shadow DOM) sizing; the global reset sets border-box. */
+    box-sizing: content-box;
+  }
 
-.breadcrumb {
-  padding: var(--sys-size-2) var(--sys-size-4);
-  border-radius: var(--sys-shape-corner-extra-small);
-}
+  .breadcrumbs > * {
+    /* The global \\'* { min-width: 0 }\\' reset would otherwise let crumbs and chevrons shrink
+       below their content when they overflow, so the text overlaps the arrows. */
+    flex-shrink: 0;
+  }
 
-.breadcrumb:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
+  .breadcrumbs.visible {
+    display: flex;
+  }
 
-.range {
-  font-size: var(--sys-typescale-body4-size);
-  white-space: nowrap;
-}
+  .breadcrumbs::-webkit-scrollbar {
+    display: none;
+  }
 
-.active-breadcrumb {
-  font-weight: bold;
-  color: var(--app-color-active-breadcrumb);
+  .breadcrumb {
+    padding: var(--sys-size-2) var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-extra-small);
+  }
+
+  .breadcrumb:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  .range {
+    font-size: var(--sys-typescale-body4-size);
+    white-space: nowrap;
+  }
+
+  .active-breadcrumb {
+    font-weight: bold;
+    color: var(--app-color-active-breadcrumb);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./breadcrumbsUI.css')} */`;

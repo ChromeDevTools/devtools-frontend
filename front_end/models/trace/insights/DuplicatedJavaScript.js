@@ -4,6 +4,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Extras from '../extras/extras.js';
 import * as Helpers from '../helpers/helpers.js';
+import * as Types from '../types/types.js';
 import { estimateCompressionRatioForScript, metricSavingsForWastedBytes } from './Common.js';
 import { InsightCategory, InsightKeys, } from './types.js';
 export const UIStrings = {
@@ -77,12 +78,22 @@ export function generateInsight(data, context) {
             wastedBytesByRequestId.set(requestId, (wastedBytesByRequestId.get(requestId) || 0) + transferSize);
         }
     }
+    let mainDocumentUrl = data.Meta.mainFrameURL;
+    if (context.navigation) {
+        if (Types.Events.isSoftNavigationStart(context.navigation)) {
+            mainDocumentUrl = context.navigation.args.context.URL;
+        }
+        else {
+            mainDocumentUrl =
+                context.navigation.args.data?.documentLoaderURL ?? context.navigation.args.data?.url ?? mainDocumentUrl;
+        }
+    }
     return finalize({
         duplication,
         duplicationGroupedByNodeModules,
         scriptsWithDuplication: [...new Set(scriptsWithDuplication)],
         scripts,
-        mainDocumentUrl: context.navigation?.args.data?.url ?? data.Meta.mainFrameURL,
+        mainDocumentUrl,
         metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
         wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0),
     });

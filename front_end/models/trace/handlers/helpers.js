@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 export function getEntityForEvent(event, entityMappings) {
     const url = getNonResolvedURL(event);
@@ -31,8 +32,10 @@ export function getNonResolvedURL(entry, handlerData) {
     if (Types.Events.isParseAuthorStyleSheetEvent(entry) && entry.args) {
         return entry.args.data.styleSheetUrl;
     }
-    if (entry.args?.data?.stackTrace && entry.args.data.stackTrace.length > 0) {
-        return entry.args.data.stackTrace[0].url;
+    const data = Helpers.Trace.getEventDataObject(entry);
+    if (data && Array.isArray(data.stackTrace) && data.stackTrace.length > 0 &&
+        typeof data.stackTrace[0]?.url === 'string') {
+        return data.stackTrace[0].url;
     }
     // ParseHTML events store the URL under beginData, not data.
     if (Types.Events.isParseHTML(entry)) {
@@ -51,12 +54,12 @@ export function getNonResolvedURL(entry, handlerData) {
         }
     }
     // For all other events, try to see if the URL is provided, else return null.
-    if (entry.args?.data?.url) {
-        return entry.args.data.url;
+    if (data && typeof data.url === 'string' && data.url) {
+        return data.url;
     }
     // Many events don't have a url, but are associated with a request. Use the
     // request's url.
-    const requestId = entry.args?.data?.requestId;
+    const requestId = data && typeof data.requestId === 'string' ? data.requestId : undefined;
     if (handlerData && requestId) {
         const url = handlerData.NetworkRequests.byId.get(requestId)?.args.data.url;
         if (url) {

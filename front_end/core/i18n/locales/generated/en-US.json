@@ -434,8 +434,14 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Paused in debugger"
   },
+  "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
+    "message": "Can’t load resource for an unavailable cross-origin frame"
+  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Load canceled due to reload of inspected page"
+  },
+  "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
+    "message": "Can’t load http(s) resource without a target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Error loading log"
@@ -3446,6 +3452,9 @@
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
   },
+  "panels/application/AppManifestView.ts | bundleId": {
+    "message": "Bundle ID"
+  },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Computed app ID"
   },
@@ -3577,6 +3586,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Page isn’t served from a secure origin"
+  },
+  "panels/application/AppManifestView.ts | parentAppName": {
+    "message": "Parent app name"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platform"
@@ -6635,11 +6647,17 @@
   "panels/comments/CommentsPane.ts | noComments": {
     "message": "No active comments. Add comments on elements in DevTools to send to your AI coding agent."
   },
+  "panels/comments/CommentsPane.ts | queued": {
+    "message": "Queued"
+  },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "See response"
   },
   "panels/comments/CommentsPane.ts | sendToAgent": {
     "message": "Send to Agent"
+  },
+  "panels/comments/CommentsPane.ts | sent": {
+    "message": "Sent"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Working"
@@ -15574,9 +15592,6 @@
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Open in Sources panel"
-  },
-  "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "Pause on caught exceptions"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "Resume with all pauses blocked for 500 ms"

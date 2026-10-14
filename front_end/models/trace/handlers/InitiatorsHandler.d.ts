@@ -13,8 +13,8 @@ export declare function reset(): void;
 export declare function handleEvent(event: Types.Events.Event): void;
 export declare function finalize(): Promise<void>;
 export interface InitiatorsData {
-    eventToInitiator: Map<Types.Events.Event, Types.Events.Event>;
-    initiatorToEvents: Map<Types.Events.Event, Types.Events.Event[]>;
+    eventToInitiator: WeakMap<Types.Events.Event, Types.Events.Event>;
+    initiatorToEvents: WeakMap<Types.Events.Event, Types.Events.Event[]>;
 }
 export declare function data(): InitiatorsData;
 export declare function deps(): ['Flows', 'AsyncJSCalls'];

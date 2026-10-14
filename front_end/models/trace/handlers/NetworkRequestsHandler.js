@@ -18,7 +18,7 @@ let requestsByTime = [];
  */
 let requestIdsByURL = new Map();
 let networkRequestEventByInitiatorUrl = new Map();
-let eventToInitiatorMap = new Map();
+let eventToInitiatorMap = new WeakMap();
 /**
  * These are to store ThirdParty data relationships between entities and events. To reduce iterating through data
  * more than we have to, here we start building the caches. After this, the RendererHandler will update
@@ -63,7 +63,7 @@ export function reset() {
     requestMap = new Map();
     requestsByTime = [];
     networkRequestEventByInitiatorUrl = new Map();
-    eventToInitiatorMap = new Map();
+    eventToInitiatorMap = new WeakMap();
     webSocketData = new Map();
     requestIdsByURL = new Map();
     entityMappings = {
@@ -260,7 +260,7 @@ export async function finalize() {
             };
             const TCPMsHeader = request.receiveResponse.args.data.headers.find(h => h.name === 'X-TCPMs');
             const TCPMs = TCPMsHeader ? Math.max(0, parseInt(TCPMsHeader.value, 10)) : 0;
-            if (request.receiveResponse.args.data.protocol.startsWith('h3')) {
+            if (request.receiveResponse.args.data.protocol?.startsWith('h3')) {
                 timing.connectStart = 0;
                 timing.connectEnd = TCPMs;
             }
@@ -570,7 +570,7 @@ function createSyntheticWebSocketConnection(startEvent, endEvent, firstRecordedE
             data: {
                 identifier: mainEvent.args.data.identifier,
                 priority: "Low" /* Protocol.Network.ResourcePriority.Low */,
-                url: mainEvent.args.data.url || '',
+                url: startEvent ? startEvent.args.data.url : '',
             },
         },
     };

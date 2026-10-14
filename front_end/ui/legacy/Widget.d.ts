@@ -291,12 +291,13 @@ export declare class WidgetFocusRestorer {
     restore(): void;
 }
 export interface WrapperWidgetParams {
-    widget: AnyWidget;
+    widget: AnyWidget | null;
 }
 export declare class WrapperWidget extends Widget {
     #private;
     constructor(element: HTMLElement, _deps: never[], params?: WrapperWidgetParams);
     set widget(widget: AnyWidget | null);
+    calculateConstraints(): Geometry.Constraints;
     focus(): void;
 }
 export {};

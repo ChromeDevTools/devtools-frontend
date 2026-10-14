@@ -91,12 +91,11 @@ var Breadcrumbs = class {
 // ../../front_end/panels/timeline/components/BreadcrumbsUI.ts
 var BreadcrumbsUI_exports = {};
 __export(BreadcrumbsUI_exports, {
-  BreadcrumbActivatedEvent: () => BreadcrumbActivatedEvent,
-  BreadcrumbsUI: () => BreadcrumbsUI
+  BreadcrumbsUI: () => BreadcrumbsUI,
+  DEFAULT_VIEW: () => DEFAULT_VIEW
 });
 import * as i18n from "../../../core/i18n/i18n.js";
 import * as Trace from "../../../models/trace/trace.js";
-import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
 import * as UI from "../../../ui/legacy/legacy.js";
 import * as Lit from "../../../ui/lit/lit.js";
 import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
@@ -108,35 +107,54 @@ var breadcrumbsUI_css_default = `/*
  * found in the LICENSE file.
  */
 
-.breadcrumbs {
-  display: none;
-  align-items: center;
-  height: 29px;
-  padding: 3px;
-  overflow: scroll hidden;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    /* The widget root defaults to \\'flex: auto\\'; don't take space from the overview pane. */
+    flex: none;
+  }
 
-.breadcrumbs::-webkit-scrollbar {
-  display: none;
-}
+  .breadcrumbs {
+    display: none;
+    align-items: center;
+    height: 29px;
+    padding: 3px;
+    overflow: scroll hidden;
+    /* Keep the pre-widget (shadow DOM) sizing; the global reset sets border-box. */
+    box-sizing: content-box;
+  }
 
-.breadcrumb {
-  padding: var(--sys-size-2) var(--sys-size-4);
-  border-radius: var(--sys-shape-corner-extra-small);
-}
+  .breadcrumbs > * {
+    /* The global \\'* { min-width: 0 }\\' reset would otherwise let crumbs and chevrons shrink
+       below their content when they overflow, so the text overlaps the arrows. */
+    flex-shrink: 0;
+  }
 
-.breadcrumb:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
+  .breadcrumbs.visible {
+    display: flex;
+  }
 
-.range {
-  font-size: var(--sys-typescale-body4-size);
-  white-space: nowrap;
-}
+  .breadcrumbs::-webkit-scrollbar {
+    display: none;
+  }
 
-.active-breadcrumb {
-  font-weight: bold;
-  color: var(--app-color-active-breadcrumb);
+  .breadcrumb {
+    padding: var(--sys-size-2) var(--sys-size-4);
+    border-radius: var(--sys-shape-corner-extra-small);
+  }
+
+  .breadcrumb:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  .range {
+    font-size: var(--sys-typescale-body4-size);
+    white-space: nowrap;
+  }
+
+  .active-breadcrumb {
+    font-weight: bold;
+    color: var(--app-color-active-breadcrumb);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./breadcrumbsUI.css")} */`;
@@ -155,80 +173,99 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/timeline/components/BreadcrumbsUI.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var BreadcrumbActivatedEvent = class _BreadcrumbActivatedEvent extends Event {
-  constructor(breadcrumb, childBreadcrumbsRemoved) {
-    super(_BreadcrumbActivatedEvent.eventName);
-    this.breadcrumb = breadcrumb;
-    this.childBreadcrumbsRemoved = childBreadcrumbsRemoved;
-  }
-  breadcrumb;
-  childBreadcrumbsRemoved;
-  static eventName = "breadcrumbactivated";
-};
-var BreadcrumbsUI = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var BreadcrumbsUI = class extends UI.Widget.Widget {
+  #view;
+  #viewOutput = {};
   #initialBreadcrumb = null;
   #activeBreadcrumb = null;
-  set data(data) {
-    this.#initialBreadcrumb = data.initialBreadcrumb;
-    this.#activeBreadcrumb = data.activeBreadcrumb;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  #showBreadcrumbs = false;
+  onBreadcrumbActivated;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  set initialBreadcrumb(breadcrumb) {
+    this.#initialBreadcrumb = breadcrumb;
+    this.requestUpdate();
+  }
+  set activeBreadcrumb(breadcrumb) {
+    this.#activeBreadcrumb = breadcrumb;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
   #activateBreadcrumb(breadcrumb) {
     this.#activeBreadcrumb = breadcrumb;
-    this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb));
-  }
-  #showBreadcrumbsAndScrollLastCrumbIntoView() {
-    const container = this.#shadow.querySelector(".breadcrumbs");
-    if (!container) {
-      return;
-    }
-    container.style.display = "flex";
-    requestAnimationFrame(() => {
-      if (container.scrollWidth - container.clientWidth > 0) {
-        requestAnimationFrame(() => {
-          container.scrollLeft = container.scrollWidth - container.clientWidth;
-        });
-      }
-    });
+    this.onBreadcrumbActivated?.(breadcrumb, false);
   }
   #onContextMenu(event, breadcrumb) {
     const menu = new UI.ContextMenu.ContextMenu(event);
     menu.defaultSection().appendItem(i18nString(UIStrings.activateBreadcrumb), () => {
-      this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb));
+      this.onBreadcrumbActivated?.(breadcrumb, false);
     });
     menu.defaultSection().appendItem(i18nString(UIStrings.removeChildBreadcrumbs), () => {
-      this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb, true));
+      this.onBreadcrumbActivated?.(breadcrumb, true);
     });
     void menu.show();
   }
-  #renderElement(breadcrumb, index) {
-    const breadcrumbRange = Trace.Helpers.Timing.microToMilli(breadcrumb.window.range);
-    return html`
-          <div class="breadcrumb" @contextmenu=${(event) => this.#onContextMenu(event, breadcrumb)} @click=${() => this.#activateBreadcrumb(breadcrumb)}
-          jslog=${VisualLogging.item("timeline.breadcrumb-select").track({ click: true, resize: true })}>
-           <span class="${breadcrumb === this.#activeBreadcrumb ? "active-breadcrumb" : ""} range">
-            ${index === 0 ? `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` : `${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)}`}
-            </span>
-          </div>
-          ${breadcrumb.child !== null ? html`
-            <devtools-icon name="chevron-right" class="medium">` : ""}
-      `;
-  }
-  #render() {
-    const output = html`
-      <style>${breadcrumbsUI_css_default}</style>
-      ${this.#initialBreadcrumb === null ? Lit.nothing : html`<div class="breadcrumbs" jslog=${VisualLogging.section("breadcrumbs")}>
-        ${flattenBreadcrumbs(this.#initialBreadcrumb).map((breadcrumb, index) => this.#renderElement(breadcrumb, index))}
-      </div>`}
-    `;
-    render(output, this.#shadow, { host: this });
+  performUpdate() {
+    if (this.#initialBreadcrumb === null) {
+      this.#showBreadcrumbs = false;
+    } else if (this.#initialBreadcrumb.child) {
+      this.#showBreadcrumbs = true;
+    }
+    const input = {
+      initialBreadcrumb: this.#initialBreadcrumb,
+      activeBreadcrumb: this.#activeBreadcrumb,
+      showBreadcrumbs: this.#showBreadcrumbs,
+      onBreadcrumbClick: (breadcrumb) => this.#activateBreadcrumb(breadcrumb),
+      onBreadcrumbContextMenu: (event, breadcrumb) => this.#onContextMenu(event, breadcrumb)
+    };
+    this.#view(input, this.#viewOutput, this.contentElement);
     if (this.#initialBreadcrumb?.child) {
-      this.#showBreadcrumbsAndScrollLastCrumbIntoView();
+      this.#viewOutput.scrollToEnd?.();
     }
   }
 };
-customElements.define("devtools-breadcrumbs-ui", BreadcrumbsUI);
+function scrollLastCrumbIntoView(container) {
+  requestAnimationFrame(() => {
+    if (container.scrollWidth - container.clientWidth > 0) {
+      requestAnimationFrame(() => {
+        container.scrollLeft = container.scrollWidth - container.clientWidth;
+      });
+    }
+  });
+}
+var DEFAULT_VIEW = (input, output, target) => {
+  const renderElement = (breadcrumb, index) => {
+    const breadcrumbRange = Trace.Helpers.Timing.microToMilli(breadcrumb.window.range);
+    return html`
+      <div class="breadcrumb" @contextmenu=${(event) => input.onBreadcrumbContextMenu(event, breadcrumb)} @click=${() => input.onBreadcrumbClick(breadcrumb)}
+      jslog=${VisualLogging.item("timeline.breadcrumb-select").track({ click: true, resize: true })}>
+       <span class="${breadcrumb === input.activeBreadcrumb ? "active-breadcrumb" : ""} range">
+        ${index === 0 ? `Full range (${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)})` : `${i18n.TimeUtilities.preciseMillisToString(breadcrumbRange, 2)}`}
+        </span>
+      </div>
+      ${breadcrumb.child !== null ? html`
+        <devtools-icon name="chevron-right" class="medium"></devtools-icon>` : ""}
+    `;
+  };
+  render(html`
+    <style>${breadcrumbsUI_css_default}</style>
+    ${input.initialBreadcrumb === null ? Lit.nothing : html`<div
+        class=${Lit.Directives.classMap({ breadcrumbs: true, visible: input.showBreadcrumbs })}
+        jslog=${VisualLogging.section("breadcrumbs")}
+        ${Lit.Directives.ref((el) => {
+    if (el instanceof HTMLElement) {
+      output.scrollToEnd = () => scrollLastCrumbIntoView(el);
+    }
+  })}>
+      ${flattenBreadcrumbs(input.initialBreadcrumb).map((breadcrumb, index) => renderElement(breadcrumb, index))}
+    </div>`}
+  `, target);
+};
 
 // ../../front_end/panels/timeline/components/CWVMetrics.ts
 var CWVMetrics_exports = {};
@@ -3967,7 +4004,7 @@ import * as Host from "../../../core/host/host.js";
 import * as i18n9 from "../../../core/i18n/i18n.js";
 import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
 import * as Dialogs from "../../../ui/components/dialogs/dialogs.js";
-import * as ComponentHelpers2 from "../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
 import * as UI3 from "../../../ui/legacy/legacy.js";
 import * as Lit3 from "../../../ui/lit/lit.js";
 
@@ -4164,7 +4201,7 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
     };
   }
   #scheduleRender() {
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   #checkboxOptionChanged(checkboxWithLabel, checked) {
     const newState = Object.assign({}, this.#state, { dialogState: Dialogs.Dialog.DialogState.EXPANDED });
@@ -4244,7 +4281,7 @@ var ExportTraceOptions = class _ExportTraceOptions extends HTMLElement {
     </devtools-tooltip>`;
   }
   #render() {
-    if (!ComponentHelpers2.ScheduledRender.isScheduledRender(this)) {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error("Export trace options dialog render was not scheduled");
     }
     const output = html3`
@@ -4342,7 +4379,7 @@ import * as i18n13 from "../../../core/i18n/i18n.js";
 import * as CrUXManager5 from "../../../models/crux-manager/crux-manager.js";
 import * as Buttons3 from "../../../ui/components/buttons/buttons.js";
 import * as Dialogs2 from "../../../ui/components/dialogs/dialogs.js";
-import * as ComponentHelpers3 from "../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers2 from "../../../ui/components/helpers/helpers.js";
 import * as Input2 from "../../../ui/components/input/input.js";
 import * as uiI18n2 from "../../../ui/i18n/i18n.js";
 import * as UI5 from "../../../ui/legacy/legacy.js";
@@ -4472,7 +4509,7 @@ devtools-link {
 // ../../front_end/panels/timeline/components/OriginMap.ts
 var OriginMap_exports = {};
 __export(OriginMap_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   OriginMap: () => OriginMap
 });
 import "../../../ui/kit/kit.js";
@@ -4580,7 +4617,7 @@ function renderItem(input, originMapping, index) {
     </tr>
   `;
 }
-var DEFAULT_VIEW = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, _output, target) => {
   if (!input.prefillDevelopmentOrigin && input.mappings.length === 0) {
     Lit4.render(Lit4.nothing, target);
     return;
@@ -4611,7 +4648,7 @@ var OriginMap = class extends UI4.Widget.VBox {
   #view;
   #errorMessage = "";
   #prefillDevelopmentOrigin = "";
-  constructor(element, view = DEFAULT_VIEW) {
+  constructor(element, view = DEFAULT_VIEW2) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.registerRequiredCSS(originMap_css_default);
@@ -4852,7 +4889,7 @@ var FieldSettingsDialog = class extends HTMLElement {
     });
   }
   #onSettingsChanged() {
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   async #urlHasFieldData(url) {
     const cruxManager = CrUXManager5.CrUXManager.instance();
@@ -4869,13 +4906,13 @@ var FieldSettingsDialog = class extends HTMLElement {
       const origin = this.#getOrigin(this.#urlOverride);
       if (!origin) {
         this.#urlOverrideWarning = i18nString7(UIStrings7.invalidOrigin, { PH1: this.#urlOverride });
-        void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+        void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
         return;
       }
       const hasFieldData = await this.#urlHasFieldData(this.#urlOverride);
       if (!hasFieldData) {
         this.#urlOverrideWarning = i18nString7(UIStrings7.doesNotHaveSufficientData);
-        void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+        void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
         return;
       }
     }
@@ -4888,7 +4925,7 @@ var FieldSettingsDialog = class extends HTMLElement {
     }
     this.#resetToSettingState();
     void this.#dialog.setDialogVisible(true);
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
     this.dispatchEvent(new ShowDialog());
   }
   #closeDialog(evt) {
@@ -4899,11 +4936,11 @@ var FieldSettingsDialog = class extends HTMLElement {
     if (evt) {
       evt.stopImmediatePropagation();
     }
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
     this.#configSetting.addChangeListener(this.#onSettingsChanged, this);
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   disconnectedCallback() {
     this.#configSetting.removeChangeListener(this.#onSettingsChanged, this);
@@ -4972,14 +5009,14 @@ var FieldSettingsDialog = class extends HTMLElement {
     const input = event.target;
     this.#urlOverride = input.value;
     this.#urlOverrideWarning = "";
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   #onUrlOverrideEnabledChange(event) {
     event.stopPropagation();
     const input = event.target;
     this.#urlOverrideEnabled = input.checked;
     this.#urlOverrideWarning = "";
-    void ComponentHelpers3.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
   }
   #getOrigin(url) {
     try {
@@ -5086,7 +5123,7 @@ customElements.define("devtools-field-settings-dialog", FieldSettingsDialog);
 // ../../front_end/panels/timeline/components/IgnoreListSetting.ts
 var IgnoreListSetting_exports = {};
 __export(IgnoreListSetting_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   IgnoreListSetting: () => IgnoreListSetting,
   regexInputIsValid: () => regexInputIsValid
 });
@@ -5162,8 +5199,8 @@ var ignoreListSetting_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./ignoreListSetting.css")} */`;
 
 // ../../front_end/panels/timeline/components/IgnoreListSetting.ts
-var { html: html6, Directives: Directives4 } = Lit6;
-var { live } = Directives4;
+var { html: html6, Directives: Directives5 } = Lit6;
+var { live } = Directives5;
 var UIStrings8 = {
   /**
    * @description Tooltip text for the button to open the ignore list settings dialog in the Performance panel.
@@ -5198,7 +5235,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/timeline/components/IgnoreListSetting.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   const {
     ignoreListEnabled,
     regexes,
@@ -5293,7 +5330,7 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI6.Widget.Widget {
   #newRegexValue = "";
   #newRegexChecked = false;
   #editingRegexSetting = null;
-  constructor(element, view = DEFAULT_VIEW2) {
+  constructor(element, view = DEFAULT_VIEW3) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.element.classList.remove("vbox", "flex-auto");
@@ -5412,7 +5449,7 @@ function regexInputIsValid(inputValue) {
 // ../../front_end/panels/timeline/components/InteractionBreakdown.ts
 var InteractionBreakdown_exports = {};
 __export(InteractionBreakdown_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   InteractionBreakdown: () => InteractionBreakdown
 });
 import * as i18n17 from "../../../core/i18n/i18n.js";
@@ -5465,7 +5502,7 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/timeline/components/InteractionBreakdown.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const { entry } = input;
   const inputDelay = i18n17.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.inputDelay);
   const mainThreadTime = i18n17.TimeUtilities.formatMicroSecondsAsMillisFixed(entry.mainThreadHandling);
@@ -5490,7 +5527,7 @@ var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget
   }
   #view;
   #entry = null;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -5515,13 +5552,13 @@ var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget
 // ../../front_end/panels/timeline/components/LayoutShiftDetails.ts
 var LayoutShiftDetails_exports = {};
 __export(LayoutShiftDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   LayoutShiftDetails: () => LayoutShiftDetails
 });
 import * as i18n19 from "../../../core/i18n/i18n.js";
 import * as SDK2 from "../../../core/sdk/sdk.js";
 import * as Helpers5 from "../../../models/trace/helpers/helpers.js";
-import * as Trace4 from "../../../models/trace/trace.js";
+import * as Trace5 from "../../../models/trace/trace.js";
 import * as Buttons5 from "../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "../../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "../../../ui/legacy/legacy.js";
@@ -5721,7 +5758,7 @@ var LayoutShiftDetails = class extends UI8.Widget.Widget {
   #event = null;
   #parsedTrace = null;
   #isFreshRecording = false;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element);
     this.#view = view;
   }
@@ -5755,7 +5792,7 @@ var LayoutShiftDetails = class extends UI8.Widget.Widget {
     if (!rowEl?.parentElement) {
       return;
     }
-    const event = Trace4.Types.Events.isSyntheticLayoutShift(this.#event) ? this.#event : this.#event.events.find((e2) => e2.ts === parseInt(rowEl.getAttribute("data-ts") ?? "", 10));
+    const event = Trace5.Types.Events.isSyntheticLayoutShift(this.#event) ? this.#event : this.#event.events.find((e2) => e2.ts === parseInt(rowEl.getAttribute("data-ts") ?? "", 10));
     this.contentElement.dispatchEvent(
       new CustomEvent("toggle-popover", { detail: { event, show }, bubbles: true, composed: true })
     );
@@ -5774,12 +5811,12 @@ var LayoutShiftDetails = class extends UI8.Widget.Widget {
     );
   }
 };
-var DEFAULT_VIEW4 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   if (!input.event || !input.parsedTrace) {
     render8(Lit8.nothing, target);
     return;
   }
-  const title = Trace4.Name.forEntry(input.event);
+  const title = Trace5.Name.forEntry(input.event);
   render8(html8`
         <style>${layoutShiftDetails_css_default}</style>
         <style>${Buttons5.textButtonStyles}</style>
@@ -5794,7 +5831,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
           <div class="layout-shift-event-title"></div>
           ${title}
         </div>
-        ${Trace4.Types.Events.isSyntheticLayoutShift(input.event) ? renderLayoutShiftDetails(
+        ${Trace5.Types.Events.isSyntheticLayoutShift(input.event) ? renderLayoutShiftDetails(
     input.event,
     input.parsedTrace.insights,
     input.parsedTrace,
@@ -5811,9 +5848,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       `, target);
 };
 function findInsightSet(insightSets, navigationId) {
-  return insightSets?.values().find(
-    (insightSet) => navigationId ? navigationId === insightSet.navigation?.args.data?.navigationId : !insightSet.navigation
-  );
+  return insightSets?.values().find((insightSet) => navigationId ? navigationId === Helpers5.Trace.navigationIDForEvent(insightSet.navigation) : !insightSet.navigation);
 }
 function renderLayoutShiftDetails(layoutShift, insightSets, parsedTrace, isFreshRecording, onEventClick) {
   if (!insightSets) {
@@ -5916,7 +5951,7 @@ function renderShiftRow(currentShift, userHasSingleShiftSelected, parsedTrace, e
       </tr>`;
 }
 function renderStartTime(shift, userHasSingleShiftSelected, parsedTrace, onEventClick) {
-  const ts = Trace4.Types.Timing.Micro(shift.ts - parsedTrace.data.Meta.traceBounds.min);
+  const ts = Trace5.Types.Timing.Micro(shift.ts - parsedTrace.data.Meta.traceBounds.min);
   if (userHasSingleShiftSelected) {
     return html8`${i18n19.TimeUtilities.preciseMillisToString(Helpers5.Timing.microToMilli(ts))}`;
   }
@@ -5928,7 +5963,7 @@ function renderParentCluster(cluster, onEventClick, parsedTrace) {
   if (!cluster) {
     return Lit8.nothing;
   }
-  const ts = Trace4.Types.Timing.Micro(cluster.ts - (parsedTrace.data.Meta.traceBounds.min ?? 0));
+  const ts = Trace5.Types.Timing.Micro(cluster.ts - (parsedTrace.data.Meta.traceBounds.min ?? 0));
   const clusterTs = i18n19.TimeUtilities.formatMicroSecondsTime(ts);
   return html8`
       <span class="parent-cluster">${i18nString10(UIStrings10.parentCluster)}:<button type="button" class="timeline-link parent-cluster-link" @click=${() => onEventClick(cluster)}>${i18nString10(UIStrings10.cluster, { PH1: clusterTs })}</button>
@@ -6004,7 +6039,7 @@ function renderIframe(iframeRootCause) {
 // ../../front_end/panels/timeline/components/LiveMetricsView.ts
 var LiveMetricsView_exports = {};
 __export(LiveMetricsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   LiveMetricsView: () => LiveMetricsView
 });
 import "../../../ui/components/settings/settings.js";
@@ -6017,7 +6052,7 @@ import * as SDK3 from "../../../core/sdk/sdk.js";
 import * as CrUXManager9 from "../../../models/crux-manager/crux-manager.js";
 import * as EmulationModel from "../../../models/emulation/emulation.js";
 import * as LiveMetrics from "../../../models/live-metrics/live-metrics.js";
-import * as Trace5 from "../../../models/trace/trace.js";
+import * as Trace6 from "../../../models/trace/trace.js";
 import * as Buttons7 from "../../../ui/components/buttons/buttons.js";
 import * as uiI18n4 from "../../../ui/i18n/i18n.js";
 import * as UI10 from "../../../ui/legacy/legacy.js";
@@ -6453,7 +6488,7 @@ devtools-link {
 // ../../front_end/panels/timeline/components/MetricCard.ts
 var MetricCard_exports = {};
 __export(MetricCard_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   MetricCard: () => MetricCard
 });
 import "../../../ui/components/tooltips/tooltips.js";
@@ -7090,7 +7125,7 @@ function getPercentLabelForRating(histogram, rating) {
   const percent = Math.round(density * 100);
   return i18nString11(UIStrings12.percentage, { PH1: percent });
 }
-var DEFAULT_VIEW5 = (input, output, target) => {
+var DEFAULT_VIEW6 = (input, output, target) => {
   const { metric, localValue, fieldValue } = input;
   function getCompareRating() {
     if (localValue === void 0 || fieldValue === void 0) {
@@ -7338,7 +7373,7 @@ var MetricCard = class extends UI9.Widget.VBox {
   #histogram;
   #subparts;
   #warnings;
-  constructor(target, view = DEFAULT_VIEW5) {
+  constructor(target, view = DEFAULT_VIEW6) {
     super(target, { useShadowDom: true });
     this.#view = view;
   }
@@ -7704,10 +7739,10 @@ function getLcpFieldSubparts(cruxManager) {
     return null;
   }
   return {
-    timeToFirstByte: Trace5.Types.Timing.Milli(ttfb),
-    resourceLoadDelay: Trace5.Types.Timing.Milli(loadDelay),
-    resourceLoadTime: Trace5.Types.Timing.Milli(loadDuration),
-    elementRenderDelay: Trace5.Types.Timing.Milli(renderDelay)
+    timeToFirstByte: Trace6.Types.Timing.Milli(ttfb),
+    resourceLoadDelay: Trace6.Types.Timing.Milli(loadDelay),
+    resourceLoadTime: Trace6.Types.Timing.Milli(loadDuration),
+    elementRenderDelay: Trace6.Types.Timing.Milli(renderDelay)
   };
 }
 function getNetworkRecTitle(cruxManager) {
@@ -8248,7 +8283,7 @@ function renderNodeView(input) {
     </div>
   `;
 }
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   if (input.isNode) {
     Lit9.render(renderNodeView(input), target);
     return;
@@ -8358,7 +8393,7 @@ var LiveMetricsView = class extends UI10.Widget.Widget {
   #view;
   #viewOutput = {};
   #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-  constructor(element, view = DEFAULT_VIEW6) {
+  constructor(element, view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: true });
     this.#view = view;
     this.#toggleRecordAction = UI10.ActionRegistry.ActionRegistry.instance().getAction("timeline.toggle-recording");
@@ -8551,7 +8586,7 @@ var LiveMetricsLogs = class extends UI10.Widget.Widget {
 // ../../front_end/panels/timeline/components/NetworkRequestDetails.ts
 var NetworkRequestDetails_exports = {};
 __export(NetworkRequestDetails_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "../../../ui/components/request_link_icon/request_link_icon.js";
@@ -8559,7 +8594,7 @@ import * as Common4 from "../../../core/common/common.js";
 import * as i18n29 from "../../../core/i18n/i18n.js";
 import * as SDK5 from "../../../core/sdk/sdk.js";
 import * as Helpers9 from "../../../models/trace/helpers/helpers.js";
-import * as Trace7 from "../../../models/trace/trace.js";
+import * as Trace8 from "../../../models/trace/trace.js";
 import * as LegacyComponents2 from "../../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "../../../ui/legacy/legacy.js";
 import * as Lit11 from "../../../ui/lit/lit.js";
@@ -8852,14 +8887,14 @@ var networkRequestTooltip_css_default = `/*
 // ../../front_end/panels/timeline/components/NetworkRequestTooltip.ts
 var NetworkRequestTooltip_exports = {};
 __export(NetworkRequestTooltip_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   NetworkRequestTooltip: () => NetworkRequestTooltip
 });
 import "../../../ui/kit/kit.js";
 import * as i18n27 from "../../../core/i18n/i18n.js";
 import * as Platform7 from "../../../core/platform/platform.js";
 import * as SDK4 from "../../../core/sdk/sdk.js";
-import * as Trace6 from "../../../models/trace/trace.js";
+import * as Trace7 from "../../../models/trace/trace.js";
 import * as PerfUI from "../../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI11 from "../../../ui/legacy/legacy.js";
 import * as Lit10 from "../../../ui/lit/lit.js";
@@ -8908,7 +8943,7 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/timeline/components/NetworkRequestTooltip.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var DEFAULT_VIEW7 = (input, output, target) => {
+var DEFAULT_VIEW8 = (input, output, target) => {
   const {
     networkRequest,
     entityMapper,
@@ -8937,7 +8972,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         <div class="throttled-row">
           ${i18nString13(UIStrings14.wasThrottled, { PH1: throttlingTitle })}
         </div>` : nothing11}
-      ${Trace6.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html11`<div class="render-blocking"> ${i18nString13(UIStrings14.renderBlocking)} </div>` : Lit10.nothing}
+      ${Trace7.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkRequest) ? html11`<div class="render-blocking"> ${i18nString13(UIStrings14.renderBlocking)} </div>` : Lit10.nothing}
       <div class="divider"></div>
 
       ${NetworkRequestTooltip.renderTimings(networkRequest)}
@@ -8956,7 +8991,7 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI11.Widget.Wid
   #view;
   #networkRequest;
   #entityMapper;
-  constructor(element, view = DEFAULT_VIEW7) {
+  constructor(element, view = DEFAULT_VIEW8) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -9178,7 +9213,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
   #linkifier = null;
   #serverTimings = null;
   #parsedTrace = null;
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -9227,7 +9262,7 @@ var NetworkRequestDetails = class extends UI12.Widget.Widget {
     );
   }
 };
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var DEFAULT_VIEW9 = (input, _output, target) => {
   if (!input.request) {
     render12(Lit11.nothing, target);
     return;
@@ -9427,20 +9462,20 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
   if (!linkifier) {
     return Lit11.nothing;
   }
-  const hasStackTrace = Trace7.Helpers.Trace.stackTraceInEvent(request) !== null;
+  const hasStackTrace = Trace8.Helpers.Trace.stackTraceInEvent(request) !== null;
   let link = null;
   const options = {
     tabStop: true,
     showColumnNumber: true
   };
   if (hasStackTrace) {
-    const topFrame = Trace7.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
+    const topFrame = Trace8.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;
     if (topFrame) {
       link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, options);
     }
   }
-  const initiator = parsedTrace ? Trace7.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request) : void 0;
-  if (initiator && Trace7.Types.Events.isSyntheticNetworkRequest(initiator)) {
+  const initiator = parsedTrace ? Trace8.Extras.Initiators.getNetworkInitiator(parsedTrace.data, request) : void 0;
+  if (initiator && Trace8.Types.Events.isSyntheticNetworkRequest(initiator)) {
     link = linkifier.maybeLinkifyScriptLocation(
       target,
       null,
@@ -9466,7 +9501,7 @@ var NetworkTrackWidget_exports = {};
 __export(NetworkTrackWidget_exports, {
   NetworkTrackWidget: () => NetworkTrackWidget
 });
-import * as Trace8 from "../../../models/trace/trace.js";
+import * as Trace9 from "../../../models/trace/trace.js";
 import * as PerfUI2 from "../../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Lit12 from "../../../ui/lit/lit.js";
 
@@ -9532,15 +9567,15 @@ var NetworkTrackWidget = class extends HTMLElement {
       this.#flameChart = new PerfUI2.FlameChart.FlameChart(this.#dataProvider, this);
       this.#flameChart.show(this.#flameChartContainer, void 0, true);
     }
-    const entityMapper = Trace8.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
+    const entityMapper = Trace9.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
     this.#dataProvider.preparePopoverElement = () => null;
     this.#dataProvider.setModel(parsedTrace, entityMapper);
     const timelineData = this.#dataProvider.timelineData();
     timelineData.groups = [];
-    const bounds = Trace8.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: Trace8.Types.Timing.Micro(data.bounds.min),
-      max: Trace8.Types.Timing.Micro(data.bounds.max),
-      range: Trace8.Types.Timing.Micro(data.bounds.range)
+    const bounds = Trace9.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
+      min: Trace9.Types.Timing.Micro(data.bounds.min),
+      max: Trace9.Types.Timing.Micro(data.bounds.max),
+      range: Trace9.Types.Timing.Micro(data.bounds.range)
     });
     this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
     this.#flameChart.setWindowTimes(bounds.min, bounds.max);
@@ -9573,7 +9608,7 @@ if (!customElements.get("devtools-performance-agent-network-track")) {
 // ../../front_end/panels/timeline/components/RelatedInsightChips.ts
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   RelatedInsightChips: () => RelatedInsightChips
 });
 import * as i18n31 from "../../../core/i18n/i18n.js";
@@ -9681,7 +9716,7 @@ var RelatedInsightChips = class extends UI13.Widget.Widget {
   #view;
   #activeEvent = null;
   #eventToInsightsMap = /* @__PURE__ */ new Map();
-  constructor(element, view = DEFAULT_VIEW9) {
+  constructor(element, view = DEFAULT_VIEW10) {
     super(element);
     this.#view = view;
   }
@@ -9707,7 +9742,7 @@ var RelatedInsightChips = class extends UI13.Widget.Widget {
     this.#view(input, {}, this.contentElement);
   }
 };
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
@@ -9769,14 +9804,14 @@ import * as Insights9 from "./insights/insights.js";
 // ../../front_end/panels/timeline/components/SidebarAnnotationsTab.ts
 var SidebarAnnotationsTab_exports = {};
 __export(SidebarAnnotationsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "../../../ui/components/settings/settings.js";
 import * as Common5 from "../../../core/common/common.js";
 import * as i18n33 from "../../../core/i18n/i18n.js";
 import * as Platform8 from "../../../core/platform/platform.js";
-import * as Trace9 from "../../../models/trace/trace.js";
+import * as Trace10 from "../../../models/trace/trace.js";
 import * as TraceBounds3 from "../../../services/trace_bounds/trace_bounds.js";
 import * as UI14 from "../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "../../../ui/legacy/theme_support/theme_support.js";
@@ -9971,7 +10006,7 @@ var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW10) {
+  constructor(view = DEFAULT_VIEW11) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common5.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
@@ -10057,7 +10092,7 @@ var SidebarAnnotationsTab = class extends UI14.Widget.Widget {
 function detailedAriaDescriptionForAnnotation(annotation) {
   switch (annotation.type) {
     case "ENTRY_LABEL": {
-      const name = Trace9.Name.forEntry(annotation.entry);
+      const name = Trace10.Name.forEntry(annotation.entry);
       return i18nString16(UIStrings17.entryLabelDescriptionLabel, {
         PH1: name,
         PH2: annotation.label
@@ -10075,8 +10110,8 @@ function detailedAriaDescriptionForAnnotation(annotation) {
       if (!annotation.entryTo) {
         return "";
       }
-      const nameFrom = Trace9.Name.forEntry(annotation.entryFrom);
-      const nameTo = Trace9.Name.forEntry(annotation.entryTo);
+      const nameFrom = Trace10.Name.forEntry(annotation.entryFrom);
+      const nameTo = Trace10.Name.forEntry(annotation.entryTo);
       return i18nString16(UIStrings17.entryLinkDescriptionLabel, {
         PH1: nameFrom,
         PH2: nameTo
@@ -10099,7 +10134,7 @@ function findTextColorForContrast(bgColorText) {
 function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
   switch (annotation.type) {
     case "ENTRY_LABEL": {
-      const entryName = Trace9.Name.forEntry(annotation.entry);
+      const entryName = Trace10.Name.forEntry(annotation.entry);
       const backgroundColor = annotationEntryToColorMap.get(annotation.entry) ?? "";
       const color = findTextColorForContrast(backgroundColor);
       const styleForAnnotationIdentifier = {
@@ -10114,8 +10149,8 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
     }
     case "TIME_RANGE": {
       const minTraceBoundsMilli = TraceBounds3.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
-      const timeRangeStartInMs = Math.round(Trace9.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
-      const timeRangeEndInMs = Math.round(Trace9.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
+      const timeRangeStartInMs = Math.round(Trace10.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
+      const timeRangeEndInMs = Math.round(Trace10.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
       return html15`
             <span class="annotation-identifier time-range">
               ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
@@ -10123,7 +10158,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
       `;
     }
     case "ENTRIES_LINK": {
-      const entryFromName = Trace9.Name.forEntry(annotation.entryFrom);
+      const entryFromName = Trace10.Name.forEntry(annotation.entryFrom);
       const fromBackgroundColor = annotationEntryToColorMap.get(annotation.entryFrom) ?? "";
       const fromTextColor = findTextColorForContrast(fromBackgroundColor);
       const styleForFromAnnotationIdentifier = {
@@ -10147,7 +10182,7 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
 }
 function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
   if (annotation.entryTo) {
-    const entryToName = Trace9.Name.forEntry(annotation.entryTo);
+    const entryToName = Trace10.Name.forEntry(annotation.entryTo);
     const toBackgroundColor = annotationEntryToColorMap.get(annotation.entryTo) ?? "";
     const toTextColor = findTextColorForContrast(toBackgroundColor);
     const styleForToAnnotationIdentifier = {
@@ -10198,7 +10233,7 @@ function renderTutorial() {
       </div>
     </div>`;
 }
-var DEFAULT_VIEW10 = (input, _output, target) => {
+var DEFAULT_VIEW11 = (input, _output, target) => {
   render15(
     html15`
       <style>${sidebarAnnotationsTab_css_default}</style>
@@ -10242,10 +10277,10 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
 // ../../front_end/panels/timeline/components/SidebarInsightsTab.ts
 var SidebarInsightsTab_exports = {};
 __export(SidebarInsightsTab_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW13,
   SidebarInsightsTab: () => SidebarInsightsTab
 });
-import * as Trace11 from "../../../models/trace/trace.js";
+import * as Trace12 from "../../../models/trace/trace.js";
 import * as Buttons8 from "../../../ui/components/buttons/buttons.js";
 import * as UI16 from "../../../ui/legacy/legacy.js";
 import * as Lit16 from "../../../ui/lit/lit.js";
@@ -10338,7 +10373,7 @@ __export(SidebarSingleInsightSet_exports, {
 });
 import * as i18n35 from "../../../core/i18n/i18n.js";
 import * as AIAssistance from "../../../models/ai_assistance/ai_assistance.js";
-import * as Trace10 from "../../../models/trace/trace.js";
+import * as Trace11 from "../../../models/trace/trace.js";
 import * as UI15 from "../../../ui/legacy/legacy.js";
 import * as Lit15 from "../../../ui/lit/lit.js";
 import * as Insights6 from "./insights/insights.js";
@@ -10398,7 +10433,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/components/SidebarSingleInsightSet.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var { widget: widget4 } = UI15.Widget;
-var DEFAULT_VIEW11 = (input, output, target) => {
+var DEFAULT_VIEW12 = (input, output, target) => {
   const {
     shownInsights,
     passedInsights,
@@ -10441,11 +10476,11 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
   #activeHighlightTimeout = -1;
   #data = {
     insightSetKey: null,
-    activeCategory: Trace10.Insights.Types.InsightCategory.ALL,
+    activeCategory: Trace11.Insights.Types.InsightCategory.ALL,
     activeInsight: null,
     parsedTrace: null
   };
-  constructor(element, view = DEFAULT_VIEW11) {
+  constructor(element, view = DEFAULT_VIEW12) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -10553,7 +10588,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI15.Widget
 // ../../front_end/panels/timeline/components/SidebarInsightsTab.ts
 var { html: html17 } = Lit16;
 var { widget: widget5 } = UI16.Widget;
-var DEFAULT_VIEW12 = (input, output, target) => {
+var DEFAULT_VIEW13 = (input, output, target) => {
   const {
     parsedTrace,
     labels,
@@ -10652,7 +10687,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
   #view;
   #parsedTrace = null;
   #activeInsight = null;
-  #selectedCategory = Trace11.Insights.Types.InsightCategory.ALL;
+  #selectedCategory = Trace12.Insights.Types.InsightCategory.ALL;
   /**
    * When a trace has sets of insights, we show an accordion with each
    * set within. A set can be specific to a single navigation, or include the
@@ -10660,7 +10695,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI16.Widget.Widget {
    * You can only have one of these open at any time.
    */
   #selectedInsightSet = null;
-  constructor(element, view = DEFAULT_VIEW12) {
+  constructor(element, view = DEFAULT_VIEW13) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }
@@ -10948,7 +10983,7 @@ __export(TimelineRangeSummaryView_exports, {
   statsForTimeRange: () => statsForTimeRange
 });
 import * as Platform10 from "../../../core/platform/platform.js";
-import * as Trace12 from "../../../models/trace/trace.js";
+import * as Trace13 from "../../../models/trace/trace.js";
 import * as UI19 from "../../../ui/legacy/legacy.js";
 import * as Lit18 from "../../../ui/lit/lit.js";
 
@@ -11190,7 +11225,7 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     render19(html19`<div class="timeline-details-range-summary"></div>`, target);
     return;
   }
-  const minBoundsMilli = Trace12.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+  const minBoundsMilli = Trace13.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
   const aggregatedStats = statsForTimeRange(events, startTime, endTime);
   const startOffset = startTime - minBoundsMilli;
   const endOffset = endTime - minBoundsMilli;
@@ -11199,9 +11234,9 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     total += aggregatedStats[categoryName];
   }
   const categories = [];
-  for (const categoryName in Trace12.Styles.getCategoryStyles()) {
-    const category = Trace12.Styles.getCategoryStyles()[categoryName];
-    if (category.name === Trace12.Styles.EventCategory.IDLE) {
+  for (const categoryName in Trace13.Styles.getCategoryStyles()) {
+    const category = Trace13.Styles.getCategoryStyles()[categoryName];
+    if (category.name === Trace13.Styles.EventCategory.IDLE) {
       continue;
     }
     const value2 = aggregatedStats[category.name];
@@ -11293,7 +11328,7 @@ function statsForTimeRange(events, startTime, endTime) {
     const aggregatedStats2 = {};
     const categoryStack = [];
     let lastTime = 0;
-    Trace12.Helpers.Trace.forEachEvent(events2, {
+    Trace13.Helpers.Trace.forEachEvent(events2, {
       onStartEvent,
       onEndEvent
     });
@@ -11320,8 +11355,8 @@ function statsForTimeRange(events, startTime, endTime) {
       }
     }
     function onStartEvent(e) {
-      const { startTime: startTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
-      const category = Trace12.Styles.getEventStyle(e.name)?.category.name || Trace12.Styles.getCategoryStyles().other.name;
+      const { startTime: startTime2 } = Trace13.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const category = Trace13.Styles.getEventStyle(e.name)?.category.name || Trace13.Styles.getCategoryStyles().other.name;
       const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
       if (category !== parentCategory) {
         categoryChange(parentCategory || null, category, startTime2);
@@ -11329,7 +11364,7 @@ function statsForTimeRange(events, startTime, endTime) {
       categoryStack.push(category);
     }
     function onEndEvent(e) {
-      const { endTime: endTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const { endTime: endTime2 } = Trace13.Helpers.Timing.eventTimingsMilliSeconds(e);
       const category = categoryStack.pop();
       const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
       if (category !== parentCategory) {

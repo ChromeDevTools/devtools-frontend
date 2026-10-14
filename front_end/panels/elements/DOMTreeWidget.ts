@@ -2134,6 +2134,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           return;
         }
         this.selectDOMNode(node, selectedByUser, isClosingTag);
+        // Mirror the legacy ElementsTreeElement.onselect behavior: a user
+        // selection (mouse click or keyboard navigation) highlights the node
+        // in the page overlay.
+        node.highlight();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
       },
       onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => {
         this.setNodeExpanded(node, expanded);

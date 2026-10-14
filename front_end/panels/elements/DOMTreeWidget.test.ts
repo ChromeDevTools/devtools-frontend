@@ -1652,6 +1652,66 @@ describeWithEnvironment('DOMTreeWidget', () => {
          }
        });
 
+    it('highlights the newly selected node in the overlay on keyboard navigation', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P'},
+            {nodeId: 3, nodeName: 'SPAN'},
+          ],
+        });
+        domTree.omitRootDOMNode = true;
+        domTree.rootDOMNode = rootNode;
+        domTree.selectEnabled = true;
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const pNode = rootNode.children()![0];
+        const spanNode = rootNode.children()![1];
+
+        // Select pNode programmatically (e.g. via "Inspect element"). This
+        // must not highlight the node in the overlay by itself.
+        const highlightSpy = sinon.spy(domModel.overlayModel(), 'highlightInOverlay');
+        domTree.selectDOMNode(pNode);
+        await waitForTreeUpdates();
+        sinon.assert.notCalled(highlightSpy);
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const selectedWidget =
+            UI.Widget.Widget.get(internalTree.selectedTreeElement!.listItemElement.querySelector('devtools-widget')!) as
+            Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.strictEqual(selectedWidget.node, pNode);
+
+        // Press ArrowDown to move the selection to spanNode via the keyboard.
+        internalTree.contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+        await waitForTreeUpdates();
+
+        assert.strictEqual(domTree.selectedDOMNode(), spanNode);
+        sinon.assert.calledOnce(highlightSpy);
+        sinon.assert.calledWith(highlightSpy, sinon.match({node: spanNode}));
+
+        // Press ArrowUp to move the selection back to pNode.
+        highlightSpy.resetHistory();
+        internalTree.contentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+        await waitForTreeUpdates();
+
+        assert.strictEqual(domTree.selectedDOMNode(), pNode);
+        sinon.assert.calledOnce(highlightSpy);
+        sinon.assert.calledWith(highlightSpy, sinon.match({node: pNode}));
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('highlights search match and clears match highlights in declarative view', async () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;

@@ -65,20 +65,23 @@ logical regressions are introduced during modernization.
 
 Always detect the execution environment first to run tests successfully:
 
-### Scenario A: Google-Internal Cog/Cider Workspaces (PRIMARY PATH for Google Workspaces)
+### Scenario A: Google-Internal Cog Workspaces (PRIMARY PATH for Google Workspaces)
 
 *   **Detection**: Triggered if the workspace path starts with `/google/cog/` or
     `/google/src/`.
-*   **Why it is required**: Raw commands like `./dt test` or `autoninja` fail
-    because they lack Google cloudtop/virtualization wrapper configurations.
+*   **Execution Guide**: Follow [`devtools-verification`](../devtools-verification/SKILL.md).
 *   **Resolution Steps**:
 
-    1.  Do not run `./dt test` or standard `autoninja` directly.
-    2.  Leverage the Google-specific Cider testing script to compile and run
-        tests in the cloud workspace:
+    1.  Ensure `depot_tools` is at the front of your `PATH`:
 
         ```bash
-        python3 internal/infra/scripts/cider/init_workspace.py test /google/cog/cloud/username/workspace_name --test_filter=front_end/panels/application/IndexedDBViews.test.ts
+        export PATH="/path/to/depot_tools:$PATH"
+        ```
+
+    2.  Execute tests using `./dt test` directly from `chromium/third_party/devtools-frontend/src`:
+
+        ```bash
+        ./dt test front_end/panels/application/IndexedDBViews.test.ts
         ```
 
 ### Scenario B: Standard Chromium Environment (Fallback)
@@ -132,6 +135,33 @@ Always detect the execution environment first to run tests successfully:
     2.  Inspect the failure log to see if it is a **layout shift** or a **missing style**.
     3.  If it's a layout shift, check if you replaced a block element with an inline element (e.g. `div` -> `span`).
     4.  If styles are missing, verify if the test wrapper needs `{includeCommonStyles: true}`.
+
+### Scenario E: Lightweight Test Hook Gotchas (`describe` vs `describeWithEnvironment`)
+
+*   Prefer `describe` with lightweight hooks (`setupLocaleHooks()`, `setupSettingsHooks()`) when full `describeWithEnvironment` is unnecessary.
+*   **Always reset singleton registries in `afterEach`**:
+    When registering actions, shortcuts, or context menus in tests, singleton registries MUST be reset in `afterEach`:
+
+    ```typescript
+    afterEach(() => {
+      UI.ActionRegistration.reset();
+      UI.ActionRegistry.ActionRegistry.reset();
+      UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
+    });
+    ```
+
+    Without these resets, repeated runs (such as `--repeat=10` or CQ flake detection) will fail on iteration 2+ with `Duplicate action ID: '...'`.
+
+*   **GlassPane Container Setup**:
+    If testing UI that opens a `GlassPane` or long-press option menu (e.g. `bindToAction` with long-press buttons) in a test suite using `describe` without `describeWithEnvironment`, call:
+
+    ```typescript
+    beforeEach(() => {
+      UI.GlassPane.GlassPane.setContainer(document.body);
+    });
+    ```
+
+    Otherwise, menu rendering will fail because `GlassPane` lacks an attached container element.
 
 --------------------------------------------------------------------------------
 

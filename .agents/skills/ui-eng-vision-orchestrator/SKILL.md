@@ -76,6 +76,26 @@ principles.
     clean and focused on high-level orchestration, prefer delegating intense
     execution tasks (like running tests, debugging compilations, or processing
     independent classes in parallel) to specialized subagents.
+13. **Cross-Repo Runtime Coupling Check (`legacy_test_runner` & `blink/web_tests`)**:
+    Before converting TypeScript `private` fields/methods to ES `#private` or
+    removing widget properties (e.g., `.tabbedPane`, `.sidebarPaneStack`,
+    `.threadsSidebarPane`, `.searchInputElement`), search both
+    `front_end/legacy_test_runner/**/*.js` and Chromium's
+    `third_party/blink/web_tests/http/tests/devtools/**/*.js` (which run on
+    `dtf_linux_rel` CQ via `blink_web_tests` and reflectively access private
+    members in untyped JS). Keep accessed members as TypeScript `private` with a
+    `// Accessed in web_tests / legacy_test_runner` comment, or migrate the
+    web_tests first in a dedicated CL.
+14. **Strict CL Splitting Rules**:
+    *   **One Class Per CL for Hybrid Files**: When modernizing files containing
+        multiple classes, extract or migrate secondary classes (e.g.,
+        `QuickSourceView`) into their own dedicated CLs.
+    *   **Separate Infrastructure CLs**: Keep shared `ui/legacy` or component
+        infrastructure changes (e.g., `bindToAction`, `SplitWidget`,
+        `WrapperWidget`) in separate, preceding CLs. Always verify with
+        `cog_api.py diff` before uploading that no changes from later commits
+        leaked into earlier infrastructure CLs.
+
 
 
 --------------------------------------------------------------------------------
@@ -129,6 +149,8 @@ The plan you generate **MUST** follow this structure:
 ## 🛠️ Passes Checklist
 - [ ] **Pass 0: Baseline & Safety Scaffolding**
   - Assigned to: `ui-eng-vision-test-scaffolder`
+- [ ] **Pass 0.5: Privatize & Dead-Code Cleanup**
+  - Mechanical prefactor: convert TypeScript `private` to ES `#private` and remove dead code
 - [ ] **Pass 1: Logic Consolidation**
   - Assigned to: `ui-eng-vision-logic-consolidator`
 - [ ] **Pass 2: Lit-HTML Rendering**
@@ -149,10 +171,18 @@ The plan you generate **MUST** follow this structure:
         regressions.
     2.  Pay extra attention not to skip this step.
 
+### Privatize & Dead-Code Cleanup (Pass 0.5)
+
+*   **Trigger Condition**: Baseline tests green.
+*   **Actions**:
+    1.  Perform the **Cross-Repo Runtime Coupling Check** against `legacy_test_runner` and `blink_web_tests` first.
+    2.  Convert internal TypeScript `private` fields/methods to ES `#private` (except those reflectively accessed by web tests).
+    3.  Identify and remove unused dead code, redundant containers, or obsolete split widgets in a dedicated prefactor CL so mechanical renames don't clutter logic and view CLs.
+    4.  Verify that all tests and lints pass and stage this prefactor CL before proceeding to logic consolidation.
+
 ### Logic Consolidation
 
-*   **Trigger Condition**: Baseline tests green (or respective previous pass
-    staged).
+*   **Trigger Condition**: Pass 0.5 staged (or baseline tests green if 0.5 skipped).
 *   **Subskill to Import/Delegate**: `ui-eng-vision-logic-consolidator` (Delegate to a subagent to maintain focus)
 *   **Actions**:
     1.  Extract manual elements, constructor DOM configurations, and imperative

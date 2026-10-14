@@ -28,11 +28,11 @@ clean `UI.Widget` classes that use native update rendering delegates.
 2.  **Upgrade View Delegates & Inject View**:
 
     *   Migrate the local Lit template strings into a formally exported default
-        view layout:
+        view layout (using named imports `import {html, render} from '../../ui/lit/lit.js';`):
 
         ```typescript
         export const DEFAULT_VIEW: View = (input, output, target) => {
-          Lit.render(html`...`, target);
+          render(html`...`, target);
         };
         ```
 
@@ -67,10 +67,10 @@ clean `UI.Widget` classes that use native update rendering delegates.
 
     *   Remove any `LegacyWrapper` bindings or custom wrappable custom elements.
     *   Replace old panel instantiations with standard `<devtools-widget>`
-        declarative entries:
+        declarative entries (using `const {widget} = UI.Widget;`):
 
         ```typescript
-        html`<devtools-widget .widgetConfig=${widgetConfig(MyWidgetClass, [params])}></devtools-widget>`
+        html`<devtools-widget ${widget(MyWidgetClass, {params})}></devtools-widget>`
         ```
 
     *   Inspect instantiator files (e.g., `ApplicationPanelSidebar.ts`) and

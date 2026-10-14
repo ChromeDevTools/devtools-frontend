@@ -76,7 +76,29 @@ consolidating them into private helper methods with explicit data contracts.
         that first extracts the code that needs to be reordered into named
         helper functions and pause the migration, waiting for user confirmation.
 
-6.  **Wait for confirmation**:
+6.  **No Write-Only State Fields in Prefactor CLs**:
+
+    *   Do not introduce `#state` fields in a logic-consolidation CL that are only
+        written to in that CL and only read in the *next* CL's `DEFAULT_VIEW`.
+    *   Either read them in the prefactor CL (e.g., inside an extracted imperative
+        `#render...` helper) or introduce them in the CL that actually adds
+        `DEFAULT_VIEW`.
+
+7.  **Extract Imperative `#renderSubtreeContent()` Helpers**:
+
+    *   For complex layouts, extracting an imperative `#renderFooContent()`
+        helper in Pass 1 (while keeping the outer container imperative) minimizes
+        the Pass 2/3 diff when converting `#renderFooContent()` to
+        `renderFooContent(input: ViewInput): LitTemplate`.
+
+8.  **Preserve Imperative Cleanup Calls**:
+
+    *   When consolidating DOM/widget references (e.g., replacing
+        `#tabbedLocationHeader` with `#debuggerSidebarTabbedLocation`), preserve
+        imperative cleanup calls like `splitWidget.uninstallResizer(...)` until the
+        imperative container itself is removed.
+
+9.  **Wait for confirmation**:
 
     *   Wait for an explicit confirmation from the user (or Parent Orchestrator Agent) before proceeding to the next step.
 
@@ -86,6 +108,8 @@ consolidating them into private helper methods with explicit data contracts.
 
 *Before reporting back or committing, re-read the instructions and verify:*
 1.  ❓ **Minimal Diffs**: Did I move code blocks around unnecessarily?
-2.  ❓ **State Completeness**: Are all imperative DOM updates now backed by state variables?
-3.  ❓ **Build**: Does the code still compile?
+2.  ❓ **State Completeness & Utility**: Are all state variables actually read in this CL, with no write-only placeholders?
+3.  ❓ **Cleanup Preserved**: Are resizer/listener uninstallation calls preserved during reference consolidation?
+4.  ❓ **Build**: Does the code still compile?
+
 

@@ -906,6 +906,34 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 };
 ```
 
+### Long-press action buttons
+
+Imperative long-press action buttons (`UI.Toolbar.Toolbar.createLongPressActionButton`) are migrated declaratively by nesting secondary `<devtools-button>` elements inside `<devtools-button ${bindToAction('...')}>`. The parent button triggers the primary action on click, and holding the button down opens a menu presenting the nested buttons:
+
+```typescript
+export const DEFAULT_VIEW = (input, _output, target) => {
+  const {bindToAction} = UI.UIUtils;
+  render(html`
+    <devtools-toolbar>
+      <devtools-button ${bindToAction('debugger.toggle-pause')}>
+        <devtools-button
+            .iconName=${'stop'}
+            .variant=${Buttons.Button.Variant.TOOLBAR}
+            .title=${i18nString(UIStrings.terminateCurrentJavascriptCall)}
+            @click=${input.onTerminateExecution}>
+        </devtools-button>
+        <devtools-button
+            .iconName=${'play'}
+            .variant=${Buttons.Button.Variant.TOOLBAR}
+            .title=${i18nString(UIStrings.resumeWithAllPausesBlockedForMs)}
+            @click=${input.onLongResume}>
+        </devtools-button>
+      </devtools-button>
+    </devtools-toolbar>`,
+    target);
+};
+```
+
 ## Binding a setting to a checkbox
 
 Use the `bindToSetting` directive to bind a boolean setting to a `<devtools-checkbox>` component.
@@ -1243,6 +1271,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     target);
 };
 ```
+
+### Pre-existing Widget Instances (`WrapperWidget`)
+When embedding pre-existing `UI.Widget` instances that are created elsewhere (such as `UI.ViewManager` locations: `TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`), render them declaratively using `${widget(UI.Widget.WrapperWidget, {widget: myWidgetInstance})}` instead of creating custom wrapper widget classes. `WrapperWidget` automatically forwards constraints and manages child widget attach/detach lifecycles.
+
+### Preserving `showMode` Settings
+When migrating a `SplitWidget` that persists sidebar visibility (e.g. via `splitWidget.showModeSetting()`), bind the setting's value to the `<devtools-split-view show=${input.showMode}>` property (`Both`, `OnlyMain`, or `OnlySidebar`) to preserve user settings and layout state across sessions.
 
 ## Migrating `UI.ARIAUtils` helpers
 

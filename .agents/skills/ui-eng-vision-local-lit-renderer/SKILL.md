@@ -34,13 +34,17 @@ existing element containers.
         that method. **Do not** introduce Widget lifecycle methods
         (`performUpdate`) on classes that do not inherit them.
 
-3.  **Import Modern Templating**:
+3.  **Import Modern Templating (Named Imports Only)**:
 
-    *   Import the `Lit` rendering system inside the view module:
+    *   Always use named imports from `../../ui/lit/lit.js`:
 
         ```typescript
-        import {html, render, nothing} from '../../ui/lit/lit.js';
+        import {html, nothing, render, Directives, type LitTemplate} from '../../ui/lit/lit.js';
         ```
+
+    *   **NEVER** use namespace imports like `import * as Lit` or reference
+        `Lit.nothing` / `Lit.render`. Named imports enable better tree-shaking and
+        maintain consistent codebase style.
 
 4.  **Modern Component Mapping**:
     *   **MANDATORY**: You **MUST** read and load [ui_engineering.md](../../../docs/ui_engineering.md) first to understand specific component mappings (e.g., Toolbar vs `devtools-toolbar`). Do not assume standard Lit defaults.
@@ -115,13 +119,53 @@ existing element containers.
     *   The Gerrit Code Review UI cannot identify moved blocks of unchanged code.
     *   If blocks of code need to be reordered, create a "prefactoring" change that first extracts the code that needs to be reordered into a named helper functions and pause the migration, waiting user confirmation.
 
-12. **Micro-Commit Strategy**:
+12. **Embedding Pre-Existing `UI.Widget` Instances via `UI.Widget.WrapperWidget`**:
+
+    *   Use `${widget(UI.Widget.WrapperWidget, {widget: input.childWidget})}` when
+        embedding widgets owned by `UI.ViewManager`
+        (`TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`) or when
+        conditionally moving a shared widget instance between containers
+        (`{widget: shouldShow ? this.#sharedWidget : null}`).
+    *   `WrapperWidget` automatically handles showing and detaching the inner
+        widget and forwards calculateConstraints without requiring custom wrapper
+        classes.
+
+13. **Declarative `<devtools-split-view>` Guidelines**:
+
+    *   **CSS Sizing**: Ensure `<devtools-split-view>` has `flex: auto; height: 100%;`
+        in CSS so it fills available container space and doesn't collapse to 0x0.
+    *   **Reuse Existing Settings for `showMode`**: When binding `show=${...}`
+        declaratively on `<devtools-split-view name="...">`, reuse the existing
+        `SplitWidget` setting (`{vertical?: {size, showMode}, horizontal?: {size, showMode}}`)
+        for `showMode` rather than creating new boolean settings (which loses user
+        preferences and requires `KnownContextValues.ts` updates).
+    *   **Keep Environment Overrides in Templates**: Keep environment overrides
+        (like `!input.isTraceApp`) in the `DEFAULT_VIEW` template (e.g.,
+        `show=${!input.isTraceApp && input.isSidebarOpen ? 'both' : 'main'}`)
+        rather than baking them into the presenter's setting state.
+    *   **Clean Up Resizers**: Do not leave unused `resizer-widget` classes in
+        templates; `<devtools-split-view>` manages its own built-in splitter
+        unless custom elements are explicitly registered with `installResizer`.
+
+14. **Declarative Long-Press Action Buttons (`bindToAction`)**:
+
+    *   Legacy `UI.Toolbar.Toolbar.createLongPressActionButton(action, [subButtons])`
+        maps declaratively to nesting option `<devtools-button>` elements directly
+        inside `<devtools-button ${bindToAction('action-id')}>...</devtools-button>`.
+
+15. **Audit Removed `UIStrings`**:
+
+    *   If a `UIStrings` entry becomes unused during template migration, verify
+        that a conditional UI branch (such as a dynamically shown checkbox, button,
+        or tooltip) wasn't accidentally dropped before deleting the string.
+
+16. **Micro-Commit Strategy**:
 
     *   Do not attempt to convert every helper method and UI component in a single monolithic commit. Break the template extraction into **small, self-contained micro-commits** (e.g., migrating one helper method, toolbar button, or list item render at a time).
     *   Verify with build and run tests after each micro-commit to guarantee zero regressions and 100% visual parity before moving to the next compartment.
     *   Provide the exact list of files and commit message when presenting progress so the change history remains atomic and easy to review.
 
-13. **Wait for confirmation**:
+17. **Wait for confirmation**:
 
     *   Wait for an explicit confirmation from the user (or Parent Orchestrator Agent) before proceeding to the next step.
 
@@ -130,8 +174,12 @@ existing element containers.
 ## 🔍 Mental Audit (Internal Self-Correction)
 
 *Before reporting back or committing, re-read the instructions and verify:*
-1.  ❓ **Tag Parity**: Did I accidentally change any `span` to `div` (or vice versa)?
-2.  ❓ **Attribute Drop**: Did I drop any `aria-*`, `role`, or custom data attributes?
-3.  ❓ **Clang-Off Boundary**: Is the template wrapped in `// clang-format off`?
-4.  ❓ **Build**: Does the code compile and do visual tests pass with 0% diff?
+1.  ❓ **Named Imports**: Did I use named imports `{html, nothing, render}` from `ui/lit/lit.js` (and no `import * as Lit`)?
+2.  ❓ **Tag Parity**: Did I accidentally change any `span` to `div` (or vice versa)?
+3.  ❓ **Attribute Drop**: Did I drop any `aria-*`, `role`, or custom data attributes?
+4.  ❓ **Clang-Off Boundary**: Is the template wrapped in `// clang-format off`?
+5.  ❓ **Split Views**: Does `<devtools-split-view>` have `flex: auto; height: 100%;` CSS and reuse existing split settings?
+6.  ❓ **String Audit**: Did I verify that any removed `UIStrings` weren't from accidentally dropped UI branches?
+7.  ❓ **Build**: Does the code compile and do visual tests pass with 0% diff?
+
 

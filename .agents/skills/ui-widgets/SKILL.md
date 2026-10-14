@@ -43,7 +43,7 @@ Complex views can be broken down using helper functions defined inside `DEFAULT_
 ```ts
 // clang-format off
 const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
-  const renderHeader = (): Lit.LitTemplate => {
+  const renderHeader = (): LitTemplate => {
     return html`<h1>${input.title}</h1>`;
   };
   // ...
@@ -58,10 +58,11 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 
 ### Composition
 
-* To render a child widget, the parent's View MUST use lit-html directive `UI.Widget.wiget`
+* To render a child widget, the parent's View MUST use the lit-html directive `UI.Widget.widget`.
 * Configuration is passed via the parameters.
 * Properties passed from a parent MUST be declared as public fields on the child presenter class.
 * The framework automatically updates these properties and calls `requestUpdate()` on the child when the parent re-renders.
+* **Pre-existing Widget Instances (`WrapperWidget`):** To render an existing `UI.Widget` instance (such as locations created by `UI.ViewManager`: `TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`) declaratively without creating a custom wrapper class, use `${widget(UI.Widget.WrapperWidget, {widget: myWidgetInstance})}`. `WrapperWidget` automatically forwards constraints, handles attach/detach lifecycle, and supports dynamic widget replacement.
 
 ## Refactoring Legacy Components
 
@@ -106,7 +107,7 @@ render(html`
 **Note:** The `{host: input}` option in `render()` is generally **not required** unless you are using specific Shadow DOM patterns that necessitate it. The `@scope` strategy is the preferred method for style isolation in DevTools widgets.
 
 ### Legacy Interop & Refs
-*   **Raw Elements:** Use `Lit.Directives.ref` to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
+*   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
 *   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget if you need to call methods on it directly (though declarative data flow is preferred).
 
 ### Dependencies
@@ -153,12 +154,12 @@ Example: `front_end/panels/my_example/MyExampleWidget.ts`.
 ```ts
 // front_end/panels/my_example/MyExampleWidget.ts
 
-import * as Lit from '../../ui/lit/lit.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import myExampleWidgetStyles from './myExampleWidget.css.js';
 
-const {html, render, ref} = Lit;
+const {ref} = Directives;
 
 // 1. Define Input data shape. (Assuming Child Widget configuration for completeness)
 export interface ViewInput {
@@ -241,14 +242,13 @@ Example: `front_end/panels/parent/ParentWidget.ts`. Demonstrates passing state v
 ```ts
 // front_end/panels/parent/ParentWidget.ts
 
-import * as Lit from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {MyExampleWidget} from '../my_example/MyExampleWidget.ts';
 
 import parentWidgetStyles from './parentWidgetStyles.css';
 
-const {html, render} = Lit;
-const {widgetConfig} = UI.Widget;
+const {widget} = UI.Widget;
 
 interface ViewInput {
   title: string;

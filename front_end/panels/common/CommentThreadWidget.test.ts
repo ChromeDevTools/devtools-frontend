@@ -479,6 +479,23 @@ describeWithEnvironment('CommentThreadWidget presenter', () => {
     }
   });
 
+  it('calls onStartEdit when entering edit mode for an ACTIVE thread', async () => {
+    const {view, widget} = await createShownWidget();
+    try {
+      const onStartEdit = sinon.spy();
+      widget.onStartEdit = onStartEdit;
+      widget.status = 'ACTIVE';
+      widget.comments = [{author: 'DEVELOPER', text: 'Queued note', timestamp: 0}];
+      await view.nextInput;
+
+      view.input.onSetEditMode(true);
+
+      sinon.assert.calledOnce(onStartEdit);
+    } finally {
+      widget.detach();
+    }
+  });
+
   it('forwards the trimmed edited text to onSaveEdit and leaves edit mode', async () => {
     const {view, widget} = await createShownWidget();
     try {

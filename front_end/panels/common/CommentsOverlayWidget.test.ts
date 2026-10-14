@@ -677,6 +677,51 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     }
   });
 
+  it('keeps the popup open when editing starts before the auto-close timer fires', async () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: start-edit-test');
+    testEl.textContent = 'start edit test content';
+    testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+
+    try {
+      await view.nextInput;
+      renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+      commentManager.setCommentMode(true);
+      overlayManager.handleElementClick(testEl);
+
+      const draftInput = await view.nextInput;
+      draftInput.onQueueComment('Queued comment text');
+      const queuedInput = await view.nextInput;
+      assert.isNotNull(queuedInput.activeThread);
+      assert.strictEqual(queuedInput.activeThread.status, 'ACTIVE');
+
+      queuedInput.onStartEdit();
+      clock.tick(2000);
+
+      // The auto-close timer must not fire, so force a render to inspect the current state.
+      widget.requestUpdate();
+      const afterTickInput = await view.nextInput;
+      assert.isNotNull(afterTickInput.activeThread);
+      assert.strictEqual(afterTickInput.activeThread.id, queuedInput.activeThread.id);
+    } finally {
+      testEl.remove();
+      widget.detach();
+      clock.restore();
+    }
+  });
+
   it('replaces the queued comment text when an edit is saved via onSaveEdit', async () => {
     const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
     const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);

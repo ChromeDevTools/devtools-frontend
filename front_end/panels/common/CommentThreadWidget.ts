@@ -270,6 +270,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
   onQueueComment?: (text: string) => void;
   onDeleteQueuedComment?: () => void;
   onSaveEdit?: (text: string) => void;
+  onStartEdit?: () => void;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
@@ -306,6 +307,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       return;
     }
 
+    this.onStartEdit?.();
     this.#commentText = commentText;
     this.#isEditing = value;
     this.requestUpdate();

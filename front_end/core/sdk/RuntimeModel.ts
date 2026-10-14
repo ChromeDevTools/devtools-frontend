@@ -27,6 +27,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.RuntimeApi;
   readonly #executionContextById = new Map<number, ExecutionContext>();
   #executionContextComparator: (arg0: ExecutionContext, arg1: ExecutionContext) => number = ExecutionContext.comparator;
+  readonly #customFormattersSetting: Common.Settings.Setting<boolean>;
   constructor(target: Target) {
     super(target);
 
@@ -34,13 +35,17 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
     void this.agent.invoke_enable();
 
-    const customFormattersSetting =
+    this.#customFormattersSetting =
         this.target().targetManager().context.get(Common.Settings.Settings).resolve(customFormattersSettingDescriptor);
-    if (customFormattersSetting.get()) {
+    if (this.#customFormattersSetting.get()) {
       void this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});
     }
 
-    customFormattersSetting.addChangeListener(this.customFormattersStateChanged.bind(this));
+    this.#customFormattersSetting.addChangeListener(this.customFormattersStateChanged, this);
+  }
+
+  override dispose(): void {
+    this.#customFormattersSetting.removeChangeListener(this.customFormattersStateChanged, this);
   }
 
   static isSideEffectFailure(response: Protocol.Runtime.EvaluateResponse|EvaluationResult): boolean {

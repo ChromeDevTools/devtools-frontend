@@ -563,6 +563,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     const settings = this.target().targetManager().settings;
     settings.resolve(cacheDisabledSettingDescriptor).removeChangeListener(this.cacheDisabledSettingChanged, this);
     settings.resolve(preserveNetworkLogSettingDescriptor).removeChangeListener(this.preserveLogChanged, this);
+    this.#bypassServiceWorkerSetting.removeChangeListener(this.bypassServiceWorkerChanged, this);
   }
 
   private bypassServiceWorkerChanged(): void {

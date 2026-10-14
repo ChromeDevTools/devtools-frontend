@@ -258,6 +258,11 @@ export class Settings {
     return setting;
   }
 
+  /** The event target shared by all settings. Change listeners are registered with the setting name as event type. */
+  get eventTargetForTest(): ObjectWrapper<GenericEvents> {
+    return this.#eventSupport;
+  }
+
   /**
    * Get setting via key, and create a new setting if the requested setting does not exist.
    * @param key kebab-case string ID

@@ -1383,9 +1383,7 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
     } catch {
       return null;
     }
-    // Just loading the image, not building UI.
-    /* eslint-disable @devtools/no-imperative-dom-api */
-    const image = document.createElement('img');
+    const image = new Image();
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
       image.onerror = reject;
@@ -1394,7 +1392,6 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
     // does not work, we can parse mimeType out of the response headers
     // using front_end/core/platform/MimeType.ts.
     image.src = 'data:application/octet-stream;base64,' + await Common.Base64.encode(content);
-    /* eslint-enable @devtools/no-imperative-dom-api */
     try {
       await result;
       return {naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight, src: image.src};

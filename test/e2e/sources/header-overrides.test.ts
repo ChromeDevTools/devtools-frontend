@@ -86,6 +86,7 @@ async function editHeaderItem(devToolsPage: DevToolsPage, newValue: string, prev
   const element = await devToolsPage.activeElement();
   await element.evaluate((e, value) => {
     e.textContent = value;
+    e.dispatchEvent(new InputEvent('input', {bubbles: true}));
   }, newValue);
   focusedTextContent = await devToolsPage.activeElementTextContent();
   assert.strictEqual(focusedTextContent, newValue);

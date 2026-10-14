@@ -17,6 +17,7 @@ import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   dispatchInputEvent,
   getCleanTextContentFromElements,
+  raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -1184,6 +1185,7 @@ Learn more`,
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
     await RenderCoordinator.done();
+    await raf();
     assert.isFalse(isRowFocused(component, 0));
     assert.isTrue(isRowFocused(component, 1));
 

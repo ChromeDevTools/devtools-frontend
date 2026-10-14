@@ -297,6 +297,7 @@ Learn more`,
     assert.instanceOf(nameEditable, HTMLElement);
     nameEditable.focus();
     nameEditable.innerText = '';
+    dispatchInputEvent(nameEditable, {inputType: 'insertText', data: '', bubbles: true, composed: true});
     nameEditable.blur();
 
     assert.strictEqual(headerEditedEventCount, 0);
@@ -324,6 +325,8 @@ Learn more`,
     assert.strictEqual(valueEditable.innerText, originalHeaderValue);
     valueEditable.focus();
     valueEditable.innerText = 'new value for header';
+    dispatchInputEvent(valueEditable,
+                       {inputType: 'insertText', data: 'new value for header', bubbles: true, composed: true});
     dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
 
     assert.strictEqual(eventCount, 0);
@@ -353,6 +356,8 @@ Learn more`,
     assert.instanceOf(valueEditable, HTMLElement);
     valueEditable.focus();
     valueEditable.innerText = editedHeaderValue;
+    dispatchInputEvent(valueEditable,
+                       {inputType: 'insertText', data: editedHeaderValue, bubbles: true, composed: true});
     dispatchKeyDownEvent(valueEditable, {key: 'Enter', bubbles: true});
 
     assert.strictEqual(headerValueFromEvent, editedHeaderValue);
@@ -494,7 +499,7 @@ Learn more`,
     const nameEl = component.shadowRoot.querySelector('.header-name devtools-editable-span') as EditableSpan;
     const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
 
-    assert.strictEqual(nameEl.value, 'Permissions-Policy');
+    assert.strictEqual(nameEl.value, 'permissions-policy');
     assert.strictEqual(valueEl.value, 'unload=(https://xyz.com)');
   });
 
@@ -530,14 +535,14 @@ Learn more`,
     const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
 
     await RenderCoordinator.done();
-    assert.strictEqual(nameEl.value, ':Abc');
+    assert.strictEqual(nameEl.value, ':abc');
     assert.strictEqual(valueEl.value, originalHeaderValue);
 
     dispatchKeyDownEvent(nameEditable, {key: 'Escape', bubbles: true, composed: true});
 
     await RenderCoordinator.done();
     assert.strictEqual(headerEditedEventCount, 0);
-    assert.strictEqual(nameEl.value, 'Some-Header-Name');
+    assert.strictEqual(nameEl.value, 'some-header-name');
   });
 
   it('revert pasted header name and value on escape', async () => {
@@ -572,14 +577,14 @@ Learn more`,
     const valueEl = component.shadowRoot.querySelector('.header-value devtools-editable-span') as EditableSpan;
 
     await RenderCoordinator.done();
-    assert.strictEqual(nameEl.value, 'Permissions-Policy');
+    assert.strictEqual(nameEl.value, 'permissions-Policy');
     assert.strictEqual(valueEl.value, 'unload=(https://xyz.com)');
 
     dispatchKeyDownEvent(valueEditable, {key: 'Escape', bubbles: true, composed: true});
 
     await RenderCoordinator.done();
     assert.strictEqual(headerEditedEventCount, 0);
-    assert.strictEqual(nameEl.value, 'Some-Header-Name');
+    assert.strictEqual(nameEl.value, 'some-header-name');
     assert.strictEqual(valueEl.value, 'someHeaderValue');
   });
 
@@ -648,6 +653,7 @@ Learn more`,
     assert.instanceOf(nameEditable, HTMLElement);
     nameEditable.focus();
     nameEditable.innerText = editedHeaderName;
+    dispatchInputEvent(nameEditable, {inputType: 'insertText', data: editedHeaderName, bubbles: true, composed: true});
     nameEditable.blur();
 
     assert.strictEqual(headerEditedEventCount, 1);
@@ -657,6 +663,8 @@ Learn more`,
     assert.instanceOf(valueEditable, HTMLElement);
     valueEditable.focus();
     valueEditable.innerText = editedHeaderValue;
+    dispatchInputEvent(valueEditable,
+                       {inputType: 'insertText', data: editedHeaderValue, bubbles: true, composed: true});
     valueEditable.blur();
 
     assert.strictEqual(headerEditedEventCount, 2);

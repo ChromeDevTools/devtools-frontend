@@ -3,15 +3,10 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import {html, render} from '../../../ui/lit/lit.js';
+import {Directives, html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import editableSpanStyles from './EditableSpan.css.js';
-
-export interface EditableSpanData {
-  value: string;
-}
 
 export class EditableSpan extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -23,21 +18,13 @@ export class EditableSpan extends HTMLElement {
     this.#shadow.addEventListener('input', this.#onInput.bind(this));
   }
 
-  set data(data: EditableSpanData) {
-    this.#value = data.value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
   get value(): string {
-    return this.#shadow.querySelector<HTMLSpanElement>('span')?.innerText || '';
+    return this.#value;
   }
 
   set value(value: string) {
     this.#value = value;
-    const span = this.#shadow.querySelector<HTMLSpanElement>('span');
-    if (span) {
-      span.innerText = value;
-    }
+    this.performUpdate();
   }
 
   #onKeyDown(event: Event): void {
@@ -60,11 +47,7 @@ export class EditableSpan extends HTMLElement {
     selection?.addRange(range);
   }
 
-  #render(): void {
-    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
-      throw new Error('HeaderSectionRow render was not scheduled');
-    }
-
+  performUpdate(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -73,7 +56,7 @@ export class EditableSpan extends HTMLElement {
         contenteditable="plaintext-only"
         class="editable"
         tabindex="0"
-        .innerText=${this.#value}
+        .innerText=${Directives.live(this.#value)}
         jslog=${VisualLogging.value('header-editor').track({change: true, keydown: 'Enter|Escape'})}
         ></span>`, this.#shadow, {host: this});
     // clang-format on

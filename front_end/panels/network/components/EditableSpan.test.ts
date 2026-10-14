@@ -8,18 +8,16 @@ import {
   assertScreenshot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as NetworkComponents from './components.js';
 
-async function renderEditableSpan(value: string, includeCommonStyles = false): Promise<{
+function renderEditableSpan(value: string, includeCommonStyles = false): {
   component: NetworkComponents.EditableSpan.EditableSpan,
   editable: HTMLSpanElement,
-}> {
+} {
   const component = new NetworkComponents.EditableSpan.EditableSpan();
   renderElementIntoDOM(component, {includeCommonStyles});
-  component.data = {value};
-  await RenderCoordinator.done();
+  component.value = value;
 
   assert.isNotNull(component.shadowRoot);
   const editable = component.shadowRoot.querySelector('.editable');
@@ -28,8 +26,8 @@ async function renderEditableSpan(value: string, includeCommonStyles = false): P
 }
 
 describe('EditableSpan', () => {
-  it('selects all text contents of .editable span on focusin', async () => {
-    const {editable} = await renderEditableSpan('select-me');
+  it('selects all text contents of .editable span on focusin', () => {
+    const {editable} = renderEditableSpan('select-me');
 
     editable.focus();
 
@@ -39,7 +37,7 @@ describe('EditableSpan', () => {
   });
 
   it('renders an editable span', async () => {
-    await renderEditableSpan('example-header-value', true);
+    renderEditableSpan('example-header-value', true);
 
     await assertScreenshot('network/editable_span.png');
   });

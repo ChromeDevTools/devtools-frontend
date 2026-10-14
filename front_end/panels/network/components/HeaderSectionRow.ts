@@ -194,7 +194,7 @@ export class HeaderSectionRow extends HTMLElement {
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
               @paste=${this.#onHeaderNamePaste}
-              .data=${{value: this.#header.name}}
+              .value=${this.#header.name}
             ></devtools-editable-span>` :
             this.#header.name}
         </div>
@@ -256,7 +256,7 @@ export class HeaderSectionRow extends HTMLElement {
         @input=${this.#onHeaderValueEdit}
         @paste=${this.#onHeaderValueEdit}
         @keydown=${this.#onKeyDown}
-        .data=${{value: this.#header.value || ''}}
+        .value=${this.#header.value || ''}
       ></devtools-editable-span>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <devtools-button

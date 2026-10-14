@@ -10,13 +10,8 @@ import editableSpanStyles from './EditableSpan.css.js';
 
 export class EditableSpan extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #editableRef = Directives.createRef<HTMLElement>();
   #value = '';
-
-  connectedCallback(): void {
-    this.#shadow.addEventListener('focusin', this.#selectAllText.bind(this));
-    this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
-    this.#shadow.addEventListener('input', this.#onInput.bind(this));
-  }
 
   get value(): string {
     return this.#value;
@@ -53,19 +48,22 @@ export class EditableSpan extends HTMLElement {
     render(html`
       <style>${editableSpanStyles}</style>
       <span
+        ${Directives.ref(this.#editableRef)}
         contenteditable="plaintext-only"
         class="editable"
         tabindex="0"
         .innerText=${Directives.live(this.#value)}
         jslog=${VisualLogging.value('header-editor').track({change: true, keydown: 'Enter|Escape'})}
+        @focusin=${this.#selectAllText.bind(this)}
+        @keydown=${this.#onKeyDown.bind(this)}
+        @input=${this.#onInput.bind(this)}
         ></span>`, this.#shadow, {host: this});
     // clang-format on
   }
 
   override focus(): void {
     requestAnimationFrame(() => {
-      const span = this.#shadow.querySelector<HTMLElement>('.editable');
-      span?.focus();
+      this.#editableRef.value?.focus();
     });
   }
 }

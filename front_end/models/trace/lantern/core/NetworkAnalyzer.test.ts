@@ -554,6 +554,32 @@ describe('NetworkAnalyzer', () => {
          }
          assert.strictEqual(graph.request.url, 'http://127.0.0.1:54321/');
        });
+
+    it('should not fall back to an unrelated non-document or same-origin redirecting request', () => {
+      const subresourceFinal = createRecord({url: 'https://other-host.com/final', resourceType: 'Other'});
+      const subresourceRedirect = createRecord({
+        url: 'https://host.com/',
+        resourceType: undefined,
+      });
+      subresourceRedirect.redirectDestination = subresourceFinal;
+
+      const sameOriginDocFinal = createRecord({url: 'https://host.com/home', resourceType: 'Document'});
+      const sameOriginDocRedirect = createRecord({
+        url: 'https://host.com/',
+        resourceType: undefined,
+      });
+      sameOriginDocRedirect.redirectDestination = sameOriginDocFinal;
+
+      const mockRecords = [
+        subresourceRedirect,
+        subresourceFinal,
+        sameOriginDocRedirect,
+        sameOriginDocFinal,
+      ];
+
+      const result = NetworkAnalyzer.findResourceForUrl(mockRecords, 'https://host.com/some/path');
+      assert.isUndefined(result);
+    });
   });
 
   describe('#resolveRedirects', () => {

@@ -636,6 +636,7 @@ export enum IssueCreated {
   'GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo' = 114,
   'GenericIssue::AutofillPolicyControlledFeatureInfo' = 115,
   'GenericIssue::ManualTextPolicyControlledFeatureInfo' = 116,
+  'GenericIssue::GeolocationPromptWithoutUserGesture' = 117,
   'CorsIssue::InvalidLocalNetworkAccess' = 118,
   /* eslint-enable @typescript-eslint/naming-convention */
   MAX_VALUE = 119,

@@ -48,6 +48,11 @@ const UIStrings = {
    * @description Title for back-to-ad intervention documentation page.
    */
   backToAdInterventionPageTitle: 'Back-to-ad intervention explainer',
+
+  /**
+   * @description Title for web permissions best practices documentation page.
+   */
+  permissionsBestPracticesPageTitle: 'Web permissions best practices',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
@@ -243,6 +248,14 @@ export const genericFormModelContextParameterMissingName: LazyMarkdownIssueDescr
   links: [],
 };
 
+export const genericGeolocationPromptWithoutUserGesture: LazyMarkdownIssueDescription = {
+  file: 'genericGeolocationPromptWithoutUserGesture.md',
+  links: [{
+    link: 'https://web.dev/articles/permissions-best-practices',
+    linkTitle: i18nLazyString(UIStrings.permissionsBestPracticesPageTitle),
+  }],
+};
+
 const issueDescriptions = new Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdownIssueDescription>([
   [Protocol.Audits.GenericIssueErrorType.FormLabelForNameError, genericFormLabelForNameError],
   [Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError, genericFormInputWithNoLabelError],
@@ -307,6 +320,10 @@ const issueDescriptions = new Map<Protocol.Audits.GenericIssueErrorType, LazyMar
     Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingName,
     genericFormModelContextParameterMissingName,
   ],
+  [
+    Protocol.Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture,
+    genericGeolocationPromptWithoutUserGesture,
+  ],
 ]);
 
 const issueTypes = new Map<Protocol.Audits.GenericIssueErrorType, IssueKind>([
@@ -328,4 +345,5 @@ const issueTypes = new Map<Protocol.Audits.GenericIssueErrorType, IssueKind>([
   [Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingTitleAndDescription, IssueKind.PAGE_ERROR],
   [Protocol.Audits.GenericIssueErrorType.FormModelContextRequiredParameterMissingName, IssueKind.PAGE_ERROR],
   [Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingName, IssueKind.PAGE_ERROR],
+  [Protocol.Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture, IssueKind.IMPROVEMENT],
 ]);

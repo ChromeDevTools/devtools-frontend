@@ -1009,6 +1009,7 @@
       'GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo': 114,
       'GenericIssue::AutofillPolicyControlledFeatureInfo': 115,
       'GenericIssue::ManualTextPolicyControlledFeatureInfo': 116,
+      'GenericIssue::GeolocationPromptWithoutUserGesture': 117,
       'CorsIssue::InvalidLocalNetworkAccess': 118,
       MAX_VALUE: 119,
     },

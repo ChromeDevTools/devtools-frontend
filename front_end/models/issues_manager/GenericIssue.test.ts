@@ -125,4 +125,22 @@ describe('GenericIssue', () => {
     const requests = Array.from(genericIssue.requests());
     assert.strictEqual(requests[0].url, 'https://skippablePage.com');
   });
+
+  it('adds a geolocation requested without user gesture issue with valid details', () => {
+    const issueDetails = {
+      errorType: Protocol.Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture,
+    };
+
+    const issue = createProtocolIssueWithDetails(issueDetails);
+    const genericIssues = IssuesManager.GenericIssue.GenericIssue.fromInspectorIssue(mockModel, issue);
+    assert.lengthOf(genericIssues, 1);
+    const genericIssue = genericIssues[0];
+
+    assert.strictEqual(genericIssue.getCategory(), IssuesManager.Issue.IssueCategory.GENERIC);
+    assert.strictEqual(
+        genericIssue.primaryKey(),
+        'GenericIssue::GeolocationPromptWithoutUserGesture-(undefined)-(undefined)-(undefined)-(no-request)');
+    assert.strictEqual(genericIssue.getKind(), IssuesManager.Issue.IssueKind.IMPROVEMENT);
+    assert.isNotNull(genericIssue.getDescription());
+  });
 });

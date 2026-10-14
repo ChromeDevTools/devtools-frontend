@@ -27,17 +27,18 @@ class AutoWidthSelectDirective extends Directive.Directive {
   }
 
   override update(part: Directive.ElementPart, [text]: [string]): unknown {
-    /* eslint-disable @devtools/no-imperative-dom-api */
     const select = part.element as HTMLSelectElement;
 
     let widthPx = AutoWidthSelectDirective.itemWidthCache.get(text);
     if (!widthPx) {
+      // eslint-disable-next-line @devtools/no-imperative-dom-api
       const measuringElement = document.createElement('select');
       measuringElement.className = select.className;
       measuringElement.style.width = 'fit-content';
       measuringElement.style.position = 'absolute';
       measuringElement.style.visibility = 'hidden';
       measuringElement.style.pointerEvents = 'none';
+
       measuringElement.appendChild(document.createElement('option'));
       measuringElement.options[0].textContent = text;
 
@@ -53,7 +54,6 @@ class AutoWidthSelectDirective extends Directive.Directive {
     }
 
     select.style.width = widthPx;
-    /* eslint-enable @devtools/no-imperative-dom-api */
     return this.render(text);
   }
 

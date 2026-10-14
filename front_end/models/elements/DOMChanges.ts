@@ -2,37 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as ChangeTracker from '../change_tracker/change_tracker.js';
-import type * as CommentManager from '../comment_manager/comment_manager.js';
+
+import {buildAnchor, trimValue} from './ChangeTrackingUtils.js';
 
 type Tracker = ChangeTracker.ChangeTracker.ChangeTracker|undefined;
 
-/**
- * Maximum number of characters of page controlled data (tag names, attribute names and values,
- * text node values and HTML) that a change description embeds. The inspected page fully controls
- * these strings and `Changed HTML from ... to ...` in particular can otherwise hold on to the
- * entire subtree of an element.
- */
-export const MAX_VALUE_LENGTH = 100;
-
-/** Shortens page controlled data so that both its start and its end stay recognizable. */
-function trimValue(value: string): string {
-  return Platform.StringUtilities.trimMiddle(value, MAX_VALUE_LENGTH);
-}
-
-function buildAnchor(node: SDK.DOMModel.DOMNode,
-                     selector = 'element'): CommentManager.CommentManager.CommentAnchorSignature {
-  return {
-    vePath: 'Panel: elements > Tree: elements > TreeItem',
-    textSignature: selector,
-    node: {
-      backendNodeId: node.backendNodeId(),
-      targetId: node.domModel().target().id(),
-    },
-  };
-}
+const DOM_TREE_VE_PATH = 'Panel: elements > Tree: elements > TreeItem';
+const ELEMENT_PLACEHOLDER_TEXT_SIGNATURE = 'element';
 
 /**
  * Parses a raw attribute string (e.g. 'class="btn"', 'data-id=123', or 'disabled')
@@ -165,7 +143,8 @@ export function trackAttributeEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode,
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeAttributeEdit(edit), buildAnchor(node, selector));
+  tracker.trackChange(describeAttributeEdit(edit),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackTagNameEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
@@ -173,7 +152,8 @@ export function trackTagNameEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, s
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeTagNameEdit(oldTagName, newTagName), buildAnchor(node, selector));
+  tracker.trackChange(describeTagNameEdit(oldTagName, newTagName),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackTextNodeEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
@@ -181,14 +161,16 @@ export function trackTextNodeEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, 
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeTextNodeEdit(oldText, newText), buildAnchor(node, selector));
+  tracker.trackChange(describeTextNodeEdit(oldText, newText),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackNodeRemoval(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined): void {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeRemoval(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+  tracker.trackChange(describeNodeRemoval(node.nodeName().toLowerCase()),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackHTMLEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
@@ -196,7 +178,8 @@ export function trackHTMLEdit(tracker: Tracker, node: SDK.DOMModel.DOMNode, sele
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeHTMLEdit(oldValue, newValue), buildAnchor(node, selector));
+  tracker.trackChange(describeHTMLEdit(oldValue, newValue),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackVisibilityToggle(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
@@ -204,14 +187,16 @@ export function trackVisibilityToggle(tracker: Tracker, node: SDK.DOMModel.DOMNo
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeVisibilityToggle(node.nodeName().toLowerCase(), hidden), buildAnchor(node, selector));
+  tracker.trackChange(describeVisibilityToggle(node.nodeName().toLowerCase(), hidden),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackNodeDuplication(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined): void {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeDuplication(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+  tracker.trackChange(describeNodeDuplication(node.nodeName().toLowerCase()),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackNodeMove(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
@@ -219,14 +204,16 @@ export function trackNodeMove(tracker: Tracker, node: SDK.DOMModel.DOMNode, sele
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeMove(node.nodeName().toLowerCase(), directionUp), buildAnchor(node, selector));
+  tracker.trackChange(describeNodeMove(node.nodeName().toLowerCase(), directionUp),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackNodeDrop(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined): void {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeDrop(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+  tracker.trackChange(describeNodeDrop(node.nodeName().toLowerCase()),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }
 
 export function trackNodePaste(tracker: Tracker, node: SDK.DOMModel.DOMNode, selector: string|undefined,
@@ -234,5 +221,6 @@ export function trackNodePaste(tracker: Tracker, node: SDK.DOMModel.DOMNode, sel
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodePaste(node.nodeName().toLowerCase(), isCut), buildAnchor(node, selector));
+  tracker.trackChange(describeNodePaste(node.nodeName().toLowerCase(), isCut),
+                      buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE));
 }

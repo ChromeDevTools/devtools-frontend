@@ -675,7 +675,7 @@ export function rematchCommentAnchor(comment: CommentThread, root: Document|Elem
       return VisualLogging.getVePath(cmEditor) === anchor.vePath;
     });
     for (const cmEditor of matchingEditors) {
-      if (checkCodeMirrorLineMatch(cmEditor, lineNumber, anchor.textSignature)) {
+      if (anchor.textSignature !== undefined && checkCodeMirrorLineMatch(cmEditor, lineNumber, anchor.textSignature)) {
         return cmEditor;
       }
     }

@@ -9,8 +9,10 @@ import("../visibility.gni")
 
 devtools_foundation_module("elements") {
   sources = [
+    "ChangeTrackingUtils.ts",
     "DOMChanges.ts",
     "ElementUpdateRecord.ts",
+    "StyleChanges.ts",
   ]
 
   ts_deps = [
@@ -40,7 +42,10 @@ devtools_entrypoint("bundle") {
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 
-  sources = [ "DOMChanges.test.ts" ]
+  sources = [
+    "DOMChanges.test.ts",
+    "StyleChanges.test.ts",
+  ]
 
   ts_deps = [
     ":bundle",

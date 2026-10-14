@@ -781,7 +781,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const parts = ['45deg', 'red', 'blue'];
       const gradient = () => `linear-gradient(${parts.join(', ')})`;
       const text = () => `background: ${gradient()}`;
-      const {treeElement, valueElement, edit, commit} = renderEditable('background', gradient());
+      // The angle and the colors are the only renderers that edit this value.
+      const {valueElement, check, edit, commit} = renderEditable('background', gradient(), {checkSplicing: true});
       const angle = valueElement.querySelector('devtools-css-angle');
       assert.exists(angle);
       const angleSwatch = angle.querySelector('devtools-css-angle-swatch');
@@ -798,7 +799,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       // part of the property with the next edit.
       parts[0] = '100grad';
       dispatchClickEvent(angleSwatch, {shiftKey: true});
-      assert.strictEqual(treeElement.renderedPropertyText(), text(), 'changing the unit of the angle');
+      check('changing the unit of the angle', text());
 
       // The angle is edited in the new unit from now on.
       parts[0] = '200grad';

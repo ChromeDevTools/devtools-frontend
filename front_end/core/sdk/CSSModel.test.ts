@@ -556,4 +556,62 @@ describe('CSSModel', () => {
     assert.strictEqual(changedEvent.styleSheetId, styleSheetId);
     assert.strictEqual(await cssModel.getStyleSheetText(styleSheetId), 'h1 { COLOR: Red; }');
   });
+
+  describe('forcePositionTryOption', () => {
+    it('tracks forced position-try option on the node, invokes the agent, and dispatches PositionTryOptionForced',
+       () => {
+         const target = universe.createTarget();
+         const cssModel = target.model(SDK.CSSModel.CSSModel);
+         const domModel = target.model(SDK.DOMModel.DOMModel);
+         assert.exists(cssModel);
+         assert.exists(domModel);
+
+         const nodeId = 1 as Protocol.DOM.NodeId;
+         const node = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+           nodeId,
+           backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+           nodeType: SDK.DOMModel.NodeType.ELEMENT_NODE,
+           nodeName: 'div',
+           localName: 'div',
+           nodeValue: '',
+         });
+
+         const invokeStub =
+             sinon.stub(cssModel.agent, 'invoke_forcePositionTryOption').resolves({getError: () => undefined});
+         const listenerSpy = sinon.spy();
+         cssModel.addEventListener(SDK.CSSModel.Events.PositionTryOptionForced, listenerSpy);
+
+         assert.isUndefined(cssModel.forcedPositionTryOption(node));
+
+         // Calling with undefined when already unforced is a no-op.
+         assert.isFalse(cssModel.forcePositionTryOption(node, undefined));
+         sinon.assert.notCalled(invokeStub);
+         sinon.assert.notCalled(listenerSpy);
+
+         // Forcing index 0 (base style) updates the marker, invokes the agent, and fires the event.
+         assert.isTrue(cssModel.forcePositionTryOption(node, 0));
+         assert.strictEqual(cssModel.forcedPositionTryOption(node), 0);
+         sinon.assert.calledOnceWithExactly(invokeStub, {nodeId, index: 0});
+         sinon.assert.calledOnceWithExactly(listenerSpy, sinon.match({data: node}));
+
+         // Calling with the same index is a no-op.
+         assert.isFalse(cssModel.forcePositionTryOption(node, 0));
+         sinon.assert.calledOnce(invokeStub);
+         sinon.assert.calledOnce(listenerSpy);
+
+         // Forcing a fallback index updates the marker and invokes the agent.
+         assert.isTrue(cssModel.forcePositionTryOption(node, 2));
+         assert.strictEqual(cssModel.forcedPositionTryOption(node), 2);
+         sinon.assert.calledTwice(invokeStub);
+         sinon.assert.calledWithExactly(invokeStub.secondCall, {nodeId, index: 2});
+         sinon.assert.calledTwice(listenerSpy);
+
+         // Clearing with undefined resets the marker and invokes the agent without an index.
+         assert.isTrue(cssModel.forcePositionTryOption(node, undefined));
+         assert.isUndefined(cssModel.forcedPositionTryOption(node));
+         sinon.assert.calledThrice(invokeStub);
+         sinon.assert.calledWithExactly(invokeStub.thirdCall, {nodeId, index: undefined});
+         sinon.assert.calledThrice(listenerSpy);
+       });
+  });
 });

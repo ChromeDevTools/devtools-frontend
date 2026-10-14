@@ -1188,7 +1188,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
   }
 
   marker<T>(name: string): T|null {
-    return this.#markers.get(name) as T || null;
+    return (this.#markers.get(name) as T) ?? null;
   }
 
   getMarkerKeysForTest(): string[] {

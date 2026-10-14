@@ -2442,6 +2442,94 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       assert.isFalse(values[1].classList.contains('inactive-value'));
       assert.isTrue(values[2].classList.contains('inactive-value'));
     });
+
+    it('renders the position-try swatch in default and forced states', () => {
+      const forcedOptionStub = sinon.stub(matchedStyles.cssModel(), 'forcedPositionTryOption').returns(undefined);
+      const stylePropertyTreeElement = getTreeElement('position-try-fallbacks', '--top, --left');
+
+      stylePropertyTreeElement.updateTitle();
+      let swatch = stylePropertyTreeElement.valueElement?.querySelector<Icon>('.position-try-swatch-icon');
+      assert.exists(swatch);
+      assert.strictEqual(swatch.name, 'layers');
+      assert.isFalse(swatch.classList.contains('toggled'));
+
+      forcedOptionStub.returns(0);
+      stylePropertyTreeElement.updateTitle();
+      swatch = stylePropertyTreeElement.valueElement?.querySelector<Icon>('.position-try-swatch-icon');
+      assert.exists(swatch);
+      assert.strictEqual(swatch.name, 'layers-filled');
+      assert.isTrue(swatch.classList.contains('toggled'));
+
+      forcedOptionStub.returns(2);
+      stylePropertyTreeElement.updateTitle();
+      swatch = stylePropertyTreeElement.valueElement?.querySelector<Icon>('.position-try-swatch-icon');
+      assert.exists(swatch);
+      assert.strictEqual(swatch.name, 'layers-filled');
+      assert.isTrue(swatch.classList.contains('toggled'));
+
+      stylePropertyTreeElement.setOverloaded(true);
+      stylePropertyTreeElement.updateTitle();
+      swatch = stylePropertyTreeElement.valueElement?.querySelector<Icon>('.position-try-swatch-icon');
+      assert.isNull(swatch);
+    });
+
+    it('opens a context menu with fallback options and forces the selected option', () => {
+      const node = matchedStyles.node();
+      assert.exists(node);
+      const forcedOptionStub = sinon.stub(matchedStyles.cssModel(), 'forcedPositionTryOption').returns(undefined);
+      const forceOptionSpy = sinon.stub(matchedStyles.cssModel(), 'forcePositionTryOption');
+      let shownMenu: LegacyUI.ContextMenu.ContextMenu|undefined;
+      sinon.stub(LegacyUI.ContextMenu.ContextMenu.prototype, 'show')
+          .callsFake(async function(this: LegacyUI.ContextMenu.ContextMenu) {
+            shownMenu = this;
+          });
+
+      const stylePropertyTreeElement =
+          getTreeElement('position-try', '/* comment */ most-height --top, flip-block, --bottom');
+      stylePropertyTreeElement.updateTitle();
+      const swatch = stylePropertyTreeElement.valueElement?.querySelector<Icon>('.position-try-swatch-icon');
+      assert.exists(swatch);
+
+      swatch.click();
+      assert.exists(shownMenu);
+      const items = shownMenu.defaultSection().items;
+      assert.deepEqual(items.map(item => {
+        const descriptor = item.buildDescriptor();
+        return {type: descriptor.type, label: descriptor.label, checked: descriptor.checked};
+      }),
+                       [
+                         {type: 'checkbox', label: 'Default', checked: true},
+                         {type: 'checkbox', label: 'Base', checked: false},
+                         {type: 'separator', label: undefined, checked: undefined},
+                         {type: 'checkbox', label: '--top', checked: false},
+                         {type: 'checkbox', label: 'flip-block', checked: false},
+                         {type: 'checkbox', label: '--bottom', checked: false},
+                       ]);
+
+      shownMenu.invokeHandler(items[1].id());
+      sinon.assert.calledOnceWithExactly(forceOptionSpy, node, 0);
+
+      shownMenu.invokeHandler(items[3].id());
+      sinon.assert.calledWithExactly(forceOptionSpy, node, 1);
+
+      shownMenu.invokeHandler(items[4].id());
+      sinon.assert.calledWithExactly(forceOptionSpy, node, 2);
+
+      shownMenu.invokeHandler(items[0].id());
+      sinon.assert.calledWithExactly(forceOptionSpy, node, undefined);
+
+      forcedOptionStub.returns(0);
+      swatch.click();
+      assert.exists(shownMenu);
+      assert.deepEqual(shownMenu.defaultSection().items.map(item => item.buildDescriptor().checked),
+                       [false, true, undefined, false, false, false]);
+
+      forcedOptionStub.returns(2);
+      swatch.click();
+      assert.exists(shownMenu);
+      assert.deepEqual(shownMenu.defaultSection().items.map(item => item.buildDescriptor().checked),
+                       [false, false, undefined, false, true, false]);
+    });
   });
 
   describe('LengthRenderer', () => {

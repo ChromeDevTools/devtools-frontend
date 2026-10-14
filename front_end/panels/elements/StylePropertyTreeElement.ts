@@ -163,6 +163,18 @@ const UIStrings = {
    * @description Title in the Styles tab for the icon button for jumping to the anchor node.
    */
   jumpToAnchorNode: 'Jump to anchor node',
+  /**
+   * @description Title of the button that opens the position-try option menu in the Styles tab of the Elements panel.
+   */
+  positionTrySwatchButton: 'Force `position-try` option',
+  /**
+   * @description Label for the default (unforced) option in the position-try menu in the Styles tab of the Elements panel.
+   */
+  defaultPositionTryOption: 'Default',
+  /**
+   * @description Label for the base style (no fallback) option in the position-try menu in the Styles tab of the Elements panel.
+   */
+  basePositionTryOption: 'Base',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -2279,11 +2291,13 @@ const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Positi
 // clang-format off
 export class PositionTryRenderer extends PositionTryRendererBase {
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  readonly #treeElement: StylePropertyTreeElement|null;
   // clang-format on
 
-  constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+  constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement|null) {
     super();
     this.#matchedStyles = matchedStyles;
+    this.#treeElement = treeElement;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Lit.LitTemplate {
@@ -2292,19 +2306,66 @@ export class PositionTryRenderer extends PositionTryRendererBase {
       const {nodes} = Renderer.render(match.preamble, context);
       content.push(nodes);
     }
+    const node = this.#treeElement ? this.#matchedStyles.nodeForStyle(this.#treeElement.property.ownerStyle) :
+                                     this.#matchedStyles.node();
+    const fallbackLabels: string[] = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
       const fallbackContent = document.createElement('span');
       if (i > 0) {
         fallbackContent.appendChild(document.createTextNode(', '));
       }
-      if (i !== this.#matchedStyles.activePositionFallbackIndex()) {
+      if (!this.#treeElement?.inherited() && node === this.#matchedStyles.node() &&
+          i !== this.#matchedStyles.activePositionFallbackIndex()) {
         fallbackContent.classList.add('inactive-value');
       }
       Renderer.renderInto(fallback, context, fallbackContent);
+      fallbackLabels.push(
+          context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim());
 
       content.push(fallbackContent);
     }
-    return html`${content}`;
+    if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() ||
+        !this.#treeElement.property.activeInStyle() || !node) {
+      return html`${content}`;
+    }
+    const cssModel = this.#matchedStyles.cssModel();
+    const forcedIndex = cssModel.forcedPositionTryOption(node);
+    const isForced = forcedIndex !== undefined;
+
+    // clang-format off
+    return html`<devtools-icon
+      name=${isForced ? 'layers-filled' : 'layers'}
+      class=${isForced ? 'position-try-swatch-icon toggled' : 'position-try-swatch-icon'}
+      title=${i18nString(UIStrings.positionTrySwatchButton)}
+      role=button
+      tabindex=-1
+      jslog=${VisualLogging.dropDown('position-try').track({click: true})}
+      @click=${(event: MouseEvent) => {
+        event.consume(true);
+        const currentForced = cssModel.forcedPositionTryOption(node);
+        const contextMenu = new UI.ContextMenu.ContextMenu(event);
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.defaultPositionTryOption), () => {
+          cssModel.forcePositionTryOption(node, undefined);
+        }, {checked: currentForced === undefined, jslogContext: 'default'});
+        contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.basePositionTryOption), () => {
+          cssModel.forcePositionTryOption(node, 0);
+        }, {checked: currentForced === 0, jslogContext: 'base'});
+        contextMenu.defaultSection().appendSeparator();
+        for (const [i, label] of fallbackLabels.entries()) {
+          const optionIndex = i + 1;
+          contextMenu.defaultSection().appendCheckboxItem(label, () => {
+            cssModel.forcePositionTryOption(node, optionIndex);
+          }, {checked: currentForced === optionIndex, jslogContext: 'position-try-option'});
+        }
+        void contextMenu.show();
+      }}
+      @mousedown=${(event: Event) => {
+        event.consume();
+      }}
+      @mouseup=${(event: Event) => {
+        event.consume();
+      }}></devtools-icon>${content}`;
+    // clang-format on
   }
 }
 
@@ -2334,7 +2395,7 @@ export function getPropertyRenderers(
     new FlexGridRenderer(stylesContainer, treeElement),
     new PositionAreaRenderer(stylesContainer, treeElement),
     new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
-    new PositionTryRenderer(matchedStyles),
+    new PositionTryRenderer(matchedStyles, treeElement),
     new LengthRenderer(stylesContainer, propertyName, treeElement),
     new MathFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName,
                              treeElement),

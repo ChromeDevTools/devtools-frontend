@@ -537,6 +537,24 @@ export class CSSModel extends SDKModel<EventTypes> {
     return true;
   }
 
+  forcePositionTryOption(node: DOMNode, index?: number): boolean {
+    const currentForcedIndex = node.marker<number>(PositionTryOptionMarker) ?? undefined;
+    if (currentForcedIndex === index) {
+      return false;
+    }
+    node.setMarker(PositionTryOptionMarker, index ?? null);
+    if (node.id === undefined) {
+      return false;
+    }
+    void this.agent.invoke_forcePositionTryOption({nodeId: node.id, index});
+    this.dispatchEventToListeners(Events.PositionTryOptionForced, node);
+    return true;
+  }
+
+  forcedPositionTryOption(node: DOMNode): number|undefined {
+    return node.marker<number>(PositionTryOptionMarker) ?? undefined;
+  }
+
   forcePseudoState(node: DOMNode, pseudoClass: string, enable: boolean): boolean {
     const forcedPseudoClasses = node.marker<string[]>(PseudoStateMarker) || [];
     const hasPseudoClass = forcedPseudoClasses.includes(pseudoClass);
@@ -1058,6 +1076,7 @@ export enum Events {
   MediaQueryResultChanged = 'MediaQueryResultChanged',
   ModelWasEnabled = 'ModelWasEnabled',
   ModelDisposed = 'ModelDisposed',
+  PositionTryOptionForced = 'PositionTryOptionForced',
   PseudoStateForced = 'PseudoStateForced',
   StartingStylesStateForced = 'StartingStylesStateForced',
   StyleSheetAdded = 'StyleSheetAdded',
@@ -1087,6 +1106,7 @@ export interface EventTypes {
   [Events.MediaQueryResultChanged]: void;
   [Events.ModelWasEnabled]: void;
   [Events.ModelDisposed]: CSSModel;
+  [Events.PositionTryOptionForced]: DOMNode;
   [Events.PseudoStateForced]: PseudoStateForcedEvent;
   [Events.StartingStylesStateForced]: DOMNode;
   [Events.StyleSheetAdded]: CSSStyleSheetHeader;
@@ -1096,6 +1116,7 @@ export interface EventTypes {
 }
 
 const PseudoStateMarker = 'pseudo-state-marker';
+const PositionTryOptionMarker = 'position-try-option-marker';
 
 export class Edit {
   styleSheetId: string;

@@ -12,6 +12,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import {assertScreenshot, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
@@ -172,6 +174,58 @@ describeWithEnvironment('BinaryResourceView', () => {
     const expectedHex = '68656c6c6f20776f726c64';
     assert.strictEqual(copiedText, expectedHex);
     view.detach();
+  });
+
+  describe('with a stubbed view', () => {
+    async function createView(viewOutput?: Network.BinaryResourceView.ViewOutput) {
+      const contentData = TextUtils.StreamingContentData.StreamingContentData.from(
+          new TextUtils.ContentData.ContentData(btoa('hello world'), true, 'application/octet-stream'));
+      const view = createViewFunctionStub(Network.BinaryResourceView.BinaryResourceView, viewOutput);
+      const widget = new Network.BinaryResourceView.BinaryResourceView(
+          contentData, urlString`http://example.com`, Common.ResourceType.resourceTypes.XHR, undefined, view);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget);
+      await view.nextInput;
+      return {view, widget};
+    }
+
+    it('shows the copied message and fades it out after a delay', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+      try {
+        const {view, widget} = await createView();
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
+        assert.strictEqual(view.input.copiedText, '');
+
+        view.input.copySelectedViewToClipboard();
+        let input = await view.nextInput;
+        assert.strictEqual(input.copiedText, 'Copied as Hex');
+        assert.isFalse(input.copiedTextFadeout);
+
+        clock.tick(2000);
+        input = await view.nextInput;
+        assert.strictEqual(input.copiedText, 'Copied as Hex');
+        assert.isTrue(input.copiedTextFadeout);
+
+        widget.detach();
+      } finally {
+        clock.restore();
+      }
+    });
+
+    it('carries the reading position of the active view over to the new view type', async () => {
+      const activeView = {getPositionPercentage: () => 0.42} as unknown as
+          SourceFrame.StreamingContentHexView.StreamingContentHexView;
+      const {view, widget} = await createView({activeView});
+      assert.strictEqual(view.input.binaryViewType, 'hex');
+      assert.strictEqual(view.input.activePositionPercentage, 0);
+
+      view.input.binaryViewTypeChanged({target: {value: 'base64'}} as unknown as Event);
+      const input = await view.nextInput;
+      assert.strictEqual(input.binaryViewType, 'base64');
+      assert.strictEqual(input.activePositionPercentage, 0.42);
+
+      widget.detach();
+    });
   });
 });
 

@@ -1,7 +1,6 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
 
@@ -13,12 +12,13 @@ import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import binaryResourceViewStyles from './binaryResourceView.css.js';
 
 const {widget} = UI.Widget;
+const {classMap} = Directives;
 
 const UIStrings = {
   /**
@@ -66,34 +66,40 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/BinaryResourceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+type BinaryView =
+    SourceFrame.ResourceSourceFrame.ResourceSourceFrame|SourceFrame.StreamingContentHexView.StreamingContentHexView;
+
 export interface ViewInput {
   binaryViewObjects: BinaryViewObject[];
   content: TextUtils.StreamingContentData.StreamingContentData;
   contentUrl: Platform.DevToolsPath.UrlString;
   resourceType: Common.ResourceType.ResourceType;
   activePositionPercentage: number;
-  binaryViewTypeSetting: Common.Settings.Setting<string>;
+  binaryViewType: string;
+  copiedText: string;
+  copiedTextFadeout: boolean;
   binaryViewTypeChanged: (event: Event) => void;
   copySelectedViewToClipboard: () => void;
-  copiedText: UI.Toolbar.ToolbarText;
 }
-export type ViewOutput = undefined;
+export interface ViewOutput {
+  activeView?: BinaryView;
+}
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-const defaultView: View = (input, _output, target) => {
+export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
     <style>${binaryResourceViewStyles}</style>
     <div class="vbox flex-auto">
       ${input.binaryViewObjects.map(
-        obj => obj.type === input.binaryViewTypeSetting.get() ? html`
+        obj => obj.type === input.binaryViewType ? html`
           <devtools-widget
             class="widget vbox flex-auto"
             ${widget((e: HTMLElement) => {
               const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
                   input.content, input.contentUrl, input.resourceType);
-              let view: SourceFrame.ResourceSourceFrame.ResourceSourceFrame|
-                  SourceFrame.StreamingContentHexView.StreamingContentHexView;
+              let view: BinaryView;
               switch (obj.type) {
                 case 'base64':
                   view = factory.createBase64View(e);
@@ -107,9 +113,8 @@ const defaultView: View = (input, _output, target) => {
                 default:
                   throw new Error('Unsupported view type');
               }
-              if ('setPositionPercentage' in view) {
-                view.setPositionPercentage(input.activePositionPercentage);
-              }
+              view.setPositionPercentage(input.activePositionPercentage);
+              output.activeView = view;
               return view;
             })}>
           </devtools-widget>
@@ -121,7 +126,7 @@ const defaultView: View = (input, _output, target) => {
               @change=${input.binaryViewTypeChanged}>
             ${input.binaryViewObjects.map(viewObject => html`
               <option value=${viewObject.type}
-                  ?selected=${viewObject.type === input.binaryViewTypeSetting.get()}
+                  ?selected=${viewObject.type === input.binaryViewType}
                   jslog=${VisualLogging.item(viewObject.type).track({click: true})}>${viewObject.label}</option>
             `)}
           </select>
@@ -132,7 +137,11 @@ const defaultView: View = (input, _output, target) => {
               iconName: 'copy',
               jslogContext: 'copy',
             } as Buttons.Button.ButtonData}></devtools-button>
-        ${input.copiedText.element}
+        <div class=${classMap({
+          'toolbar-text': true,
+          'binary-view-copied-text': true,
+          fadeout: input.copiedTextFadeout,
+        })}>${input.copiedText}</div>
       </devtools-toolbar>
     </div>
   `, target);
@@ -147,16 +156,16 @@ export class BinaryResourceView extends UI.Widget.VBox {
   private readonly resourceType: Common.ResourceType.ResourceType;
   private readonly binaryViewObjects: BinaryViewObject[];
   private binaryViewTypeSetting: Common.Settings.Setting<string>;
-  readonly copiedText: UI.Toolbar.ToolbarText;
-  private addFadeoutSettimeoutId: number|null;
-  private litContainer: HTMLElement;
-  #view = defaultView;
+  #copiedText = '';
+  #copiedTextFadeout = false;
+  #fadeoutTimeoutId: number|null = null;
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
 
-  constructor(
-      content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
-      resourceType: Common.ResourceType.ResourceType, element?: HTMLElement) {
+  constructor(content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
+              resourceType: Common.ResourceType.ResourceType, element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
-    this.registerRequiredCSS(binaryResourceViewStyles);
+    this.#view = view;
 
     this.streamingContent = content;
     this.contentUrl = contentUrl;
@@ -177,15 +186,11 @@ export class BinaryResourceView extends UI.Widget.VBox {
           this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory)),
     ];
     this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting('binary-view-type', 'hex');
+  }
 
-    this.copiedText = new UI.Toolbar.ToolbarText();
-    this.copiedText.element.classList.add('binary-view-copied-text');
-
-    this.addFadeoutSettimeoutId = null;
-
-    this.litContainer = this.element.createChild('div', 'vbox flex-auto');
-
-    this.performUpdate();
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   private getCurrentViewObject(): BinaryViewObject|null {
@@ -204,16 +209,17 @@ export class BinaryResourceView extends UI.Widget.VBox {
       return;
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(viewObject.content());
-    this.copiedText.setText(viewObject.copiedMessage);
-    this.copiedText.element.classList.remove('fadeout');
-    const addFadeoutClass = (): void => {
-      this.copiedText.element.classList.add('fadeout');
-    };
-    if (this.addFadeoutSettimeoutId) {
-      clearTimeout(this.addFadeoutSettimeoutId);
-      this.addFadeoutSettimeoutId = null;
+    this.#copiedText = viewObject.copiedMessage;
+    this.#copiedTextFadeout = false;
+    if (this.#fadeoutTimeoutId) {
+      clearTimeout(this.#fadeoutTimeoutId);
     }
-    this.addFadeoutSettimeoutId = window.setTimeout(addFadeoutClass, 2000);
+    this.#fadeoutTimeoutId = window.setTimeout(() => {
+      this.#fadeoutTimeoutId = null;
+      this.#copiedTextFadeout = true;
+      this.requestUpdate();
+    }, 2000);
+    this.requestUpdate();
   }
 
   override performUpdate(): void {
@@ -223,12 +229,13 @@ export class BinaryResourceView extends UI.Widget.VBox {
       contentUrl: this.contentUrl,
       resourceType: this.resourceType,
       binaryViewObjects: this.binaryViewObjects,
-      binaryViewTypeSetting: this.binaryViewTypeSetting,
+      binaryViewType: this.binaryViewTypeSetting.get(),
+      copiedText: this.#copiedText,
+      copiedTextFadeout: this.#copiedTextFadeout,
       binaryViewTypeChanged: this.binaryViewTypeChanged.bind(this),
       copySelectedViewToClipboard: this.copySelectedViewToClipboard.bind(this),
-      copiedText: this.copiedText,
     };
-    this.#view(viewInput, undefined, this.litContainer);
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 
   binaryViewTypeChanged(event: Event): void {
@@ -237,17 +244,14 @@ export class BinaryResourceView extends UI.Widget.VBox {
       return;
     }
 
-    const currentViewWidget = this.litContainer.querySelector('devtools-widget');
-    if (currentViewWidget) {
-      const view = UI.Widget.Widget.get(currentViewWidget) as SourceFrame.ResourceSourceFrame.ResourceSourceFrame |
-          SourceFrame.StreamingContentHexView.StreamingContentHexView;
-      if (view && 'getPositionPercentage' in view) {
-        this.activePositionPercentage = view.getPositionPercentage();
-      }
+    // Carry the reading position of the outgoing view over to the new one.
+    const activeView = this.#viewOutput.activeView;
+    if (activeView) {
+      this.activePositionPercentage = activeView.getPositionPercentage();
     }
 
     this.binaryViewTypeSetting.set(newViewType);
-    this.performUpdate();
+    this.requestUpdate();
   }
 
   addCopyToContextMenu(contextMenu: UI.ContextMenu.ContextMenu, submenuItemText: string): void {

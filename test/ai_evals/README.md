@@ -48,6 +48,13 @@ To override with a custom OTA account:
 ./dt test test/ai_evals --ota-username your_ota_account@gmail.com
 ```
 
+> [!NOTE]
+> Passing `--ota-password` is generally only needed for OTA accounts where the user or environment cannot change the password dynamically (for example, on CI bots that cannot use `stubby` and instead rely on a pre-configured password):
+>
+> ```bash
+> ./dt test test/ai_evals --ota-username your_ota_account@gmail.com --ota-password your_password
+> ```
+
 Harness tests:
 
 ```bash
@@ -62,7 +69,7 @@ Protip: You can add `--debug` to the harness test command line, to see the outpu
 
 When you run the test, the test runner performs these steps:
 
-1. Uses `stubby` to get a temporary password for the OTA account.
+1. Uses `stubby` to get a temporary password for the OTA account (unless `--ota-password` is provided).
 2. Starts Chrome and signs in to the Google account automatically.
 3. Configures DevTools AI Assistance preferences.
 4. Opens the inspected target page and sends prompts to AI Assistance.

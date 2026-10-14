@@ -84,6 +84,7 @@ export interface CommandLineOptions {
   'expectations-file'?: string;
   'force-screenshots': boolean;
   'ota-username'?: string;
+  'ota-password'?: string;
 }
 
 export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>): Yargs.Argv<T&CommandLineOptions> {
@@ -200,5 +201,9 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       .option('ota-username', {
         type: 'string',
         desc: 'Test account username used for Ai authentication logic in testing.',
+      })
+      .option('ota-password', {
+        type: 'string',
+        desc: 'Test account password used for Ai authentication logic in testing.',
       });
 }

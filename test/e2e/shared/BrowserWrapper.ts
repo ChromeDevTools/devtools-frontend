@@ -119,6 +119,7 @@ export class BrowserWrapper {
 
 export interface BrowserSettings {
   chromeUsername?: string;
+  chromePassword?: string;
   enabledFeatures: string[];
   disabledFeatures: string[];
   extensions?: string[];
@@ -141,7 +142,7 @@ export class Launcher {
       if (settings.chromeUsername) {
         const loginPage = await wrapper.browser.newPage();
         try {
-          await chromeLogin(loginPage, settings.chromeUsername);
+          await chromeLogin(loginPage, settings.chromeUsername, settings.chromePassword);
           await configureDevToolsPreferences(loginPage);
         } finally {
           await loginPage.close().catch(() => {});

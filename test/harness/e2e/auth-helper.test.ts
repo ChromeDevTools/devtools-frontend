@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {TestConfig} from '../../conductor/test_config.js';
 import {describe, it} from '../../e2e/conductor/mocha-interface.js';
-import {chromeLogin, getOtaPassword, typeTextIn} from '../../e2e/shared/auth-helper.js';
+import {chromeLogin, fillGoogleLoginPage, getOtaPassword, typeTextIn} from '../../e2e/shared/auth-helper.js';
 import {DEFAULT_BROWSER_SETTINGS, Launcher} from '../../e2e/shared/BrowserWrapper.js';
 
 describe('Auth Helper', () => {
@@ -67,5 +67,36 @@ describe('Auth Helper', () => {
     await chromeLogin(mockPage, 'test_user@invalid.com');
     assert.lengthOf(calls, 1);
     assert.strictEqual(calls[0], 'goTo:https://accounts.google.com');
+  });
+
+  it('uses provided password directly without calling stubby in fillGoogleLoginPage', async () => {
+    const rawBrowser = await Launcher.launchChrome(DEFAULT_BROWSER_SETTINGS, 0);
+
+    try {
+      const page = await rawBrowser.newPage();
+      // Set up a minimal fake DOM matching the selectors that fillGoogleLoginPage
+      // interacts with on accounts.google.com.
+      await page.setContent(`
+        <input name="identifier" type="text" />
+        <button id="identifierNext" type="button">Next</button>
+        <input name="Passwd" type="password" />
+        <button id="passwordNext" type="button">Sign in</button>
+      `);
+
+      // Passing an explicit password should bypass getOtaPassword (which would
+      // otherwise throw when calling stubby with this fake email address) and
+      // type the provided password directly into the password field.
+      await fillGoogleLoginPage(page, 'invalid_fake_user_test_1234567890@invalid.com', 'provided_secret_password');
+
+      const values = await page.evaluate(() => {
+        const emailInput = document.querySelector('input[name="identifier"]') as HTMLInputElement;
+        const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
+        return {email: emailInput.value, password: passwordInput.value};
+      });
+      assert.strictEqual(values.email, 'invalid_fake_user_test_1234567890@invalid.com');
+      assert.strictEqual(values.password, 'provided_secret_password');
+    } finally {
+      await rawBrowser.close();
+    }
   });
 });

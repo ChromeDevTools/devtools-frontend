@@ -52,6 +52,7 @@ interface Config {
   bail: boolean;
   forceScreenshots: boolean;
   otaUsername?: string;
+  otaPassword?: string;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -185,6 +186,7 @@ export const TestConfig: Config = {
   bail: options['bail'],
   forceScreenshots: Boolean(options['force-screenshots']),
   otaUsername: options['ota-username'],
+  otaPassword: options['ota-password'],
 };
 
 export function shuffleTests(tests: string[]): string[] {

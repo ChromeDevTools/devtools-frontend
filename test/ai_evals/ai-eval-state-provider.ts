@@ -150,6 +150,7 @@ export class AiEvalStateProvider extends StateProvider {
     return await Launcher.browserSetup({
       ...settings,
       chromeUsername: TestConfig.otaUsername ?? getDefaultOtaAccount(),
+      chromePassword: TestConfig.otaPassword,
     },
                                        StateProvider.serverPort);
   }

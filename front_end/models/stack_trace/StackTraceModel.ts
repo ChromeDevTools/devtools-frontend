@@ -68,6 +68,9 @@ export type TranslateRawFrames = (frames: readonly RawFrame[], target: SDK.Targe
 export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   readonly #trie = new Trie();
   readonly #mutex = new Common.Mutex.Mutex();
+  /** Scripts whose info changed since {@link #pendingScriptsUpdate} was scheduled. */
+  readonly #pendingScripts = new Set<SDK.Script.Script>();
+  #pendingScriptsUpdate: Promise<void>|null = null;
 
   /** @returns the {@link StackTraceModel} for the target. Throws if the target or its model cannot be found. */
   static #modelForTarget(target: SDK.Target.Target|null|undefined): StackTraceModel {
@@ -139,15 +142,33 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   /**
    * Re-translates all trie nodes whose raw frame or eval origin chain is in `script`, and notifies all stack traces
    * that contain such a node.
+   *
+   * Calls that arrive before the pending update acquired the mutex are coalesced into a single update (using the
+   * `translateRawFrames` of the first call), so that e.g. re-adding thousands of scripts walks the trie only once.
    */
-  async scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void> {
+  scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void> {
+    this.#pendingScripts.add(script);
+    this.#pendingScriptsUpdate ??= this.#updatePendingScripts(translateRawFrames);
+    return this.#pendingScriptsUpdate;
+  }
+
+  async #updatePendingScripts(translateRawFrames: TranslateRawFrames): Promise<void> {
+    const release = await this.#mutex.acquire();
+    const scriptIds = new Set<Protocol.Runtime.ScriptId>();
+    const sourceURLs = new Set<string>();
+    for (const script of this.#pendingScripts) {
+      scriptIds.add(script.scriptId);
+      sourceURLs.add(script.sourceURL);
+    }
+    this.#pendingScripts.clear();
+    this.#pendingScriptsUpdate = null;
+
     // scriptId has precedence, but if the frame does not have one, check the URL.
     const matches = (raw: RawFrame): boolean =>
-        raw.scriptId === script.scriptId || (!raw.scriptId && raw.url === script.sourceURL);
+        raw.scriptId ? scriptIds.has(raw.scriptId) : raw.url !== undefined && sourceURLs.has(raw.url);
     const evalMatches = (raw: RawFrame|undefined): boolean =>
         Boolean(raw) && (matches(raw as RawFrame) || evalMatches(raw?.parsedFrameInfo?.evalOrigin));
 
-    const release = await this.#mutex.acquire();
     try {
       // Walk the whole trie: the same script can appear multiple times in a call stack.
       const affected: FrameNode[] = [];

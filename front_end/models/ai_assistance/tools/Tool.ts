@@ -34,6 +34,10 @@ export interface ToolApprovalResult {
 export interface ToolDataResult<DataType> {
   result: DataType;
   widgets?: AiWidget[];
+  /**
+   * Skills newly activated by this tool execution. Used to emit UI telemetry.
+   */
+  loadedSkills?: string[];
 }
 
 /**

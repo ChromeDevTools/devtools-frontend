@@ -249,6 +249,11 @@ export interface ContextChangeResponse {
   description: string;
   context: ConversationContext<unknown>;
   widgets?: AiWidget[];
+  /**
+   * The name of the tool that triggered this context change. Used by the panel
+   * to emit UI telemetry.
+   */
+  toolName?: string;
 }
 
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {}
@@ -285,6 +290,11 @@ export interface ActionResponse extends ToolCallEvent {
    * output of tools annotated with `REDACT_FROM_HISTORY`.
    */
   toolName?: string;
+  /**
+   * Skills newly loaded by a `learnSkills` call. Used by the panel to emit
+   * `ai-v2-learn-skill` visual logging events.
+   */
+  loadedSkills?: string[];
 }
 
 /**
@@ -1219,6 +1229,7 @@ export abstract class AiAgent<T> {
             description: result.description,
             context: result.context,
             widgets: result.widgets,
+            toolName: functionCall.name,
           };
           return {type: 'contextChanged'};
         }
@@ -1226,8 +1237,12 @@ export abstract class AiAgent<T> {
         functionResponses.push({
           functionResponse: {
             name: functionCall.name,
-            // Widgets are not sent back to the LLM
-            response: {...result, widgets: undefined},
+            // Widgets and UI telemetry metadata are not sent back to the LLM.
+            response: {
+              ...result,
+              widgets: undefined,
+              ...('loadedSkills' in result ? {loadedSkills: undefined} : {}),
+            },
           },
         });
       }
@@ -1280,6 +1295,7 @@ export abstract class AiAgent<T> {
           ): AsyncGenerator<FunctionCallResponseData, {
         result: unknown,
         widgets?: AiWidget[],
+        loadedSkills?: string[],
       }|{error: string}|{context: ConversationContext<unknown>, description: string, widgets?: AiWidget[]}> {
     const callId = crypto.randomUUID();
     const call = this.#functionDeclarations.get(name);
@@ -1432,6 +1448,7 @@ export abstract class AiAgent<T> {
         widgets: result.widgets,
         canceled: false,
         toolName: name,
+        ...(result.loadedSkills ? {loadedSkills: result.loadedSkills} : {}),
       };
     }
 

@@ -296,8 +296,15 @@ export class AiAgent2 extends AiAgent<unknown> {
         };
       },
       handler: async args => {
+        const previouslyLoaded = new Set(this.#activeSkills);
         const result = await this.learnSkill(args.skills);
-        return {result};
+        // The LLM may hallucinate skill names. Filter out any skills that were not newly activated.
+        const loadedSkills =
+            [...new Set(args.skills)].filter(skill => !previouslyLoaded.has(skill) && this.#activeSkills.has(skill));
+        return {
+          result,
+          loadedSkills: loadedSkills.length > 0 ? loadedSkills : undefined,
+        };
       },
     });
   }

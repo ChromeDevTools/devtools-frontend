@@ -751,6 +751,7 @@ describe('AiConversation', () => {
       code: 'code',
       output: 'output',
       canceled: false,
+      loadedSkills: ['styling'],
       widgets: [{
         name: 'COMPUTED_STYLES',
         data: {
@@ -784,9 +785,10 @@ describe('AiConversation', () => {
     assert.strictEqual(serialized.history[1].type, AiAssistance.AiAgent.ResponseType.CONTEXT);
     assert.isUndefined((serialized.history[1] as AiAssistance.AiAgent.ContextResponse).widgets);
 
-    // ActionResponse should have widgets removed
+    // ActionResponse should have widgets and loadedSkills removed.
     assert.strictEqual(serialized.history[2].type, AiAssistance.AiAgent.ResponseType.ACTION);
     assert.isUndefined((serialized.history[2] as AiAssistance.AiAgent.ActionResponse).widgets);
+    assert.isUndefined((serialized.history[2] as AiAssistance.AiAgent.ActionResponse).loadedSkills);
   });
 
   it('redacts action outputs of tools annotated with REDACT_FROM_HISTORY', () => {

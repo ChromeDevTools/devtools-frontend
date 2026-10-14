@@ -235,6 +235,8 @@ describe('AiAgent2', () => {
     const actionResponse = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
     assert.isDefined(actionResponse);
     assert.propertyVal(actionResponse, 'code', 'learnSkills(\'styling\')');
+    assert.propertyVal(actionResponse, 'toolName', 'learnSkills');
+    assert.deepEqual(actionResponse.loadedSkills, ['styling']);
 
     // Verify AIDA response contains skill instructions
     sinon.assert.callCount(aidaClient.doConversation, 2);
@@ -244,9 +246,35 @@ describe('AiAgent2', () => {
     const functionResponse = functionResponsePart.functionResponse;
     assert.propertyVal(functionResponse, 'name', 'learnSkills');
 
-    const responseObj = functionResponse.response as {result: string};
+    const responseObj = functionResponse.response as {result: string, loadedSkills?: string[]};
     assert.property(responseObj, 'result');
     assert.isTrue(responseObj.result.includes(SKILLS.styling.instructions));
+    assert.isUndefined(responseObj.loadedSkills);
+  });
+
+  it('populates loadedSkills only for newly loaded valid skills in learnSkills ACTION response', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{
+          name: 'learnSkills',
+          args: {skills: ['styling', 'network', 'network', 'non-existent-skill']},
+        }],
+      }],
+      [{
+        explanation: 'Skills processed.',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient, originLock: defaultOriginLock});
+    await agent.learnSkill(['styling']);
+
+    const responses = await Array.fromAsync(agent.run('question', {selected: null}));
+
+    const actionResponse = responses.find(
+        (r): r is AiAssistance.AiAgent.ActionResponse => r.type === AiAssistance.AiAgent.ResponseType.ACTION,
+    );
+    assert.isDefined(actionResponse);
+    assert.deepEqual(actionResponse.loadedSkills, ['network']);
   });
 
   it('injects skills manifest containing only unloaded skills', async () => {
@@ -934,6 +962,7 @@ describe('AiAgent2', () => {
     sinon.assert.calledOnce(runLighthouseStub);
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
+    assert.strictEqual(contextChange.toolName, 'runLighthouse');
     assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
     assert.strictEqual(contextChange.context.getItem(), mockReport);
     assert.isUndefined(contextChange.widgets);
@@ -1077,6 +1106,7 @@ describe('AiAgent2', () => {
     assert.strictEqual(actionResponses[0].code, 'learnSkills(\'lighthouse\')');
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
+    assert.strictEqual(contextChange.toolName, 'runLighthouse');
     assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
     assert.strictEqual(contextChange.context.getItem(), mockReport);
     assert.isUndefined(contextChange.widgets);
@@ -1121,6 +1151,7 @@ describe('AiAgent2', () => {
     assert.isTrue(agent.activeSkills.has('lighthouse'));
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
+    assert.strictEqual(contextChange.toolName, 'runLighthouse');
     assert.instanceOf(contextChange.context, AiAssistance.LighthouseContext.LighthouseContext);
     assert.strictEqual(contextChange.context.getItem(), mockReport);
     assert.isUndefined(contextChange.widgets);

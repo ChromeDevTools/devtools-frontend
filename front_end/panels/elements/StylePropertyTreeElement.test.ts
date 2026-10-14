@@ -560,23 +560,13 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       hide(true);
     }
 
-    // `checkSplicing` also checks the property text that is spliced together from the edits that the renderers record,
-    // which is meant to replace the text read back from the DOM. That only works for values that don't contain anything
-    // that edits the value without recording it, so it is enabled for values as their renderers record their edits.
-    function renderEditable(name: string, value: string, {checkSplicing = false} = {}) {
+    function renderEditable(name: string, value: string) {
       const treeElement = getTreeElement(name, value);
-      // The property text is only available while the tree element is attached to the document.
-      renderElementIntoDOM(treeElement.listItemElement, {allowMultipleChildren: true});
       treeElement.updateTitle();
       const {valueElement} = treeElement;
       assert.exists(valueElement);
-      // The text of the value depends on its layout.
-      renderElementIntoDOM(valueElement, {allowMultipleChildren: true});
       const check = (message: string, expected: string): void => {
         assert.strictEqual(treeElement.renderedPropertyText(), expected, message);
-        if (checkSplicing) {
-          assert.strictEqual(treeElement.editedPropertyTextForTest(), expected, `${message} (edited property text)`);
-        }
       };
       check('initial property text', `${name}: ${value}`);
 
@@ -629,7 +619,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       ];
       const text = () => `--x: ${parts.join(' ')}`;
       // The colors and the bezier editor are the only renderers that edit this value.
-      const {valueElement, edit, commit} = renderEditable('--x', parts.join(' '), {checkSplicing: true});
+      const {valueElement, edit, commit} = renderEditable('--x', parts.join(' '));
       await Promise.all(colorSchemes.returnValues);
 
       const swatches = valueElement.querySelectorAll('devtools-color-swatch');
@@ -705,7 +695,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const parts = ['10px 11px hsl(120deg, 50%, 25%)', '1px var(--y-color)'];
       const text = () => `box-shadow: ${parts.join(', ')}`;
       // The shadow renderer puts the text of the value together from the shadow editor and the renderers of the parts.
-      const {valueElement, edit, commit} = renderEditable('box-shadow', parts.join(', '), {checkSplicing: true});
+      const {valueElement, edit, commit} = renderEditable('box-shadow', parts.join(', '));
       const [first, second] = valueElement.querySelectorAll('css-shadow-swatch');
       assert.exists(first);
       assert.exists(second);
@@ -753,7 +743,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const transform = () => `rotate(${parts[0]}) skew(${parts[1]})`;
       const text = () => `transform: ${transform()}`;
       // The angles are the only renderers that edit this value.
-      const {valueElement, check, edit, commit} = renderEditable('transform', transform(), {checkSplicing: true});
+      const {valueElement, check, edit, commit} = renderEditable('transform', transform());
       const [first, second] = valueElement.querySelectorAll('devtools-css-angle');
       assert.exists(first);
       assert.exists(second);
@@ -789,7 +779,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const gradient = () => `linear-gradient(${parts.join(', ')})`;
       const text = () => `background: ${gradient()}`;
       // The angle and the colors are the only renderers that edit this value.
-      const {valueElement, check, edit, commit} = renderEditable('background', gradient(), {checkSplicing: true});
+      const {valueElement, check, edit, commit} = renderEditable('background', gradient());
       const angle = valueElement.querySelector('devtools-css-angle');
       assert.exists(angle);
       const angleSwatch = angle.querySelector('devtools-css-angle-swatch');
@@ -823,12 +813,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
     it('applies the edits of the position area editor', async () => {
       // The position area editor is the only renderer that edits this value.
-      const {treeElement, valueElement, edit, commit} =
-          renderEditable('position-area', 'bottom right', {checkSplicing: true});
+      const {treeElement, valueElement, edit, commit} = renderEditable('position-area', 'bottom right');
       const section = treeElement.section();
       assert.exists(section);
-      // The editor adds properties to the section, whose text is only available while it is attached to the document.
-      renderElementIntoDOM(section.element, {allowMultipleChildren: true});
       const icon = valueElement.querySelector('devtools-icon.position-area-swatch-icon');
       assert.exists(icon);
       showPopover.resetHistory();
@@ -1290,7 +1277,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
       renderElementIntoDOM(stylePropertyTreeElement.valueElement, {allowMultipleChildren: true});
-      assert.strictEqual(stylePropertyTreeElement.renderedPropertyText(), 'color: var(--blue, )');
+      assert.strictEqual(stylePropertyTreeElement.renderedPropertyText(), 'color: var(--blue,)');
     });
   });
 

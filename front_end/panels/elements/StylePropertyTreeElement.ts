@@ -2658,19 +2658,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return matches;
   }
 
+  // The text of the property, including the edits that renderers recorded for its value, e.g. when the user picks a
+  // color.
   renderedPropertyText(): string {
-    if (!this.#isConnected()) {
-      return '';
-    }
-    if (!this.nameElement || !this.valueElement) {
-      return '';
-    }
-    return this.nameElement.innerText + ': ' + this.valueElement.innerText;
-  }
-
-  // Like `renderedPropertyText`, but built from the changes that renderers recorded instead of read back from the DOM.
-  // Tests compare the two while the renderers are being migrated. This replaces `renderedPropertyText` afterwards.
-  editedPropertyTextForTest(): string {
     return `${this.name}: ${this.#edits?.valueText() ?? this.property.value}`;
   }
 
@@ -4011,9 +4001,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   styleTextAppliedForTest(): void {
   }
 
-  // If the item isn't connected to the DOM, then reading its innerText will
-  // also include any invisible text (e.g. sources, styles), so we don't want
-  // to do that.
+  // Changes to an item that isn't connected to the DOM are not applied to the style.
   #isConnected(): boolean {
     return this.listItemElement.isConnected;
   }

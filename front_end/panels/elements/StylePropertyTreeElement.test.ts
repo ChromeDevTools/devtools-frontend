@@ -15,8 +15,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createTarget, describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled, spyCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
@@ -27,6 +27,7 @@ import {
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {Icon} from '../../ui/kit/kit.js';
+import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -527,6 +528,334 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     assert.deepEqual(stylePropertyTreeElement.renderedPropertyText(), `color: ${expectedColorString}`);
 
     sinon.assert.alwaysCalledWith(applyStyleTextStub, `color: ${expectedColorString}`, false);
+  });
+
+  describe('edits through the renderers', () => {
+    // These tests change a property the way a user does: through the swatches and the editors they open. After every
+    // edit they check the property text of the tree element, which is what gets applied to the style. Applying the style
+    // is stubbed out, so nothing re-renders in between and the edits accumulate on a single tree element.
+    //
+    // The color picker looks up the shortcut of the eye dropper.
+    setupActionRegistry();
+
+    let applyStyleText:
+        SinonStub<Parameters<Elements.StylePropertyTreeElement.StylePropertyTreeElement['applyStyleText']>,
+                  Promise<void>>;
+    let showPopover: SinonStub<Parameters<InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper['show']>, void>;
+
+    beforeEach(() => {
+      applyStyleText =
+          sinon.stub(Elements.StylePropertyTreeElement.StylePropertyTreeElement.prototype, 'applyStyleText').resolves();
+      // Captures the editors instead of showing them.
+      showPopover = sinon.stub(stylesSidebarPane.swatchPopoverHelper(), 'show');
+    });
+
+    // Closes the editor that was opened last, accepting its edits.
+    function hideLastPopover(): void {
+      const hide = showPopover.lastCall.args[2];
+      assert.exists(hide);
+      hide(true);
+    }
+
+    // `checkSplicing` also checks the property text that is spliced together from the edits that the renderers record,
+    // which is meant to replace the text read back from the DOM. That only works for values that don't contain anything
+    // that edits the value without recording it, so it is enabled for values as their renderers record their edits.
+    function renderEditable(name: string, value: string, {checkSplicing = false} = {}) {
+      const treeElement = getTreeElement(name, value);
+      // The property text is only available while the tree element is attached to the document.
+      renderElementIntoDOM(treeElement.listItemElement, {allowMultipleChildren: true});
+      treeElement.updateTitle();
+      const {valueElement} = treeElement;
+      assert.exists(valueElement);
+      // The text of the value depends on its layout.
+      renderElementIntoDOM(valueElement, {allowMultipleChildren: true});
+      const check = (message: string, expected: string): void => {
+        assert.strictEqual(treeElement.renderedPropertyText(), expected, message);
+        if (checkSplicing) {
+          assert.strictEqual(treeElement.editedPropertyTextForTest(), expected, `${message} (edited property text)`);
+        }
+      };
+      check('initial property text', `${name}: ${value}`);
+
+      return {
+        treeElement,
+        valueElement,
+        check,
+        // Runs `action`, which edits the property with one of the editors, and checks that the edit is previewed.
+        edit(message: string, expected: string, action: () => void): void {
+          applyStyleText.resetHistory();
+          action();
+          check(message, expected);
+          sinon.assert.alwaysCalledWith(applyStyleText, expected, false);
+        },
+        // Accepts the edits of an editor by closing it, which by default is the editor that was opened last.
+        commit(expected: string, close = hideLastPopover): void {
+          applyStyleText.resetHistory();
+          close();
+          sinon.assert.calledOnceWithExactly(applyStyleText, expected, true);
+        },
+      };
+    }
+
+    function openColorPicker(swatch: InlineEditor.ColorSwatch.ColorSwatch): ColorPicker.Spectrum.Spectrum {
+      showPopover.resetHistory();
+      const target = swatch.shadowRoot?.querySelector('.color-swatch-inner');
+      assert.exists(target);
+      dispatchClickEvent(target);
+      sinon.assert.calledOnce(showPopover);
+      const [spectrum] = showPopover.firstCall.args;
+      assert.instanceOf(spectrum, ColorPicker.Spectrum.Spectrum);
+      return spectrum;
+    }
+
+    function pickColor(swatch: InlineEditor.ColorSwatch.ColorSwatch, color: string): void {
+      openColorPicker(swatch).dispatchEventToListeners(ColorPicker.Spectrum.Events.COLOR_CHANGED, color);
+    }
+
+    it('applies the edits of all color swatches and the bezier editor of a custom property', async () => {
+      const colorSchemes =
+          sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+      // The parts of the value that the edits below replace, in order.
+      const parts = [
+        'red',
+        'var(--a)',
+        'light-dark(red, blue)',
+        'contrast-color(black)',
+        'color-mix(in srgb, red, blue)',
+        'cubic-bezier(0.1, 0.2, 0.3, 0.4)',
+      ];
+      const text = () => `--x: ${parts.join(' ')}`;
+      const {valueElement, edit, commit} = renderEditable('--x', parts.join(' '));
+      await Promise.all(colorSchemes.returnValues);
+
+      const swatches = valueElement.querySelectorAll('devtools-color-swatch');
+      assert.lengthOf(swatches, 9);
+      const [plain, variable, lightDark, light, dark, contrast, contrastArgument, mixFirst, mixSecond] = swatches;
+
+      parts[0] = '#00ff00';
+      edit('picking a plain color', text(), () => pickColor(plain, '#00ff00'));
+
+      const hsl = plain.color?.as(Common.Color.Format.HSL);
+      assert.exists(hsl);
+      parts[0] = 'hsl(120deg 100% 50%)';
+      edit('changing the format of a plain color', text(),
+           () => plain.dispatchEvent(new InlineEditor.ColorSwatch.ColorFormatChangedEvent(hsl)));
+
+      // The swatches of var() and the like represent the whole function, so picking a color replaces all of it.
+      parts[1] = '#0000ff';
+      edit('picking a color for var()', text(), () => pickColor(variable, '#0000ff'));
+
+      parts[2] = 'light-dark(#ff00ff, blue)';
+      edit('picking the light color of light-dark()', text(), () => pickColor(light, '#ff00ff'));
+      parts[2] = 'light-dark(#ff00ff, #00ffff)';
+      edit('picking the dark color of light-dark()', text(), () => pickColor(dark, '#00ffff'));
+      parts[2] = '#123456';
+      edit('picking a color for light-dark()', text(), () => pickColor(lightDark, '#123456'));
+
+      parts[3] = 'contrast-color(#654321)';
+      edit('picking the argument of contrast-color()', text(), () => pickColor(contrastArgument, '#654321'));
+      parts[3] = '#abcdef';
+      edit('picking a color for contrast-color()', text(), () => pickColor(contrast, '#abcdef'));
+
+      parts[4] = 'color-mix(in srgb, #111111, blue)';
+      edit('picking the first color of color-mix()', text(), () => pickColor(mixFirst, '#111111'));
+      parts[4] = 'color-mix(in srgb, #111111, #222222)';
+      edit('picking the second color of color-mix()', text(), () => pickColor(mixSecond, '#222222'));
+
+      const bezierIcon = valueElement.querySelector('.bezier-swatch-icon');
+      assert.exists(bezierIcon);
+      showPopover.resetHistory();
+      dispatchClickEvent(bezierIcon);
+      sinon.assert.calledOnce(showPopover);
+      const [bezierEditor] = showPopover.firstCall.args;
+      assert.instanceOf(bezierEditor, InlineEditor.BezierEditor.BezierEditor);
+      parts[5] = 'cubic-bezier(0.1, 0.7, 1, 0.1)';
+      edit('changing the bezier curve', text(),
+           () => bezierEditor.dispatchEventToListeners(InlineEditor.BezierEditor.Events.BEZIER_CHANGED,
+                                                       'cubic-bezier(0.1, 0.7, 1, 0.1)'));
+      commit(text());
+    });
+
+    function openShadowEditor(swatch: InlineEditor.Swatches.CSSShadowSwatch):
+        InlineEditor.CSSShadowEditor.CSSShadowEditor {
+      showPopover.resetHistory();
+      swatch.iconElement().click();
+      sinon.assert.calledOnce(showPopover);
+      const [editor] = showPopover.firstCall.args;
+      assert.instanceOf(editor, InlineEditor.CSSShadowEditor.CSSShadowEditor);
+      return editor;
+    }
+
+    function typeIntoShadowEditor(editor: InlineEditor.CSSShadowEditor.CSSShadowEditor, input: 'x'|'y'|'blur'|'spread',
+                                  value: string): void {
+      const textInputs = editor.contentElement.querySelectorAll<HTMLInputElement>('.shadow-editor-text-input');
+      const textInput = textInputs[['x', 'y', 'blur', 'spread'].indexOf(input)];
+      assert.exists(textInput);
+      textInput.value = value;
+      textInput.dispatchEvent(new InputEvent('input', {data: value}));
+    }
+
+    it('applies the edits of the shadow editor, the hue and the colors of a box-shadow', () => {
+      // The parts of the value that the edits below replace, in order.
+      const parts = ['10px 11px hsl(120deg, 50%, 25%)', '1px 2px red'];
+      const text = () => `box-shadow: ${parts.join(', ')}`;
+      const {valueElement, edit, commit} = renderEditable('box-shadow', parts.join(', '));
+      const [first, second] = valueElement.querySelectorAll('css-shadow-swatch');
+      assert.exists(first);
+      assert.exists(second);
+
+      const firstEditor = openShadowEditor(first);
+      parts[0] = 'inset 10px 11px hsl(120deg, 50%, 25%)';
+      edit('toggling inset', text(),
+           () => firstEditor.contentElement.querySelector<HTMLElement>('.shadow-editor-button-right')?.click());
+      parts[0] = 'inset 12px 11px hsl(120deg, 50%, 25%)';
+      edit('changing the x offset', text(), () => typeIntoShadowEditor(firstEditor, 'x', '12px'));
+      parts[0] = 'inset 12px 13px hsl(120deg, 50%, 25%)';
+      edit('changing the y offset', text(), () => typeIntoShadowEditor(firstEditor, 'y', '13px'));
+      parts[0] = 'inset 12px 13px 14px hsl(120deg, 50%, 25%)';
+      edit('adding a blur radius', text(), () => typeIntoShadowEditor(firstEditor, 'blur', '14px'));
+      parts[0] = 'inset 12px 13px 14px 15px hsl(120deg, 50%, 25%)';
+      edit('adding a spread radius', text(), () => typeIntoShadowEditor(firstEditor, 'spread', '15px'));
+      commit(text());
+
+      // The shadow editor renders the colors of its shadow anew with every change, which discards edits made to them
+      // before. In the app, opening the color picker closes the shadow editor, so the colors are only edited once the
+      // shadow editor is done with the shadow here as well. For that reason, the swatches are looked up late.
+      const angle = first.nextElementSibling?.querySelector('devtools-css-angle');
+      assert.exists(angle);
+      parts[0] = 'inset 12px 13px 14px 15px hsl(200deg, 50%, 25%)';
+      edit('changing the hue', text(),
+           () => angle.updateAngle({value: 200, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+
+      const secondEditor = openShadowEditor(second);
+      parts[1] = '1px 2px 3px red';
+      edit('adding a blur radius to the second shadow', text(),
+           () => typeIntoShadowEditor(secondEditor, 'blur', '3px'));
+      commit(text());
+
+      const color = second.nextElementSibling?.querySelector('devtools-color-swatch');
+      assert.exists(color);
+      parts[1] = '1px 2px 3px #ff8000';
+      edit('picking a color for the second shadow', text(), () => pickColor(color, '#ff8000'));
+      commit(text());
+    });
+
+    it('applies the edits of the angles of a transform', () => {
+      // The parts of the value that the edits below replace, in order.
+      const parts = ['45deg', '10deg'];
+      const transform = () => `rotate(${parts[0]}) skew(${parts[1]})`;
+      const text = () => `transform: ${transform()}`;
+      // The angles are the only renderers that edit this value.
+      const {valueElement, check, edit, commit} = renderEditable('transform', transform(), {checkSplicing: true});
+      const [first, second] = valueElement.querySelectorAll('devtools-css-angle');
+      assert.exists(first);
+      assert.exists(second);
+      const secondSwatch = second.querySelector('devtools-css-angle-swatch');
+      assert.exists(secondSwatch);
+
+      parts[0] = '180deg';
+      edit('changing the first angle', text(),
+           () => first.updateAngle({value: 180, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+      parts[1] = '90deg';
+      edit('changing the second angle', text(),
+           () => second.updateAngle({value: 90, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+
+      // Shift-clicking the swatch switches the angle to the next unit. Nothing is applied for that, the new unit becomes
+      // part of the property with the next edit.
+      parts[1] = '100grad';
+      dispatchClickEvent(secondSwatch, {shiftKey: true});
+      check('changing the unit of the second angle', text());
+
+      // The second angle is edited in the new unit from now on, whereas the first angle keeps its unit.
+      parts[1] = '200grad';
+      edit('changing the second angle in the new unit', text(),
+           () => second.updateAngle({value: 180, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+      parts[0] = '270deg';
+      edit('changing the first angle again', text(),
+           () => first.updateAngle({value: 270, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+      commit(text(), () => second.dispatchEvent(new InlineEditor.CSSAngle.PopoverToggledEvent(false)));
+    });
+
+    it('applies the edits of the angle and the colors of a gradient', () => {
+      // The parts of the value that the edits below replace, in order.
+      const parts = ['45deg', 'red', 'blue'];
+      const gradient = () => `linear-gradient(${parts.join(', ')})`;
+      const text = () => `background: ${gradient()}`;
+      const {treeElement, valueElement, edit, commit} = renderEditable('background', gradient());
+      const angle = valueElement.querySelector('devtools-css-angle');
+      assert.exists(angle);
+      const angleSwatch = angle.querySelector('devtools-css-angle-swatch');
+      assert.exists(angleSwatch);
+      const [first, second] = valueElement.querySelectorAll('devtools-color-swatch');
+      assert.exists(first);
+      assert.exists(second);
+
+      parts[0] = '90deg';
+      edit('changing the angle', text(),
+           () => angle.updateAngle({value: 90, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+
+      // Shift-clicking the swatch switches the angle to the next unit. Nothing is applied for that, the new unit becomes
+      // part of the property with the next edit.
+      parts[0] = '100grad';
+      dispatchClickEvent(angleSwatch, {shiftKey: true});
+      assert.strictEqual(treeElement.renderedPropertyText(), text(), 'changing the unit of the angle');
+
+      // The angle is edited in the new unit from now on.
+      parts[0] = '200grad';
+      edit('changing the angle in the new unit', text(),
+           () => angle.updateAngle({value: 180, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
+      commit(text(), () => angle.dispatchEvent(new InlineEditor.CSSAngle.PopoverToggledEvent(false)));
+
+      parts[1] = '#ff8000';
+      edit('picking the first color', text(), () => pickColor(first, '#ff8000'));
+      parts[2] = '#8000ff';
+      edit('picking the second color', text(), () => pickColor(second, '#8000ff'));
+      commit(text());
+    });
+
+    it('applies the edits of the position area editor', async () => {
+      const {treeElement, valueElement, edit, commit} = renderEditable('position-area', 'bottom right');
+      const section = treeElement.section();
+      assert.exists(section);
+      // The editor adds properties to the section, whose text is only available while it is attached to the document.
+      renderElementIntoDOM(section.element, {allowMultipleChildren: true});
+      const icon = valueElement.querySelector('devtools-icon.position-area-swatch-icon');
+      assert.exists(icon);
+      showPopover.resetHistory();
+      dispatchClickEvent(icon);
+      sinon.assert.calledOnce(showPopover);
+      const [editor] = showPopover.firstCall.args;
+      assert.instanceOf(editor, InlineEditor.PositionAreaEditor.PositionAreaEditor);
+
+      const selectArea = (area: string): void => {
+        const parsed = InlineEditor.PositionAreaEditor.parsePositionArea(area);
+        assert.exists(parsed);
+        editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, parsed);
+      };
+      edit('selecting an area', 'position-area: top left', () => selectArea('top left'));
+      edit('selecting another area', 'position-area: bottom center', () => selectArea('bottom center'));
+
+      // The editor also edits the alignment of the element. That is not part of position-area, but done with properties
+      // of their own, which get added to the same section.
+      applyStyleText.resetHistory();
+      editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED,
+                                      {propertyName: 'align-self', value: 'center'});
+      sinon.assert.calledOnceWithExactly(applyStyleText, 'align-self: center', false);
+      const [alignSelf] = section.propertiesTreeOutline.rootElement().children();
+      assert.instanceOf(alignSelf, Elements.StylePropertyTreeElement.StylePropertyTreeElement);
+      assert.strictEqual(alignSelf.property.name, 'align-self');
+      sinon.assert.calledOn(applyStyleText, alignSelf);
+      await applyStyleText.lastCall.returnValue;
+
+      applyStyleText.resetHistory();
+      editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED,
+                                      {propertyName: 'align-self', value: undefined});
+      sinon.assert.calledOnceWithExactly(applyStyleText, '', false);
+      sinon.assert.calledOn(applyStyleText, alignSelf);
+      await applyStyleText.lastCall.returnValue;
+
+      commit('position-area: bottom center');
+    });
   });
 
   describe('Context menu', () => {

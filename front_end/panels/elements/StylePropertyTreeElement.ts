@@ -45,6 +45,7 @@ import {
   StringRenderer,
   type TracingContext,
   URLRenderer,
+  ValueUpdateTracking,
 } from './PropertyRenderer.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import type {ActiveAiSuggestionProperty, StylePropertiesSection} from './StylePropertiesSection.js';
@@ -1214,10 +1215,12 @@ export class AngleRenderer extends AngleRendererBase {
     });
     cssAngle.addEventListener('valuechanged', async ({data}) => {
       valueElement.textContent = data.value;
+      context.recordEdit(match, data.value);
       await treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
     });
     cssAngle.addEventListener('unitchanged', ({data}) => {
       valueElement.textContent = data.value;
+      context.recordEdit(match, data.value);
     });
 
     context.addControl('angle', cssAngle);
@@ -2356,6 +2359,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private contextForTest!: Context|undefined;
   #gridNames: Set<string>|undefined = undefined;
   #tooltipKeyCounts = new Map<string, number>();
+  // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
+  // parsed.
+  #edits: ValueUpdateTracking|undefined;
 
   #lazyRender?: boolean;
 
@@ -2528,6 +2534,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return '';
     }
     return this.nameElement.innerText + ': ' + this.valueElement.innerText;
+  }
+
+  // Like `renderedPropertyText`, but built from the changes that renderers recorded instead of read back from the DOM.
+  // Tests compare the two while the renderers are being migrated. This replaces `renderedPropertyText` afterwards.
+  editedPropertyTextForTest(): string {
+    return `${this.name}: ${this.#edits?.valueText() ?? this.property.value}`;
   }
 
   private updateState(): void {
@@ -2786,7 +2798,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
-    this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers).valueElement;
+    this.#edits = matchedResult ? new ValueUpdateTracking(matchedResult.ast) : undefined;
+    this.valueElement =
+        Renderer.renderValueElement(this.property, matchedResult, renderers, undefined, undefined, this.#edits)
+            .valueElement;
     this.nameElement = Renderer.renderNameElement(this.name);
 
     if (!this.treeOutline) {

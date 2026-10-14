@@ -341,7 +341,7 @@ class ComputedTextChunk {
  * original and computed slices as required.
  **/
 export class ComputedText {
-  readonly #chunks: ComputedTextChunk[] = [];
+  #chunks: ComputedTextChunk[] = [];
   readonly text: string;
   readonly #topLevelValueCounts = new Map<string, number>();
 
@@ -356,12 +356,21 @@ export class ComputedText {
   }
 
   get chunkCount(): number {
+    this.#sortIfNecessary();
     return this.#chunks.length;
   }
 
   #sortIfNecessary(): void {
     if (this.#sorted) {
       return;
+    }
+    // A match that was pushed more than once is superseded by its last push.
+    const lastPush = new Map<Match, ComputedTextChunk>();
+    for (const chunk of this.#chunks) {
+      lastPush.set(chunk.match, chunk);
+    }
+    if (lastPush.size < this.#chunks.length) {
+      this.#chunks = this.#chunks.filter(chunk => lastPush.get(chunk.match) === chunk);
     }
     // Sort intervals by offset, with longer intervals first if the offset is identical.
     this.#chunks.sort((a, b) => {
@@ -383,7 +392,7 @@ export class ComputedText {
   }
 
   // Add another substitutable match. The match will either be appended to the list of existing matches or it will
-  // be substituted for the last match(es) if it encompasses them.
+  // be substituted for the last match(es) if it encompasses them. Pushing a match again supersedes its earlier push.
   push(match: Match, offset: number): void {
     function hasComputedText(match: Match): match is MatchWithComputedText {
       return Boolean(match.computedText);

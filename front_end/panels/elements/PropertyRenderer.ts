@@ -491,6 +491,57 @@ export class ValueUpdateTracking {
   }
 }
 
+export class ValueEditEvent extends CustomEvent<string> {
+  static readonly eventName = 'valueedit';
+
+  constructor(value: string) {
+    super(ValueEditEvent.eventName, {bubbles: true, detail: value});
+  }
+}
+
+interface EditableContentViewInput {
+  editedValue: string|null;
+  onValueEdit: (event: ValueEditEvent) => void;
+}
+
+type EditableContentView = (input: EditableContentViewInput, output: undefined, target: HTMLElement|DocumentFragment) =>
+    void;
+
+const EDITABLE_CONTENT_DEFAULT_VIEW: EditableContentView = (input, _output, target) => {
+  render(html`<slot name="icon" @valueedit=${input.onValueEdit}></slot>${input.editedValue ?? html`<slot></slot>`}`,
+         target);
+};
+
+/**
+ * Hosts a value part that can be edited through an inline swatch or icon.
+ *
+ * The swatch or icon goes into the `icon` slot, and the initial rendered AST nodes go into the default slot. When the
+ * swatch or icon dispatches a `ValueEditEvent`, the default slot is replaced with the new text while the `icon` slot
+ * stays in place.
+ **/
+export class EditableContent extends UI.Widget.Widget<DocumentFragment> {
+  #editedValue: string|null = null;
+  readonly #view: EditableContentView;
+
+  constructor(element?: HTMLElement, view: EditableContentView = EDITABLE_CONTENT_DEFAULT_VIEW) {
+    super(element, {useShadowDom: 'pure'});
+    this.element.classList.remove('vbox', 'flex-auto', 'widget');
+    this.#view = view;
+    // Render synchronously so that `<slot name="icon">` is in the DOM before synchronous callers dispatch edits.
+    this.performUpdate();
+  }
+
+  #onValueEdit = (event: ValueEditEvent): void => {
+    event.stopPropagation();
+    this.#editedValue = event.detail;
+    this.performUpdate();
+  };
+
+  override performUpdate(): void {
+    this.#view({editedValue: this.#editedValue, onValueEdit: this.#onValueEdit}, undefined, this.contentElement);
+  }
+}
+
 export class RenderingContext {
   constructor(readonly ast: SDK.CSSPropertyParser.SyntaxTree, readonly property: SDK.CSSProperty.CSSProperty|null,
               readonly renderers: Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,

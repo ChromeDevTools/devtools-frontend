@@ -38,6 +38,7 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {
   BinOpRenderer,
   type CSSControlMap,
+  EditableContent,
   type MatchRenderer,
   Renderer,
   rendererBase,
@@ -46,6 +47,7 @@ import {
   StringRenderer,
   type TracingContext,
   URLRenderer,
+  ValueEditEvent,
   ValueUpdateTracking,
 } from './PropertyRenderer.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
@@ -1201,22 +1203,21 @@ export class AngleRenderer extends AngleRendererBase {
     this.#treeElement = treeElement;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): Lit.LitTemplate {
     const angleText = match.text;
     if (!this.#treeElement?.editable()) {
-      return [document.createTextNode(angleText)];
+      return html`${angleText}`;
     }
+    // TODO(crbug.com/407750607): Render <devtools-css-angle> as a Lit template once cssControls is replaced.
     const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
+    cssAngle.slot = 'icon';
     cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('css-angle')}`);
-    const valueElement = document.createElement('span');
-    valueElement.textContent = angleText;
     cssAngle.data = {
       angleText,
       containingPane:
           (this.#treeElement.stylesContainer().element.enclosingNodeOrSelfWithClass('style-panes-wrapper') as
            HTMLElement),
     };
-    cssAngle.append(valueElement);
 
     const treeElement = this.#treeElement;
     cssAngle.addEventListener('popovertoggled', ({data}) => {
@@ -1240,17 +1241,17 @@ export class AngleRenderer extends AngleRendererBase {
       }
     });
     cssAngle.addEventListener('valuechanged', async ({data}) => {
-      valueElement.textContent = data.value;
+      cssAngle.dispatchEvent(new ValueEditEvent(data.value));
       context.recordEdit(match, data.value);
       await treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
     });
     cssAngle.addEventListener('unitchanged', ({data}) => {
-      valueElement.textContent = data.value;
+      cssAngle.dispatchEvent(new ValueEditEvent(data.value));
       context.recordEdit(match, data.value);
     });
 
     context.addControl('angle', cssAngle);
-    return [cssAngle];
+    return html`<devtools-widget ${widget(EditableContent)}>${cssAngle}${angleText}</devtools-widget>`;
   }
 }
 

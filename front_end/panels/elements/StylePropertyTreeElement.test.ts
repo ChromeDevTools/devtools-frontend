@@ -2272,7 +2272,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
       assert.exists(swatch);
       swatch.data = {
-        angleText: swatch.innerText ?? '',
+        angleText: '45deg',
         containingPane: document.createElement('div'),
       };
 

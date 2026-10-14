@@ -91,6 +91,21 @@ describe('DockController', () => {
     assert.strictEqual(dockController.dockSide(), LegacyUI.DockController.DockState.BOTTOM);
   });
 
+  it('resets an invalid last dock state without changing the current dock state', async () => {
+    await deinitializeGlobalVars();
+    await registerDockingSettings('left');
+    const lastDockStateSetting = Common.Settings.Settings.instance().createSetting('last-dock-state', 'bottom');
+    lastDockStateSetting.set('not-a-dock-state');
+
+    const dockController = LegacyUI.DockController.DockController.instance({forceNew: true, canDock: true});
+    dockController.initialize();
+
+    assert.strictEqual(dockController.dockSide(), LegacyUI.DockController.DockState.LEFT);
+    assert.strictEqual(lastDockStateSetting.get(), LegacyUI.DockController.DockState.BOTTOM);
+    dockController.toggleDockSide();
+    assert.strictEqual(dockController.dockSide(), LegacyUI.DockController.DockState.BOTTOM);
+  });
+
   describe('AFTER_DOCK_SIDE_CHANGED', () => {
     const {DockState, Events} = LegacyUI.DockController;
 

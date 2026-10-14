@@ -157,4 +157,75 @@ describe('CommentThread', () => {
        assert.strictEqual(thread2.status, 'SENT_TO_AGENT');
        assert.strictEqual(thread2.index, 2);
      });
+
+  it('editComment() replaces the developer comment text of an ACTIVE thread and dispatches CHANGED', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    thread.save('Original');
+    let changeCount = 0;
+    thread.addEventListener(CommentManager.CommentThread.Events.CHANGED, () => {
+      changeCount++;
+    });
+
+    thread.editComment('  Edited  ');
+
+    assert.strictEqual(thread.status, 'ACTIVE');
+    assert.lengthOf(thread.comments, 1);
+    assert.strictEqual(thread.comments[0].author, 'DEVELOPER');
+    assert.strictEqual(thread.comments[0].text, 'Edited');
+    assert.strictEqual(changeCount, 1);
+  });
+
+  it('editComment() is a no-op for a SENT_TO_AGENT thread', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    thread.sendToAgent('Sent');
+    let changeCount = 0;
+    thread.addEventListener(CommentManager.CommentThread.Events.CHANGED, () => {
+      changeCount++;
+    });
+
+    thread.editComment('Edited');
+
+    assert.strictEqual(thread.comments[0].text, 'Sent');
+    assert.strictEqual(changeCount, 0);
+  });
+
+  it('editComment() does not dispatch CHANGED when the text is unchanged', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    thread.save('Original');
+    let changeCount = 0;
+    thread.addEventListener(CommentManager.CommentThread.Events.CHANGED, () => {
+      changeCount++;
+    });
+
+    thread.editComment('Original');
+    thread.editComment('  Original  ');
+
+    assert.strictEqual(thread.comments[0].text, 'Original');
+    assert.strictEqual(changeCount, 0);
+  });
+
+  it('editComment() ignores empty or whitespace-only text', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    thread.save('Original');
+    let changeCount = 0;
+    thread.addEventListener(CommentManager.CommentThread.Events.CHANGED, () => {
+      changeCount++;
+    });
+
+    thread.editComment('');
+    thread.editComment('   ');
+
+    assert.strictEqual(thread.status, 'ACTIVE');
+    assert.lengthOf(thread.comments, 1);
+    assert.strictEqual(thread.comments[0].text, 'Original');
+    assert.strictEqual(changeCount, 0);
+  });
 });

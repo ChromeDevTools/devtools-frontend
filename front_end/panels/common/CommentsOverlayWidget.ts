@@ -31,6 +31,7 @@ export interface ViewInput {
   onAddComment: (text: string) => void;
   onDeleteQueuedComment: () => void;
   onQueueComment: (text: string) => void;
+  onSaveEdit: (text: string) => void;
 }
 
 export type View = (
@@ -113,6 +114,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
                 onAddComment: input.onAddComment,
                 onDeleteQueuedComment: input.onDeleteQueuedComment,
                 onQueueComment: input.onQueueComment,
+                onSaveEdit: input.onSaveEdit,
               })}
             </div>
           `;
@@ -374,6 +376,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
           onAddComment: () => {},
           onDeleteQueuedComment: () => {},
           onQueueComment: () => {},
+          onSaveEdit: () => {},
         },
         undefined,
         this.contentElement,
@@ -417,6 +420,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         }
         activeThread.save(text);
         this.#scheduleAutoClose(activeThread.id);
+      },
+      onSaveEdit: (text: string) => {
+        if (!activeThread) {
+          return;
+        }
+        activeThread.editComment(text);
       },
     };
     this.#view(viewInput, undefined, this.contentElement);

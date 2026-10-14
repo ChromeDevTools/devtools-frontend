@@ -207,8 +207,8 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
    */
   protected autoSelectFirstChildOnRefresh = true;
 
-  constructor(element?: HTMLElement) {
-    super(element);
+  constructor(element?: HTMLElement, options?: UI.Widget.WidgetOptions) {
+    super(element, options);
     this.#selectedEvents = null;
     this.element.classList.add('timeline-tree-view');
     this.registerRequiredCSS(timelineTreeViewStyles);

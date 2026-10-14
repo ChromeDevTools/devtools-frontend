@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -44,8 +43,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   #isInAIWidget = false;
 
   constructor(element?: HTMLElement) {
-    super(element);
-    this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);
+    super(element, {jslog: `${VisualLogging.pane('third-party-tree').track({hover: true})}`});
     this.init();
     this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.NEAREST);

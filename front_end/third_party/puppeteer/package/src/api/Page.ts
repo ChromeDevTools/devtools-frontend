@@ -28,7 +28,7 @@ import {
   timer,
   type Observable,
 } from '../../third_party/rxjs/rxjs.js';
-import type {HTTPRequest} from '../api/HTTPRequest.js';
+import type {HeadersInput, HTTPRequest} from '../api/HTTPRequest.js';
 import type {HTTPResponse} from '../api/HTTPResponse.js';
 import type {Accessibility} from '../cdp/Accessibility.js';
 import type {Coverage} from '../cdp/Coverage.js';
@@ -1775,10 +1775,12 @@ export abstract class Page extends EventEmitter<PageEvents> {
    *
    * :::
    *
-   * @param headers - An object containing additional HTTP headers to be sent
-   * with every request. All header values must be strings.
+   * @param headers - Additional HTTP headers to be sent with every request.
+   * Either a {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+   * instance or a record of additional HTTP headers. All header values must be
+   * strings.
    */
-  abstract setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
+  abstract setExtraHTTPHeaders(headers: HeadersInput): Promise<void>;
 
   /**
    * @param userAgent - Specific user agent to use in this page
@@ -2846,9 +2848,12 @@ export abstract class Page extends EventEmitter<PageEvents> {
     return await this.mainFrame()
       .isolatedRealm()
       .evaluate(() => {
+        // Frames are whole pixels, so round off any floating-point error
+        // (e.g. 800 * 1.15 = 919.99...) that would make ffmpeg's pad filter
+        // one pixel smaller than the frames.
         return [
-          window.visualViewport!.width * window.devicePixelRatio,
-          window.visualViewport!.height * window.devicePixelRatio,
+          Math.round(window.visualViewport!.width * window.devicePixelRatio),
+          Math.round(window.visualViewport!.height * window.devicePixelRatio),
           window.devicePixelRatio,
         ] as const;
       });

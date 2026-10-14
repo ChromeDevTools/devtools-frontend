@@ -3154,7 +3154,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.13.0';
+  const packageVersion = '25.14.0';
   // x-release-please-end
 
   /**
@@ -10076,6 +10076,43 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   })();
 
   /**
+   * Converts a Fetch API {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+   * instance into a plain record. Plain records are returned as-is.
+   *
+   * Header values provided by a `Headers` instance that repeat the same name
+   * (e.g., `set-cookie`) are collected into an array so that the information
+   * is not lost.
+   *
+   * @internal
+   */
+  function normalizeHeadersInput(headers) {
+    if (headers instanceof Headers) {
+      const result = {};
+      headers.forEach((value, key) => {
+        const existing = result[key];
+        if (existing === undefined) {
+          result[key] = value;
+        } else if (Array.isArray(existing)) {
+          existing.push(value);
+        } else {
+          result[key] = [existing, value];
+        }
+      });
+      return result;
+    }
+    return headers;
+  }
+  /**
+   * Converts header input into a plain record with string values.
+   *
+   * @internal
+   */
+  function headersInputToRecord(headers) {
+    return Object.fromEntries(Object.entries(normalizeHeadersInput(headers)).map(([key, value]) => {
+      return [key, Array.isArray(value) ? value.join(', ') : value];
+    }));
+  }
+  /**
    * The default cooperative request interception resolution priority
    *
    * @public
@@ -10307,10 +10344,20 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (!this.canBeIntercepted()) {
         return;
       }
+      const {
+        headers,
+        ...rest
+      } = overrides;
+      const normalizedOverrides = {
+        ...rest,
+        ...(headers && {
+          headers: headersInputToRecord(headers)
+        })
+      };
       if (priority === undefined) {
-        return await this._continue(overrides);
+        return await this._continue(normalizedOverrides);
       }
-      this.interception.requestOverrides = overrides;
+      this.interception.requestOverrides = normalizedOverrides;
       if (this.interception.resolutionState.priority === undefined || priority > this.interception.resolutionState.priority) {
         this.interception.resolutionState = {
           action: exports.InterceptResolutionAction.Continue,
@@ -10363,10 +10410,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (!this.canBeIntercepted()) {
         return;
       }
+      const normalizedResponse = {
+        ...response,
+        headers: response.headers instanceof Headers ? normalizeHeadersInput(response.headers) : response.headers
+      };
       if (priority === undefined) {
-        return await this._respond(response);
+        return await this._respond(normalizedResponse);
       }
-      this.interception.response = response;
+      this.interception.response = normalizedResponse;
       if (this.interception.resolutionState.priority === undefined || priority > this.interception.resolutionState.priority) {
         this.interception.resolutionState = {
           action: exports.InterceptResolutionAction.Respond,
@@ -12500,7 +12551,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           });
         }
         return await this.mainFrame().isolatedRealm().evaluate(() => {
-          return [window.visualViewport.width * window.devicePixelRatio, window.visualViewport.height * window.devicePixelRatio, window.devicePixelRatio];
+          // Frames are whole pixels, so round off any floating-point error
+          // (e.g. 800 * 1.15 = 919.99...) that would make ffmpeg's pad filter
+          // one pixel smaller than the frames.
+          return [Math.round(window.visualViewport.width * window.devicePixelRatio), Math.round(window.visualViewport.height * window.devicePixelRatio), window.devicePixelRatio];
         });
       } catch (e_1) {
         env_1.error = e_1;
@@ -18346,8 +18400,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       const responseHeaders = {};
       if (response.headers) {
-        for (const header of Object.keys(response.headers)) {
-          const value = response.headers[header];
+        for (const [header, value] of Object.entries(response.headers)) {
           responseHeaders[header.toLowerCase()] = Array.isArray(value) ? value.map(item => {
             return String(item);
           }) : String(value);
@@ -18865,7 +18918,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     async setExtraHTTPHeaders(headers) {
       const extraHTTPHeaders = {};
-      for (const [key, value] of Object.entries(headers)) {
+      for (const [key, value] of Object.entries(headersInputToRecord(headers))) {
         assert(isString(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
         extraHTTPHeaders[key.toLowerCase()] = value;
       }
@@ -18899,9 +18952,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           latency: 0
         });
       }
-      _classPrivateFieldGet(_emulatedNetworkConditions, this).upload = networkConditions ? networkConditions.upload : -1;
-      _classPrivateFieldGet(_emulatedNetworkConditions, this).download = networkConditions ? networkConditions.download : -1;
-      _classPrivateFieldGet(_emulatedNetworkConditions, this).latency = networkConditions ? networkConditions.latency : 0;
+      _classPrivateFieldGet(_emulatedNetworkConditions, this).upload = networkConditions?.upload ?? -1;
+      _classPrivateFieldGet(_emulatedNetworkConditions, this).download = networkConditions?.download ?? -1;
+      _classPrivateFieldGet(_emulatedNetworkConditions, this).latency = networkConditions?.latency ?? 0;
       _classPrivateFieldGet(_emulatedNetworkConditions, this).offline = networkConditions?.offline ?? false;
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyNetworkConditions).bind(this));
     }
@@ -18966,12 +19019,29 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (_classPrivateFieldGet(_emulatedNetworkConditions, this) === undefined) {
       return;
     }
+    if (client.connection()?.rejectEmulateNetworkConditionsCalls) {
+      throw new Error('Cannot reset network conditions: rule-based emulation is enabled.');
+    }
     try {
-      await client.send('Network.emulateNetworkConditions', {
+      // `Network.emulateNetworkConditions` is deprecated by Chromium in favor
+      // of `Network.emulateNetworkConditionsByRule`. Rules only shape the
+      // network traffic, so `Network.overrideNetworkState` is also sent to
+      // emulate the network state exposed to the page via `navigator.onLine`
+      // and `navigator.connection`.
+      await client.send('Network.overrideNetworkState', {
         offline: _classPrivateFieldGet(_emulatedNetworkConditions, this).offline,
         latency: _classPrivateFieldGet(_emulatedNetworkConditions, this).latency,
         uploadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).upload,
         downloadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).download
+      });
+      await client.send('Network.emulateNetworkConditionsByRule', {
+        matchedNetworkConditions: [{
+          urlPattern: '',
+          offline: _classPrivateFieldGet(_emulatedNetworkConditions, this).offline,
+          latency: _classPrivateFieldGet(_emulatedNetworkConditions, this).latency,
+          downloadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).download,
+          uploadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).upload
+        }]
       });
     } catch (error) {
       if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
@@ -25213,17 +25283,37 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return;
         }
         // Special case for service workers: being attached to service workers will
-        // prevent them from ever being destroyed. Therefore, we silently detach
-        // from service workers unless the connection was manually created via
-        // `page.worker()`. To determine this, we use
+        // prevent them from ever being destroyed. Therefore, when no
+        // blocklist/allowlist is configured, we silently detach from service
+        // workers unless the connection was manually created via `page.worker()`.
+        // To determine this, we use
         // `this.#connection.isAutoAttached(targetInfo.targetId)`. In the future, we
         // should determine if a target is auto-attached or not with the help of
         // CDP.
+        //
+        // When a blocklist/allowlist is configured, we stay attached to every
+        // service worker instead: network conditions are reset when the session
+        // that set them detaches, so staying attached is what keeps the rules
+        // enforced for requests the worker issues, including the ones it forwards
+        // on behalf of controlled pages. As a consequence, the browser never
+        // idle-terminates service workers while rules are configured.
         if (targetInfo.type === 'service_worker') {
-          if (!this.isUrlAllowed(targetInfo.url)) {
-            await Promise.all([_classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo), session.send('Runtime.runIfWaitingForDebugger')]).catch(error => {
+          if (_assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this)) {
+            // The rules are applied before the worker is resumed so that requests
+            // made during `install` are covered as well:
+            // #maybeSetupNetworkConditions dispatches its commands synchronously,
+            // so they are on the wire ahead of Runtime.runIfWaitingForDebugger.
+            // They are only acknowledged once the worker runs, though, so they
+            // are awaited after resuming it.
+            const networkConditionsSetUp = _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo);
+            await session.send('Runtime.runIfWaitingForDebugger').catch(error => {
               _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
             });
+            await networkConditionsSetUp;
+            if (!this.isUrlAllowed(targetInfo.url) || _classPrivateFieldGet(_ignoredTargets, this).has(targetInfo.targetId) || !_classPrivateFieldGet(_discoveredTargetsByTargetId, this).has(targetInfo.targetId)) {
+              return;
+            }
+            _assertClassBrand(_TargetManager_brand, this, _attachServiceWorkerTarget).call(this, targetInfo, session, parentSession);
             return;
           }
           await _classPrivateFieldGet(_silentDetach, this).call(this, session, parentSession);
@@ -25297,7 +25387,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * Helper to validate URL against blocklist patterns
        */
       _defineProperty(this, "isUrlAllowed", url => {
-        if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
+        if (!_assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this)) {
           return true;
         }
         // Always allow internal or setup pages
@@ -25319,9 +25409,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         return true;
       });
-      _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, async (session, targetInfo) => {
-        if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
-          return;
+      /**
+       * Issues the `Network.*` commands that enforce the blocklist/allowlist on
+       * `session`. The commands are sent synchronously (before this function
+       * returns), so callers can rely on them being dispatched ahead of any command
+       * they send afterwards. The returned promise settles once the commands are
+       * acknowledged; for worker targets that only happens once the worker is
+       * running, so it must not be awaited before `Runtime.runIfWaitingForDebugger`.
+       */
+      _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, (session, targetInfo) => {
+        if (!_assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this)) {
+          return Promise.resolve();
         }
         const matchedNetworkConditions = [];
         for (const item of _classPrivateFieldGet(_blocklist, this)) {
@@ -25360,7 +25458,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           offline: _classPrivateFieldGet(_blocklist, this).length > 0 ? true : undefined,
           matchedNetworkConditions
         }));
-        await Promise.all(promises).catch(error => {
+        return Promise.all(promises).catch(error => {
           _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
@@ -25444,6 +25542,31 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_attachmentSubscriptions, this).delete(session);
     }
   }
+  /**
+   * Registers a service worker session that is kept open (see the
+   * blocklist/allowlist handling in {@link TargetManager.#onAttachedToTarget})
+   * so that the session is visible to the manager's bookkeeping and
+   * `WorkerTarget.worker()` reuses it instead of opening a second one.
+   */
+  function _attachServiceWorkerTarget(targetInfo, session, parentSession) {
+    let target = _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId);
+    const isExistingTarget = target !== undefined;
+    if (!target) {
+      target = _classPrivateFieldGet(_targetFactory, this).call(this, targetInfo, session, parentSession instanceof CdpCDPSession ? parentSession : undefined);
+    }
+    _assertClassBrand(_TargetManager_brand, this, _setupAttachmentListeners).call(this, session);
+    if (isExistingTarget) {
+      session.setTarget(target);
+    } else {
+      target._initialize();
+      _classPrivateFieldGet(_attachedTargetsByTargetId, this).set(targetInfo.targetId, target);
+    }
+    _classPrivateFieldGet(_attachedTargetsBySessionId, this).set(session.id(), target);
+    _classPrivateFieldGet(_getParentTarget, this).call(this, parentSession)?._addChildTarget(target);
+    if (!isExistingTarget) {
+      this.emit("targetAvailable" /* TargetManagerEvent.TargetAvailable */, target);
+    }
+  }
   function _finishInitializationIfReady(targetId) {
     if (targetId !== undefined) {
       _classPrivateFieldGet(_targetsIdsForInit, this).delete(targetId);
@@ -25456,6 +25579,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (_classPrivateFieldGet(_targetsIdsForInit, this).size === 0) {
       _classPrivateFieldGet(_initializeDeferred, this).resolve();
     }
+  }
+  function _hasNetworkRules() {
+    return _classPrivateFieldGet(_blocklist, this).length > 0 || _classPrivateFieldGet(_allowlist, this).length > 0;
   }
   function _mapPatterns(rules) {
     const result = [];
@@ -28412,9 +28538,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '155.0.8059.39',
-    'chrome-headless-shell': '155.0.8059.39',
-    firefox: 'stable_157.0.1'
+    chrome: '155.0.8059.79',
+    'chrome-headless-shell': '155.0.8059.79',
+    firefox: 'stable_158.0'
   });
 
   /**
@@ -28589,6 +28715,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.getSourceUrlComment = getSourceUrlComment;
   exports.handleError = handleError;
   exports.headersArray = headersArray;
+  exports.headersInputToRecord = headersInputToRecord;
   exports.isDate = isDate;
   exports.isErrnoException = isErrnoException;
   exports.isErrorLike = isErrorLike;
@@ -28598,6 +28725,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.isString = isString;
   exports.isTargetClosedError = isTargetClosedError;
   exports.normalizeHeaderValue = normalizeHeaderValue;
+  exports.normalizeHeadersInput = normalizeHeadersInput;
   exports.pageBindingInitString = pageBindingInitString;
   exports.paperFormats = paperFormats;
   exports.parsePDFOptions = parsePDFOptions;

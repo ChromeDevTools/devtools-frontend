@@ -11,6 +11,7 @@ import type { CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { Extension } from '../api/Extension.js';
 import type { WaitForOptions } from '../api/Frame.js';
+import { type HeadersInput } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, HeapSnapshotOptions, MediaFeature, PageEvents, RecordOptions, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
@@ -124,7 +125,7 @@ export declare class BidiPage extends Page {
     /**
      * @internal
      */
-    setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
+    setExtraHTTPHeaders(headers: HeadersInput): Promise<void>;
     /**
      * @internal
      */

@@ -6,6 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
+import { type HeadersInput } from '../api/HTTPRequest.js';
 import type { Credentials, Page } from '../api/Page.js';
 import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
@@ -23,23 +24,28 @@ export interface NetworkConditions {
      */
     offline?: boolean;
     /**
-     * Download speed (bytes/s)
+     * Download speed (bytes/s). If not provided, download throttling is
+     * disabled and only the offline mode is emulated.
      */
-    download: number;
+    download?: number;
     /**
-     * Upload speed (bytes/s)
+     * Upload speed (bytes/s). If not provided, upload throttling is
+     * disabled and only the offline mode is emulated.
      */
-    upload: number;
+    upload?: number;
     /**
-     * Latency (ms)
+     * Latency (ms). If not provided, no latency is emulated.
      */
-    latency: number;
+    latency?: number;
 }
 /**
  * @public
  */
 export interface InternalNetworkConditions extends NetworkConditions {
     offline: boolean;
+    download: number;
+    upload: number;
+    latency: number;
 }
 /**
  * @internal
@@ -56,7 +62,7 @@ export declare class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     constructor(frameManager: FrameProvider, networkEnabled: boolean | undefined, logger: Logger);
     addClient(client: CDPSession): Promise<void>;
     authenticate(credentials: Credentials | null): Promise<void>;
-    setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
+    setExtraHTTPHeaders(headers: HeadersInput): Promise<void>;
     extraHTTPHeaders(): Record<string, string>;
     inFlightRequestsCount(): number;
     setOfflineMode(value: boolean): Promise<void>;

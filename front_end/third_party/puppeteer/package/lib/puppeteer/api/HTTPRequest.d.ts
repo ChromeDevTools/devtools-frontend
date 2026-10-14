@@ -12,6 +12,27 @@ import type { HTTPResponse } from './HTTPResponse.js';
 /**
  * @public
  */
+export type HeadersInput = Headers | Record<string, string>;
+/**
+ * Converts a Fetch API {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+ * instance into a plain record. Plain records are returned as-is.
+ *
+ * Header values provided by a `Headers` instance that repeat the same name
+ * (e.g., `set-cookie`) are collected into an array so that the information
+ * is not lost.
+ *
+ * @internal
+ */
+export declare function normalizeHeadersInput(headers: HeadersInput): Record<string, string | string[]>;
+/**
+ * Converts header input into a plain record with string values.
+ *
+ * @internal
+ */
+export declare function headersInputToRecord(headers: HeadersInput): Record<string, string>;
+/**
+ * @public
+ */
 export interface ContinueRequestOverrides {
     /**
      * If set, the request URL will change. This is not a redirect.
@@ -19,8 +40,19 @@ export interface ContinueRequestOverrides {
     url?: string;
     method?: string;
     postData?: string;
-    headers?: Record<string, string>;
+    /**
+     * Optional headers to set on the request. Either a
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+     * instance or a plain record of headers.
+     */
+    headers?: HeadersInput;
 }
+/**
+ * @internal
+ */
+export type ContinueRequestOverridesInternal = Omit<ContinueRequestOverrides, 'headers'> & {
+    headers?: Record<string, string>;
+};
 /**
  * @public
  */
@@ -36,17 +68,25 @@ export interface InterceptResolutionState {
 export interface ResponseForRequest {
     status: number;
     /**
-     * Optional response headers.
+     * Optional response headers. Either a
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+     * instance or a plain record.
      *
      * The record values will be converted to string following:
      * Arrays' values will be mapped to String
      * (Used when you need multiple headers with the same name).
      * Non-arrays will be converted to String.
      */
-    headers: Record<string, string | string[] | unknown>;
+    headers: Headers | Record<string, string | string[] | unknown>;
     contentType: string;
     body: string | Uint8Array;
 }
+/**
+ * @internal
+ */
+export type ResponseForRequestInternal = Omit<ResponseForRequest, 'headers'> & {
+    headers: Record<string, string | string[] | unknown>;
+};
 /**
  * Resource types for HTTPRequests as perceived by the rendering engine.
  *
@@ -124,8 +164,8 @@ export declare abstract class HTTPRequest {
         handled: boolean;
         handlers: Array<() => void | PromiseLike<any>>;
         resolutionState: InterceptResolutionState;
-        requestOverrides: ContinueRequestOverrides;
-        response: Partial<ResponseForRequest> | null;
+        requestOverrides: ContinueRequestOverridesInternal;
+        response: Partial<ResponseForRequestInternal> | null;
         abortReason: Protocol.Network.ErrorReason | null;
     };
     /**
@@ -188,11 +228,11 @@ export declare abstract class HTTPRequest {
     /**
      * @internal
      */
-    abstract _respond(response: Partial<ResponseForRequest>): Promise<void>;
+    abstract _respond(response: Partial<ResponseForRequestInternal>): Promise<void>;
     /**
      * @internal
      */
-    abstract _continue(overrides: ContinueRequestOverrides): Promise<void>;
+    abstract _continue(overrides: ContinueRequestOverridesInternal): Promise<void>;
     /**
      * Awaits pending interception handlers and then decides how to fulfill
      * the request interception.

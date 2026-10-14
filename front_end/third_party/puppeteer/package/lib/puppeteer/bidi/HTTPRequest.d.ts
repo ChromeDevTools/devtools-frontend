@@ -6,7 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
-import type { ContinueRequestOverrides, InterceptResolutionState, ResponseForRequest } from '../api/HTTPRequest.js';
+import type { ContinueRequestOverridesInternal, InterceptResolutionState, ResponseForRequestInternal } from '../api/HTTPRequest.js';
 import { HTTPRequest, type ResourceType } from '../api/HTTPRequest.js';
 import type { Logger } from '../common/Debug.js';
 import type { Request } from './core/Request.js';
@@ -39,9 +39,9 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     initiator(): Protocol.Network.Initiator | undefined;
     redirectChain(): BidiHTTPRequest[];
     frame(): BidiFrame;
-    _continue(overrides?: ContinueRequestOverrides): Promise<void>;
+    _continue(overrides?: ContinueRequestOverridesInternal): Promise<void>;
     _abort(): Promise<void>;
-    _respond(response: Partial<ResponseForRequest>, _priority?: number): Promise<void>;
+    _respond(response: Partial<ResponseForRequestInternal>, _priority?: number): Promise<void>;
     timing(): Bidi.Network.FetchTimingInfo;
     getResponseContent(): Promise<Uint8Array>;
 }

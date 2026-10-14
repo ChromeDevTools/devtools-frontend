@@ -6,7 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
-import { type ContinueRequestOverrides, HTTPRequest, type ResourceType, type ResponseForRequest } from '../api/HTTPRequest.js';
+import { type ContinueRequestOverridesInternal, HTTPRequest, type ResourceType, type ResponseForRequestInternal } from '../api/HTTPRequest.js';
 import { type Logger } from '../common/Debug.js';
 import type { CdpHTTPResponse } from './HTTPResponse.js';
 /**
@@ -65,8 +65,8 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     /**
      * @internal
      */
-    _continue(overrides?: ContinueRequestOverrides): Promise<void>;
-    _respond(response: Partial<ResponseForRequest>): Promise<void>;
+    _continue(overrides?: ContinueRequestOverridesInternal): Promise<void>;
+    _respond(response: Partial<ResponseForRequestInternal>): Promise<void>;
     _abort(errorReason: Protocol.Network.ErrorReason | null): Promise<void>;
 }
 //# sourceMappingURL=HTTPRequest.d.ts.map

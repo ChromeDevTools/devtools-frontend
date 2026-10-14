@@ -1459,6 +1459,11 @@ export declare interface ConnectOptions {
    * For complete network sandboxing, we recommend using
    * container/OS-level sandbox mechanism.
    *
+   * To enforce the patterns for requests made by service workers (including
+   * requests they forward on behalf of controlled pages), Puppeteer stays
+   * attached to every service worker while this option is set. As a
+   * consequence, the browser never idle-terminates service workers.
+   *
    * Cannot be used along with {@link ConnectOptions.allowlist}.
    *
    * @experimental
@@ -1497,6 +1502,11 @@ export declare interface ConnectOptions {
    * usage under Puppeteer control and not a complete network sandbox.
    * For complete network sandboxing, we recommend using
    * container/OS-level sandbox mechanism.
+   *
+   * To enforce the patterns for requests made by service workers (including
+   * requests they forward on behalf of controlled pages), Puppeteer stays
+   * attached to every service worker while this option is set. As a
+   * consequence, the browser never idle-terminates service workers.
    *
    * Cannot be used along with {@link ConnectOptions.blocklist}.
    *
@@ -1626,7 +1636,12 @@ export declare interface ContinueRequestOverrides {
   url?: string;
   method?: string;
   postData?: string;
-  headers?: Record<string, string>;
+  /**
+   * Optional headers to set on the request. Either a
+   * {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+   * instance or a plain record of headers.
+   */
+  headers?: HeadersInput;
 }
 
 /**
@@ -3912,6 +3927,11 @@ export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
 export declare type Handler<T = unknown> = (event: T) => void;
 
 /**
+ * @public
+ */
+export declare type HeadersInput = Headers | Record<string, string>;
+
+/**
  * Options for {@link Page.captureHeapSnapshot}.
  *
  * @public
@@ -4388,6 +4408,9 @@ export declare interface InterceptResolutionState {
  */
 export declare interface InternalNetworkConditions extends NetworkConditions {
   offline: boolean;
+  download: number;
+  upload: number;
+  latency: number;
 }
 
 /**
@@ -5954,17 +5977,19 @@ export declare interface NetworkConditions {
    */
   offline?: boolean;
   /**
-   * Download speed (bytes/s)
+   * Download speed (bytes/s). If not provided, download throttling is
+   * disabled and only the offline mode is emulated.
    */
-  download: number;
+  download?: number;
   /**
-   * Upload speed (bytes/s)
+   * Upload speed (bytes/s). If not provided, upload throttling is
+   * disabled and only the offline mode is emulated.
    */
-  upload: number;
+  upload?: number;
   /**
-   * Latency (ms)
+   * Latency (ms). If not provided, no latency is emulated.
    */
-  latency: number;
+  latency?: number;
 }
 
 /**
@@ -6811,10 +6836,12 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    *
    * :::
    *
-   * @param headers - An object containing additional HTTP headers to be sent
-   * with every request. All header values must be strings.
+   * @param headers - Additional HTTP headers to be sent with every request.
+   * Either a {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+   * instance or a record of additional HTTP headers. All header values must be
+   * strings.
    */
-  abstract setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
+  abstract setExtraHTTPHeaders(headers: HeadersInput): Promise<void>;
   /**
    * @param userAgent - Specific user agent to use in this page
    * @param userAgentData - Specific user agent client hint data to use in this
@@ -8617,6 +8644,7 @@ declare namespace Puppeteer_2 {
     FrameAddScriptTagOptions,
     FrameAddStyleTagOptions,
     FrameEvents,
+    HeadersInput,
     ContinueRequestOverrides,
     InterceptResolutionState,
     ResponseForRequest,
@@ -9214,14 +9242,16 @@ export declare type ResourceType = Lowercase<Protocol.Network.ResourceType>;
 export declare interface ResponseForRequest {
   status: number;
   /**
-   * Optional response headers.
+   * Optional response headers. Either a
+   * {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers | Headers}
+   * instance or a plain record.
    *
    * The record values will be converted to string following:
    * Arrays' values will be mapped to String
    * (Used when you need multiple headers with the same name).
    * Non-arrays will be converted to String.
    */
-  headers: Record<string, string | string[] | unknown>;
+  headers: Headers | Record<string, string | string[] | unknown>;
   contentType: string;
   body: string | Uint8Array;
 }

@@ -11,6 +11,7 @@ import { type CDPSession } from '../api/CDPSession.js';
 import type { DeviceRequestPrompt } from '../api/DeviceRequestPrompt.js';
 import type { Extension } from '../api/Extension.js';
 import type { Frame, WaitForOptions } from '../api/Frame.js';
+import type { HeadersInput } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import type { Credentials, HeapSnapshotOptions, RecordOptions, ReloadOptions } from '../api/Page.js';
@@ -86,7 +87,7 @@ export declare class CdpPage extends Page {
     }): Promise<void>;
     removeExposedFunction(name: string): Promise<void>;
     authenticate(credentials: Credentials | null): Promise<void>;
-    setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
+    setExtraHTTPHeaders(headers: HeadersInput): Promise<void>;
     setUserAgent(userAgentOrOptions: string | {
         userAgent?: string;
         userAgentMetadata?: Protocol.Emulation.UserAgentMetadata;

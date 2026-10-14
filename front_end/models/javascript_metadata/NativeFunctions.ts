@@ -7030,10 +7030,6 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["type"]]
   },
   {
-    name: "requestStorageAccessFor",
-    signatures: [["requestedOrigin"]]
-  },
-  {
     name: "createObjectURL",
     signatures: [["blob"]],
     receivers: ["StorageAccessHandle"]

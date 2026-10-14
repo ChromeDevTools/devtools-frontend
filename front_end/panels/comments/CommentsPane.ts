@@ -27,9 +27,13 @@ const UIStrings = {
    */
   clearComments: 'Clear all comments',
   /**
-   * @description Text displayed when there are no comments to show.
+   * @description Text displayed when there are no queued comments to show in the queued tab of the Comments panel.
    */
-  noComments: 'No active comments. Add comments on elements in DevTools to send to your AI coding agent.',
+  noQueuedComments: 'No queued comments. Add comments on elements in DevTools to send to your AI coding agent.',
+  /**
+   * @description Text displayed when there are no sent comments to show in the sent tab of the Comments panel.
+   */
+  noSentComments: 'No sent comments. Send comments to your AI coding agent to see them here.',
   /**
    * @description Tooltip and aria-label for deleting a comment thread.
    */
@@ -179,7 +183,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
 
       ${input.threads.length === 0 ? html`
         <div class="comments-empty-state">
-          <p>${i18nString(UIStrings.noComments)}</p>
+          <p>${isQueued ? i18nString(UIStrings.noQueuedComments) : i18nString(UIStrings.noSentComments)}</p>
         </div>
       ` : html`
         <ul class="comments-list" role="list">

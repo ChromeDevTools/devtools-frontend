@@ -242,6 +242,7 @@ export function uploadRunStarted(payload: RunStartedPayload): boolean {
   const jsonContent = {
     project: payload.project,
     run_id: payload.runId,
+    user: os.userInfo().username,
     model: payload.model,
     agent: payload.agent,
     start_time: payload.startTime,

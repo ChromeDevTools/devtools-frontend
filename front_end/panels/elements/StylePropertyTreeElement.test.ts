@@ -819,7 +819,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     });
 
     it('applies the edits of the position area editor', async () => {
-      const {treeElement, valueElement, edit, commit} = renderEditable('position-area', 'bottom right');
+      // The position area editor is the only renderer that edits this value.
+      const {treeElement, valueElement, edit, commit} =
+          renderEditable('position-area', 'bottom right', {checkSplicing: true});
       const section = treeElement.section();
       assert.exists(section);
       // The editor adds properties to the section, whose text is only available while it is attached to the document.

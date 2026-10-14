@@ -461,8 +461,10 @@ export class ValueUpdateTracking {
     const edit = this.#edits.get(match) ?? new ValueEdit(match, value);
     edit.value = value;
     this.#edits.set(match, edit);
+    // A match of the whole declaration stands for its value, which starts after the name of the property.
+    const offset = match.node.name === 'Declaration' ? this.#valueBegin : match.node.from - this.#declarationStart;
     // Pushing the edit again supersedes its earlier push, which is how the new value gets picked up.
-    this.#text.push(edit, match.node.from - this.#declarationStart);
+    this.#text.push(edit, offset);
   }
 
   // The text of the value with the recorded changes applied.

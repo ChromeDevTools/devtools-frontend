@@ -2130,6 +2130,8 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     editor: InlineEditor.PositionAreaEditor.PositionAreaEditor,
     treeElement: StylePropertyTreeElement,
     valueElement: HTMLElement,
+    match: SDK.CSSPropertyParserMatchers.PositionAreaMatch,
+    context: RenderingContext,
     key?: string,
   };
   readonly #treeElement: StylePropertyTreeElement|null;
@@ -2168,7 +2170,9 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
   override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch,
                   context: RenderingContext): Node[]|Lit.LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
-    if (!this.#treeElement?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(match.text)) {
+    // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
+    if (!this.#treeElement?.editable() ||
+        !InlineEditor.PositionAreaEditor.parsePositionArea(context.matchedResult.getComputedPropertyValueText())) {
       return children;
     }
 
@@ -2189,6 +2193,8 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         key !== undefined && PositionAreaRenderer.#active.key === key) {
       PositionAreaRenderer.#active.treeElement = treeElement;
       PositionAreaRenderer.#active.valueElement = valueElement;
+      PositionAreaRenderer.#active.match = match;
+      PositionAreaRenderer.#active.context = context;
       popoverHelper.setAnchorElement(button);
     }
     button.onclick = event => {
@@ -2198,7 +2204,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         return;
       }
       const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
-      const active = {editor, key, treeElement, valueElement};
+      const active = {editor, key, treeElement, valueElement, match, context};
       PositionAreaRenderer.#active = active;
       editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? '') ?? undefined;
 
@@ -2221,7 +2227,9 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       void updateEditorProperties();
       const onPositionAreaChanged =
           (changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.Area>): void => {
-            active.valueElement.textContent = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+            const area = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+            active.valueElement.textContent = area;
+            active.context.recordEdit(active.match, area);
             void active.treeElement.applyStyleText(active.treeElement.renderedPropertyText(), false);
           };
       const onPropertyChanged =

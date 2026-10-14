@@ -28,6 +28,7 @@ generate_css("css_files") {
     "serviceWorkerUpdateCycleView.css",
     "serviceWorkersView.css",
     "storageView.css",
+    "subAppsView.css",
     "webMCPView.css",
   ]
 }
@@ -69,6 +70,7 @@ devtools_ui_module("application") {
     "StorageBucketsTreeElement.ts",
     "StorageItemsToolbar.ts",
     "StorageView.ts",
+    "SubAppsView.ts",
     "TrustTokensTreeElement.ts",
     "WebMCPTreeElement.ts",
     "WebMCPView.ts",
@@ -199,6 +201,7 @@ devtools_ui_module("unittests") {
     "ServiceWorkersView.test.ts",
     "StorageBucketsTreeElement.test.ts",
     "StorageView.test.ts",
+    "SubAppsView.test.ts",
     "WebMCPView.test.ts",
     "preloading/PreloadingView.test.ts",
   ]

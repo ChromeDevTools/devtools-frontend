@@ -34,6 +34,7 @@ import * as ServiceWorkerUpdateCycleView from './ServiceWorkerUpdateCycleView.js
 import * as StorageBucketsTreeElement from './StorageBucketsTreeElement.js';
 import * as StorageItemsToolbar from './StorageItemsToolbar.js';
 import * as StorageView from './StorageView.js';
+import * as SubAppsView from './SubAppsView.js';
 import * as TrustTokensTreeElement from './TrustTokensTreeElement.js';
 import * as WebMCPTreeElement from './WebMCPTreeElement.js';
 import * as WebMCPView from './WebMCPView.js';
@@ -72,6 +73,7 @@ export {
   StorageBucketsTreeElement,
   StorageItemsToolbar,
   StorageView,
+  SubAppsView,
   TrustTokensTreeElement,
   WebMCPTreeElement,
   WebMCPView,

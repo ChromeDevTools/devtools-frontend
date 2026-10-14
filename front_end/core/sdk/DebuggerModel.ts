@@ -959,6 +959,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#disableAsyncStackTracesSetting.removeChangeListener(this.asyncStackTracesStateChanged, this);
     this.#breakpointsActiveSetting.removeChangeListener(this.breakpointsActiveChanged, this);
     this.#jsSourceMapsEnabledSetting.removeChangeListener(this.jsSourceMapsStateChanged, this);
+    // Drop all scripts and their source maps, so they don't outlive the target in case something
+    // still holds on to this model (e.g. a console message with "Preserve log" enabled).
+    this.reset();
   }
 
   override async suspendModel(): Promise<void> {

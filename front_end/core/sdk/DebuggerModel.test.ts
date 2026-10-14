@@ -623,6 +623,88 @@ describe('DebuggerModel', () => {
       sinon.assert.called(attachSourceMapSpy);
     });
   });
+
+  describe('dispose', () => {
+    const SCRIPT_URL = urlString`http://example.com/worker.js`;
+    const SOURCE_MAP_URL = `${SCRIPT_URL}.map`;
+    const SOURCE_MAP_LOAD_RESULT = {
+      success: true,
+      content: JSON.stringify({version: 3, file: 'worker.js', mappings: '', sources: ['worker.ts']}),
+      errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+    };
+
+    function createWorkerTarget(loadOverride: () => Promise<typeof SOURCE_MAP_LOAD_RESULT>): {
+      workerTarget: SDK.Target.Target,
+      debuggerModel: SDK.DebuggerModel.DebuggerModel,
+      script: SDK.Script.Script,
+    } {
+      const testUniverse = new TestUniverse({pageResourceLoaderOptions: {loadOverride}});
+      // Mirror production, where the bindings observe all debugger models and their source maps.
+      void testUniverse.debuggerWorkspaceBinding;
+
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Debugger.enable',
+                                   () => ({debuggerId: 'worker-debugger' as Protocol.Runtime.UniqueDebuggerId}));
+      const frameTarget = testUniverse.createTarget({connection});
+      const workerTarget = testUniverse.createTarget({type: SDK.Target.Type.Worker, parentTarget: frameTarget});
+      const debuggerModel = workerTarget.model(SDK.DebuggerModel.DebuggerModel);
+      assert.exists(debuggerModel);
+
+      connection.dispatchEvent('Debugger.scriptParsed', {
+        scriptId: SCRIPT_ID_ONE,
+        url: SCRIPT_URL,
+        startLine: 0,
+        startColumn: 0,
+        endLine: 1,
+        endColumn: 10,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+        sourceMapURL: SOURCE_MAP_URL,
+        hasSourceURL: false,
+        length: 10,
+      },
+                               workerTarget.sessionId);
+      const script = debuggerModel.scriptForId(SCRIPT_ID_ONE);
+      assert.exists(script);
+
+      return {workerTarget, debuggerModel, script};
+    }
+
+    it('drops scripts and detaches their source maps when the target is disposed', async () => {
+      const {workerTarget, debuggerModel, script} = createWorkerTarget(async () => SOURCE_MAP_LOAD_RESULT);
+      const sourceMapManager = debuggerModel.sourceMapManager();
+      const sourceMap = await sourceMapManager.sourceMapForClientPromise(script);
+      assert.exists(sourceMap);
+      assert.strictEqual(sourceMapManager.sourceMapForClient(script), sourceMap);
+      assert.deepEqual(debuggerModel.scripts(), [script]);
+
+      workerTarget.dispose('test');
+
+      assert.isEmpty(debuggerModel.scripts());
+      assert.isNull(debuggerModel.scriptForId(SCRIPT_ID_ONE));
+      assert.isEmpty(debuggerModel.scriptsForSourceURL(SCRIPT_URL));
+      assert.isUndefined(sourceMapManager.sourceMapForClient(script));
+      assert.isUndefined(sourceMapManager.clientForSourceMap(sourceMap));
+    });
+
+    it('does not attach source maps that finish loading after the target is disposed', async () => {
+      const {promise: loadPromise, resolve: resolveLoad} = Promise.withResolvers<typeof SOURCE_MAP_LOAD_RESULT>();
+      const {workerTarget, debuggerModel, script} = createWorkerTarget(() => loadPromise);
+      const sourceMapManager = debuggerModel.sourceMapManager();
+      const sourceMapAttached = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, sourceMapAttached);
+      const sourceMapPromise = sourceMapManager.sourceMapForClientPromise(script);
+
+      workerTarget.dispose('test');
+      resolveLoad(SOURCE_MAP_LOAD_RESULT);
+
+      // The load itself still completes, but the result must not be attached to the disposed script.
+      assert.exists(await sourceMapPromise);
+      sinon.assert.notCalled(sourceMapAttached);
+      assert.isUndefined(sourceMapManager.sourceMapForClient(script));
+    });
+  });
 });
 
 describe('DebuggerModel', () => {

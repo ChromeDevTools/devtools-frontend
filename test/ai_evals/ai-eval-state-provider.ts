@@ -36,6 +36,11 @@ import {createTempEvalDir, type Step, TrajectoryBuilder} from './report/trajecto
 
 export type AiAssistanceContext = NonNullable<AiAssistance.ExternalHandler.ExternalAIRequestOptions['context']>;
 
+// Eval target type used when a test's evalConfig does not set `type`.
+const DEFAULT_EVAL_TYPE = 'eval';
+// Agent name reported in run_started.json when a run contains eval tests of several types.
+const MIXED_TARGETS_AGENT = 'devtools-ai-evals';
+
 export interface AiEvalConfig {
   type?: string;
   label: string;
@@ -62,7 +67,7 @@ export class EvalTaskHandle {
   failureError?: string;
 
   constructor(config: AiEvalConfig, devToolsPage: DevToolsPage, logger: EvalLogger, isConfigured = true) {
-    this.type = config.type ?? 'eval';
+    this.type = config.type ?? DEFAULT_EVAL_TYPE;
     this.taskId = config.taskId;
     this.label = config.label;
     this.evals = [...(config.evals ?? [])];
@@ -108,11 +113,15 @@ export class AiEvalStateProvider extends StateProvider {
   #taskStatuses: TaskStatus[] = [];
   #taskToolCallCounts = new Map<string, number>();
   #resultStores: ResultStore[] = [];
+  // Target types of all registered eval tests. Suites are registered while the test files
+  // are loaded, i.e. before `startEvalRun` is called from the global setup.
+  #evalTypes = new Set<string>();
 
   override registerSuiteSettings(suite: Mocha.Suite, suiteSettings: AiEvalSuiteSettings): void {
     super.registerSuiteSettings(suite, suiteSettings);
     if (suiteSettings.evalConfig) {
       this.#suiteToEvalConfig.set(suite, suiteSettings.evalConfig);
+      this.#evalTypes.add(suiteSettings.evalConfig.type ?? DEFAULT_EVAL_TYPE);
     }
   }
 
@@ -124,11 +133,14 @@ export class AiEvalStateProvider extends StateProvider {
     this.#taskStatuses = [];
     this.#taskToolCallCounts = new Map();
     this.#resultStores = [];
+    const targets = [...this.#evalTypes];
+    const agent = targets.length === 1 ? `devtools-${targets[0]}` : MIXED_TARGETS_AGENT;
     this.#logger.append(`Evaluation run started for ${this.#runId} at ${this.#runStartTimestamp}`);
+    this.#logger.append(`Target: ${targets.join(', ')}, Agent: ${agent}`);
     uploadRunStarted({
       project: PROJECT_ID,
       runId: this.#runId,
-      agent: 'devtools-ai-evals',
+      agent,
       model: 'default',
       startTime: this.#runStartTimestamp,
       status: 'RUNNING',
@@ -202,7 +214,7 @@ export class AiEvalStateProvider extends StateProvider {
     handleTaskFailure({
       runId: this.#runId,
       taskId: evalConfig.taskId,
-      label: evalConfig.label,
+      target: evalConfig.type ?? DEFAULT_EVAL_TYPE,
       phase: 'Preparation',
       durationSeconds: Number(((performance.now() - startTime) / 1000).toFixed(2)),
       logger: this.#logger,
@@ -267,7 +279,7 @@ export class AiEvalStateProvider extends StateProvider {
           handleTaskFailure({
             runId: this.#runId,
             taskId: evalTask.taskId,
-            label: evalTask.label,
+            target: evalTask.type,
             phase: 'Execution',
             durationSeconds,
             logger: this.#logger,
@@ -296,6 +308,7 @@ export class AiEvalStateProvider extends StateProvider {
               runId: this.#runId,
               taskId: evalTask.taskId,
               label: evalTask.label,
+              target: evalTask.type,
               trajectory,
               outputDir: this.#tempOutputDir,
               durationSeconds,
@@ -313,7 +326,7 @@ export class AiEvalStateProvider extends StateProvider {
             handleTaskFailure({
               runId: this.#runId,
               taskId: evalTask.taskId,
-              label: evalTask.label,
+              target: evalTask.type,
               phase: 'Finalization',
               durationSeconds,
               logger: this.#logger,

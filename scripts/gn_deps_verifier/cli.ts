@@ -56,6 +56,7 @@ if (argv.all) {
     path.join(argv.root, 'front_end'),
     path.join(argv.root, 'mcp'),
     path.join(argv.root, 'inspector_overlay'),
+    path.join(argv.root, 'test'),
   ];
 }
 

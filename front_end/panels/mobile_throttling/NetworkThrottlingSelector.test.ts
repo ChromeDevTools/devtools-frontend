@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
 
@@ -174,6 +176,101 @@ describeWithEnvironment('createForGlobalConditions CrUX integration', () => {
     cruxManager.dispatchEventToListeners(CrUXManager.Events.FIELD_DATA_CHANGED, undefined);
 
     assert.isNull(select.recommendedConditions);
+  });
+});
+
+describeWithEnvironment('NetworkThrottlingSelect listeners', () => {
+  const {NetworkThrottlingSelect} = MobileThrottling.NetworkThrottlingSelector;
+  let multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager;
+  let cruxManager: CrUXManager.CrUXManager;
+  let getSelectedFieldMetricData: sinon.SinonStub;
+
+  beforeEach(() => {
+    multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
+    cruxManager = CrUXManager.CrUXManager.instance({forceNew: true});
+    getSelectedFieldMetricData = sinon.stub(cruxManager, 'getSelectedFieldMetricData').returns(undefined);
+  });
+
+  function listensToCustomConditions(select: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect):
+      boolean {
+    const {listeners} = Common.Settings.Settings.instance().eventTargetForTest;
+    return [...listeners?.get('custom-network-conditions') ?? []].some(({thisObject}) => thisObject === select);
+  }
+
+  function changeGlobalConditionsAndFieldData(): void {
+    multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Slow3GConditions);
+    getSelectedFieldMetricData.returns({percentiles: {p75: '150'}, histogram: []});
+    cruxManager.dispatchEventToListeners(CrUXManager.Events.FIELD_DATA_CHANGED, undefined);
+  }
+
+  it('only tracks the global conditions while shown', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const select = NetworkThrottlingSelect.createForGlobalConditions(container, 'Network throttling');
+    assert.isTrue(listensToCustomConditions(select));
+    assert.isTrue(cruxManager.hasEventListeners(CrUXManager.Events.FIELD_DATA_CHANGED));
+
+    select.detach();
+    assert.isFalse(listensToCustomConditions(select));
+    assert.isFalse(cruxManager.hasEventListeners(CrUXManager.Events.FIELD_DATA_CHANGED));
+    changeGlobalConditionsAndFieldData();
+    assert.strictEqual(select.currentConditions, SDK.NetworkManager.NoThrottlingConditions);
+    assert.isNull(select.recommendedConditions);
+
+    // The changes made while the select was hidden are picked up when it is shown again.
+    select.show(container);
+    assert.strictEqual(select.currentConditions, SDK.NetworkManager.Slow3GConditions);
+    assert.strictEqual(select.recommendedConditions, SDK.NetworkManager.Slow4GConditions);
+    multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Fast4GConditions);
+    assert.strictEqual(select.currentConditions, SDK.NetworkManager.Fast4GConditions);
+  });
+
+  it('stops tracking the global conditions when its element is removed', async () => {
+    // This is how the `widget()` directive instantiates the select, e.g. in the device toolbar.
+    const selectElement = document.createElement('select');
+    UI.Widget.registerWidgetConfig(selectElement,
+                                   UI.Widget.widgetConfig(NetworkThrottlingSelect, {bindToGlobalConditions: true}));
+    renderElementIntoDOM(selectElement);
+    const select = UI.Widget.Widget.get(selectElement);
+    assert.instanceOf(select, NetworkThrottlingSelect);
+    assert.isTrue(listensToCustomConditions(select));
+    assert.isTrue(cruxManager.hasEventListeners(CrUXManager.Events.FIELD_DATA_CHANGED));
+
+    selectElement.remove();
+    // The widget is detached asynchronously after its element was disconnected.
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isFalse(listensToCustomConditions(select));
+    assert.isFalse(cruxManager.hasEventListeners(CrUXManager.Events.FIELD_DATA_CHANGED));
+    changeGlobalConditionsAndFieldData();
+    assert.strictEqual(select.currentConditions, SDK.NetworkManager.NoThrottlingConditions);
+    assert.isNull(select.recommendedConditions);
+  });
+
+  it('only re-renders on custom conditions changes while shown', async () => {
+    const view = sinon.stub<Parameters<MobileThrottling.NetworkThrottlingSelector.ViewFunction>, void>();
+    const select =
+        new NetworkThrottlingSelect(document.createElement('select'), {}, Common.Settings.Settings.instance(), view);
+    renderElementIntoDOM(select);
+    await UI.Widget.Widget.allUpdatesComplete;
+    const customConditions: SDK.NetworkManager.Conditions = {
+      key: 'USER_CUSTOM_SETTING_1',
+      title: 'Custom conditions',
+      download: 1000,
+      upload: 1000,
+      latency: 100,
+    };
+
+    select.detach();
+    view.resetHistory();
+    SDK.NetworkManager.customUserNetworkConditionsSetting(Common.Settings.Settings.instance()).set([customConditions]);
+    await UI.Widget.Widget.allUpdatesComplete;
+    sinon.assert.notCalled(view);
+
+    renderElementIntoDOM(select);
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.deepEqual(view.lastCall.args[0].customConditionsGroup.items, [customConditions]);
   });
 });
 

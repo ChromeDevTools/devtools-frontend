@@ -187,6 +187,7 @@ devtools_ui_module("unittests") {
     "EventListenersWidget.test.ts",
     "ImagePreviewPopover.test.ts",
     "InspectElementModeController.test.ts",
+    "LayersWidget.test.ts",
     "LayoutPane.test.ts",
     "MetricsSidebarPane.test.ts",
     "PlatformFontsWidget.test.ts",

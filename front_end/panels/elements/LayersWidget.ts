@@ -95,7 +95,7 @@ export class LayersWidget extends UI.Widget.Widget {
   }
 
   override wasHidden(): void {
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
     this.#onDOMNodeChanged({data: null});
     super.wasHidden();
   }

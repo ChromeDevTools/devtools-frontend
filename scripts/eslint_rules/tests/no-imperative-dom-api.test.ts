@@ -1651,5 +1651,23 @@ function createDivWithVar(myVar) {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      name: 'reports TreeOutline and TreeElement instantiations',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const tree = new UI.TreeOutline.TreeOutline();
+    const shadowTree = new UI.TreeOutline.TreeOutlineInShadow();
+    const element = new UI.TreeOutline.TreeElement('Node');
+  }
+}`,
+      errors: [
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+        {messageId: 'preferTemplateLiterals'},
+      ],
+    },
   ],
 });

@@ -13,6 +13,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Elements from '../../models/elements/elements.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {createIcon, Icon} from '../../ui/kit/kit.js';
@@ -2436,6 +2437,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
   // parsed.
   #edits: ValueUpdateTracking|undefined;
+  // Stores the last committed property so incremental live previews and
+  // in-place mutations of `this.property` don't overwrite the baseline for change tracking.
+  #lastCommittedProperty: {name: string, value: string};
 
   #lazyRender?: boolean;
 
@@ -2456,6 +2460,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#parentSection = section;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
+    this.#lastCommittedProperty = {
+      name: property.name,
+      value: property.value,
+    };
     this.#lazyRender = !this.newProperty && stylesContainer.shouldRenderLazily();
     if (this.newProperty) {
       this.listItemElement.textContent = '';
@@ -4034,6 +4042,24 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const deleteProperty = majorChange && !styleText.length;
     if (!deleteProperty && updatedProperty) {
       this.property = updatedProperty;
+    }
+
+    // Only track committed edits (`majorChange` is true), skipping intermediate live previews and reverts.
+    if (majorChange) {
+      const newName = deleteProperty ? '' : this.property.name;
+      const newValue = deleteProperty ? '' : this.property.value;
+      Elements.StyleChanges.trackStylePropertyEdit(
+          this.#stylesContainer.changeTracker,
+          currentNode ?? this.#matchedStyles.node(),
+          {
+            ruleHeader: this.#parentSection.headerText(),
+            oldName: this.#lastCommittedProperty.name,
+            oldValue: this.#lastCommittedProperty.value,
+            newName,
+            newValue,
+          },
+      );
+      this.#lastCommittedProperty = {name: newName, value: newValue};
     }
 
     if (currentNode === this.node()) {

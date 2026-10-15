@@ -13,6 +13,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -40,6 +41,7 @@ const {html} = Lit;
 describeWithEnvironment('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
+  let changeTracker: SinonStubbedInstance<ChangeTracker.ChangeTracker.ChangeTracker>;
   let connection: MockCDPConnection;
   let mockVariableMap: Record<string, string|SDK.CSSProperty.CSSProperty>;
   let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -56,7 +58,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
   beforeEach(async () => {
     connection = new MockCDPConnection();
     computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
-    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
+    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
     mockVariableMap = {
       '--a': 'red',
       '--b': 'blue',
@@ -4253,6 +4256,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const style = stylePayload(cssText);
       const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       node.id = 1 as Protocol.DOM.NodeId;
+      node.backendNodeId.returns(1 as Protocol.DOM.BackendNodeId);
+      node.domModel.returns(liveCSSModel.domModel());
       node.nodeType.returns(Node.ELEMENT_NODE);
       const liveMatchedStyles = await getMatchedStylesWithStylesheet({
         cssModel: liveCSSModel,
@@ -4559,7 +4564,115 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       await SDK.DOMModel.DOMModelUndoStack.instance().undo();
       sinon.assert.calledOnce(undoStub);
     });
+
+    describe('Change tracking', () => {
+      beforeEach(() => {
+        sinon.stub(changeTracker, 'isTracking').get(() => true);
+      });
+
+      it('tracks adding a new property only when committed', async () => {
+        const section = await createLiveSection('font-size: 12px;', {inline: true});
+        const first = section.addNewBlankProperty(0);
+        first.startEditingName();
+        assert.exists(first.nameElement);
+        first.nameElement.textContent = 'margin-left';
+        pressKey(first.nameElement, {key: 'Enter'});
+
+        selectAllText(first.valueElement, '1px');
+        pressKey(first.valueElement, {key: 'ArrowUp'});
+        await waitFor(() => setStyleTextsStub.callCount === 1);
+        pressKey(first.valueElement, {key: 'ArrowUp'});
+        await waitFor(() => setStyleTextsStub.callCount === 2);
+
+        // Live previews should not be recorded in ChangeTracker.
+        sinon.assert.notCalled(changeTracker.trackChange);
+
+        // Commit the edit.
+        pressKey(first.valueElement, {key: 'Enter'});
+        await waitFor(() => isEditingName(treeElementAt(section, 1)));
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Added style property "margin-left: 3px" to rule "element.style"',
+            sinon.match.object,
+        );
+      });
+
+      it('tracks modifying an existing property value', async () => {
+        const section = await createLiveSection('color: red;');
+        const color = treeElementAt(section, 0);
+
+        color.startEditingValue();
+        assert.exists(color.valueElement);
+        color.valueElement.textContent = 'green';
+        await color.kickFreeFlowStyleEditForTest();
+        sinon.assert.notCalled(changeTracker.trackChange);
+
+        selectAllText(color.valueElement, 'blue');
+        pressKey(color.valueElement, {key: 'Enter'});
+        // Pressing enter will commit the edit and create a new blank property.
+        await waitFor(() => section.propertiesTreeOutline.rootElement().childCount() === 2);
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Changed style property "color" from "red" to "blue" in rule "div"',
+            sinon.match.object,
+        );
+      });
+
+      it('tracks renaming an existing property', async () => {
+        const section = await createLiveSection('color: red; margin: 1px;');
+        const color = treeElementAt(section, 0);
+
+        color.startEditingName();
+        setTextWithCaretAtEnd(color.nameElement, 'background-color');
+        typeCharacter(color.nameElement, ':');
+
+        await waitFor(() => isEditingValue(treeElementAt(section, 0)));
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Changed style property from "color: red" to "background-color: red" in rule "div"',
+            sinon.match.object,
+        );
+      });
+
+      it('tracks removing an existing property when its value is cleared', async () => {
+        const section = await createLiveSection('color: red; margin: 1px;');
+        const color = treeElementAt(section, 0);
+
+        color.startEditingValue();
+        assert.exists(color.valueElement);
+        color.valueElement.textContent = '';
+        pressKey(color.valueElement, {key: 'Enter'});
+
+        await waitFor(() => section.propertiesTreeOutline.rootElement().childCount() === 1);
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Removed style property "color: red" from rule "div"',
+            sinon.match.object,
+        );
+      });
+
+      it('does not track anything when a previewed edit is cancelled with Escape', async () => {
+        const section = await createLiveSection('color: blue;');
+        const color = treeElementAt(section, 0);
+
+        color.startEditingValue();
+        assert.exists(color.valueElement);
+        color.valueElement.textContent = 'red';
+        await color.kickFreeFlowStyleEditForTest();
+        assert.deepEqual(declarations(), ['color: red']);
+
+        pressKey(color.valueElement, {key: 'Escape'});
+        await waitFor(() => declarations()[0] === 'color: blue');
+
+        sinon.assert.notCalled(changeTracker.trackChange);
+      });
+    });
   });
+
   describe('PositionAreaRenderer', () => {
     it('sets the property as active before entering style editing mode when opening the position-area editor', () => {
       const stylePropertyTreeElement = getTreeElement('position-area', 'top left');

@@ -26,11 +26,12 @@ agentic_review: {
     ]
   }
   capability_groups: {
-    path_expression: [".*\\.test\\.ts", "test/.*\\.ts"]
+    path_expression: [".*\\.test\\.ts", "test/.*\\.ts", "front_end/testing/.*\\.ts"]
     review_capability_skills: [
       ".agents/skills/devtools-testing-guidance/SKILL.md",
       ".agents/skills/foundation-test-migration/SKILL.md",
-      ".agents/skills/fix-tests/SKILL.md"
+      ".agents/skills/fix-tests/SKILL.md",
+      ".agents/skills/review-tests/SKILL.md"
     ]
   }
 }

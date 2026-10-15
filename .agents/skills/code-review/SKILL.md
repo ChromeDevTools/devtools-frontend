@@ -36,6 +36,7 @@ Load the skill that matches what the diff touches, and apply its rules:
 | `UI.Widget`, lit-html views, components, CSS | `ui-widgets` |
 | Migration of legacy imperative DOM to widgets or Lit | `ui-eng-vision-orchestrator` (and its sub-skills) |
 | New or changed tests: choosing unit, API, or E2E | `devtools-testing-guidance` |
+| Reviewing tests (`*.test.ts`, `test/`, `front_end/testing/`) | `review-tests` |
 | Tests that use `describeWithEnvironment` or `describeWithMockConnection`, or foundation modules | `foundation-test-migration` |
 | Ported Chromium web tests (`web_tests/http/tests/devtools`) | `migrate-chromium-test` |
 | Flaky or disabled tests, or `it.skip` / `it.skipOnPlatforms` | `fix-tests` |

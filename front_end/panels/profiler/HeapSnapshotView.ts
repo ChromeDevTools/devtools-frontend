@@ -353,6 +353,9 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   currentSearchResultIndex = -1;
   currentSearch?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
   #registry: ProfileTypeRegistry;
+  // Profiles on which `updateControls` listens for title changes. Other
+  // profiles can outlive this view, so `dispose()` removes the listeners.
+  readonly #profilesWithTitleListener = new Set<ProfileHeader>();
 
   get currentQuery(): string|undefined {
     return this.currentSearch?.query;
@@ -530,6 +533,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
 
     for (const existingProfile of this.profiles()) {
       existingProfile.addEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
+      this.#profilesWithTitleListener.add(existingProfile);
     }
   }
 
@@ -1189,11 +1193,13 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.updateControls();
     const profile = event.data;
     profile.addEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
+    this.#profilesWithTitleListener.add(profile);
   }
 
   onProfileHeaderRemoved(event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
     const profile = event.data;
     profile.removeEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
+    this.#profilesWithTitleListener.delete(profile);
 
     if (this.profile === profile) {
       this.detach();
@@ -1220,6 +1226,10 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     if (this.trackingOverviewGrid) {
       this.trackingOverviewGrid.removeEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
     }
+    for (const profile of this.#profilesWithTitleListener) {
+      profile.removeEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
+    }
+    this.#profilesWithTitleListener.clear();
   }
 }
 

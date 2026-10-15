@@ -409,17 +409,39 @@ export class HeapProfileView extends UI.View.SimpleView implements UI.Searchable
   }
 
   #setupTimelineOverview(): void {
-    if (this.profileType.hasTemporaryView()) {
+    // Only the profile that is being recorded receives stats updates. Profiles
+    // loaded from a file are also marked as being recorded while they load.
+    if (this.profileType.hasTemporaryView() && !this.profileHeader.fromFile() &&
+        this.profileType.profileBeingRecorded() === this.profileHeader) {
       this.timelineOverview.addEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
       this.timelineOverview.start();
 
       this.profileType.addEventListener(SamplingHeapProfileType.Events.STATS_UPDATE, this.onStatsUpdate, this);
-      void this.profileType.once(ProfileEvents.PROFILE_COMPLETE).then(() => {
-        this.profileType.removeEventListener(SamplingHeapProfileType.Events.STATS_UPDATE, this.onStatsUpdate, this);
-        this.timelineOverview.stop();
-        this.timelineOverview.updateGrid();
-      });
+      this.profileType.addEventListener(ProfileEvents.PROFILE_COMPLETE, this.#onProfileComplete, this);
+      this.profileType.addEventListener(ProfileEvents.REMOVE_PROFILE_HEADER, this.#onProfileRemoved, this);
     }
+  }
+
+  #onProfileComplete({data: profile}: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
+    if (profile !== this.profileHeader) {
+      return;
+    }
+    this.#stopTimelineTracking();
+    this.timelineOverview.updateGrid();
+  }
+
+  #onProfileRemoved({data: profile}: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
+    // A profile that is removed while it is being recorded never completes.
+    if (profile === this.profileHeader) {
+      this.#stopTimelineTracking();
+    }
+  }
+
+  #stopTimelineTracking(): void {
+    this.profileType.removeEventListener(SamplingHeapProfileType.Events.STATS_UPDATE, this.onStatsUpdate, this);
+    this.profileType.removeEventListener(ProfileEvents.PROFILE_COMPLETE, this.#onProfileComplete, this);
+    this.profileType.removeEventListener(ProfileEvents.REMOVE_PROFILE_HEADER, this.#onProfileRemoved, this);
+    this.timelineOverview.stop();
   }
 
   override async toolbarItems(): Promise<TemplateResult> {

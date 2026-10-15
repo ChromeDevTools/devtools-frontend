@@ -3,13 +3,14 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import {html, render} from '../../ui/lit/lit.js';
 
 import * as Profiler from './profiler.js';
@@ -253,5 +254,83 @@ describeWithEnvironment('HeapProfileView', () => {
     const anonymousChildrenHeavy = anonymousNodeHeavy!.children as Profiler.ProfileDataGrid.ProfileEntry[];
     const pageFunctionNodeHeavy = anonymousChildrenHeavy.find(node => node.functionName === 'pageFunction');
     assert.isDefined(pageFunctionNodeHeavy);
+  });
+
+  describe('with the sampling heap profiler timeline', () => {
+    const {HeapProfileView, SamplingHeapProfileHeader, SamplingHeapProfileType} = Profiler.HeapProfileView;
+    const {ProfileEvents} = Profiler.ProfileHeader;
+
+    function createProfileType(): Profiler.HeapProfileView.SamplingHeapProfileType {
+      Common.Settings.Settings.instance().createSetting('record-sampling-heap-profiler-timeline', false).set(true);
+      return new SamplingHeapProfileType();
+    }
+
+    function startRecording(profileType: Profiler.HeapProfileView.SamplingHeapProfileType):
+        Profiler.HeapProfileView.SamplingHeapProfileHeader {
+      const profile = new SamplingHeapProfileHeader(null, profileType);
+      profileType.setProfileBeingRecorded(profile);
+      profileType.addProfile(profile);
+      return profile;
+    }
+
+    function createView(profile: Profiler.HeapProfileView.SamplingHeapProfileHeader):
+        Profiler.HeapProfileView.HeapProfileView {
+      return new HeapProfileView(profile, createViewFunctionStub(HeapProfileView));
+    }
+
+    function assertNoTimelineListeners(profileType: Profiler.HeapProfileView.SamplingHeapProfileType): void {
+      assert.isFalse(profileType.hasEventListeners(SamplingHeapProfileType.Events.STATS_UPDATE));
+      assert.isFalse(profileType.hasEventListeners(ProfileEvents.PROFILE_COMPLETE));
+      assert.isFalse(profileType.hasEventListeners(ProfileEvents.REMOVE_PROFILE_HEADER));
+    }
+
+    it('does not track heap stats for profiles that are not being recorded', () => {
+      const profileType = createProfileType();
+      const recordedProfile = new SamplingHeapProfileHeader(null, profileType);
+      profileType.addProfile(recordedProfile);
+      // Profiles loaded from a file are marked as being recorded while they load.
+      const loadedProfile = new SamplingHeapProfileHeader(null, profileType);
+      loadedProfile.setFromFile();
+      profileType.setProfileBeingRecorded(loadedProfile);
+      profileType.addProfile(loadedProfile);
+
+      const views = [createView(recordedProfile), createView(loadedProfile)];
+
+      assertNoTimelineListeners(profileType);
+      for (const view of views) {
+        assert.isNotTrue(view.timelineOverview.running);
+      }
+    });
+
+    it('tracks heap stats for the profile being recorded until the recording completes', () => {
+      const profileType = createProfileType();
+      const profile = startRecording(profileType);
+      const view = createView(profile);
+      const setSelectionRange = sinon.stub(view, 'setSelectionRange');
+
+      profileType.dispatchEventToListeners(SamplingHeapProfileType.Events.STATS_UPDATE, null);
+      assert.lengthOf(view.timestamps, 1);
+      assert.isTrue(view.timelineOverview.running);
+
+      profileType.setProfileBeingRecorded(null);
+      profileType.dispatchEventToListeners(ProfileEvents.PROFILE_COMPLETE, profile);
+
+      assertNoTimelineListeners(profileType);
+      assert.isFalse(view.timelineOverview.running);
+      // The completed profile is shown for the range selected in the overview.
+      sinon.assert.calledOnce(setSelectionRange);
+    });
+
+    it('stops tracking heap stats when the profile is removed during recording', () => {
+      const profileType = createProfileType();
+      const profile = startRecording(profileType);
+      const view = createView(profile);
+      assert.isTrue(view.timelineOverview.running);
+
+      profileType.removeProfile(profile);
+
+      assertNoTimelineListeners(profileType);
+      assert.isFalse(view.timelineOverview.running);
+    });
   });
 });

@@ -540,7 +540,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   createOverview(): void {
     const profileType = this.profile.profileType();
     this.trackingOverviewGrid = new HeapTimelineOverview();
-    this.trackingOverviewGrid.addEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
+    this.trackingOverviewGrid.addEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged, this);
     if (!this.profile.fromFile() && profileType.profileBeingRecorded() === this.profile) {
       (profileType as TrackingHeapSnapshotProfileType)
           .addEventListener(TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE, this.onHeapStatsUpdate, this);
@@ -1224,7 +1224,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     this.onStopTracking();
     if (this.trackingOverviewGrid) {
-      this.trackingOverviewGrid.removeEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
+      this.trackingOverviewGrid.removeEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged, this);
     }
     for (const profile of this.#profilesWithTitleListener) {
       profile.removeEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);

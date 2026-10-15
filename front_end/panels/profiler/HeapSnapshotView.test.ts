@@ -10,7 +10,8 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Profiler from './profiler.js';
 
 describeWithEnvironment('HeapSnapshotView', () => {
-  const {HeapProfileHeader, HeapSnapshotProfileType, HeapSnapshotView} = Profiler.HeapSnapshotView;
+  const {HeapProfileHeader, HeapSnapshotProfileType, HeapSnapshotView, TrackingHeapSnapshotProfileType} =
+      Profiler.HeapSnapshotView;
 
   function createView(profile: Profiler.HeapSnapshotView.HeapProfileHeader):
       Profiler.HeapSnapshotView.HeapSnapshotView {
@@ -47,5 +48,20 @@ describeWithEnvironment('HeapSnapshotView', () => {
     for (const otherProfile of otherProfiles) {
       assert.isFalse(otherProfile.hasEventListeners(Profiler.ProfileHeader.Events.PROFILE_TITLE_CHANGED));
     }
+  });
+
+  it('stops listening to its heap timeline overview when its profile is removed', () => {
+    const profileType = new TrackingHeapSnapshotProfileType();
+    const profile = new HeapProfileHeader(null, profileType, 'Snapshot 1');
+    profileType.addProfile(profile);
+    const view = createView(profile);
+
+    const overview = view.trackingOverviewGrid;
+    assert.exists(overview);
+    assert.isTrue(overview.hasEventListeners(Profiler.HeapTimelineOverview.Events.IDS_RANGE_CHANGED));
+
+    profileType.removeProfile(profile);
+
+    assert.isFalse(overview.hasEventListeners(Profiler.HeapTimelineOverview.Events.IDS_RANGE_CHANGED));
   });
 });

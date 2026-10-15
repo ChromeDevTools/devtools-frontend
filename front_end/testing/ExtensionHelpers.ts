@@ -65,7 +65,6 @@ export function setupDevtoolsExtensionHooks(extension: Partial<Host.InspectorFro
     const chrome: Partial<Chrome.DevTools.Chrome> = {};
     (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
     context.chrome = chrome;
-    sinon.restore();
   }
 
   beforeEach(async () => {

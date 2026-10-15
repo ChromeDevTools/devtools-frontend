@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, describe, it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
@@ -20,10 +20,6 @@ describe('ServiceWorkerUpdateCycleView', () => {
   setupLocaleHooks();
   let versionId = 0;
   const registrationId = 'fake-sw-id' as Protocol.ServiceWorker.RegistrationID;
-
-  afterEach(() => {
-    sinon.restore();
-  });
 
   it('calculates update cycle ranges', () => {
     const payload: Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: '', isDeleted: false};

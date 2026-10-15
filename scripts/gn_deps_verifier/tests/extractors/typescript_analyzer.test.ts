@@ -19,7 +19,6 @@ const FIXTURES_BUILD_GN = path.join(FIXTURES_DIR, 'BUILD.gn');
 describe('typescript_analyzer', () => {
   afterEach(() => {
     TypeScriptAnalyzer.clearCacheForTesting();
-    sinon.restore();
   });
 
   describe('getMappedTarget', () => {

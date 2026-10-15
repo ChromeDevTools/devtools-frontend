@@ -288,7 +288,6 @@ describe('CD4ABridge', () => {
     });
 
     afterEach(() => {
-      sinon.restore();
       Common.Revealer.RevealerRegistry.removeInstance();
     });
 

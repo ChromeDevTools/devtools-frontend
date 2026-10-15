@@ -96,7 +96,6 @@ describeWithEnvironment('AdsView', () => {
     // this timeout is tracked by TrackAsyncOperations. If we don't advance the clock,
     // the test runner will fail, complaining about a dangling setTimeout promise.
     clock.tick(1500);
-    sinon.restore();
     globalThis.ResizeObserver = originalResizeObserver;
   });
 

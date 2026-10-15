@@ -125,7 +125,6 @@ describe('TimelineFlameChartView', function() {
 
     afterEach(() => {
       document.body.style.overflow = '';
-      sinon.restore();
     });
     beforeEach(() => {
       // We persist collapsed/expanded states across sessions, but we want to

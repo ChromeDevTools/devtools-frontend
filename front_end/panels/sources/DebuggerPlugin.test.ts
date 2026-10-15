@@ -50,7 +50,6 @@ describe('Inline variable view scope helpers', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 

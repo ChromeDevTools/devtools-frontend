@@ -41,7 +41,6 @@ describe('NameResolver', () => {
 
   afterEach(() => {
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
-    sinon.restore();
   });
 
   /** Resolves the function name at the start of `callFrame`'s local scope, i.e. where V8 reports a function's location. */

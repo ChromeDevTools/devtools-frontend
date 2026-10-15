@@ -4240,7 +4240,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
         void panel.handleAction('freestyler.elements-floating-button');
 
         // Start in wide mode
-        sinon.stub(panel.contentElement, 'offsetWidth').get(() => 1000);
+        const offsetWidthStub = sinon.stub(panel.contentElement, 'offsetWidth').get(() => 1000);
         panel.onResize();
         let nextInput = await view.nextInput;
         assertChatViewState(nextInput);
@@ -4266,7 +4266,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
         );
 
         // Resize to narrow
-        sinon.restore();
+        offsetWidthStub.restore();
         sinon.stub(panel.contentElement, 'offsetWidth').get(() => 600);
         panel.onResize();
         nextInput = await view.nextInput;
@@ -4287,7 +4287,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
         });
 
         // Start in narrow mode
-        sinon.stub(panel.contentElement, 'offsetWidth').get(() => 600);
+        const offsetWidthStub = sinon.stub(panel.contentElement, 'offsetWidth').get(() => 600);
         panel.onResize();
         void panel.handleAction('freestyler.elements-floating-button');
         let nextInput = await view.nextInput;
@@ -4330,7 +4330,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
         ]);
 
         // Resize to wide
-        sinon.restore();
+        offsetWidthStub.restore();
         sinon.stub(panel.contentElement, 'offsetWidth').get(() => 1000);
         panel.onResize();
         nextInput = await view.nextInput;

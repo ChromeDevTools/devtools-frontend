@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, describe, it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -29,10 +29,6 @@ describe('UISourceCodeFrame', () => {
   setupRuntimeHooks();
   setupSettingsHooks();
   setupLocaleHooks();
-
-  afterEach(() => {
-    sinon.restore();
-  });
 
   function setup() {
     const backend = new MockDebuggerBackend();

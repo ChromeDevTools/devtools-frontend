@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
@@ -65,10 +65,6 @@ describe('CoverageDeocrationManager', () => {
     // invalidated during the test.
     await getInitializedResourceTreeModel(target);
     sinon.stub(Formatter.FormatterWorkerPool.FormatterWorkerPool.instance(), 'javaScriptScopeTree').resolves(null);
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   const URL = urlString`http://example.com/index.js`;

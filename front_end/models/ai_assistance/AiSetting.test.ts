@@ -35,7 +35,6 @@ describe('AiSetting', () => {
 
   afterEach(() => {
     hostConfigTracker.dispose();
-    sinon.restore();
   });
 
   it('reports disabled=false, unavailable=false, and empty disabledReasons when descriptor is available', () => {

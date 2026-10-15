@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -37,10 +37,6 @@ describe('WebSocketTransport', () => {
     sinon.stub(globalThis, 'WebSocket').callsFake(function() {
       return mockSocket as unknown as WebSocket;
     });
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   it('reports connection failed and mentions --remote-allow-origins on connection error', () => {

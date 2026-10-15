@@ -793,6 +793,7 @@ export default defineConfig([
       '@devtools/prefer-url-string': 'error',
       '@devtools/trace-engine-test-timeouts': 'error',
       '@devtools/no-document-body-mutation': 'error',
+      '@devtools/no-manual-sinon-restore': 'error',
       // Don't update the KnownContext with test data.
       '@devtools/jslog-context-list': 'off',
       '@devtools/enforce-custom-element-definitions-location': 'off',
@@ -962,6 +963,17 @@ export default defineConfig([
       // The config operate on the default export
       // So allow it for them
       'no-restricted-syntax': 'off',
+    },
+  },
+  {
+    name: 'Mocha test harness setup files',
+    files: [
+      'front_end/testing/test_setup.ts',
+      'test/unit/mocha-hooks.ts',
+    ],
+    rules: {
+      // Global Mocha test harness restores Sinon stubs and timers after each test.
+      '@devtools/no-manual-sinon-restore': 'off',
     },
   },
 ]);

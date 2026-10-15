@@ -15,7 +15,6 @@ const ROOT_DIR = path.resolve(import.meta.dirname, '../../../../');
 
 describe('GnAstExtractor', () => {
   afterEach(() => {
-    sinon.restore();
     GnAstExtractor.clearCacheForTesting();
   });
 

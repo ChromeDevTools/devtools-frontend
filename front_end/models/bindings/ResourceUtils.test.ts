@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
@@ -50,10 +50,6 @@ describe('ResourceUtils', () => {
       uiSourceCodeForURLStub = sinon.stub(universe.workspace, 'uiSourceCodeForURL').returns(null);
       sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(universe.workspace);
       sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
-    });
-
-    afterEach(() => {
-      sinon.restore();
     });
 
     it('favors displayName from UISourceCode', () => {

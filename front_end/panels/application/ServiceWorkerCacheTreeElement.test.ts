@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -38,10 +38,6 @@ describe('ServiceWorkerCacheTreeElement', () => {
     model = target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel) as
         SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
     panel = sinon.createStubInstance(Application.ResourcesPanel.ResourcesPanel);
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   it('does not duplicate cache tree elements on re-initialization', () => {

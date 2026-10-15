@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
@@ -35,10 +35,6 @@ describeWithEnvironment('DetachedElementsProfileView', () => {
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
     sinon.stub(IssuesManager.IssuesManager.IssuesManager, 'instance').returns(universe.issuesManager);
     target = universe.createTarget();
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   function createDetachedElementInfo(): Protocol.DOM.DetachedElementInfo {

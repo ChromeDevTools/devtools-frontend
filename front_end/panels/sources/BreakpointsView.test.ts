@@ -730,7 +730,6 @@ describe('BreakpointsSidebarController', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 
@@ -932,7 +931,6 @@ describe('BreakpointsView', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 

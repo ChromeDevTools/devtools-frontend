@@ -31,7 +31,6 @@ describe('ScopeChainModel', () => {
   afterEach(async () => {
     clock.restore();
     await deinitializeGlobalVars();
-    sinon.restore();
   });
 
   it('emits an event after it was constructed with the scope chain', async () => {

@@ -234,7 +234,6 @@ export const y = "";
     });
 
     afterEach(async () => {
-      sinon.restore();
       await deinitializeGlobalVars();
     });
 

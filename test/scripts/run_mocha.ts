@@ -63,6 +63,7 @@ TestConfig.tests = TestConfig.tests.map(testId => {
 void run({
   require: [
     path.join(SOURCE_ROOT, 'node_modules', 'source-map-support', 'register.js'),
+    path.join(SOURCE_ROOT, 'test', 'unit', 'mocha-hooks.ts'),
   ],
   spec: loadScriptTests(),
   timeout: 4_000,

@@ -130,7 +130,6 @@ describe('SourceMapsResolver', () => {
   });
 
   afterEach(() => {
-    sinon.restore();
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
   });
 

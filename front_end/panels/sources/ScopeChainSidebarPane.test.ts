@@ -46,7 +46,6 @@ describe('ScopeChainSidebarPane', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 

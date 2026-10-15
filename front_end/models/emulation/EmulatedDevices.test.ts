@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
@@ -17,9 +17,6 @@ describe('emulatedDevices', () => {
     sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getUserAgent').returns('Mozilla/5.0 HeadlessChrome/120.0.0.0');
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
   it('before parsing, all Chrome UAs all have %s placeholder for major version patching', () => {
     const devices = EmulationModel.EmulatedDevices.EmulatedDevicesList.rawEmulatedDevicesForTest();
     const chromeRawDevices = devices.filter(d => d['user-agent'].includes(' Chrome/'));

@@ -26,7 +26,6 @@ describe('ScopeChainResolver', () => {
 
   afterEach(() => {
     universe.dispose();
-    sinon.restore();
   });
 
   function createFakeCallFrame(debuggerModel: SDK.DebuggerModel.DebuggerModel,

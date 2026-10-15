@@ -67,7 +67,6 @@ describe('NetworkNavigatorView', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 
@@ -746,7 +745,6 @@ describe('FilesNavigatorView', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 
@@ -882,7 +880,6 @@ describe('OverridesNavigatorView', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
     await deinitializeGlobalVars();
   });
 

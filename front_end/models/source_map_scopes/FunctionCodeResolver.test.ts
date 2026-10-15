@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
-import sinon from 'sinon';
+import {beforeEach, describe, it} from 'mocha';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -32,10 +31,6 @@ describe('FunctionCodeResolver', function() {
     backend = new MockDebuggerBackend();
     void backend.universe.debuggerWorkspaceBinding;
     target = backend.createTarget();
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   // This was minified with 'esbuild --sourcemap=linked --minify' v0.25.9.

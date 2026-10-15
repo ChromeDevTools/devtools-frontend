@@ -230,6 +230,9 @@
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} ({PH2}) साठी आशय लोड करता आला नाही"
   },
+  "core/sdk/Connections.ts | websocketConnectionFailed": {
+    "message": "WebSocket डिस्कनेक्ट केले आहे. Chrome इंस्टन्सवरील --remote-allow-origins सद्य ओरिजिनला अनुमती देत असल्याची खात्री करा."
+  },
   "core/sdk/Connections.ts | websocketDisconnected": {
     "message": "WebSocket डिस्कनेक्ट केले"
   },
@@ -324,10 +327,10 @@
     "message": "DevTools ने विनंती ब्लॉक केली होती: \"{PH1}\""
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
-    "message": "{PH1} लोड करता आले नाही: {PH2} \"{PH3}\"."
+    "message": "{PH1} लोड करता आले नाही: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
-    "message": "{PH1} लोड करणे पूर्ण झाले: {PH2} \"{PH3}\"."
+    "message": "{PH1} लोड करणे पूर्ण झाले: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G"
@@ -508,6 +511,9 @@
   },
   "core/sdk/SourceMapScopeChainEntry.ts | closure": {
     "message": "बंद"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | exception": {
+    "message": "एक्सेप्शन"
   },
   "core/sdk/SourceMapScopeChainEntry.ts | global": {
     "message": "जागतिक"
@@ -908,8 +914,8 @@
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "पेजवर फोकस करा"
   },
-  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
-    "message": "DevTools MCP मिळवा"
+  "entrypoints/main/MainImpl.ts | getChromeDevToolsForAgents": {
+    "message": "तुमच्या एजंटला DevTools चा अ‍ॅक्सेस द्या"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "मदत"
@@ -1346,12 +1352,6 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer ला क्रॉस-ओरिजिन प्रतिबंधाची आवश्यकता असेल. अधिक तपशिलांसाठी https://developer.chrome.com/blog/enabling-shared-array-buffer/ पहा."
   },
-  "generated/Deprecation.ts | SharedStorage": {
-    "message": "Shared Storage API डेप्रिकेट केले आहे आणि भविष्यातील रिलीझमध्ये ते काढून टाकले जाईल."
-  },
-  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
-    "message": "document.requestStorageAccessFor डेप्रिकेट केले आहे आणि ते काढून टाकले जाईल. अधिक तपशिलांसाठी https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ पहा."
-  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "वापरकर्ता अ‍ॅक्टिव्हेशनशिवाय speechSynthesis.speak() डेप्रिकेट केले गेले आहे आणे ते काढून टाकले जाईल."
   },
@@ -1407,7 +1407,7 @@
     "message": "फील्ड मेट्रिक ही सद्य पेजहून वेगळ्या URL साठी आहेत"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "डिव्हाइस पिक्सेल रेशो हा संख्या किंवा रिकामा असणे आवश्यक आहे."
+    "message": "डिव्हाइस पिक्सेल रेशो हा संख्या किंवा रिकामा असणे आवश्यक आहे"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
     "message": "डिव्हाइस पिक्सेल रेशो {PH1} पेक्षा जास्त किंवा तितकाच असणे आवश्यक आहे"
@@ -2555,6 +2555,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLiveRecordingList": {
     "message": "अ‍ॅक्सेसिबिलिटी घोषणा"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyElementHtml": {
+    "message": "घटकाचा HTML कॉपी करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyMessage": {
+    "message": "मेसेज कॉपी करा"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | jsTriggered": {
     "message": "JS-ट्रिगर केले आहे"
   },
@@ -2567,8 +2573,53 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "वेळ"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | announcementsOnly": {
+    "message": "फक्त घोषणा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveOnly": {
+    "message": "फक्त ARIA-लाइव्ह"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
     "message": "घोषणा रेकॉर्डिंग"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | clearAnnouncements": {
+    "message": "घोषणा साफ करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | exportCsv": {
+    "message": "CSV मध्ये एक्सपोर्ट करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filter": {
+    "message": "फिल्टर करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filterByType": {
+    "message": "प्रकारानुसार फिल्टर करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | frameBlockedReason": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | nEventsMatch": {
+    "message": "{PH1} इव्हेंट जुळत आहे"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | noEventsMatch": {
+    "message": "कोणतेही इव्हेंट जुळत नाहीत"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | oneEventMatches": {
+    "message": "१ इव्हेंट जुळतो"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordBoth": {
+    "message": "दोन्ही रेकॉर्ड करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
+    "message": "काही फ्रेमसाठी रेकॉर्डिंग ब्लॉक केले होते:"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
+    "message": "रेकॉर्डिंग सुरू करा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | stopRecording": {
+    "message": "रेकॉर्डिंग थांबवा"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | unknownError": {
+    "message": "अज्ञात एरर"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "अ‍ॅक्सेसिबिलिटी नोड उघड केलेला नाही"
@@ -3126,7 +3177,7 @@
     "message": "एजंट डेमो"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
-    "message": "या पेजवर तुम्ही अ‍ॅनिमेशनची तपासणी करू शकता आणि त्यामध्ये फेरबदल करू शकता."
+    "message": "या पेजवर तुम्ही अ‍ॅनिमेशनची तपासणी करू शकता आणि त्यामध्ये फेरबदल करू शकता"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "अ‍ॅनिमेशनचे पूर्वावलोकन {PH1}"
@@ -3210,7 +3261,7 @@
     "message": "मॅनिफेस्ट"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "'purpose' च्या 'any maskable' सह आयकन घोषित करण्याला प्रोत्साहन दिले जात नाही. ते काही प्लॅटफॉर्मवर खूप जास्त किंवा खूप कमी पॅडिंगमुळे चुकीचे दिसू शकते."
+    "message": "‘purpose' च्या ‘any maskable' सह आयकन घोषित करण्याला प्रोत्साहन दिले जात नाही. ते काही प्लॅटफॉर्मवर खूप जास्त किंवा खूप कमी पॅडिंगमुळे चुकीचे दिसू शकते."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "बॅकग्राउंड रंग"
@@ -3225,13 +3276,13 @@
     "message": "सुचवलेला आयडी क्लिपबोर्डवर कॉपी केला आहे"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
-    "message": "मॅनिफेस्टमध्ये start_url हा भाग नसल्यामुळे service worker तपासता आला नाही"
+    "message": "मॅनिफेस्टमध्ये ‘start_url' फील्डशिवाय service worker तपासता आले नाही"
   },
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
-    "message": "मॅनिफेस्टवरून आवश्यक आयकन डाउनलोड करता आला नाही"
+    "message": "मॅनिफेस्टमधून आवश्यक आयकन डाउनलोड करता आला नाही"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "तुमच्या PWA च्या टायटल बारची विंडो नियंत्रणे ओव्हरले कस्टमाइझ करा"
+    "message": "तुमच्या PWA च्या टायटल बारचे Window Controls Overlay कस्टमाइझ करा"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "वर्णन"
@@ -3279,7 +3330,7 @@
     "message": "मॅनिफेस्टमध्ये 'display_override' फील्डचा समावेश असतो आणि सपोर्ट असलेला पहिला डिस्प्ले मोड हा 'standalone', 'fullscreen' किंवा 'minimal-ui' यांपैकी एक असणे आवश्यक आहे"
   },
   "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
-    "message": "मॅनिफेस्ट मिळवता आला नाही, रिकामा आहे किंवा पार्स करता आला नाही"
+    "message": "मॅनिफेस्ट मिळवता आले नाहीत, रिकामे आहे किंवा पार्स करता आले नाही"
   },
   "panels/application/AppManifestView.ts | manifestDescription": {
     "message": "तुमचे अ‍ॅप फोनच्या होम स्क्रीनवर कसे दिसते आणि लाँचच्या वेळी अ‍ॅप कसे दिसते हे मॅनिफेस्टद्वारे परिभाषित केले जाते"
@@ -3288,7 +3339,7 @@
     "message": "मॅनिफेस्ट 'display' प्रॉपर्टी 'standalone', 'fullscreen', किंवा 'minimal-ui' यांपैकी एक असणे आवश्यक आहे"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainANameOr": {
-    "message": "मॅनिफेस्टमध्ये 'name' किंवा 'short_name' फील्ड नाही"
+    "message": "मॅनिफेस्टमध्ये ‘name' किंवा ‘short_name' फील्डचा समावेश नाही"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
     "message": "मॅनिफेस्टमध्ये योग्य आयकन नाही - PNG, SVG किंवा किमान {PH1}px चा WebP फॉरमॅट असणे आवश्यक आहे, sizes ॲट्रिब्यूट सेट करणे आवश्यक आहे आणि purposeॲट्रिब्यूट सेट केले असल्यास, त्यामध्ये any चा समावेश असला पाहिजे"
@@ -3297,7 +3348,7 @@
     "message": "मॅनिफेस्ट 'prefer_related_applications: true' नमूद करते"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "मॅनिफेस्ट 'start_url' वैध नाही"
+    "message": "मॅनिफेस्ट ‘start_url' वैध नाही"
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "नाव"
@@ -3312,13 +3363,13 @@
     "message": "मॅनिफेस्ट आढळला नाही"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "Play Store आयडी दिलेला नाही"
+    "message": "कोणताही Google Play Store आयडी दिलेला नाही"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Richer PWA Install UI डेस्कटॉपवर उपलब्ध नसेल. कृपया form_factor हा wide वर सेट केलेला किमान एक स्क्रीनशॉट जोडा."
+    "message": "Richer PWA install UI डेस्कटॉपवर उपलब्ध नसेल. कृपया form_factor हा wide वर सेट केलेला किमान एक स्क्रीनशॉट जोडा."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Richer PWA Install UI हे मोबाइलवर उपलब्ध नसेल. कृपया किमान एक स्क्रीनशॉट जोडा, ज्यासाठी form_factor सेट केलेले नाही किंवाwide व्यतिरिक्त एखादे मूल्य सेट केलेले नाही."
+    "message": "Richer PWA इंस्टॉल UI मोबाइलवर उपलब्ध नसेल. किमान एक स्क्रीनशॉट जोडा, ज्यासाठी form_factor सेट केलेले नाही किंवा wide व्यतिरिक्त एखादे मूल्य सेट केलेले नाही."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "पुरवलेला कोणताही आयकन हा PNG, SVG किंवा WebP फॉरमॅटमध्ये किमान {PH1} चौरस पिक्सेलचा, उद्देश ॲट्रिब्यूट सेट न केलेला किंवा ‘any' वर सेट केलेला नाही"
@@ -3333,7 +3384,7 @@
     "message": "पेज ऑफलाइन काम करत नाही"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "पेज ऑफलाइन काम करत नाही. Chrome 93 पासून, इंस्टॉल करण्याचे निकष बदलणार आहेत आणि ही साइट इंस्टॉल करता येणार नाही. अधिक माहितीसाठी {PH1} पहा."
+    "message": "पेज ऑफलाइन काम करत नाही. Chrome 93 पासून, इंस्टॉल करण्यायोग्यतेचे निकष बदलत आहेत आणि ही साइट इंस्टॉल करण्यायोग्य नसेल. अधिक माहितीसाठी {PH1} पहा."
   },
   "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "पेजमध्ये मॅनिफेस्ट <link> URL नाही."
@@ -3369,7 +3420,7 @@
     "message": "{PH1} {PH2} उंची रुंदीपेक्षा २.३ पटीने जास्त असू शकत नाही"
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
-    "message": "बहुतांश ऑपरेटिंग सिस्टमना चौरस आयकनची आवश्यकता असते. कृपया अ‍ॅरेमध्ये किमान एक चौरस आयकन जोडा."
+    "message": "बहुतांश ऑपरेटिंग सिस्टीमना चौरस आयकनची आवश्यकता असते. अ‍ॅरेमध्ये किमान एक चौरस आयकन समाविष्ट करा."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} ने तिचा आकार [width]x[height] असा नमूद केला पाहिजे"
@@ -3384,10 +3435,10 @@
     "message": "{PH1} {PH2} रुंदी उंचीपेक्षा २.३ पटीने जास्त असू शकत नाही"
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} 'src' सेट केलेले नाही"
+    "message": "{PH1} ‘src' सेट केलेले नाही"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL ''{PH2}'' पार्स करता आली नाही"
+    "message": "{PH1} URL \"{PH2}\" पार्स करता आली नाही"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "स्क्रीनशॉट"
@@ -3402,7 +3453,7 @@
     "message": "पहिल्या स्क्रीनशॉटमध्ये जसा form_factor आहे त्याप्रमाणे सर्व स्क्रीनशॉटमध्ये form_factor असलेला समान आस्पेक्ट रेशो असणे आवश्यक आहे. काही स्क्रीनशॉटकडे दुर्लक्ष केले जाईल."
   },
   "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
-    "message": "विंडो नियंत्रणे ओव्हरले यावर एम्यूलेट करा"
+    "message": "Window Controls Overlay एम्यूलेट करा"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "छोटे नाव"
@@ -3426,7 +3477,7 @@
     "message": "अ‍ॅप आधीच इंस्टॉल केले आहे"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play Store अ‍ॅप URL आणि Play Store आयडी जुळत नाहीत"
+    "message": "Google Play Store अ‍ॅप URL आणि Google Play Store आयडी जुळत नाहीत"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "नमूद केलेल्या अ‍ॅप्लिकेशन प्लॅटफॉर्मला Android वर सपोर्ट नाही"
@@ -3444,7 +3495,7 @@
     "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
-    "message": "Chrome ला {PH3} मध्ये {PH2} या फील्डसाठीचे {PH1} संबंधित मूल्य यशस्वीरीत्या सापडले आहे"
+    "message": "Chrome ला {PH3} मध्ये {PH2} या फील्डसाठीचे {PH1} संबंधित मूल्य सापडले आहे"
   },
   "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
     "message": "मदत हवी आहे का? {PH1} वाचा."
@@ -3516,7 +3567,7 @@
     "message": "IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | indexeddbDescription": {
-    "message": "या पेजवर तुम्ही indexedDB की-मूल्य पेअर आणि डेटाबेस पाहू शकता व हटवू शकता"
+    "message": "या पेजवर तुम्ही IndexedDB की-मूल्य पेअर आणि डेटाबेस पाहू शकता व हटवू शकता"
   },
   "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "कीचा पाथ: {PH1}"
@@ -3540,7 +3591,7 @@
     "message": "एक्स्टेंशन स्टोरेज डिटेक्ट केल्या नाहीत"
   },
   "panels/application/ApplicationPanelSidebar.ts | noIndexeddb": {
-    "message": "कोणतेही indexedDB डिटेक्ट झाले नाही"
+    "message": "कोणतेही IndexedDB डिटेक्ट झाले नाही"
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "स्थानिक स्टोरेज डिटेक्ट केले नाही"
@@ -3549,7 +3600,7 @@
     "message": "सेशन स्टोरेज डिटेक्ट केले नाही"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
-    "message": "{PH1} पर्यंत स्क्रोल केले"
+    "message": "{PH1} पर्यंत स्क्रोल केले आहे"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
     "message": "मॅनिफेस्ट: मॅनिफेस्टच्या सर्वात वरती स्क्रोल करणे सुरू करा"
@@ -3579,7 +3630,7 @@
     "message": "स्टोरेज"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
-    "message": "या दस्तऐवजाचा आशय 'document.write()' मार्फत डायनॅमिक पद्धतीने जनरेट केला गेला आहे"
+    "message": "या दस्तऐवजाचा आशय document.write() मार्फत डायनॅमिक पद्धतीने जनरेट केला आहे"
   },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "आवृत्ती: {PH1}"
@@ -3597,7 +3648,7 @@
     "message": "वर्कर"
   },
   "panels/application/ApplicationPanelSidebar.ts | workerDescription": {
-    "message": "या पेजवर तुम्ही मूळ फ्रेमद्वारे तयार केलेले समर्पित वर्कर पाहू शकता"
+    "message": "या पेजवर तुम्ही मूळ फ्रेमद्वारे जोडलेले समर्पित वर्कर पाहू शकता"
   },
   "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
     "message": "बॅक/फॉरवर्ड कॅशे"
@@ -3720,7 +3771,7 @@
     "message": "की किंवा मूल्य यानुसार फिल्टर करा"
   },
   "panels/application/CrashReportContextView.ts | noContext": {
-    "message": "फ्रेममध्ये कोणत्याही संदर्भ नोंदी डिटेक्ट केल्या नाहीत."
+    "message": "फ्रेममध्ये कोणत्याही संदर्भ नोंदी डिटेक्ट केल्या नाहीत"
   },
   "panels/application/CrashReportContextView.ts | refresh": {
     "message": "रिफ्रेश करा"
@@ -4053,7 +4104,7 @@
     "message": "समावेश करा"
   },
   "panels/application/DeviceBoundSessionsView.ts | scope": {
-    "message": "स्कोप"
+    "message": "व्याप्ती"
   },
   "panels/application/DeviceBoundSessionsView.ts | scopeOriginContainsPath": {
     "message": "स्कोप ओरिजिनमध्ये पाथ समाविष्ट आहे"
@@ -4068,7 +4119,7 @@
     "message": "साइट-स्कोपमधील सेशनमध्ये होस्ट पॅटर्न आणि साइट जुळत नाही"
   },
   "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
-    "message": "आणखी तपशील पाहण्यासाठी इव्हेंट पंक्ती निवडा"
+    "message": "तपशील पाहण्यासाठी इव्हेंट पंक्ती निवडा"
   },
   "panels/application/DeviceBoundSessionsView.ts | serverError": {
     "message": "एंडपॉइंटला उद्भवणारी तात्पुरती एरर"
@@ -4119,7 +4170,7 @@
     "message": "सबडोमेन नोंदणी .well-known उपलब्ध नाही"
   },
   "panels/application/DeviceBoundSessionsView.ts | success": {
-    "message": "यशस्वी"
+    "message": "यशस्वी झाले"
   },
   "panels/application/DeviceBoundSessionsView.ts | termination": {
     "message": "समाप्त केले"
@@ -4164,10 +4215,10 @@
     "message": "फ्रेम अ‍ॅन्सेस्टर हा असुरक्षित संदर्भ आहे"
   },
   "panels/application/FrameDetailsView.ts | adStatus": {
-    "message": "जाहिरातीची स्थिती"
+    "message": "जाहिरातीचे स्टेटस"
   },
   "panels/application/FrameDetailsView.ts | additionalInformation": {
-    "message": "अतिरिक्त माहिती"
+    "message": "अधिक माहिती"
   },
   "panels/application/FrameDetailsView.ts | apiAvailability": {
     "message": "API उपलब्धता"
@@ -4203,19 +4254,19 @@
     "message": "आशय सुरक्षा धोरण (CSP)"
   },
   "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "ही फ्रेम तयार केली तेव्हा (async) stack मध्ये एक जाहिरातीचे स्क्रिप्ट होते. या फ्रेमच्या क्रीएशन stack trace चे परीक्षण केल्यामुळे काही इनसाइट मिळू शकतात."
+    "message": "ही फ्रेम तयार केली, तेव्हा (async) stack मध्ये जाहिरात स्क्रिप्ट होती. या फ्रेमच्या क्रीएशन stack trace चे परीक्षण केल्यामुळे काही इनसाइट मिळू शकतात."
   },
   "panels/application/FrameDetailsView.ts | creationStackTrace": {
-    "message": "फ्रेम क्रीएशन Stack Trace"
+    "message": "फ्रेम क्रीएशन stack trace"
   },
   "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "ही फ्रेम प्रोग्रामिकरीत्या तयार केली आहे. stack trace हे कुठे घडले ते दाखवते."
   },
   "panels/application/FrameDetailsView.ts | creatorAdScriptAncestry": {
-    "message": "अशा जाहिरात स्क्रिप्ट ज्या वापरून फ्रेम तयार केली जाते"
+    "message": "निर्माणकर्ता जाहिरात स्क्रिप्टचे मूळ"
   },
   "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "वेगळे ठेवलेले क्रॉस-ओरिजिन"
+    "message": "क्रॉस-ओरिजिन प्रतिबंधित"
   },
   "panels/application/FrameDetailsView.ts | document": {
     "message": "दस्तऐवज"
@@ -4254,7 +4305,7 @@
     "message": "ही फ्रेम जाहिरात फ्रेम म्हणून धरली जाईल, कारण ती जाहिरात फ्रेममधील मुख्य फ्रेम आहे"
   },
   "panels/application/FrameDetailsView.ts | reportingTo": {
-    "message": "येथे तक्रार करत आहे"
+    "message": "इथे अहवाल देत आहे"
   },
   "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
     "message": "क्रॉस-ओरिजिन वेगळा ठेवलेला संदर्भ आवश्यक आहे"
@@ -4272,13 +4323,13 @@
     "message": "सुरक्षित संदर्भ"
   },
   "panels/application/FrameDetailsView.ts | securityIsolation": {
-    "message": "सुरक्षितता आणि वेगळे ठेवणे"
+    "message": "सुरक्षा आणि वेगळे ठेवणे"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
     "message": "SharedArrayBuffer कंस्ट्रक्टर उपलब्ध आहे आणि postMessage मार्फत SABs ट्रान्सफर केले जाऊ शकतात"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer कंस्ट्रक्टर उपलब्ध आहे पण SABs हे postMessage मार्फत ट्रान्सफर केले जाऊ शकत नाहीत"
+    "message": "SharedArrayBuffer कन्स्ट्रक्टर उपलब्ध आहे, पण SABs हे postMessage द्वारे ट्रान्सफर केले जाऊ शकत नाही"
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "फ्रेमची स्कीम असुरक्षित आहे"
@@ -4290,7 +4341,7 @@
     "message": "performance.measureUserAgentSpecificMemory() API उपलब्ध नाही"
   },
   "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "'प्रोटोकॉल मॉनिटर' प्रयोग सुरू केला असल्यामुळे ही अतिरिक्त (डीबगिंगसंबंधी) माहिती दाखवली गेली आहे"
+    "message": "\"प्रोटोकॉल मॉनिटर\" प्रयोग सुरू केल्यामुळे ही डीबगिंगशी संबंधित माहिती दाखवली आहे"
   },
   "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "SharedArrayBuffer ट्रान्सफरसाठी परवानगी धोरण सुरू करणे आवश्यक आहे:"
@@ -4413,7 +4464,7 @@
     "message": "बंद"
   },
   "panels/application/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "क्रॉस-ओरिजिन एम्बेडर धोरण"
+    "message": "क्रॉस-ओरिजिन एंबेडर धोरण"
   },
   "panels/application/OpenedWindowDetailsView.ts | document": {
     "message": "दस्तऐवज"
@@ -4422,16 +4473,16 @@
     "message": "नाही"
   },
   "panels/application/OpenedWindowDetailsView.ts | openerFrame": {
-    "message": "उघडणारी फ्रेम"
+    "message": "ओपनर फ्रेम"
   },
   "panels/application/OpenedWindowDetailsView.ts | reportingTo": {
-    "message": "येथे तक्रार करत आहे"
+    "message": "इथे अहवाल देत आहे"
   },
   "panels/application/OpenedWindowDetailsView.ts | security": {
     "message": "सुरक्षा"
   },
   "panels/application/OpenedWindowDetailsView.ts | securityIsolation": {
-    "message": "सुरक्षितता आणि वेगळे ठेवणे"
+    "message": "सुरक्षा आणि वेगळे ठेवणे"
   },
   "panels/application/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "उघडलेली विंडो ती उघडणार्‍याला अ‍ॅक्सेस करू शकते का आणि उघडणारा ती विंडो अ‍ॅक्सेस करू शकतो का हे दाखवते"
@@ -4464,7 +4515,7 @@
     "message": "तृतीय पक्ष"
   },
   "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "सबडोमेन जुळत आहे"
+    "message": "सबडोमेन जुळणी"
   },
   "panels/application/OriginTrialTreeView.ts | noTrialTokens": {
     "message": "कोणतीही चाचणी टोकन नाहीत"
@@ -4488,7 +4539,7 @@
     "message": "चाचणीचे नाव"
   },
   "panels/application/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "वापर प्रतिबंध"
+    "message": "वापराशी संबंधित निर्बंध"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "नियम"
@@ -4515,7 +4566,7 @@
     "message": "अहवाल निवडलेला नाही"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
-    "message": "या पेजवर तुम्हाला Reporting API शी संबंधित तक्रारींची आणि एंडपॉइंटची तपासणी करता येईल"
+    "message": "Reporting API शी संबंधित तक्रारींची आणि एंडपॉइंटची तपासणी करा"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "कॅशे स्टोरेज"
@@ -4979,11 +5030,11 @@
   "panels/application/components/AdsView.ts | filterListRule": {
     "message": "फिल्टर सूची नियम"
   },
-  "panels/application/components/AdsView.ts | highlightAds": {
-    "message": "जाहिराती हायलाइट करा"
+  "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
+    "message": "जाहिरातीशी संबंधित स्रोत हायलाइट करा"
   },
-  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBe": {
-    "message": "जाहिराती असल्याचे आढळलेले घटक हायलाइट करते (लाल)"
+  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBeAdRelated": {
+    "message": "जाहिरातीशी संबंधित असल्याचे आढळलेले घटक हायलाइट करते (लाल)"
   },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "सुरुवातीचे ओरिजिन"
@@ -4998,7 +5049,7 @@
     "message": "नेटवर्क"
   },
   "panels/application/components/AdsView.ts | noProvenance": {
-    "message": "<no provenance>"
+    "message": "<कोणताही मूळ डेटा नाही>"
   },
   "panels/application/components/AdsView.ts | noProvenanceTooltip": {
     "message": "कोणताही मूळ डेटा उपलब्ध नाही"
@@ -5015,8 +5066,14 @@
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "जाहिरातींद्वारे एकूण सीपीयू वापर"
   },
+  "panels/application/components/AdsView.ts | totalCpuUsageExplanation": {
+    "message": "जाहिरातींद्वारे वापरलेली एकूण सीपीयू वेळ"
+  },
   "panels/application/components/AdsView.ts | totalNetworkUsage": {
     "message": "जाहिरातींद्वारे एकूण नेटवर्क वापर"
+  },
+  "panels/application/components/AdsView.ts | totalNetworkUsageExplanation": {
+    "message": "जाहिरातींद्वारे वापरलेला एकूण नेटवर्क डेटा"
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<unnamed>"
@@ -5027,8 +5084,14 @@
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "व्ह्यूपोर्टमधील जाहिरातींची संख्या"
   },
+  "panels/application/components/AdsView.ts | viewportAdCountExplanation": {
+    "message": "व्ह्यूपोर्टमधील जाहिरातींची संख्या"
+  },
   "panels/application/components/AdsView.ts | viewportAdDensity": {
     "message": "व्ह्यूपोर्टमधील जाहिरातींची घनता"
+  },
+  "panels/application/components/AdsView.ts | viewportAdDensityExplanation": {
+    "message": "जाहिरातींनी व्यापलेल्या व्ह्यूपोर्टची टक्केवारी"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "फक्त GET विनंतीद्वारे लोड केलेली पेज बॅक-फॉरवर्ड कॅशेसाठी पात्र आहेत"
@@ -5418,7 +5481,7 @@
     "message": "फ्रेम"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
-    "message": "{n,plural, =1{{m} फ्रेममध्ये # समस्या आढळली.}other{{m} फ्रेममध्ये # समस्या आढळल्या.}}"
+    "message": "{n,plural, =1{{m} फ्रेममध्ये # समस्या आढळली आहे}other{{m} फ्रेममध्ये # समस्या आढळल्या आहेत}}"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
     "message": "{n,plural, =1{१ फ्रेममध्ये # समस्या आढळली आहे}other{एका फ्रेममध्ये # समस्या आढळल्या आहेत}}"
@@ -5928,7 +5991,7 @@
     "message": "URL प्रीफेच करण्यासाठी पात्र नाही, कारण डीफॉल्ट नेटवर्क संदर्भात ती प्रॉक्सी सर्व्हर वापरण्यासाठी कॉन्फिगर केली गेली आहे"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
-    "message": "URL प्रीफेच करण्‍यासाठी पात्र नाही, कारण तिचा होस्ट युनिक नव्हता (उदा. सार्वजनिकपणे राउट न करता येणारा आयपी अ‍ॅड्रेस किंवा रेजिस्ट्रीद्वारे नियंत्रित नसलेले होस्टनेम), पण प्रीफेच प्रॉक्सी करणे आवश्यक होते"
+    "message": "URL प्रीफेच करण्‍यासाठी पात्र नाही, कारण तिचा होस्ट युनिक नव्हता (उदा. सार्वजनिकपणे राउट न करता येणारा आयपी अ‍ॅड्रेस किंवा रजिस्ट्रीद्वारे नियंत्रित नसलेले होस्टनेम), पण प्रीफेच प्रॉक्सी करणे आवश्यक होते"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
     "message": "URL प्रीफेच करण्‍यासाठी पात्र नाही, कारण ती स्टोरेजचे डीफॉल्ट नसलेले विभाजन वापरते"
@@ -6572,6 +6635,24 @@
   "panels/common/CPUThrottlingOption.ts | noThrottling": {
     "message": "थ्रॉटलिंग नाही"
   },
+  "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
+    "message": "टिप्पणीचे इनपुट"
+  },
+  "panels/common/CommentThreadWidget.ts | response": {
+    "message": "प्रतिसाद:"
+  },
+  "panels/common/CommentThreadWidget.ts | sendToAgent": {
+    "message": "एजंटला पाठवा"
+  },
+  "panels/common/CommentThreadWidget.ts | sent": {
+    "message": "पाठवले"
+  },
+  "panels/common/CommentThreadWidget.ts | sentCheckmark": {
+    "message": "पाठवले आहे हे दाखवणारी बरोबरची खूण"
+  },
+  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
+    "message": "टिप्पण्या ({PH1})"
+  },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<नोड>"
   },
@@ -6649,6 +6730,15 @@
   },
   "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "स्रोत नकाशाशी लिंक केले: {PH1}"
+  },
+  "panels/common/common-meta.ts | comments": {
+    "message": "टिप्पण्या"
+  },
+  "panels/common/common-meta.ts | showComments": {
+    "message": "टिप्पण्या दाखवा"
+  },
+  "panels/common/common-meta.ts | toggleCommentMode": {
+    "message": "तुमच्या AI कोडिंग एजंटला पाठवण्यासाठी टिप्पण्या जोडा"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "एक्स्टेंशन"
@@ -7491,7 +7581,7 @@
     "message": "हा घटक {CONTAINER_DISPLAY_NAME} आयटम, म्हणजेच {CONTAINER_DISPLAY_NAME} कंटेनरचा उपघटक आहे, पण {PROPERTY_NAME} फक्त कंटेनरला लागू होते"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "फाँट-फॅमिली \"{PH5}\" साठी सेटिंग \"{PH1}\" चे {PH2} चे मूल्य सपोर्ट असलेल्या रेंजच्या [{PH3}, {PH4}] बाहेरचे आहे"
+    "message": "फाँट-फॅमिली \"{PH5}\" साठी सेटिंग \"{PH1}\" {PH2} चे मूल्य सपोर्ट असलेल्या रेंजच्या [{PH3}, {PH4}] बाहेरचे आहे."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "अँकर परिभाषित केला होता, पण घटक अँकर-स्थानबद्ध केलेला नव्हता, तर \"{POSITION}\" वर त्याचे स्थान निर्धारण केले होते"
@@ -7700,6 +7790,21 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "हे आयटम व्रॅप करा"
   },
+  "panels/elements/DOMTreeWidget.ts | pageDom": {
+    "message": "पेज DOM"
+  },
+  "panels/elements/DOMTreeWidget.ts | reveal": {
+    "message": "दाखवा"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllLines": {
+    "message": "सर्व दाखवा ({PH1} ओळी)"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllNodesDMore": {
+    "message": "सर्व नोड दाखवा (आणखी {PH1})"
+  },
+  "panels/elements/DOMTreeWidget.ts | viewIssue": {
+    "message": "समस्या पहा:"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup> मधील अयोग्य घटक किंवा मजकूर नोड"
   },
@@ -7817,132 +7922,6 @@
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "रिमोट ऑब्जेक्टचे वैध नोडवर निराकरण करता आले नाही"
   },
-  "panels/elements/ElementsTreeElement.ts | children": {
-    "message": "उपघटक:"
-  },
-  "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "कॉपी करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
-    "message": "निर्माणकर्ता जाहिरात स्क्रिप्टचे मूळ"
-  },
-  "panels/elements/ElementsTreeElement.ts | cut": {
-    "message": "कट करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableContainer": {
-    "message": "कंटेनर ओव्हरले बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
-    "message": "फ्लेक्स मोड बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
-    "message": "ग्रिड-लेन मोड बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
-    "message": "ग्रिड मोड बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
-    "message": "स्क्रोल-स्नॅप ओव्हरले बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
-    "message": "@starting-style मोड बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
-    "message": "या घटकामध्ये स्क्रोल करता येणारा ओव्हरफ्लो आहे"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableContainer": {
-    "message": "कंटेनर ओव्हरले सुरू करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
-    "message": "फ्लेक्स मोड सुरू करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
-    "message": "ग्रिड-लेन मोड सुरू करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
-    "message": "ग्रिड मोड सुरू करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
-    "message": "स्क्रोल-स्नॅप ओव्हरले सुरू करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
-    "message": "@starting-style मोड सुरू करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | filterListRule": {
-    "message": "फिल्टर सूची नियम"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
-    "message": "हे पॉपओव्हर उघडे ठेवा"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
-    "message": "या घटकावरील स्वारस्य ट्रिगर करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceState": {
-    "message": "स्थितीची सक्ती करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
-    "message": "कोणताही मूळ डेटा उपलब्ध नाही"
-  },
-  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
-    "message": "मीडिया पॅनलवर जा"
-  },
-  "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "पेस्ट करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "दाखवा"
-  },
-  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
-    "message": "रूट स्क्रिप्ट फिल्टर सूची नियम"
-  },
-  "panels/elements/ElementsTreeElement.ts | selectAll": {
-    "message": "सर्व निवडा"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "commandfor ॲट्रिब्यूटशी संबंधित असलेला घटक दाखवा"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
-    "message": "कस्टम घटकाची व्याख्या दाखवा"
-  },
-  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "interesttarget ॲट्रिब्यूटशी संबंधित असलेला घटक दाखवा"
-  },
-  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "popovertarget ॲट्रिब्यूटशी संबंधित असलेला घटक दाखवा"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
-    "message": "पॉपओव्हर उघडे ठेवणे बंद करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
-    "message": "या घटकावरील स्वारस्य रद्द करा"
-  },
-  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
-    "message": "हा घटक जाहिरात म्हणून ओळखला गेला आहे"
-  },
-  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
-    "message": "या घटकाचा संदर्भ देण्यासाठी कन्सोलमध्ये {PH1} वापरा"
-  },
-  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
-    "message": "<संपादन करण्यासाठी स्ट्रिंग खूप मोठी आहे>"
-  },
-  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
-    "message": "स्रोत कोड पहा"
-  },
-  "panels/elements/ElementsTreeOutline.ts | pageDom": {
-    "message": "पेज DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "दाखवा"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
-    "message": "सर्व दाखवा ({PH1} ओळी)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "सर्व नोड दाखवा (आणखी {PH1})"
-  },
-  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
-    "message": "समस्या पहा:"
-  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "सर्व"
   },
@@ -8044,9 +8023,6 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS प्रॉपर्टीचे मूल्य: {PH1}"
-  },
-  "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "दाखवा"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "विस्तारित नियम कोलॅप्स करा"
@@ -9276,7 +9252,7 @@
     "message": "ऑडिटिंगच्या दरम्यान मोबाइलचे अनुकरण लागू करा"
   },
   "panels/lighthouse/LighthouseController.ts | atLeastOneCategoryMustBeSelected": {
-    "message": "किमान एक वर्गवारी निवडणे आवश्यक आहे."
+    "message": "किमान एक वर्गवारी निवडणे आवश्यक आहे"
   },
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "सर्वोत्तम पद्धती"
@@ -9873,7 +9849,7 @@
     "message": "विनंत्या ब्लॉक केलेल्या असू शकतात. विनंती संबंधित नियमांचे पॅनल पहा."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "विनंत्या स्थानिकरीत्या ओव्हरराइड केल्या जाऊ शकतात. अधिक माहितीसाठी 'स्रोत' पॅनल पहा"
+    "message": "विनंत्या स्थानिकरीत्या ओव्हरराइड केल्या जाऊ शकतात. अधिक माहितीसाठी स्रोत पॅनल पहा"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
     "message": "जोडा…"
@@ -9909,7 +9885,7 @@
     "message": "CPU थ्रॉटलिंग सुरू केले आहे"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
-    "message": "डीफॉल्ट मूल्य ओलांडल्यामुळे सिस्टीमच्या परफॉर्मन्सचा दर्जा कमी होऊ शकतो."
+    "message": "डीफॉल्ट मूल्य ओलांडल्यामुळे सिस्टीमच्या परफॉर्मन्सचा दर्जा कमी होऊ शकतो"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "नेटवर्कवरून सक्तीने डिस्कनेक्ट केले"
@@ -9980,8 +9956,14 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrate": {
     "message": "कॅलिब्रेट करा"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedLowTierMobile": {
+    "message": "लो-टिएर मोबाइल डिव्हाइस"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedMidTierMobile": {
+    "message": "मध्यम प्रतीचे मोबाइल डिव्हाइस"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationCTA": {
-    "message": "सीपीयू थ्रॉटलिंग प्रीसेट वापरण्यासाठी, तुमच्या डिव्हाइसाठी उत्तम थ्रॉटलिंग रेट निर्धारित करण्यासाठी कॅलिबरेशन प्रक्रिया रन करा."
+    "message": "सीपीयू थ्रॉटलिंग प्रीसेट वापरण्यासाठी, तुमच्या डिव्हाइसाठी उत्तम थ्रॉटलिंग रेट निर्धारित करण्यासाठी कॅलिबरेशन प्रक्रिया रन करा"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationConfirmationPrompt": {
     "message": "कॅलिबरेशनला ~५ सेकंद लागतील आणि तुमच्या सध्याच्या पेजपासून तात्पुरते दूर नेव्हिगेट केले जाईल. तुम्हाला पुढे सुरू ठेवायचे आहे का?"
@@ -11141,6 +11123,9 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "सर्वसाधारण"
   },
+  "panels/network/RequestHeadersView.ts | openWith": {
+    "message": "{PH1} सह उघडा"
+  },
   "panels/network/RequestHeadersView.ts | raw": {
     "message": "रॉ"
   },
@@ -11458,6 +11443,9 @@
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket फ्रेम"
+  },
+  "panels/network/ShowMoreDetailsWidget.ts | copy": {
+    "message": "कॉपी करा"
   },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "आणखी दाखवा"
@@ -11869,15 +11857,6 @@
   },
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "सिस्टीम मॉनिटर"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedElementsList": {
-    "message": "डिटॅच केलेल्या घटकांची सूची"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedNodes": {
-    "message": "डिटॅच केलेली नोड"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | nodeSize": {
-    "message": "नोडची संख्या"
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementProfile": {
     "message": "डिटॅच केलेले घटक {PH1}"
@@ -12710,6 +12689,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "रीप्ले रद्द करा"
   },
+  "panels/recorder/RecordingView.ts | codeFormat": {
+    "message": "कोड फॉरमॅट"
+  },
   "panels/recorder/RecordingView.ts | codeSidebarClosed": {
     "message": "कोड साइडबार बंद केला आहे"
   },
@@ -13463,6 +13445,9 @@
   "panels/sensors/SensorsView.ts | beta": {
     "message": "β (बीटा)"
   },
+  "panels/sensors/SensorsView.ts | cpuPerformanceNoOverrideWithDefault": {
+    "message": "ओव्हरराइड नाही ({PH1})"
+  },
   "panels/sensors/SensorsView.ts | customOrientation": {
     "message": "कस्टम ओरिएंटेशन"
   },
@@ -13480,6 +13465,9 @@
   },
   "panels/sensors/SensorsView.ts | error": {
     "message": "एरर"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedCpuPerformanceTierEmulation": {
+    "message": "सीपीयू परफॉर्मन्स टिएर एम्यूलेशनची सक्ती करते"
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "निवडलेल्या निष्क्रिय स्थितीच्या अनुकरणाची सक्ती करते"
@@ -13558,6 +13546,27 @@
   },
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "अ‍ॅक्सेलेरोमीटर"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformance": {
+    "message": "सीपीयू परफॉर्मन्स टिएर"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceNoOverride": {
+    "message": "ओव्हरराइड नाही"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierHigh": {
+    "message": "टिएर ३: उच्च"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierLow": {
+    "message": "टिएर १: कमी"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierMid": {
+    "message": "टिएर २: मध्यम"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUltra": {
+    "message": "टिएर ४: अल्ट्रा"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUnknown": {
+    "message": "टिएर ०: अज्ञात"
   },
   "panels/sensors/sensors-meta.ts | cpuPressure": {
     "message": "CPU प्रेशर"
@@ -13774,6 +13783,63 @@
   },
   "panels/settings/AISettingsTab.ts | wrongLocale": {
     "message": "हे वैशिष्ट्य वापरण्यासाठी, DevTools सेटिंग्जमध्ये तुमच्या भाषेचे प्राधान्य इंग्रजीवर सेट करा"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | correlationIdDescription": {
+    "message": "X-Correlation-ID किंवा Correlation-ID प्रतिसाद हेडरचे मूल्य"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | description": {
+    "message": "जुळणाऱ्या नेटवर्क विनंत्यांसाठी बाह्य बॅकएंड डीबगिंग, APM किंवा ट्रेसिंग टूलच्या लिंक कॉन्फिगर करा. विनंती आणि प्रतिसाद हेडरमधून काढलेले कोरिलेशन आयडी घालण्यासाठी प्लेसहोल्डर वापरा."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | devtoolsDebugIdDescription": {
+    "message": "devtools-debug-id Server-Timing एंट्रीमध्ये desc पॅरामीटरचे मूल्य"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | headerColumn": {
+    "message": "संदर्भ दिलेले हेडर / प्रॉपर्टी"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
+    "message": "चुकीचे नियम लागू किंवा सेव्ह केले जाणार नाहीत"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
+    "message": "URL पॅटर्न हा वैध URL पॅटर्न असणे आवश्यक आहे"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelCannotBeEmpty": {
+    "message": "लेबल रिकामे असू शकत नाही"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelColumn": {
+    "message": "लेबल"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderColumn": {
+    "message": "प्लेसहोल्डर"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderDocHeading": {
+    "message": "उपलब्ध प्लेसहोल्डर"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | requestIdDescription": {
+    "message": "X-Request-ID प्रतिसाद हेडरचे मूल्य"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | rulesSectionHeading": {
+    "message": "बॅकएंड लिंक करण्याशी संबंधित नियम"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | spanIdDescription": {
+    "message": "Server-Timing traceparent एंट्रीवरून ८-बाइट हेक्स पालक स्पॅन आयडी"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateCannotBeEmpty": {
+    "message": "लक्ष्यित URL टेंप्लेट रिकामे असू शकत नाही"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateColumn": {
+    "message": "लक्ष्यित URL टेंप्लेट"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | templateRequiresPlaceholder": {
+    "message": "लक्ष्यित URL टेंप्लेटमध्ये किमान एक प्लेसहोल्डर असणे आवश्यक आहे"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | traceIdDescription": {
+    "message": "trace-id प्रतिसाद हेडर किंवा Server-Timing traceparent एंट्रीवरून १६-बाइट हेक्स ट्रेस आयडी"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternCannotBeEmpty": {
+    "message": "URL पॅटर्न रिकामा असू शकत नाही"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
+    "message": "URL पॅटर्न"
   },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "पाथ एंटर करा"
@@ -14246,6 +14312,9 @@
   "panels/settings/settings-meta.ts | aiInnovations": {
     "message": "AI नवकल्पना"
   },
+  "panels/settings/settings-meta.ts | backendLinking": {
+    "message": "बॅकएंड लिंक करणे"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "दस्तऐवजीकरण"
   },
@@ -14266,6 +14335,9 @@
   },
   "panels/settings/settings-meta.ts | showAiInnovations": {
     "message": "AI प्रयोग दाखवा"
+  },
+  "panels/settings/settings-meta.ts | showBackendLinking": {
+    "message": "बॅकएंड लिंक करणे दाखवा"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "प्रयोग दाखवा"
@@ -14418,7 +14490,7 @@
     "message": "स्टॅक ट्रेस कॉपी करा"
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
-    "message": "\"{PH1}\" डीबग फाइल लोड करता आली नाही."
+    "message": "\"{PH1}\" डीबग फाइल लोड करता आली नाही"
   },
   "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
     "message": "{PH1} फंक्शनसाठी डीबग माहिती अपूर्ण आहे"
@@ -14601,7 +14673,7 @@
     "message": "कॉन्फिगर करा"
   },
   "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
-    "message": "\"{PH1}\" डीबग फाइल लोड करता आली नाही."
+    "message": "\"{PH1}\" डीबग फाइल लोड करता आली नाही"
   },
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "{PH1} साठी कोणतीही डीबग माहिती लोड करता आली नाही"
@@ -14927,9 +14999,6 @@
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "स्रोत पॅनलमध्ये उघडा"
   },
-  "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "कॅच केलेल्या एक्सेप्शनवर थांबवा"
-  },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "सर्व थांबवणे ५०० मिसे साठी ब्लॉक करून पुन्हा सुरू करा"
   },
@@ -14948,23 +15017,11 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "सध्याचा JavaScript कॉल समाप्त करा"
   },
-  "panels/sources/SourcesView.ts | debuggerHidden": {
-    "message": "डीबगर साइडबार लपवला आहे"
-  },
-  "panels/sources/SourcesView.ts | debuggerShown": {
-    "message": "डीबगर साइडबार दाखवला आहे"
-  },
   "panels/sources/SourcesView.ts | hideDebugger": {
     "message": "डीबगर लपवा"
   },
   "panels/sources/SourcesView.ts | hideNavigator": {
     "message": "नेव्हिगेटर लपवा"
-  },
-  "panels/sources/SourcesView.ts | navigatorHidden": {
-    "message": "नेव्हिगेटर साइडबार लपवला आहे"
-  },
-  "panels/sources/SourcesView.ts | navigatorShown": {
-    "message": "नेव्हिगेटर साइडबार दाखवला आहे"
   },
   "panels/sources/SourcesView.ts | showDebugger": {
     "message": "डीबगर दाखवा"
@@ -16401,10 +16458,10 @@
     "message": "दीर्घ टास्क"
   },
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} हे संभाव्य परफॉर्मन्स बॉटलनेक आहे."
+    "message": "{PH1} हे संभाव्य परफॉर्मन्स बॉटलनेक आहे"
   },
   "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} हे पेजचा खराब सत्वर प्रतिसाद दर्शवत आहे."
+    "message": "{PH1} हे पेजचा सत्वर प्रतिसाद खराब असल्याचे दर्शवते"
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} ला {PH2} लागले."
@@ -16590,7 +16647,7 @@
     "message": "डेस्कटॉप"
   },
   "panels/timeline/components/LiveMetricsView.ts | device": {
-    "message": "डिव्हाइस: {PH1}"
+    "message": "डिव्हाइस:"
   },
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "नेटवर्क कॅशे बंद करा"
@@ -16662,7 +16719,7 @@
     "message": "{PH1} - कोणताही डेटा नाही"
   },
   "panels/timeline/components/LiveMetricsView.ts | network": {
-    "message": "नेटवर्क: {PH1}"
+    "message": "नेटवर्क:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "पुढील पायऱ्या"
@@ -17070,7 +17127,7 @@
     "message": "या इनसाइटसाठी अंदाजे बचत: {PH1} आणि {PH2} ट्रान्सफरचा आकार"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} इनसाइटसाठी तपशील पहा."
+    "message": "{PH1} इनसाइटसाठी तपशील पहा"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "इनसाइट तपासणी पूर्ण झाली नाही: {PH1}"
@@ -18167,23 +18224,14 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | auto": {
     "message": "ऑटोमॅटिक"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | block": {
-    "message": "ब्लॉक करा"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | blockAxisMode": {
-    "message": "अक्ष मोड ब्लॉक करा"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "कॉर्डिनेट"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inline": {
-    "message": "इनलाइन"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inlineAxisMode": {
-    "message": "इनलाइन अ‍ॅक्सिस मोड"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "तार्किक"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | mode": {
+    "message": "मोड"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | physical": {
     "message": "प्रत्यक्ष"
@@ -18230,7 +18278,7 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "प्रॉपर्टी नाहीत"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInspector": {
     "message": "मेमरी इन्स्पेक्टर पॅनलमध्ये उघडा"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAll": {

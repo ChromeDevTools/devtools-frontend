@@ -230,6 +230,9 @@
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} 콘텐츠를 로드할 수 없음({PH2})"
   },
+  "core/sdk/Connections.ts | websocketConnectionFailed": {
+    "message": "WebSocket 연결이 해제되었습니다. Chrome 인스턴스의 --remote-allow-origins에서 현재 출처를 허용하는지 확인하세요."
+  },
   "core/sdk/Connections.ts | websocketDisconnected": {
     "message": "WebSocket 연결 해제됨"
   },
@@ -324,10 +327,10 @@
     "message": "DevTools에서 차단한 요청: \"{PH1}\""
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
-    "message": "{PH1} 로드하지 못함: {PH2} \"{PH3}\"."
+    "message": "{PH1} 로드하지 못함: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
-    "message": "{PH1} 로드 완료됨: {PH2} \"{PH3}\"."
+    "message": "{PH1} 로드 완료됨: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G"
@@ -450,7 +453,7 @@
     "message": "스크립트 소스를 가져올 수 없습니다."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "\"{PH1}\" 측정항목에서 지원 중단된 문법이 발견되었습니다. <name>;dur=<duration>;desc=<description>을 사용하세요"
+    "message": "\"{PH1}\" 측정항목에서 지원 중단된 문법이 발견되었습니다. <name>;dur=<duration>;desc=<description>을 사용하세요."
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "중복된 매개변수 \"{PH1}\"가 무시되었습니다."
@@ -465,7 +468,7 @@
     "message": "\"{PH1}\" 값 \"{PH2}\"을(를) 파싱할 수 없습니다."
   },
   "core/sdk/ServerTiming.ts | unrecognizedParameterS": {
-    "message": "매개변수 \"{PH1}\"가 인식되지 않았습니다"
+    "message": "매개변수 \"{PH1}\"가 인식되지 않았습니다."
   },
   "core/sdk/ServiceWorkerCacheModel.ts | serviceworkercacheagentError": {
     "message": "캐시에서 캐시 항목 {PH1} 삭제 중 ServiceWorkerCacheAgent 오류 발생: {PH2}"
@@ -508,6 +511,9 @@
   },
   "core/sdk/SourceMapScopeChainEntry.ts | closure": {
     "message": "클로저"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | exception": {
+    "message": "예외"
   },
   "core/sdk/SourceMapScopeChainEntry.ts | global": {
     "message": "전역"
@@ -561,7 +567,7 @@
     "message": "페이지에 포커스를 유지합니다. 사라지는 요소를 디버깅하는 데 흔히 사용됩니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "자동 어두운 모드를 사용 설정하고 prefers-color-scheme을(를) dark(으)로 설정합니다."
+    "message": "자동 어두운 모드를 사용 설정하고 prefers-color-scheme을 dark로 설정합니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut 미디어 기능을 강제 실행합니다."
@@ -609,7 +615,7 @@
     "message": "광고인 것으로 감지된 요소(빨간색)를 강조 표시합니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
-    "message": "터치 및 휠 이벤트 핸들러, 기타 기본 스레드 스크롤 상황을 포함해 스크롤 속도를 줄일 수 있는 요소(청록색)를 강조 표시합니다"
+    "message": "터치 및 휠 이벤트 핸들러, 기타 기본 스레드 스크롤 상황을 포함해 스크롤 속도를 줄일 수 있는 요소(청록색)를 강조 표시합니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "레이어 테두리"
@@ -621,10 +627,10 @@
     "message": "페인트 플래시"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | plotsFrameThroughputDropped": {
-    "message": "프레임 처리량, 누락된 프레임 배포, GPU 메모리를 표시합니다"
+    "message": "프레임 처리량, 누락된 프레임 배포, GPU 메모리를 표시합니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | requiresAPageReloadToApplyAnd": {
-    "message": "페이지 새로고침을 적용해야 하며 이미지 요청의 캐싱을 사용 중지합니다"
+    "message": "페이지 새로고침을 적용해야 하며 이미지 요청의 캐싱을 사용 중지합니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
     "message": "스크롤 성능 문제"
@@ -908,8 +914,8 @@
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "페이지에 초점 맞추기"
   },
-  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
-    "message": "DevTools MCP 다운로드"
+  "entrypoints/main/MainImpl.ts | getChromeDevToolsForAgents": {
+    "message": "에이전트에 DevTools 액세스 권한 부여"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "도움말"
@@ -1345,12 +1351,6 @@
   },
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer에서는 교차 출처 분리를 요구합니다. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/enabling-shared-array-buffer/"
-  },
-  "generated/Deprecation.ts | SharedStorage": {
-    "message": "Shared Storage API는 지원 중단되었으며 향후 버전에서 삭제될 예정입니다."
-  },
-  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
-    "message": "document.requestStorageAccessFor는 지원 중단되었으며 삭제될 예정입니다. 자세한 내용은 https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/를 참고하세요."
   },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "사용자 활성화를 포함하지 않은 speechSynthesis.speak()는 지원 중단되었으며 삭제될 예정입니다."
@@ -2442,7 +2442,7 @@
     "message": "미사용 연결입니다. 페이지에서 요청할 가능성이 있는 출처에만 preconnect를 사용합니다."
   },
   "models/trace/insights/NetworkDependencyTree.ts | warningDescription": {
-    "message": "체인의 길이를 줄이고, 리소스의 다운로드 크기를 줄이거나 불필요한 리소스의 다운로드를 지연하여 페이지 로드 속도를 개선하는 방식으로 크리티컬 요청 체이닝을 방지합니다,"
+    "message": "체인의 길이를 줄이거나, 리소스의 다운로드 크기를 줄이거나, 불필요한 리소스의 다운로드를 지연하여 페이지 로드 속도를 개선하는 방식으로 크리티컬 요청 체이닝을 방지합니다."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
     "message": "요청으로 인해 페이지의 초기 렌더링이 차단되어 LCP가 지연될 수 있습니다. [지연 또는 인라인 처리](https://developer.chrome.com/docs/performance/insights/render-blocking)하면 이러한 네트워크 요청이 주요 경로에서 벗어날 수 있습니다."
@@ -2555,6 +2555,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLiveRecordingList": {
     "message": "접근성 공지사항"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyElementHtml": {
+    "message": "요소 HTML 복사"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyMessage": {
+    "message": "메시지 복사"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | jsTriggered": {
     "message": "JS 트리거됨"
   },
@@ -2567,8 +2573,53 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "시간"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | announcementsOnly": {
+    "message": "공지사항만"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveOnly": {
+    "message": "ARIA-live만"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
     "message": "공지사항 기록"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | clearAnnouncements": {
+    "message": "공지사항 지우기"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | exportCsv": {
+    "message": "CSV 파일로 내보내기"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filter": {
+    "message": "필터"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filterByType": {
+    "message": "유형별 필터링"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | frameBlockedReason": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | nEventsMatch": {
+    "message": "이벤트 {PH1}개 일치"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | noEventsMatch": {
+    "message": "일치하는 이벤트 없음"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | oneEventMatches": {
+    "message": "일치하는 이벤트 1개"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordBoth": {
+    "message": "둘 다 기록"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
+    "message": "일부 프레임에서 기록이 차단되었습니다."
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
+    "message": "기록 시작"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | stopRecording": {
+    "message": "기록 중지"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | unknownError": {
+    "message": "알 수 없는 오류"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "접근성 노드가 노출되지 않음"
@@ -3195,22 +3246,22 @@
     "message": "{PH2} {PH3}의 실제 높이({PH1}px)가 지정된 높이({PH4}px)와 일치하지 않습니다."
   },
   "panels/application/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
-    "message": "{PH3} {PH4}의 실제 크기({PH1}×{PH2}px)와 지정된 크기({PH5}×{PH6}px)가 일치하지 않음"
+    "message": "{PH3} {PH4}의 실제 크기({PH1}×{PH2}px)와 지정된 크기({PH5}×{PH6}px)가 일치하지 않습니다."
   },
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
-    "message": "{PH2} {PH3}의 실제 너비({PH1}px)가 지정된 너비({PH4}px)와 일치하지 않음"
+    "message": "{PH2} {PH3}의 실제 너비({PH1}px)가 지정된 너비({PH4}px)와 일치하지 않습니다."
   },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "매니페스트가 기존 애플리케이션을 업데이트해야 하는지 또는 설치 가능한 새로운 웹 앱을 참조하는지 브라우저에서 파악해야 할 때 사용됩니다."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "매니페스트에 id가 지정되지 않아 start_url이 대신 사용되었습니다. 현재 ID에 대응하는 앱 ID를 지정하려면 id 필드를 {PH1} {PH2}(으)로 설정하세요."
+    "message": "참고: 매니페스트에 id가 지정되지 않아 start_url이 대신 사용되었습니다. 현재 ID에 대응하는 앱 ID를 지정하려면 id 필드를 {PH1} {PH2}으로 설정하세요."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "매니페스트"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "'any maskable'의 'purpose'을(를) 사용하여 아이콘을 선언하는 것은 권장되지 않습니다. 패딩이 너무 많거나 적어 일부 플랫폼에서 잘못 표시될 가능성이 높습니다."
+    "message": "'any maskable'의 'purpose'를 사용하여 아이콘을 선언하는 것은 권장되지 않습니다. 패딩이 너무 많거나 적어 일부 플랫폼에서 잘못 표시될 가능성이 높습니다."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "배경 색상"
@@ -3225,13 +3276,13 @@
     "message": "클립보드에 추천 ID 복사"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
-    "message": "매니페스트에 'start_url' 필드가 없어 service worker을(를) 확인할 수 없습니다."
+    "message": "매니페스트에 'start_url' 필드가 없으면 service worker를 확인할 수 없습니다."
   },
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
-    "message": "매니페스트에서 필요한 아이콘을 다운로드할 수 없음"
+    "message": "매니페스트에서 필요한 아이콘을 다운로드할 수 없습니다."
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "PWA 제목 표시줄의 창 컨트롤 오버레이를 맞춤설정합니다."
+    "message": "PWA 제목 표시줄의 Window Controls Overlay 맞춤설정"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "설명"
@@ -3279,25 +3330,25 @@
     "message": "매니페스트에 'display_override' 필드가 포함되며, 첫 번째 지원되는 표시 모드는 'standalone', 'fullscreen', 'minimal-ui' 중 하나여야 합니다."
   },
   "panels/application/AppManifestView.ts | manifestCouldNotBeFetchedIsEmpty": {
-    "message": "매니페스트를 가져올 수 없거나 파싱할 수 없거나 매니페스트가 비어있습니다."
+    "message": "매니페스트를 가져올 수 없거나, 비어 있거나, 파싱할 수 없습니다."
   },
   "panels/application/AppManifestView.ts | manifestDescription": {
-    "message": "매니페스트는 휴대전화의 홈 화면에 앱이 표시되는 방식과 실행 시 앱의 형태를 정의합니다"
+    "message": "매니페스트는 휴대전화의 홈 화면에 앱이 표시되는 방식과 실행 시 앱의 형태를 정의합니다."
   },
   "panels/application/AppManifestView.ts | manifestDisplayPropertyMustBeOne": {
     "message": "매니페스트 'display' 속성은 'standalone', 'fullscreen', 'minimal-ui' 중 하나여야 합니다."
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainANameOr": {
-    "message": "매니페스트에는 'name' 또는 'short_name' 필드가 포함되지 않습니다."
+    "message": "매니페스트에 'name' 또는 'short_name' 필드가 포함되어 있지 않습니다."
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "매니페스트에 적절한 아이콘이 포함되어 있지 않습니다. 아이콘은 최소 {PH1}px인 PNG, SVG 또는 WebP 형식으로 'sizes' 속성이 설정되어야 하며, 'purpose' 속성이 설정된 경우 속성에 'any'를 포함해야 합니다."
+    "message": "매니페스트에 적합한 아이콘이 포함되어 있지 않습니다. 최소 {PH1}px 이상의 PNG, SVG 또는 WebP 형식이어야 하며, 'sizes' 속성이 설정되어 있어야 하고, 'purpose' 속성이 설정된 경우 'any'를 포함해야 합니다."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "매니페스트에서 'prefer_related_applications: true' 지정"
   },
   "panels/application/AppManifestView.ts | manifestStartUrlIsNotValid": {
-    "message": "‘start_url’ 매니페스트가 잘못되었습니다"
+    "message": "'start_url' 매니페스트가 잘못되었습니다."
   },
   "panels/application/AppManifestView.ts | name": {
     "message": "이름"
@@ -3321,7 +3372,7 @@
     "message": "모바일에서는 더욱 풍부한 PWA 설치 UI를 사용할 수 없습니다. form_factor가 설정되지 않았거나 wide 이외의 값으로 설정된 스크린샷을 하나 이상 추가하세요."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
-    "message": "제공된 아이콘 중 최소 {PH1}픽셀인 정사각형으로 PNG, SVG 또는 WebP 형식이며 purpose 속성이 설정되어 있지 않거나 설정되어 있는 경우 'any'로 설정되어 있는 아이콘이 없습니다"
+    "message": "제공된 아이콘 중 최소 {PH1}픽셀인 정사각형으로 PNG, SVG 또는 WebP 형식이며 purpose 속성이 설정되어 있지 않거나 'any'로 설정되어 있는 아이콘이 없습니다"
   },
   "panels/application/AppManifestView.ts | onInvokeAlert": {
     "message": "{PH1}까지 스크롤함"
@@ -3330,7 +3381,7 @@
     "message": "방향"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOffline": {
-    "message": "페이지가 오프라인에서 작동하지 않음"
+    "message": "페이지가 오프라인에서 작동하지 않습니다."
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
     "message": "페이지가 오프라인에서 작동하지 않습니다. Chrome 93부터 설치 가능 기준이 변경되어 이 사이트에서 설치할 수 없게 됩니다. {PH1}에서 자세한 내용을 참고하세요."
@@ -3360,7 +3411,7 @@
     "message": "프로토콜 핸들러"
   },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
-    "message": "{PH1} {PH2}은(는) 매니페스트에서 크기를 지정하지 않음"
+    "message": "{PH1} {PH2}의 크기가 매니페스트에 지정되어 있지 않습니다."
   },
   "panels/application/AppManifestView.ts | sSFailedToLoad": {
     "message": "{PH1} {PH2}을(를) 로드하지 못함"
@@ -3369,7 +3420,7 @@
     "message": "{PH1} {PH2} 높이는 너비의 2.3배 이상일 수 없습니다."
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
-    "message": "대부분의 운영체제에 정사각형 아이콘이 필요합니다. 정사각형 아이콘을 배열에 하나 이상 포함하세요."
+    "message": "대부분의 운영체제에 정사각형 아이콘이 필요합니다. 배열에 정사각형 아이콘을 하나 이상 포함하세요."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2}에서 크기를 [width]x[height](으)로 지정해야 합니다."
@@ -3384,10 +3435,10 @@
     "message": "{PH1} {PH2} 너비는 높이의 2.3배 이상일 수 없습니다."
   },
   "panels/application/AppManifestView.ts | sSrcIsNotSet": {
-    "message": "{PH1} 'src'이(가) 설정되지 않음"
+    "message": "{PH1} 'src'가 설정되지 않았습니다."
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL(''{PH2}'')을 파싱할 수 없음"
+    "message": "{PH1} URL(\"{PH2}\")을 파싱할 수 없습니다."
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "스크린샷"
@@ -3402,7 +3453,7 @@
     "message": "form_factor가 동일한 모든 스크린샷은 해당 form_factor가 있는 첫 번째 스크린샷과 가로세로 비율이 동일해야 합니다. 일부 스크린샷은 무시됩니다."
   },
   "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
-    "message": "컨트롤 오버레이가 사용 설정된 창 에뮬레이션"
+    "message": "Window Controls Overlay 에뮬레이션"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "닉네임"
@@ -3444,13 +3495,13 @@
     "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
-    "message": "Chrome에서 {PH3}의 {PH2} 필드에 대한 {PH1} 값을 찾았습니다"
+    "message": "Chrome에서 {PH3}의 {PH2} 필드에 대한 {PH1} 값을 찾았습니다."
   },
   "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
-    "message": "도움이 필요하신가요? {PH1} 사이트를 읽어보세요."
+    "message": "도움이 필요하신가요? {PH1}를 읽어보세요."
   },
   "panels/application/AppManifestView.ts | wcoNotFound": {
-    "message": "Window Controls Overlay API를 사용하고 앱의 제목 표시줄을 맞춤설정하려면 매니페스트에서 {PH1}를 정의합니다"
+    "message": "Window Controls Overlay API를 사용하고 앱의 제목 표시줄을 맞춤설정하려면 매니페스트에서 {PH1}를 정의합니다."
   },
   "panels/application/ApplicationPanelSidebar.ts | ads": {
     "message": "광고"
@@ -3516,7 +3567,7 @@
     "message": "IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | indexeddbDescription": {
-    "message": "이 페이지에서 indexedDB 키-값 쌍과 데이터베이스를 확인하고 삭제할 수 있습니다"
+    "message": "이 페이지에서 IndexedDB 키-값 쌍과 데이터베이스를 확인하고 삭제할 수 있습니다."
   },
   "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "키 경로: {PH1}"
@@ -3540,7 +3591,7 @@
     "message": "확장 프로그램 스토리지가 감지되지 않음"
   },
   "panels/application/ApplicationPanelSidebar.ts | noIndexeddb": {
-    "message": "indexedDB가 감지되지 않음"
+    "message": "IndexedDB가 감지되지 않음"
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "로컬 스토리지가 감지되지 않음"
@@ -3558,16 +3609,16 @@
     "message": "열린 창"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
-    "message": "이 페이지에서 window.open()을 통해 열린 창을 볼 수 있습니다"
+    "message": "이 페이지에서 window.open()을(를) 통해 열린 창을 볼 수 있습니다."
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB 새로고침"
   },
   "panels/application/ApplicationPanelSidebar.ts | resourceDescription": {
-    "message": "이 페이지에서 프레임의 리소스를 확인할 수 있습니다"
+    "message": "이 페이지에서 프레임의 리소스를 확인할 수 있습니다."
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
-    "message": "세션 저장소"
+    "message": "세션 스토리지"
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "이 페이지에서 세션 스토리지 키-값 쌍을 확인, 추가, 수정 및 삭제할 수 있습니다."
@@ -3576,10 +3627,10 @@
     "message": "채팅 시작"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
-    "message": "저장용량"
+    "message": "스토리지"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
-    "message": "이 문서의 콘텐츠는 'document.write()'를 통해 동적으로 생성되었습니다."
+    "message": "이 문서의 콘텐츠는 document.write()를 통해 동적으로 생성되었습니다."
   },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "버전: {PH1}"
@@ -3597,7 +3648,7 @@
     "message": "작업자"
   },
   "panels/application/ApplicationPanelSidebar.ts | workerDescription": {
-    "message": "이 페이지에서 상위 프레임에서 만든 전용 작업자를 볼 수 있습니다."
+    "message": "이 페이지에서는 상위 프레임에서 추가한 전용 작업자를 볼 수 있습니다."
   },
   "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
     "message": "뒤로-앞으로 캐시"
@@ -3720,7 +3771,7 @@
     "message": "키 또는 값으로 필터링"
   },
   "panels/application/CrashReportContextView.ts | noContext": {
-    "message": "프레임 전반에서 감지된 컨텍스트 항목이 없습니다."
+    "message": "프레임 전반에서 감지된 컨텍스트 항목이 없습니다"
   },
   "panels/application/CrashReportContextView.ts | refresh": {
     "message": "새로고침"
@@ -3768,7 +3819,7 @@
     "message": "증명 키 생성 오류"
   },
   "panels/application/DeviceBoundSessionsView.ts | boundCookieSetForbidden": {
-    "message": "바운딩 쿠키를 설정할 수 없는 컨텍스트에서 등록"
+    "message": "바인딩 쿠키를 설정할 수 없는 컨텍스트에서 등록"
   },
   "panels/application/DeviceBoundSessionsView.ts | cachedChallenge": {
     "message": "캐시된 챌린지"
@@ -4008,7 +4059,7 @@
     "message": "허용된 새로고침 개시자에 잘못된 호스트 패턴이 있음"
   },
   "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
-    "message": "허용된 새로고침 개시자가 문자열이 아님"
+    "message": "허용된 새로고침 개시자가 문자열이 아닙니다."
   },
   "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
     "message": "결과 새로고침"
@@ -4068,7 +4119,7 @@
     "message": "사이트 범위 세션의 호스트 패턴과 사이트가 일치하지 않음"
   },
   "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
-    "message": "세부정보를 보려면 이벤트 행을 선택하세요"
+    "message": "세부정보를 보려면 이벤트 행을 선택하세요."
   },
   "panels/application/DeviceBoundSessionsView.ts | serverError": {
     "message": "엔드포인트 일시적 오류"
@@ -4203,10 +4254,10 @@
     "message": "콘텐츠 보안 정책(CSP)"
   },
   "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "프레임이 생성되었을 때 (async) stack에 광고 스크립트가 있었습니다. 프레임의 생성 stack trace을(를) 검사하면 추가로 유용한 정보를 얻을 수도 있습니다."
+    "message": "이 프레임이 생성되었을 때 (async) stack에 광고 스크립트가 있었습니다. 프레임의 생성 stack trace을(를) 검사하면 추가로 유용한 정보를 얻을 수도 있습니다."
   },
   "panels/application/FrameDetailsView.ts | creationStackTrace": {
-    "message": "프레임 생성 Stack Trace"
+    "message": "프레임 생성 stack trace"
   },
   "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "이 프레임은 프로그래매틱 방식으로 생성되었습니다. stack trace은(는) 프레임 생성 위치를 표시합니다."
@@ -4215,7 +4266,7 @@
     "message": "크리에이터 광고 스크립트 상위 항목"
   },
   "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "교차 출처 분리됨"
+    "message": "교차 출처 분리"
   },
   "panels/application/FrameDetailsView.ts | document": {
     "message": "문서"
@@ -4236,7 +4287,7 @@
     "message": "메모리 측정"
   },
   "panels/application/FrameDetailsView.ts | no": {
-    "message": "없음"
+    "message": "아니요"
   },
   "panels/application/FrameDetailsView.ts | none": {
     "message": "없음"
@@ -4272,13 +4323,13 @@
     "message": "보안 컨텍스트"
   },
   "panels/application/FrameDetailsView.ts | securityIsolation": {
-    "message": "보안 및 분리"
+    "message": "보안 및 격리"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
     "message": "SharedArrayBuffer 생성자를 사용할 수 있으며 SABs은(는) postMessage을(를) 통해 전송될 수 있음"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer 생성자를 사용할 수 있지만 SABs은(는) postMessage을(를) 통해 전송될 수 없음"
+    "message": "SharedArrayBuffer 생성자를 사용할 수 있지만 postMessage를 통해 SABs를 전송할 수 없습니다."
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "프레임의 스키마가 안전하지 않음"
@@ -4287,10 +4338,10 @@
     "message": "performance.measureUserAgentSpecificMemory() API 사용 가능"
   },
   "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "performance.measureUserAgentSpecificMemory() API 사용 불가"
+    "message": "performance.measureUserAgentSpecificMemory() API를 사용할 수 없습니다."
   },
   "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "'프로토콜 모니터' 실험이 사용 설정되어 있기 때문에 추가(디버깅) 정보가 표시됩니다"
+    "message": "'프로토콜 모니터' 실험이 사용 설정되어 있기 때문에 이 디버깅 정보가 표시됩니다."
   },
   "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "SharedArrayBuffer를 전송하려면 다음 권한 정책을 사용 설정해야 합니다."
@@ -4356,7 +4407,7 @@
     "message": "키"
   },
   "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
-    "message": "선택한 객체 스토어에 포함된 데이터가 삭제됩니다"
+    "message": "선택한 객체 스토어에 포함된 데이터가 삭제됩니다."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "객체 저장"
@@ -4419,7 +4470,7 @@
     "message": "문서"
   },
   "panels/application/OpenedWindowDetailsView.ts | no": {
-    "message": "없음"
+    "message": "아니요"
   },
   "panels/application/OpenedWindowDetailsView.ts | openerFrame": {
     "message": "오프너 프레임"
@@ -4431,7 +4482,7 @@
     "message": "보안"
   },
   "panels/application/OpenedWindowDetailsView.ts | securityIsolation": {
-    "message": "보안 및 분리"
+    "message": "보안 및 격리"
   },
   "panels/application/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "열린 창이 이러한 창을 연 프로그램에 액세스하거나 창을 연 프로그램이 열린 창에 액세스할 수 있는지를 표시합니다."
@@ -4461,7 +4512,7 @@
     "message": "만료 시간"
   },
   "panels/application/OriginTrialTreeView.ts | isThirdParty": {
-    "message": "타사"
+    "message": "서드 파티"
   },
   "panels/application/OriginTrialTreeView.ts | matchSubDomains": {
     "message": "하위 도메인 일치"
@@ -4485,7 +4536,7 @@
     "message": "토큰 {PH1}개"
   },
   "panels/application/OriginTrialTreeView.ts | trialName": {
-    "message": "알 수 없음"
+    "message": "체험판 이름"
   },
   "panels/application/OriginTrialTreeView.ts | usageRestriction": {
     "message": "사용 제한"
@@ -4506,7 +4557,7 @@
     "message": "Reporting API"
   },
   "panels/application/ReportingApiView.ts | clickToDisplayBody": {
-    "message": "아무 보고서나 클릭하여 본문 표시"
+    "message": "보고서를 클릭하여 본문을 표시합니다."
   },
   "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
     "message": "보고서 또는 엔드포인트 없음"
@@ -4515,7 +4566,7 @@
     "message": "선택된 보고서 없음"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
-    "message": "이 페이지에서 Reporting API 보고서 및 엔드포인트를 검사할 수 있습니다."
+    "message": "Reporting API 보고서 및 엔드포인트 검사"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "캐시 스토리지"
@@ -4979,11 +5030,11 @@
   "panels/application/components/AdsView.ts | filterListRule": {
     "message": "목록 규칙 필터링"
   },
-  "panels/application/components/AdsView.ts | highlightAds": {
-    "message": "광고 강조 표시"
+  "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
+    "message": "광고 관련 리소스 강조 표시"
   },
-  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBe": {
-    "message": "광고인 것으로 감지된 요소(빨간색)를 강조 표시합니다."
+  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBeAdRelated": {
+    "message": "광고와 관련된 것으로 감지된 요소(빨간색)를 강조 표시합니다."
   },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "초기 출처"
@@ -5015,8 +5066,14 @@
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "광고의 총 CPU 사용량"
   },
+  "panels/application/components/AdsView.ts | totalCpuUsageExplanation": {
+    "message": "광고에서 사용한 총 CPU 시간"
+  },
   "panels/application/components/AdsView.ts | totalNetworkUsage": {
     "message": "광고의 총 네트워크 사용량"
+  },
+  "panels/application/components/AdsView.ts | totalNetworkUsageExplanation": {
+    "message": "광고에서 사용한 총 네트워크 데이터"
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<unnamed>"
@@ -5027,8 +5084,14 @@
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "표시 영역 광고 수"
   },
+  "panels/application/components/AdsView.ts | viewportAdCountExplanation": {
+    "message": "표시 영역의 광고 수"
+  },
   "panels/application/components/AdsView.ts | viewportAdDensity": {
     "message": "표시 영역 광고 밀도"
+  },
+  "panels/application/components/AdsView.ts | viewportAdDensityExplanation": {
+    "message": "광고가 차지하는 표시 영역의 비율입니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET 요청을 통해 로드된 페이지만 뒤로-앞으로 캐시를 사용할 수 있습니다."
@@ -5268,7 +5331,7 @@
     "message": "인쇄 UI를 표시하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "페이지가 'window.open()'을 사용하여 열렸고 다른 탭에 해당 페이지 참조가 있거나, 페이지에 창이 열려 있습니다"
+    "message": "페이지가 'window.open()'을 사용하여 열렸고 다른 탭에 해당 페이지 참조가 있거나, 페이지에 창이 열려 있습니다."
   },
   "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
     "message": "뒤로-앞으로 캐시에 저장된 페이지의 렌더러 프로세스가 다운되었습니다."
@@ -5418,7 +5481,7 @@
     "message": "프레임"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
-    "message": "{n,plural, =1{프레임 {m}개에서 문제 #개가 발견되었습니다.}other{프레임 {m}개에서 문제 #개가 발견되었습니다.}}"
+    "message": "{n,plural, =1{프레임 {m}개에서 문제 #개가 발견되었습니다}other{프레임 {m}개에서 문제 #개가 발견되었습니다}}"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
     "message": "{n,plural, =1{프레임 1개에서 문제 #개가 발견되었습니다.}other{프레임 1개에서 문제 #개가 발견되었습니다.}}"
@@ -5433,7 +5496,7 @@
     "message": "자세히 알아보기: 로드 취소 핸들러 사용 안함"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
-    "message": "뒤로-앞으로 캐시를 통해 페이지를 복원할 수 없습니다. 뒤로-앞으로 캐시를 실행하려면 Chrome의 뒤로/앞으로 버튼을 사용하거나 아래의 테스트 버튼을 사용하여 자동으로 앞뒤로 이동하세요"
+    "message": "뒤로-앞으로 캐시를 사용할 수 없습니다. 뒤로-앞으로 캐시를 실행하려면 Chrome의 뒤로/앞으로 버튼을 사용하거나 아래의 테스트 버튼을 사용하여 자동으로 앞뒤로 이동하세요"
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "실행 가능"
@@ -5823,7 +5886,7 @@
     "message": "운영체제의 절전 모드로 인해 추측 로드가 사용 중지되었습니다."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "운영체제의 데이터 절약 모드로 인해 추측 로드가 사용 중지되었습니다"
+    "message": "운영체제의 데이터 절약 모드로 인해 추측 로드가 사용 중지되었습니다."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "DevTools가 열려 있으므로 미리 가져오기가 강제 사용 설정됩니다. 이 브라우저 세션은 성능 비교에 사용되는 보류 그룹에 속해 있으므로 DevTools가 닫히면 미리 가져오기가 사용 중지됩니다."
@@ -5916,7 +5979,7 @@
     "message": "미리 가져오기와 사용 사이에 너무 오랜 시간이 경과되어 미리 가져오기가 삭제되었습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
-    "message": "절전 모드가 사용 설정되어 있어 미리 가져오기가 실행되지 않았습니다."
+    "message": "절전 모드가 사용 설정되어 있어 미리 가져오기가 수행되지 않았습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
     "message": "브라우저가 시크릿 모드 또는 게스트 모드이므로 미리 가져오기를 수행할 수 없습니다."
@@ -6027,7 +6090,7 @@
     "message": "사전 렌더링 탐색에 HTTP 인증이 필요하지만 현재 이 인증은 지원되지 않습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "이 기기의 전체 시스템 메모리가 사전 렌더링을 지원하기에 부족하여 사전 렌더링을 수행할 수 없습니다."
+    "message": "이 기기의 전체 시스템 메모리가 사전 렌더링을 지원하기에 부족하여 사전 렌더링이 수행되지 않았습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
     "message": "시작 페이지에 이미 진행 중인 사전 렌더링이 너무 많아서 eagerness가 \"eager\"인 사전 렌더링이 수행되지 않았습니다. 사전 렌더링을 추가로 사용 설정하려면 \"eager\"가 포함된 다른 추측 규칙을 삭제하세요."
@@ -6102,7 +6165,7 @@
     "message": "사전 렌더링된 페이지가 교차 출처 동일 사이트 URL로 리디렉션되는 URL로 이동했으나 대상 응답에 적절한 Supports-Loading-Mode 헤더가 포함되어 있지 않습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
-    "message": "시작 페이지가 <script type=\"speculationrules\">에서 해당 사전 렌더링 규칙을 삭제했으므로 사전 렌더링된 페이지의 로드가 취소되었습니다."
+    "message": "트리거 페이지가 <script type=\"speculationrules\">에서 해당 사전 렌더링 규칙을 삭제했으므로 사전 렌더링된 페이지의 로드가 취소되었습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
     "message": "잘못된 SSL 인증서로 인해 사전 렌더링 탐색이 실패했습니다."
@@ -6572,6 +6635,24 @@
   "panels/common/CPUThrottlingOption.ts | noThrottling": {
     "message": "제한 없음"
   },
+  "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
+    "message": "댓글 입력"
+  },
+  "panels/common/CommentThreadWidget.ts | response": {
+    "message": "응답:"
+  },
+  "panels/common/CommentThreadWidget.ts | sendToAgent": {
+    "message": "에이전트로 전송"
+  },
+  "panels/common/CommentThreadWidget.ts | sent": {
+    "message": "전송됨"
+  },
+  "panels/common/CommentThreadWidget.ts | sentCheckmark": {
+    "message": "전송됨 체크표시"
+  },
+  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
+    "message": "댓글({PH1}개)"
+  },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
   },
@@ -6649,6 +6730,15 @@
   },
   "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "소스 맵에 연결됨: {PH1}"
+  },
+  "panels/common/common-meta.ts | comments": {
+    "message": "댓글"
+  },
+  "panels/common/common-meta.ts | showComments": {
+    "message": "댓글 표시"
+  },
+  "panels/common/common-meta.ts | toggleCommentMode": {
+    "message": "AI 코딩 에이전트에 보낼 주석 추가"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "확장 프로그램"
@@ -7700,6 +7790,21 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "이 항목 래핑"
   },
+  "panels/elements/DOMTreeWidget.ts | pageDom": {
+    "message": "페이지 DOM"
+  },
+  "panels/elements/DOMTreeWidget.ts | reveal": {
+    "message": "표시"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllLines": {
+    "message": "모두 표시({PH1}줄)"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllNodesDMore": {
+    "message": "모든 노드 표시(추가 {PH1}개)"
+  },
+  "panels/elements/DOMTreeWidget.ts | viewIssue": {
+    "message": "문제 보기:"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup> 내에 잘못된 요소 또는 텍스트 노드가 포함됨"
   },
@@ -7817,132 +7922,6 @@
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "원격 객체를 유효한 노드로 결정할 수 없습니다."
   },
-  "panels/elements/ElementsTreeElement.ts | children": {
-    "message": "하위 요소:"
-  },
-  "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "복사"
-  },
-  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
-    "message": "크리에이터 광고 스크립트 상위 항목"
-  },
-  "panels/elements/ElementsTreeElement.ts | cut": {
-    "message": "잘라내기"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableContainer": {
-    "message": "컨테이너 오버레이 사용 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
-    "message": "Flex 모드 사용 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
-    "message": "그리드 레인 모드 사용 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
-    "message": "그리드 모드 사용 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
-    "message": "스크롤-스냅 오버레이 사용 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
-    "message": "@starting-style 모드 사용 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
-    "message": "이 요소에는 스크롤 가능한 오버플로가 있습니다."
-  },
-  "panels/elements/ElementsTreeElement.ts | enableContainer": {
-    "message": "컨테이너 오버레이 사용 설정"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
-    "message": "Flex 모드 사용 설정"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
-    "message": "그리드 레인 모드 사용 설정"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
-    "message": "그리드 모드 사용 설정"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
-    "message": "스크롤-스냅 오버레이 사용 설정"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
-    "message": "@starting-style 모드 사용 설정"
-  },
-  "panels/elements/ElementsTreeElement.ts | filterListRule": {
-    "message": "목록 규칙 필터링"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
-    "message": "이 팝오버를 열어 두기"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
-    "message": "이 요소에 대한 관심도 유발"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceState": {
-    "message": "강제 실행 상태"
-  },
-  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
-    "message": "출처 데이터를 사용할 수 없음"
-  },
-  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
-    "message": "미디어 패널로 이동"
-  },
-  "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "붙여넣기"
-  },
-  "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "표시"
-  },
-  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
-    "message": "루트 스크립트 필터 목록 규칙"
-  },
-  "panels/elements/ElementsTreeElement.ts | selectAll": {
-    "message": "모두 선택"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "commandfor 속성과 연결된 요소 표시"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
-    "message": "맞춤 요소 정의 표시"
-  },
-  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "interesttarget 속성과 연결된 요소 표시"
-  },
-  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "popovertarget 속성과 연결된 요소 표시"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
-    "message": "이 팝오버 열어 두기 중지"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
-    "message": "이 요소에 대한 관심 취소"
-  },
-  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
-    "message": "이 요소는 광고로 확인됨"
-  },
-  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
-    "message": "이 요소를 참조하려면 콘솔에서 {PH1}을 사용합니다."
-  },
-  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
-    "message": "<value is too large to edit>"
-  },
-  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
-    "message": "소스 코드 보기"
-  },
-  "panels/elements/ElementsTreeOutline.ts | pageDom": {
-    "message": "페이지 DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "표시"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
-    "message": "모두 표시({PH1}줄)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "모든 노드 표시(추가 {PH1}개)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
-    "message": "문제 보기:"
-  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "전체"
   },
@@ -8044,9 +8023,6 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS 속성값: {PH1}"
-  },
-  "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "표시"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "펼쳐진 규칙 접기"
@@ -9980,6 +9956,12 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrate": {
     "message": "보정"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedLowTierMobile": {
+    "message": "낮은 등급의 휴대기기"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedMidTierMobile": {
+    "message": "중간 등급 휴대기기"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationCTA": {
     "message": "CPU 제한 사전 설정을 사용하려면 보정 프로세스를 실행하여 기기에 적합한 제한 속도를 결정하세요."
   },
@@ -11040,7 +11022,7 @@
     "message": "RegExp 그룹은 허용되지 않습니다."
   },
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
-    "message": "패턴 입력은 비워 둘 수 없습니다"
+    "message": "패턴 입력은 비워 둘 수 없습니다."
   },
   "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
     "message": "URL 패턴이 아래로 이동되었습니다"
@@ -11140,6 +11122,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "일반"
+  },
+  "panels/network/RequestHeadersView.ts | openWith": {
+    "message": "{PH1}(으)로 열기"
   },
   "panels/network/RequestHeadersView.ts | raw": {
     "message": "원본 헤더"
@@ -11459,6 +11444,9 @@
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket 프레임"
   },
+  "panels/network/ShowMoreDetailsWidget.ts | copy": {
+    "message": "복사"
+  },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "더보기"
   },
@@ -11673,7 +11661,7 @@
     "message": "리소스와 문서가 동일한 사이트에서 제공되는 경우 이 옵션을 선택하세요."
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
-    "message": "이 리소스를 포함하는 임의의 웹사이트로 인해 보안 위험이 제기되지 않는 경우에만 이 옵션을 선택합니다"
+    "message": "이 리소스를 포함하는 임의의 웹사이트로 인해 보안 위험이 제기되지 않는 경우에만 이 옵션을 선택합니다."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
     "message": "이 문서에서 교차 출처 오프너 정책을 지정했기 때문에 샌드박스된 iframe에 의해 열리는 팝업에서 문서가 로드되지 않도록 차단되었습니다"
@@ -11869,15 +11857,6 @@
   },
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "시스템 모니터"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedElementsList": {
-    "message": "분리된 요소 목록"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedNodes": {
-    "message": "분리된 노드"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | nodeSize": {
-    "message": "노드 수"
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementProfile": {
     "message": "분리된 요소 {PH1}"
@@ -12710,6 +12689,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "다시 재생 취소"
   },
+  "panels/recorder/RecordingView.ts | codeFormat": {
+    "message": "코드 형식"
+  },
   "panels/recorder/RecordingView.ts | codeSidebarClosed": {
     "message": "코드 사이드바 닫힘"
   },
@@ -13463,6 +13445,9 @@
   "panels/sensors/SensorsView.ts | beta": {
     "message": "β(베타)"
   },
+  "panels/sensors/SensorsView.ts | cpuPerformanceNoOverrideWithDefault": {
+    "message": "재정의 안 함({PH1})"
+  },
   "panels/sensors/SensorsView.ts | customOrientation": {
     "message": "맞춤 방향"
   },
@@ -13480,6 +13465,9 @@
   },
   "panels/sensors/SensorsView.ts | error": {
     "message": "오류"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedCpuPerformanceTierEmulation": {
+    "message": "CPU 성능 등급 에뮬레이션을 강제합니다."
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "선택한 유휴 상태 에뮬레이션 강제 실행"
@@ -13558,6 +13546,27 @@
   },
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "가속도계"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformance": {
+    "message": "CPU 성능 등급"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceNoOverride": {
+    "message": "재정의 안 함"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierHigh": {
+    "message": "등급 3: 높음"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierLow": {
+    "message": "등급 1: 낮음"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierMid": {
+    "message": "등급 2: 중간"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUltra": {
+    "message": "등급 4: 울트라"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUnknown": {
+    "message": "등급 0: 알 수 없음"
   },
   "panels/sensors/sensors-meta.ts | cpuPressure": {
     "message": "CPU 압력"
@@ -13774,6 +13783,63 @@
   },
   "panels/settings/AISettingsTab.ts | wrongLocale": {
     "message": "이 기능을 사용하려면 DevTools 설정에서 언어 환경설정을 영어로 설정하세요."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | correlationIdDescription": {
+    "message": "X-Correlation-ID 또는 Correlation-ID 응답 헤더의 값"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | description": {
+    "message": "일치하는 네트워크 요청에 대한 외부 백엔드 디버깅, APM 또는 추적 도구 링크를 구성합니다. 자리표시자를 사용하여 요청 및 응답 헤더에서 추출된 연관 ID를 삽입합니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | devtoolsDebugIdDescription": {
+    "message": "devtools-debug-id Server-Timing 항목의 desc 매개변수 값"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | headerColumn": {
+    "message": "참조된 헤더/속성"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
+    "message": "잘못된 규칙은 적용되거나 저장되지 않습니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
+    "message": "URL 패턴은 유효한 URL 패턴이어야 합니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelCannotBeEmpty": {
+    "message": "라벨은 비워 둘 수 없습니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelColumn": {
+    "message": "라벨"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderColumn": {
+    "message": "자리표시자"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderDocHeading": {
+    "message": "사용 가능한 자리표시자"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | requestIdDescription": {
+    "message": "X-Request-ID 응답 헤더의 값"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | rulesSectionHeading": {
+    "message": "백엔드 연결 규칙"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | spanIdDescription": {
+    "message": "Server-Timing traceparent 항목의 8바이트 16진수 상위 스팬 ID"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateCannotBeEmpty": {
+    "message": "타겟 URL 템플릿은 비워 둘 수 없습니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateColumn": {
+    "message": "타겟 URL 템플릿"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | templateRequiresPlaceholder": {
+    "message": "타겟 URL 템플릿에는 자리표시자가 하나 이상 포함되어야 합니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | traceIdDescription": {
+    "message": "trace-id 응답 헤더 또는 Server-Timing traceparent 항목의 16바이트 16진수 트레이스 ID"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternCannotBeEmpty": {
+    "message": "URL 패턴은 비워 둘 수 없습니다."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
+    "message": "URL 패턴"
   },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "경로를 입력하세요."
@@ -14010,7 +14076,7 @@
     "message": "중앙 y"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutFieldRequired": {
-    "message": "디스플레이 컷아웃이 사용 설정된 경우 {PH1}은(는) 필수입니다"
+    "message": "디스플레이 컷아웃이 사용 설정된 경우 {PH1} 입력란은 필수입니다."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutHeight": {
     "message": "컷아웃 높이"
@@ -14246,6 +14312,9 @@
   "panels/settings/settings-meta.ts | aiInnovations": {
     "message": "AI 혁신"
   },
+  "panels/settings/settings-meta.ts | backendLinking": {
+    "message": "백엔드 연결"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "문서"
   },
@@ -14266,6 +14335,9 @@
   },
   "panels/settings/settings-meta.ts | showAiInnovations": {
     "message": "AI 혁신 보기"
+  },
+  "panels/settings/settings-meta.ts | showBackendLinking": {
+    "message": "백엔드 연결 표시"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "실험 표시"
@@ -14927,9 +14999,6 @@
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "소스 패널에서 열기"
   },
-  "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "포착된 예외에서 일시중지"
-  },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "500ms 동안 차단된 모든 일시중지로 다시 시작"
   },
@@ -14948,23 +15017,11 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "현재 자바스크립트 호출 종료"
   },
-  "panels/sources/SourcesView.ts | debuggerHidden": {
-    "message": "디버거 사이드바 숨김"
-  },
-  "panels/sources/SourcesView.ts | debuggerShown": {
-    "message": "디버거 사이드바 표시됨"
-  },
   "panels/sources/SourcesView.ts | hideDebugger": {
     "message": "디버거 숨기기"
   },
   "panels/sources/SourcesView.ts | hideNavigator": {
     "message": "탐색기 숨기기"
-  },
-  "panels/sources/SourcesView.ts | navigatorHidden": {
-    "message": "탐색기 사이드바 숨김"
-  },
-  "panels/sources/SourcesView.ts | navigatorShown": {
-    "message": "탐색기 사이드바 표시됨"
   },
   "panels/sources/SourcesView.ts | showDebugger": {
     "message": "디버거 표시"
@@ -16590,7 +16647,7 @@
     "message": "데스크톱"
   },
   "panels/timeline/components/LiveMetricsView.ts | device": {
-    "message": "기기: {PH1}"
+    "message": "기기:"
   },
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "네트워크 캐시 사용 중지"
@@ -16662,7 +16719,7 @@
     "message": "{PH1} - 데이터 없음"
   },
   "panels/timeline/components/LiveMetricsView.ts | network": {
-    "message": "네트워크: {PH1}"
+    "message": "네트워크:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "다음 단계"
@@ -17070,7 +17127,7 @@
     "message": "이 통계로 예상되는 절감: {PH1} 및 {PH2} 전송 크기"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} 통계에 대한 세부정보를 확인하세요."
+    "message": "{PH1} 통계 세부정보 보기"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "통계 확인 실패: {PH1}"
@@ -18167,23 +18224,14 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | auto": {
     "message": "자동"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | block": {
-    "message": "차단"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | blockAxisMode": {
-    "message": "블록 축 모드"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "좌표"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inline": {
-    "message": "인라인"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inlineAxisMode": {
-    "message": "인라인 축 모드"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "논리적"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | mode": {
+    "message": "모드"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | physical": {
     "message": "Physical"
@@ -18230,7 +18278,7 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "속성 없음"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInspector": {
     "message": "메모리 검사기 패널에서 열기"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAll": {

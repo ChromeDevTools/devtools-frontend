@@ -230,6 +230,9 @@
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} தளத்திலுள்ள உள்ளடக்கத்தை ஏற்ற முடியவில்லை ({PH2})"
   },
+  "core/sdk/Connections.ts | websocketConnectionFailed": {
+    "message": "WebSocket துண்டிக்கப்பட்டது. Chrome நிகழ்வில் உள்ள --remote-allow-origins தற்போதைய ஆரிஜினை அனுமதிப்பதை உறுதிசெய்துகொள்ளவும்."
+  },
   "core/sdk/Connections.ts | websocketDisconnected": {
     "message": "WebSocket துண்டிக்கப்பட்டது"
   },
@@ -324,10 +327,10 @@
     "message": "டெவெலப்பர் கருவிகள் மூலம் கோரிக்கை தடுக்கப்பட்டது: \"{PH1}\""
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
-    "message": "{PH1} ஐ ஏற்ற முடியவில்லை: {PH2} \"{PH3}\"."
+    "message": "{PH1} ஏற்றப்படவில்லை: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
-    "message": "{PH1} ஏற்றப்பட்டது: {PH2} \"{PH3}\"."
+    "message": "{PH1} ஏற்றப்பட்டது: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3ஜி"
@@ -509,6 +512,9 @@
   "core/sdk/SourceMapScopeChainEntry.ts | closure": {
     "message": "உள்ளடங்கிய செயல்பாடு"
   },
+  "core/sdk/SourceMapScopeChainEntry.ts | exception": {
+    "message": "விதிவிலக்கு"
+  },
   "core/sdk/SourceMapScopeChainEntry.ts | global": {
     "message": "குளோபல்"
   },
@@ -606,7 +612,7 @@
     "message": "பக்கத்தில் ஹைலைட் செய்யப்பட்ட பகுதிகளை (பச்சை) மீண்டும் பெயிண்ட் செய்ய வேண்டும். படமெடுப்பதன் விளைவாகப் பாதிக்கப்படுபவர்களுக்கு இது பொருந்தாமல் போகலாம்."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsRedDetectedToBe": {
-    "message": "விளம்பரங்கள் என்று கண்டறியப்படும் உறுப்புகளை ஹைலைட் (சிவப்பு) செய்யும்"
+    "message": "விளம்பரங்கள் என்று கண்டறியப்படும் எலிமெண்ட்களை ஹைலைட் (சிவப்பு) செய்யும்"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsElementsTealThatCan": {
     "message": "ஸ்க்ரோலிங் செயல்பாட்டின் வேகத்தைக் குறைக்கும் உறுப்புகளை டீல் நிறத்தில் ஹைலைட் செய்யும், இதில் டச் & வீல் ஈவண்ட் ஹேண்ட்லர்கள் மற்றும் பிற முக்கியமான மெசேஜ் தொடரில் ஸ்க்ரோலிங் சூழல்களும் அடங்கும்"
@@ -908,8 +914,8 @@
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "ஃபோகஸ் பக்கம்"
   },
-  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
-    "message": "DevTools MCP ஐப் பெறுங்கள்"
+  "entrypoints/main/MainImpl.ts | getChromeDevToolsForAgents": {
+    "message": "DevToolsக்கான அணுகலை உங்கள் ஏஜெண்ட்டுக்கு வழங்குங்கள்"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "உதவி"
@@ -1346,12 +1352,6 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBufferக்குக் கிராஸ் ஆரிஜின் ஐசொலேஷன் தேவை. கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/enabling-shared-array-buffer/ தளத்திற்குச் செல்லவும்."
   },
-  "generated/Deprecation.ts | SharedStorage": {
-    "message": "Shared Storage API நிறுத்தப்பட்டது, எதிர்கால வெளியீட்டில் அது அகற்றப்படும்."
-  },
-  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
-    "message": "document.requestStorageAccessFor நிறுத்தப்பட்டது, விரைவில் அது அகற்றப்படும். கூடுதல் விவரங்களுக்கு https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ தளத்தைப் பார்க்கவும்."
-  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "பயனரைச் செயல்படுத்தாமல் speechSynthesis.speak() செயல்பாட்டை அழைக்கும் வசதி நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
   },
@@ -1407,7 +1407,7 @@
     "message": "புல அளவீடுகள் தற்போதைய பக்கத்திற்கானதாக இல்லாமல் வேறொரு URLலைச் சார்ந்தவையாக உள்ளன"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "சாதனத்தின் பிக்சல் விகித மதிப்பு எண்ணாகவோ காலியாகவோ இருக்க வேண்டும்."
+    "message": "சாதனத்தின் பிக்சல் விகித மதிப்பு எண்ணாகவோ காலியாகவோ இருக்க வேண்டும்"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
     "message": "சாதனத்தின் பிக்சல் விகிதம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
@@ -2555,6 +2555,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLiveRecordingList": {
     "message": "மாற்றுத்திறன் வசதி அறிவிப்புகள்"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyElementHtml": {
+    "message": "எலிமெண்ட் HTMLலை நகலெடு"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyMessage": {
+    "message": "மெசேஜை நகலெடு"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | jsTriggered": {
     "message": "JS மூலம் தூண்டப்பட்டது"
   },
@@ -2567,8 +2573,53 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "நேரம்"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | announcementsOnly": {
+    "message": "அறிவிப்புகள் மட்டும்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveOnly": {
+    "message": "ARIA-நேரலை மட்டும்"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
     "message": "அறிவிப்பு ரெக்கார்டிங்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | clearAnnouncements": {
+    "message": "அறிவிப்புகளை அழிக்கும்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | exportCsv": {
+    "message": "CSV ஆக எக்ஸ்போர்ட் செய்யும்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filter": {
+    "message": "ஃபில்டர்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filterByType": {
+    "message": "வகையின்படி ஃபில்டர் செய்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | frameBlockedReason": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | nEventsMatch": {
+    "message": "{PH1} நிகழ்வுகள் பொருந்துகின்றன"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | noEventsMatch": {
+    "message": "பொருந்தும் நிகழ்வுகள் இல்லை"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | oneEventMatches": {
+    "message": "ஒரு நிகழ்வு பொருந்துகிறது"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordBoth": {
+    "message": "இரண்டையும் ரெக்கார்டு செய்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
+    "message": "சில ஃபிரேம்களுக்கு ரெக்கார்டிங் தடுக்கப்பட்டது:"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
+    "message": "ரெக்கார்டிங்கைத் தொடங்கும்"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | stopRecording": {
+    "message": "ரெக்கார்டிங்கை நிறுத்து"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | unknownError": {
+    "message": "அறியப்படாத பிழை"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "அணுகல்தன்மை கணு காட்டப்படவில்லை"
@@ -3018,13 +3069,13 @@
     "message": "AI உதவியை இயக்கு"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | enableGemini": {
-    "message": "Geminiயை ஆன் செய்"
+    "message": "Gemini ஆன் செய்"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
     "message": "AI உதவியைக் காட்டு"
   },
   "panels/ai_assistance/ai_assistance-meta.ts | showGemini": {
-    "message": "Geminiயைக் காட்டு"
+    "message": "Gemini காட்டு"
   },
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "உங்கள் உரையாடலைத் தொடங்க மேலே பரிந்துரைக்கப்பட்டுள்ள ப்ராம்ப்ட்டுகளில் ஏதேனும் ஒன்றையும் பயன்படுத்தலாம்"
@@ -3126,7 +3177,7 @@
     "message": "ஏஜெண்ட் டெமோ"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
-    "message": "இந்தப் பக்கத்தில் அனிமேஷன்களை ஆய்வு செய்யலாம் மாற்றலாம்."
+    "message": "இந்தப் பக்கத்தில் அனிமேஷன்களைப் பார்க்கலாம் மாற்றலாம்"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "அனிமேஷன் மாதிரிக்காட்சி {PH1}"
@@ -3192,13 +3243,13 @@
     "message": "பயனர்பெயர், கடவுச்சொல், போர்ட் போன்றவற்றை மெனிஃபெஸ்ட்டில் உள்ள URL கொண்டுள்ளது"
   },
   "panels/application/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
-    "message": "{PH2} ({PH3}) இன் அசல் உயரம் ({PH1}பிக்சல்) குறிப்பிடப்பட்டுள்ள உயரத்துடன் ({PH4}பிக்சல்) பொருந்தவில்லை"
+    "message": "{PH2} {PH3} அசல் உயரம் ({PH1}px) குறிப்பிடப்பட்டுள்ள உயரத்துடன் ({PH4}px) பொருந்தவில்லை"
   },
   "panels/application/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
-    "message": "{PH3} {PH4} இன் அசல் அளவு ({PH1}×{PH2})பிக்சல் குறிப்பிடப்பட்டுள்ள ({PH5}×{PH6}பிக்சல்) அளவுடன் பொருந்தவில்லை"
+    "message": "{PH3} {PH4} படத்தின் அசல் அளவு ({PH1}×{PH2})px, குறிப்பிடப்பட்டுள்ள அளவுடன் ({PH5}×{PH6})px பொருந்தவில்லை"
   },
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
-    "message": "{PH2} {PH3} படத்தின் அசல் அகலம் ({PH1}பிக்சல்) குறிப்பிடப்பட்டுள்ள அகலத்துடன் ({PH4}பிக்சல்) பொருந்தவில்லை"
+    "message": "{PH2} {PH3} அசல் அகலம் ({PH1}px) குறிப்பிடப்பட்டுள்ள அகலத்துடன் ({PH4}px) பொருந்தவில்லை"
   },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "ஏற்கெனவே உள்ள ஆப்ஸை மெனிஃபெஸ்ட் புதுப்பிக்க வேண்டுமா அல்லது புதிய வெப் ஆப்ஸை நிறுவ வேண்டுமென அது குறிக்கிறதா என்பதை அறிய, பிரவுசர் இதைப் பயன்படுத்துகிறது"
@@ -3225,13 +3276,13 @@
     "message": "பரிந்துரைக்கப்பட்ட ஐடியைக் கிளிப்போர்டுக்கு நகலெடுக்கும்"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
-    "message": "மெனிஃபெஸ்ட்டில் 'start_url' புலம் இல்லாமல் service worker ஐச் சரிபார்க்க இயலாது"
+    "message": "மெனிஃபெஸ்ட்டில் 'start_url' புலம் இல்லாமல் service workerஐச் சரிபார்க்க முடியவில்லை"
   },
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "மெனிஃபெஸ்ட்டில் இருந்து அவசியமான ஐகானைப் பதிவிறக்க முடியவில்லை"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "உங்கள் PWA தலைப்புப் பட்டியின் சாளரக் கட்டுப்பாடுகள் மேலடுக்கைப் பிரத்தியேகமாக்குங்கள்"
+    "message": "உங்கள் PWA தலைப்புப் பட்டியின் Window Controls Overlayஐப் பிரத்தியேகமாக்குங்கள்"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "விளக்கம்"
@@ -3273,7 +3324,7 @@
     "message": "லேபிள்"
   },
   "panels/application/AppManifestView.ts | learnMore": {
-    "message": "மேலும் அறிக"
+    "message": "மேலும் தெரிந்துகொள்ளுங்கள்"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "மெனிஃபெஸ்ட் 'display_override' புலத்தைக் கொண்டிருக்கும், மேலும் முதலில் ஆதரிக்கப்படும் காட்சிப் பயன்முறையானது 'standalone', 'fullscreen', 'minimal-ui' போன்றவற்றில் ஒன்றாக இருக்க வேண்டும்"
@@ -3288,10 +3339,10 @@
     "message": "'standalone', 'fullscreen', 'minimal-ui' ஆகியவற்றில் ஏதேனும் ஒன்றாக மெனிஃபெஸ்ட் 'display' உடைமை இருக்க வேண்டும்"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainANameOr": {
-    "message": "மெனிஃபெஸ்ட்டில் 'name'/'short_name' புலம் இருக்காது"
+    "message": "மெனிஃபெஸ்ட்டில் 'name' அல்லது 'short_name' புலம் இல்லை"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "மெனிஃபெஸ்ட்டில் பொருத்தமான ஐகான் இல்லை. PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {PH1}பிக்சல்களுடன் இருக்க வேண்டும், 'sizes' பண்புக்கூறு அமைக்கப்பட்டிருக்க வேண்டும், 'purpose' பண்புக்கூறு அமைக்கப்பட்டிருந்தால் அதில் 'any' இருக்க வேண்டும்"
+    "message": "மெனிஃபெஸ்ட்டில் பொருத்தமான ஐகான் இல்லை. PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {PH1}பிக்சல்களுடன் இருக்க வேண்டும், 'sizes' பண்புக்கூறு அமைக்கப்பட்டிருக்க வேண்டும், 'purpose' பண்புக்கூறு அமைக்கப்பட்டிருந்தால் அதில் 'any' இருக்க வேண்டும்."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "’prefer_related_applications: சரி’ என மெனிஃபெஸ்ட் குறிக்கிறது"
@@ -3312,19 +3363,19 @@
     "message": "மெனிஃபெஸ்ட் எதுவும் கண்டறியப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "Play Store ஐடி வழங்கப்படவில்லை"
+    "message": "Play Store ஐடி இல்லை"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Richer PWA Install UIயை டெஸ்க்டாப்பில் பயன்படுத்த முடியாது. wide என்று form_factor அமைக்கப்பட்டதைக் காட்டும் வகையில் குறைந்தது ஒரு ஸ்கிரீன்ஷாட்டைச் சேர்க்கவும்."
+    "message": "டெஸ்க்டாப்பில் Richer PWA install UI பயன்படுத்த முடியாது. wide என்று form_factor அமைக்கப்பட்டதைக் காட்டும் ஒரு ஸ்கிரீன்ஷாட்டையாவது சேர்க்கவும்."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Richer PWA Install UIயை மொபைலில் பயன்படுத்த முடியாது. \"form_factor\" எதுவும் அமைக்கப்படவில்லை என்பதையோ அதன் மதிப்பு \"wide\" என்று இல்லாமல் வேறு ஒன்றாக அமைக்கப்பட்டுள்ளது என்பதையோ காட்டும் வகையில் குறைந்தது ஒரு ஸ்கிரீன்ஷாட்டைச் சேர்க்கவும்."
+    "message": "Richer PWA install UI மொபைலில் பயன்படுத்த முடியாது. form_factor எதுவும் அமைக்கப்படவில்லை என்பதையோ அதன் மதிப்பு wide என்று இல்லாமல் வேறு ஒன்றாக அமைக்கப்பட்டுள்ளது என்பதையோ காட்டும் வகையில் குறைந்தது ஒரு ஸ்கிரீன்ஷாட்டைச் சேர்க்கவும்."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "வழங்கப்பட்ட எந்தவொரு ஐகானும் PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {PH1} சதுர பிக்சல்களுடன் இல்லை, purpose பண்புக்கூறு ‘any’ என்று அமைக்கப்பட்டுள்ளது அல்லது அமைக்கப்படவே இல்லை"
   },
   "panels/application/AppManifestView.ts | onInvokeAlert": {
-    "message": "{PH1}க்குச் செல்கிறது"
+    "message": "{PH1}க்குச் சென்றது"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "திசையமைப்பு"
@@ -3333,7 +3384,7 @@
     "message": "பக்கம் ஆஃப்லைனில் காட்டப்படாது"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "பக்கம் ஆஃப்லைனில் காட்டப்படாது. Chrome 93 வெளியிடப்படும்போது நிறுவலுக்கான நிபந்தனைகள் மாறும். இந்தத் தளத்தை நிறுவவும் முடியாது. கூடுதல் தகவல்களுக்கு {PH1} தளத்திற்குச் செல்லவும்."
+    "message": "பக்கம் ஆஃப்லைனில் காட்டப்படாது. Chrome 93ல் இருந்து, நிறுவுவதற்கான நிபந்தனைகள் மாற்றப்படுவதால் இந்தத் தளத்தை நிறுவ முடியாது. கூடுதல் தகவல்களுக்கு {PH1} பார்க்கவும்."
   },
   "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "பக்கம் மெனிஃபெஸ்ட் <link> URL ஐக் கொண்டிருக்கவில்லை"
@@ -3345,7 +3396,7 @@
     "message": "முதன்மை ஃபிரேமில் பக்கம் ஏற்றப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
-    "message": "பாதுகாப்பான ஆரிஜினில் இருந்து பக்கம் காட்டப்படவில்லை"
+    "message": "பக்கம் பாதுகாப்பான ஆரிஜினில் இருந்து காட்டப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "பிளாட்ஃபார்ம்"
@@ -3387,7 +3438,7 @@
     "message": "{PH1} 'src' அமைக்கப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "“{PH2}” {PH1} URLலைப் பாகுபடுத்த முடியவில்லை"
+    "message": "{PH1} URL \"{PH2}\" பாகுபடுத்த முடியவில்லை"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "ஸ்கிரீன்ஷாட்"
@@ -3402,7 +3453,7 @@
     "message": "ஒரே மாதிரியான \"form_factor\" உள்ள ஸ்கிரீன்ஷாட்கள் அனைத்தும் அந்த \"form_factor\" உள்ள முதல் ஸ்கிரீன்ஷாட்டின் தோற்ற விகிதத்தையே கொண்டிருக்க வேண்டும். சில ஸ்கிரீன்ஷாட்கள் தவிர்க்கப்படும்."
   },
   "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
-    "message": "Window Controls Overlayவை இதில் செயல்படுத்து"
+    "message": "Window Controls Overlay எமுலேட் செய்"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "சுருக்கப் பெயர்"
@@ -3414,7 +3465,7 @@
     "message": "ஷார்ட்கட் #{PH1}, 96×96 பிக்சல் ஐகானைக் கொண்டிருக்க வேண்டும்"
   },
   "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
-    "message": "ஷார்ட்கட்களின் அதிகபட்ச எண்ணிக்கை பிளாட்ஃபார்ம் சார்ந்தது. அனைத்து ஷார்ட்கட்களையும் பயன்படுத்த முடியாது."
+    "message": "ஷார்ட்கட்களின் அதிகபட்ச எண்ணிக்கை பிளாட்ஃபார்ம் சார்ந்தது. சில ஷார்ட்கட்கள் கிடைக்காமல் போகலாம்."
   },
   "panels/application/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "மாஸ்கபிள் ஐகான்களுக்கு குறைந்தபட்சமாக அனுமதிக்கப்பட்ட பகுதியைக் காட்டு"
@@ -3426,7 +3477,7 @@
     "message": "இந்த ஆப்ஸ் ஏற்கெனவே நிறுவப்பட்டுள்ளது"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play Store ஆப்ஸின் URLலும் Play Storeரின் ஐடியும் பொருந்தவில்லை"
+    "message": "Play Store ஆப்ஸ் URLலும் Play Store ஐடியும் பொருந்தவில்லை"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "குறிப்பிடப்பட்ட ஆப்ஸ் பிளாட்ஃபார்ம் Androidல் ஆதரிக்கப்படவில்லை"
@@ -3444,10 +3495,10 @@
     "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
-    "message": "{PH3} பக்கத்தில் {PH2} புலத்தில் உள்ள {PH1} மதிப்பை Chrome கண்டறிந்துள்ளது"
+    "message": "{PH3}ல் {PH2} புலத்தில் உள்ள {PH1} மதிப்பை Chrome கண்டறிந்துள்ளது"
   },
   "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
-    "message": "உதவி தேவையா? {PH1} தளத்தில் படிக்கவும்."
+    "message": "உதவி தேவையா? {PH1} பக்கத்தைப் படியுங்கள்."
   },
   "panels/application/AppManifestView.ts | wcoNotFound": {
     "message": "Window Controls Overlay API பயன்படுத்தவும் உங்கள் ஆப்ஸின் தலைப்புப் பட்டியைப் பிரத்தியேகமாக்கவும் மெனிஃபெஸ்ட்டில் {PH1} வரையறுக்கவும்"
@@ -3465,7 +3516,7 @@
     "message": "பின்னணிச் சேவைகள்"
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
-    "message": "{PH1}: Manifestடில் உள்ள இந்தப் பிரிவிற்குச் செல்ல இயக்கலாம்"
+    "message": "{PH1}: மெனிஃபெஸ்ட்டில் உள்ள இந்தப் பிரிவிற்குச் செல்ல இயக்கலாம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | clear": {
     "message": "அழி"
@@ -3492,7 +3543,7 @@
     "message": "சேமிப்பகத்தை விளக்கு"
   },
   "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
-    "message": "லோக்கல்"
+    "message": "சாதனம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | extensionManagedStorage": {
     "message": "நிர்வகிக்கப்படுகிறது"
@@ -3507,7 +3558,7 @@
     "message": "இந்தப் பக்கத்தில், நீட்டிப்புச் சேமிப்பகக் குறியீடு-மதிப்பு இணைப்புகளைப் பார்க்கலாம், சேர்க்கலாம், திருத்தலாம், நீக்கலாம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | extensionSyncStorage": {
-    "message": "ஒத்திசைவு"
+    "message": "ஒத்திசை"
   },
   "panels/application/ApplicationPanelSidebar.ts | frames": {
     "message": "ஃபிரேம்கள்"
@@ -3516,13 +3567,13 @@
     "message": "IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | indexeddbDescription": {
-    "message": "இந்தப் பக்கத்தில், indexedDB குறியீடு-மதிப்பு இணைப்புகள் மற்றும் தரவுத்தளங்களைப் பார்க்கலாம் நீக்கலாம்"
+    "message": "இந்தப் பக்கத்தில், indexedDB குறியீடு-மதிப்பு இணைப்புகள் மற்றும் தரவுத்தளங்களைப் பார்க்கலாம், நீக்கலாம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "முக்கியத் தடம்: {PH1}"
   },
   "panels/application/ApplicationPanelSidebar.ts | localFiles": {
-    "message": "அக ஃபைல்கள்"
+    "message": "சாதன ஃபைல்கள்"
   },
   "panels/application/ApplicationPanelSidebar.ts | localStorage": {
     "message": "சாதனச் சேமிப்பகம்"
@@ -3540,7 +3591,7 @@
     "message": "நீட்டிப்புச் சேமிப்பகம் எதுவும் கண்டறியப்படவில்லை"
   },
   "panels/application/ApplicationPanelSidebar.ts | noIndexeddb": {
-    "message": "indexedDB எதுவும் கண்டறியப்படவில்லை"
+    "message": "IndexedDB எதுவும் இல்லை"
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "லோக்கல் சேமிப்பகம் எதுவும் கண்டறியப்படவில்லை"
@@ -3552,7 +3603,7 @@
     "message": "{PH1}க்குச் செல்கிறது"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
-    "message": "Manifest: Manifestடின் மேல்பகுதிக்குச் செல்ல இயக்கலாம்"
+    "message": "மெனிஃபெஸ்ட்: மெனிஃபெஸ்ட்டின் மேல்பகுதிக்குச் செல்ல துவக்கலாம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "திறந்துள்ள சாளரங்கள்"
@@ -3579,7 +3630,7 @@
     "message": "சேமிப்பகம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
-    "message": "'document.write()' மூலம் இந்த ஆவணத்திற்கான உள்ளடக்கம் டைனமிக் முறையில் உருவாக்கப்பட்டுள்ளது"
+    "message": "document.write() மூலம் இந்த ஆவணத்திற்கான உள்ளடக்கம் டைனமிக் முறையில் உருவாக்கப்பட்டுள்ளது"
   },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "பதிப்பு: {PH1}"
@@ -3594,13 +3645,13 @@
     "message": "தலைப்பு இல்லாத சாளரம்"
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
-    "message": "worker"
+    "message": "வொர்க்கர்"
   },
   "panels/application/ApplicationPanelSidebar.ts | workerDescription": {
-    "message": "இந்தப் பக்கத்தில், முதல்நிலை ஃபிரேம் உருவாக்கிய பிரத்தியேக வொர்க்கர்களைப் பார்க்கலாம்"
+    "message": "இந்தப் பக்கத்தில் முதல்நிலை ஃபிரேம் சேர்த்த பிரத்தியேக வொர்க்கர்களைப் பார்க்கலாம்"
   },
   "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
-    "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்"
+    "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமி"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "பின்னணிப் பெறுதல்"
@@ -3720,10 +3771,10 @@
     "message": "கீ அல்லது மதிப்பின்படி ஃபில்டர் செய்க"
   },
   "panels/application/CrashReportContextView.ts | noContext": {
-    "message": "ஃபிரேம்கள் அனைத்திலும் சூழல் உள்ளீடுகள் எதுவும் கண்டறியப்படவில்லை."
+    "message": "ஃபிரேம்கள் அனைத்திலும் சூழல் உள்ளீடுகள் எதுவும் இல்லை"
   },
   "panels/application/CrashReportContextView.ts | refresh": {
-    "message": "ரெஃப்ரெஷ் செய்"
+    "message": "ரெஃப்ரெஷ் செய்யும்"
   },
   "panels/application/CrashReportContextView.ts | unknownFrame": {
     "message": "தெரியாத ஃபிரேம்"
@@ -3939,7 +3990,7 @@
     "message": "தவறான ஸ்கோப் விவரக்குறிப்பு"
   },
   "panels/application/DeviceBoundSessionsView.ts | invalidScopeSpecificationType": {
-    "message": "வரம்பின் விவரக்குறிப்பு வகை சேர்க்கும் அல்லது விலக்கும் வகையைச் சேர்ந்ததாக இல்லை"
+    "message": "வரம்பின் விவரக்குறிப்பு வகை, சேர்க்கும் அல்லது விலக்கும் வகையைச் சேர்ந்ததாக இல்லை"
   },
   "panels/application/DeviceBoundSessionsView.ts | invalidSessionId": {
     "message": "தவறான அமர்வு ஐடி"
@@ -4008,7 +4059,7 @@
     "message": "அனுமதிக்கப்பட்ட புதுப்பிப்புத் தொடக்கத்திற்கான ஹோஸ்ட் பேட்டர்ன் தவறாக உள்ளது"
   },
   "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
-    "message": "புதுப்பிப்பைத் தொடங்க அனுமதிக்கப்பட்டவர் ஒரு ஸ்ட்ரிங் இல்லை"
+    "message": "அனுமதிக்கப்பட்ட ரெஃப்ரெஷ் இனிஷியேட்டர் ஒரு ஸ்ட்ரிங் இல்லை"
   },
   "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
     "message": "முடிவைப் புதுப்பி"
@@ -4053,7 +4104,7 @@
     "message": "சேர்"
   },
   "panels/application/DeviceBoundSessionsView.ts | scope": {
-    "message": "ஸ்கோப்"
+    "message": "வரம்பு"
   },
   "panels/application/DeviceBoundSessionsView.ts | scopeOriginContainsPath": {
     "message": "வரம்பின் ஆரிஜினில் தடம் உள்ளது"
@@ -4068,7 +4119,7 @@
     "message": "தள வரம்பிற்குட்பட்ட அமர்வில் ஹோஸ்ட் பேட்டர்னும் தளமும் பொருந்தவில்லை"
   },
   "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
-    "message": "கூடுதல் விவரங்களைப் பார்க்க நிகழ்வு வரிசையைத் தேர்ந்தெடுங்கள்"
+    "message": "விவரங்களைப் பார்க்க நிகழ்வு வரிசையைத் தேர்ந்தெடுக்கவும்"
   },
   "panels/application/DeviceBoundSessionsView.ts | serverError": {
     "message": "எண்ட்பாயிண்ட் தற்காலிகப் பிழை"
@@ -4110,7 +4161,7 @@
     "message": "சேமிப்பகப் பகிர்வில் இருந்து அகற்றப்பட்டது"
   },
   "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationUnauthorized": {
-    "message": ".well-known துணை டொமைன் மூலம் பதிவுசெய்வதை அங்கீகரிக்கவில்லை"
+    "message": "துணை டொமைன் மூலம் பதிவுசெய்வதை .well-known அங்கீகரிக்கவில்லை"
   },
   "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownMalformed": {
     "message": "துணை டொமைன் பதிவு .well-known உள்ளடக்கம் தவறாக வடிவமைக்கப்பட்டுள்ளது"
@@ -4164,7 +4215,7 @@
     "message": "ஃபிரேம் ஆன்செஸ்டர் என்பது பாதுகாப்பற்ற உள்ளடக்கம் ஆகும்"
   },
   "panels/application/FrameDetailsView.ts | adStatus": {
-    "message": "விளம்பரத்தின் நிலை"
+    "message": "விளம்பர நிலை"
   },
   "panels/application/FrameDetailsView.ts | additionalInformation": {
     "message": "கூடுதல் தகவல்கள்"
@@ -4203,10 +4254,10 @@
     "message": "உள்ளடக்கப் பாதுகாப்புக் கொள்கை (Content Security Policy - CSP)"
   },
   "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "இந்த ஃப்ரேம் உருவாக்கப்பட்டபோது (async) stack இல் விளம்பர ஸ்கிரிப்ட் இருந்தது. இந்த ஃப்ரேமின் உருவாக்க stack trace ஐ ஆய்வுசெய்தால் கூடுதல் புள்ளிவிவரம் கிடைக்கக்கூடும்."
+    "message": "இந்த ஃபிரேம் உருவாக்கப்பட்டபோது (async) stackல் விளம்பர ஸ்கிரிப்ட் இருந்தது. இந்த ஃப்ரேமின் உருவாக்க stack trace ஆய்வுசெய்தால் கூடுதல் புள்ளிவிவரம் கிடைக்கக்கூடும்."
   },
   "panels/application/FrameDetailsView.ts | creationStackTrace": {
-    "message": "ஃபிரேம் உருவாக்கத்திற்கான Stack Trace"
+    "message": "ஃபிரேம் உருவாக்க stack trace"
   },
   "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "நிரல் மூலமாக இந்த ஃபிரேம் உருவாக்கப்பட்டது. இது எங்கே நிகழ்ந்தது என stack trace காட்டுகிறது."
@@ -4215,7 +4266,7 @@
     "message": "கிரியேட்டர் விளம்பர ஸ்கிரிப்ட்டின் ஆன்செஸ்ட்ரி"
   },
   "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "கிராஸ் ஆரிஜின் தனிமைப்படுத்தப்பட்டது"
+    "message": "கிராஸ் ஆரிஜின் ஐசொலேட்டெட்"
   },
   "panels/application/FrameDetailsView.ts | document": {
     "message": "ஆவணம்"
@@ -4224,7 +4275,7 @@
     "message": "ஃபிரேம் ஐடி"
   },
   "panels/application/FrameDetailsView.ts | learnMore": {
-    "message": "மேலும் அறிக"
+    "message": "மேலும் தெரிந்துகொள்ளுங்கள்"
   },
   "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
     "message": "Localhost எப்போதும் ஒரு பாதுகாப்பான சூழல்"
@@ -4233,13 +4284,13 @@
     "message": "இந்த ஃபிரேமின் தற்போதைய (அல்லது முந்தைய) முதன்மை ஆவணம் ஒரு விளம்பர ஆதாரம் என்பதால் இது விளம்பர ஃபிரேமாகக் கருதப்படுகிறது"
   },
   "panels/application/FrameDetailsView.ts | measureMemory": {
-    "message": "நினைவகத்தை அளவிடு"
+    "message": "நினைவகத்தை அளவிடுதல்"
   },
   "panels/application/FrameDetailsView.ts | no": {
     "message": "இல்லை"
   },
   "panels/application/FrameDetailsView.ts | none": {
-    "message": "எதுவுமில்லை"
+    "message": "ஏதுமில்லை"
   },
   "panels/application/FrameDetailsView.ts | origin": {
     "message": "ஆரிஜின்"
@@ -4248,13 +4299,13 @@
     "message": "புதிய அல்லது பரிசோதனை அம்சத்திற்கான அணுகலைத் தொடக்கச் சோதனைகள் வழங்கும்"
   },
   "panels/application/FrameDetailsView.ts | ownerElement": {
-    "message": "உரிமையாளர் உறுப்பு"
+    "message": "ஓனர் எலிமெண்ட்"
   },
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "இதன் முதல்நிலை ஃபிரேம் ஒரு விளம்பர ஃபிரேம் என்பதால் இது விளம்பர ஃபிரேமாகக் கருதப்படுகிறது"
   },
   "panels/application/FrameDetailsView.ts | reportingTo": {
-    "message": "இதற்கு அனுப்பப்படும்:"
+    "message": "ரிப்போர்ட்டிங்:"
   },
   "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
     "message": "கிராஸ் ஆரிஜின் தனிப்படுத்தப்பட்ட சூழல் தேவைப்படுகிறது"
@@ -4266,19 +4317,19 @@
     "message": "ஒரு விளம்பரத்தின் மூல ஃபிரேமாக இந்த ஃபிரேம் அடையாளம் காணப்பட்டுள்ளது"
   },
   "panels/application/FrameDetailsView.ts | rootScriptFilterlistRule": {
-    "message": "ரூட் ஸ்கிரிப்ட் ஃபில்டர்லிஸ்ட் விதி"
+    "message": "ரூட் ஸ்கிரிப்ட் ஃபில்டர் பட்டியல் விதி"
   },
   "panels/application/FrameDetailsView.ts | secureContext": {
-    "message": "பாதுகாப்பான காண்டெக்ஸ்ட்"
+    "message": "பாதுகாப்பான சூழல்"
   },
   "panels/application/FrameDetailsView.ts | securityIsolation": {
-    "message": "பாதுகாப்பு & தனிமை"
+    "message": "பாதுகாப்பு & ஐசோலேஷன்"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
     "message": "SharedArrayBuffer கன்ஸ்ட்ரக்டர் கிடைக்கிறது. postMessage வழியாக SABs இடமாற்றப்படலாம்"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer கன்ஸ்ட்ரக்டர் கிடைக்கிறது. ஆனால் postMessage வழியாக SABs மாற்றப்பட முடியாது"
+    "message": "SharedArrayBuffer கன்ஸ்ட்ரக்டர் உள்ளது, ஆனால் postMessage மூலம் SABs மாற்ற முடியாது"
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "ஃபிரேமின் திட்டம் பாதுகாப்பற்றது"
@@ -4287,10 +4338,10 @@
     "message": "performance.measureUserAgentSpecificMemory() API உள்ளது"
   },
   "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "performance.measureUserAgentSpecificMemory() API இல்லை"
+    "message": "performance.measureUserAgentSpecificMemory() API கிடைக்கவில்லை"
   },
   "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "'நெறிமுறை மானிட்டர்' பரிசோதனை ஆன் செய்யப்பட்டுள்ளதால் இந்தக் கூடுதல் (பிழைதிருத்தத்) தகவல்கள் காட்டப்படுகின்றன"
+    "message": "\"நெறிமுறை மானிட்டர்\" பரிசோதனை ஆன் செய்யப்பட்டுள்ளதால் இந்தப் பிழைதிருத்தத் தகவல்கள் காட்டப்படுகின்றன"
   },
   "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "SharedArrayBuffer இடமாற்றத்திற்கு அனுமதிக் கொள்கை இயக்கப்பட்டிருக்க வேண்டும்:"
@@ -4425,22 +4476,22 @@
     "message": "ஓப்பனர் ஃபிரேம்"
   },
   "panels/application/OpenedWindowDetailsView.ts | reportingTo": {
-    "message": "இதற்கு அனுப்பப்படும்:"
+    "message": "ரிப்போர்ட்டிங்:"
   },
   "panels/application/OpenedWindowDetailsView.ts | security": {
     "message": "பாதுகாப்பு"
   },
   "panels/application/OpenedWindowDetailsView.ts | securityIsolation": {
-    "message": "பாதுகாப்பு & தனிமை"
+    "message": "பாதுகாப்பு & ஐசோலேஷன்"
   },
   "panels/application/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "திறந்துள்ள சாளரத்தால் ஓப்பனரை அணுக முடிகிறதா என்பதையும் ஓப்பனரால் திறந்துள்ள சாளரத்தை அணுக முடிகிறதா என்பதையும் காட்டுகிறது"
   },
   "panels/application/OpenedWindowDetailsView.ts | type": {
-    "message": "உள்ளிடு"
+    "message": "வகை"
   },
   "panels/application/OpenedWindowDetailsView.ts | unknown": {
-    "message": "தெரியாதது"
+    "message": "தெரியவில்லை"
   },
   "panels/application/OpenedWindowDetailsView.ts | url": {
     "message": "URL"
@@ -4452,7 +4503,7 @@
     "message": "தலைப்பு இல்லாத சாளரம்"
   },
   "panels/application/OpenedWindowDetailsView.ts | worker": {
-    "message": "worker"
+    "message": "வொர்க்கர்"
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ஆம்"
@@ -4485,10 +4536,10 @@
     "message": "{PH1} டோக்கன்கள்"
   },
   "panels/application/OriginTrialTreeView.ts | trialName": {
-    "message": "சோதனையின் பெயர்"
+    "message": "டிரையல் பெயர்"
   },
   "panels/application/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "பயன்பாட்டுக் கட்டுப்பாடுகள்"
+    "message": "உபயோகக் கட்டுப்பாடு"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "விதிகள்"
@@ -4515,7 +4566,7 @@
     "message": "அறிக்கை எதுவும் தேர்ந்தெடுக்கப்படவில்லை"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
-    "message": "இந்தப் பக்கத்தில் Reporting API அறிக்கைகளையும் எண்ட்பாயிண்ட்டுகளையும் உங்களால் ஆய்வு செய்ய முடியும்"
+    "message": "Reporting API அறிக்கைகளையும் எண்ட்பாயிண்ட்டுகளையும் ஆய்வு செய்யலாம்"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "தற்காலிகச் சேமிப்பிடம்"
@@ -4941,10 +4992,10 @@
     "message": "ஆப்ஸைக் காட்டு"
   },
   "panels/application/application-meta.ts | startRecordingEvents": {
-    "message": "நிகழ்வுகளை ரெக்கார்டி செய்யத் தொடங்கு"
+    "message": "நிகழ்வு ரெக்கார்டிங்கைத் தொடங்கு"
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
-    "message": "நிகழ்வுகளை ரெக்கார்டு செய்வதை நிறுத்து"
+    "message": "நிகழ்வு ரெக்கார்டிங்கை நிறுத்து"
   },
   "panels/application/components/AdsView.ts | adDetectionMistakes": {
     "message": "Chrome விளம்பரக் கண்டறிதல் தவறான முடிவுகளை வழங்கக்கூடும்"
@@ -4979,11 +5030,11 @@
   "panels/application/components/AdsView.ts | filterListRule": {
     "message": "ஃபில்டர் பட்டியல் விதி"
   },
-  "panels/application/components/AdsView.ts | highlightAds": {
-    "message": "விளம்பரங்களை ஹைலைட் செய்தல்"
+  "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
+    "message": "விளம்பரம் தொடர்பான ஆதாரங்களை ஹைலைட் செய்"
   },
-  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBe": {
-    "message": "விளம்பரங்கள் என்று கண்டறியப்படும் உறுப்புகளை ஹைலைட் (சிவப்பு) செய்யும்"
+  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBeAdRelated": {
+    "message": "விளம்பரம் தொடர்பானவை என்று கண்டறியப்படும் எலிமெண்ட்களை ஹைலைட் (சிவப்பு) செய்யும்"
   },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "ஆரம்ப ஆரிஜின்"
@@ -5015,8 +5066,14 @@
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "விளம்பரங்கள் பயன்படுத்திய மொத்த CPU"
   },
+  "panels/application/components/AdsView.ts | totalCpuUsageExplanation": {
+    "message": "விளம்பரங்கள் பயன்படுத்திய மொத்த CPU நேரம்"
+  },
   "panels/application/components/AdsView.ts | totalNetworkUsage": {
     "message": "விளம்பரங்கள் பயன்படுத்திய மொத்த நெட்வொர்க்"
+  },
+  "panels/application/components/AdsView.ts | totalNetworkUsageExplanation": {
+    "message": "விளம்பரங்கள் பயன்படுத்திய மொத்த நெட்வொர்க் டேட்டா"
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<பெயரிடப்படாதது>"
@@ -5027,8 +5084,14 @@
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "காட்சிப் பகுதி விளம்பர எண்ணிக்கை"
   },
+  "panels/application/components/AdsView.ts | viewportAdCountExplanation": {
+    "message": "காட்சிப் பகுதியில் உள்ள விளம்பரங்களின் எண்ணிக்கை"
+  },
   "panels/application/components/AdsView.ts | viewportAdDensity": {
     "message": "காட்சிப் பகுதியின் விளம்பர அடர்த்தி"
+  },
+  "panels/application/components/AdsView.ts | viewportAdDensityExplanation": {
+    "message": "விளம்பரங்களால் நிரப்பப்பட்ட காட்சிப் பகுதியின் சதவீதம்"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET கோரிக்கை மூலம் ஏற்றப்பட்ட பக்கங்களை மட்டுமே ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் சேமிக்க முடியும்"
@@ -5418,7 +5481,7 @@
     "message": "ஃபிரேம்கள்"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
-    "message": "{n,plural, =1{{m} ஃபிரேம்களில் # சிக்கல் கண்டறியப்பட்டது.}other{{m} ஃபிரேம்களில் # சிக்கல்கள் கண்டறியப்பட்டன.}}"
+    "message": "{n,plural, =1{{m} ஃபிரேம்களில் # சிக்கல் கண்டறியப்பட்டது}other{{m} ஃபிரேம்களில் # சிக்கல்கள் கண்டறியப்பட்டன}}"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
     "message": "{n,plural, =1{1 ஃபிரேமில் # சிக்கல் கண்டறியப்பட்டது}other{1 ஃபிரேமில் # சிக்கல்கள் கண்டறியப்பட்டன}}"
@@ -6572,6 +6635,24 @@
   "panels/common/CPUThrottlingOption.ts | noThrottling": {
     "message": "த்ராட்லிங் இல்லை"
   },
+  "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
+    "message": "கருத்து வழங்கும் இடம்"
+  },
+  "panels/common/CommentThreadWidget.ts | response": {
+    "message": "பதில்:"
+  },
+  "panels/common/CommentThreadWidget.ts | sendToAgent": {
+    "message": "ஏஜெண்ட்டுக்கு அனுப்பும்"
+  },
+  "panels/common/CommentThreadWidget.ts | sent": {
+    "message": "அனுப்பப்பட்டது"
+  },
+  "panels/common/CommentThreadWidget.ts | sentCheckmark": {
+    "message": "அனுப்பப்பட்டதற்கான தேர்வுக்குறி"
+  },
+  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
+    "message": "கருத்துகள் ({PH1})"
+  },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<கணு>"
   },
@@ -6636,7 +6717,7 @@
     "message": "செயல்திறன் டிரேஸ்களில் உள்ள சிக்கல்களைத் தானாகக் கண்டறியும்"
   },
   "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "DevToolsஸில் Gemini 3 Flash"
+    "message": "DevToolsல் உள்ள Gemini 3 Flash"
   },
   "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
     "message": "நிராகரி"
@@ -6649,6 +6730,15 @@
   },
   "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "சோர்ஸ் மேப்புடன் இணைக்கப்பட்டுள்ளது: {PH1}"
+  },
+  "panels/common/common-meta.ts | comments": {
+    "message": "கருத்துகள்"
+  },
+  "panels/common/common-meta.ts | showComments": {
+    "message": "கருத்துகளைக் காட்டு"
+  },
+  "panels/common/common-meta.ts | toggleCommentMode": {
+    "message": "உங்கள் AI கோடிங் ஏஜெண்ட்டுக்கு அனுப்ப கருத்துகளைச் சேருங்கள்"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "நீட்டிப்பு"
@@ -7491,7 +7581,7 @@
     "message": "இந்த எலிமெண்ட் {CONTAINER_DISPLAY_NAME} வகையைச் சேர்ந்தது. அதாவது, {CONTAINER_DISPLAY_NAME} கண்டெய்னரின் உபநிலை. ஆனால், கண்டெய்னர்களுக்கு மட்டுமே {PROPERTY_NAME} வகை பொருந்தும்"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "\"{PH5}\" எழுத்து வடிவக் குடும்பத்திற்கான \"{PH1}\" {PH2} அமைப்பின் மதிப்பு, ஆதரிக்கப்படும் வரம்பை [{PH3}, {PH4}] விட அதிகமாக உள்ளது"
+    "message": "\"{PH5}\" எழுத்து வடிவக் குடும்பத்திற்கான \"{PH1}\" {PH2} அமைப்பின் மதிப்பு, ஆதரிக்கப்படும் வரம்பை [{PH3}, {PH4}] விட அதிகமாக உள்ளது."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "ஆங்க்கர் வரையறுக்கப்பட்டுள்ளது, ஆனால் உறுப்பு ஆங்க்கர்-பொசிஷனிங் செய்யப்படவில்லை, \"{POSITION}\" என்று பொசிஷனிங் செய்யப்பட்டுள்ளது"
@@ -7700,6 +7790,21 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "உள்ளடக்கத்தை மடி"
   },
+  "panels/elements/DOMTreeWidget.ts | pageDom": {
+    "message": "பக்க DOM"
+  },
+  "panels/elements/DOMTreeWidget.ts | reveal": {
+    "message": "காட்டு"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllLines": {
+    "message": "எல்லாம் காட்டு ({PH1} வரிகள்)"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllNodesDMore": {
+    "message": "நோடுகள் அனைத்தையும் காட்டு (மேலும் {PH1})"
+  },
+  "panels/elements/DOMTreeWidget.ts | viewIssue": {
+    "message": "சிக்கலைக் காட்டு:"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup>க்குள் தவறான எலிமெண்ட் அல்லது டெக்ஸ்ட் நோடு உள்ளது"
   },
@@ -7817,132 +7922,6 @@
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "ரிமோட் ஆப்ஜெக்ட்டைச் சரியான நோடாக மாற்ற முடியவில்லை"
   },
-  "panels/elements/ElementsTreeElement.ts | children": {
-    "message": "உபநிலை உறுப்புகள்:"
-  },
-  "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "நகலெடு"
-  },
-  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
-    "message": "கிரியேட்டர் விளம்பர ஸ்கிரிப்ட்டின் ஆன்செஸ்ட்ரி"
-  },
-  "panels/elements/ElementsTreeElement.ts | cut": {
-    "message": "வெட்டு"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableContainer": {
-    "message": "கண்டெய்னர் மேல் அடுக்கை ஆஃப் செய்"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
-    "message": "ஃப்ளெக்ஸ் பயன்முறையை முடக்கு"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
-    "message": "கிரிட் லேன்கள் மோடை ஆஃப் செய்யும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
-    "message": "கட்டக்காட்சிப் பயன்முறையை முடக்கும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
-    "message": "ஸ்க்ரோல் ஸ்னாப் ஓவர்லேயை முடக்கு"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
-    "message": "@starting-style மோடை ஆஃப் செய்"
-  },
-  "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
-    "message": "இந்த எலிமெண்ட்டிற்கு ஸ்க்ரோல் செய்யக்கூடிய ஓவர்ஃப்லோ உள்ளது"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableContainer": {
-    "message": "கண்டெய்னர் மேல் அடுக்கை ஆன் செய்"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
-    "message": "ஃப்ளெக்ஸ் பயன்முறையை இயக்கு"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
-    "message": "கிரிட் லேன்கள் மோடை ஆன் செய்யும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
-    "message": "கட்டக்காட்சிப் பயன்முறையை இயக்கும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
-    "message": "ஸ்க்ரோல் ஸ்னாப் ஓவர்லேயை இயக்கு"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
-    "message": "@starting-style மோடை ஆன் செய்"
-  },
-  "panels/elements/ElementsTreeElement.ts | filterListRule": {
-    "message": "ஃபில்டர் பட்டியல் விதி"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
-    "message": "இந்த பாப்-ஓவரைத் திறந்தே வைக்கும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
-    "message": "இந்த உறுப்புக்கான ஆர்வத்தைத் தூண்டும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceState": {
-    "message": "இயக்க நிலை"
-  },
-  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
-    "message": "ஆதாரத் தரவு இல்லை"
-  },
-  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
-    "message": "மீடியா பேனலுக்குச் செல்"
-  },
-  "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "ஒட்டு"
-  },
-  "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "காட்டு"
-  },
-  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
-    "message": "ரூட் ஸ்கிரிப்ட் ஃபில்டர் பட்டியல் விதி"
-  },
-  "panels/elements/ElementsTreeElement.ts | selectAll": {
-    "message": "எல்லாவற்றையும் தேர்ந்தெடு"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "commandfor பண்புக்கூறுடன் தொடர்புடைய எலிமெண்ட்டைக் காட்டும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
-    "message": "பிரத்தியேக உறுப்பு வரையறையைக் காட்டு"
-  },
-  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "interesttarget பண்புக்கூறுடன் தொடர்புடைய எலிமெண்ட்டைக் காட்டும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "popovertarget பண்புக்கூறுடன் தொடர்புடைய எலிமெண்ட்டைக் காட்டும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
-    "message": "இந்த பாப்-ஓவரைத் திறந்தே வைப்பதை நிறுத்தும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
-    "message": "இந்த உறுப்புக்கான ஆர்வத்தை ரத்துசெய்யும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
-    "message": "இந்த எலிமெண்ட் விளம்பரமாக அடையாளம் காணப்பட்டுள்ளது"
-  },
-  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
-    "message": "இந்த உறுப்பைக் குறிப்பிட, {PH1} ஐக் கன்சோலில் பயன்படுத்தவும்"
-  },
-  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
-    "message": "<மதிப்பு திருத்துவதற்கு மிகவும் பெரியதாக உள்ளது>"
-  },
-  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
-    "message": "மூலக் குறியீட்டைக் காட்டு"
-  },
-  "panels/elements/ElementsTreeOutline.ts | pageDom": {
-    "message": "பக்க DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "காட்டு"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
-    "message": "எல்லாம் காட்டு ({PH1} வரிகள்)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "நோடுகள் அனைத்தையும் காட்டு (மேலும் {PH1})"
-  },
-  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
-    "message": "சிக்கலைக் காட்டு:"
-  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "எல்லாம்"
   },
@@ -8044,9 +8023,6 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS பண்பின் மதிப்பு: {PH1}"
-  },
-  "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "காட்டு"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "விரிவாக்கப்பட்ட விதியைச் சுருக்கும்"
@@ -9276,7 +9252,7 @@
     "message": "தணிக்கையின்போது மொபைல் மாதிரி இயக்கத்தைப் பயன்படுத்து"
   },
   "panels/lighthouse/LighthouseController.ts | atLeastOneCategoryMustBeSelected": {
-    "message": "குறைந்தது ஒரு வகையைத் தேர்ந்தெடுக்க வேண்டும்."
+    "message": "குறைந்தது ஒரு வகையைத் தேர்ந்தெடுக்க வேண்டும்"
   },
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "சிறந்த நடைமுறைகள்"
@@ -9561,7 +9537,7 @@
     "message": "SEO"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
-    "message": "Lighthouse ஐக் காட்டு"
+    "message": "Lighthouse காட்டு"
   },
   "panels/lighthouse/lighthouse-meta.ts | throttling": {
     "message": "த்ராட்லிங் முறை"
@@ -9873,7 +9849,7 @@
     "message": "கோரிக்கைகள் தடுக்கப்பட்டிருக்கலாம். கோரிக்கை நிபந்தனைகள் பேனலைப் பார்க்கவும்."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "கோரிக்கைகள் சாதனத்திலேயே ஓவர்ரைடு செய்யப்பட்டிருக்கலாம், ஆதாரங்கள் பேனலைப் பார்க்கவும்"
+    "message": "கோரிக்கைகள் சாதனத்திலேயே ஓவர்ரைடு செய்யப்பட்டிருக்கலாம், ஆதாரங்கள் பேனலைப் பார்க்கவும்."
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
     "message": "சேர்…"
@@ -9909,7 +9885,7 @@
     "message": "CPU த்ராட்லிங் இயக்கப்பட்டுள்ளது"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
-    "message": "இயல்பு மதிப்பைவிட அதிகமாக அமைத்தால் சிஸ்டம் செயல்திறன் குறையக்கூடும்."
+    "message": "இயல்பு மதிப்பைவிட அதிகமாக அமைத்தால் சிஸ்டம் செயல்திறன் குறையக்கூடும்"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "நெட்வொர்க்கில் இருந்து துண்டி"
@@ -9980,8 +9956,14 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrate": {
     "message": "சீராக்கு"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedLowTierMobile": {
+    "message": "குறைந்த திறனுள்ள மொபைல் சாதனம்"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedMidTierMobile": {
+    "message": "நடுத்தரமான திறனுள்ள மொபைல் சாதனம்"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationCTA": {
-    "message": "CPU த்ராட்லிங் முன்னமைவுகளைப் பயன்படுத்த, சீராக்கச் செயல்முறையை இயக்கி உங்கள் சாதனத்திற்கு ஏற்ற த்ராட்லிங் மதிப்பைக் கணக்கிட வேண்டும்."
+    "message": "CPU த்ராட்லிங் முன்னமைவுகளைப் பயன்படுத்த, ஒன்றிணைத்தல் செயல்முறையை ஆன் செய்து உங்கள் சாதனத்திற்கு ஏற்ற த்ராட்லிங் மதிப்பைக் கணக்கிட வேண்டும்"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationConfirmationPrompt": {
     "message": "சீராக்க ~5 வினாடிகள் ஆகும், தற்காலிகமாக இந்தப் பக்கத்தில் இருந்து வேறு பக்கத்திற்குச் செல்லும். தொடர விரும்புகிறீர்களா?"
@@ -11141,6 +11123,9 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "பொது"
   },
+  "panels/network/RequestHeadersView.ts | openWith": {
+    "message": "{PH1} மூலம் திறத்தல்"
+  },
   "panels/network/RequestHeadersView.ts | raw": {
     "message": "Raw"
   },
@@ -11458,6 +11443,9 @@
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket ஃப்ரேம்"
+  },
+  "panels/network/ShowMoreDetailsWidget.ts | copy": {
+    "message": "நகலெடு"
   },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "மேலும் காட்டு"
@@ -11869,15 +11857,6 @@
   },
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "சிஸ்டம் மானிட்டர்"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedElementsList": {
-    "message": "டிட்டாச் செய்யப்பட்ட எலிமெண்ட்டுகளின் பட்டியல்"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedNodes": {
-    "message": "டிட்டாச் செய்யப்பட்ட நோடுகள்"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | nodeSize": {
-    "message": "நோடுகளின் எண்ணிக்கை"
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementProfile": {
     "message": "டிட்டாச் செய்யப்பட்ட எலிமெண்ட்டுகள்: {PH1}"
@@ -12710,6 +12689,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "மீண்டும் பிளே செய்வதை ரத்துசெய்"
   },
+  "panels/recorder/RecordingView.ts | codeFormat": {
+    "message": "குறியீட்டு வடிவம்"
+  },
   "panels/recorder/RecordingView.ts | codeSidebarClosed": {
     "message": "குறியீடு பக்கப்பட்டி மூடப்பட்டது"
   },
@@ -13463,6 +13445,9 @@
   "panels/sensors/SensorsView.ts | beta": {
     "message": "β (பீட்டா)"
   },
+  "panels/sensors/SensorsView.ts | cpuPerformanceNoOverrideWithDefault": {
+    "message": "ஓவர்ரைடு இல்லை ({PH1})"
+  },
   "panels/sensors/SensorsView.ts | customOrientation": {
     "message": "பிரத்தியேகத் திசையமைப்பு"
   },
@@ -13480,6 +13465,9 @@
   },
   "panels/sensors/SensorsView.ts | error": {
     "message": "பிழை"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedCpuPerformanceTierEmulation": {
+    "message": "CPU செயல்திறன் அடுக்கின் மாதிரி இயக்கத்தைச் செயல்படுத்தும்"
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "தேர்ந்தெடுத்த செயலற்ற நிலையின் மாதிரி இயக்கத்தைச் செயல்படுத்தும்"
@@ -13558,6 +13546,27 @@
   },
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "ஆக்சலரோமீட்டர்"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformance": {
+    "message": "CPU செயல்திறன் அடுக்கு"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceNoOverride": {
+    "message": "மீறிச் செயல்படுதல் இல்லை"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierHigh": {
+    "message": "அடுக்கு 3: அதிகம்"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierLow": {
+    "message": "அடுக்கு 1: குறைவு"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierMid": {
+    "message": "அடுக்கு 2: நடுத்தரம்"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUltra": {
+    "message": "அடுக்கு 4: மிக அதிகம்"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUnknown": {
+    "message": "அடுக்கு 0: தெரியாதது"
   },
   "panels/sensors/sensors-meta.ts | cpuPressure": {
     "message": "CPU அழுத்தம்"
@@ -13695,7 +13704,7 @@
     "message": "செயல்திறன் பேனல் குறிப்புகளுக்கான AI பரிந்துரைகளை ஆன் செய்"
   },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
-    "message": "Console insights அம்சத்தை இயக்கு"
+    "message": "Console insights ஆன் செய்"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
     "message": "இந்த அம்சங்கள் ஜெனரேட்டிவ் AIயைப் பயன்படுத்துகின்றன. இவை Googleளின் கருத்துகளைப் பிரதிபலிக்காத, துல்லியமற்ற, மனதைப் புண்படுத்தக்கூடிய தகவல்களைக் காட்டக்கூடும்."
@@ -13774,6 +13783,63 @@
   },
   "panels/settings/AISettingsTab.ts | wrongLocale": {
     "message": "இந்த அம்சத்தைப் பயன்படுத்த டெவெலப்பர் கருவிகள் அமைப்புகளில் உங்களின் விருப்ப மொழியை ஆங்கிலம் என்று அமையுங்கள்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | correlationIdDescription": {
+    "message": "X-Correlation-ID அல்லது Correlation-ID பதில் தலைப்பின் மதிப்பு"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | description": {
+    "message": "பொருந்தும் நெட்வொர்க் கோரிக்கைகளுக்கு வெளிப்புறப் பின்னணிச் செயலாக்கப் பிழைதிருத்தம், APM அல்லது டிரேஸிங் கருவிகளுக்கான இணைப்புகளை உள்ளமைக்கலாம். கோரிக்கை மற்றும் பதிலளிப்புத் தலைப்புகளில் இருந்து பிரித்தெடுக்கப்பட்ட ‘உடன் தொடர்பு ஐடி’களைச் சேர்க்க ஒதுக்கிடங்களைப் பயன்படுத்தலாம்."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | devtoolsDebugIdDescription": {
+    "message": "devtools-debug-id Server-Timing உள்ளீட்டில் உள்ள desc அளவுரு மதிப்பு"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | headerColumn": {
+    "message": "குறிப்பிடப்பட்ட தலைப்பு/பிராப்பர்ட்டி"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
+    "message": "தவறான விதிகள் பயன்படுத்தப்படாது அல்லது சேமிக்கப்படாது"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
+    "message": "URL வடிவம் சரியான வடிவமாக இருக்க வேண்டும்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelCannotBeEmpty": {
+    "message": "லேபிள் காலியாக இருக்கக்கூடாது"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelColumn": {
+    "message": "லேபிள்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderColumn": {
+    "message": "ஒதுக்கிடம்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderDocHeading": {
+    "message": "கிடைக்கும் ஒதுக்கிடங்கள்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | requestIdDescription": {
+    "message": "X-Request-ID பதில் தலைப்பின் மதிப்பு"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | rulesSectionHeading": {
+    "message": "பின்னணிச் செயலாக்க இணைத்தல் விதிகள்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | spanIdDescription": {
+    "message": "Server-Timing traceparent உள்ளீட்டில் இருந்து 8-பைட் ஹெக்ஸ் முதல்நிலை ஸ்பேன் ஐடி"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateCannotBeEmpty": {
+    "message": "இலக்கு URL டெம்ப்ளேட் காலியாக இருக்கக்கூடாது"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateColumn": {
+    "message": "இலக்கு URL டெம்ப்ளேட்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | templateRequiresPlaceholder": {
+    "message": "இலக்கு URL டெம்ப்ளேட்டில் குறைந்தது ஓர் ஒதுக்கிடம் இருக்க வேண்டும்"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | traceIdDescription": {
+    "message": "trace-id பதில் தலைப்பு அல்லது Server-Timing traceparent உள்ளீட்டில் இருந்து 16-பைட் ஹெக்ஸ் டிரேஸ் ஐடி"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternCannotBeEmpty": {
+    "message": "URL பேட்டர்ன் காலியாக இருக்கக்கூடாது"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
+    "message": "URL வடிவம்"
   },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "தடத்தை உள்ளிடவும்"
@@ -14246,6 +14312,9 @@
   "panels/settings/settings-meta.ts | aiInnovations": {
     "message": "AI கண்டுபிடிப்புகள்"
   },
+  "panels/settings/settings-meta.ts | backendLinking": {
+    "message": "பின்னணிச் செயலாக்கத்தை இணைத்தல்"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ஆவணமாக்கல்"
   },
@@ -14266,6 +14335,9 @@
   },
   "panels/settings/settings-meta.ts | showAiInnovations": {
     "message": "AI கண்டுபிடிப்புகளைக் காட்டு"
+  },
+  "panels/settings/settings-meta.ts | showBackendLinking": {
+    "message": "பின்னணிச் செயலாக்க இணைப்பைக் காட்டு"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "பரிசோதனைகளைக் காட்டு"
@@ -14418,7 +14490,7 @@
     "message": "ஸ்டாக் டிரேஸை நகலெடு"
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
-    "message": "\"{PH1}\" என்ற பிழைதிருத்த ஃபைலை ஏற்ற முடியவில்லை."
+    "message": "\"{PH1}\" என்ற பிழைதிருத்த ஃபைலைக் காட்ட முடியவில்லை"
   },
   "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
     "message": "{PH1} செயல்பாட்டுக்கான பிழைதிருத்தத் தகவல்கள் முழுமையாக இல்லை"
@@ -14601,7 +14673,7 @@
     "message": "உள்ளமை"
   },
   "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
-    "message": "\"{PH1}\" என்ற பிழைதிருத்த ஃபைலைக் காட்ட முடியவில்லை."
+    "message": "\"{PH1}\" என்ற பிழைதிருத்த ஃபைலைக் காட்ட முடியவில்லை"
   },
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "{PH1}க்கான பிழைதிருத்தத் தகவல்களைக் காட்ட முடியவில்லை"
@@ -14927,9 +14999,6 @@
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "ஆதாரங்கள் பேனலில் திற"
   },
-  "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "வழங்கப்பட்ட எக்ஸெப்ஷன்களில் இடைநிறுத்து"
-  },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "இடைநிறுத்தங்கள் அனைத்தையும் 500 மிவி தடுத்து மீண்டும் தொடங்கும்"
   },
@@ -14948,23 +15017,11 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "தற்போதைய JavaScript செயலை நிறைவுசெய்யும்"
   },
-  "panels/sources/SourcesView.ts | debuggerHidden": {
-    "message": "பிழைதிருத்தி பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
-  },
-  "panels/sources/SourcesView.ts | debuggerShown": {
-    "message": "பிழைதிருத்தி பக்கப்பட்டி காட்டப்படுகிறது"
-  },
   "panels/sources/SourcesView.ts | hideDebugger": {
     "message": "பிழைதிருத்தியை மறைக்கும்"
   },
   "panels/sources/SourcesView.ts | hideNavigator": {
     "message": "வழிச்செலுத்தல் கருவியை மறைக்கும்"
-  },
-  "panels/sources/SourcesView.ts | navigatorHidden": {
-    "message": "வழிச்செலுத்தல் பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
-  },
-  "panels/sources/SourcesView.ts | navigatorShown": {
-    "message": "வழிச்செலுத்தல் பக்கப்பட்டி காட்டப்படுகிறது"
   },
   "panels/sources/SourcesView.ts | showDebugger": {
     "message": "பிழைதிருத்தியைக் காட்டும்"
@@ -16401,13 +16458,13 @@
     "message": "நீண்ட பணி"
   },
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} ஆனது செயல்திறன் சிக்கலை ஏற்படுத்த வாய்ப்புள்ளது."
+    "message": "{PH1} செயல்திறன் சிக்கலை ஏற்படுத்த வாய்ப்புள்ளது"
   },
   "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} என்பது பக்கத்தின் மோசமான பதிலளிக்கும் தன்மையைக் குறிக்கிறது."
+    "message": "{PH1} என்பது பக்கத்தின் மோசமான பதிலளிக்கும் தன்மையைக் குறிக்கிறது"
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
-    "message": "{PH1} {PH2} எடுத்துக்கொண்டது."
+    "message": "{PH1}, {PH2} எடுத்துக்கொண்டது"
   },
   "panels/timeline/components/DetailsView.ts | webSocketBytes": {
     "message": "{PH1} பைட்டுகள்"
@@ -16590,7 +16647,7 @@
     "message": "டெஸ்க்டாப்"
   },
   "panels/timeline/components/LiveMetricsView.ts | device": {
-    "message": "சாதனம்: {PH1}"
+    "message": "சாதனம்:"
   },
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "நெட்வொர்க் தற்காலிகச் சேமிப்பை முடக்கு"
@@ -16662,7 +16719,7 @@
     "message": "{PH1} - தரவு இல்லை"
   },
   "panels/timeline/components/LiveMetricsView.ts | network": {
-    "message": "நெட்வொர்க்: {PH1}"
+    "message": "நெட்வொர்க்:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "அடுத்த படிகள்"
@@ -17070,7 +17127,7 @@
     "message": "இந்தப் புள்ளிவிவரத்திற்கான மதிப்பிடப்பட்ட சேமிப்புகள்: {PH1} மற்றும் {PH2} டிரான்ஸ்ஃபர் அளவு"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} புள்ளிவிவரத்திற்கான விவரங்களைக் காட்டும்."
+    "message": "{PH1} புள்ளிவிவர விவரங்களைக் காட்டும்"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "புள்ளிவிவரத்தைச் சரிபார்க்க முடியவில்லை: {PH1}"
@@ -18167,23 +18224,14 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | auto": {
     "message": "தானியங்கு"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | block": {
-    "message": "தடுத்தல்"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | blockAxisMode": {
-    "message": "பிளாக் ஆக்ஸிஸ் மோட்"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "ஒருங்கிணைத்தல்"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inline": {
-    "message": "இன்லைன்"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inlineAxisMode": {
-    "message": "இன்லைன் அச்சு மோட்"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "லாஜிக்கல்"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | mode": {
+    "message": "மோட்"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | physical": {
     "message": "நேரடி"
@@ -18230,7 +18278,7 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "பண்புகள் இல்லை"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInspector": {
     "message": "மெமரி இன்ஸ்பெக்டர் பேனலில் திறக்கும்"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAll": {

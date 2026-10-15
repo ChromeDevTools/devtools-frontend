@@ -213,7 +213,7 @@
     "message": "Системийн алдаа"
   },
   "core/host/ResourceLoader.ts | unknownError": {
-    "message": "Үл мэдэгдэх алдаа"
+    "message": "Тодорхойгүй алдаа"
   },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Профайл {PH1}"
@@ -229,6 +229,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} ({PH2})-н контентыг ачаалж чадсангүй"
+  },
+  "core/sdk/Connections.ts | websocketConnectionFailed": {
+    "message": "WebSocket салсан. Chrome-н инстанс дээрх --remote-allow-origins одоогийн эх серверийг зөвшөөрдөг эсэхийг нягтална уу."
   },
   "core/sdk/Connections.ts | websocketDisconnected": {
     "message": "WebSocket салсан"
@@ -258,7 +261,7 @@
     "message": "Хаагдалт"
   },
   "core/sdk/DebuggerModel.ts | exception": {
-    "message": "Гажиг"
+    "message": "Онцгой тохиолдол"
   },
   "core/sdk/DebuggerModel.ts | expression": {
     "message": "Илэрхийлэл"
@@ -324,10 +327,10 @@
     "message": "Хүсэлтийг DevTools-с блоклосон: \"{PH1}\""
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
-    "message": "{PH1} ачаалж чадсангүй: {PH2} \"{PH3}\"."
+    "message": "{PH1}-г ачаалж чадсангүй: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
-    "message": "{PH1}-г ачаалж дууссан: {PH2} \"{PH3}\"."
+    "message": "{PH1} ачаалж дууслаа: {PH2} \"{PH3}\""
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G"
@@ -508,6 +511,9 @@
   },
   "core/sdk/SourceMapScopeChainEntry.ts | closure": {
     "message": "Хаагдалт"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | exception": {
+    "message": "Онцгой тохиолдол"
   },
   "core/sdk/SourceMapScopeChainEntry.ts | global": {
     "message": "Глобал"
@@ -882,7 +888,7 @@
     "message": "ХОУ-ы тусламжийн түр зуурын самбарыг нээх"
   },
   "entrypoints/main/GlobalAiButton.ts | openGemini": {
-    "message": "Gemini-н самбарыг нээх"
+    "message": "Gemini түр зуурын самбарыг нээх"
   },
   "entrypoints/main/MainImpl.ts | aiModelDownloaded": {
     "message": "ХОУ-ы загварыг татсан"
@@ -908,8 +914,8 @@
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
     "message": "Хуудас сонгох"
   },
-  "entrypoints/main/MainImpl.ts | getDevToolsMcp": {
-    "message": "DevTools MCP-г авах"
+  "entrypoints/main/MainImpl.ts | getChromeDevToolsForAgents": {
+    "message": "Агентдаа DevTools-д хандах эрх өгөх"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Тусламж"
@@ -1346,12 +1352,6 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer нь хөндлөнгийн эхийн тусгаарлалт шаардана. Илүү дэлгэрэнгүйг https://developer.chrome.com/blog/enabling-shared-array-buffer/ дээрээс харна уу."
   },
-  "generated/Deprecation.ts | SharedStorage": {
-    "message": "Shared Storage API-г зогсоосон бөгөөд ирээдүйн хувилбараас хасна."
-  },
-  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
-    "message": "document.requestStorageAccessFor-г зогсоосон бөгөөд хасна. Илүү дэлгэрэнгүй мэдээллийг https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ дээрээс харна уу."
-  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "Хэрэглэгчийн идэвхжүүлэлтгүйгээр speechSynthesis.speak()-г зогсоосон бөгөөд хасна."
   },
@@ -1407,7 +1407,7 @@
     "message": "Талбарын хэмжигдэхүүн нь одоогийн хуудаснаас өөр URL-д зориулагдсан"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Төхөөрөмжийн пикселийн харьцаа нь тоо эсвэл хоосон байх ёстой."
+    "message": "Төхөөрөмжийн пикселийн харьцаа нь тоо эсвэл хоосон байх ёстой"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
     "message": "Төхөөрөмжийн пикселийн харьцаа нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой"
@@ -2555,6 +2555,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLiveRecordingList": {
     "message": "Хүртээмжийн мэдэгдэл"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyElementHtml": {
+    "message": "Элементийн HTML-г хуулах"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | copyMessage": {
+    "message": "Мессежийг хуулах"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | jsTriggered": {
     "message": "JS-р идэвхжүүлсэн"
   },
@@ -2567,8 +2573,53 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "Цаг"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | announcementsOnly": {
+    "message": "Зөвхөн мэдэгдэл"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveOnly": {
+    "message": "Зөвхөн ARIA-live"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
     "message": "Мэдэгдлийн бичлэг"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | clearAnnouncements": {
+    "message": "Мэдэгдлийг арилгах"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | exportCsv": {
+    "message": "CSV руу экспортлох"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filter": {
+    "message": "Шүүлтүүр"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | filterByType": {
+    "message": "Төрлөөр шүүх"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | frameBlockedReason": {
+    "message": "{PH1}: {PH2}"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | nEventsMatch": {
+    "message": "{PH1} үйл явдал таарч байна"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | noEventsMatch": {
+    "message": "Ямар ч үйл явдал таарахгүй байна"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | oneEventMatches": {
+    "message": "1 үйл явдал таарч байна"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordBoth": {
+    "message": "Хоёуланг нь бичих"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
+    "message": "Зарим фреймийн хувьд бичихийг блоклосон:"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
+    "message": "Бичиж эхлэх"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | stopRecording": {
+    "message": "Бичихийг зогсоох"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | unknownError": {
+    "message": "Тодорхойгүй алдаа"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Хүртээмжтэй зангилааг задруулаагүй"
@@ -3126,7 +3177,7 @@
     "message": "Агентын зааварчилгаа"
   },
   "panels/animation/AnimationTimeline.ts | animationDescription": {
-    "message": "Та энэ хуудсан дээр анимацийг шалгаж, өөрчлөх боломжтой."
+    "message": "Та энэ хуудсан дээр анимацийг шалгаж, өөрчлөх боломжтой"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Анимацийн урьдчилан харагдах байдал {PH1}"
@@ -3192,10 +3243,10 @@
     "message": "Тодорхойлогч файл дахь URL-д хэрэглэгчийн нэр, нууц үг эсвэл порт агуулдаг"
   },
   "panels/application/AppManifestView.ts | actualHeightSpxOfSSDoesNotMatch": {
-    "message": "{PH2} {PH3}-н бодит өндөр болох ({PH1}px) нь заасан өндөртэй ({PH4}px) таарахгүй байна"
+    "message": "{PH2} {PH3}-н бодит өндөр ({PH1}пиксел) заасан өндөртэй ({PH4}пиксел) таарахгүй байна"
   },
   "panels/application/AppManifestView.ts | actualSizeSspxOfSSDoesNotMatch": {
-    "message": "{PH3} {PH4}-н ({PH1}×{PH2})пикселийн бодит хэмжээ нь заасан хэмжээтэй ({PH5}×{PH6}пиксел) таарахгүй байна"
+    "message": "{PH3} {PH4}-н бодит хэмжээ ({PH1}×{PH2}) пиксел заасан хэмжээтэй ({PH5}×{PH6}пиксел) таарахгүй байна"
   },
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}-н бодит өргөн ({PH1}пиксел) заасан өргөнтэй ({PH4}пиксел) таарахгүй байна"
@@ -3204,13 +3255,13 @@
     "message": "Хөтөч үүнийг тодорхойлогч файл одоо байгаа аппликэйшныг шинэчлэх шаардлагатай эсвэл энэ нь суулгах боломжтой шинэ веб аппыг зааж байгаа эсэхийг мэдэхэд ашигладаг"
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "Тэмдэглэл: id-г тодорхойлогч файлд заагаагүй, оронд ньstart_url-г ашигласан. Одоогийн таниулбартай таарах аппын ID заахын тулд id талбарыг '{PH1} {PH2} болгож тохируулна уу."
+    "message": "Тэмдэглэл: id-г тодорхойлогч файлд заагаагүй, оронд нь start_url-г ашигласан. Одоогийн танигчтай таарах аппын ID заахын тулд id талбарыг {PH1} {PH2} болгож тохируулна уу."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Тодорхойлогч файл"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
-    "message": "'any maskable'-н 'purpose'-тай дүрс тэмдгийг мэдэгдэхийг зөвлөдөггүй. Хэт их эсвэл хэт бага зах хүрээтэй тул зарим платформ дээр буруу харагдаж магадгүй."
+    "message": "'any maskable'-н 'purpose'-тай дүрс тэмдгийг мэдэгдэхийг зөвлөдөггүй. Хэт их эсвэл хэт бага зай байгаа тул зарим платформ дээр буруу харагдах магадлалтай."
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Дэвсгэр өнгө"
@@ -3231,7 +3282,7 @@
     "message": "Шаардлагатай дүрс тэмдгийг тодорхойлогч файлаас татаж чадсангүй"
   },
   "panels/application/AppManifestView.ts | customizePwaTitleBar": {
-    "message": "PWA-н гарчгийн хэсгийнхээ Window-н тохиргооны давхарлалтыг өөрчилнө үү"
+    "message": "PWA-н нэрийн хэсгийнхээ Window Controls Overlay-г өөрчилнө үү"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Тайлбар"
@@ -3288,10 +3339,10 @@
     "message": "Тодорхойлогч файлын 'display' өмч нь 'standalone', 'fullscreen', эсвэл 'minimal-ui'-н нэг байх шаардлагатай"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainANameOr": {
-    "message": "Тодорхойлогч файлд 'name' эсвэл 'short_name' талбар агуулаагүй байна"
+    "message": "Тодорхойлогч файл 'name' эсвэл 'short_name' талбар агуулаагүй байна"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Тодорхойлогч файлд тохирох дүрс тэмдэг агуулаагүй байна. Хамгийн багадаа {PH1} пикселтэй PNG, SVG, WebP формат шаардлагатай. 'sizes' атрибутыг тохируулсан байх ёстой бөгөөд хэрэв 'purpose' атрибутыг тохируулсан бол 'any'-г агуулж байх ёстой"
+    "message": "Тодорхойлогч файлд таарах дүрс тэмдэг алга байна. Хамгийн багадаа {PH1} пикселийн хэмжээтэй PNG, SVG, WebP формат шаардлагатай бөгөөд 'sizes' атрибутыг тохируулсан байх ёстой. Мөн 'purpose' атрибутыг тохируулсан бол 'any'-г заавал агуулсан байх шаардлагатай."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Тодорхойлогч файл 'prefer_related_applications-г зааж байна: үнэн'"
@@ -3312,13 +3363,13 @@
     "message": "Тодорхойлогч файл илрээгүй"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "Play Store ID өгөөгүй"
+    "message": "Ямар ч Google Play Store ID өгөөгүй"
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
-    "message": "Илүү баялаг PWA суулгах UI дэлгэцэд боломжгүй байх болно. form_factor-г wide болгож тохируулсан дор хаяж нэг дэлгэцийн агшин нэмнэ үү."
+    "message": "PWA суулгах баялаг UI компьютер дээр ажиллахгүй. form_factor-г wide болгож тохируулсан дор хаяж нэг дэлгэцийн агшин нэмнэ үү."
   },
   "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
-    "message": "Илүү баялаг PWA суулгах UI гар утсанд боломжгүй байх болно. form_factor-г wide-с өөр утга болгож тохируулаагүй эсвэл тохируулсан дор хаяж нэг дэлгэцийн агшин нэмнэ үү."
+    "message": "PWA суулгах баялаг UI хөдөлгөөнт төхөөрөмж дээр ажиллахгүй. form_factor-г wide-с өөр утга болгож тохируулаагүй эсвэл тохируулсан дор хаяж нэг дэлгэцийн агшин нэмнэ үү."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "PNG, SVG эсвэл WebP форматтай, зорилгын атрибутыг тохируулаагүй эсвэл 'any' гэж тохируулсан хамгийн багадаа {PH1} пикселтэй дөрвөлжин дүрс тэмдэг олгоогүй"
@@ -3330,10 +3381,10 @@
     "message": "Чиглэл"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOffline": {
-    "message": "Хуудас офлайн горимд ажиллахгүй"
+    "message": "Хуудас офлайн горимд ажилладаггүй."
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "Хуудас офлайн горимд ажилладаггүй. Chrome 93-аас эхлэн суулгах боломжтой эсэх шалгуур өөрчлөгдөж буй бөгөөд энэ сайтыг суулгах боломжгүй болно. Нэмэлт мэдээлэл авах бол {PH1}-г харна уу."
+    "message": "Хуудас офлайн горимд ажилладаггүй. Chrome 93-аас эхлэн суулгах боломжтой байдлын шалгуур өөрчлөгдөж байгаа бөгөөд энэ сайтыг суулгах боломжгүй болно. Нэмэлт мэдээлэл авах бол {PH1}-г харна уу."
   },
   "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "Хуудсанд тодорхойлогч файл алга <link> URL"
@@ -3342,10 +3393,10 @@
     "message": "Хуудсыг нууцлалтай цонхонд ачаалсан"
   },
   "panels/application/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
-    "message": "Хуудсыг үндсэн фреиймд ачаалаагүй байна"
+    "message": "Хуудсыг үндсэн фреймд ачаалаагүй байна"
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
-    "message": "Хуудсыг аюулгүй эхээс олгоогүй байна"
+    "message": "Хуудсыг аюулгүй эхээс хүргээгүй байна"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформ"
@@ -3357,7 +3408,7 @@
     "message": "Үзүүлэн"
   },
   "panels/application/AppManifestView.ts | protocolHandlers": {
-    "message": "Протокол хариуцагчид"
+    "message": "Протокол хариуцагч"
   },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} нь тодорхойлогч файлд өөрийн хэмжээг заадаггүй"
@@ -3369,7 +3420,7 @@
     "message": "{PH1} {PH2}-н өндөр нь өргөнөөс 2,3 дахин урт байж болохгүй"
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
-    "message": "Ихэнх үйлдлийн систем дөрвөлжин дүрс тэмдэг шаарддаг. Матрицад дор хаяж нэг дөрвөлжин дүрс тэмдэг оруулна уу."
+    "message": "Ихэнх үйлдлийн систем дөрвөлжин дүрс тэмдэг шаарддаг. Массивт дор хаяж нэг дөрвөлжин дүрс тэмдэг оруулна уу."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} үүний хэмжээг [width]x[height]-р тодорхойлох ёстой"
@@ -3387,7 +3438,7 @@
     "message": "{PH1} 'src'-г тохируулаагүй байна"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1}-н ''{PH2}'' URL-г шинжилж чадсангүй"
+    "message": "{PH1}-н \"{PH2}\" URL-г задлан шинжилж чадсангүй"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Дэлгэцийн агшин"
@@ -3402,7 +3453,7 @@
     "message": "Ижил form_factor-тай бүх дэлгэцийн агшин тухайн form_factor-тай эхний дэлгэцийн агшинтай ижил харьцаатай байх ёстой. Зарим дэлгэцийн агшныг үл хэрэгсэнэ."
   },
   "panels/application/AppManifestView.ts | selectWindowControlsOverlayEmulationOs": {
-    "message": "Window-н тохиргооны давхарлалтыг дараахад эмуляц хийх"
+    "message": "Window Controls Overlay-г эмуляц хийх"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "Богино нэр"
@@ -3426,10 +3477,10 @@
     "message": "Аппыг аль хэдийн суулгасан байна"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play Store аппын URL болон Play Store-н ID таарахгүй байна"
+    "message": "Google Play Store аппын URL, Google Play Store ID таарахгүй байна"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
-    "message": "Заасан аппликэйшний платформыг Android дээр дэмждэггүй"
+    "message": "Заасан аппликейшны платформыг Android дээр дэмждэггүй"
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Загварын өнгө"
@@ -3444,13 +3495,13 @@
     "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
-    "message": "Chrome {PH3}-с {PH2} талбарын {PH1} утгыг амжилттай оллоо"
+    "message": "Chrome {PH3}-с {PH2} талбарын {PH1} утгыг оллоо"
   },
   "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
     "message": "Тусламж хэрэгтэй юү? {PH1}-г уншина уу."
   },
   "panels/application/AppManifestView.ts | wcoNotFound": {
-    "message": "Window Controls Overlay API-г ашиглахын тулд тодорхойлогч файлд {PH1}-г тодорхойлж, аппын нэрийн хэсгийг өөрчилнө үү"
+    "message": "Window Controls Overlay API-г ашиглахын тулд тодорхойлогч файлд {PH1}-г тодорхойлж, аппынхаа нэрийн хэсгийг тусгайлан өөрчилнө үү"
   },
   "panels/application/ApplicationPanelSidebar.ts | ads": {
     "message": "Зар"
@@ -3462,7 +3513,7 @@
     "message": "Аппликэйшны түр зуурын самбарын хажуугийн цэс"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
-    "message": "Дэвсгэрийн үйлчилгээнүүд"
+    "message": "Арын үйлчилгээнүүд"
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Тодорхойлогч файлын энэ хэсэг рүү гүйлгэхийн тулд дуудна уу"
@@ -3492,7 +3543,7 @@
     "message": "Хадгалах санг тайлбарлах"
   },
   "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
-    "message": "Дотоод"
+    "message": "Орон нутгийн"
   },
   "panels/application/ApplicationPanelSidebar.ts | extensionManagedStorage": {
     "message": "Удирддаг"
@@ -3516,7 +3567,7 @@
     "message": "IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | indexeddbDescription": {
-    "message": "Та энэ хуудсан дээр indexedDB түлхүүр утгын хослол, өгөгдлийн баазыг харж, устгах боломжтой"
+    "message": "Та энэ хуудсан дээр IndexedDB-н түлхүүр утгын хослол, өгөгдлийн баазыг харж, устгах боломжтой"
   },
   "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "Гол зам: {PH1}"
@@ -3540,7 +3591,7 @@
     "message": "Ямар ч өргөтгөлийн хадгалах сан илрээгүй"
   },
   "panels/application/ApplicationPanelSidebar.ts | noIndexeddb": {
-    "message": "Ямар ч indexedDB илрээгүй"
+    "message": "Ямар ч IndexedDB илрээгүй"
   },
   "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
     "message": "Ямар ч дотоод хадгалах сан илрээгүй"
@@ -3555,7 +3606,7 @@
     "message": "Тодорхойлогч файл: Тодорхойлогч файлын дээд тал руу гүйлгэхийн тулд дуудна уу"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
-    "message": "Нээсэн цонхнууд"
+    "message": "Нээсэн цонх"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "Энэ хуудсан дээр та window.open()-р нээсэн цонхыг харах боломжтой"
@@ -3579,7 +3630,7 @@
     "message": "Хадгалах сан"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
-    "message": "Энэ документын контентыг 'document.write()'-р динамик байдлаар үүсгэсэн байна"
+    "message": "Энэ баримт бичгийн контентыг document.write()-р динамик байдлаар үүсгэсэн байна"
   },
   "panels/application/ApplicationPanelSidebar.ts | versionS": {
     "message": "Хувилбар: {PH1}"
@@ -3591,16 +3642,16 @@
     "message": "Вебийн ажилчид"
   },
   "panels/application/ApplicationPanelSidebar.ts | windowWithoutTitle": {
-    "message": "Гарчиггүй цонх"
+    "message": "Нэргүй цонх"
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ажилтан"
   },
   "panels/application/ApplicationPanelSidebar.ts | workerDescription": {
-    "message": "Энэ хуудсан дээр та эх фреймийн үүсгэсэн зориулалтын ажилтныг харах боломжтой"
+    "message": "Энэ хуудсан дээр та эх фреймийн нэмсэн зориулалтын ажилтныг харах боломжтой"
   },
   "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
-    "message": "Back/forward cache"
+    "message": "Back-forward cache"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Дэвсгэрийг дуудах"
@@ -3720,13 +3771,13 @@
     "message": "Түлхүүр эсвэл утгаар шүүх"
   },
   "panels/application/CrashReportContextView.ts | noContext": {
-    "message": "Жаазнууд дээр ямар ч хам сэдвийн оруулга илрээгүй."
+    "message": "Фреймүүд дээр ямар ч хам сэдвийн оруулга илрээгүй"
   },
   "panels/application/CrashReportContextView.ts | refresh": {
     "message": "Сэргээх"
   },
   "panels/application/CrashReportContextView.ts | unknownFrame": {
-    "message": "Тодорхойгүй жааз"
+    "message": "Тодорхойгүй фрейм"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "Хадгалах сангийн зүйлийг устгасан"
@@ -3987,7 +4038,7 @@
     "message": "Тохирох харилцан үйлдлийн ID байхгүй"
   },
   "panels/application/DeviceBoundSessionsView.ts | origin": {
-    "message": "Гарал үүсэл"
+    "message": "Эх"
   },
   "panels/application/DeviceBoundSessionsView.ts | persistentHttpError": {
     "message": "HTTP-н байнгын алдаа"
@@ -4053,7 +4104,7 @@
     "message": "Оруулах"
   },
   "panels/application/DeviceBoundSessionsView.ts | scope": {
-    "message": "Хүрээ"
+    "message": "Хамрах хүрээ"
   },
   "panels/application/DeviceBoundSessionsView.ts | scopeOriginContainsPath": {
     "message": "Хамрах хүрээний гарал үүсэлд зам байна"
@@ -4068,7 +4119,7 @@
     "message": "Сайтын хамрах хүрээтэй харилцан үйлдлийн хост загвар болон сайтын хооронд таарахгүй байдал байна"
   },
   "panels/application/DeviceBoundSessionsView.ts | selectEventToViewDetails": {
-    "message": "Илүү дэлгэрэнгүй мэдээлэл харахын тулд үйл явдлын мөрийг сонгоно уу"
+    "message": "Дэлгэрэнгүй мэдээллийг харахын тулд үйл явдлын мөрийг сонгоно уу"
   },
   "panels/application/DeviceBoundSessionsView.ts | serverError": {
     "message": "Төгсгөлийн цэгийн түр зуурын алдаа"
@@ -4110,7 +4161,7 @@
     "message": "Хадгалах сангийн хуваалтаас хассан"
   },
   "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationUnauthorized": {
-    "message": ".well-known дэд домайнаар бүртгүүлэхийг зөвшөөрөөгүй"
+    "message": ".well-known дэд домэйнаар бүртгүүлэхийг зөвшөөрөөгүй"
   },
   "panels/application/DeviceBoundSessionsView.ts | subdomainRegistrationWellKnownMalformed": {
     "message": "Дэд домэйн бүртгэлийн .well-known контент буруу хэлбэртэй байна"
@@ -4164,10 +4215,10 @@
     "message": "Фреймийн өвөг нь аюултай хам сэдэв байна"
   },
   "panels/application/FrameDetailsView.ts | adStatus": {
-    "message": "Сурталчилгааны төлөв"
+    "message": "Зарын төлөв"
   },
   "panels/application/FrameDetailsView.ts | additionalInformation": {
-    "message": "Нэмэлт мэдээлэл"
+    "message": "Дэлгэрэнгүй мэдээлэл"
   },
   "panels/application/FrameDetailsView.ts | apiAvailability": {
     "message": "API-н боломжтой байдал"
@@ -4203,10 +4254,10 @@
     "message": "Контентын аюулгүй байдлын бодлого (CSP)"
   },
   "panels/application/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Энэ фреймийг үүсгэх үед (async) stack-д зарын скрипт байсан. Энэ фреймийн үүсгэлийн stack trace-г шалгаснаар илүү их статистикийг өгч магадгүй."
+    "message": "Энэ фреймийг үүсгэхэд зарын скрипт (async) stack-д байсан. Энэ фреймийн үүсгэлийн stack trace-г шалгаснаар илүү их статистикийг өгч магадгүй."
   },
   "panels/application/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Фрейм үүсгэх Stack Trace"
+    "message": "Фрейм үүсгэх stack trace"
   },
   "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Энэ фреймийг программатик байдлаар үүсгэсэн. stack trace нь үүнийг хаана болсныг харуулна."
@@ -4215,10 +4266,10 @@
     "message": "Бүтээгчийн зарын скриптийн угсаа"
   },
   "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Тусгаарласан хөндлөнгийн эх"
+    "message": "Домэйн хооронд тусгаарласан"
   },
   "panels/application/FrameDetailsView.ts | document": {
-    "message": "Документ"
+    "message": "Баримт бичиг"
   },
   "panels/application/FrameDetailsView.ts | frameId": {
     "message": "Фреймийн ID"
@@ -4233,7 +4284,7 @@
     "message": "Энэ фреймийн одоогийн (эсвэл өмнөх) үндсэн документ нь зарын нөөц тул үүнийг зарын фрейм гэж үзсэн"
   },
   "panels/application/FrameDetailsView.ts | measureMemory": {
-    "message": "Хэмжилтийн санах ой"
+    "message": "Санах ойг хэмжих"
   },
   "panels/application/FrameDetailsView.ts | no": {
     "message": "Үгүй"
@@ -4272,13 +4323,13 @@
     "message": "Аюулгүй хам сэдэв"
   },
   "panels/application/FrameDetailsView.ts | securityIsolation": {
-    "message": "Аюулгүй байдал болон тусгаарлалт"
+    "message": "Аюулгүй байдал, тусгаарлалт"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
     "message": "SharedArrayBuffer бүтээгч боломжтой бөгөөд SABs-г postMessage-р дамжуулах боломжтой"
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer бүтээгч боломжтой хэдий ч SABs-г postMessage-р дамжуулах боломжгүй"
+    "message": "SharedArrayBuffer бүтээгчийг ашиглах боломжтой ч SABs-г postMessage-р шилжүүлэх боломжгүй"
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Фреймийн схем аюултай байна"
@@ -4287,10 +4338,10 @@
     "message": "performance.measureUserAgentSpecificMemory() API боломжтой байна"
   },
   "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "performance.measureUserAgentSpecificMemory() API боломжгүй байна"
+    "message": "performance.measureUserAgentSpecificMemory() API-г ашиглах боломжгүй байна"
   },
   "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "Энэ нэмэлт (дебаг) мэдээллийг 'Protocol Monitor' туршилтыг идэвхжүүлсэн тул харуулсан"
+    "message": "Энэ дебаг хийх мэдээллийг \"Protocol Monitor\" туршилтыг идэвхжүүлсэн тул харуулсан"
   },
   "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "SharedArrayBuffer шилжүүлэгт зөвшөөрлийн бодлогыг идэвхжүүлэхийг шаарддаг:"
@@ -4413,16 +4464,16 @@
     "message": "хаалттай"
   },
   "panels/application/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Хөндлөнгийн эх оруулагчийн бодлого"
+    "message": "Домэйн хооронд оруулагчийн бодлого"
   },
   "panels/application/OpenedWindowDetailsView.ts | document": {
-    "message": "Документ"
+    "message": "Баримт бичиг"
   },
   "panels/application/OpenedWindowDetailsView.ts | no": {
     "message": "Үгүй"
   },
   "panels/application/OpenedWindowDetailsView.ts | openerFrame": {
-    "message": "Нээгч фрейм"
+    "message": "Нээгчийн фрейм"
   },
   "panels/application/OpenedWindowDetailsView.ts | reportingTo": {
     "message": "дараахад мэдээлж байна"
@@ -4431,7 +4482,7 @@
     "message": "Аюулгүй байдал"
   },
   "panels/application/OpenedWindowDetailsView.ts | securityIsolation": {
-    "message": "Аюулгүй байдал болон тусгаарлалт"
+    "message": "Аюулгүй байдал, тусгаарлалт"
   },
   "panels/application/OpenedWindowDetailsView.ts | showsWhetherTheOpenedWindowIs": {
     "message": "Нээсэн цонх нээгчдээ хандах эсвэл эсрэгээр байх боломжтой эсэхийг харуулна"
@@ -4449,7 +4500,7 @@
     "message": "Вебийн ажилчин"
   },
   "panels/application/OpenedWindowDetailsView.ts | windowWithoutTitle": {
-    "message": "Гарчиггүй цонх"
+    "message": "Нэргүй цонх"
   },
   "panels/application/OpenedWindowDetailsView.ts | worker": {
     "message": "ажилтан"
@@ -4458,7 +4509,7 @@
     "message": "Тийм"
   },
   "panels/application/OriginTrialTreeView.ts | expiryTime": {
-    "message": "Дуусах хугацаа"
+    "message": "Дуусах цаг"
   },
   "panels/application/OriginTrialTreeView.ts | isThirdParty": {
     "message": "Гуравдагч тал"
@@ -4473,7 +4524,7 @@
     "message": "Эх"
   },
   "panels/application/OriginTrialTreeView.ts | rawTokenText": {
-    "message": "Raw токен"
+    "message": "Боловсруулаагүй токен"
   },
   "panels/application/OriginTrialTreeView.ts | status": {
     "message": "Токены төлөв"
@@ -4485,10 +4536,10 @@
     "message": "{PH1} токен"
   },
   "panels/application/OriginTrialTreeView.ts | trialName": {
-    "message": "Туршилтын нэр"
+    "message": "Туршилтын хугацааны нэр"
   },
   "panels/application/OriginTrialTreeView.ts | usageRestriction": {
-    "message": "Ашиглалтын хязгаарлалт"
+    "message": "Ашиглах хязгаарлалт"
   },
   "panels/application/PreloadingTreeElement.ts | rules": {
     "message": "Дүрмүүд"
@@ -4515,7 +4566,7 @@
     "message": "Ямар ч тайлан сонгоогүй"
   },
   "panels/application/ReportingApiView.ts | reportingApiDescription": {
-    "message": "Та энэ хуудсан дээрээс Reporting API-н тайлан, эцсийн цэгийг шалгах боломжтой болно"
+    "message": "Reporting API-н тайлан, эцсийн цэгийг шалгах"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Завсрын санах ойн хадгалах сан"
@@ -4938,7 +4989,7 @@
     "message": "дэвшилтэт веб программ (pwa)"
   },
   "panels/application/application-meta.ts | showApplication": {
-    "message": "Аппликейшнийг харуулах"
+    "message": "Аппликейшныг харуулах"
   },
   "panels/application/application-meta.ts | startRecordingEvents": {
     "message": "Үйл явдлыг бичиж эхлэх"
@@ -4979,11 +5030,11 @@
   "panels/application/components/AdsView.ts | filterListRule": {
     "message": "Шүүлтүүрийн жагсаалтын дүрэм"
   },
-  "panels/application/components/AdsView.ts | highlightAds": {
-    "message": "Зарыг тодруулах"
+  "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
+    "message": "Зартай холбоотой нөөцийг тодруулах"
   },
-  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBe": {
-    "message": "Зар гэж илрүүлсэн элементийг тодруулна (улаан)"
+  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBeAdRelated": {
+    "message": "Зартай холбоотой гэж илрүүлсэн элементийг тодруулна (улаан)"
   },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "Эхлэх цэг"
@@ -5015,8 +5066,14 @@
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Зарын төв процессорын нэгжийн нийт ашиглалт"
   },
+  "panels/application/components/AdsView.ts | totalCpuUsageExplanation": {
+    "message": "Зарын зарцуулсан нийт CPU цаг"
+  },
   "panels/application/components/AdsView.ts | totalNetworkUsage": {
     "message": "Зарын сүлжээний нийт ашиглалт"
+  },
+  "panels/application/components/AdsView.ts | totalNetworkUsageExplanation": {
+    "message": "Зарын зарцуулсан сүлжээний нийт өгөгдөл"
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<нэргүй>"
@@ -5027,8 +5084,14 @@
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "Харагдах хэсгийн зарын тоо"
   },
+  "panels/application/components/AdsView.ts | viewportAdCountExplanation": {
+    "message": "Харагдах хэсэг дэх зарын тоо"
+  },
   "panels/application/components/AdsView.ts | viewportAdDensity": {
     "message": "Харагдах хэсгийн зарын нягтрал"
+  },
+  "panels/application/components/AdsView.ts | viewportAdDensityExplanation": {
+    "message": "Зарын эзлэх харагдах хэсгийн хувь"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Зөвхөн GET хүсэлтээр ачаалсан хуудаснууд back/forward cache-г ашиглах зохих эрхтэй"
@@ -5418,7 +5481,7 @@
     "message": "Фрейм"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
-    "message": "{n,plural, =1{{m} фреймээс # асуудал олдлоо.}other{{m} фреймээс # асуудал олдлоо.}}"
+    "message": "{n,plural, =1{{m} фреймээс # асуудал олдлоо}other{{m} фреймээс # асуудал олдлоо}}"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
     "message": "{n,plural, =1{1 фреймээс # асуудал олдлоо}other{1 фреймээс # асуудал олдлоо}}"
@@ -6572,6 +6635,24 @@
   "panels/common/CPUThrottlingOption.ts | noThrottling": {
     "message": "Удаашруулаагүй"
   },
+  "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
+    "message": "Сэтгэгдэл оруулах"
+  },
+  "panels/common/CommentThreadWidget.ts | response": {
+    "message": "Хариулт:"
+  },
+  "panels/common/CommentThreadWidget.ts | sendToAgent": {
+    "message": "Агент руу илгээх"
+  },
+  "panels/common/CommentThreadWidget.ts | sent": {
+    "message": "Илгээсэн"
+  },
+  "panels/common/CommentThreadWidget.ts | sentCheckmark": {
+    "message": "Илгээсэн зөв тэмдэг"
+  },
+  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
+    "message": "Сэтгэгдэл ({PH1})"
+  },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<зангилаа>"
   },
@@ -6636,7 +6717,7 @@
     "message": "Гүйцэтгэлийн ул мөрд байх асуудлыг автоматаар олно"
   },
   "panels/common/GeminiRebrandPromoDialog.ts | dialogAriaLabel": {
-    "message": "DevTools дэх Gemini 3 Flash"
+    "message": "DevTools-н Gemini 3 Flash"
   },
   "panels/common/GeminiRebrandPromoDialog.ts | dismiss": {
     "message": "Хаах"
@@ -6649,6 +6730,15 @@
   },
   "panels/common/PersistenceUtils.ts | linkedToSourceMapS": {
     "message": "Эх газрын зурагтай холбосон: {PH1}"
+  },
+  "panels/common/common-meta.ts | comments": {
+    "message": "Сэтгэгдлүүд"
+  },
+  "panels/common/common-meta.ts | showComments": {
+    "message": "Сэтгэгдэл харуулах"
+  },
+  "panels/common/common-meta.ts | toggleCommentMode": {
+    "message": "ХОУ-ы код бичих агент руугаа илгээх сэтгэгдэл нэмнэ үү"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "Өргөтгөл"
@@ -7491,7 +7581,7 @@
     "message": "Энэ элемент нь {CONTAINER_DISPLAY_NAME}-н зүйл юм. Ж.нь: {CONTAINER_DISPLAY_NAME} агуулагчийн дэд элемент хэдий ч {PROPERTY_NAME} зөвхөн агуулагчдад хэрэгжинэ"
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "\"{PH1}\" {PH2} тохиргооны утга нь \"{PH5}\" фонтын бүлгийн дэмжигдсэн мужаас гадуур байна [{PH3}, {PH4}]"
+    "message": "\"{PH1}\" {PH2} тохиргооны утга нь \"{PH5}\" фонтын бүлгийн дэмжигдсэн мужаас гадуур байна [{PH3}, {PH4}]."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "Бэхэлгээ тодорхойлсон хэдий ч элементийг бэхэлгээний байрлалд байрлуулаагүй, харин \"{POSITION}\" байрлалд байрлуулсан"
@@ -7700,6 +7790,21 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "Эдгээр зүйлийг багтаах"
   },
+  "panels/elements/DOMTreeWidget.ts | pageDom": {
+    "message": "Хуудасны DOM"
+  },
+  "panels/elements/DOMTreeWidget.ts | reveal": {
+    "message": "ил болгох"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllLines": {
+    "message": "Бүгдийг харуулах ({PH1} мөр)"
+  },
+  "panels/elements/DOMTreeWidget.ts | showAllNodesDMore": {
+    "message": "Бүх зангилааг харуулах (өөр {PH1})"
+  },
+  "panels/elements/DOMTreeWidget.ts | viewIssue": {
+    "message": "Асуудлыг харах:"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup> дотор буруу элемент эсвэл текстийн зангилаа байна"
   },
@@ -7817,132 +7922,6 @@
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "Алсын объектыг хүчинтэй зангилаанд шийдвэрлэх боломжгүй"
   },
-  "panels/elements/ElementsTreeElement.ts | children": {
-    "message": "Дэд:"
-  },
-  "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "Хуулах"
-  },
-  "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
-    "message": "Бүтээгчийн зарын скриптийн угсаа"
-  },
-  "panels/elements/ElementsTreeElement.ts | cut": {
-    "message": "Таслах"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableContainer": {
-    "message": "Агуулагчийн давхарлалыг идэвхгүй болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableFlexMode": {
-    "message": "Уян хатан горимыг идэвхгүй болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridLanesMode": {
-    "message": "Хүснэгтийн зурвасын горимыг идэвхгүй болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableGridMode": {
-    "message": "Хүснэгтийн горимыг идэвхгүй болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableScrollSnap": {
-    "message": "Гүйлгэлтийн тасалдлын давхарлалтыг идэвхгүй болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | disableStartingStyle": {
-    "message": "@Эхлүүлэх хэв маягийн горимыг идэвхгүй болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
-    "message": "Энэ элемент гүйлгэх боломжтой цэстэй байна"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableContainer": {
-    "message": "Агуулагчийн давхарлалыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
-    "message": "Уян хатан горимыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridLanesMode": {
-    "message": "Хүснэгтийн зурвасын горимыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableGridMode": {
-    "message": "Хүснэгтийн горимыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
-    "message": "Гүйлгэлтийн тасалдлын давхарлалтыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | enableStartingStyle": {
-    "message": "@Эхлүүлэх хэв маягийн горимыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | filterListRule": {
-    "message": "Шүүлтүүрийн жагсаалтын дүрэм"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceOpenPopover": {
-    "message": "Энэ поповерыг нээлттэй байлгах"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceShowInterest": {
-    "message": "Энэ элемент дээр сонирхлыг идэвхжүүлэх"
-  },
-  "panels/elements/ElementsTreeElement.ts | forceState": {
-    "message": "Хүчлэх төлөв"
-  },
-  "panels/elements/ElementsTreeElement.ts | noProvenanceAvailable": {
-    "message": "Гарал үүслийн өгөгдөл байхгүй байна"
-  },
-  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
-    "message": "Медиагийн түр зуурын самбар луу очих"
-  },
-  "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "Буулгах"
-  },
-  "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "Ил болгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
-    "message": "Үндсэн скриптийн шүүлтүүрийн жагсаалтын дүрэм"
-  },
-  "panels/elements/ElementsTreeElement.ts | selectAll": {
-    "message": "Бүгдийг сонгох"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "commandfor атрибуттай холбоотой элементийг харуулах"
-  },
-  "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
-    "message": "Захиалгат элементийн тодорхойлолтыг харуулах"
-  },
-  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "interesttarget атрибуттай холбоотой элементийг харуулах"
-  },
-  "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "popovertarget атрибуттай холбоотой элементийг харуулах"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
-    "message": "Энэ поповерыг нээлттэй байлгахыг болиулах"
-  },
-  "panels/elements/ElementsTreeElement.ts | stopForceShowInterest": {
-    "message": "Энэ элемент дээрх сонирхлыг цуцлах"
-  },
-  "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
-    "message": "Энэ элементийг зар гэж тодорхойлсон"
-  },
-  "panels/elements/ElementsTreeElement.ts | useSInTheConsoleToReferToThis": {
-    "message": "Энэ элементийг дурдахын тулд {PH1}-г консолд ашиглана уу"
-  },
-  "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
-    "message": "<утга засахад хэт том байна>"
-  },
-  "panels/elements/ElementsTreeElement.ts | viewSourceCode": {
-    "message": "Эх кодыг үзэх"
-  },
-  "panels/elements/ElementsTreeOutline.ts | pageDom": {
-    "message": "Хуудасны DOM"
-  },
-  "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "ил болгох"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllLines": {
-    "message": "Бүгдийг харуулах ({PH1} мөр)"
-  },
-  "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "Бүх зангилааг харуулах (өөр {PH1})"
-  },
-  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
-    "message": "Асуудлыг харах:"
-  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "Бүгд"
   },
@@ -8044,9 +8023,6 @@
   },
   "panels/elements/PropertyRenderer.ts | cssPropertyValue": {
     "message": "CSS өмчийн утга: {PH1}"
-  },
-  "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "ил болгох"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "Дэлгэсэн дүрмийг хураах"
@@ -9276,7 +9252,7 @@
     "message": "Аудитын үеэр мобайл эмуляцыг ашиглах"
   },
   "panels/lighthouse/LighthouseController.ts | atLeastOneCategoryMustBeSelected": {
-    "message": "Хамгийн багадаа нэг ангилал сонгосон байх шаардлагатай."
+    "message": "Дор хаяж нэг ангилал сонгосон байх ёстой"
   },
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Шилдэг практик"
@@ -9561,7 +9537,7 @@
     "message": "SEO"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
-    "message": "Lighthouse-г харуул"
+    "message": "Lighthouse-г харуулах"
   },
   "panels/lighthouse/lighthouse-meta.ts | throttling": {
     "message": "Удаашруулалтын арга"
@@ -9873,7 +9849,7 @@
     "message": "Хүсэлтийг блоклосон байж болзошгүй. Хүсэлтийн нөхцөлийн түр зуурын самбарыг харна уу."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
-    "message": "Хүсэлтүүдийг дотоодод дарж магадгүй. Эх сурвалжийн түр зуурын самбарыг харна уу"
+    "message": "Хүсэлтүүдийг дотоодод дарж магадгүй. Эх сурвалжийн самбарыг харна уу."
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | add": {
     "message": "Нэмэх…"
@@ -9909,7 +9885,7 @@
     "message": "CPU багасгалтыг идэвхжүүлсэн байна"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
-    "message": "Өгөгдмөл утгаас хэтэрснээр системийн гүйцэтгэлийг бууруулж магадгүй."
+    "message": "Өгөгдмөл утгыг хэтрүүлэх нь системийн гүйцэтгэлийг бууруулж болзошгүй"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Сүлжээнээс хүчээр салгасан"
@@ -9980,8 +9956,14 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrate": {
     "message": "Тохируулна уу"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedLowTierMobile": {
+    "message": "Бага түвшний хөдөлгөөнт төхөөрөмж"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibratedMidTierMobile": {
+    "message": "Дунд түвшний хөдөлгөөнт төхөөрөмж"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationCTA": {
-    "message": "Төв процессорын нэгжийг удаашруулах урьдчилсан тохируулгыг ашиглахын тулд төхөөрөмждөө тохирох удаашруулах хувийг тодорхойлохоор тохируулгын явцыг ажиллуулна уу."
+    "message": "Төв процессорын нэгжийг удаашруулах урьдчилсан тохируулгыг ашиглахын тулд төхөөрөмждөө тохирох удаашруулах хувийг тодорхойлохоор тохируулгын явцыг ажиллуулна уу"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationConfirmationPrompt": {
     "message": "Тохируулгад ойролцоогоор 5 секунд зарцуулах бөгөөд таны одоогийн хуудаснаас түр зуур шилжиж явна. Та үргэлжлүүлэхийг хүсэж байна уу?"
@@ -11141,6 +11123,9 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Ерөнхий"
   },
+  "panels/network/RequestHeadersView.ts | openWith": {
+    "message": "{PH1}-р нээх"
+  },
   "panels/network/RequestHeadersView.ts | raw": {
     "message": "Raw"
   },
@@ -11458,6 +11443,9 @@
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket-н фрейм"
+  },
+  "panels/network/ShowMoreDetailsWidget.ts | copy": {
+    "message": "Хуулах"
   },
   "panels/network/ShowMoreDetailsWidget.ts | showMore": {
     "message": "Дэлгэрэнгүй харуулах"
@@ -11869,15 +11857,6 @@
   },
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "системийн монитор"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedElementsList": {
-    "message": "Салгасан элементүүдийн жагсаалт"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedNodes": {
-    "message": "Салгасан зангилаа"
-  },
-  "panels/profiler/HeapDetachedElementsDataGrid.ts | nodeSize": {
-    "message": "Зангилааны тоо"
   },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementProfile": {
     "message": "{PH1} элементийг салгасан"
@@ -12710,6 +12689,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Дахин тоглуулахыг цуцлах"
   },
+  "panels/recorder/RecordingView.ts | codeFormat": {
+    "message": "Кодын формат"
+  },
   "panels/recorder/RecordingView.ts | codeSidebarClosed": {
     "message": "Кодын хажуугийн цэсийг хаасан"
   },
@@ -13463,6 +13445,9 @@
   "panels/sensors/SensorsView.ts | beta": {
     "message": "β (бета)"
   },
+  "panels/sensors/SensorsView.ts | cpuPerformanceNoOverrideWithDefault": {
+    "message": "Дарахгүй ({PH1})"
+  },
   "panels/sensors/SensorsView.ts | customOrientation": {
     "message": "Захиалгат чиглэл"
   },
@@ -13480,6 +13465,9 @@
   },
   "panels/sensors/SensorsView.ts | error": {
     "message": "Алдаа"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedCpuPerformanceTierEmulation": {
+    "message": "Төв процессорын нэгжийн гүйцэтгэлийн зэрэглэлийг эмуляц хийхийг хүчилнэ"
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "Сонгосон идэвхгүй төлөвийг эмуляц хийхийг хүчилнэ"
@@ -13558,6 +13546,27 @@
   },
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "хурдатгал хэмжигч"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformance": {
+    "message": "Төв процессорын нэгжийн гүйцэтгэлийн зэрэглэл"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceNoOverride": {
+    "message": "Дарахгүй"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierHigh": {
+    "message": "3-р зэрэглэл: ӨНДӨР"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierLow": {
+    "message": "1-р зэрэглэл: БАГА"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierMid": {
+    "message": "2-р зэрэглэл: ДУНД"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUltra": {
+    "message": "4-р зэрэглэл: ХЭТ ӨНДӨР"
+  },
+  "panels/sensors/sensors-meta.ts | cpuPerformanceTierUnknown": {
+    "message": "0-р түвшин: ТОДОРХОЙГҮЙ"
   },
   "panels/sensors/sensors-meta.ts | cpuPressure": {
     "message": "Төв процессорын нэгжийн даралт"
@@ -13774,6 +13783,63 @@
   },
   "panels/settings/AISettingsTab.ts | wrongLocale": {
     "message": "Энэ онцлогийг ашиглахын тулд хэлний сонголтоо DevTools-н тохиргооноос англи хэл болгож тохируулна уу"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | correlationIdDescription": {
+    "message": "X-Correlation-ID эсвэл Correlation-ID хариултын толгой хэсгийн утга"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | description": {
+    "message": "Сүлжээний хүсэлтийг тааруулахын тулд гаднын backend дебаг хийх, APM, мөшгөх хэрэгслийн холбоосыг тохируулна уу. Хүсэлт, хариултын толгой хэсгээс задалсан коррелацийн ID-г оруулахын тулд орлуулагчийг ашиглана уу."
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | devtoolsDebugIdDescription": {
+    "message": "devtools-debug-id Server-Timing оруулга дахь desc параметрийн утга"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | headerColumn": {
+    "message": "Лавласан толгой хэсэг / өмч"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
+    "message": "Хүчингүй дүрмийг хэрэгжүүлэхгүй, хадгалахгүй"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
+    "message": "URL-н загвар нь хүчинтэй URL-н загвар байх ёстой"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelCannotBeEmpty": {
+    "message": "Шошго хоосон байж болохгүй"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | labelColumn": {
+    "message": "Шошго"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderColumn": {
+    "message": "Oрлуулагч"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | placeholderDocHeading": {
+    "message": "Боломжтой орлуулагч"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | requestIdDescription": {
+    "message": "X-Request-ID хариултын толгой хэсгийн утга"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | rulesSectionHeading": {
+    "message": "Backend холбох дүрэм"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | spanIdDescription": {
+    "message": "Server-Timing traceparent оруулгын 8 байтын арван зургаатын эх спаны ID"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateCannotBeEmpty": {
+    "message": "Зорилтот URL-н загвар хоосон байж болохгүй"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | targetUrlTemplateColumn": {
+    "message": "Зорилтот URL-н загвар"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | templateRequiresPlaceholder": {
+    "message": "Зорилтот URL-н загвар дор хаяж нэг орлуулагч агуулсан байх ёстой"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | traceIdDescription": {
+    "message": "trace-id хариултын толгой хэсэг эсвэл Server-Timing traceparent оруулгын 16 байтын арван зургаатын ул мөрийн ID"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternCannotBeEmpty": {
+    "message": "URL-н загвар хоосон байж болохгүй"
+  },
+  "panels/settings/BackendLinkingSettingsTab.ts | urlPatternColumn": {
+    "message": "URL-н загвар"
   },
   "panels/settings/EditFileSystemView.ts | enterAPath": {
     "message": "Зам оруулах"
@@ -14246,6 +14312,9 @@
   "panels/settings/settings-meta.ts | aiInnovations": {
     "message": "ХОУ-ы инновац"
   },
+  "panels/settings/settings-meta.ts | backendLinking": {
+    "message": "Backend холбох"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Баримтжуулалт"
   },
@@ -14266,6 +14335,9 @@
   },
   "panels/settings/settings-meta.ts | showAiInnovations": {
     "message": "ХОУ-ы инновацийг харуул"
+  },
+  "panels/settings/settings-meta.ts | showBackendLinking": {
+    "message": "Backend холбохыг харуулах"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Туршилтыг харуулах"
@@ -14418,7 +14490,7 @@
     "message": "Стекийн мөрийг хуулах"
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
-    "message": "\"{PH1}\" дебаг хийх файлыг ачаалж чадсангүй."
+    "message": "\"{PH1}\" дебаг хийх файлыг ачаалж чадсангүй"
   },
   "panels/sources/CallStackSidebarPane.ts | debugSymbolsIncomplete": {
     "message": "{PH1} функцийн дебаг хийх мэдээлэл дутуу байна"
@@ -14601,7 +14673,7 @@
     "message": "Тохируулах"
   },
   "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
-    "message": "\"{PH1}\" дебаг хийх файлыг ачаалж чадсангүй."
+    "message": "\"{PH1}\" дебаг хийх файлыг ачаалж чадсангүй"
   },
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "{PH1}-д зориулсан ямар нэг дебаг хийх мэдээллийг ачаалж чадсангүй"
@@ -14927,9 +14999,6 @@
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Эх сурвалжийн түр зуурын самбарт нээх"
   },
-  "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "Илрүүлсэн онцгой тохиолдол дээр түр зогсоох"
-  },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "500 мс-ээр блоклосон бүх түр зогсолтыг үргэлжлүүлэх"
   },
@@ -14948,23 +15017,11 @@
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Одоогийн JavaScript-н дуудлагыг дуусгавар болгох"
   },
-  "panels/sources/SourcesView.ts | debuggerHidden": {
-    "message": "Дебаг хийгчийн хажуугийн цэсийг нуусан"
-  },
-  "panels/sources/SourcesView.ts | debuggerShown": {
-    "message": "Дебаг хийгчийн хажуугийн цэсийг харуулсан"
-  },
   "panels/sources/SourcesView.ts | hideDebugger": {
     "message": "Дебаг хийгчийг нуух"
   },
   "panels/sources/SourcesView.ts | hideNavigator": {
     "message": "Чиглүүлэгчийг нуух"
-  },
-  "panels/sources/SourcesView.ts | navigatorHidden": {
-    "message": "Чиглүүлэгчийн хажуугийн цэсийг нуусан"
-  },
-  "panels/sources/SourcesView.ts | navigatorShown": {
-    "message": "Чиглүүлэгчийн хажуугийн цэсийг харуулсан"
   },
   "panels/sources/SourcesView.ts | showDebugger": {
     "message": "Дебаг хийгчийг харуулах"
@@ -16401,13 +16458,13 @@
     "message": "Урт хугацаатай ажил"
   },
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} нь гүйцэтгэлийн гацаа байж магадгүй."
+    "message": "{PH1} нь гүйцэтгэлийн гацаа байж магадгүй"
   },
   "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} нь хуудасны хариу үйлдэлт байдал муу байгааг заана."
+    "message": "{PH1} нь хуудасны хариу үйлдэлт байдал муу байгааг заана"
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
-    "message": "{PH1}-д {PH2} зарцуулсан."
+    "message": "{PH1}-д {PH2} зарцуулсан"
   },
   "panels/timeline/components/DetailsView.ts | webSocketBytes": {
     "message": "{PH1} байт"
@@ -16590,7 +16647,7 @@
     "message": "Компьютер"
   },
   "panels/timeline/components/LiveMetricsView.ts | device": {
-    "message": "Төхөөрөмж: {PH1}"
+    "message": "Төхөөрөмж:"
   },
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "Сүлжээний завсрын санах ойг идэвхгүй болгох"
@@ -16662,7 +16719,7 @@
     "message": "{PH1} - Ямар ч өгөгдөл байхгүй"
   },
   "panels/timeline/components/LiveMetricsView.ts | network": {
-    "message": "Сүлжээ: {PH1}"
+    "message": "Сүлжээ:"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Дараагийн алхмууд"
@@ -17070,7 +17127,7 @@
     "message": "Энэ статистикт үндэслэн тооцоолсон хэмнэлт: {PH1}, {PH2}-н шилжүүлэх хэмжээ"
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} статистикийн дэлгэрэнгүйг үзэх."
+    "message": "{PH1} статистикийн дэлгэрэнгүйг үзэх"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Статистикийн шалгалт амжилтгүй: {PH1}"
@@ -18167,23 +18224,14 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | auto": {
     "message": "Автомат"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | block": {
-    "message": "Блоклох"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | blockAxisMode": {
-    "message": "Блокийн тэнхлэгийн горим"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Координат"
   },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inline": {
-    "message": "Мөрд"
-  },
-  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | inlineAxisMode": {
-    "message": "Мөрийн тэнхлэгийн горим"
-  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Логик"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | mode": {
+    "message": "Горим"
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | physical": {
     "message": "Биет"
@@ -18230,7 +18278,7 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Өмч байхгүй"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInspector": {
     "message": "Санах ой шалгагчийн түр зуурын самбарт нээх"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAll": {

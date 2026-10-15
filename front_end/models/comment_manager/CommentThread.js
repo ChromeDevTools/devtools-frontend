@@ -55,6 +55,18 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
             this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
         }
     }
+    editComment(text) {
+        const trimmed = text.trim();
+        if (this.status !== 'ACTIVE' || !trimmed) {
+            return;
+        }
+        const comment = this.comments.find(c => c.author === 'DEVELOPER');
+        if (!comment || comment.text === trimmed) {
+            return;
+        }
+        comment.text = trimmed;
+        this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
+    }
     sendToAgent(text, author = 'DEVELOPER') {
         let changed = this.#saveText(text, author);
         if (this.status === 'DRAFT' || this.status === 'ACTIVE') {

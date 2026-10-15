@@ -442,6 +442,22 @@ export class CSSModel extends SDKModel {
         this.dispatchEventToListeners(Events.StartingStylesStateForced, node);
         return true;
     }
+    forcePositionTryOption(node, index) {
+        const currentForcedIndex = node.marker(PositionTryOptionMarker) ?? undefined;
+        if (currentForcedIndex === index) {
+            return false;
+        }
+        node.setMarker(PositionTryOptionMarker, index ?? null);
+        if (node.id === undefined) {
+            return false;
+        }
+        void this.agent.invoke_forcePositionTryOption({ nodeId: node.id, index });
+        this.dispatchEventToListeners(Events.PositionTryOptionForced, node);
+        return true;
+    }
+    forcedPositionTryOption(node) {
+        return node.marker(PositionTryOptionMarker) ?? undefined;
+    }
     forcePseudoState(node, pseudoClass, enable) {
         const forcedPseudoClasses = node.marker(PseudoStateMarker) || [];
         const hasPseudoClass = forcedPseudoClasses.includes(pseudoClass);
@@ -890,6 +906,7 @@ export var Events;
     Events["MediaQueryResultChanged"] = "MediaQueryResultChanged";
     Events["ModelWasEnabled"] = "ModelWasEnabled";
     Events["ModelDisposed"] = "ModelDisposed";
+    Events["PositionTryOptionForced"] = "PositionTryOptionForced";
     Events["PseudoStateForced"] = "PseudoStateForced";
     Events["StartingStylesStateForced"] = "StartingStylesStateForced";
     Events["StyleSheetAdded"] = "StyleSheetAdded";
@@ -899,6 +916,7 @@ export var Events;
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Events || (Events = {}));
 const PseudoStateMarker = 'pseudo-state-marker';
+const PositionTryOptionMarker = 'position-try-option-marker';
 export class Edit {
     styleSheetId;
     oldRange;

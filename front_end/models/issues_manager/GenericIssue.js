@@ -33,6 +33,10 @@ const UIStrings = {
      * @description Title for back-to-ad intervention documentation page.
      */
     backToAdInterventionPageTitle: 'Back-to-ad intervention explainer',
+    /**
+     * @description Title for web permissions best practices documentation page.
+     */
+    permissionsBestPracticesPageTitle: 'Web permissions best practices',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -196,6 +200,13 @@ export const genericFormModelContextParameterMissingName = {
     file: 'genericFormModelContextParameterMissingName.md',
     links: [],
 };
+export const genericGeolocationPromptWithoutUserGesture = {
+    file: 'genericGeolocationPromptWithoutUserGesture.md',
+    links: [{
+            link: 'https://web.dev/articles/permissions-best-practices',
+            linkTitle: i18nLazyString(UIStrings.permissionsBestPracticesPageTitle),
+        }],
+};
 const issueDescriptions = new Map([
     ["FormLabelForNameError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForNameError */, genericFormLabelForNameError],
     ["FormInputWithNoLabelError" /* Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError */, genericFormInputWithNoLabelError],
@@ -260,6 +271,10 @@ const issueDescriptions = new Map([
         "FormModelContextParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingName */,
         genericFormModelContextParameterMissingName,
     ],
+    [
+        "GeolocationPromptWithoutUserGesture" /* Protocol.Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture */,
+        genericGeolocationPromptWithoutUserGesture,
+    ],
 ]);
 const issueTypes = new Map([
     ["FormLabelForNameError" /* Protocol.Audits.GenericIssueErrorType.FormLabelForNameError */, "PageError" /* IssueKind.PAGE_ERROR */],
@@ -280,5 +295,6 @@ const issueTypes = new Map([
     ["FormModelContextParameterMissingTitleAndDescription" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingTitleAndDescription */, "PageError" /* IssueKind.PAGE_ERROR */],
     ["FormModelContextRequiredParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextRequiredParameterMissingName */, "PageError" /* IssueKind.PAGE_ERROR */],
     ["FormModelContextParameterMissingName" /* Protocol.Audits.GenericIssueErrorType.FormModelContextParameterMissingName */, "PageError" /* IssueKind.PAGE_ERROR */],
+    ["GeolocationPromptWithoutUserGesture" /* Protocol.Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture */, "Improvement" /* IssueKind.IMPROVEMENT */],
 ]);
 //# sourceMappingURL=GenericIssue.js.map

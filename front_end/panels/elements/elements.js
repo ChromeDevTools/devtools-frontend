@@ -1822,6 +1822,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
@@ -3887,6 +3888,7 @@ __export(PropertyRenderer_exports, {
   StringRenderer: () => StringRenderer,
   TracingContext: () => TracingContext,
   URLRenderer: () => URLRenderer,
+  ValueUpdateTracking: () => ValueUpdateTracking,
   precedingSpace: () => precedingSpace,
   rendererBase: () => rendererBase
 });
@@ -5388,13 +5390,18 @@ devtools-icon.open-in-animations-panel {
 }
 
 devtools-icon.bezier-swatch-icon,
-devtools-icon.position-area-swatch-icon {
+devtools-icon.position-area-swatch-icon,
+devtools-icon.position-try-swatch-icon {
   position: relative;
   transform: scale(0.7);
   margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));
   user-select: none;
   color: var(--icon-css);
   cursor: default;
+
+  &.toggled {
+    color: var(--icon-toggled);
+  }
 
   &:hover {
     color: var(--icon-css-hover);
@@ -5709,7 +5716,19 @@ var UIStrings5 = {
   /**
    * @description Title in the Styles tab for the icon button for jumping to the anchor node.
    */
-  jumpToAnchorNode: "Jump to anchor node"
+  jumpToAnchorNode: "Jump to anchor node",
+  /**
+   * @description Title of the button that opens the position-try option menu in the Styles tab of the Elements panel.
+   */
+  positionTrySwatchButton: "Force `position-try` option",
+  /**
+   * @description Label for the default (unforced) option in the position-try menu in the Styles tab of the Elements panel.
+   */
+  defaultPositionTryOption: "Default",
+  /**
+   * @description Label for the base style (no fallback) option in the position-try menu in the Styles tab of the Elements panel.
+   */
+  basePositionTryOption: "Base"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/elements/StylePropertyTreeElement.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -5850,7 +5869,8 @@ var CSSWideKeywordRenderer = class extends CSSWideKeywordRendererBase {
     if (SDK5.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) || SDK5.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
       const color = Common2.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
-        return [new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, swatch), swatch];
+        const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, swatch, match, context);
+        return [colorSwatch, swatch];
       }
     }
     return [swatch];
@@ -5955,7 +5975,7 @@ var VariableRenderer = class extends VariableRendererBase {
     if (!color) {
       return [varSwatch];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch, match, context);
     context.addControl("color", colorSwatch);
     if (fromFallback) {
       renderedFallback?.cssControls.get("color")?.forEach(
@@ -6099,7 +6119,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
     if (!color) {
       return [varSwatch];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch, match, context);
     context.addControl("color", colorSwatch);
     if (fromFallback) {
       renderedFallback?.cssControls.get("color")?.forEach(
@@ -6240,7 +6260,9 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         colorText2.textContent = displayColor.asString();
         const swatch2 = new _ColorRenderer(this.#stylesContainer, null).renderColorSwatch(
           displayColor.isGamutClipped() ? color : displayColor.nickname() ?? displayColor,
-          colorText2
+          colorText2,
+          match,
+          context
         );
         swatch2.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
           colorText2.textContent = ev.data.color.asString();
@@ -6252,7 +6274,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         return evaluation;
       }
     }
-    const swatch = this.renderColorSwatch(color, valueChild);
+    const swatch = this.renderColorSwatch(color, valueChild, match, context);
     context.addControl("color", swatch);
     if (cssControls && match.node.name === "CallExpression" && context.ast.text(match.node.getChild("Callee")).match(/^(hsla?|hwba?)/)) {
       const [angle] = cssControls.get("angle") ?? [];
@@ -6275,7 +6297,9 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     }
     return [swatch, valueChild];
   }
-  renderColorSwatch(color, valueChild) {
+  // Renders a swatch for `color`, which stands for the text that is displayed in `valueChild`. When the user changes the
+  // color through the swatch, `valueChild` is replaced with the new text, which is recorded as the edit of `match`.
+  renderColorSwatch(color, valueChild, match, context) {
     const editable = this.#treeElement?.editable();
     const shiftClickMessage = i18nString5(UIStrings5.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString5(UIStrings5.openColorPickerS, { PH1: shiftClickMessage }) : "";
@@ -6290,7 +6314,9 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
       const onColorFormatChanged = (e) => {
-        valueChild.textContent = e.data.color.getAuthoredText() ?? e.data.color.asString();
+        const text = e.data.color.getAuthoredText() ?? e.data.color.asString();
+        valueChild.textContent = text;
+        context.recordEdit(match, text);
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
       swatch.addEventListener(InlineEditor2.ColorSwatch.ClickEvent.eventName, () => {
@@ -6300,7 +6326,9 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       swatch.addEventListener(InlineEditor2.ColorSwatch.ColorFormatChangedEvent.eventName, onColorFormatChanged);
       const swatchIcon = new ColorSwatchPopoverIcon(treeElement, treeElement.stylesContainer().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener("colorchanged" /* COLOR_CHANGED */, (ev) => {
-        valueChild.textContent = ev.data.getAuthoredText() ?? ev.data.asString();
+        const text = ev.data.getAuthoredText() ?? ev.data.asString();
+        valueChild.textContent = text;
+        context.recordEdit(match, text);
         swatch.setColor(ev.data);
       });
       if (treeElement.property.name === "color") {
@@ -6349,7 +6377,7 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
     if (!color) {
       return [content];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(void 0, content);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(void 0, content, match, context);
     context.addControl("color", colorSwatch);
     void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
     return [colorSwatch, content];
@@ -6477,7 +6505,7 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
         const initialColor = Common2.Color.parse("#000");
         const colorText = document.createElement("span");
         colorText.textContent = initialColor.asString();
-        const swatch2 = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, colorText);
+        const swatch2 = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, colorText, match, context);
         swatch2.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
           colorText.textContent = ev.data.color.asString();
         });
@@ -6567,7 +6595,7 @@ var ContrastColorRenderer = class extends ContrastColorRendererBase {
     if (!color) {
       return [content];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, content);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, content, match, context);
     context.addControl("color", colorSwatch);
     return [colorSwatch, content];
   }
@@ -6613,10 +6641,12 @@ var AngleRenderer = class extends AngleRendererBase {
     });
     cssAngle.addEventListener("valuechanged", async ({ data }) => {
       valueElement.textContent = data.value;
+      context.recordEdit(match, data.value);
       await treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
     });
     cssAngle.addEventListener("unitchanged", ({ data }) => {
       valueElement.textContent = data.value;
+      context.recordEdit(match, data.value);
     });
     context.addControl("angle", cssAngle);
     return [cssAngle];
@@ -7464,10 +7494,12 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
 var PositionTryRendererBase = rendererBase(SDK5.CSSPropertyParserMatchers.PositionTryMatch);
 var PositionTryRenderer = class extends PositionTryRendererBase {
   #matchedStyles;
+  #treeElement;
   // clang-format on
-  constructor(matchedStyles) {
+  constructor(matchedStyles, treeElement) {
     super();
     this.#matchedStyles = matchedStyles;
+    this.#treeElement = treeElement;
   }
   render(match, context) {
     const content = [];
@@ -7475,18 +7507,60 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
       const { nodes } = Renderer.render(match.preamble, context);
       content.push(nodes);
     }
+    const node = this.#treeElement ? this.#matchedStyles.nodeForStyle(this.#treeElement.property.ownerStyle) : this.#matchedStyles.node();
+    const fallbackLabels = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
       const fallbackContent = document.createElement("span");
       if (i > 0) {
         fallbackContent.appendChild(document.createTextNode(", "));
       }
-      if (i !== this.#matchedStyles.activePositionFallbackIndex()) {
+      if (!this.#treeElement?.inherited() && node === this.#matchedStyles.node() && i !== this.#matchedStyles.activePositionFallbackIndex()) {
         fallbackContent.classList.add("inactive-value");
       }
       Renderer.renderInto(fallback, context, fallbackContent);
+      fallbackLabels.push(
+        context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim()
+      );
       content.push(fallbackContent);
     }
-    return html7`${content}`;
+    if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() || !this.#treeElement.property.activeInStyle() || !node) {
+      return html7`${content}`;
+    }
+    const cssModel = this.#matchedStyles.cssModel();
+    const forcedIndex = cssModel.forcedPositionTryOption(node);
+    const isForced = forcedIndex !== void 0;
+    return html7`<devtools-icon
+      name=${isForced ? "layers-filled" : "layers"}
+      class=${isForced ? "position-try-swatch-icon toggled" : "position-try-swatch-icon"}
+      title=${i18nString5(UIStrings5.positionTrySwatchButton)}
+      role=button
+      tabindex=-1
+      jslog=${VisualLogging3.dropDown("position-try").track({ click: true })}
+      @click=${(event) => {
+      event.consume(true);
+      const currentForced = cssModel.forcedPositionTryOption(node);
+      const contextMenu = new UI7.ContextMenu.ContextMenu(event);
+      contextMenu.defaultSection().appendCheckboxItem(i18nString5(UIStrings5.defaultPositionTryOption), () => {
+        cssModel.forcePositionTryOption(node, void 0);
+      }, { checked: currentForced === void 0, jslogContext: "default" });
+      contextMenu.defaultSection().appendCheckboxItem(i18nString5(UIStrings5.basePositionTryOption), () => {
+        cssModel.forcePositionTryOption(node, 0);
+      }, { checked: currentForced === 0, jslogContext: "base" });
+      contextMenu.defaultSection().appendSeparator();
+      for (const [i, label] of fallbackLabels.entries()) {
+        const optionIndex = i + 1;
+        contextMenu.defaultSection().appendCheckboxItem(label, () => {
+          cssModel.forcePositionTryOption(node, optionIndex);
+        }, { checked: currentForced === optionIndex, jslogContext: "position-try-option" });
+      }
+      void contextMenu.show();
+    }}
+      @mousedown=${(event) => {
+      event.consume();
+    }}
+      @mouseup=${(event) => {
+      event.consume();
+    }}></devtools-icon>${content}`;
   }
 };
 function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyles, treeElement, computedStyles, computedStyleExtraFields) {
@@ -7511,7 +7585,7 @@ function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyle
     new FlexGridRenderer(stylesContainer, treeElement),
     new PositionAreaRenderer(stylesContainer, treeElement),
     new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
-    new PositionTryRenderer(matchedStyles),
+    new PositionTryRenderer(matchedStyles, treeElement),
     new LengthRenderer(stylesContainer, propertyName, treeElement),
     new MathFunctionRenderer(
       stylesContainer,
@@ -7560,6 +7634,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   contextForTest;
   #gridNames = void 0;
   #tooltipKeyCounts = /* @__PURE__ */ new Map();
+  // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
+  // parsed.
+  #edits;
   #lazyRender;
   constructor({ stylesContainer, section: section5, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }) {
     const jslogContext = property.name.startsWith("--") ? "custom-property" : property.name;
@@ -7707,6 +7784,11 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       return "";
     }
     return this.nameElement.innerText + ": " + this.valueElement.innerText;
+  }
+  // Like `renderedPropertyText`, but built from the changes that renderers recorded instead of read back from the DOM.
+  // Tests compare the two while the renderers are being migrated. This replaces `renderedPropertyText` afterwards.
+  editedPropertyTextForTest() {
+    return `${this.name}: ${this.#edits?.valueText() ?? this.property.value}`;
   }
   updateState() {
     if (!this.listItemElement) {
@@ -7922,7 +8004,8 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     ) : [];
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
-    this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers).valueElement;
+    this.#edits = matchedResult ? new ValueUpdateTracking(matchedResult.ast) : void 0;
+    this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers, void 0, void 0, this.#edits).valueElement;
     this.nameElement = Renderer.renderNameElement(this.name);
     if (!this.treeOutline) {
       return;
@@ -14640,8 +14723,64 @@ var TracingContext = class _TracingContext {
   }
 };
 var CSSControlMap = Map;
+var ValueEdit = class {
+  constructor(original, value5) {
+    this.original = original;
+    this.value = value5;
+  }
+  original;
+  value;
+  get text() {
+    return this.original.text;
+  }
+  get node() {
+    return this.original.node;
+  }
+  computedText() {
+    return this.value;
+  }
+};
+var ValueUpdateTracking = class {
+  #text;
+  // A `ComputedText` keeps only the last push of any given edit, so a match needs to keep using the same edit.
+  #edits = /* @__PURE__ */ new Map();
+  // The text spans the whole declaration, including the name of the property and the trailing ';}'. Offsets in it are
+  // relative to the start of the declaration, whereas the AST that a renderer works on may be a subtree of it.
+  #declarationStart;
+  // The value in the text: from the first node after the colon to the last node of the declaration, which may be a
+  // comment that follows the value.
+  #valueBegin;
+  #valueEnd;
+  constructor(ast) {
+    const { siblings, declValue, range } = SDK8.CSSPropertyParser.ASTUtils;
+    const { tree: tree3, trailingNodes } = ast;
+    const [first, last] = range(siblings(declValue(tree3)));
+    const end = trailingNodes.at(-1) ?? last;
+    this.#declarationStart = tree3.from;
+    this.#text = new SDK8.CSSPropertyParser.ComputedText(ast.rule.substring(tree3.from));
+    if (first && end) {
+      this.#valueBegin = first.from - tree3.from;
+      this.#valueEnd = end.to - tree3.from;
+    } else {
+      this.#valueBegin = 0;
+      this.#valueEnd = 0;
+    }
+  }
+  // Records that the text of `match` was changed to `value`. This replaces the change of `match` that was recorded
+  // before, if any.
+  recordEdit(match, value5) {
+    const edit = this.#edits.get(match) ?? new ValueEdit(match, value5);
+    edit.value = value5;
+    this.#edits.set(match, edit);
+    this.#text.push(edit, match.node.from - this.#declarationStart);
+  }
+  // The text of the value with the recorded changes applied.
+  valueText() {
+    return this.#text.get(this.#valueBegin, this.#valueEnd);
+  }
+};
 var RenderingContext = class {
-  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal) {
+  constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits) {
     this.ast = ast;
     this.property = property;
     this.renderers = renderers;
@@ -14650,6 +14789,7 @@ var RenderingContext = class {
     this.options = options;
     this.tracing = tracing;
     this.signal = signal;
+    this.edits = edits;
   }
   ast;
   property;
@@ -14659,6 +14799,13 @@ var RenderingContext = class {
   options;
   tracing;
   signal;
+  edits;
+  // Records that a renderer changed the text of `match` to `value`, e.g. because the user picked a color, so that the
+  // change becomes part of the text of the property. Does nothing if the context doesn't track changes, e.g. for value
+  // traces.
+  recordEdit(match, value5) {
+    this.edits?.recordEdit(match, value5);
+  }
   addControl(cssType, control) {
     if (this.cssControls) {
       const controls = this.cssControls.get(cssType);
@@ -14698,10 +14845,20 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
   #matchedResult;
   #output = [];
   #context;
-  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal) {
+  constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits) {
     super(ast);
     this.#matchedResult = matchedResult;
-    this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal);
+    this.#context = new RenderingContext(
+      this.ast,
+      property,
+      renderers,
+      this.#matchedResult,
+      cssControls,
+      options,
+      tracing,
+      signal,
+      edits
+    );
   }
   static render(nodeOrNodes, context) {
     if (!Array.isArray(nodeOrNodes)) {
@@ -14716,7 +14873,8 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
       cssControls,
       context.options,
       context.tracing,
-      context.signal
+      context.signal,
+      context.edits
     ));
     const nodes = renderers.reduce((nodes2, renderer) => {
       if (renderer !== renderers[0]) {
@@ -14779,7 +14937,10 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
   //
   // More general, longer matches take precedence over shorter, more specific matches. Whitespaces are normalized, for
   // unmatched text and around rendered matching results.
-  static renderValueElement(property, matchedResult, renderers, tracing, signal) {
+  //
+  // The renderers record the changes they make to the text of the value in `edits`, if given, see
+  // `RenderingContext.recordEdit`.
+  static renderValueElement(property, matchedResult, renderers, tracing, signal, edits) {
     const valueElement = document.createElement("span");
     valueElement.setAttribute(
       "jslog",
@@ -14791,12 +14952,12 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
     UI11.ARIAUtils.setLabel(valueElement, i18nString9(UIStrings9.cssPropertyValue, { PH1: property.value }));
     valueElement.className = "value";
     valueElement.tabIndex = -1;
-    const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
+    const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
     render7(nodes, valueElement);
     valueElement.normalize();
     return { valueElement, cssControls };
   }
-  static renderValueNodes(property, matchedResult, renderers, tracing, signal) {
+  static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits) {
     if (!matchedResult) {
       return { nodes: html9`${property.value}`, cssControls: /* @__PURE__ */ new Map() };
     }
@@ -14812,7 +14973,8 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
       void 0,
       {},
       tracing,
-      signal
+      signal,
+      edits
     );
     return _Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }

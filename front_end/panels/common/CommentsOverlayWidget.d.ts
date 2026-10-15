@@ -15,6 +15,8 @@ export interface ViewInput {
     onAddComment: (text: string) => void;
     onDeleteQueuedComment: () => void;
     onQueueComment: (text: string) => void;
+    onSaveEdit: (text: string) => void;
+    onStartEdit: () => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class CommentsOverlayWidget extends UI.Widget.Widget {

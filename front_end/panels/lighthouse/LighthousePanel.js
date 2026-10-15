@@ -128,12 +128,12 @@ export class LighthousePanel extends UI.Panel.Panel {
             this.renderStatusView();
             const { lhr, artifacts } = await this.controller.collectLighthouseResults();
             this.buildReportUI(lhr, artifacts);
-            return { report: lhr };
+            return { status: 'completed', report: lhr };
         }
         catch (err) {
             this.handleError(err);
             UI.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
-            return { report: null };
+            return err instanceof CancelledError ? { status: 'cancelled' } : { status: 'failed' };
         }
     }
     async handleRunCancel() {
@@ -327,8 +327,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     static async executeLighthouseRecording(overrides) {
         const panel = LighthousePanel.instance();
         await UI.ViewManager.ViewManager.instance().showView('lighthouse');
-        const { report } = await panel.handleCompleteRun(overrides);
-        return report;
+        return await panel.handleCompleteRun(overrides);
     }
 }
 export class ReportRevealer {

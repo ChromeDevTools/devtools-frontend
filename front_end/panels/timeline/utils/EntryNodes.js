@@ -71,7 +71,7 @@ export async function relatedDOMNodesForEvent(parsedTrace, event) {
     }
     const nodeIds = nodeIdsForEvent(parsedTrace, event);
     if (nodeIds.size) {
-        const frame = Trace.Helpers.Trace.getEventDataObject(event)?.frame;
+        const frame = Trace.Helpers.Trace.frameIDForEvent(event);
         const result = await domNodesForBackendIds(frame, nodeIds);
         domNodesForEventCache.set(event, result);
         return result;

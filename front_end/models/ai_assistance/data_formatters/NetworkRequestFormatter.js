@@ -56,15 +56,9 @@ export class NetworkRequestFormatter {
         }), MAX_HEADERS_SIZE);
     }
     static async formatBody(title, request, maxBodySize) {
-        // requestContentData() waits until the request finishes. Some requests
-        // never finish: Chrome does not send loadingFinished for a
-        // `Cache-Control: no-store` fetch() whose body the page never reads.
-        if (!request.finished) {
-            return `${title}\n<not available: the request has not finished loading>`;
-        }
-        const data = await request.requestContentData();
+        const data = await request.requestContentDataIfAvailable();
         if (TextUtils.ContentData.ContentData.isError(data)) {
-            return '';
+            return request.finished ? '' : `${title}\n<not available: the request has not finished loading>`;
         }
         if (data.isEmpty) {
             return `${title}\n<empty response>`;

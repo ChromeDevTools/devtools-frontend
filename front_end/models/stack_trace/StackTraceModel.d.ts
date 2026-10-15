@@ -49,6 +49,9 @@ export declare class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     /**
      * Re-translates all trie nodes whose raw frame or eval origin chain is in `script`, and notifies all stack traces
      * that contain such a node.
+     *
+     * Calls that arrive before the pending update acquired the mutex are coalesced into a single update (using the
+     * `translateRawFrames` of the first call), so that e.g. re-adding thousands of scripts walks the trie only once.
      */
     scriptInfoChanged(script: SDK.Script.Script, translateRawFrames: TranslateRawFrames): Promise<void>;
 }

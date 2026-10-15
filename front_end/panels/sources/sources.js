@@ -598,7 +598,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </div>
     `,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { tabindex: -1 } } }
   );
 };
 var BreakpointEditDialog = class extends UI3.Widget.Widget {
@@ -616,14 +617,13 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
   #editor;
   #state;
   constructor(target, view = DEFAULT_VIEW2) {
-    super({
+    super(target, {
       jslog: `${VisualLogging2.dialog("edit-breakpoint")}`,
       useShadowDom: true,
       delegatesFocus: true,
       classes: ["sources-edit-breakpoint-dialog"]
     });
     this.#view = view;
-    this.element.tabIndex = -1;
   }
   get editorLineNumber() {
     return this.#editorLineNumber;
@@ -4136,6 +4136,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";

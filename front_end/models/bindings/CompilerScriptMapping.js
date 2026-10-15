@@ -411,7 +411,8 @@ export class CompilerScriptMapping {
      * and copies over all the mappings from the other source maps that were registered for the
      * same URL and which are compatible (agree on the content and ignore-list hint for the given
      * URL). If they are considered incompatible, the original `UISourceCode` will simply be
-     * removed and a new mapping will be established.
+     * removed and a new mapping will be established, unless the original `UISourceCode` is
+     * mapped by a newer script, which happens when source maps finish loading out of parse order.
      *
      * @param event holds the {@link SDK.Script.Script} and its {@link SDK.SourceMap.SourceMap}.
      */
@@ -433,7 +434,15 @@ export class CompilerScriptMapping {
             this.#projects.set(projectId, project);
         }
         this.#sourceMapToProject.set(sourceMap, project);
+        const scriptParseOrder = new Map(this.#debuggerModel.scripts().map((script, index) => [script, index]));
         for (const url of sourceMap.sourceURLs()) {
+            const existingUISourceCode = project.uiSourceCodeForURL(url);
+            // Source maps can finish loading out of parse order (e.g. when DevTools attaches after a
+            // script was replaced on hot reload), so a stale source map must not override the mapping
+            // of a newer script.
+            if (!this.#shouldUseSourceMapForURL(existingUISourceCode, url, script, sourceMap, scriptParseOrder)) {
+                continue;
+            }
             const contentType = Common.ResourceType.resourceTypes.SourceMapScript;
             const uiSourceCode = project.createUISourceCode(url, contentType);
             if (sourceMap.hasIgnoreListHint(url)) {
@@ -463,18 +472,17 @@ export class CompilerScriptMapping {
             // added scripts in case of code-splitting, since it won't find out about these new mappings.
             // By removing and (re)adding a `UISourceCode` for the `url` we effectively force restoration
             // of breakpoints.
-            const otherUISourceCode = project.uiSourceCodeForURL(url);
-            if (otherUISourceCode !== null) {
-                // Copy the existing source mappings from the `otherUISourceCode` over as long as
+            if (existingUISourceCode !== null) {
+                // Copy the existing source mappings from the `existingUISourceCode` over as long as
                 // they are compatible with the `sourceMap` wrt. `url`. While doing so, also clean
-                // up the `otherUISourceCode` (in particular its frame attributions).
-                for (const otherSourceMap of this.#uiSourceCodeToSourceMaps.get(otherUISourceCode)) {
-                    this.#uiSourceCodeToSourceMaps.delete(otherUISourceCode, otherSourceMap);
+                // up the `existingUISourceCode` (in particular its frame attributions).
+                for (const otherSourceMap of this.#uiSourceCodeToSourceMaps.get(existingUISourceCode)) {
+                    this.#uiSourceCodeToSourceMaps.delete(existingUISourceCode, otherSourceMap);
                     const otherScript = this.#sourceMapManager.clientForSourceMap(otherSourceMap);
                     if (!otherScript) {
                         continue;
                     }
-                    NetworkProject.removeFrameAttribution(otherUISourceCode, otherScript.frameId);
+                    NetworkProject.removeFrameAttribution(existingUISourceCode, otherScript.frameId);
                     if (sourceMap.compatibleForURL(url, otherSourceMap)) {
                         this.#uiSourceCodeToSourceMaps.set(uiSourceCode, otherSourceMap);
                         NetworkProject.addFrameAttribution(uiSourceCode, otherScript.frameId);
@@ -487,6 +495,25 @@ export class CompilerScriptMapping {
         }
         void Promise.all([...scripts].map(script => this.#debuggerWorkspaceBinding.updateLocations(script)))
             .then(() => this.sourceMapAttachedForTest(sourceMap));
+    }
+    #shouldUseSourceMapForURL(existingUISourceCode, url, script, sourceMap, scriptParseOrder) {
+        if (existingUISourceCode === null) {
+            return true;
+        }
+        for (const existingSourceMap of this.#uiSourceCodeToSourceMaps.get(existingUISourceCode)) {
+            const existingScript = this.#sourceMapManager.clientForSourceMap(existingSourceMap);
+            // Compatible source maps agree on the source code of `url` (e.g. code splitting) and
+            // complement each other. Incompatible ones mean a different script replaced the source code
+            // of `url` (e.g. on hot reload), so only the source map of the newest script should be used.
+            if (!existingScript || sourceMap.compatibleForURL(url, existingSourceMap)) {
+                continue;
+            }
+            const isExistingScriptNewer = (scriptParseOrder.get(existingScript) ?? -1) > (scriptParseOrder.get(script) ?? -1);
+            if (isExistingScriptNewer) {
+                return false;
+            }
+        }
+        return true;
     }
     /**
      * Invoked by the {@link SDK.SourceMapManager.SourceMapManager} when the source map for a given

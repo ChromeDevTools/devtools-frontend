@@ -1819,6 +1819,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
@@ -4378,10 +4379,6 @@ var UIStrings9 = {
    */
   SharedArrayBufferConstructedWithoutIsolation: "`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.",
   /**
-   * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the `document.requestStorageAccessFor` API is called. The placeholder will always be the string `document.requestStorageAccessFor`.
-   */
-  StorageAccessAPI_requestStorageAccessFor_Method: "`document.requestStorageAccessFor` is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details.",
-  /**
    * @description A deprecation warning shown in the DevTools Issues tab. It's shown when the speech synthesis API is called before the page receives a user activation.
    */
   TextToSpeech_DisallowedByAutoplay: "`speechSynthesis.speak()` without user activation is deprecated and will be removed.",
@@ -4560,9 +4557,6 @@ var DEPRECATIONS_METADATA = {
   },
   "SharedArrayBufferConstructedWithoutIsolation": {
     "milestone": 106
-  },
-  "StorageAccessAPI_requestStorageAccessFor_Method": {
-    "chromeStatusFeature": 5162221567082496
   },
   "TextToSpeech_DisallowedByAutoplay": {
     "chromeStatusFeature": 5687444770914304,
@@ -5959,6 +5953,7 @@ __export(GenericIssue_exports, {
   genericFormModelContextParameterMissingName: () => genericFormModelContextParameterMissingName,
   genericFormModelContextParameterMissingTitleAndDescription: () => genericFormModelContextParameterMissingTitleAndDescription,
   genericFormModelContextRequiredParameterMissingName: () => genericFormModelContextRequiredParameterMissingName,
+  genericGeolocationPromptWithoutUserGesture: () => genericGeolocationPromptWithoutUserGesture,
   genericNavigationEntryMarkedSkippable: () => genericNavigationEntryMarkedSkippable,
   genericResponseWasBlockedbyORB: () => genericResponseWasBlockedbyORB
 });
@@ -5991,7 +5986,11 @@ var UIStrings14 = {
   /**
    * @description Title for back-to-ad intervention documentation page.
    */
-  backToAdInterventionPageTitle: "Back-to-ad intervention explainer"
+  backToAdInterventionPageTitle: "Back-to-ad intervention explainer",
+  /**
+   * @description Title for web permissions best practices documentation page.
+   */
+  permissionsBestPracticesPageTitle: "Web permissions best practices"
 };
 var str_13 = i18n25.i18n.registerUIStrings("models/issues_manager/GenericIssue.ts", UIStrings14);
 var i18nLazyString10 = i18n25.i18n.getLazilyComputedLocalizedString.bind(void 0, str_13);
@@ -6155,6 +6154,13 @@ var genericFormModelContextParameterMissingName = {
   file: "genericFormModelContextParameterMissingName.md",
   links: []
 };
+var genericGeolocationPromptWithoutUserGesture = {
+  file: "genericGeolocationPromptWithoutUserGesture.md",
+  links: [{
+    link: "https://web.dev/articles/permissions-best-practices",
+    linkTitle: i18nLazyString10(UIStrings14.permissionsBestPracticesPageTitle)
+  }]
+};
 var issueDescriptions9 = /* @__PURE__ */ new Map([
   [Audits.GenericIssueErrorType.FormLabelForNameError, genericFormLabelForNameError],
   [Audits.GenericIssueErrorType.FormInputWithNoLabelError, genericFormInputWithNoLabelError],
@@ -6218,6 +6224,10 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
   [
     Audits.GenericIssueErrorType.FormModelContextParameterMissingName,
     genericFormModelContextParameterMissingName
+  ],
+  [
+    Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture,
+    genericGeolocationPromptWithoutUserGesture
   ]
 ]);
 var issueTypes = /* @__PURE__ */ new Map([
@@ -6238,7 +6248,8 @@ var issueTypes = /* @__PURE__ */ new Map([
   [Audits.GenericIssueErrorType.FormModelContextMissingToolDescription, "PageError" /* PAGE_ERROR */],
   [Audits.GenericIssueErrorType.FormModelContextParameterMissingTitleAndDescription, "PageError" /* PAGE_ERROR */],
   [Audits.GenericIssueErrorType.FormModelContextRequiredParameterMissingName, "PageError" /* PAGE_ERROR */],
-  [Audits.GenericIssueErrorType.FormModelContextParameterMissingName, "PageError" /* PAGE_ERROR */]
+  [Audits.GenericIssueErrorType.FormModelContextParameterMissingName, "PageError" /* PAGE_ERROR */],
+  [Audits.GenericIssueErrorType.GeolocationPromptWithoutUserGesture, "Improvement" /* IMPROVEMENT */]
 ]);
 
 // ../../front_end/models/issues_manager/HeavyAdIssue.ts

@@ -31,9 +31,6 @@
     },
     {
       "path": "../conductor/implementation-tsconfig.ref.json"
-    },
-    {
-      "path": "../e2e/shared/shared-tsconfig.ref.json"
     }
   ]
 }

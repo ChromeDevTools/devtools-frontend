@@ -633,6 +633,7 @@ export var IssueCreated;
     IssueCreated[IssueCreated["GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo"] = 114] = "GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo";
     IssueCreated[IssueCreated["GenericIssue::AutofillPolicyControlledFeatureInfo"] = 115] = "GenericIssue::AutofillPolicyControlledFeatureInfo";
     IssueCreated[IssueCreated["GenericIssue::ManualTextPolicyControlledFeatureInfo"] = 116] = "GenericIssue::ManualTextPolicyControlledFeatureInfo";
+    IssueCreated[IssueCreated["GenericIssue::GeolocationPromptWithoutUserGesture"] = 117] = "GenericIssue::GeolocationPromptWithoutUserGesture";
     IssueCreated[IssueCreated["CorsIssue::InvalidLocalNetworkAccess"] = 118] = "CorsIssue::InvalidLocalNetworkAccess";
     /* eslint-enable @typescript-eslint/naming-convention */
     IssueCreated[IssueCreated["MAX_VALUE"] = 119] = "MAX_VALUE";

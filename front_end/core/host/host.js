@@ -3153,6 +3153,7 @@ var IssueCreated = /* @__PURE__ */ ((IssueCreated3) => {
   IssueCreated3[IssueCreated3["GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo"] = 114] = "GenericIssue::AutofillAndManualTextPolicyControlledFeaturesInfo";
   IssueCreated3[IssueCreated3["GenericIssue::AutofillPolicyControlledFeatureInfo"] = 115] = "GenericIssue::AutofillPolicyControlledFeatureInfo";
   IssueCreated3[IssueCreated3["GenericIssue::ManualTextPolicyControlledFeatureInfo"] = 116] = "GenericIssue::ManualTextPolicyControlledFeatureInfo";
+  IssueCreated3[IssueCreated3["GenericIssue::GeolocationPromptWithoutUserGesture"] = 117] = "GenericIssue::GeolocationPromptWithoutUserGesture";
   IssueCreated3[IssueCreated3["CorsIssue::InvalidLocalNetworkAccess"] = 118] = "CorsIssue::InvalidLocalNetworkAccess";
   IssueCreated3[IssueCreated3["MAX_VALUE"] = 119] = "MAX_VALUE";
   return IssueCreated3;

@@ -555,14 +555,8 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
      * category IDs, in which case these take priority.
      */
     async startLighthouse(overrides) {
-        if (this.lastAction) {
-            await this.lastAction;
-        }
-        this.lastAction = new Promise(async (resolve) => {
-            if (this.currentLighthouseRun) {
-                await this.currentLighthouseRun.cancel();
-                this.currentLighthouseRun = undefined;
-            }
+        await this.#enqueueAction(async () => {
+            await this.#cancelCurrentRun();
             const inspectedURL = await this.getInspectedURL({ force: true });
             const flags = this.getFlags();
             if (overrides?.mode) {
@@ -572,9 +566,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
             this.recordMetrics(flags, categoryIDs);
             this.currentLighthouseRun = new LighthouseRun(this, this.protocolService, inspectedURL, categoryIDs, flags, Boolean(overrides?.isAIControlled));
             await this.currentLighthouseRun.start();
-            resolve();
         });
-        return await this.lastAction;
     }
     async collectLighthouseResults() {
         if (!this.currentLighthouseRun) {
@@ -586,17 +578,32 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
         return lighthouseResponse;
     }
     async cancelLighthouse() {
-        if (this.lastAction) {
-            await this.lastAction;
-        }
-        this.lastAction = new Promise(async (resolve) => {
-            if (this.currentLighthouseRun) {
-                await this.currentLighthouseRun.cancel();
-                this.currentLighthouseRun = undefined;
+        await this.#enqueueAction(() => this.#cancelCurrentRun());
+    }
+    /**
+     * Runs `action` once the previous start or cancel action has settled, so
+     * that runs are started and cancelled one at a time. If an action fails, only
+     * its own caller sees the error; later actions still run.
+     */
+    #enqueueAction(action) {
+        const previousAction = this.lastAction;
+        const nextAction = (async () => {
+            if (previousAction) {
+                await Promise.allSettled([previousAction]);
             }
-            resolve();
-        });
-        return await this.lastAction;
+            await action();
+        })();
+        this.lastAction = nextAction;
+        return nextAction;
+    }
+    /**
+     * Cancels the current run, if any. The run is cleared before cancelling so
+     * that a failed cleanup does not block later runs.
+     */
+    async #cancelCurrentRun() {
+        const run = this.currentLighthouseRun;
+        this.currentLighthouseRun = undefined;
+        await run?.cancel();
     }
 }
 const STORAGE_TYPE_NAMES = new Map([

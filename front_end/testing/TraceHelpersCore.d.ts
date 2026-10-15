@@ -46,6 +46,10 @@ export declare function makeFlowEvents(events: Trace.Types.Events.Event[], flowI
  */
 export declare function makeInstantEvent(name: string, tsMicroseconds: number, cat?: string, pid?: number, tid?: number, s?: Trace.Types.Events.Scope): Trace.Types.Events.Instant;
 /**
+ * Builds a mock ConsoleTimeStamp.
+ */
+export declare function makeConsoleTimeStamp(message: string, tsMicroseconds: number, data?: Partial<Trace.Types.Events.ConsoleTimeStamp['args']['data']>, pid?: number, tid?: number): Trace.Types.Events.ConsoleTimeStamp;
+/**
  * Builds a mock Begin.
  */
 export declare function makeBeginEvent(name: string, ts: number, cat?: string, pid?: number, tid?: number): Trace.Types.Events.Begin;

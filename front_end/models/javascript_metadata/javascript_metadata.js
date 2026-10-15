@@ -7028,10 +7028,6 @@ var NativeFunctions = [
     signatures: [["type"]]
   },
   {
-    name: "requestStorageAccessFor",
-    signatures: [["requestedOrigin"]]
-  },
-  {
     name: "createObjectURL",
     signatures: [["blob"]],
     receivers: ["StorageAccessHandle"]

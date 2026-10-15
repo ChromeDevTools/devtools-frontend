@@ -288,11 +288,20 @@ export class ComputedText {
         this.#topLevelValueCounts.clear();
     }
     get chunkCount() {
+        this.#sortIfNecessary();
         return this.#chunks.length;
     }
     #sortIfNecessary() {
         if (this.#sorted) {
             return;
+        }
+        // A match that was pushed more than once is superseded by its last push.
+        const lastPush = new Map();
+        for (const chunk of this.#chunks) {
+            lastPush.set(chunk.match, chunk);
+        }
+        if (lastPush.size < this.#chunks.length) {
+            this.#chunks = this.#chunks.filter(chunk => lastPush.get(chunk.match) === chunk);
         }
         // Sort intervals by offset, with longer intervals first if the offset is identical.
         this.#chunks.sort((a, b) => {
@@ -313,7 +322,7 @@ export class ComputedText {
         this.#sorted = true;
     }
     // Add another substitutable match. The match will either be appended to the list of existing matches or it will
-    // be substituted for the last match(es) if it encompasses them.
+    // be substituted for the last match(es) if it encompasses them. Pushing a match again supersedes its earlier push.
     push(match, offset) {
         function hasComputedText(match) {
             return Boolean(match.computedText);

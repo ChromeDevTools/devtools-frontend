@@ -49,6 +49,7 @@
   "genericFormLabelHasNeitherForNorNestedInputError.md",
   "genericFormLabelForMatchesNonExistingIdError.md",
   "genericNavigationEntryMarkedSkippable.md",
+  "genericGeolocationPromptWithoutUserGesture.md",
   "genericBackUINavigationWouldSkipAd.md",
   "genericResponseWasBlockedByORB.md",
   "genericFormModelContextMissingToolName.md",

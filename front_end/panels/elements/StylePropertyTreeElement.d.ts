@@ -74,7 +74,7 @@ export declare class ColorRenderer extends ColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
-    renderColorSwatch(color: Common.Color.Color | undefined, valueChild: Node): InlineEditor.ColorSwatch.ColorSwatch;
+    renderColorSwatch(color: Common.Color.Color | undefined, valueChild: Node, match: SDK.CSSPropertyParser.Match, context: RenderingContext): InlineEditor.ColorSwatch.ColorSwatch;
 }
 declare const LightDarkColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LightDarkColorMatch>;
 export declare class LightDarkColorRenderer extends LightDarkColorRendererBase {
@@ -213,7 +213,7 @@ export declare class PositionAreaRenderer extends PositionAreaRendererBase {
 declare const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionTryMatch>;
 export declare class PositionTryRenderer extends PositionTryRendererBase {
     #private;
-    constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
+    constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Lit.LitTemplate;
 }
 export declare function getPropertyRenderers(propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Array<MatchRenderer<SDK.CSSPropertyParser.Match>>;
@@ -255,6 +255,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     get value(): string;
     updateFilter(): boolean;
     renderedPropertyText(): string;
+    editedPropertyTextForTest(): string;
     private updateState;
     node(): SDK.DOMModel.DOMNode | null;
     stylesContainer(): StylesContainer;

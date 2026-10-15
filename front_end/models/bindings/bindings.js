@@ -702,7 +702,8 @@ var CompilerScriptMapping = class {
    * and copies over all the mappings from the other source maps that were registered for the
    * same URL and which are compatible (agree on the content and ignore-list hint for the given
    * URL). If they are considered incompatible, the original `UISourceCode` will simply be
-   * removed and a new mapping will be established.
+   * removed and a new mapping will be established, unless the original `UISourceCode` is
+   * mapped by a newer script, which happens when source maps finish loading out of parse order.
    *
    * @param event holds the {@link SDK.Script.Script} and its {@link SDK.SourceMap.SourceMap}.
    */
@@ -731,7 +732,12 @@ var CompilerScriptMapping = class {
       this.#projects.set(projectId, project);
     }
     this.#sourceMapToProject.set(sourceMap, project);
+    const scriptParseOrder = new Map(this.#debuggerModel.scripts().map((script2, index) => [script2, index]));
     for (const url of sourceMap.sourceURLs()) {
+      const existingUISourceCode = project.uiSourceCodeForURL(url);
+      if (!this.#shouldUseSourceMapForURL(existingUISourceCode, url, script, sourceMap, scriptParseOrder)) {
+        continue;
+      }
       const contentType = Common2.ResourceType.resourceTypes.SourceMapScript;
       const uiSourceCode = project.createUISourceCode(url, contentType);
       if (sourceMap.hasIgnoreListHint(url)) {
@@ -752,15 +758,14 @@ var CompilerScriptMapping = class {
       const mimeType = Common2.ResourceType.ResourceType.mimeFromURL(url) ?? contentType.canonicalMimeType();
       this.#uiSourceCodeToSourceMaps.set(uiSourceCode, sourceMap);
       NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
-      const otherUISourceCode = project.uiSourceCodeForURL(url);
-      if (otherUISourceCode !== null) {
-        for (const otherSourceMap of this.#uiSourceCodeToSourceMaps.get(otherUISourceCode)) {
-          this.#uiSourceCodeToSourceMaps.delete(otherUISourceCode, otherSourceMap);
+      if (existingUISourceCode !== null) {
+        for (const otherSourceMap of this.#uiSourceCodeToSourceMaps.get(existingUISourceCode)) {
+          this.#uiSourceCodeToSourceMaps.delete(existingUISourceCode, otherSourceMap);
           const otherScript = this.#sourceMapManager.clientForSourceMap(otherSourceMap);
           if (!otherScript) {
             continue;
           }
-          NetworkProject.removeFrameAttribution(otherUISourceCode, otherScript.frameId);
+          NetworkProject.removeFrameAttribution(existingUISourceCode, otherScript.frameId);
           if (sourceMap.compatibleForURL(url, otherSourceMap)) {
             this.#uiSourceCodeToSourceMaps.set(uiSourceCode, otherSourceMap);
             NetworkProject.addFrameAttribution(uiSourceCode, otherScript.frameId);
@@ -772,6 +777,22 @@ var CompilerScriptMapping = class {
       project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
     }
     void Promise.all([...scripts].map((script2) => this.#debuggerWorkspaceBinding.updateLocations(script2))).then(() => this.sourceMapAttachedForTest(sourceMap));
+  }
+  #shouldUseSourceMapForURL(existingUISourceCode, url, script, sourceMap, scriptParseOrder) {
+    if (existingUISourceCode === null) {
+      return true;
+    }
+    for (const existingSourceMap of this.#uiSourceCodeToSourceMaps.get(existingUISourceCode)) {
+      const existingScript = this.#sourceMapManager.clientForSourceMap(existingSourceMap);
+      if (!existingScript || sourceMap.compatibleForURL(url, existingSourceMap)) {
+        continue;
+      }
+      const isExistingScriptNewer = (scriptParseOrder.get(existingScript) ?? -1) > (scriptParseOrder.get(script) ?? -1);
+      if (isExistingScriptNewer) {
+        return false;
+      }
+    }
+    return true;
   }
   /**
    * Invoked by the {@link SDK.SourceMapManager.SourceMapManager} when the source map for a given
@@ -3550,6 +3571,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
@@ -5866,8 +5888,8 @@ var ResourceScriptMapping = class {
       }
     }
     const scripts = Array.from(this.#scriptToUISourceCode).filter(([script, uiSourceCode]) => this.#resolvedSourceURLChanged(script, uiSourceCode)).map(([script]) => script);
+    this.removeScripts(scripts);
     for (const script of scripts) {
-      this.removeScripts([script]);
       this.addScript(script);
     }
   }

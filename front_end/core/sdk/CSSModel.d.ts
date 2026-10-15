@@ -68,6 +68,8 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     allStyleSheets(): CSSStyleSheetHeader[];
     getInlineStyles(nodeId: Protocol.DOM.NodeId): Promise<InlineStyleResult | null>;
     forceStartingStyle(node: DOMNode, forced: boolean): boolean;
+    forcePositionTryOption(node: DOMNode, index?: number): boolean;
+    forcedPositionTryOption(node: DOMNode): number | undefined;
     forcePseudoState(node: DOMNode, pseudoClass: string, enable: boolean): boolean;
     pseudoState(node: DOMNode): string[] | null;
     setMediaText(styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, newMediaText: string): Promise<boolean>;
@@ -116,6 +118,7 @@ export declare enum Events {
     MediaQueryResultChanged = "MediaQueryResultChanged",
     ModelWasEnabled = "ModelWasEnabled",
     ModelDisposed = "ModelDisposed",
+    PositionTryOptionForced = "PositionTryOptionForced",
     PseudoStateForced = "PseudoStateForced",
     StartingStylesStateForced = "StartingStylesStateForced",
     StyleSheetAdded = "StyleSheetAdded",
@@ -140,6 +143,7 @@ export interface EventTypes {
     [Events.MediaQueryResultChanged]: void;
     [Events.ModelWasEnabled]: void;
     [Events.ModelDisposed]: CSSModel;
+    [Events.PositionTryOptionForced]: DOMNode;
     [Events.PseudoStateForced]: PseudoStateForcedEvent;
     [Events.StartingStylesStateForced]: DOMNode;
     [Events.StyleSheetAdded]: CSSStyleSheetHeader;

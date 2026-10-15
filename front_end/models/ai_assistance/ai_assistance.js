@@ -2387,6 +2387,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
@@ -3429,6 +3430,7 @@ __export(AiUtils_exports, {
   consoleInsightsEnabledSettingDescriptor: () => consoleInsightsEnabledSettingDescriptor,
   getDisabledReasons: () => getDisabledReasons,
   getIconName: () => getIconName,
+  isAiV2Enabled: () => isAiV2Enabled,
   isContextSelectionEnabled: () => isContextSelectionEnabled,
   isGeminiBranding: () => isGeminiBranding,
   isNaturalLanguageInterfaceEnabled: () => isNaturalLanguageInterfaceEnabled,
@@ -3540,8 +3542,11 @@ function isGeminiBranding() {
 function isNaturalLanguageInterfaceEnabled() {
   return Boolean(Root.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
 }
+function isAiV2Enabled() {
+  return Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
+}
 function isContextSelectionEnabled() {
-  return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
+  return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || isAiV2Enabled();
 }
 var FrontendAccessPrecondition = /* @__PURE__ */ ((FrontendAccessPrecondition2) => {
   FrontendAccessPrecondition2["IS_OFF_THE_RECORD"] = "is-off-the-record";
@@ -5557,13 +5562,10 @@ var NetworkRequestFormatter = class _NetworkRequestFormatter {
     );
   }
   static async formatBody(title, request, maxBodySize) {
-    if (!request.finished) {
-      return `${title}
-<not available: the request has not finished loading>`;
-    }
-    const data = await request.requestContentData();
+    const data = await request.requestContentDataIfAvailable();
     if (TextUtils.ContentData.ContentData.isError(data)) {
-      return "";
+      return request.finished ? "" : `${title}
+<not available: the request has not finished loading>`;
     }
     if (data.isEmpty) {
       return `${title}
@@ -9558,6 +9560,8 @@ var MultimodalInputType = /* @__PURE__ */ ((MultimodalInputType2) => {
   return MultimodalInputType2;
 })(MultimodalInputType || {});
 var MAX_STEPS = 20;
+var NOT_EXECUTED_AFTER_CONTEXT_CHANGE = "Not executed: the conversation switched to a new context before this call ran.";
+var USER_DENIED_CALL = "Error: The user denied this call, so it did not run. Other calls in the same response were handled separately; check their responses.";
 var ConversationContext = class {
   /**
    * Returns true if the server-side logging is enabled when this context is active.
@@ -9871,8 +9875,7 @@ var AiAgent = class {
       return;
     }
     Host24.userMetrics.freestylerQueryLength(enhancedQuery.length);
-    let query;
-    query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
+    const query = multimodalInput ? [{ text: enhancedQuery }, multimodalInput.input] : [{ text: enhancedQuery }];
     let request = this.buildRequest(query, Host24.AidaClient.Role.USER);
     const clientFeatureName = Host24.AidaClient.getClientFeatureName(this.clientFeature);
     debugLog(`[AiAgent] Starting conversation with client ${clientFeatureName}, userTier ${this.userTier}`);
@@ -9883,23 +9886,18 @@ var AiAgent = class {
       };
       if (i === 0) {
         debugLog("[AiAgent] Step 1: Sending user prompt to model:", enhancedQuery);
-      } else if (!Array.isArray(query) && "functionResponse" in query) {
-        debugLog(
-          `[AiAgent] Step ${i + 1}: Sending function response for '${query.functionResponse.name}' to model:`,
-          query.functionResponse.response
-        );
       } else {
         debugLog(`[AiAgent] Step ${i + 1}: Sending request to model:`, request.current_message);
       }
       let rpcId;
       let textResponse = "";
-      let functionCall = void 0;
+      let functionCalls;
       try {
         for await (const fetchResult of this.#aidaFetch(request, { signal: options.signal })) {
           rpcId = fetchResult.rpcId;
           textResponse = fetchResult.text ?? "";
-          functionCall = fetchResult.functionCall;
-          if (!functionCall && !fetchResult.completed) {
+          functionCalls = fetchResult.functionCalls;
+          if (!functionCalls && !fetchResult.completed) {
             const parsed = this.parsePartialTextResponse(textResponse);
             const partialAnswer = "answer" in parsed ? parsed.answer : "";
             if (!partialAnswer) {
@@ -9924,7 +9922,7 @@ var AiAgent = class {
         if (!("answer" in parsedResponse)) {
           throw new Error("Expected a completed response to have an answer");
         }
-        if (!functionCall) {
+        if (!functionCalls) {
           debugLog(`[AiAgent] Step ${i + 1}: Model returned text response:`, parsedResponse.answer);
           this.#history.push({
             parts: [{
@@ -9941,109 +9939,147 @@ var AiAgent = class {
           complete: true,
           rpcId
         });
-        if (!functionCall) {
+        if (!functionCalls) {
           break;
         }
       }
-      if (functionCall) {
-        debugLog(`[AiAgent] Step ${i + 1}: Model requested function call: ${functionCall.name}`, functionCall.args);
-        const allowedOriginResult = this.#allowedOrigin?.();
-        if (allowedOriginResult && "blocked" in allowedOriginResult) {
-          yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
-          break;
-        }
-        try {
-          const result = yield* this.#callFunction(
-            functionCall.name,
-            functionCall.args,
-            functionCall.thoughtSignature,
-            {
-              ...options,
-              explanation: textResponse
-            }
-          );
-          if (options.signal?.aborted) {
-            yield this.#createErrorResponse("abort" /* ABORT */);
-            break;
-          }
-          if ("context" in result) {
-            this.#history.push({
-              parts: [{
-                functionResponse: {
-                  name: functionCall.name,
-                  response: { result: result.description }
-                }
-              }],
-              role: Host24.AidaClient.Role.ROLE_UNSPECIFIED
-            });
-            yield {
-              type: "context-change" /* CONTEXT_CHANGE */,
-              description: result.description,
-              context: result.context,
-              widgets: result.widgets
-            };
-            return;
-          }
-          query = {
-            functionResponse: {
-              name: functionCall.name,
-              // Widgets are not sent back to the LLM
-              response: { ...result, widgets: void 0 }
-            }
-          };
-          if (i === MAX_STEPS - 1) {
-            this.#history.push({
-              parts: [query],
-              role: Host24.AidaClient.Role.ROLE_UNSPECIFIED
-            });
-            yield this.#createErrorResponse("max-steps" /* MAX_STEPS */);
-            break;
-          }
-          request = this.buildRequest(query, Host24.AidaClient.Role.ROLE_UNSPECIFIED);
-        } catch (err) {
-          if (err instanceof CrossOriginError) {
-            yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
-            break;
-          }
-          debugLog("Error handling function call", err);
-          yield this.#createErrorResponse("unknown" /* UNKNOWN */);
-          break;
-        }
-      } else {
+      if (!functionCalls) {
         yield this.#createErrorResponse("unknown" /* UNKNOWN */);
         break;
       }
+      debugLog(`[AiAgent] Step ${i + 1}: Model requested function calls:`, functionCalls);
+      const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options);
+      if (outcome.type === "contextChanged") {
+        return;
+      }
+      if (outcome.type === "stopped") {
+        break;
+      }
+      if (i === MAX_STEPS - 1) {
+        this.#history.push({
+          parts: outcome.functionResponses,
+          role: Host24.AidaClient.Role.ROLE_UNSPECIFIED
+        });
+        yield this.#createErrorResponse("max-steps" /* MAX_STEPS */);
+        break;
+      }
+      request = this.buildRequest(outcome.functionResponses, Host24.AidaClient.Role.ROLE_UNSPECIFIED);
     }
     if (isStructuredLogEnabled()) {
       dispatchAiAssistanceDoneEvent();
     }
     return;
   }
-  async *#callFunction(name, args, thoughtSignature, options) {
-    const call = this.#functionDeclarations.get(name);
-    if (!call) {
-      throw new Error(`Function ${name} is not found.`);
-    }
-    debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
-    const parts = [];
-    if (options?.explanation) {
-      parts.push({
-        text: options.explanation
-      });
-    }
-    const functionCall = {
-      name,
-      args
-    };
-    if (thoughtSignature) {
-      functionCall.thoughtSignature = thoughtSignature;
-    }
-    parts.push({ functionCall });
+  /**
+   * Runs every function call in one model response, one after another, in the
+   * order the model returned them.
+   *
+   * The model's text and all calls are stored in history as one MODEL turn.
+   * Every `functionCall` in history gets a matching `functionResponse`: in the
+   * returned `functionResponses`, or, after a context change, in history
+   * directly. When the run stops, the ERROR response removes the run from
+   * history instead.
+   */
+  async *#runFunctionCalls(functionCalls, textResponse, options) {
+    const modelParts = textResponse ? [{ text: textResponse }] : [];
+    modelParts.push(...functionCalls.map((functionCall) => ({ functionCall })));
     this.#history.push({
-      parts,
+      parts: modelParts,
       role: Host24.AidaClient.Role.MODEL
     });
+    const functionResponses = [];
+    try {
+      for (const [index, functionCall] of functionCalls.entries()) {
+        const allowedOriginResult = this.#allowedOrigin?.();
+        if (allowedOriginResult && "blocked" in allowedOriginResult) {
+          throw new CrossOriginError();
+        }
+        const result = yield* this.#callFunction(functionCall.name, functionCall.args, options);
+        if (options.signal?.aborted) {
+          yield this.#createErrorResponse("abort" /* ABORT */);
+          return { type: "stopped" };
+        }
+        if ("context" in result) {
+          functionResponses.push(
+            ...this.#contextChangeResponses(functionCall, functionCalls.slice(index + 1), result.description)
+          );
+          this.#history.push({
+            parts: functionResponses,
+            role: Host24.AidaClient.Role.ROLE_UNSPECIFIED
+          });
+          yield {
+            type: "context-change" /* CONTEXT_CHANGE */,
+            description: result.description,
+            context: result.context,
+            widgets: result.widgets,
+            toolName: functionCall.name
+          };
+          return { type: "contextChanged" };
+        }
+        functionResponses.push({
+          functionResponse: {
+            name: functionCall.name,
+            // Widgets and UI telemetry metadata are not sent back to the LLM.
+            response: {
+              ...result,
+              widgets: void 0,
+              ..."loadedSkills" in result ? { loadedSkills: void 0 } : {}
+            }
+          }
+        });
+      }
+    } catch (err) {
+      if (err instanceof CrossOriginError) {
+        yield this.#createErrorResponse("cross-origin" /* CROSS_ORIGIN */);
+        return { type: "stopped" };
+      }
+      debugLog("Error handling function call", err);
+      yield this.#createErrorResponse("unknown" /* UNKNOWN */);
+      return { type: "stopped" };
+    }
+    return { type: "responses", functionResponses };
+  }
+  /**
+   * Returns the function responses for `switchingCall`, which switched the
+   * context, and for `skippedCalls`, which come after it and do not run.
+   *
+   * Pairing every `functionCall` with a `functionResponse` keeps the history
+   * valid if this agent instance runs again after the context change
+   * (`AiAgent2`). The new context reaches the model through the next USER
+   * query.
+   */
+  #contextChangeResponses(switchingCall, skippedCalls, description) {
+    return [
+      {
+        functionResponse: {
+          name: switchingCall.name,
+          response: { result: description }
+        }
+      },
+      ...skippedCalls.map((skippedCall) => ({
+        functionResponse: {
+          name: skippedCall.name,
+          response: { result: NOT_EXECUTED_AFTER_CONTEXT_CHANGE }
+        }
+      }))
+    ];
+  }
+  async *#callFunction(name, args, options) {
     const callId = crypto.randomUUID();
+    const call = this.#functionDeclarations.get(name);
+    if (!call) {
+      const error = `Error: Function ${name} is not found.`;
+      debugLog(`[AiAgent] Tool '${name}' is not declared.`);
+      yield {
+        type: "action" /* ACTION */,
+        callId,
+        output: error,
+        canceled: false,
+        toolName: name
+      };
+      return { error };
+    }
+    debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
     let code;
     if (call.displayInfoFromArgs) {
       const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
@@ -10067,7 +10103,15 @@ var AiAgent = class {
       const allowedOriginResult = this.#allowedOrigin?.();
       return Boolean(allowedOriginResult && "blocked" in allowedOriginResult);
     };
-    let result = await call.handler(args, options);
+    const runHandler = async (handlerOptions) => {
+      try {
+        return await call.handler(args, handlerOptions);
+      } catch (err) {
+        debugLog(`[AiAgent] Tool '${name}' threw:`, err);
+        return { error: `Error: ${err instanceof Error ? err.message : String(err)}` };
+      }
+    };
+    let result = await runHandler(options);
     if (isOriginBlocked()) {
       throw new CrossOriginError();
     }
@@ -10117,13 +10161,13 @@ var AiAgent = class {
         };
         debugLog(`[AiAgent] Tool '${name}' denied by user.`);
         return {
-          result: "Error: User denied code execution with side effects."
+          result: USER_DENIED_CALL
         };
       }
       if (isOriginBlocked()) {
         throw new CrossOriginError();
       }
-      result = await call.handler(args, {
+      result = await runHandler({
         ...options,
         approved: true
       });
@@ -10139,7 +10183,8 @@ var AiAgent = class {
         output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
         widgets: result.widgets,
         canceled: false,
-        toolName: name
+        toolName: name,
+        ...result.loadedSkills ? { loadedSkills: result.loadedSkills } : {}
       };
     }
     if ("error" in result) {
@@ -10163,15 +10208,9 @@ var AiAgent = class {
     let rpcId;
     for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
       if (aidaResponse.functionCalls?.length) {
-        if (aidaResponse.functionCalls.length > 1) {
-          debugLog(
-            `[AiAgent] Unexpected: received ${aidaResponse.functionCalls.length} function calls in response:`,
-            aidaResponse.functionCalls
-          );
-        }
         yield {
           rpcId,
-          functionCall: aidaResponse.functionCalls[0],
+          functionCalls: aidaResponse.functionCalls,
           completed: true,
           text: aidaResponse.explanation
         };
@@ -11070,17 +11109,20 @@ var RunLighthouseTool = class {
   async handler(params, context) {
     const mode = params.mode ?? "snapshot";
     try {
-      const report = await context.runLighthouse({
+      const result = await context.runLighthouse({
         mode,
         categoryIds: params.categoryId === "all" ? void 0 : [params.categoryId],
         isAIControlled: true
       });
-      if (!report) {
+      if (result.status === "cancelled") {
+        return { error: "The user cancelled the Lighthouse audit. Do not run it again unless the user asks you to." };
+      }
+      if (result.status === "failed") {
         return { error: "Error: Failed to record new audits." };
       }
       return {
         // No widgets are returned here; LighthouseContext.getWidgets() provides the report widget.
-        context: new LighthouseContext(report),
+        context: new LighthouseContext(result.report),
         description: "Lighthouse audit completed"
       };
     } catch (err) {
@@ -11419,14 +11461,20 @@ var AccessibilityAgent = class extends AiAgent {
         if (!this.#lighthouseRecording) {
           return { error: "Lighthouse recording is not available." };
         }
-        const report = await this.#lighthouseRecording({
+        const result = await this.#lighthouseRecording({
           mode: "snapshot",
           categoryIds: ["accessibility"],
           isAIControlled: true
         });
-        if (!report) {
+        if (result.status === "cancelled") {
+          return {
+            error: "The user cancelled the accessibility audits. Do not run them again unless the user asks you to."
+          };
+        }
+        if (result.status === "failed") {
           return { error: "Failed to run accessibility audits." };
         }
+        const { report } = result;
         const audits = new LighthouseFormatter().audits(report, "accessibility");
         return {
           result: { audits },
@@ -12431,13 +12479,18 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         const mode = parseLighthouseMode(params.mode);
         debugLog(`Recording with Lighthouse; runMode=${mode}`);
         const result = await this.#lighthouseRecording({ mode });
-        if (!result) {
+        if (result.status === "cancelled") {
+          return {
+            error: "The user cancelled the Lighthouse audit. Do not run it again unless the user asks you to."
+          };
+        }
+        if (result.status === "failed") {
           return { error: "Failed to generate Lighthouse report." };
         }
         return {
-          context: new LighthouseContext(result),
+          context: new LighthouseContext(result.report),
           description: "User has selected a Lighthouse report",
-          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report: result } }]
+          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report: result.report } }]
         };
       }
     });
@@ -14812,8 +14865,13 @@ var AiAgent2 = class extends AiAgent {
         };
       },
       handler: async (args) => {
+        const previouslyLoaded = new Set(this.#activeSkills);
         const result = await this.learnSkill(args.skills);
-        return { result };
+        const loadedSkills = [...new Set(args.skills)].filter((skill7) => !previouslyLoaded.has(skill7) && this.#activeSkills.has(skill7));
+        return {
+          result,
+          loadedSkills: loadedSkills.length > 0 ? loadedSkills : void 0
+        };
       }
     });
   }
@@ -14939,7 +14997,7 @@ ${skillObj.instructions}
           getTarget: () => this.#getTarget(),
           getOriginLock: () => this.#originLock(),
           getLighthouseReport: () => this.context instanceof LighthouseContext ? this.context.getItem() : null,
-          runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
+          runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? { status: "failed" }),
           getPerformanceTraceContext: () => this.context instanceof PerformanceTraceContext ? this.context : null,
           performanceRecordAndReload: this.#performanceRecordAndReload,
           disableLogging: () => {
@@ -15455,7 +15513,8 @@ ${item.text.trim()}`);
             return {
               ...item,
               output: shouldRedact ? "<redacted>" : item.output,
-              widgets: void 0
+              widgets: void 0,
+              loadedSkills: void 0
             };
           }
           default:

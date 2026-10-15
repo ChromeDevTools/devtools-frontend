@@ -83,6 +83,18 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
       this.dispatchEventToListeners("Changed" /* CHANGED */);
     }
   }
+  editComment(text) {
+    const trimmed = text.trim();
+    if (this.status !== "ACTIVE" || !trimmed) {
+      return;
+    }
+    const comment = this.comments.find((c) => c.author === "DEVELOPER");
+    if (!comment || comment.text === trimmed) {
+      return;
+    }
+    comment.text = trimmed;
+    this.dispatchEventToListeners("Changed" /* CHANGED */);
+  }
   sendToAgent(text, author = "DEVELOPER") {
     let changed = this.#saveText(text, author);
     if (this.status === "DRAFT" || this.status === "ACTIVE") {

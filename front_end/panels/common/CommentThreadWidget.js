@@ -12,7 +12,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import commentThreadWidgetStyles from './commentThreadWidget.css.js';
 import { DOMNodeLink } from './DOMLinkifier.js';
-const { html, render, Directives: { createRef, ref } } = Lit;
+const { html, render, Directives: { classMap, createRef, ref } } = Lit;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
@@ -34,6 +34,10 @@ const UIStrings = {
      * @description Label for the agent response section in the comment thread.
      */
     response: 'Response:',
+    /**
+     * @description Label for the aria-label of the save edited comment button.
+     */
+    save: 'Save',
     /**
      * @description Label for the aria-label of the add comment button.
      */
@@ -59,8 +63,19 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 export const DEFAULT_VIEW = (input, _output, target) => {
     const hasComment = input.comments.length > 0;
-    const buttonText = input.isQueueModifierPressed ? i18nString(UIStrings.queueComment) : i18nString(UIStrings.sendToAgent);
+    const showCommentInput = !hasComment || input.isEditing;
+    let buttonText;
+    if (input.isEditing) {
+        buttonText = i18nString(UIStrings.save);
+    }
+    else {
+        buttonText = input.isQueueModifierPressed ? i18nString(UIStrings.queueComment) : i18nString(UIStrings.sendToAgent);
+    }
     const submit = (queue) => {
+        if (input.isEditing) {
+            input.onSaveEdit(input.commentText);
+            return;
+        }
         if (queue) {
             input.onQueueComment(input.commentText);
         }
@@ -109,7 +124,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     render(html `
     <style>${Input.textInputStyles}${commentThreadWidgetStyles}</style>
     <div
-      class="comment-thread-widget ${hasComment ? 'submitted' : ''}"
+      class="comment-thread-widget ${classMap({ submitted: !showCommentInput })}"
       jslog=${VisualLogging.popover('comment-thread')}>
       <div class="header">
         <span class="selected-item">
@@ -122,23 +137,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </div>
       </div>
 
-      ${hasComment ? html `
-        ${input.comments.map(comment => comment.author === 'DEVELOPER' ? html `
-          <div class="comment-text">
-            ${comment.text}
-          </div>
-        ` : html `
-          <div class="agent-response">
-            <div class="elbow"></div>
-            <div class="response-content">
-              <div class="response-header">${i18nString(UIStrings.response)}</div>
-              ${MarkdownView.MarkdownView.renderTextAsMarkdown(comment.text, new MarkdownView.MarkdownView.MarkdownInsightRenderer())}
-            </div>
-          </div>
-        `)}
-      ` : Lit.nothing}
-
-      ${!hasComment ? html `
+      ${showCommentInput ? html `
         <textarea
           ${ref(input.textAreaRef)}
           class="devtools-text-input input"
@@ -185,7 +184,22 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             ${buttonText}
           </devtools-button>
         </div>
-      ` : Lit.nothing}
+      ` : html `${input.comments.map(comment => comment.author === 'DEVELOPER' ? html `
+          <div class="comment-text"
+            @click=${() => { input.onSetEditMode(true); }}
+          >
+            ${comment.text}
+          </div>
+        ` : html `
+          <div class="agent-response">
+            <div class="elbow"></div>
+            <div class="response-content">
+              <div class="response-header">${i18nString(UIStrings.response)}</div>
+              ${MarkdownView.MarkdownView.renderTextAsMarkdown(comment.text, new MarkdownView.MarkdownView.MarkdownInsightRenderer())}
+            </div>
+          </div>
+        `)}
+      `}
     </div>
   `, target);
     // clang-format on
@@ -198,9 +212,12 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     #isQueueModifierPressed = false;
     #textAreaRef = createRef();
     #view;
+    #isEditing = false;
     onAddComment;
     onQueueComment;
     onDeleteQueuedComment;
+    onSaveEdit;
+    onStartEdit;
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -224,6 +241,16 @@ export class CommentThreadWidget extends UI.Widget.Widget {
         this.#status = commentStatus;
         this.requestUpdate();
     }
+    #onSetEditMode = (value) => {
+        const commentText = this.#comments.find(c => c.author === 'DEVELOPER')?.text;
+        if (this.#status !== 'ACTIVE' || !commentText) {
+            return;
+        }
+        this.onStartEdit?.();
+        this.#commentText = commentText;
+        this.#isEditing = value;
+        this.requestUpdate();
+    };
     #handleQueueModifierChange = (pressed) => {
         if (this.#isQueueModifierPressed !== pressed) {
             this.#isQueueModifierPressed = pressed;
@@ -247,6 +274,11 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     #handleDeleteQueuedComment = () => {
         this.onDeleteQueuedComment?.();
     };
+    #handleOnSaveEdit = (text) => {
+        this.#isEditing = false;
+        this.#submit(text, this.onSaveEdit);
+        this.requestUpdate();
+    };
     #handleCommentTextChange = (event) => {
         const input = event.target;
         this.#commentText = input.value;
@@ -265,6 +297,9 @@ export class CommentThreadWidget extends UI.Widget.Widget {
             onCommentTextChange: this.#handleCommentTextChange,
             onDeleteQueuedComment: this.#handleDeleteQueuedComment,
             onQueueModifierChange: this.#handleQueueModifierChange,
+            onSaveEdit: this.#handleOnSaveEdit,
+            onSetEditMode: this.#onSetEditMode,
+            isEditing: this.#isEditing,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

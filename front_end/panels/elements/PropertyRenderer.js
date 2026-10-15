@@ -332,6 +332,79 @@ export class TracingContext {
     }
 }
 export const CSSControlMap = Map;
+/**
+ * Records that the text of `original` was modified to `value`, e.g. because the user changed it in an editor. In a
+ * `ComputedText`, a ValueEdit stands in for `original`: it takes over the range of `original` and substitutes `value`
+ * for its text. This keeps modifications separate from `original.computedText()`, which stands for the result of
+ * resolving var()s, stripping comments and the like.
+ *
+ * A `ComputedText` keeps only the last push of any given match. So to change a ValueEdit that was already pushed, set
+ * its `value` and push it again.
+ **/
+class ValueEdit {
+    original;
+    value;
+    constructor(original, value) {
+        this.original = original;
+        this.value = value;
+    }
+    get text() {
+        return this.original.text;
+    }
+    get node() {
+        return this.original.node;
+    }
+    computedText() {
+        return this.value;
+    }
+}
+/**
+ * Tracks the changes that renderers make to the text of the value of a declaration, e.g. because the user picked a
+ * color, and puts the text of the value together from them. It wraps a `ComputedText` over the authored text of the
+ * declaration, in which a change takes the place of the match that it replaces.
+ **/
+export class ValueUpdateTracking {
+    #text;
+    // A `ComputedText` keeps only the last push of any given edit, so a match needs to keep using the same edit.
+    #edits = new Map();
+    // The text spans the whole declaration, including the name of the property and the trailing ';}'. Offsets in it are
+    // relative to the start of the declaration, whereas the AST that a renderer works on may be a subtree of it.
+    #declarationStart;
+    // The value in the text: from the first node after the colon to the last node of the declaration, which may be a
+    // comment that follows the value.
+    #valueBegin;
+    #valueEnd;
+    constructor(ast) {
+        const { siblings, declValue, range } = SDK.CSSPropertyParser.ASTUtils;
+        const { tree, trailingNodes } = ast;
+        const [first, last] = range(siblings(declValue(tree)));
+        const end = trailingNodes.at(-1) ?? last;
+        this.#declarationStart = tree.from;
+        this.#text = new SDK.CSSPropertyParser.ComputedText(ast.rule.substring(tree.from));
+        if (first && end) {
+            this.#valueBegin = first.from - tree.from;
+            this.#valueEnd = end.to - tree.from;
+        }
+        else {
+            // Without a value, the range is empty.
+            this.#valueBegin = 0;
+            this.#valueEnd = 0;
+        }
+    }
+    // Records that the text of `match` was changed to `value`. This replaces the change of `match` that was recorded
+    // before, if any.
+    recordEdit(match, value) {
+        const edit = this.#edits.get(match) ?? new ValueEdit(match, value);
+        edit.value = value;
+        this.#edits.set(match, edit);
+        // Pushing the edit again supersedes its earlier push, which is how the new value gets picked up.
+        this.#text.push(edit, match.node.from - this.#declarationStart);
+    }
+    // The text of the value with the recorded changes applied.
+    valueText() {
+        return this.#text.get(this.#valueBegin, this.#valueEnd);
+    }
+}
 export class RenderingContext {
     ast;
     property;
@@ -341,7 +414,8 @@ export class RenderingContext {
     options;
     tracing;
     signal;
-    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal) {
+    edits;
+    constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal, edits) {
         this.ast = ast;
         this.property = property;
         this.renderers = renderers;
@@ -350,6 +424,13 @@ export class RenderingContext {
         this.options = options;
         this.tracing = tracing;
         this.signal = signal;
+        this.edits = edits;
+    }
+    // Records that a renderer changed the text of `match` to `value`, e.g. because the user picked a color, so that the
+    // change becomes part of the text of the property. Does nothing if the context doesn't track changes, e.g. for value
+    // traces.
+    recordEdit(match, value) {
+        this.edits?.recordEdit(match, value);
     }
     addControl(cssType, control) {
         if (this.cssControls) {
@@ -391,18 +472,17 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     #matchedResult;
     #output = [];
     #context;
-    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal) {
+    constructor(ast, property, renderers, matchedResult, cssControls, options, tracing, signal, edits) {
         super(ast);
         this.#matchedResult = matchedResult;
-        this.#context =
-            new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal);
+        this.#context = new RenderingContext(this.ast, property, renderers, this.#matchedResult, cssControls, options, tracing, signal, edits);
     }
     static render(nodeOrNodes, context) {
         if (!Array.isArray(nodeOrNodes)) {
             return this.render([nodeOrNodes], context);
         }
         const cssControls = new CSSControlMap();
-        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
+        const renderers = nodeOrNodes.map(node => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal, context.edits));
         const nodes = renderers.reduce((nodes, renderer) => {
             if (renderer !== renderers[0]) {
                 const spacing = precedingSpace(renderer.ast.tree, context.ast, context.matchedResult);
@@ -462,7 +542,10 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     //
     // More general, longer matches take precedence over shorter, more specific matches. Whitespaces are normalized, for
     // unmatched text and around rendered matching results.
-    static renderValueElement(property, matchedResult, renderers, tracing, signal) {
+    //
+    // The renderers record the changes they make to the text of the value in `edits`, if given, see
+    // `RenderingContext.recordEdit`.
+    static renderValueElement(property, matchedResult, renderers, tracing, signal, edits) {
         const valueElement = document.createElement('span');
         valueElement.setAttribute('jslog', `${VisualLogging.value().track({
             change: true,
@@ -471,12 +554,12 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, { PH1: property.value }));
         valueElement.className = 'value';
         valueElement.tabIndex = -1;
-        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
+        const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal, edits);
         render(nodes, valueElement);
         valueElement.normalize();
         return { valueElement, cssControls };
     }
-    static renderValueNodes(property, matchedResult, renderers, tracing, signal) {
+    static renderValueNodes(property, matchedResult, renderers, tracing, signal, edits) {
         if (!matchedResult) {
             return { nodes: html `${property.value}`, cssControls: new Map() };
         }
@@ -484,7 +567,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         for (const renderer of renderers) {
             rendererMap.set(renderer.matchType, renderer);
         }
-        const context = new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, undefined, {}, tracing, signal);
+        const context = new RenderingContext(matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, undefined, {}, tracing, signal, edits);
         return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
     }
 }

@@ -13775,6 +13775,7 @@ export declare namespace Page {
         SyncXhr = "sync-xhr",
         Tools = "tools",
         Translator = "translator",
+        UnboundedElement = "unbounded-element",
         Unload = "unload",
         Usb = "usb",
         UsbUnrestricted = "usb-unrestricted",

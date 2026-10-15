@@ -65,6 +65,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
             onAddComment: input.onAddComment,
             onDeleteQueuedComment: input.onDeleteQueuedComment,
             onQueueComment: input.onQueueComment,
+            onSaveEdit: input.onSaveEdit,
+            onStartEdit: input.onStartEdit,
         })}
             </div>
           `;
@@ -242,6 +244,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             onAddComment: () => { },
             onDeleteQueuedComment: () => { },
             onQueueComment: () => { },
+            onSaveEdit: () => { },
+            onStartEdit: () => { },
         }, undefined, this.contentElement);
     }
     #renderWithTitle(activeThread, title) {
@@ -277,6 +281,13 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
                 activeThread.save(text);
                 this.#scheduleAutoClose(activeThread.id);
             },
+            onSaveEdit: (text) => {
+                if (!activeThread) {
+                    return;
+                }
+                activeThread.editComment(text);
+            },
+            onStartEdit: () => this.#clearCloseTimeout(),
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

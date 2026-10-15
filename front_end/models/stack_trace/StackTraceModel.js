@@ -17,6 +17,9 @@ import { EvalOrigin, Trie } from './Trie.js';
 export class StackTraceModel extends SDK.SDKModel.SDKModel {
     #trie = new Trie();
     #mutex = new Common.Mutex.Mutex();
+    /** Scripts whose info changed since {@link #pendingScriptsUpdate} was scheduled. */
+    #pendingScripts = new Set();
+    #pendingScriptsUpdate = null;
     /** @returns the {@link StackTraceModel} for the target. Throws if the target or its model cannot be found. */
     static #modelForTarget(target) {
         const model = target?.model(_a);
@@ -71,12 +74,28 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
     /**
      * Re-translates all trie nodes whose raw frame or eval origin chain is in `script`, and notifies all stack traces
      * that contain such a node.
+     *
+     * Calls that arrive before the pending update acquired the mutex are coalesced into a single update (using the
+     * `translateRawFrames` of the first call), so that e.g. re-adding thousands of scripts walks the trie only once.
      */
-    async scriptInfoChanged(script, translateRawFrames) {
-        // scriptId has precedence, but if the frame does not have one, check the URL.
-        const matches = (raw) => raw.scriptId === script.scriptId || (!raw.scriptId && raw.url === script.sourceURL);
-        const evalMatches = (raw) => Boolean(raw) && (matches(raw) || evalMatches(raw?.parsedFrameInfo?.evalOrigin));
+    scriptInfoChanged(script, translateRawFrames) {
+        this.#pendingScripts.add(script);
+        this.#pendingScriptsUpdate ??= this.#updatePendingScripts(translateRawFrames);
+        return this.#pendingScriptsUpdate;
+    }
+    async #updatePendingScripts(translateRawFrames) {
         const release = await this.#mutex.acquire();
+        const scriptIds = new Set();
+        const sourceURLs = new Set();
+        for (const script of this.#pendingScripts) {
+            scriptIds.add(script.scriptId);
+            sourceURLs.add(script.sourceURL);
+        }
+        this.#pendingScripts.clear();
+        this.#pendingScriptsUpdate = null;
+        // scriptId has precedence, but if the frame does not have one, check the URL.
+        const matches = (raw) => raw.scriptId ? scriptIds.has(raw.scriptId) : raw.url !== undefined && sourceURLs.has(raw.url);
+        const evalMatches = (raw) => Boolean(raw) && (matches(raw) || evalMatches(raw?.parsedFrameInfo?.evalOrigin));
         try {
             // Walk the whole trie: the same script can appear multiple times in a call stack.
             const affected = [];

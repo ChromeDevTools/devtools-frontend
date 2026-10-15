@@ -32,9 +32,7 @@ export declare class LighthousePanel extends UI.Panel.Panel {
     static getEvents(): typeof Events;
     handleTimespanStart(): Promise<void>;
     handleTimespanEnd(): Promise<void>;
-    handleCompleteRun(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<{
-        report: LighthouseModel.ReporterTypes.ReportJSON | null;
-    }>;
+    handleCompleteRun(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<LighthouseModel.RunTypes.RunResult>;
     handleRunCancel(): Promise<void>;
     private handleError;
     private refreshWarningsUI;
@@ -56,7 +54,7 @@ export declare class LighthousePanel extends UI.Panel.Panel {
     elementsToRestoreScrollPositionsFor(): Element[];
     private onKeyDown;
     selectReport(report: LighthouseModel.ReporterTypes.ReportJSON): void;
-    static executeLighthouseRecording(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<LighthouseModel.ReporterTypes.ReportJSON | null>;
+    static executeLighthouseRecording(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<LighthouseModel.RunTypes.RunResult>;
 }
 export declare class ReportRevealer implements Common.Revealer.Revealer<ActiveLighthouseReport> {
     reveal(report: ActiveLighthouseReport): Promise<void>;

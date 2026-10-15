@@ -2336,12 +2336,12 @@ var CountersGraph = class extends UI.Widget.VBox {
       if (!counters) {
         return;
       }
+      const { startTime } = Trace11.Helpers.Timing.eventTimingsMilliSeconds(event);
       const counterKeys = ["jsHeapSizeUsed", "documents", "nodes", "jsEventListeners"];
       for (const name of counterKeys) {
         const counter = this.countersByName.get(name);
         const value = counters[name];
         if (counter && typeof value === "number") {
-          const { startTime } = Trace11.Helpers.Timing.eventTimingsMilliSeconds(event);
           counter.appendSample(startTime, value);
         }
       }
@@ -4741,6 +4741,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
@@ -19333,18 +19334,11 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     }
     for (const marker of this.#markers) {
       for (const event of marker.entries) {
-        let navigationId;
         let fieldMetricResult;
         if (Trace32.Types.Events.isFirstContentfulPaint(event)) {
-          navigationId = event.args?.data?.navigationId;
-          if (navigationId) {
-            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.fcp;
-          }
+          fieldMetricResult = fieldMetricResultsByNavigationId.get(event.args.data.navigationId)?.fcp;
         } else if (Trace32.Types.Events.isLargestContentfulPaintCandidate(event)) {
-          navigationId = event.args?.data?.navigationId;
-          if (navigationId) {
-            fieldMetricResult = fieldMetricResultsByNavigationId.get(navigationId)?.lcp;
-          }
+          fieldMetricResult = fieldMetricResultsByNavigationId.get(event.args.data.navigationId)?.lcp;
         }
         if (!fieldMetricResult) {
           continue;

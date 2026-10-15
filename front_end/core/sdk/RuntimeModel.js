@@ -14,16 +14,21 @@ export class RuntimeModel extends SDKModel {
     agent;
     #executionContextById = new Map();
     #executionContextComparator = ExecutionContext.comparator;
+    #customFormattersSetting;
     constructor(target) {
         super(target);
         this.agent = target.runtimeAgent();
         this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
         void this.agent.invoke_enable();
-        const customFormattersSetting = this.target().targetManager().context.get(Common.Settings.Settings).resolve(customFormattersSettingDescriptor);
-        if (customFormattersSetting.get()) {
+        this.#customFormattersSetting =
+            this.target().targetManager().context.get(Common.Settings.Settings).resolve(customFormattersSettingDescriptor);
+        if (this.#customFormattersSetting.get()) {
             void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
         }
-        customFormattersSetting.addChangeListener(this.customFormattersStateChanged.bind(this));
+        this.#customFormattersSetting.addChangeListener(this.customFormattersStateChanged, this);
+    }
+    dispose() {
+        this.#customFormattersSetting.removeChangeListener(this.customFormattersStateChanged, this);
     }
     static isSideEffectFailure(response) {
         const exceptionDetails = 'exceptionDetails' in response && response.exceptionDetails;

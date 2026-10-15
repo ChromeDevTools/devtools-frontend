@@ -2118,6 +2118,7 @@ export var Page;
         PermissionsPolicyFeature["SyncXhr"] = "sync-xhr";
         PermissionsPolicyFeature["Tools"] = "tools";
         PermissionsPolicyFeature["Translator"] = "translator";
+        PermissionsPolicyFeature["UnboundedElement"] = "unbounded-element";
         PermissionsPolicyFeature["Unload"] = "unload";
         PermissionsPolicyFeature["Usb"] = "usb";
         PermissionsPolicyFeature["UsbUnrestricted"] = "usb-unrestricted";

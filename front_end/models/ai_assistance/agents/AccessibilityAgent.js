@@ -254,14 +254,20 @@ export class AccessibilityAgent extends AiAgent {
                 if (!this.#lighthouseRecording) {
                     return { error: 'Lighthouse recording is not available.' };
                 }
-                const report = await this.#lighthouseRecording({
+                const result = await this.#lighthouseRecording({
                     mode: 'snapshot',
                     categoryIds: ['accessibility'],
                     isAIControlled: true,
                 });
-                if (!report) {
+                if (result.status === 'cancelled') {
+                    return {
+                        error: 'The user cancelled the accessibility audits. Do not run them again unless the user asks you to.',
+                    };
+                }
+                if (result.status === 'failed') {
                     return { error: 'Failed to run accessibility audits.' };
                 }
+                const { report } = result;
                 const audits = new LighthouseFormatter().audits(report, 'accessibility');
                 return {
                     result: { audits },

@@ -1,6 +1,7 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../common/common.js';
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
@@ -27,7 +28,7 @@ export class EmulationModel extends SDKModel {
     #screenOrientationLocked;
     #lockedOrientation;
     #dataSaverSetting;
-    #dataSaverChangeListener;
+    #settingListeners = [];
     constructor(target) {
         super(target);
         this.#multitargetNetworkManager = target.targetManager().getNetworkManager();
@@ -44,17 +45,17 @@ export class EmulationModel extends SDKModel {
         }
         const settings = this.target().targetManager().settings;
         const disableJavascriptSetting = settings.resolve(javaScriptDisabledSettingDescriptor);
-        disableJavascriptSetting.addChangeListener(async () => await this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: disableJavascriptSetting.get() }));
+        this.#settingListeners.push(disableJavascriptSetting.addChangeListener(async () => await this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: disableJavascriptSetting.get() })));
         if (disableJavascriptSetting.get()) {
             void this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: true });
         }
         const touchSetting = settings.resolve(touchSettingDescriptor);
-        touchSetting.addChangeListener(() => {
+        this.#settingListeners.push(touchSetting.addChangeListener(() => {
             const settingValue = touchSetting.get();
             void this.overrideEmulateTouch(settingValue === 'force');
-        });
+        }));
         const idleDetectionSetting = settings.resolve(idleDetectionSettingDescriptor);
-        idleDetectionSetting.addChangeListener(async () => {
+        this.#settingListeners.push(idleDetectionSetting.addChangeListener(async () => {
             const settingValue = idleDetectionSetting.get();
             if (settingValue === 'none') {
                 await this.clearIdleOverride();
@@ -62,9 +63,9 @@ export class EmulationModel extends SDKModel {
             }
             const emulationParams = JSON.parse(settingValue);
             await this.setIdleOverride(emulationParams);
-        });
+        }));
         const cpuPressureDetectionSetting = settings.resolve(cpuPressureSettingDescriptor);
-        cpuPressureDetectionSetting.addChangeListener(async () => {
+        this.#settingListeners.push(cpuPressureDetectionSetting.addChangeListener(async () => {
             const settingValue = cpuPressureDetectionSetting.get();
             if (settingValue === 'none') {
                 await this.setPressureSourceOverrideEnabled(false);
@@ -76,7 +77,7 @@ export class EmulationModel extends SDKModel {
                 await this.setPressureSourceOverrideEnabled(true);
             }
             await this.setPressureStateOverride(settingValue);
-        });
+        }));
         const mediaTypeSetting = settings.resolve(emulatedCSSMediaSettingDescriptor);
         const mediaFeatureColorGamutSetting = settings.resolve(emulatedCSSMediaFeatureColorGamutSettingDescriptor);
         const mediaFeaturePrefersColorSchemeSetting = settings.resolve(emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
@@ -99,63 +100,63 @@ export class EmulationModel extends SDKModel {
             ['prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get()],
             ['prefers-reduced-transparency', mediaFeaturePrefersReducedTransparencySetting.get()],
         ]);
-        mediaTypeSetting.addChangeListener(() => {
+        this.#settingListeners.push(mediaTypeSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('type', mediaTypeSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeatureColorGamutSetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeatureColorGamutSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('color-gamut', mediaFeatureColorGamutSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeaturePrefersColorSchemeSetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeaturePrefersColorSchemeSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeatureForcedColorsSetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeatureForcedColorsSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('forced-colors', mediaFeatureForcedColorsSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeaturePrefersContrastSetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeaturePrefersContrastSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('prefers-contrast', mediaFeaturePrefersContrastSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeaturePrefersReducedDataSetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeaturePrefersReducedDataSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('prefers-reduced-data', mediaFeaturePrefersReducedDataSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
             this.#mediaConfiguration.set('prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get());
             void this.updateCssMedia();
-        });
-        mediaFeaturePrefersReducedTransparencySetting.addChangeListener(() => {
+        }));
+        this.#settingListeners.push(mediaFeaturePrefersReducedTransparencySetting.addChangeListener(() => {
             this.#mediaConfiguration.set('prefers-reduced-transparency', mediaFeaturePrefersReducedTransparencySetting.get());
             void this.updateCssMedia();
-        });
+        }));
         void this.updateCssMedia();
         const autoDarkModeSetting = settings.resolve(emulateAutoDarkModeSettingDescriptor);
-        autoDarkModeSetting.addChangeListener(() => {
+        this.#settingListeners.push(autoDarkModeSetting.addChangeListener(() => {
             const enabled = autoDarkModeSetting.get();
             mediaFeaturePrefersColorSchemeSetting.set(enabled ? 'dark' : '');
             void this.emulateAutoDarkMode(enabled);
-        });
+        }));
         if (autoDarkModeSetting.get()) {
             mediaFeaturePrefersColorSchemeSetting.set('dark');
             void this.emulateAutoDarkMode(true);
         }
         const visionDeficiencySetting = settings.resolve(emulatedVisionDeficiencySettingDescriptor);
-        visionDeficiencySetting.addChangeListener(() => this.emulateVisionDeficiency(visionDeficiencySetting.get()));
+        this.#settingListeners.push(visionDeficiencySetting.addChangeListener(() => this.emulateVisionDeficiency(visionDeficiencySetting.get())));
         if (visionDeficiencySetting.get()) {
             void this.emulateVisionDeficiency(visionDeficiencySetting.get());
         }
         const osTextScaleSetting = settings.resolve(emulatedOSTextScaleSettingDescriptor);
-        osTextScaleSetting.addChangeListener(() => {
+        this.#settingListeners.push(osTextScaleSetting.addChangeListener(() => {
             void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || undefined);
-        });
+        }));
         if (osTextScaleSetting.get()) {
             void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || undefined);
         }
         const localFontsDisabledSetting = settings.resolve(localFontsDisabledSettingDescriptor);
-        localFontsDisabledSetting.addChangeListener(() => this.setLocalFontsDisabled(localFontsDisabledSetting.get()));
+        this.#settingListeners.push(localFontsDisabledSetting.addChangeListener(() => this.setLocalFontsDisabled(localFontsDisabledSetting.get())));
         if (localFontsDisabledSetting.get()) {
             this.setLocalFontsDisabled(localFontsDisabledSetting.get());
         }
@@ -175,17 +176,16 @@ export class EmulationModel extends SDKModel {
             }
             this.setDisabledImageTypes(types);
         };
-        avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-        jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
-        webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats);
+        this.#settingListeners.push(avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats));
+        this.#settingListeners.push(jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats));
+        this.#settingListeners.push(webpFormatDisabledSetting.addChangeListener(updateDisabledImageFormats));
         if (avifFormatDisabledSetting.get() || jpegXlFormatDisabledSetting.get() || webpFormatDisabledSetting.get()) {
             updateDisabledImageFormats();
         }
         this.#dataSaverSetting = settings.resolve(dataSaverSettingDescriptor);
-        this.#dataSaverChangeListener = () => {
+        this.#settingListeners.push(this.#dataSaverSetting.addChangeListener(() => {
             void this.setDataSaverOverride(this.#dataSaverSetting.get());
-        };
-        this.#dataSaverSetting.addChangeListener(this.#dataSaverChangeListener, this);
+        }));
         if (this.#dataSaverSetting.get() !== "unset" /* DataSaverOverride.UNSET */) {
             void this.setDataSaverOverride(this.#dataSaverSetting.get());
         }
@@ -202,7 +202,7 @@ export class EmulationModel extends SDKModel {
     }
     dispose() {
         super.dispose();
-        this.#dataSaverSetting.removeChangeListener(this.#dataSaverChangeListener, this);
+        Common.EventTarget.removeEventListeners(this.#settingListeners);
     }
     setTouchEmulationAllowed(touchEmulationAllowed) {
         this.#touchEmulationAllowed = touchEmulationAllowed;

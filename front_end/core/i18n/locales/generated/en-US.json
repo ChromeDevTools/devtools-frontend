@@ -1361,9 +1361,6 @@
   "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
   },
-  "generated/Deprecation.ts | StorageAccessAPI_requestStorageAccessFor_Method": {
-    "message": "document.requestStorageAccessFor is deprecated and will be removed. See https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ for more details."
-  },
   "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
     "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
   },
@@ -1567,6 +1564,9 @@
   },
   "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
     "message": "The label elements"
+  },
+  "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
+    "message": "Web permissions best practices"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Handling heavy ad interventions"
@@ -6644,8 +6644,11 @@
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "Delete comment"
   },
-  "panels/comments/CommentsPane.ts | noComments": {
-    "message": "No active comments. Add comments on elements in DevTools to send to your AI coding agent."
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | noSentComments": {
+    "message": "No sent comments. Send comments to your AI coding agent to see them here."
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "Queued"
@@ -6703,6 +6706,9 @@
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Response:"
+  },
+  "panels/common/CommentThreadWidget.ts | save": {
+    "message": "Save"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Send to agent"
@@ -8471,6 +8477,9 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "via inspector"
   },
+  "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
+    "message": "Base"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copy all declarations as JS"
   },
@@ -8491,6 +8500,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Copy value"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
+    "message": "Default"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Open flexbox editor"
@@ -8527,6 +8539,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "Open position-area editor"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
+    "message": "Force position-try option"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Shift + Click to change color format"

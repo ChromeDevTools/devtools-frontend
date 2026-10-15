@@ -1173,6 +1173,26 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.#contentData;
     }
+    /**
+     * Returns the response body without waiting for the request to finish loading.
+     *
+     * `requestContentData()` waits for `FINISHED_LOADING` when the request has no
+     * content data provider. Some requests never finish: Chrome does not send
+     * `loadingFinished` for a `Cache-Control: no-store` fetch() whose body the page
+     * never reads, and synthetic requests without a provider are never finished at all.
+     * Callers that must not block, such as AI context building, use this method instead.
+     *
+     * Requests with a content data provider (Local Overrides, Cache Storage, HAR
+     * imports) resolve even when they have not finished.
+     */
+    requestContentDataIfAvailable() {
+        // A content data provider returns the body without waiting for the request
+        // to finish, so only requests without a content data provider can block.
+        if (!this.finished && !this.#contentDataProvider) {
+            return Promise.resolve({ error: 'Request has not finished loading' });
+        }
+        return this.requestContentData();
+    }
     setContentDataProvider(dataProvider) {
         console.assert(!this.#contentData, 'contentData can only be set once.');
         this.#contentDataProvider = dataProvider;

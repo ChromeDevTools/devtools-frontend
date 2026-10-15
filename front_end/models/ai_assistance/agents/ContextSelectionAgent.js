@@ -386,13 +386,18 @@ export class ContextSelectionAgent extends AiAgent {
                 const mode = parseLighthouseMode(params.mode);
                 debugLog(`Recording with Lighthouse; runMode=${mode}`);
                 const result = await this.#lighthouseRecording({ mode });
-                if (!result) {
+                if (result.status === 'cancelled') {
+                    return {
+                        error: 'The user cancelled the Lighthouse audit. Do not run it again unless the user asks you to.',
+                    };
+                }
+                if (result.status === 'failed') {
                     return { error: 'Failed to generate Lighthouse report.' };
                 }
                 return {
-                    context: new LighthouseContext(result),
+                    context: new LighthouseContext(result.report),
                     description: 'User has selected a Lighthouse report',
-                    widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report: result } }],
+                    widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report: result.report } }],
                 };
             },
         });

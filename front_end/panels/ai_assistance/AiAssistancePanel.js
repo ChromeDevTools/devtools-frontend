@@ -1421,6 +1421,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         // Cancel any previous in-flight query.
         this.#cancel();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+        if (AiAssistanceModel.AiUtils.isAiV2Enabled()) {
+            void VisualLogging.logFunctionCall('ai-v2-query-submitted', getContextTypeString(this.#conversation.selectedContext));
+        }
         const signal = this.#runAbortController.signal;
         // Initial conversation boundary (turn 1 only).
         if (this.#conversation.isEmpty) {
@@ -1589,6 +1592,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         step.output ??= data.output;
                         step.widgets ??= data.widgets;
                         commitStep();
+                        if (AiAssistanceModel.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly) {
+                            if (data.toolName === 'learnSkills') {
+                                for (const skill of data.loadedSkills ?? []) {
+                                    void VisualLogging.logFunctionCall('ai-v2-learn-skill', skill);
+                                }
+                            }
+                            else if (data.toolName) {
+                                void VisualLogging.logFunctionCall('ai-v2-tool-call', Platform.StringUtilities.toKebabCase(data.toolName));
+                            }
+                        }
                         break;
                     }
                     case "answer" /* AiAssistanceModel.AiAgent.ResponseType.ANSWER */: {
@@ -1630,6 +1643,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     }
                     case "error" /* AiAssistanceModel.AiAgent.ResponseType.ERROR */: {
                         systemMessage.error = data.error;
+                        if (AiAssistanceModel.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly &&
+                            data.error !== "abort" /* AiAssistanceModel.AiAgent.ErrorType.ABORT */) {
+                            void VisualLogging.logFunctionCall('ai-v2-error', data.error);
+                        }
                         const lastPart = systemMessage.parts.at(-1);
                         if (lastPart?.type === 'step') {
                             const lastStep = lastPart.step;
@@ -1651,6 +1668,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         break;
                     }
                     case "context-change" /* AiAssistanceModel.AiAgent.ResponseType.CONTEXT_CHANGE */: {
+                        if (AiAssistanceModel.AiUtils.isAiV2Enabled() && !this.#conversation?.isReadOnly && data.toolName) {
+                            void VisualLogging.logFunctionCall('ai-v2-tool-call', Platform.StringUtilities.toKebabCase(data.toolName));
+                        }
                         this.#handleConversationContextChange(data.context);
                         step.state = { type: 'completed' };
                         step.widgets = data.widgets;

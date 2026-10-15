@@ -357,11 +357,11 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-left .device-mode-ruler-marker.device-mode-ruler-marker-medium {
-  width: 10px;
+  width: var(--sys-size-5);
 }
 
 .device-mode-ruler-left .device-mode-ruler-marker.device-mode-ruler-marker-large {
-  width: 15px;
+  width: var(--sys-size-7);
 }
 
 .device-mode-ruler-text {
@@ -381,7 +381,7 @@ devtools-toolbar.device-mode-toolbar-options {
 
 .device-mode-ruler-left .device-mode-ruler-text {
   left: calc(-1 * var(--sys-size-3));
-  top: -15px;
+  top: calc(-1 * var(--sys-size-8));
   transform: rotate(270deg);
 }
 

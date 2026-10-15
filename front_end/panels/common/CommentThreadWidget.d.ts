@@ -20,10 +20,13 @@ export interface ViewInput {
     isQueueModifierPressed: boolean;
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
     status: CommentManager.CommentManager.CommentThreadStatus;
+    isEditing: boolean;
     onAddComment: (text: string) => void;
     onQueueComment: (text: string) => void;
     onCommentTextChange: (event: Event) => void;
     onDeleteQueuedComment: () => void;
+    onSaveEdit: (text: string) => void;
+    onSetEditMode: (value: boolean) => void;
     /** Reports Cmd (Mac) / Ctrl (other platforms) state while typing in the textarea. */
     onQueueModifierChange: (pressed: boolean) => void;
 }
@@ -36,6 +39,8 @@ export declare class CommentThreadWidget extends UI.Widget.Widget {
     onAddComment?: (text: string) => void;
     onQueueComment?: (text: string) => void;
     onDeleteQueuedComment?: () => void;
+    onSaveEdit?: (text: string) => void;
+    onStartEdit?: () => void;
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     willHide(): void;

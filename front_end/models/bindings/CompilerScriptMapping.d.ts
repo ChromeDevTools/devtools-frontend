@@ -118,7 +118,8 @@ export declare class CompilerScriptMapping implements DebuggerSourceMapping {
      * and copies over all the mappings from the other source maps that were registered for the
      * same URL and which are compatible (agree on the content and ignore-list hint for the given
      * URL). If they are considered incompatible, the original `UISourceCode` will simply be
-     * removed and a new mapping will be established.
+     * removed and a new mapping will be established, unless the original `UISourceCode` is
+     * mapped by a newer script, which happens when source maps finish loading out of parse order.
      *
      * @param event holds the {@link SDK.Script.Script} and its {@link SDK.SourceMap.SourceMap}.
      */

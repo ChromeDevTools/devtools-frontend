@@ -1072,13 +1072,8 @@ function eventStackFrame(event) {
   if (Types4.Events.isProfileCall(event)) {
     return event.callFrame;
   }
-  const data = Helpers3.Trace.getEventDataObject(event);
-  const stackTrace = data && Array.isArray(data.stackTrace) ? data.stackTrace : null;
-  if (!stackTrace || stackTrace.length === 0) {
-    return null;
-  }
-  const topFrame = stackTrace[0];
-  if (!topFrame || typeof topFrame !== "object") {
+  const topFrame = Helpers3.Trace.stackTraceInEvent(event)?.[0];
+  if (!topFrame) {
     return null;
   }
   return { ...topFrame, scriptId: String(topFrame.scriptId) };

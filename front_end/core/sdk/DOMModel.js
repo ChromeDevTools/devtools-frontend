@@ -984,7 +984,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     marker(name) {
-        return this.#markers.get(name) || null;
+        return this.#markers.get(name) ?? null;
     }
     getMarkerKeysForTest() {
         return [...this.#markers.keys()];

@@ -28,7 +28,7 @@ export interface AiConversationOptions {
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
+    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
     aiHistoryStorage?: AiHistoryStorage;
     targetManager?: SDK.TargetManager.TargetManager;
 }

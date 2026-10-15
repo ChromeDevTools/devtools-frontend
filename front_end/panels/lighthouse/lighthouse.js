@@ -2043,6 +2043,7 @@ var Page;
     PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
     PermissionsPolicyFeature2["Tools"] = "tools";
     PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["UnboundedElement"] = "unbounded-element";
     PermissionsPolicyFeature2["Unload"] = "unload";
     PermissionsPolicyFeature2["Usb"] = "usb";
     PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
@@ -3597,14 +3598,8 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
    * category IDs, in which case these take priority.
    */
   async startLighthouse(overrides) {
-    if (this.lastAction) {
-      await this.lastAction;
-    }
-    this.lastAction = new Promise(async (resolve) => {
-      if (this.currentLighthouseRun) {
-        await this.currentLighthouseRun.cancel();
-        this.currentLighthouseRun = void 0;
-      }
+    await this.#enqueueAction(async () => {
+      await this.#cancelCurrentRun();
       const inspectedURL = await this.getInspectedURL({ force: true });
       const flags = this.getFlags();
       if (overrides?.mode) {
@@ -3621,9 +3616,7 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
         Boolean(overrides?.isAIControlled)
       );
       await this.currentLighthouseRun.start();
-      resolve();
     });
-    return await this.lastAction;
   }
   async collectLighthouseResults() {
     if (!this.currentLighthouseRun) {
@@ -3635,17 +3628,32 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
     return lighthouseResponse;
   }
   async cancelLighthouse() {
-    if (this.lastAction) {
-      await this.lastAction;
-    }
-    this.lastAction = new Promise(async (resolve) => {
-      if (this.currentLighthouseRun) {
-        await this.currentLighthouseRun.cancel();
-        this.currentLighthouseRun = void 0;
+    await this.#enqueueAction(() => this.#cancelCurrentRun());
+  }
+  /**
+   * Runs `action` once the previous start or cancel action has settled, so
+   * that runs are started and cancelled one at a time. If an action fails, only
+   * its own caller sees the error; later actions still run.
+   */
+  #enqueueAction(action) {
+    const previousAction = this.lastAction;
+    const nextAction = (async () => {
+      if (previousAction) {
+        await Promise.allSettled([previousAction]);
       }
-      resolve();
-    });
-    return await this.lastAction;
+      await action();
+    })();
+    this.lastAction = nextAction;
+    return nextAction;
+  }
+  /**
+   * Cancels the current run, if any. The run is cleared before cancelling so
+   * that a failed cleanup does not block later runs.
+   */
+  async #cancelCurrentRun() {
+    const run = this.currentLighthouseRun;
+    this.currentLighthouseRun = void 0;
+    await run?.cancel();
   }
 };
 var STORAGE_TYPE_NAMES = /* @__PURE__ */ new Map([
@@ -4173,25 +4181,28 @@ var ProtocolService = class {
   }
   /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
   async sendWithResponse(action, args = {}) {
-    const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
-    const messageResult = new Promise((resolve, reject) => {
-      const workerListener = (event) => {
-        const lighthouseMessage = event.data;
-        if (lighthouseMessage.id === messageId) {
-          worker.removeEventListener("message", workerListener);
-          this.#pendingRequests.delete(messageId);
-          resolve(lighthouseMessage.result);
-        }
-      };
-      worker.addEventListener("message", workerListener);
-      this.#pendingRequests.set(messageId, (err) => {
+    const { promise, resolve, reject } = Promise.withResolvers();
+    this.#pendingRequests.set(messageId, reject);
+    const worker = await this.ensureWorkerExists();
+    if (!this.#pendingRequests.has(messageId)) {
+      return await promise;
+    }
+    const workerListener = (event) => {
+      const lighthouseMessage = event.data;
+      if (lighthouseMessage.id === messageId) {
         worker.removeEventListener("message", workerListener);
-        reject(err);
-      });
+        this.#pendingRequests.delete(messageId);
+        resolve(lighthouseMessage.result);
+      }
+    };
+    worker.addEventListener("message", workerListener);
+    this.#pendingRequests.set(messageId, (err) => {
+      worker.removeEventListener("message", workerListener);
+      reject(err);
     });
     worker.postMessage({ id: messageId, action, args: { ...args, id: messageId } });
-    return await messageResult;
+    return await promise;
   }
 };
 
@@ -5958,11 +5969,11 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
       this.renderStatusView();
       const { lhr, artifacts } = await this.controller.collectLighthouseResults();
       this.buildReportUI(lhr, artifacts);
-      return { report: lhr };
+      return { status: "completed", report: lhr };
     } catch (err) {
       this.handleError(err);
       UI8.Context.Context.instance().setFlavor(ActiveLighthouseReport, null);
-      return { report: null };
+      return err instanceof CancelledError ? { status: "cancelled" } : { status: "failed" };
     }
   }
   async handleRunCancel() {
@@ -6162,8 +6173,7 @@ var LighthousePanel = class _LighthousePanel extends UI8.Panel.Panel {
   static async executeLighthouseRecording(overrides) {
     const panel = _LighthousePanel.instance();
     await UI8.ViewManager.ViewManager.instance().showView("lighthouse");
-    const { report } = await panel.handleCompleteRun(overrides);
-    return report;
+    return await panel.handleCompleteRun(overrides);
   }
 };
 var ReportRevealer = class {

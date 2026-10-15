@@ -309,25 +309,32 @@ export class ProtocolService {
     }
     /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
     async sendWithResponse(action, args = {}) {
-        const worker = await this.ensureWorkerExists();
         const messageId = lastId++;
-        const messageResult = new Promise((resolve, reject) => {
-            const workerListener = (event) => {
-                const lighthouseMessage = event.data;
-                if (lighthouseMessage.id === messageId) {
-                    worker.removeEventListener('message', workerListener);
-                    this.#pendingRequests.delete(messageId);
-                    resolve(lighthouseMessage.result);
-                }
-            };
-            worker.addEventListener('message', workerListener);
-            this.#pendingRequests.set(messageId, (err) => {
+        const { promise, resolve, reject } = Promise.withResolvers();
+        // Register the request before waiting for the worker, so that detach()
+        // can reject it even if the user cancels while the worker is still loading.
+        this.#pendingRequests.set(messageId, reject);
+        const worker = await this.ensureWorkerExists();
+        if (!this.#pendingRequests.has(messageId)) {
+            // detach() ran while the worker was loading: it has already rejected
+            // this request and terminated the worker.
+            return await promise;
+        }
+        const workerListener = (event) => {
+            const lighthouseMessage = event.data;
+            if (lighthouseMessage.id === messageId) {
                 worker.removeEventListener('message', workerListener);
-                reject(err);
-            });
+                this.#pendingRequests.delete(messageId);
+                resolve(lighthouseMessage.result);
+            }
+        };
+        worker.addEventListener('message', workerListener);
+        this.#pendingRequests.set(messageId, (err) => {
+            worker.removeEventListener('message', workerListener);
+            reject(err);
         });
         worker.postMessage({ id: messageId, action, args: { ...args, id: messageId } });
-        return await messageResult;
+        return await promise;
     }
 }
 //# sourceMappingURL=LighthouseProtocolService.js.map

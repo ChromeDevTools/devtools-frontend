@@ -112,6 +112,9 @@ export function isGeminiBranding() {
 export function isNaturalLanguageInterfaceEnabled() {
     return Boolean(Root.Runtime.hostConfig.devToolsAiNaturalLanguageInterface?.enabled);
 }
+export function isAiV2Enabled() {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
+}
 /**
  * Returns true if context selection / dynamic context switching is enabled.
  *
@@ -124,8 +127,7 @@ export function isNaturalLanguageInterfaceEnabled() {
  * removed in the future when V2 ships permanently and the V1 architecture is removed.
  */
 export function isContextSelectionEnabled() {
-    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) ||
-        Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
+    return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || isAiV2Enabled();
 }
 /**
  * Preconditions determined entirely on the DevTools frontend side (e.g. Incognito

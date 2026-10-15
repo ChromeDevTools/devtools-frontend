@@ -27,6 +27,10 @@ export interface ToolApprovalResult {
 export interface ToolDataResult<DataType> {
     result: DataType;
     widgets?: AiWidget[];
+    /**
+     * Skills newly activated by this tool execution. Used to emit UI telemetry.
+     */
+    loadedSkills?: string[];
 }
 /**
  * Result produced by a ContextTool (`ContextTool`). Switches or introduces a new active focal entity
@@ -152,7 +156,7 @@ export interface LighthouseReportCapability {
  * Capability for tools that trigger new Lighthouse audit runs.
  */
 export interface LighthouseRecordingCapability {
-    runLighthouse(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.ReporterTypes.ReportJSON | null>;
+    runLighthouse(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.RunTypes.RunResult>;
 }
 /**
  * Capability for tools that need access to the active performance trace context.

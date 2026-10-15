@@ -265,6 +265,7 @@ export class AiConversation {
                             ...item,
                             output: shouldRedact ? '<redacted>' : item.output,
                             widgets: undefined,
+                            loadedSkills: undefined,
                         };
                     }
                     default:

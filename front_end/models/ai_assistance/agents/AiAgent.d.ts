@@ -22,12 +22,22 @@ type UrlString = Platform.DevToolsPath.UrlString;
  *   QUERYING
  *   one of:
  *     ANSWER (complete: false)*, ANSWER (complete: true)   text-only reply; the run ends
- *     [ANSWER (complete: true)], <tool call events>        function call, optionally with text
+ *     ANSWER (complete: false)*, [ANSWER (complete: true)],
+ *       <tool call events>+                                one or more function calls, optionally with text
  *     ERROR                                                the run ends
  * ```
  *
+ * When a model response contains several function calls,
+ * `AiAgent#runFunctionCalls()` runs them one after another, so each call's
+ * events finish before the next call's events start. A denied call does not
+ * stop the calls after it, and neither does a failed call: an unknown tool
+ * name or an error thrown by the handler becomes an error result for that
+ * call.
+ *
  * An `ERROR` can also follow the tool call events, for example when the user
  * aborts, the page navigates cross-origin, or the run reaches `MAX_STEPS`.
+ * The remaining calls in that model response do not run after an abort or a
+ * cross-origin navigation.
  *
  * ## Events for one tool call
  *
@@ -45,8 +55,18 @@ type UrlString = Platform.DevToolsPath.UrlString;
  * ```
  *
  * If the tool switches context instead of returning a result, there is no
- * result `ACTION`. `AiAgent#run()` yields `CONTEXT_CHANGE` and returns, and
- * `AiConversation` starts a new run with the agent for the new context.
+ * result `ACTION`. `AiAgent#runFunctionCalls()` yields `CONTEXT_CHANGE` and
+ * the run ends, and `AiConversation` starts a new run with the agent for the
+ * new context. The remaining calls in that model response do not run.
+ *
+ * ## Model history for function calls
+ *
+ * This is the history sent to the model, separate from the saved history
+ * below. `AiAgent#runFunctionCalls()` stores the model's explanation text and
+ * every function call in a response as one `MODEL` turn. The next request
+ * carries one `functionResponse` per call, in the same order. A denied call
+ * gets a response that says it did not run. After a context change, each call
+ * that did not run gets a "Not executed" response.
  *
  * ## Saved history
  *
@@ -200,6 +220,11 @@ export interface ContextChangeResponse {
     description: string;
     context: ConversationContext<unknown>;
     widgets?: AiWidget[];
+    /**
+     * The name of the tool that triggered this context change. Used by the panel
+     * to emit UI telemetry.
+     */
+    toolName?: string;
 }
 interface SerializedSideEffectResponse extends Omit<SideEffectResponse, 'confirm'> {
 }
@@ -235,6 +260,11 @@ export interface ActionResponse extends ToolCallEvent {
      * output of tools annotated with `REDACT_FROM_HISTORY`.
      */
     toolName?: string;
+    /**
+     * Skills newly loaded by a `learnSkills` call. Used by the panel to emit
+     * `ai-v2-learn-skill` visual logging events.
+     */
+    loadedSkills?: string[];
 }
 /**
  * Yielded before each model request. The panel starts a new step for it.
@@ -275,7 +305,7 @@ export interface AgentOptions {
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     history?: Host.AidaClient.Content[];
     allowedOrigin?: () => AllowedOriginResult;
-    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
+    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
     targetManager?: SDK.TargetManager.TargetManager;
 }
 export interface ParsedAnswer {

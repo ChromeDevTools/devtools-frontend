@@ -65,6 +65,17 @@ export declare class TracingContext {
 }
 export declare const CSSControlMap: MapConstructor;
 export type CSSControlMap = Map<string, HTMLElement[]>;
+/**
+ * Tracks the changes that renderers make to the text of the value of a declaration, e.g. because the user picked a
+ * color, and puts the text of the value together from them. It wraps a `ComputedText` over the authored text of the
+ * declaration, in which a change takes the place of the match that it replaces.
+ **/
+export declare class ValueUpdateTracking {
+    #private;
+    constructor(ast: SDK.CSSPropertyParser.SyntaxTree);
+    recordEdit(match: SDK.CSSPropertyParser.Match, value: string): void;
+    valueText(): string;
+}
 export declare class RenderingContext {
     readonly ast: SDK.CSSPropertyParser.SyntaxTree;
     readonly property: SDK.CSSProperty.CSSProperty | null;
@@ -76,9 +87,11 @@ export declare class RenderingContext {
     };
     readonly tracing?: TracingContext | undefined;
     readonly signal?: AbortSignal | undefined;
+    readonly edits?: ValueUpdateTracking | undefined;
     constructor(ast: SDK.CSSPropertyParser.SyntaxTree, property: SDK.CSSProperty.CSSProperty | null, renderers: Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching, cssControls?: CSSControlMap | undefined, options?: {
         readonly?: boolean;
-    }, tracing?: TracingContext | undefined, signal?: AbortSignal | undefined);
+    }, tracing?: TracingContext | undefined, signal?: AbortSignal | undefined, edits?: ValueUpdateTracking | undefined);
+    recordEdit(match: SDK.CSSPropertyParser.Match, value: string): void;
     addControl(cssType: string, control: HTMLElement): void;
     getComputedLonghandName(node: CodeMirror.SyntaxNode): string | null;
     findParent<MatchT extends SDK.CSSPropertyParser.Match>(node: CodeMirror.SyntaxNode | null, matchType: Platform.Constructor.Constructor<MatchT>): MatchT | null;
@@ -87,7 +100,7 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     #private;
     constructor(ast: SDK.CSSPropertyParser.SyntaxTree, property: SDK.CSSProperty.CSSProperty | null, renderers: Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching, cssControls: CSSControlMap, options: {
         readonly?: boolean;
-    }, tracing: TracingContext | undefined, signal: AbortSignal | undefined);
+    }, tracing: TracingContext | undefined, signal: AbortSignal | undefined, edits: ValueUpdateTracking | undefined);
     static render(nodeOrNodes: CodeMirror.SyntaxNode | CodeMirror.SyntaxNode[], context: RenderingContext): {
         nodes: LitTemplate;
         cssControls: CSSControlMap;
@@ -102,14 +115,14 @@ export declare class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     static renderValueElement(property: SDK.CSSProperty.CSSProperty | {
         name: string;
         value: string;
-    }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal): {
+    }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal, edits?: ValueUpdateTracking): {
         valueElement: HTMLElement;
         cssControls: CSSControlMap;
     };
     static renderValueNodes(property: SDK.CSSProperty.CSSProperty | {
         name: string;
         value: string;
-    }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal): {
+    }, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching | null, renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext, signal?: AbortSignal, edits?: ValueUpdateTracking): {
         nodes: LitTemplate;
         cssControls: CSSControlMap;
     };

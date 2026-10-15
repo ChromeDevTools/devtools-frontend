@@ -10,6 +10,7 @@ export declare class RuntimeModel extends SDKModel<EventTypes> {
     #private;
     readonly agent: ProtocolProxyApi.RuntimeApi;
     constructor(target: Target);
+    dispose(): void;
     static isSideEffectFailure(response: Protocol.Runtime.EvaluateResponse | EvaluationResult): boolean;
     debuggerModel(): DebuggerModel;
     heapProfilerModel(): HeapProfilerModel;

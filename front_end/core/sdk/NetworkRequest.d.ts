@@ -253,6 +253,19 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     private parseMultipartFormDataParameters;
     private computeHeaderValue;
     requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError>;
+    /**
+     * Returns the response body without waiting for the request to finish loading.
+     *
+     * `requestContentData()` waits for `FINISHED_LOADING` when the request has no
+     * content data provider. Some requests never finish: Chrome does not send
+     * `loadingFinished` for a `Cache-Control: no-store` fetch() whose body the page
+     * never reads, and synthetic requests without a provider are never finished at all.
+     * Callers that must not block, such as AI context building, use this method instead.
+     *
+     * Requests with a content data provider (Local Overrides, Cache Storage, HAR
+     * imports) resolve even when they have not finished.
+     */
+    requestContentDataIfAvailable(): Promise<TextUtils.ContentData.ContentDataOrError>;
     setContentDataProvider(dataProvider: () => Promise<TextUtils.ContentData.ContentDataOrError>): void;
     requestStreamingContent(): Promise<TextUtils.StreamingContentData.StreamingContentDataOrError>;
     contentURL(): Platform.DevToolsPath.UrlString;

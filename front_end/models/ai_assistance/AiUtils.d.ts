@@ -11,6 +11,7 @@ export declare const aiAssistanceEnabledSettingDescriptor: Common.Settings.Condi
 export declare const aiAssistanceV2OptInChangeDialogSeenSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare function isGeminiBranding(): boolean;
 export declare function isNaturalLanguageInterfaceEnabled(): boolean;
+export declare function isAiV2Enabled(): boolean;
 /**
  * Returns true if context selection / dynamic context switching is enabled.
  *

@@ -249,8 +249,14 @@ export class AiAgent2 extends AiAgent {
                 };
             },
             handler: async (args) => {
+                const previouslyLoaded = new Set(this.#activeSkills);
                 const result = await this.learnSkill(args.skills);
-                return { result };
+                // The LLM may hallucinate skill names. Filter out any skills that were not newly activated.
+                const loadedSkills = [...new Set(args.skills)].filter(skill => !previouslyLoaded.has(skill) && this.#activeSkills.has(skill));
+                return {
+                    result,
+                    loadedSkills: loadedSkills.length > 0 ? loadedSkills : undefined,
+                };
             },
         });
     }
@@ -378,7 +384,7 @@ User query: ${enhancedQuery}`;
                     getTarget: () => this.#getTarget(),
                     getOriginLock: () => this.#originLock(),
                     getLighthouseReport: () => (this.context instanceof LighthouseContext ? this.context.getItem() : null),
-                    runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
+                    runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? { status: 'failed' }),
                     getPerformanceTraceContext: () => (this.context instanceof PerformanceTraceContext ? this.context : null),
                     performanceRecordAndReload: this.#performanceRecordAndReload,
                     disableLogging: () => {

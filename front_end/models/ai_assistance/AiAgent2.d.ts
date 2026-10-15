@@ -10,7 +10,7 @@ export interface AiAgent2Options extends ExecuteJsAgentOptions {
      * Supplies the origin lock state for the conversation.
      */
     originLock: () => OriginLockState;
-    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
+    lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
 }
 export declare class AiAgent2 extends AiAgent<unknown> {

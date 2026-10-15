@@ -10,44 +10,32 @@ export const secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
 export const microToMilli = (value) => Types.Timing.Milli(value / 1000);
 export const microToSeconds = (value) => Types.Timing.Seconds(value / 1000 / 1000);
 export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds, navigationsByNavigationId, softNavigationsById, navigationsByFrameId) {
-    let eventTimeStamp = event.ts - traceBounds.min;
+    let navigationForEvent = null;
     if (Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
-        const navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
-        if (navigationForEvent) {
-            eventTimeStamp = event.ts - navigationForEvent.ts;
-        }
+        navigationForEvent = softNavigationsById.get(event.args.data.performanceTimelineNavigationId) ?? null;
     }
     else if (Types.Events.isSoftFirstContentfulPaint(event) && event.args?.context?.performanceTimelineNavigationId) {
-        const navigationForEvent = softNavigationsById.get(event.args.context.performanceTimelineNavigationId);
-        if (navigationForEvent) {
-            eventTimeStamp = event.ts - navigationForEvent.ts;
-        }
+        navigationForEvent = softNavigationsById.get(event.args.context.performanceTimelineNavigationId) ?? null;
     }
     else if (Types.Events.isSoftNavigationStart(event)) {
-        const navigationForEvent = getNavigationForTraceEvent(event, event.args.frame, navigationsByFrameId);
-        if (navigationForEvent) {
-            eventTimeStamp = event.ts - navigationForEvent.ts;
-        }
+        navigationForEvent = getNavigationForTraceEvent(event, event.args.frame, navigationsByFrameId);
     }
     else {
         const navigationId = navigationIDForEvent(event);
         if (navigationId) {
-            const navigationForEvent = navigationsByNavigationId.get(navigationId);
-            if (navigationForEvent) {
-                eventTimeStamp = event.ts - navigationForEvent.ts;
-            }
+            navigationForEvent = navigationsByNavigationId.get(navigationId) ?? null;
         }
         else {
             const frameId = frameIDForEvent(event);
             if (frameId) {
-                const navigationForEvent = getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
-                if (navigationForEvent) {
-                    eventTimeStamp = event.ts - navigationForEvent.ts;
-                }
+                navigationForEvent = getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
             }
         }
     }
-    return Types.Timing.Micro(eventTimeStamp);
+    if (navigationForEvent) {
+        return Types.Timing.Micro(event.ts - navigationForEvent.ts);
+    }
+    return Types.Timing.Micro(event.ts - traceBounds.min);
 }
 /**
  * Expands the trace window by a provided percentage or, if it the expanded window is smaller than 1 millisecond, expands it to 1 millisecond.

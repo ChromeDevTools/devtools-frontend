@@ -26,7 +26,6 @@ describe('Debouncer', () => {
     // Then wait a while before checking the value.
     clock.tick(10);
     assert.strictEqual(count, 1);
-    clock.restore();
   });
 
   it('can be cancelled', () => {
@@ -44,6 +43,5 @@ describe('Debouncer', () => {
     // Then wait a while before checking the value.
     clock.tick(10);
     assert.strictEqual(count, 0);
-    clock.restore();
   });
 });

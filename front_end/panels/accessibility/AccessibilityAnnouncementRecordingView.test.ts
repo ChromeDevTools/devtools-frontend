@@ -897,8 +897,6 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       // Filter by record type: ARIA_LIVE (1 match) -> "1 event matches"
       view.setRecordTypeFilter(RecordTypeFilter.ARIA_LIVE);
       assert.isTrue(alertSpy.calledOnceWith('1 event matches'));
-
-      alertSpy.restore();
     });
 
     it('memoizes filteredAnnouncements and reuses the cached reference', async () => {
@@ -1127,11 +1125,6 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
         const downloadCall = setAttributeSpy.getCalls().find(call => call.args[0] === 'download');
         assert.exists(downloadCall);
         assert.match(downloadCall!.args[1] as string, /^aria-live-announcements-\d{8}T\d{6}\.csv$/);
-
-        createObjectURLStub.restore();
-        revokeObjectURLSpy.restore();
-        clickSpy.restore();
-        setAttributeSpy.restore();
       });
     });
   });

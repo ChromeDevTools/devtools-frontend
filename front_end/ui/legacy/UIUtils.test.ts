@@ -68,7 +68,6 @@ describe('UIUtils', () => {
 
       el.dispatchEvent(new PointerEvent('pointerdown'));
       sinon.assert.calledOnce(callback);
-      clock.restore();
     });
   });
 

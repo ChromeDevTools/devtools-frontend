@@ -141,6 +141,5 @@ describe('CommandMenu Views', () => {
     viewCommand.execute();
 
     sinon.assert.calledOnceWithExactly(showViewStub, viewId, true);
-    showViewStub.restore();
   });
 });

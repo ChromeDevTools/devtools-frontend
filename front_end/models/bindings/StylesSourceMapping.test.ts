@@ -338,7 +338,7 @@ describe('StylesSourceMapping', () => {
     const uiSourceCode = await addInspectorStyleSheet(target, cssModel, styleSheetId);
 
     const setStyleSheetTextSpy = sinon.spy(cssModel, 'setStyleSheetText');
-    const {promise: syncPromise, stub: syncStub} = stubStyleFileSynced();
+    const {promise: syncPromise} = stubStyleFileSynced();
     const newContent = '#inspected { background-color: green; }';
     uiSourceCode.setWorkingCopy(newContent);
     uiSourceCode.commitWorkingCopy();
@@ -349,7 +349,6 @@ describe('StylesSourceMapping', () => {
     assert.deepEqual(setStyleSheetTextCalls, [{styleSheetId, text: newContent}]);
     assert.isFalse(uiSourceCode.isDirty());
     assert.strictEqual(uiSourceCode.workingCopy(), newContent);
-    syncStub.restore();
   });
 
   it('mirrors CSS edits of an inline stylesheet with sourceURL into the UISourceCode working copy', async () => {
@@ -402,7 +401,7 @@ describe('StylesSourceMapping', () => {
     assert.strictEqual(uiSourceCode.workingCopy(), '#inspected {\n    color: red;\n}');
     assert.isFalse(uiSourceCode.isDirty());
 
-    const {promise: syncPromise, stub: syncStub} = stubStyleFileSynced();
+    const {promise: syncPromise} = stubStyleFileSynced();
     const success = await cssModel.setStyleText(styleSheetId, new TextUtils.TextRange.TextRange(1, 4, 1, 15),
                                                 'color: green;', /* majorChange */ true);
     assert.isTrue(success);
@@ -416,7 +415,6 @@ describe('StylesSourceMapping', () => {
     assert.strictEqual(uiSourceCode.uiLocation(0).linkText(), '*foo.css:1');
     // The edit came from the only header, so it is not pushed back to the backend.
     sinon.assert.notCalled(setStyleSheetTextStub);
-    syncStub.restore();
   });
 
   it('updates the inspector stylesheet UISourceCode when rules are added to it', async () => {
@@ -468,6 +466,5 @@ describe('StylesSourceMapping', () => {
     assert.isTrue(uiSourceCode.isDirty());
     // The change originates from the backend, so it is not echoed back via setStyleSheetText.
     sinon.assert.notCalled(setStyleSheetTextStub);
-    syncStub.restore();
   });
 });

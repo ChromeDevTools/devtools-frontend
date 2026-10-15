@@ -161,8 +161,6 @@ describe('ProtocolMonitor', () => {
         FILENAME, TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA, /* forceSaveAs=*/ true));
     await fileManagerCloseCall;
     assert.isTrue(fileManager.append.calledOnceWith(FILENAME, sinon.match('"method": "Test.test"')));
-
-    clock.restore();
   });
 
   describe('context menu', () => {

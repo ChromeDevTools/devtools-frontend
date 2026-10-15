@@ -134,7 +134,6 @@ describeWithEnvironment('SourceFrame', () => {
     await pasteIntoSourceFrame();
     const dialogContainer = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
     assert.isNull(dialogContainer);
-    stub.restore();
   });
 
   it('disassembles wasm', async () => {

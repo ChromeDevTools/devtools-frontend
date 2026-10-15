@@ -54,6 +54,7 @@ devtools_ui_module("unit_fixtures") {
     "unit/multi_logs.test.ts",
     "unit/screenshot_diff.test.ts",
     "unit/screenshot_retry.test.ts",
+    "unit/sinon_restore.test.ts",
     "unit/snapshot.test.ts",
     "unit/unit.test.ts",
     "unit/unit_2.test.ts",

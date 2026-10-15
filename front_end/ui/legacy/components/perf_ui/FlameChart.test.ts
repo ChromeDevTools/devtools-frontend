@@ -812,7 +812,7 @@ describeWithEnvironment('FlameChart', () => {
       Object.defineProperty(event, 'offsetX', {value: 22, writable: true});
       Object.defineProperty(event, 'offsetY', {value: 17, writable: true});
 
-      const showStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
       const copyTextStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText');
 
       chartInstance.getCanvas().dispatchEvent(event);
@@ -831,9 +831,6 @@ describeWithEnvironment('FlameChart', () => {
       assert.exists(copyUrlItem);
       menu.invokeHandler(copyUrlItem.id());
       sinon.assert.calledWith(copyTextStub, 'https://example.com/main.js');
-
-      showStub.restore();
-      copyTextStub.restore();
     });
   });
 
@@ -2047,10 +2044,9 @@ describeWithEnvironment('FlameChart', () => {
 
        // DPR change invalidates the cache because subpixel font metrics may change.
        // Increment the existing devicePixelRatio to guarantee a change on high-DPI displays.
-       const dprStub = sinon.stub(window, 'devicePixelRatio').value((window.devicePixelRatio || 1) + 1);
+       sinon.stub(window, 'devicePixelRatio').value((window.devicePixelRatio || 1) + 1);
        chartInstance.update();
        sinon.assert.callCount(entryTitleSpy, 4);
-       dprStub.restore();
      });
 
   it('does not query entryTitle for events that have no room for text', () => {

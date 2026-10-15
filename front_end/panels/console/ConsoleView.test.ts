@@ -405,7 +405,6 @@ describeWithEnvironment('ConsoleView', () => {
       dispatchPasteEvent(messagesElement, {clipboardData: dt, bubbles: true});
 
       assert.lengthOf(Common.Console.Console.instance().messages(), 0);
-      stub.restore();
     });
   });
 

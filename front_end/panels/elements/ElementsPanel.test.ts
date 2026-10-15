@@ -259,8 +259,6 @@ describeWithEnvironment('ElementsPanel', () => {
     hideStub.resetHistory();
     panel.onSearchCanceled();
     sinon.assert.calledWith(hideStub, SDK.TargetManager.TargetManager.instance());
-
-    hideStub.restore();
   });
 
   // Causes unit test execution to abort

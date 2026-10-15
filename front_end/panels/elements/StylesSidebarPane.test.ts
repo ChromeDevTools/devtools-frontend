@@ -2683,7 +2683,6 @@ describe('StylesSidebarPane', () => {
         sinon.assert.calledOnce(triggerAiCodeCompletionStub);
         assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[0], 'backgrou');
         assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[1], 8);
-        clock.restore();
       });
 
       it('cancels pending requests and clears suggestions on deletion', async () => {
@@ -2706,7 +2705,6 @@ describe('StylesSidebarPane', () => {
         sinon.assert.notCalled(triggerAiCodeCompletionStub);
         // Verify active suggestion was cleared
         assert.isUndefined(mockTreeItem.section().activeAiSuggestion);
-        clock.restore();
       });
 
       it('triggerAiCodeCompletion calls the provider with correct arguments', () => {
@@ -2721,7 +2719,6 @@ describe('StylesSidebarPane', () => {
         sinon.assert.calledOnce(triggerAiCodeCompletionStub);
         assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[0], 'backgrou');
         assert.strictEqual(triggerAiCodeCompletionStub.firstCall.args[1], 8);
-        clock.restore();
       });
 
       it('setAiAutoCompletion sets activeAiSuggestion on the section', async () => {

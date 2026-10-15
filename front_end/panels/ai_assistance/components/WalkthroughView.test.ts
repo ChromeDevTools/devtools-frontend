@@ -327,8 +327,6 @@ describeWithEnvironment('WalkthroughView', () => {
     sinon.assert.calledWithMatch(scrollIntoViewSpy, {behavior: 'smooth', block: 'end'});
     // Verify it was called on the last element
     sinon.assert.calledOn(scrollIntoViewSpy, lastStep);
-
-    scrollIntoViewSpy.restore();
   });
 
   it('does not call scrollIntoView on the last step when it is not loading', async () => {
@@ -356,8 +354,6 @@ describeWithEnvironment('WalkthroughView', () => {
 
     // Verify it was NOT called
     sinon.assert.notCalled(scrollIntoViewSpy);
-
-    scrollIntoViewSpy.restore();
   });
 
   describe('walkthrough titles', () => {

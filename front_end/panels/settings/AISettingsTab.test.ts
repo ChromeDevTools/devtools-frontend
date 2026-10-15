@@ -258,11 +258,10 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('updates disabled reason', async () => {
-    const isAvailableStub =
-        sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
-          status: Common.Settings.SettingAvailability.DISABLED,
-          reason: [AiAssistanceModel.AiUtils.DisabledReason.WRONG_LOCALE],
-        });
+    sinon.stub(AiAssistanceModel.AiUtils.aiAssistanceEnabledSettingDescriptor, 'isAvailable').returns({
+      status: Common.Settings.SettingAvailability.DISABLED,
+      reason: [AiAssistanceModel.AiUtils.DisabledReason.WRONG_LOCALE],
+    });
 
     const {view} = await setupWidget();
 
@@ -270,7 +269,6 @@ describeWithEnvironment('AISettingsTab', () => {
       'To use this feature, set your language preference to English in DevTools settings' as
           Platform.UIString.LocalizedString,
     ]);
-    isAvailableStub.restore();
   });
 
   it('can turn feature off and clear history', async () => {

@@ -331,8 +331,7 @@ describe('StorageMetadataView', () => {
     sinon.assert.calledOnce(revealStub);
     const revealArg = revealStub.firstCall.args[0];
     assert.instanceOf(revealArg, ApplicationComponents.StorageMetadataView.StorageBucketRevealInfo);
-    assert.deepEqual(
-        (revealArg as ApplicationComponents.StorageMetadataView.StorageBucketRevealInfo).bucketInfo, bucketInfo);
-    revealStub.restore();
+    assert.deepEqual((revealArg as ApplicationComponents.StorageMetadataView.StorageBucketRevealInfo).bucketInfo,
+                     bucketInfo);
   });
 });

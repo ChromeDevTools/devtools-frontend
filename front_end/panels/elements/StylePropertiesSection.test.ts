@@ -860,7 +860,6 @@ describeWithEnvironment('StylesPropertySection', () => {
 
     selectorHeader.dispatchEvent(new MouseEvent('mouseleave'));
     sinon.assert.called(hideStub);
-    clock.restore();
   });
 
   it('triggers node overlay highlight with resolved :is(...) selector when hovering nested section selector',
@@ -930,8 +929,6 @@ describeWithEnvironment('StylesPropertySection', () => {
        selectorElement.dispatchEvent(new MouseEvent('mouseenter'));
        clock.tick(300);
        sinon.assert.calledWith(highlightSpy, {node, selectorList: ':is(.card) .title'}, 'all');
-
-       clock.restore();
      });
 
   it('highlights rule selectors in overlay when hovering selector container', async () => {

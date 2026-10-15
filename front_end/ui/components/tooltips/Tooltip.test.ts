@@ -218,7 +218,6 @@ describe('Tooltip', () => {
 
     clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
   });
 
   it('should not be activated if un-focused', async () => {
@@ -246,7 +245,6 @@ describe('Tooltip', () => {
 
     clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
   });
 
   it('should not open on focus if `trigger` is set to `click`', () => {
@@ -258,7 +256,6 @@ describe('Tooltip', () => {
 
     clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
   });
 
   it('should open with click if `trigger` is set to `click`', () => {
@@ -279,7 +276,6 @@ describe('Tooltip', () => {
 
     clock.runAll();
     assert.isTrue(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
   });
 
   it('should open on focus if `trigger` is set to `both`', () => {
@@ -291,7 +287,6 @@ describe('Tooltip', () => {
 
     clock.runAll();
     assert.isTrue(container.querySelector('devtools-tooltip')?.open);
-    clock.restore();
   });
 
   it('should open with click if `trigger` is set to `both`', () => {

@@ -1954,7 +1954,7 @@ describeWithEnvironment('ChatMessage', () => {
       const revealError = new Error(
           'Node can’t be found in the current page',
       );
-      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').rejects(revealError);
+      sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').rejects(revealError);
       const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
 
       revealBtn.click();
@@ -1965,9 +1965,6 @@ describeWithEnvironment('ChatMessage', () => {
       sinon.assert.calledOnceWithExactly(snackbarShowStub, {
         message: 'Node can’t be found in the current page',
       });
-
-      revealStub.restore();
-      snackbarShowStub.restore();
     });
     it('renders NETWORK_TRACK widget with correct header and widget element', async () => {
       const parsedTrace = getBaseTraceHandlerData();
@@ -2088,7 +2085,6 @@ describeWithEnvironment('ChatMessage', () => {
       const [revealedObject] = revealStub.getCall(0).args;
       assert.instanceOf(revealedObject, Lighthouse.LighthousePanel.ActiveLighthouseReport);
       assert.strictEqual((revealedObject as Lighthouse.LighthousePanel.ActiveLighthouseReport).report, mockReport);
-      revealStub.restore();
     });
 
     it('does not render empty step-widgets-wrapper when step widgets return nothing', async () => {

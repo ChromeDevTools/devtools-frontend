@@ -277,7 +277,7 @@ describe('InspectorDrawerView', () => {
 
     it('clicking drawer console tab does not expand when main console tab is active', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
-      const selectedTabIdStub = sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
+      sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
       assert.isTrue(inspectorView.isDrawerMinimized());
@@ -296,12 +296,11 @@ describe('InspectorDrawerView', () => {
       });
 
       assert.isTrue(inspectorView.isDrawerMinimized());
-      selectedTabIdStub.restore();
     });
 
     it('clicking drawer console tab minimizes when main console tab is active and drawer is expanded', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
-      const selectedTabIdStub = sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
+      sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       assert.isFalse(inspectorView.isDrawerMinimized());
 
@@ -319,15 +318,14 @@ describe('InspectorDrawerView', () => {
       });
 
       assert.isTrue(inspectorView.isDrawerMinimized());
-      selectedTabIdStub.restore();
     });
 
     it('clicking expand drawer button does not expand when main console tab is active', () => {
       const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
-      const selectedTabIdStub = sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
+      sinon.stub(inspectorView.tabbedPane, 'selectedTabId').get(() => 'console');
       const drawerTabbedPane =
           (inspectorView as unknown as {drawerTabbedPane: LegacyUI.TabbedPane.TabbedPane}).drawerTabbedPane;
-      const drawerSelectedTabIdStub = sinon.stub(drawerTabbedPane, 'selectedTabId').get(() => 'console-view');
+      sinon.stub(drawerTabbedPane, 'selectedTabId').get(() => 'console-view');
       inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
       inspectorView.setDrawerMinimized(true);
       assert.isTrue(inspectorView.isDrawerMinimized());
@@ -340,8 +338,6 @@ describe('InspectorDrawerView', () => {
       expandButton.click();
 
       assert.isTrue(inspectorView.isDrawerMinimized());
-      drawerSelectedTabIdStub.restore();
-      selectedTabIdStub.restore();
     });
   });
 

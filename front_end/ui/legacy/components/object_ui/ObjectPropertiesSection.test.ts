@@ -264,7 +264,7 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
     assert.exists(rootElement);
     const event = new MouseEvent('contextmenu');
 
-    const showSpy = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     const appendCheckboxItemSpy = sinon.spy(UI.ContextMenu.Section.prototype, 'appendCheckboxItem');
 
     rootElement.dispatchEvent(event);
@@ -278,9 +278,6 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
     const showAllItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Show all');
     assert.exists(showAllItem);
     assert.isTrue(showAllItem[2]?.checked);
-
-    showSpy.restore();
-    appendCheckboxItemSpy.restore();
   });
 
   describe('getMemoryIcon', () => {

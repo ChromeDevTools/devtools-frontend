@@ -125,7 +125,6 @@ describeWithEnvironment('ConsolePinPane', () => {
       await pasteIntoLiveExpression(consolePinPane);
       const dialogContainer = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
       assert.isNull(dialogContainer);
-      stub.restore();
     });
   });
 });

@@ -413,8 +413,6 @@ describeWithEnvironment('DeviceBoundSessionsView', () => {
     sinon.assert.notCalled(deselectSpy);
     Application.DeviceBoundSessionsView.DEFAULT_VIEW(viewInput, {}, targetWidget.contentElement);
     sinon.assert.calledOnce(deselectSpy);
-
-    deselectSpy.restore();
   });
 
   it('renders session correctly', async () => {

@@ -2975,7 +2975,6 @@ describe('InterceptedRequest', () => {
     assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
     assert.strictEqual((contentData as TextUtils.ContentData.ContentData).text, 'Hello World!');
     sinon.assert.notCalled(requestContentDataSpy);
-    requestContentDataSpy.restore();
   });
 
   it('preserves overridden content data across cross-origin navigation with preserve-log on', async () => {
@@ -3009,7 +3008,6 @@ describe('InterceptedRequest', () => {
     assert.isFalse(TextUtils.ContentData.ContentData.isError(contentData));
     assert.strictEqual((contentData as TextUtils.ContentData.ContentData).text, 'Hello World!');
     sinon.assert.notCalled(requestContentDataSpy);
-    requestContentDataSpy.restore();
   });
 
   it('populates content data on networkRequest when continueRequestWithContent is called with overridden body',

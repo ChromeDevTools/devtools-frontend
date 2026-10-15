@@ -92,7 +92,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('shows opt-in teaser when setting is disabled via isAvailable', async () => {
-    const stub = sinon.stub(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, 'isAvailable').returns({
+    sinon.stub(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, 'isAvailable').returns({
       status: Common.Settings.SettingAvailability.DISABLED,
       reason: [AiAssistanceModel.AiUtils.DisabledReason.POLICY_RESTRICTED],
     });
@@ -105,7 +105,6 @@ describeWithEnvironment('ConsoleInsight', () => {
     const nextInput = await view.nextInput;
 
     assert.strictEqual(nextInput.state.type, Explain.State.SETTING_IS_NOT_TRUE);
-    stub.restore();
   });
 
   it('shows reminder on first run of console insights', async () => {

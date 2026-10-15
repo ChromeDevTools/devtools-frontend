@@ -75,7 +75,6 @@ describeWithEnvironment('AiCodeGenerationTeaser', () => {
     clock.tick(1100);
 
     assert.strictEqual(timerCallCount, setTimerText.callCount);
-    clock.restore();
   });
 
   it('disclaimerTextVariant is updated', async () => {

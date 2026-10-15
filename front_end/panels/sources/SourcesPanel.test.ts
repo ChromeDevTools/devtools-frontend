@@ -188,7 +188,6 @@ describeWithEnvironment('SourcesPanel', () => {
       'Debugger sidebar hidden',
       'Debugger sidebar shown',
     ]);
-    alertSpy.restore();
   });
 
   describe('handleBeforeUnload', () => {

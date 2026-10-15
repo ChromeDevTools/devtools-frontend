@@ -21,7 +21,6 @@ describe('fetchAndRegisterLocaleData', () => {
   });
 
   afterEach(() => {
-    fetchStub.restore();
     i18n.i18n.resetLocaleDataForTest();
   });
 

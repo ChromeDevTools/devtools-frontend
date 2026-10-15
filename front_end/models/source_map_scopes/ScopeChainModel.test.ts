@@ -29,7 +29,6 @@ describe('ScopeChainModel', () => {
   });
 
   afterEach(async () => {
-    clock.restore();
     await deinitializeGlobalVars();
   });
 

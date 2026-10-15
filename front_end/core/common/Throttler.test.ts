@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from './common.js';
@@ -24,11 +24,6 @@ describe('Throttler class', () => {
     // With mock time, current time is also 0 initially. Advance the clock
     // to get more realistic initial state.
     await ensureNoRecentRun();
-  });
-
-  afterEach(() => {
-    clock.restore();
-    consoleStub.restore();
   });
 
   function ensureNoRecentRun() {

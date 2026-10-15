@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -100,14 +100,12 @@ describeWithEnvironment('OriginMap', () => {
   let cruxManager: CrUXManager.CrUXManager;
   let targetManager: SDK.TargetManager.TargetManager;
   let mockFieldData: CrUXManager.PageResult;
-  let getFieldDataStub: sinon.SinonStub;
-  let mockInspectedURL: sinon.SinonStub;
 
   beforeEach(async () => {
     cruxManager = CrUXManager.CrUXManager.instance({forceNew: true});
     targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
-    getFieldDataStub = sinon.stub(cruxManager, 'getFieldDataForPage').callsFake(async () => mockFieldData);
-    mockInspectedURL = sinon.stub(targetManager, 'inspectedURL').returns('http://localhost:8080');
+    sinon.stub(cruxManager, 'getFieldDataForPage').callsFake(async () => mockFieldData);
+    sinon.stub(targetManager, 'inspectedURL').returns('http://localhost:8080');
 
     mockFieldData = {
       'origin-ALL': mockResponse(),
@@ -123,11 +121,6 @@ describeWithEnvironment('OriginMap', () => {
     };
 
     cruxManager.getConfigSetting().set({enabled: true, override: ''});
-  });
-
-  afterEach(async () => {
-    getFieldDataStub.restore();
-    mockInspectedURL.restore();
   });
 
   it('should show mappings from setting', async () => {

@@ -20,15 +20,13 @@ describeWithEnvironment('DeviceBoundSessionsView', () => {
   const mockSessionId = 'session-id-123';
   const mockSite = 'https://example.com';
 
-  let toLocaleStringStub: sinon.SinonStub;
   beforeEach(async () => {
     const original = Date.prototype.toLocaleString;
-    toLocaleStringStub = sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
+    sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
       return original.call(this, 'en-US', {timeZone: 'UTC'});
     });
   });
   afterEach(async () => {
-    toLocaleStringStub.restore();
     cleanTestDOM();
     await raf();
   });

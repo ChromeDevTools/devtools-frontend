@@ -124,10 +124,6 @@ describeWithEnvironment('DeviceModeToolbar', () => {
       renderSpy.resetHistory();
     });
 
-    afterEach(() => {
-      renderSpy.restore();
-    });
-
     it('updates UI when scale changes', async () => {
       deviceModeModel.scaleSetting().set(1.5);
       await toolbar.updateComplete;

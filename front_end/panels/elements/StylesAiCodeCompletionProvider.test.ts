@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -81,10 +81,6 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
     sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'aidaAvailability')
         .get(() => Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
-  });
-
-  afterEach(() => {
-    clock.restore();
   });
 
   it('does not create a provider when the feature is disabled', () => {

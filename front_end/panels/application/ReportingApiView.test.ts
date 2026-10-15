@@ -227,7 +227,6 @@ describeWithEnvironment('ReportingApiView', () => {
 
   describe('view', () => {
     let target!: HTMLElement;
-    let stub: sinon.SinonStub;
 
     beforeEach(async () => {
       Root.Runtime.experiments.register({
@@ -239,7 +238,7 @@ describeWithEnvironment('ReportingApiView', () => {
       });
 
       const original = Date.prototype.toLocaleString;
-      stub = sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
+      sinon.stub(Date.prototype, 'toLocaleString').callsFake(function(this: Date) {
         return original.call(this, 'en-US', {timeZone: 'UTC'});
       });
 
@@ -255,7 +254,6 @@ describeWithEnvironment('ReportingApiView', () => {
     });
 
     afterEach(async () => {
-      stub.restore();
       cleanTestDOM();
       await raf();
     });

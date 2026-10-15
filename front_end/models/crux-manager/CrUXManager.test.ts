@@ -132,8 +132,6 @@ describe('CrUXManager', () => {
     });
 
     afterEach(() => {
-      mockFetch?.restore();
-      mockConsoleError?.restore();
       cruxManager?.getConfigSetting().set({enabled: false});
     });
 
@@ -380,7 +378,6 @@ describe('CrUXManager', () => {
     });
 
     afterEach(() => {
-      getFieldDataMock.restore();
       cruxManager?.getConfigSetting().set({enabled: false});
     });
 
@@ -569,7 +566,6 @@ describe('CrUXManager', () => {
     });
 
     afterEach(() => {
-      getFieldDataMock.restore();
       cruxManager?.getConfigSetting().set({enabled: false});
     });
 

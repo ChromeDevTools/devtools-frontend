@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
@@ -25,10 +25,6 @@ describe('DOMBreakpointsSidebarPane', () => {
 
   beforeEach(() => {
     linkifierStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify');
-  });
-
-  afterEach(() => {
-    linkifierStub.restore();
   });
 
   it('renders correctly with no breakpoints (Sources)', async () => {

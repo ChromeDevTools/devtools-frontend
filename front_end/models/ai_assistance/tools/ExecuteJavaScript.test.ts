@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Root from '../../../core/root/root.js';
@@ -234,10 +234,6 @@ describe('ExecuteJavaScriptTool', () => {
     let clock: sinon.SinonFakeTimers;
     beforeEach(() => {
       clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
-    });
-
-    afterEach(() => {
-      clock.restore();
     });
 
     it('clears the timeout after execution completes', async () => {

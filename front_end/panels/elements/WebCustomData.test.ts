@@ -27,7 +27,6 @@ describe('WebCustomData', () => {
 
   afterEach(() => {
     fetchResolve({});  // Resolve for our pending promise detection.
-    fetchStub.restore();
   });
 
   describe('findCssProperty', () => {

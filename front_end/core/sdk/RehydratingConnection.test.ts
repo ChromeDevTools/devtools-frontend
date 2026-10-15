@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, afterEach, before, beforeEach, describe, it} from 'mocha';
+import {after, before, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Protocol from '../../generated/protocol.js';
@@ -364,20 +364,13 @@ describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
 
   let queryParamStub: sinon.SinonStub;
   let fetchStub: sinon.SinonStub;
-  let revealStub: sinon.SinonStub;
 
   beforeEach(() => {
     queryParamStub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
     queryParamStub.callThrough();
 
     fetchStub = sinon.stub(globalThis, 'fetch');
-    revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
-  });
-
-  afterEach(() => {
-    queryParamStub.restore();
-    fetchStub.restore();
-    revealStub.restore();
+    sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
   });
 
   function respondWith(trace: object): void {

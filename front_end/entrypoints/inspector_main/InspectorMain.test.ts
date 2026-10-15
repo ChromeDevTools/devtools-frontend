@@ -40,7 +40,6 @@ describeWithEnvironment('FocusDebuggeeActionDelegate', () => {
 describeWithEnvironment('InspectorMainImpl', () => {
   const DEBUGGER_ID = 'debuggerId' as Protocol.Runtime.UniqueDebuggerId;
   let connection: MockCDPConnection;
-  let createTargetStub: sinon.SinonStub;
 
   const runForTabTarget = async () => {
     const inspectorMain = new InspectorMain.InspectorMain.InspectorMainImpl();
@@ -57,17 +56,15 @@ describeWithEnvironment('InspectorMainImpl', () => {
     sinon.stub(ProtocolClient.ConnectionTransport.ConnectionTransport, 'setFactory');
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const originalCreateTarget = targetManager.createTarget;
-    createTargetStub =
-        sinon.stub(targetManager, 'createTarget')
-            .callsFake((id, name, type, parentTarget, sessionId, waitForDebuggerInPage, conn, targetInfo) => {
-              return originalCreateTarget.call(targetManager, id, name, type, parentTarget, sessionId,
-                                               waitForDebuggerInPage, conn || connection, targetInfo);
-            });
+    sinon.stub(targetManager, 'createTarget')
+        .callsFake((id, name, type, parentTarget, sessionId, waitForDebuggerInPage, conn, targetInfo) => {
+          return originalCreateTarget.call(targetManager, id, name, type, parentTarget, sessionId,
+                                           waitForDebuggerInPage, conn || connection, targetInfo);
+        });
   });
 
   afterEach(() => {
     SDK.TargetManager.TargetManager.removeInstance();
-    createTargetStub.restore();
   });
 
   it('continues only after primary page target is available', async () => {

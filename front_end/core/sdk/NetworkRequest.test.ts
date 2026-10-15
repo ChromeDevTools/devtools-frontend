@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
@@ -263,7 +263,6 @@ describe('NetworkRequest (MockConnection)', () => {
   setupLocaleHooks();
   setupSettingsHooks();
   setupRuntimeHooks();
-  let networkManagerForRequestStub: sinon.SinonStub;
   let cookie: SDK.Cookie.Cookie;
   let addBlockedCookieSpy: sinon.SinonSpy;
   let target: SDK.Target.Target;
@@ -277,13 +276,9 @@ describe('NetworkRequest (MockConnection)', () => {
     target = universe.createTarget({connection});
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
-    networkManagerForRequestStub = sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
+    sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
     cookie = new SDK.Cookie.Cookie('name', 'value');
     addBlockedCookieSpy = sinon.spy(SDK.CookieModel.CookieModel.prototype, 'addBlockedCookie');
-  });
-
-  afterEach(() => {
-    networkManagerForRequestStub.restore();
   });
 
   it('adds blocked response cookies to - and removes exempted cookies from cookieModel', async () => {

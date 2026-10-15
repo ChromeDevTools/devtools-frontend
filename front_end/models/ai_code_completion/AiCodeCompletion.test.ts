@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
@@ -27,10 +27,8 @@ describe('AiCodeCompletion', () => {
   setupLocaleHooks();
   setupRuntimeHooks();
 
-  let clock: sinon.SinonFakeTimers;
-
   beforeEach(() => {
-    clock = sinon.useFakeTimers();
+    sinon.useFakeTimers();
     updateHostConfig({
       devToolsAiCodeCompletion: {
         enabled: true,
@@ -39,10 +37,6 @@ describe('AiCodeCompletion', () => {
         userTier: 'BETA',
       },
     });
-  });
-
-  afterEach(() => {
-    clock.restore();
   });
 
   it('builds a request and calls the AIDA client on text changed', async () => {

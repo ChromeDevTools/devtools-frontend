@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
@@ -206,7 +206,6 @@ describeWithEnvironment('LighthouseProtocolService', () => {
     let connectionSend: sinon.SinonStub;
     let workerPostMessage: sinon.SinonStub;
     let mockWorker: Worker;
-    let workerStub: sinon.SinonStub;
     let service: LighthouseModule.LighthouseProtocolService.ProtocolService;
 
     function workerSend(payload: {id: number, method: string, params?: object, sessionId?: string}): void {
@@ -240,7 +239,7 @@ describeWithEnvironment('LighthouseProtocolService', () => {
       workerPostMessage = sinon.stub();
       mockWorker.postMessage = workerPostMessage as unknown as typeof mockWorker.postMessage;
       mockWorker.terminate = sinon.stub() as unknown as typeof mockWorker.terminate;
-      workerStub = sinon.stub(globalThis, 'Worker').returns(mockWorker);
+      sinon.stub(globalThis, 'Worker').returns(mockWorker);
 
       const router = rootTarget.router();
       assert.exists(router);
@@ -258,10 +257,6 @@ describeWithEnvironment('LighthouseProtocolService', () => {
       mockWorker.dispatchEvent(new MessageEvent('message', {data: 'workerReady'}));
       await workerReady;
       workerPostMessage.resetHistory();
-    });
-
-    afterEach(() => {
-      workerStub.restore();
     });
 
     it('only relays worker commands targeting sessions created for the run', () => {

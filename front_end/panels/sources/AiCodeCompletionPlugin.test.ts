@@ -94,7 +94,6 @@ describeWithEnvironment('AiCodeCompletionPlugin', () => {
 
     afterEach(async () => {
       await clock.runAllAsync();
-      clock.restore();
     });
 
     function setupPlugin() {

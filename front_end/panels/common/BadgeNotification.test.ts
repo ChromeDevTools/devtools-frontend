@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -211,10 +211,6 @@ describeWithEnvironment('BadgeNotification', () => {
     let clock: sinon.SinonFakeTimers;
     beforeEach(() => {
       clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
-    });
-
-    afterEach(() => {
-      clock.restore();
     });
 
     it('a starter badge notification calls `snoozeStarterBadge`', async () => {

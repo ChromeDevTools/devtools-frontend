@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
@@ -21,10 +21,6 @@ describeWithEnvironment('CodeBlock', () => {
 
   beforeEach(() => {
     clock = sinon.useFakeTimers();
-  });
-
-  afterEach(() => {
-    clock.restore();
   });
 
   it('copies the code to clipboard', async () => {

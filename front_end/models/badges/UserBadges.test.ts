@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Common from '../../core/common/common.js';
@@ -168,10 +168,6 @@ describe('UserBadges', () => {
     Object.assign(Badges.UserBadges.BADGE_REGISTRY, MOCK_BADGE_REGISTRY);
     inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     universe = new TestUniverse({inspectorFrontendHost});
-  });
-
-  afterEach(() => {
-    clock.restore();
   });
 
   it('should dispatch a badge triggered event when a badge is triggered for the first time', async () => {

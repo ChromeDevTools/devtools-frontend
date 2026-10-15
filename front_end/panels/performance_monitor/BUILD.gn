@@ -64,5 +64,6 @@ devtools_ui_module("unittests") {
     "../../core/common:bundle",
     "../../core/sdk:bundle",
     "../../testing",
+    "../../ui/legacy/theme_support:bundle",
   ]
 }

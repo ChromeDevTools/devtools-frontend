@@ -12,6 +12,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as PerformanceMonitor from './performance_monitor.js';
 
@@ -91,6 +92,47 @@ describeWithEnvironment('PerformanceMonitor', () => {
     onMetricChanged(chartToActivate, false);
     const {height: heightAfterDeactivation} = await view.nextInput;
     assert.strictEqual(heightAfterDeactivation, initialHeight);
+  });
+
+  // Returns how often a theme change makes the performance monitor request an update.
+  function countUpdatesOnThemeChange(): number {
+    const requestUpdate = sinon.spy(performanceMonitor, 'requestUpdate');
+    ThemeSupport.ThemeSupport.instance().dispatchEvent(new ThemeSupport.ThemeChangeEvent());
+    requestUpdate.restore();
+    return requestUpdate.callCount;
+  }
+
+  it('only handles theme changes while shown', () => {
+    const view = createViewFunctionStub(PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl);
+    performanceMonitor = new PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl(0, view);
+
+    for (let i = 0; i < 3; ++i) {
+      renderElementIntoDOM(performanceMonitor);
+      assert.strictEqual(countUpdatesOnThemeChange(), 1);
+
+      performanceMonitor.detach();
+      assert.strictEqual(countUpdatesOnThemeChange(), 0);
+    }
+  });
+
+  it('only handles theme changes while it has a model', () => {
+    const view = createViewFunctionStub(PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl);
+    performanceMonitor = new PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl(0, view);
+    renderElementIntoDOM(performanceMonitor);
+    assert.strictEqual(countUpdatesOnThemeChange(), 1);
+
+    // Removing the model while shown makes the monitor call its own `willHide()`.
+    const tabTarget = target.parentTarget();
+    assert.exists(tabTarget);
+    target.dispose('test');
+    assert.strictEqual(countUpdatesOnThemeChange(), 0);
+
+    // Adding a model while shown makes the monitor call its own `wasShown()`.
+    target = createTarget({parentTarget: tabTarget});
+    assert.strictEqual(countUpdatesOnThemeChange(), 1);
+
+    performanceMonitor.detach();
+    assert.strictEqual(countUpdatesOnThemeChange(), 0);
   });
 });
 

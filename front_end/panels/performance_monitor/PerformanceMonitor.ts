@@ -154,6 +154,13 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox<ShadowRoot> implement
     this.recalcChartHeight();
   }
 
+  readonly #onThemeChange = (): void => {
+    // instantiateMetricData sets the colors for the metrics, which we need
+    // to re-evaluate when the theme changes before re-drawing the canvas.
+    this.chartInfos = this.createChartInfos();
+    this.requestUpdate();
+  };
+
   override wasShown(): void {
     super.wasShown();
     if (!this.model) {
@@ -161,12 +168,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox<ShadowRoot> implement
     }
     this.chartInfos = this.createChartInfos();
     const themeSupport = ThemeSupport.ThemeSupport.instance();
-    themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-      // instantiateMetricData sets the colors for the metrics, which we need
-      // to re-evaluate when the theme changes before re-drawing the canvas.
-      this.chartInfos = this.createChartInfos();
-      this.requestUpdate();
-    });
+    themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
     void this.model.enable();
@@ -179,6 +181,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox<ShadowRoot> implement
     if (!this.model) {
       return;
     }
+    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                             this.#onThemeChange);
     SDK.TargetManager.TargetManager.instance().removeEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.suspendStateChanged, this);
     this.stopPolling();

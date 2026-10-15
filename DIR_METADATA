@@ -23,7 +23,8 @@ agentic_review: {
     path_expression_exclusion: [".*\\.test\\.ts"]
     review_capability_skills: [
       ".agents/skills/ui-widgets/SKILL.md",
-      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md"
+      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md",
+      ".agents/skills/review-ui-widgets/SKILL.md"
     ]
   }
   capability_groups: {

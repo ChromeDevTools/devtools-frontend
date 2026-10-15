@@ -34,15 +34,17 @@ Load the skill that matches what the diff touches, and apply its rules:
 | :--- | :--- |
 | Any `import` statement, or a new cross-module dependency | `devtools-imports` |
 | `UI.Widget`, lit-html views, components, CSS | `ui-widgets` |
+| Reviewing UI and widgets (`front_end/(panels|ui)/**/*.{ts,css}`) | `review-ui-widgets` |
 | Migration of legacy imperative DOM to widgets or Lit | `ui-eng-vision-orchestrator` (and its sub-skills) |
 | New or changed tests: choosing unit, API, or E2E | `devtools-testing-guidance` |
-| Reviewing tests (`*.test.ts`, `test/`, `front_end/testing/`) | `review-tests` |
+| Reviewing tests (`*.test.ts`, `test/**`, `front_end/testing/**`) | `review-tests` |
 | Tests that use `describeWithEnvironment` or `describeWithMockConnection`, or foundation modules | `foundation-test-migration` |
 | Ported Chromium web tests (`web_tests/http/tests/devtools`) | `migrate-chromium-test` |
 | Flaky or disabled tests, or `it.skip` / `it.skipOnPlatforms` | `fix-tests` |
 | `UIStrings` / user-facing text | `devtools-ux-writing-refactor` |
 | Rendering user-controlled strings (URLs, names, console text) | `devtools-unicode-escaping` |
 | `front_end/models/*`, `BUILD.gn`, `devtools_grd_files.gni`, entrypoints | `devtools-model-management` |
+| Reviewing foundation, models, and build configs (`front_end/(core|models|entrypoints|generated)/**`, `BUILD.gn`, `*.gni`) | `review-models-core` |
 | Merging modules or consolidating `BUILD.gn` | `merging-devtools-module` |
 | `Settings` registrations and descriptors | `devtools-setting-migration` |
 | Stack traces, source maps, `DebuggerWorkspaceBinding` | `devtools-source-maps` |

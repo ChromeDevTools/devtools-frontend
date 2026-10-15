@@ -12,10 +12,10 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 
 ## Path group `ui-and-widgets` (17 rules)
 
-### `UI_MODERN_COMPONENT_AND_ENCAPSULATION_STANDARDS`: Use modern DevTools UI primitives (`devtools-button`, `devtools-data-grid`, `devtools-icon`), #private fields, and side-effect imports
+### `UI_MODERN_COMPONENT_AND_ENCAPSULATION_STANDARDS`: Use modern DevTools UI primitives (`devtools-button`, `devtools-data-grid`, `devtools-icon`), #private fields, and module entrypoint imports
 - **Severity**: WARNING
-- **Why**: Legacy `UI.Fragment`, `DataGridImpl`, `LitElement`, `new Icon()`, and TypeScript `private` fields are superseded by standard `<devtools-*>` custom elements (with bare side-effect imports so custom tags register at runtime) and ECMAScript `#private` fields.
-- **Look for**: `UI.Fragment.build`, legacy `DataGridImpl`, `extends LitElement`, `private ` keyword instead of `#` in new UI classes, or `<devtools-*>` tags in Lit templates without a matching `import '.../bundle.js'` side-effect import.
+- **Why**: Legacy `UI.Fragment`, `DataGridImpl`, `LitElement`, `new Icon()`, and TypeScript `private` fields are superseded by standard `<devtools-*>` custom elements (imported via module entrypoints such as `import * as Buttons from '../../ui/components/buttons/buttons.js'` so custom tags register at runtime) and ECMAScript `#private` fields.
+- **Look for**: `UI.Fragment.build`, legacy `DataGridImpl`, `extends LitElement`, `private ` keyword instead of `#` in new UI classes, or `<devtools-*>` tags in Lit templates without importing the corresponding component module entrypoint (e.g. `import * as Buttons from '../../ui/components/buttons/buttons.js'`).
 - **Do not flag**: Overriding inherited `protected` lifecycle methods on framework base classes (e.g. extending `UI.Widget.Widget`).
 
 ### `UI_TYPE_SAFETY_AND_EXHAUSTIVENESS`: Model multi-state UI workflows with discriminated unions, Platform.assertNever exhaustiveness checks, and strict domain types
@@ -90,11 +90,11 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Look for**: Panel-level `UI.Widget` views placed inside `panels/<panel>/components/`, internal state flags registered with user-facing titles in `*-meta.ts`, or `loadView` callbacks calling `.instance()` instead of using the passed `Universe` context.
 - **Do not flag**: Standalone reusable leaf components inside `components/` or genuine user-configurable preferences.
 
-### `UI_WEAK_DOM_REFERENCES_AND_OBSERVER_CLEANUP`: Store DOM node metadata in instance-scoped WeakMap or WeakRef collections and clean up observers when elements detach
+### `UI_WEAK_DOM_REFERENCES_AND_OBSERVER_CLEANUP`: Store DOM node metadata in WeakMap or WeakRef collections and clean up observers when elements detach
 - **Severity**: WARNING
-- **Why**: Retaining DOM `Element` or `SDK.Target` references in strong `Map`/`Set` collections or module-level globals prevents detached DOM trees from being garbage-collected, while leaving `ResizeObserver`, `MutationObserver`, or `Lit.Directives.ref` callbacks active after unmount leaks memory.
-- **Look for**: `Map<Element, ...>` or module-level `WeakMap` globals holding DOM/model associations, `ResizeObserver`/`IntersectionObserver` without `.unobserve()`/`.disconnect()` on teardown, or `ref(el => ...)` callbacks that do not handle `el === undefined`.
-- **Do not flag**: Short-lived local maps created and discarded within a single synchronous function call.
+- **Why**: Retaining DOM `Element` or `SDK.Target` references in strong `Map`/`Set` collections (or in `WeakMap` values that hold strong references back to their keys) prevents detached DOM trees from being garbage-collected, while leaving `ResizeObserver`, `MutationObserver`, or `Lit.Directives.ref` callbacks active after unmount leaks memory.
+- **Look for**: Strong `Map<Element, ...>` / `Set<Element>` collections holding DOM/model associations, `WeakMap` values retaining strong references back to their DOM keys, `ResizeObserver`/`IntersectionObserver` without `.unobserve()`/`.disconnect()` on teardown, or `ref(el => ...)` callbacks that do not handle `el === undefined`.
+- **Do not flag**: Module-level `WeakMap<Element, ...>` globals whose values do not strongly reference the key, or short-lived local maps created and discarded within a single synchronous function call.
 
 ### `UI_SECURITY_AND_OUTPUT_SANITIZATION`: Sanitize untrusted strings, URLs, CSS selectors, and Markdown exports before rendering or exporting
 - **Severity**: ERROR
@@ -105,7 +105,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 ### `UI_DECLARATIVE_CHILD_WIDGET_COMPOSITION`: Compose child UI.Widget instances declaratively in Lit templates using the widget() directive instead of imperative show() calls
 - **Severity**: WARNING
 - **Why**: Imperatively instantiating child widgets and calling `child.show(container)` inside presenters or views bypasses Lit reconciliation, complicates lifecycle management, and recreates widgets unnecessarily across renders.
-- **Look for**: `new ChildWidget()` followed by `.show(...)` or `.appendChild(child.element)` inside Lit view functions or migrated `performUpdate()` methods instead of `widget(ChildWidget, {...})`.
+- **Look for**: `new ChildWidget()` followed by `.show(...)` or `.appendChild(child.element)` inside Lit view functions or migrated `performUpdate()` methods instead of `<devtools-widget ${widget(ChildWidget, {...})}></devtools-widget>` (or `${widget(ChildWidget, {...})}`).
 - **Do not flag**: Top-level legacy split widgets or tabbed panes that have not migrated to Lit views.
 
 ### `UI_AWAIT_UPDATE_COMPLETE_POST_RENDER`: Await this.updateComplete before executing post-render DOM measurements, focus changes, or scroll adjustments

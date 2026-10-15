@@ -69,6 +69,8 @@ enum SpecificPseudoStates {
   AUTOFILL = 'autofill',
   OPEN = 'open',
   TARGET_CURRENT = 'target-current',
+  BUFFERING = 'buffering',
+  STALLED = 'stalled',
 }
 
 interface ElementState {
@@ -184,6 +186,8 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     this.#states.set(SpecificPseudoStates.OPEN, {state: SpecificPseudoStates.OPEN, type: 'specific'});
     this.#states.set(
         SpecificPseudoStates.TARGET_CURRENT, {state: SpecificPseudoStates.TARGET_CURRENT, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.BUFFERING, {state: SpecificPseudoStates.BUFFERING, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.STALLED, {state: SpecificPseudoStates.STALLED, type: 'specific'});
 
     setDualStateCheckboxes(SpecificPseudoStates.VALID, SpecificPseudoStates.INVALID);
     setDualStateCheckboxes(SpecificPseudoStates.USER_VALID, SpecificPseudoStates.USER_INVALID);
@@ -399,6 +403,12 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     } else {
       hideSpecificCheckbox(SpecificPseudoStates.TARGET_CURRENT, true);
     }
+
+    // :buffering and :stalled are independent. Forcing :stalled does not force
+    // :buffering, even though a real stalled media element is also buffering.
+    const isMediaElement = isElementOfTypes(node, ['audio', 'video']);
+    hideSpecificCheckbox(SpecificPseudoStates.BUFFERING, !isMediaElement);
+    hideSpecificCheckbox(SpecificPseudoStates.STALLED, !isMediaElement);
   }
 }
 

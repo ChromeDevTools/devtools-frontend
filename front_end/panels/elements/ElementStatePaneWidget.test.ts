@@ -20,10 +20,10 @@ describeWithEnvironment('ElementStatePaneWidget', () => {
   let view: Elements.ElementStatePaneWidget.ElementStatePaneWidget;
 
   const pseudoClasses = [
-    'enabled',       'disabled',          'valid',    'invalid',   'user-valid',
-    'user-invalid',  'required',          'optional', 'read-only', 'read-write',
-    'in-range',      'out-of-range',      'visited',  'link',      'checked',
-    'indeterminate', 'placeholder-shown', 'autofill', 'open',      'target-current',
+    'enabled',  'disabled',       'valid',     'invalid',       'user-valid',        'user-invalid',
+    'required', 'optional',       'read-only', 'read-write',    'in-range',          'out-of-range',
+    'visited',  'link',           'checked',   'indeterminate', 'placeholder-shown', 'autofill',
+    'open',     'target-current', 'buffering', 'stalled',
   ];
 
   beforeEach(() => {
@@ -371,6 +371,17 @@ describeWithEnvironment('ElementStatePaneWidget', () => {
     await assertExpectedPseudoClasses(
         '::scroll-marker',
         ['read-write', 'target-current'],
+    );
+  });
+
+  it('Shows the specific pseudo-classes for audio and video', async () => {
+    await assertExpectedPseudoClasses(
+        'audio',
+        ['read-write', 'buffering', 'stalled'],
+    );
+    await assertExpectedPseudoClasses(
+        'video',
+        ['read-write', 'buffering', 'stalled'],
     );
   });
 

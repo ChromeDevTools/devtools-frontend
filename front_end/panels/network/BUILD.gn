@@ -194,6 +194,7 @@ devtools_ui_module("unittests") {
     "RequestResponseView.test.ts",
     "RequestTimingView.test.ts",
     "ResourceDirectSocketChunkView.test.ts",
+    "ResourceWebSocketFrameView.test.ts",
     "ShowMoreDetailsWidget.test.ts",
   ]
 

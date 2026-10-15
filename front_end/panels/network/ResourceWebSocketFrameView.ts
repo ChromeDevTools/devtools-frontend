@@ -175,6 +175,7 @@ class ResourceFrameNode extends DataGridItem {
       length = i18nString(UIStrings.na);
     } else if (isTextFrame) {
       description = dataText;
+      length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.countWtf8Bytes(frame.text));
     } else if (frame.opCode === OpCodes.BINARY_FRAME) {
       length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();

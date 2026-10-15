@@ -1454,6 +1454,9 @@ type ShadowLengthProperty = ShadowProperty&{
   propertyType: Exclude<ShadowPropertyType, ShadowPropertyType.INSET|ShadowPropertyType.COLOR>,
 };
 
+// A part of a shadow as it is rendered: either text, or a node together with the context to render and read it in.
+type ShadowPart = string|{node: CodeMirror.SyntaxNode, context: RenderingContext};
+
 /**
  * The shadow model is an abstraction over the various shadow properties on the one hand and the order they were defined
  * in on the other, so that modifications through the shadow editor can retain the property order in the authored text.
@@ -1579,26 +1582,48 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     }
   }
 
-  renderContents(span: HTMLSpanElement): void {
-    const parts: Array<string|Lit.LitTemplate> = [];
+  // What the shadow consists of, in the order it is rendered in: the text of properties that were set through the
+  // model, and the nodes of everything else together with the context to render and read them in.
+  #parts(): ShadowPart[] {
+    const parts: ShadowPart[] = [];
     let previousSource = null;
     for (const property of this.#properties) {
       if (!property.source || property.source !== previousSource) {
-        if (property !== this.#properties[0]) {
-          parts.push(' ');
-        }
         // If `source` is present on the property that means it came from a var() and we'll use that to render.
         if (property.source) {
-          parts.push(Renderer.render(property.source, this.#context).nodes);
+          parts.push({node: property.source, context: this.#context});
         } else if (typeof property.value === 'string') {
           parts.push(property.value);
         } else {
-          parts.push(Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
+          parts.push({node: property.value, context: property.expansionContext ?? this.#context});
         }
       }
       previousSource = property.source;
     }
+    return parts;
+  }
+
+  renderContents(span: HTMLSpanElement): void {
+    const parts: Array<string|Lit.LitTemplate> = [];
+    for (const part of this.#parts()) {
+      if (parts.length > 0) {
+        parts.push(' ');
+      }
+      parts.push(typeof part === 'string' ? part : Renderer.render(part.node, part.context).nodes);
+    }
     render(html`${parts}`, span);
+  }
+
+  // The text of the shadow as `renderContents` renders it, including the changes that renderers recorded for its parts.
+  text(): string {
+    const texts = this.#parts().map(part => {
+      if (typeof part === 'string') {
+        return part;
+      }
+      const {node, context} = part;
+      return context.edits?.textRange(node, node) ?? context.ast.text(node);
+    });
+    return texts.join(' ');
   }
 }
 
@@ -1663,14 +1688,18 @@ export class ShadowRenderer extends ShadowRendererBase {
         if (matches.hasUnresolvedSubstitutions(matches.ast.tree)) {
           return null;
         }
+        // Once the var() is replaced with its expansion, the nodes of the expansion are rendered by the renderers, which
+        // record their changes in the tracking of the expansion.
+        const trackedContext =
+            new RenderingContext(computedValueAst, null, context.renderers, matches, undefined, undefined, undefined,
+                                 undefined, new ValueUpdateTracking(computedValueAst));
         queue.unshift(
-            ...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree))
-                .map(matchedNode => ({
-                       value: matchedNode,
-                       source: value,
-                       match: matches.getMatch(matchedNode),
-                       expansionContext: new RenderingContext(computedValueAst, null, context.renderers, matches),
-                     })));
+            ...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree)).map(matchedNode => ({
+                                                                             value: matchedNode,
+                                                                             source: value,
+                                                                             match: matches.getMatch(matchedNode),
+                                                                             expansionContext: trackedContext,
+                                                                           })));
       } else {
         // The length properties must come in one block, so if there were any lengths before, followed by a non-length
         // property, we will not allow any future lengths.
@@ -1704,9 +1733,17 @@ export class ShadowRenderer extends ShadowRendererBase {
   override render(match: SDK.CSSPropertyParserMatchers.ShadowMatch, context: RenderingContext): Lit.LitTemplate {
     const shadows = ASTUtils.split(ASTUtils.siblings(ASTUtils.declValue(match.node)));
     const result: Array<Node|Lit.LitTemplate> = [];
+    // The text of the whole value is put together from the shadows below, so the changes that renderers make to their
+    // parts need to be recorded in a tracking of their own to not be hidden by it.
+    const nestedEdits = new ValueUpdateTracking(context.ast);
+    const nestedContext =
+        new RenderingContext(context.ast, context.property, context.renderers, context.matchedResult,
+                             context.cssControls, context.options, context.tracing, context.signal, nestedEdits);
+    // Reads the text of each shadow when it is needed, since the user can change it with the shadow editor.
+    const texts: Array<() => string> = [];
 
     for (const shadow of shadows) {
-      const model = this.shadowModel(shadow, match.shadowType, context);
+      const model = this.shadowModel(shadow, match.shadowType, nestedContext);
       const isImportant = shadow.find(node => node.name === 'Important');
 
       if (shadow !== shadows[0]) {
@@ -1714,8 +1751,9 @@ export class ShadowRenderer extends ShadowRendererBase {
       }
 
       if (!model || !this.#treeElement?.editable()) {
-        const {nodes} = Renderer.render(shadow, context);
+        const {nodes} = Renderer.render(shadow, nestedContext);
         result.push(nodes);
+        texts.push(() => nestedEdits.textRange(...ASTUtils.range(shadow)));
         continue;
       }
 
@@ -1735,12 +1773,15 @@ export class ShadowRenderer extends ShadowRendererBase {
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       });
       result.push(swatch, contents);
+      texts.push(() =>
+                     isImportant ? `${model.text()} ${nestedEdits.textRange(isImportant, isImportant)}` : model.text());
 
       if (isImportant) {
-        result.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
+        result.push(document.createTextNode(' '), Renderer.render(isImportant, nestedContext).nodes);
       }
     }
 
+    context.recordEdit(match, () => texts.map(text => text()).join(', '));
     return html`${result}`;
   }
 }

@@ -700,10 +700,12 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     }
 
     it('applies the edits of the shadow editor, the hue and the colors of a box-shadow', () => {
+      mockVariableMap['--y-color'] = '2px red';
       // The parts of the value that the edits below replace, in order.
-      const parts = ['10px 11px hsl(120deg, 50%, 25%)', '1px 2px red'];
+      const parts = ['10px 11px hsl(120deg, 50%, 25%)', '1px var(--y-color)'];
       const text = () => `box-shadow: ${parts.join(', ')}`;
-      const {valueElement, edit, commit} = renderEditable('box-shadow', parts.join(', '));
+      // The shadow renderer puts the text of the value together from the shadow editor and the renderers of the parts.
+      const {valueElement, edit, commit} = renderEditable('box-shadow', parts.join(', '), {checkSplicing: true});
       const [first, second] = valueElement.querySelectorAll('css-shadow-swatch');
       assert.exists(first);
       assert.exists(second);
@@ -732,6 +734,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
            () => angle.updateAngle({value: 200, unit: InlineEditor.CSSAngleUtils.AngleUnit.DEG}));
 
       const secondEditor = openShadowEditor(second);
+      // Inserting the blur radius between the y offset and the color of --y-color expands the var().
       parts[1] = '1px 2px 3px red';
       edit('adding a blur radius to the second shadow', text(),
            () => typeIntoShadowEditor(secondEditor, 'blur', '3px'));

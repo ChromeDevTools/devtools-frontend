@@ -114,7 +114,7 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
             label=${group.title}>
             ${group.items.map(condition => html`<option
               ${Directives.ref(option => option && optionsMap.set(option as HTMLOptionElement, condition))}
-              ?selected=${selectedConditions ?
+              .selected=${selectedConditions ?
                   SDK.NetworkManager.networkConditionsEqual(condition, selectedConditions) :
                   (group === input.throttlingGroups[0])}
               value=${title(condition)}
@@ -128,7 +128,7 @@ export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
         <optgroup label=${input.customConditionsGroup.title}>
           ${input.customConditionsGroup.items.map(condition => html`<option
               ${Directives.ref(option => option && optionsMap.set(option as HTMLOptionElement, condition))}
-              ?selected=${selectedConditions && SDK.NetworkManager.networkConditionsEqual(condition, selectedConditions)}
+              .selected=${Boolean(selectedConditions && SDK.NetworkManager.networkConditionsEqual(condition, selectedConditions))}
               value=${title(condition)}
               aria-label=${i18nString(UIStrings.sS, {PH1: input.customConditionsGroup.title, PH2: title(condition)})}
               jslog=${VisualLogging.item('custom-network-throttling-item').track({click: true})}>

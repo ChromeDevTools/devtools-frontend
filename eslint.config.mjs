@@ -668,6 +668,7 @@ export default defineConfig([
       ],
       '@devtools/static-custom-event-names': 'error',
       '@devtools/lit-no-attribute-quotes': 'error',
+      '@devtools/no-boolean-input-checked-attr': 'error',
       '@devtools/lit-template-result-or-nothing': 'error',
       '@devtools/inject-checkbox-styles': 'error',
       '@devtools/jslog-context-list': 'error',

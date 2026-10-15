@@ -404,9 +404,9 @@ export type SaveDataOverrideViewFunction =
 export const DEFAULT_SAVE_DATA_VIEW: SaveDataOverrideViewFunction = (input, _output, target) => {
   // clang-format off
   render(html`
-    <option value=${SDK.EmulationModel.DataSaverOverride.UNSET} ?selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.UNSET}>${i18nString(UIStrings.noSaveDataOverride)}</option>
-    <option value=${SDK.EmulationModel.DataSaverOverride.ENABLED} ?selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.ENABLED}>${i18nString(UIStrings.saveDataOn)}</option>
-    <option value=${SDK.EmulationModel.DataSaverOverride.DISABLED} ?selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.DISABLED}>${i18nString(UIStrings.saveDataOff)}</option>
+    <option value=${SDK.EmulationModel.DataSaverOverride.UNSET} .selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.UNSET}>${i18nString(UIStrings.noSaveDataOverride)}</option>
+    <option value=${SDK.EmulationModel.DataSaverOverride.ENABLED} .selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.ENABLED}>${i18nString(UIStrings.saveDataOn)}</option>
+    <option value=${SDK.EmulationModel.DataSaverOverride.DISABLED} .selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.DISABLED}>${i18nString(UIStrings.saveDataOff)}</option>
   `, target, {container: {listeners: {change: (e: Event) => input.onSelect((e.target as HTMLSelectElement).value as SDK.EmulationModel.DataSaverOverride)}}});
   // clang-format on
 };

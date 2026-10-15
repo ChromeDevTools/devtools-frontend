@@ -126,7 +126,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               @change=${input.binaryViewTypeChanged}>
             ${input.binaryViewObjects.map(viewObject => html`
               <option value=${viewObject.type}
-                  ?selected=${viewObject.type === input.binaryViewType}
+                  .selected=${viewObject.type === input.binaryViewType}
                   jslog=${VisualLogging.item(viewObject.type).track({click: true})}>${viewObject.label}</option>
             `)}
           </select>

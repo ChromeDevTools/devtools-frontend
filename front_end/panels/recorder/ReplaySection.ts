@@ -161,7 +161,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                       <option
                         .title=${item.label()}
                         value=${item.value}
-                        ?selected=${selected}
+                        .selected=${selected}
                         jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}
                       >
                         ${(selected && item.buttonLabel) ? item.buttonLabel() : item.label()}

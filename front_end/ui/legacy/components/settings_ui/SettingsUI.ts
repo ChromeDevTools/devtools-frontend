@@ -83,7 +83,7 @@ export function renderSettingSelect(setting: Common.Settings.Setting<unknown>, s
               return html`
                 <option
                   value=${option.value}
-                  ?selected=${setting.get() === option.value}
+                  .selected=${setting.get() === option.value}
                   jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option.value)).track({click: true})}
                 >
                   ${option.text}

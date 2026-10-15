@@ -249,7 +249,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
                   @keydown=${onKeyDown}
                   .value=${item.selectorType}
                   jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${item.selectorType}`)}
-                  ?checked=${item.checked}
+                  .checked=${item.checked}
                   type="checkbox"
                   @change=${(e:Event) => onUpdate({
                     selectorType: item.selectorType,

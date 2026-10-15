@@ -318,17 +318,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 @change=${input.onDeviceChange}
                 .value=${live(input.selectedDeviceOption === input.deviceModeOptions.responsive ? 'Responsive' : (input.selectedDeviceOption?.title || 'Responsive'))}
                 jslog=${VisualLogging.dropDown().track({change: true}).context('device')}>
-          <option value="Responsive" ?selected=${input.deviceModeOptions.responsive.selected} jslog=${VisualLogging.item(input.deviceModeOptions.responsive.jslogContext).track({click: true})}>
+          <option value="Responsive" .selected=${input.deviceModeOptions.responsive.selected} jslog=${VisualLogging.item(input.deviceModeOptions.responsive.jslogContext).track({click: true})}>
             ${input.deviceModeOptions.responsive.title}
           </option>
           ${input.deviceModeOptions.standard.map(group => html`
             <optgroup label=${EmulationModel.EmulatedDevices.getCategoryTitle(group.category)}>
-              ${group.options.map(o => html`<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+              ${group.options.map(o => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
             </optgroup>
           `)}
           ${input.deviceModeOptions.custom.length > 0 ? html`
             <optgroup label="Custom">
-              ${input.deviceModeOptions.custom.map(o => html`<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+              ${input.deviceModeOptions.custom.map(o => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
             </optgroup>
           ` : ''}
           <option value="Edit" jslog=${VisualLogging.item(input.deviceModeOptions.edit.jslogContext).track({click: true})}>
@@ -349,7 +349,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               @change=${input.onScaleChange}
               .value=${String(input.scaleOptions.find(o => o.selected)?.value ?? '')}
               jslog=${VisualLogging.dropDown().track({change: true}).context('scale')}>
-        ${input.scaleOptions.map(o => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+        ${input.scaleOptions.map(o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
       </select>
 
       <div class="device-mode-empty-toolbar-element"></div>
@@ -366,7 +366,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                     .value=${String(input.dprOptions.find(o => o.selected)?.value ?? '')}
                     jslog=${VisualLogging.dropDown().track({change: true}).context('device-pixel-ratio')}
                     ?disabled=${!input.isResponsive}>
-                ${input.dprOptions.map(o => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+                ${input.dprOptions.map(o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
               </select>`,
           })}
         </div>` : ''}
@@ -381,7 +381,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 .value=${input.uaOptions.find(o => o.selected)?.value || ''}
                 jslog=${VisualLogging.dropDown().track({change: true}).context('device-type')}
                 ?disabled=${!input.isResponsive}>
-          ${input.uaOptions.map(o => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
+          ${input.uaOptions.map(o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({click: true})}>${o.title}</option>`)}
         </select>` : ''}
       <select class="dark-text" ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
         title: i18nString(UIStrings.throttling),
@@ -418,7 +418,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                 @change=${input.onPostureChange}
                 .value=${input.postureOptions.find(o => o.selected)?.value || ''}
                 jslog=${VisualLogging.dropDown().track({change: true}).context('device-posture')}>
-          ${input.postureOptions.map(o => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.value.toLowerCase()).track({click: true})}>${o.title}</option>`)}
+          ${input.postureOptions.map(o => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.value.toLowerCase()).track({click: true})}>${o.title}</option>`)}
         </select>` : ''}
     </devtools-toolbar>
     <devtools-toolbar class="device-mode-toolbar-options" wrappable>

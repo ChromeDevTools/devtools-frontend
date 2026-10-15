@@ -294,7 +294,7 @@ function renderSettings({
             @change=${onNetworkConditionsChange}>
       ${networkConditionPresets.map(condition => html`
         <option jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(condition.i18nTitleKey || ''))}
-                value=${condition.i18nTitleKey || ''} ?selected=${selectedOption === condition.i18nTitleKey}>
+                value=${condition.i18nTitleKey || ''} .selected=${selectedOption === condition.i18nTitleKey}>
                 ${
                   condition.title instanceof Function
                     ? condition.title()
@@ -417,7 +417,7 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
                 ${input.builtInConverters.map(converter => {
                   return html`<option
                     value=${converter.getId()}
-                    ?selected=${input.converterId === converter.getId()}
+                    .selected=${input.converterId === converter.getId()}
                     jslog=${VisualLogging.item(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}>
                     ${converter.getFormatName()}
                   </option>`;
@@ -425,7 +425,7 @@ function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTempla
                 ${input.extensionConverters.map(converter => {
                   return html`<option
                     value=${converter.getId()}
-                    ?selected=${input.converterId === converter.getId()}
+                    .selected=${input.converterId === converter.getId()}
                     jslog=${VisualLogging.item('converter-extension')}>
                     ${converter.getFormatName()}
                   </option>`;

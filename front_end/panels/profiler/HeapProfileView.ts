@@ -432,13 +432,13 @@ export class HeapProfileView extends UI.View.SimpleView implements UI.Searchable
               @change=${this.changeView.bind(this)}
               jslog=${VisualLogging.dropDown('profile-view.selected-view').track({change: true})}
               ${ref(e => { this.viewSelectComboBox = e as HTMLSelectElement; })}>
-        <option value=${ViewTypes.FLAME} ?selected=${currentViewType === ViewTypes.FLAME}>
+        <option value=${ViewTypes.FLAME} .selected=${currentViewType === ViewTypes.FLAME}>
           ${i18nString(UIStrings.chart)}
         </option>
-        <option value=${ViewTypes.HEAVY} ?selected=${currentViewType === ViewTypes.HEAVY}>
+        <option value=${ViewTypes.HEAVY} .selected=${currentViewType === ViewTypes.HEAVY}>
           ${i18nString(UIStrings.heavyBottomUp)}
         </option>
-        <option value=${ViewTypes.TREE} ?selected=${currentViewType === ViewTypes.TREE}>
+        <option value=${ViewTypes.TREE} .selected=${currentViewType === ViewTypes.TREE}>
           ${i18nString(UIStrings.treeTopDown)}
         </option>
       </select>

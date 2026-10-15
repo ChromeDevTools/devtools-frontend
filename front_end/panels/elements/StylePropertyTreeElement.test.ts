@@ -4670,6 +4670,34 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
         sinon.assert.notCalled(changeTracker.trackChange);
       });
+
+      it('tracks disabling and enabling a property through its checkbox', async () => {
+        const section = await createLiveSection('font-weight: bold;', {inline: true});
+        const checkbox = treeElementAt(section, 0).listItemElement.querySelector('.enabled-button');
+        assert.instanceOf(checkbox, HTMLInputElement);
+
+        checkbox.click();
+        await waitFor(() => treeElementAt(section, 0).listItemElement.classList.contains('disabled'));
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Disabled style property "font-weight: bold" in rule "element.style"',
+            sinon.match.object,
+        );
+        changeTracker.trackChange.resetHistory();
+
+        const disabledCheckbox = treeElementAt(section, 0).listItemElement.querySelector('.enabled-button');
+        assert.instanceOf(disabledCheckbox, HTMLInputElement);
+
+        disabledCheckbox.click();
+        await waitFor(() => !treeElementAt(section, 0).listItemElement.classList.contains('disabled'));
+
+        sinon.assert.calledOnceWithExactly(
+            changeTracker.trackChange,
+            'Enabled style property "font-weight: bold" in rule "element.style"',
+            sinon.match.object,
+        );
+      });
     });
   });
 

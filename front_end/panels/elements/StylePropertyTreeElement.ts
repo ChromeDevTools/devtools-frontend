@@ -2691,6 +2691,16 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!success) {
       return;
     }
+    Elements.StyleChanges.trackStylePropertyToggle(
+        this.#stylesContainer.changeTracker,
+        this.#stylesContainer.node() ?? this.#matchedStyles.node(),
+        {
+          ruleHeader: this.#parentSection.headerText(),
+          name: this.property.name,
+          value: this.property.value,
+          disabled,
+        },
+    );
     this.#matchedStyles.resetActiveProperties();
     this.updatePane();
     this.styleTextAppliedForTest();

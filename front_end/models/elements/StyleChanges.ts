@@ -28,6 +28,15 @@ export interface StylePropertyEdit {
   newValue: string;
 }
 
+export interface StylePropertyToggle {
+  /** Rule header or selector containing the property (e.g. 'element.style' or '.btn:hover'). */
+  ruleHeader?: string;
+  name: string;
+  value: string;
+  /** Whether the property is now disabled. */
+  disabled: boolean;
+}
+
 /**
  * These strings are for consumption by AI agents and do not need to be translated.
  */
@@ -50,6 +59,11 @@ function describeStylePropertyEdit({ruleHeader, oldName, oldValue, newName, newV
       formatRuleSuffix('in', ruleHeader)}`;
 }
 
+function describeStylePropertyToggle({ruleHeader, name, value, disabled}: StylePropertyToggle): string {
+  const action = disabled ? 'Disabled' : 'Enabled';
+  return `${action} style property "${trimValue(name)}: ${trimValue(value)}"${formatRuleSuffix('in', ruleHeader)}`;
+}
+
 export function trackStylePropertyEdit(
     tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
     node: SDK.DOMModel.DOMNode,
@@ -69,4 +83,15 @@ export function trackStylePropertyEdit(
       describeStylePropertyEdit({ruleHeader: edit.ruleHeader, oldName, oldValue, newName, newValue}),
       buildAnchor(STYLES_PANE_VE_PATH, node),
   );
+}
+
+export function trackStylePropertyToggle(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    toggle: StylePropertyToggle,
+    ): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeStylePropertyToggle(toggle), buildAnchor(STYLES_PANE_VE_PATH, node));
 }

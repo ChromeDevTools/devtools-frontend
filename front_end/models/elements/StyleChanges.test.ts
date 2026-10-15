@@ -117,6 +117,24 @@ describe('StyleChanges', () => {
     );
   });
 
+  it('records disabling and enabling a style property', () => {
+    Elements.StyleChanges.trackStylePropertyToggle(tracker, createNode(42), {
+      ruleHeader: 'element.style',
+      name: 'font-weight',
+      value: 'bold',
+      disabled: true,
+    });
+    assert.strictEqual(lastDescription(), 'Disabled style property "font-weight: bold" in rule "element.style"');
+
+    Elements.StyleChanges.trackStylePropertyToggle(tracker, createNode(42), {
+      ruleHeader: 'element.style',
+      name: 'font-weight',
+      value: 'bold',
+      disabled: false,
+    });
+    assert.strictEqual(lastDescription(), 'Enabled style property "font-weight: bold" in rule "element.style"');
+  });
+
   it('omits the rule clause when ruleHeader is omitted or empty', () => {
     trackStylePropertyEdit({
       oldName: 'color',

@@ -186,6 +186,31 @@ describeWithEnvironment('TabbedPane', () => {
 
     assert.isUndefined((tabbedPane as unknown as {lastSelectedOverflowTab?: unknown}).lastSelectedOverflowTab);
   });
+
+  it('only listens to zoom changes while shown', () => {
+    const zoomManager = UI.ZoomManager.ZoomManager.instance();
+    assert.isTrue(zoomManager.hasEventListeners(UI.ZoomManager.Events.ZOOM_CHANGED));
+
+    tabbedPane.detach();
+    const hiddenTabbedPane = new UI.TabbedPane.TabbedPane();
+    assert.isFalse(hiddenTabbedPane.isShowing());
+    assert.isFalse(zoomManager.hasEventListeners(UI.ZoomManager.Events.ZOOM_CHANGED));
+
+    renderElementIntoDOM(tabbedPane);
+    assert.isTrue(zoomManager.hasEventListeners(UI.ZoomManager.Events.ZOOM_CHANGED));
+  });
+
+  it('re-measures the tabs when shown again', async () => {
+    tabbedPane.detach();
+    // The zoom factor might have changed while the pane was hidden.
+    (tabbedPane as unknown as {measuredDropDownButtonWidth: number}).measuredDropDownButtonWidth = 999;
+
+    renderElementIntoDOM(tabbedPane);
+    await tabbedPane.updateComplete;
+
+    assert.notStrictEqual((tabbedPane as unknown as {measuredDropDownButtonWidth?: number}).measuredDropDownButtonWidth,
+                          999);
+  });
 });
 
 describeWithEnvironment('TabbedPaneElement', () => {

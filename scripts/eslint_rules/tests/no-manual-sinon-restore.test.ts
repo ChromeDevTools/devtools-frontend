@@ -18,23 +18,35 @@ new RuleTester().run('no-manual-sinon-restore', rule, {
       filename: 'front_end/panels/my-panel/my-panel.test.ts',
     },
     {
-      name: 'allows afterEach() without sinon.restore()',
+      name: 'allows mid-test stub.restore() inside it()',
+      code: `it('handles mid-test stub restore', () => {
+  const stub = sinon.stub(foo, 'bar');
+  stub.restore();
+  assert.strictEqual(foo.bar(), 'real');
+});`,
+      filename: 'front_end/panels/my-panel/my-panel.test.ts',
+    },
+    {
+      name: 'allows afterEach() without restore() calls',
       code: `afterEach(() => {
   cleanupSomething();
 });`,
       filename: 'front_end/panels/my-panel/my-panel.test.ts',
     },
     {
-      name: 'allows other restore calls like clock.restore() in afterEach()',
+      name: 'allows non-Sinon restore(arg) with arguments in afterEach()',
       code: `afterEach(() => {
-  clock.restore();
+  stateManager.restore(savedState);
 });`,
       filename: 'front_end/panels/my-panel/my-panel.test.ts',
     },
     {
-      name: 'allows stub.restore() in afterEach()',
+      name: 'allows custom sandbox.restore() and canvas ctx.restore() in afterEach()',
       code: `afterEach(() => {
-  myStub.restore();
+  sandbox.restore();
+  this.sandbox.restore();
+  ctx.restore();
+  this.ctx.restore();
 });`,
       filename: 'front_end/panels/my-panel/my-panel.test.ts',
     },
@@ -74,6 +86,21 @@ new RuleTester().run('no-manual-sinon-restore', rule, {
 });`,
     },
     {
+      name: 'disallows sinon.restore() in after() and removes after()',
+      code: `describe('suite', () => {
+  after(() => {
+    sinon.restore();
+  });
+
+  it('test', () => {});
+});`,
+      filename: 'front_end/panels/my-panel/my-panel.test.ts',
+      errors: [{messageId: 'noManualSinonRestore'}],
+      output: `describe('suite', () => {
+  it('test', () => {});
+});`,
+    },
+    {
       name: 'disallows concise arrow afterEach(() => sinon.restore()) and removes afterEach',
       code: `describe('suite', () => {
   afterEach(() => sinon.restore());
@@ -85,6 +112,30 @@ new RuleTester().run('no-manual-sinon-restore', rule, {
       output: `describe('suite', () => {
   it('test', () => {});
 });`,
+    },
+    {
+      name: 'disallows clock.restore() in afterEach() without blindly autofixing non-sinon identifiers',
+      code: `describe('suite', () => {
+  afterEach(() => {
+    clock.restore();
+  });
+
+  it('test', () => {});
+});`,
+      filename: 'front_end/panels/my-panel/my-panel.test.ts',
+      errors: [{messageId: 'noManualSinonRestoreInAfterEach'}],
+    },
+    {
+      name: 'disallows stub.restore() in after() hook without blindly autofixing non-sinon identifiers',
+      code: `describe('suite', () => {
+  after(() => {
+    stub.restore();
+  });
+
+  it('test', () => {});
+});`,
+      filename: 'front_end/panels/my-panel/my-panel.test.ts',
+      errors: [{messageId: 'noManualSinonRestoreInAfterEach'}],
     },
     {
       name: 'disallows point-free afterEach(sinon.restore) and removes afterEach',
@@ -110,22 +161,7 @@ new RuleTester().run('no-manual-sinon-restore', rule, {
       errors: [{messageId: 'noManualSinonRestore'}],
     },
     {
-      name: 'disallows sinon.restore() in after() and removes after()',
-      code: `describe('suite', () => {
-  after(() => {
-    sinon.restore();
-  });
-
-  it('test', () => {});
-});`,
-      filename: 'front_end/panels/my-panel/my-panel.test.ts',
-      errors: [{messageId: 'noManualSinonRestore'}],
-      output: `describe('suite', () => {
-  it('test', () => {});
-});`,
-    },
-    {
-      name: 'disallows sinon.restore() with other statements in afterEach() and removes only sinon.restore()',
+      name: 'disallows sinon.restore() with other statements in afterEach() and removes only restore call',
       code: `describe('suite', () => {
   afterEach(async () => {
     sinon.restore();
@@ -147,8 +183,8 @@ new RuleTester().run('no-manual-sinon-restore', rule, {
     {
       name: 'disallows sinon.restore() when placed after other statements in afterEach()',
       code: `describe('suite', () => {
-  afterEach(() => {
-    otherCleanup();
+  afterEach(async () => {
+    await deinitializeGlobalVars();
     sinon.restore();
   });
 
@@ -157,8 +193,8 @@ new RuleTester().run('no-manual-sinon-restore', rule, {
       filename: 'front_end/panels/my-panel/my-panel.test.ts',
       errors: [{messageId: 'noManualSinonRestore'}],
       output: `describe('suite', () => {
-  afterEach(() => {
-    otherCleanup();
+  afterEach(async () => {
+    await deinitializeGlobalVars();
   });
 
   it('test', () => {});

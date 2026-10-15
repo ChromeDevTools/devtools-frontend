@@ -7,7 +7,25 @@ import type {RuleFix, RuleFixer, SourceCode} from '@typescript-eslint/utils/ts-e
 
 import {createRule} from './utils/ruleCreator.ts';
 
-type MessageIds = 'noManualSinonRestore';
+type MessageIds = 'noManualSinonRestore'|'noManualSinonRestoreInAfterEach';
+
+const SUITE_OR_TEST_NAMES = new Set([
+  'it',
+  'test',
+  'describe',
+  'beforeEach',
+  'before',
+  'describeWithEnvironment',
+  'describeWithMockConnection',
+  'describeWithLocale',
+]);
+
+const NON_SINON_RESTORE_RECEIVERS = new Set([
+  'sandbox',
+  'ctx',
+  'context',
+  'canvasContext',
+]);
 
 function removeStatement(fixer: RuleFixer, sourceCode: Readonly<SourceCode>, node: TSESTree.Node): RuleFix {
   const text = sourceCode.text;
@@ -29,20 +47,38 @@ function removeStatement(fixer: RuleFixer, sourceCode: Readonly<SourceCode>, nod
   return fixer.removeRange([start, end]);
 }
 
+function isRestoreCall(
+    node: TSESTree.CallExpression,
+    ): node is TSESTree.CallExpression&{
+  callee: TSESTree.MemberExpression,
+}
+{
+  if (node.arguments.length !== 0) {
+    return false;
+  }
+  const callee = node.callee;
+  if (callee.type === 'MemberExpression' && !callee.computed) {
+    return callee.property.type === 'Identifier' && callee.property.name === 'restore';
+  }
+  return false;
+}
+
 export default createRule<unknown[], MessageIds>({
   name: 'no-manual-sinon-restore',
   meta: {
     type: 'problem',
     docs: {
-      description:
-          'Flag sinon.restore() calls since the global Mocha test harness already restores Sinon after each test, ' +
-          'and targeted stub.restore() should be used if resetting mid-test.',
+      description: 'Flag sinon.restore() calls and redundant restore() calls in afterEach() or after() ' +
+          'since the global Mocha test harness already restores Sinon after each test.',
       category: 'Best Practices',
     },
     messages: {
       noManualSinonRestore: 'Global Mocha test harness already restores Sinon stubs and timers after each test. ' +
           'Do not call sinon.restore() manually. If a reset is required during a test, ' +
           'use stub.restore() on the specific stub instead.',
+      noManualSinonRestoreInAfterEach:
+          'Global Mocha test harness already restores Sinon stubs and timers after each test. ' +
+          'Do not call restore() on Sinon stubs, spies, or timers in afterEach() or after().',
     },
     fixable: 'code',
     schema: [],
@@ -51,18 +87,24 @@ export default createRule<unknown[], MessageIds>({
   create(context) {
     return {
       CallExpression(node: TSESTree.CallExpression) {
-        if (node.callee.type !== 'MemberExpression' || node.callee.computed || node.arguments.length !== 0) {
+        if (!isRestoreCall(node)) {
           return;
         }
 
-        const isSinonRestore = node.callee.object.type === 'Identifier' && node.callee.object.name === 'sinon' &&
-            node.callee.property.type === 'Identifier' && node.callee.property.name === 'restore';
-
-        if (!isSinonRestore) {
+        let receiverName: string|null = null;
+        if (node.callee.object.type === 'Identifier') {
+          receiverName = node.callee.object.name;
+        } else if (node.callee.object.type === 'MemberExpression' && !node.callee.object.computed &&
+                   node.callee.object.property.type === 'Identifier') {
+          receiverName = node.callee.object.property.name;
+        }
+        if (receiverName && NON_SINON_RESTORE_RECEIVERS.has(receiverName)) {
           return;
         }
 
-        // Find enclosing afterEach or after call, if any.
+        const isSinonRestore = node.callee.object.type === 'Identifier' && node.callee.object.name === 'sinon';
+
+        // Walk up to find enclosing afterEach or after call.
         let afterEachCall: TSESTree.CallExpression|null = null;
         let current: TSESTree.Node|undefined = node.parent;
 
@@ -78,10 +120,9 @@ export default createRule<unknown[], MessageIds>({
               break;
             }
 
-            const isTestOrSuite = (callee.type === 'Identifier' &&
-                                   (callee.name === 'it' || callee.name === 'test' || callee.name === 'describe')) ||
+            const isTestOrSuite = (callee.type === 'Identifier' && SUITE_OR_TEST_NAMES.has(callee.name)) ||
                 (callee.type === 'MemberExpression' && !callee.computed && callee.object.type === 'Identifier' &&
-                 (callee.object.name === 'it' || callee.object.name === 'test' || callee.object.name === 'describe'));
+                 SUITE_OR_TEST_NAMES.has(callee.object.name));
             if (isTestOrSuite) {
               break;
             }
@@ -89,52 +130,59 @@ export default createRule<unknown[], MessageIds>({
           current = current.parent;
         }
 
-        context.report({
-          node,
-          messageId: 'noManualSinonRestore',
-          fix(fixer) {
-            if (!afterEachCall) {
-              return null;
-            }
+        if (afterEachCall) {
+          context.report({
+            node,
+            messageId: isSinonRestore ? 'noManualSinonRestore' : 'noManualSinonRestoreInAfterEach',
+            fix: isSinonRestore ?
+                fixer => {
+                  const fn = afterEachCall.arguments.find(arg => arg.type === 'ArrowFunctionExpression' ||
+                                                              arg.type === 'FunctionExpression') as
+                          TSESTree.ArrowFunctionExpression |
+                      TSESTree.FunctionExpression | undefined;
 
-            const fn = afterEachCall.arguments.find(arg => arg.type === 'ArrowFunctionExpression' ||
-                                                        arg.type === 'FunctionExpression') as
-                    TSESTree.ArrowFunctionExpression |
-                TSESTree.FunctionExpression | undefined;
+                  if (!fn) {
+                    return null;
+                  }
 
-            if (!fn) {
-              return null;
-            }
+                  if (fn.body.type === 'CallExpression') {
+                    if (fn.body === node) {
+                      const stmt =
+                          afterEachCall.parent?.type === 'ExpressionStatement' ? afterEachCall.parent : afterEachCall;
+                      return removeStatement(fixer, context.sourceCode, stmt);
+                    }
+                    return null;
+                  }
 
-            if (fn.body.type === 'CallExpression') {
-              if (fn.body === node) {
-                // Concise arrow body: afterEach(() => sinon.restore());
-                const stmt =
-                    afterEachCall.parent?.type === 'ExpressionStatement' ? afterEachCall.parent : afterEachCall;
-                return removeStatement(fixer, context.sourceCode, stmt);
-              }
-              return null;
-            }
+                  if (fn.body.type === 'BlockStatement') {
+                    const isDirectStatement =
+                        node.parent?.type === 'ExpressionStatement' && node.parent.parent === fn.body;
+                    if (!isDirectStatement) {
+                      return null;
+                    }
 
-            if (fn.body.type === 'BlockStatement') {
-              const isDirectStatement = node.parent?.type === 'ExpressionStatement' && node.parent.parent === fn.body;
-              if (!isDirectStatement) {
-                return null;
-              }
+                    if (fn.body.body.length === 1) {
+                      const stmt =
+                          afterEachCall.parent?.type === 'ExpressionStatement' ? afterEachCall.parent : afterEachCall;
+                      return removeStatement(fixer, context.sourceCode, stmt);
+                    }
 
-              if (fn.body.body.length === 1) {
-                // sinon.restore() is the only statement in afterEach
-                const stmt =
-                    afterEachCall.parent?.type === 'ExpressionStatement' ? afterEachCall.parent : afterEachCall;
-                return removeStatement(fixer, context.sourceCode, stmt);
-              }
+                    return removeStatement(fixer, context.sourceCode, node.parent);
+                  }
 
-              return removeStatement(fixer, context.sourceCode, node.parent);
-            }
+                  return null;
+                } :
+                null,
+          });
+          return;
+        }
 
-            return null;
-          },
-        });
+        if (isSinonRestore) {
+          context.report({
+            node,
+            messageId: 'noManualSinonRestore',
+          });
+        }
       },
       MemberExpression(node: TSESTree.MemberExpression) {
         const isSinonRestore = !node.computed && node.object.type === 'Identifier' && node.object.name === 'sinon' &&

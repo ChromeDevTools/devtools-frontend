@@ -18,6 +18,11 @@ existing element containers.
 
     *   Maintain the existing class hierarchy, helper class boundaries, and
         logical groups.
+    *   Preserve existing standalone/module-level DOM helper functions (e.g.,
+        `linkifyIcon`, `maybeCreateLinkToElementsPanel`) and class helper
+        methods in their original locations, converting DOM-returning helpers in
+        place to return `LitTemplate` (or `Promise<LitTemplate|null>`) rather
+        than deleting and inlining them into `performUpdate()` or `DEFAULT_VIEW`.
     *   Do not aggressively "flatten" classes or collapse helper abstractions
         into the main view just to coerce a single master template. Pass 2
         should only change the *implementation details* of rendering (imperative

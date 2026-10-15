@@ -81,7 +81,7 @@ clean `UI.Widget` classes that use native update rendering delegates.
 ## 2. Safety & Verification Rules
 
 *   **CRITICAL**: Never update screenshot goldens without explicit consent of the user. Most likely the failure points to an issue in the implementation or (less likely) the test itself. Look at the screenshot diffs to debug.
-*   **Minimal Code Movement**: When migrating, try to move code around as little as possible, in particular around the lit rendering helpers. This minimizes the git diff and improves reviewability.
+*   **Minimal Code Movement & Helper Topology**: When migrating, try to move code around as little as possible, in particular around the lit rendering helpers. Preserve existing standalone/module-level DOM helper functions (e.g., `linkifyIcon`, `maybeCreateLinkToElementsPanel`) and async class update helpers in their original locations, having DOM helpers return `LitTemplate` (or `Promise<LitTemplate|null>`) rather than deleting and inlining them into `performUpdate()` or `DEFAULT_VIEW`. This minimizes the git diff and improves reviewability.
 
 --------------------------------------------------------------------------------
 

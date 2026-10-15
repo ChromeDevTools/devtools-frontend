@@ -105,6 +105,7 @@ devtools_ui_module("unittests") {
   sources = [
     "HeapDetachedElementsView.test.ts",
     "HeapProfileView.test.ts",
+    "HeapTimelineOverview.test.ts",
   ]
 
   ts_deps = [
@@ -117,6 +118,7 @@ devtools_ui_module("unittests") {
     "../../panels/elements:bundle",
     "../../testing",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
   ]
 }

@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -9,8 +9,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as Elements from '../elements/elements.js';
 
-import {HeapDetachedElementsDataGrid} from './HeapDetachedElementsDataGrid.js';
 import {
   type DataDisplayDelegate,
   ProfileEvents as ProfileTypeEvents,
@@ -19,7 +20,8 @@ import {
 } from './ProfileHeader.js';
 import {WritableProfileHeader} from './WritableProfileHeader.js';
 
-const {html} = Lit;
+const {html, render} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -39,28 +41,119 @@ const UIStrings = {
    * @example {2} PH1
    */
   detachedElementProfile: 'Detached elements {PH1}',
+  /**
+   * @description Column header in detached elements table displaying detached DOM nodes.
+   */
+  detachedNodes: 'Detached nodes',
+  /**
+   * @description Column header in detached elements table displaying the number of detached DOM nodes.
+   */
+  nodeSize: 'Node count',
+  /**
+   * @description Label for the detached elements table.
+   */
+  detachedElementsList: 'Detached elements list',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapDetachedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ParsedElement {
+  elementInfo: Protocol.DOM.DetachedElementInfo;
+  node: SDK.DOMModel.DOMNode;
+  nodeCount: number;
+}
+
+export interface ViewInput {
+  parsedElements: ParsedElement[];
+}
+
+export type ViewOutput = undefined;
+
+export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <devtools-data-grid striped class="flex-auto" name=${i18nString(UIStrings.detachedElementsList)}>
+      <table>
+        <tr>
+          <th id="detached-node">${i18nString(UIStrings.detachedNodes)}</th>
+          <th id="detached-node-count">${i18nString(UIStrings.nodeSize)}</th>
+        </tr>
+        ${input.parsedElements.map(parsed => html`
+          <tr jslog=${VisualLogging.tableRow('detached-element')}>
+            <td>
+              <devtools-widget
+                ${widget(Elements.DOMTreeWidget.DOMTreeWidget, {
+                  omitRootDOMNode: false,
+                  selectEnabled: true,
+                  hideGutter: true,
+                  rootDOMNode: parsed.node,
+                  showSelectionOnKeyboardFocus: true,
+                  deindentSingleNode: true,
+                })}
+              ></devtools-widget>
+            </td>
+            <td>${parsed.nodeCount}</td>
+          </tr>
+        `)}
+      </table>
+    </devtools-data-grid>
+  `, target);
+  // clang-format on
+};
+
+function calculateDetachedNodeCount(treeNode?: Protocol.DOM.Node): number {
+  if (!treeNode) {
+    return 0;
+  }
+  let count = 1;
+  const queue: Protocol.DOM.Node[] = [];
+  let node: Protocol.DOM.Node|undefined;
+  queue.push(treeNode);
+  while (queue.length > 0) {
+    node = queue.shift();
+    if (!node) {
+      break;
+    }
+    if (node.childNodeCount) {
+      count += node.childNodeCount;
+    }
+    if (node.children) {
+      for (const child of node.children) {
+        queue.push(child);
+      }
+    }
+  }
+  return count;
+}
+
+type View = typeof DEFAULT_VIEW;
+
 export class DetachedElementsProfileView extends UI.View.SimpleView implements DataDisplayDelegate {
-  readonly selectedSizeText: UI.Toolbar.ToolbarText;
-  dataGrid: HeapDetachedElementsDataGrid;
+  readonly #view: View;
+  #parsedElements: ParsedElement[] = [];
   profile: DetachedElementsProfileHeader;
   readonly parentDataDisplayDelegate: DataDisplayDelegate;
 
-  constructor(dataDisplayDelegate: DataDisplayDelegate, profile: DetachedElementsProfileHeader) {
+  constructor(dataDisplayDelegate: DataDisplayDelegate, profile: DetachedElementsProfileHeader,
+              view: View = DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.detachedElementsTitle),
       viewId: 'detached-elements',
+      classes: ['detached-elements-view'],
     });
-    this.element.classList.add('detached-elements-view');
+    this.#view = view;
     this.profile = profile;
     this.parentDataDisplayDelegate = dataDisplayDelegate;
-    this.selectedSizeText = new UI.Toolbar.ToolbarText();
-    this.dataGrid = new HeapDetachedElementsDataGrid();
-    this.dataGrid.show(this.element);
     this.populateElementsGrid(profile.detachedElements);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view({parsedElements: this.#parsedElements}, undefined, this.contentElement);
   }
 
   showProfile(profile: ProfileHeader|null): UI.Widget.Widget|null {
@@ -76,21 +169,18 @@ export class DetachedElementsProfileView extends UI.View.SimpleView implements D
   }
 
   populateElementsGrid(detachedElements: Protocol.DOM.DetachedElementInfo[]|null): void {
-    if (!detachedElements) {
+    const domModel = this.profile.heapProfilerModel()?.target().model(SDK.DOMModel.DOMModel);
+    if (!detachedElements || !domModel) {
       return;
     }
 
-    const heapProfilerModel = this.profile.heapProfilerModel();
-    const domModel = heapProfilerModel?.target().model(SDK.DOMModel.DOMModel);
-    if (!domModel) {
-      return;
-    }
-
-    this.dataGrid.data = {detachedElements, domModel};
-  }
-
-  override async toolbarItems(): Promise<Lit.TemplateResult> {
-    return html`${this.selectedSizeText.element}`;
+    this.#parsedElements = detachedElements.map(elementInfo => {
+      const retainedNodeIds = new Set((elementInfo.retainedNodeIds ?? []) as unknown as Protocol.DOM.BackendNodeId[]);
+      const node = SDK.DOMModel.DOMNode.create(domModel, null, false, elementInfo.treeNode, retainedNodeIds);
+      node.detached = true;
+      return {elementInfo, node, nodeCount: calculateDetachedNodeCount(elementInfo.treeNode)};
+    });
+    this.requestUpdate();
   }
 }
 

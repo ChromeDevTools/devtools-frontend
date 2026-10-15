@@ -10,7 +10,6 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "heapDetachedElementsDataGrid.css",
     "heapProfiler.css",
     "profileLauncherView.css",
     "profilesPanel.css",
@@ -21,7 +20,6 @@ generate_css("css_files") {
 devtools_ui_module("profiler") {
   sources = [
     "BottomUpProfileDataGrid.ts",
-    "HeapDetachedElementsDataGrid.ts",
     "HeapDetachedElementsView.ts",
     "HeapProfileView.ts",
     "HeapProfilerPanel.ts",
@@ -105,7 +103,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
-    "HeapDetachedElementsDataGrid.test.ts",
+    "HeapDetachedElementsView.test.ts",
     "HeapProfileView.test.ts",
   ]
 
@@ -116,7 +114,9 @@ devtools_ui_module("unittests") {
     "../../generated",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
+    "../../panels/elements:bundle",
     "../../testing",
+    "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
   ]
 }

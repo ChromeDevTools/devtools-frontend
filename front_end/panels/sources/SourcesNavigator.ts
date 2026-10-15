@@ -263,6 +263,7 @@ let overridesNavigatorViewInstance: OverridesNavigatorView;
 
 export class OverridesNavigatorView extends NavigatorView {
   private readonly toolbar: UI.Toolbar.Toolbar;
+  #enableCheckbox?: UI.Toolbar.ToolbarSettingCheckbox;
   private constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
     super('navigator-overrides', networkProjectManager);
     const placeholder = new UI.EmptyWidget.EmptyWidget(
@@ -318,9 +319,11 @@ export class OverridesNavigatorView extends NavigatorView {
     this.toolbar.removeToolbarItems();
     const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(
+      // The checkbox can never stop listening to the setting, so create it
+      // only once and re-append it on every update.
+      this.#enableCheckbox ??= new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(
           Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor));
-      this.toolbar.appendToolbarItem(enableCheckbox);
+      this.toolbar.appendToolbarItem(this.#enableCheckbox);
 
       this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
       const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'clear');

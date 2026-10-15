@@ -378,6 +378,44 @@ describeWithEnvironment('ComputedStyleWidget', () => {
     });
   });
 
+  describe('settings', () => {
+    const SETTING_NAMES = ['show-inherited-computed-style-properties', 'group-computed-styles'];
+
+    function countSettingListeners(): number[] {
+      const {listeners} = Common.Settings.Settings.instance().eventTargetForTest;
+      return SETTING_NAMES.map(name => listeners?.get(name)?.size ?? 0);
+    }
+
+    it('only listens to setting changes while shown', () => {
+      const initialCounts = countSettingListeners();
+
+      // Stub the view, as its toolbar checkboxes listen to the settings on their own.
+      const view = createViewFunctionStub(Elements.ComputedStyleWidget.ComputedStyleWidget);
+      computedStyleWidget = new Elements.ComputedStyleWidget.ComputedStyleWidget(undefined, view);
+      assert.deepEqual(countSettingListeners(), initialCounts);
+
+      renderElementIntoDOM(computedStyleWidget);
+      assert.deepEqual(countSettingListeners(), initialCounts.map(count => count + 1));
+
+      computedStyleWidget.detach();
+      assert.deepEqual(countSettingListeners(), initialCounts);
+    });
+
+    it('re-renders when a setting changes while shown', async () => {
+      Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false).set(true);
+      const view = createViewFunctionStub(Elements.ComputedStyleWidget.ComputedStyleWidget);
+      computedStyleWidget = createWidgetWithMultipleProperties(new Map([['order', '1']]), false, view);
+      renderElementIntoDOM(computedStyleWidget);
+      await computedStyleWidget.updateComplete;
+      assert.deepEqual(await getDisplayedProperties(view.input.computedStylesTree), ['order']);
+
+      Common.Settings.Settings.instance().createSetting('group-computed-styles', false).set(true);
+      await computedStyleWidget.updateComplete;
+
+      assert.deepEqual(await getDisplayedProperties(view.input.computedStylesTree), ['order', 'order', 'order']);
+    });
+  });
+
   describe('narrow view', () => {
     it('applies the computed-narrow class when width is less than 260px by default', async () => {
       const properties = new Map([

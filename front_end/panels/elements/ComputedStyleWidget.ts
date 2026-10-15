@@ -352,12 +352,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
 
     this.showInheritedComputedStylePropertiesSetting =
         Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
-    this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
-
     this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
-    this.groupComputedStylesSetting.addChangeListener(() => {
-      this.requestUpdate();
-    });
 
     this.filterRegex = null;
     this.linkifier = new Components.Linkifier.Linkifier(maxLinkLength);
@@ -376,6 +371,20 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         });
 
     this.#updateView({hasMatches: true});
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate, this);
+    this.groupComputedStylesSetting.addChangeListener(this.requestUpdate, this);
+    // The settings might have changed while the widget was hidden.
+    this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.showInheritedComputedStylePropertiesSetting.removeChangeListener(this.requestUpdate, this);
+    this.groupComputedStylesSetting.removeChangeListener(this.requestUpdate, this);
   }
 
   override onResize(): void {

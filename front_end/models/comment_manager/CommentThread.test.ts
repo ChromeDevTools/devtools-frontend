@@ -4,6 +4,9 @@
 
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
+
+import * as Host from '../../core/host/host.js';
 
 import * as CommentManager from './comment_manager.js';
 
@@ -227,5 +230,70 @@ describe('CommentThread', () => {
     assert.lengthOf(thread.comments, 1);
     assert.strictEqual(thread.comments[0].text, 'Original');
     assert.strictEqual(changeCount, 0);
+  });
+});
+
+describe('CommentThread UMA', () => {
+  const anchor: CommentManager.CommentThread.CommentAnchorSignature = {
+    vePath: 'Panel: elements > TreeItem: rule',
+  };
+
+  let commentCreated: sinon.SinonStub;
+  let commentSize: sinon.SinonStub;
+
+  beforeEach(() => {
+    commentCreated = sinon.stub(Host.userMetrics, 'commentCreated');
+    commentSize = sinon.stub(Host.userMetrics, 'commentSize');
+  });
+
+  it('records CommentCreated and CommentSize once when a draft is saved', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({anchor});
+    thread.save('  Make this blue  ');
+    thread.save('Follow-up');
+    thread.sendToAgent();
+
+    sinon.assert.calledOnceWithExactly(commentCreated, 1);
+    sinon.assert.calledOnceWithExactly(commentSize, 'Make this blue'.length);
+  });
+
+  it('records CommentCreated and CommentSize when a draft is sent to the agent directly', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({anchor});
+    thread.sendToAgent('Fix padding');
+
+    sinon.assert.calledOnceWithExactly(commentCreated, 1);
+    sinon.assert.calledOnceWithExactly(commentSize, 'Fix padding'.length);
+  });
+
+  it('does not record CommentCreated for generated comments', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor,
+      comments: [{author: 'DEVELOPER', text: 'Changed color', timestamp: 0}],
+      isGeneratedComment: true,
+    });
+    thread.save();
+
+    sinon.assert.notCalled(commentCreated);
+    sinon.assert.notCalled(commentSize);
+  });
+
+  it('does not record CommentCreated or CommentSize for drafts without developer text', () => {
+    const whitespaceThread = new CommentManager.CommentThread.CommentThread({
+      anchor,
+      comments: [{author: 'DEVELOPER', text: '   ', timestamp: 0}],
+    });
+    whitespaceThread.save();
+
+    const emptyThread = new CommentManager.CommentThread.CommentThread({anchor});
+    emptyThread.save();
+
+    sinon.assert.notCalled(commentCreated);
+    sinon.assert.notCalled(commentSize);
+  });
+
+  it('does not record CommentCreated for drafts that are never saved', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({anchor});
+    thread.editComment('ignored');
+
+    sinon.assert.notCalled(commentCreated);
   });
 });

@@ -11,6 +11,7 @@ devtools_foundation_module("change_tracker") {
   sources = [ "ChangeTracker.ts" ]
 
   ts_deps = [
+    "../../core/host:bundle",
     "../../core/root:bundle",
     "../comment_manager:bundle",
   ]
@@ -39,6 +40,7 @@ devtools_foundation_module("foundation_unittests") {
 
   ts_deps = [
     ":bundle",
+    "../../core/host:bundle",
     "../../testing",
     "../comment_manager:bundle",
   ]

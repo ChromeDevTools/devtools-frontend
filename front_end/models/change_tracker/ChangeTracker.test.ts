@@ -4,7 +4,9 @@
 
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
+import * as Host from '../../core/host/host.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import * as CommentManager from '../comment_manager/comment_manager.js';
 
@@ -112,5 +114,41 @@ describe('ChangeTracker', () => {
 
     assert.lengthOf(cm1.getCommentThreads(), 1);
     assert.lengthOf(cm2.getCommentThreads(), 0);
+  });
+});
+
+describe('ChangeTracker UMA', () => {
+  const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+    vePath: 'Panel: elements > Tree: elements > TreeItem',
+  };
+
+  let commentManager: CommentManager.CommentManager.CommentManager;
+  let tracker: ChangeTracker.ChangeTracker.ChangeTracker;
+  let changeRecorded: sinon.SinonStub;
+
+  beforeEach(() => {
+    updateHostConfig({
+      devToolsComments: {
+        enabled: true,
+      },
+    });
+    commentManager = new CommentManager.CommentManager.CommentManager();
+    tracker = new ChangeTracker.ChangeTracker.ChangeTracker(commentManager);
+    changeRecorded = sinon.stub(Host.userMetrics, 'changeRecorded');
+  });
+
+  it('records ChangeRecorded for each tracked change', () => {
+    commentManager.setAgentAttached(true);
+    tracker.trackChange('Change 1', anchor);
+    tracker.trackChange('Change 2', anchor);
+
+    sinon.assert.calledTwice(changeRecorded);
+    sinon.assert.alwaysCalledWithExactly(changeRecorded, 1);
+  });
+
+  it('does not record ChangeRecorded when agent is not attached', () => {
+    tracker.trackChange('Change', anchor);
+
+    sinon.assert.notCalled(changeRecorded);
   });
 });

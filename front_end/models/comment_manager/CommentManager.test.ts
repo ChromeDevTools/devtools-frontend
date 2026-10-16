@@ -4,6 +4,9 @@
 
 import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
+
+import * as Host from '../../core/host/host.js';
 
 import * as CommentManager from './comment_manager.js';
 
@@ -302,5 +305,70 @@ describe('CommentManager', () => {
     const thread = manager.createCommentThread(anchor, 'Timeline comment');
     assert.strictEqual(thread.anchor.timeline?.traceId, 'trace-12345');
     assert.strictEqual(thread.anchor.timeline?.traceEventKey, 'r-0');
+  });
+});
+
+describe('CommentManager UMA', () => {
+  const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+    vePath: 'Panel: elements > TreeItem: rule',
+  };
+
+  let manager: CommentManager.CommentManager.CommentManager;
+  let commentSharedWithAgent: sinon.SinonStub;
+  let changeSharedWithAgent: sinon.SinonStub;
+  let commentResolved: sinon.SinonStub;
+
+  beforeEach(() => {
+    manager = new CommentManager.CommentManager.CommentManager();
+    commentSharedWithAgent = sinon.stub(Host.userMetrics, 'commentSharedWithAgent');
+    changeSharedWithAgent = sinon.stub(Host.userMetrics, 'changeSharedWithAgent');
+    commentResolved = sinon.stub(Host.userMetrics, 'commentResolved');
+  });
+
+  afterEach(() => {
+    manager.clear();
+  });
+
+  it('records shared comment and change counts when threads are taken by the agent', () => {
+    manager.createCommentThread(anchor).sendToAgent('Comment 1');
+    manager.createCommentThread(anchor).sendToAgent('Comment 2');
+    manager.createCommentThread(anchor, 'Change 1', 'DEVELOPER', true).sendToAgent();
+    manager.createCommentThread(anchor).save('Queued, not sent');
+
+    assert.lengthOf(manager.takeComments(), 3);
+
+    sinon.assert.calledOnceWithExactly(commentSharedWithAgent, 2);
+    sinon.assert.calledOnceWithExactly(changeSharedWithAgent, 1);
+  });
+
+  it('does not record shared counts when nothing is taken', () => {
+    manager.createCommentThread(anchor).sendToAgent('Comment');
+    manager.takeComments();
+    commentSharedWithAgent.resetHistory();
+
+    assert.isEmpty(manager.takeComments());
+
+    sinon.assert.notCalled(commentSharedWithAgent);
+    sinon.assert.notCalled(changeSharedWithAgent);
+  });
+
+  it('records CommentResolvedByAgent once per thread', () => {
+    const thread = manager.createCommentThread(anchor);
+    thread.sendToAgent('Comment');
+
+    assert.isTrue(manager.resolveCommentThread(thread.id, 'Done'));
+    assert.isTrue(manager.resolveCommentThread(thread.id, 'Done again'));
+    assert.isFalse(manager.resolveCommentThread('unknown-id'));
+
+    sinon.assert.calledOnceWithExactly(commentResolved, 'Agent', 1);
+  });
+
+  it('records CommentResolvedByAgent for generated change threads', () => {
+    const thread = manager.createCommentThread(anchor, 'Change 1', 'DEVELOPER', true);
+    thread.sendToAgent();
+
+    assert.isTrue(manager.resolveCommentThread(thread.id, 'Done'));
+
+    sinon.assert.calledOnceWithExactly(commentResolved, 'Agent', 1);
   });
 });

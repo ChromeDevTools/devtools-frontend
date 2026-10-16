@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import type * as CommentManager from '../comment_manager/comment_manager.js';
 
@@ -26,5 +27,6 @@ export class ChangeTracker {
 
     const thread = this.#commentManager.createCommentThread(anchor, description, 'DEVELOPER', true);
     thread.save();
+    Host.userMetrics.changeRecorded(1);
   }
 }

@@ -156,7 +156,6 @@ devtools_entrypoint("bundle") {
     "../components/docs/radio_button/*",
     "../components/docs/slider/*",
     "../components/issue_counter:unittests",
-    "../components/legacy_wrapper:*",
     "../components/linear_memory_inspector:*",
     "../components/lists:*",
     "../components/markdown_view:*",

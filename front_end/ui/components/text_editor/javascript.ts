@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -820,9 +819,11 @@ async function getArgumentsForBoundFunction(object: SDK.RemoteObject.RemoteObjec
 }
 
 function tooltipBuilder(signatures: string[][], currentIndex: number): {dom: HTMLElement} {
+  // eslint-disable-next-line @devtools/no-imperative-dom-api
   const tooltip = document.createElement('div');
   tooltip.className = 'cm-argumentHints';
   for (const args of signatures) {
+    // eslint-disable-next-line @devtools/no-imperative-dom-api
     const argumentsElement = document.createElement('span');
     for (let i = 0; i < args.length; i++) {
       if (i === currentIndex || (i < currentIndex && args[i].startsWith('...'))) {

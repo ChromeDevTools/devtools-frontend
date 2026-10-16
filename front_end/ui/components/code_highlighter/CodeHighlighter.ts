@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
@@ -56,6 +55,7 @@ export async function highlightNode(node: Element, mimeType: string): Promise<vo
   highlighter.highlight((text, style) => {
     let token: Node = document.createTextNode(text);
     if (style) {
+      // eslint-disable-next-line @devtools/no-imperative-dom-api
       const span = document.createElement('span');
       span.className = style;
       span.appendChild(token);

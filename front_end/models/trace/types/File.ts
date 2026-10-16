@@ -48,6 +48,7 @@ export enum EventKeyType {
   SYNTHETIC_EVENT = 's',
   PROFILE_CALL = 'p',
   LEGACY_TIMELINE_FRAME = 'l',
+  LAYOUT_SHIFT_CLUSTER = 'c',
 }
 
 /**
@@ -141,7 +142,8 @@ export type RawEventKey = `${EventKeyType.RAW_EVENT}-${number}`;
 export type SyntheticEventKey = `${EventKeyType.SYNTHETIC_EVENT}-${number}`;
 export type ProfileCallKey = `${EventKeyType.PROFILE_CALL}-${ProcessID}-${ThreadID}-${SampleIndex}-${Protocol.integer}`;
 export type LegacyTimelineFrameKey = `${EventKeyType.LEGACY_TIMELINE_FRAME}-${number}`;
-export type SerializableKey = RawEventKey|ProfileCallKey|SyntheticEventKey|LegacyTimelineFrameKey;
+export type LayoutShiftClusterKey = `${EventKeyType.LAYOUT_SHIFT_CLUSTER}-${number}`;
+export type SerializableKey = RawEventKey|ProfileCallKey|SyntheticEventKey|LegacyTimelineFrameKey|LayoutShiftClusterKey;
 
 /** Serializable keys values objects contain data that maps the keys to original Trace Events **/
 export interface RawEventKeyValues {
@@ -167,8 +169,14 @@ export interface LegacyTimelineFrameKeyValues {
   rawIndex: number;
 }
 
-export type SerializableKeyValues =
-    RawEventKeyValues|ProfileCallKeyValues|SyntheticEventKeyValues|LegacyTimelineFrameKeyValues;
+export interface LayoutShiftClusterKeyValues {
+  type: EventKeyType.LAYOUT_SHIFT_CLUSTER;
+  // The raw event index of the first layout shift in the cluster.
+  rawIndex: number;
+}
+
+export type SerializableKeyValues = RawEventKeyValues|ProfileCallKeyValues|SyntheticEventKeyValues|
+    LegacyTimelineFrameKeyValues|LayoutShiftClusterKeyValues;
 
 export interface Modifications {
   entriesModifications: {
@@ -285,6 +293,15 @@ export function traceEventKeyToValues(key: SerializableKey): SerializableKeyValu
     case EventKeyType.LEGACY_TIMELINE_FRAME: {
       if (parts.length !== 2 || Number.isNaN(parseInt(parts[1], 10))) {
         throw new Error(`Invalid LegacyTimelineFrame Key: ${key}`);
+      }
+      return {
+        type,
+        rawIndex: parseInt(parts[1], 10),
+      };
+    }
+    case EventKeyType.LAYOUT_SHIFT_CLUSTER: {
+      if (parts.length !== 2 || Number.isNaN(parseInt(parts[1], 10))) {
+        throw new Error(`Invalid LayoutShiftCluster Key: ${key}`);
       }
       return {
         type,

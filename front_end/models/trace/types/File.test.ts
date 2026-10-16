@@ -25,6 +25,16 @@ describe('Trace file types', () => {
       assert.deepEqual(result, {type: Trace.Types.File.EventKeyType.SYNTHETIC_EVENT, rawIndex: 101});
     });
 
+    it('converts the values for a layout shift cluster', async () => {
+      const result = Trace.Types.File.traceEventKeyToValues('c-101');
+      assert.deepEqual(result, {type: Trace.Types.File.EventKeyType.LAYOUT_SHIFT_CLUSTER, rawIndex: 101});
+    });
+
+    it('throws for a layout shift cluster key with extra parts', async () => {
+      const key = 'c-101-1' as Trace.Types.File.SerializableKey;
+      assert.throws(() => Trace.Types.File.traceEventKeyToValues(key), 'Invalid LayoutShiftCluster Key: c-101-1');
+    });
+
     it('converts the values for a profile call event', async () => {
       const pid = Trace.Types.Events.ProcessID(1);
       const tid = Trace.Types.Events.ThreadID(2);

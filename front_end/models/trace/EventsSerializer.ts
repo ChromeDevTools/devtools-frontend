@@ -24,6 +24,21 @@ export class EventsSerializer {
     }
 
     const rawEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
+
+    if (Types.Events.isSyntheticLayoutShiftCluster(event)) {
+      // A cluster has no raw event of its own, so it is keyed by the raw event
+      // of its first layout shift.
+      const firstShift = event.events.at(0);
+      if (!firstShift) {
+        return null;
+      }
+      const firstShiftIndex = rawEvents.indexOf(firstShift.rawSourceEvent);
+      if (firstShiftIndex === -1) {
+        return null;
+      }
+      return `${Types.File.EventKeyType.LAYOUT_SHIFT_CLUSTER}-${firstShiftIndex}`;
+    }
+
     const isSynthetic = Types.Events.isSyntheticBased(event);
     const index = rawEvents.indexOf(isSynthetic ? event.rawSourceEvent : event);
     if (index === -1) {
@@ -54,6 +69,20 @@ export class EventsSerializer {
       return event;
     }
 
+    if (EventsSerializer.isLayoutShiftClusterKey(eventValues)) {
+      const rawEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
+      const firstShiftRawEvent = rawEvents.at(eventValues.rawIndex);
+      const cluster = parsedTrace.data.LayoutShifts.clusters.find(cluster => {
+        const firstShift = cluster.events.at(0);
+        return firstShift !== undefined && firstShift.rawSourceEvent === firstShiftRawEvent;
+      });
+      if (!cluster) {
+        throw new Error(
+            `Unknown trace event. Could not find layout shift cluster with first shift index ${eventValues.rawIndex}`);
+      }
+      return cluster;
+    }
+
     if (EventsSerializer.isSyntheticEventKey(eventValues)) {
       const syntheticEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getSyntheticTraces();
       const syntheticEvent = syntheticEvents.at(eventValues.rawIndex);
@@ -79,6 +108,10 @@ export class EventsSerializer {
     return key.type === Types.File.EventKeyType.LEGACY_TIMELINE_FRAME;
   }
 
+  static isLayoutShiftClusterKey(key: Types.File.SerializableKeyValues): key is Types.File.LayoutShiftClusterKeyValues {
+    return key.type === Types.File.EventKeyType.LAYOUT_SHIFT_CLUSTER;
+  }
+
   static isRawEventKey(key: Types.File.SerializableKeyValues): key is Types.File.RawEventKeyValues {
     return key.type === Types.File.EventKeyType.RAW_EVENT;
   }
@@ -86,8 +119,8 @@ export class EventsSerializer {
     return key.type === Types.File.EventKeyType.SYNTHETIC_EVENT;
   }
 
-  #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues, parsedTrace: ParsedTrace):
-      Types.Events.SyntheticProfileCall {
+  #getModifiedProfileCallByKeyValues(key: Types.File.ProfileCallKeyValues,
+                                     parsedTrace: ParsedTrace): Types.Events.SyntheticProfileCall {
     const cacheResult = this.#modifiedProfileCallByKey.get(key);
     if (cacheResult) {
       return cacheResult;

@@ -39,7 +39,7 @@ Content:
           "  - LCP breakdown:",
           "    - TTFB: 553 ms, bounds: {min: 465456489730µs, max: 465457042737µs}",
           "    - Render delay: 123 ms, bounds: {min: 465457042737µs, max: 465457166052µs}",
-          "  - CLS: 0.02, event: (eventKey: s-14250, ts: 465457121239)",
+          "  - CLS: 0.02, event: (eventKey: c-14250, ts: 465457121239)",
           "Metrics (field / real users): n/a – no data for this page in CrUX",
           "Available insights:",
           "  - insight name: RenderBlocking",

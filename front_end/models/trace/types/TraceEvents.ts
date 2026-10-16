@@ -1080,10 +1080,15 @@ export const NO_NAVIGATION = 'NO_NAVIGATION';
 export type NavigationId = string;
 
 /**
- * This is a synthetic Layout shift cluster. The rawSourceEvent is the worst layout shift event
- * in the cluster.
+ * This is a synthetic Layout shift cluster: a session window of layout shifts.
+ *
+ * Do not extend the SyntheticBased interface because a cluster is built from
+ * many layout shifts and doesn't have a raw trace event of its own. For the
+ * same reason, clusters are not registered with SyntheticEventsManager. Use
+ * `worstShiftEvent` to find the layout shift with the highest score in the
+ * cluster.
  */
-export interface SyntheticLayoutShiftCluster extends SyntheticBased<Phase.COMPLETE> {
+export interface SyntheticLayoutShiftCluster extends Event {
   name: 'SyntheticLayoutShiftCluster';
   clusterWindow: TraceWindowMicro;
   clusterCumulativeScore: number;

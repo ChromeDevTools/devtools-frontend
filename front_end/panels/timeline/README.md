@@ -173,6 +173,18 @@ If you ever need to know how high the network canvas is, use `networkChartOffset
 +-------------------------------------------+
 ```
 
+## Comments
+
+Comments on flame chart entries use the shared comments UI from `ui/comments` and `panels/common`, so the pin, popup and highlight match other panels. Those widgets are not drawn in the canvas or by `Overlays`; they are drawn in the shared comments layer above the panel.
+
+`TimelineCommentController` connects the flame charts to the shared comments UI:
+
+1. It keeps one invisible `COMMENT_PIN` overlay over each commented entry. `Overlays` positions it like any other entry overlay, including when the user pans or zooms, when the entry runs under the network track, and when the entry is off-screen.
+2. It returns that overlay's element from `getAnchorElement()`, and calls `notifyCustomAnchorsMoved()` after each `OverlaysUpdated` event while `COMMENT_PIN` overlays exist, and once more after the last one is removed.
+3. `CommentOverlayManager` reads the element's on-screen rect and draws the pin, popup and highlight there.
+
+The pin and the `COMMENT_PIN` element are separate elements in separate layers, and moving the element fires no DOM scroll or resize event, so step 2 is what keeps the pin on its entry. See the `CustomAnchorResolver` documentation in `ui/comments/CommentAnchorResolver.ts` for the contract.
+
 ## Timeline tree views
 
 The `TimelineTreeView` base class provides the foundation for creating various tree-based views within the Performance panel (e.g., Summary, Bottom-Up, Call Tree, Event Log). It handles core functionality like:

@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
+import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -24,6 +25,7 @@ import {ModificationsManager} from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
+import {TimelineCommentController} from './TimelineCommentController.js';
 import {type Tab, TimelineDetailsPane} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
@@ -171,6 +173,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #currentSelection: TimelineSelection|null = null;
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
+  readonly #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
+  readonly #commentController: TimelineCommentController;
 
   // Only one dimmer is used at a time. The first dimmer, as defined by the following
   // order, that is `active` within this array is used.
@@ -199,7 +203,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #networkPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
   #mainPersistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedGroupConfig[]|null>;
 
-  constructor(delegate: TimelineModeViewDelegate) {
+  constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager) {
     super({jslog: `${VisualLogging.section('timeline.flame-chart-view')}`});
     this.registerRequiredCSS(timelineFlameChartViewStyles);
     this.element.classList.add('timeline-flamechart');
@@ -478,6 +482,20 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
         'timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
     this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
     this.refreshMainFlameChart();
+
+    // Comments on flame chart entries are drawn by the shared comments overlay.
+    // TimelineCommentController connects the canvases and Overlays to it.
+    this.#commentController = new TimelineCommentController(
+        {
+          mainFlameChart: this.mainFlameChart,
+          networkFlameChart: this.networkFlameChart,
+          mainDataProvider: this.mainDataProvider,
+          networkDataProvider: this.networkDataProvider,
+          overlays: this.#overlays,
+          eventsSerializer: this.#eventsSerializer,
+        },
+        commentManager,
+    );
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
   }
@@ -1256,6 +1274,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     this.resizeToPreferredHeights();
     this.setMarkers(this.#parsedTrace);
     this.dimThirdPartiesIfRequired();
+    this.#commentController.setParsedTrace(this.#parsedTrace);
     ModificationsManager.activeManager()?.applyAnnotationsFromCache(
         {muteAriaNotifications: opts.updateType === 'REDRAW_EXISTING_TRACE'});
   }
@@ -1416,12 +1435,14 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
     super.willHide();
     this.#networkPersistedGroupConfigSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
+    this.#commentController.willHide();
   }
 
   override wasShown(): void {
     super.wasShown();
     this.#networkPersistedGroupConfigSetting.addChangeListener(this.resizeToPreferredHeights, this);
     Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
+    this.#commentController.wasShown();
     if (this.needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }

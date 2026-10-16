@@ -22,6 +22,7 @@ import * as SaveFileFormatter from './SaveFileFormatter.js';
 import * as TargetForEvent from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import * as ThreadAppender from './ThreadAppender.js';
+import * as TimelineCommentController from './TimelineCommentController.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
 import * as TimelineEventOverview from './TimelineEventOverview.js';
@@ -66,6 +67,7 @@ export {
   TargetForEvent,
   ThirdPartyTreeView,
   ThreadAppender,
+  TimelineCommentController,
   TimelineController,
   TimelineDetailsView,
   TimelineEventOverview,

@@ -159,9 +159,9 @@ UI.ViewManager.registerViewExtension({
   order: 50,
   async loadView(universe) {
     const Timeline = await loadTimelineModule();
-    const {pageResourceLoader: resourceLoader, targetManager, isolateManager} = universe;
+    const {pageResourceLoader: resourceLoader, targetManager, isolateManager, commentManager} = universe;
     return Timeline.TimelinePanel.TimelinePanel.instance(
-        {forceNew: true, resourceLoader, targetManager, isolateManager});
+        {forceNew: true, resourceLoader, targetManager, isolateManager, commentManager});
   },
 });
 

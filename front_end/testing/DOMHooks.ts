@@ -59,6 +59,13 @@ function removeAnnouncer() {
  **/
 export const cleanTestDOM = (testName = ''): void => {
   resetTestUniverseForWidgets();
+  // `inspectorCommon.css` makes <body> the scroll container, so focus or
+  // autofocus during a test can scroll it. Reset it before removing the test
+  // container: once <body> has no overflow, setting `scrollTop` or `scrollLeft`
+  // is a no-op and the old offset returns when the next test renders tall or
+  // wide content.
+  document.body.scrollTop = 0;
+  document.body.scrollLeft = 0;
   const previousContainer = document.getElementById(TEST_CONTAINER_ID);
   if (previousContainer) {
     removeChildren(previousContainer);

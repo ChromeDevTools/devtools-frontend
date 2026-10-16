@@ -1443,7 +1443,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     it('renders the easing function swatch', () => {
       const stylePropertyTreeElement = getTreeElement('animation-timing-function', 'ease-out');
       stylePropertyTreeElement.updateTitle();
-      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstElementChild?.firstChild, Icon);
+      assert.instanceOf(stylePropertyTreeElement.valueElement?.firstElementChild?.firstElementChild, Icon);
     });
   });
 

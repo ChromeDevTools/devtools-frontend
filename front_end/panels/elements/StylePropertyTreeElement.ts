@@ -1371,30 +1371,25 @@ export class BezierRenderer extends BezierRendererBase {
     super();
     this.#treeElement = treeElement;
   }
-  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Lit.LitTemplate {
     const nodes = match.node.name === 'CallExpression' ? Renderer.render(ASTUtils.children(match.node), context).nodes :
-                                                         [document.createTextNode(match.text)];
+                                                         match.text;
     if (!this.#treeElement?.editable() ||
         !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(
             context.matchedResult.getComputedText(match.node))) {
-      return nodes;
+      return html`${nodes}`;
     }
     const swatchPopoverHelper = this.#treeElement.stylesContainer().swatchPopoverHelper();
     const icon = createIcon('bezier-curve-filled', 'bezier-swatch-icon');
+    icon.slot = 'icon';
     icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
     icon.tabIndex = -1;
     icon.addEventListener('click', () => {
       Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
     });
-    const bezierText = document.createElement('span');
-    render(html`${nodes}`, bezierText);
-    new BezierPopoverIcon(
-        {treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText, match, context});
-    const iconAndTextContainer = document.createElement('span');
-    iconAndTextContainer.classList.add('bezier-icon-and-text');
-    iconAndTextContainer.append(icon);
-    iconAndTextContainer.append(bezierText);
-    return [iconAndTextContainer];
+    new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, match, context});
+    return html`<devtools-widget class="bezier-icon-and-text" ${widget(EditableContent)}>${icon}${
+        nodes}</devtools-widget>`;
   }
 }
 

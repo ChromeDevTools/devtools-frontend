@@ -475,6 +475,10 @@ export class ValueUpdateTracking {
     return this.#get(this.#valueBegin, this.#valueEnd);
   }
 
+  getEdit(match: SDK.CSSPropertyParser.Match): string|undefined {
+    return this.#edits.get(match)?.computedText();
+  }
+
   // The text of the nodes `from` to `to` with the recorded changes applied, like `SyntaxTree.textRange` for the authored
   // text.
   textRange(from: CodeMirror.SyntaxNode|undefined, to: CodeMirror.SyntaxNode|undefined): string {

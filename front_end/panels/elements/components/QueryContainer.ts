@@ -78,7 +78,7 @@ export class QueryContainer extends HTMLElement {
     // eslint-disable-next-line @devtools/no-a-tags-in-lit
     render(html`
       <style>${queryContainerStyles}</style>
-      →
+      \u2192
       <a href="#" draggable=false class="container-link"
          jslog=${VisualLogging.cssRuleHeader('container-query').track({click: true})}
          @click=${this.#onContainerLinkClick}

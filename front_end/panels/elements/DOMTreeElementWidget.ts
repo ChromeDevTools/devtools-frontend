@@ -523,7 +523,7 @@ function renderTitle(node: SDK.DOMModel.DOMNode, input: ViewInput): Lit.LitTempl
               {clickHandler: onExpand} as
               ElementsComponents.ElementsTreeExpandButton
                   .ElementsTreeExpandButtonData}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderClosingTag()}`;
+                  >\u2026</span>\u200B${renderClosingTag()}`;
         }
         return openingTag;
       }

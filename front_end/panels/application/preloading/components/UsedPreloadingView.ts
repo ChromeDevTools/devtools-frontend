@@ -342,7 +342,7 @@ function renderSpeculationsInitiatedByThisPageSummarySections(
               jslog=${VisualLogging.action('view-all-rules').track({click: true})}>
             ${i18nString(UIStrings.viewAllRules)}
           </button>
-         ・
+         \u30fb
           <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
               jslog=${VisualLogging.action('view-all-speculations').track({click: true})}>
            ${i18nString(UIStrings.viewAllSpeculations)}

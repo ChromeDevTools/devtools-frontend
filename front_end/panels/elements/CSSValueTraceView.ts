@@ -44,29 +44,29 @@ function defaultView(input: ViewInput, output: object, target: HTMLElement): voi
     html`
       <div role=dialog class="css-value-trace monospace" @keydown=${onKeyDown}>
         ${substitutions.map(line => html`
-          <span class="trace-line-icon" aria-label="is equal to">↳</span>
+          <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
           <span class="trace-line">${line}</span>`,
         )}
         ${firstEvaluation && intermediateEvaluations.length === 0 ? html`
-          <span class="trace-line-icon" aria-label="is equal to">↳</span>
+          <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
           <span class="trace-line">${firstEvaluation}</span>`
             : html`
           <details @toggle=${input.onToggle} ?hidden=${hiddenSummary}>
             <summary tabindex=${ifDefined(summaryTabIndex)}>
-              <span class="trace-line-icon" aria-label="is equal to">↳</span>
+              <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
               <devtools-icon class="marker"></devtools-icon>
               <span class="trace-line">${firstEvaluation}</span>
             </summary>
             <div>
               ${intermediateEvaluations.map(
                 evaluation => html`
-                  <span class="trace-line-icon" aria-label="is equal to" >↳</span>
+                  <span class="trace-line-icon" aria-label="is equal to" >\u21b3</span>
                   <span class="trace-line">${evaluation}</span>`,
               )}
             </div>
           </details>`}
         ${finalResult ? html`
-          <span class="trace-line-icon" aria-label="is equal to" ?hidden=${singleResult}>↳</span>
+          <span class="trace-line-icon" aria-label="is equal to" ?hidden=${singleResult}>\u21b3</span>
           <span class=${classMap({ 'trace-line': true, 'full-row': singleResult})}>
             ${finalResult}
           </span>`: ''}

@@ -147,6 +147,7 @@ const WINDOW_LOCAL_STORAGE: Common.Settings.SettingsBackingStore = {
 export class MainImpl {
   #readyForTestPromise = Promise.withResolvers<void>();
   #veStartPromise!: Promise<void>;
+  #toolbarsPromise!: Promise<void>;
   #universe!: Foundation.Universe.Universe;
   #supportsEmulation = false;
 
@@ -535,7 +536,7 @@ export class MainImpl {
         Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_REQUESTED, event => {
           inspectorView.displaySelectOverrideFolderInfobar(event.data);
         });
-    await inspectorView.createToolbars();
+    this.#toolbarsPromise = inspectorView.createToolbars();
     inspectorView.renderStatusBar(this.#universe.commentManager.isAgentAttached());
     this.#universe.commentManager.addEventListener(
         CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED,
@@ -551,6 +552,7 @@ export class MainImpl {
 
     // Allow UI cycles to repaint prior to creating connection.
     window.setTimeout(this.#initializeTarget.bind(this), 0);
+    await this.#toolbarsPromise;
     MainImpl.timeEnd('Main._showAppUI');
   }
 
@@ -564,6 +566,7 @@ export class MainImpl {
       await runnableInstanceFunction().run();
     }
     await this.#veStartPromise;
+    await this.#toolbarsPromise;
     // Used for browser tests.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.readyForTest();
     this.#readyForTestPromise.resolve();

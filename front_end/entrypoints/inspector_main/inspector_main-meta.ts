@@ -358,6 +358,16 @@ async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
   return loadedInspectorMainModule;
 }
 
+Common.Runnable.registerEarlyInitializationRunnable(function() {
+  return {
+    async run() {
+      const InspectorMain = await loadInspectorMainModule();
+      const runnable = new InspectorMain.InspectorMain.InspectorMainImpl();
+      await runnable.run();
+    },
+  };
+});
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'rendering',

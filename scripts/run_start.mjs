@@ -109,6 +109,12 @@ const argv = yargs(hideBin(process.argv))
     default: getEnvString(ENV.TARGET, 'Default'),
     description: 'Specify the target build subdirectory under //out',
   })
+  .option('build-target', {
+    alias: 'b',
+    type: 'string',
+    default: 'devtools_all_files',
+    description: 'Specify the ninja build target',
+  })
   .option('user-data-dir', {
     type: 'string',
     default: getEnvString(ENV.USER_DATA_DIR, ''),
@@ -130,6 +136,7 @@ const argv = yargs(hideBin(process.argv))
 
 const {
   browser,
+  buildTarget,
   disableFeatures,
   enableFeatures,
   unstableFeatures,
@@ -219,7 +226,11 @@ if (remoteDebuggingPort && browser !== 'cft' && !userDataDir) {
 // Perform the initial build.
 const { status } = childProcess.spawnSync(
   process.argv[0],
-  [runBuildPath, `--target=${target}`],
+  [
+    runBuildPath,
+    `--target=${target}`,
+    ...(buildTarget ? [`--build-target=${buildTarget}`] : []),
+  ],
   {
     cwd,
     env,
@@ -302,7 +313,13 @@ async function start() {
 // devtools-frontend whenever there are changes detected.
 const watcher = argv.watch ? childProcess.spawn(
   process.argv[0],
-  [runBuildPath, '--skip-initial-build', `--target=${target}`, '--watch'],
+  [
+    runBuildPath,
+    '--skip-initial-build',
+    `--target=${target}`,
+    ...(buildTarget ? [`--build-target=${buildTarget}`] : []),
+    '--watch',
+  ],
   { cwd, env, stdio: 'inherit' },
 ) : null;
 try {

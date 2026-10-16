@@ -5,6 +5,7 @@
 import * as childProcess from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
@@ -41,11 +42,6 @@ delete argv.target;
 delete argv.script;
 
 let sourceRoot = path.dirname(path.dirname(path.resolve(argv['$0'])));
-
-// Ensure that we can find the node_modules folder even if the out folder is
-// not a sibling of the node_modules folder.
-const env = process.env;
-env.NODE_PATH = path.join(sourceRoot, 'node_modules');
 
 let cwd = path.join(sourceRoot, 'out', target);
 
@@ -101,6 +97,15 @@ if (!skipNinja) {
     process.exit(status ?? 1);
   }
 }
+
+// Ensure that we can find the node_modules folder even if the out folder is
+// not a sibling of the node_modules folder.
+const devtoolsRoot = path.dirname(path.dirname(path.resolve(argv['$0'])));
+const hookPath = path.join(devtoolsRoot, 'scripts', 'node_modules_hook.mjs');
+const hookUrl = pathToFileURL(hookPath).href;
+
+const env = {...process.env};
+env.NODE_OPTIONS = `${env.NODE_OPTIONS ?? ''} --import ${hookUrl}`.trim();
 
 const scriptPath = path.resolve(cwd, script);
 const { argv0 } = process;

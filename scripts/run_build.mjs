@@ -18,6 +18,13 @@ const argv = yargs(hideBin(process.argv))
                    default: getEnvString(ENV.TARGET, 'Default'),
                    description: 'Specify the target build subdirectory under //out',
                  })
+                 .option('build-target', {
+                   alias: 'b',
+                   type: 'array',
+                   string: true,
+                   default: [],
+                   description: 'Specify the ninja build target(s)',
+                 })
                  .option('skip-initial-build', {
                    type: 'boolean',
                    default: false,
@@ -35,7 +42,7 @@ const argv = yargs(hideBin(process.argv))
                  .version(false)
                  .parseSync();
 
-const {target, watch, skipInitialBuild} = argv;
+const {target, watch, skipInitialBuild, buildTargets} = argv;
 const timeFormatter = new Intl.NumberFormat('en-US', {
   style: 'unit',
   unit: 'second',
@@ -57,7 +64,7 @@ try {
 if (!skipInitialBuild) {
   spinner.start('Building…');
   try {
-    const {time} = await build(target);
+    const {time} = await build(target, {buildTargets});
     spinner.succeed(`Build ready (${timeFormatter.format(time)})`);
   } catch (error) {
     spinner.fail(error.message);
@@ -95,7 +102,7 @@ if (watch) {
     buildPromise = buildPromise.then(async () => {
       try {
         spinner.start('Rebuilding...');
-        const {time} = await build(target, {signal});
+        const {time} = await build(target, {signal, buildTargets});
         spinner.succeed(`Rebuild successfully (${timeFormatter.format(time)})`);
       } catch (error) {
         if (error.name !== 'AbortError') {

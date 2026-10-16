@@ -343,7 +343,7 @@ export function gnArgsForTarget(target) {
 
 /**
  * @param {string} target
- * @param {{ signal?: AbortSignal }} [options]
+ * @param {{ signal?: AbortSignal, buildTargets?: string[] }} [options]
  * @returns {Promise<BuildResult>} a `BuildResult` with statistics for the build.
  */
 export async function build(target, options = {}) {
@@ -352,7 +352,7 @@ export async function build(target, options = {}) {
 
   try {
     const autoninjaExe = vpython3ExecutablePath();
-    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir];
+    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, ...(options.buildTargets ?? [])];
     await spawn(autoninjaExe, autoninjaArgs, {
       signal: options.signal,
     });

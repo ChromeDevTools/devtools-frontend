@@ -2153,8 +2153,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.strictEqual(swatch.color?.getAuthoredText(), mockVariableMap[variableName(activeColor)] ?? activeColor);
         const active = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? light : dark;
         const inactive = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? dark : light;
-        assert.isTrue(inactive.parentElement?.classList.contains('inactive-value'));
-        assert.isFalse(active.parentElement?.classList.contains('inactive-value'));
+        assert.isTrue(inactive.parentElement?.parentElement?.classList.contains('inactive-value'));
+        assert.isFalse(active.parentElement?.parentElement?.classList.contains('inactive-value'));
         stylePropertyTreeElement.valueElement.remove();
       }
 

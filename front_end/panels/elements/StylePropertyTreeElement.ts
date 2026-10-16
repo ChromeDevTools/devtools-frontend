@@ -320,7 +320,8 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     const resolvedProperty = match.resolveProperty();
     if (!resolvedProperty) {
       return [document.createTextNode(match.text)];
@@ -339,9 +340,11 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
         SDK.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
       const color = Common.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
-        const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement)
-                                .renderColorSwatch(color, swatch, match, context);
-        return [colorSwatch, swatch];
+        const colorSwatch =
+            new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
+        return this.#treeElement?.editable() ?
+            html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${swatch}</devtools-widget>` :
+            [colorSwatch, swatch];
       }
     }
 
@@ -457,7 +460,7 @@ export class VariableRenderer extends VariableRendererBase {
     }
 
     const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch, match, context);
+        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl('color', colorSwatch);
 
     if (fromFallback) {
@@ -467,7 +470,9 @@ export class VariableRenderer extends VariableRendererBase {
           }));
     }
 
-    return [colorSwatch, varSwatch];
+    return this.#treeElement?.editable() ?
+        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
+        [colorSwatch, varSwatch];
   }
 }
 
@@ -626,7 +631,7 @@ export class AttributeRenderer extends AttributeRendererBase {
     }
 
     const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch, match, context);
+        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl('color', colorSwatch);
 
     if (fromFallback) {
@@ -636,7 +641,9 @@ export class AttributeRenderer extends AttributeRendererBase {
           }));
     }
 
-    return [colorSwatch, varSwatch];
+    return this.#treeElement?.editable() ?
+        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
+        [colorSwatch, varSwatch];
   }
 
   #handleAttributeActivate(node: SDK.DOMModel.DOMNode|null, attribute: string): void {
@@ -739,14 +746,12 @@ export class ColorRenderer extends ColorRendererBase {
   }
 
   #getValueChild(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): {
-    valueChild: HTMLSpanElement,
+    valueChild: Lit.LitTemplate,
     cssControls?: CSSControlMap,
     childTracingContexts?: TracingContext[],
   } {
-    const valueChild = document.createElement('span');
     if (match.node.name !== 'CallExpression') {
-      valueChild.appendChild(document.createTextNode(match.text));
-      return {valueChild};
+      return {valueChild: html`<span>${match.text}</span>`};
     }
 
     const func = context.matchedResult.ast.text(match.node.getChild('Callee'));
@@ -754,19 +759,17 @@ export class ColorRenderer extends ColorRendererBase {
 
     const childTracingContexts = context.tracing?.evaluation([args], {match, context}) ?? undefined;
     const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
-    const {nodes, cssControls} = Renderer.renderInto(args, renderingContext, valueChild);
-    render(
-        html`${
-            this.#treeElement?.getTracingTooltip(
-                func, match.node, this.#treeElement.matchedStyles(), this.#treeElement.getComputedStyles() ?? new Map(),
-                this.#treeElement.getComputedStyleExtraFields(), renderingContext) ??
-            func}${nodes}`,
-        valueChild);
+    const {nodes, cssControls} = Renderer.render(args, renderingContext);
+    const valueChild = html`<span>${
+        this.#treeElement?.getTracingTooltip(func, match.node, this.#treeElement.matchedStyles(),
+                                             this.#treeElement.getComputedStyles() ?? new Map(),
+                                             this.#treeElement.getComputedStyleExtraFields(), renderingContext) ??
+        func}${nodes}</span>`;
 
     return {valueChild, cssControls, childTracingContexts};
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Lit.LitTemplate {
     const {valueChild, cssControls, childTracingContexts} = this.#getValueChild(match, context);
     let colorText = context.matchedResult.getComputedText(match.node);
 
@@ -783,7 +786,7 @@ export class ColorRenderer extends ColorRendererBase {
       if (match.node.name === 'CallExpression') {
         return Renderer.render(ASTUtils.children(match.node), context).nodes;
       }
-      return [document.createTextNode(colorText)];
+      return html`${colorText}`;
     }
 
     if (match.node.name === 'CallExpression' && childTracingContexts) {
@@ -794,7 +797,7 @@ export class ColorRenderer extends ColorRendererBase {
         const swatch =
             new ColorRenderer(this.#stylesContainer, null)
                 .renderColorSwatch(displayColor.isGamutClipped() ? color : (displayColor.nickname() ?? displayColor),
-                                   colorText, match, context);
+                                   match, context);
         swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
           colorText.textContent = ev.data.color.asString();
         });
@@ -802,11 +805,11 @@ export class ColorRenderer extends ColorRendererBase {
         return {placeholder: [swatch, colorText]};
       });
       if (evaluation) {
-        return evaluation;
+        return html`${evaluation}`;
       }
     }
 
-    const swatch = this.renderColorSwatch(color, valueChild, match, context);
+    const swatch = this.renderColorSwatch(color, match, context);
     context.addControl('color', swatch);
 
     // For hsl/hwb colors, hook up the angle swatch for the hue.
@@ -830,12 +833,14 @@ export class ColorRenderer extends ColorRendererBase {
         });
       }
     }
-    return [swatch, valueChild];
+    return this.#treeElement?.editable() ?
+        html`<devtools-widget ${widget(EditableContent)}>${swatch}${valueChild}</devtools-widget>` :
+        html`${swatch}${valueChild}`;
   }
 
-  // Renders a swatch for `color`, which stands for the text that is displayed in `valueChild`. When the user changes the
-  // color through the swatch, `valueChild` is replaced with the new text, which is recorded as the edit of `match`.
-  renderColorSwatch(color: Common.Color.Color|undefined, valueChild: Node, match: SDK.CSSPropertyParser.Match,
+  // Renders a swatch for `color`. When the user changes the color through the swatch, a `ValueEditEvent` is dispatched
+  // to update the enclosing `EditableContent`, and the new text is recorded as the edit of `match`.
+  renderColorSwatch(color: Common.Color.Color|undefined, match: SDK.CSSPropertyParser.Match,
                     context: RenderingContext): InlineEditor.ColorSwatch.ColorSwatch {
     const editable = this.#treeElement?.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
@@ -848,6 +853,7 @@ export class ColorRenderer extends ColorRendererBase {
     }
 
     if (this.#treeElement?.editable()) {
+      swatch.slot = 'icon';
       const treeElement = this.#treeElement;
       const onColorChanged = (): void => {
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
@@ -855,7 +861,7 @@ export class ColorRenderer extends ColorRendererBase {
 
       const onColorFormatChanged = (e: InlineEditor.ColorSwatch.ColorFormatChangedEvent): void => {
         const text = e.data.color.getAuthoredText() ?? e.data.color.asString();
-        valueChild.textContent = text;
+        swatch.dispatchEvent(new ValueEditEvent(text));
         context.recordEdit(match, text);
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
@@ -870,7 +876,7 @@ export class ColorRenderer extends ColorRendererBase {
           new ColorSwatchPopoverIcon(treeElement, treeElement.stylesContainer().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.COLOR_CHANGED, ev => {
         const text = ev.data.getAuthoredText() ?? ev.data.asString();
-        valueChild.textContent = text;
+        swatch.dispatchEvent(new ValueEditEvent(text));
         context.recordEdit(match, text);
         swatch.setColor(ev.data);
       });
@@ -910,7 +916,8 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     this.#matchedStyles = matchedStyles;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     const content = document.createElement('span');
     content.appendChild(document.createTextNode('light-dark('));
     const light = content.appendChild(document.createElement('span'));
@@ -932,12 +939,14 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
 
     // Pass an undefined color here to insert a placeholder swatch that will be filled in from the async
     // applyColorScheme below.
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement)
-                            .renderColorSwatch(undefined, content, match, context);
+    const colorSwatch =
+        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(undefined, match, context);
     context.addControl('color', colorSwatch);
     void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
 
-    return [colorSwatch, content];
+    return this.#treeElement?.editable() ?
+        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :
+        [colorSwatch, content];
   }
 
   async applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext,
@@ -1080,8 +1089,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
         const initialColor = Common.Color.parse('#000') as Common.Color.Color;
         const colorText = document.createElement('span');
         colorText.textContent = initialColor.asString();
-        const swatch =
-            new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, colorText, match, context);
+        const swatch = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
         swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
           colorText.textContent = ev.data.color.asString();
         });
@@ -1162,7 +1170,8 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch,
+                  context: RenderingContext): Node[]|Lit.LitTemplate {
     const content = document.createElement('span');
     content.appendChild(document.createTextNode('contrast-color('));
     const param = content.appendChild(document.createElement('span'));
@@ -1185,10 +1194,12 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
     }
 
     const colorSwatch =
-        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, content, match, context);
+        new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl('color', colorSwatch);
 
-    return [colorSwatch, content];
+    return this.#treeElement?.editable() ?
+        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :
+        [colorSwatch, content];
   }
 }
 

@@ -27,7 +27,7 @@ export default [{
   },
   plugins: [
     nodeResolve(),
-    terser()
+    terser({format: {ascii_only: true}})
   ]
 }, {
   input: './bundle.d.ts',

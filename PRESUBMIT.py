@@ -442,6 +442,7 @@ def CheckTestExpectations(input_api, output_api):
 
 _UPDATE_NODE_DEPENDENCIES_FOOTER = 'Update-Node-Dependencies'
 
+
 def CheckNodeModules(input_api, output_api):
     files = ['.clang-format', 'OWNERS', 'README.md']
     results = []
@@ -601,6 +602,134 @@ def CheckVisualLoggingNoContextValueRemoval(input_api, output_api):
             locations=[
                 output_api.PresubmitResultLocation(file_path=local_path)
             ],
+        )
+    ]
+
+
+_EXEMPT_THIRD_PARTY_LICENSE_PACKAGES = {
+    'vscode.web-custom-data',
+}
+
+
+def CheckThirdPartyAndSvgAssets(input_api, output_api):
+    """Verify front_end/third_party/ package metadata and front_end/Images/src/ SVG icon hygiene."""
+    devtools_root = input_api.PresubmitLocalPath()
+    third_party_prefix = input_api.os_path.join(
+        'front_end', 'third_party') + input_api.os_path.sep
+    images_src_prefix = input_api.os_path.join('front_end', 'Images',
+                                               'src') + input_api.os_path.sep
+
+    checked_packages = set()
+    errors = []
+
+    for f in input_api.AffectedFiles():
+        # Check both added and modified files (but not deleted files).
+        if f.Action() not in ('A', 'M'):
+            continue
+
+        local_path = f.LocalPath()
+
+        if local_path.startswith(third_party_prefix):
+            rel_path = local_path[len(third_party_prefix):]
+            parts = rel_path.split(input_api.os_path.sep)
+            if len(parts) < 2:
+                continue
+            pkg = parts[0]
+            if pkg in checked_packages:
+                continue
+            checked_packages.add(pkg)
+
+            pkg_dir = input_api.os_path.join(devtools_root, 'front_end',
+                                             'third_party', pkg)
+            if not input_api.os_path.isdir(pkg_dir):
+                continue
+
+            readme_path = input_api.os_path.join(pkg_dir, 'README.chromium')
+            if not input_api.os_path.isfile(readme_path):
+                errors.append(
+                    f'front_end/third_party/{pkg}/README.chromium is missing.')
+            else:
+                readme_text = Path(readme_path).read_text(encoding='utf-8')
+                if 'Update Mechanism:' not in readme_text:
+                    errors.append(
+                        f'front_end/third_party/{pkg}/README.chromium must include an "Update Mechanism:" field.'
+                    )
+
+            if pkg not in _EXEMPT_THIRD_PARTY_LICENSE_PACKAGES:
+                license_path = input_api.os_path.join(pkg_dir, 'LICENSE')
+                pkg_license_path = input_api.os_path.join(
+                    pkg_dir, 'package', 'LICENSE')
+                license_md_path = input_api.os_path.join(pkg_dir, 'LICENSE.md')
+                has_license = input_api.os_path.isfile(
+                    license_path) or input_api.os_path.isfile(pkg_license_path)
+                if input_api.os_path.isfile(license_md_path):
+                    errors.append(
+                        f'front_end/third_party/{pkg}/ uses LICENSE.md; name the license file "LICENSE" instead.'
+                    )
+                elif not has_license:
+                    errors.append(
+                        f'front_end/third_party/{pkg}/ is missing a LICENSE file.'
+                    )
+
+        elif local_path.startswith(images_src_prefix) and local_path.endswith(
+                '.svg'):
+            svg_text = '\n'.join(f.NewContents())
+            svg_tag_match = input_api.re.search(r'<svg\b[^>]*>', svg_text)
+            if not svg_tag_match:
+                continue
+            svg_tag = svg_tag_match.group(0)
+
+            fills = [
+                fill.strip().lower()
+                for fill in input_api.re.findall(r'\bfill="([^"]+)"', svg_text)
+                if fill.strip().lower() != 'none'
+            ]
+            has_gradient_or_defs = bool(
+                input_api.re.search(
+                    r'<(linearGradient|radialGradient|style)\b|url\(#',
+                    svg_text))
+            distinct_fills = set(fills)
+
+            width_match = input_api.re.search(r'\bwidth="(\d+)"', svg_tag)
+            height_match = input_api.re.search(r'\bheight="(\d+)"', svg_tag)
+            viewbox_match = input_api.re.search(r'\bviewBox="([^"]+)"',
+                                                svg_tag)
+
+            # Skip multi-color illustrations, gradient illustrations, or large non-icon SVGs.
+            if has_gradient_or_defs or len(distinct_fills) > 1:
+                continue
+            if width_match and height_match:
+                w = int(width_match.group(1))
+                h = int(height_match.group(1))
+                if w != h or w > 24:
+                    continue
+
+            if not viewbox_match:
+                errors.append(
+                    f'{local_path}: SVG icon is missing a viewBox attribute (expected viewBox="0 0 20 20").'
+                )
+            elif viewbox_match.group(1) not in ('0 0 20 20', '0 0 16 16',
+                                                '0 0 24 24'):
+                errors.append(
+                    f'{local_path}: SVG icon has viewBox="{viewbox_match.group(1)}" (expected "0 0 20 20").'
+                )
+
+            invalid_fills = [
+                fill for fill in distinct_fills
+                if fill not in ('#000', '#000000', 'black')
+            ]
+            if invalid_fills:
+                errors.append(
+                    f'{local_path}: Monochromatic SVG icon uses non-black fill {invalid_fills[0]} (expected #000 or black).'
+                )
+
+    if not errors:
+        return []
+
+    return [
+        output_api.PresubmitError(
+            'Third-party package or SVG asset hygiene check failed:',
+            long_text='\n'.join(errors) + '\n',
         )
     ]
 

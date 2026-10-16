@@ -789,12 +789,7 @@ describeWithEnvironment('SecurityPanel', () => {
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
 
-    const request = createNetworkRequest({
-      url: 'https://foo.test/',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request = createNetworkRequest({url: 'https://foo.test/'});
     request.setSecurityState(Protocol.Security.SecurityState.Secure);
     request.setSecurityDetails(createSecurityDetails({
       signedCertificateTimestampList: [],
@@ -816,12 +811,7 @@ describeWithEnvironment('SecurityPanel', () => {
     const securityModel = target.model(Security.SecurityModel.SecurityModel);
     assert.exists(securityModel);
     const networkManager = securityModel.networkManager();
-    const request = createNetworkRequest({
-      url: 'https://foo.test',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request = createNetworkRequest({url: 'https://foo.test'});
     request.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 
@@ -882,20 +872,12 @@ describeWithEnvironment('SecurityPanel', () => {
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
 
-    const request1 = createNetworkRequest({
-      url: 'https://foo.test/foo.jpg',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request1 = createNetworkRequest({url: 'https://foo.test/foo.jpg'});
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request1);
 
     const request2 = createNetworkRequest({
       url:
           'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAKCAYAAABmBXS+AAAAPElEQVR42mNgQAMZGRn/GfABkIIdO3b8x6kQpgAEsCpEVgADKAqxKcBQCCLwARRFIBodYygiyiSCighhAO4e2jskhrm3AAAAAElFTkSuQmCC',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
     });
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
     await doubleRaf();
@@ -923,21 +905,11 @@ describeWithEnvironment('SecurityPanel', () => {
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
 
-    const request1 = createNetworkRequest({
-      url: 'https://foo.test/foo.jpg',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request1 = createNetworkRequest({url: 'https://foo.test/foo.jpg'});
     request1.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request1);
 
-    const request2 = createNetworkRequest({
-      url: 'https://does-not-resolve.test',
-      documentURL: 'https://does-not-resolve.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request2 = createNetworkRequest({url: 'https://does-not-resolve.test'});
     // Leave the security state unknown.
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
     await doubleRaf();
@@ -976,12 +948,7 @@ describeWithEnvironment('SecurityPanel', () => {
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
                                            pageVisibleSecurityState);
 
-    const request = createNetworkRequest({
-      url: 'http://foo.test',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request = createNetworkRequest({url: 'http://foo.test'});
     request.setBlockedReason(Protocol.Network.BlockedReason.MixedContent);
     request.mixedContentType = Protocol.Security.MixedContentType.Blockable;
     const networkManager = securityModel.networkManager();
@@ -1039,12 +1006,7 @@ describeWithEnvironment('SecurityPanel', () => {
     // Now simulate a refresh.
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
                                            pageVisibleSecurityState);
-    const request = createNetworkRequest({
-      url: 'http://foo.test',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request = createNetworkRequest({url: 'http://foo.test'});
     request.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
     const networkManager = securityModel.networkManager();
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
@@ -1102,21 +1064,11 @@ describeWithEnvironment('SecurityPanel', () => {
     securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
                                            pageVisibleSecurityState);
     const networkManager = securityModel.networkManager();
-    const passiveRequest = createNetworkRequest({
-      url: 'http://foo.test',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const passiveRequest = createNetworkRequest({url: 'http://foo.test'});
     passiveRequest.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passiveRequest);
 
-    const activeRequest = createNetworkRequest({
-      url: 'http://foo.test',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const activeRequest = createNetworkRequest({url: 'http://foo.test'});
     activeRequest.mixedContentType = Protocol.Security.MixedContentType.Blockable;
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, activeRequest);
 
@@ -1139,12 +1091,7 @@ describeWithEnvironment('SecurityPanel', () => {
     securityModel.dispatchEventToListeners(
         Security.SecurityModel.Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
 
-    const passive = createNetworkRequest({
-      url: 'http://foo.test',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const passive = createNetworkRequest({url: 'http://foo.test'});
     passive.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
     const networkManager = securityModel.networkManager();
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passive);
@@ -1153,17 +1100,36 @@ describeWithEnvironment('SecurityPanel', () => {
         sidebarTreeClearSpy.calledOnceWith(urlString`http://foo.test`, Protocol.Security.SecurityState.Insecure));
     sidebarTreeClearSpy.resetHistory();
 
-    const active = createNetworkRequest({
-      url: 'http://bar.test',
-      documentURL: 'https://bar.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const active = createNetworkRequest({url: 'http://bar.test'});
     active.mixedContentType = Protocol.Security.MixedContentType.Blockable;
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, active);
 
     assert.isTrue(
         sidebarTreeClearSpy.calledOnceWith(urlString`http://bar.test`, Protocol.Security.SecurityState.Insecure));
+  });
+
+  it('shows the overview when an interstitial is shown', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+
+    const request = createNetworkRequest({url: 'http://foo.test/'});
+    request.setSecurityState(Protocol.Security.SecurityState.Insecure);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+    assert.isTrue(securityPanel.mainView.isShowing());
+
+    securityPanel.sidebar.selectedOrigin = urlString`http://foo.test`;
+    const originView = securityPanel.visibleView;
+    assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
+    assert.isFalse(securityPanel.mainView.isShowing());
+    assert.isTrue(originView.isShowing());
+
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
+    assert.isTrue(securityPanel.mainView.isShowing());
+    assert.isFalse(originView.isShowing());
   });
 
   it('hides and shows the sidebar origin list when an interstitial is shown or hidden', async () => {
@@ -1174,32 +1140,17 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.exists(resourceTreeModel);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
-    const request1 = createNetworkRequest({
-      url: 'https://foo.test/',
-      documentURL: 'https://foo.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request1 = createNetworkRequest({url: 'https://foo.test/'});
     request1.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request1);
 
-    const request2 = createNetworkRequest({
-      url: 'https://bar.test/foo.jpg',
-      documentURL: 'https://bar.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request2 = createNetworkRequest({url: 'https://bar.test/foo.jpg'});
     request2.setSecurityState(Protocol.Security.SecurityState.Secure);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
     // Simulate a request finishing after the interstitial is shown, to make sure that doesn't show up in the sidebar.
-    const request3 = createNetworkRequest({
-      url: 'https://bar.test/foo.jpg',
-      documentURL: 'https://bar.test',
-      frameId: '0',
-      loaderId: '0',
-    });
+    const request3 = createNetworkRequest({url: 'https://bar.test/foo.jpg'});
     request3.setSecurityState(Protocol.Security.SecurityState.Unknown);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request3);
     assert.isTrue(toggleSidebarSpy.calledOnceWith(true));

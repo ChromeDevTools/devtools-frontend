@@ -13,6 +13,7 @@ import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.j
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Resources from './application.js';
 
@@ -26,15 +27,15 @@ class ExtensionStorageItemsListener {
   constructor(dispatcher: Common.ObjectWrapper.ObjectWrapper<View.ExtensionStorageItemsDispatcher.EventTypes>) {
     this.#dispatcher = dispatcher;
     this.#dispatcher.addEventListener(View.ExtensionStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemsEdited, this);
-    this.#dispatcher.addEventListener(
-        View.ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed, this);
+    this.#dispatcher.addEventListener(View.ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed,
+                                      this);
   }
 
   dispose(): void {
-    this.#dispatcher.removeEventListener(
-        View.ExtensionStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemsEdited, this);
-    this.#dispatcher.removeEventListener(
-        View.ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed, this);
+    this.#dispatcher.removeEventListener(View.ExtensionStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemsEdited,
+                                         this);
+    this.#dispatcher.removeEventListener(View.ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED,
+                                         this.#itemsRefreshed, this);
   }
 
   #itemsEdited(): void {
@@ -170,7 +171,7 @@ describeWithEnvironment('ExtensionStorageItemsView', function() {
     const itemsListener = new ExtensionStorageItemsListener(view.extensionStorageItemsDispatcher);
     await itemsListener.waitForItemsRefreshed();
 
-    await view.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     await assertScreenshot('application/extension-storage-item-view.png');
     view.detach();

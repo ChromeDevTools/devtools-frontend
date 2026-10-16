@@ -23,7 +23,6 @@ import {
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -49,8 +48,8 @@ describeWithEnvironment('IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done({waitForWork: true});
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    await component.updateComplete;
+    const report = getElementWithinComponent(component.element, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
     const titleElement = report.shadowRoot.querySelector('.report-title');
@@ -87,8 +86,8 @@ describeWithEnvironment('IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done({waitForWork: true});
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    await component.updateComplete;
+    const report = getElementWithinComponent(component.element, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
@@ -124,8 +123,8 @@ describeWithEnvironment('IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done({waitForWork: true});
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    await component.updateComplete;
+    const report = getElementWithinComponent(component.element, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
@@ -173,9 +172,9 @@ describeWithEnvironment('IDBDatabaseView', () => {
     renderElementIntoDOM(defaultBucketComponent);
 
     assert.isNotNull(defaultBucketComponent.shadowRoot);
-    await RenderCoordinator.done({waitForWork: true});
+    await defaultBucketComponent.updateComplete;
     const defaultReport =
-        getElementWithinComponent(defaultBucketComponent, 'devtools-report', ReportView.ReportView.Report);
+        getElementWithinComponent(defaultBucketComponent.element, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(defaultReport.shadowRoot);
 
     const defaultKeys = getCleanTextContentFromElements(defaultBucketComponent.shadowRoot, 'devtools-report-key');
@@ -215,7 +214,7 @@ describeWithEnvironment('IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done({waitForWork: true});
+    await component.updateComplete;
 
     const buttons = component.shadowRoot.querySelectorAll('devtools-button');
     assert.lengthOf(buttons, 2);

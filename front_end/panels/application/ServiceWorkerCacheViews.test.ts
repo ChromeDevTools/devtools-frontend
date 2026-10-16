@@ -14,7 +14,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
@@ -34,8 +34,8 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     connection.setSuccessHandler('CacheStorage.requestEntries', () => ({cacheDataEntries: [], returnCount: 0}));
     target = createTarget({connection});
     cacheStorageModel = new SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel(target);
-    cache = new SDK.ServiceWorkerCacheModel.Cache(
-        cacheStorageModel, testStorageBucket, 'test-cache', 'id' as Protocol.CacheStorage.CacheId);
+    cache = new SDK.ServiceWorkerCacheModel.Cache(cacheStorageModel, testStorageBucket, 'test-cache',
+                                                  'id' as Protocol.CacheStorage.CacheId);
   });
 
   it('creates the expected view structure with toolbar, metadata, grid, and details pane', () => {
@@ -44,7 +44,7 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     const toolbar = view.element.querySelector('devtools-toolbar');
     assert.isNotNull(toolbar, 'Expected a toolbar');
 
-    const metadataView = view.element.querySelector('devtools-storage-metadata-view');
+    const metadataView = view.element.querySelector('.storage-metadata-view');
     assert.isNotNull(metadataView, 'Expected a metadata view');
 
     const dataGrid = view.element.querySelector('.data-grid');
@@ -58,10 +58,10 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
     renderElementIntoDOM(view);
 
-    const metadataView = view.element.querySelector('devtools-storage-metadata-view');
+    const metadataView = view.element.querySelector('.storage-metadata-view');
     assert.isNotNull(metadataView);
 
-    await RenderCoordinator.done();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isNotNull(metadataView.shadowRoot);
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
@@ -92,10 +92,10 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
     renderElementIntoDOM(view);
 
-    const metadataView = view.element.querySelector('devtools-storage-metadata-view');
+    const metadataView = view.element.querySelector('.storage-metadata-view');
     assert.isNotNull(metadataView);
 
-    await RenderCoordinator.done();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     assert.isNotNull(metadataView.shadowRoot);
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');

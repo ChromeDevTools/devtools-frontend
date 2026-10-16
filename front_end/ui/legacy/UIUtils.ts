@@ -1574,8 +1574,8 @@ export class MessageDialog {
 }
 
 export class ConfirmDialog {
-  static async show(message: string, header?: string, where?: Element|Document, options?: ConfirmDialogOptions):
-      Promise<boolean> {
+  static async show(message: string, header?: string, where?: Element|Document|Widget,
+                    options?: ConfirmDialogOptions): Promise<boolean> {
     const dialog = new Dialog(options?.jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
@@ -1592,13 +1592,13 @@ export class ConfirmDialog {
           /* text= */ options?.okButtonLabel || i18nString(UIStrings.ok), /* clickHandler= */ () => resolve(true),
           {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(createTextButton(
-          options?.cancelButtonLabel || i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'}));
+      buttonsBar.appendChild(createTextButton(options?.cancelButtonLabel || i18nString(UIStrings.cancel),
+                                              () => resolve(false), {jslogContext: 'cancel'}));
       dialog.setOutsideClickCallback(event => {
         event.consume();
         resolve(false);
       });
-      dialog.show(where);
+      dialog.show(where instanceof Widget ? where.element : where);
       okButton.focus();
     });
     dialog.hide();

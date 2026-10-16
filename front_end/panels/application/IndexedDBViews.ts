@@ -7,6 +7,7 @@ import '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -136,99 +137,129 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {repeat} = Directives;
 const {widget} = UI.Widget;
 
-export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.StorageMetadataView {
-  private readonly model: IndexedDBModel;
-  private database!: Database;
-  constructor(model: IndexedDBModel, database: Database|null) {
-    super();
+export interface IndexedDBDatabaseViewInput {
+  database: Database|null;
+  storageKey: SDK.StorageKeyManager.StorageKey|null;
+  storageBucket: Protocol.Storage.StorageBucketInfo|null;
+  onDeleteDatabase: () => void;
+  onRefreshDatabase: () => void;
+}
 
-    this.model = model;
-    this.setShowOnlyBucket(true);
+export type IDBDatabaseViewView = (input: IndexedDBDatabaseViewInput, output: undefined, target: HTMLElement) => void;
+
+export const IDB_DATABASE_VIEW_DEFAULT_VIEW: IDBDatabaseViewView = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${ApplicationComponents.StorageMetadataView.storageMetadataViewStyle}</style>
+    <devtools-report .data=${{reportTitle: input.database?.databaseId.name ?? ''}}>
+      ${input.database ? html`
+        ${ApplicationComponents.StorageMetadataView.renderStorageMetadataReportContent(
+            input.storageKey, input.storageBucket, /* showOnlyBucket= */ true)}
+        <devtools-report-key>${i18nString(UIStrings.version)}</devtools-report-key>
+        <devtools-report-value>${input.database.version.toString()}</devtools-report-value>
+        <devtools-report-key>${i18nString(UIStrings.objectStores)}</devtools-report-key>
+        <devtools-report-value>${input.database.objectStores.size.toString()}</devtools-report-value>
+        <devtools-report-divider></devtools-report-divider>
+        <devtools-report-section>
+          <devtools-button
+              aria-label=${i18nString(UIStrings.deleteDatabase)}
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              @click=${input.onDeleteDatabase}
+              jslog=${VisualLogging.action('delete-database').track({
+          click: true,
+        })}>
+            ${i18nString(UIStrings.deleteDatabase)}
+          </devtools-button>&nbsp;
+          <devtools-button
+              aria-label=${i18nString(UIStrings.refreshDatabase)}
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              @click=${input.onRefreshDatabase}
+              jslog=${VisualLogging.action('refresh-database').track({
+          click: true,
+        })}>
+            ${i18nString(UIStrings.refreshDatabase)}
+          </devtools-button>
+        </devtools-report-section>
+      ` : nothing}
+    </devtools-report>
+  `, target);
+  // clang-format on
+};
+
+export class IDBDatabaseView extends UI.Widget.VBox {
+  readonly #model: IndexedDBModel;
+  #database: Database|null = null;
+  #storageKey: SDK.StorageKeyManager.StorageKey|null = null;
+  #storageBucket: Protocol.Storage.StorageBucketInfo|null = null;
+  readonly #view: IDBDatabaseViewView;
+
+  constructor(model: IndexedDBModel, database: Database|null, element?: HTMLElement,
+              view: IDBDatabaseViewView = IDB_DATABASE_VIEW_DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, jslog: `${VisualLogging.pane('indexeddb-data')}`});
+
+    this.#view = view;
+    this.#model = model;
     if (database) {
       this.update(database);
     }
   }
 
-  override getTitle(): string|undefined {
-    return this.database?.databaseId.name;
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
-  override async renderReportContent(): Promise<LitTemplate> {
-    if (!this.database) {
-      return nothing;
+  get shadowRoot(): ShadowRoot|null {
+    return this.element.shadowRoot;
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      database: this.#database,
+      storageKey: this.#storageKey,
+      storageBucket: this.#storageBucket,
+      onDeleteDatabase: () => {
+        void this.#deleteDatabase();
+      },
+      onRefreshDatabase: () => {
+        this.#refreshDatabaseButtonClicked();
+      },
+    },
+               undefined, this.contentElement);
+  }
+
+  #refreshDatabaseButtonClicked(): void {
+    if (!this.#database) {
+      return;
     }
-    return html`
-      ${await super.renderReportContent()}
-      ${this.key(i18nString(UIStrings.version))}
-      ${this.value(this.database.version.toString())}
-      ${this.key(i18nString(UIStrings.objectStores))}
-      ${this.value(this.database.objectStores.size.toString())}
-      <devtools-report-divider></devtools-report-divider>
-      <devtools-report-section>
-      <devtools-button
-          aria-label=${i18nString(UIStrings.deleteDatabase)}
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          @click=${this.deleteDatabase}
-          jslog=${VisualLogging.action('delete-database').track({
-      click: true,
-    })}>
-        ${i18nString(UIStrings.deleteDatabase)}
-      </devtools-button>&nbsp;
-      <devtools-button
-          aria-label=${i18nString(UIStrings.refreshDatabase)}
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          @click=${this.refreshDatabaseButtonClicked}
-          jslog=${VisualLogging.action('refresh-database').track({
-      click: true,
-    })}>
-        ${i18nString(UIStrings.refreshDatabase)}
-      </devtools-button>
-      </devtools-report-section>
-      `;
-  }
-
-  private refreshDatabaseButtonClicked(): void {
-    this.model.refreshDatabase(this.database.databaseId);
+    this.#model.refreshDatabase(this.#database.databaseId);
   }
 
   update(database: Database): void {
-    this.database = database;
+    this.#database = database;
     const bucketInfo =
-        this.model.target()
+        this.#model.target()
             .model(SDK.StorageBucketsModel.StorageBucketsModel)
-            ?.getBucketByName(database.databaseId.storageBucket.storageKey, database.databaseId.storageBucket.name);
-    if (bucketInfo) {
-      this.setStorageBucket(bucketInfo);
-    } else {
-      this.setStorageKey(database.databaseId.storageBucket.storageKey);
+            ?.getBucketByName(database.databaseId.storageBucket.storageKey, database.databaseId.storageBucket.name) ??
+        null;
+    this.#storageBucket = bucketInfo;
+    const storageKey = bucketInfo ? bucketInfo.bucket.storageKey : database.databaseId.storageBucket.storageKey;
+    this.#storageKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
+
+    this.requestUpdate();
+  }
+
+  async #deleteDatabase(): Promise<void> {
+    if (!this.#database) {
+      return;
     }
-
-    void this.render().then(() => this.updatedForTests());
-  }
-
-  private updatedForTests(): void {
-    // Sniffed in tests.
-  }
-
-  private async deleteDatabase(): Promise<void> {
     const ok = await UI.UIUtils.ConfirmDialog.show(
         i18nString(UIStrings.databaseWillBeRemoved),
-        i18nString(UIStrings.confirmDeleteDatabase, {PH1: this.database.databaseId.name}), this,
+        i18nString(UIStrings.confirmDeleteDatabase, {PH1: this.#database.databaseId.name}), this,
         {jslogContext: 'delete-database-confirmation'});
     if (ok) {
-      void this.model.deleteDatabase(this.database.databaseId);
+      void this.#model.deleteDatabase(this.#database.databaseId);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-  }
-}
-
-customElements.define('devtools-idb-database-view', IDBDatabaseView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-idb-database-view': IDBDatabaseView;
   }
 }
 export interface IndexedDBDataViewInput {
@@ -570,9 +601,7 @@ export class IDBDataView extends UI.View.SimpleView {
     const ok =
         await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.objectStoreWillBeCleared),
                                             i18nString(UIStrings.confirmClearObjectStore, {PH1: this.objectStore.name}),
-                                            // TODO(b/407750537): Fix the linter false positive
-                                            // eslint-disable-next-line @devtools/no-imperative-dom-api
-                                            this.element, {jslogContext: 'clear-object-store-confirmation'});
+                                            this, {jslogContext: 'clear-object-store-confirmation'});
     if (ok) {
       this.#clearButtonEnabled = false;
       this.performUpdate();

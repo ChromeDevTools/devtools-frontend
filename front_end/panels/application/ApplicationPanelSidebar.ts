@@ -41,7 +41,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1314,7 +1313,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   databaseId: DatabaseId;
   private readonly idbObjectStoreTreeElements: Map<string, IDBObjectStoreTreeElement>;
   private database?: IndexedDBModelDatabase;
-  private view?: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widget.VBox, IDBDatabaseView>;
+  private view?: IDBDatabaseView;
 
   constructor(storagePanel: ResourcesPanel, model: IndexedDBModel, databaseId: DatabaseId) {
     super(storagePanel, databaseId.name, false, 'indexed-db-database');
@@ -1378,7 +1377,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     }
 
     if (this.view) {
-      this.view.getComponent().update(database);
+      this.view.update(database);
     }
 
     this.updateTooltip();
@@ -1406,8 +1405,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
       return false;
     }
     if (!this.view) {
-      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.Widget.VBox, new IDBDatabaseView(this.model, this.database), 'indexeddb-data');
+      this.view = new IDBDatabaseView(this.model, this.database);
     }
 
     this.showView(this.view);

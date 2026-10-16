@@ -17,7 +17,6 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
@@ -36,8 +35,8 @@ async function makeView(
   } else {
     component.setStorageBucket(storageKeyOrBucketInfo);
   }
-  await RenderCoordinator.done();
-  return component;
+  await component.updateComplete;
+  return component.element;
 }
 
 describe('StorageMetadataView', () => {
@@ -318,7 +317,7 @@ describe('StorageMetadataView', () => {
     };
     component.setStorageBucket(bucketInfo);
     component.setShowOnlyBucket(true);
-    await RenderCoordinator.done();
+    await component.updateComplete;
 
     const report = component.shadowRoot!.querySelector('devtools-report');
     assert.exists(report);

@@ -117,7 +117,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     const editorToolbar = this.element.createChild('devtools-toolbar', 'data-view-toolbar');
     editorToolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    this.element.appendChild(this.metadataView);
+    this.metadataView.show(this.element);
     this.splitWidget = new UI.SplitWidget.SplitWidget(false, false);
     this.splitWidget.show(this.element);
 

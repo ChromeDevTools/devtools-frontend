@@ -7,9 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import {createIcon} from '../../ui/kit/kit.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import {IndexedDBTreeElement} from './ApplicationPanelSidebar.js';
 import {ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
@@ -136,7 +134,7 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
 export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeElement {
   private storageBucketInfo: Protocol.Storage.StorageBucketInfo;
   private bucketModel: SDK.StorageBucketsModel.StorageBucketsModel;
-  private view?: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widget.Widget, StorageMetadataView.StorageMetadataView>;
+  private view?: StorageMetadataView.StorageMetadataView;
 
   constructor(
       resourcesPanel: ResourcesPanel, model: SDK.StorageBucketsModel.StorageBucketsModel,
@@ -175,17 +173,16 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
   set bucketInfo(bucketInfo: Protocol.Storage.StorageBucketInfo) {
     this.storageBucketInfo = bucketInfo;
     if (this.view) {
-      this.view.getComponent().setStorageBucket(this.storageBucketInfo);
+      this.view.setStorageBucket(this.storageBucketInfo);
     }
   }
 
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view =
-          LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new StorageMetadataView.StorageMetadataView());
-      this.view.getComponent().enableStorageBucketControls(this.model);
-      this.view.getComponent().setStorageBucket(this.storageBucketInfo);
+      this.view = new StorageMetadataView.StorageMetadataView();
+      this.view.enableStorageBucketControls(this.model);
+      this.view.setStorageBucket(this.storageBucketInfo);
     }
     this.showView(this.view);
     return false;

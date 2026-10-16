@@ -1,7 +1,6 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/kit/kit.js';
@@ -11,13 +10,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import storageMetadataViewStyle from './storageMetadataView.css.js';
+
+export {storageMetadataViewStyle};
 
 const UIStrings = {
   /**
@@ -119,45 +118,225 @@ export class StorageBucketRevealInfo {
   }
 }
 
-export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+function key(content: string|TemplateResult): TemplateResult {
+  return html`<devtools-report-key>${content}</devtools-report-key>`;
+}
+
+function value(content: string|TemplateResult): TemplateResult {
+  return html`<devtools-report-value>${content}</devtools-report-value>`;
+}
+
+function getExpirationString(storageBucket: Protocol.Storage.StorageBucketInfo): string {
+  const {expiration} = storageBucket;
+  if (expiration === 0) {
+    return i18nString(UIStrings.none);
+  }
+  return (new Date(expiration * 1000)).toLocaleString();
+}
+
+function renderStorageBucketInfo(storageBucket: Protocol.Storage.StorageBucketInfo,
+                                 showOnlyBucket: boolean): LitTemplate {
+  const {bucket: {name}, persistent, durability, quota} = storageBucket;
+  const isDefault = !name;
+
+  const renderBucketName = (): TemplateResult => {
+    if (isDefault) {
+      return html`<span class="default-bucket">${i18nString(UIStrings.defaultBucket)}</span>`;
+    }
+    if (!showOnlyBucket) {
+      return html`${name}`;
+    }
+    const revealBucket = (e: Event): void => {
+      e.preventDefault();
+      void Common.Revealer.reveal(new StorageBucketRevealInfo(storageBucket));
+    };
+    return html`<devtools-link
+      @click=${revealBucket}
+      title=${name}
+      jslog=${VisualLogging.action('storage-bucket').track({
+      click: true,
+    })}
+    >${name}</devtools-link>`;
+  };
+
+  if (showOnlyBucket) {
+    return html`
+      ${key(i18nString(UIStrings.bucketName))}
+      ${value(renderBucketName())}`;
+  }
+  // If quota is 0, it means no custom quota limit has been set on the bucket.
+  // We do not render it here to avoid confusing the user (who might interpret
+  // a 0 quota as a full bucket/0 capacity rather than sharing the default origin limit).
+  // clang-format off
+  return html`
+    ${key(i18nString(UIStrings.bucketName))}
+    ${value(renderBucketName())}
+    ${key(i18nString(UIStrings.persistent))}
+    ${value(persistent ? i18nString(UIStrings.yes) : i18nString(UIStrings.no))}
+    ${key(i18nString(UIStrings.durability))}
+    ${value(durability)}
+    ${quota !== 0 ? html`
+      ${key(i18nString(UIStrings.quota))}
+      ${value(i18n.ByteUtilities.bytesToString(quota))}
+    ` : nothing}
+    ${key(i18nString(UIStrings.expiration))}
+    ${value(getExpirationString(storageBucket))}`;
+  // clang-format on
+}
+
+export function renderStorageMetadataReportContent(
+    storageKey: SDK.StorageKeyManager.StorageKey|null,
+    storageBucket: Protocol.Storage.StorageBucketInfo|null,
+    showOnlyBucket = false,
+    ): LitTemplate {
+  if (!storageKey) {
+    return nothing;
+  }
+  const origin = storageKey.origin;
+  const ancestorChainHasCrossSite =
+      Boolean(storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.ANCESTOR_CHAIN_BIT));
+  const hasNonce = Boolean(storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.NONCE_HIGH));
+  const topLevelSiteIsOpaque =
+      Boolean(storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE_OPAQUE_NONCE_HIGH));
+  const topLevelSite = storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE);
+  const thirdPartyReason = ancestorChainHasCrossSite ? i18nString(UIStrings.yesBecauseAncestorChainHasCrossSite) :
+      hasNonce                                       ? i18nString(UIStrings.yesBecauseKeyIsOpaque) :
+      topLevelSiteIsOpaque                           ? i18nString(UIStrings.yesBecauseTopLevelIsOpaque) :
+      (topLevelSite && origin !== topLevelSite)      ? i18nString(UIStrings.yesBecauseOriginNotInTopLevelSite) :
+                                                       null;
+
+  const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
+
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  return html`
+    ${(isIframeOrEmbedded) ?
+      html`${key(i18nString(UIStrings.origin))}
+        ${value(html`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}`
+      : nothing}
+    ${(topLevelSite || topLevelSiteIsOpaque) ?
+      key(i18nString(UIStrings.topLevelSite)) : nothing}
+    ${topLevelSite ? value(topLevelSite) : nothing}
+    ${topLevelSiteIsOpaque ? value(i18nString(UIStrings.opaque)) : nothing}
+    ${thirdPartyReason ? html`
+      ${key(i18nString(UIStrings.isThirdParty))}${value(thirdPartyReason)}` : nothing}
+    ${hasNonce || topLevelSiteIsOpaque ?
+      key(i18nString(UIStrings.isOpaque)) : nothing}
+    ${hasNonce ? value(i18nString(UIStrings.yes)) : nothing}
+    ${topLevelSiteIsOpaque ?
+      value(i18nString(UIStrings.yesBecauseTopLevelIsOpaque)) : nothing}
+    ${storageBucket ? renderStorageBucketInfo(storageBucket, showOnlyBucket) : nothing}`;
+  // clang-format on
+}
+
+export interface ViewInput {
+  title: string;
+  storageKey: SDK.StorageKeyManager.StorageKey|null;
+  storageBucket: Protocol.Storage.StorageBucketInfo|null;
+  showOnlyBucket: boolean;
+  showBucketControls: boolean;
+  onDeleteBucket: () => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  if (!input.storageKey) {
+    render(nothing, target);
+    return;
+  }
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  render(html`
+    <style>${storageMetadataViewStyle}</style>
+    <devtools-report .data=${{reportTitle: input.title}}>
+      ${renderStorageMetadataReportContent(input.storageKey, input.storageBucket, input.showOnlyBucket)}
+      ${input.showBucketControls ? html`
+        <devtools-report-divider></devtools-report-divider>
+        <devtools-report-section>
+          <devtools-button aria-label=${i18nString(UIStrings.deleteBucket)}
+                           .variant=${Buttons.Button.Variant.OUTLINED}
+                           @click=${input.onDeleteBucket}>
+            ${i18nString(UIStrings.deleteBucket)}
+          </devtools-button>
+        </devtools-report-section>` : nothing}
+    </devtools-report>`, target);
+  // clang-format on
+};
+
+export class StorageMetadataView extends UI.Widget.Widget {
   #storageBucketsModel?: SDK.StorageBucketsModel.StorageBucketsModel;
   #storageKey: SDK.StorageKeyManager.StorageKey|null = null;
   #storageBucket: Protocol.Storage.StorageBucketInfo|null = null;
   #showOnlyBucket = false;
+  readonly #view: View;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, classes: ['storage-metadata-view']});
+    this.element.classList.remove('vbox', 'flex-auto');
+    this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  get shadowRoot(): ShadowRoot|null {
+    return this.element.shadowRoot;
+  }
 
   setStorageKey(storageKey: string): void {
-    this.#storageKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
-    void this.render();
+    const parsedStorageKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
+    if (this.#storageKey && this.#storageKey.origin === parsedStorageKey.origin &&
+        this.#storageKey.components.size === parsedStorageKey.components.size &&
+        Array.from(this.#storageKey.components.entries())
+            .every(([key, value]) => parsedStorageKey.components.get(key) === value)) {
+      return;
+    }
+    this.#storageKey = parsedStorageKey;
+    this.requestUpdate();
   }
 
   setStorageBucket(storageBucket: Protocol.Storage.StorageBucketInfo): void {
+    if (this.#storageBucket === storageBucket) {
+      return;
+    }
     this.#storageBucket = storageBucket;
     this.setStorageKey(storageBucket.bucket.storageKey);
+    this.requestUpdate();
   }
 
   setShowOnlyBucket(show: boolean): void {
+    if (this.#showOnlyBucket === show) {
+      return;
+    }
     this.#showOnlyBucket = show;
+    this.requestUpdate();
   }
 
   enableStorageBucketControls(model: SDK.StorageBucketsModel.StorageBucketsModel): void {
+    if (this.#storageBucketsModel === model) {
+      return;
+    }
     this.#storageBucketsModel = model;
     if (this.#storageKey) {
-      void this.render();
+      this.requestUpdate();
     }
   }
 
-  override render(): Promise<void> {
-    return RenderCoordinator.write('StorageMetadataView render', async () => {
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      render(html`
-        <style>${storageMetadataViewStyle}</style>
-        <devtools-report .data=${{reportTitle: this.getTitle() ?? i18nString(UIStrings.loading)}}>
-          ${await this.renderReportContent()}
-        </devtools-report>`, this.#shadow, {host: this});
-      // clang-format on
-    });
+  override performUpdate(): void {
+    this.#view({
+      title: this.getTitle() ?? i18nString(UIStrings.loading),
+      storageKey: this.#storageKey,
+      storageBucket: this.#storageBucket,
+      showOnlyBucket: this.#showOnlyBucket,
+      showBucketControls: Boolean(this.#storageKey && this.#storageBucketsModel),
+      onDeleteBucket: () => {
+        void this.#deleteBucket();
+      },
+    },
+               undefined, this.contentElement);
   }
 
   getTitle(): string|undefined {
@@ -167,136 +346,6 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     const origin = this.#storageKey.origin;
     const bucketName = this.#storageBucket?.bucket.name || i18nString(UIStrings.defaultBucket);
     return this.#storageBucketsModel ? `${bucketName} - ${origin}` : origin;
-  }
-
-  key(content: string|TemplateResult): TemplateResult {
-    return html`<devtools-report-key>${content}</devtools-report-key>`;
-  }
-
-  value(content: string|TemplateResult): TemplateResult {
-    return html`<devtools-report-value>${content}</devtools-report-value>`;
-  }
-
-  async renderReportContent(): Promise<LitTemplate> {
-    if (!this.#storageKey) {
-      return nothing;
-    }
-    const origin = this.#storageKey.origin;
-    const ancestorChainHasCrossSite =
-        Boolean(this.#storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.ANCESTOR_CHAIN_BIT));
-    const hasNonce = Boolean(this.#storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.NONCE_HIGH));
-    const topLevelSiteIsOpaque = Boolean(
-        this.#storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE_OPAQUE_NONCE_HIGH));
-    const topLevelSite = this.#storageKey.components.get(SDK.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE);
-    const thirdPartyReason = ancestorChainHasCrossSite ? i18nString(UIStrings.yesBecauseAncestorChainHasCrossSite) :
-        hasNonce                                       ? i18nString(UIStrings.yesBecauseKeyIsOpaque) :
-        topLevelSiteIsOpaque                           ? i18nString(UIStrings.yesBecauseTopLevelIsOpaque) :
-        (topLevelSite && origin !== topLevelSite)      ? i18nString(UIStrings.yesBecauseOriginNotInTopLevelSite) :
-                                                         null;
-
-    const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-  return html`
-        ${(isIframeOrEmbedded) ?
-          html`${this.key(i18nString(UIStrings.origin))}
-            ${this.value(html`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}`
-          : nothing}
-        ${(topLevelSite || topLevelSiteIsOpaque) ?
-          this.key(i18nString(UIStrings.topLevelSite)) : nothing}
-        ${topLevelSite ? this.value(topLevelSite) : nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString(UIStrings.opaque)) : nothing}
-        ${thirdPartyReason ?  html`
-          ${this.key(i18nString(UIStrings.isThirdParty))}${this.value(thirdPartyReason)}` : nothing}
-        ${hasNonce || topLevelSiteIsOpaque ?
-          this.key(i18nString(UIStrings.isOpaque)) : nothing}
-        ${hasNonce ? this.value(i18nString(UIStrings.yes)) : nothing}
-        ${topLevelSiteIsOpaque ?
-          this.value(i18nString(UIStrings.yesBecauseTopLevelIsOpaque)) : nothing}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : nothing}
-        ${this.#storageBucketsModel ? this.#renderBucketControls() : nothing}`;
-    // clang-format on
-  }
-
-  #renderStorageBucketInfo(): LitTemplate {
-    if (!this.#storageBucket) {
-      throw new Error('Should not call #renderStorageBucketInfo if #bucket is null.');
-    }
-    const {bucket: {name}, persistent, durability, quota} = this.#storageBucket;
-    const isDefault = !name;
-
-    const renderBucketName = (): TemplateResult => {
-      if (isDefault) {
-        return html`<span class="default-bucket">${i18nString(UIStrings.defaultBucket)}</span>`;
-      }
-      if (!this.#showOnlyBucket) {
-        return html`${name}`;
-      }
-      const revealBucket = (e: Event): void => {
-        e.preventDefault();
-        void Common.Revealer.reveal(
-            new StorageBucketRevealInfo(this.#storageBucket as Protocol.Storage.StorageBucketInfo));
-      };
-      return html`<devtools-link
-        @click=${revealBucket}
-        title=${name}
-        jslog=${VisualLogging.action('storage-bucket').track({
-        click: true,
-      })}
-      >${name}</devtools-link>`;
-    };
-
-    if (this.#showOnlyBucket) {
-      return html`
-        ${this.key(i18nString(UIStrings.bucketName))}
-        ${this.value(renderBucketName())}`;
-    }
-    // If quota is 0, it means no custom quota limit has been set on the bucket.
-    // We do not render it here to avoid confusing the user (who might interpret
-    // a 0 quota as a full bucket/0 capacity rather than sharing the default origin limit).
-    // clang-format off
-    return html`
-      ${this.key(i18nString(UIStrings.bucketName))}
-      ${this.value(renderBucketName())}
-      ${this.key(i18nString(UIStrings.persistent))}
-      ${this.value(persistent ? i18nString(UIStrings.yes) : i18nString(UIStrings.no))}
-      ${this.key(i18nString(UIStrings.durability))}
-      ${this.value(durability)}
-      ${quota !== 0 ? html`
-        ${this.key(i18nString(UIStrings.quota))}
-        ${this.value(i18n.ByteUtilities.bytesToString(quota))}
-      ` : nothing}
-      ${this.key(i18nString(UIStrings.expiration))}
-      ${this.value(this.#getExpirationString())}`;
-  }
-
-  #getExpirationString(): string {
-    if (!this.#storageBucket) {
-      throw new Error('Should not call #getExpirationString if #bucket is null.');
-    }
-
-    const {expiration} = this.#storageBucket;
-
-    if (expiration === 0) {
-      return i18nString(UIStrings.none);
-    }
-
-    return (new Date(expiration * 1000)).toLocaleString();
-  }
-
-  #renderBucketControls(): TemplateResult {
-    // clang-format off
-  return html`
-    <devtools-report-divider></devtools-report-divider>
-    <devtools-report-section>
-      <devtools-button aria-label=${i18nString(UIStrings.deleteBucket)}
-                       .variant=${Buttons.Button.Variant.OUTLINED}
-                       @click=${this.#deleteBucket}>
-        ${i18nString(UIStrings.deleteBucket)}
-      </devtools-button>
-    </devtools-report-section>`;
-    // clang-format on
   }
 
   async #deleteBucket(): Promise<void> {
@@ -310,13 +359,5 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     if (ok) {
       this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);
     }
-  }
-}
-
-customElements.define('devtools-storage-metadata-view', StorageMetadataView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-storage-metadata-view': StorageMetadataView;
   }
 }

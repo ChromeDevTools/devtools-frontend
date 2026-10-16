@@ -188,6 +188,7 @@ devtools_ui_module("unittests") {
     "IndexedDBModel.test.ts",
     "IndexedDBViews.test.ts",
     "KeyValueStorageItemsView.test.ts",
+    "OpenedWindowDetailsView.test.ts",
     "OriginTrialTreeView.test.ts",
     "PreloadingTreeElement.test.ts",
     "ReportingApiTreeElement.test.ts",

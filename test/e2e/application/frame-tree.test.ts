@@ -204,7 +204,7 @@ describe('The Application Tab', () => {
     await devToolsPage.click(`${OPENED_WINDOWS_SELECTOR} + ol li:first-child`);
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');
+      const fieldValues = await getTrimmedTextContent(devToolsPage, 'devtools-report-value');
       // Make sure the length is equivalent to the expected value below
       if (fieldValues.length === 3 && !fieldValues.includes('')) {
         return fieldValues;
@@ -235,7 +235,7 @@ describe('The Application Tab', () => {
     void devToolsPage.pressKey('ArrowDown');
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');
+      const fieldValues = await getTrimmedTextContent(devToolsPage, 'devtools-report-value');
       // Make sure the length is equivalent to the expected value below
       if (fieldValues.length === 3 && fieldValues.every(field => field.trim() !== '')) {
         return fieldValues;
@@ -258,7 +258,7 @@ describe('The Application Tab', () => {
     void devToolsPage.pressKey('ArrowDown');
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');
+      const fieldValues = await getTrimmedTextContent(devToolsPage, 'devtools-report-value');
       // Make sure the length is equivalent to the expected value below
       if (fieldValues.length === 3 && fieldValues.every(field => field.trim() !== '')) {
         return fieldValues;

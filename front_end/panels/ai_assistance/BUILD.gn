@@ -39,7 +39,6 @@ devtools_ui_module("ai_assistance") {
     "components/MarkdownRendererWithCodeBlock.ts",
     "components/OptInChangeDialog.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
-    "components/StylingAgentMarkdownRenderer.ts",
     "components/WalkthroughUtils.ts",
     "components/WalkthroughView.ts",
   ]
@@ -104,7 +103,6 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/*",
     "../../testing/*",
     "../../ui/components/docs/ai_assistance/*",
-    "../console/*",
     "../explain",
   ]
 

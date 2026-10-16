@@ -858,10 +858,6 @@ export abstract class AiAgent<T> {
     this.#serverSideLoggingActive = false;
   }
 
-  popPendingMultimodalInput(): MultimodalInput|undefined {
-    return undefined;
-  }
-
   /**
    * Preamble features appended to the `client_version` in metadata.
    * This is required ONLY for the Styling Agent for legacy reasons to serve

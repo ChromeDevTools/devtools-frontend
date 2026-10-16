@@ -433,10 +433,3 @@
     --tabbed-pane-close-icon-color: HighlightText;
   }
 }
-
-.spark {
-  position: absolute;
-  top: var(--sys-size-2);
-
-  --icon-default: var(--sys-color-primary);
-}

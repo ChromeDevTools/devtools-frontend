@@ -40,7 +40,6 @@ devtools_entrypoint("bundle") {
     "../../models/workspace_diff/*",
     "../../panels/application/*",
     "../../panels/changes/*",
-    "../../panels/common/*",
     "../../panels/sources/*",
     "../../panels/utils:unittests",
     "../../panels/utils/*",

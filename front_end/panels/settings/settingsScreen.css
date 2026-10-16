@@ -191,7 +191,3 @@ devtools-button.link-icon {
     color: HighlightText;
   }
 }
-
-.greendev-widgets input[type="radio"] {
-  margin: var(--sys-size-4);
-}

@@ -887,12 +887,10 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     return await this.#windowControls.initializeStyleSheetText(url);
   }
 
-  inspectPanelShowRequested({backendNodeId}: Protocol.Overlay.InspectPanelShowRequestedEvent): void {
-    this.dispatchEventToListeners(Events.INSPECT_PANEL_SHOW_REQUESTED, backendNodeId);
+  inspectPanelShowRequested(_event: Protocol.Overlay.InspectPanelShowRequestedEvent): void {
   }
 
-  inspectedElementWindowRestored({backendNodeId}: Protocol.Overlay.InspectedElementWindowRestoredEvent): void {
-    this.dispatchEventToListeners(Events.INSPECTED_ELEMENT_WINDOW_RESTORED, backendNodeId);
+  inspectedElementWindowRestored(_event: Protocol.Overlay.InspectedElementWindowRestoredEvent): void {
   }
 }
 
@@ -1028,8 +1026,6 @@ export const enum Events {
   PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED = 'PersistentFlexContainerOverlayStateChanged',
   PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED = 'PersistentScrollSnapOverlayStateChanged',
   PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED = 'PersistentContainerQueryOverlayStateChanged',
-  INSPECT_PANEL_SHOW_REQUESTED = 'InspectPanelShowRequested',
-  INSPECTED_ELEMENT_WINDOW_RESTORED = 'InspectedElementWindowRestored',
 }
 
 export interface ChangedNodeId {
@@ -1046,8 +1042,6 @@ export interface EventTypes {
   [Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED]: ChangedNodeId;
   [Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED]: ChangedNodeId;
   [Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED]: ChangedNodeId;
-  [Events.INSPECT_PANEL_SHOW_REQUESTED]: number;
-  [Events.INSPECTED_ELEMENT_WINDOW_RESTORED]: number;
 }
 
 export interface Highlighter {

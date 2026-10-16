@@ -21,7 +21,6 @@ bundle("build_inspector_overlay") {
   # available to esbuild under remote execution (e.g. Siso with -strict_remote).
   inputs = [
     "common.css",
-    "tool_green_dev_anchors.css",
     "tool_grid.css",
     "tool_highlight.css",
     "tool_paused.css",
@@ -55,7 +54,6 @@ ts_library("inspector_overlay") {
     "highlight_isolated_element.ts",
     "highlight_scroll_snap.ts",
     "main.ts",
-    "tool_green_dev_anchors.ts",
     "tool_highlight.ts",
     "tool_paused.ts",
     "tool_persistent.ts",

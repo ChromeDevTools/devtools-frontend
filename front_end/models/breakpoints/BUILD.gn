@@ -35,7 +35,6 @@ devtools_entrypoint("bundle") {
     "../../foundation/*",
     "../../models/ai_assistance/*",
     "../../panels/changes/*",
-    "../../panels/console/*",
     "../../panels/settings/*",
     "../../panels/sources/*",
     "../../testing/*",

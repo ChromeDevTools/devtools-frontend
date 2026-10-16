@@ -33,7 +33,6 @@ devtools_entrypoint("bundle") {
     "../../foundation/*",
     "../../panels/ai_assistance/*",
     "../../panels/changes/*",
-    "../../panels/common/*",
     "../../panels/elements/*",
     "../../panels/sources/*",
     "../../testing/*",

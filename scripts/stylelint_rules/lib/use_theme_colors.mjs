@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { comment, parse } from 'postcss';
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {comment, parse} from 'postcss';
 import stylelint from 'stylelint';
 
 const {
   createPlugin,
-  utils: { report, ruleMessages },
+  utils: {report, ruleMessages},
 } = stylelint;
 
 const RULE_NAME = 'plugin/use_theme_colors';
@@ -54,36 +54,42 @@ const COLOR_INDICATOR_REGEXES = new Set([
 ]);
 
 const CUSTOM_VARIABLE_OVERRIDE_PREFIX = '--override-';
+const LEGACY_COLOR_VARIABLE_PREFIX = '--color-';
 
 const applicationTokensPath = join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'front_end',
-  'application_tokens.css',
+    import.meta.dirname,
+    '..',
+    '..',
+    '..',
+    'front_end',
+    'application_tokens.css',
 );
 const designSystemTokensPath = join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'front_end',
-  'design_system_tokens.css',
+    import.meta.dirname,
+    '..',
+    '..',
+    '..',
+    'front_end',
+    'design_system_tokens.css',
 );
 const inspectorCommonPath = join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'front_end',
-  'ui',
-  'legacy',
-  'inspectorCommon.css',
+    import.meta.dirname,
+    '..',
+    '..',
+    '..',
+    'front_end',
+    'ui',
+    'legacy',
+    'inspectorCommon.css',
 );
 
+const TOKEN_DEFINITION_FILES = new Set([
+  applicationTokensPath,
+  designSystemTokensPath,
+]);
+
 function getRootVariableDeclarationsFromCSSFile(filePath) {
-  const fileContents = readFileSync(filePath, { encoding: 'utf-8' });
+  const fileContents = readFileSync(filePath, {encoding: 'utf-8'});
   const definedVariableNames = new Set();
   const parsed = parse(fileContents);
   // Only parse the colors in the :root declaration.
@@ -97,13 +103,11 @@ function getRootVariableDeclarationsFromCSSFile(filePath) {
   return definedVariableNames;
 }
 
-const DEFINED_APPLICATION_COLOR_VARIABLES =
-  getRootVariableDeclarationsFromCSSFile(applicationTokensPath);
+const DEFINED_APPLICATION_COLOR_VARIABLES = getRootVariableDeclarationsFromCSSFile(applicationTokensPath);
 const DEFINED_THEME_COLOR_VARIABLES = getRootVariableDeclarationsFromCSSFile(
-  designSystemTokensPath,
+    designSystemTokensPath,
 );
-const DEFINED_INSPECTOR_STYLE_VARIABLES =
-  getRootVariableDeclarationsFromCSSFile(inspectorCommonPath);
+const DEFINED_INSPECTOR_STYLE_VARIABLES = getRootVariableDeclarationsFromCSSFile(inspectorCommonPath);
 const ALL_DEFINED_VARIABLES = new Set([
   ...DEFINED_APPLICATION_COLOR_VARIABLES,
   ...DEFINED_THEME_COLOR_VARIABLES,
@@ -111,11 +115,11 @@ const ALL_DEFINED_VARIABLES = new Set([
 ]);
 
 const BOX_SHADOW_VARIABLES = new Set(
-  [1, 2, 3, 4, 5].map(x => `var(--sys-elevation-level${x})`),
+    [1, 2, 3, 4, 5].map(x => `var(--sys-elevation-level${x})`),
 );
 
 const ruleFunction = (primary, secondary, context) => {
-  return function (postcssRoot, postcssResult) {
+  return function(postcssRoot, postcssResult) {
     function reportError(declaration, shouldFix) {
       /**
        * Unfortunately for this rule there seems to be an issue with stylelint's
@@ -137,17 +141,16 @@ const ruleFunction = (primary, secondary, context) => {
         // stylelint-disable-line, it doesn't work, hence why we add two
         // comments, one to disable and one with the tracking bug.
         declaration.after(
-          comment({
-            text: 'See: crbug.com/1152736 for color variable migration.',
-          }),
+            comment({
+              text: 'See: crbug.com/1152736 for color variable migration.',
+            }),
         );
         declaration.after(
-          ' /* stylelint-disable-line plugin/use_theme_colors */',
+            ' /* stylelint-disable-line plugin/use_theme_colors */',
         );
       } else {
         report({
-          message:
-            'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
+          message: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
           ruleName: RULE_NAME,
           node: declaration,
           result: postcssResult,
@@ -166,10 +169,7 @@ const ruleFunction = (primary, secondary, context) => {
          * rgb(var(--some-base-color) / 20%) so we don't want to error if we
          * match that.
          */
-        if (
-          indicator.test(cssValueToCheck) &&
-          !cssValueToCheck.startsWith('rgb(var')
-        ) {
+        if (indicator.test(cssValueToCheck) && !cssValueToCheck.startsWith('rgb(var')) {
           reportError(declarationToErrorOn, !alreadyFixed);
         }
       }
@@ -182,8 +182,7 @@ const ruleFunction = (primary, secondary, context) => {
        * are used.
        */
       const shouldAllowAnyVars =
-        declarationToErrorOn.prop === 'background-image' ||
-        cssValueToCheck.startsWith('var(--image-file');
+          declarationToErrorOn.prop === 'background-image' || cssValueToCheck.startsWith('var(--image-file');
       if (shouldAllowAnyVars) {
         return;
       }
@@ -202,13 +201,13 @@ const ruleFunction = (primary, secondary, context) => {
         const execArray = /var\(\s*(--[\w-]+)\s*/.exec(cssValueToCheck);
         if (!execArray) {
           throw new Error(
-            `Could not parse CSS variable usage: ${cssValueToCheck}`,
+              `Could not parse CSS variable usage: ${cssValueToCheck}`,
           );
         }
         const [match, variableName] = execArray;
         if (!match) {
           throw new Error(
-            `Could not parse CSS variable usage: ${cssValueToCheck}`,
+              `Could not parse CSS variable usage: ${cssValueToCheck}`,
           );
         }
 
@@ -223,19 +222,18 @@ const ruleFunction = (primary, secondary, context) => {
           return;
         }
 
-        if (!ALL_DEFINED_VARIABLES.has(variableName)) {
+        if (variableName.startsWith(LEGACY_COLOR_VARIABLE_PREFIX) || !ALL_DEFINED_VARIABLES.has(variableName)) {
           reportError(declarationToErrorOn, !alreadyFixed);
         }
       }
     }
     const sourceFile = postcssResult.opts.from;
-    if (
-      sourceFile &&
-      !sourceFile.includes('front_end') &&
-      sourceFile.includes('inspector_overlay')
-    ) {
+    if (sourceFile && !sourceFile.includes('front_end') && sourceFile.includes('inspector_overlay')) {
       // The inspector overlay sits outside of front_end and does not get loaded
       // with the same CSS variables. So we don't want to apply this rule to it.
+      return;
+    }
+    if (sourceFile && TOKEN_DEFINITION_FILES.has(sourceFile)) {
       return;
     }
 
@@ -261,30 +259,22 @@ const ruleFunction = (primary, secondary, context) => {
         const declIndex = declaration.parent.nodes.indexOf(declaration);
         const nextNode = declaration.parent.nodes[declIndex + 1];
         const previousNode = declaration.parent.nodes[declIndex - 1];
-        const nextNodeIsDisableComment =
-          nextNode &&
-          nextNode.type === 'comment' &&
-          nextNode.text.startsWith(
-            'stylelint-disable-line plugin/use_theme_colors',
-          );
-        const previousNodeIsDisableComment =
-          previousNode &&
-          previousNode.type === 'comment' &&
-          previousNode.text.startsWith(
-            'stylelint-disable-next-line plugin/use_theme_colors',
-          );
-        const alreadyFixed =
-          nextNodeIsDisableComment || previousNodeIsDisableComment;
+        const nextNodeIsDisableComment = nextNode && nextNode.type === 'comment' &&
+            nextNode.text.startsWith(
+                'stylelint-disable-line plugin/use_theme_colors',
+            );
+        const previousNodeIsDisableComment = previousNode && previousNode.type === 'comment' &&
+            previousNode.text.startsWith(
+                'stylelint-disable-next-line plugin/use_theme_colors',
+            );
+        const alreadyFixed = nextNodeIsDisableComment || previousNodeIsDisableComment;
 
         /**
          * If we're checking a border-{top/bottom/left/right}, we need to regex
          * out just the color part of the declaration to check.
          * We also apply the same check for outline.
          */
-        if (
-          borderCombinedDeclarations.has(declaration.prop) ||
-          declaration.prop === 'outline'
-        ) {
+        if (borderCombinedDeclarations.has(declaration.prop) || declaration.prop === 'outline') {
           // This is a pretty basic regex but it should split border-bottom:
           // var(--foo) solid var(--bar) into the three parts we need.
           // If this rule picks up false positives, we can improve this regex.

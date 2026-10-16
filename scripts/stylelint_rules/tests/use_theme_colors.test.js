@@ -203,10 +203,10 @@ describe('use_theme_colors', () => {
   it('does not autofix valid variable color usage', async () => {
     const {code: outputCode} = await stylelint.lint({
       fix: true,
-      code: 'p { color: var(--color-primary-old); }',
+      code: 'p { color: var(--sys-color-primary); }',
       ...configBase,
     });
-    assert.strictEqual(outputCode, 'p { color: var(--color-primary-old); }');
+    assert.strictEqual(outputCode, 'p { color: var(--sys-color-primary); }');
   });
 
   it('errors when a variable is used that is not defined in themeColors', async () => {
@@ -249,10 +249,67 @@ describe('use_theme_colors', () => {
     ]);
   });
 
-  it('allows locally declared variables to be used', async () => {
+  it('allows defined design system and application tokens to be used', async () => {
     const warnings = await lintAndGetWarnings(
-        'p { color: var(--color-primary-old); }',
+        'p { color: var(--sys-color-primary); background-color: var(--app-color-toolbar-background); }',
     );
+    assert.deepEqual(warnings, []);
+  });
+
+  it('errors when legacy --color-* variables are used', async () => {
+    const warnings = await lintAndGetWarnings(
+        'p { color: var(--color-text-secondary); background-color: var(--color-background); border: 1px solid var(--color-primary); }',
+    );
+
+    assert.deepEqual(warnings, [
+      {
+        column: 5,
+        endColumn: 40,
+        endLine: 1,
+        line: 1,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
+        fix: undefined,
+      },
+      {
+        column: 41,
+        endColumn: 83,
+        endLine: 1,
+        line: 1,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
+        fix: undefined,
+      },
+      {
+        column: 84,
+        endColumn: 123,
+        endLine: 1,
+        line: 1,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
+        fix: undefined,
+      },
+    ]);
+  });
+
+  it('allows token definition files to define and reference colors', async () => {
+    const {
+      results: [{warnings}],
+    } = await stylelint.lint({
+      code:
+          ':root { --color-primary-old: rgb(26 115 232); --color-background-elevation-dark-only: var(--color-background); }',
+      codeFilename: path.resolve(
+          import.meta.dirname,
+          '../../../front_end/application_tokens.css',
+          ),
+      ...configBase,
+    });
     assert.deepEqual(warnings, []);
   });
 
@@ -344,7 +401,7 @@ describe('use_theme_colors', () => {
 
   it('does not error when there is a var for the border width', async () => {
     const warnings = await lintAndGetWarnings(
-        'p { border: var(--button-border-size) solid var(--color-primary); }',
+        'p { border: var(--button-border-size) solid var(--sys-color-primary); }',
     );
 
     assert.deepEqual(warnings, []);
@@ -352,7 +409,7 @@ describe('use_theme_colors', () => {
 
   it('does not error when there is a var for the outline width', async () => {
     const warnings = await lintAndGetWarnings(
-        'p { outline: var(--button-border-size) solid var(--color-primary); }',
+        'p { outline: var(--button-border-size) solid var(--sys-color-primary); }',
     );
 
     assert.deepEqual(warnings, []);
@@ -410,7 +467,7 @@ describe('use_theme_colors', () => {
     const warnings = await lintAndGetWarnings(
         `p {
         color: var(
-          --color-primary-old
+          --sys-color-primary
         );
       }`,
     );

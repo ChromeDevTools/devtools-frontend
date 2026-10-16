@@ -14,7 +14,7 @@
   pointer-events: none;
   position: absolute;
   display: block;
-  border: var(--sys-size-2) solid var(--color-text-primary);
+  border: var(--sys-size-2) solid var(--sys-color-on-surface);
   box-sizing: border-box;
 
   &.cut-off-top {
@@ -35,7 +35,7 @@
 }
 
 .entry-is-not-source {
-  border: var(--sys-size-2) dashed var(--color-text-primary);
+  border: var(--sys-size-2) dashed var(--sys-color-on-surface);
 }
 
 .create-link-icon {

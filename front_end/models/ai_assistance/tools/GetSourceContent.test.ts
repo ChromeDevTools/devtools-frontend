@@ -177,4 +177,96 @@ describe('GetSourceContentTool', () => {
     const response = await tool.handler({id: 1}, context);
     assertIsError(response, 'Cross-origin access blocked due to navigation.');
   });
+
+  describe('long files', () => {
+    const exampleOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+    const context = {
+      getOriginLock: (): AiAssistance.Tool.OriginLockState => ({status: 'ESTABLISHED_ORIGIN', origin: exampleOrigin}),
+    };
+
+    function createSource(content: string): number {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+            content,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+      AiAssistance.ListSources.ListSourcesTool.getUISourceCodes({status: 'ESTABLISHED_ORIGIN', origin: exampleOrigin},
+                                                                universe.workspace);
+      const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0]);
+      assert.isDefined(sourceId);
+      return sourceId;
+    }
+
+    it('reads the part of a long file that starts at the given offset', async () => {
+      const sourceId = createSource('a'.repeat(10_000) + 'b'.repeat(20));
+
+      const response = await tool.handler({id: sourceId, offset: 10_000}, context);
+      assertIsResult(response);
+      assert.include(response.result.content,
+                     '```\n' +
+                         'b'.repeat(20) + '\n```');
+      assert.notInclude(response.result.content, 'aaaa');
+      assert.notInclude(response.result.content, 'Content truncated');
+    });
+
+    it('returns a truncation notice with the next offset for the first part of a long file', async () => {
+      const sourceId = createSource('a'.repeat(10_000) + 'b'.repeat(20));
+
+      const response = await tool.handler({id: sourceId}, context);
+      assertIsResult(response);
+      assert.include(response.result.content,
+                     'Content truncated: showing characters 0-10000 of 10020. The next part starts at offset 10000.');
+    });
+
+    it('returns error for an offset at or past the end of the file', async () => {
+      const sourceId = createSource('console.log("hello");');
+
+      const response = await tool.handler({id: sourceId, offset: 21}, context);
+      assertIsError(response, 'Invalid offset 21. The file content has 21 characters.');
+    });
+
+    it('returns error for a negative offset', async () => {
+      const sourceId = createSource('console.log("hello");');
+
+      const response = await tool.handler({id: sourceId, offset: -1}, context);
+      assertIsError(response, 'Invalid offset -1. The file content has 21 characters.');
+    });
+
+    describe('displayInfoFromArgs', () => {
+      it('shows the offset in the action only when it is set', () => {
+        assert.strictEqual(tool.displayInfoFromArgs({id: 1}).action, 'getSourceContent(1)');
+        assert.strictEqual(tool.displayInfoFromArgs({id: 1, offset: 10_000}).action, 'getSourceContent(1, 10000)');
+      });
+
+      it('names a listed file in the title', () => {
+        const sourceId = createSource('console.log("hello");');
+
+        assert.strictEqual(tool.displayInfoFromArgs({id: sourceId}).title, 'Reading script.js');
+      });
+
+      it('names a listed file and the offset in the title when an offset is set', () => {
+        const sourceId = createSource('console.log("hello");');
+
+        assert.strictEqual(tool.displayInfoFromArgs({id: sourceId, offset: 30_000}).title,
+                           'Reading script.js (offset 30,000)');
+      });
+
+      it('omits the offset from the title when the offset is 0', () => {
+        const sourceId = createSource('console.log("hello");');
+
+        assert.strictEqual(tool.displayInfoFromArgs({id: sourceId, offset: 0}).title, 'Reading script.js');
+      });
+
+      it('uses a generic title for an id that listSources has not returned', () => {
+        assert.strictEqual(tool.displayInfoFromArgs({id: 999}).title, 'Reading source content');
+      });
+    });
+  });
 });

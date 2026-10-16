@@ -10,6 +10,16 @@ import {formatRequestInitiatorChain} from './NetworkRequestFormatter.js';
 
 const MAX_FILE_SIZE = 10000;
 
+export interface FormatFileOptions {
+  /**
+   * Character offset in the file content to start reading from. Defaults to 0.
+   * Callers that expose paging to the model pass the offset from a previous
+   * truncation notice. An offset at or past the end of the content produces an
+   * empty code block, so callers must validate offsets they receive from the model.
+   */
+  offset?: number;
+}
+
 /**
  * File that formats a file for the LLM usage.
  */
@@ -65,7 +75,7 @@ export class FileFormatter {
     this.#networkLog = networkLog;
   }
 
-  formatFile(): string {
+  formatFile(options: FormatFileOptions = {}): string {
     const sourceMapDetails = FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
     const lines = [
       `File name: ${this.#file.displayName()}`,
@@ -78,16 +88,27 @@ export class FileFormatter {
 ${formatRequestInitiatorChain(resource.request, this.#networkLog)}`);
     }
     lines.push(`File content:
-${this.#formatFileContent()}`);
+${this.#formatFileContent(options.offset ?? 0)}`);
     return lines.filter(line => line.trim() !== '').join('\n');
   }
 
-  #formatFileContent(): string {
+  /**
+   * Returns at most `MAX_FILE_SIZE` characters starting at `offset`. If the
+   * content continues past that, a notice after the code block gives the
+   * offset where the next part starts, so the model can read the rest instead
+   * of re-requesting the same part.
+   */
+  #formatFileContent(offset: number): string {
     const contentData = this.#file.workingCopyContentData();
     const content = contentData.isTextContent ? contentData.text : '<binary data>';
-    const truncated = content.length > MAX_FILE_SIZE ? content.slice(0, MAX_FILE_SIZE) + '...' : content;
-    return `\`\`\`
-${truncated}
+    const end = Math.min(offset + MAX_FILE_SIZE, content.length);
+    const codeBlock = `\`\`\`
+${content.slice(offset, end)}
 \`\`\``;
+    if (end === content.length) {
+      return codeBlock;
+    }
+    return `${codeBlock}
+Content truncated: showing characters ${offset}-${end} of ${content.length}. The next part starts at offset ${end}.`;
   }
 }

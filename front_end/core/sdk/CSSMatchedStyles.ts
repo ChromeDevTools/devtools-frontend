@@ -140,6 +140,10 @@ function cleanUserAgentPayload(payload: Protocol.CSS.RuleMatch[]): Protocol.CSS.
   }
 }
 
+function parseCustomHighlightName(selectorText: string): string|null {
+  return selectorText.match(/::highlight\(([^)]+)\)/)?.[1] ?? null;
+}
+
 /**
  * Return a mapping of the highlight names in the specified RuleMatch to
  * the indices of selectors in that selector list with that highlight name.
@@ -164,15 +168,15 @@ function cleanUserAgentPayload(payload: Protocol.CSS.RuleMatch[]): Protocol.CSS.
  * list associated with ruleMatch. The indices correspond to the selectors in the rule
  * associated with the key's highlight name.
  */
-function customHighlightNamesToMatchingSelectorIndices(ruleMatch: Protocol.CSS.RuleMatch): Map<string, number[]> {
+function customHighlightNamesToMatchingSelectorIndices(ruleMatch: Protocol.CSS.RuleMatch,
+                                                       highlightNames: Set<string>): Map<string, number[]> {
   const highlightNamesToMatchingSelectors = new Map<string, number[]>();
 
   for (let i = 0; i < ruleMatch.matchingSelectors.length; i++) {
     const matchingSelectorIndex = ruleMatch.matchingSelectors[i];
     const selectorText = ruleMatch.rule.selectorList.selectors[matchingSelectorIndex].text;
-    const highlightNameMatch = selectorText.match(/::highlight\((.*)\)/);
-    if (highlightNameMatch) {
-      const highlightName = highlightNameMatch[1];
+    const highlightName = parseCustomHighlightName(selectorText);
+    if (highlightName) {
       const selectorsForName = highlightNamesToMatchingSelectors.get(highlightName);
       if (selectorsForName) {
         selectorsForName.push(matchingSelectorIndex);
@@ -181,7 +185,34 @@ function customHighlightNamesToMatchingSelectorIndices(ruleMatch: Protocol.CSS.R
       }
     }
   }
+
+  const universalSelectors = highlightNamesToMatchingSelectors.get('*');
+  if (universalSelectors) {
+    for (const highlightName of highlightNames) {
+      const selectorsForName = highlightNamesToMatchingSelectors.get(highlightName) ?? [];
+      highlightNamesToMatchingSelectors.set(highlightName, [...selectorsForName, ...universalSelectors]);
+    }
+  }
   return highlightNamesToMatchingSelectors;
+}
+
+function getCustomHighlightNames(pseudoPayload: Protocol.CSS.PseudoElementMatches[]): Set<string> {
+  const highlightNames = new Set<string>();
+  for (const entryPayload of pseudoPayload) {
+    if (entryPayload.pseudoType !== Protocol.DOM.PseudoType.Highlight || !entryPayload.matches) {
+      continue;
+    }
+    for (const ruleMatch of entryPayload.matches) {
+      for (const matchingSelectorIndex of ruleMatch.matchingSelectors) {
+        const selectorText = ruleMatch.rule.selectorList.selectors[matchingSelectorIndex].text;
+        const highlightName = parseCustomHighlightName(selectorText);
+        if (highlightName && highlightName !== '*') {
+          highlightNames.add(highlightName);
+        }
+      }
+    }
+  }
+  return highlightNames;
 }
 
 function queryMatches(style: CSSStyleDeclaration): boolean {
@@ -564,13 +595,14 @@ export class CSSMatchedStyles {
    * This helper function takes a list of rule matches and generates separate NodeCascades
    * for each custom highlight name that was matched.
    */
-  private buildSplitCustomHighlightCascades(
-      rules: Protocol.CSS.RuleMatch[], node: DOMNode, isInherited: boolean,
-      pseudoCascades: Map<string, NodeCascade[]>): void {
+  private buildSplitCustomHighlightCascades(rules: Protocol.CSS.RuleMatch[], node: DOMNode, isInherited: boolean,
+                                            highlightNames: Set<string>,
+                                            pseudoCascades: Map<string, NodeCascade[]>): void {
     const splitHighlightRules = new Map<string, CSSStyleDeclaration[]>();
 
     for (let j = rules.length - 1; j >= 0; --j) {
-      const highlightNamesToMatchingSelectorIndices = customHighlightNamesToMatchingSelectorIndices(rules[j]);
+      const highlightNamesToMatchingSelectorIndices =
+          customHighlightNamesToMatchingSelectorIndices(rules[j], highlightNames);
 
       for (const [highlightName, matchingSelectors] of highlightNamesToMatchingSelectorIndices) {
         const pseudoRule = new CSSStyleRule(this.#cssModel, rules[j].rule);
@@ -613,6 +645,8 @@ export class CSSMatchedStyles {
 
     const pseudoCascades = new Map<Protocol.DOM.PseudoType, NodeCascade[]>();
     const customHighlightPseudoCascades = new Map<string, NodeCascade[]>();
+    const highlightNames = getCustomHighlightNames(
+        [...pseudoPayload, ...(inheritedPseudoPayload || []).flatMap(entry => entry.pseudoElements)]);
     for (let i = 0; i < pseudoPayload.length; ++i) {
       const entryPayload = pseudoPayload[i];
       // PseudoElement nodes are not created unless "content" css property is set.
@@ -621,8 +655,8 @@ export class CSSMatchedStyles {
       const rules = entryPayload.matches || [];
 
       if (entryPayload.pseudoType === Protocol.DOM.PseudoType.Highlight) {
-        this.buildSplitCustomHighlightCascades(
-            rules, this.#node, false /* #isInherited */, customHighlightPseudoCascades);
+        this.buildSplitCustomHighlightCascades(rules, this.#node, false /* #isInherited */, highlightNames,
+                                               customHighlightPseudoCascades);
       } else {
         for (let j = rules.length - 1; j >= 0; --j) {
           const pseudoRule = new CSSStyleRule(this.#cssModel, rules[j].rule);
@@ -651,8 +685,8 @@ export class CSSMatchedStyles {
           const rules = inheritedEntryPayload.matches || [];
 
           if (inheritedEntryPayload.pseudoType === Protocol.DOM.PseudoType.Highlight) {
-            this.buildSplitCustomHighlightCascades(
-                rules, parentNode, true /* #isInherited */, customHighlightPseudoCascades);
+            this.buildSplitCustomHighlightCascades(rules, parentNode, true /* #isInherited */, highlightNames,
+                                                   customHighlightPseudoCascades);
           } else {
             const pseudoStyles = [];
             for (let k = rules.length - 1; k >= 0; --k) {

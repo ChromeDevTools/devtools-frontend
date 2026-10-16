@@ -618,6 +618,63 @@ describe('StylesSidebarPane', () => {
         assertBlockVisibility([false, true, false, true]);
       });
 
+      it('merges universal highlight rules into named highlight blocks', async () => {
+        const stylesSidebarPane =
+            new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());
+        const outerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        outerNode.nodeName.returns('div');
+        outerNode.id = 1 as Protocol.DOM.NodeId;
+        const targetNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        targetNode.nodeName.returns('h1');
+        targetNode.id = 2 as Protocol.DOM.NodeId;
+        targetNode.pseudoElements.returns(new Map());
+        targetNode.parentNode = outerNode;
+
+        const matchedStyles = await getMatchedStyles({
+          connection,
+          cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+          node: targetNode,
+          pseudoPayload: [{
+            pseudoType: Protocol.DOM.PseudoType.Highlight,
+            matches: [
+              ruleMatch('#target::highlight(*)', {color: 'red', 'background-color': 'yellow'}),
+              ruleMatch('#target::highlight(foo)', {color: 'green'}),
+            ],
+          }],
+          inheritedPseudoPayload: [{
+            pseudoElements: [{
+              pseudoType: Protocol.DOM.PseudoType.Highlight,
+              matches: [ruleMatch('#outer::highlight(foo)', {color: 'blue', 'background-color': 'gray'})],
+            }],
+          }],
+        });
+
+        const sectionBlocks = await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(
+            matchedStyles, new Map(), new Map(), null);
+
+        const blocks = sectionBlocks.slice(1).map(block => ({
+                                                    title: block.titleElement()?.textContent,
+                                                    sections: block.sections.map(section => section.headerText()),
+                                                  }));
+        assert.deepEqual(blocks, [
+          {title: 'Pseudo ::highlight(foo) element', sections: ['#target::highlight(foo)', '#target::highlight(*)']},
+          {title: 'Inherited from ::highlight(foo) pseudo of ', sections: ['#outer::highlight(foo)']},
+          {title: 'Pseudo ::highlight(*) element', sections: ['#target::highlight(*)']},
+        ]);
+
+        const [, universalSection, outerSection] = sectionBlocks.slice(1).flatMap(block => block.sections);
+        const propertyStates = (section: Elements.StylePropertiesSection.StylePropertiesSection) =>
+            section.style().leadingProperties().map(property => [property.name, matchedStyles.propertyState(property)]);
+        assert.deepEqual(propertyStates(universalSection), [
+          ['color', SDK.CSSMatchedStyles.PropertyState.OVERLOADED],
+          ['background-color', SDK.CSSMatchedStyles.PropertyState.ACTIVE],
+        ]);
+        assert.deepEqual(propertyStates(outerSection), [
+          ['color', SDK.CSSMatchedStyles.PropertyState.OVERLOADED],
+          ['background-color', SDK.CSSMatchedStyles.PropertyState.OVERLOADED],
+        ]);
+      });
+
       it('renders media queries', async () => {
         const stylesSidebarPane =
             new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel());

@@ -1,6 +1,6 @@
 ---
 name: lighthouse
-description: Analyzing an active Lighthouse report context, running Lighthouse reports and audits (performance, accessibility, best practices, Search Engine Optimization (SEO)), accessibility audits, ARIA properties, accessible tree inspection, color contrast, and screen reader semantics. Not for general page performance measurement without a Lighthouse report; use the performance skill for that.
+description: Analyzing an active Lighthouse report context, running Lighthouse reports and audits (performance, accessibility, best practices, Search Engine Optimization (SEO), and agentic browsing when explicitly requested), accessibility audits, ARIA properties, accessible tree inspection, color contrast, and screen reader semantics. Not for general page performance measurement without a Lighthouse report; use the performance skill for that.
 allowed-tools:
   - runLighthouse
   - getLighthouseAudits
@@ -22,6 +22,7 @@ Your role is to evaluate websites using Lighthouse audits across performance, ac
    - If no active report exists or a fresh audit is requested, call `runLighthouse`:
      - If the user asks for a general report or multiple categories, use `categoryId: 'all'`.
      - For a single category, pass that category ID (e.g. `'accessibility'`).
+     - Only pass `categoryId: 'agentic-browsing'` when the user explicitly asks for an agentic browsing audit, such as how ready the page is for AI agents to navigate and use it, or WebMCP checks. `'all'` does not include it, so never pick it for general audits, and never substitute another category (such as `'seo'`) when the user asks for it. Use `"navigation"` mode for `'agentic-browsing'` unless the user explicitly asks for another mode, because its WebMCP audits only run in `"navigation"` mode.
      - Execution mode:
        - Use `"navigation"` mode for full page-load audits (default for full site reviews).
        - Use `"snapshot"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.

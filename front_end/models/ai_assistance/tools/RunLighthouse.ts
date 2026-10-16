@@ -45,9 +45,9 @@ export class RunLighthouseTool implements
       },
       categoryId: {
         type: Host.AidaClient.ParametersTypes.STRING,
-        // The experimental 'agentic-browsing' category is intentionally omitted from the prompt description so the agent does not invoke it unprompted. It is also excluded when 'all' is provided.
+        // The experimental 'agentic-browsing' category is listed separately from the standard categories and restricted to explicit user requests so the agent does not invoke it unprompted. It is also excluded when 'all' is provided (see `LighthouseController.getCategoryIDs`).
         description:
-            'Lighthouse category. Use "all" to run all categories, or specify a category: "accessibility", "performance", "best-practices", "seo".',
+            'Lighthouse category. Use "all" to run all categories, or specify a category: "accessibility", "performance", "best-practices", "seo". Use "agentic-browsing" only when the user explicitly asks for an agentic browsing audit (how well AI agents can navigate and use the page, including WebMCP). "all" does not include "agentic-browsing". Run "agentic-browsing" in "navigation" mode, because its WebMCP audits only run in "navigation" mode.',
         nullable: false,
       },
       mode: {

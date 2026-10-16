@@ -116,4 +116,30 @@ describe('validator', () => {
       await fs.promises.rm(tempDir, {recursive: true, force: true});
     }
   });
+
+  it('succeeds in targeted dry-run mode when source is declared in ancestor BUILD.gn', async () => {
+    const tempDir = await fs.promises.mkdtemp(
+        path.join(import.meta.dirname, 'gn-test-'),
+    );
+    try {
+      const subDir = path.join(tempDir, 'sub');
+      await fs.promises.mkdir(subDir, {recursive: true});
+
+      await fs.promises.writeFile(path.join(subDir, 'child.ts'), 'export const x = 1;\n');
+      await fs.promises.writeFile(path.join(subDir, 'other.ts'), 'export const y = 2;\n');
+
+      await fs.promises.writeFile(
+          path.join(tempDir, 'BUILD.gn'),
+          'group("ancestor_target") {\n  sources = [ "sub/child.ts" ]\n}\n',
+      );
+      await fs.promises.writeFile(
+          path.join(subDir, 'BUILD.gn'),
+          'group("child_target") {\n  sources = [ "other.ts" ]\n}\n',
+      );
+
+      await checkDepsGn(tempDir, [path.join(subDir, 'child.ts')], true);
+    } finally {
+      await fs.promises.rm(tempDir, {recursive: true, force: true});
+    }
+  });
 });

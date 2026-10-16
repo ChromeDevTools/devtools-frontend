@@ -394,21 +394,15 @@ export class TypeScriptAnalyzer {
   }
 
   async #processDiscoveredBuildFiles(): Promise<void> {
-    let processedAny = false;
     const tasks: Array<() => Promise<void>> = [];
     for (const filePath of this.#astExtractor.buildFiles.keys()) {
       if (!this.#buildFiles.has(filePath)) {
         tasks.push(() => this.processBuildFile(filePath));
-        processedAny = true;
       }
     }
 
     if (tasks.length > 0) {
       await withConcurrencyLimit(tasks, 50);
-    }
-
-    if (processedAny) {
-      await this.#processDiscoveredBuildFiles();
     }
   }
 

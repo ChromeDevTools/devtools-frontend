@@ -97,18 +97,29 @@ export class GnAstExtractor {
       return Array.from(this.#fileToTarget.get(absPath) ?? new Set());
     }
 
-    const buildFile = await this.#findNearestBuildGn(absPath);
-    if (!buildFile) {
-      this.#fileToTarget.set(absPath, new Set());
-      return [];
+    let currentPath = absPath;
+    while (isInsideRoot(this.rootDir, currentPath)) {
+      const buildFile = await this.#findNearestBuildGn(currentPath);
+      if (!buildFile) {
+        break;
+      }
+
+      await this.#parseAndCacheBuildFile(buildFile);
+
+      if (this.#fileToTarget.has(absPath)) {
+        return Array.from(this.#fileToTarget.get(absPath) ?? new Set());
+      }
+
+      const buildDir = path.dirname(buildFile);
+      const parentDir = path.dirname(buildDir);
+      if (parentDir === buildDir || !isInsideRoot(this.rootDir, parentDir)) {
+        break;
+      }
+      currentPath = parentDir;
     }
 
-    await this.#parseAndCacheBuildFile(buildFile);
-
-    if (!this.#fileToTarget.has(absPath)) {
-      this.#fileToTarget.set(absPath, new Set());
-    }
-    return Array.from(this.#fileToTarget.get(absPath) ?? new Set());
+    this.#fileToTarget.set(absPath, new Set());
+    return [];
   }
 
   async #parseAndCacheBuildFile(

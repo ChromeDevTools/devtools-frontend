@@ -126,6 +126,75 @@ describe('GnAstExtractor', () => {
       const subTarget = await extractor.getTargetsForFile(subPath);
       assert.deepEqual(subTarget, ['//scripts/gn_deps_verifier/tests/fixtures:subtraction_target']);
     });
+
+    it('finds target declared in an ancestor BUILD.gn when nearer BUILD.gn exists without the source', async () => {
+      const tempDir = await fs.promises.mkdtemp(path.join(import.meta.dirname, 'gn-test-'));
+      try {
+        const parentDir = path.join(tempDir, 'parent');
+        const childDir = path.join(parentDir, 'child');
+        await fs.promises.mkdir(childDir, {recursive: true});
+
+        await fs.promises.writeFile(
+            path.join(parentDir, 'BUILD.gn'),
+            'group("ancestor_target") {\n  sources = [ "child/Source.ts" ]\n}\n',
+        );
+        await fs.promises.writeFile(
+            path.join(childDir, 'BUILD.gn'),
+            'group("child_target") {\n  sources = [ "Other.ts" ]\n}\n',
+        );
+
+        GnAstExtractor.clearCacheForTesting();
+        const customExtractor = GnAstExtractor.create(tempDir);
+
+        const target = await customExtractor.getTargetsForFile(path.join(childDir, 'Source.ts'));
+        assert.deepEqual(target, ['//parent:ancestor_target']);
+
+        const childTarget = await customExtractor.getTargetsForFile(path.join(childDir, 'Other.ts'));
+        assert.deepEqual(childTarget, ['//parent/child:child_target']);
+
+        const unlistedTarget = await customExtractor.getTargetsForFile(path.join(childDir, 'Unlisted.ts'));
+        assert.deepEqual(unlistedTarget, []);
+      } finally {
+        await fs.promises.rm(tempDir, {recursive: true, force: true});
+      }
+    });
+
+    it('handles parallel concurrent requests for files requiring ancestor traversal', async () => {
+      const tempDir = await fs.promises.mkdtemp(path.join(import.meta.dirname, 'gn-test-'));
+      try {
+        const childDir = path.join(tempDir, 'child');
+        await fs.promises.mkdir(childDir, {recursive: true});
+
+        await fs.promises.writeFile(
+            path.join(tempDir, 'BUILD.gn'),
+            'group("ancestor_target") {\n  sources = [ "child/AncestorSource.ts" ]\n}\n',
+        );
+        await fs.promises.writeFile(
+            path.join(childDir, 'BUILD.gn'),
+            'group("child_target") {\n  sources = [ "ChildSource.ts" ]\n}\n',
+        );
+
+        GnAstExtractor.clearCacheForTesting();
+        const customExtractor = GnAstExtractor.create(tempDir);
+
+        // Fire parallel requests for the same file, sibling files, and unlisted files
+        const [ancestor1, ancestor2, child, unlisted1, unlisted2] = await Promise.all([
+          customExtractor.getTargetsForFile(path.join(childDir, 'AncestorSource.ts')),
+          customExtractor.getTargetsForFile(path.join(childDir, 'AncestorSource.ts')),
+          customExtractor.getTargetsForFile(path.join(childDir, 'ChildSource.ts')),
+          customExtractor.getTargetsForFile(path.join(childDir, 'Unlisted.ts')),
+          customExtractor.getTargetsForFile(path.join(childDir, 'Unlisted.ts')),
+        ]);
+
+        assert.deepEqual(ancestor1, ['//:ancestor_target']);
+        assert.deepEqual(ancestor2, ['//:ancestor_target']);
+        assert.deepEqual(child, ['//child:child_target']);
+        assert.deepEqual(unlisted1, []);
+        assert.deepEqual(unlisted2, []);
+      } finally {
+        await fs.promises.rm(tempDir, {recursive: true, force: true});
+      }
+    });
   });
 
   describe('findNearestBuildGn', () => {

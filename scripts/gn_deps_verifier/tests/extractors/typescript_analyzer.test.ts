@@ -1018,6 +1018,23 @@ describe('typescript_analyzer', () => {
       const result = await analyzer.analyze();
       assert.strictEqual(result.size, 0);
     });
+
+    it('does not recursively analyze transitive BUILD.gn files loaded during import resolution', async () => {
+      const explainBuildGn = path.join(ROOT_DIR, 'front_end/panels/explain/BUILD.gn');
+      const extractor = GnAstExtractor.create(ROOT_DIR);
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+
+      const result = await analyzer.analyze([explainBuildGn]);
+
+      // Resolving imports loads external BUILD.gn files into the extractor cache...
+      assert.isAbove(extractor.buildFiles.size, 1);
+      // ...but TypeScriptAnalyzer should only process the requested BUILD.gn file.
+      assert.strictEqual(analyzer.buildFiles.size, 1);
+      assert.isTrue(analyzer.buildFiles.has(explainBuildGn));
+      for (const targetLabel of result.keys()) {
+        assert.isTrue(targetLabel.startsWith('//front_end/panels/explain:'));
+      }
+    });
   });
 
   describe('TypeScriptAnalyzer class', () => {

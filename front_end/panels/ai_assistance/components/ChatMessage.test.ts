@@ -1136,6 +1136,49 @@ describeWithEnvironment('ChatMessage', () => {
       );
     });
 
+    it('renders new buttons when one prompt replaces another in a single render', () => {
+      const stepA: AiAssistance.ChatMessage.Step = {
+        state: {type: 'needs_approval', sideEffectDialog: {description: null, onAnswer: () => {}}},
+        title: 'Setting the color',
+        code: 'a()',
+      };
+      const stepB: AiAssistance.ChatMessage.Step = {
+        state: {type: 'needs_approval', sideEffectDialog: {description: null, onAnswer: () => {}}},
+        title: 'Setting the background color',
+        code: 'b()',
+      };
+      const walkthrough = {...DEFAULT_WALKTHROUGH, isInlined: true, isExpanded: false};
+      const target = renderView({
+        message: {
+          entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+          parts: [{type: 'step', step: stepA}],
+          rpcId: 99,
+          id: '1',
+        },
+        walkthrough,
+      });
+      const buttonA =
+          querySelectorErrorOnMissing(target, '.side-effect-container .side-effect-confirmation devtools-button');
+
+      // Prompt A is answered and prompt B appears before the next render.
+      stepA.state = {type: 'completed'};
+      renderView({
+        message: {
+          entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+          parts: [{type: 'step', step: stepA}, {type: 'step', step: stepB}],
+          rpcId: 99,
+          id: '1',
+        },
+        walkthrough,
+      },
+                 target);
+      const buttonB =
+          querySelectorErrorOnMissing(target, '.side-effect-container .side-effect-confirmation devtools-button');
+
+      assert.isFalse(buttonA.isConnected);
+      assert.notStrictEqual(buttonA, buttonB);
+    });
+
     it('does not force walkthrough expansion when there are side-effect steps', () => {
       const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
         entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,

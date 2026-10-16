@@ -902,9 +902,13 @@ function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Li
   // With the natural language interface the approval is rendered as a
   // dedicated permission prompt instead of the side-effect confirmation UI.
   const showPermissionPrompt = AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled();
+  // Key each prompt by its step so that a new prompt always gets new DOM.
+  // Without the key, Lit reuses the previous prompt's buttons when one prompt
+  // replaces another in a single render, and keyboard focus on the previous
+  // approve button would carry over to the new prompt.
   // clang-format off
   return html`
-    ${sideEffectSteps.map(step => html`
+    ${Lit.Directives.repeat(sideEffectSteps, step => step, step => html`
       <div class="side-effect-container">
         ${showPermissionPrompt ?
           renderPermissionPrompt(step) :

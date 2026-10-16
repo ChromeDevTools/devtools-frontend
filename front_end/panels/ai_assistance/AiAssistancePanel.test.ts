@@ -93,6 +93,8 @@ function cleanup(): void {
     panel.detach();
   }
   panels = [];
+  now = 0;
+  performanceNowStub = null;
 }
 
 function openHistoryContextMenu(
@@ -142,6 +144,37 @@ async function waitForLoadingToFinish(
     nextInput = await view.nextInput;
   }
   return nextInput;
+}
+
+let now = 0;
+let performanceNowStub: sinon.SinonStub|null = null;
+
+function stubPerformanceNow(initialTime = 0): void {
+  now = initialTime;
+  performanceNowStub = sinon.stub(performance, 'now').callsFake(() => now);
+}
+
+/**
+ * Advances the clock past the input protection window before answering the permission dialog.
+ * The test must call `stubPerformanceNow()` before the prompt appears, because the panel reads
+ * the clock when it shows the prompt.
+ */
+function approveSideEffect(
+    dialog: AiAssistancePanel.ChatMessage.ConfirmSideEffectDialog,
+    decision: AiAssistanceModel.Tool.PermissionDecision = AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE,
+    ): void {
+  assert.isNotNull(performanceNowStub, 'Call stubPerformanceNow() before the permission prompt appears.');
+  now += 500;
+  dialog.onAnswer(decision);
+}
+
+function summarizeSteps(viewInput: AiAssistancePanel.ViewInput): unknown[] {
+  assert(viewInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+  const lastMessage = viewInput.props.messages.at(-1);
+  assert.exists(lastMessage);
+  assert(lastMessage.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
+  return lastMessage.parts.filter(part => part.type === 'step')
+      .map(part => ({title: part.step.title, output: part.step.output, state: part.step.state.type}));
 }
 
 /**
@@ -906,6 +939,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     });
 
     it('should clean up the abort event listener when inspect element finishes', async () => {
+      stubPerformanceNow();
       updateHostConfig({
         devToolsAiAssistanceContextSelectionAgent: {enabled: true},
       });
@@ -933,7 +967,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       view.input.props.onTextSubmit('inspect element');
 
       const sideEffectDialog = await waitForSideEffectDialog(view);
-      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      approveSideEffect(sideEffectDialog, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
 
       // Allow microtasks to run so handleInspectElement registers its listeners.
       await new Promise(resolve => setTimeout(resolve, 10));
@@ -1297,6 +1331,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     });
 
     it('should log ai-v2-context-agent-change when agent changes context', async () => {
+      stubPerformanceNow();
       updateHostConfig({
         devToolsAiV2Architecture: {enabled: false},
         devToolsAiAssistanceContextSelectionAgent: {enabled: true},
@@ -1323,7 +1358,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       view.input.props.onTextSubmit('inspect element');
 
       const sideEffectDialog = await waitForSideEffectDialog(view);
-      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      approveSideEffect(sideEffectDialog, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
 
       // Allow microtasks to run so handleInspectElement registers its listeners.
       await new Promise(resolve => setTimeout(resolve, 10));
@@ -3958,6 +3993,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
     });
 
     it('keeps an earlier step unchanged while a later call in the same response waits for approval', async () => {
+      stubPerformanceNow();
       const {promise: decision, resolve: confirm} = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
       sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
         yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
@@ -3990,24 +4026,131 @@ describeWithEnvironment('AI Assistance Panel', () => {
       assert(input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
       input.props.onTextSubmit('test');
 
-      function summarizeSteps(viewInput: AiAssistancePanel.ViewInput): unknown[] {
-        assert(viewInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
-        const lastMessage = viewInput.props.messages.at(-1);
-        assert.exists(lastMessage);
-        assert(lastMessage.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
-        return lastMessage.parts.filter(part => part.type === 'step')
-            .map(part => ({title: part.step.title, output: part.step.output, state: part.step.state.type}));
-      }
-
       const sideEffectDialog = await waitForSideEffectDialog(view);
       assert.deepEqual(summarizeSteps(view.input), [
         {title: 'Call A', output: 'a-output', state: 'completed'},
         {title: 'Call B', output: undefined, state: 'needs_approval'},
       ]);
 
-      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      approveSideEffect(sideEffectDialog, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
       const finalInput = await waitForLoadingToFinish(view);
 
+      assert.deepEqual(summarizeSteps(finalInput), [
+        {title: 'Call A', output: 'a-output', state: 'completed'},
+        {title: 'Call B', output: 'b-output', state: 'completed'},
+      ]);
+    });
+  });
+
+  describe('permission prompt input protection', () => {
+    beforeEach(async () => {
+      await enableAllFeatureAndSetting();
+      stubPerformanceNow(0);
+    });
+
+    it('honors REJECT immediately', async () => {
+      const {promise: decision, resolve: confirmResolver} =
+          Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      const confirm = sinon.spy((decision: AiAssistanceModel.Tool.PermissionDecision) => {
+        confirmResolver(decision);
+      });
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call A', callId: 'a'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT, description: null, confirm, callId: 'a'};
+        await decision;
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+      })());
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const input = await view.nextInput;
+      assert(input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      input.props.onTextSubmit('test');
+      const sideEffectDialog = await waitForSideEffectDialog(view);
+
+      sideEffectDialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.REJECT);
+
+      sinon.assert.calledOnceWithExactly(confirm, AiAssistanceModel.Tool.PermissionDecision.REJECT);
+    });
+
+    it('ignores approvals within 500 ms of each prompt in one model response', async () => {
+      const {promise: decisionA, resolve: confirmResolverA} =
+          Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      const confirmA = sinon.spy((decision: AiAssistanceModel.Tool.PermissionDecision) => {
+        confirmResolverA(decision);
+      });
+      const {promise: decisionB, resolve: confirmResolverB} =
+          Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      const confirmB = sinon.spy((decision: AiAssistanceModel.Tool.PermissionDecision) => {
+        confirmResolverB(decision);
+      });
+
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call A', callId: 'a'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          description: null,
+          confirm: confirmA,
+          callId: 'a',
+        };
+        await decisionA;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'a()',
+          output: 'a-output',
+          canceled: false,
+          callId: 'a',
+        };
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call B', callId: 'b'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          description: null,
+          confirm: confirmB,
+          callId: 'b',
+        };
+        await decisionB;
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'b()',
+          output: 'b-output',
+          canceled: false,
+          callId: 'b',
+        };
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+      })());
+
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const input = await view.nextInput;
+      assert(input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      input.props.onTextSubmit('test');
+
+      const dialogA = await waitForSideEffectDialog(view);
+      approveSideEffect(dialogA, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      sinon.assert.calledOnceWithExactly(confirmA, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+
+      const dialogB = await waitForSideEffectDialog(view);
+      // An approval that arrives just inside prompt B's 500 ms window is ignored.
+      now += 499;
+      dialogB.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      sinon.assert.notCalled(confirmB);
+
+      assert.deepEqual(summarizeSteps(view.input), [
+        {title: 'Call A', output: 'a-output', state: 'completed'},
+        {title: 'Call B', output: undefined, state: 'needs_approval'},
+      ]);
+
+      // Approving prompt B after its protection window elapses succeeds.
+      approveSideEffect(dialogB, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      sinon.assert.calledOnceWithExactly(confirmB, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+
+      const finalInput = await waitForLoadingToFinish(view);
       assert.deepEqual(summarizeSteps(finalInput), [
         {title: 'Call A', output: 'a-output', state: 'completed'},
         {title: 'Call B', output: 'b-output', state: 'completed'},

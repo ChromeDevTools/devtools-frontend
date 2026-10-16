@@ -109,6 +109,42 @@ describe('AI Assistance', function() {
     await devtoolsPage.typeText(query);
   }
 
+  /**
+   * Clicks Continue until the panel accepts the approval and removes the button.
+   * The panel ignores approvals that arrive within 500 ms of a prompt appearing,
+   * so a single immediate click can be dropped.
+   */
+  async function approvePendingSideEffect(devToolsPage: DevToolsPage, signal?: AbortSignal): Promise<void> {
+    signal?.throwIfAborted();
+    const handle = await devToolsPage.locator('aria/Continue').waitHandle({signal});
+    try {
+      await devToolsPage.waitForFunction(async () => {
+        signal?.throwIfAborted();
+        const isConnected = await handle.evaluate(el => el.isConnected).catch(() => false);
+        if (!isConnected) {
+          return true;
+        }
+        await handle.click().catch(() => {});
+        signal?.throwIfAborted();
+        return undefined;
+      });
+    } catch (err) {
+      if (!signal?.aborted) {
+        throw err;
+      }
+      // The caller aborts only after the run has finished. A run cannot finish
+      // while a prompt is pending, and only this helper answers prompts, so the
+      // prompt behind this handle was approved. The panel can render after the
+      // run finishes, so wait for the render to remove the button.
+      await devToolsPage.waitForFunction(async () => {
+        const isConnected = await handle.evaluate(el => el.isConnected).catch(() => false);
+        return isConnected ? undefined : true;
+      });
+    } finally {
+      await handle.dispose().catch(() => {});
+    }
+  }
+
   interface Log {
     request: Host.AidaClient.DoConversationRequest;
   }
@@ -135,15 +171,16 @@ describe('AI Assistance', function() {
     let sideEffectCount = 0;
     async function autoAcceptEvals(signal: AbortSignal) {
       while (!signal.aborted) {
-        await devtoolsPage.locator('aria/Continue').click({signal});
+        await approvePendingSideEffect(devtoolsPage, signal);
         sideEffectCount++;
         onSideEffect?.();
       }
     }
     // Click continue once without sending abort signal.
-    autoAcceptEvals(abort.signal).catch(() => {});
+    const acceptLoop = autoAcceptEvals(abort.signal).catch(() => {});
     await done;
     abort.abort();
+    await acceptLoop;
     if (sideEffectCount && throwOnSideEffect) {
       throw new Error('Unexpected side effect');
     }
@@ -593,8 +630,7 @@ describe('AI Assistance', function() {
     // Verify that the prior conversation is aborted and its confirmation unmounts before continuing.
     await devToolsPage.waitForElementWithTextContent('You stopped this response');
     // Wait for the new conversation's side-effect confirmation to mount and approve it.
-    await devToolsPage.waitForAria('Continue');
-    await devToolsPage.click('aria/Continue');
+    await approvePendingSideEffect(devToolsPage);
     await devToolsPage.waitForElementWithTextContent('changed styles');
 
     await inspectedPage.waitForFunction(() => {

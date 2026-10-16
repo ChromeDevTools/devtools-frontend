@@ -117,7 +117,7 @@ Each `Step` has a `state` (`StepState` in `components/ChatMessage.ts`):
 | State | Set when | Badge |
 | :--- | :--- | :--- |
 | `in_progress` | `QUERYING` creates the step. | A spinner if the step is the last step. Otherwise, a checkmark. |
-| `needs_approval` | A `SIDE_EFFECT` event asks the user to approve a tool call. The state holds the approval dialog. | A pause icon, with the approval prompt in the step. Only the last step can be in this state. |
+| `needs_approval` | A `SIDE_EFFECT` event asks the user to approve a tool call. The state holds the approval dialog. The panel ignores allow decisions that arrive within 500 ms of the prompt appearing; rejections always go through. | A pause icon, with the approval prompt in the step. Only the last step can be in this state. |
 | `canceled` | An `ACTION` with `canceled: true` arrives because the user denied the tool call, or the user aborts the run while this is the last step. | A cross. |
 | `completed` | A `CONTEXT`, `THOUGHT`, `ACTION`, `CONTEXT_CHANGE` or `ANSWER` event arrives, or the user answers the approval prompt. | A checkmark. |
 

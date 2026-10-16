@@ -84,13 +84,8 @@ export class EventsSerializer {
     }
 
     if (EventsSerializer.isSyntheticEventKey(eventValues)) {
-      const syntheticEvents = Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getSyntheticTraces();
-      const syntheticEvent = syntheticEvents.at(eventValues.rawIndex);
-      if (!syntheticEvent) {
-        throw new Error(`Unknown trace event. Attempted to get a synthetic event from an unknown raw event index: ${
-            eventValues.rawIndex}`);
-      }
-      return syntheticEvent;
+      return Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().syntheticEventForRawEventIndex(
+          eventValues.rawIndex);
     }
 
     if (EventsSerializer.isRawEventKey(eventValues)) {

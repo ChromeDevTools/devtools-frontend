@@ -35,7 +35,6 @@ interface ModificationsManagerData {
   parsedTrace: Trace.TraceModel.ParsedTrace;
   traceBounds: Trace.Types.Timing.TraceWindowMicro;
   rawTraceEvents: readonly Trace.Types.Events.Event[];
-  syntheticEvents: Trace.Types.Events.SyntheticBased[];
   modifications?: Trace.Types.File.Modifications;
 }
 
@@ -90,7 +89,6 @@ export class ModificationsManager extends EventTarget {
       traceBounds,
       rawTraceEvents: parsedTrace.traceEvents,
       modifications: parsedTrace.metadata.modifications,
-      syntheticEvents: parsedTrace.syntheticEventsManager.getSyntheticTraces(),
     });
     modificationsManagerByTraceIndex[traceIndex] = newModificationsManager;
     activeManager = newModificationsManager;

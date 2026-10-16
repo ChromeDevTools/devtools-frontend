@@ -56,7 +56,7 @@ import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
 import type {StylesContainer} from './StylesContainer.js';
 import {CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME} from './StylesSidebarPane.js';
 
-const {html, nothing, render, Directives: {classMap}} = Lit;
+const {html, nothing, render, Directives: {classMap, ref}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -2166,9 +2166,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
   static #active?: {
     editor: InlineEditor.PositionAreaEditor.PositionAreaEditor,
     treeElement: StylePropertyTreeElement,
-    valueElement: HTMLElement,
-    match: SDK.CSSPropertyParserMatchers.PositionAreaMatch,
-    context: RenderingContext,
+    edit: (value: string) => void,
     key?: string,
   };
   readonly #treeElement: StylePropertyTreeElement|null;
@@ -2204,46 +2202,42 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         (child): child is StylePropertyTreeElement =>
             child instanceof StylePropertyTreeElement && child.property.name === propertyName);
   }
-  override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Lit.LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
     if (!this.#treeElement?.editable() ||
         !InlineEditor.PositionAreaEditor.parsePositionArea(context.matchedResult.getComputedPropertyValueText())) {
-      return children;
+      return html`${children}`;
     }
 
     const section = this.#treeElement.section();
     const key = section ? `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx++}` : undefined;
-    const valueElement = document.createElement('span');
-    render(children, valueElement);
 
-    const button = createIcon('grid-on', 'position-area-swatch-icon');
-    button.title = i18nString(UIStrings.positionAreaEditorButton);
-    button.role = 'button';
-    button.tabIndex = -1;
-    button.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('position-area')}`);
-
+    let button: Element|undefined;
+    const edit = (value: string): void => {
+      button?.dispatchEvent(new ValueEditEvent(value));
+      context.recordEdit(match, value);
+    };
     const treeElement = this.#treeElement;
     const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
-    if (PositionAreaRenderer.#active && popoverHelper.isShowing(PositionAreaRenderer.#active.editor) &&
-        key !== undefined && PositionAreaRenderer.#active.key === key) {
+    const isActive =
+        Boolean(PositionAreaRenderer.#active && popoverHelper.isShowing(PositionAreaRenderer.#active.editor) &&
+                key !== undefined && PositionAreaRenderer.#active.key === key);
+    if (isActive && PositionAreaRenderer.#active) {
       PositionAreaRenderer.#active.treeElement = treeElement;
-      PositionAreaRenderer.#active.valueElement = valueElement;
-      PositionAreaRenderer.#active.match = match;
-      PositionAreaRenderer.#active.context = context;
-      popoverHelper.setAnchorElement(button);
+      PositionAreaRenderer.#active.edit = edit;
     }
-    button.onclick = event => {
+    const onClick = (event: Event): void => {
       event.consume(true);
-      if (popoverHelper.isShowing()) {
+      if (popoverHelper.isShowing() || !button) {
         popoverHelper.hide(true);
         return;
       }
       const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
-      const active = {editor, key, treeElement, valueElement, match, context};
+      const active = {editor, key, treeElement, edit};
       PositionAreaRenderer.#active = active;
-      editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? '') ?? undefined;
+      const valueText = context.edits?.getEdit(match) ?? context.matchedResult.getComputedPropertyValueText();
+      editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueText) ?? undefined;
 
       const updateProperty = (propertyName: string, computedStyle: Map<string, string>|null): void => {
         const matchedStyles = active.treeElement.matchedStyles();
@@ -2265,8 +2259,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       const onPositionAreaChanged =
           (changeEvent: Common.EventTarget.EventTargetEvent<InlineEditor.PositionAreaEditor.Area>): void => {
             const area = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
-            active.valueElement.textContent = area;
-            active.context.recordEdit(active.match, area);
+            active.edit(area);
             void active.treeElement.applyStyleText(active.treeElement.renderedPropertyText(), false);
           };
       const onPropertyChanged =
@@ -2322,14 +2315,27 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         this.#stylesContainer.setEditingStyle(false);
       });
     };
-    button.onmousedown = event => {
-      event.consume();
-    };
-    button.onmouseup = event => {
-      event.consume();
-    };
 
-    return [button, valueElement];
+    // clang-format off
+    return html`<devtools-widget ${widget(EditableContent)}><devtools-icon
+      ${ref(e => {
+        button = e;
+        if (e && isActive) {
+          popoverHelper.setAnchorElement(e);
+        }
+      })}
+      slot="icon"
+      name="grid-on"
+      class="position-area-swatch-icon"
+      title=${i18nString(UIStrings.positionAreaEditorButton)}
+      role="button"
+      tabindex="-1"
+      jslog=${VisualLogging.showStyleEditor().track({click: true}).context('position-area')}
+      @click=${onClick}
+      @mousedown=${(event: Event) => event.consume()}
+      @mouseup=${(event: Event) => event.consume()}
+    ></devtools-icon>${children}</devtools-widget>`;
+    // clang-format on
   }
 }
 

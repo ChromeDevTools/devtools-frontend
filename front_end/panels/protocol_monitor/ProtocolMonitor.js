@@ -276,7 +276,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                       @change=${(e) => input.onTargetChange(e.target.value)}>
                 ${input.targets.map(target => html `
                   <option jslog=${VisualLogging.item('target').track({ click: true })}
-                          value=${target.id()} ?selected=${target.id() === input.selectedTargetId}>
+                          value=${target.id()} .selected=${target.id() === input.selectedTargetId}>
                     ${target.name()} (${target.inspectedURL()})
                   </option>`)}
               </select>

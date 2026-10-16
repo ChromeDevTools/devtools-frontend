@@ -24,6 +24,7 @@
     "../../../../../test/harness/unit/multi_logs.test.ts",
     "../../../../../test/harness/unit/screenshot_diff.test.ts",
     "../../../../../test/harness/unit/screenshot_retry.test.ts",
+    "../../../../../test/harness/unit/sinon_restore.test.ts",
     "../../../../../test/harness/unit/snapshot.test.ts",
     "../../../../../test/harness/unit/unit.test.ts",
     "../../../../../test/harness/unit/unit_2.test.ts",

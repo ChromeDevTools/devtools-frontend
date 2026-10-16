@@ -29,6 +29,7 @@ export interface HostRuntime {
     getCacheStorage(): CacheStorageLike | undefined;
     getDevicePixelRatio(): number;
     saveScreenshot(options: ScreenshotOptions): Promise<void>;
+    copyScreenshot(options: ScreenshotOptions): Promise<void>;
     revokeLastScreenshotUrl(): void;
     loadTextFile(url: URL): Promise<string>;
     evaluateCSS(dataValue: string | null, customExpr: string): string | null;

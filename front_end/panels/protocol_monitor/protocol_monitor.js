@@ -968,7 +968,7 @@ function renderTargetSelectorRow(input) {
             @change=${input.onTargetSelected}>
       ${input.targets.map((target) => html`
         <option jslog=${VisualLogging.item("target").track({ click: true, resize: true })}
-                value=${target.id()} ?selected=${target.id() === input.targetId}>
+                value=${target.id()} .selected=${target.id() === input.targetId}>
           ${target.name()} (${target.inspectedURL()})
         </option>`)}
     </select>
@@ -1525,7 +1525,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                       @change=${(e) => input.onTargetChange(e.target.value)}>
                 ${input.targets.map((target2) => html2`
                   <option jslog=${VisualLogging2.item("target").track({ click: true })}
-                          value=${target2.id()} ?selected=${target2.id() === input.selectedTargetId}>
+                          value=${target2.id()} .selected=${target2.id() === input.selectedTargetId}>
                     ${target2.name()} (${target2.inspectedURL()})
                   </option>`)}
               </select>

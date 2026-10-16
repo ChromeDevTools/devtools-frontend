@@ -46,8 +46,10 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/elements/ChangeTrackingUtils.ts",
     "../../../../../../front_end/models/elements/DOMChanges.ts",
-    "../../../../../../front_end/models/elements/ElementUpdateRecord.ts"
+    "../../../../../../front_end/models/elements/ElementUpdateRecord.ts",
+    "../../../../../../front_end/models/elements/StyleChanges.ts"
   ],
   "references": [
     {

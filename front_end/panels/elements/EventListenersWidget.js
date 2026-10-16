@@ -92,7 +92,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           jslog=${VisualLogging.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
           ${input.dispatchFilters.map(filter => html `
-            <option value=${filter.value} ?selected=${filter.value === input.selectedDispatchFilter}>
+            <option value=${filter.value} .selected=${filter.value === input.selectedDispatchFilter}>
               ${filter.name}
             </option>`)}
         </select>

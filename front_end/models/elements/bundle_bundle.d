@@ -1,1 +1,1 @@
-gen/front_end/models/elements/elements.js: ../../front_end/models/elements/DOMChanges.ts ../../front_end/models/elements/ElementUpdateRecord.ts ../../front_end/models/elements/elements.ts
+gen/front_end/models/elements/elements.js: ../../front_end/models/elements/ChangeTrackingUtils.ts ../../front_end/models/elements/DOMChanges.ts ../../front_end/models/elements/ElementUpdateRecord.ts ../../front_end/models/elements/StyleChanges.ts ../../front_end/models/elements/elements.ts

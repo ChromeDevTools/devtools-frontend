@@ -40,14 +40,14 @@
       "../../../../../../node_modules"
     ],
     "types": [
-      "mocha",
       "node",
       "undici-types"
     ],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/elements/DOMChanges.test.ts"
+    "../../../../../../front_end/models/elements/DOMChanges.test.ts",
+    "../../../../../../front_end/models/elements/StyleChanges.test.ts"
   ],
   "references": [
     {

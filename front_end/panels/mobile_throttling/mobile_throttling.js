@@ -492,9 +492,9 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
 };
 var DEFAULT_SAVE_DATA_VIEW = (input, _output, target) => {
   render(html`
-    <option value=${SDK2.EmulationModel.DataSaverOverride.UNSET} ?selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.UNSET}>${i18nString2(UIStrings2.noSaveDataOverride)}</option>
-    <option value=${SDK2.EmulationModel.DataSaverOverride.ENABLED} ?selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.ENABLED}>${i18nString2(UIStrings2.saveDataOn)}</option>
-    <option value=${SDK2.EmulationModel.DataSaverOverride.DISABLED} ?selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.DISABLED}>${i18nString2(UIStrings2.saveDataOff)}</option>
+    <option value=${SDK2.EmulationModel.DataSaverOverride.UNSET} .selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.UNSET}>${i18nString2(UIStrings2.noSaveDataOverride)}</option>
+    <option value=${SDK2.EmulationModel.DataSaverOverride.ENABLED} .selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.ENABLED}>${i18nString2(UIStrings2.saveDataOn)}</option>
+    <option value=${SDK2.EmulationModel.DataSaverOverride.DISABLED} .selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.DISABLED}>${i18nString2(UIStrings2.saveDataOff)}</option>
   `, target, { container: { listeners: { change: (e) => input.onSelect(e.target.value) } } });
 };
 var SaveDataOverrideSelect = class extends UI.Widget.Widget {
@@ -638,7 +638,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
           (optionEl) => optionEl && optionsMap.set(optionEl, option)
         )}
               .value=${String(option.calibratedDeviceType ?? rate)}
-              ?selected=${input.currentOption === option}
+              .selected=${input.currentOption === option}
               ?disabled=${rate === 0}
               title=${title}
               aria-label=${title}
@@ -952,7 +952,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             label=${group.title}>
             ${group.items.map((condition) => html3`<option
               ${Directives2.ref((option) => option && optionsMap2.set(option, condition))}
-              ?selected=${selectedConditions ? SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions) : group === input.throttlingGroups[0]}
+              .selected=${selectedConditions ? SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions) : group === input.throttlingGroups[0]}
               value=${title(condition)}
               aria-label=${i18nString5(UIStrings5.sS, { PH1: group.title, PH2: title(condition) })}
               jslog=${jslog(group, condition)}>
@@ -963,7 +963,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <optgroup label=${input.customConditionsGroup.title}>
           ${input.customConditionsGroup.items.map((condition) => html3`<option
               ${Directives2.ref((option) => option && optionsMap2.set(option, condition))}
-              ?selected=${selectedConditions && SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions)}
+              .selected=${Boolean(selectedConditions && SDK5.NetworkManager.networkConditionsEqual(condition, selectedConditions))}
               value=${title(condition)}
               aria-label=${i18nString5(UIStrings5.sS, { PH1: input.customConditionsGroup.title, PH2: title(condition) })}
               jslog=${VisualLogging3.item("custom-network-throttling-item").track({ click: true })}>

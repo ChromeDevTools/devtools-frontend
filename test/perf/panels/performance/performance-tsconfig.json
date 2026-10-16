@@ -41,7 +41,6 @@
       "../../../../../../../node_modules"
     ],
     "types": [
-      "mocha",
       "node",
       "undici-types"
     ],

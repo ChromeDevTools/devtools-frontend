@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Elements from '../../models/elements/elements.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import { createIcon, Icon } from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
@@ -2023,6 +2024,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
     // parsed.
     #edits;
+    // Stores the last committed property so incremental live previews and
+    // in-place mutations of `this.property` don't overwrite the baseline for change tracking.
+    #lastCommittedProperty;
     #lazyRender;
     constructor({ stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }) {
         // Pass an empty title, the title gets made later in onattach.
@@ -2038,6 +2042,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.#parentSection = section;
         this.isShorthand = isShorthand;
         this.newProperty = newProperty;
+        this.#lastCommittedProperty = {
+            name: property.name,
+            value: property.value,
+        };
         this.#lazyRender = !this.newProperty && stylesContainer.shouldRenderLazily();
         if (this.newProperty) {
             this.listItemElement.textContent = '';
@@ -2233,6 +2241,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (!success) {
             return;
         }
+        Elements.StyleChanges.trackStylePropertyToggle(this.#stylesContainer.changeTracker, this.#stylesContainer.node() ?? this.#matchedStyles.node(), {
+            ruleHeader: this.#parentSection.headerText(),
+            name: this.property.name,
+            value: this.property.value,
+            disabled,
+        });
         this.#matchedStyles.resetActiveProperties();
         this.updatePane();
         this.styleTextAppliedForTest();
@@ -3402,6 +3416,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const deleteProperty = majorChange && !styleText.length;
         if (!deleteProperty && updatedProperty) {
             this.property = updatedProperty;
+        }
+        // Only track committed edits (`majorChange` is true), skipping intermediate live previews and reverts.
+        if (majorChange) {
+            const newName = deleteProperty ? '' : this.property.name;
+            const newValue = deleteProperty ? '' : this.property.value;
+            Elements.StyleChanges.trackStylePropertyEdit(this.#stylesContainer.changeTracker, currentNode ?? this.#matchedStyles.node(), {
+                ruleHeader: this.#parentSection.headerText(),
+                oldName: this.#lastCommittedProperty.name,
+                oldValue: this.#lastCommittedProperty.value,
+                newName,
+                newValue,
+            });
+            this.#lastCommittedProperty = { name: newName, value: newValue };
         }
         if (currentNode === this.node()) {
             this.updatePane();

@@ -221,6 +221,7 @@ models/computed_style/ComputedStyleModel.test.js
 models/cpu_profile/CPUProfileDataModel.test.js
 models/crux-manager/CrUXManager.test.js
 models/elements/DOMChanges.test.js
+models/elements/StyleChanges.test.js
 models/emulation/DeviceModeModel.test.js
 models/emulation/EmulatedDevices.test.js
 models/extensions/ExtensionEndpoint.test.js
@@ -583,7 +584,7 @@ panels/network/components/RequestHeaderSection.test.js
 panels/network/components/RequestTrustTokensView.test.js
 panels/network/components/ResponseHeaderSection.test.js
 panels/performance_monitor/PerformanceMonitor.test.js
-panels/profiler/HeapDetachedElementsDataGrid.test.js
+panels/profiler/HeapDetachedElementsView.test.js
 panels/profiler/HeapProfileView.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js

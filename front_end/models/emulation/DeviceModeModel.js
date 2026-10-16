@@ -797,6 +797,19 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         }
         try {
             const screenshot = await screenCaptureModel.captureScreenshot("png" /* Protocol.Page.CaptureScreenshotRequestFormat.Png */, 100, screenshotMode, clip);
+            if (screenshot !== null) {
+                void Platform.HostRuntime.HOST_RUNTIME
+                    .copyScreenshot({
+                    base64Png: screenshot,
+                    fileName: this.getScreenshotFileName(),
+                })
+                    .then(() => {
+                    this.dispatchEventToListeners("ScreenshotCopied" /* Events.SCREENSHOT_COPIED */);
+                })
+                    .catch(() => {
+                    this.dispatchEventToListeners("ScreenshotCopyFailed" /* Events.SCREENSHOT_COPY_FAILED */);
+                });
+            }
             return screenshot;
         }
         finally {
@@ -1033,6 +1046,8 @@ export class Rect {
 export var Events;
 (function (Events) {
     Events["UPDATED"] = "Updated";
+    Events["SCREENSHOT_COPIED"] = "ScreenshotCopied";
+    Events["SCREENSHOT_COPY_FAILED"] = "ScreenshotCopyFailed";
 })(Events || (Events = {}));
 export var Type;
 (function (Type) {

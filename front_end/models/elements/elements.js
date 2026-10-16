@@ -4,10 +4,34 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
+// ../../front_end/models/elements/ChangeTrackingUtils.ts
+var ChangeTrackingUtils_exports = {};
+__export(ChangeTrackingUtils_exports, {
+  MAX_VALUE_LENGTH: () => MAX_VALUE_LENGTH,
+  buildAnchor: () => buildAnchor,
+  trimValue: () => trimValue
+});
+import * as Platform from "../../core/platform/platform.js";
+var MAX_VALUE_LENGTH = 100;
+function trimValue(value) {
+  return Platform.StringUtilities.trimMiddle(value.trim(), MAX_VALUE_LENGTH);
+}
+function buildAnchor(vePath, node, textSignature) {
+  return {
+    vePath,
+    ...textSignature ? { textSignature } : {},
+    ...node ? {
+      node: {
+        backendNodeId: node.backendNodeId(),
+        targetId: node.domModel().target().id()
+      }
+    } : {}
+  };
+}
+
 // ../../front_end/models/elements/DOMChanges.ts
 var DOMChanges_exports = {};
 __export(DOMChanges_exports, {
-  MAX_VALUE_LENGTH: () => MAX_VALUE_LENGTH,
   trackAttributeEdit: () => trackAttributeEdit,
   trackHTMLEdit: () => trackHTMLEdit,
   trackNodeDrop: () => trackNodeDrop,
@@ -19,21 +43,8 @@ __export(DOMChanges_exports, {
   trackTextNodeEdit: () => trackTextNodeEdit,
   trackVisibilityToggle: () => trackVisibilityToggle
 });
-import * as Platform from "../../core/platform/platform.js";
-var MAX_VALUE_LENGTH = 100;
-function trimValue(value) {
-  return Platform.StringUtilities.trimMiddle(value, MAX_VALUE_LENGTH);
-}
-function buildAnchor(node, selector = "element") {
-  return {
-    vePath: "Panel: elements > Tree: elements > TreeItem",
-    textSignature: selector,
-    node: {
-      backendNodeId: node.backendNodeId(),
-      targetId: node.domModel().target().id()
-    }
-  };
-}
+var DOM_TREE_VE_PATH = "Panel: elements > Tree: elements > TreeItem";
+var ELEMENT_PLACEHOLDER_TEXT_SIGNATURE = "element";
 function parseAttributeText(text) {
   const trimmed = text.trim();
   const eqIdx = trimmed.indexOf("=");
@@ -121,61 +132,91 @@ function trackAttributeEdit(tracker, node, selector, edit) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeAttributeEdit(edit), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeAttributeEdit(edit),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackTagNameEdit(tracker, node, selector, oldTagName, newTagName) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeTagNameEdit(oldTagName, newTagName), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeTagNameEdit(oldTagName, newTagName),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackTextNodeEdit(tracker, node, selector, oldText, newText) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeTextNodeEdit(oldText, newText), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeTextNodeEdit(oldText, newText),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackNodeRemoval(tracker, node, selector) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeRemoval(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeNodeRemoval(node.nodeName().toLowerCase()),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackHTMLEdit(tracker, node, selector, oldValue, newValue) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeHTMLEdit(oldValue, newValue), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeHTMLEdit(oldValue, newValue),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackVisibilityToggle(tracker, node, selector, hidden) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeVisibilityToggle(node.nodeName().toLowerCase(), hidden), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeVisibilityToggle(node.nodeName().toLowerCase(), hidden),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackNodeDuplication(tracker, node, selector) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeDuplication(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeNodeDuplication(node.nodeName().toLowerCase()),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackNodeMove(tracker, node, selector, directionUp) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeMove(node.nodeName().toLowerCase(), directionUp), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeNodeMove(node.nodeName().toLowerCase(), directionUp),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackNodeDrop(tracker, node, selector) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodeDrop(node.nodeName().toLowerCase()), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeNodeDrop(node.nodeName().toLowerCase()),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 function trackNodePaste(tracker, node, selector, isCut) {
   if (!tracker?.isTracking) {
     return;
   }
-  tracker.trackChange(describeNodePaste(node.nodeName().toLowerCase(), isCut), buildAnchor(node, selector));
+  tracker.trackChange(
+    describeNodePaste(node.nodeName().toLowerCase(), isCut),
+    buildAnchor(DOM_TREE_VE_PATH, node, selector ?? ELEMENT_PLACEHOLDER_TEXT_SIGNATURE)
+  );
 }
 
 // ../../front_end/models/elements/ElementUpdateRecord.ts
@@ -236,8 +277,61 @@ var ElementUpdateRecord = class {
     return Boolean(this.#hasRemovedChildren);
   }
 };
+
+// ../../front_end/models/elements/StyleChanges.ts
+var StyleChanges_exports = {};
+__export(StyleChanges_exports, {
+  trackStylePropertyEdit: () => trackStylePropertyEdit,
+  trackStylePropertyToggle: () => trackStylePropertyToggle
+});
+import * as Platform2 from "../../core/platform/platform.js";
+var STYLES_PANE_VE_PATH = "Panel: elements > Pane: styles";
+function formatRuleSuffix(preposition, ruleHeader) {
+  const trimmedRule = ruleHeader ? Platform2.StringUtilities.collapseWhitespace(ruleHeader.trim()) : "";
+  return trimmedRule ? ` ${preposition} rule "${trimValue(trimmedRule)}"` : "";
+}
+function describeStylePropertyEdit({ ruleHeader, oldName, oldValue, newName, newValue }) {
+  if (!newName) {
+    return `Removed style property "${trimValue(oldName)}: ${trimValue(oldValue)}"${formatRuleSuffix("from", ruleHeader)}`;
+  }
+  if (!oldName) {
+    return `Added style property "${trimValue(newName)}: ${trimValue(newValue)}"${formatRuleSuffix("to", ruleHeader)}`;
+  }
+  if (oldName !== newName) {
+    return `Changed style property from "${trimValue(oldName)}: ${trimValue(oldValue)}" to "${trimValue(newName)}: ${trimValue(newValue)}"${formatRuleSuffix("in", ruleHeader)}`;
+  }
+  return `Changed style property "${trimValue(newName)}" from "${trimValue(oldValue)}" to "${trimValue(newValue)}"${formatRuleSuffix("in", ruleHeader)}`;
+}
+function describeStylePropertyToggle({ ruleHeader, name, value, disabled }) {
+  const action = disabled ? "Disabled" : "Enabled";
+  return `${action} style property "${trimValue(name)}: ${trimValue(value)}"${formatRuleSuffix("in", ruleHeader)}`;
+}
+function trackStylePropertyEdit(tracker, node, edit) {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  const oldName = edit.oldName.trim();
+  const oldValue = edit.oldValue.trim();
+  const newName = edit.newName.trim();
+  const newValue = edit.newValue.trim();
+  if (oldName === newName && oldValue === newValue) {
+    return;
+  }
+  tracker.trackChange(
+    describeStylePropertyEdit({ ruleHeader: edit.ruleHeader, oldName, oldValue, newName, newValue }),
+    buildAnchor(STYLES_PANE_VE_PATH, node)
+  );
+}
+function trackStylePropertyToggle(tracker, node, toggle) {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  tracker.trackChange(describeStylePropertyToggle(toggle), buildAnchor(STYLES_PANE_VE_PATH, node));
+}
 export {
+  ChangeTrackingUtils_exports as ChangeTrackingUtils,
   DOMChanges_exports as DOMChanges,
-  ElementUpdateRecord_exports as ElementUpdateRecord
+  ElementUpdateRecord_exports as ElementUpdateRecord,
+  StyleChanges_exports as StyleChanges
 };
 //# sourceMappingURL=elements.js.map

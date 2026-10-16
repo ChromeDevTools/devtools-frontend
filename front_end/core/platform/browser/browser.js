@@ -117,6 +117,13 @@ async function saveScreenshot(options) {
   link.href = blobUrl;
   link.click();
 }
+async function copyScreenshot(options) {
+  const response = await fetch("data:image/png;base64," + options.base64Png);
+  const blob = await response.blob();
+  await navigator.clipboard.write([
+    new ClipboardItem({ "image/png": blob })
+  ]);
+}
 var cssEvaluationElement = null;
 var HOST_RUNTIME = {
   createWorker(url) {
@@ -139,6 +146,7 @@ var HOST_RUNTIME = {
     return window.devicePixelRatio;
   },
   saveScreenshot,
+  copyScreenshot,
   revokeLastScreenshotUrl,
   async loadTextFile(url) {
     const response = await fetch(url);

@@ -30,6 +30,7 @@ import * as i18n5 from "../../core/i18n/i18n.js";
 import * as Root from "../../core/root/root.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as EmulationModel2 from "../../models/emulation/emulation.js";
+import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
@@ -282,17 +283,17 @@ var DEFAULT_VIEW = (input, _output, target) => {
                 @change=${input.onDeviceChange}
                 .value=${live(input.selectedDeviceOption === input.deviceModeOptions.responsive ? "Responsive" : input.selectedDeviceOption?.title || "Responsive")}
                 jslog=${VisualLogging.dropDown().track({ change: true }).context("device")}>
-          <option value="Responsive" ?selected=${input.deviceModeOptions.responsive.selected} jslog=${VisualLogging.item(input.deviceModeOptions.responsive.jslogContext).track({ click: true })}>
+          <option value="Responsive" .selected=${input.deviceModeOptions.responsive.selected} jslog=${VisualLogging.item(input.deviceModeOptions.responsive.jslogContext).track({ click: true })}>
             ${input.deviceModeOptions.responsive.title}
           </option>
           ${input.deviceModeOptions.standard.map((group) => html`
             <optgroup label=${EmulationModel.EmulatedDevices.getCategoryTitle(group.category)}>
-              ${group.options.map((o) => html`<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
+              ${group.options.map((o) => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
             </optgroup>
           `)}
           ${input.deviceModeOptions.custom.length > 0 ? html`
             <optgroup label="Custom">
-              ${input.deviceModeOptions.custom.map((o) => html`<option value=${o.title} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
+              ${input.deviceModeOptions.custom.map((o) => html`<option value=${o.title} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
             </optgroup>
           ` : ""}
           <option value="Edit" jslog=${VisualLogging.item(input.deviceModeOptions.edit.jslogContext).track({ click: true })}>
@@ -313,7 +314,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
               @change=${input.onScaleChange}
               .value=${String(input.scaleOptions.find((o) => o.selected)?.value ?? "")}
               jslog=${VisualLogging.dropDown().track({ change: true }).context("scale")}>
-        ${input.scaleOptions.map((o) => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
+        ${input.scaleOptions.map((o) => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
       </select>
 
       <div class="device-mode-empty-toolbar-element"></div>
@@ -330,7 +331,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
                     .value=${String(input.dprOptions.find((o) => o.selected)?.value ?? "")}
                     jslog=${VisualLogging.dropDown().track({ change: true }).context("device-pixel-ratio")}
                     ?disabled=${!input.isResponsive}>
-                ${input.dprOptions.map((o) => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
+                ${input.dprOptions.map((o) => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
               </select>`
   })}
         </div>` : ""}
@@ -345,7 +346,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
                 .value=${input.uaOptions.find((o) => o.selected)?.value || ""}
                 jslog=${VisualLogging.dropDown().track({ change: true }).context("device-type")}
                 ?disabled=${!input.isResponsive}>
-          ${input.uaOptions.map((o) => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
+          ${input.uaOptions.map((o) => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
         </select>` : ""}
       <select class="dark-text" ${widget(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
     title: i18nString(UIStrings.throttling),
@@ -383,7 +384,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
                 @change=${input.onPostureChange}
                 .value=${input.postureOptions.find((o) => o.selected)?.value || ""}
                 jslog=${VisualLogging.dropDown().track({ change: true }).context("device-posture")}>
-          ${input.postureOptions.map((o) => html`<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.value.toLowerCase()).track({ click: true })}>${o.title}</option>`)}
+          ${input.postureOptions.map((o) => html`<option value=${o.value} .selected=${o.selected} jslog=${VisualLogging.item(o.value.toLowerCase()).track({ click: true })}>${o.title}</option>`)}
         </select>` : ""}
     </devtools-toolbar>
     <devtools-toolbar class="device-mode-toolbar-options" wrappable>
@@ -1455,6 +1456,9 @@ var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Inspected
     return { x: left, y: top, width: right - left, height: bottom - top };
   }
   update(force) {
+    if (!this.element.isConnected) {
+      return;
+    }
     const rect = this.dipPageRect();
     const bounds = {
       x: Math.round(rect.x),
@@ -2129,7 +2133,15 @@ var UIStrings3 = {
    * @description Name of a device that the user can select to emulate. Large laptop device.
    * Translation of this phrase should be limited to 10 characters.
    */
-  laptopL: "Laptop L"
+  laptopL: "Laptop L",
+  /**
+   * @description Message shown after a screenshot is copied to the clipboard.
+   */
+  screenshotCopied: "Screenshot copied to clipboard",
+  /**
+   * @description Message shown when a screenshot cannot be copied to the clipboard.
+   */
+  screenshotCopyFailed: "Couldn\u2019t copy screenshot to clipboard"
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/emulation/DeviceModeView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
@@ -2302,6 +2314,12 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
     this.registerRequiredCSS(deviceModeView_css_default);
     this.model = EmulationModel2.DeviceModeModel.DeviceModeModel.instance();
     this.model.addEventListener(EmulationModel2.DeviceModeModel.Events.UPDATED, this.updateUI, this);
+    this.model.addEventListener(EmulationModel2.DeviceModeModel.Events.SCREENSHOT_COPIED, this.screenshotCopied, this);
+    this.model.addEventListener(
+      EmulationModel2.DeviceModeModel.Events.SCREENSHOT_COPY_FAILED,
+      this.screenshotCopyFailed,
+      this
+    );
     this.showMediaInspectorSetting = Common4.Settings.Settings.instance().resolve(
       SettingsUI2.EmulationSettings.showMediaQueryInspectorSettingDescriptor
     );
@@ -2321,6 +2339,12 @@ var DeviceModeView = class _DeviceModeView extends UI4.Widget.VBox {
     );
     this.performUpdate();
     UI4.ZoomManager.ZoomManager.instance().addEventListener(UI4.ZoomManager.Events.ZOOM_CHANGED, this.zoomChanged, this);
+  }
+  screenshotCopied() {
+    Snackbars.Snackbar.Snackbar.show({ message: i18nString3(UIStrings3.screenshotCopied) });
+  }
+  screenshotCopyFailed() {
+    Snackbars.Snackbar.Snackbar.show({ message: i18nString3(UIStrings3.screenshotCopyFailed) });
   }
   #showDeviceModeChanged() {
     if (!this.#showDeviceModeSetting.get()) {

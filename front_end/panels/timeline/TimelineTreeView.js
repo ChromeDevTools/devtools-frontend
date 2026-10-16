@@ -196,8 +196,8 @@ export class TimelineTreeView extends TimelineTreeViewBase {
      * by default when refreshTree() gets called.
      */
     autoSelectFirstChildOnRefresh = true;
-    constructor(element) {
-        super(element);
+    constructor(element, options) {
+        super(element, options);
         this.#selectedEvents = null;
         this.element.classList.add('timeline-tree-view');
         this.registerRequiredCSS(timelineTreeViewStyles);

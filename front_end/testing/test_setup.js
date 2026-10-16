@@ -35,13 +35,15 @@ before(async function () {
     });
 });
 beforeEach(async function () {
-    if (this.currentTest) {
-        this.currentTest.hasExclusiveTests = this.currentTest.parent?.hasOnly?.();
+    const currentTest = this.currentTest;
+    if (currentTest) {
+        const parent = currentTest.parent;
+        currentTest.hasExclusiveTests = parent?.hasOnly?.();
     }
-    stopTrackingAsyncActivity();
-    resetHostConfig();
     // Clear out any Sinon stubs or spies between individual tests.
     sinon.restore();
+    stopTrackingAsyncActivity();
+    resetHostConfig();
     await setupTestDOM();
     // Ensure that no trace data leaks between tests when testing the trace engine.
     for (const handler of Object.values(Trace.Handlers.ModelHandlers)) {
@@ -60,10 +62,13 @@ beforeEach(async function () {
 });
 afterEach(async function () {
     cleanTestDOM(this.currentTest?.fullTitle());
+    // Flush and restore any Sinon fake timers before checking for pending activity,
+    // so fake timers do not intercept timeouts scheduled while flushing pending async work.
+    sinon.clock?.runToLast();
+    sinon.clock?.restore();
     await checkForPendingActivity(this.currentTest?.fullTitle());
     stopTrackingAsyncActivity();
     // Clear out any Sinon stubs or spies between individual tests.
-    sinon.clock?.runToLast();
     sinon.restore();
 });
 //# sourceMappingURL=test_setup.js.map

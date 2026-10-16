@@ -36,7 +36,7 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
      * by default when refreshTree() gets called.
      */
     protected autoSelectFirstChildOnRefresh: boolean;
-    constructor(element?: HTMLElement);
+    constructor(element?: HTMLElement, options?: UI.Widget.WidgetOptions);
     get selectedEvents(): Trace.Types.Events.Event[];
     set selectedEvents(selectedEvents: Trace.Types.Events.Event[] | null);
     set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace | null);

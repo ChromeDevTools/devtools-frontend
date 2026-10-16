@@ -689,11 +689,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     });
     const totalVisibleRows = input.maxRowsShown ? countAllVisibleRows() : 0;
     const truncatedLines = input.maxRowsShown ? Math.max(0, totalVisibleRows - input.maxRowsShown) : 0;
+    // This widget renders without a shadow root, so you must scope its
+    // stylesheets. Otherwise, broad rules such as `* {min-width: 0}` in
+    // `inspectorCommon.css` apply to the host's whole tree scope and break the
+    // layout of hosts such as the AI assistance chat.
     // clang-format off
     render(html `
-    <style>${UI.inspectorCommonStyles}</style>
-    <style>${domTreeWidgetStyles}</style>
-    <style>${CodeHighlighter.codeHighlighterStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${UI.inspectorCommonStyles} }</style>
+    <style>@scope to (devtools-widget > *) { ${domTreeWidgetStyles} }</style>
+    <style>@scope to (devtools-widget > *) { ${CodeHighlighter.codeHighlighterStyles} }</style>
     <div class=${disclosureClasses} style=${disclosureStyles}>
       <devtools-tree
         class="elements-tree-outline ${input.wrap ? '' : 'elements-tree-nowrap'} ${input.hideGutter ? 'elements-hide-gutter' : ''} ${isSingleNode ? 'single-node' : ''}"

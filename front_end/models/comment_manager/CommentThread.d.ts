@@ -29,7 +29,7 @@ export interface CommentAnchorSignature {
     /** Visual logging tree path, e.g. "Panel: elements > Pane: styles > TreeOutline > TreeItem: color" */
     vePath: string;
     /** Normalized text content of the target node */
-    textSignature: string;
+    textSignature?: string;
     /** Text content of the parent container VE node for sibling disambiguation */
     parentTextSignature?: string;
     /** 0-indexed position among siblings sharing the same visual logging path */

@@ -64,6 +64,9 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/snackbars/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {

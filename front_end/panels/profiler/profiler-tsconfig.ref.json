@@ -14,7 +14,6 @@
   },
   "files": [
     "../../../../../../front_end/panels/profiler/BottomUpProfileDataGrid.ts",
-    "../../../../../../front_end/panels/profiler/HeapDetachedElementsDataGrid.ts",
     "../../../../../../front_end/panels/profiler/HeapDetachedElementsView.ts",
     "../../../../../../front_end/panels/profiler/HeapProfileView.ts",
     "../../../../../../front_end/panels/profiler/HeapProfilerPanel.ts",

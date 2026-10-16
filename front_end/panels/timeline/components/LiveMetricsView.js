@@ -626,7 +626,7 @@ function renderDeviceScopeSetting(input) {
         return html `
             <option
               value=${deviceOption}
-              ?selected=${input.cruxManager.fieldDeviceOption === deviceOption}
+              .selected=${input.cruxManager.fieldDeviceOption === deviceOption}
               jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(deviceOption)).track({ click: true })}
             >
               ${getLabelForDeviceOption(input.cruxManager, deviceOption)}

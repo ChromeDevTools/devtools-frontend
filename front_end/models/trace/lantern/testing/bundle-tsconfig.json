@@ -42,7 +42,7 @@
       "../../../../../../../../node_modules"
     ],
     "types": [
-      "mocha"
+
     ],
     "useUnknownInCatchVariables": false
   },

@@ -419,14 +419,17 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     if (exactMatch) {
       return exactMatch;
     }
-    try {
-      const originUrl = `${new URL(resourceUrl).origin}/`;
-      return records.find(
-        (request) => Boolean(request.redirectDestination) && originUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, originUrl)
-      );
-    } catch {
+    const origin = URL.parse(resourceUrl)?.origin;
+    if (!origin) {
       return void 0;
     }
+    return records.find((request) => {
+      if (!request.redirectDestination || request.url !== `${origin}/`) {
+        return false;
+      }
+      const finalRequest = _NetworkAnalyzer.resolveRedirects(request);
+      return finalRequest.resourceType === "Document" && !finalRequest.failed && URL.parse(finalRequest.url)?.origin !== origin;
+    });
   }
   static findLastDocumentForUrl(records, resourceUrl) {
     const matchingRequests = records.filter(

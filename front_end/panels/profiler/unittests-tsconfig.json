@@ -41,12 +41,12 @@
       "../../../../../../node_modules"
     ],
     "types": [
-      "mocha"
+
     ],
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/panels/profiler/HeapDetachedElementsDataGrid.test.ts",
+    "../../../../../../front_end/panels/profiler/HeapDetachedElementsView.test.ts",
     "../../../../../../front_end/panels/profiler/HeapProfileView.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -73,7 +73,13 @@
       "path": "../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../elements/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.ref.json"

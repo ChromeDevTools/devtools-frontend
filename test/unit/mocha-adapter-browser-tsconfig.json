@@ -41,7 +41,7 @@
       "../../../../../node_modules"
     ],
     "types": [
-      "mocha"
+
     ],
     "useUnknownInCatchVariables": false
   },
@@ -53,6 +53,9 @@
     "../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
+    {
+      "path": "browser-globals-tsconfig.ref.json"
+    },
     {
       "path": "mocha-interface-tsconfig.ref.json"
     },

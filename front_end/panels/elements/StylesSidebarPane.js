@@ -42,6 +42,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import { createIcon, Icon } from '../../ui/kit/kit.js';
@@ -238,8 +239,10 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
     #lazyRenderCallbacks = new WeakMap();
     #elementsForSyncViewportCheck = [];
     #updateId = 0;
-    constructor(computedStyleModel) {
+    #changeTracker;
+    constructor(computedStyleModel, changeTracker) {
         super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ['flex-none'] });
+        this.#changeTracker = changeTracker;
         this.setMinimumSize(96, 26);
         this.registerRequiredCSS(stylesSidebarPaneStyles);
         Common.Settings.Settings.instance()
@@ -328,6 +331,14 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             this.#webCustomData = WebCustomData.create();
         }
         return this.#webCustomData;
+    }
+    get changeTracker() {
+        // The widget is currently created for non-widget StylesSidebarPane so
+        // the changeTracker can be empty, relying on the manual resolution.
+        // Note that this only works once the widget is attached to the DOM.
+        this.#changeTracker ??=
+            UI.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
+        return this.#changeTracker;
     }
     onScroll(_event) {
         this.hideAllPopovers();

@@ -88,7 +88,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               ${Directives.ref(optionEl => optionEl &&
                 optionsMap.set(optionEl, option))}
               .value=${String(option.calibratedDeviceType ?? rate)}
-              ?selected=${input.currentOption === option}
+              .selected=${input.currentOption === option}
               ?disabled=${rate === 0}
               title=${title}
               aria-label=${title}

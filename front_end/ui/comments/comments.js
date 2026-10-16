@@ -377,7 +377,7 @@ function rematchCommentAnchor(comment, root = document, cachedJslogElements) {
       return VisualLogging.getVePath(cmEditor) === anchor.vePath;
     });
     for (const cmEditor of matchingEditors) {
-      if (checkCodeMirrorLineMatch(cmEditor, lineNumber, anchor.textSignature)) {
+      if (anchor.textSignature !== void 0 && checkCodeMirrorLineMatch(cmEditor, lineNumber, anchor.textSignature)) {
         return cmEditor;
       }
     }

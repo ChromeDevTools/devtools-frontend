@@ -323,9 +323,9 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
 export const DEFAULT_SAVE_DATA_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
-    <option value=${"unset" /* SDK.EmulationModel.DataSaverOverride.UNSET */} ?selected=${input.selectedOption === "unset" /* SDK.EmulationModel.DataSaverOverride.UNSET */}>${i18nString(UIStrings.noSaveDataOverride)}</option>
-    <option value=${"enabled" /* SDK.EmulationModel.DataSaverOverride.ENABLED */} ?selected=${input.selectedOption === "enabled" /* SDK.EmulationModel.DataSaverOverride.ENABLED */}>${i18nString(UIStrings.saveDataOn)}</option>
-    <option value=${"disabled" /* SDK.EmulationModel.DataSaverOverride.DISABLED */} ?selected=${input.selectedOption === "disabled" /* SDK.EmulationModel.DataSaverOverride.DISABLED */}>${i18nString(UIStrings.saveDataOff)}</option>
+    <option value=${"unset" /* SDK.EmulationModel.DataSaverOverride.UNSET */} .selected=${input.selectedOption === "unset" /* SDK.EmulationModel.DataSaverOverride.UNSET */}>${i18nString(UIStrings.noSaveDataOverride)}</option>
+    <option value=${"enabled" /* SDK.EmulationModel.DataSaverOverride.ENABLED */} .selected=${input.selectedOption === "enabled" /* SDK.EmulationModel.DataSaverOverride.ENABLED */}>${i18nString(UIStrings.saveDataOn)}</option>
+    <option value=${"disabled" /* SDK.EmulationModel.DataSaverOverride.DISABLED */} .selected=${input.selectedOption === "disabled" /* SDK.EmulationModel.DataSaverOverride.DISABLED */}>${i18nString(UIStrings.saveDataOff)}</option>
   `, target, { container: { listeners: { change: (e) => input.onSelect(e.target.value) } } });
     // clang-format on
 };

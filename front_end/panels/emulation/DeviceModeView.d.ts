@@ -52,6 +52,8 @@ export declare class DeviceModeView extends UI.Widget.VBox {
     private cachedShowRulers?;
     private cachedScale?;
     constructor(element?: HTMLElement, view?: DeviceModeViewView);
+    private screenshotCopied;
+    private screenshotCopyFailed;
     performUpdate(): void;
     static captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean;
     private screenshotRequestedFromOverlay;

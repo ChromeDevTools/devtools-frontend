@@ -8393,6 +8393,13 @@ var statusBar_css_default = `/* Copyright 2026 The Chromium Authors
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background: var(--sys-color-cdt-base-container);
   }
+
+  /* Hide the bar when no visible item renders anything besides its style tag.
+   * Status bar items are expected to be light DOM widgets (see
+   * docs/ui_engineering.md "Styling"); content in a shadow root is not detected. */
+  .status-bar:not(:has(> :not(.hidden) > :not(style))) {
+    display: none;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./statusBar.css")} */`;

@@ -124,6 +124,8 @@ var HOST_RUNTIME = {
   },
   async saveScreenshot(_options) {
   },
+  async copyScreenshot(_options) {
+  },
   revokeLastScreenshotUrl() {
   },
   async loadTextFile(url) {

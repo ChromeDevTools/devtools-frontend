@@ -3,6 +3,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -55,8 +56,9 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
     aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig;
     aiCodeCompletionProvider?: StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider;
-    constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel);
+    constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker);
     get webCustomData(): WebCustomData | undefined;
+    get changeTracker(): ChangeTracker.ChangeTracker.ChangeTracker | undefined;
     private onScroll;
     swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
     setUserOperation(userOperation: boolean): void;

@@ -133,10 +133,14 @@ export declare class Rect {
     rebaseTo(origin: Rect): Rect;
 }
 export declare const enum Events {
-    UPDATED = "Updated"
+    UPDATED = "Updated",
+    SCREENSHOT_COPIED = "ScreenshotCopied",
+    SCREENSHOT_COPY_FAILED = "ScreenshotCopyFailed"
 }
 export interface EventTypes {
     [Events.UPDATED]: void;
+    [Events.SCREENSHOT_COPIED]: void;
+    [Events.SCREENSHOT_COPY_FAILED]: void;
 }
 export declare enum Type {
     None = "None",

@@ -14351,8 +14351,8 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
    * by default when refreshTree() gets called.
    */
   autoSelectFirstChildOnRefresh = true;
-  constructor(element) {
-    super(element);
+  constructor(element, options) {
+    super(element, options);
     this.#selectedEvents = null;
     this.element.classList.add("timeline-tree-view");
     this.registerRequiredCSS(timelineTreeView_css_default);
@@ -15782,8 +15782,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
   #onRowClicked;
   #isInAIWidget = false;
   constructor(element) {
-    super(element);
-    this.element.setAttribute("jslog", `${VisualLogging8.pane("third-party-tree").track({ hover: true })}`);
+    super(element, { jslog: `${VisualLogging8.pane("third-party-tree").track({ hover: true })}` });
     this.init();
     this.dataGrid.markColumnAsSortedBy("self", DataGrid5.DataGrid.Order.Descending);
     this.dataGrid.setResizeMethod(DataGrid5.DataGrid.ResizeMethod.NEAREST);

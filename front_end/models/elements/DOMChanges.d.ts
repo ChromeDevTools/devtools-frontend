@@ -1,13 +1,6 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as ChangeTracker from '../change_tracker/change_tracker.js';
 type Tracker = ChangeTracker.ChangeTracker.ChangeTracker | undefined;
-/**
- * Maximum number of characters of page controlled data (tag names, attribute names and values,
- * text node values and HTML) that a change description embeds. The inspected page fully controls
- * these strings and `Changed HTML from ... to ...` in particular can otherwise hold on to the
- * entire subtree of an element.
- */
-export declare const MAX_VALUE_LENGTH = 100;
 export interface AttributeEdit {
     /** Name of the edited attribute, or an empty string when a new attribute is added. */
     attributeName: string;

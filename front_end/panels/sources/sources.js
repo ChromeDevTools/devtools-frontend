@@ -1701,7 +1701,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           aria-checked=${input.pauseOnUncaughtExceptions}
           data-first-pause>
         <label class='checkbox-label'>
-          <input type='checkbox' tabindex=-1 class="small" ?checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging3.toggle("pause-uncaught").track({ change: true })}>
+          <input type='checkbox' tabindex=-1 class="small" .checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging3.toggle("pause-uncaught").track({ change: true })}>
           <span>${i18nString3(UIStrings3.pauseOnUncaughtExceptions)}</span>
         </label>
       </div>
@@ -1713,7 +1713,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             aria-checked=${input.pauseOnCaughtExceptions}
             data-last-pause>
           <label class='checkbox-label'>
-            <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 ?checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged.bind(void 0)} jslog=${VisualLogging3.toggle("pause-on-caught-exception").track({ change: true })}>
+            <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 .checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged.bind(void 0)} jslog=${VisualLogging3.toggle("pause-on-caught-exception").track({ change: true })}>
             <span>${i18nString3(UIStrings3.pauseOnCaughtExceptions)}</span>
           </label>
       </div>

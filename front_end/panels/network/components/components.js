@@ -490,8 +490,7 @@ var EditableSpan_exports = {};
 __export(EditableSpan_exports, {
   EditableSpan: () => EditableSpan
 });
-import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
-import { html as html2, render as render2 } from "../../../ui/lit/lit.js";
+import { Directives, html as html2, render as render2 } from "../../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/EditableSpan.css.js
@@ -538,25 +537,14 @@ var EditableSpan_css_default = `/*
 // ../../front_end/panels/network/components/EditableSpan.ts
 var EditableSpan = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
+  #editableRef = Directives.createRef();
   #value = "";
-  connectedCallback() {
-    this.#shadow.addEventListener("focusin", this.#selectAllText.bind(this));
-    this.#shadow.addEventListener("keydown", this.#onKeyDown.bind(this));
-    this.#shadow.addEventListener("input", this.#onInput.bind(this));
-  }
-  set data(data) {
-    this.#value = data.value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
   get value() {
-    return this.#shadow.querySelector("span")?.innerText || "";
+    return this.#value;
   }
   set value(value2) {
     this.#value = value2;
-    const span = this.#shadow.querySelector("span");
-    if (span) {
-      span.innerText = value2;
-    }
+    this.performUpdate();
   }
   #onKeyDown(event) {
     if (event.key === "Enter") {
@@ -575,24 +563,24 @@ var EditableSpan = class extends HTMLElement {
     selection?.removeAllRanges();
     selection?.addRange(range);
   }
-  #render() {
-    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
-      throw new Error("HeaderSectionRow render was not scheduled");
-    }
+  performUpdate() {
     render2(html2`
       <style>${EditableSpan_css_default}</style>
       <span
+        ${Directives.ref(this.#editableRef)}
         contenteditable="plaintext-only"
         class="editable"
         tabindex="0"
-        .innerText=${this.#value}
+        .innerText=${Directives.live(this.#value)}
         jslog=${VisualLogging2.value("header-editor").track({ change: true, keydown: "Enter|Escape" })}
+        @focusin=${this.#selectAllText.bind(this)}
+        @keydown=${this.#onKeyDown.bind(this)}
+        @input=${this.#onInput.bind(this)}
         ></span>`, this.#shadow, { host: this });
   }
   focus() {
     requestAnimationFrame(() => {
-      const span = this.#shadow.querySelector(".editable");
-      span?.focus();
+      this.#editableRef.value?.focus();
     });
   }
 };
@@ -616,7 +604,7 @@ import * as Platform from "../../../core/platform/platform.js";
 import * as SDK2 from "../../../core/sdk/sdk.js";
 import * as ClientVariations from "../../../third_party/chromium/client-variations/client-variations.js";
 import * as Buttons from "../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers2 from "../../../ui/components/helpers/helpers.js";
+import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
 import * as UI2 from "../../../ui/legacy/legacy.js";
 import * as Lit2 from "../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
@@ -907,10 +895,10 @@ var HeaderSectionRow = class extends HTMLElement {
     this.#header = data.header;
     this.#isHeaderValueEdited = this.#header.originalValue !== void 0 && this.#header.value !== this.#header.originalValue;
     this.#isValidHeaderName = isValidHeaderName(this.#header.name);
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   #render() {
-    if (!ComponentHelpers2.ScheduledRender.isScheduledRender(this)) {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error("HeaderSectionRow render was not scheduled");
     }
     if (!this.#header) {
@@ -946,7 +934,7 @@ var HeaderSectionRow = class extends HTMLElement {
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
               @paste=${this.#onHeaderNamePaste}
-              .data=${{ value: this.#header.name }}
+              .value=${this.#header.name}
             ></devtools-editable-span>` : this.#header.name}
         </div>
         <div
@@ -999,7 +987,7 @@ var HeaderSectionRow = class extends HTMLElement {
         @input=${this.#onHeaderValueEdit}
         @paste=${this.#onHeaderValueEdit}
         @keydown=${this.#onKeyDown}
-        .data=${{ value: this.#header.value || "" }}
+        .value=${this.#header.value || ""}
       ></devtools-editable-span>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <devtools-button
@@ -1088,7 +1076,7 @@ var HeaderSectionRow = class extends HTMLElement {
     if (!compareHeaders(headerValue, this.#header.value?.trim())) {
       this.#header.value = headerValue;
       this.dispatchEvent(new HeaderEditedEvent(this.#header.name, headerValue));
-      void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
     const selection = window.getSelection();
     selection?.removeAllRanges();
@@ -1105,7 +1093,7 @@ var HeaderSectionRow = class extends HTMLElement {
     } else if (!compareHeaders(headerName, this.#header.name.trim())) {
       this.#header.name = headerName;
       this.dispatchEvent(new HeaderEditedEvent(headerName, this.#header.value || ""));
-      void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
     const selection = window.getSelection();
     selection?.removeAllRanges();
@@ -1147,7 +1135,7 @@ var HeaderSectionRow = class extends HTMLElement {
     const isValidName = isValidHeaderName(editable.value);
     if (this.#isValidHeaderName !== isValidName) {
       this.#isValidHeaderName = isValidName;
-      void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
   }
   #onHeaderValueEdit(event) {
@@ -1158,7 +1146,7 @@ var HeaderSectionRow = class extends HTMLElement {
       if (this.#header) {
         this.#header.highlight = false;
       }
-      void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
   }
   #onHeaderNamePaste(event) {

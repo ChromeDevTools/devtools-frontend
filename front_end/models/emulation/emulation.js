@@ -5608,6 +5608,16 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
         screenshotMode,
         clip
       );
+      if (screenshot !== null) {
+        void Platform.HostRuntime.HOST_RUNTIME.copyScreenshot({
+          base64Png: screenshot,
+          fileName: this.getScreenshotFileName()
+        }).then(() => {
+          this.dispatchEventToListeners("ScreenshotCopied" /* SCREENSHOT_COPIED */);
+        }).catch(() => {
+          this.dispatchEventToListeners("ScreenshotCopyFailed" /* SCREENSHOT_COPY_FAILED */);
+        });
+      }
       return screenshot;
     } finally {
       await this.#emulationModel?.emulateDevice(null);
@@ -5841,6 +5851,8 @@ var Rect = class _Rect {
 };
 var Events2 = /* @__PURE__ */ ((Events3) => {
   Events3["UPDATED"] = "Updated";
+  Events3["SCREENSHOT_COPIED"] = "ScreenshotCopied";
+  Events3["SCREENSHOT_COPY_FAILED"] = "ScreenshotCopyFailed";
   return Events3;
 })(Events2 || {});
 var Type2 = /* @__PURE__ */ ((Type3) => {

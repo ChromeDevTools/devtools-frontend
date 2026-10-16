@@ -80,7 +80,7 @@ function renderSettingSelect(setting, subtitle, disabled) {
       return html`
                 <option
                   value=${option.value}
-                  ?selected=${setting.get() === option.value}
+                  .selected=${setting.get() === option.value}
                   jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option.value)).track({ click: true })}
                 >
                   ${option.text}

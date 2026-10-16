@@ -44,7 +44,6 @@ export function setupDevtoolsExtensionHooks(extension = {}, keysToForward = []) 
         const chrome = {};
         window.chrome = chrome;
         context.chrome = chrome;
-        sinon.restore();
     }
     beforeEach(async () => {
         await initializeGlobalVars();

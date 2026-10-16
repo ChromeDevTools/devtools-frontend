@@ -8,7 +8,8 @@ var __export = (target, all) => {
 var BinaryResourceView_exports = {};
 __export(BinaryResourceView_exports, {
   BinaryResourceView: () => BinaryResourceView,
-  BinaryViewObject: () => BinaryViewObject
+  BinaryViewObject: () => BinaryViewObject,
+  DEFAULT_VIEW: () => DEFAULT_VIEW
 });
 import "../../ui/legacy/legacy.js";
 import * as Common from "../../core/common/common.js";
@@ -17,7 +18,7 @@ import * as i18n from "../../core/i18n/i18n.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI from "../../ui/legacy/legacy.js";
-import { html, nothing, render } from "../../ui/lit/lit.js";
+import { Directives, html, nothing, render } from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/binaryResourceView.css.js
@@ -49,6 +50,7 @@ var binaryResourceView_css_default = `/*
 
 // ../../front_end/panels/network/BinaryResourceView.ts
 var { widget } = UI.Widget;
+var { classMap } = Directives;
 var UIStrings = {
   /**
    * @description Text in binary resource view of the Network panel. Shown to the user as a status
@@ -95,12 +97,12 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/network/BinaryResourceView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var defaultView = (input, _output, target) => {
+var DEFAULT_VIEW = (input, output, target) => {
   render(html`
     <style>${binaryResourceView_css_default}</style>
     <div class="vbox flex-auto">
       ${input.binaryViewObjects.map(
-    (obj) => obj.type === input.binaryViewTypeSetting.get() ? html`
+    (obj) => obj.type === input.binaryViewType ? html`
           <devtools-widget
             class="widget vbox flex-auto"
             ${widget((e) => {
@@ -123,9 +125,8 @@ var defaultView = (input, _output, target) => {
         default:
           throw new Error("Unsupported view type");
       }
-      if ("setPositionPercentage" in view) {
-        view.setPositionPercentage(input.activePositionPercentage);
-      }
+      view.setPositionPercentage(input.activePositionPercentage);
+      output.activeView = view;
       return view;
     })}>
           </devtools-widget>
@@ -137,7 +138,7 @@ var defaultView = (input, _output, target) => {
               @change=${input.binaryViewTypeChanged}>
             ${input.binaryViewObjects.map((viewObject) => html`
               <option value=${viewObject.type}
-                  ?selected=${viewObject.type === input.binaryViewTypeSetting.get()}
+                  .selected=${viewObject.type === input.binaryViewType}
                   jslog=${VisualLogging.item(viewObject.type).track({ click: true })}>${viewObject.label}</option>
             `)}
           </select>
@@ -148,7 +149,11 @@ var defaultView = (input, _output, target) => {
     iconName: "copy",
     jslogContext: "copy"
   }}></devtools-button>
-        ${input.copiedText.element}
+        <div class=${classMap({
+    "toolbar-text": true,
+    "binary-view-copied-text": true,
+    fadeout: input.copiedTextFadeout
+  })}>${input.copiedText}</div>
       </devtools-toolbar>
     </div>
   `, target);
@@ -161,13 +166,14 @@ var BinaryResourceView = class extends UI.Widget.VBox {
   resourceType;
   binaryViewObjects;
   binaryViewTypeSetting;
-  copiedText;
-  addFadeoutSettimeoutId;
-  litContainer;
-  #view = defaultView;
-  constructor(content, contentUrl, resourceType, element) {
+  #copiedText = "";
+  #copiedTextFadeout = false;
+  #fadeoutTimeoutId = null;
+  #view;
+  #viewOutput = {};
+  constructor(content, contentUrl, resourceType, element, view = DEFAULT_VIEW) {
     super(element);
-    this.registerRequiredCSS(binaryResourceView_css_default);
+    this.#view = view;
     this.streamingContent = content;
     this.contentUrl = contentUrl;
     this.resourceType = resourceType;
@@ -193,11 +199,10 @@ var BinaryResourceView = class extends UI.Widget.VBox {
       )
     ];
     this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting("binary-view-type", "hex");
-    this.copiedText = new UI.Toolbar.ToolbarText();
-    this.copiedText.element.classList.add("binary-view-copied-text");
-    this.addFadeoutSettimeoutId = null;
-    this.litContainer = this.element.createChild("div", "vbox flex-auto");
-    this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
   getCurrentViewObject() {
     const filter = (obj) => obj.type === this.binaryViewTypeSetting.get();
@@ -214,16 +219,17 @@ var BinaryResourceView = class extends UI.Widget.VBox {
       return;
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(viewObject.content());
-    this.copiedText.setText(viewObject.copiedMessage);
-    this.copiedText.element.classList.remove("fadeout");
-    const addFadeoutClass = () => {
-      this.copiedText.element.classList.add("fadeout");
-    };
-    if (this.addFadeoutSettimeoutId) {
-      clearTimeout(this.addFadeoutSettimeoutId);
-      this.addFadeoutSettimeoutId = null;
+    this.#copiedText = viewObject.copiedMessage;
+    this.#copiedTextFadeout = false;
+    if (this.#fadeoutTimeoutId) {
+      clearTimeout(this.#fadeoutTimeoutId);
     }
-    this.addFadeoutSettimeoutId = window.setTimeout(addFadeoutClass, 2e3);
+    this.#fadeoutTimeoutId = window.setTimeout(() => {
+      this.#fadeoutTimeoutId = null;
+      this.#copiedTextFadeout = true;
+      this.requestUpdate();
+    }, 2e3);
+    this.requestUpdate();
   }
   performUpdate() {
     const viewInput = {
@@ -232,27 +238,25 @@ var BinaryResourceView = class extends UI.Widget.VBox {
       contentUrl: this.contentUrl,
       resourceType: this.resourceType,
       binaryViewObjects: this.binaryViewObjects,
-      binaryViewTypeSetting: this.binaryViewTypeSetting,
+      binaryViewType: this.binaryViewTypeSetting.get(),
+      copiedText: this.#copiedText,
+      copiedTextFadeout: this.#copiedTextFadeout,
       binaryViewTypeChanged: this.binaryViewTypeChanged.bind(this),
-      copySelectedViewToClipboard: this.copySelectedViewToClipboard.bind(this),
-      copiedText: this.copiedText
+      copySelectedViewToClipboard: this.copySelectedViewToClipboard.bind(this)
     };
-    this.#view(viewInput, void 0, this.litContainer);
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
   binaryViewTypeChanged(event) {
     const newViewType = event.target.value;
     if (this.binaryViewTypeSetting.get() === newViewType) {
       return;
     }
-    const currentViewWidget = this.litContainer.querySelector("devtools-widget");
-    if (currentViewWidget) {
-      const view = UI.Widget.Widget.get(currentViewWidget);
-      if (view && "getPositionPercentage" in view) {
-        this.activePositionPercentage = view.getPositionPercentage();
-      }
+    const activeView = this.#viewOutput.activeView;
+    if (activeView) {
+      this.activePositionPercentage = activeView.getPositionPercentage();
     }
     this.binaryViewTypeSetting.set(newViewType);
-    this.performUpdate();
+    this.requestUpdate();
   }
   addCopyToContextMenu(contextMenu, submenuItemText) {
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText, false, "copy");
@@ -291,7 +295,7 @@ __export(RequestConditionsDrawer_exports, {
   ActionDelegate: () => ActionDelegate,
   AffectedCountWidget: () => AffectedCountWidget,
   AppliedConditionsRevealer: () => AppliedConditionsRevealer,
-  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RequestConditionsDrawer: () => RequestConditionsDrawer
 });
 import "../../ui/components/lists/lists.js";
@@ -305,7 +309,7 @@ import * as Logs from "../../models/logs/logs.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
-import { Directives, html as html2, nothing as nothing2, render as render2 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html2, nothing as nothing2, render as render2 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
 import * as PanelUtils from "../utils/utils.js";
@@ -408,7 +412,7 @@ var requestConditionsDrawer_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestConditionsDrawer.css")} */`;
 
 // ../../front_end/panels/network/RequestConditionsDrawer.ts
-var { ref, live, ifDefined } = Directives;
+var { ref, live, ifDefined } = Directives2;
 var { widget: widget2 } = UI2.Widget;
 var UIStrings2 = {
   /**
@@ -502,7 +506,7 @@ var str_2 = i18n3.i18n.registerUIStrings("panels/network/RequestConditionsDrawer
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var REQUEST_CONDITIONS_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/request-conditions";
 var { bindToAction } = UI2.UIUtils;
-var DEFAULT_VIEW = (input, output, target) => {
+var DEFAULT_VIEW2 = (input, output, target) => {
   render2(
     // clang-format off
     html2`
@@ -784,7 +788,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   #view;
   #viewOutput = { itemRefs: /* @__PURE__ */ new Map() };
   #editingCondition;
-  constructor(target, view = DEFAULT_VIEW) {
+  constructor(target, view = DEFAULT_VIEW2) {
     super(target, {
       jslog: `${VisualLogging2.panel("network.blocked-urls").track({ resize: true })}`,
       useShadowDom: true
@@ -1012,7 +1016,7 @@ var AppliedConditionsRevealer = class {
 // ../../front_end/panels/network/RequestDeviceBoundSessionsView.ts
 var RequestDeviceBoundSessionsView_exports = {};
 __export(RequestDeviceBoundSessionsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   RequestDeviceBoundSessionsView: () => RequestDeviceBoundSessionsView
 });
 import "../../ui/legacy/components/data_grid/data_grid.js";
@@ -3929,7 +3933,7 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/network/RequestDeviceBoundSessionsView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW3 = (input, _output, target) => {
   const { deviceBoundSessionUsages } = input;
   render3(
     html3`
@@ -3967,7 +3971,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
 var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
   #request;
   #view;
-  constructor(request, view = DEFAULT_VIEW2) {
+  constructor(request, view = DEFAULT_VIEW3) {
     super();
     this.#request = request;
     this.#view = view;
@@ -4010,7 +4014,7 @@ function getDeferralDecision(usage) {
 // ../../front_end/panels/network/EventSourceMessagesView.ts
 var EventSourceMessagesView_exports = {};
 __export(EventSourceMessagesView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4,
   EventSourceMessagesView: () => EventSourceMessagesView
 });
 import "../../ui/legacy/components/data_grid/data_grid.js";
@@ -4020,7 +4024,7 @@ import * as i18n7 from "../../core/i18n/i18n.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html4, render as render4 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html4, render as render4 } from "../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/eventSourceMessagesView.css.js
@@ -4047,7 +4051,7 @@ var eventSourceMessagesView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./eventSourceMessagesView.css")} */`;
 
 // ../../front_end/panels/network/EventSourceMessagesView.ts
-var { repeat } = Directives2;
+var { repeat } = Directives3;
 var UIStrings4 = {
   /**
    * @description Column header for event ID in event source messages view of the Network panel.
@@ -4084,7 +4088,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/network/EventSourceMessagesView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var DEFAULT_VIEW3 = (input, _output, target) => {
+var DEFAULT_VIEW4 = (input, _output, target) => {
   render4(html4`
     <style>
       ${eventSourceMessagesView_css_default}
@@ -4137,7 +4141,7 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
   messageFilterSetting;
   filterRegex = null;
   #view;
-  constructor(request, view = DEFAULT_VIEW3) {
+  constructor(request, view = DEFAULT_VIEW4) {
     super({ jslog: `${VisualLogging4.pane("event-stream").track({ resize: true })}` });
     this.#view = view;
     this.request = request;
@@ -4220,7 +4224,7 @@ var clearMessageOffsets = /* @__PURE__ */ new WeakMap();
 // ../../front_end/panels/network/NetworkConfigView.ts
 var NetworkConfigView_exports = {};
 __export(NetworkConfigView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW4,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   NetworkConfigView: () => NetworkConfigView,
   userAgentGroups: () => userAgentGroups
 });
@@ -4231,7 +4235,7 @@ import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK4 from "../../core/sdk/sdk.js";
 import * as EmulationModel from "../../models/emulation/emulation.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html5, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html5, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
 
@@ -4357,7 +4361,7 @@ devtools-user-agent-client-hints-form {
 /*# sourceURL=${import.meta.resolve("./networkConfigView.css")} */`;
 
 // ../../front_end/panels/network/NetworkConfigView.ts
-var { ref: ref2 } = Directives3;
+var { ref: ref2 } = Directives4;
 var UIStrings5 = {
   /**
    * @description Option in network conditions view of the Network panel shown in user agent dropdown.
@@ -4502,7 +4506,7 @@ function renderUserAgentSection(input, output) {
         jslog=${VisualLogging5.toggle().track({ change: true }).context("custom-user-agent")}>
       ${i18nString5(UIStrings5.selectAutomatically)}
     </devtools-checkbox>
-    <div class=${Directives3.classMap({ "network-config-ua-custom": true, checked: input.useCustomUA })}>
+    <div class=${Directives4.classMap({ "network-config-ua-custom": true, checked: input.useCustomUA })}>
       ${renderUserAgentSelectAndInput(input, output, title)}
       <devtools-user-agent-client-hints-form
           .value=${input.clientHintsValue}
@@ -4516,7 +4520,7 @@ function renderUserAgentSection(input, output) {
     <span class="status-text">${input.clientHintsStatusText}</span>
   `);
 }
-var DEFAULT_VIEW4 = (input, output, target) => {
+var DEFAULT_VIEW5 = (input, output, target) => {
   render5(html5`
     ${renderCacheSection(input)}
     <div class="panel-section-separator"></div>
@@ -4540,7 +4544,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   #validationError = "";
   #clientHintsValue;
   #statusText = "";
-  constructor(view = DEFAULT_VIEW4) {
+  constructor(view = DEFAULT_VIEW5) {
     super({
       jslog: `${VisualLogging5.panel("network-conditions").track({ resize: true })}`,
       useShadowDom: true
@@ -6781,7 +6785,7 @@ import * as NetworkComponents2 from "./components/components.js";
 // ../../front_end/panels/network/RequestCookiesView.ts
 var RequestCookiesView_exports = {};
 __export(RequestCookiesView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   RequestCookiesView: () => RequestCookiesView
 });
 import * as Common6 from "../../core/common/common.js";
@@ -6885,7 +6889,7 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/network/RequestCookiesView.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var DEFAULT_VIEW5 = (input, _output, target) => {
+var DEFAULT_VIEW6 = (input, _output, target) => {
   render7(
     html6`
     <style>${requestCookiesView_css_default}</style>
@@ -6965,7 +6969,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
   request;
   showFilteredOutCookiesSetting;
   view;
-  constructor(request, view = DEFAULT_VIEW5) {
+  constructor(request, view = DEFAULT_VIEW6) {
     super();
     this.request = request;
     this.showFilteredOutCookiesSetting = Common6.Settings.Settings.instance().createSetting(
@@ -7084,7 +7088,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
 // ../../front_end/panels/network/RequestHeadersView.ts
 var RequestHeadersView_exports = {};
 __export(RequestHeadersView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   GENERAL_HEADERS_ONLY_VIEW: () => GENERAL_HEADERS_ONLY_VIEW,
   RequestHeadersView: () => RequestHeadersView,
   renderCategory: () => renderCategory,
@@ -8558,7 +8562,7 @@ var networkWaterfallColumn_css_default = `/*
 // ../../front_end/panels/network/RequestTimingView.ts
 var RequestTimingView_exports = {};
 __export(RequestTimingView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   RequestTimingView: () => RequestTimingView
 });
 import "../../ui/kit/kit.js";
@@ -8572,7 +8576,7 @@ import * as NetworkTimeCalculator2 from "../../models/network_time_calculator/ne
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html7, nothing as nothing5, render as render8 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html7, nothing as nothing5, render as render8 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
@@ -8847,7 +8851,7 @@ tr.synthetic {
 /*# sourceURL=${import.meta.resolve("./networkTimingTable.css")} */`;
 
 // ../../front_end/panels/network/RequestTimingView.ts
-var { repeat: repeat2, classMap, ifDefined: ifDefined2 } = Directives4;
+var { repeat: repeat2, classMap: classMap2, ifDefined: ifDefined2 } = Directives5;
 var UIStrings10 = {
   /**
    * @description Text used to label the time taken to receive an HTTP/2 Push message.
@@ -9116,7 +9120,7 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
       return i18nString9(UIStrings10.fallbackCode);
   }
 }
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   const serverTimings = input.request.serverTimings ?? [];
   const requestStartTime = input.request.startTime;
   const requestIssueTime = input.request.issueTime();
@@ -9136,7 +9140,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     const left = serverTiming.value === null ? -1 : scale * (input.endTime - input.startTime - serverTiming.value / 1e3);
     const lastRange = input.timeRanges.findLast((range) => range.name !== NetworkTimeCalculator2.RequestTimeRangeNames.TOTAL);
     const lastTimingRightEdge = lastRange ? scale * (input.endTime - lastRange.end) : 100;
-    const classes2 = classMap({
+    const classes2 = classMap2({
       ["network-timing-footer"]: isTotal,
       ["server-timing-row"]: !isTotal,
       // Mark entries from a bespoke format
@@ -9244,7 +9248,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   const throttledRequestTitle = input.wasThrottled ? i18nString9(UIStrings10.wasThrottled, {
     PH1: typeof input.wasThrottled.conditions.title === "string" ? input.wasThrottled.conditions.title : input.wasThrottled.conditions.title()
   }) : void 0;
-  const classes = classMap({
+  const classes = classMap2({
     ["network-timing-table"]: true,
     ["resource-timing-table"]: true
   });
@@ -9388,7 +9392,7 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
   #calculator;
   #lastMinimumBoundary = -1;
   #view;
-  constructor(target, view = DEFAULT_VIEW6) {
+  constructor(target, view = DEFAULT_VIEW7) {
     super(target);
     this.#view = view;
   }
@@ -10016,7 +10020,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI11.Widget.V
 // ../../front_end/panels/network/RequestInitiatorView.ts
 var RequestInitiatorView_exports = {};
 __export(RequestInitiatorView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   RequestInitiatorView: () => RequestInitiatorView
 });
 import * as i18n21 from "../../core/i18n/i18n.js";
@@ -10025,7 +10029,7 @@ import * as Bindings2 from "../../models/bindings/bindings.js";
 import * as Logs4 from "../../models/logs/logs.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html8, nothing as nothing6, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html8, nothing as nothing6, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
@@ -10113,7 +10117,7 @@ function trimUrl(url) {
   const halfMaxLength = Math.floor(MAX_URL_LENGTH / 2);
   return url.substring(0, halfMaxLength) + "\u2026" + url.substring(url.length - halfMaxLength);
 }
-var DEFAULT_VIEW7 = (input, _output, target) => {
+var DEFAULT_VIEW8 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
     render9(
@@ -10161,7 +10165,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const title = url.length < 2e3 ? url : void 0;
     return html8`
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
-            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives5.ifDefined(title)}>
+            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives6.ifDefined(title)}>
               ${trimUrl(url)}
             </span>
             ${hasFurtherInitiatedNodes || renderedChildren !== nothing6 ? html8`
@@ -10192,7 +10196,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       const title = url.length < 2e3 ? url : void 0;
       return html8`
         <li role="treeitem" aria-expanded="true" open>
-          <span title=${Directives5.ifDefined(title)}>
+          <span title=${Directives6.ifDefined(title)}>
             ${trimUrl(url)}
           </span>
           ${renderedChildren !== nothing6 ? html8`<ul role="group">${renderedChildren}</ul>` : nothing6}
@@ -10238,7 +10242,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
 var RequestInitiatorView = class extends UI12.Widget.VBox {
   request;
   #view;
-  constructor(request, view = DEFAULT_VIEW7) {
+  constructor(request, view = DEFAULT_VIEW8) {
     super({ jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` });
     this.element.classList.add("request-initiator-view");
     this.request = request;
@@ -15341,7 +15345,7 @@ var SearchNetworkView = class _SearchNetworkView extends Search.SearchView.Searc
 // ../../front_end/panels/network/ShowMoreDetailsWidget.ts
 var ShowMoreDetailsWidget_exports = {};
 __export(ShowMoreDetailsWidget_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   ShowMoreDetailsWidget: () => ShowMoreDetailsWidget
 });
 import * as i18n31 from "../../core/i18n/i18n.js";
@@ -15362,7 +15366,7 @@ var str_16 = i18n31.i18n.registerUIStrings("panels/network/ShowMoreDetailsWidget
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var { render: render10, html: html9 } = Lit2;
 var MAX_LENGTH = 3e3;
-var DEFAULT_VIEW8 = (input, output, target) => {
+var DEFAULT_VIEW9 = (input, output, target) => {
   const onContextMenuShowMore = (event) => {
     const contextMenu = new UI16.ContextMenu.ContextMenu(event);
     if (input.copy) {
@@ -15391,7 +15395,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
   #text = "";
   #showMore = false;
   #copy = null;
-  constructor(target, view = DEFAULT_VIEW8) {
+  constructor(target, view = DEFAULT_VIEW9) {
     super(target);
     this.#view = view;
   }
@@ -15554,7 +15558,7 @@ function renderGeneralSection(input, forceOpen) {
     contents: renderGeneralRows(input)
   });
 }
-var DEFAULT_VIEW9 = (input, _output, target) => {
+var DEFAULT_VIEW10 = (input, _output, target) => {
   const requestHeadersText = input.request.requestHeadersText();
   render11(
     html10`
@@ -15642,7 +15646,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
     this.#request = val;
     this.#addEventListeners();
   }
-  constructor(target, view = DEFAULT_VIEW9) {
+  constructor(target, view = DEFAULT_VIEW10) {
     super();
     this.#view = view;
   }
@@ -15917,7 +15921,7 @@ function renderCategory(data) {
 // ../../front_end/panels/network/RequestPayloadView.ts
 var RequestPayloadView_exports = {};
 __export(RequestPayloadView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   RequestPayloadView: () => RequestPayloadView
 });
 import * as Common15 from "../../core/common/common.js";
@@ -16152,7 +16156,7 @@ var objectValue_css_default = `/*
 
 // ../../front_end/panels/network/RequestPayloadView.ts
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html11, nothing as nothing9, render as render12 } from "../../ui/lit/lit.js";
+import { Directives as Directives7, html as html11, nothing as nothing9, render as render12 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
@@ -16311,7 +16315,7 @@ var requestPayloadView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
 // ../../front_end/panels/network/RequestPayloadView.ts
-var { classMap: classMap2 } = Directives6;
+var { classMap: classMap3 } = Directives7;
 var { widget: widget6 } = UI18.Widget;
 var { ifExpanded } = UI18.TreeOutline;
 var UIStrings18 = {
@@ -16365,7 +16369,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n35.i18n.registerUIStrings("panels/network/RequestPayloadView.ts", UIStrings18);
 var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
-var DEFAULT_VIEW10 = (input, output, target) => {
+var DEFAULT_VIEW11 = (input, output, target) => {
   const createViewSourceToggle = (viewSource, callback) => html11`<devtools-button
       class="payload-toggle"
       jslog=${VisualLogging13.action().track({ click: true }).context("source-parse")}
@@ -16584,7 +16588,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   #viewFormParamSource = false;
   #viewQueryParamSource = false;
   #refreshFormDataPromiseForTest = Promise.resolve();
-  constructor(target, view = DEFAULT_VIEW10) {
+  constructor(target, view = DEFAULT_VIEW11) {
     super();
     this.#view = view;
   }
@@ -16777,7 +16781,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
   }
   static formatParameter(value, className, decodeParameters) {
     const { value: decoded, errorDecoding } = _RequestPayloadView.decodeParameter(value, decodeParameters);
-    const classes = classMap2({ [className]: !!className, "empty-value": decoded === "" });
+    const classes = classMap3({ [className]: !!className, "empty-value": decoded === "" });
     return html11`<div class=${classes}>
       ${errorDecoding ? html11`<span class=payload-decode-error>${i18nString17(UIStrings18.unableToDecodeValue)}</span>` : decoded}
     </div>`;
@@ -16800,7 +16804,7 @@ import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 // ../../front_end/panels/network/RequestHTMLView.ts
 var RequestHTMLView_exports = {};
 __export(RequestHTMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW11,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12,
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI19 from "../../ui/legacy/legacy.js";
@@ -16826,7 +16830,7 @@ var requestHTMLView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestHTMLView.css")} */`;
 
 // ../../front_end/panels/network/RequestHTMLView.ts
-var DEFAULT_VIEW11 = (input, _output, target) => {
+var DEFAULT_VIEW12 = (input, _output, target) => {
   render13(
     html12`
     <style>${requestHTMLView_css_default}</style>
@@ -16843,7 +16847,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
 var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
   #dataURL;
   #view;
-  constructor(dataURL, view = DEFAULT_VIEW11) {
+  constructor(dataURL, view = DEFAULT_VIEW12) {
     super({ useShadowDom: true });
     this.#dataURL = dataURL;
     this.#view = view;
@@ -17354,7 +17358,7 @@ var RequestPreviewView = class extends UI21.Widget.VBox {
 // ../../front_end/panels/network/RequestResponseView.ts
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW13,
   RequestResponseView: () => RequestResponseView
 });
 import * as Common16 from "../../core/common/common.js";
@@ -17382,7 +17386,7 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/RequestResponseView.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var { widgetRef, widget: widget7 } = UI22.Widget;
-var DEFAULT_VIEW12 = (input, output, target) => {
+var DEFAULT_VIEW13 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils6.StreamingContentData.isError(input.contentData)) {
     widgetTemplate = html13`${widget7((element) => new UI22.EmptyWidget.EmptyWidget(
@@ -17419,7 +17423,7 @@ var RequestResponseView = class extends UI22.Widget.VBox {
   request;
   #view;
   #revealPosition;
-  constructor(request, view = DEFAULT_VIEW12) {
+  constructor(request, view = DEFAULT_VIEW13) {
     super();
     this.request = request;
     this.#view = view;
@@ -17615,7 +17619,7 @@ function defaultHeaderTemplate() {
       <th id="time" sortable sort="ascending" weight="7">${i18nString21(UIStrings22.time)}</th>
     </tr>`;
 }
-var DEFAULT_VIEW13 = (input, _output, target) => {
+var DEFAULT_VIEW14 = (input, _output, target) => {
   render16(
     html14`
       <style>${resourceChunkView_css_default}</style>
@@ -17721,7 +17725,7 @@ var ResourceChunkView = class extends UI23.Widget.VBox {
   get headerTemplate() {
     return defaultHeaderTemplate();
   }
-  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW13) {
+  constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint, opts, view = DEFAULT_VIEW14) {
     super(opts);
     this.#view = view;
     this.messageFilterSetting = Common17.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");

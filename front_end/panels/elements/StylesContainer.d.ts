@@ -1,5 +1,6 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
+import type * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import type * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -14,6 +15,7 @@ export interface StylesContainer {
     readonly sectionByElement: WeakMap<Node, StylePropertiesSection>;
     readonly element: HTMLElement;
     readonly linkifier: Components.Linkifier.Linkifier;
+    readonly changeTracker?: ChangeTracker.ChangeTracker.ChangeTracker;
     swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
     node(): SDK.DOMModel.DOMNode | null;
     cssModel(): SDK.CSSModel.CSSModel | null;

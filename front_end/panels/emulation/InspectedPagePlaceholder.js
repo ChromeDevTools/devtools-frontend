@@ -36,6 +36,12 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
         return { x: left, y: top, width: right - left, height: bottom - top };
     }
     update(force) {
+        // The placeholder is temporarily detached while its owner re-renders (e.g. when device mode is toggled)
+        // or while it moves between the DevTools and the toolbox documents. A detached element measures as 0x0,
+        // which would resize the inspected page to 1x1, so wait until it is attached again.
+        if (!this.element.isConnected) {
+            return;
+        }
         const rect = this.dipPageRect();
         const bounds = {
             x: Math.round(rect.x),

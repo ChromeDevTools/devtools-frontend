@@ -854,7 +854,7 @@ function renderTargetSelectorRow(input) {
             @change=${input.onTargetSelected}>
       ${input.targets.map(target => html `
         <option jslog=${VisualLogging.item('target').track({ click: true, resize: true })}
-                value=${target.id()} ?selected=${target.id() === input.targetId}>
+                value=${target.id()} .selected=${target.id() === input.targetId}>
           ${target.name()} (${target.inspectedURL()})
         </option>`)}
     </select>

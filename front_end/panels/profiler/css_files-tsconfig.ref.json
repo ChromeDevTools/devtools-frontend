@@ -8,7 +8,6 @@
     "skipLibCheck": true
   },
   "files": [
-    "heapDetachedElementsDataGrid.css.js",
     "heapProfiler.css.js",
     "profileLauncherView.css.js",
     "profilesPanel.css.js",

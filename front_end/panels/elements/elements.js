@@ -3928,6 +3928,7 @@ import * as SDK7 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as AiCodeCompletion3 from "../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings4 from "../../models/bindings/bindings.js";
+import * as ChangeTracker from "../../models/change_tracker/change_tracker.js";
 import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
 import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
 import { createIcon as createIcon4, Icon as Icon2 } from "../../ui/kit/kit.js";
@@ -4221,6 +4222,7 @@ import * as SDK5 from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Badges from "../../models/badges/badges.js";
 import * as Bindings2 from "../../models/bindings/bindings.js";
+import * as Elements from "../../models/elements/elements.js";
 import * as Tooltips from "../../ui/components/tooltips/tooltips.js";
 import { createIcon, Icon } from "../../ui/kit/kit.js";
 import * as ColorPicker2 from "../../ui/legacy/components/color_picker/color_picker.js";
@@ -7637,6 +7639,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   // The changes that renderers made to the text of the value since it was rendered. Only available if the value was
   // parsed.
   #edits;
+  // Stores the last committed property so incremental live previews and
+  // in-place mutations of `this.property` don't overwrite the baseline for change tracking.
+  #lastCommittedProperty;
   #lazyRender;
   constructor({ stylesContainer, section: section5, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }) {
     const jslogContext = property.name.startsWith("--") ? "custom-property" : property.name;
@@ -7651,6 +7656,10 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.#parentSection = section5;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
+    this.#lastCommittedProperty = {
+      name: property.name,
+      value: property.value
+    };
     this.#lazyRender = !this.newProperty && stylesContainer.shouldRenderLazily();
     if (this.newProperty) {
       this.listItemElement.textContent = "";
@@ -7845,6 +7854,16 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (!success) {
       return;
     }
+    Elements.StyleChanges.trackStylePropertyToggle(
+      this.#stylesContainer.changeTracker,
+      this.#stylesContainer.node() ?? this.#matchedStyles.node(),
+      {
+        ruleHeader: this.#parentSection.headerText(),
+        name: this.property.name,
+        value: this.property.value,
+        disabled
+      }
+    );
     this.#matchedStyles.resetActiveProperties();
     this.updatePane();
     this.styleTextAppliedForTest();
@@ -8973,6 +8992,22 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const deleteProperty = majorChange && !styleText.length;
     if (!deleteProperty && updatedProperty) {
       this.property = updatedProperty;
+    }
+    if (majorChange) {
+      const newName = deleteProperty ? "" : this.property.name;
+      const newValue = deleteProperty ? "" : this.property.value;
+      Elements.StyleChanges.trackStylePropertyEdit(
+        this.#stylesContainer.changeTracker,
+        currentNode ?? this.#matchedStyles.node(),
+        {
+          ruleHeader: this.#parentSection.headerText(),
+          oldName: this.#lastCommittedProperty.name,
+          oldValue: this.#lastCommittedProperty.value,
+          newName,
+          newValue
+        }
+      );
+      this.#lastCommittedProperty = { name: newName, value: newValue };
     }
     if (currentNode === this.node()) {
       this.updatePane();
@@ -12177,8 +12212,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
   #lazyRenderCallbacks = /* @__PURE__ */ new WeakMap();
   #elementsForSyncViewportCheck = [];
   #updateId = 0;
-  constructor(computedStyleModel) {
+  #changeTracker;
+  constructor(computedStyleModel, changeTracker) {
     super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ["flex-none"] });
+    this.#changeTracker = changeTracker;
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPane_css_default);
     Common5.Settings.Settings.instance().resolve(SDK7.SDKSettings.textEditorIndentSettingDescriptor).addChangeListener(this.requestUpdate, this);
@@ -12271,6 +12308,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       this.#webCustomData = WebCustomData.create();
     }
     return this.#webCustomData;
+  }
+  get changeTracker() {
+    this.#changeTracker ??= UI10.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
+    return this.#changeTracker;
   }
   onScroll(_event) {
     this.hideAllPopovers();
@@ -15687,8 +15728,8 @@ import * as Host6 from "../../core/host/host.js";
 import * as i18n32 from "../../core/i18n/i18n.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
 import * as Badges4 from "../../models/badges/badges.js";
-import * as ChangeTracker3 from "../../models/change_tracker/change_tracker.js";
-import * as Elements2 from "../../models/elements/elements.js";
+import * as ChangeTracker5 from "../../models/change_tracker/change_tracker.js";
+import * as Elements3 from "../../models/elements/elements.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter5 from "../../ui/components/code_highlighter/code_highlighter.js";
 import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
@@ -16254,8 +16295,8 @@ import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as AIAssistance from "../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "../../models/badges/badges.js";
 import * as Bindings5 from "../../models/bindings/bindings.js";
-import * as ChangeTracker from "../../models/change_tracker/change_tracker.js";
-import * as Elements from "../../models/elements/elements.js";
+import * as ChangeTracker3 from "../../models/change_tracker/change_tracker.js";
+import * as Elements2 from "../../models/elements/elements.js";
 import * as IssuesManager2 from "../../models/issues_manager/issues_manager.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
@@ -17848,7 +17889,7 @@ function createEditAsHTMLState(initialValue, callbacks) {
 var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widget {
   static INJECT = [
     IssuesManager2.DOMIssuesManager.DOMIssuesManager,
-    ChangeTracker.ChangeTracker.ChangeTracker
+    ChangeTracker3.ChangeTracker.ChangeTracker
   ];
   #domIssuesManager;
   #changeTracker;
@@ -18051,7 +18092,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     return this.#domIssuesManager?.issuesForNode(this.node) ?? [];
   }
   get changeTracker() {
-    this.#changeTracker ??= UI15.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker.ChangeTracker.ChangeTracker);
+    this.#changeTracker ??= UI15.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker3.ChangeTracker.ChangeTracker);
     return this.#changeTracker;
   }
   constructor(element, [domIssuesManager, changeTracker] = [], view = DEFAULT_VIEW5) {
@@ -18825,7 +18866,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
       const changeTracker = this.changeTracker;
       this.node.setAttribute(attributeName, newText, (error) => {
         if (!error) {
-          Elements.DOMChanges.trackAttributeEdit(
+          Elements2.DOMChanges.trackAttributeEdit(
             changeTracker,
             this.node,
             buildChangeSelector(changeTracker, this.node),
@@ -18879,7 +18920,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
         return;
       }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      Elements.DOMChanges.trackTagNameEdit(
+      Elements2.DOMChanges.trackTagNameEdit(
         changeTracker,
         newNode,
         buildChangeSelector(changeTracker, newNode),
@@ -18897,7 +18938,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     const changeTracker = this.changeTracker;
     textNode.setNodeValue(newText, (error) => {
       if (!error && oldValue !== newText) {
-        Elements.DOMChanges.trackTextNodeEdit(
+        Elements2.DOMChanges.trackTextNodeEdit(
           changeTracker,
           textNode,
           buildChangeSelector(changeTracker, textNode),
@@ -19014,7 +19055,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     const selector = buildChangeSelector(changeTracker, this.node);
     await this.node.removeNode((err) => {
       if (!err) {
-        Elements.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
+        Elements2.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
       }
     });
   }
@@ -19036,7 +19077,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
         const selector = buildChangeSelector(changeTracker, node);
         node.setOuterHTML(value5, (error) => {
           if (!error) {
-            Elements.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value5);
+            Elements2.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value5);
           }
           selectNode(error);
         });
@@ -20987,9 +21028,9 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   const totalVisibleRows = input.maxRowsShown ? countAllVisibleRows() : 0;
   const truncatedLines = input.maxRowsShown ? Math.max(0, totalVisibleRows - input.maxRowsShown) : 0;
   render12(html15`
-    <style>${UI17.inspectorCommonStyles}</style>
-    <style>${domTreeWidget_css_default}</style>
-    <style>${CodeHighlighter5.codeHighlighterStyles}</style>
+    <style>@scope to (devtools-widget > *) { ${UI17.inspectorCommonStyles} }</style>
+    <style>@scope to (devtools-widget > *) { ${domTreeWidget_css_default} }</style>
+    <style>@scope to (devtools-widget > *) { ${CodeHighlighter5.codeHighlighterStyles} }</style>
     <div class=${disclosureClasses} style=${disclosureStyles}>
       <devtools-tree
         class="elements-tree-outline ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""} ${isSingleNode ? "single-node" : ""}"
@@ -21065,7 +21106,7 @@ function getElementsTreeWidgetAndNode(element) {
   return {};
 }
 var DOMTreeWidget = class extends UI17.Widget.Widget {
-  static INJECT = [ChangeTracker3.ChangeTracker.ChangeTracker];
+  static INJECT = [ChangeTracker5.ChangeTracker.ChangeTracker];
   omitRootDOMNode = false;
   selectEnabled = false;
   hideGutter = false;
@@ -21204,7 +21245,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   #view;
   #highlightThrottler = new Common11.Throttler.Throttler(100);
   get changeTracker() {
-    this.#changeTracker ??= UI17.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker3.ChangeTracker.ChangeTracker);
+    this.#changeTracker ??= UI17.Widget.lookupUniverseForElement(this.contentElement)?.get(ChangeTracker5.ChangeTracker.ChangeTracker);
     return this.#changeTracker;
   }
   constructor(element, [changeTracker] = [], view = DEFAULT_VIEW6) {
@@ -21334,7 +21375,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   #addUpdateRecord(node) {
     let record = this.#updateRecords.get(node);
     if (!record) {
-      record = new Elements2.ElementUpdateRecord.ElementUpdateRecord();
+      record = new Elements3.ElementUpdateRecord.ElementUpdateRecord();
       this.#updateRecords.set(node, record);
     }
     return record;
@@ -22018,7 +22059,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     const isHidden = this.isToggledToHidden(node);
     if (isHidden !== wasHidden) {
       const changeTracker = this.changeTracker;
-      Elements2.DOMChanges.trackVisibilityToggle(
+      Elements3.DOMChanges.trackVisibilityToggle(
         changeTracker,
         node,
         buildChangeSelector(changeTracker, node),
@@ -22040,7 +22081,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     const selector = buildChangeSelector(changeTracker, node);
     await node.removeNode((err) => {
       if (!err) {
-        Elements2.DOMChanges.trackNodeRemoval(changeTracker, node, selector);
+        Elements3.DOMChanges.trackNodeRemoval(changeTracker, node, selector);
       }
     });
   }
@@ -22129,7 +22170,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     void node.duplicate().then(({ error, node: newNode }) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements2.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
+        Elements3.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
     });
   }
@@ -22254,7 +22295,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements2.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
+        Elements3.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
       this.selectNodeAfterEdit(wasExpanded, error, newNode);
     });
@@ -22479,7 +22520,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     node.moveTo(parentNode, anchor, (error, newNode) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements2.DOMChanges.trackNodeMove(
+        Elements3.DOMChanges.trackNodeMove(
           changeTracker,
           newNode,
           buildChangeSelector(changeTracker, newNode),
@@ -22586,7 +22627,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       clipboardNode.moveTo(targetNode, null, (error, newNode) => {
         if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements2.DOMChanges.trackNodePaste(
+          Elements3.DOMChanges.trackNodePaste(
             changeTracker,
             newNode,
             buildChangeSelector(changeTracker, newNode),
@@ -22601,7 +22642,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       clipboardNode.copyTo(targetNode, null, (error, newNode) => {
         if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements2.DOMChanges.trackNodePaste(
+          Elements3.DOMChanges.trackNodePaste(
             changeTracker,
             newNode,
             buildChangeSelector(changeTracker, newNode),
@@ -25657,7 +25698,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
           jslog=${VisualLogging15.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
           ${input.dispatchFilters.map((filter) => html19`
-            <option value=${filter.value} ?selected=${filter.value === input.selectedDispatchFilter}>
+            <option value=${filter.value} .selected=${filter.value === input.selectedDispatchFilter}>
               ${filter.name}
             </option>`)}
         </select>

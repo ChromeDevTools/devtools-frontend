@@ -6,10 +6,10 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
-import {debugLog} from '../debug.js';
 import {ExtensionScope} from '../ExtensionScope.js';
 import {
   type OriginLockState,
@@ -30,6 +30,8 @@ import {
   type ExecuteJsAgentOptions,
   executeJsCode,
 } from './ExecuteJavascript.js';
+
+const {debugLog} = AiUtils.Debug;
 
 /**
  * WARNING: preamble defined in code is only used when userTier is

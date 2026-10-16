@@ -10,7 +10,7 @@ import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 
-import * as AiAssistance from './ai_assistance.js';
+import * as AiAssistance from './ai-utils.js';
 
 describe('AiUtils', () => {
   setupLocaleHooks();

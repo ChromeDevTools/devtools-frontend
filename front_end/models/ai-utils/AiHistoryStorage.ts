@@ -6,8 +6,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 
-import {ResponseType, type SerializedResponseData} from './agents/AiAgent.js';
-
 export const enum ConversationType {
   NONE = 'none',
   STYLING = 'freestyler',
@@ -18,10 +16,13 @@ export const enum ConversationType {
   STORAGE = 'storage',
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SerializedResponseItem = Record<string, any>;
+
 export interface SerializedConversation {
   id: string;
   type: ConversationType;
-  history: SerializedResponseData[];
+  history: SerializedResponseItem[];
 }
 
 export interface SerializedImage {
@@ -108,9 +109,9 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return structuredClone(this.#recentPromptsSetting.get());
   }
 
-  #getImageIdsFromHistory(history: SerializedResponseData[]): string[] {
+  #getImageIdsFromHistory(history: SerializedResponseItem[]): string[] {
     return history.flatMap(item => {
-      if (item.type === ResponseType.USER_QUERY && item.imageId) {
+      if (item.type === 'user-query' && typeof item.imageId === 'string' && item.imageId) {
         return [item.imageId];
       }
       return [];

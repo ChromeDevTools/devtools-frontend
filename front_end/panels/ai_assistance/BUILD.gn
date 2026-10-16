@@ -119,7 +119,7 @@ devtools_entrypoint("meta") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
-    "../../models/ai_assistance:bundle",
+    "../../models/ai-utils:bundle",
     "../../ui/legacy:bundle",
     "../../ui/settings:bundle",
   ]

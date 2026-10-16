@@ -8,7 +8,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as AIAssistance from '../../../models/ai_assistance/ai_assistance.js';
+import * as AIAssistance from '../../../models/ai-utils/ai-utils.js';
 import * as AiCodeGeneration from '../../../models/ai_code_generation/ai_code_generation.js';
 import * as UI from '../../legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../lit/lit.js';

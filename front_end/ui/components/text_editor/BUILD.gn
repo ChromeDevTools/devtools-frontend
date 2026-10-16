@@ -45,7 +45,7 @@ devtools_ui_module("text_editor") {
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../core/text_utils:bundle",
-    "../../../models/ai_assistance:bundle",
+    "../../../models/ai-utils:bundle",
     "../../../models/ai_code_completion:bundle",
     "../../../models/ai_code_generation:bundle",
     "../../../models/bindings:bundle",

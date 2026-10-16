@@ -25,7 +25,7 @@ devtools_module("main") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../foundation:bundle",
-    "../../models/ai_assistance:bundle",
+    "../../models/ai-utils:bundle",
     "../../models/badges:bundle",
     "../../models/comment_manager:bundle",
     "../../models/crux-manager:bundle",

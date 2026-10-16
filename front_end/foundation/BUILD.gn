@@ -13,7 +13,7 @@ devtools_foundation_module("foundation") {
     "../core/host:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",
-    "../models/ai_assistance:bundle",
+    "../models/ai-utils:bundle",
     "../models/autofill_manager:bundle",
     "../models/badges:bundle",
     "../models/bindings:bundle",

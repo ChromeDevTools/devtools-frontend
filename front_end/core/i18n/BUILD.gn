@@ -50,6 +50,7 @@ devtools_entrypoint("bundle") {
     "../../core/common/*",
     "../../core/host/*",
     "../../core/sdk/*",
+    "../../models/ai-utils/*",
     "../../models/ai_assistance/*",
     "../../models/badges/*",
     "../../models/bindings/*",

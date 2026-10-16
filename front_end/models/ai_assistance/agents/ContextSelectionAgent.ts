@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
@@ -18,7 +19,6 @@ import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 import {RequestContext} from '../contexts/RequestContext.js';
 import {StorageContext} from '../contexts/StorageContext.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
-import {debugLog} from '../debug.js';
 import {StorageItem} from '../StorageItem.js';
 import {isOriginAllowedByLock} from '../tools/Tool.js';
 
@@ -29,6 +29,8 @@ import {
   type ContextResponse,
   type RequestOptions,
 } from './AiAgent.js';
+
+const {debugLog} = AiUtils.Debug;
 
 type NetworkRequest = SDK.NetworkRequest.NetworkRequest;
 

@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 
-import * as AiAssistance from './ai_assistance.js';
+import * as AiAssistance from './ai-utils.js';
 
 const {SettingsStorage, SettingType, SettingAvailability} = Common.Settings;
 const {DisabledReason} = AiAssistance.AiUtils;

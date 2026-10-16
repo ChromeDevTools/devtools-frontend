@@ -6,11 +6,11 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
 import type {AiWidget} from '../agents/AiAgent.js';
 import {PerformanceInsightFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
-import {debugLog} from '../debug.js';
 
 import {
   type BaseToolCapability,
@@ -23,6 +23,8 @@ import {
   type ToolArgs,
   ToolName,
 } from './Tool.js';
+
+const {debugLog} = AiUtils.Debug;
 
 const lockedString = i18n.i18n.lockedString;
 

@@ -4,8 +4,9 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 
-import {runOneShotPrompt} from './AiUtils.js';
+const {runOneShotPrompt} = AiUtils.AiUtils;
 
 const preamble = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.

@@ -43,7 +43,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
+import * as AIAssistance from '../../models/ai-utils/ai-utils.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';

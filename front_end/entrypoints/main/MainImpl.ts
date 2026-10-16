@@ -42,7 +42,7 @@ import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Foundation from '../../foundation/foundation.js';
-import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as AiAssistanceModel from '../../models/ai-utils/ai-utils.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';

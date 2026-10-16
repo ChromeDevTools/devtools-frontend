@@ -11,10 +11,6 @@ import * as StorageAgent from './agents/StorageAgent.js';
 import * as StylingAgent from './agents/StylingAgent.js';
 import * as AiAgent2 from './AiAgent2.js';
 import * as AiConversation from './AiConversation.js';
-import * as AiHistoryStorage from './AiHistoryStorage.js';
-import * as AiSetting from './AiSetting.js';
-import * as AiUtils from './AiUtils.js';
-import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
@@ -29,7 +25,6 @@ import * as NetworkRequestFormatter from './data_formatters/NetworkRequestFormat
 import * as PerformanceInsightFormatter from './data_formatters/PerformanceInsightFormatter.js';
 import * as PerformanceTraceFormatter from './data_formatters/PerformanceTraceFormatter.js';
 import * as UnitFormatters from './data_formatters/UnitFormatters.js';
-import * as Debug from './debug.js';
 import * as DOMHelpers from './DOMHelpers.js';
 import * as EvaluateAction from './EvaluateAction.js';
 import * as ExtensionScope from './ExtensionScope.js';
@@ -72,22 +67,24 @@ import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
 
 export {
+  AiHistoryStorage,
+  AiSetting,
+  AiUtils,
+  BuiltInAi,
+  Debug,
+} from '../ai-utils/ai-utils.js';
+export {
   AccessibilityAgent,
   AiAgent,
   AiAgent2,
   AICallTree,
   AIContext,
   AiConversation,
-  AiHistoryStorage,
   AIQueries,
-  AiSetting,
-  AiUtils,
-  BuiltInAi,
   ChangeManager,
   ContextSelectionAgent,
   ConversationSummary,
   CookieUtils,
-  Debug,
   DOMHelpers,
   DOMNodeContext,
   DOMStorageUtils,

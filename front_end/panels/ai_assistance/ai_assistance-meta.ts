@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as AiAssistanceModel from '../../models/ai-utils/ai-utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingUIRegistration from '../../ui/settings/settings.js';
 

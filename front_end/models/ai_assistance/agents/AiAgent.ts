@@ -8,10 +8,10 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
-import {debugLog, isStructuredLogEnabled} from '../debug.js';
 import {dispatchAiAssistanceDoneEvent} from '../DOMHelpers.js';
 import {
   type ContextHandlerResult,
@@ -19,6 +19,8 @@ import {
   PermissionDecision,
   type PermissionPrompt,
 } from '../tools/Tool.js';
+
+const {debugLog, isStructuredLogEnabled} = AiUtils.Debug;
 
 type UrlString = Platform.DevToolsPath.UrlString;
 const MAX_SUGGESTION_LENGTH = 200;

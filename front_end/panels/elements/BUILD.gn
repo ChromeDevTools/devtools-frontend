@@ -79,7 +79,7 @@ devtools_ui_module("elements") {
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
-    "../../models/ai_assistance:bundle",
+    "../../models/ai-utils:bundle",
     "../../models/ai_code_completion:bundle",
     "../../models/badges:bundle",
     "../../models/bindings:bundle",

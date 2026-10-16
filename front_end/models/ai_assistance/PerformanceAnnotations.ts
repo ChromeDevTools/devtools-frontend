@@ -4,9 +4,11 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 
-import {runOneShotPrompt} from './AiUtils.js';
 import type {AICallTree} from './performance/AICallTree.js';
+
+const {runOneShotPrompt} = AiUtils.AiUtils;
 
 const callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.

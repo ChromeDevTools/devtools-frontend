@@ -6,7 +6,8 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import * as AiAssistanceModel from '../ai_assistance/ai_assistance.js';
+
+import * as AiAssistanceModel from './ai-utils.js';
 
 describe('BuiltInAi', () => {
   it('can generate a console insight teaser', async () => {

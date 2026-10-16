@@ -5,6 +5,7 @@
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
 
@@ -23,7 +24,6 @@ import {ChangeManager} from './ChangeManager.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {LighthouseContext} from './contexts/LighthouseContext.js';
 import {PerformanceTraceContext} from './contexts/PerformanceTraceContext.js';
-import {debugLog} from './debug.js';
 import {ExtensionScope} from './ExtensionScope.js';
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
@@ -35,6 +35,8 @@ import {
   type ToolArgs,
 } from './tools/Tool.js';
 import {ToolRegistry} from './tools/ToolRegistry.js';
+
+const {debugLog} = AiUtils.Debug;
 
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   styling: 'CSS and styling',

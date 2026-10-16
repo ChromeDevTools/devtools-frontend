@@ -8,13 +8,15 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {isNaturalLanguageInterfaceEnabled} from '../AiUtils.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import type {ChangeManager} from '../ChangeManager.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {FREESTYLER_WORLD_CSP, FREESTYLER_WORLD_NAME} from '../injected.js';
 import type {DataHandlerResult} from '../tools/Tool.js';
 
 import type {AgentOptions as BaseAgentOptions, FunctionHandlerOptions} from './AiAgent.js';
+
+const {isNaturalLanguageInterfaceEnabled} = AiUtils.AiUtils;
 
 const lockedString = i18n.i18n.lockedString;
 

@@ -28,9 +28,6 @@ devtools_foundation_module("ai_assistance") {
   sources = [
     "AiAgent2.ts",
     "AiConversation.ts",
-    "AiHistoryStorage.ts",
-    "AiSetting.ts",
-    "AiUtils.ts",
     "ChangeManager.ts",
     "ConversationSummary.ts",
     "EvaluateAction.ts",
@@ -58,7 +55,6 @@ devtools_foundation_module("ai_assistance") {
     "data_formatters/PerformanceInsightFormatter.ts",
     "data_formatters/PerformanceTraceFormatter.ts",
     "data_formatters/UnitFormatters.ts",
-    "debug.ts",
     "performance/AICallTree.ts",
     "performance/AIContext.ts",
     "performance/AIQueries.ts",
@@ -113,6 +109,7 @@ devtools_foundation_module("ai_assistance") {
     "../../generated",
     "../../models/network_time_calculator:bundle",
     "../../services/tracing:bundle",
+    "../ai-utils:bundle",
     "../bindings:bundle",
     "../crux-manager:bundle",
     "../formatter:bundle",
@@ -126,19 +123,6 @@ devtools_foundation_module("ai_assistance") {
   ]
 }
 
-# BuiltInAi.ts interacts with browser-only APIs (window.LanguageModel and canvas
-# WebGL GPU detection). It is isolated in a separate ts_library so DOM/window
-# types do not leak into the rest of models/ai_assistance.
-ts_library("built_in_ai") {
-  sources = [ "BuiltInAi.ts" ]
-
-  ts_deps = [
-    "../../core/common:bundle",
-    "../../core/host:bundle",
-    "../../core/root:bundle",
-  ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "ai_assistance.ts"
 
@@ -146,9 +130,9 @@ devtools_entrypoint("bundle") {
 
   ts_deps = [
     ":ai_assistance",
-    ":built_in_ai",
     ":dom_helpers",
     ":injected",
+    "../ai-utils:bundle",
   ]
 
   visibility = [
@@ -176,15 +160,9 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [
-    "BuiltInAi.test.ts",
-    "DOMHelpers.test.ts",
-  ]
+  sources = [ "DOMHelpers.test.ts" ]
 
-  ts_deps = [
-    ":bundle",
-    "../../testing",
-  ]
+  ts_deps = [ ":bundle" ]
 }
 
 devtools_foundation_module("foundation_unittests") {
@@ -194,8 +172,6 @@ devtools_foundation_module("foundation_unittests") {
     "AiAgent2.test.ts",
     "AiConversation.test.ts",
     "AiHistoryStorage.test.ts",
-    "AiSetting.test.ts",
-    "AiUtils.test.ts",
     "ChangeManager.test.ts",
     "ConversationSummary.test.ts",
     "EvaluateAction.test.ts",

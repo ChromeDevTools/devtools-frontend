@@ -12,7 +12,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
@@ -1251,6 +1251,90 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
               Accessibility.AccessibilityAnnouncementRecordingListView.AccessibilityAnnouncementRecordingListView>;
       await widgetEl?.getWidget()?.updateComplete;
       await assertScreenshot('accessibility/accessibility_announcement_recording_view_blocked.png');
+    });
+
+    it('maintains non-zero height and renders visible rows in an auto-height container', async () => {
+      targetEl.style.height = 'auto';
+      targetEl.classList.add('vbox', 'flex-none');
+
+      const mockAnnouncement1: Accessibility.AccessibilityAnnouncementRecordingView.A11yAnnouncement = {
+        api: AnnouncementApi.ARIA_LIVE,
+        message: 'Live status updated',
+        politeness: 'polite',
+        element: '<div aria-live="polite">Live status updated</div>',
+        time: 1700000000000,
+      };
+      const mockAnnouncement2: Accessibility.AccessibilityAnnouncementRecordingView.A11yAnnouncement = {
+        api: AnnouncementApi.JS_TRIGGERED,
+        message: 'Notification sent',
+        politeness: 'assertive',
+        element: '<button>Save</button>',
+        time: 1700000005000,
+      };
+
+      Accessibility.AccessibilityAnnouncementRecordingView.DEFAULT_VIEW(
+          {
+            isRecording: true,
+            onToggleRecording: () => {},
+            onClear: () => {},
+            onExportCsv: () => {},
+            canExport: true,
+            recordTypeFilter: RecordTypeFilter.BOTH,
+            onRecordTypeFilterChange: () => {},
+            textFilter: '',
+            onTextFilterChange: () => {},
+            blockedTargets: [],
+            announcements: [mockAnnouncement1, mockAnnouncement2],
+            selectedAnnouncement: null,
+            onSelectAnnouncement: () => {},
+            onRevealInElements: () => {},
+            onRevealInA11yTree: () => {},
+          },
+          undefined,
+          targetEl,
+      );
+
+      const widgetEl =
+          targetEl.querySelector('devtools-widget') as UI.Widget.WidgetElement<
+              Accessibility.AccessibilityAnnouncementRecordingListView.AccessibilityAnnouncementRecordingListView>;
+      await widgetEl?.getWidget()?.updateComplete;
+      await raf();
+
+      const mainPane = targetEl.querySelector<HTMLElement>('.announcements-main-pane');
+      assert.exists(mainPane);
+      assert.isAtLeast(mainPane.clientHeight, 150);
+
+      const dataGrid = widgetEl.shadowRoot?.querySelector<HTMLElement>('devtools-data-grid');
+      assert.exists(dataGrid);
+      assert.isAtLeast(dataGrid.clientHeight, 150);
+
+      const visibleRows =
+          dataGrid.shadowRoot?.querySelectorAll('table.data tbody tr.data-grid-data-grid-node.revealed');
+      assert.exists(visibleRows);
+      assert.lengthOf(visibleRows, 2);
+
+      const resizer = targetEl.querySelector<HTMLElement>('.announcements-resizer');
+      assert.exists(resizer);
+
+      // Drag grabber down by 80px to expand the main pane
+      resizer.dispatchEvent(
+          new PointerEvent('pointerdown', {button: 0, buttons: 1, clientY: 100, pointerId: 1, bubbles: true}));
+      resizer.dispatchEvent(new PointerEvent('pointermove', {buttons: 1, clientY: 180, pointerId: 1, bubbles: true}));
+      resizer.dispatchEvent(new PointerEvent('pointerup', {clientY: 180, pointerId: 1, bubbles: true}));
+      assert.strictEqual(mainPane.clientHeight, 230);
+
+      // Drag grabber far upward and verify it clamps at 150px minimum
+      resizer.dispatchEvent(
+          new PointerEvent('pointerdown', {button: 0, buttons: 1, clientY: 180, pointerId: 1, bubbles: true}));
+      resizer.dispatchEvent(new PointerEvent('pointermove', {buttons: 1, clientY: 20, pointerId: 1, bubbles: true}));
+      resizer.dispatchEvent(new PointerEvent('pointerup', {clientY: 20, pointerId: 1, bubbles: true}));
+      assert.strictEqual(mainPane.clientHeight, 150);
+
+      // Resize via keyboard ArrowDown / ArrowUp
+      resizer.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      assert.strictEqual(mainPane.clientHeight, 160);
+      resizer.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      assert.strictEqual(mainPane.clientHeight, 150);
     });
   });
 

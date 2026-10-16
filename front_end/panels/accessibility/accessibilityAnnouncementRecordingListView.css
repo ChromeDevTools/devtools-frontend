@@ -10,7 +10,7 @@
   flex-direction: column;
   flex: auto;
   height: 100%;
-  min-height: 0;
+  min-height: 150px;
   overflow: hidden;
 }
 
@@ -21,6 +21,7 @@
     flex-direction: column;
     flex: auto;
     height: 100%;
+    min-height: 150px;
     overflow: hidden;
   }
 
@@ -28,6 +29,7 @@
     font-family: inherit;
     flex: auto;
     height: 100%;
+    min-height: 150px;
     border: none;
   }
 }

@@ -284,6 +284,7 @@ export const knownContextValues: Set<string> = new Set([
   'accept-execute-code',
   'access-control-allow-origin',
   'accessibility-announcements.filter-by-type',
+  'accessibility-announcements.resizer',
   'accessibility-default',
   'accessibility-tree',
   'accessibility.clear-announcements',

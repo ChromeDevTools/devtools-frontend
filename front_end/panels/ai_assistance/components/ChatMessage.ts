@@ -47,7 +47,6 @@ const {html, Directives: {ref, ifDefined}} = Lit;
 const lockedString = i18n.i18n.lockedString;
 const {widget} = UI.Widget;
 
-const REPORT_URL = 'https://crbug.com/508304827' as Platform.DevToolsPath.UrlString;
 const SCROLL_ROUNDING_OFFSET = 1;
 
 /*
@@ -2255,44 +2254,43 @@ export class ChatMessage extends UI.Widget.Widget {
   override performUpdate(): Promise<void>|void {
     const message =
         this.message.entity === ChatMessageEntity.MODEL ? getDeduplicatedWidgetsMessage(this.message) : this.message;
-    this.#view(
-        {
-          message,
-          isLoading: this.isLoading,
-          isReadOnly: this.isReadOnly,
-          canShowFeedbackForm: this.canShowFeedbackForm,
-          markdownRenderer: this.markdownRenderer,
-          isLastMessage: this.isLastMessage,
-          isFirstMessage: this.isFirstMessage,
-          prompt: this.prompt,
-          onSuggestionClick: this.onSuggestionClick,
-          onRatingClick: this.#handleRateClick.bind(this),
-          onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
-          onCopyResponseClick: () => {
-            if (this.message.entity === ChatMessageEntity.MODEL) {
-              this.onCopyResponseClick(this.message);
-            }
-          },
-          onExportClick: this.onExportClick,
-          scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
-          onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
-          onSubmit: this.#handleSubmit.bind(this),
-          onClose: this.#handleClose.bind(this),
-          onInputChange: this.#handleInputChange.bind(this),
-          isSubmitButtonDisabled: this.#isSubmitButtonDisabled,
-          // Props for actions logic
-          showActions: !(this.isLastMessage && this.isLoading),
-          showRateButtons: this.message.entity === ChatMessageEntity.MODEL && !!this.message.rpcId,
-          suggestions: (this.isLastMessage && this.message.entity === ChatMessageEntity.MODEL && !this.isReadOnly &&
-                        this.message.parts.at(-1)?.type === 'answer') ?
-              (this.message.parts.at(-1) as AnswerPart).suggestions :
-              undefined,
-          currentRating: this.#currentRating,
-          isShowingFeedbackForm: this.#isShowingFeedbackForm,
-          onFeedbackSubmit: this.onFeedbackSubmit,
-          walkthrough: this.walkthrough,
-        },
-        this.#viewOutput, this.contentElement);
+    this.#view({
+      message,
+      isLoading: this.isLoading,
+      isReadOnly: this.isReadOnly,
+      canShowFeedbackForm: this.canShowFeedbackForm,
+      markdownRenderer: this.markdownRenderer,
+      isLastMessage: this.isLastMessage,
+      isFirstMessage: this.isFirstMessage,
+      prompt: this.prompt,
+      onSuggestionClick: this.onSuggestionClick,
+      onRatingClick: this.#handleRateClick.bind(this),
+      onReportClick: () => UIHelpers.openInNewTab(AiAssistanceModel.AiUtils.REPORT_LEGAL_ISSUE_URL),
+      onCopyResponseClick: () => {
+        if (this.message.entity === ChatMessageEntity.MODEL) {
+          this.onCopyResponseClick(this.message);
+        }
+      },
+      onExportClick: this.onExportClick,
+      scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
+      onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
+      onSubmit: this.#handleSubmit.bind(this),
+      onClose: this.#handleClose.bind(this),
+      onInputChange: this.#handleInputChange.bind(this),
+      isSubmitButtonDisabled: this.#isSubmitButtonDisabled,
+      // Props for actions logic
+      showActions: !(this.isLastMessage && this.isLoading),
+      showRateButtons: this.message.entity === ChatMessageEntity.MODEL && !!this.message.rpcId,
+      suggestions: (this.isLastMessage && this.message.entity === ChatMessageEntity.MODEL && !this.isReadOnly &&
+                    this.message.parts.at(-1)?.type === 'answer') ?
+          (this.message.parts.at(-1) as AnswerPart).suggestions :
+          undefined,
+      currentRating: this.#currentRating,
+      isShowingFeedbackForm: this.#isShowingFeedbackForm,
+      onFeedbackSubmit: this.onFeedbackSubmit,
+      walkthrough: this.walkthrough,
+    },
+               this.#viewOutput, this.contentElement);
 
     if (this.#viewOutput.suggestionsScrollContainer && !this.#isObservingSuggestions) {
       this.#suggestionsResizeObserver.observe(this.#viewOutput.suggestionsScrollContainer);

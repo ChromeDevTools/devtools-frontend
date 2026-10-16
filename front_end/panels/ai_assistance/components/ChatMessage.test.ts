@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
@@ -36,6 +36,8 @@ import {
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('ChatMessage', () => {
   function createComponent(
@@ -560,6 +562,17 @@ describeWithEnvironment('ChatMessage', () => {
 
     sinon.assert.callCount(view, 1);
     assert.isFalse(view.input.showRateButtons);
+  });
+
+  it('opens the legal issue form when the report button is clicked', async () => {
+    const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+    const [view] = createComponent();
+
+    view.input.onReportClick();
+
+    sinon.assert.calledOnceWithExactly(
+        openInNewTabStub,
+        urlString`https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504`);
   });
 
   it('should show actions when it is not the last message and it is loading', async () => {

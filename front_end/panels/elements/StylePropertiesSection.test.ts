@@ -62,6 +62,7 @@ describeWithEnvironment('StylesPropertySection', () => {
     assert.strictEqual(selectorElement?.textContent, '.child');
     const tooltip = section.element?.querySelector('devtools-tooltip');
     assert.exists(tooltip);
+    assert.isTrue(tooltip.classList.contains('styles-specificity-tooltip'));
     const details = tooltip.querySelector('details');
     assert.exists(details);
     const summary = details.querySelector('summary');

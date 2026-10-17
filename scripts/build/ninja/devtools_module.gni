@@ -68,6 +68,7 @@ template("devtools_foundation_module") {
                            [
                              "deps",
                              "ts_deps",
+                             "validations",
                              "visibility",
                            ])
 
@@ -94,7 +95,8 @@ template("devtools_foundation_module") {
 
     visibility += [ ":*" ]
 
-    public_deps += [ ":$_node_type_check_target" ]
+    # Not in public_deps: the stamp changes on each run and defeats restat.
+    validations += [ ":$_node_type_check_target" ]
   }
 }
 
@@ -121,5 +123,6 @@ foreach(module,
     visibility = []
     data = []
     public_deps = []
+    validations = []
   }
 }

@@ -18,5 +18,5 @@ ts_library("foundation_module") {
     "dom",
     "dom.iterable",
   ]
-  public_deps = [ ":foundation_node_typecheck" ]
+  validations = [ ":foundation_node_typecheck" ]
 }

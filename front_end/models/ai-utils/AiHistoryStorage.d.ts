@@ -1,5 +1,4 @@
 import * as Common from '../../core/common/common.js';
-import { type SerializedResponseData } from './agents/AiAgent.js';
 export declare const enum ConversationType {
     NONE = "none",
     STYLING = "freestyler",
@@ -9,10 +8,11 @@ export declare const enum ConversationType {
     ACCESSIBILITY = "accessibility",
     STORAGE = "storage"
 }
+export type SerializedResponseItem = Record<string, any>;
 export interface SerializedConversation {
     id: string;
     type: ConversationType;
-    history: SerializedResponseData[];
+    history: SerializedResponseItem[];
 }
 export interface SerializedImage {
     id: string;

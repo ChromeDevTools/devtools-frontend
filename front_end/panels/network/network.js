@@ -15644,7 +15644,10 @@ var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
   set request(val) {
     this.#removeEventListeners();
     this.#request = val;
-    this.#addEventListeners();
+    if (this.isShowing()) {
+      this.#addEventListeners();
+      this.requestUpdate();
+    }
   }
   constructor(target, view = DEFAULT_VIEW10) {
     super();
@@ -18254,6 +18257,7 @@ var ResourceFrameNode = class extends DataGridItem {
       length = i18nString23(UIStrings24.na);
     } else if (isTextFrame) {
       description = dataText;
+      length = i18n47.ByteUtilities.bytesToString(Platform13.StringUtilities.countWtf8Bytes(frame.text));
     } else if (frame.opCode === 2 /* BINARY_FRAME */) {
       length = i18n47.ByteUtilities.bytesToString(Platform13.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();

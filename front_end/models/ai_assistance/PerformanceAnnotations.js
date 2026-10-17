@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-import { runOneShotPrompt } from './AiUtils.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
+const { runOneShotPrompt } = AiUtils.AiUtils;
 const callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.

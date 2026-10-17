@@ -33,7 +33,7 @@
       "path": "../core/sdk/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../models/ai_assistance/bundle-tsconfig.ref.json"
+      "path": "../models/ai-utils/bundle-tsconfig.ref.json"
     },
     {
       "path": "../models/autofill_manager/bundle-tsconfig.ref.json"

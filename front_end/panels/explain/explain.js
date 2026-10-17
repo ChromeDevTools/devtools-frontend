@@ -612,7 +612,6 @@ var TERMS_OF_SERVICE_URL = "https://policies.google.com/terms";
 var PRIVACY_POLICY_URL = "https://policies.google.com/privacy";
 var CODE_SNIPPET_WARNING_URL = "https://support.google.com/legal/answer/13505487";
 var LEARN_MORE_URL = "https://goo.gle/devtools-console-messages-ai";
-var REPORT_URL = "https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504";
 var SIGN_IN_URL = "https://accounts.google.com";
 var State = /* @__PURE__ */ ((State2) => {
   State2["INSIGHT"] = "insight";
@@ -1272,7 +1271,9 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     });
   }
   #onReport() {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+      AiAssistanceModel.AiUtils.REPORT_LEGAL_ISSUE_URL
+    );
   }
   #onSearch() {
     const query = this.#promptBuilder.getSearchQuery();

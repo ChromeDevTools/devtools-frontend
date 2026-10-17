@@ -6,6 +6,11 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import { debugLog } from './debug.js';
+/**
+ * The Google legal troubleshooter form that users are sent to when they
+ * report a legal issue with AI generated content.
+ */
+export const REPORT_LEGAL_ISSUE_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504';
 export var DisabledReason;
 (function (DisabledReason) {
     DisabledReason["GEO_RESTRICTED"] = "geo-restricted";

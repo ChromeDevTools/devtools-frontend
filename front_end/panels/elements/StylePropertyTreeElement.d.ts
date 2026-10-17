@@ -99,7 +99,7 @@ declare const AngleRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Angl
 export declare class AngleRenderer extends AngleRendererBase {
     #private;
     constructor(treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.AngleMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const LinkableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinkableNameMatch>;
 export declare class LinkableNameRenderer extends LinkableNameRendererBase {
@@ -111,7 +111,7 @@ declare const BezierRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Bez
 export declare class BezierRenderer extends BezierRendererBase {
     #private;
     constructor(treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const AutoBaseRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AutoBaseMatch>;
 export declare class AutoBaseRenderer extends AutoBaseRendererBase {
@@ -154,6 +154,7 @@ export declare class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShad
     setBlurRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void;
     setSpreadRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void;
     renderContents(span: HTMLSpanElement): void;
+    text(): string;
 }
 declare const ShadowRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ShadowMatch>;
 export declare class ShadowRenderer extends ShadowRendererBase {
@@ -255,7 +256,6 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     get value(): string;
     updateFilter(): boolean;
     renderedPropertyText(): string;
-    editedPropertyTextForTest(): string;
     private updateState;
     node(): SDK.DOMModel.DOMNode | null;
     stylesContainer(): StylesContainer;

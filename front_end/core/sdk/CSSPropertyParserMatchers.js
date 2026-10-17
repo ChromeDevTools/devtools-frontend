@@ -1126,14 +1126,15 @@ export class FlexGridGridLanesMatcher extends FlexGridGridLanesMatcherBase {
             .map(node => matching.getComputedText(node).trim())
             .filter(value => value);
         const text = values.join(' ');
+        const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
         if (FlexGridGridLanesMatcher.FLEX.includes(text)) {
-            return new FlexGridGridLanesMatch(matching.ast.text(node), node, "flex" /* LayoutType.FLEX */);
+            return new FlexGridGridLanesMatch(valueText, node, "flex" /* LayoutType.FLEX */);
         }
         if (FlexGridGridLanesMatcher.GRID.includes(text)) {
-            return new FlexGridGridLanesMatch(matching.ast.text(node), node, "grid" /* LayoutType.GRID */);
+            return new FlexGridGridLanesMatch(valueText, node, "grid" /* LayoutType.GRID */);
         }
         if (FlexGridGridLanesMatcher.GRID_LANES.includes(text)) {
-            return new FlexGridGridLanesMatch(matching.ast.text(node), node, "grid-lanes" /* LayoutType.GRID_LANES */);
+            return new FlexGridGridLanesMatch(valueText, node, "grid-lanes" /* LayoutType.GRID_LANES */);
         }
         return null;
     }
@@ -1475,10 +1476,11 @@ export class PositionAreaMatcher extends PositionAreaMatcherBase {
         if (valueNodes.length === 0) {
             return null;
         }
-        const valueText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
-        if (CSSMetadata.isCSSWideKeyword(valueText)) {
+        const computedText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+        if (CSSMetadata.isCSSWideKeyword(computedText)) {
             return null;
         }
+        const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
         return new PositionAreaMatch(valueText, node);
     }
 }

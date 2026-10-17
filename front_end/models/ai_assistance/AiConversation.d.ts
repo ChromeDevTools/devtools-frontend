@@ -3,11 +3,14 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import type * as Trace from '../../models/trace/trace.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { type AllowedOriginResult, type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
-import { AiHistoryStorage, ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
 import { type OriginLockState } from './tools/Tool.js';
+type AiHistoryStorage = AiUtils.AiHistoryStorage.AiHistoryStorage;
+type ConversationType = AiUtils.AiHistoryStorage.ConversationType;
+type SerializedConversation = AiUtils.AiHistoryStorage.SerializedConversation;
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare const CONTEXT_TITLE = "Analyzing data";
 /**
@@ -74,3 +77,4 @@ export declare class AiConversation {
      */
     allowedOrigin: () => AllowedOriginResult;
 }
+export {};

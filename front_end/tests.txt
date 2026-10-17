@@ -130,11 +130,11 @@ entrypoints/formatter_worker/Substitute.test.js
 entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
 entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 foundation/Universe.test.js
+models/ai-utils/AiSetting.test.js
+models/ai-utils/AiUtils.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
-models/ai_assistance/AiSetting.test.js
-models/ai_assistance/AiUtils.test.js
 models/ai_assistance/ChangeManager.test.js
 models/ai_assistance/ConversationSummary.test.js
 models/ai_assistance/EvaluateAction.test.js
@@ -380,7 +380,7 @@ entrypoints/main/GlobalAiButton.test.js
 entrypoints/main/MainImpl.test.js
 entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
-models/ai_assistance/BuiltInAi.test.js
+models/ai-utils/BuiltInAi.test.js
 models/ai_assistance/DOMHelpers.test.js
 panels/accessibility/ARIAAttributesView.test.js
 panels/accessibility/AccessibilityAnnouncementRecordingListView.test.js
@@ -502,6 +502,7 @@ panels/elements/ElementsPanel.test.js
 panels/elements/EventListenersWidget.test.js
 panels/elements/ImagePreviewPopover.test.js
 panels/elements/InspectElementModeController.test.js
+panels/elements/LayersWidget.test.js
 panels/elements/LayoutPane.test.js
 panels/elements/MetricsSidebarPane.test.js
 panels/elements/PlatformFontsWidget.test.js
@@ -576,6 +577,7 @@ panels/network/RequestPreviewView.test.js
 panels/network/RequestResponseView.test.js
 panels/network/RequestTimingView.test.js
 panels/network/ResourceDirectSocketChunkView.test.js
+panels/network/ResourceWebSocketFrameView.test.js
 panels/network/ShowMoreDetailsWidget.test.js
 panels/network/components/DirectSocketConnectionView.test.js
 panels/network/components/EditableSpan.test.js
@@ -586,6 +588,8 @@ panels/network/components/ResponseHeaderSection.test.js
 panels/performance_monitor/PerformanceMonitor.test.js
 panels/profiler/HeapDetachedElementsView.test.js
 panels/profiler/HeapProfileView.test.js
+panels/profiler/HeapSnapshotView.test.js
+panels/profiler/HeapTimelineOverview.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
 panels/recorder/CreateRecordingView.test.js
@@ -665,6 +669,7 @@ panels/timeline/ModificationsManager.test.js
 panels/timeline/RecordingMetadata.test.js
 panels/timeline/SaveFileFormatter.test.js
 panels/timeline/ThirdPartyTreeView.test.js
+panels/timeline/TimelineCommentController.test.js
 panels/timeline/TimelineController.test.js
 panels/timeline/TimelineDetailsView.test.js
 panels/timeline/TimelineFilters.test.js

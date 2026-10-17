@@ -8,13 +8,14 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
 import { formatEventForAI, PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
-import { debugLog } from '../debug.js';
 import { AICallTree } from '../performance/AICallTree.js';
 import { AiAgent, } from './AiAgent.js';
+const { debugLog } = AiUtils.Debug;
 const UIStringsNotTranslated = {
     /**
      * @description Shown when the agent is investigating network activity

@@ -147,6 +147,17 @@ var EventsSerializer = class _EventsSerializer {
       return null;
     }
     const rawEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
+    if (Types.Events.isSyntheticLayoutShiftCluster(event)) {
+      const firstShift = event.events.at(0);
+      if (!firstShift) {
+        return null;
+      }
+      const firstShiftIndex = rawEvents.indexOf(firstShift.rawSourceEvent);
+      if (firstShiftIndex === -1) {
+        return null;
+      }
+      return `${Types.File.EventKeyType.LAYOUT_SHIFT_CLUSTER}-${firstShiftIndex}`;
+    }
     const isSynthetic = Types.Events.isSyntheticBased(event);
     const index = rawEvents.indexOf(isSynthetic ? event.rawSourceEvent : event);
     if (index === -1) {
@@ -170,6 +181,20 @@ var EventsSerializer = class _EventsSerializer {
       }
       return event;
     }
+    if (_EventsSerializer.isLayoutShiftClusterKey(eventValues)) {
+      const rawEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
+      const firstShiftRawEvent = rawEvents.at(eventValues.rawIndex);
+      const cluster = parsedTrace.data.LayoutShifts.clusters.find((cluster2) => {
+        const firstShift = cluster2.events.at(0);
+        return firstShift !== void 0 && firstShift.rawSourceEvent === firstShiftRawEvent;
+      });
+      if (!cluster) {
+        throw new Error(
+          `Unknown trace event. Could not find layout shift cluster with first shift index ${eventValues.rawIndex}`
+        );
+      }
+      return cluster;
+    }
     if (_EventsSerializer.isSyntheticEventKey(eventValues)) {
       const syntheticEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getSyntheticTraces();
       const syntheticEvent = syntheticEvents.at(eventValues.rawIndex);
@@ -189,6 +214,9 @@ var EventsSerializer = class _EventsSerializer {
   }
   static isLegacyTimelineFrameKey(key) {
     return key.type === Types.File.EventKeyType.LEGACY_TIMELINE_FRAME;
+  }
+  static isLayoutShiftClusterKey(key) {
+    return key.type === Types.File.EventKeyType.LAYOUT_SHIFT_CLUSTER;
   }
   static isRawEventKey(key) {
     return key.type === Types.File.EventKeyType.RAW_EVENT;

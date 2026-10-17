@@ -34,7 +34,8 @@ export declare enum EventKeyType {
     RAW_EVENT = "r",
     SYNTHETIC_EVENT = "s",
     PROFILE_CALL = "p",
-    LEGACY_TIMELINE_FRAME = "l"
+    LEGACY_TIMELINE_FRAME = "l",
+    LAYOUT_SHIFT_CLUSTER = "c"
 }
 /**
  * Represents an object that is saved in the file when user created annotations in the timeline.
@@ -110,7 +111,8 @@ export type RawEventKey = `${EventKeyType.RAW_EVENT}-${number}`;
 export type SyntheticEventKey = `${EventKeyType.SYNTHETIC_EVENT}-${number}`;
 export type ProfileCallKey = `${EventKeyType.PROFILE_CALL}-${ProcessID}-${ThreadID}-${SampleIndex}-${Protocol.integer}`;
 export type LegacyTimelineFrameKey = `${EventKeyType.LEGACY_TIMELINE_FRAME}-${number}`;
-export type SerializableKey = RawEventKey | ProfileCallKey | SyntheticEventKey | LegacyTimelineFrameKey;
+export type LayoutShiftClusterKey = `${EventKeyType.LAYOUT_SHIFT_CLUSTER}-${number}`;
+export type SerializableKey = RawEventKey | ProfileCallKey | SyntheticEventKey | LegacyTimelineFrameKey | LayoutShiftClusterKey;
 /** Serializable keys values objects contain data that maps the keys to original Trace Events **/
 export interface RawEventKeyValues {
     type: EventKeyType.RAW_EVENT;
@@ -131,7 +133,11 @@ export interface LegacyTimelineFrameKeyValues {
     type: EventKeyType.LEGACY_TIMELINE_FRAME;
     rawIndex: number;
 }
-export type SerializableKeyValues = RawEventKeyValues | ProfileCallKeyValues | SyntheticEventKeyValues | LegacyTimelineFrameKeyValues;
+export interface LayoutShiftClusterKeyValues {
+    type: EventKeyType.LAYOUT_SHIFT_CLUSTER;
+    rawIndex: number;
+}
+export type SerializableKeyValues = RawEventKeyValues | ProfileCallKeyValues | SyntheticEventKeyValues | LegacyTimelineFrameKeyValues | LayoutShiftClusterKeyValues;
 export interface Modifications {
     entriesModifications: {
         hiddenEntries: SerializableKey[];

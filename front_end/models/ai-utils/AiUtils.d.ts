@@ -1,5 +1,11 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import type * as Platform from '../../core/platform/platform.js';
+/**
+ * The Google legal troubleshooter form that users are sent to when they
+ * report a legal issue with AI generated content.
+ */
+export declare const REPORT_LEGAL_ISSUE_URL: Platform.DevToolsPath.UrlString;
 export declare const enum DisabledReason {
     GEO_RESTRICTED = "geo-restricted",
     POLICY_RESTRICTED = "policy-restricted",

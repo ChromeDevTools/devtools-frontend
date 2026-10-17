@@ -37,6 +37,8 @@ export declare class NetworkThrottlingSelect extends NetworkThrottlingSelectBase
         currentConditions?: SDK.NetworkManager.Conditions;
         includeBlocking?: true;
     }, settings?: Common.Settings.Settings, view?: ViewFunction);
+    wasShown(): void;
+    willHide(): void;
     get disabled(): boolean;
     set disabled(disabled: boolean);
     get recommendedConditions(): SDK.NetworkManager.Conditions | null;

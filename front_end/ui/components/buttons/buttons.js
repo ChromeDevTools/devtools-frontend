@@ -406,7 +406,7 @@ button {
 /*# sourceURL=${import.meta.resolve("./button.css")} */`;
 
 // ../../front_end/ui/components/buttons/Button.ts
-var { html, Directives: { ifDefined, ref, classMap } } = Lit;
+var { html, Directives: { ifDefined, ref, repeat, classMap } } = Lit;
 var Variant = /* @__PURE__ */ ((Variant2) => {
   Variant2["PRIMARY"] = "primary";
   Variant2["TONAL"] = "tonal";
@@ -686,29 +686,35 @@ var Button = class _Button extends HTMLElement {
       spinner: true
     };
     const jslog = this.#props.jslogContext && VisualLogging.action().track({ click: true }).context(this.#props.jslogContext);
+    const innerButtonHadFocus = this.#shadow.activeElement !== null;
     Lit.render(
       html`
         <style>${button_css_default}</style>
-        <button title=${ifDefined(this.buttonTitle || this.title || void 0)}
-                ?disabled=${this.#props.disabled}
-                class=${classMap(classes)}
-                aria-pressed=${ifDefined(this.#props.toggled)}
-                aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
-                aria-label=${ifDefined(this.accessibleLabel || this.title || void 0)}
-                jslog=${ifDefined(jslog)}>
-          ${hasIcon ? html`
-            <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
-            </devtools-icon>` : ""}
-          ${this.#props.longClickable ? html`
-              <devtools-icon name="triangle-bottom-right" class="long-click">
+        ${repeat([this.#props.jslogContext], (context) => context, () => html`
+          <button title=${ifDefined(this.buttonTitle || this.title || void 0)}
+                  ?disabled=${this.#props.disabled}
+                  class=${classMap(classes)}
+                  aria-pressed=${ifDefined(this.#props.toggled)}
+                  aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
+                  aria-label=${ifDefined(this.accessibleLabel || this.title || void 0)}
+                  jslog=${ifDefined(jslog)}>
+            ${hasIcon ? html`
+              <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
               </devtools-icon>` : ""}
-          ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ""}
-          <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
-        </button>
+            ${this.#props.longClickable ? html`
+                <devtools-icon name="triangle-bottom-right" class="long-click">
+                </devtools-icon>` : ""}
+            ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ""}
+            <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
+          </button>
+        `)}
       `,
       this.#shadow,
       { host: this }
     );
+    if (innerButtonHadFocus && this.#shadow.activeElement === null) {
+      this.focus();
+    }
   }
   // Based on https://web.dev/more-capable-form-controls/ to make custom elements form-friendly.
   // Form controls usually expose a "value" property.

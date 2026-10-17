@@ -72,7 +72,7 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper {
     }
     #getImageIdsFromHistory(history) {
         return history.flatMap(item => {
-            if (item.type === "user-query" /* ResponseType.USER_QUERY */ && item.imageId) {
+            if (item.type === 'user-query' && typeof item.imageId === 'string' && item.imageId) {
                 return [item.imageId];
             }
             return [];

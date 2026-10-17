@@ -18,7 +18,7 @@ export default `/*
 }
 
 devtools-dialog {
-  --override-transparent: color-mix(in srgb, var(--color-background) 80%, transparent);
+  --override-transparent: color-mix(in srgb, var(--sys-color-cdt-base-container) 80%, transparent);
 }
 
 .section-title {
@@ -106,7 +106,7 @@ input[type="text"][disabled] {
 
 .warning {
   margin: var(--sys-size-2) var(--sys-size-5);
-  color: var(--color-error-text);
+  color: var(--sys-color-error);
 }
 
 devtools-link {

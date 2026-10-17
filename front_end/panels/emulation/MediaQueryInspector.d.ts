@@ -38,6 +38,7 @@ export declare class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> im
     private buildMediaQueryMarkers;
     private zoomFactor;
     wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
 }
 export declare const enum Section {

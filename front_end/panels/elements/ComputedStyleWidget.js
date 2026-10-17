@@ -281,11 +281,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
         this.contentElement.classList.add('styles-sidebar-computed-style-widget');
         this.showInheritedComputedStylePropertiesSetting =
             Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
-        this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate.bind(this));
         this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('group-computed-styles', false);
-        this.groupComputedStylesSetting.addChangeListener(() => {
-            this.requestUpdate();
-        });
         this.filterRegex = null;
         this.linkifier = new Components.Linkifier.Linkifier(maxLinkLength);
         this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
@@ -299,6 +295,18 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
             return liveFeatures ?? this.#storedNodeFeatures ?? undefined;
         });
         this.#updateView({ hasMatches: true });
+    }
+    wasShown() {
+        super.wasShown();
+        this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.requestUpdate, this);
+        this.groupComputedStylesSetting.addChangeListener(this.requestUpdate, this);
+        // The settings might have changed while the widget was hidden.
+        this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        this.showInheritedComputedStylePropertiesSetting.removeChangeListener(this.requestUpdate, this);
+        this.groupComputedStylesSetting.removeChangeListener(this.requestUpdate, this);
     }
     onResize() {
         const isNarrow = this.#enableNarrowViewResizing && this.contentElement.offsetWidth < 260;

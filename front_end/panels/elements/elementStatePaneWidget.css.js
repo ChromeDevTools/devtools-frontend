@@ -27,7 +27,7 @@ export default `/**
 
   .styles-element-state-pane .section-header {
     margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
-    color: var(--color-text-secondary);
+    color: var(--sys-color-token-subtle);
   }
 
   .styles-element-state-pane > table {

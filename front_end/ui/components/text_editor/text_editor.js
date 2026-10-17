@@ -415,7 +415,7 @@ import * as Common from "../../../core/common/common.js";
 import * as Host2 from "../../../core/host/host.js";
 import * as i18n3 from "../../../core/i18n/i18n.js";
 import * as Root2 from "../../../core/root/root.js";
-import * as AIAssistance from "../../../models/ai_assistance/ai_assistance.js";
+import * as AIAssistance from "../../../models/ai-utils/ai-utils.js";
 import * as AiCodeGeneration from "../../../models/ai_code_generation/ai_code_generation.js";
 import * as UI2 from "../../legacy/legacy.js";
 import { html as html2, nothing as nothing2, render as render2 } from "../../lit/lit.js";

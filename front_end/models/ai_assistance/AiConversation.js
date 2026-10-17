@@ -2,6 +2,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiUtils from '../ai-utils/ai-utils.js';
 import { AccessibilityAgent } from './agents/AccessibilityAgent.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent } from './agents/FileAgent.js';
@@ -10,8 +11,6 @@ import { PerformanceAgent } from './agents/PerformanceAgent.js';
 import { StorageAgent } from './agents/StorageAgent.js';
 import { StylingAgent } from './agents/StylingAgent.js';
 import { AiAgent2 } from './AiAgent2.js';
-import { AiHistoryStorage } from './AiHistoryStorage.js';
-import { isContextSelectionEnabled } from './AiUtils.js';
 import { DOMNodeContext } from './contexts/DOMNodeContext.js';
 import { FileContext } from './contexts/FileContext.js';
 import { LighthouseContext } from './contexts/LighthouseContext.js';
@@ -74,7 +73,7 @@ export class AiConversation {
     #aiHistoryStorage;
     #targetManager;
     constructor(options) {
-        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiHistoryStorage.instance(), 
+        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiUtils.AiHistoryStorage.AiHistoryStorage.instance(), 
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         targetManager = SDK.TargetManager.TargetManager.instance(), } = options;
         this.#changeManager = changeManager;
@@ -122,30 +121,30 @@ export class AiConversation {
     setContext(updateContext) {
         if (!updateContext) {
             this.#contexts = [];
-            if (isContextSelectionEnabled()) {
-                this.#updateAgent("none" /* ConversationType.NONE */);
+            if (AiUtils.AiUtils.isContextSelectionEnabled()) {
+                this.#updateAgent("none" /* AiUtils.AiHistoryStorage.ConversationType.NONE */);
             }
             return;
         }
         this.#contexts = [updateContext];
-        if (isContextSelectionEnabled()) {
+        if (AiUtils.AiUtils.isContextSelectionEnabled()) {
             if (updateContext instanceof FileContext) {
-                this.#updateAgent("drjones-file" /* ConversationType.FILE */);
+                this.#updateAgent("drjones-file" /* AiUtils.AiHistoryStorage.ConversationType.FILE */);
             }
             else if (updateContext instanceof DOMNodeContext) {
-                this.#updateAgent("freestyler" /* ConversationType.STYLING */);
+                this.#updateAgent("freestyler" /* AiUtils.AiHistoryStorage.ConversationType.STYLING */);
             }
             else if (updateContext instanceof RequestContext) {
-                this.#updateAgent("drjones-network-request" /* ConversationType.NETWORK */);
+                this.#updateAgent("drjones-network-request" /* AiUtils.AiHistoryStorage.ConversationType.NETWORK */);
             }
             else if (updateContext instanceof PerformanceTraceContext) {
-                this.#updateAgent("drjones-performance-full" /* ConversationType.PERFORMANCE */);
+                this.#updateAgent("drjones-performance-full" /* AiUtils.AiHistoryStorage.ConversationType.PERFORMANCE */);
             }
             else if (updateContext instanceof LighthouseContext) {
-                this.#updateAgent("accessibility" /* ConversationType.ACCESSIBILITY */);
+                this.#updateAgent("accessibility" /* AiUtils.AiHistoryStorage.ConversationType.ACCESSIBILITY */);
             }
             else if (updateContext instanceof StorageContext) {
-                this.#updateAgent("storage" /* ConversationType.STORAGE */);
+                this.#updateAgent("storage" /* AiUtils.AiHistoryStorage.ConversationType.STORAGE */);
             }
         }
     }
@@ -303,7 +302,8 @@ export class AiConversation {
         // In legacy V1 architecture, agents are recreated when switching conversation types.
         // Discard conversation history when transitioning away from Storage to prevent
         // sensitive data (e.g. cookies or storage items) from leaking into subsequent agent queries.
-        const isTransitioningFromStorage = previousType === "storage" /* ConversationType.STORAGE */ && type !== "storage" /* ConversationType.STORAGE */;
+        const isTransitioningFromStorage = previousType === "storage" /* AiUtils.AiHistoryStorage.ConversationType.STORAGE */ &&
+            type !== "storage" /* AiUtils.AiHistoryStorage.ConversationType.STORAGE */;
         const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
         const baseOptions = {
             aidaClient: this.#aidaClient,
@@ -328,19 +328,19 @@ export class AiConversation {
     }
     #createV1Agent(type, options) {
         switch (type) {
-            case "freestyler" /* ConversationType.STYLING */:
+            case "freestyler" /* AiUtils.AiHistoryStorage.ConversationType.STYLING */:
                 return new StylingAgent(options);
-            case "drjones-network-request" /* ConversationType.NETWORK */:
+            case "drjones-network-request" /* AiUtils.AiHistoryStorage.ConversationType.NETWORK */:
                 return new NetworkAgent(options);
-            case "drjones-file" /* ConversationType.FILE */:
+            case "drjones-file" /* AiUtils.AiHistoryStorage.ConversationType.FILE */:
                 return new FileAgent(options);
-            case "drjones-performance-full" /* ConversationType.PERFORMANCE */:
+            case "drjones-performance-full" /* AiUtils.AiHistoryStorage.ConversationType.PERFORMANCE */:
                 return new PerformanceAgent(options);
-            case "accessibility" /* ConversationType.ACCESSIBILITY */:
+            case "accessibility" /* AiUtils.AiHistoryStorage.ConversationType.ACCESSIBILITY */:
                 return new AccessibilityAgent(options);
-            case "storage" /* ConversationType.STORAGE */:
+            case "storage" /* AiUtils.AiHistoryStorage.ConversationType.STORAGE */:
                 return new StorageAgent(options);
-            case "none" /* ConversationType.NONE */:
+            case "none" /* AiUtils.AiHistoryStorage.ConversationType.NONE */:
                 return new ContextSelectionAgent(options);
             default:
                 Platform.assertNever(type, 'Unknown conversation type');

@@ -421,7 +421,7 @@ export class TimelinePanel extends TimelinePanelBase {
     #resourceLoader;
     #targetManager;
     #isolateManager;
-    constructor(resourceLoader, targetManager, isolateManager, traceModel) {
+    constructor(resourceLoader, targetManager, isolateManager, commentManager, traceModel) {
         super('timeline');
         this.#resourceLoader = resourceLoader;
         this.#targetManager = targetManager;
@@ -476,7 +476,7 @@ export class TimelinePanel extends TimelinePanelBase {
         });
         this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
         this.createFileSelector();
-        this.flameChart = new TimelineFlameChartView(this);
+        this.flameChart = new TimelineFlameChartView(this, commentManager);
         this.element.addEventListener('toggle-popover', event => this.flameChart.togglePopover(event.detail));
         this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
         this.flameChart.getMainFlameChart().addEventListener("EntryHovered" /* PerfUI.FlameChart.Events.ENTRY_HOVERED */, this.#onMainEntryHovered);
@@ -601,8 +601,7 @@ export class TimelinePanel extends TimelinePanelBase {
     }
     static instance(opts = undefined) {
         if (opts) {
-            timelinePanelInstance =
-                new TimelinePanel(opts.resourceLoader, opts.targetManager, opts.isolateManager, opts.traceModel);
+            timelinePanelInstance = new TimelinePanel(opts.resourceLoader, opts.targetManager, opts.isolateManager, opts.commentManager, opts.traceModel);
         }
         if (!timelinePanelInstance) {
             throw new Error('No TimelinePanel instance');

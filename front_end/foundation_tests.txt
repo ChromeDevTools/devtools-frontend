@@ -130,11 +130,11 @@ entrypoints/formatter_worker/Substitute.test.js
 entrypoints/heap_snapshot_worker/HeapSnapshot.test.js
 entrypoints/heap_snapshot_worker/heap_snapshot_worker.test.js
 foundation/Universe.test.js
+models/ai-utils/AiSetting.test.js
+models/ai-utils/AiUtils.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
-models/ai_assistance/AiSetting.test.js
-models/ai_assistance/AiUtils.test.js
 models/ai_assistance/ChangeManager.test.js
 models/ai_assistance/ConversationSummary.test.js
 models/ai_assistance/EvaluateAction.test.js

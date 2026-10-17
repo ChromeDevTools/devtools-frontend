@@ -186,7 +186,7 @@ dd.dl-title {
   word-break: break-all;
 
   .element-img-details-size {
-    color: var(--color-text-secondary);
+    color: var(--sys-color-token-subtle);
   }
 }
 

@@ -88,6 +88,7 @@ export class TabbedPane extends TabbedPaneBase {
     #rightToolbar;
     #trailingSlot;
     #lastDispatchedHiddenTabIds = '';
+    #zoomManager = ZoomManager.instance();
     allowTabReorder;
     automaticReorder;
     constructor(element) {
@@ -149,7 +150,6 @@ export class TabbedPane extends TabbedPaneBase {
         this.triggerDropDownTimeout = null;
         this.dropDownButton = this.createDropDownButton();
         this.currentDevicePixelRatio = window.devicePixelRatio;
-        ZoomManager.instance().addEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.zoomChanged, this);
         this.makeTabSlider();
     }
     setAccessibleName(name) {
@@ -493,12 +493,19 @@ export class TabbedPane extends TabbedPaneBase {
     }
     wasShown() {
         super.wasShown();
+        this.#zoomManager.addEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.zoomChanged, this);
+        // The zoom factor might have changed while the pane was hidden.
+        this.clearMeasuredWidths();
         const effectiveTab = this.currentTab || this.tabsHistory[0];
         if (effectiveTab && this.autoSelectFirstItemOnShow) {
             this.selectTab(effectiveTab.id);
         }
         this.requestUpdate();
         this.dispatchEventToListeners(Events.PaneVisibilityChanged, { isVisible: true });
+    }
+    willHide() {
+        super.willHide();
+        this.#zoomManager.removeEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.zoomChanged, this);
     }
     wasHidden() {
         this.dispatchEventToListeners(Events.PaneVisibilityChanged, { isVisible: false });

@@ -21,6 +21,7 @@ import { ModificationsManager } from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
 import { targetForEvent } from './TargetForEvent.js';
+import { TimelineCommentController } from './TimelineCommentController.js';
 import { TimelineDetailsPane } from './TimelineDetailsView.js';
 import { TimelineRegExp } from './TimelineFilters.js';
 import { TimelineFlameChartDataProvider, } from './TimelineFlameChartDataProvider.js';
@@ -120,6 +121,8 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #onNetworkEntryInvoked;
     #currentSelection = null;
     #entityMapper = null;
+    #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
+    #commentController;
     // Only one dimmer is used at a time. The first dimmer, as defined by the following
     // order, that is `active` within this array is used.
     #flameChartDimmers = [];
@@ -145,7 +148,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
      */
     #networkPersistedGroupConfigSetting;
     #mainPersistedGroupConfigSetting;
-    constructor(delegate) {
+    constructor(delegate, commentManager) {
         super({ jslog: `${VisualLogging.section('timeline.flame-chart-view')}` });
         this.registerRequiredCSS(timelineFlameChartViewStyles);
         this.element.classList.add('timeline-flamechart');
@@ -375,6 +378,16 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.groupBySetting = Common.Settings.Settings.instance().createSetting('timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
         this.groupBySetting.addChangeListener(this.refreshMainFlameChart, this);
         this.refreshMainFlameChart();
+        // Comments on flame chart entries are drawn by the shared comments overlay.
+        // TimelineCommentController connects the canvases and Overlays to it.
+        this.#commentController = new TimelineCommentController({
+            mainFlameChart: this.mainFlameChart,
+            networkFlameChart: this.networkFlameChart,
+            mainDataProvider: this.mainDataProvider,
+            networkDataProvider: this.networkDataProvider,
+            overlays: this.#overlays,
+            eventsSerializer: this.#eventsSerializer,
+        }, commentManager);
         TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
     }
     containingElement() {
@@ -1014,6 +1027,7 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         this.resizeToPreferredHeights();
         this.setMarkers(this.#parsedTrace);
         this.dimThirdPartiesIfRequired();
+        this.#commentController.setParsedTrace(this.#parsedTrace);
         ModificationsManager.activeManager()?.applyAnnotationsFromCache({ muteAriaNotifications: opts.updateType === 'REDRAW_EXISTING_TRACE' });
     }
     /**
@@ -1153,11 +1167,13 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         super.willHide();
         this.#networkPersistedGroupConfigSetting.removeChangeListener(this.resizeToPreferredHeights, this);
         Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
+        this.#commentController.willHide();
     }
     wasShown() {
         super.wasShown();
         this.#networkPersistedGroupConfigSetting.addChangeListener(this.resizeToPreferredHeights, this);
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
+        this.#commentController.wasShown();
         if (this.needsResizeToPreferredHeights) {
             this.resizeToPreferredHeights();
         }

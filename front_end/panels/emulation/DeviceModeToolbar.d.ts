@@ -99,6 +99,7 @@ export declare class DeviceModeToolbar extends UI.Widget.Widget {
     get model(): EmulationModel.DeviceModeModel.DeviceModeModel | undefined;
     set model(model: EmulationModel.DeviceModeModel.DeviceModeModel);
     wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
     private getDevicePostureOptions;
     private onPostureChange;

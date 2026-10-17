@@ -9,6 +9,7 @@ var ChangeTracker_exports = {};
 __export(ChangeTracker_exports, {
   ChangeTracker: () => ChangeTracker
 });
+import * as Host from "../../core/host/host.js";
 import * as Root from "../../core/root/root.js";
 var ChangeTracker = class {
   #commentManager;
@@ -24,6 +25,7 @@ var ChangeTracker = class {
     }
     const thread = this.#commentManager.createCommentThread(anchor, description, "DEVELOPER", true);
     thread.save();
+    Host.userMetrics.changeRecorded(1);
   }
 };
 export {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import { CommentThread, } from './CommentThread.js';
 export { CommentThread, };
 export var Events;
@@ -81,6 +82,14 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
                 threads.push(thread);
             }
         }
+        const changeCount = threads.filter(thread => thread.isGeneratedComment).length;
+        const commentCount = threads.length - changeCount;
+        if (commentCount > 0) {
+            Host.userMetrics.commentSharedWithAgent(commentCount);
+        }
+        if (changeCount > 0) {
+            Host.userMetrics.changeSharedWithAgent(changeCount);
+        }
         return threads;
     }
     sendQueuedThreads() {
@@ -94,6 +103,9 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
         const thread = this.#commentThreads.get(threadId);
         if (!thread) {
             return false;
+        }
+        if (thread.status !== 'RESOLVED') {
+            Host.userMetrics.commentResolved('Agent', 1);
         }
         thread.resolve(replyText);
         return true;

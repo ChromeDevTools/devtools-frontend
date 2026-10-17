@@ -5098,6 +5098,16 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
       this.#model.removeEventListener("RecordingStateChanged" /* RecordingStateChanged */, this.onRecordingStateChanged, this);
       this.#model.removeEventListener("BackgroundServiceEventReceived" /* BackgroundServiceEventReceived */, this.onEventReceived, this);
     }
+    this.#securityOriginManager?.removeEventListener(
+      SDK4.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      this.onOriginChanged,
+      this
+    );
+    this.#storageKeyManager?.removeEventListener(
+      SDK4.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+      this.onStorageKeyChanged,
+      this
+    );
     this.#model = model;
     this.#model.addEventListener("RecordingStateChanged" /* RecordingStateChanged */, this.onRecordingStateChanged, this);
     this.#model.addEventListener("BackgroundServiceEventReceived" /* BackgroundServiceEventReceived */, this.onEventReceived, this);
@@ -5106,19 +5116,17 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
     }
     this.#serviceWorkerManager = this.#model.target().model(SDK4.ServiceWorkerManager.ServiceWorkerManager) ?? void 0;
     this.#securityOriginManager = this.#model.target().model(SDK4.SecurityOriginManager.SecurityOriginManager) ?? void 0;
-    if (this.#securityOriginManager) {
-      this.#securityOriginManager.addEventListener(
-        SDK4.SecurityOriginManager.Events.MainSecurityOriginChanged,
-        () => this.onOriginChanged()
-      );
-    }
+    this.#securityOriginManager?.addEventListener(
+      SDK4.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      this.onOriginChanged,
+      this
+    );
     this.#storageKeyManager = this.#model.target().model(SDK4.StorageKeyManager.StorageKeyManager) ?? void 0;
-    if (this.#storageKeyManager) {
-      this.#storageKeyManager.addEventListener(
-        SDK4.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
-        () => this.onStorageKeyChanged()
-      );
-    }
+    this.#storageKeyManager?.addEventListener(
+      SDK4.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+      this.onStorageKeyChanged,
+      this
+    );
     this.requestUpdate();
   }
   wasShown() {

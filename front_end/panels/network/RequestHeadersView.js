@@ -256,7 +256,11 @@ export class RequestHeadersView extends UI.Widget.Widget {
     set request(val) {
         this.#removeEventListeners();
         this.#request = val;
-        this.#addEventListeners();
+        // When hidden, `wasShown()` adds the listeners and refreshes the view.
+        if (this.isShowing()) {
+            this.#addEventListeners();
+            this.requestUpdate();
+        }
     }
     constructor(target, view = DEFAULT_VIEW) {
         super();

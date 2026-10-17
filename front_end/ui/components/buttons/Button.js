@@ -6,7 +6,7 @@ import '../../kit/kit.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import buttonStyles from './button.css.js';
-const { html, Directives: { ifDefined, ref, classMap } } = Lit;
+const { html, Directives: { ifDefined, ref, repeat, classMap } } = Lit;
 export var Variant;
 (function (Variant) {
     Variant["PRIMARY"] = "primary";
@@ -288,29 +288,40 @@ export class Button extends HTMLElement {
             spinner: true,
         };
         const jslog = this.#props.jslogContext && VisualLogging.action().track({ click: true }).context(this.#props.jslogContext);
+        const innerButtonHadFocus = this.#shadow.activeElement !== null;
+        // Visual logging caches the parsed `jslog` attribute per element. Rendering
+        // the inner <button> through `repeat` with the context as its only key
+        // makes Lit create a new element (and therefore a new VE) whenever the
+        // context changes.
         // clang-format off
         Lit.render(html `
         <style>${buttonStyles}</style>
-        <button title=${ifDefined(this.buttonTitle || this.title || undefined)}
-                ?disabled=${this.#props.disabled}
-                class=${classMap(classes)}
-                aria-pressed=${ifDefined(this.#props.toggled)}
-                aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
-                aria-label=${ifDefined(this.accessibleLabel || this.title || undefined)}
-                jslog=${ifDefined(jslog)}>
-          ${hasIcon ? html `
-            <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
-            </devtools-icon>`
-            : ''}
-          ${this.#props.longClickable ? html `
-              <devtools-icon name="triangle-bottom-right" class="long-click">
+        ${repeat([this.#props.jslogContext], context => context, () => html `
+          <button title=${ifDefined(this.buttonTitle || this.title || undefined)}
+                  ?disabled=${this.#props.disabled}
+                  class=${classMap(classes)}
+                  aria-pressed=${ifDefined(this.#props.toggled)}
+                  aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
+                  aria-label=${ifDefined(this.accessibleLabel || this.title || undefined)}
+                  jslog=${ifDefined(jslog)}>
+            ${hasIcon ? html `
+              <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
               </devtools-icon>`
             : ''}
-          ${this.#props.spinner ? html `<span class=${classMap(spinnerClasses)}></span>` : ''}
-          <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
-        </button>
+            ${this.#props.longClickable ? html `
+                <devtools-icon name="triangle-bottom-right" class="long-click">
+                </devtools-icon>`
+            : ''}
+            ${this.#props.spinner ? html `<span class=${classMap(spinnerClasses)}></span>` : ''}
+            <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
+          </button>
+        `)}
       `, this.#shadow, { host: this });
         // clang-format on
+        // Replacing a focused inner <button> drops focus, so move it to the new one.
+        if (innerButtonHadFocus && this.#shadow.activeElement === null) {
+            this.focus();
+        }
     }
     // Based on https://web.dev/more-capable-form-controls/ to make custom elements form-friendly.
     // Form controls usually expose a "value" property.

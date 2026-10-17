@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -47,7 +48,7 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     private needsResizeToPreferredHeights?;
     private selectedSearchResult?;
     private searchRegex?;
-    constructor(delegate: TimelineModeViewDelegate);
+    constructor(delegate: TimelineModeViewDelegate, commentManager: CommentManager.CommentManager.CommentManager);
     containingElement(): HTMLElement;
     dimThirdPartiesIfRequired(): void;
     setMarkers(parsedTrace: Trace.TraceModel.ParsedTrace | null): void;

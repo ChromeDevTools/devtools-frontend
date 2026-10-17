@@ -35,12 +35,12 @@ export default `/*
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
-  background-color: var(--color-scrollbar-mac);
+  background-color: var(--color-scrollbar-mac); /* stylelint-disable-line plugin/use_theme_colors */
   border-radius: 50px;
 }
 
 :host-context(.platform-mac) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: var(--color-scrollbar-mac-hover);
+  background-color: var(--color-scrollbar-mac-hover); /* stylelint-disable-line plugin/use_theme_colors */
 }
 /* force non overlay scrollbars for Aura Overlay Scrollbar enabled */
 
@@ -49,11 +49,11 @@ export default `/*
 }
 
 :host-context(.overlay-scrollbar-enabled) ::-webkit-scrollbar-thumb {
-  background-color: var(--color-scrollbar-other);
+  background-color: var(--color-scrollbar-other); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 :host-context(.overlay-scrollbar-enabled) .chart-viewport-v-scroll:hover::-webkit-scrollbar-thumb {
-  background-color: var(--color-scrollbar-other-hover);
+  background-color: var(--color-scrollbar-other-hover); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .chart-viewport-selection-overlay {

@@ -375,23 +375,16 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         super(element);
         this.view = view;
         this.showMediaInspectorSetting = Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor);
-        this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
         this.showRulersSetting =
             Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showRulersSettingDescriptor);
-        this.showRulersSetting.addChangeListener(this.requestUpdate, this);
         this.showDeviceScaleFactorSetting =
             Common.Settings.Settings.instance().createSetting('emulation.show-device-scale-factor', false);
-        this.showDeviceScaleFactorSetting.addChangeListener(this.requestUpdate, this);
         this.showUserAgentTypeSetting =
             Common.Settings.Settings.instance().createSetting('emulation.show-user-agent-type', false);
-        this.showUserAgentTypeSetting.addChangeListener(this.requestUpdate, this);
         this.autoAdjustScaleSetting =
             Common.Settings.Settings.instance().createSetting('emulation.auto-adjust-scale', true);
-        this.autoAdjustScaleSetting.addChangeListener(this.requestUpdate, this);
         this.lastMode = new Map();
         this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
-        this.emulatedDevicesList.addEventListener("CustomDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED */, this.deviceListChanged, this);
-        this.emulatedDevicesList.addEventListener("StandardDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED */, this.deviceListChanged, this);
         this.persistenceSetting = Common.Settings.Settings.instance().createSetting('emulation.device-mode-value', { device: '', orientation: '', mode: '' });
     }
     get model() {
@@ -401,26 +394,59 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         if (this.#model === model) {
             return;
         }
-        if (this.#model) {
-            this.#model.toolbarControlsEnabledSetting().removeChangeListener(this.requestUpdate, this);
-            this.#model.scaleSetting().removeChangeListener(this.requestUpdate, this);
-            this.#model.uaSetting().removeChangeListener(this.requestUpdate, this);
-            this.#model.deviceScaleFactorSetting().removeChangeListener(this.requestUpdate, this);
-            this.#model.removeEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.requestUpdate, this);
+        if (this.isShowing()) {
+            this.#removeModelListeners();
         }
         this.#model = model;
+        if (this.isShowing()) {
+            this.#addModelListeners();
+        }
+        this.requestUpdate();
+    }
+    #addModelListeners() {
+        if (!this.#model) {
+            return;
+        }
         this.#model.toolbarControlsEnabledSetting().addChangeListener(this.requestUpdate, this);
         this.#model.scaleSetting().addChangeListener(this.requestUpdate, this);
         this.#model.uaSetting().addChangeListener(this.requestUpdate, this);
         this.#model.deviceScaleFactorSetting().addChangeListener(this.requestUpdate, this);
         this.#model.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.requestUpdate, this);
-        this.requestUpdate();
+    }
+    #removeModelListeners() {
+        if (!this.#model) {
+            return;
+        }
+        this.#model.toolbarControlsEnabledSetting().removeChangeListener(this.requestUpdate, this);
+        this.#model.scaleSetting().removeChangeListener(this.requestUpdate, this);
+        this.#model.uaSetting().removeChangeListener(this.requestUpdate, this);
+        this.#model.deviceScaleFactorSetting().removeChangeListener(this.requestUpdate, this);
+        this.#model.removeEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.requestUpdate, this);
     }
     wasShown() {
         super.wasShown();
+        this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
+        this.showRulersSetting.addChangeListener(this.requestUpdate, this);
+        this.showDeviceScaleFactorSetting.addChangeListener(this.requestUpdate, this);
+        this.showUserAgentTypeSetting.addChangeListener(this.requestUpdate, this);
+        this.autoAdjustScaleSetting.addChangeListener(this.requestUpdate, this);
+        this.emulatedDevicesList.addEventListener("CustomDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED */, this.deviceListChanged, this);
+        this.emulatedDevicesList.addEventListener("StandardDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED */, this.deviceListChanged, this);
+        this.#addModelListeners();
         // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
         this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
         this.restore();
+    }
+    willHide() {
+        super.willHide();
+        this.showMediaInspectorSetting.removeChangeListener(this.requestUpdate, this);
+        this.showRulersSetting.removeChangeListener(this.requestUpdate, this);
+        this.showDeviceScaleFactorSetting.removeChangeListener(this.requestUpdate, this);
+        this.showUserAgentTypeSetting.removeChangeListener(this.requestUpdate, this);
+        this.autoAdjustScaleSetting.removeChangeListener(this.requestUpdate, this);
+        this.emulatedDevicesList.removeEventListener("CustomDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED */, this.deviceListChanged, this);
+        this.emulatedDevicesList.removeEventListener("StandardDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED */, this.deviceListChanged, this);
+        this.#removeModelListeners();
     }
     performUpdate() {
         if (!this.model) {

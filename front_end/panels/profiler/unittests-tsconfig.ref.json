@@ -15,6 +15,8 @@
   "files": [
     "../../../../../../front_end/panels/profiler/HeapDetachedElementsView.test.ts",
     "../../../../../../front_end/panels/profiler/HeapProfileView.test.ts",
+    "../../../../../../front_end/panels/profiler/HeapSnapshotView.test.ts",
+    "../../../../../../front_end/panels/profiler/HeapTimelineOverview.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -47,6 +49,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.ref.json"

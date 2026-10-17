@@ -336,12 +336,12 @@ devtools-icon.check-double {
 
 .swatch-overlay:hover,
 .swatch-overlay:focus-visible {
-  background-color: var(--color-background-inverted-opacity-30);
+  background-color: color-mix(in srgb, var(--sys-color-inverse-surface) 30%, transparent);
   opacity: 100%;
 }
 
 .swatch-overlay:active {
-  background-color: var(--color-background-inverted-opacity-50);
+  background-color: color-mix(in srgb, var(--sys-color-inverse-surface) 50%, transparent);
 }
 
 devtools-icon.copy-color-icon {

@@ -1744,7 +1744,6 @@ var WalkthroughView = class extends UI.Widget.Widget {
 var { html: html5, Directives: { ref: ref2, ifDefined } } = Lit5;
 var lockedString2 = i18n3.i18n.lockedString;
 var { widget } = UI2.Widget;
-var REPORT_URL = "https://crbug.com/508304827";
 var SCROLL_ROUNDING_OFFSET = 1;
 var UIStringsNotTranslate = {
   /**
@@ -2338,7 +2337,7 @@ function renderSideEffectStepsUI(input, steps) {
   }
   const showPermissionPrompt = AiAssistanceModel4.AiUtils.isNaturalLanguageInterfaceEnabled();
   return html5`
-    ${sideEffectSteps.map((step) => html5`
+    ${Lit5.Directives.repeat(sideEffectSteps, (step) => step, (step) => html5`
       <div class="side-effect-container">
         ${showPermissionPrompt ? renderPermissionPrompt(step) : renderStep({
     step,
@@ -3457,7 +3456,7 @@ var ChatMessage = class extends UI2.Widget.Widget {
         prompt: this.prompt,
         onSuggestionClick: this.onSuggestionClick,
         onRatingClick: this.#handleRateClick.bind(this),
-        onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
+        onReportClick: () => UIHelpers.openInNewTab(AiAssistanceModel4.AiUtils.REPORT_LEGAL_ISSUE_URL),
         onCopyResponseClick: () => {
           if (this.message.entity === "model" /* MODEL */) {
             this.onCopyResponseClick(this.message);
@@ -9565,6 +9564,7 @@ var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
 var WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
 var WALKTHROUGH_SIDEBAR_INITIAL_WIDTH = 400;
+var PERMISSION_PROMPT_INPUT_PROTECTION_MS = 500;
 var UIStrings6 = {
   /**
    * @description AI assistance UI text for creating a new chat.
@@ -11098,6 +11098,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             step = stepForCall(data.callId);
             const approvalStep = step;
             approvalStep.code ??= data.code;
+            const promptShownAt = performance.now();
             approvalStep.state = {
               type: "needs_approval",
               sideEffectDialog: {
@@ -11105,6 +11106,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
                 permissionPrompt: data.permissionPrompt,
                 permissionTitle: data.permissionTitle,
                 onAnswer: (decision) => {
+                  if (decision !== AiAssistanceModel7.Tool.PermissionDecision.REJECT && performance.now() - promptShownAt < PERMISSION_PROMPT_INPUT_PROTECTION_MS) {
+                    return;
+                  }
                   data.confirm(decision);
                   approvalStep.state = { type: "completed" };
                   this.requestUpdate();

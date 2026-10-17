@@ -146,6 +146,7 @@ export function getRecommendedNetworkConditions(roundTripTimeMetricData) {
 const NetworkThrottlingSelectBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
 export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     #settings;
+    #customNetworkConditionsSetting;
     #recommendedConditions = null;
     #jslogContext;
     #currentConditions;
@@ -153,6 +154,8 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     #view;
     #variant = "global-conditions" /* NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS */;
     #disabled = false;
+    #boundToGlobalConditions = false;
+    #globalConditionsListeners = [];
     static createForGlobalConditions(element, title) {
         const selectElement = element.createChild('select');
         const select = new NetworkThrottlingSelect(selectElement, { title });
@@ -164,12 +167,28 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     constructor(element, options = {}, settings = Common.Settings.Settings.instance(), view = DEFAULT_VIEW) {
         super(element);
         this.#settings = settings;
-        SDK.NetworkManager.customUserNetworkConditionsSetting(settings).addChangeListener(this.requestUpdate, this);
+        this.#customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting(settings);
         this.#jslogContext = options.jslogContext;
         this.#currentConditions = options.currentConditions;
         this.#title = options.title;
         this.#view = view;
         this.performUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.#customNetworkConditionsSetting.addChangeListener(this.requestUpdate, this);
+        if (this.#boundToGlobalConditions) {
+            this.#addGlobalConditionsListeners();
+            // The global conditions and the CrUX data may have changed while the select was hidden.
+            this.#onGlobalConditionsChanged();
+            this.#updateRecommendation();
+        }
+        this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        this.#customNetworkConditionsSetting.removeChangeListener(this.requestUpdate, this);
+        Common.EventTarget.removeEventListeners(this.#globalConditionsListeners);
     }
     get disabled() {
         return this.#disabled;
@@ -213,24 +232,31 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
         const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData('round_trip_time');
         this.recommendedConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
     };
+    #addGlobalConditionsListeners() {
+        this.#globalConditionsListeners.push(SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, this.#onGlobalConditionsChanged), 
+        // Subscribe to CrUX field data changes to show recommended throttling
+        // presets based on real-user RTT data.
+        CrUXManager.CrUXManager.instance().addEventListener("field-data-changed" /* CrUXManager.Events.FIELD_DATA_CHANGED */, this.#updateRecommendation));
+    }
     set bindToGlobalConditions(bind) {
-        const cruxManager = CrUXManager.CrUXManager.instance();
-        const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+        if (bind === this.#boundToGlobalConditions) {
+            return;
+        }
+        this.#boundToGlobalConditions = bind;
         if (bind) {
             this.#jslogContext = SDK.NetworkManager.activeNetworkThrottlingKeySetting(this.#settings).name;
             ThrottlingManager.instance(); // Instantiate the throttling manager to connect network manager with the setting
-            this.#currentConditions = multitargetNetworkManager.networkConditions();
+            this.#currentConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
             this.addEventListener("ConditionsChanged" /* Events.CONDITIONS_CHANGED */, this.#onConditionsChanged);
-            multitargetNetworkManager.addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, this.#onGlobalConditionsChanged);
-            // Subscribe to CrUX field data changes to show recommended throttling
-            // presets based on real-user RTT data.
-            cruxManager.addEventListener("field-data-changed" /* CrUXManager.Events.FIELD_DATA_CHANGED */, this.#updateRecommendation);
+            // The global listeners are only registered while the select is shown, see `wasShown()`.
+            if (this.isShowing()) {
+                this.#addGlobalConditionsListeners();
+            }
             this.#updateRecommendation();
         }
         else {
             this.removeEventListener("ConditionsChanged" /* Events.CONDITIONS_CHANGED */, this.#onConditionsChanged);
-            multitargetNetworkManager.removeEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, this.#onGlobalConditionsChanged);
-            cruxManager.removeEventListener("field-data-changed" /* CrUXManager.Events.FIELD_DATA_CHANGED */, this.#updateRecommendation);
+            Common.EventTarget.removeEventListeners(this.#globalConditionsListeners);
         }
         this.requestUpdate();
     }

@@ -1,25 +1,29 @@
 import * as Common from '../../core/common/common.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type { Icon } from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
+import { type RenderingContext } from './PropertyRenderer.js';
 import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
 interface BezierPopoverIconParams {
     treeElement: StylePropertyTreeElement;
     swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
     swatch: Icon;
-    bezierText: HTMLElement;
+    match: SDK.CSSPropertyParser.Match;
+    context: RenderingContext;
 }
 export declare class BezierPopoverIcon {
     private treeElement;
     private readonly swatchPopoverHelper;
     private readonly swatch;
-    private readonly bezierText;
+    private readonly match;
+    private readonly context;
     private readonly boundBezierChanged;
     private readonly boundOnScroll;
     private bezierEditor?;
     private scrollerElement?;
     private originalPropertyText?;
-    constructor({ treeElement, swatchPopoverHelper, swatch, bezierText, }: BezierPopoverIconParams);
+    constructor({ treeElement, swatchPopoverHelper, swatch, match, context, }: BezierPopoverIconParams);
     private iconClick;
     private bezierChanged;
     private onScroll;

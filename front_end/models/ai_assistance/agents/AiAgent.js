@@ -4,8 +4,9 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { debugLog, isStructuredLogEnabled } from '../debug.js';
+import * as AiUtils from '../../ai-utils/ai-utils.js';
 import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
+const { debugLog, isStructuredLogEnabled } = AiUtils.Debug;
 const MAX_SUGGESTION_LENGTH = 200;
 /**
  * The types of event in the response stream that `AiConversation#run()`

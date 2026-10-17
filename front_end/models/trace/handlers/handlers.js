@@ -6731,10 +6731,8 @@ async function buildLayoutShiftsClusters() {
       } else {
         navigationId = Types23.Events.NO_NAVIGATION;
       }
-      clusters.push(Helpers17.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      clusters.push({
         name: "SyntheticLayoutShiftCluster",
-        // Will be replaced by the worst layout shift in the next for loop.
-        rawSourceEvent: event,
         events: [],
         clusterWindow: traceWindowFromTime(clusterStartTime),
         clusterCumulativeScore: 0,
@@ -6750,7 +6748,7 @@ async function buildLayoutShiftsClusters() {
         cat: "",
         dur: Types23.Timing.Micro(-1)
         // This `cluster.dur` is updated below.
-      }));
+      });
       firstShiftTime = clusterStartTime;
     }
     const currentCluster = clusters[clusters.length - 1];
@@ -6839,7 +6837,6 @@ async function buildLayoutShiftsClusters() {
     }
     if (worstShiftEvent) {
       cluster.worstShiftEvent = worstShiftEvent;
-      cluster.rawSourceEvent = worstShiftEvent.rawSourceEvent;
     }
     cluster.ts = cluster.events[0].ts;
     const lastShiftTimings = Helpers17.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);

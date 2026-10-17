@@ -8,6 +8,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { ValueEditEvent } from './PropertyRenderer.js';
 const UIStrings = {
     /**
      * @description Tooltip text for an icon that opens the cubic bezier editor, which is a tool that
@@ -26,17 +27,19 @@ export class BezierPopoverIcon {
     treeElement;
     swatchPopoverHelper;
     swatch;
-    bezierText;
+    match;
+    context;
     boundBezierChanged;
     boundOnScroll;
     bezierEditor;
     scrollerElement;
     originalPropertyText;
-    constructor({ treeElement, swatchPopoverHelper, swatch, bezierText, }) {
+    constructor({ treeElement, swatchPopoverHelper, swatch, match, context, }) {
         this.treeElement = treeElement;
         this.swatchPopoverHelper = swatchPopoverHelper;
         this.swatch = swatch;
-        this.bezierText = bezierText;
+        this.match = match;
+        this.context = context;
         UI.Tooltip.Tooltip.install(this.swatch, i18nString(UIStrings.openCubicBezierEditor));
         this.swatch.addEventListener('click', this.iconClick.bind(this), false);
         this.swatch.addEventListener('keydown', this.iconClick.bind(this), false);
@@ -53,7 +56,8 @@ export class BezierPopoverIcon {
             this.swatchPopoverHelper.hide(true);
             return;
         }
-        const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(this.bezierText.innerText) ||
+        const text = this.context.edits?.getEdit(this.match) ?? this.context.matchedResult.getComputedText(this.match.node);
+        const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(text) ||
             InlineEditor.AnimationTimingModel.LINEAR_BEZIER;
         this.bezierEditor = new InlineEditor.BezierEditor.BezierEditor(model);
         this.bezierEditor.addEventListener("BezierChanged" /* InlineEditor.BezierEditor.Events.BEZIER_CHANGED */, this.boundBezierChanged);
@@ -70,7 +74,8 @@ export class BezierPopoverIcon {
         }
     }
     bezierChanged(event) {
-        this.bezierText.textContent = event.data;
+        this.swatch.dispatchEvent(new ValueEditEvent(event.data));
+        this.context.recordEdit(this.match, event.data);
         void this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
     }
     onScroll(_event) {

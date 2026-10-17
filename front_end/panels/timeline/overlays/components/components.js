@@ -34,7 +34,7 @@ var entriesLinkOverlay_css_default = `/*
   pointer-events: none;
   position: absolute;
   display: block;
-  border: var(--sys-size-2) solid var(--color-text-primary);
+  border: var(--sys-size-2) solid var(--sys-color-on-surface);
   box-sizing: border-box;
 
   &.cut-off-top {
@@ -55,7 +55,7 @@ var entriesLinkOverlay_css_default = `/*
 }
 
 .entry-is-not-source {
-  border: var(--sys-size-2) dashed var(--color-text-primary);
+  border: var(--sys-size-2) dashed var(--sys-color-on-surface);
 }
 
 .create-link-icon {
@@ -480,7 +480,7 @@ var entryLabelOverlay_css_default = `/*
   border-radius: 50%;
   padding: 0;
   border: none;
-  background: var(--color-background-inverted);
+  background: var(--sys-color-inverse-surface);
 }
 
 .ai-label-loading,
@@ -507,7 +507,7 @@ var entryLabelOverlay_css_default = `/*
   align-items: center;
   gap: var(--sys-size-4);
   padding: var(--sys-size-3) var(--sys-size-5);
-  border: var(--sys-size-1) solid var(--color-primary);
+  border: var(--sys-size-1) solid var(--sys-color-primary);
   border-radius: var(--sys-shape-corner-large);
 
   &.enabled {
@@ -525,12 +525,12 @@ var entryLabelOverlay_css_default = `/*
 
 .generate-label-text {
   white-space: nowrap;
-  color: var(--color-primary);
+  color: var(--sys-color-primary);
 }
 
 .input-field {
-  background-color: var(--color-background-inverted);
-  color: var(--color-background);
+  background-color: var(--sys-color-inverse-surface);
+  color: var(--sys-color-cdt-base-container);
   pointer-events: auto;
   border-radius: var(--sys-shape-corner-extra-small);
   white-space: nowrap;
@@ -538,7 +538,7 @@ var entryLabelOverlay_css_default = `/*
   font-family: var(--default-font-family);
   font-size: var(--sys-typescale-body2-size);
   font-weight: var(--ref-typeface-weight-medium);
-  outline: var(--sys-size-2) solid var(--color-background);
+  outline: var(--sys-size-2) solid var(--sys-color-cdt-base-container);
 }
 
 
@@ -551,9 +551,9 @@ var entryLabelOverlay_css_default = `/*
 .input-field:focus,
 .label-parts-wrapper:focus-within .input-field,
 .input-field.fake-focus-state {
-  background-color: var(--color-background);
-  color: var(--color-background-inverted);
-  outline: var(--sys-size-2) solid var(--color-background-inverted);
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-inverse-surface);
+  outline: var(--sys-size-2) solid var(--sys-color-inverse-surface);
 }
 
 .connectorContainer {

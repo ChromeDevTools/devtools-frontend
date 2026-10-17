@@ -25,7 +25,7 @@ import * as ElementsComponents from './components/components.js';
 import { cssRuleValidatorsMap } from './CSSRuleValidator.js';
 import { CSSValueTraceView } from './CSSValueTraceView.js';
 import { ElementsPanel } from './ElementsPanel.js';
-import { BinOpRenderer, Renderer, rendererBase, RenderingContext, StringRenderer, URLRenderer, ValueUpdateTracking, } from './PropertyRenderer.js';
+import { BinOpRenderer, EditableContent, Renderer, rendererBase, RenderingContext, StringRenderer, URLRenderer, ValueEditEvent, ValueUpdateTracking, } from './PropertyRenderer.js';
 import { StyleEditorWidget } from './StyleEditorWidget.js';
 import { getCssDeclarationAsJavascriptProperty } from './StylePropertyUtils.js';
 import { CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME } from './StylesSidebarPane.js';
@@ -977,17 +977,16 @@ export class AngleRenderer extends AngleRendererBase {
     render(match, context) {
         const angleText = match.text;
         if (!this.#treeElement?.editable()) {
-            return [document.createTextNode(angleText)];
+            return html `${angleText}`;
         }
+        // TODO(crbug.com/407750607): Render <devtools-css-angle> as a Lit template once cssControls is replaced.
         const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
+        cssAngle.slot = 'icon';
         cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({ click: true }).context('css-angle')}`);
-        const valueElement = document.createElement('span');
-        valueElement.textContent = angleText;
         cssAngle.data = {
             angleText,
             containingPane: this.#treeElement.stylesContainer().element.enclosingNodeOrSelfWithClass('style-panes-wrapper'),
         };
-        cssAngle.append(valueElement);
         const treeElement = this.#treeElement;
         cssAngle.addEventListener('popovertoggled', ({ data }) => {
             const section = treeElement.section();
@@ -1007,16 +1006,16 @@ export class AngleRenderer extends AngleRendererBase {
             }
         });
         cssAngle.addEventListener('valuechanged', async ({ data }) => {
-            valueElement.textContent = data.value;
+            cssAngle.dispatchEvent(new ValueEditEvent(data.value));
             context.recordEdit(match, data.value);
             await treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
         });
         cssAngle.addEventListener('unitchanged', ({ data }) => {
-            valueElement.textContent = data.value;
+            cssAngle.dispatchEvent(new ValueEditEvent(data.value));
             context.recordEdit(match, data.value);
         });
         context.addControl('angle', cssAngle);
-        return [cssAngle];
+        return html `<devtools-widget ${widget(EditableContent)}>${cssAngle}${angleText}</devtools-widget>`;
     }
 }
 const LinkableNameRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.LinkableNameMatch);
@@ -1125,26 +1124,21 @@ export class BezierRenderer extends BezierRendererBase {
     }
     render(match, context) {
         const nodes = match.node.name === 'CallExpression' ? Renderer.render(ASTUtils.children(match.node), context).nodes :
-            [document.createTextNode(match.text)];
+            match.text;
         if (!this.#treeElement?.editable() ||
             !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(context.matchedResult.getComputedText(match.node))) {
-            return nodes;
+            return html `${nodes}`;
         }
         const swatchPopoverHelper = this.#treeElement.stylesContainer().swatchPopoverHelper();
         const icon = createIcon('bezier-curve-filled', 'bezier-swatch-icon');
+        icon.slot = 'icon';
         icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
         icon.tabIndex = -1;
         icon.addEventListener('click', () => {
             Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
         });
-        const bezierText = document.createElement('span');
-        render(html `${nodes}`, bezierText);
-        new BezierPopoverIcon({ treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText });
-        const iconAndTextContainer = document.createElement('span');
-        iconAndTextContainer.classList.add('bezier-icon-and-text');
-        iconAndTextContainer.append(icon);
-        iconAndTextContainer.append(bezierText);
-        return [iconAndTextContainer];
+        new BezierPopoverIcon({ treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, match, context });
+        return html `<devtools-widget class="bezier-icon-and-text" ${widget(EditableContent)}>${icon}${nodes}</devtools-widget>`;
     }
 }
 const AutoBaseRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.AutoBaseMatch);
@@ -1295,28 +1289,48 @@ export class ShadowModel {
             this.#setLength(value, "spread" /* ShadowPropertyType.SPREAD */);
         }
     }
-    renderContents(span) {
+    // What the shadow consists of, in the order it is rendered in: the text of properties that were set through the
+    // model, and the nodes of everything else together with the context to render and read them in.
+    #parts() {
         const parts = [];
         let previousSource = null;
         for (const property of this.#properties) {
             if (!property.source || property.source !== previousSource) {
-                if (property !== this.#properties[0]) {
-                    parts.push(' ');
-                }
                 // If `source` is present on the property that means it came from a var() and we'll use that to render.
                 if (property.source) {
-                    parts.push(Renderer.render(property.source, this.#context).nodes);
+                    parts.push({ node: property.source, context: this.#context });
                 }
                 else if (typeof property.value === 'string') {
                     parts.push(property.value);
                 }
                 else {
-                    parts.push(Renderer.render(property.value, property.expansionContext ?? this.#context).nodes);
+                    parts.push({ node: property.value, context: property.expansionContext ?? this.#context });
                 }
             }
             previousSource = property.source;
         }
+        return parts;
+    }
+    renderContents(span) {
+        const parts = [];
+        for (const part of this.#parts()) {
+            if (parts.length > 0) {
+                parts.push(' ');
+            }
+            parts.push(typeof part === 'string' ? part : Renderer.render(part.node, part.context).nodes);
+        }
         render(html `${parts}`, span);
+    }
+    // The text of the shadow as `renderContents` renders it, including the changes that renderers recorded for its parts.
+    text() {
+        const texts = this.#parts().map(part => {
+            if (typeof part === 'string') {
+                return part;
+            }
+            const { node, context } = part;
+            return context.edits?.textRange(node, node) ?? context.ast.text(node);
+        });
+        return texts.join(' ');
     }
 }
 const ShadowRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ShadowMatch);
@@ -1366,12 +1380,14 @@ export class ShadowRenderer extends ShadowRendererBase {
                 if (matches.hasUnresolvedSubstitutions(matches.ast.tree)) {
                     return null;
                 }
-                queue.unshift(...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree))
-                    .map(matchedNode => ({
+                // Once the var() is replaced with its expansion, the nodes of the expansion are rendered by the renderers, which
+                // record their changes in the tracking of the expansion.
+                const trackedContext = new RenderingContext(computedValueAst, null, context.renderers, matches, undefined, undefined, undefined, undefined, new ValueUpdateTracking(computedValueAst));
+                queue.unshift(...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree)).map(matchedNode => ({
                     value: matchedNode,
                     source: value,
                     match: matches.getMatch(matchedNode),
-                    expansionContext: new RenderingContext(computedValueAst, null, context.renderers, matches),
+                    expansionContext: trackedContext,
                 })));
             }
             else {
@@ -1407,15 +1423,22 @@ export class ShadowRenderer extends ShadowRendererBase {
     render(match, context) {
         const shadows = ASTUtils.split(ASTUtils.siblings(ASTUtils.declValue(match.node)));
         const result = [];
+        // The text of the whole value is put together from the shadows below, so the changes that renderers make to their
+        // parts need to be recorded in a tracking of their own to not be hidden by it.
+        const nestedEdits = new ValueUpdateTracking(context.ast);
+        const nestedContext = new RenderingContext(context.ast, context.property, context.renderers, context.matchedResult, context.cssControls, context.options, context.tracing, context.signal, nestedEdits);
+        // Reads the text of each shadow when it is needed, since the user can change it with the shadow editor.
+        const texts = [];
         for (const shadow of shadows) {
-            const model = this.shadowModel(shadow, match.shadowType, context);
+            const model = this.shadowModel(shadow, match.shadowType, nestedContext);
             const isImportant = shadow.find(node => node.name === 'Important');
             if (shadow !== shadows[0]) {
                 result.push(document.createTextNode(', '));
             }
             if (!model || !this.#treeElement?.editable()) {
-                const { nodes } = Renderer.render(shadow, context);
+                const { nodes } = Renderer.render(shadow, nestedContext);
                 result.push(nodes);
+                texts.push(() => nestedEdits.textRange(...ASTUtils.range(shadow)));
                 continue;
             }
             const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
@@ -1432,10 +1455,12 @@ export class ShadowRenderer extends ShadowRendererBase {
                 void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
             });
             result.push(swatch, contents);
+            texts.push(() => isImportant ? `${model.text()} ${nestedEdits.textRange(isImportant, isImportant)}` : model.text());
             if (isImportant) {
-                result.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
+                result.push(document.createTextNode(' '), Renderer.render(isImportant, nestedContext).nodes);
             }
         }
+        context.recordEdit(match, () => texts.map(text => text()).join(', '));
         return html `${result}`;
     }
 }
@@ -1780,7 +1805,9 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     }
     render(match, context) {
         const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
-        if (!this.#treeElement?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(match.text)) {
+        // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
+        if (!this.#treeElement?.editable() ||
+            !InlineEditor.PositionAreaEditor.parsePositionArea(context.matchedResult.getComputedPropertyValueText())) {
             return children;
         }
         const section = this.#treeElement.section();
@@ -1798,6 +1825,8 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
             key !== undefined && PositionAreaRenderer.#active.key === key) {
             PositionAreaRenderer.#active.treeElement = treeElement;
             PositionAreaRenderer.#active.valueElement = valueElement;
+            PositionAreaRenderer.#active.match = match;
+            PositionAreaRenderer.#active.context = context;
             popoverHelper.setAnchorElement(button);
         }
         button.onclick = event => {
@@ -1807,7 +1836,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
                 return;
             }
             const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
-            const active = { editor, key, treeElement, valueElement };
+            const active = { editor, key, treeElement, valueElement, match, context };
             PositionAreaRenderer.#active = active;
             editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? '') ?? undefined;
             const updateProperty = (propertyName, computedStyle) => {
@@ -1827,7 +1856,9 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
             };
             void updateEditorProperties();
             const onPositionAreaChanged = (changeEvent) => {
-                active.valueElement.textContent = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+                const area = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
+                active.valueElement.textContent = area;
+                active.context.recordEdit(active.match, area);
                 void active.treeElement.applyStyleText(active.treeElement.renderedPropertyText(), false);
             };
             const onPropertyChanged = async (changeEvent) => {
@@ -2167,18 +2198,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
         return matches;
     }
+    // The text of the property, including the edits that renderers recorded for its value, e.g. when the user picks a
+    // color.
     renderedPropertyText() {
-        if (!this.#isConnected()) {
-            return '';
-        }
-        if (!this.nameElement || !this.valueElement) {
-            return '';
-        }
-        return this.nameElement.innerText + ': ' + this.valueElement.innerText;
-    }
-    // Like `renderedPropertyText`, but built from the changes that renderers recorded instead of read back from the DOM.
-    // Tests compare the two while the renderers are being migrated. This replaces `renderedPropertyText` afterwards.
-    editedPropertyTextForTest() {
         return `${this.name}: ${this.#edits?.valueText() ?? this.property.value}`;
     }
     updateState() {
@@ -3338,9 +3360,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     styleTextAppliedForTest() {
     }
-    // If the item isn't connected to the DOM, then reading its innerText will
-    // also include any invisible text (e.g. sources, styles), so we don't want
-    // to do that.
+    // Changes to an item that isn't connected to the DOM are not applied to the style.
     #isConnected() {
         return this.listItemElement.isConnected;
     }

@@ -40,6 +40,8 @@ export declare class ComputedStyleWidget extends UI.Widget.VBox {
     private readonly linkifier;
     private readonly imagePreviewPopover;
     constructor(element?: HTMLElement, view?: View);
+    wasShown(): void;
+    willHide(): void;
     onResize(): void;
     get enableNarrowViewResizing(): boolean;
     set enableNarrowViewResizing(enable: boolean);

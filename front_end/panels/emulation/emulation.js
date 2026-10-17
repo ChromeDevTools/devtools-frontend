@@ -418,27 +418,12 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
     this.showMediaInspectorSetting = Common.Settings.Settings.instance().resolve(
       SettingsUI.EmulationSettings.showMediaQueryInspectorSettingDescriptor
     );
-    this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
     this.showRulersSetting = Common.Settings.Settings.instance().resolve(SettingsUI.EmulationSettings.showRulersSettingDescriptor);
-    this.showRulersSetting.addChangeListener(this.requestUpdate, this);
     this.showDeviceScaleFactorSetting = Common.Settings.Settings.instance().createSetting("emulation.show-device-scale-factor", false);
-    this.showDeviceScaleFactorSetting.addChangeListener(this.requestUpdate, this);
     this.showUserAgentTypeSetting = Common.Settings.Settings.instance().createSetting("emulation.show-user-agent-type", false);
-    this.showUserAgentTypeSetting.addChangeListener(this.requestUpdate, this);
     this.autoAdjustScaleSetting = Common.Settings.Settings.instance().createSetting("emulation.auto-adjust-scale", true);
-    this.autoAdjustScaleSetting.addChangeListener(this.requestUpdate, this);
     this.lastMode = /* @__PURE__ */ new Map();
     this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
-    this.emulatedDevicesList.addEventListener(
-      EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED,
-      this.deviceListChanged,
-      this
-    );
-    this.emulatedDevicesList.addEventListener(
-      EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED,
-      this.deviceListChanged,
-      this
-    );
     this.persistenceSetting = Common.Settings.Settings.instance().createSetting(
       "emulation.device-mode-value",
       { device: "", orientation: "", mode: "" }
@@ -451,25 +436,74 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
     if (this.#model === model) {
       return;
     }
-    if (this.#model) {
-      this.#model.toolbarControlsEnabledSetting().removeChangeListener(this.requestUpdate, this);
-      this.#model.scaleSetting().removeChangeListener(this.requestUpdate, this);
-      this.#model.uaSetting().removeChangeListener(this.requestUpdate, this);
-      this.#model.deviceScaleFactorSetting().removeChangeListener(this.requestUpdate, this);
-      this.#model.removeEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.requestUpdate, this);
+    if (this.isShowing()) {
+      this.#removeModelListeners();
     }
     this.#model = model;
+    if (this.isShowing()) {
+      this.#addModelListeners();
+    }
+    this.requestUpdate();
+  }
+  #addModelListeners() {
+    if (!this.#model) {
+      return;
+    }
     this.#model.toolbarControlsEnabledSetting().addChangeListener(this.requestUpdate, this);
     this.#model.scaleSetting().addChangeListener(this.requestUpdate, this);
     this.#model.uaSetting().addChangeListener(this.requestUpdate, this);
     this.#model.deviceScaleFactorSetting().addChangeListener(this.requestUpdate, this);
     this.#model.addEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.requestUpdate, this);
-    this.requestUpdate();
+  }
+  #removeModelListeners() {
+    if (!this.#model) {
+      return;
+    }
+    this.#model.toolbarControlsEnabledSetting().removeChangeListener(this.requestUpdate, this);
+    this.#model.scaleSetting().removeChangeListener(this.requestUpdate, this);
+    this.#model.uaSetting().removeChangeListener(this.requestUpdate, this);
+    this.#model.deviceScaleFactorSetting().removeChangeListener(this.requestUpdate, this);
+    this.#model.removeEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.requestUpdate, this);
   }
   wasShown() {
     super.wasShown();
+    this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
+    this.showRulersSetting.addChangeListener(this.requestUpdate, this);
+    this.showDeviceScaleFactorSetting.addChangeListener(this.requestUpdate, this);
+    this.showUserAgentTypeSetting.addChangeListener(this.requestUpdate, this);
+    this.autoAdjustScaleSetting.addChangeListener(this.requestUpdate, this);
+    this.emulatedDevicesList.addEventListener(
+      EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED,
+      this.deviceListChanged,
+      this
+    );
+    this.emulatedDevicesList.addEventListener(
+      EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED,
+      this.deviceListChanged,
+      this
+    );
+    this.#addModelListeners();
     this.performUpdate();
     this.restore();
+  }
+  willHide() {
+    super.willHide();
+    this.showMediaInspectorSetting.removeChangeListener(this.requestUpdate, this);
+    this.showRulersSetting.removeChangeListener(this.requestUpdate, this);
+    this.showDeviceScaleFactorSetting.removeChangeListener(this.requestUpdate, this);
+    this.showUserAgentTypeSetting.removeChangeListener(this.requestUpdate, this);
+    this.autoAdjustScaleSetting.removeChangeListener(this.requestUpdate, this);
+    this.emulatedDevicesList.removeEventListener(
+      EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED,
+      this.deviceListChanged,
+      this
+    );
+    this.emulatedDevicesList.removeEventListener(
+      EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED,
+      this.deviceListChanged,
+      this
+    );
+    this.#removeModelListeners();
   }
   performUpdate() {
     if (!this.model) {
@@ -1736,6 +1770,8 @@ function renderLabel(expression, atLeft, leftAlign) {
 var MediaQueryInspector = class extends UI3.Widget.Widget {
   view;
   mediaThrottler = new Common3.Throttler.Throttler(0);
+  #targetManager = SDK.TargetManager.TargetManager.instance();
+  #zoomManager = UI3.ZoomManager.ZoomManager.instance();
   #getWidthCallback;
   #setWidthCallback;
   #scale;
@@ -1745,12 +1781,6 @@ var MediaQueryInspector = class extends UI3.Widget.Widget {
     super(element, { useShadowDom: "pure" });
     this.view = view;
     this.#scale = 1;
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
-    UI3.ZoomManager.ZoomManager.instance().addEventListener(
-      UI3.ZoomManager.Events.ZOOM_CHANGED,
-      this.requestUpdate.bind(this),
-      this
-    );
   }
   get getWidthCallback() {
     return this.#getWidthCallback;
@@ -1937,8 +1967,18 @@ var MediaQueryInspector = class extends UI3.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
+    this.#targetManager.observeModels(SDK.CSSModel.CSSModel, this);
+    this.#zoomManager.addEventListener(UI3.ZoomManager.Events.ZOOM_CHANGED, this.requestUpdate, this);
     this.scheduleMediaQueriesUpdate();
     this.performUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#targetManager.unobserveModels(SDK.CSSModel.CSSModel, this);
+    if (this.cssModel) {
+      this.modelRemoved(this.cssModel);
+    }
+    this.#zoomManager.removeEventListener(UI3.ZoomManager.Events.ZOOM_CHANGED, this.requestUpdate, this);
   }
   performUpdate() {
     if (!this.isShowing() || !this.getWidthCallback || !this.setWidthCallback) {

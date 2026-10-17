@@ -354,7 +354,7 @@ devtools-icon.position-try-swatch-icon {
   }
 }
 
-span.bezier-icon-and-text {
+.bezier-icon-and-text {
   white-space: nowrap;
 }
 

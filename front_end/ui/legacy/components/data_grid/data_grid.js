@@ -290,6 +290,11 @@ var dataGrid_css_default = `/*
   background-color: var(--sys-color-tonal-container);
 }
 
+.data-grid:focus-visible tbody tr.revealed.selected {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
+}
+
 .data-grid tbody tr.revealed:not(.data-grid-filler-row, .selected):hover {
   background-color: var(--sys-color-state-hover-on-subtle);
 }
@@ -431,6 +436,10 @@ var dataGrid_css_default = `/*
   .data-grid tbody tr.revealed:focus *,
   .data-grid tbody tr.revealed:hover .heap-object-tag {
     color: HighlightText;
+  }
+
+  .data-grid:focus-visible tbody tr.revealed.selected {
+    outline-color: HighlightText;
   }
 
   .data-grid th {

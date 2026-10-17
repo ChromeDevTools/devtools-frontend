@@ -68,6 +68,7 @@
     "../../../../../../front_end/panels/timeline/TargetForEvent.ts",
     "../../../../../../front_end/panels/timeline/ThirdPartyTreeView.ts",
     "../../../../../../front_end/panels/timeline/ThreadAppender.ts",
+    "../../../../../../front_end/panels/timeline/TimelineCommentController.ts",
     "../../../../../../front_end/panels/timeline/TimelineController.ts",
     "../../../../../../front_end/panels/timeline/TimelineDetailsView.ts",
     "../../../../../../front_end/panels/timeline/TimelineEventOverview.ts",
@@ -131,6 +132,9 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/crux-manager/bundle-tsconfig.ref.json"
     },
     {
@@ -162,6 +166,9 @@
     },
     {
       "path": "../../services/tracing/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/comments/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"

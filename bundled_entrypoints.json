@@ -35,6 +35,7 @@
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker.js",
   "front_end/entrypoints/worker_app/worker_app.js",
   "front_end/foundation/foundation.js",
+  "front_end/models/ai-utils/ai-utils.js",
   "front_end/models/ai_assistance/ai_assistance.js",
   "front_end/models/ai_code_completion/ai_code_completion.js",
   "front_end/models/ai_code_generation/ai_code_generation.js",

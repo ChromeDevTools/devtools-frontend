@@ -55,6 +55,7 @@
     "../../../../../../front_end/panels/timeline/RecordingMetadata.test.ts",
     "../../../../../../front_end/panels/timeline/SaveFileFormatter.test.ts",
     "../../../../../../front_end/panels/timeline/ThirdPartyTreeView.test.ts",
+    "../../../../../../front_end/panels/timeline/TimelineCommentController.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineController.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineDetailsView.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineFilters.test.ts",
@@ -107,6 +108,9 @@
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/live-metrics/bundle-tsconfig.ref.json"
     },
     {
@@ -128,6 +132,9 @@
       "path": "../../testing/testing-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/comments/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
     },
     {
@@ -141,6 +148,9 @@
     },
     {
       "path": "../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"
     },
     {
       "path": "components/bundle-tsconfig.ref.json"

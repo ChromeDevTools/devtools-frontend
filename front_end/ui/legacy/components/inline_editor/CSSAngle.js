@@ -181,7 +181,6 @@ export class CSSAngle extends HTMLElement {
             angle: this.angle,
         }}>
           </devtools-css-angle-swatch>
-          <slot></slot>
         </div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>

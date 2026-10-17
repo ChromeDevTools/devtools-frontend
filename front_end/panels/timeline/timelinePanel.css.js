@@ -225,13 +225,13 @@ export default `/*
 }
 
 .timeline-paint-profiler-log-split > div:last-child {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
   z-index: 0;
 }
 
 .timeline-layers-view > div:last-child,
 .timeline-layers-view-properties > div:last-child {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 .timeline.panel .status-pane-container > div {

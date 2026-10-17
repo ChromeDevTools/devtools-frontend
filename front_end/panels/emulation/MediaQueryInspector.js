@@ -131,6 +131,8 @@ function renderLabel(expression, atLeft, leftAlign) {
 export class MediaQueryInspector extends UI.Widget.Widget {
     view;
     mediaThrottler = new Common.Throttler.Throttler(0);
+    #targetManager = SDK.TargetManager.TargetManager.instance();
+    #zoomManager = UI.ZoomManager.ZoomManager.instance();
     #getWidthCallback;
     #setWidthCallback;
     #scale;
@@ -140,8 +142,6 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         super(element, { useShadowDom: 'pure' });
         this.view = view;
         this.#scale = 1;
-        SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
-        UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate.bind(this), this);
     }
     get getWidthCallback() {
         return this.#getWidthCallback;
@@ -316,9 +316,20 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     }
     wasShown() {
         super.wasShown();
+        this.#targetManager.observeModels(SDK.CSSModel.CSSModel, this);
+        this.#zoomManager.addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate, this);
         this.scheduleMediaQueriesUpdate();
         // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
         this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
+    }
+    willHide() {
+        super.willHide();
+        this.#targetManager.unobserveModels(SDK.CSSModel.CSSModel, this);
+        // `unobserveModels()` doesn't call `modelRemoved()`, so stop listening to the CSS model explicitly.
+        if (this.cssModel) {
+            this.modelRemoved(this.cssModel);
+        }
+        this.#zoomManager.removeEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate, this);
     }
     performUpdate() {
         if (!this.isShowing() || !this.getWidthCallback || !this.setWidthCallback) {

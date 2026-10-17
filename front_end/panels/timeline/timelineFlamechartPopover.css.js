@@ -59,8 +59,8 @@ export default `/*
 }
 
 .layout-shift-viz-rect {
-  outline: var(--sys-size-1) solid color-mix(in srgb, var(--color-background-inverted) 20%, var(--app-color-rendering));
-  background-color: color-mix(in srgb, var(--color-background-inverted-opacity-0) 50%, var(--app-color-rendering-children));
+  outline: var(--sys-size-1) solid color-mix(in srgb, var(--sys-color-inverse-surface) 20%, var(--app-color-rendering));
+  background-color: color-mix(in srgb, transparent 50%, var(--app-color-rendering-children));
   position: absolute;
   z-index: 100;
 }

@@ -2069,7 +2069,6 @@ var CSSAngle = class extends HTMLElement {
       angle: this.angle
     }}>
           </devtools-css-angle-swatch>
-          <slot></slot>
         </div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
@@ -2186,25 +2185,23 @@ var cssShadowEditor_css_default = `/*
 
 .shadow-editor-button-left:hover,
 .shadow-editor-button-right:hover {
-  box-shadow: 0 var(--sys-size-1) var(--sys-size-1) var(--color-background-elevation-1);
+  box-shadow: 0 var(--sys-size-1) var(--sys-size-1) var(--sys-color-surface1);
 }
 
 .shadow-editor-button-left:focus,
 .shadow-editor-button-right:focus {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 .shadow-editor-button-left.enabled,
 .shadow-editor-button-right.enabled {
-  --override-button-text-color: #fff;
-
-  background-color: var(--color-primary-old);
-  color: var(--override-button-text-color);
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-on-primary);
 }
 
 .shadow-editor-button-left.enabled:focus,
 .shadow-editor-button-right.enabled:focus {
-  background-color: var(--color-primary-variant);
+  background-color: var(--sys-color-primary-bright);
 }
 
 .shadow-editor-text-input {

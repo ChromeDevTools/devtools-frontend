@@ -13,7 +13,7 @@ export default `/*
   position: absolute;
   inset: 0;
   display: flex;
-  background-color: var(--color-background-opacity-80);
+  background-color: color-mix(in srgb, var(--sys-color-cdt-base-container) 80%, transparent);
   z-index: 1000;
 }
 

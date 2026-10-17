@@ -328,6 +328,8 @@ export class BackgroundServiceView extends UI.Widget.Widget {
             this.#model.removeEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
             this.#model.removeEventListener(Events.BackgroundServiceEventReceived, this.onEventReceived, this);
         }
+        this.#securityOriginManager?.removeEventListener(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.onOriginChanged, this);
+        this.#storageKeyManager?.removeEventListener("MainStorageKeyChanged" /* SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED */, this.onStorageKeyChanged, this);
         this.#model = model;
         this.#model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
         this.#model.addEventListener(Events.BackgroundServiceEventReceived, this.onEventReceived, this);
@@ -337,13 +339,9 @@ export class BackgroundServiceView extends UI.Widget.Widget {
         this.#serviceWorkerManager = this.#model.target().model(SDK.ServiceWorkerManager.ServiceWorkerManager) ?? undefined;
         this.#securityOriginManager =
             this.#model.target().model(SDK.SecurityOriginManager.SecurityOriginManager) ?? undefined;
-        if (this.#securityOriginManager) {
-            this.#securityOriginManager.addEventListener(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, () => this.onOriginChanged());
-        }
+        this.#securityOriginManager?.addEventListener(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.onOriginChanged, this);
         this.#storageKeyManager = this.#model.target().model(SDK.StorageKeyManager.StorageKeyManager) ?? undefined;
-        if (this.#storageKeyManager) {
-            this.#storageKeyManager.addEventListener("MainStorageKeyChanged" /* SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED */, () => this.onStorageKeyChanged());
-        }
+        this.#storageKeyManager?.addEventListener("MainStorageKeyChanged" /* SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED */, this.onStorageKeyChanged, this);
         this.requestUpdate();
     }
     wasShown() {

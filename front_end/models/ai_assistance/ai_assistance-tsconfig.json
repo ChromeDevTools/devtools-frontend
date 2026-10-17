@@ -47,9 +47,6 @@
   "files": [
     "../../../../../../front_end/models/ai_assistance/AiAgent2.ts",
     "../../../../../../front_end/models/ai_assistance/AiConversation.ts",
-    "../../../../../../front_end/models/ai_assistance/AiHistoryStorage.ts",
-    "../../../../../../front_end/models/ai_assistance/AiSetting.ts",
-    "../../../../../../front_end/models/ai_assistance/AiUtils.ts",
     "../../../../../../front_end/models/ai_assistance/ChangeManager.ts",
     "../../../../../../front_end/models/ai_assistance/ConversationSummary.ts",
     "../../../../../../front_end/models/ai_assistance/EvaluateAction.ts",
@@ -77,7 +74,6 @@
     "../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/UnitFormatters.ts",
-    "../../../../../../front_end/models/ai_assistance/debug.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AICallTree.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIContext.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIQueries.ts",
@@ -153,6 +149,9 @@
     },
     {
       "path": "../../services/tracing/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../ai-utils/bundle-tsconfig.ref.json"
     },
     {
       "path": "../bindings/bundle-tsconfig.ref.json"

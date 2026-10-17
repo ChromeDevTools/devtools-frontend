@@ -169,7 +169,6 @@ const TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms';
 const PRIVACY_POLICY_URL = 'https://policies.google.com/privacy';
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 const LEARN_MORE_URL = 'https://goo.gle/devtools-console-messages-ai';
-const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504';
 const SIGN_IN_URL = 'https://accounts.google.com';
 export var State;
 (function (State) {
@@ -859,7 +858,7 @@ export class ConsoleInsight extends UI.Widget.Widget {
         });
     }
     #onReport() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AiAssistanceModel.AiUtils.REPORT_LEGAL_ISSUE_URL);
     }
     #onSearch() {
         const query = this.#promptBuilder.getSearchQuery();

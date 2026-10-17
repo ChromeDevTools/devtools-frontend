@@ -30,6 +30,7 @@
     "../../../../../../front_end/panels/elements/EventListenersWidget.test.ts",
     "../../../../../../front_end/panels/elements/ImagePreviewPopover.test.ts",
     "../../../../../../front_end/panels/elements/InspectElementModeController.test.ts",
+    "../../../../../../front_end/panels/elements/LayersWidget.test.ts",
     "../../../../../../front_end/panels/elements/LayoutPane.test.ts",
     "../../../../../../front_end/panels/elements/MetricsSidebarPane.test.ts",
     "../../../../../../front_end/panels/elements/PlatformFontsWidget.test.ts",

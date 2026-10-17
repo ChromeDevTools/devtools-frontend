@@ -1006,6 +1006,7 @@ var NetworkThrottlingSelectBase = Common4.ObjectWrapper.eventMixin(
 );
 var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
   #settings;
+  #customNetworkConditionsSetting;
   #recommendedConditions = null;
   #jslogContext;
   #currentConditions;
@@ -1013,6 +1014,8 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
   #view;
   #variant = _NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
   #disabled = false;
+  #boundToGlobalConditions = false;
+  #globalConditionsListeners = [];
   static createForGlobalConditions(element, title) {
     const selectElement = element.createChild("select");
     const select = new _NetworkThrottlingSelect(selectElement, { title });
@@ -1029,12 +1032,27 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
   constructor(element, options = {}, settings = Common4.Settings.Settings.instance(), view = DEFAULT_VIEW2) {
     super(element);
     this.#settings = settings;
-    SDK5.NetworkManager.customUserNetworkConditionsSetting(settings).addChangeListener(this.requestUpdate, this);
+    this.#customNetworkConditionsSetting = SDK5.NetworkManager.customUserNetworkConditionsSetting(settings);
     this.#jslogContext = options.jslogContext;
     this.#currentConditions = options.currentConditions;
     this.#title = options.title;
     this.#view = view;
     this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.#customNetworkConditionsSetting.addChangeListener(this.requestUpdate, this);
+    if (this.#boundToGlobalConditions) {
+      this.#addGlobalConditionsListeners();
+      this.#onGlobalConditionsChanged();
+      this.#updateRecommendation();
+    }
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#customNetworkConditionsSetting.removeChangeListener(this.requestUpdate, this);
+    Common4.EventTarget.removeEventListeners(this.#globalConditionsListeners);
   }
   get disabled() {
     return this.#disabled;
@@ -1080,27 +1098,37 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
       roundTripTimeMetricData
     );
   };
+  #addGlobalConditionsListeners() {
+    this.#globalConditionsListeners.push(
+      SDK5.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
+        SDK5.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+        this.#onGlobalConditionsChanged
+      ),
+      // Subscribe to CrUX field data changes to show recommended throttling
+      // presets based on real-user RTT data.
+      CrUXManager3.CrUXManager.instance().addEventListener(
+        CrUXManager3.Events.FIELD_DATA_CHANGED,
+        this.#updateRecommendation
+      )
+    );
+  }
   set bindToGlobalConditions(bind) {
-    const cruxManager = CrUXManager3.CrUXManager.instance();
-    const multitargetNetworkManager = SDK5.NetworkManager.MultitargetNetworkManager.instance();
+    if (bind === this.#boundToGlobalConditions) {
+      return;
+    }
+    this.#boundToGlobalConditions = bind;
     if (bind) {
       this.#jslogContext = SDK5.NetworkManager.activeNetworkThrottlingKeySetting(this.#settings).name;
       ThrottlingManager.instance();
-      this.#currentConditions = multitargetNetworkManager.networkConditions();
+      this.#currentConditions = SDK5.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
       this.addEventListener("ConditionsChanged" /* CONDITIONS_CHANGED */, this.#onConditionsChanged);
-      multitargetNetworkManager.addEventListener(
-        SDK5.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
-        this.#onGlobalConditionsChanged
-      );
-      cruxManager.addEventListener(CrUXManager3.Events.FIELD_DATA_CHANGED, this.#updateRecommendation);
+      if (this.isShowing()) {
+        this.#addGlobalConditionsListeners();
+      }
       this.#updateRecommendation();
     } else {
       this.removeEventListener("ConditionsChanged" /* CONDITIONS_CHANGED */, this.#onConditionsChanged);
-      multitargetNetworkManager.removeEventListener(
-        SDK5.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
-        this.#onGlobalConditionsChanged
-      );
-      cruxManager.removeEventListener(CrUXManager3.Events.FIELD_DATA_CHANGED, this.#updateRecommendation);
+      Common4.EventTarget.removeEventListeners(this.#globalConditionsListeners);
     }
     this.requestUpdate();
   }

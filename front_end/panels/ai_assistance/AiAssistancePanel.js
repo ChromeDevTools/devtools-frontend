@@ -38,6 +38,10 @@ const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393';
 const AI_ASSISTANCE_HELP = 'https://developer.chrome.com/docs/devtools/ai-assistance';
 const WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
 const WALKTHROUGH_SIDEBAR_INITIAL_WIDTH = 400;
+// Ignores approvals that arrive within this window after a permission prompt appears, so input meant for something
+// else (such as the second click of a double-click on the previous prompt) cannot approve it. The value matches the
+// 500 ms double-click interval that Chromium's InputEventActivationProtector uses for dialog buttons.
+const PERMISSION_PROMPT_INPUT_PROTECTION_MS = 500;
 const UIStrings = {
     /**
      * @description AI assistance UI text for creating a new chat.
@@ -1569,6 +1573,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         step = stepForCall(data.callId);
                         const approvalStep = step;
                         approvalStep.code ??= data.code;
+                        const promptShownAt = performance.now();
                         approvalStep.state = {
                             type: 'needs_approval',
                             sideEffectDialog: {
@@ -1576,6 +1581,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                                 permissionPrompt: data.permissionPrompt,
                                 permissionTitle: data.permissionTitle,
                                 onAnswer: (decision) => {
+                                    if (decision !== "reject" /* AiAssistanceModel.Tool.PermissionDecision.REJECT */ &&
+                                        performance.now() - promptShownAt < PERMISSION_PROMPT_INPUT_PROTECTION_MS) {
+                                        return;
+                                    }
                                     data.confirm(decision);
                                     approvalStep.state = { type: 'completed' };
                                     this.requestUpdate();

@@ -90,6 +90,7 @@ export declare class TabbedPane extends TabbedPaneBase {
     onResize(): void;
     headerResized(): void;
     wasShown(): void;
+    willHide(): void;
     wasHidden(): void;
     makeTabSlider(): void;
     private setTabSlider;

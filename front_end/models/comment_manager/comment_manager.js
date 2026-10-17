@@ -11,7 +11,7 @@ __export(CD4ABridge_exports, {
   Events: () => Events3
 });
 import * as Common3 from "../../core/common/common.js";
-import * as Host from "../../core/host/host.js";
+import * as Host3 from "../../core/host/host.js";
 import * as SDK from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/comment_manager/CommentManager.ts
@@ -22,6 +22,7 @@ __export(CommentManager_exports, {
   Events: () => Events2
 });
 import * as Common2 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
 
 // ../../front_end/models/comment_manager/CommentThread.ts
 var CommentThread_exports = {};
@@ -30,6 +31,7 @@ __export(CommentThread_exports, {
   Events: () => Events
 });
 import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
 var Events = /* @__PURE__ */ ((Events4) => {
   Events4["CHANGED"] = "Changed";
   return Events4;
@@ -70,9 +72,24 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
     }
     return false;
   }
+  /**
+   * Records UMA for a developer-authored comment when it leaves the DRAFT state.
+   */
+  #recordCommentCreated() {
+    if (this.isGeneratedComment) {
+      return;
+    }
+    const text = this.comments.find((c) => c.author === "DEVELOPER")?.text.trim();
+    if (!text) {
+      return;
+    }
+    Host.userMetrics.commentCreated(1);
+    Host.userMetrics.commentSize(text.length);
+  }
   save(text, author = "DEVELOPER") {
     let changed = this.#saveText(text, author);
     if (this.status === "DRAFT") {
+      this.#recordCommentCreated();
       if (this.#savedIndex === void 0) {
         this.#savedIndex = _CommentThread.#nextIndex++;
       }
@@ -97,6 +114,9 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
   }
   sendToAgent(text, author = "DEVELOPER") {
     let changed = this.#saveText(text, author);
+    if (this.status === "DRAFT") {
+      this.#recordCommentCreated();
+    }
     if (this.status === "DRAFT" || this.status === "ACTIVE") {
       if (this.#savedIndex === void 0) {
         this.#savedIndex = _CommentThread.#nextIndex++;
@@ -198,6 +218,14 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
         threads.push(thread);
       }
     }
+    const changeCount = threads.filter((thread) => thread.isGeneratedComment).length;
+    const commentCount = threads.length - changeCount;
+    if (commentCount > 0) {
+      Host2.userMetrics.commentSharedWithAgent(commentCount);
+    }
+    if (changeCount > 0) {
+      Host2.userMetrics.changeSharedWithAgent(changeCount);
+    }
     return threads;
   }
   sendQueuedThreads() {
@@ -211,6 +239,9 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
     const thread = this.#commentThreads.get(threadId);
     if (!thread) {
       return false;
+    }
+    if (thread.status !== "RESOLVED") {
+      Host2.userMetrics.commentResolved("Agent", 1);
     }
     thread.resolve(replyText);
     return true;
@@ -246,7 +277,7 @@ var CD4ABridge = class extends Common3.ObjectWrapper.ObjectWrapper {
   #networkLog;
   #inspectorFrontendHost;
   #eventListeners;
-  constructor(commentManager, targetManager, networkLog, inspectorFrontendHost = Host.InspectorFrontendHost.InspectorFrontendHostInstance) {
+  constructor(commentManager, targetManager, networkLog, inspectorFrontendHost = Host3.InspectorFrontendHost.InspectorFrontendHostInstance) {
     super();
     this.#commentManager = commentManager;
     this.#targetManager = targetManager;
@@ -332,7 +363,7 @@ ${details.join("\n")}` : details.join("\n");
   async reveal(panelName, target) {
     if (panelName) {
       this.#inspectorFrontendHost.events.dispatchEventToListeners(
-        Host.InspectorFrontendHostAPI.Events.ShowPanel,
+        Host3.InspectorFrontendHostAPI.Events.ShowPanel,
         panelName
       );
     }

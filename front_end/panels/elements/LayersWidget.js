@@ -73,7 +73,7 @@ export class LayersWidget extends UI.Widget.Widget {
         this.#onDOMNodeChanged({ data: UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode) });
     }
     wasHidden() {
-        UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
+        UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
         this.#onDOMNodeChanged({ data: null });
         super.wasHidden();
     }

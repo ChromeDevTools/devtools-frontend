@@ -347,8 +347,10 @@ export class InspectorView extends VBox {
         return null;
     }
     async createToolbars() {
-        await this.tabbedPane.leftToolbar().appendItemsAtLocation('main-toolbar-left');
-        await this.tabbedPane.rightToolbar().appendItemsAtLocation('main-toolbar-right');
+        await Promise.all([
+            this.tabbedPane.leftToolbar().appendItemsAtLocation('main-toolbar-left'),
+            this.tabbedPane.rightToolbar().appendItemsAtLocation('main-toolbar-right'),
+        ]);
     }
     addPanel(view) {
         this.tabbedLocation.appendView(view);

@@ -2,10 +2,12 @@ import * as Host from '../../../core/host/host.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type OriginLockCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
 export interface GetSourceContentArgs extends ToolArgs {
     id: number;
+    offset?: number;
 }
 /**
  * A tool that retrieves the contents of a source file by its unique ID.
  * Filters access by origin lock to prevent cross-origin leakage.
+ * Long files are returned in parts; `offset` selects which part.
  */
 export declare class GetSourceContentTool implements DataTool<GetSourceContentArgs, {
     content: string;

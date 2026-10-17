@@ -158,6 +158,7 @@ class ResourceFrameNode extends DataGridItem {
         }
         else if (isTextFrame) {
             description = dataText;
+            length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.countWtf8Bytes(frame.text));
         }
         else if (frame.opCode === 2 /* OpCodes.BINARY_FRAME */) {
             length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.base64ToSize(frame.text));

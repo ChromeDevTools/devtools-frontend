@@ -157,6 +157,17 @@ var menuItem_css_default = `/*
   outline: none;
 }
 
+:host(:focus-visible:not(.prevents-close)) .menu-item::after {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
+}
+
+@media (forced-colors: active) {
+  :host(:focus-visible:not(.prevents-close)) .menu-item::after {
+    outline-color: Highlight;
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./menuItem.css")} */`;
 
 // ../../front_end/ui/components/menus/Menu.ts

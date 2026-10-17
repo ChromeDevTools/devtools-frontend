@@ -80,7 +80,7 @@
       "path": "../../foundation/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../models/ai_assistance/bundle-tsconfig.ref.json"
+      "path": "../../models/ai-utils/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../models/badges/bundle-tsconfig.ref.json"

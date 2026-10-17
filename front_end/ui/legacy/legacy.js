@@ -5195,6 +5195,7 @@ var TabbedPane = class extends TabbedPaneBase {
   #rightToolbar;
   #trailingSlot;
   #lastDispatchedHiddenTabIds = "";
+  #zoomManager = ZoomManager.instance();
   allowTabReorder;
   automaticReorder;
   constructor(element) {
@@ -5245,7 +5246,6 @@ var TabbedPane = class extends TabbedPaneBase {
     this.triggerDropDownTimeout = null;
     this.dropDownButton = this.createDropDownButton();
     this.currentDevicePixelRatio = window.devicePixelRatio;
-    ZoomManager.instance().addEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.zoomChanged, this);
     this.makeTabSlider();
   }
   setAccessibleName(name) {
@@ -5589,12 +5589,18 @@ var TabbedPane = class extends TabbedPaneBase {
   }
   wasShown() {
     super.wasShown();
+    this.#zoomManager.addEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.zoomChanged, this);
+    this.clearMeasuredWidths();
     const effectiveTab = this.currentTab || this.tabsHistory[0];
     if (effectiveTab && this.autoSelectFirstItemOnShow) {
       this.selectTab(effectiveTab.id);
     }
     this.requestUpdate();
     this.dispatchEventToListeners("PaneVisibilityChanged" /* PaneVisibilityChanged */, { isVisible: true });
+  }
+  willHide() {
+    super.willHide();
+    this.#zoomManager.removeEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.zoomChanged, this);
   }
   wasHidden() {
     this.dispatchEventToListeners("PaneVisibilityChanged" /* PaneVisibilityChanged */, { isVisible: false });
@@ -8854,8 +8860,10 @@ var InspectorView = class _InspectorView extends VBox {
     return null;
   }
   async createToolbars() {
-    await this.tabbedPane.leftToolbar().appendItemsAtLocation("main-toolbar-left");
-    await this.tabbedPane.rightToolbar().appendItemsAtLocation("main-toolbar-right");
+    await Promise.all([
+      this.tabbedPane.leftToolbar().appendItemsAtLocation("main-toolbar-left"),
+      this.tabbedPane.rightToolbar().appendItemsAtLocation("main-toolbar-right")
+    ]);
   }
   addPanel(view) {
     this.tabbedLocation.appendView(view);
@@ -18939,7 +18947,7 @@ var dropTarget_css_default = `/*
   position: absolute;
   inset: 0;
   display: flex;
-  background-color: var(--color-background-opacity-80);
+  background-color: color-mix(in srgb, var(--sys-color-cdt-base-container) 80%, transparent);
   z-index: 1000;
 }
 

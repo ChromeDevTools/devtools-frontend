@@ -46,7 +46,6 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/ai_assistance/BuiltInAi.test.ts",
     "../../../../../../front_end/models/ai_assistance/DOMHelpers.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -56,9 +55,6 @@
   "references": [
     {
       "path": "bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../testing/testing-tsconfig.ref.json"
     }
   ]
 }

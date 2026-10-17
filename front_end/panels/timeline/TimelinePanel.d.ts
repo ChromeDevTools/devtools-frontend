@@ -3,6 +3,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineComponents from './components/components.js';
@@ -49,7 +50,7 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
     private fileSelectorElement?;
     private selection;
     private traceLoadStart;
-    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, traceModel?: Trace.TraceModel.Model);
+    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, commentManager: CommentManager.CommentManager.CommentManager, traceModel?: Trace.TraceModel.Model);
     zoomEvent(event: Trace.Types.Events.Event): void;
     /**
      * This disables the 3P checkbox in the toolbar.
@@ -61,6 +62,7 @@ export declare class TimelinePanel extends TimelinePanelBase implements Client, 
         resourceLoader: SDK.PageResourceLoader.ResourceLoader;
         targetManager: SDK.TargetManager.TargetManager;
         isolateManager: SDK.IsolateManager.IsolateManager;
+        commentManager: CommentManager.CommentManager.CommentManager;
         traceModel?: Trace.TraceModel.Model;
     } | undefined): TimelinePanel;
     static removeInstance(): void;

@@ -55,7 +55,7 @@
       "path": "../../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../models/ai_assistance/bundle-tsconfig.ref.json"
+      "path": "../../../models/ai-utils/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../models/ai_code_completion/bundle-tsconfig.ref.json"

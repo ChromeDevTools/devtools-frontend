@@ -338,8 +338,8 @@ export const CSSControlMap = Map;
  * for its text. This keeps modifications separate from `original.computedText()`, which stands for the result of
  * resolving var()s, stripping comments and the like.
  *
- * A `ComputedText` keeps only the last push of any given match. So to change a ValueEdit that was already pushed, set
- * its `value` and push it again.
+ * A function as `value` is called whenever the text is read. This is for renderers that put the text of their match
+ * together from parts that keep changing.
  **/
 class ValueEdit {
     original;
@@ -355,7 +355,7 @@ class ValueEdit {
         return this.original.node;
     }
     computedText() {
-        return this.value;
+        return typeof this.value === 'string' ? this.value : this.value();
     }
 }
 /**
@@ -365,7 +365,7 @@ class ValueEdit {
  **/
 export class ValueUpdateTracking {
     #text;
-    // A `ComputedText` keeps only the last push of any given edit, so a match needs to keep using the same edit.
+    // A match is pushed to the text once, later changes of it update its edit. See `#get` for how they get picked up.
     #edits = new Map();
     // The text spans the whole declaration, including the name of the property and the trailing ';}'. Offsets in it are
     // relative to the start of the declaration, whereas the AST that a renderer works on may be a subtree of it.
@@ -392,17 +392,73 @@ export class ValueUpdateTracking {
         }
     }
     // Records that the text of `match` was changed to `value`. This replaces the change of `match` that was recorded
-    // before, if any.
+    // before, if any. A function is called every time the text is read.
     recordEdit(match, value) {
-        const edit = this.#edits.get(match) ?? new ValueEdit(match, value);
-        edit.value = value;
+        const existing = this.#edits.get(match);
+        if (existing) {
+            existing.value = value;
+            return;
+        }
+        const edit = new ValueEdit(match, value);
         this.#edits.set(match, edit);
-        // Pushing the edit again supersedes its earlier push, which is how the new value gets picked up.
-        this.#text.push(edit, match.node.from - this.#declarationStart);
+        // A match of the whole declaration stands for its value, which starts after the name of the property.
+        const offset = match.node.name === 'Declaration' ? this.#valueBegin : match.node.from - this.#declarationStart;
+        this.#text.push(edit, offset);
     }
     // The text of the value with the recorded changes applied.
     valueText() {
-        return this.#text.get(this.#valueBegin, this.#valueEnd);
+        return this.#get(this.#valueBegin, this.#valueEnd);
+    }
+    getEdit(match) {
+        return this.#edits.get(match)?.computedText();
+    }
+    // The text of the nodes `from` to `to` with the recorded changes applied, like `SyntaxTree.textRange` for the authored
+    // text.
+    textRange(from, to) {
+        if (!from || !to) {
+            return '';
+        }
+        return this.#get(from.from - this.#declarationStart, to.to - this.#declarationStart);
+    }
+    // A `ComputedText` remembers the text of a chunk after reading it for the first time, which would hide later changes
+    // of an edit. Asking the edits for their text through the substitution hook avoids that.
+    #get(begin, end) {
+        return this.#text.get(begin, end, match => match.computedText?.() ?? null);
+    }
+}
+export class ValueEditEvent extends CustomEvent {
+    static eventName = 'valueedit';
+    constructor(value) {
+        super(ValueEditEvent.eventName, { bubbles: true, detail: value });
+    }
+}
+const EDITABLE_CONTENT_DEFAULT_VIEW = (input, _output, target) => {
+    render(html `<slot name="icon" @valueedit=${input.onValueEdit}></slot>${input.editedValue ?? html `<slot></slot>`}`, target);
+};
+/**
+ * Hosts a value part that can be edited through an inline swatch or icon.
+ *
+ * The swatch or icon goes into the `icon` slot, and the initial rendered AST nodes go into the default slot. When the
+ * swatch or icon dispatches a `ValueEditEvent`, the default slot is replaced with the new text while the `icon` slot
+ * stays in place.
+ **/
+export class EditableContent extends UI.Widget.Widget {
+    #editedValue = null;
+    #view;
+    constructor(element, view = EDITABLE_CONTENT_DEFAULT_VIEW) {
+        super(element, { useShadowDom: 'pure' });
+        this.element.classList.remove('vbox', 'flex-auto', 'widget');
+        this.#view = view;
+        // Render synchronously so that `<slot name="icon">` is in the DOM before synchronous callers dispatch edits.
+        this.performUpdate();
+    }
+    #onValueEdit = (event) => {
+        event.stopPropagation();
+        this.#editedValue = event.detail;
+        this.performUpdate();
+    };
+    performUpdate() {
+        this.#view({ editedValue: this.#editedValue, onValueEdit: this.#onValueEdit }, undefined, this.contentElement);
     }
 }
 export class RenderingContext {
@@ -427,8 +483,8 @@ export class RenderingContext {
         this.edits = edits;
     }
     // Records that a renderer changed the text of `match` to `value`, e.g. because the user picked a color, so that the
-    // change becomes part of the text of the property. Does nothing if the context doesn't track changes, e.g. for value
-    // traces.
+    // change becomes part of the text of the property. A function is called every time the text of the property is put
+    // together. Does nothing if the context doesn't track changes, e.g. for value traces.
     recordEdit(match, value) {
         this.edits?.recordEdit(match, value);
     }

@@ -133,6 +133,11 @@ devtools-text-prompt {
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
+.filtered-list-widget:focus-within .filtered-list-widget-item.selected {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
+}
+
 .filtered-list-widget-item > div {
   flex: auto;
   white-space: nowrap;
@@ -192,6 +197,7 @@ devtools-text-prompt {
   .filtered-list-widget-item.selected {
     background-color: Highlight;
     color: HighlightText;
+    outline-color: HighlightText;
   }
 
   devtools-text-prompt {

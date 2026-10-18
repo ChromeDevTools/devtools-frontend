@@ -420,9 +420,22 @@ def CheckForTooLargeFiles(input_api, output_api):
 
 
 def CheckObsoleteScreenshotGoldens(input_api, output_api):
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                         'scripts', 'test',
+    devtools_root = input_api.PresubmitLocalPath()
+    script_path = input_api.os_path.join(devtools_root, 'scripts', 'test',
                                          'check_obsolete_goldens.js')
+    # Only unit tests, goldens, and the script itself decide which goldens are
+    # obsolete. Deleted files count, because a deleted test can leave goldens
+    # behind.
+    # LINT.IfChange(ObsoleteGoldensPaths)
+    affected_unit_tests = _GetAffectedFiles(
+        input_api, [input_api.os_path.join(devtools_root, 'front_end')], [],
+        ['.test.ts'])
+    affected_goldens = _GetAffectedFiles(input_api, [
+        input_api.os_path.join(devtools_root, 'test', 'goldens'), script_path
+    ], [], [])
+    # LINT.ThenChange(/scripts/test/check_obsolete_goldens.js:ObsoleteGoldensPaths)
+    if len(affected_unit_tests) == 0 and len(affected_goldens) == 0:
+        return []
     return _CheckWithNodeScript(input_api,
                                 output_api,
                                 script_path,

@@ -22,10 +22,12 @@ const yargsObject = yargs(hideBin(process.argv))
 
 const shouldRemoveFiles = yargsObject.removeFiles === true;
 const SOURCE_ROOT = path.resolve(import.meta.dirname, path.join('..', '..'));
+// LINT.IfChange(ObsoleteGoldensPaths)
 const unitTestRoot = path.join(SOURCE_ROOT, 'front_end');
 const GOLDENS_LOCATION = path.join(SOURCE_ROOT, 'test', 'goldens');
 const unitTestFiles =
     (await Array.fromAsync(glob('**/*.test.ts', {cwd: unitTestRoot}))).map(file => path.join(unitTestRoot, file));
+// LINT.ThenChange(/PRESUBMIT.py:ObsoleteGoldensPaths)
 
 function findScreenshotsToCheck(folder) {
   const filesToCheck = [];
@@ -42,15 +44,29 @@ function findScreenshotsToCheck(folder) {
   return filesToCheck;
 }
 
-function checkFolder(relativeGoldenPath, filesToSearch) {
+const PNG_EXTENSION = '.png';
+
+/**
+ * Returns the text before each ".png" in the unit test files, from the start
+ * of its line. Golden paths end with ".png" and have no line breaks, so a unit
+ * test file contains a golden path only if one of these strings ends with it.
+ * This reads each unit test file one time.
+ */
+function findPngReferences(filesToSearch) {
+  const references = [];
   for (const file of filesToSearch) {
     const content = fs.readFileSync(file, 'utf-8');
-    if (content.includes(relativeGoldenPath)) {
-      return true;
+    let index = content.indexOf(PNG_EXTENSION);
+    while (index !== -1) {
+      const lineStart = content.lastIndexOf('\n', index) + 1;
+      references.push(content.slice(lineStart, index + PNG_EXTENSION.length));
+      index = content.indexOf(PNG_EXTENSION, index + PNG_EXTENSION.length);
     }
   }
-  return false;
+  return references;
 }
+
+const pngReferences = findPngReferences(unitTestFiles);
 
 function checkGoldensForPlatform(platform) {
   const obsoleteImages = [];
@@ -60,9 +76,9 @@ function checkGoldensForPlatform(platform) {
 
   for (const golden of goldens) {
     const relativeGoldenPath = path.relative(platformRoot, golden).replace(/\\/g, '/');
-    const units = checkFolder(relativeGoldenPath, unitTestFiles);
+    const isReferenced = pngReferences.some(reference => reference.endsWith(relativeGoldenPath));
 
-    if (!units) {
+    if (!isReferenced) {
       obsoleteImages.push(path.join(platform, relativeGoldenPath));
     }
   }

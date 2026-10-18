@@ -375,8 +375,12 @@ def CheckL10nStrings(input_api, output_api):
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
     script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
                                          'check-strings.js')
-    affected_front_end_files = _GetAffectedFiles(
-        input_api, [devtools_front_end, script_path], [], ['.js', '.ts'])
+    affected_front_end_files = [
+        file_name for file_name in
+        _GetAffectedFiles(input_api, [devtools_front_end, script_path], ['D'],
+                          ['.js', '.ts']) if file_name == script_path
+        or 'UIStrings' in input_api.ReadFile(file_name)
+    ]
     if len(affected_front_end_files) == 0:
         return []
     return _CheckWithNodeScript(input_api,

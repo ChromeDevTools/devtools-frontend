@@ -24,6 +24,7 @@ import {
   getMatchedStylesWithProperties,
   ruleMatch,
 } from '../../testing/StyleHelpers.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Elements from './elements.js';
 
@@ -227,4 +228,31 @@ describeWithEnvironment('StandaloneStylesContainer', () => {
     assert.lengthOf(container.contentElement.querySelectorAll('.styles-section'), 2);
   });
 
+  it('should reset linkifier on updates and dispose model and linkifier when hidden', async () => {
+    const {container} = await setupContainer([{name: 'color', value: 'red'}]);
+    assert.isTrue(cssModel.hasEventListeners(SDK.CSSModel.Events.MediaQueryResultChanged));
+
+    const resetSpy = sinon.spy(Components.Linkifier.Linkifier.prototype, 'reset');
+    const disposeSpy = sinon.spy(Components.Linkifier.Linkifier.prototype, 'dispose');
+
+    const rebuildPromise = new Promise<void>(resolve => {
+      container.addEventListener(Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(),
+                                 {once: true});
+    });
+    container.forceUpdate();
+    await rebuildPromise;
+    sinon.assert.called(resetSpy);
+
+    container.detach();
+    sinon.assert.calledOnce(disposeSpy);
+    assert.isFalse(cssModel.hasEventListeners(SDK.CSSModel.Events.MediaQueryResultChanged));
+
+    const reshowPromise = new Promise<void>(resolve => {
+      container.addEventListener(Elements.StandaloneStylesContainer.Events.STYLES_UPDATE_COMPLETED, () => resolve(),
+                                 {once: true});
+    });
+    renderElementIntoDOM(container);
+    await reshowPromise;
+    assert.isTrue(cssModel.hasEventListeners(SDK.CSSModel.Events.MediaQueryResultChanged));
+  });
 });

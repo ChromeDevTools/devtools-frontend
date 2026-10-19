@@ -112,6 +112,23 @@ describe('TargetManager', () => {
     sinon.assert.calledTwice(listener);
   });
 
+  it('removes all registrations of the same model listener at once', () => {
+    const WillReloadPage = SDK.ResourceTreeModel.Events.WillReloadPage;
+    const thisObject = {};
+    const listener = sinon.spy();
+    const target = createTarget({targetManager});
+
+    targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, WillReloadPage, listener, thisObject);
+    targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, WillReloadPage, listener, thisObject);
+    resourceTreeModel(target).dispatchEventToListeners(WillReloadPage);
+    sinon.assert.calledTwice(listener);
+
+    targetManager.removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, WillReloadPage, listener, thisObject);
+    assert.isFalse(resourceTreeModel(target).hasEventListeners(WillReloadPage));
+    resourceTreeModel(target).dispatchEventToListeners(WillReloadPage);
+    sinon.assert.calledTwice(listener);
+  });
+
   it('allows observing targets in scope', () => {
     const target1 = createTarget({targetManager});
     const target2 = createTarget({targetManager});

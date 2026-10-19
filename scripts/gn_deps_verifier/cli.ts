@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {enableCompileCache} from 'node:module';
 import * as path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
@@ -14,6 +15,10 @@ import {checkDepsGn} from './validator.ts';
 if (!import.meta.main) {
   throw new Error('This script is intended to be run as a command');
 }
+
+// Keeps compiled code on disk for the next run. Most of it is the TypeScript
+// package, which the import extractor loads on first use.
+enableCompileCache();
 
 const argv = yargs(hideBin(process.argv))
                  .scriptName('gn_verifier')

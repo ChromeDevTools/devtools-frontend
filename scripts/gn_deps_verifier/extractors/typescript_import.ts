@@ -3,10 +3,24 @@
 // found in the LICENSE file.
 
 import * as fs from 'node:fs';
+import {createRequire} from 'node:module';
 import * as path from 'node:path';
-import ts from 'typescript';
+import type ts from 'typescript';
 
 import {isNotFoundError} from '../utils/error.ts';
+
+let typescript: typeof ts|undefined;
+
+/**
+ * TODO(victorporof): Check if this can be removed once TS v7.1 is released.
+ * Loads TypeScript with `require` on first use. When an ES module imports this
+ * large CommonJS package, Node also detects its format and scans its exports.
+ * `require` skips both steps.
+ */
+function loadTypeScript(): typeof ts {
+  typescript ??= createRequire(import.meta.url)('typescript') as typeof ts;
+  return typescript;
+}
 
 export class TypeScriptImportExtractor {
   #tsImportsCache = new Map<string, Promise<string[]>>();
@@ -89,6 +103,7 @@ export class TypeScriptImportExtractor {
   }
 
   #extractImports(absPath: string, fileContent: string): string[] {
+    const ts = loadTypeScript();
     const sourceFile = ts.createSourceFile(
         absPath,
         fileContent,

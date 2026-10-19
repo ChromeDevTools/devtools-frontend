@@ -241,6 +241,7 @@ devtools_foundation_module("foundation_unittests") {
     "Target.test.ts",
     "TargetManager.test.ts",
     "TraceObject.test.ts",
+    "WebAuthnModel.test.ts",
   ]
 
   ts_deps = [

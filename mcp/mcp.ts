@@ -29,6 +29,7 @@ export * as SDKSettings from '../front_end/core/sdk/SDKSettings.js';
 export * as SourceMapManager from '../front_end/core/sdk/SourceMapManager.js';
 export {Target} from '../front_end/core/sdk/Target.js';
 export {TargetManager} from '../front_end/core/sdk/TargetManager.js';
+export * as WebAuthnModel from '../front_end/core/sdk/WebAuthnModel.js';
 export {VALID_PLACEHOLDER_MATCH_PATTERN} from '../front_end/core/text_utils/Markdown.js';
 export * as Foundation from '../front_end/foundation/foundation.js';
 export * as Protocol from '../front_end/generated/protocol.js';

@@ -30,9 +30,9 @@ export class WebAuthnModel extends SDKModel<EventTypes> {
     target.registerWebAuthnDispatcher(new WebAuthnDispatcher(this));
   }
 
-  setVirtualAuthEnvEnabled(enable: boolean): Promise<Object> {
+  setVirtualAuthEnvEnabled(enable: boolean, enableUI = true): Promise<Object> {
     if (enable) {
-      return this.#agent.invoke_enable({enableUI: true});
+      return this.#agent.invoke_enable({enableUI});
     }
     return this.#agent.invoke_disable();
   }
@@ -50,6 +50,15 @@ export class WebAuthnModel extends SDKModel<EventTypes> {
   async setAutomaticPresenceSimulation(authenticatorId: Protocol.WebAuthn.AuthenticatorId, enabled: boolean):
       Promise<void> {
     await this.#agent.invoke_setAutomaticPresenceSimulation({authenticatorId, enabled});
+  }
+
+  async setUserVerified(authenticatorId: Protocol.WebAuthn.AuthenticatorId, isUserVerified: boolean): Promise<void> {
+    await this.#agent.invoke_setUserVerified({authenticatorId, isUserVerified});
+  }
+
+  async addCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId,
+                      credential: Protocol.WebAuthn.Credential): Promise<void> {
+    await this.#agent.invoke_addCredential({authenticatorId, credential});
   }
 
   async getCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<Protocol.WebAuthn.Credential[]> {

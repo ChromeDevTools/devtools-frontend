@@ -25,6 +25,7 @@ devtools_module("mcp") {
     "../front_end/generated",
     "../front_end/models/ai_assistance",
     "../front_end/models/bindings",
+    "../front_end/models/breakpoints",
     "../front_end/models/comment_manager",
     "../front_end/models/crux-manager",
     "../front_end/models/formatter:bundle",
@@ -34,6 +35,7 @@ devtools_module("mcp") {
     "../front_end/models/trace:bundle",
     "../front_end/models/trace/types",
     "../front_end/models/workspace",
+    "../front_end/models/workspace:bundle",
     "../front_end/third_party/marked:bundle",
   ]
 }

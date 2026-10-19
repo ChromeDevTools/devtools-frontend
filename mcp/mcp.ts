@@ -41,6 +41,7 @@ export {
 } from '../front_end/models/ai_assistance/data_formatters/PerformanceTraceFormatter.js';
 export {AgentFocus} from '../front_end/models/ai_assistance/performance/AIContext.js';
 export {DebuggerWorkspaceBinding} from '../front_end/models/bindings/DebuggerWorkspaceBinding.js';
+export * as BreakpointManager from '../front_end/models/breakpoints/BreakpointManager.js';
 export type * as CD4ABridge from '../front_end/models/comment_manager/CD4ABridge.js';
 export * as CrUXManager from '../front_end/models/crux-manager/CrUXManager.js';
 export * as Formatter from '../front_end/models/formatter/formatter.js';
@@ -66,4 +67,5 @@ export {
   OptionalCategories as TracingOptionalCategories,
 } from '../front_end/models/trace/types/TraceEvents.js';
 export {IgnoreListManager} from '../front_end/models/workspace/IgnoreListManager.js';
+export * as Workspace from '../front_end/models/workspace/workspace.js';
 export * as Marked from '../front_end/third_party/marked/marked.js';

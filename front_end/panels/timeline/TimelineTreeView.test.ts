@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {after, afterEach, before, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
@@ -174,6 +175,31 @@ describe('TimelineTreeView', function() {
       await RenderCoordinator.done();
 
       assert.lengthOf(bottomUpTreeView.dataGrid.rootNode().children, 2);
+    });
+
+    it('only listens to the group-by setting while shown and refreshes when re-shown', function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+      const groupBySetting = Common.Settings.Settings.instance().createSetting(
+          'timeline-tree-group-by', Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None);
+      groupBySetting.set(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None);
+
+      renderElementIntoDOM(bottomUpTreeView);
+      bottomUpTreeView.setRange(startTime, endTime);
+      bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+
+      bottomUpTreeView.detach();
+      const refreshTree = sinon.spy(bottomUpTreeView, 'refreshTree');
+      groupBySetting.set(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Category);
+      sinon.assert.notCalled(refreshTree);
+
+      renderElementIntoDOM(bottomUpTreeView);
+      sinon.assert.calledOnce(refreshTree);
+      bottomUpTreeView.detach();
+      groupBySetting.set(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.None);
     });
   });
 

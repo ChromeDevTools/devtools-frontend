@@ -1086,15 +1086,36 @@ const treeNodeToGridNode = new WeakMap<Trace.Extras.TraceTree.Node, TreeGridNode
 export class AggregatedTimelineTreeView extends TimelineTreeView {
   protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
   readonly stackView: TimelineStackView;
+  #builtGroupBy?: AggregatedTimelineTreeView.GroupBy;
+  readonly #onGroupByChanged = (): void => this.refreshTree();
 
   constructor(element?: HTMLElement) {
     super(element);
     this.groupBySetting = Common.Settings.Settings.instance().createSetting(
         'timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
-    this.groupBySetting.addChangeListener(() => this.refreshTree());
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
+  }
+
+  override refreshTree(forceRefresh = false): void {
+    if (this.element.parentElement || forceRefresh) {
+      this.#builtGroupBy = this.groupBySetting.get();
+    }
+    super.refreshTree(forceRefresh);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.groupBySetting.addChangeListener(this.#onGroupByChanged);
+    if (this.#builtGroupBy !== undefined && this.#builtGroupBy !== this.groupBySetting.get()) {
+      this.refreshTree();
+    }
+  }
+
+  override willHide(): void {
+    this.groupBySetting.removeChangeListener(this.#onGroupByChanged);
+    super.willHide();
   }
 
   setGroupBySetting(groupBy: AggregatedTimelineTreeView.GroupBy): void {

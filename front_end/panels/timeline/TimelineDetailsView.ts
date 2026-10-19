@@ -97,6 +97,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+  #boundsStateWhenHidden?: Readonly<TraceBounds.TraceBounds.TraceWindows<Trace.Types.Timing.Micro>>;
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
 
   static makeEventWidget(
@@ -199,9 +200,31 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
-    TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
-
     this.lazySelectorStatsView = null;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+    const micro = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro;
+    const prev = this.#boundsStateWhenHidden;
+    if (prev && micro &&
+        (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds ||
+         prev.timelineTraceWindow !== micro.timelineTraceWindow)) {
+      if (this.selection) {
+        void this.setSelection(this.selection);
+      } else {
+        this.scheduleUpdateContentsFromWindow();
+      }
+    }
+    this.#boundsStateWhenHidden = undefined;
+  }
+
+  override willHide(): void {
+    TraceBounds.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
+    const micro = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro;
+    this.#boundsStateWhenHidden = micro ? {...micro} : undefined;
+    super.willHide();
   }
 
   /**

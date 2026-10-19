@@ -4,8 +4,10 @@
 
 import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Trace from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
@@ -196,5 +198,35 @@ describe('TimelineDetailsView', function() {
         detailsView.element.querySelector('.tabbed-pane')?.shadowRoot?.querySelector('.tabbed-pane-header');
     assert.isOk(tabbedPaneHeader);
     assert.isTrue(tabbedPaneHeader.classList.contains('hidden'));
+    detailsView.detach();
+  });
+
+  it('stops listening to TraceBounds changes when hidden', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const evalScriptEvent = allThreadEntriesInTrace(parsedTrace).find(event => {
+      return event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.dur && event.dur > 2000;
+    });
+    assert.isOk(evalScriptEvent);
+
+    const detailsView = Timeline.TimelineDetailsView.TimelineDetailsPane.makeEventWidget(
+        evalScriptEvent,
+        parsedTrace,
+    );
+    renderElementIntoDOM(detailsView);
+    await doubleRaf();
+
+    detailsView.detach();
+    const setSelection = sinon.spy(detailsView, 'setSelection');
+    const {min, max} = parsedTrace.data.Meta.traceBounds;
+    const subBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+        min,
+        Trace.Types.Timing.Micro(max - 2_000),
+    );
+    TraceBounds.TraceBounds.BoundsManager.instance().setMiniMapBounds(subBounds);
+    sinon.assert.notCalled(setSelection);
+
+    renderElementIntoDOM(detailsView);
+    sinon.assert.calledOnce(setSelection);
+    detailsView.detach();
   });
 });

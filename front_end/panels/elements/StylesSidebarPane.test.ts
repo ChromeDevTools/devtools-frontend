@@ -4952,4 +4952,29 @@ describeWithEnvironment('StylesSidebarPane updates, completions, and media/keyfr
       sinon.assert.calledOnce(hideHighlightSpy);
     });
   });
+
+  it('re-runs filter on LIVE_LOCATION_UPDATED after a styles rebuild', async () => {
+    computedStyleModel.node = node;
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      cssModel,
+      node,
+      matchedPayload: [ruleMatch('div', {color: 'red'})],
+    });
+    sinon.stub(cssModel, 'cachedMatchedCascadeForNode').resolves(matchedStyles);
+    sinon.stub(cssModel, 'getComputedStyle').resolves(new Map());
+    sinon.stub(cssModel, 'getComputedStyleExtraFields').resolves({isAppearanceBase: false});
+
+    await stylesSidebarPane.performUpdate();
+    assert.isTrue(stylesSidebarPane.linkifier.hasEventListeners(Components.Linkifier.Events.LIVE_LOCATION_UPDATED));
+
+    stylesSidebarPane.setFilter(/long-stylesheet-name/);
+    const updateFilterSpy = sinon.spy(stylesSidebarPane.sectionBlocks[0], 'updateFilter');
+    stylesSidebarPane.linkifier.dispatchEventToListeners(
+        Components.Linkifier.Events.LIVE_LOCATION_UPDATED,
+        {} as unknown as Bindings.LiveLocation.LiveLocation,
+    );
+    await new Promise<void>(resolve => queueMicrotask(resolve));
+    sinon.assert.calledOnce(updateFilterSpy);
+  });
 });

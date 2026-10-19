@@ -307,21 +307,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
 
     this.#swatchPopoverHelper.addEventListener(InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER,
                                                this.hideAllPopovers, this);
-    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, () => {
-      if (!this.filterRegex() || this.#filterUpdateScheduled) {
-        return;
-      }
-      this.#filterUpdateScheduled = true;
-      queueMicrotask(() => {
-        if (!this.#filterUpdateScheduled) {
-          return;
-        }
-        this.#filterUpdateScheduled = false;
-        if (this.filterRegex()) {
-          this.updateFilter();
-        }
-      });
-    });
+    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, this.#onLiveLocationUpdated,
+                                    this);
     this.decorator = new StylePropertyHighlighter(this);
     this.contentElement.classList.add('styles-pane');
 
@@ -370,6 +357,22 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
       this.aiCodeCompletionProvider =
           StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
     }
+  }
+
+  #onLiveLocationUpdated(): void {
+    if (!this.filterRegex() || this.#filterUpdateScheduled) {
+      return;
+    }
+    this.#filterUpdateScheduled = true;
+    queueMicrotask(() => {
+      if (!this.#filterUpdateScheduled) {
+        return;
+      }
+      this.#filterUpdateScheduled = false;
+      if (this.filterRegex()) {
+        this.updateFilter();
+      }
+    });
   }
 
   get webCustomData(): WebCustomData|undefined {
@@ -1088,6 +1091,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
 
     this.#elementsForSyncViewportCheck = [];
     this.linkifier.reset();
+    this.linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, this.#onLiveLocationUpdated,
+                                    this);
     const node = this.node();
     if (this.#lastNode !== node) {
       // Clear inactive styles when a different node is selected.

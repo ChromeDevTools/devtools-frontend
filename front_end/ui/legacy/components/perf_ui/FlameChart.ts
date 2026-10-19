@@ -4445,7 +4445,7 @@ export interface FlameChartDataProvider {
 
   preparePopoverElement(entryIndex: number): Element|TemplateResult|null;
 
-  preparePopoverForCollapsedArrow?(entryIndex: number): Element|null;
+  preparePopoverForCollapsedArrow?(entryIndex: number): Element|TemplateResult|null;
 
   canJumpToEntry(entryIndex: number): boolean;
 

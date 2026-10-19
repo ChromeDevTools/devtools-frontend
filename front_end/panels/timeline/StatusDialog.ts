@@ -193,7 +193,7 @@ export class StatusDialog extends UI.Widget.VBox<ShadowRoot> {
   remove(): void {
     (this.element.parentNode as HTMLElement)?.classList.remove('opaque', 'tinted');
     this.stopTimer();
-    this.element.remove();
+    this.detach();
   }
 
   showPane(parent: Element, mode: 'tinted'|'opaque' = 'opaque'): void {

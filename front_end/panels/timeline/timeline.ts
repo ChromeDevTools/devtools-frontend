@@ -19,6 +19,7 @@ import * as ModificationsManager from './ModificationsManager.js';
 import * as NetworkTrackAppender from './NetworkTrackAppender.js';
 import * as RecordingMetadata from './RecordingMetadata.js';
 import * as SaveFileFormatter from './SaveFileFormatter.js';
+import * as StatusDialog from './StatusDialog.js';
 import * as TargetForEvent from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import * as ThreadAppender from './ThreadAppender.js';
@@ -64,6 +65,7 @@ export {
   NetworkTrackAppender,
   RecordingMetadata,
   SaveFileFormatter,
+  StatusDialog,
   TargetForEvent,
   ThirdPartyTreeView,
   ThreadAppender,

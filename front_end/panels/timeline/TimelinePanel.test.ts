@@ -830,4 +830,17 @@ describe('TimelinePanel', function() {
       sinon.assert.calledTwice(showDialogStub);
     });
   });
+
+  it('detaches StatusDialog from its parent widget when removed', () => {
+    const parentWidget = new UI.Widget.Widget();
+    parentWidget.show(timeline.element);
+    const dialog = new Timeline.StatusDialog.StatusDialog({hideStopButton: true}, () => {});
+    dialog.showPane(parentWidget.element);
+    assert.strictEqual(dialog.parentWidget(), parentWidget);
+    assert.isTrue(dialog.isShowing());
+
+    dialog.remove();
+    assert.isNull(dialog.parentWidget());
+    assert.isFalse(dialog.isShowing());
+  });
 });

@@ -4,9 +4,10 @@
 
 import {assert} from 'chai';
 import {after, afterEach, before, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Trace from '../../models/trace/trace.js';
-import {assertScreenshot} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace, renderWidgetInVbox} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -246,6 +247,38 @@ describe('TimelineTreeView', function() {
       await RenderCoordinator.done();
 
       assert.isAbove(callTreeView.dataGrid.rootNode().children.length, 0);
+      callTreeView.detach();
+    });
+
+    it('removes data grid selection listeners when hidden', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderElementIntoDOM(callTreeView);
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+      await RenderCoordinator.done();
+
+      for (let i = 0; i < 3; ++i) {
+        callTreeView.detach();
+        renderElementIntoDOM(callTreeView);
+      }
+
+      const rowClicked = sinon.spy();
+      callTreeView.addEventListener(Timeline.TimelineTreeView.TimelineTreeView.Events.TREE_ROW_CLICKED, rowClicked);
+      callTreeView.dataGrid.rootNode().children[0].deselect();
+      rowClicked.resetHistory();
+      callTreeView.dataGrid.rootNode().children[0].select();
+      sinon.assert.calledOnce(rowClicked);
+
+      rowClicked.resetHistory();
+      callTreeView.detach();
+      callTreeView.dataGrid.rootNode().children[0].deselect();
+      callTreeView.dataGrid.rootNode().children[0].select();
+      sinon.assert.notCalled(rowClicked);
     });
   });
 

@@ -746,9 +746,10 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node});
   }
 
-  override childWasDetached(_widget: UI.Widget.Widget): void {
-    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange);
-    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection);
+  override willHide(): void {
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection, this);
+    super.willHide();
   }
 
   /**

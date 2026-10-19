@@ -960,6 +960,24 @@ describeWithEnvironment('SecurityPanel', () => {
     assert.strictEqual(unknownOriginElement.textContent, 'https://does-not-resolve.test');
   });
 
+  it('shows informational explanations after regular explanations', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+
+    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Secure, null, null, ['pkp-bypassed']);
+    securityModel.dispatchEventToListeners(Security.SecurityModel.Events.VisibleSecurityStateChanged,
+                                           pageVisibleSecurityState);
+
+    const titles = securityPanel.mainView.contentElement.querySelectorAll('.security-explanation-title');
+    assert.deepEqual(Array.from(titles, title => title.textContent), [
+      'Resources - all served securely',
+      'Certificate - Public-Key-Pinning bypassed',
+    ]);
+  });
+
   it('shows an explanation for blocked mixed content and clears it on navigation', () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     renderElementIntoDOM(securityPanel);

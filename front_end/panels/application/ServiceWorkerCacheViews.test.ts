@@ -20,6 +20,7 @@ import * as Application from './application.js';
 
 describeWithEnvironment('ServiceWorkerCacheView', function() {
   let target: SDK.Target.Target;
+  let cacheEntries: Protocol.CacheStorage.DataEntry[];
   let cacheStorageModel: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
   let cache: SDK.ServiceWorkerCacheModel.Cache;
 
@@ -29,9 +30,43 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     storageKey: testStorageKey,
   };
 
+  function createTestEntry(overrides: Partial<Protocol.CacheStorage.DataEntry> = {}): Protocol.CacheStorage.DataEntry {
+    return {
+      requestURL: 'https://example.com/script.js',
+      requestMethod: 'GET',
+      requestHeaders: [],
+      responseTime: 1700000000,
+      responseStatus: 200,
+      responseStatusText: 'OK',
+      responseType: 'basic' as Protocol.CacheStorage.CachedResponseType,
+      responseHeaders: [
+        {name: 'content-type', value: 'application/javascript'},
+        {name: 'content-length', value: '1234'},
+        {name: 'vary', value: 'Accept-Encoding'},
+      ],
+      ...overrides,
+    };
+  }
+
+  function waitForUpdate(view: Application.ServiceWorkerCacheViews.ServiceWorkerCacheView): Promise<void> {
+    return new Promise<void>(resolve => {
+      const stub = sinon.stub(view as unknown as {updatedForTest: () => void}, 'updatedForTest').callsFake(() => {
+        stub.restore();
+        resolve();
+      });
+    });
+  }
+
   beforeEach(() => {
+    cacheEntries = [];
     const connection = new MockCDPConnection();
-    connection.setSuccessHandler('CacheStorage.requestEntries', () => ({cacheDataEntries: [], returnCount: 0}));
+    connection.setSuccessHandler('CacheStorage.requestEntries', params => {
+      const pathFilter = params.pathFilter ?? '';
+      const filtered = cacheEntries.filter(entry => entry.requestURL.includes(pathFilter));
+      return {cacheDataEntries: filtered, returnCount: filtered.length};
+    });
+    connection.setSuccessHandler('CacheStorage.requestCachedResponse', () => ({response: {body: ''}}));
+    connection.setSuccessHandler('CacheStorage.deleteEntry', () => ({}));
     target = createTarget({connection});
     cacheStorageModel = new SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel(target);
     cache = new SDK.ServiceWorkerCacheModel.Cache(cacheStorageModel, testStorageBucket, 'test-cache',
@@ -154,6 +189,110 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     } finally {
       view.detach();
       updateStub.restore();
+    }
+  });
+
+  it('renders populated cache entries in the data grid and summary bar', async () => {
+    cacheEntries = [
+      createTestEntry(),
+      createTestEntry({
+        requestURL: 'https://example.com/image.png',
+        responseType: 'opaqueResponse' as Protocol.CacheStorage.CachedResponseType,
+        responseHeaders: [{name: 'content-type', value: 'image/png'}],
+      }),
+    ];
+
+    const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
+    const updatedPromise = waitForUpdate(view);
+    view.markAsRoot();
+    renderElementIntoDOM(view);
+
+    try {
+      await updatedPromise;
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const nameCells = getCleanTextContentFromElements(view.element, '.data-grid td.name-column');
+      assert.deepEqual(nameCells, ['/script.js', '/image.png']);
+
+      const responseTypeCells = getCleanTextContentFromElements(view.element, '.data-grid td.response-type-column');
+      assert.deepEqual(responseTypeCells, ['basic', 'opaque']);
+
+      const contentTypeCells = getCleanTextContentFromElements(view.element, '.data-grid td.content-type-column');
+      assert.deepEqual(contentTypeCells, ['application/javascript', 'image/png']);
+
+      const varyHeaderCells = getCleanTextContentFromElements(view.element, '.data-grid td.vary-header-column');
+      assert.deepEqual(varyHeaderCells, ['Accept-Encoding', '']);
+
+      const summaryBar = view.element.querySelector('.cache-storage-summary-bar');
+      assert.isNotNull(summaryBar);
+      assert.strictEqual(summaryBar.textContent, 'Total entries: 2');
+    } finally {
+      view.detach();
+    }
+  });
+
+  it('filters entries by path and updates summary bar to show matching entries count', async () => {
+    cacheEntries = [
+      createTestEntry({requestURL: 'https://example.com/script.js'}),
+      createTestEntry({requestURL: 'https://example.com/style.css'}),
+    ];
+
+    const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
+    const initialUpdate = waitForUpdate(view);
+    view.markAsRoot();
+    renderElementIntoDOM(view);
+
+    try {
+      await initialUpdate;
+
+      const filterUpdate = waitForUpdate(view);
+      const filterPrompt = view.element.querySelector<HTMLElement>('.toolbar-input-prompt');
+      assert.isNotNull(filterPrompt);
+      filterPrompt.textContent = 'style';
+      filterPrompt.dispatchEvent(new Event('input', {bubbles: true}));
+
+      await filterUpdate;
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const nameCells = getCleanTextContentFromElements(view.element, '.data-grid td.name-column');
+      assert.deepEqual(nameCells, ['/style.css']);
+
+      const summaryBar = view.element.querySelector('.cache-storage-summary-bar');
+      assert.isNotNull(summaryBar);
+      assert.strictEqual(summaryBar.textContent, 'Matching entries: 1');
+    } finally {
+      view.detach();
+    }
+  });
+
+  it('previews the selected entry and deletes it when the delete button is clicked', async () => {
+    cacheEntries = [createTestEntry({requestURL: 'https://example.com/script.js'})];
+    const deleteSpy = sinon.spy(cacheStorageModel, 'deleteCacheEntry');
+
+    const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
+    const updatedPromise = waitForUpdate(view);
+    view.markAsRoot();
+    renderElementIntoDOM(view);
+
+    try {
+      await updatedPromise;
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const row = view.element.querySelector<HTMLElement>('.data-grid tbody tr.data-grid-data-grid-node');
+      assert.isNotNull(row);
+      row.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      const tabbedPane = view.element.querySelector('.tabbed-pane');
+      assert.isNotNull(tabbedPane, 'Expected RequestView tabbed pane to be shown when an entry is selected');
+
+      const deleteButton = view.element.querySelector<HTMLElement>('devtools-button[aria-label="Delete selected"]');
+      assert.isNotNull(deleteButton);
+      deleteButton.click();
+
+      sinon.assert.calledOnceWithExactly(deleteSpy, cache, 'https://example.com/script.js');
+    } finally {
+      view.detach();
     }
   });
 });

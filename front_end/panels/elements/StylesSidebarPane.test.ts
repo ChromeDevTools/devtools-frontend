@@ -2407,6 +2407,8 @@ describe('StylesSidebarPane', () => {
       });
 
       it('cleans up toolbar when the feature is disabled', async () => {
+        const detachSpy =
+            sinon.spy(PanelsCommon.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar.prototype, 'detach');
         const providerConfig = stylesSidebarPane.aiCodeCompletionConfig;
         assert.exists(providerConfig);
         providerConfig.onFeatureEnabled();
@@ -2414,6 +2416,7 @@ describe('StylesSidebarPane', () => {
 
         providerConfig.onFeatureDisabled();
 
+        sinon.assert.calledOnce(detachSpy);
         assert.notExists(
             stylesWrapper.contentElement.querySelector('div.ai-code-completion-summary-toolbar-container'));
       });

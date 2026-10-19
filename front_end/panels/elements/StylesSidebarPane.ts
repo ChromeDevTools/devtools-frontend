@@ -1834,6 +1834,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   }
 
   #cleanupAiCodeCompletion(): void {
+    this.#aiCodeCompletionSummaryToolbar?.detach();
     this.#aiCodeCompletionSummaryToolbarContainer?.remove();
     this.#aiCodeCompletionSummaryToolbarContainer = undefined;
     this.#aiCodeCompletionSummaryToolbar = undefined;

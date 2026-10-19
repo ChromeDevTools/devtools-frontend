@@ -286,7 +286,10 @@ export class StorageMetadataView extends UI.Widget.Widget {
     return this.element.shadowRoot;
   }
 
-  setStorageKey(storageKey: string): void {
+  set storageKey(storageKey: string|undefined) {
+    if (storageKey === undefined) {
+      return;
+    }
     const parsedStorageKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
     if (this.#storageKey && this.#storageKey.origin === parsedStorageKey.origin &&
         this.#storageKey.components.size === parsedStorageKey.components.size &&
@@ -298,16 +301,19 @@ export class StorageMetadataView extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  setStorageBucket(storageBucket: Protocol.Storage.StorageBucketInfo): void {
-    if (this.#storageBucket === storageBucket) {
+  set storageBucket(storageBucket: Protocol.Storage.StorageBucketInfo|null|undefined) {
+    const newBucket = storageBucket ?? null;
+    if (this.#storageBucket === newBucket) {
       return;
     }
-    this.#storageBucket = storageBucket;
-    this.setStorageKey(storageBucket.bucket.storageKey);
+    this.#storageBucket = newBucket;
+    if (newBucket) {
+      this.storageKey = newBucket.bucket.storageKey;
+    }
     this.requestUpdate();
   }
 
-  setShowOnlyBucket(show: boolean): void {
+  set showOnlyBucket(show: boolean) {
     if (this.#showOnlyBucket === show) {
       return;
     }

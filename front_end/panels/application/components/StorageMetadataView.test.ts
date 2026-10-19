@@ -31,9 +31,9 @@ async function makeView(
     component.enableStorageBucketControls(storageBucketsModel);
   }
   if (typeof storageKeyOrBucketInfo === 'string') {
-    component.setStorageKey(storageKeyOrBucketInfo);
+    component.storageKey = storageKeyOrBucketInfo;
   } else {
-    component.setStorageBucket(storageKeyOrBucketInfo);
+    component.storageBucket = storageKeyOrBucketInfo;
   }
   await component.updateComplete;
   return component.element;
@@ -315,8 +315,8 @@ describe('StorageMetadataView', () => {
       persistent: false,
       durability: Protocol.Storage.StorageBucketsDurability.Relaxed,
     };
-    component.setStorageBucket(bucketInfo);
-    component.setShowOnlyBucket(true);
+    component.storageBucket = bucketInfo;
+    component.showOnlyBucket = true;
     await component.updateComplete;
 
     const report = component.shadowRoot!.querySelector('devtools-report');

@@ -168,7 +168,7 @@ export class StorageItemsToolbar extends StorageItemsToolbarBase {
   }
 
   setStorageKey(storageKey: string): void {
-    this.metadataView.setStorageKey(storageKey);
+    this.metadataView.storageKey = storageKey;
   }
 
   filterChanged({detail: text}: CustomEvent<string|null>): void {

@@ -37,25 +37,24 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
   private bucketTreeElements = new Set<StorageBucketsTreeElement>();
 
   constructor(storagePanel: ResourcesPanel) {
-    super(
-        storagePanel, i18nString(UIStrings.storageBuckets), i18nString(UIStrings.noStorageBuckets),
-        i18nString(UIStrings.storageBucketsDescription), 'storage-buckets');
+    super(storagePanel, i18nString(UIStrings.storageBuckets), i18nString(UIStrings.noStorageBuckets),
+          i18nString(UIStrings.storageBucketsDescription), 'storage-buckets');
     const icon = createIcon('bucket');
     this.setLeadingIcons([icon]);
-    this.setLink(
-        'https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md' as Platform.DevToolsPath.UrlString);
+    this.setLink('https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md' as
+                 Platform.DevToolsPath.UrlString);
   }
 
   initialize(): void {
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BUCKET_ADDED, this.bucketAdded,
-        this);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BUCKET_REMOVED, this.bucketRemoved,
-        this);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.StorageBucketsModel.StorageBucketsModel, SDK.StorageBucketsModel.Events.BUCKET_CHANGED, this.bucketChanged,
-        this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.StorageBucketsModel.StorageBucketsModel,
+                                                                SDK.StorageBucketsModel.Events.BUCKET_ADDED,
+                                                                this.bucketAdded, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.StorageBucketsModel.StorageBucketsModel,
+                                                                SDK.StorageBucketsModel.Events.BUCKET_REMOVED,
+                                                                this.bucketRemoved, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.StorageBucketsModel.StorageBucketsModel,
+                                                                SDK.StorageBucketsModel.Events.BUCKET_CHANGED,
+                                                                this.bucketChanged, this);
 
     for (const bucketsModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.StorageBucketsModel.StorageBucketsModel)) {
@@ -97,8 +96,8 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
     idbDatabaseTreeElement.bucketInfo = bucketInfo;
   }
 
-  private addBucketTreeElement(
-      model: SDK.StorageBucketsModel.StorageBucketsModel, bucketInfo: Protocol.Storage.StorageBucketInfo): void {
+  private addBucketTreeElement(model: SDK.StorageBucketsModel.StorageBucketsModel,
+                               bucketInfo: Protocol.Storage.StorageBucketInfo): void {
     if (bucketInfo.bucket.name === undefined) {
       return;
     }
@@ -136,9 +135,8 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
   private bucketModel: SDK.StorageBucketsModel.StorageBucketsModel;
   private view?: StorageMetadataView.StorageMetadataView;
 
-  constructor(
-      resourcesPanel: ResourcesPanel, model: SDK.StorageBucketsModel.StorageBucketsModel,
-      bucketInfo: Protocol.Storage.StorageBucketInfo) {
+  constructor(resourcesPanel: ResourcesPanel, model: SDK.StorageBucketsModel.StorageBucketsModel,
+              bucketInfo: Protocol.Storage.StorageBucketInfo) {
     const {bucket} = bucketInfo;
     const {origin} = SDK.StorageKeyManager.parseStorageKey(bucketInfo.bucket.storageKey);
     super(resourcesPanel, `${bucket.name} - ${origin}`, '', '', 'storage-bucket');
@@ -173,7 +171,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
   set bucketInfo(bucketInfo: Protocol.Storage.StorageBucketInfo) {
     this.storageBucketInfo = bucketInfo;
     if (this.view) {
-      this.view.setStorageBucket(this.storageBucketInfo);
+      this.view.storageBucket = this.storageBucketInfo;
     }
   }
 
@@ -182,7 +180,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
     if (!this.view) {
       this.view = new StorageMetadataView.StorageMetadataView();
       this.view.enableStorageBucketControls(this.model);
-      this.view.setStorageBucket(this.storageBucketInfo);
+      this.view.storageBucket = this.storageBucketInfo;
     }
     this.showView(this.view);
     return false;

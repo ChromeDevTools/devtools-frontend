@@ -1843,6 +1843,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private cleanupAiCodeCompletion(): void {
+    this.aiCodeCompletionSummaryToolbar?.detach();
     this.aiCodeCompletionSummaryToolbarContainer?.remove();
     this.aiCodeCompletionSummaryToolbarContainer = undefined;
     this.aiCodeCompletionSummaryToolbar = undefined;

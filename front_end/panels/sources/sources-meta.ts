@@ -228,11 +228,6 @@ const UIStrings = {
    */
   createNewSnippet: 'Create new snippet',
   /**
-   * @description Button in the Workspace tab of the Sources panel, used to
-   *              (manually) add a folder to the workspace.
-   */
-  addFolderManually: 'Add folder manually',
-  /**
    * @description Title of an action in the Sources panel command menu to (manually)
    *              add a folder to the workspace.
    */
@@ -564,9 +559,9 @@ UI.ViewManager.registerViewExtension({
   order: 3,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: () => !Root.Runtime.Runtime.isTraceApp(),
-  async loadView(universe) {
+  async loadView() {
     const Sources = await loadSourcesModule();
-    return new Sources.SourcesNavigator.FilesNavigatorView(universe.networkProjectManager);
+    return new Sources.SourcesNavigator.FilesNavigatorView();
   },
 });
 
@@ -2053,12 +2048,6 @@ Common.Revealer.registerRevealer({
     const Sources = await loadSourcesModule();
     return new Sources.SearchSourcesView.Revealer();
   },
-});
-
-UI.Toolbar.registerToolbarItem({
-  actionId: 'sources.add-folder-to-workspace',
-  location: UI.Toolbar.ToolbarItemLocation.FILES_NAVIGATION_TOOLBAR,
-  label: i18nLazyString(UIStrings.addFolderManually),
 });
 
 UI.Context.registerListener({

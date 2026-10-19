@@ -182,7 +182,7 @@ export interface ViewInput {
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
-  const showPlaceholder = Boolean(input.placeholder && !input.showTree);
+  const showPlaceholder = !input.showTree;
   // clang-format off
   render(
       html`

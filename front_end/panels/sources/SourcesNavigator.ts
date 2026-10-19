@@ -4,6 +4,7 @@
 
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
@@ -15,8 +16,8 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -26,6 +27,7 @@ import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const {html, render, Directives: {ref}} = Lit;
+const {bindToAction} = UI.UIUtils;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -37,6 +39,11 @@ const UIStrings = {
    * @description Text to explain the workspace feature in the Sources panel. Learn more at https://goo.gle/devtools-workspace.
    */
   explainWorkspace: 'Set up workspaces to sync edits directly to the sources you develop',
+  /**
+   * @description Button in the Workspace tab of the Sources panel, used to
+   *              (manually) add a folder to the workspace.
+   */
+  addFolderManually: 'Add folder manually',
   /**
    * @description Text to show if no local overrides are set up. Learn more at https://goo.gle/devtools-overrides.
    */
@@ -256,57 +263,100 @@ export class NetworkNavigatorView extends SourcesNavigatorView {
   }
 }
 
-export class FilesNavigatorView extends NavigatorView {
+export interface FilesNavigatorViewInput {
+  projectFilter: (project: Workspace.Workspace.Project) => boolean;
+  showAutomaticFileSystemNudge: boolean;
+  onContextMenu: (event: Event) => void;
+  onSourceSelected: () => void;
+}
+
+export type FilesNavigatorViewFunc =
+    (input: FilesNavigatorViewInput, output: SourcesNavigatorViewOutput, target: HTMLElement) => void;
+
+export const FILES_NAVIGATOR_DEFAULT_VIEW: FilesNavigatorViewFunc = (input, output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${sourcesNavigatorStyles}</style>
+        <devtools-widget
+          jslog=${VisualLogging.pane('navigator-files').track({resize: true})}
+          @contextmenu=${input.onContextMenu}
+          @source-selected=${input.onSourceSelected}
+          ${widget(NavigatorView, {
+            projectFilter: input.projectFilter,
+          })}
+          ${ref(e => {
+            if (e instanceof UI.Widget.WidgetElement) {
+              output.navigatorView = e;
+            }
+          })}
+        >
+          <devtools-toolbar class="navigator-toolbar" slot="header">
+            <devtools-button
+              class="toolbar-button"
+              .iconName=${'plus'}
+              .variant=${Buttons.Button.Variant.TEXT}
+              .reducedFocusRing=${true}
+              ${bindToAction('sources.add-folder-to-workspace')}
+            >${i18nString(UIStrings.addFolderManually)}</devtools-button>
+          </devtools-toolbar>
+          <span class="automatic-file-system-nudge" slot="header" ?hidden=${!input.showAutomaticFileSystemNudge}>
+            ${uiI18n.getFormatLocalizedStringTemplate(
+                str_, UIStrings.automaticWorkspaceNudge,
+                {PH1: html`<devtools-link href="https://goo.gle/devtools-automatic-workspace-folders">com.chrome.devtools.json</devtools-link>`})}
+          </span>
+          <devtools-widget
+            slot="placeholder"
+            ${widget(UI.EmptyWidget.EmptyWidget, {
+              header: i18nString(UIStrings.noWorkspace),
+              text: i18nString(UIStrings.explainWorkspace),
+              link: 'https://developer.chrome.com/docs/devtools/workspaces/' as Platform.DevToolsPath.UrlString,
+            })}
+          ></devtools-widget>
+        </devtools-widget>
+      `,
+      target);
+  // clang-format on
+};
+
+export class FilesNavigatorView extends SourcesNavigatorView {
+  #view: FilesNavigatorViewFunc;
   #automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
   #eventListeners: Common.EventTarget.EventDescriptor[] = [];
-  #automaticFileSystemNudge: HTMLSpanElement;
 
-  constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-files').track({resize: true})}`,
-    });
-    this.registerRequiredCSS(sourcesNavigatorStyles);
-    const placeholder =
-        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noWorkspace), i18nString(UIStrings.explainWorkspace));
-    this.setPlaceholder(placeholder);
-    placeholder.link = 'https://developer.chrome.com/docs/devtools/workspaces/' as Platform.DevToolsPath.UrlString;
-
-    const link = Link.create('https://goo.gle/devtools-automatic-workspace-folders', 'com.chrome.devtools.json');
-    this.#automaticFileSystemNudge =
-        uiI18n.getFormatLocalizedString(str_, UIStrings.automaticWorkspaceNudge, {PH1: link});
-    this.#automaticFileSystemNudge.classList.add('automatic-file-system-nudge');
-    this.contentElement.insertBefore(this.#automaticFileSystemNudge, this.contentElement.firstChild);
-
-    const toolbar = document.createElement('devtools-toolbar');
-    toolbar.classList.add('navigator-toolbar');
-    void toolbar.appendItemsAtLocation('files-navigator-toolbar').then(() => {
-      if (!toolbar.empty()) {
-        this.contentElement.insertBefore(toolbar, this.contentElement.firstChild);
-      }
-    });
+  constructor(element?: HTMLElement, view: FilesNavigatorViewFunc = FILES_NAVIGATOR_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
 
   override wasShown(): void {
     super.wasShown();
     this.#eventListeners = [
       this.#automaticFileSystemManager.addEventListener(
-          Persistence.AutomaticFileSystemManager.Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#automaticFileSystemChanged,
-          this),
+          Persistence.AutomaticFileSystemManager.Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.requestUpdate, this),
       this.#automaticFileSystemManager.addEventListener(
-          Persistence.AutomaticFileSystemManager.Events.AVAILABILITY_CHANGED, this.#availabilityChanged, this),
+          Persistence.AutomaticFileSystemManager.Events.AVAILABILITY_CHANGED, this.requestUpdate, this),
     ];
-    this.#automaticFileSystemChanged({data: this.#automaticFileSystemManager.automaticFileSystem});
   }
 
   override willHide(): void {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
-    this.#automaticFileSystemChanged({data: null});
     super.willHide();
   }
 
-  override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
+  override performUpdate(): void {
+    const {automaticFileSystem, availability} = this.#automaticFileSystemManager;
+    this.#view({
+      projectFilter: this.projectFilter,
+      showAutomaticFileSystemNudge: automaticFileSystem === null && availability === 'available',
+      onContextMenu: this.handleContextMenu.bind(this),
+      onSourceSelected: this.sourceSelected.bind(this),
+    },
+               this.viewOutput, this.contentElement);
+  }
+
+  sourceSelected(): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceSourceSelected);
-    super.sourceSelected(uiSourceCode, focusSource);
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {
@@ -318,25 +368,10 @@ export class FilesNavigatorView extends NavigatorView {
         !Snippets.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
 
-  override handleContextMenu(event: Event): void {
+  handleContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
     void contextMenu.show();
-  }
-
-  #automaticFileSystemChanged(
-      _event: Common.EventTarget.EventTargetEvent<Persistence.AutomaticFileSystemManager.AutomaticFileSystem|null>):
-      void {
-    this.#availabilityChanged({data: this.#automaticFileSystemManager.availability});
-  }
-
-  #availabilityChanged(
-      event:
-          Common.EventTarget.EventTargetEvent<Persistence.AutomaticFileSystemManager.AutomaticFileSystemAvailability>):
-      void {
-    const availability = event.data;
-    const {automaticFileSystem} = this.#automaticFileSystemManager;
-    this.#automaticFileSystemNudge.hidden = automaticFileSystem !== null || availability !== 'available';
   }
 }
 

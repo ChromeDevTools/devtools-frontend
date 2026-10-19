@@ -18,7 +18,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
@@ -707,7 +707,6 @@ describe('FilesNavigatorView', () => {
 
   let workspace: Workspace.Workspace.WorkspaceImpl;
   let backend: MockDebuggerBackend;
-  let networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
 
   beforeEach(() => {
     backend = new MockDebuggerBackend();
@@ -730,24 +729,48 @@ describe('FilesNavigatorView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
+    UI.ActionRegistration.maybeRemoveActionExtension('sources.add-folder-to-workspace');
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'sources.add-folder-to-workspace',
+      iconClass: UI.ActionRegistration.IconClass.PLUS,
+      title: () => 'Add folder to workspace' as Platform.UIString.LocalizedString,
+      category: UI.ActionRegistration.ActionCategory.SOURCES,
+    });
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
 
-    const automaticFileSystemManager =
-        sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
     sinon.stub(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager, 'instance')
-        .returns(automaticFileSystemManager);
+        .returns(backend.universe.automaticFileSystemManager);
 
-    networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
+    setTestUniverseForWidgets(backend.universe);
   });
 
+  async function createFilesNavigatorView(): Promise<Sources.NavigatorView.NavigatorView> {
+    const filesNavigatorView = new Sources.SourcesNavigator.FilesNavigatorView();
+    renderElementIntoDOM(filesNavigatorView, {includeCommonStyles: true});
+    await filesNavigatorView.updateComplete;
+    const navigatorView =
+        filesNavigatorView.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
+    assert.exists(navigatorView);
+    await navigatorView.updateComplete;
+    await raf();
+    return navigatorView;
+  }
   afterEach(async () => {
     await deinitializeGlobalVars();
   });
 
+  it('renders the empty state with placeholder and automatic file system nudge', async () => {
+    sinon.stub(backend.universe.automaticFileSystemManager, 'availability').get(() => 'available');
+    await createFilesNavigatorView();
+
+    await assertScreenshot('sources/files-navigator-empty.png');
+  });
+
   it('shows context menu on placeholder', async () => {
-    const navigatorView = new Sources.SourcesNavigator.FilesNavigatorView(networkProjectManager);
+    const navigatorView = new Sources.SourcesNavigator.FilesNavigatorView();
     const contextMenuSpy = sinon.spy(navigatorView, 'handleContextMenu');
+    renderElementIntoDOM(navigatorView);
     await navigatorView.updateComplete;
 
     const placeholderContainer = navigatorView.contentElement.querySelector('devtools-widget');
@@ -779,8 +802,9 @@ describe('FilesNavigatorView', () => {
       universe: backend.universe,
     });
 
-    const navigatorView = new Sources.SourcesNavigator.FilesNavigatorView(networkProjectManager);
-    await navigatorView.updateComplete;
+    const navigatorView = await createFilesNavigatorView();
+
+    await assertScreenshot('sources/files-navigator-populated.png');
 
     const rootElement = navigatorView.scriptsTree.rootElement();
     const children = rootElement.children();
@@ -814,8 +838,7 @@ describe('FilesNavigatorView', () => {
       universe: backend.universe,
     });
 
-    const navigatorView = new Sources.SourcesNavigator.FilesNavigatorView(networkProjectManager);
-    await navigatorView.updateComplete;
+    const navigatorView = await createFilesNavigatorView();
 
     // Stub createFile on the platform file system to simulate successful creation.
     const createFileStub = sinon.stub(project.fileSystem(), 'createFile');

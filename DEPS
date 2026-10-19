@@ -12,13 +12,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '2dd9151c997c4571aa017ac86f68620f056eb0c9',
+  'build_revision': '78db0371fa87cd001dd309022664f86d8e27a7b0',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '54989aa9486c639962bec871e62404cbe3ea1667',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'd38909eb68d85b91259f4bf20fe5ebcd38461bc2',
+  'depot_tools_revision': 'd577332cf25a37dee72e27bc6e469e044a924c98',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'b8141806c6b0382b0b741d5c23d45c85168644e6',
@@ -65,7 +65,7 @@ vars = {
   'cpython3_version': 'version:3@3.11.9.chromium.38',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:b521b230cb7c56c821235e498285cf8e548a73ee',
+  'siso_version': 'git_revision:7ab4814901b3c7afc2dddf2ed1a6ff238a0d85c5',
 
   # Fetches the AI Evals testing data.
   'checkout_devtools_ai_evals': False,

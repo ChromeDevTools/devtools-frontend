@@ -807,12 +807,15 @@ describe('bindToSetting (string)', () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     const inputRef = Lit.Directives.createRef<HTMLInputElement>();
-    Lit.render(html`<input ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, opts)}>`, container);
+    const render = () => {
+      Lit.render(html`<input ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, opts)}>`, container);
+    };
+    render();
 
     const input = inputRef.value;
     assert.exists(input);
 
-    return {input, setting, container};
+    return {input, setting, container, render};
   }
 
   it('shows the current value on initial render', () => {
@@ -872,6 +875,24 @@ describe('bindToSetting (string)', () => {
 
     assert.isFalse(input.isConnected);
     assert.strictEqual(input.value, 'defaultValue');
+
+    input.value = 'new value via user edit';
+    input.dispatchEvent(new Event('change'));
+
+    assert.strictEqual(setting.get(), 'new value via change listener');
+  });
+
+  it('does not stack listeners across multiple renders', () => {
+    const {setting, input, render} = setup();
+    const setSpy = sinon.spy(setting, 'set');
+    for (let i = 0; i < 4; i++) {
+      render();
+    }
+
+    input.value = 'new value via user edit';
+    input.dispatchEvent(new Event('change'));
+
+    sinon.assert.calledOnceWithExactly(setSpy, 'new value via user edit');
   });
 });
 
@@ -882,14 +903,17 @@ describe('bindToSetting (boolean)', () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     const inputRef = Lit.Directives.createRef<UI.UIUtils.CheckboxLabel>();
-    Lit.render(
-        html`<devtools-checkbox ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, opts)}></devtools-checkbox>`,
-        container);
+    const render = () => {
+      Lit.render(
+          html`<devtools-checkbox ${Lit.Directives.ref(inputRef)} ${bindToSetting(setting, opts)}></devtools-checkbox>`,
+          container);
+    };
+    render();
 
     const input = inputRef.value;
     assert.exists(input);
 
-    return {input, setting, container};
+    return {input, setting, container, render};
   }
 
   it('shows the current value on initial render', () => {
@@ -935,6 +959,24 @@ describe('bindToSetting (boolean)', () => {
 
     assert.isFalse(input.isConnected);
     assert.isTrue(input.checked);
+
+    input.checked = true;
+    input.dispatchEvent(new Event('change'));
+
+    assert.isFalse(setting.get());
+  });
+
+  it('does not stack listeners across multiple renders', () => {
+    const {setting, input, render} = setup();
+    const setSpy = sinon.spy(setting, 'set');
+    for (let i = 0; i < 4; i++) {
+      render();
+    }
+
+    input.checked = false;
+    input.dispatchEvent(new Event('change'));
+
+    sinon.assert.calledOnceWithExactly(setSpy, false);
   });
 });
 

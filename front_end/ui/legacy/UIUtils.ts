@@ -1387,13 +1387,16 @@ export class DevToolsCloseButton extends HTMLElement {
 // eslint-disable-next-line @devtools/enforce-custom-element-prefix
 customElements.define('dt-close-button', DevToolsCloseButton);
 
-export function bindInput(
-    input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => boolean, numeric: boolean,
-    modifierMultiplier?: number): (arg0: string) => void {
+export function bindInput(input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => boolean,
+                          numeric: boolean, modifierMultiplier?: number): {
+  setValue: (arg0: string) => void,
+  cleanup: () => void,
+} {
+  const onFocus = input.select.bind(input);
   input.addEventListener('change', onChange, false);
   input.addEventListener('input', onInput, false);
   input.addEventListener('keydown', onKeyDown, false);
-  input.addEventListener('focus', input.select.bind(input), false);
+  input.addEventListener('focus', onFocus, false);
 
   function onInput(): void {
     input.classList.toggle('error-input', !validate(input.value));
@@ -1442,7 +1445,14 @@ export function bindInput(
     input.value = value;
   }
 
-  return setValue;
+  function cleanup(): void {
+    input.removeEventListener('change', onChange, false);
+    input.removeEventListener('input', onInput, false);
+    input.removeEventListener('keydown', onKeyDown, false);
+    input.removeEventListener('focus', onFocus, false);
+  }
+
+  return {setValue, cleanup};
 }
 
 export function trimText(
@@ -2358,15 +2368,18 @@ export function getDevToolsBoundingElement(): HTMLElement {
 /**
  * @deprecated Prefer {@link bindToSetting} as this function leaks the checkbox via the setting listener.
  */
-export const bindCheckbox = function(
-    input: CheckboxLabel, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
-  const setValue = bindCheckboxImpl(input, setting.set.bind(setting), metric);
+export const bindCheckbox = function(input: CheckboxLabel, setting: Common.Settings.Setting<boolean>,
+                                     metric?: UserMetricOptions): void {
+  const {setValue} = bindCheckboxImpl(input, setting.set.bind(setting), metric);
   setting.addChangeListener(event => setValue(event.data));
   setValue(setting.get());
 };
 
-export const bindCheckboxImpl = function(
-    input: CheckboxLabel, apply: (value: boolean) => void, metric?: UserMetricOptions): (value: boolean) => void {
+export const bindCheckboxImpl = function(input: CheckboxLabel, apply: (value: boolean) => void,
+                                         metric?: UserMetricOptions): {
+  setValue: (value: boolean) => void,
+  cleanup: () => void,
+} {
   input.addEventListener('change', onInputChanged, false);
 
   function onInputChanged(): void {
@@ -2385,10 +2398,15 @@ export const bindCheckboxImpl = function(
     }
   }
 
-  return function setValue(value: boolean): void {
-    if (value !== input.checked) {
-      input.checked = value;
-    }
+  return {
+    setValue(value: boolean): void {
+      if (value !== input.checked) {
+        input.checked = value;
+      }
+    },
+    cleanup(): void {
+      input.removeEventListener('change', onInputChanged, false);
+    },
   };
 };
 
@@ -2418,21 +2436,17 @@ export const bindToSetting =
       // be able to remove it again.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let setValue: (value: any) => void;
+      let cleanup: (() => void)|undefined;
       function settingChanged(): void {
         setValue(setting.get());
       }
 
       if (setting.type() === Common.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === 'boolean') {
-        let attachedButton: Buttons.Button.Button|undefined;
-        let clickListener: (() => void)|undefined;
-
         return Directives.ref(e => {
           if (e === undefined) {
             setting.removeChangeListener(settingChanged);
-            if (attachedButton && clickListener) {
-              attachedButton.removeEventListener('click', clickListener);
-              attachedButton = undefined;
-            }
+            cleanup?.();
+            cleanup = undefined;
             return;
           }
           if (jslog) {
@@ -2444,17 +2458,19 @@ export const bindToSetting =
           setting.addChangeListener(settingChanged);
 
           if (e instanceof Buttons.Button.Button) {
-            attachedButton = e;
-            clickListener = (): void => {
+            const clickListener = (): void => {
               (setting as Common.Settings.Setting<boolean>).set(!setting.get());
             };
             e.addEventListener('click', clickListener);
+            cleanup = () => {
+              e.removeEventListener('click', clickListener);
+            };
             setValue = (value: boolean): void => {
               e.toggled = value;
             };
           } else {
-            setValue =
-                bindCheckboxImpl(e as CheckboxLabel, (setting as Common.Settings.Setting<boolean>).set.bind(setting));
+            ({setValue, cleanup} =
+                 bindCheckboxImpl(e as CheckboxLabel, (setting as Common.Settings.Setting<boolean>).set.bind(setting)));
           }
           setValue(setting.get());
         });
@@ -2466,6 +2482,8 @@ export const bindToSetting =
         return Directives.ref(e => {
           if (e === undefined) {
             setting.removeChangeListener(settingChanged);
+            cleanup?.();
+            cleanup = undefined;
             return;
           }
 
@@ -2473,14 +2491,14 @@ export const bindToSetting =
             e.setAttribute('jslog', jslogBuilder.toString());
           }
           setting.addChangeListener(settingChanged);
-          setValue = bindInput(e as HTMLInputElement, setting.set.bind(setting), (value: string) => {
-            try {
-              new RegExp(value);
-              return true;
-            } catch {
-              return false;
-            }
-          }, /* numeric */ false);
+          ({setValue, cleanup} = bindInput(e as HTMLInputElement, setting.set.bind(setting), (value: string) => {
+             try {
+               new RegExp(value);
+               return true;
+             } catch {
+               return false;
+             }
+           }, /* numeric */ false));
           setValue(setting.get());
         });
       }
@@ -2489,6 +2507,8 @@ export const bindToSetting =
         return Directives.ref(e => {
           if (e === undefined) {
             setting.removeChangeListener(settingChanged);
+            cleanup?.();
+            cleanup = undefined;
             return;
           }
 
@@ -2496,8 +2516,8 @@ export const bindToSetting =
             e.setAttribute('jslog', jslogBuilder.toString());
           }
           setting.addChangeListener(settingChanged);
-          setValue = bindInput(
-              e as HTMLInputElement, setting.set.bind(setting), stringValidator ?? (() => true), /* numeric */ false);
+          ({setValue, cleanup} = bindInput(e as HTMLInputElement, setting.set.bind(setting),
+                                           stringValidator ?? (() => true), /* numeric */ false));
           setValue(setting.get());
         });
       }

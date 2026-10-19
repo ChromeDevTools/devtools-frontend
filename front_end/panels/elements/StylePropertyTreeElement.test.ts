@@ -854,6 +854,24 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
       commit('position-area: bottom center');
     });
+
+    it('initializes the position-area editor with the computed value when the authored value uses var()', async () => {
+      mockVariableMap['--area'] = 'top left';
+      const stylePropertyTreeElement = getTreeElement('position-area', 'var(--area)');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+
+      const button = stylePropertyTreeElement.valueElement.querySelector<HTMLElement>('.position-area-swatch-icon');
+      assert.exists(button);
+      button.click();
+
+      sinon.assert.calledOnce(showPopover);
+      const editor = showPopover.firstCall.args[0];
+      assert.instanceOf(editor, InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      assert.exists(editor.area);
+      assert.strictEqual(InlineEditor.PositionAreaEditor.stringifyPositionArea(editor.area), 'top left');
+      hideLastPopover();
+    });
   });
 
   describe('Context menu', () => {

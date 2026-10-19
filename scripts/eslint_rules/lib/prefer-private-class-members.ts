@@ -69,7 +69,7 @@ export default createRule({
       const memberFixes: TSESTree.Identifier[] = [];
       let isSafe = true;
 
-      function visit(current: TSESTree.Node): void {
+      function visit(current: TSESTree.Node, inStaticContext = false, inReboundThis = false): void {
         if (!isSafe) {
           return;
         }
@@ -83,6 +83,34 @@ export default createRule({
           return;
         }
 
+        if (current.parent === classBody) {
+          if (current.type === AST_NODE_TYPES.StaticBlock) {
+            inStaticContext = true;
+          } else if (current.type === AST_NODE_TYPES.MethodDefinition ||
+                     current.type === AST_NODE_TYPES.PropertyDefinition ||
+                     current.type === AST_NODE_TYPES.AccessorProperty) {
+            inStaticContext = current.static;
+          }
+        }
+
+        if (current.type === AST_NODE_TYPES.FunctionDeclaration ||
+            (current.type === AST_NODE_TYPES.FunctionExpression &&
+             !(current.parent.type === AST_NODE_TYPES.MethodDefinition && current.parent.parent === classBody))) {
+          inReboundThis = true;
+        }
+
+        if (current.type === AST_NODE_TYPES.ObjectPattern) {
+          for (const prop of current.properties) {
+            if (prop.type === AST_NODE_TYPES.Property) {
+              if ((!prop.computed && prop.key.type === AST_NODE_TYPES.Identifier && prop.key.name === memberName) ||
+                  (prop.computed && prop.key.type === AST_NODE_TYPES.Literal && prop.key.value === memberName)) {
+                isSafe = false;
+                return;
+              }
+            }
+          }
+        }
+
         if (current.type === AST_NODE_TYPES.MemberExpression) {
           if (current.computed) {
             if (current.property.type === AST_NODE_TYPES.Literal && current.property.value === memberName) {
@@ -90,17 +118,20 @@ export default createRule({
               return;
             }
           } else if (current.property.type === AST_NODE_TYPES.Identifier && current.property.name === memberName) {
-            if (!node.static && current.object.type === AST_NODE_TYPES.ThisExpression) {
-              memberFixes.push(current.property);
-            } else if (node.static &&
-                       (current.object.type === AST_NODE_TYPES.ThisExpression ||
-                        (current.object.type === AST_NODE_TYPES.Identifier &&
-                         (classNode.type === AST_NODE_TYPES.ClassDeclaration ||
-                          classNode.type === AST_NODE_TYPES.ClassExpression) &&
-                         classNode.id?.name === current.object.name))) {
+            if (current.parent.type === AST_NODE_TYPES.UnaryExpression && current.parent.operator === 'delete') {
+              isSafe = false;
+              return;
+            }
+            const isValidThis = !inReboundThis && current.object.type === AST_NODE_TYPES.ThisExpression &&
+                Boolean(node.static) === Boolean(inStaticContext);
+            const isValidStaticClassRef = Boolean(node.static) && current.object.type === AST_NODE_TYPES.Identifier &&
+                (classNode.type === AST_NODE_TYPES.ClassDeclaration ||
+                 classNode.type === AST_NODE_TYPES.ClassExpression) &&
+                classNode.id?.name === current.object.name;
+            if (isValidThis || isValidStaticClassRef) {
               memberFixes.push(current.property);
             } else {
-              // Cross-instance or external object property access with the same name: unsafe to autofix.
+              // Cross-instance, mismatched static/instance `this`, rebound `this`, or external object property access.
               isSafe = false;
               return;
             }
@@ -109,12 +140,8 @@ export default createRule({
 
         if (current.type === AST_NODE_TYPES.TSQualifiedName) {
           if (current.right.type === AST_NODE_TYPES.Identifier && current.right.name === memberName) {
-            if (!node.static && current.left.type === AST_NODE_TYPES.ThisExpression) {
-              memberFixes.push(current.right);
-            } else {
-              isSafe = false;
-              return;
-            }
+            isSafe = false;
+            return;
           }
         }
 
@@ -129,11 +156,11 @@ export default createRule({
           if (Array.isArray(child)) {
             for (const item of child) {
               if (item && typeof item.type === 'string') {
-                visit(item);
+                visit(item, inStaticContext, inReboundThis);
               }
             }
           } else if (child && typeof child.type === 'string') {
-            visit(child);
+            visit(child, inStaticContext, inReboundThis);
           }
         }
       }

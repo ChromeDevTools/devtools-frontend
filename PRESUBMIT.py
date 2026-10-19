@@ -696,9 +696,13 @@ def CheckThirdPartyAndSvgAssets(input_api, output_api):
                 continue
             svg_tag = svg_tag_match.group(0)
 
+            def _CanonicalizeFill(fill):
+                fill = fill.strip().lower()
+                return '#000' if fill in ('#000', '#000000', 'black') else fill
+
             fills = [
-                fill.strip().lower()
-                for fill in input_api.re.findall(r'\bfill="([^"]+)"', svg_text)
+                _CanonicalizeFill(fill) for fill in input_api.re.findall(
+                    r'''\bfill=["']([^"']+)["']''', svg_text)
                 if fill.strip().lower() != 'none'
             ]
             has_gradient_or_defs = bool(
@@ -707,10 +711,12 @@ def CheckThirdPartyAndSvgAssets(input_api, output_api):
                     svg_text))
             distinct_fills = set(fills)
 
-            width_match = input_api.re.search(r'\bwidth="(\d+)"', svg_tag)
-            height_match = input_api.re.search(r'\bheight="(\d+)"', svg_tag)
-            viewbox_match = input_api.re.search(r'\bviewBox="([^"]+)"',
-                                                svg_tag)
+            width_match = input_api.re.search(
+                r'''\bwidth=["'](\d+)(?:px)?["']''', svg_tag)
+            height_match = input_api.re.search(
+                r'''\bheight=["'](\d+)(?:px)?["']''', svg_tag)
+            viewbox_match = input_api.re.search(
+                r'''\bviewBox=["']([^"']+)["']''', svg_tag)
 
             # Skip multi-color illustrations, gradient illustrations, or large non-icon SVGs.
             if has_gradient_or_defs or len(distinct_fills) > 1:
@@ -725,16 +731,17 @@ def CheckThirdPartyAndSvgAssets(input_api, output_api):
                 errors.append(
                     f'{local_path}: SVG icon is missing a viewBox attribute (expected viewBox="0 0 20 20").'
                 )
-            elif viewbox_match.group(1) not in ('0 0 20 20', '0 0 16 16',
-                                                '0 0 24 24'):
-                errors.append(
-                    f'{local_path}: SVG icon has viewBox="{viewbox_match.group(1)}" (expected "0 0 20 20").'
-                )
+            else:
+                normalized_viewbox = ' '.join(
+                    input_api.re.split(r'[\s,]+',
+                                       viewbox_match.group(1).strip()))
+                if normalized_viewbox not in ('0 0 20 20', '0 0 16 16',
+                                              '0 0 24 24', '0 -960 960 960'):
+                    errors.append(
+                        f'{local_path}: SVG icon has viewBox="{viewbox_match.group(1)}" (expected "0 0 20 20").'
+                    )
 
-            invalid_fills = [
-                fill for fill in distinct_fills
-                if fill not in ('#000', '#000000', 'black')
-            ]
+            invalid_fills = [fill for fill in distinct_fills if fill != '#000']
             if invalid_fills:
                 errors.append(
                     f'{local_path}: Monochromatic SVG icon uses non-black fill {invalid_fills[0]} (expected #000 or black).'

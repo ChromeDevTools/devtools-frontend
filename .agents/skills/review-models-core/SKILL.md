@@ -22,7 +22,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: ERROR
 - **Why**: Storing model tracking collections (`Set`/`Map`) at module scope leaks state across multiple `TestUniverse` instances and targets, while failing to track OOPIF/worker sub-targets or scanning DOM trees linearly for frame nodes causes bugs and $O(N)$ bottlenecks.
 - **Look for**: Module-level `const tracked = new Map/Set()` in `core/sdk/` or `models/bindings/`, linear DOM tree traversals for frame/node lookups instead of indexed `Map`s, or target listeners that ignore sub-target attachment/detachment.
-- **Do not flag**: Immutable module-level `Set` or `Map` lookup tables of constant string literals.
+- **Do not flag**: Immutable module-level `Set` or `Map` lookup tables of constant string literals. Properties marked required (non-optional) in generated `front_end/generated/protocol.ts` CDP types (do not ask for redundant runtime null/undefined checks on them), or `node.shadowRoots()[0]` accesses (elements have at most one shadow root; the array return type is a legacy Shadow DOM v0 artifact).
 
 ### `CORE_GN_BUILD_AND_MODULE_LAYERING`: Enforce strict GN bundle visibility, declare complete deps/ts_deps, and never import UI or panel modules from foundation layers
 - **Severity**: ERROR
@@ -46,7 +46,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: ERROR
 - **Why**: CDP agent calls and `requestContentData()` resolve to error-bearing response objects (`getError()`, `ContentData.isError()`) rather than throwing, so wrapping them in `try/catch` is misleading. Furthermore, temporary `RemoteObject` handles must be released in `finally` blocks, and extension APIs must reject with sanitized `Error` instances.
 - **Look for**: `try { await ...invoke_*() }` or `try { await request.requestContentData() }` blocks, `Runtime.evaluate` calls creating `RemoteObject`s without `release()` in `finally`, callback-taking SDK methods instead of `Promise`, or `reject(rawObject)` in `ExtensionAPI.ts`.
-- **Do not flag**: `try/catch` blocks that wrap subsequent throwing operations like `JSON.parse()`.
+- **Do not flag**: `try/catch` blocks that wrap subsequent throwing operations like `JSON.parse()`. Properties marked required (non-optional) in generated `front_end/generated/protocol.ts` CDP types (do not ask for redundant runtime null/undefined checks on them), or `node.shadowRoots()[0]` accesses (elements have at most one shadow root; the array return type is a legacy Shadow DOM v0 artifact).
 
 ### `CORE_SECURITY_ORIGIN_AND_CAPABILITY_GUARDS`: Enforce security origin validation, enterprise policy guards, and branded UrlString types in the model and host layers
 - **Severity**: ERROR

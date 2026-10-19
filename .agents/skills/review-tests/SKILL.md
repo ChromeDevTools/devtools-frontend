@@ -22,7 +22,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: WARNING
 - **Why**: Wrapping unit tests in `describeWithEnvironment` initializes all DevTools global singletons and settings, slowing down tests and hiding implicit global dependencies. Tests should use `TestUniverse` or granular hooks (`setupLocaleHooks()`, `setupSettingsHooks()`, `updateHostConfig()`) and never mix `TestUniverse` with `describeWithEnvironment`.
 - **Look for**: `describeWithEnvironment` in unit tests that only need locale, settings, or `TestUniverse`, or suites combining `new TestUniverse()` with `describeWithEnvironment`, or direct mutation of `Root.Runtime.hostConfig` instead of `updateHostConfig(...)`.
-- **Do not flag**: Integration-style panel tests that exercise legacy singleton classes not yet migrated to `Universe` dependency injection.
+- **Do not flag**: Integration-style panel tests that exercise legacy singleton classes not yet migrated to `Universe` dependency injection. Bot-only CLI flags, credentials, or standalone runner scripts under `test/conductor/` or `test/ai_evals/` that do not run inside the standard Mocha unit test harness.
 
 ### `TEST_DETERMINISTIC_ASYNC_SYNCHRONIZATION`: Synchronize asynchronous test assertions using lifecycle promises, expectCall, or raf instead of arbitrary setTimeout delays
 - **Severity**: ERROR

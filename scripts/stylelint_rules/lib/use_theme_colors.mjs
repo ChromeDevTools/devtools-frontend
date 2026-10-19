@@ -198,32 +198,28 @@ const ruleFunction = (primary, secondary, context) => {
       }
 
       if (cssValueToCheck.includes('var(')) {
-        const execArray = /var\(\s*(--[\w-]+)\s*/.exec(cssValueToCheck);
-        if (!execArray) {
-          throw new Error(
-              `Could not parse CSS variable usage: ${cssValueToCheck}`,
-          );
-        }
-        const [match, variableName] = execArray;
-        if (!match) {
+        const matches = [...cssValueToCheck.matchAll(/var\(\s*(--[\w-]+)\s*/g)];
+        if (matches.length === 0) {
           throw new Error(
               `Could not parse CSS variable usage: ${cssValueToCheck}`,
           );
         }
 
-        /**
-         * The override prefix acts as an escape hatch to allow custom-defined
-         * color variables to be applied. This option should only be used when
-         * there's no alternative. Example scenarios include using CSS
-         * variables to customize internal styles of a web component from its
-         * host environment.
-         */
-        if (variableName.startsWith(CUSTOM_VARIABLE_OVERRIDE_PREFIX)) {
-          return;
-        }
+        for (const [, variableName] of matches) {
+          /**
+           * The override prefix acts as an escape hatch to allow custom-defined
+           * color variables to be applied. This option should only be used when
+           * there's no alternative. Example scenarios include using CSS
+           * variables to customize internal styles of a web component from its
+           * host environment.
+           */
+          if (variableName.startsWith(CUSTOM_VARIABLE_OVERRIDE_PREFIX)) {
+            continue;
+          }
 
-        if (variableName.startsWith(LEGACY_COLOR_VARIABLE_PREFIX) || !ALL_DEFINED_VARIABLES.has(variableName)) {
-          reportError(declarationToErrorOn, !alreadyFixed);
+          if (variableName.startsWith(LEGACY_COLOR_VARIABLE_PREFIX) || !ALL_DEFINED_VARIABLES.has(variableName)) {
+            reportError(declarationToErrorOn, !alreadyFixed);
+          }
         }
       }
     }

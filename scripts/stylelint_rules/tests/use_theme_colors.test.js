@@ -568,4 +568,24 @@ describe('use_theme_colors', () => {
       },
     ]);
   });
+
+  it('errors when a valid variable is followed by a legacy --color-* variable in the same declaration', async () => {
+    const code = `p {
+      background: linear-gradient(var(--sys-color-surface), var(--color-background));
+    }`;
+    const warnings = await lintAndGetWarnings(code);
+    assert.deepEqual(warnings, [
+      {
+        column: 7,
+        endColumn: 86,
+        endLine: 2,
+        fix: undefined,
+        line: 2,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
+      },
+    ]);
+  });
 });

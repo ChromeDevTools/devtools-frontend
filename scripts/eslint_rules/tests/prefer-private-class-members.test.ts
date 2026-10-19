@@ -110,5 +110,72 @@ new RuleTester().run('prefer-private-class-members', rule, {
       filename: 'front_end/core/host/InspectorFrontendHost.ts',
       errors: [{messageId: 'doNotUsePrivate'}],
     },
+    {
+      name: 'reports without autofix when member is destructured from this',
+      code: `class Foo {
+        private prop = 1;
+        run() {
+          const {prop} = this;
+          return prop;
+        }
+      }
+      `,
+      filename: 'front_end/core/common/Foo.ts',
+      errors: [{messageId: 'doNotUsePrivate'}],
+    },
+    {
+      name: 'reports without autofix when member is deleted via delete operator',
+      code: `class Foo {
+        private prop?: number;
+        run() {
+          delete this.prop;
+        }
+      }
+      `,
+      filename: 'front_end/core/common/Foo.ts',
+      errors: [{messageId: 'doNotUsePrivate'}],
+    },
+    {
+      name: 'reports without autofix when static member is accessed via instance this',
+      code: `class Foo {
+        private static prop = 1;
+        run() {
+          return (this as unknown as typeof Foo).prop ?? this.prop;
+        }
+      }
+      `,
+      filename: 'front_end/core/common/Foo.ts',
+      errors: [{messageId: 'doNotUsePrivate'}],
+    },
+    {
+      name: 'reports without autofix when member is accessed via non-lexical this in nested function',
+      code: `class Foo {
+        private prop = 1;
+        run() {
+          const obj = {
+            prop: 2,
+            get() {
+              return this.prop;
+            },
+          };
+          return obj.get();
+        }
+      }
+      `,
+      filename: 'front_end/core/common/Foo.ts',
+      errors: [{messageId: 'doNotUsePrivate'}],
+    },
+    {
+      name: 'reports without autofix when member is referenced in a TSQualifiedName type position',
+      code: `class Foo {
+        private static prop = {bar: 'baz'};
+        run(x: typeof Foo.prop.bar) {
+          return x;
+        }
+      }
+      `,
+      filename: 'front_end/core/common/Foo.ts',
+      errors: [{messageId: 'doNotUsePrivate'}],
+    },
   ],
 });

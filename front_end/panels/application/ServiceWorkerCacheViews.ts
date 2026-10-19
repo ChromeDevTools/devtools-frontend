@@ -13,11 +13,15 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Network from '../network/network.js';
 
 import * as ApplicationComponents from './components/components.js';
 import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.js';
+
+const {render, html} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -527,45 +531,67 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   }
 }
 
+export interface RequestViewInput {
+  request: SDK.NetworkRequest.NetworkRequest;
+  selectedTabId: string;
+  onTabSelected: (tabId: string, isUserGesture: boolean) => void;
+}
+
+export type RequestViewFunction = (input: RequestViewInput, output: undefined, target: HTMLElement) => void;
+
+export const REQUEST_VIEW_DEFAULT_VIEW: RequestViewFunction = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <devtools-tabbed-pane
+      jslog=${VisualLogging.section('network-item-preview')}
+      @select=${(event: CustomEvent<{tabId: string, isUserGesture?: boolean}>) =>
+        input.onTabSelected(event.detail.tabId, Boolean(event.detail.isUserGesture))}>
+      <devtools-widget
+        id="headers"
+        label=${i18nString(UIStrings.headers)}
+        ?selected=${input.selectedTabId !== 'preview'}
+        ${widget(Network.RequestHeadersView.RequestHeadersView, {request: input.request})}>
+      </devtools-widget>
+      <devtools-widget
+        id="preview"
+        label=${i18nString(UIStrings.preview)}
+        ?selected=${input.selectedTabId === 'preview'}
+        ${widget(element => new Network.RequestPreviewView.RequestPreviewView(input.request, element))}>
+      </devtools-widget>
+    </devtools-tabbed-pane>
+  `, target);
+  // clang-format on
+};
+
 export class RequestView extends UI.Widget.VBox {
-  private tabbedPane: UI.TabbedPane.TabbedPane;
-  private resourceViewTabSetting: Common.Settings.Setting<string>;
+  readonly #view: RequestViewFunction;
+  readonly #request: SDK.NetworkRequest.NetworkRequest;
+  readonly #resourceViewTabSetting: Common.Settings.Setting<string>;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+  constructor(request: SDK.NetworkRequest.NetworkRequest, view: RequestViewFunction = REQUEST_VIEW_DEFAULT_VIEW) {
     super();
-
-    this.tabbedPane = new UI.TabbedPane.TabbedPane();
-    this.tabbedPane.element.setAttribute('jslog', `${VisualLogging.section('network-item-preview')}`);
-    this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
-    this.resourceViewTabSetting =
+    this.#view = view;
+    this.#request = request;
+    this.#resourceViewTabSetting =
         Common.Settings.Settings.instance().createSetting('cache-storage-view-tab', 'preview');
-
-    const requestHeadersView = new Network.RequestHeadersView.RequestHeadersView();
-    requestHeadersView.request = request;
-    this.tabbedPane.appendTab('headers', i18nString(UIStrings.headers), requestHeadersView);
-    this.tabbedPane.appendTab(
-        'preview', i18nString(UIStrings.preview), new Network.RequestPreviewView.RequestPreviewView(request));
-    this.tabbedPane.show(this.element);
+    this.requestUpdate();
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.selectTab();
+    this.requestUpdate();
   }
 
-  private selectTab(tabId?: string): void {
-    if (!tabId) {
-      tabId = this.resourceViewTabSetting.get();
-    }
-    if (tabId && !this.tabbedPane.selectTab(tabId)) {
-      this.tabbedPane.selectTab('headers');
-    }
-  }
-
-  private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
-    if (!event.data.isUserGesture) {
-      return;
-    }
-    this.resourceViewTabSetting.set(event.data.tabId);
+  override performUpdate(): void {
+    this.#view({
+      request: this.#request,
+      selectedTabId: this.#resourceViewTabSetting.get(),
+      onTabSelected: (tabId, isUserGesture) => {
+        if (isUserGesture) {
+          this.#resourceViewTabSetting.set(tabId);
+        }
+      },
+    },
+               undefined, this.contentElement);
   }
 }

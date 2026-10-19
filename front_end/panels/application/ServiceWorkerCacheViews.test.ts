@@ -6,6 +6,8 @@ import {assert} from 'chai';
 import {beforeEach, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
@@ -14,9 +16,12 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('ServiceWorkerCacheView', function() {
   let target: SDK.Target.Target;
@@ -294,5 +299,28 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     } finally {
       view.detach();
     }
+  });
+
+  it('persists the selected RequestView tab in settings only on user gesture', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'cache-storage-test', urlString`https://example.com/script.js`, Platform.DevToolsPath.EmptyUrlString, null);
+    const viewStub = createViewFunctionStub(Application.ServiceWorkerCacheViews.RequestView);
+    const requestView = new Application.ServiceWorkerCacheViews.RequestView(request, viewStub);
+    await viewStub.nextInput;
+
+    assert.strictEqual(viewStub.input.request, request);
+    assert.strictEqual(viewStub.input.selectedTabId, 'preview');
+
+    viewStub.input.onTabSelected('headers', /* isUserGesture= */ false);
+    assert.strictEqual(Common.Settings.Settings.instance().createSetting('cache-storage-view-tab', 'preview').get(),
+                       'preview');
+
+    viewStub.input.onTabSelected('headers', /* isUserGesture= */ true);
+    assert.strictEqual(Common.Settings.Settings.instance().createSetting('cache-storage-view-tab', 'preview').get(),
+                       'headers');
+
+    requestView.requestUpdate();
+    await viewStub.nextInput;
+    assert.strictEqual(viewStub.input.selectedTabId, 'headers');
   });
 });

@@ -32,8 +32,8 @@ export class RequestPreviewView extends UI.Widget.VBox {
   request: SDK.NetworkRequest.NetworkRequest;
   private contentViewPromise: Promise<UI.Widget.Widget>|null;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super({jslog: `${VisualLogging.pane('preview').track({resize: true})}`});
+  constructor(request: SDK.NetworkRequest.NetworkRequest, element?: HTMLElement) {
+    super(element, {jslog: `${VisualLogging.pane('preview').track({resize: true})}`});
     this.element.classList.add('request-view');
     this.request = request;
     this.contentViewPromise = null;

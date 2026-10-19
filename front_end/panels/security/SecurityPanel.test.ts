@@ -716,6 +716,28 @@ describeWithEnvironment('SecurityPanel', () => {
     target = createTarget({parentTarget: tabTarget});
   });
 
+  it('shows security information for a non-cryptographic secure origin', () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+    renderElementIntoDOM(securityPanel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    const origin = urlString`chrome-test://test`;
+    const request = createNetworkRequest({url: origin});
+    request.setSecurityState(Protocol.Security.SecurityState.Secure);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
+    securityPanel.sidebar.selectedOrigin = origin;
+
+    const originView = securityPanel.visibleView;
+    assert.instanceOf(originView, Security.SecurityPanel.SecurityOriginView);
+
+    const originDisplay = querySelectorErrorOnMissing(originView.element, '.origin-display');
+    assert.strictEqual(originDisplay.textContent, origin);
+
+    const section = querySelectorErrorOnMissing(originView.element, '.security-state-section');
+    assert.include(section.textContent, 'This origin is a non-HTTPS secure origin');
+  });
+
   it('updates when security state changes', async () => {
     const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
     const securityModel = target.model(Security.SecurityModel.SecurityModel);

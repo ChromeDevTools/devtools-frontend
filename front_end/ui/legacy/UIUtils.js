@@ -1358,7 +1358,7 @@ export class ConfirmDialog {
                 event.consume();
                 resolve(false);
             });
-            dialog.show(where);
+            dialog.show(where instanceof Widget ? where.element : where);
             okButton.focus();
         });
         dialog.hide();

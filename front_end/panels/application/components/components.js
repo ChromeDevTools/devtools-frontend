@@ -5271,14 +5271,14 @@ var CrashReportContextGrid = class extends UI4.Widget.Widget {
       });
     });
   }
-  #onContextMenu(e, key, value) {
+  #onContextMenu(e, key2, value2) {
     const customEvent = e;
     const contextMenu = customEvent.detail;
     contextMenu.defaultSection().appendItem(i18nString4(UIStrings5.copyKey), () => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(key);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(key2);
     }, { jslogContext: "copy-key" });
     contextMenu.defaultSection().appendItem(i18nString4(UIStrings5.copyValue), () => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value2);
     }, { jslogContext: "copy-value" });
   }
   performUpdate() {
@@ -5287,8 +5287,8 @@ var CrashReportContextGrid = class extends UI4.Widget.Widget {
       {
         entries: this.#filteredEntries,
         selectedKey: this.#selectedKey,
-        onSelect: (key) => this.element.dispatchEvent(new CustomEvent("select", { detail: key })),
-        onContextMenu: (e, key, value) => this.#onContextMenu(e, key, value)
+        onSelect: (key2) => this.element.dispatchEvent(new CustomEvent("select", { detail: key2 })),
+        onContextMenu: (e, key2, value2) => this.#onContextMenu(e, key2, value2)
       },
       void 0,
       this.contentElement
@@ -6219,8 +6219,11 @@ var ServiceWorkerRouterView = class extends UI9.Widget.Widget {
 // ../../front_end/panels/application/components/StorageMetadataView.ts
 var StorageMetadataView_exports = {};
 __export(StorageMetadataView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   StorageBucketRevealInfo: () => StorageBucketRevealInfo,
-  StorageMetadataView: () => StorageMetadataView
+  StorageMetadataView: () => StorageMetadataView,
+  renderStorageMetadataReportContent: () => renderStorageMetadataReportContent,
+  storageMetadataViewStyle: () => storageMetadataView_css_default
 });
 import "../../../ui/components/report_view/report_view.js";
 import "../../../ui/kit/kit.js";
@@ -6228,8 +6231,6 @@ import * as Common4 from "../../../core/common/common.js";
 import * as i18n19 from "../../../core/i18n/i18n.js";
 import * as SDK5 from "../../../core/sdk/sdk.js";
 import * as Buttons5 from "../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper from "../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator from "../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI10 from "../../../ui/legacy/legacy.js";
 import { html as html10, nothing as nothing6, render as render10 } from "../../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../../ui/visual_logging/visual_logging.js";
@@ -6347,37 +6348,169 @@ var StorageBucketRevealInfo = class {
   }
   bucketInfo;
 };
-var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  #shadow = this.attachShadow({ mode: "open" });
+function key(content) {
+  return html10`<devtools-report-key>${content}</devtools-report-key>`;
+}
+function value(content) {
+  return html10`<devtools-report-value>${content}</devtools-report-value>`;
+}
+function getExpirationString(storageBucket) {
+  const { expiration } = storageBucket;
+  if (expiration === 0) {
+    return i18nString9(UIStrings10.none);
+  }
+  return new Date(expiration * 1e3).toLocaleString();
+}
+function renderStorageBucketInfo(storageBucket, showOnlyBucket) {
+  const { bucket: { name }, persistent, durability, quota } = storageBucket;
+  const isDefault = !name;
+  const renderBucketName = () => {
+    if (isDefault) {
+      return html10`<span class="default-bucket">${i18nString9(UIStrings10.defaultBucket)}</span>`;
+    }
+    if (!showOnlyBucket) {
+      return html10`${name}`;
+    }
+    const revealBucket = (e) => {
+      e.preventDefault();
+      void Common4.Revealer.reveal(new StorageBucketRevealInfo(storageBucket));
+    };
+    return html10`<devtools-link
+      @click=${revealBucket}
+      title=${name}
+      jslog=${VisualLogging8.action("storage-bucket").track({
+      click: true
+    })}
+    >${name}</devtools-link>`;
+  };
+  if (showOnlyBucket) {
+    return html10`
+      ${key(i18nString9(UIStrings10.bucketName))}
+      ${value(renderBucketName())}`;
+  }
+  return html10`
+    ${key(i18nString9(UIStrings10.bucketName))}
+    ${value(renderBucketName())}
+    ${key(i18nString9(UIStrings10.persistent))}
+    ${value(persistent ? i18nString9(UIStrings10.yes) : i18nString9(UIStrings10.no))}
+    ${key(i18nString9(UIStrings10.durability))}
+    ${value(durability)}
+    ${quota !== 0 ? html10`
+      ${key(i18nString9(UIStrings10.quota))}
+      ${value(i18n19.ByteUtilities.bytesToString(quota))}
+    ` : nothing6}
+    ${key(i18nString9(UIStrings10.expiration))}
+    ${value(getExpirationString(storageBucket))}`;
+}
+function renderStorageMetadataReportContent(storageKey, storageBucket, showOnlyBucket = false) {
+  if (!storageKey) {
+    return nothing6;
+  }
+  const origin = storageKey.origin;
+  const ancestorChainHasCrossSite = Boolean(storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.ANCESTOR_CHAIN_BIT));
+  const hasNonce = Boolean(storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.NONCE_HIGH));
+  const topLevelSiteIsOpaque = Boolean(storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE_OPAQUE_NONCE_HIGH));
+  const topLevelSite = storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE);
+  const thirdPartyReason = ancestorChainHasCrossSite ? i18nString9(UIStrings10.yesBecauseAncestorChainHasCrossSite) : hasNonce ? i18nString9(UIStrings10.yesBecauseKeyIsOpaque) : topLevelSiteIsOpaque ? i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque) : topLevelSite && origin !== topLevelSite ? i18nString9(UIStrings10.yesBecauseOriginNotInTopLevelSite) : null;
+  const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
+  return html10`
+    ${isIframeOrEmbedded ? html10`${key(i18nString9(UIStrings10.origin))}
+        ${value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : nothing6}
+    ${topLevelSite || topLevelSiteIsOpaque ? key(i18nString9(UIStrings10.topLevelSite)) : nothing6}
+    ${topLevelSite ? value(topLevelSite) : nothing6}
+    ${topLevelSiteIsOpaque ? value(i18nString9(UIStrings10.opaque)) : nothing6}
+    ${thirdPartyReason ? html10`
+      ${key(i18nString9(UIStrings10.isThirdParty))}${value(thirdPartyReason)}` : nothing6}
+    ${hasNonce || topLevelSiteIsOpaque ? key(i18nString9(UIStrings10.isOpaque)) : nothing6}
+    ${hasNonce ? value(i18nString9(UIStrings10.yes)) : nothing6}
+    ${topLevelSiteIsOpaque ? value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : nothing6}
+    ${storageBucket ? renderStorageBucketInfo(storageBucket, showOnlyBucket) : nothing6}`;
+}
+var DEFAULT_VIEW10 = (input, _output, target) => {
+  if (!input.storageKey) {
+    render10(nothing6, target);
+    return;
+  }
+  render10(html10`
+    <style>${storageMetadataView_css_default}</style>
+    <devtools-report .data=${{ reportTitle: input.title }}>
+      ${renderStorageMetadataReportContent(input.storageKey, input.storageBucket, input.showOnlyBucket)}
+      ${input.showBucketControls ? html10`
+        <devtools-report-divider></devtools-report-divider>
+        <devtools-report-section>
+          <devtools-button aria-label=${i18nString9(UIStrings10.deleteBucket)}
+                           .variant=${Buttons5.Button.Variant.OUTLINED}
+                           @click=${input.onDeleteBucket}>
+            ${i18nString9(UIStrings10.deleteBucket)}
+          </devtools-button>
+        </devtools-report-section>` : nothing6}
+    </devtools-report>`, target);
+};
+var StorageMetadataView = class extends UI10.Widget.Widget {
   #storageBucketsModel;
   #storageKey = null;
   #storageBucket = null;
   #showOnlyBucket = false;
+  #view;
+  constructor(element, view = DEFAULT_VIEW10) {
+    super(element, { useShadowDom: true, classes: ["storage-metadata-view"] });
+    this.element.classList.remove("vbox", "flex-auto");
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  get shadowRoot() {
+    return this.element.shadowRoot;
+  }
   setStorageKey(storageKey) {
-    this.#storageKey = SDK5.StorageKeyManager.parseStorageKey(storageKey);
-    void this.render();
+    const parsedStorageKey = SDK5.StorageKeyManager.parseStorageKey(storageKey);
+    if (this.#storageKey && this.#storageKey.origin === parsedStorageKey.origin && this.#storageKey.components.size === parsedStorageKey.components.size && Array.from(this.#storageKey.components.entries()).every(([key2, value2]) => parsedStorageKey.components.get(key2) === value2)) {
+      return;
+    }
+    this.#storageKey = parsedStorageKey;
+    this.requestUpdate();
   }
   setStorageBucket(storageBucket) {
+    if (this.#storageBucket === storageBucket) {
+      return;
+    }
     this.#storageBucket = storageBucket;
     this.setStorageKey(storageBucket.bucket.storageKey);
+    this.requestUpdate();
   }
   setShowOnlyBucket(show) {
+    if (this.#showOnlyBucket === show) {
+      return;
+    }
     this.#showOnlyBucket = show;
+    this.requestUpdate();
   }
   enableStorageBucketControls(model) {
+    if (this.#storageBucketsModel === model) {
+      return;
+    }
     this.#storageBucketsModel = model;
     if (this.#storageKey) {
-      void this.render();
+      this.requestUpdate();
     }
   }
-  render() {
-    return RenderCoordinator.write("StorageMetadataView render", async () => {
-      render10(html10`
-        <style>${storageMetadataView_css_default}</style>
-        <devtools-report .data=${{ reportTitle: this.getTitle() ?? i18nString9(UIStrings10.loading) }}>
-          ${await this.renderReportContent()}
-        </devtools-report>`, this.#shadow, { host: this });
-    });
+  performUpdate() {
+    this.#view(
+      {
+        title: this.getTitle() ?? i18nString9(UIStrings10.loading),
+        storageKey: this.#storageKey,
+        storageBucket: this.#storageBucket,
+        showOnlyBucket: this.#showOnlyBucket,
+        showBucketControls: Boolean(this.#storageKey && this.#storageBucketsModel),
+        onDeleteBucket: () => {
+          void this.#deleteBucket();
+        }
+      },
+      void 0,
+      this.contentElement
+    );
   }
   getTitle() {
     if (!this.#storageKey) {
@@ -6386,106 +6519,6 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
     const origin = this.#storageKey.origin;
     const bucketName = this.#storageBucket?.bucket.name || i18nString9(UIStrings10.defaultBucket);
     return this.#storageBucketsModel ? `${bucketName} - ${origin}` : origin;
-  }
-  key(content) {
-    return html10`<devtools-report-key>${content}</devtools-report-key>`;
-  }
-  value(content) {
-    return html10`<devtools-report-value>${content}</devtools-report-value>`;
-  }
-  async renderReportContent() {
-    if (!this.#storageKey) {
-      return nothing6;
-    }
-    const origin = this.#storageKey.origin;
-    const ancestorChainHasCrossSite = Boolean(this.#storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.ANCESTOR_CHAIN_BIT));
-    const hasNonce = Boolean(this.#storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.NONCE_HIGH));
-    const topLevelSiteIsOpaque = Boolean(
-      this.#storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE_OPAQUE_NONCE_HIGH)
-    );
-    const topLevelSite = this.#storageKey.components.get(SDK5.StorageKeyManager.StorageKeyComponent.TOP_LEVEL_SITE);
-    const thirdPartyReason = ancestorChainHasCrossSite ? i18nString9(UIStrings10.yesBecauseAncestorChainHasCrossSite) : hasNonce ? i18nString9(UIStrings10.yesBecauseKeyIsOpaque) : topLevelSiteIsOpaque ? i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque) : topLevelSite && origin !== topLevelSite ? i18nString9(UIStrings10.yesBecauseOriginNotInTopLevelSite) : null;
-    const isIframeOrEmbedded = topLevelSite && origin !== topLevelSite;
-    return html10`
-        ${isIframeOrEmbedded ? html10`${this.key(i18nString9(UIStrings10.origin))}
-            ${this.value(html10`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}` : nothing6}
-        ${topLevelSite || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.topLevelSite)) : nothing6}
-        ${topLevelSite ? this.value(topLevelSite) : nothing6}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.opaque)) : nothing6}
-        ${thirdPartyReason ? html10`
-          ${this.key(i18nString9(UIStrings10.isThirdParty))}${this.value(thirdPartyReason)}` : nothing6}
-        ${hasNonce || topLevelSiteIsOpaque ? this.key(i18nString9(UIStrings10.isOpaque)) : nothing6}
-        ${hasNonce ? this.value(i18nString9(UIStrings10.yes)) : nothing6}
-        ${topLevelSiteIsOpaque ? this.value(i18nString9(UIStrings10.yesBecauseTopLevelIsOpaque)) : nothing6}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : nothing6}
-        ${this.#storageBucketsModel ? this.#renderBucketControls() : nothing6}`;
-  }
-  #renderStorageBucketInfo() {
-    if (!this.#storageBucket) {
-      throw new Error("Should not call #renderStorageBucketInfo if #bucket is null.");
-    }
-    const { bucket: { name }, persistent, durability, quota } = this.#storageBucket;
-    const isDefault = !name;
-    const renderBucketName = () => {
-      if (isDefault) {
-        return html10`<span class="default-bucket">${i18nString9(UIStrings10.defaultBucket)}</span>`;
-      }
-      if (!this.#showOnlyBucket) {
-        return html10`${name}`;
-      }
-      const revealBucket = (e) => {
-        e.preventDefault();
-        void Common4.Revealer.reveal(
-          new StorageBucketRevealInfo(this.#storageBucket)
-        );
-      };
-      return html10`<devtools-link
-        @click=${revealBucket}
-        title=${name}
-        jslog=${VisualLogging8.action("storage-bucket").track({
-        click: true
-      })}
-      >${name}</devtools-link>`;
-    };
-    if (this.#showOnlyBucket) {
-      return html10`
-        ${this.key(i18nString9(UIStrings10.bucketName))}
-        ${this.value(renderBucketName())}`;
-    }
-    return html10`
-      ${this.key(i18nString9(UIStrings10.bucketName))}
-      ${this.value(renderBucketName())}
-      ${this.key(i18nString9(UIStrings10.persistent))}
-      ${this.value(persistent ? i18nString9(UIStrings10.yes) : i18nString9(UIStrings10.no))}
-      ${this.key(i18nString9(UIStrings10.durability))}
-      ${this.value(durability)}
-      ${quota !== 0 ? html10`
-        ${this.key(i18nString9(UIStrings10.quota))}
-        ${this.value(i18n19.ByteUtilities.bytesToString(quota))}
-      ` : nothing6}
-      ${this.key(i18nString9(UIStrings10.expiration))}
-      ${this.value(this.#getExpirationString())}`;
-  }
-  #getExpirationString() {
-    if (!this.#storageBucket) {
-      throw new Error("Should not call #getExpirationString if #bucket is null.");
-    }
-    const { expiration } = this.#storageBucket;
-    if (expiration === 0) {
-      return i18nString9(UIStrings10.none);
-    }
-    return new Date(expiration * 1e3).toLocaleString();
-  }
-  #renderBucketControls() {
-    return html10`
-    <devtools-report-divider></devtools-report-divider>
-    <devtools-report-section>
-      <devtools-button aria-label=${i18nString9(UIStrings10.deleteBucket)}
-                       .variant=${Buttons5.Button.Variant.OUTLINED}
-                       @click=${this.#deleteBucket}>
-        ${i18nString9(UIStrings10.deleteBucket)}
-      </devtools-button>
-    </devtools-report-section>`;
   }
   async #deleteBucket() {
     if (!this.#storageBucketsModel || !this.#storageBucket) {
@@ -6502,7 +6535,6 @@ var StorageMetadataView = class extends LegacyWrapper.LegacyWrapper.WrappableCom
     }
   }
 };
-customElements.define("devtools-storage-metadata-view", StorageMetadataView);
 
 // ../../front_end/panels/application/components/TrustTokensView.ts
 var TrustTokensView_exports = {};
@@ -6645,7 +6677,7 @@ function renderGridOrNoDataMessage(input) {
       </div>
     `;
 }
-var DEFAULT_VIEW10 = (input, output, target) => {
+var DEFAULT_VIEW11 = (input, output, target) => {
   Lit5.render(html11`
     <style>${trustTokensView_css_default}</style>
     <style>${UI11.inspectorCommonStyles}</style>
@@ -6656,7 +6688,7 @@ var TrustTokensView = class extends UI11.Widget.VBox {
   #updateInterval = 0;
   #tokens = [];
   #view;
-  constructor(element, view = DEFAULT_VIEW10) {
+  constructor(element, view = DEFAULT_VIEW11) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }

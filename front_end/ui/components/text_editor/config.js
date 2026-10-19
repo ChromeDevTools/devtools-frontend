@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -176,6 +175,7 @@ export const codeFolding = DynamicSetting.bool(SettingsUI.SourcesSettings.textEd
     CM.foldGutter({
         markerDOM(open) {
             const iconName = open ? 'triangle-down' : 'triangle-right';
+            // eslint-disable-next-line @devtools/no-imperative-dom-api
             const icon = new Icon();
             icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
             icon.setAttribute('jslog', `${VisualLogging.expand().track({ click: true })}`);
@@ -374,6 +374,7 @@ class CompletionHint extends CM.WidgetType {
         return this.text === other.text;
     }
     toDOM() {
+        // eslint-disable-next-line @devtools/no-imperative-dom-api
         const span = document.createElement('span');
         span.className = 'cm-completionHint';
         span.textContent = this.text;

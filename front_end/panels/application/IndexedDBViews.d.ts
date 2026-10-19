@@ -1,27 +1,26 @@
 import '../../ui/components/report_view/report_view.js';
 import '../../ui/legacy/legacy.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { type LitTemplate } from '../../ui/lit/lit.js';
-import * as ApplicationComponents from './components/components.js';
 import type { Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata } from './IndexedDBModel.js';
-export declare class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.StorageMetadataView {
-    private readonly model;
-    private database;
-    constructor(model: IndexedDBModel, database: Database | null);
-    getTitle(): string | undefined;
-    renderReportContent(): Promise<LitTemplate>;
-    private refreshDatabaseButtonClicked;
-    update(database: Database): void;
-    private updatedForTests;
-    private deleteDatabase;
-    wasShown(): void;
+export interface IndexedDBDatabaseViewInput {
+    database: Database | null;
+    storageKey: SDK.StorageKeyManager.StorageKey | null;
+    storageBucket: Protocol.Storage.StorageBucketInfo | null;
+    onDeleteDatabase: () => void;
+    onRefreshDatabase: () => void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-idb-database-view': IDBDatabaseView;
-    }
+export type IDBDatabaseViewView = (input: IndexedDBDatabaseViewInput, output: undefined, target: HTMLElement) => void;
+export declare const IDB_DATABASE_VIEW_DEFAULT_VIEW: IDBDatabaseViewView;
+export declare class IDBDatabaseView extends UI.Widget.VBox {
+    #private;
+    constructor(model: IndexedDBModel, database: Database | null, element?: HTMLElement, view?: IDBDatabaseViewView);
+    wasShown(): void;
+    get shadowRoot(): ShadowRoot | null;
+    performUpdate(): void;
+    update(database: Database): void;
 }
 export interface IndexedDBDataViewInput {
     isIndex: boolean;

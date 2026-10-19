@@ -7,6 +7,7 @@ import * as Buttons from '../components/buttons/buttons.js';
 import * as Geometry from '../geometry/geometry.js';
 import { type IconData } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';
+import { Widget } from './Widget.js';
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-checkbox': CheckboxLabel;
@@ -207,7 +208,7 @@ export declare class MessageDialog {
     static show(header: string, message: string, where?: Element | Document, jslogContext?: string): Promise<void>;
 }
 export declare class ConfirmDialog {
-    static show(message: string, header?: string, where?: Element | Document, options?: ConfirmDialogOptions): Promise<boolean>;
+    static show(message: string, header?: string, where?: Element | Document | Widget, options?: ConfirmDialogOptions): Promise<boolean>;
 }
 export declare function formatTimestamp(timestamp: number, full: boolean): string;
 export declare const isScrolledToBottom: (element: Element) => boolean;

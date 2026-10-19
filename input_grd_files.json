@@ -749,7 +749,6 @@
   "front_end/third_party/csp_evaluator/csp_evaluator.js",
   "front_end/third_party/json5/json5.js",
   "front_end/ui/components/expandable_list/expandable_list.js",
-  "front_end/ui/components/legacy_wrapper/legacy_wrapper.js",
   "front_end/panels/application/components/components.js",
   "front_end/panels/application/preloading/helper/helper.js",
   "front_end/panels/application/preloading/components/components.js",

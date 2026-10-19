@@ -135,9 +135,6 @@
       "path": "../../ui/components/input/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
     },
     {

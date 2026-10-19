@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import { createIcon } from '../../ui/kit/kit.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import { IndexedDBTreeElement } from './ApplicationPanelSidebar.js';
 import { ExpandableApplicationPanelTreeElement } from './ApplicationPanelTreeElement.js';
 import { StorageMetadataView } from './components/components.js';
@@ -130,16 +128,15 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
     set bucketInfo(bucketInfo) {
         this.storageBucketInfo = bucketInfo;
         if (this.view) {
-            this.view.getComponent().setStorageBucket(this.storageBucketInfo);
+            this.view.setStorageBucket(this.storageBucketInfo);
         }
     }
     onselect(selectedByUser) {
         super.onselect(selectedByUser);
         if (!this.view) {
-            this.view =
-                LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new StorageMetadataView.StorageMetadataView());
-            this.view.getComponent().enableStorageBucketControls(this.model);
-            this.view.getComponent().setStorageBucket(this.storageBucketInfo);
+            this.view = new StorageMetadataView.StorageMetadataView();
+            this.view.enableStorageBucketControls(this.model);
+            this.view.setStorageBucket(this.storageBucketInfo);
         }
         this.showView(this.view);
         return false;

@@ -2868,10 +2868,9 @@ var Runtime;
 
 // ../../front_end/panels/application/ApplicationPanelSidebar.ts
 import * as AiAssistance2 from "../../models/ai_assistance/ai_assistance.js";
-import * as LegacyWrapper3 from "../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon11 } from "../../ui/kit/kit.js";
 import * as SourceFrame6 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI31 from "../../ui/legacy/legacy.js";
+import * as UI30 from "../../ui/legacy/legacy.js";
 
 // ../../front_end/panels/application/ApplicationPanelTreeElement.ts
 var ApplicationPanelTreeElement_exports = {};
@@ -7860,6 +7859,7 @@ var IndexedDBViews_exports = {};
 __export(IndexedDBViews_exports, {
   IDBDataView: () => IDBDataView,
   IDBDatabaseView: () => IDBDatabaseView,
+  IDB_DATABASE_VIEW_DEFAULT_VIEW: () => IDB_DATABASE_VIEW_DEFAULT_VIEW,
   IDB_DATA_VIEW_DEFAULT_VIEW: () => IDB_DATA_VIEW_DEFAULT_VIEW,
   ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget
 });
@@ -8090,84 +8090,113 @@ var str_8 = i18n15.i18n.registerUIStrings("panels/application/IndexedDBViews.ts"
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var { repeat } = Directives3;
 var { widget: widget4 } = UI9.Widget;
-var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.StorageMetadataView {
-  model;
-  database;
-  constructor(model, database) {
-    super();
-    this.model = model;
-    this.setShowOnlyBucket(true);
+var IDB_DATABASE_VIEW_DEFAULT_VIEW = (input, _output, target) => {
+  render6(html6`
+    <style>${ApplicationComponents5.StorageMetadataView.storageMetadataViewStyle}</style>
+    <devtools-report .data=${{ reportTitle: input.database?.databaseId.name ?? "" }}>
+      ${input.database ? html6`
+        ${ApplicationComponents5.StorageMetadataView.renderStorageMetadataReportContent(
+    input.storageKey,
+    input.storageBucket,
+    /* showOnlyBucket= */
+    true
+  )}
+        <devtools-report-key>${i18nString8(UIStrings8.version)}</devtools-report-key>
+        <devtools-report-value>${input.database.version.toString()}</devtools-report-value>
+        <devtools-report-key>${i18nString8(UIStrings8.objectStores)}</devtools-report-key>
+        <devtools-report-value>${input.database.objectStores.size.toString()}</devtools-report-value>
+        <devtools-report-divider></devtools-report-divider>
+        <devtools-report-section>
+          <devtools-button
+              aria-label=${i18nString8(UIStrings8.deleteDatabase)}
+              .variant=${Buttons4.Button.Variant.OUTLINED}
+              @click=${input.onDeleteDatabase}
+              jslog=${VisualLogging4.action("delete-database").track({
+    click: true
+  })}>
+            ${i18nString8(UIStrings8.deleteDatabase)}
+          </devtools-button>&nbsp;
+          <devtools-button
+              aria-label=${i18nString8(UIStrings8.refreshDatabase)}
+              .variant=${Buttons4.Button.Variant.OUTLINED}
+              @click=${input.onRefreshDatabase}
+              jslog=${VisualLogging4.action("refresh-database").track({
+    click: true
+  })}>
+            ${i18nString8(UIStrings8.refreshDatabase)}
+          </devtools-button>
+        </devtools-report-section>
+      ` : nothing4}
+    </devtools-report>
+  `, target);
+};
+var IDBDatabaseView = class extends UI9.Widget.VBox {
+  #model;
+  #database = null;
+  #storageKey = null;
+  #storageBucket = null;
+  #view;
+  constructor(model, database, element, view = IDB_DATABASE_VIEW_DEFAULT_VIEW) {
+    super(element, { useShadowDom: true, jslog: `${VisualLogging4.pane("indexeddb-data")}` });
+    this.#view = view;
+    this.#model = model;
     if (database) {
       this.update(database);
     }
   }
-  getTitle() {
-    return this.database?.databaseId.name;
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
-  async renderReportContent() {
-    if (!this.database) {
-      return nothing4;
+  get shadowRoot() {
+    return this.element.shadowRoot;
+  }
+  performUpdate() {
+    this.#view(
+      {
+        database: this.#database,
+        storageKey: this.#storageKey,
+        storageBucket: this.#storageBucket,
+        onDeleteDatabase: () => {
+          void this.#deleteDatabase();
+        },
+        onRefreshDatabase: () => {
+          this.#refreshDatabaseButtonClicked();
+        }
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+  #refreshDatabaseButtonClicked() {
+    if (!this.#database) {
+      return;
     }
-    return html6`
-      ${await super.renderReportContent()}
-      ${this.key(i18nString8(UIStrings8.version))}
-      ${this.value(this.database.version.toString())}
-      ${this.key(i18nString8(UIStrings8.objectStores))}
-      ${this.value(this.database.objectStores.size.toString())}
-      <devtools-report-divider></devtools-report-divider>
-      <devtools-report-section>
-      <devtools-button
-          aria-label=${i18nString8(UIStrings8.deleteDatabase)}
-          .variant=${Buttons4.Button.Variant.OUTLINED}
-          @click=${this.deleteDatabase}
-          jslog=${VisualLogging4.action("delete-database").track({
-      click: true
-    })}>
-        ${i18nString8(UIStrings8.deleteDatabase)}
-      </devtools-button>&nbsp;
-      <devtools-button
-          aria-label=${i18nString8(UIStrings8.refreshDatabase)}
-          .variant=${Buttons4.Button.Variant.OUTLINED}
-          @click=${this.refreshDatabaseButtonClicked}
-          jslog=${VisualLogging4.action("refresh-database").track({
-      click: true
-    })}>
-        ${i18nString8(UIStrings8.refreshDatabase)}
-      </devtools-button>
-      </devtools-report-section>
-      `;
-  }
-  refreshDatabaseButtonClicked() {
-    this.model.refreshDatabase(this.database.databaseId);
+    this.#model.refreshDatabase(this.#database.databaseId);
   }
   update(database) {
-    this.database = database;
-    const bucketInfo = this.model.target().model(SDK9.StorageBucketsModel.StorageBucketsModel)?.getBucketByName(database.databaseId.storageBucket.storageKey, database.databaseId.storageBucket.name);
-    if (bucketInfo) {
-      this.setStorageBucket(bucketInfo);
-    } else {
-      this.setStorageKey(database.databaseId.storageBucket.storageKey);
+    this.#database = database;
+    const bucketInfo = this.#model.target().model(SDK9.StorageBucketsModel.StorageBucketsModel)?.getBucketByName(database.databaseId.storageBucket.storageKey, database.databaseId.storageBucket.name) ?? null;
+    this.#storageBucket = bucketInfo;
+    const storageKey = bucketInfo ? bucketInfo.bucket.storageKey : database.databaseId.storageBucket.storageKey;
+    this.#storageKey = SDK9.StorageKeyManager.parseStorageKey(storageKey);
+    this.requestUpdate();
+  }
+  async #deleteDatabase() {
+    if (!this.#database) {
+      return;
     }
-    void this.render().then(() => this.updatedForTests());
-  }
-  updatedForTests() {
-  }
-  async deleteDatabase() {
     const ok = await UI9.UIUtils.ConfirmDialog.show(
       i18nString8(UIStrings8.databaseWillBeRemoved),
-      i18nString8(UIStrings8.confirmDeleteDatabase, { PH1: this.database.databaseId.name }),
+      i18nString8(UIStrings8.confirmDeleteDatabase, { PH1: this.#database.databaseId.name }),
       this,
       { jslogContext: "delete-database-confirmation" }
     );
     if (ok) {
-      void this.model.deleteDatabase(this.database.databaseId);
+      void this.#model.deleteDatabase(this.#database.databaseId);
     }
   }
-  wasShown() {
-    super.wasShown();
-  }
 };
-customElements.define("devtools-idb-database-view", IDBDatabaseView);
 var renderKeyPathString = (keyPathString) => {
   return html6`"<span class="source-code indexed-db-key-path">${keyPathString}</span>"`;
 };
@@ -8449,9 +8478,7 @@ var IDBDataView = class extends UI9.View.SimpleView {
     const ok = await UI9.UIUtils.ConfirmDialog.show(
       i18nString8(UIStrings8.objectStoreWillBeCleared),
       i18nString8(UIStrings8.confirmClearObjectStore, { PH1: this.objectStore.name }),
-      // TODO(b/407750537): Fix the linter false positive
-      // eslint-disable-next-line @devtools/no-imperative-dom-api
-      this.element,
+      this,
       { jslogContext: "clear-object-store-confirmation" }
     );
     if (ok) {
@@ -10640,7 +10667,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     this.element.classList.add("storage-view");
     const editorToolbar = this.element.createChild("devtools-toolbar", "data-view-toolbar");
     editorToolbar.setAttribute("jslog", `${VisualLogging8.toolbar()}`);
-    this.element.appendChild(this.metadataView);
+    this.metadataView.show(this.element);
     this.splitWidget = new UI15.SplitWidget.SplitWidget(false, false);
     this.splitWidget.show(this.element);
     this.previewPanel = new UI15.Widget.VBox();
@@ -12734,9 +12761,7 @@ __export(StorageBucketsTreeElement_exports, {
 });
 import * as i18n37 from "../../core/i18n/i18n.js";
 import * as SDK18 from "../../core/sdk/sdk.js";
-import * as LegacyWrapper from "../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon8 } from "../../ui/kit/kit.js";
-import * as UI19 from "../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView3 } from "./components/components.js";
 var UIStrings19 = {
   /**
@@ -12884,15 +12909,15 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
   set bucketInfo(bucketInfo) {
     this.storageBucketInfo = bucketInfo;
     if (this.view) {
-      this.view.getComponent().setStorageBucket(this.storageBucketInfo);
+      this.view.setStorageBucket(this.storageBucketInfo);
     }
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(UI19.Widget.Widget, new StorageMetadataView3.StorageMetadataView());
-      this.view.getComponent().enableStorageBucketControls(this.model);
-      this.view.getComponent().setStorageBucket(this.storageBucketInfo);
+      this.view = new StorageMetadataView3.StorageMetadataView();
+      this.view.enableStorageBucketControls(this.model);
+      this.view.setStorageBucket(this.storageBucketInfo);
     }
     this.showView(this.view);
     return false;
@@ -12917,7 +12942,7 @@ import * as uiI18n from "../../ui/i18n/i18n.js";
 import { Icon, Link } from "../../ui/kit/kit.js";
 import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI2 from "../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI27 from "../../ui/legacy/legacy.js";
+import * as UI26 from "../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/ResourcesPanel.ts
@@ -12935,7 +12960,7 @@ import * as Common15 from "../../core/common/common.js";
 import * as Platform8 from "../../core/platform/platform.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
 import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI26 from "../../ui/legacy/legacy.js";
+import * as UI25 from "../../ui/legacy/legacy.js";
 import { nothing as nothing9, render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
@@ -12953,7 +12978,7 @@ import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js"
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
 import * as CookieTable from "../../ui/legacy/components/cookie_table/cookie_table.js";
-import * as UI21 from "../../ui/legacy/legacy.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
 import { html as html13, render as render13 } from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
@@ -13011,7 +13036,7 @@ import * as Common11 from "../../core/common/common.js";
 import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
 import * as Buttons8 from "../../ui/components/buttons/buttons.js";
-import * as UI20 from "../../ui/legacy/legacy.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents10 from "./components/components.js";
@@ -13053,7 +13078,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
                                 ?disabled=${!input.filterItemEnabled}
                                 @change=${input.onFilterChanged}
                                 style="flex-grow:0.4"></devtools-toolbar-input>
-        ${new UI20.Toolbar.ToolbarSeparator().element}
+        ${new UI19.Toolbar.ToolbarSeparator().element}
         <devtools-button title=${input.deleteAllButtonTitle}
                          @click=${input.onDeleteAll}
                          id=storage-items-delete-all
@@ -13073,13 +13098,13 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
                          .variant=${Buttons8.Button.Variant.TOOLBAR}></devtools-button>
         ${input.mainToolbarItems.map((item4) => item4.element)}
       </devtools-toolbar>
-      ${input.metadataView}`,
+      ${UI19.Widget.widget(UI19.Widget.WrapperWidget, { widget: input.metadataView })}`,
     // clang-format on
     target
   );
 };
 var StorageItemsToolbarBase = Common11.ObjectWrapper.eventMixin(
-  UI20.Widget.VBox
+  UI19.Widget.VBox
 );
 var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbarBase {
   filterRegex;
@@ -13117,7 +13142,7 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
         this.dispatchEventToListeners(_StorageItemsToolbar.Events.REFRESH);
-        UI20.ARIAUtils.LiveAnnouncer.alert(i18nString20(UIStrings20.refreshedStatus));
+        UI19.ARIAUtils.LiveAnnouncer.alert(i18nString20(UIStrings20.refreshedStatus));
       },
       onDeleteAll: () => {
         this.dispatchEventToListeners(_StorageItemsToolbar.Events.DELETE_ALL);
@@ -13220,7 +13245,7 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("panels/application/CookieItemsView.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var { Size } = Geometry;
-var { widget: widget8 } = UI21.Widget;
+var { widget: widget8 } = UI20.Widget;
 var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
   const cookieValue = input.cookie ? input.showDecoded ? decodeURIComponent(input.cookie.value()) : input.cookie.value() : "";
   function handleDblClickOnCookieValue(event) {
@@ -13258,7 +13283,7 @@ var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
     { container: { attributes: { jslog: `${VisualLogging12.pane("cookie-preview")}` } } }
   );
 };
-var CookiePreviewWidget = class extends UI21.Widget.VBox {
+var CookiePreviewWidget = class extends UI20.Widget.VBox {
   view;
   #cookie;
   showDecodedSetting;
@@ -13289,18 +13314,18 @@ var CookiePreviewWidget = class extends UI21.Widget.VBox {
 var DEFAULT_VIEW10 = (input, output, target) => {
   render13(
     html13`<style>${cookieItemsView_css_default}</style>
-    <devtools-widget class="storage-view" ${widget8(UI21.Widget.VBox, { minimumSize: new Size(0, 50) })}>
+    <devtools-widget class="storage-view" ${widget8(UI20.Widget.VBox, { minimumSize: new Size(0, 50) })}>
       <devtools-widget ${widget8(StorageItemsToolbar, { filterRegex: null })}
         class=flex-none
         @Refresh=${input.onRefreshItems}
         @DeleteAll=${input.onDeleteAllItems}
         @DeleteSelected=${input.onDeleteSelectedItems}
-        ${UI21.Widget.widgetRef(StorageItemsToolbar, (toolbar8) => {
+        ${UI20.Widget.widgetRef(StorageItemsToolbar, (toolbar8) => {
       output.toolbar = toolbar8;
     })}
       ></devtools-widget>
       <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">
-        <devtools-widget slot="main" ${widget8(UI21.Widget.VBox, { minimumSize: new Size(0, 50) })}>
+        <devtools-widget slot="main" ${widget8(UI20.Widget.VBox, { minimumSize: new Size(0, 50) })}>
           <devtools-widget slot="main" ${widget8(CookieTable.CookiesTable.CookiesTable, {
       cookieDomain: input.cookieDomain,
       cookiesData: input.cookiesData,
@@ -13316,10 +13341,10 @@ var DEFAULT_VIEW10 = (input, output, target) => {
     })}
           ></devtools-widget>
         </devtools-widget>
-        <devtools-widget slot="sidebar" ${widget8(UI21.Widget.VBox, { minimumSize: new Size(0, 50) })}
+        <devtools-widget slot="sidebar" ${widget8(UI20.Widget.VBox, { minimumSize: new Size(0, 50) })}
           jslog=${VisualLogging12.pane("preview").track({ resize: true })}>
           ${input.selectedCookie ? html13`<devtools-widget ${widget8(CookiePreviewWidget, { cookie: input.selectedCookie })}>
-                 </devtools-widget>` : html13`<devtools-widget ${widget8(UI21.EmptyWidget.EmptyWidget, {
+                 </devtools-widget>` : html13`<devtools-widget ${widget8(UI20.EmptyWidget.EmptyWidget, {
       header: i18nString21(UIStrings21.noCookieSelected),
       text: i18nString21(UIStrings21.selectACookieToPreviewItsValue)
     })}></devtools-widget>`}
@@ -13332,7 +13357,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
     { container: { attributes: { jslog: `${VisualLogging12.pane("cookies-data")}` } } }
   );
 };
-var CookieItemsView = class extends UI21.Widget.VBox {
+var CookieItemsView = class extends UI20.Widget.VBox {
   view;
   model;
   cookieDomain;
@@ -13346,7 +13371,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     this.view = view;
     this.model = model;
     this.cookieDomain = cookieDomain;
-    this.onlyIssuesFilterUI = new UI21.Toolbar.ToolbarCheckbox(
+    this.onlyIssuesFilterUI = new UI20.Toolbar.ToolbarCheckbox(
       i18nString21(UIStrings21.onlyShowCookiesWithAnIssue),
       i18nString21(UIStrings21.onlyShowCookiesWhichHaveAn),
       () => {
@@ -13399,7 +13424,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       aiButtonIsEnabled: this.isAiButtonEnabled(),
       onPopulateAiContextMenu: this.#onPopulateAiContextMenu.bind(this),
       onAiButtonClick: this.#onAiButtonClick.bind(this),
-      aiButtonTitle: this.isAiButtonEnabled() ? UI21.ActionRegistry.ActionRegistry.instance().getAction("ai-assistance.storage-floating-button").title() : void 0
+      aiButtonTitle: this.isAiButtonEnabled() ? UI20.ActionRegistry.ActionRegistry.instance().getAction("ai-assistance.storage-floating-button").title() : void 0
     };
     this.view(input, output, this.contentElement);
   }
@@ -13416,17 +13441,17 @@ var CookieItemsView = class extends UI21.Widget.VBox {
   }
   #updateAiAssistanceContext(cookie) {
     if (cookie && cookie.httpOnly()) {
-      UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
     const target = SDK19.TargetManager.TargetManager.instance().primaryPageTarget();
     const mainPageOrigin = target?.inspectedURL() ? Common12.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin) {
-      UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
     const storageItem = new AiAssistanceModel.StorageItem.CookieItem(mainPageOrigin, this.cookieDomain, cookie?.name());
-    UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
+    UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
   handleCookieSelected(selectedCookie) {
     if (!this.#toolbar) {
@@ -13458,7 +13483,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       this.#toolbar.setDeleteAllTitle(i18nString21(UIStrings21.clearAllCookies));
       this.#toolbar.setDeleteAllGlyph("clear-list");
     }
-    UI21.ARIAUtils.LiveAnnouncer.alert(
+    UI20.ARIAUtils.LiveAnnouncer.alert(
       i18nString21(UIStrings21.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length })
     );
     this.#toolbar.setCanFilter(true);
@@ -13482,7 +13507,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
    * This will only delete the currently visible cookies.
    */
   deleteAllItems() {
-    UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+    UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
     this.showPreview(null);
     void this.model.deleteCookies(this.shownCookies);
   }
@@ -13500,14 +13525,14 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     void this.model.getCookiesForDomain(this.cookieDomain, true).then(this.updateWithCookies.bind(this));
   }
   isAiButtonEnabled() {
-    return UI21.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
+    return UI20.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
   }
   #onPopulateAiContextMenu(cookie, contextMenu) {
     const openAiAssistanceId = "ai-assistance.application-panel-context";
-    if (this.isAiButtonEnabled() && UI21.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+    if (this.isAiButtonEnabled() && UI20.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       this.#updateAiAssistanceContext(cookie);
-      if (UI21.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
-        const action8 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      if (UI20.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
+        const action8 = UI20.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString21(UIStrings21.startAChat));
         submenu.defaultSection().appendItem(
@@ -13520,7 +13545,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
   }
   #onAiButtonClick(cookie, _event) {
     this.#updateAiAssistanceContext(cookie);
-    const actionRegistry = UI21.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI20.ActionRegistry.ActionRegistry.instance();
     const storageFloatingButtonId = "ai-assistance.storage-floating-button";
     if (actionRegistry.hasAction(storageFloatingButtonId)) {
       void actionRegistry.getAction(storageFloatingButtonId).execute();
@@ -13538,7 +13563,7 @@ import "../../ui/components/report_view/report_view.js";
 import "../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI22 from "../../ui/legacy/legacy.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
 import { Directives as Directives6, html as html14, nothing as nothing7, render as render14 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
@@ -13574,7 +13599,7 @@ var deviceBoundSessionsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./deviceBoundSessionsView.css")} */`;
 
 // ../../front_end/panels/application/DeviceBoundSessionsView.ts
-var { widget: widget9 } = UI22.Widget;
+var { widget: widget9 } = UI21.Widget;
 var UIStrings22 = {
   /**
    *@description Label for the site in the device bound sessions view of the Application panel.
@@ -14107,7 +14132,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
   const { sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription, selectedEvent, onEventRowSelected } = input;
   const toolbarHtml = preserveLogSetting ? html14`
         <devtools-toolbar class="device-bound-sessions-toolbar">
-        <devtools-checkbox title=${i18nString22(UIStrings22.doNotClearLogOnPageReload)} ${UI22.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString22(UIStrings22.preserveLog)}</devtools-checkbox>
+        <devtools-checkbox title=${i18nString22(UIStrings22.doNotClearLogOnPageReload)} ${UI21.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString22(UIStrings22.preserveLog)}</devtools-checkbox>
         </devtools-toolbar>
   ` : nothing7;
   if (!sessionAndEvents) {
@@ -14117,10 +14142,10 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
     }
     render14(
       html14`
-      <style>${UI22.inspectorCommonStyles}</style>
+      <style>${UI21.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
-      <devtools-widget ${widget9(UI22.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging13.pane("device-bound-sessions-empty")}></devtools-widget>
+      <devtools-widget ${widget9(UI21.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging13.pane("device-bound-sessions-empty")}></devtools-widget>
     `,
       target,
       { container: { attributes: { jslog: `${VisualLogging13.pane("device-bound-sessions")}` } } }
@@ -14318,7 +14343,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
   `;
   render14(
     html14`
-        <style>${UI22.inspectorCommonStyles}</style>
+        <style>${UI21.inspectorCommonStyles}</style>
         <style>${deviceBoundSessionsView_css_default}</style>
         ${toolbarHtml}
         <devtools-split-view sidebar-position="second">
@@ -14333,7 +14358,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
     target
   );
 };
-var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
+var DeviceBoundSessionsView = class extends UI21.Widget.VBox {
   #site;
   #sessionId;
   #model;
@@ -14655,7 +14680,7 @@ import * as SDK20 from "../../core/sdk/sdk.js";
 import * as TextUtils4 from "../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI24 from "../../ui/legacy/legacy.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/KeyValueStorageItemsView.ts
@@ -14693,14 +14718,14 @@ var dataGridAiButton_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
 
 // ../../front_end/panels/application/KeyValueStorageItemsView.ts
-import * as UI23 from "../../ui/legacy/legacy.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
 import { Directives as LitDirectives, html as html15, nothing as nothing8, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents11 from "./components/components.js";
 var STORAGE_FLOATING_BUTTON_ACTION_ID = "ai-assistance.storage-floating-button";
-var { ARIAUtils: ARIAUtils7 } = UI23;
-var { EmptyWidget: EmptyWidget9 } = UI23.EmptyWidget;
-var { VBox, widget: widget10 } = UI23.Widget;
+var { ARIAUtils: ARIAUtils7 } = UI22;
+var { EmptyWidget: EmptyWidget9 } = UI22.EmptyWidget;
+var { VBox, widget: widget10 } = UI22.Widget;
 var { Size: Size2 } = Geometry2;
 var { repeat: repeat2, ifDefined } = LitDirectives;
 var UIStrings23 = {
@@ -14729,7 +14754,7 @@ var UIStrings23 = {
 var str_23 = i18n45.i18n.registerUIStrings("panels/application/KeyValueStorageItemsView.ts", UIStrings23);
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var MAX_VALUE_LENGTH = 4096;
-var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
+var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
   #preview;
   #previewValue;
   #items = [];
@@ -14753,7 +14778,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
               @Refresh=${input.onRefresh}
               @DeleteAll=${input.onDeleteAll}
               @DeleteSelected=${input.onDeleteSelected}
-              ${UI23.Widget.widgetRef(StorageItemsToolbar, (view2) => {
+              ${UI22.Widget.widgetRef(StorageItemsToolbar, (view2) => {
             output.toolbar = view2;
           })}
             ></devtools-widget>
@@ -14846,7 +14871,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
       jslog: this.#jslog,
       classes: this.#classes,
       showAiButton: this.isAiButtonEnabled(),
-      aiButtonTitle: this.isAiButtonEnabled() && UI23.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ? UI23.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() : void 0,
+      aiButtonTitle: this.isAiButtonEnabled() && UI22.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ? UI22.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() : void 0,
       onSelect: (item4) => {
         this.#toolbar?.setCanDeleteSelected(Boolean(item4));
         void this.#previewEntry(item4);
@@ -15139,7 +15164,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
   itemsCleared() {
     super.itemsCleared();
-    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.domStorageItemsCleared));
+    UI23.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.domStorageItemsCleared));
   }
   domStorageItemRemoved(event) {
     if (!this.isShowing()) {
@@ -15149,7 +15174,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
   itemRemoved(key) {
     super.itemRemoved(key);
-    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.domStorageItemDeleted));
+    UI23.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.domStorageItemDeleted));
   }
   domStorageItemAdded(event) {
     if (!this.isShowing()) {
@@ -15186,7 +15211,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     const target = SDK20.TargetManager.TargetManager.instance().primaryPageTarget();
     const mainPageOrigin = target?.inspectedURL() ? Common13.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin) {
-      UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
+      UI23.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
       return;
     }
     const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(
@@ -15196,7 +15221,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       storageType,
       item4 ? item4.key : void 0
     );
-    UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
+    UI23.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
   }
   deleteAllItems() {
     this.domStorage.clear();
@@ -15206,11 +15231,11 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     this.#setAiStorageContext(item4);
   }
   isAiButtonEnabled() {
-    return UI24.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
+    return UI23.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
   }
   populateContextMenu(item4, contextMenu) {
     const openAiAssistanceId = "ai-assistance.application-panel-context";
-    const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI23.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
       this.#setAiStorageContext(item4);
       const action8 = actionRegistry.getAction(openAiAssistanceId);
@@ -15226,7 +15251,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   onAiButtonClick(item4, _event) {
     this.#setAiStorageContext(item4);
     const aiFloatingActionId = "ai-assistance.storage-floating-button";
-    const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI23.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(aiFloatingActionId)) {
       void actionRegistry.getAction(aiFloatingActionId).execute();
     }
@@ -15250,7 +15275,7 @@ import * as i18n49 from "../../core/i18n/i18n.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as JSON5 from "../../third_party/json5/json5.js";
 import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI25 from "../../ui/legacy/legacy.js";
+import * as UI24 from "../../ui/legacy/legacy.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings25 = {
   /**
@@ -15335,7 +15360,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
       return;
     }
     this.itemsCleared();
-    UI25.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.extensionStorageItemsCleared));
+    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.extensionStorageItemsCleared));
   }
   deleteSelectedItem() {
     if (!this.#isEditable) {
@@ -15525,7 +15550,7 @@ var resourcesPanel_css_default = `/*
 
 // ../../front_end/panels/application/ResourcesPanel.ts
 var resourcesPanelInstance;
-var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
+var ResourcesPanel = class _ResourcesPanel extends UI25.Panel.PanelWithSidebar {
   resourcesLastSelectedItemSetting;
   visibleView;
   pendingViewPromise;
@@ -15546,7 +15571,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.visibleView = null;
     this.pendingViewPromise = null;
     this.categoryView = null;
-    const mainContainer = new UI26.Widget.VBox();
+    const mainContainer = new UI25.Widget.VBox();
     mainContainer.setMinimumSize(100, 0);
     this.storageViews = mainContainer.element.createChild("div", "vbox flex-auto");
     this.storageViewToolbar = mainContainer.element.createChild("devtools-toolbar", "resources-toolbar");
@@ -15575,7 +15600,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     return viewClassesToClose.some((type) => view instanceof type);
   }
   static async showAndGetSidebar() {
-    await UI26.ViewManager.ViewManager.instance().showView("resources");
+    await UI25.ViewManager.ViewManager.instance().showView("resources");
     return _ResourcesPanel.instance().sidebar;
   }
   focus() {
@@ -15606,7 +15631,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     this.visibleView = view;
     this.storageViewToolbar.removeToolbarItems();
     this.storageViewToolbar.classList.toggle("hidden", true);
-    if (view instanceof UI26.View.SimpleView) {
+    if (view instanceof UI25.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         if (items === nothing9) {
           this.storageViewToolbar.classList.toggle("hidden", true);
@@ -15978,7 +16003,7 @@ var storagePieColors = /* @__PURE__ */ new Map([
 ]);
 var str_26 = i18n51.i18n.registerUIStrings("panels/application/StorageView.ts", UIStrings26);
 var i18nString26 = i18n51.i18n.getLocalizedString.bind(void 0, str_26);
-var StorageView = class _StorageView extends UI27.Widget.VBox {
+var StorageView = class _StorageView extends UI26.Widget.VBox {
   pieColors;
   reportView;
   target;
@@ -16005,7 +16030,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.contentElement.classList.add("clear-storage-container");
     this.contentElement.setAttribute("jslog", `${VisualLogging18.pane("clear-storage")}`);
     this.pieColors = storagePieColors;
-    this.reportView = new UI27.ReportView.ReportView(i18nString26(UIStrings26.storageTitle));
+    this.reportView = new UI26.ReportView.ReportView(i18nString26(UIStrings26.storageTitle));
     this.reportView.registerRequiredCSS(storageView_css_default);
     this.reportView.element.classList.add("clear-storage-header");
     this.reportView.show(this.contentElement);
@@ -16075,7 +16100,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     includeThirdPartyCookiesRow.appendChild(this.includeThirdPartyCookiesCheckbox);
     const clearButtonRow = clearSiteData.appendRow();
     clearButtonRow.classList.add("clear-selected-button-row");
-    this.clearButton = UI27.UIUtils.createTextButton(
+    this.clearButton = UI26.UIUtils.createTextButton(
       i18nString26(UIStrings26.clearSelected),
       this.clear.bind(this),
       { jslogContext: "storage.clear-site-data" }
@@ -16127,7 +16152,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.previousOverrideFieldValue = "";
     const quotaOverrideCheckboxRow = quota.appendRow();
     quotaOverrideCheckboxRow.classList.add("quota-override-row");
-    this.quotaOverrideCheckbox = UI27.UIUtils.CheckboxLabel.create(i18nString26(UIStrings26.simulateCustomStorage), false);
+    this.quotaOverrideCheckbox = UI26.UIUtils.CheckboxLabel.create(i18nString26(UIStrings26.simulateCustomStorage), false);
     this.quotaOverrideCheckbox.setAttribute(
       "jslog",
       `${VisualLogging18.toggle("simulate-custom-quota").track({ change: true })}`
@@ -16141,7 +16166,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
       "jslog",
       `${VisualLogging18.textField("quota-override").track({ change: true })}`
     );
-    this.quotaOverrideControlRow.appendChild(UI27.UIUtils.createLabel(i18nString26(UIStrings26.mb)));
+    this.quotaOverrideControlRow.appendChild(UI26.UIUtils.createLabel(i18nString26(UIStrings26.mb)));
     this.quotaOverrideControlRow.classList.add("hidden");
     this.quotaOverrideEditor.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
@@ -16352,7 +16377,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
       this.clearButton.textContent = label;
       this.clearButton.focus();
     }, 500);
-    UI27.ARIAUtils.LiveAnnouncer.alert(i18nString26(UIStrings26.SiteDataCleared));
+    UI26.ARIAUtils.LiveAnnouncer.alert(i18nString26(UIStrings26.SiteDataCleared));
   }
   static clear(target, storageKey, originForCookies, selectedStorageTypes, includeThirdPartyCookies) {
     console.assert(Boolean(storageKey));
@@ -16433,7 +16458,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
       }
       const element = uiI18n.getFormatLocalizedString(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
       this.quotaRow.appendChild(element);
-      UI27.Tooltip.Tooltip.install(
+      UI26.Tooltip.Tooltip.install(
         this.quotaRow,
         i18nString26(
           UIStrings26.storageQuotaUsedWithBytes,
@@ -16445,7 +16470,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
         icon.name = "info";
         icon.style.color = "var(--icon-info)";
         icon.classList.add("small");
-        UI27.Tooltip.Tooltip.install(icon, i18nString26(UIStrings26.storageQuotaIsLimitedIn));
+        UI26.Tooltip.Tooltip.install(icon, i18nString26(UIStrings26.storageQuotaIsLimitedIn));
         this.quotaRow.appendChild(icon);
       }
       if (usageChanged) {
@@ -16568,7 +16593,7 @@ __export(TrustTokensTreeElement_exports, {
 });
 import * as i18n53 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon9 } from "../../ui/kit/kit.js";
-import * as UI28 from "../../ui/legacy/legacy.js";
+import * as UI27 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents12 from "./components/components.js";
 var UIStrings27 = {
   /**
@@ -16594,7 +16619,7 @@ var TrustTokensTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ApplicationComponents12.TrustTokensView.TrustTokensView();
     }
     this.showView(this.view);
-    UI28.UIUserMetrics.UIUserMetrics.instance().panelShown("trust-tokens");
+    UI27.UIUserMetrics.UIUserMetrics.instance().panelShown("trust-tokens");
     return false;
   }
 };
@@ -16605,7 +16630,7 @@ __export(WebMCPTreeElement_exports, {
   WebMCPTreeElement: () => WebMCPTreeElement
 });
 import { createIcon as createIcon10 } from "../../ui/kit/kit.js";
-import * as UI30 from "../../ui/legacy/legacy.js";
+import * as UI29 from "../../ui/legacy/legacy.js";
 import { html as html17, render as render18 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/application/WebMCPView.ts
@@ -16637,7 +16662,7 @@ import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Buttons9 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
-import * as UI29 from "../../ui/legacy/legacy.js";
+import * as UI28 from "../../ui/legacy/legacy.js";
 import {
   Directives as Directives7,
   html as html16,
@@ -17191,7 +17216,7 @@ var UIStrings28 = {
 };
 var str_28 = i18n55.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings28);
 var i18nString28 = i18n55.i18n.getLocalizedString.bind(void 0, str_28);
-var { widget: widget11 } = UI29.Widget;
+var { widget: widget11 } = UI28.Widget;
 var TabId = /* @__PURE__ */ ((TabId2) => {
   TabId2["DETAILS"] = "webmcp.tool-details";
   TabId2["INPUT"] = "webmcp.call-inputs";
@@ -17355,7 +17380,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
     });
   };
   const onToolContextMenu = (event, tool) => {
-    const contextMenu = new UI29.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI28.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.copyName), () => {
       Host3.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.name);
     }, { jslogContext: "webmcp.copy-tool-name" });
@@ -17366,7 +17391,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
   };
   render17(html16`
     <style>${webMCPView_css_default}</style>
-    <style>${UI29.FilterBar.filterStyles}</style>
+    <style>${UI28.FilterBar.filterStyles}</style>
     <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view" jslog=${VisualLogging19.pane("webmcp-view")}>
       <div slot="main" class="call-log" jslog=${VisualLogging19.section("call-log")}>
         <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging19.toolbar()}>
@@ -17545,7 +17570,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
             </devtools-toolbar>
           </div>
         ` : html16`
-        ${UI29.Widget.widget(UI29.EmptyWidget.EmptyWidget, {
+        ${UI28.Widget.widget(UI28.EmptyWidget.EmptyWidget, {
     header: i18nString28(UIStrings28.noCallsPlaceholderTitle),
     text: i18nString28(UIStrings28.noCallsPlaceholder)
   })}
@@ -17559,7 +17584,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
         <div slot="main" class="tool-list" jslog=${VisualLogging19.section("tool-list")}>
           <div class="section-title">${i18nString28(UIStrings28.toolRegistry)}</div>
           ${tools.length === 0 ? html16`
-          ${UI29.Widget.widget(UI29.EmptyWidget.EmptyWidget, {
+          ${UI28.Widget.widget(UI28.EmptyWidget.EmptyWidget, {
     header: i18nString28(UIStrings28.noToolsPlaceholderTitle),
     text: i18nString28(UIStrings28.noToolsPlaceholder)
   })}
@@ -17629,7 +17654,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
       parameters: input.selectedTool.parameters || {}
     }
   })}
-              ${UI29.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, (e) => {
+              ${UI28.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, (e) => {
     editorWidget = e;
   })}
               @submiteditor=${(e) => input.onRunTool({ data: e.detail })}
@@ -17656,7 +17681,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
     </devtools-split-view>
   `, target);
 };
-var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
+var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
   #view;
   #selectedTool = null;
   #selectedCall = null;
@@ -17668,7 +17693,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
   #filterButtons;
   static createFilterButtons(onToolTypesClick, onStatusTypesClick) {
     const createButton = (label, onContextMenu, jsLogContext) => {
-      const button = new UI29.Toolbar.ToolbarMenuButton(
+      const button = new UI28.Toolbar.ToolbarMenuButton(
         onContextMenu,
         /* isIconDropdown=*/
         false,
@@ -17915,7 +17940,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
     return html16`
       <div class="payload-value source-code error-text">
         <devtools-widget
-          ${UI29.Widget.widget(Console2.SymbolizedErrorWidget.SymbolizedErrorWidget, { error })}
+          ${UI28.Widget.widget(Console2.SymbolizedErrorWidget.SymbolizedErrorWidget, { error })}
         ></devtools-widget>
       </div>
     `;
@@ -17933,7 +17958,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
     target
   );
 };
-var PayloadWidget = class extends UI29.Widget.Widget {
+var PayloadWidget = class extends UI28.Widget.Widget {
   #valueObject;
   #valueString;
   #errorText;
@@ -18071,7 +18096,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
     ` : nothing10}
   `, target);
 };
-var ToolDetailsWidget = class extends UI29.Widget.Widget {
+var ToolDetailsWidget = class extends UI28.Widget.Widget {
   #tool = null;
   #origin;
   #isUnregistered = false;
@@ -18348,7 +18373,7 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
     super(storagePanel, "WebMCP", false, "web-mcp");
     const icon = createIcon10("document");
     this.setLeadingIcons([icon]);
-    const newBadge = UI30.UIUtils.maybeCreateNewBadge("web-mcp");
+    const newBadge = UI29.UIUtils.maybeCreateNewBadge("web-mcp");
     if (newBadge) {
       const fragment = document.createDocumentFragment();
       render18(html17`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
@@ -18364,7 +18389,7 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
       this.#view = new WebMCPView();
     }
     this.showView(this.#view);
-    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("web-mcp");
+    UI29.UIUserMetrics.UIUserMetrics.instance().panelShown("web-mcp");
     return false;
   }
 };
@@ -18595,7 +18620,7 @@ function nameForExtensionStorageArea(storageArea) {
       throw new Error(`Unrecognized storage type: ${storageArea}`);
   }
 }
-var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
+var ApplicationPanelSidebar = class extends UI30.Widget.VBox {
   panel;
   sidebarTree;
   applicationTreeElement;
@@ -18635,12 +18660,12 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
   constructor(panel) {
     super();
     this.panel = panel;
-    this.sidebarTree = new UI31.TreeOutline.TreeOutlineInShadow(UI31.TreeOutline.TreeVariant.NAVIGATION_TREE);
+    this.sidebarTree = new UI30.TreeOutline.TreeOutlineInShadow(UI30.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.sidebarTree.registerRequiredCSS(resourcesSidebar_css_default);
     this.sidebarTree.element.classList.add("resources-sidebar");
     this.sidebarTree.setHideOverflow(true);
     this.sidebarTree.element.classList.add("filter-all");
-    this.sidebarTree.addEventListener(UI31.TreeOutline.Events.ElementAttached, this.treeElementAdded, this);
+    this.sidebarTree.addEventListener(UI30.TreeOutline.Events.ElementAttached, this.treeElementAdded, this);
     this.contentElement.appendChild(this.sidebarTree.element);
     const applicationSectionTitle = i18nString29(UIStrings29.application);
     this.applicationTreeElement = this.addSidebarSection(applicationSectionTitle, "application");
@@ -18663,7 +18688,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       const icon = createIcon11("ads");
       adsTreeElement.setLeadingIcons([icon]);
       const experimentIcon = createIcon11("experiment", "medium");
-      UI31.Tooltip.Tooltip.install(experimentIcon, i18nString29(UIStrings29.experimental));
+      UI30.Tooltip.Tooltip.install(experimentIcon, i18nString29(UIStrings29.experimental));
       adsTreeElement.setTrailingIcons([experimentIcon]);
       adsTreeElement.itemURL = "ads://";
       let adsView;
@@ -18673,7 +18698,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
           adsView = new ApplicationComponents13.AdsView.AdsView();
         }
         adsTreeElement.showView(adsView);
-        UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("ads");
+        UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("ads");
         return false;
       };
       this.adsTreeElement = adsTreeElement;
@@ -18829,13 +18854,13 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     this.contentElement.style.contain = "layout style";
   }
   addSidebarSection(title, jslogContext) {
-    const treeElement = new UI31.TreeOutline.TreeElement(title, true, jslogContext);
+    const treeElement = new UI30.TreeOutline.TreeElement(title, true, jslogContext);
     treeElement.listItemElement.classList.add("storage-group-list-item");
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
     this.sidebarTree.appendChild(treeElement);
-    UI31.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
-    UI31.ARIAUtils.setLabel(treeElement.childrenListElement, title);
+    UI30.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
+    UI30.ARIAUtils.setLabel(treeElement.childrenListElement, title);
     return treeElement;
   }
   targetAdded(target) {
@@ -18978,7 +19003,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       if (selectedElement instanceof ExpandableApplicationPanelTreeElement) {
         const item4 = selectedElement.createGenericStorageAiContext();
         if (item4) {
-          UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item4);
+          UI30.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item4);
         }
       }
     }
@@ -19150,11 +19175,11 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     if (!nodeUnderMouse) {
       return;
     }
-    const listNode = UI31.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, "li");
+    const listNode = UI30.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, "li");
     if (!listNode) {
       return;
     }
-    const element = UI31.TreeOutline.TreeElement.getTreeElementBylistItemNode(listNode);
+    const element = UI30.TreeOutline.TreeElement.getTreeElementBylistItemNode(listNode);
     if (this.previousHoveredElement === element) {
       return;
     }
@@ -19242,8 +19267,8 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
       this.view.model = this.model;
     }
     this.showView(this.view);
-    UI31.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("background_service_" + this.serviceName);
+    UI30.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("background_service_" + this.serviceName);
     return false;
   }
 };
@@ -19263,7 +19288,7 @@ var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ServiceWorkersView();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("service-workers");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("service-workers");
     return false;
   }
 };
@@ -19275,7 +19300,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     this.view = new AppManifestView();
-    UI31.ARIAUtils.setLabel(this.listItemElement, i18nString29(UIStrings29.onInvokeManifestAlert));
+    UI30.ARIAUtils.setLabel(this.listItemElement, i18nString29(UIStrings29.onInvokeManifestAlert));
     const handleExpansion = (hasManifest) => {
       this.setExpandable(hasManifest);
     };
@@ -19287,7 +19312,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("app-manifest");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("app-manifest");
     return false;
   }
   generateChildren() {
@@ -19312,7 +19337,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
           event.consume(true);
         }
       });
-      UI31.ARIAUtils.setLabel(
+      UI30.ARIAUtils.setLabel(
         child.listItemElement,
         i18nString29(UIStrings29.beforeInvokeAlert, { PH1: child.listItemElement.title })
       );
@@ -19321,7 +19346,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   }
   onInvoke() {
     this.view.getManifestElement().scrollIntoView();
-    UI31.ARIAUtils.LiveAnnouncer.alert(i18nString29(UIStrings29.onInvokeAlert, { PH1: this.listItemElement.title }));
+    UI30.ARIAUtils.LiveAnnouncer.alert(i18nString29(UIStrings29.onInvokeAlert, { PH1: this.listItemElement.title }));
   }
 };
 var StorageTreeElement = class extends ApplicationPanelTreeElement {
@@ -19340,7 +19365,7 @@ var StorageTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new StorageView();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown(
       Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.storage]
     );
     return false;
@@ -19416,7 +19441,7 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
       i18nString29(UIStrings29.refreshIndexeddb),
       this.refreshIndexedDB.bind(this),
@@ -19510,7 +19535,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
       i18nString29(UIStrings29.refreshIndexeddb),
       this.refreshIndexedDB.bind(this),
@@ -19550,7 +19575,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       }
     }
     if (this.view) {
-      this.view.getComponent().update(database);
+      this.view.update(database);
     }
     this.updateTooltip();
   }
@@ -19574,14 +19599,10 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       return false;
     }
     if (!this.view) {
-      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(
-        UI31.Widget.VBox,
-        new IDBDatabaseView(this.model, this.database),
-        "indexeddb-data"
-      );
+      this.view = new IDBDatabaseView(this.model, this.database);
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
     return false;
   }
   objectStoreRemoved(objectStoreName) {
@@ -19631,7 +19652,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
       i18nString29(UIStrings29.clear),
       this.clearObjectStore.bind(this),
@@ -19704,7 +19725,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDataView(this.model, this.databaseId, this.objectStore, null, this.refreshObjectStore.bind(this));
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
     return false;
   }
   indexRemoved(indexName) {
@@ -19778,7 +19799,7 @@ var IDBIndexTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDataView(this.model, this.databaseId, this.objectStore, this.index, this.refreshObjectStore);
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
     return false;
   }
   clear() {
@@ -19805,10 +19826,10 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("dom-storage");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("dom-storage");
     this.resourcesPanel.showDOMStorage(this.domStorage);
     const storageItem = this.#getStorageItem();
-    UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+    UI30.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
     return false;
   }
   /**
@@ -19834,7 +19855,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
       i18nString29(UIStrings29.clear),
       () => this.domStorage.clear(),
@@ -19843,9 +19864,9 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
     const storageItem = this.#getStorageItem();
     if (storageItem) {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
-      if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action8 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      if (UI30.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        UI30.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+        const action8 = UI30.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
         submenu.defaultSection().appendItem(
@@ -19880,7 +19901,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showExtensionStorage(this.extensionStorage);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("extension-storage");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("extension-storage");
     return false;
   }
   onattach() {
@@ -19888,7 +19909,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
       i18nString29(UIStrings29.clear),
       () => this.extensionStorage.clear(),
@@ -19947,7 +19968,7 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
       i18nString29(UIStrings29.clear),
       () => this.resourcesPanel.clearCookies(this.target, this.#cookieDomain),
@@ -19956,9 +19977,9 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     const storageItem = this.#getStorageItem();
     if (storageItem) {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
-      if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action8 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      if (UI30.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        UI30.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+        const action8 = UI30.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
         submenu.defaultSection().appendItem(
@@ -19973,20 +19994,20 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this.target, this.#cookieDomain);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown(
       Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.cookies]
     );
     const storageItem = this.#getStorageItem();
-    UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+    UI30.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
     return false;
   }
 };
-var StorageCategoryView = class extends UI31.Widget.VBox {
+var StorageCategoryView = class extends UI30.Widget.VBox {
   emptyWidget;
   constructor() {
     super();
     this.element.classList.add("storage-view");
-    this.emptyWidget = new UI31.EmptyWidget.EmptyWidget("", "");
+    this.emptyWidget = new UI30.EmptyWidget.EmptyWidget("", "");
     this.emptyWidget.show(this.element);
   }
   setText(text) {
@@ -20007,7 +20028,7 @@ var ResourcesSection = class {
   constructor(storagePanel, treeElement) {
     this.panel = storagePanel;
     this.treeElement = treeElement;
-    UI31.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
+    UI30.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
     this.treeElementForFrameId = /* @__PURE__ */ new Map();
     this.treeElementForTargetId = /* @__PURE__ */ new Map();
     const frameManager = SDK24.FrameManager.FrameManager.instance();
@@ -20257,7 +20278,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     this.invalidateChildren();
     if (this.title !== frame.displayName()) {
       this.title = frame.displayName();
-      UI31.ARIAUtils.setLabel(this.listItemElement, this.title);
+      UI30.ARIAUtils.setLabel(this.listItemElement, this.title);
       if (this.parent) {
         const parent = this.parent;
         parent.removeChild(this);
@@ -20299,7 +20320,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
       this.view = new FrameDetailsReportView();
       this.view.frame = this.frame;
     }
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-details");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-details");
     this.showView(this.view);
     this.listItemElement.classList.remove("hovered");
     SDK24.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK24.TargetManager.TargetManager.instance());
@@ -20453,7 +20474,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
       if (view) {
         return view;
       }
-      return new UI31.EmptyWidget.EmptyWidget("", this.resource.url);
+      return new UI30.EmptyWidget.EmptyWidget("", this.resource.url);
     });
     return this.previewPromise;
   }
@@ -20469,7 +20490,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-resource");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-resource");
     return false;
   }
   ondblclick(_event) {
@@ -20491,7 +20512,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     return true;
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(this.resource);
     void contextMenu.show();
   }
@@ -20546,7 +20567,7 @@ var FrameWindowTreeElement = class extends ApplicationPanelTreeElement {
       this.view.requestUpdate();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-window");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-window");
     return false;
   }
   get itemURL() {
@@ -20571,7 +20592,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
       this.view.requestUpdate();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-worker");
+    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-worker");
     return false;
   }
   get itemURL() {

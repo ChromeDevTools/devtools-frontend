@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 const t = CodeMirror.tags;
 export const highlightStyle = CodeMirror.HighlightStyle.define([
@@ -48,6 +47,7 @@ export async function highlightNode(node, mimeType) {
     highlighter.highlight((text, style) => {
         let token = document.createTextNode(text);
         if (style) {
+            // eslint-disable-next-line @devtools/no-imperative-dom-api
             const span = document.createElement('span');
             span.className = style;
             span.appendChild(token);

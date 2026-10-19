@@ -1206,6 +1206,8 @@ import * as i18n7 from "../../../core/i18n/i18n.js";
 import * as Buttons4 from "../buttons/buttons.js";
 import * as UI3 from "../../legacy/legacy.js";
 import * as Geometry from "../../geometry/geometry.js";
+import * as Lit3 from "../../lit/lit.js";
+import * as VisualLogging2 from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/dialogs/typeToAllowDialog.css.js
 var typeToAllowDialog_css_default = `/*
@@ -1259,6 +1261,7 @@ var typeToAllowDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./typeToAllowDialog.css")} */`;
 
 // ../../front_end/ui/components/dialogs/TypeToAllowDialog.ts
+var { html: html5, Directives: { ref: ref2 } } = Lit3;
 var UIStrings4 = {
   /**
    * @description Text for the cancel button in the dialog.
@@ -1271,42 +1274,88 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/components/dialogs/TypeToAllowDialog.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var DEFAULT_VIEW = (input, _output, target) => {
+  Lit3.render(html5`
+    <div class="type-to-allow-dialog">
+      <div class="header">
+        <div class="title">${input.header}</div>
+        <dt-close-button
+          class="dialog-close-button"
+          ${ref2((el) => {
+    if (el instanceof UI3.UIUtils.DevToolsCloseButton) {
+      el.setTabbable(true);
+      el.setSize(Buttons4.Button.Size.SMALL);
+    }
+  })}
+          @click=${input.onClose}
+        ></dt-close-button>
+      </div>
+      <div class="message">${input.message}</div>
+      <input
+        class="harmony-input text-input"
+        type="text"
+        placeholder=${input.inputPlaceholder}
+        jslog=${VisualLogging2.textField().track({ keydown: "ArrowUp|ArrowDown|PageUp|PageDown|Enter|Tab", change: true }).context(input.inputJslogContext)}
+        @input=${(e) => input.onInput(e.target.value)}
+        @paste=${(e) => e.preventDefault()}
+        @drop=${(e) => e.preventDefault()}
+      >
+      <div class="button">
+        <devtools-button
+          class="text-button"
+          .variant=${Buttons4.Button.Variant.PRIMARY}
+          .jslogContext=${"confirm"}
+          .disabled=${input.allowDisabled}
+          @click=${input.onAllow}
+        >${i18nString4(UIStrings4.allow)}</devtools-button>
+        <devtools-button
+          class="text-button"
+          .variant=${Buttons4.Button.Variant.OUTLINED}
+          .jslogContext=${"cancel"}
+          @click=${input.onCancel}
+        >${i18nString4(UIStrings4.cancel)}</devtools-button>
+      </div>
+    </div>
+  `, target);
+};
 var TypeToAllowDialog = class {
-  static async show(options) {
+  static async show(options, view = DEFAULT_VIEW) {
     const dialog2 = new UI3.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry.Size(504, 340));
     dialog2.setSizeBehavior(UI3.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog2.setDimmed(true);
     const shadowRoot = UI3.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: typeToAllowDialog_css_default });
-    const content = shadowRoot.createChild("div", "type-to-allow-dialog");
     const result = await new Promise((resolve) => {
-      const header = content.createChild("div", "header");
-      header.createChild("div", "title").textContent = options.header;
-      const closeButton = header.createChild("dt-close-button", "dialog-close-button");
-      closeButton.setTabbable(true);
-      self.onInvokeElement(closeButton, (event) => {
-        dialog2.hide();
-        event.consume(true);
-        resolve(false);
-      });
-      closeButton.setSize(Buttons4.Button.Size.SMALL);
-      content.createChild("div", "message").textContent = options.message;
-      const input = UI3.UIUtils.createInput("text-input", "text", options.jslogContext.input);
-      input.placeholder = options.inputPlaceholder;
-      content.appendChild(input);
-      const buttonsBar = content.createChild("div", "button");
-      const cancelButton = UI3.UIUtils.createTextButton(i18nString4(UIStrings4.cancel), () => resolve(false), { jslogContext: "cancel" });
-      const allowButton = UI3.UIUtils.createTextButton(i18nString4(UIStrings4.allow), () => {
-        resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
-      }, { jslogContext: "confirm", variant: Buttons4.Button.Variant.PRIMARY });
-      allowButton.disabled = true;
-      buttonsBar.appendChild(allowButton);
-      buttonsBar.appendChild(cancelButton);
-      input.addEventListener("input", () => {
-        allowButton.disabled = !Boolean(input.value);
-      }, false);
-      input.addEventListener("paste", (e) => e.preventDefault());
-      input.addEventListener("drop", (e) => e.preventDefault());
+      let currentValue = "";
+      const update = () => {
+        view(
+          {
+            header: options.header,
+            message: options.message,
+            inputPlaceholder: options.inputPlaceholder,
+            inputJslogContext: options.jslogContext.input,
+            allowDisabled: !Boolean(currentValue),
+            onInput: (value) => {
+              currentValue = value;
+              update();
+            },
+            onClose: (event) => {
+              dialog2.hide();
+              event.consume(true);
+              resolve(false);
+            },
+            onAllow: () => {
+              resolve(currentValue === options.typePhrase || currentValue === `'${options.typePhrase}'`);
+            },
+            onCancel: () => {
+              resolve(false);
+            }
+          },
+          void 0,
+          shadowRoot
+        );
+      };
+      update();
       dialog2.setOutsideClickCallback((event) => {
         event.consume();
         resolve(false);

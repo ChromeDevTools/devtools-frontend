@@ -17255,7 +17255,7 @@ var ConfirmDialog = class {
         event.consume();
         resolve(false);
       });
-      dialog3.show(where);
+      dialog3.show(where instanceof Widget ? where.element : where);
       okButton.focus();
     });
     dialog3.hide();

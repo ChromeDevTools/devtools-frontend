@@ -25,6 +25,9 @@ export async function runESLint(files, {fix, lintOnly, forceFix, debug}) {
     cache: cacheLinters,
     allowInlineConfig: !forceFix,
     warnIgnored: false,
+    // A full lint (on CQ) runs in 4 worker threads. Each thread loads the
+    // TypeScript types in memory (~3 GB).
+    concurrency: lintOnly ? 4 : 'off',
   });
 
   const results = await cli.lintFiles(files);

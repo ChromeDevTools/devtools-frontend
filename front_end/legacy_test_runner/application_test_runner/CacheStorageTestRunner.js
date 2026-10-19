@@ -20,11 +20,14 @@ export const dumpCacheTree = async function(pathFilter) {
 };
 
 export const dumpCacheTreeNoRefresh = async function(pathFilter) {
-  function _dumpDataGrid(dataGrid) {
-    for (const node of dataGrid.rootNode().children) {
-      const children = Array.from(node.element().children).filter(function(element) {
+  function _dumpDataGrid(view) {
+    for (const row of view.element.querySelectorAll('devtools-data-grid tr')) {
+      const children = Array.from(row.querySelectorAll('td')).filter(function(element) {
         return !element.classList.contains('response-time-column');
       });
+      if (!children.length) {
+        continue;
+      }
 
       const entries = Array.from(children, td => td.textContent).filter(text => text);
       TestRunner.addResult(' '.repeat(8) + entries.join(', '));
@@ -61,7 +64,7 @@ export const dumpCacheTreeNoRefresh = async function(pathFilter) {
     }
 
     if (!pathFilter) {
-      _dumpDataGrid(view.dataGrid);
+      _dumpDataGrid(view);
       TestRunner.addResult('        totalCount: ' + String(view.returnCount));
       continue;
     }
@@ -73,7 +76,7 @@ export const dumpCacheTreeNoRefresh = async function(pathFilter) {
       continue;
     }
 
-    _dumpDataGrid(cacheTreeElement.view.dataGrid);
+    _dumpDataGrid(cacheTreeElement.view);
     TestRunner.addResult('        totalCount: ' + String(view.returnCount));
   }
 };

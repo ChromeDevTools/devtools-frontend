@@ -1,9 +1,9 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -13,7 +13,6 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Geometry from '../../ui/geometry/geometry.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -86,9 +85,13 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export interface CacheEntry {
+  entry: Protocol.CacheStorage.DataEntry;
+  request: SDK.NetworkRequest.NetworkRequest;
+}
 
 export interface ViewInput {
-  dataGridWidget: UI.Widget.Widget|null;
+  entries: CacheEntry[];
   selectedRequest: SDK.NetworkRequest.NetworkRequest|null;
   refreshEnabled: boolean;
   entryPathFilter: string;
@@ -98,6 +101,8 @@ export interface ViewInput {
   onRefresh: () => void;
   onDeleteSelected: () => void;
   onFilterChanged: (filter: string) => void;
+  onSelect: (request: SDK.NetworkRequest.NetworkRequest|null) => void;
+  onDelete: (request: SDK.NetworkRequest.NetworkRequest) => void;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -140,8 +145,52 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     </devtools-widget>
     <devtools-split-view direction="row" sidebar-position="first">
       <devtools-widget slot="sidebar" ${widget(UI.Widget.VBox, {minimumSize: new Geometry.Size(0, 100)})}>
-        <devtools-widget class="data-grid" ${widget(UI.Widget.WrapperWidget, {widget: input.dataGridWidget})}>
-        </devtools-widget>
+        <devtools-data-grid
+          striped
+          deletable
+          class="flex-auto"
+          name=${i18nString(UIStrings.serviceWorkerCache)}
+          @refresh=${input.onRefresh}
+          @deselect=${() => input.onSelect(null)}>
+          <table>
+            <tr>
+              <th id="number" width="3px">${'#' as Common.UIString.LocalizedString}</th>
+              <th id="name" weight="4" sortable>${i18nString(UIStrings.name)}</th>
+              <th id="response-type" weight="1" align="right" sortable>${i18n.i18n.lockedString('Response-Type')}</th>
+              <th id="content-type" weight="1" sortable>${i18n.i18n.lockedString('Content-Type')}</th>
+              <th id="content-length" weight="1" align="right" type="numeric" sortable>${i18n.i18n.lockedString('Content-Length')}</th>
+              <th id="response-time" width="12em" weight="1" align="right" type="numeric" sortable>${i18nString(UIStrings.timeCached)}</th>
+              <th id="vary-header" weight="1" sortable>${i18n.i18n.lockedString('Vary Header')}</th>
+            </tr>
+            ${input.entries.map((item, index) => {
+              const requestUrl = item.request.url();
+              const parsed = new Common.ParsedURL.ParsedURL(requestUrl);
+              const name = parsed.isValid ? Platform.StringUtilities.trimURL(requestUrl, parsed.domain()) : requestUrl;
+              const responseType = item.entry.responseType === 'opaqueResponse' ? 'opaque' :
+                  item.entry.responseType === 'opaqueRedirect'                  ? 'opaqueredirect' :
+                                                                                  item.entry.responseType;
+              const varyHeader =
+                  item.request.responseHeaders.find(header => header.name.toLowerCase() === 'vary')?.value || '';
+              return html`
+                <tr
+                  ?selected=${input.selectedRequest === item.request}
+                  @select=${() => input.onSelect(item.request)}
+                  @delete=${() => input.onDelete(item.request)}>
+                  <td>${index}</td>
+                  <td class="name-column" title=${requestUrl}>${name}</td>
+                  <td class="response-type-column" title=${requestUrl}>${responseType}</td>
+                  <td class="content-type-column" title=${requestUrl}>${item.request.mimeType}</td>
+                  <td class="content-length-column" title=${requestUrl} data-value=${item.request.resourceSize}>${
+                    (item.request.resourceSize | 0).toLocaleString('en-US')}</td>
+                  <td class="response-time-column" title=${requestUrl} data-value=${item.request.endTime}>${
+                    new Date(item.request.endTime * 1000).toLocaleString()}</td>
+                  <td class="vary-header-column" title=${
+                    varyHeader ? i18nString(UIStrings.varyHeaderWarning) : requestUrl}>${varyHeader}</td>
+                </tr>
+              `;
+            })}
+          </table>
+        </devtools-data-grid>
       </devtools-widget>
       <devtools-widget slot="main" ${widget(UI.Widget.VBox)}>
         <div class="cache-preview-panel-resizer"></div>
@@ -167,9 +216,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   readonly #view: View;
   private model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
   protected entriesForTest: Protocol.CacheStorage.DataEntry[]|null = null;
+  #entries: CacheEntry[] = [];
   #selectedRequest: SDK.NetworkRequest.NetworkRequest|null = null;
   private cache: SDK.ServiceWorkerCacheModel.Cache;
-  private dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>|null = null;
   readonly #refreshThrottler = new Common.Throttler.Throttler(300);
   readonly #entryPathFilterThrottler = new Common.Throttler.Throttler(300);
   #refreshEnabled = true;
@@ -199,12 +248,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this.update(cache);
   }
 
-  #resetDataGrid(): void {
-    this.dataGrid = this.#createDataGrid();
-    this.#selectedRequest = null;
-    this.performUpdate();
-  }
-
   override wasShown(): void {
     super.wasShown();
     this.model.addEventListener(SDK.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
@@ -218,94 +261,16 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
                                    this.#cacheContentUpdated, this);
   }
 
-  #createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
-    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
-      {id: 'number', title: '#' as Common.UIString.LocalizedString, sortable: false, width: '3px'},
-      {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
-      {
-        id: 'response-type',
-        title: i18n.i18n.lockedString('Response-Type'),
-        weight: 1,
-        align: DataGrid.DataGrid.Align.RIGHT,
-        sortable: true,
-      },
-      {id: 'content-type', title: i18n.i18n.lockedString('Content-Type'), weight: 1, sortable: true},
-      {
-        id: 'content-length',
-        title: i18n.i18n.lockedString('Content-Length'),
-        weight: 1,
-        align: DataGrid.DataGrid.Align.RIGHT,
-        sortable: true,
-      },
-      {
-        id: 'response-time',
-        title: i18nString(UIStrings.timeCached),
-        width: '12em',
-        weight: 1,
-        align: DataGrid.DataGrid.Align.RIGHT,
-        sortable: true,
-      },
-      {id: 'vary-header', title: i18n.i18n.lockedString('Vary Header'), weight: 1, sortable: true},
-    ];
-    const dataGrid = new DataGrid.DataGrid.DataGridImpl({
-      displayName: i18nString(UIStrings.serviceWorkerCache),
-      columns,
-      deleteCallback: this.#deleteButtonClicked.bind(this),
-      refreshCallback: this.updateData.bind(this, true),
-    });
-
-    dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortingChanged, this);
-
-    dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, event => {
-      this.#selectedRequest = event.data.data as SDK.NetworkRequest.NetworkRequest;
-      this.performUpdate();
-    }, this);
-    dataGrid.setStriped(true);
-    return dataGrid;
-  }
-
-  #sortingChanged(): void {
-    if (!this.dataGrid) {
+  async #deleteButtonClicked(request: SDK.NetworkRequest.NetworkRequest|null = this.#selectedRequest): Promise<void> {
+    if (!request) {
       return;
     }
-
-    const dataGrid = this.dataGrid;
-
-    const accending = dataGrid.isSortOrderAscending();
-    const columnId = dataGrid.sortColumnId();
-    let comparator: (arg0: DataGridNode, arg1: DataGridNode) => number;
-    if (columnId === 'name') {
-      comparator = (a: DataGridNode, b: DataGridNode) => a.name.localeCompare(b.name);
-    } else if (columnId === 'content-type') {
-      comparator = (a: DataGridNode, b: DataGridNode) => a.data.mimeType.localeCompare(b.data.mimeType);
-    } else if (columnId === 'content-length') {
-      comparator = (a: DataGridNode, b: DataGridNode) => a.data.resourceSize - b.data.resourceSize;
-    } else if (columnId === 'response-time') {
-      comparator = (a: DataGridNode, b: DataGridNode) => a.data.endTime - b.data.endTime;
-    } else if (columnId === 'response-type') {
-      comparator = (a: DataGridNode, b: DataGridNode) => a.responseType.localeCompare(b.responseType);
-    } else if (columnId === 'vary-header') {
-      comparator = (a: DataGridNode, b: DataGridNode) => a.varyHeader.localeCompare(b.varyHeader);
+    await this.model.deleteCacheEntry(this.cache, request.url());
+    this.#entries = this.#entries.filter(item => item.request !== request);
+    if (this.#selectedRequest === request) {
+      this.#selectedRequest = null;
     }
-
-    const children = dataGrid.rootNode().children.slice();
-    dataGrid.rootNode().removeChildren();
-    children.sort((a, b) => {
-      const result = comparator((a as DataGridNode), (b as DataGridNode));
-      return accending ? result : -result;
-    });
-    children.forEach(child => dataGrid.rootNode().appendChild(child));
-  }
-
-  async #deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<DataGridNode>|null): Promise<void> {
-    if (!node) {
-      node = this.dataGrid?.selectedNode ?? null;
-      if (!node) {
-        return;
-      }
-    }
-    await this.model.deleteCacheEntry(this.cache, (node.data.url() as string));
-    node.remove();
+    this.performUpdate();
   }
 
   update(cache: SDK.ServiceWorkerCacheModel.Cache|null = null): void {
@@ -313,7 +278,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       return;
     }
     this.cache = cache;
-    this.#resetDataGrid();
+    this.#entries = [];
+    this.#selectedRequest = null;
     void this.updateData(true);
   }
 
@@ -322,7 +288,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
                            .model(SDK.StorageBucketsModel.StorageBucketsModel)
                            ?.getBucketByName(this.cache.storageBucket.storageKey, this.cache.storageBucket.name);
     this.#view({
-      dataGridWidget: this.dataGrid ? this.dataGrid.asWidget() : null,
+      entries: this.#entries,
       selectedRequest: this.#selectedRequest,
       refreshEnabled: this.#refreshEnabled,
       entryPathFilter: this.entryPathFilter,
@@ -333,7 +299,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
         void this.updateData(true);
       },
       onDeleteSelected: () => {
-        void this.#deleteButtonClicked(null);
+        void this.#deleteButtonClicked();
       },
       onFilterChanged: (filter: string) => {
         void this.#entryPathFilterThrottler.schedule(() => {
@@ -341,47 +307,41 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
           return this.updateData(true);
         });
       },
+      onSelect: (request: SDK.NetworkRequest.NetworkRequest|null) => {
+        this.#selectedRequest = request;
+        this.performUpdate();
+      },
+      onDelete: (request: SDK.NetworkRequest.NetworkRequest) => {
+        void this.#deleteButtonClicked(request);
+      },
     },
                undefined, this.contentElement);
   }
 
   private updateDataCallback(entries: Protocol.CacheStorage.DataEntry[], returnCount: number): void {
-    if (!this.dataGrid) {
-      return;
-    }
-    const selected = this.dataGrid.selectedNode?.data.url();
+    const selectedUrl = this.#selectedRequest?.url();
     this.#refreshEnabled = true;
     this.entriesForTest = entries;
     this.returnCount = returnCount;
-    this.performUpdate();
 
-    const oldEntries = new Map<string, DataGridNode>();
-    const rootNode = this.dataGrid.rootNode();
-    for (const node of rootNode.children) {
-      oldEntries.set(node.data.url, (node as DataGridNode));
+    const oldEntries = new Map<string, CacheEntry>();
+    for (const item of this.#entries) {
+      oldEntries.set(item.entry.requestURL, item);
     }
-    rootNode.removeChildren();
-    let selectedNode: DataGridNode|null = null;
-    for (let i = 0; i < entries.length; ++i) {
-      const entry = entries[i];
-      let node = oldEntries.get(entry.requestURL);
-      if (!node || node.data.responseTime !== entry.responseTime) {
-        node = new DataGridNode(i, this.createRequest(entry), entry.responseType);
-        node.selectable = true;
-      } else {
-        node.data.number = i;
+
+    let selectedRequest: SDK.NetworkRequest.NetworkRequest|null = null;
+    this.#entries = entries.map(entry => {
+      const existing = oldEntries.get(entry.requestURL);
+      const item: CacheEntry = existing && existing.entry.responseTime === entry.responseTime ?
+          existing :
+          {entry, request: this.createRequest(entry)};
+      if (entry.requestURL === selectedUrl) {
+        selectedRequest = item.request;
       }
-      rootNode.appendChild(node);
-      if (entry.requestURL === selected) {
-        selectedNode = node;
-      }
-    }
-    if (!selectedNode) {
-      this.#selectedRequest = null;
-      this.performUpdate();
-    } else {
-      selectedNode.revealAndSelect();
-    }
+      return item;
+    });
+    this.#selectedRequest = selectedRequest;
+    this.performUpdate();
     this.updatedForTest();
   }
 
@@ -469,68 +429,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   private updatedForTest(): void {
-  }
-}
-
-export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
-  private number: number;
-  name: string;
-  private request: SDK.NetworkRequest.NetworkRequest;
-  responseType: Protocol.CacheStorage.CachedResponseType;
-  varyHeader: string;
-
-  constructor(
-      number: number, request: SDK.NetworkRequest.NetworkRequest,
-      responseType: Protocol.CacheStorage.CachedResponseType) {
-    super(request);
-    this.number = number;
-    const parsed = new Common.ParsedURL.ParsedURL(request.url());
-    if (parsed.isValid) {
-      this.name = Platform.StringUtilities.trimURL(request.url(), parsed.domain());
-    } else {
-      this.name = request.url();
-    }
-    this.request = request;
-    this.responseType = responseType;
-    this.varyHeader = request.responseHeaders.find(header => header.name.toLowerCase() === 'vary')?.value || '';
-  }
-
-  override createCell(columnId: string): HTMLElement {
-    const cell = this.createTD(columnId);
-    let value;
-    let tooltip = this.request.url() as string;
-    if (columnId === 'number') {
-      value = String(this.number);
-    } else if (columnId === 'name') {
-      value = this.name;
-    } else if (columnId === 'response-type') {
-      if (this.responseType === 'opaqueResponse') {
-        value = 'opaque';
-      } else if (this.responseType === 'opaqueRedirect') {
-        value = 'opaqueredirect';
-      } else {
-        value = this.responseType;
-      }
-    } else if (columnId === 'content-type') {
-      value = this.request.mimeType;
-    } else if (columnId === 'content-length') {
-      value = (this.request.resourceSize | 0).toLocaleString('en-US');
-    } else if (columnId === 'response-time') {
-      value = new Date(this.request.endTime * 1000).toLocaleString();
-    } else if (columnId === 'vary-header') {
-      value = this.varyHeader;
-      if (this.varyHeader) {
-        tooltip = i18nString(UIStrings.varyHeaderWarning);
-      }
-    }
-    const parentElement = cell.parentElement;
-    let gridNode;
-    if (parentElement && this.dataGrid) {
-      gridNode = this.dataGrid.elementToDataGridNode.get(parentElement);
-    }
-    DataGrid.DataGrid.DataGridImpl.setElementText(cell, value || '', /* longText= */ true, gridNode);
-    UI.Tooltip.Tooltip.install(cell, tooltip);
-    return cell;
   }
 }
 

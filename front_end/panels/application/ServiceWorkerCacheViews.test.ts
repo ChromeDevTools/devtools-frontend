@@ -87,7 +87,7 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
     const metadataView = view.element.querySelector('.storage-metadata-view');
     assert.isNotNull(metadataView, 'Expected a metadata view');
 
-    const dataGrid = view.element.querySelector('.data-grid');
+    const dataGrid = view.element.querySelector('devtools-data-grid');
     assert.isNotNull(dataGrid, 'Expected a cache entries data grid');
 
     const detailsPane = view.element.querySelector('[slot="main"]');
@@ -216,21 +216,23 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
       await updatedPromise;
       await UI.Widget.Widget.allUpdatesComplete;
 
-      const nameCells = getCleanTextContentFromElements(view.element, '.data-grid td.name-column');
+      const nameCells = getCleanTextContentFromElements(view.element, 'devtools-data-grid td.name-column');
       assert.deepEqual(nameCells, ['/script.js', '/image.png']);
 
-      const responseTypeCells = getCleanTextContentFromElements(view.element, '.data-grid td.response-type-column');
+      const responseTypeCells =
+          getCleanTextContentFromElements(view.element, 'devtools-data-grid td.response-type-column');
       assert.deepEqual(responseTypeCells, ['basic', 'opaque']);
 
-      const contentTypeCells = getCleanTextContentFromElements(view.element, '.data-grid td.content-type-column');
+      const contentTypeCells =
+          getCleanTextContentFromElements(view.element, 'devtools-data-grid td.content-type-column');
       assert.deepEqual(contentTypeCells, ['application/javascript', 'image/png']);
 
-      const varyHeaderCells = getCleanTextContentFromElements(view.element, '.data-grid td.vary-header-column');
+      const varyHeaderCells = getCleanTextContentFromElements(view.element, 'devtools-data-grid td.vary-header-column');
       assert.deepEqual(varyHeaderCells, ['Accept-Encoding', '']);
 
       const summaryBar = view.element.querySelector('.cache-storage-summary-bar');
       assert.isNotNull(summaryBar);
-      assert.strictEqual(summaryBar.textContent, 'Total entries: 2');
+      assert.strictEqual(summaryBar.textContent?.trim(), 'Total entries: 2');
     } finally {
       view.detach();
     }
@@ -259,12 +261,12 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
       await filterUpdate;
       await UI.Widget.Widget.allUpdatesComplete;
 
-      const nameCells = getCleanTextContentFromElements(view.element, '.data-grid td.name-column');
+      const nameCells = getCleanTextContentFromElements(view.element, 'devtools-data-grid td.name-column');
       assert.deepEqual(nameCells, ['/style.css']);
 
       const summaryBar = view.element.querySelector('.cache-storage-summary-bar');
       assert.isNotNull(summaryBar);
-      assert.strictEqual(summaryBar.textContent, 'Matching entries: 1');
+      assert.strictEqual(summaryBar.textContent?.trim(), 'Matching entries: 1');
     } finally {
       view.detach();
     }
@@ -283,9 +285,9 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
       await updatedPromise;
       await UI.Widget.Widget.allUpdatesComplete;
 
-      const row = view.element.querySelector<HTMLElement>('.data-grid tbody tr.data-grid-data-grid-node');
+      const row = view.element.querySelector<HTMLElement>('devtools-data-grid table tr:nth-of-type(2)');
       assert.isNotNull(row);
-      row.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+      row.dispatchEvent(new Event('select'));
       await UI.Widget.Widget.allUpdatesComplete;
 
       const tabbedPane = view.element.querySelector('.tabbed-pane');

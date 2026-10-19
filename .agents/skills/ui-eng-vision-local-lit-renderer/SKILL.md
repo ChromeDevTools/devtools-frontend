@@ -124,9 +124,20 @@ existing element containers.
     *   The Gerrit Code Review UI cannot identify moved blocks of unchanged code.
     *   If blocks of code need to be reordered, create a "prefactoring" change that first extracts the code that needs to be reordered into a named helper functions and pause the migration, waiting user confirmation.
 
-12. **Embedding Pre-Existing `UI.Widget` Instances via `UI.Widget.WrapperWidget`**:
+12. **Composing Child `UI.Widget`s & Pre-Existing Instances**:
 
-    *   Use `${widget(UI.Widget.WrapperWidget, {widget: input.childWidget})}` when
+    *   **Strongly Prefer Two-Argument `widget(ChildWidgetClass, {params})`**:
+        When instantiating child widgets in a Lit template, strongly prefer the
+        two-argument form `widget(ChildWidgetClass, {propA: input.a, propB: input.b})`
+        over the single-argument factory `widget(element => new ChildWidgetClass(element))`.
+        The two-argument form automatically propagates updated parameters and
+        schedules `requestUpdate()` on re-renders, whereas a factory callback only
+        runs once on initial creation. If the child widget currently uses
+        `setFoo()` methods instead of setters, convert them into `set foo()`
+        setters on the child widget so you can use the two-argument `widget()`
+        directive.
+    *   **Pre-Existing Widget Instances (`UI.Widget.WrapperWidget`)**: Use
+        `${widget(UI.Widget.WrapperWidget, {widget: input.childWidget})}` when
         embedding widgets owned by `UI.ViewManager`
         (`TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`) or when
         conditionally moving a shared widget instance between containers

@@ -59,8 +59,10 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 ### Composition
 
 * To render a child widget, the parent's View MUST use the lit-html directive `UI.Widget.widget`.
+* **Strongly prefer the two-argument `widget(WidgetClass, {params})` form** over the single-argument factory callback `widget(element => new WidgetClass(element, ...))`. The two-argument form automatically updates properties and calls `requestUpdate()` on subsequent renders, whereas a factory callback only runs once on initial instantiation.
+* If a child widget currently exposes imperative setter methods (e.g., `setStorageKey(key)` or `setStorageBucket(bucket)`) instead of public properties/setters, convert them into standard TypeScript setters (`set storageKey(key)`, `set storageBucket(bucket)`) on the child widget so it can be instantiated and updated declaratively via the two-argument `widget(WidgetClass, {params})` directive.
 * Configuration is passed via the parameters.
-* Properties passed from a parent MUST be declared as public fields on the child presenter class.
+* Properties passed from a parent MUST be declared as public fields or setters on the child presenter class.
 * The framework automatically updates these properties and calls `requestUpdate()` on the child when the parent re-renders.
 * **Pre-existing Widget Instances (`WrapperWidget`):** To render an existing `UI.Widget` instance (such as locations created by `UI.ViewManager`: `TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`) declaratively without creating a custom wrapper class, use `${widget(UI.Widget.WrapperWidget, {widget: myWidgetInstance})}`. `WrapperWidget` automatically forwards constraints, handles attach/detach lifecycle, and supports dynamic widget replacement.
 

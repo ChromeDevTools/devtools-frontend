@@ -73,6 +73,7 @@ clean `UI.Widget` classes that use native update rendering delegates.
         html`<devtools-widget ${widget(MyWidgetClass, {params})}></devtools-widget>`
         ```
 
+    *   **Strongly prefer the two-argument `widget(MyWidgetClass, {params})` form** over the single-argument factory callback `widget(element => new MyWidgetClass(element, ...))`. The single-argument factory only runs on initial creation and does not update properties on subsequent re-renders. If the child widget only exposes `setFoo(...)` methods, convert them into `set foo(...)` setters so they can be passed via the second argument of `widget()`.
     *   Inspect instantiator files (e.g., `ApplicationPanelSidebar.ts`) and
         decouple any direct accesses to `.element`.
 

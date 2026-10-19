@@ -68,6 +68,7 @@ import * as PageResourceLoader from './PageResourceLoader.js';
 import * as PaintProfiler from './PaintProfiler.js';
 import * as PerformanceMetricsModel from './PerformanceMetricsModel.js';
 import * as PreloadingModel from './PreloadingModel.js';
+import * as PrivateVerificationTokensModel from './PrivateVerificationTokensModel.js';
 import * as RehydratingConnection from './RehydratingConnection.js';
 import * as RehydratingObject from './RehydratingObject.js';
 import * as RemoteObject from './RemoteObject.js';
@@ -159,6 +160,7 @@ export {
   PaintProfiler,
   PerformanceMetricsModel,
   PreloadingModel,
+  PrivateVerificationTokensModel,
   RehydratingConnection,  // TODO(crbug.com/444191656): Exported for tests.
   RehydratingObject,
   RemoteObject,

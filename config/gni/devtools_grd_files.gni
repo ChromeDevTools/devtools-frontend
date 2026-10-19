@@ -1019,6 +1019,7 @@ grd_files_unbundled_sources = [
   "front_end/core/sdk/PaintProfiler.js",
   "front_end/core/sdk/PerformanceMetricsModel.js",
   "front_end/core/sdk/PreloadingModel.js",
+  "front_end/core/sdk/PrivateVerificationTokensModel.js",
   "front_end/core/sdk/RehydratingConnection.js",
   "front_end/core/sdk/RehydratingObject.js",
   "front_end/core/sdk/RemoteObject.js",

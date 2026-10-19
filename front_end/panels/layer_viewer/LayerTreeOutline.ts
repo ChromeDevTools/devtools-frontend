@@ -162,13 +162,17 @@ export class LayerTreeOutline extends LayerTreeOutlineBase implements Common.Eve
     this.#view = view;
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
-
-    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.requestUpdate();
+    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+    this.update();
+  }
+
+  override willHide(): void {
+    this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.update, this);
+    super.willHide();
   }
 
   override performUpdate(): void {

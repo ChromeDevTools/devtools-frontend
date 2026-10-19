@@ -7,7 +7,9 @@ import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import {
   dispatchInputEvent,
@@ -22,6 +24,8 @@ import {render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import * as SourceFrame from './source_frame.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('SourceFrame', () => {
   let setting: Common.Settings.Setting<boolean>;
@@ -249,6 +253,163 @@ describeWithEnvironment('SourceFrame', () => {
 
       sourceFrame.detach();
       toolbar.remove();
+    });
+  });
+
+  describe('indent setting', () => {
+    function countIndentSettingListeners(): number {
+      return Common.Settings.Settings.instance().eventTargetForTest.listeners?.get('text-editor-indent')?.size ?? 0;
+    }
+
+    it('only listens to changes of the indent setting while shown', async () => {
+      const initialCount = countIndentSettingListeners();
+      const sourceFrame =
+          new SourceFrame.SourceFrame.SourceFrameImpl(async () => TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA);
+      // Stub `setContent()`, as the text editor listens to the indent setting on its own once it has content.
+      const setContentStub = sinon.stub(sourceFrame, 'setContent');
+      assert.strictEqual(countIndentSettingListeners(), initialCount);
+
+      renderElementIntoDOM(sourceFrame);
+      await expectCall(setContentStub);
+      assert.strictEqual(countIndentSettingListeners(), initialCount + 1);
+
+      sourceFrame.detach();
+      assert.strictEqual(countIndentSettingListeners(), initialCount);
+    });
+
+    it('stops listening to changes of the indent setting when disposed', async () => {
+      const initialCount = countIndentSettingListeners();
+      const sourceFrame =
+          new SourceFrame.SourceFrame.SourceFrameImpl(async () => TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA);
+      const setContentStub = sinon.stub(sourceFrame, 'setContent');
+      renderElementIntoDOM(sourceFrame);
+      await expectCall(setContentStub);
+
+      sourceFrame.disposeView();
+      assert.strictEqual(countIndentSettingListeners(), initialCount);
+
+      sourceFrame.detach();
+      sourceFrame.disposeView();
+      assert.strictEqual(countIndentSettingListeners(), initialCount);
+    });
+
+    it('re-formats with an indent that changed while hidden when shown again', async () => {
+      const indentSetting =
+          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor);
+      indentSetting.set('  ');
+      // Long enough for the content to be considered minified, so that it is pretty printed automatically.
+      const value = 'x'.repeat(100);
+      const sourceFrame = new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
+          TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+              urlString`https://example.com/data.json`, Common.ResourceType.resourceTypes.XHR, `{"a":"${value}"}`),
+          'application/json');
+      sourceFrame.setCanPrettyPrint(true, /* autoPrettyPrint */ true);
+      const setContentStub = sinon.stub(sourceFrame, 'setContent');
+
+      renderElementIntoDOM(sourceFrame);
+      let [content] = await expectCall(setContentStub);
+      assert.strictEqual(content, `{\n  "a": "${value}"\n}`);
+
+      sourceFrame.detach();
+      indentSetting.set('\t');
+      sinon.assert.calledOnce(setContentStub);
+
+      // Showing the frame again first restores the raw content and then pretty prints it with the new indent.
+      const reformatted = expectCall(setContentStub, {callCount: 3});
+      renderElementIntoDOM(sourceFrame);
+      [content] = await reformatted;
+      assert.strictEqual(content, `{\n\t"a": "${value}"\n}`);
+
+      sourceFrame.detach();
+    });
+
+    async function createShownPrettyJsonFrame(): Promise<{
+      sourceFrame: SourceFrame.ResourceSourceFrame.ResourceSourceFrame,
+      indentSetting: Common.Settings.Setting<string>,
+      bPropertyRawColumn: number,
+    }> {
+      const indentSetting =
+          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor);
+      indentSetting.set('  ');
+      const value = 'x'.repeat(100);
+      const rawJson = `{"a":"${value}","b":1}`;
+      const bPropertyRawColumn = rawJson.indexOf('"b"');
+      const sourceFrame = new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
+          TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+              urlString`https://example.com/data.json`, Common.ResourceType.resourceTypes.XHR, rawJson),
+          'application/json');
+      sourceFrame.setCanPrettyPrint(true, /* autoPrettyPrint */ true);
+
+      const originalRevealPosition = sourceFrame.textEditor.revealPosition.bind(sourceFrame.textEditor);
+      const revealPositionStub = sinon.stub(sourceFrame.textEditor, 'revealPosition');
+      const initialReveal = expectCall(revealPositionStub, {fakeFn: originalRevealPosition});
+      sourceFrame.revealPosition({lineNumber: 0, columnNumber: 0});
+      renderElementIntoDOM(sourceFrame);
+      await initialReveal;
+      revealPositionStub.restore();
+
+      return {sourceFrame, indentSetting, bPropertyRawColumn};
+    }
+
+    it('preserves the cursor position when re-formatting after an indent change while hidden', async () => {
+      const {sourceFrame, indentSetting} = await createShownPrettyJsonFrame();
+      // Place the cursor on `"b": 1` (line 2, column 2 with 2-space indent).
+      sourceFrame.textEditor.dispatch({
+        selection: sourceFrame.textEditor.createSelection({lineNumber: 2, columnNumber: 2}),
+      });
+
+      sourceFrame.detach();
+      indentSetting.set('\t');
+
+      const originalRevealPosition = sourceFrame.textEditor.revealPosition.bind(sourceFrame.textEditor);
+      const revealPositionStub = sinon.stub(sourceFrame.textEditor, 'revealPosition');
+      const reformatted = expectCall(revealPositionStub, {fakeFn: originalRevealPosition, callCount: 2});
+      renderElementIntoDOM(sourceFrame);
+      await reformatted;
+
+      // With a tab indent, `"b": 1` moves to line 2, column 1.
+      const cursor = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
+      assert.deepEqual(cursor, {lineNumber: 2, columnNumber: 1});
+
+      sourceFrame.detach();
+    });
+
+    it('reveals a pending position with the new indent when shown after an indent change', async () => {
+      const {sourceFrame, indentSetting, bPropertyRawColumn} = await createShownPrettyJsonFrame();
+      sourceFrame.detach();
+      indentSetting.set('\t');
+
+      const originalRevealPosition = sourceFrame.textEditor.revealPosition.bind(sourceFrame.textEditor);
+      const revealPositionStub = sinon.stub(sourceFrame.textEditor, 'revealPosition');
+      const revealed = expectCall(revealPositionStub, {fakeFn: originalRevealPosition, callCount: 3});
+      sourceFrame.revealPosition({lineNumber: 0, columnNumber: bPropertyRawColumn}, true);
+      renderElementIntoDOM(sourceFrame);
+      const [, shouldHighlight] = await revealed;
+
+      const cursor = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
+      assert.deepEqual(cursor, {lineNumber: 2, columnNumber: 1});
+      assert.isTrue(shouldHighlight);
+
+      sourceFrame.detach();
+    });
+
+    it('reveals a position requested right after showing when re-formatting for an indent change', async () => {
+      const {sourceFrame, indentSetting, bPropertyRawColumn} = await createShownPrettyJsonFrame();
+      sourceFrame.detach();
+      indentSetting.set('\t');
+
+      const originalRevealPosition = sourceFrame.textEditor.revealPosition.bind(sourceFrame.textEditor);
+      const revealPositionStub = sinon.stub(sourceFrame.textEditor, 'revealPosition');
+      const revealed = expectCall(revealPositionStub, {fakeFn: originalRevealPosition, callCount: 3});
+      renderElementIntoDOM(sourceFrame);
+      sourceFrame.revealPosition({lineNumber: 0, columnNumber: bPropertyRawColumn}, true);
+      const [, shouldHighlight] = await revealed;
+
+      const cursor = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
+      assert.deepEqual(cursor, {lineNumber: 2, columnNumber: 1});
+      assert.isTrue(shouldHighlight);
+
+      sourceFrame.detach();
     });
   });
 });

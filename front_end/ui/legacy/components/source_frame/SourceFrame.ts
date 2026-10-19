@@ -244,6 +244,11 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   private wasmDisassemblyInternal: TextUtils.WasmDisassembly.WasmDisassembly|null;
   contentSet: boolean;
   private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
+  readonly #textEditorIndentSetting: Common.Settings.Setting<string>;
+  #listeningToIndentSetting = false;
+  // The indentation that the content was last pretty printed with.
+  #prettyIndent: string|null = null;
+  #updatingPrettyIndent = false;
 
   constructor(lazyContent: () => Promise<TextUtils.ContentData.ContentDataOrError>,
               private readonly options: SourceFrameOptions = {}, element?: HTMLElement, view: View = DEFAULT_VIEW) {
@@ -287,9 +292,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
 
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
-    Common.Settings.Settings.instance()
-        .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
-        .addChangeListener(this.#textEditorIndentChanged, this);
+    this.#textEditorIndentSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor);
 
     this.performUpdate();
   }
@@ -323,9 +327,14 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   }
 
   override disposeView(): void {
-    Common.Settings.Settings.instance()
-        .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
-        .removeChangeListener(this.#textEditorIndentChanged, this);
+    this.#stopListeningToIndentSetting();
+  }
+
+  #stopListeningToIndentSetting(): void {
+    if (this.#listeningToIndentSetting) {
+      this.#textEditorIndentSetting.removeChangeListener(this.#textEditorIndentChanged, this);
+      this.#listeningToIndentSetting = false;
+    }
   }
 
   async #textEditorIndentChanged(): Promise<void> {
@@ -333,8 +342,14 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       // Indentation settings changed, which are used for pretty printing as well,
       // so if the editor is currently pretty printed, just toggle the state here
       // to apply the new indentation settings.
-      await this.setPretty(false);
-      await this.setPretty(true);
+      this.#updatingPrettyIndent = true;
+      try {
+        await this.setPretty(false);
+        await this.setPretty(true);
+      } finally {
+        this.#updatingPrettyIndent = false;
+      }
+      this.#revealPositionIfNeeded();
     }
   }
 
@@ -499,8 +514,8 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       const content =
           this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || '';
       this.textEditor.state = this.placeholderEditorState(i18nString(UIStrings.formatting));
-      const indent =
-          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+      const indent = this.#textEditorIndentSetting.get();
+      this.#prettyIndent = indent;
       const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(this.contentType, content, indent);
       this.formattedMap = formatInfo.formattedMapping;
       await this.setContent(formatInfo.formattedContent);
@@ -510,11 +525,11 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       newSelection = textEditor.createSelection(
           {lineNumber: start[0], columnNumber: start[1]}, {lineNumber: end[0], columnNumber: end[1]});
     } else {
+      const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);
+      const end = this.prettyToRawLocation(endPos.lineNumber, endPos.columnNumber);
       this.formattedMap = null;
       await this.setContent(this.rawContent || '');
       this.baseDoc = textEditor.state.doc;
-      const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);
-      const end = this.prettyToRawLocation(endPos.lineNumber, endPos.columnNumber);
       newSelection = textEditor.createSelection(
           {lineNumber: start[0], columnNumber: start[1]}, {lineNumber: end[0], columnNumber: end[1]});
     }
@@ -593,11 +608,21 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
   override wasShown(): void {
     super.wasShown();
     void this.ensureContentLoaded();
+    // `wasShown()` can be called again without `willHide()` in between, so only register once.
+    if (!this.#listeningToIndentSetting) {
+      this.#textEditorIndentSetting.addChangeListener(this.#textEditorIndentChanged, this);
+      this.#listeningToIndentSetting = true;
+    }
+    // The indentation might have changed while the frame was hidden.
+    if (this.prettyInternal && this.#prettyIndent !== this.#textEditorIndentSetting.get()) {
+      void this.#textEditorIndentChanged();
+    }
     this.wasShownOrLoaded();
   }
 
   override willHide(): void {
     super.willHide();
+    this.#stopListeningToIndentSetting();
 
     this.clearPositionToReveal();
   }
@@ -750,7 +775,7 @@ export class SourceFrameImpl extends SourceFrameImplBase implements UI.Searchabl
       return;
     }
 
-    if (!this.loaded || !this.isShowing()) {
+    if (!this.loaded || !this.isShowing() || this.#updatingPrettyIndent) {
       return;
     }
 

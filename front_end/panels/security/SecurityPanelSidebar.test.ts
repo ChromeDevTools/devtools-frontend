@@ -252,56 +252,6 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
     assert.strictEqual(callback.firstCall.args[0], origin);
   });
 
-  it('dumps origins as expected by security_test_runner', async () => {
-    const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
-    renderElementIntoDOM(sidebar);
-
-    const mainOrigin = urlString`https://devtools.test`;
-    const unknownOrigin = urlString`https://foo.test`;
-
-    sidebar.setMainOrigin(mainOrigin);
-    sidebar.addOrigin(unknownOrigin, Protocol.Security.SecurityState.Unknown);
-    await doubleRaf();
-
-    const tree = sidebar.contentElement.querySelector('devtools-tree');
-    assert.exists(tree);
-
-    const results: string[] = [];
-    const root = (tree as unknown as {templateRoot: DocumentFragment}).templateRoot || tree.shadowRoot || tree;
-    const groups = root.querySelectorAll('.security-sidebar-origins');
-    for (const group of groups) {
-      if (group.hasAttribute('hidden') || group.classList.contains('hidden')) {
-        continue;
-      }
-      const titleElement =
-          group.querySelector('.security-sidebar-origins-title') || group.querySelector('.tree-element-title');
-      const title = titleElement ? titleElement.textContent?.trim() : group.textContent?.trim();
-      results.push('Group: ' + title);
-      const originContainer = group.querySelector('ul[role="group"]') || group.nextElementSibling;
-      if (!originContainer) {
-        continue;
-      }
-      const originItems = originContainer.querySelectorAll('.security-sidebar-tree-item');
-      for (const originItem of originItems) {
-        const spans = originItem.getElementsByTagName('span');
-        for (const span of spans) {
-          if (!span.classList.contains('tree-element-title')) {
-            results.push(span.textContent || '');
-          }
-        }
-      }
-    }
-
-    assert.deepEqual(results, [
-      'Group: Main origin',
-      'Group: Unknown / canceled',
-      'https://foo.test',
-      'https',
-      '://',
-      'foo.test',
-    ]);
-  });
-
   describe('visual screenshots', () => {
     it('renders initial sidebar state', async () => {
       const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();

@@ -322,5 +322,22 @@ describe('Treemap', () => {
         ['https://onetag-sys.com/usync/?pubId=765b4e6bb9c8438', 2356, 942, true],
       ]);
     });
+
+    it('deduplicates non-inline scripts that share the same network request', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'dupe-js.json.gz');
+      const bundleScript =
+          parsedTrace.data.Scripts.scripts.find(s => s.url === 'https://dupe-modules-lh-2.surge.sh/bundle.js?v1');
+      assert.isOk(bundleScript?.request);
+
+      const scripts = {
+        scripts: [
+          bundleScript,
+          {...bundleScript, scriptId: '999' as typeof bundleScript.scriptId},
+        ],
+      };
+      const data = Utils.Treemap.createTreemapData(scripts, new Map());
+      assert.lengthOf(data, 1);
+      assert.strictEqual(data[0].name, 'https://dupe-modules-lh-2.surge.sh/bundle.js?v1');
+    });
   });
 });

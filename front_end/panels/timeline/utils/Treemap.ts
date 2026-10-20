@@ -197,10 +197,18 @@ export function createTreemapData(
     duplication: Trace.Extras.ScriptDuplication.ScriptDuplication): TreemapData {
   const nodes: TreemapNode[] = [];
   const htmlNodesByFrameId = new Map<string, TreemapNode>();
+  const seenRequests = new Set<Trace.Types.Events.SyntheticNetworkRequest>();
 
   for (const script of scripts.scripts) {
     if (!script.url) {
       continue;
+    }
+
+    if (!script.inline && script.request) {
+      if (seenRequests.has(script.request)) {
+        continue;
+      }
+      seenRequests.add(script.request);
     }
 
     const name = script.url;

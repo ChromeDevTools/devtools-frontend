@@ -330,10 +330,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
           enabled, isLogpoint, origin);
 
       if (uiSourceCode === compatibleUiSourceCode) {
-        if (normalizedLocation.id() !== uiLocation.id()) {
-          // Only call this on the uiSourceCode that was initially selected for breakpoint setting.
-          void Common.Revealer.reveal(normalizedLocation);
-        }
         primaryBreakpoint = breakpoint;
       }
     }

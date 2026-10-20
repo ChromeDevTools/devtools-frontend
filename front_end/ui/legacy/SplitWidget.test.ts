@@ -139,7 +139,7 @@ describeWithEnvironment('SplitWidget', () => {
     renderElementIntoDOM(container);
     let splitWidget!: UI.SplitWidget.SplitWidget;
 
-    const renderSplitView = (show: 'main'|'sidebar'|'both') => {
+    const renderSplitView = (show: UI.SplitWidget.ShowAttribute) => {
       // clang-format off
       render(
           html`
@@ -183,7 +183,7 @@ describeWithEnvironment('SplitWidget', () => {
     renderElementIntoDOM(container);
     let splitWidget!: UI.SplitWidget.SplitWidget;
 
-    const renderSplitView = (show: 'main'|'sidebar'|'both') => {
+    const renderSplitView = (show: UI.SplitWidget.ShowAttribute) => {
       // clang-format off
       render(
           html`
@@ -227,7 +227,7 @@ describeWithEnvironment('SplitWidget', () => {
     renderElementIntoDOM(container);
     let splitWidget!: UI.SplitWidget.SplitWidget;
 
-    const renderSplitView = (slotMain: boolean, slotSidebar: boolean, show: 'main'|'sidebar'|'both') => {
+    const renderSplitView = (slotMain: boolean, slotSidebar: boolean, show: UI.SplitWidget.ShowAttribute) => {
       // clang-format off
       render(
           html`

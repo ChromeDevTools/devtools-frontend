@@ -198,8 +198,8 @@ export class SplitWidget extends SplitWidgetBase {
       widget.element.slot = 'main';
       if (this.#showMode === ShowMode.ONLY_MAIN || this.#showMode === ShowMode.BOTH) {
         widget.show(this.element);
-      } else {
-        this.#hideSide(widget);
+      } else if (this.element instanceof SplitWidgetElement) {
+        widget.hideWidget();
       }
     }
     this.resumeInvalidations();
@@ -218,21 +218,11 @@ export class SplitWidget extends SplitWidgetBase {
       widget.element.slot = 'sidebar';
       if (this.#showMode === ShowMode.ONLY_SIDEBAR || this.#showMode === ShowMode.BOTH) {
         widget.show(this.element);
-      } else {
-        this.#hideSide(widget);
+      } else if (this.element instanceof SplitWidgetElement) {
+        widget.hideWidget();
       }
     }
     this.resumeInvalidations();
-  }
-
-  #hideSide(widget: AnyWidget): void {
-    if (this.element instanceof SplitWidgetElement) {
-      widget.hideWidget();
-    } else {
-      this.#detaching = true;
-      widget.detach();
-      this.#detaching = false;
-    }
   }
 
   mainWidget(): AnyWidget|null {
@@ -342,7 +332,13 @@ export class SplitWidget extends SplitWidgetBase {
         }
       }
       if (sideToHide) {
-        this.#hideSide(sideToHide);
+        if (this.element instanceof SplitWidgetElement) {
+          sideToHide.hideWidget();
+        } else {
+          this.#detaching = true;
+          sideToHide.detach();
+          this.#detaching = false;
+        }
       }
 
       this.#resizerElement.classList.add('hidden');
@@ -918,6 +914,8 @@ export class SplitWidget extends SplitWidgetBase {
   }
 }
 
+export type ShowAttribute = 'main'|'sidebar'|'both';
+
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
   static readonly observedAttributes: string[] = ['direction', 'sidebar-position', 'sidebar-initial-size', 'show'];
 
@@ -972,7 +970,7 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
         widget.hideSidebar();
       } else if (newValue === 'sidebar') {
         widget.hideMain();
-      } else {
+      } else if (newValue === 'both' || newValue === null) {
         widget.showBoth();
       }
     }

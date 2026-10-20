@@ -707,11 +707,13 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     const propertyStub = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
     const matchedStylesStub = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
     for (const keyword of SDK.CSSMetadata.CSSWideKeywords) {
-      const {match, text} = matchSingleValue(
-          '--property', keyword,
-          new SDK.CSSPropertyParserMatchers.CSSWideKeywordMatcher(propertyStub, matchedStylesStub));
-      assert.exists(match, text);
-      assert.strictEqual(match.text, keyword);
+      for (const value of [keyword, `${keyword} !important`]) {
+        const {match, text} =
+            matchSingleValue('--property', value,
+                             new SDK.CSSPropertyParserMatchers.CSSWideKeywordMatcher(propertyStub, matchedStylesStub));
+        assert.exists(match, text);
+        assert.strictEqual(match.text, keyword);
+      }
     }
 
     const {match, text} = matchSingleValue(
@@ -932,6 +934,27 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     // Does not match other properties
     {
       const {match, text} = matchSingleValue('color', 'red', new SDK.CSSPropertyParserMatchers.PositionAreaMatcher());
+      assert.isNull(match, text);
+    }
+  });
+
+  it('matches !important', () => {
+    for (const [succeed, expected] of [['red !important', 'red'],
+                                       ['1px solid /* comment */ !important', '1px solid'],
+    ]) {
+      const {ast, match, text} =
+          matchSingleValue('color', succeed, new SDK.CSSPropertyParserMatchers.ImportantMatcher());
+      assert.exists(ast, text);
+      assert.exists(match, text);
+      assert.strictEqual(match.text, '!important');
+      assert.strictEqual(match.computedText(), '');
+      const matchedResult =
+          SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [new SDK.CSSPropertyParserMatchers.ImportantMatcher()]);
+      assert.strictEqual(matchedResult.getComputedPropertyValueText().trim(), expected);
+    }
+
+    for (const fail of ['red', '"!important"', 'important']) {
+      const {match, text} = matchSingleValue('color', fail, new SDK.CSSPropertyParserMatchers.ImportantMatcher());
       assert.isNull(match, text);
     }
   });

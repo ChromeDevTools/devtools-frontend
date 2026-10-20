@@ -1463,7 +1463,6 @@ type ShadowLengthProperty = ShadowProperty&{
 
 // A part of a shadow as it is rendered: either text, or a node together with the context to render and read it in.
 type ShadowPart = string|{node: CodeMirror.SyntaxNode, context: RenderingContext};
-
 /**
  * The shadow model is an abstraction over the various shadow properties on the one hand and the order they were defined
  * in on the other, so that modifications through the shadow editor can retain the property order in the authored text.
@@ -1620,7 +1619,6 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     }
     render(html`${parts}`, span);
   }
-
   // The text of the shadow as `renderContents` renders it, including the changes that renderers recorded for its parts.
   text(): string {
     const texts = this.#parts().map(part => {
@@ -2229,6 +2227,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       button?.dispatchEvent(new ValueEditEvent(value));
       context.recordEdit(match, value);
     };
+
     const treeElement = this.#treeElement;
     const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
     const isActive =
@@ -2374,6 +2373,7 @@ export class PositionTryRenderer extends PositionTryRendererBase {
                                      this.#matchedStyles.node();
     const fallbackLabels: string[] = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
+      const isImportant = fallback.find(node => node.name === 'Important');
       const fallbackContent = document.createElement('span');
       if (i > 0) {
         fallbackContent.appendChild(document.createTextNode(', '));
@@ -2382,11 +2382,14 @@ export class PositionTryRenderer extends PositionTryRendererBase {
           i !== this.#matchedStyles.activePositionFallbackIndex()) {
         fallbackContent.classList.add('inactive-value');
       }
-      Renderer.renderInto(fallback, context, fallbackContent);
+      Renderer.renderInto(fallback.filter(node => node.name !== 'Important'), context, fallbackContent);
       fallbackLabels.push(
           context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim());
 
       content.push(fallbackContent);
+      if (isImportant) {
+        content.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
+      }
     }
     if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() ||
         !this.#treeElement.property.activeInStyle() || !node) {

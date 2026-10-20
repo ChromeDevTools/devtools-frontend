@@ -24,6 +24,7 @@ import {
   getMatchedStyles,
   getMatchedStylesWithBlankRule,
   getMatchedStylesWithStylesheet,
+  ruleMatch,
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
@@ -2287,17 +2288,16 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
   });
 
   describe('CSSWideKeywordRenderer', () => {
-    function mockResolvedKeyword(propertyName: string, _keyword: SDK.CSSMetadata.CSSWideKeyword, propertyValue = ''):
-        sinon.SinonStubbedInstance<SDK.CSSProperty.CSSProperty> {
-      const originalDeclaration = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
+    function mockResolvedKeyword(propertyName: string, _keyword: SDK.CSSMetadata.CSSWideKeyword,
+                                 propertyValue = ''): SDK.CSSProperty.CSSProperty {
+      const originalDeclaration =
+          new SDK.CSSProperty.CSSProperty(sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration), 0,
+                                          propertyName, propertyValue, false, false, true, false);
       sinon.stub(matchedStyles, 'resolveGlobalKeyword')
           .callsFake(
               (property, keyword) => property.name === propertyName && property.value === keyword ?
                   new SDK.CSSMatchedStyles.CSSValueSource(originalDeclaration) :
                   null);
-      originalDeclaration.name = propertyName;
-      originalDeclaration.value = propertyValue;
-      originalDeclaration.ownerStyle = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
       return originalDeclaration;
     }
 
@@ -2339,6 +2339,67 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
     });
+  });
+
+  describe('!important', () => {
+    const cases: Array<{
+      description: string,
+      value: string,
+      attributes?: Record<string, string>,
+      inherited?: Protocol.CSS.CSSProperty[],
+    }> =
+        [
+          {description: 'a color', value: 'red'},
+          {description: 'attr()', value: 'attr(data-color type(<color>))', attributes: {'data-color': 'red'}},
+          {
+            description: 'a CSS-wide keyword',
+            value: 'inherit',
+            inherited: [{name: '--red', value: 'red !important', important: true}],
+          },
+        ];
+
+    for (const {description, value, attributes, inherited} of cases) {
+      it(`renders the color of an important variable set to ${description}`, async () => {
+        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        node.id = 1 as Protocol.DOM.NodeId;
+        node.nodeType.returns(1);
+        node.getAttribute.callsFake(name => attributes?.[name]);
+        const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        parent.id = 2 as Protocol.DOM.NodeId;
+        parent.nodeType.returns(1);
+        node.parentNode = parent;
+        const matchedStyles = await getMatchedStyles({
+          connection,
+          node,
+          matchedPayload: [ruleMatch(
+              'div',
+              [
+                {name: '--red', value: `${value} !important`, important: true},
+                {name: 'color', value: 'var(--red)'},
+              ],
+              )],
+          inheritedPayload: [{matchedCSSRules: [ruleMatch('div', inherited ?? [])]}],
+        });
+        for (const property of matchedStyles.nodeStyles()[0].allProperties()) {
+          const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+            stylesContainer: stylesSidebarPane,
+            section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+            matchedStyles,
+            property,
+            isShorthand: false,
+            inherited: false,
+            overloaded: false,
+            newProperty: false,
+          });
+
+          stylePropertyTreeElement.updateTitle();
+
+          const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+          assert.exists(colorSwatch);
+          assert.strictEqual(colorSwatch.color?.asString(), 'red');
+        }
+      });
+    }
   });
 
   describe('PositionAreaRenderer', () => {

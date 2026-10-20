@@ -18,7 +18,7 @@ import {
   type Matcher,
   stripComments,
 } from './CSSPropertyParser.js';
-import {CSSWideKeywordMatcher} from './CSSPropertyParserMatchers.js';
+import {CSSWideKeywordMatcher, ImportantMatcher} from './CSSPropertyParserMatchers.js';
 import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 import {textEditorIndentSettingDescriptor} from './SDKSettings.js';
 
@@ -114,7 +114,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #matchers(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null): Array<Matcher<Match>> {
     const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
 
-    matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
+    matchers.push(new CSSWideKeywordMatcher(this, matchedStyles), new ImportantMatcher());
     return matchers;
   }
 

@@ -43,6 +43,7 @@ describe('CSSMatchedStyles', () => {
                       {name: '--foo', value: 'active-foo'},
                       {name: '--baz', value: 'active-baz !important', important: true},
                       {name: '--baz', value: 'passive-baz'},
+                      {name: '--use-baz', value: 'var(--baz)'},
                       {name: '--dark', value: 'darkgrey'},
                       {name: '--empty', value: ''},
                       {name: '--empty2', value: 'var(--empty)'},
@@ -82,7 +83,7 @@ describe('CSSMatchedStyles', () => {
 
     it('should correctly compute the value of an expression that uses a variable', async () => {
       await testCssValueEquals('--foo', 'active-foo');
-      await testCssValueEquals('--baz', 'active-baz !important');
+      await testCssValueEquals('--baz', 'active-baz');
       await testCssValueEquals('--does-not-exist', null);
       await testCssValueEquals('--dark', 'darkgrey');
       await testCssValueEquals('--light', 'lightgrey');
@@ -94,6 +95,10 @@ describe('CSSMatchedStyles', () => {
       await testCssValueEquals('--empty2', '');
       await testCssValueEquals('---', 'blue');
       await testCssValueEquals('---triple-dash', 'blue');
+    });
+
+    it('does not include !important in the value of a referenced variable', async () => {
+      await testCssValueEquals('--use-baz', 'active-baz');
     });
 
     it('correctly resolves the declaration', async () => {
@@ -316,6 +321,29 @@ describe('CSSMatchedStyles', () => {
       });
       assert.strictEqual(
           matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], '--color')?.value, 'inherited-color');
+    });
+
+    it('resolves vars with css keywords and !important', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent.id = 2 as Protocol.DOM.NodeId;
+      node.parentNode = parent;
+      const matchedStyles = await getMatchedStyles({
+        connection,
+        matchedPayload: [
+          ruleMatch('div', [{name: '--color', value: 'inherit !important', important: true}]),
+          ruleMatch('div', [{name: '--color', value: 'revert-rule !important', important: true}]),
+        ],
+        inheritedPayload: [{
+          matchedCSSRules: [
+            ruleMatch('div', [{name: '--color', value: 'inherited-color !important', important: true}]),
+          ],
+        }],
+        node,
+      });
+      assert.strictEqual(matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], '--color')?.value,
+                         'inherited-color');
     });
 
     it('correcty handles cycles', async () => {
@@ -943,6 +971,7 @@ describe('CSSMatchedStyles', () => {
       {name: 'data-test-loop-2', value: 'var(--test-loop-1, 2px)'},
       {name: 'data-test-loop-indirect-2', value: 'attr(data-test-loop-1 type(<length>), 6px)'},
       {name: 'data-test-number', value: '70'},
+      {name: 'data-test-important', value: '70 !important'},
       {name: 'data-test-length', value: 'attr(data-test-number in)'},
       {name: 'data-test-bad-unit', value: 'attr(data-test-number parsecs, 2px)'},
       {name: 'data-test-bad-type', value: 'attr(data-test-number type(<nomber>), 2)'},
@@ -984,7 +1013,7 @@ describe('CSSMatchedStyles', () => {
           });
     }
 
-    const variables: Array<{name: string, value: string, expected: string | null}> = [
+    const variables: Array<{name: string, value: string, expected: string | null, important?: boolean}> = [
       {name: '--test-missing', value: 'attr(data-nonexistent)', expected: '""'},
       {name: '--test-missing-fallback', value: 'attr(data-nonexistent, 2px)', expected: '2px'},
       {name: '--test-missing-var-indirect', value: 'var(--test-missing, 2px)', expected: '""'},
@@ -1038,6 +1067,14 @@ describe('CSSMatchedStyles', () => {
         expected: '4',
       },
       {name: '--test-cant-parse', value: 'attr(data-cant-parse type(*), red)', expected: 'red'},
+      {name: '--test-important-attr', value: 'attr(data-test-important type(<number>), 2px)', expected: '2px'},
+      {name: '--test-important-raw-string', value: 'attr(data-test-important raw-string)', expected: '"70 !important"'},
+      {
+        name: '--test-important-declaration',
+        value: 'attr(data-test-number type(<number>)) !important',
+        important: true,
+        expected: '70',
+      },
     ];
 
     const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);

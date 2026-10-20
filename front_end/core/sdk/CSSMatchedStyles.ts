@@ -27,6 +27,7 @@ import {
   EnvFunctionMatcher,
   FlexGridGridLanesMatcher,
   GridTemplateMatcher,
+  ImportantMatcher,
   LengthMatcher,
   LightDarkColorMatcher,
   LinearGradientMatcher,
@@ -1524,19 +1525,23 @@ class DOMInheritanceCascade {
       return null;
     }
 
-    if (definedValue.declaration.declaration instanceof CSSProperty && definedValue.declaration.value &&
-        CSSMetadata.isCSSWideKeyword(definedValue.declaration.value)) {
-      const resolvedProperty =
-          this.resolveGlobalKeyword(definedValue.declaration.declaration, definedValue.declaration.value);
+    while (definedValue.declaration.declaration instanceof CSSProperty && definedValue.declaration.value) {
+      const value = PropertyParser
+                        .matchDeclaration(`--${variableName}`, definedValue.declaration.value, [new ImportantMatcher()])
+                        ?.getComputedPropertyValueText()
+                        .trim();
+      if (!value || !CSSMetadata.isCSSWideKeyword(value)) {
+        break;
+      }
+      const resolvedProperty = this.resolveGlobalKeyword(definedValue.declaration.declaration, value);
       if (!resolvedProperty) {
         return definedValue;
       }
       const declaration = new CSSValueSource(resolvedProperty);
-      const {value} = declaration;
-      if (!value) {
+      if (!declaration.value) {
         return definedValue;
       }
-      definedValue = {declaration, value};
+      definedValue = {declaration, value: declaration.value};
     }
 
     const ast = PropertyParser.tokenizeDeclaration(`--${variableName}`, definedValue.value);
@@ -1657,9 +1662,10 @@ class DOMInheritanceCascade {
             }
             return evaluateFallback(match.fallback, match.matching);
           }),
+      ...(declaration ? [new ImportantMatcher()] : []),
     ]);
     const decl = PropertyParser.ASTUtils.siblings(PropertyParser.ASTUtils.declValue(matching.ast.tree));
-    const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : '';
+    const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]).trim() : '';
     const hasUnresolvedSubstitutions =
         decl.length > 0 && matching.hasUnresolvedSubstitutionsRange(decl[0], decl[decl.length - 1]);
     const computedText = hasUnresolvedSubstitutions ? null : declText;

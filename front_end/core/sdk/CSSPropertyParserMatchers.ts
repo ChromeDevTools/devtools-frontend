@@ -360,6 +360,19 @@ export class TextMatcher extends TextMatcherBase {
   }
 }
 
+export class ImportantMatch extends TextMatch {
+  override computedText = (): string => '';
+}
+
+const ImportantMatcherBase: MatcherClass<ImportantMatch> = matcherBase(ImportantMatch);
+// clang-format off
+export class ImportantMatcher extends ImportantMatcherBase {
+  // clang-format on
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ImportantMatch|null {
+    return node.name === 'Important' ? new ImportantMatch(matching.ast.text(node), node) : null;
+  }
+}
+
 export class AngleMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
   }
@@ -1361,7 +1374,11 @@ export class CSSWideKeywordMatch implements Match {
     return this.matchedStyles.resolveGlobalKeyword(this.property, this.text);
   }
   computedText?(): string|null {
-    return this.resolveProperty()?.value ?? null;
+    return this.resolveProperty()
+               ?.declaration.parseValue(this.matchedStyles, null)
+               ?.getComputedPropertyValueText()
+               .trim() ??
+        null;
   }
 }
 
@@ -1380,6 +1397,7 @@ export class CSSWideKeywordMatcher extends CSSWideKeywordMatcherBase {
     }
 
     if (Array.from(ASTUtils.stripComments(ASTUtils.siblings(ASTUtils.declValue(parentNode))))
+            .filter(child => child.name !== 'Important')
             .some(child => !ASTUtils.equals(child, node))) {
       return null;
     }
@@ -1417,18 +1435,17 @@ export class PositionTryMatcher extends PositionTryMatcherBase {
     let preamble: CodeMirror.SyntaxNode[] = [];
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
     const fallbacks = ASTUtils.split(valueNodes);
-    if (matching.ast.propertyName === LinkableNameProperties.POSITION_TRY) {
       for (const [i, n] of fallbacks[0].entries()) {
         const computedText = matching.getComputedText(n);
         if (CSSMetadata.isCSSWideKeyword(computedText)) {
           return null;
         }
-        if (CSSMetadata.isPositionTryOrderKeyword(computedText)) {
+        if (matching.ast.propertyName === LinkableNameProperties.POSITION_TRY &&
+            CSSMetadata.isPositionTryOrderKeyword(computedText)) {
           preamble = fallbacks[0].splice(0, i + 1);
           break;
         }
       }
-    }
 
     const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
     return new PositionTryMatch(valueText, node, preamble, fallbacks);
@@ -1494,7 +1511,7 @@ export class PositionAreaMatcher extends PositionAreaMatcherBase {
     if (valueNodes.length === 0) {
       return null;
     }
-    const computedText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+    const computedText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]).trim();
     if (CSSMetadata.isCSSWideKeyword(computedText)) {
       return null;
     }

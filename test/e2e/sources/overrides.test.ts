@@ -47,11 +47,11 @@ describe('Overrides panel', function() {
     await openSourcesPanel(devToolsPage);
     await enableLocalOverrides(devToolsPage);
     await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
-    await devToolsPage.waitFor('[aria-label="NewFile, file"]');
+    await devToolsPage.waitFor('[aria-label="NewFile, file"] .being-edited');
     await devToolsPage.typeText('foo\n');
 
     await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
-    await devToolsPage.waitFor('[aria-label="NewFile, file"]');
+    await devToolsPage.waitFor('[aria-label="NewFile, file"] .being-edited');
     await devToolsPage.typeText('bar\n');
     await devToolsPage.waitFor('[aria-label="bar, file"]');
 
@@ -206,7 +206,7 @@ describe('Overrides panel', function() {
     await devToolsPage.click('aria/Sources');
     await devToolsPage.click('aria/Select folder for overrides');
     await openSoftContextMenuAndClickOnItem(devToolsPage, OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
-    await devToolsPage.waitFor('[aria-label="NewFile, file"]');
+    await devToolsPage.waitFor('[aria-label="NewFile, file"] .being-edited');
 
     await openNetworkTab(devToolsPage);
     await setCacheDisabled(devToolsPage, false);
@@ -445,7 +445,7 @@ describe('Overrides panel > Delete context menus', () => {
     const subfolderTab = await devToolsPage.waitFor('[role="group"] > .navigator-folder-tree-item');
     await subfolderTab.click({button: 'right'});
     await devToolsPage.click('aria/New file');
-    await devToolsPage.waitFor('[aria-label="NewFile, file"]');
+    await devToolsPage.waitFor('[aria-label="NewFile, file"] .being-edited');
     await devToolsPage.typeText('foo.js\n');
 
     await openNetworkTab(devToolsPage);

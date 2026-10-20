@@ -27,7 +27,7 @@ import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const {html, render, Directives: {ref}} = Lit;
-const {bindToAction} = UI.UIUtils;
+const {bindToAction, bindToSetting} = UI.UIUtils;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -48,6 +48,10 @@ const UIStrings = {
    * @description Text to show if no local overrides are set up. Learn more at https://goo.gle/devtools-overrides.
    */
   noLocalOverrides: 'No local overrides set up',
+  /**
+   * @description Title of a setting under the Persistence category in Settings.
+   */
+  localOverrides: 'Local overrides',
   /**
    * @description Text to explain the local overrides feature. Learn more at https://goo.gle/devtools-overrides.
    */
@@ -128,6 +132,11 @@ export interface SourcesNavigatorViewOutput {
 export abstract class SourcesNavigatorView extends UI.Widget.VBox {
   protected readonly viewOutput: SourcesNavigatorViewOutput = {};
   protected readonly projectFilter: (project: Workspace.Workspace.Project) => boolean = this.acceptProject.bind(this);
+
+  constructor(element?: HTMLElement) {
+    super(element);
+    this.requestUpdate();
+  }
 
   protected get navigatorView(): NavigatorView|undefined {
     return this.viewOutput.navigatorView?.getWidget();
@@ -344,7 +353,7 @@ export class FilesNavigatorView extends SourcesNavigatorView {
     super.willHide();
   }
 
-  override performUpdate(): void {
+  override async performUpdate(): Promise<void> {
     const {automaticFileSystem, availability} = this.#automaticFileSystemManager;
     this.#view({
       projectFilter: this.projectFilter,
@@ -353,6 +362,7 @@ export class FilesNavigatorView extends SourcesNavigatorView {
       onSourceSelected: this.sourceSelected.bind(this),
     },
                this.viewOutput, this.contentElement);
+    await this.navigatorView?.updateComplete;
   }
 
   sourceSelected(): void {
@@ -375,91 +385,145 @@ export class FilesNavigatorView extends SourcesNavigatorView {
   }
 }
 
+export interface OverridesNavigatorViewInput {
+  projectFilter: (project: Workspace.Workspace.Project) => boolean;
+  hasProject: boolean;
+  onSetupNewWorkspace: () => void;
+  onClearConfiguration: () => void;
+  onSourceSelected: () => void;
+}
+
+export type OverridesNavigatorViewFunc =
+    (input: OverridesNavigatorViewInput, output: SourcesNavigatorViewOutput, target: HTMLElement) => void;
+
+export const OVERRIDES_NAVIGATOR_DEFAULT_VIEW: OverridesNavigatorViewFunc = (input, output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${sourcesNavigatorStyles}</style>
+        <devtools-widget
+          jslog=${VisualLogging.pane('navigator-overrides').track({resize: true})}
+          @source-selected=${input.onSourceSelected}
+          ${widget(NavigatorView, {
+            projectFilter: input.projectFilter,
+          })}
+          ${ref(e => {
+            if (e instanceof UI.Widget.WidgetElement) {
+              output.navigatorView = e;
+            }
+          })}
+        >
+          <devtools-toolbar class="navigator-toolbar" slot="header">
+            ${input.hasProject ? html`
+              <devtools-checkbox
+                ${bindToSetting(Common.Settings.Settings.instance().resolve(
+                    Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor))}
+              >${i18nString(UIStrings.localOverrides)}</devtools-checkbox>
+              <div class="toolbar-spacer"></div>
+              <devtools-button
+                class="toolbar-button"
+                title=${i18nString(UIStrings.clearConfiguration)}
+                aria-label=${i18nString(UIStrings.clearConfiguration)}
+                .iconName=${'clear'}
+                .variant=${Buttons.Button.Variant.ICON}
+                @click=${input.onClearConfiguration}
+              ></devtools-button>
+            ` : html`
+              <devtools-button
+                class="toolbar-button"
+                title=${i18nString(UIStrings.selectFolderForOverrides)}
+                aria-label=${i18nString(UIStrings.selectFolderForOverrides)}
+                .iconName=${'plus'}
+                .variant=${Buttons.Button.Variant.TEXT}
+                .reducedFocusRing=${true}
+                @click=${input.onSetupNewWorkspace}
+              >${i18nString(UIStrings.selectFolderForOverrides)}</devtools-button>
+            `}
+          </devtools-toolbar>
+          <devtools-widget
+            slot="placeholder"
+            ${widget(UI.EmptyWidget.EmptyWidget, {
+              header: i18nString(UIStrings.noLocalOverrides),
+              text: i18nString(UIStrings.explainLocalOverrides),
+              link: 'https://developer.chrome.com/docs/devtools/overrides/' as Platform.DevToolsPath.UrlString,
+            })}
+          ></devtools-widget>
+        </devtools-widget>
+      `,
+      target);
+  // clang-format on
+};
 let overridesNavigatorViewInstance: OverridesNavigatorView;
 
-export class OverridesNavigatorView extends NavigatorView {
-  private readonly toolbar: UI.Toolbar.Toolbar;
-  #enableCheckbox?: UI.Toolbar.ToolbarSettingCheckbox;
-  private constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-overrides').track({resize: true})}`,
-    });
-    const placeholder = new UI.EmptyWidget.EmptyWidget(
-        i18nString(UIStrings.noLocalOverrides), i18nString(UIStrings.explainLocalOverrides));
-    this.setPlaceholder(placeholder);
-    placeholder.link = 'https://developer.chrome.com/docs/devtools/overrides/' as Platform.DevToolsPath.UrlString;
+export class OverridesNavigatorView extends SourcesNavigatorView {
+  #view: OverridesNavigatorViewFunc;
 
-    this.toolbar = document.createElement('devtools-toolbar');
-    this.toolbar.classList.add('navigator-toolbar');
-
-    this.contentElement.insertBefore(this.toolbar, this.contentElement.firstChild);
+  private constructor(element?: HTMLElement, view: OverridesNavigatorViewFunc = OVERRIDES_NAVIGATOR_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
 
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
         Persistence.NetworkPersistenceManager.Events.PROJECT_CHANGED, this.updateProjectAndUI, this);
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
         Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED, this.updateProjectAndUI, this);
-    this.workspace().addEventListener(Workspace.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
-    this.workspace().addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
-    this.updateProjectAndUI();
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
+    workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
   }
 
   static instance(opts: {
     forceNew: boolean|null,
-    networkProjectManager: Bindings.NetworkProject.NetworkProjectManager,
-  }): OverridesNavigatorView {
-    const {forceNew, networkProjectManager} = opts;
+  } = {forceNew: null}): OverridesNavigatorView {
+    const {forceNew} = opts;
     if (!overridesNavigatorViewInstance || forceNew) {
-      overridesNavigatorViewInstance = new OverridesNavigatorView(networkProjectManager);
+      overridesNavigatorViewInstance = new OverridesNavigatorView();
     }
 
     return overridesNavigatorViewInstance;
   }
 
+  override async performUpdate(): Promise<void> {
+    const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
+    this.#view({
+      projectFilter: this.projectFilter,
+      hasProject: Boolean(project),
+      onSetupNewWorkspace: () => {
+        void OverridesNavigatorView.setupNewWorkspace();
+      },
+      onClearConfiguration: () => {
+        if (!project) {
+          return;
+        }
+        Common.Settings.Settings.instance()
+            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+            .set(false);
+        project.remove();
+      },
+      onSourceSelected: this.sourceSelected.bind(this),
+    },
+               this.viewOutput, this.contentElement);
+    await this.navigatorView?.updateComplete;
+  }
   private onProjectAddOrRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
     const project = event.data;
     if (project && project.type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
       return;
     }
-    this.updateUI();
+    this.requestUpdate();
   }
 
   private updateProjectAndUI(): void {
-    this.reset();
-    const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
-    if (project) {
-      this.tryAddProject(project);
+    const navigatorView = this.navigatorView;
+    if (navigatorView) {
+      navigatorView.reset();
+      const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
+      if (project) {
+        navigatorView.tryAddProject(project);
+      }
     }
-    this.updateUI();
-  }
 
-  private updateUI(): void {
-    this.toolbar.removeToolbarItems();
-    const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
-    if (project) {
-      // The checkbox can never stop listening to the setting, so create it
-      // only once and re-append it on every update.
-      this.#enableCheckbox ??= new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(
-          Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor));
-      this.toolbar.appendToolbarItem(this.#enableCheckbox);
-
-      this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
-      const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'clear');
-      clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-        Common.Settings.Settings.instance()
-            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
-            .set(false);
-        project.remove();
-      });
-      this.toolbar.appendToolbarItem(clearButton);
-      return;
-    }
-    const title = i18nString(UIStrings.selectFolderForOverrides);
-    const setupButton = new UI.Toolbar.ToolbarButton(title, 'plus', title);
-    setupButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
-      void OverridesNavigatorView.setupNewWorkspace();
-    }, this);
-    this.toolbar.appendToolbarItem(setupButton);
+    this.requestUpdate();
   }
 
   static async setupNewWorkspace(): Promise<void> {
@@ -473,9 +537,8 @@ export class OverridesNavigatorView extends NavigatorView {
         .set(true);
   }
 
-  override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
+  sourceSelected(): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverridesSourceSelected);
-    super.sourceSelected(uiSourceCode, focusSource);
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {

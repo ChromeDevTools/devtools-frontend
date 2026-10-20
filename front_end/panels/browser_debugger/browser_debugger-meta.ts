@@ -218,10 +218,9 @@ UI.ViewManager.registerViewExtension({
   order: 4,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: () => !Root.Runtime.Runtime.isTraceApp(),
-  async loadView(universe) {
+  async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.OverridesNavigatorView.instance(
-        {forceNew: null, networkProjectManager: universe.networkProjectManager});
+    return Sources.SourcesNavigator.OverridesNavigatorView.instance();
   },
 });
 

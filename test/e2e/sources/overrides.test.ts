@@ -75,7 +75,7 @@ describe('Overrides panel', function() {
     const pageTree = await devToolsPage.waitForAria('Page');
     await pageTree.click();
 
-    const treeItems = await devToolsPage.$$('.navigator-file-tree-item');
+    const treeItems = await devToolsPage.$$('[aria-label="Page panel"] .navigator-file-tree-item');
     const treeItemNames = (await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent))));
     assert.isFalse(treeItemNames?.includes('coffees.json'));
 
@@ -99,7 +99,7 @@ describe('Overrides panel', function() {
     const pageTree = await devToolsPage.waitForAria('Page');
     await pageTree.click();
 
-    const treeItems = await devToolsPage.$$('.navigator-file-tree-item');
+    const treeItems = await devToolsPage.$$('[aria-label="Page panel"] .navigator-file-tree-item');
     const treeItemNames = (await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent))));
     assert.isFalse(treeItemNames?.includes('coffees.json'));
 

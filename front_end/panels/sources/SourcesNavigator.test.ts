@@ -14,7 +14,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../../models/bindings/bindings.js';
+import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -875,7 +875,6 @@ describe('OverridesNavigatorView', () => {
 
   let workspace: Workspace.Workspace.WorkspaceImpl;
   let backend: MockDebuggerBackend;
-  let networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
 
   beforeEach(() => {
     backend = new MockDebuggerBackend();
@@ -898,11 +897,29 @@ describe('OverridesNavigatorView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
-    networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
+    setTestUniverseForWidgets(backend.universe);
   });
+
+  async function createOverridesNavigatorView(): Promise<Sources.NavigatorView.NavigatorView> {
+    const overridesNavigatorView = Sources.SourcesNavigator.OverridesNavigatorView.instance({forceNew: true});
+    renderElementIntoDOM(overridesNavigatorView, {includeCommonStyles: true});
+    await overridesNavigatorView.updateComplete;
+    const navigatorView =
+        overridesNavigatorView.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
+    assert.exists(navigatorView);
+    await navigatorView.updateComplete;
+    await raf();
+    return navigatorView;
+  }
 
   afterEach(async () => {
     await deinitializeGlobalVars();
+  });
+
+  it('renders the empty state with placeholder', async () => {
+    await createOverridesNavigatorView();
+
+    await assertScreenshot('sources/overrides-navigator-empty.png');
   });
 
   it('marks override items as active (has-mapped-files) when overrides are enabled', async () => {
@@ -918,8 +935,9 @@ describe('OverridesNavigatorView', () => {
         .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .set(true);
 
-    const navigatorView =
-        Sources.SourcesNavigator.OverridesNavigatorView.instance({forceNew: true, networkProjectManager});
+    const navigatorView = await createOverridesNavigatorView();
+
+    await assertScreenshot('sources/overrides-navigator-populated.png');
 
     const rootElement = navigatorView.scriptsTree.rootElement();
     const children = rootElement.children();
@@ -960,8 +978,9 @@ describe('OverridesNavigatorView', () => {
 
     const countSettingListeners = (): number =>
         Common.Settings.Settings.instance().eventTargetForTest.listeners?.get(enabledSetting.name)?.size ?? 0;
-    const navigatorView =
-        Sources.SourcesNavigator.OverridesNavigatorView.instance({forceNew: true, networkProjectManager});
+    const navigatorView = Sources.SourcesNavigator.OverridesNavigatorView.instance({forceNew: true});
+    renderElementIntoDOM(navigatorView);
+    await navigatorView.updateComplete;
     const toolbar = navigatorView.contentElement.querySelector('.navigator-toolbar');
     assert.exists(toolbar);
     const checkbox = toolbar.querySelector('devtools-checkbox');
@@ -981,6 +1000,7 @@ describe('OverridesNavigatorView', () => {
         networkPersistenceManager.once(Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED);
     enabledSetting.set(false);
     await overridesUpdated;
+    await navigatorView.updateComplete;
 
     assert.strictEqual(countSettingListeners(), listenerCount);
     const checkboxes = toolbar.querySelectorAll('devtools-checkbox');

@@ -41,7 +41,9 @@
   .permission-prompt-footer {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
-    margin: 0;
+    margin: 0 calc(-1 * var(--sys-size-6));
+    padding: var(--sys-size-5) var(--sys-size-6) 0;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .permission-prompt-buttons {

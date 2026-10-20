@@ -97,7 +97,6 @@ export function renderPermissionPrompt(step: Step): Lit.LitTemplate {
     </div>
     ${description}
     ${code}
-    <p class="permission-prompt-footer">${lockedString(UIStringsNotTranslate.relevantDataIsSentToGoogle)}</p>
     <div class="permission-prompt-buttons">
       <devtools-button
         .data=${{
@@ -115,6 +114,7 @@ export function renderPermissionPrompt(step: Step): Lit.LitTemplate {
         @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE)}
       >${lockedString(UIStringsNotTranslate.allowThisTime)}</devtools-button>
     </div>
+    <p class="permission-prompt-footer">${lockedString(UIStringsNotTranslate.relevantDataIsSentToGoogle)}</p>
   </div>`;
   // clang-format on
 }

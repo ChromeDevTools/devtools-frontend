@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistancePanel from '../ai_assistance.js';
 
 describeWithEnvironment('ChatView', () => {
@@ -95,6 +95,82 @@ describeWithEnvironment('ChatView', () => {
 
       const sideEffect = chat.shadowRoot!.querySelector('.side-effect-confirmation');
       assert.exists(sideEffect);
+    });
+  });
+
+  describe('PermissionPrompt', () => {
+    function createPendingPermissionMessage(): AiAssistancePanel.ChatMessage.ModelChatMessage {
+      return {
+        entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+        id: '2',
+        parts: [
+          {
+            type: 'step',
+            step: {
+              state: {
+                type: 'needs_approval',
+                sideEffectDialog: {
+                  description: 'The AI wants to read the cookie "session" on https://example.com.',
+                  permissionTitle: 'Allow reading cookie values?',
+                  permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS,
+                  onAnswer: () => {},
+                },
+              },
+              title: 'Reading cookie values and metadata',
+              code: 'getCookieValues({cookieNames: ["session"]})',
+            },
+          },
+        ],
+      };
+    }
+
+    const userMessage: AiAssistancePanel.ChatMessage.UserChatMessage = {
+      entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.USER,
+      id: '1',
+      text: 'What is in my session cookie?',
+    };
+
+    beforeEach(() => {
+      updateHostConfig({devToolsAiNaturalLanguageInterface: {enabled: true}});
+    });
+
+    it('renders the prompt in place of the chat input when a step needs approval', () => {
+      const chat = new AiAssistancePanel.ChatView(getProp({messages: [userMessage, createPendingPermissionMessage()]}));
+      renderElementIntoDOM(chat);
+
+      const prompt = chat.shadowRoot!.querySelector('.chat-input-widget .permission-prompt');
+      assert.exists(prompt);
+      assert.isNull(chat.shadowRoot!.querySelector('devtools-widget.chat-input-widget'));
+      assert.isNull(chat.shadowRoot!.querySelector('.side-effect-confirmation'));
+    });
+
+    it('renders the chat input when no step needs approval', () => {
+      const chat = new AiAssistancePanel.ChatView(getProp({messages: [userMessage]}));
+      renderElementIntoDOM(chat);
+
+      assert.isNull(chat.shadowRoot!.querySelector('.permission-prompt'));
+      assert.exists(chat.shadowRoot!.querySelector('devtools-widget.chat-input-widget'));
+    });
+
+    it('renders the legacy confirmation inside the message when the flag is off', () => {
+      updateHostConfig({devToolsAiNaturalLanguageInterface: {enabled: false}});
+      const chat = new AiAssistancePanel.ChatView(getProp({messages: [userMessage, createPendingPermissionMessage()]}));
+      renderElementIntoDOM(chat);
+
+      assert.isNull(chat.shadowRoot!.querySelector('.permission-prompt'));
+      assert.exists(chat.shadowRoot!.querySelector('devtools-widget.chat-input-widget'));
+      assert.exists(chat.shadowRoot!.querySelector('.side-effect-confirmation'));
+    });
+
+    it('renders the prompt over the chat', async () => {
+      const chat = new AiAssistancePanel.ChatView(getProp({messages: [userMessage, createPendingPermissionMessage()]}));
+      const container = document.createElement('div');
+      container.style.width = '600px';
+      container.style.height = '400px';
+      container.append(chat);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
+      await raf();
+      await assertScreenshot('ai_assistance/chat_view_permission_prompt.png');
     });
   });
 

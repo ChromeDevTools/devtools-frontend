@@ -44,16 +44,16 @@ const UIStringsNotTranslate = {
 } as const;
 
 /**
- * Renders the permission prompt for a step that needs approval. Used when
- * `AiUtils.isNaturalLanguageInterfaceEnabled()` is on; otherwise
- * `ChatMessage` falls back to `renderStep`, which shows the legacy
- * Allow / Deny buttons inside the `renderSideEffectConfirmationUi`.
+ * Renders the permission prompt for a step that needs approval.
  *
- * A separate UI is needed because the natural language interface runs tools
- * that need richer consent than "run this code?": a tool-specific title and
- * description, and an "Allow always" option (`sideEffectDialog.permissionPrompt`).
- * It is a standalone card rather than a collapsible step so the user sees the
- * question without expanding anything.
+ * Used only with the natural language interface
+ * (`AiUtils.isNaturalLanguageInterfaceEnabled()`), where `ChatView` renders
+ * it in place of the chat input. Without the flag, `ChatMessage` renders the
+ * legacy Cancel / Continue buttons from `renderSideEffectConfirmationUi` inside
+ * the step.
+ *
+ * A separate UI is needed because the natural language interface significantly
+ * changes the permission prompt.
  *
  * TODO(b/516828269): Remove `renderSideEffectConfirmationUi` once the natural
  * language interface launches.

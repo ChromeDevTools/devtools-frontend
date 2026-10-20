@@ -408,4 +408,9 @@ main {
     */
     padding-bottom: var(--sys-size-1);
   }
+
+  /* Same paddings as the `.input-form` in ChatInput so the permission prompt lines up with the input. */
+  &.permission-prompt-container {
+    padding: 0 var(--sys-size-5) var(--sys-size-5) var(--sys-size-5);
+  }
 }

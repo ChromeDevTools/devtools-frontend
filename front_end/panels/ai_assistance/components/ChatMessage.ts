@@ -40,8 +40,6 @@ import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {PanelUtils} from '../../utils/utils.js';
 
 import chatMessageStyles from './chatMessage.css.js';
-import permissionPromptStyles from './permissionPrompt.css.js';
-import {renderPermissionPrompt} from './PermissionPrompt.js';
 import {getButtonLabel} from './WalkthroughUtils.js';
 import {walkthroughCloseTitle, walkthroughTitle, WalkthroughView} from './WalkthroughView.js';
 
@@ -642,7 +640,6 @@ export const DEFAULT_VIEW = (input: ChatMessageViewInput, output: ViewOutput, ta
   Lit.render(html`
     <style>${Input.textInputStyles}</style>
     <style>${chatMessageStyles}</style>
-    <style>${permissionPromptStyles}</style>
     <section class=${messageClasses} jslog=${VisualLogging.section('answer')}>
       ${renderWalkthroughUI(input, steps)}
       <div class="answer-body-wrapper">
@@ -877,13 +874,14 @@ function renderWalkthroughUI(input: ChatMessageViewInput, steps: Step[]): Lit.Li
 }
 
 function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Lit.LitTemplate {
-  const sideEffectSteps = steps.filter(s => s.state.type === 'needs_approval');
+  // With the natural language interface a step that needs approval is
+  // rendered by ChatView as a permission prompt in place of the chat input
+  // (see `renderPermissionPrompt`), so it is skipped here.
+  const sideEffectSteps = steps.filter(
+      s => (s.state.type === 'needs_approval' && !AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled()));
   if (sideEffectSteps.length === 0) {
     return Lit.nothing;
   }
-  // With the natural language interface the approval is rendered as a
-  // dedicated permission prompt instead of the side-effect confirmation UI.
-  const showPermissionPrompt = AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled();
   // Key each prompt by its step so that a new prompt always gets new DOM.
   // Without the key, Lit reuses the previous prompt's buttons when one prompt
   // replaces another in a single render, and keyboard focus on the previous
@@ -892,13 +890,11 @@ function renderSideEffectStepsUI(input: ChatMessageViewInput, steps: Step[]): Li
   return html`
     ${Lit.Directives.repeat(sideEffectSteps, step => step, step => html`
       <div class="side-effect-container">
-        ${showPermissionPrompt ?
-          renderPermissionPrompt(step) :
-          renderStep({
-            step,
-            markdownRenderer: input.markdownRenderer,
-            isLast: true,
-          })}
+        ${renderStep({
+          step,
+          markdownRenderer: input.markdownRenderer,
+          isLast: true,
+        })}
       </div> `)}
   `;
   // clang-format on

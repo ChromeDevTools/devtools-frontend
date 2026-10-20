@@ -46,6 +46,7 @@
 
   .permission-prompt-buttons {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--sys-size-4);
   }

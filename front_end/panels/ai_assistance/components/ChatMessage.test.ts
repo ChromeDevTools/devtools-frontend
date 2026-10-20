@@ -1299,10 +1299,10 @@ describeWithEnvironment('ChatMessage', () => {
         assert.isNotNull(target.querySelector('.side-effect-confirmation'));
       });
 
-      it('renders the permission prompt instead of the legacy confirmation when the flag is on', () => {
+      it('renders neither UI when the flag is on because ChatView renders the prompt', () => {
         const target = renderView({message: createPermissionPromptMessage()});
 
-        assert.isNotNull(target.querySelector('.permission-prompt'));
+        assert.isNull(target.querySelector('.permission-prompt'));
         assert.isNull(target.querySelector('.side-effect-confirmation'));
       });
     });

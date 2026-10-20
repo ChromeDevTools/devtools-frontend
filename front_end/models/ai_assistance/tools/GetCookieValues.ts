@@ -44,6 +44,7 @@ export class GetCookieValuesTool implements DataTool<GetCookieValuesArgs, GetCoo
   readonly name: ToolName = ToolName.GET_COOKIE_VALUES;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.ALLOW_ONCE;
   readonly permissionTitle: string = lockedString('Allow reading cookie values?');
+  readonly displayName: string = lockedString('Read cookie values');
   readonly description: string =
       'Retrieve the values and detailed metadata of specific cookies by their names across origins.';
 

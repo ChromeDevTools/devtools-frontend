@@ -49,6 +49,7 @@ export class GetStorageValuesTool implements DataTool<GetStorageValuesArgs, GetS
   readonly name: ToolName = ToolName.GET_STORAGE_VALUES;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.ALLOW_ONCE;
   readonly permissionTitle: string = lockedString('Allow reading storage values?');
+  readonly displayName: string = lockedString('Read storage values');
   readonly description: string =
       'Retrieve specific string values from storage partitions for requested keys across origins.';
 

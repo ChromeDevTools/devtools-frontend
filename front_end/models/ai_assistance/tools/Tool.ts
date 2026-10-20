@@ -331,6 +331,12 @@ export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
    */
   readonly permissionTitle?: string;
   /**
+   * Short user-facing name of the tool, e.g. "Read cookie values".
+   * Shown in the "Allowed tools" list in Settings.
+   * Required for tools that require user permission to run.
+   */
+  readonly displayName?: string;
+  /**
    * JSON schema representing the parameters this tool accepts.
    */
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ArgsType>;

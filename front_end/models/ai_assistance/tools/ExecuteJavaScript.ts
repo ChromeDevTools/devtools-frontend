@@ -81,6 +81,7 @@ export class ExecuteJavaScriptTool implements
   readonly name: ToolName = ToolName.EXECUTE_JAVASCRIPT;
   readonly permissionPrompt: PermissionPrompt = PermissionPrompt.ALLOW_ONCE;
   readonly permissionTitle: string = lockedString('Allow running JavaScript on the page?');
+  readonly displayName: string = lockedString('Run JavaScript on the page');
 
   readonly description: string =
       'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';

@@ -18,7 +18,6 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
@@ -112,10 +111,7 @@ let networkNavigatorViewInstance: NetworkNavigatorView;
 
 export class NetworkNavigatorView extends NavigatorView {
   private constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-network').track({resize: true})}`,
-    });
-    this.enableAuthoredGrouping = true;
+    super('navigator-network', networkProjectManager, true);
     this.registerRequiredCSS(sourcesNavigatorStyles);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
@@ -187,9 +183,7 @@ export class FilesNavigatorView extends NavigatorView {
   #automaticFileSystemNudge: HTMLSpanElement;
 
   constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-files').track({resize: true})}`,
-    });
+    super('navigator-files', networkProjectManager);
     this.registerRequiredCSS(sourcesNavigatorStyles);
     const placeholder =
         new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noWorkspace), i18nString(UIStrings.explainWorkspace));
@@ -271,9 +265,7 @@ export class OverridesNavigatorView extends NavigatorView {
   private readonly toolbar: UI.Toolbar.Toolbar;
   #enableCheckbox?: UI.Toolbar.ToolbarSettingCheckbox;
   private constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-overrides').track({resize: true})}`,
-    });
+    super('navigator-overrides', networkProjectManager);
     const placeholder = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noLocalOverrides), i18nString(UIStrings.explainLocalOverrides));
     this.setPlaceholder(placeholder);
@@ -375,9 +367,7 @@ export class OverridesNavigatorView extends NavigatorView {
 
 export class ContentScriptsNavigatorView extends NavigatorView {
   constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-content-scripts').track({resize: true})}`,
-    });
+    super('navigator-content-scripts', networkProjectManager);
     const placeholder = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noContentScripts), i18nString(UIStrings.explainContentScripts));
     this.setPlaceholder(placeholder);
@@ -391,9 +381,7 @@ export class ContentScriptsNavigatorView extends NavigatorView {
 
 export class SnippetsNavigatorView extends NavigatorView {
   constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-snippets').track({resize: true})}`,
-    });
+    super('navigator-snippets', networkProjectManager);
     const placeholder =
         new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noSnippets), i18nString(UIStrings.explainSnippets));
     this.setPlaceholder(placeholder);

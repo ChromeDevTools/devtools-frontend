@@ -187,16 +187,11 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   render(
       html`
         <style>${navigatorViewStyles}</style>
-        <slot name="header"></slot>
-        <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
-          <slot name="placeholder">
-            ${input.placeholder ? html`
-              <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
-                ${input.placeholder.element}
-              </devtools-widget>
-            ` : Lit.nothing}
-          </slot>
-        </div>
+        ${input.placeholder ? html`
+          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+            ${input.placeholder.element}
+          </devtools-widget>
+        ` : Lit.nothing}
         <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
           ${input.treeElement}
         </div>
@@ -206,9 +201,6 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
 };
 
 export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
-  static override readonly INJECT: readonly[typeof Bindings.NetworkProject.NetworkProjectManager] =
-      [Bindings.NetworkProject.NetworkProjectManager] as const;
-
   private placeholder: UI.Widget.Widget|null;
   scriptsTree: UI.TreeOutline.TreeOutlineInShadow;
   private readonly uiSourceCodeNodes:
@@ -221,24 +213,16 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private navigatorGroupByFolderSetting: Common.Settings.Setting<boolean>;
   private navigatorJustMyCodeSetting: Common.Settings.Setting<boolean>;
   private navigatorGroupByAuthoredSetting?: Common.Settings.Setting<boolean>;
-  #navigatorGroupByAuthoredChangeListener?: () => void;
-  #enableAuthoredGrouping = false;
   #workspace!: Workspace.Workspace.WorkspaceImpl;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;
   private groupByDomain?: boolean;
   private groupByFolder?: boolean;
   #view: View;
-
-  constructor(
-      element?: HTMLElement,
-      [networkProjectManager]: UI.Widget.WidgetDependencies<typeof NavigatorView> =
-          [Bindings.NetworkProject.NetworkProjectManager.instance()],
-      view: View = DEFAULT_VIEW,
-      options?: UI.Widget.WidgetOptions,
-  ) {
-    super(element, {
-      ...options,
+  constructor(jslogContext: string, networkProjectManager: Bindings.NetworkProject.NetworkProjectManager,
+              enableAuthoredGrouping?: boolean, view: View = DEFAULT_VIEW) {
+    super({
+      jslog: `${VisualLogging.pane(jslogContext).track({resize: true})}`,
       useShadowDom: true,
     });
     this.#view = view;
@@ -251,8 +235,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
     this.setDefaultFocusedElement(this.scriptsTree.element);
-    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.requestUpdate());
-    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.requestUpdate());
+    this.performUpdate();
 
     this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
     this.subfolderNodes = new Map();
@@ -270,6 +253,11 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.navigatorJustMyCodeSetting =
         Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
     this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
+    if (enableAuthoredGrouping) {
+      this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(
+          SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
+      this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
+    }
 
     Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
 
@@ -292,37 +280,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
                                            this.frameAttributionAdded, this);
     networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
                                            this.frameAttributionRemoved, this);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.requestUpdate();
-  }
-
-  get enableAuthoredGrouping(): boolean {
-    return this.#enableAuthoredGrouping;
-  }
-
-  set enableAuthoredGrouping(enableAuthoredGrouping: boolean) {
-    if (this.#enableAuthoredGrouping === enableAuthoredGrouping) {
-      return;
-    }
-    this.#enableAuthoredGrouping = enableAuthoredGrouping;
-    if (this.navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
-      this.navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
-      this.navigatorGroupByAuthoredSetting = undefined;
-      this.#navigatorGroupByAuthoredChangeListener = undefined;
-    }
-    if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(
-          SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
-      this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
-      this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
-    }
-    if (this.#workspace && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
-      this.groupingChanged();
-    }
-    this.requestUpdate();
   }
 
   private static treeElementOrder(treeElement: UI.TreeOutline.TreeElement): number {
@@ -374,7 +331,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   setPlaceholder(placeholder: UI.Widget.Widget): void {
     console.assert(!this.placeholder, 'A placeholder widget was already set');
     this.placeholder = placeholder;
-    this.requestUpdate();
+    this.performUpdate();
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.performUpdate());
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.performUpdate());
   }
 
   override performUpdate(): void {
@@ -1254,7 +1213,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.sourceSelected(uiSourceCode, false);
     const node = this.revealUISourceCode(uiSourceCode, true);
     if (node) {
-      await this.updateComplete;
       this.rename(node, true);
     }
   }

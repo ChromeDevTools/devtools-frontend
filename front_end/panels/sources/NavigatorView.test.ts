@@ -290,11 +290,10 @@ describeWithEnvironment('NavigatorView', () => {
 
   describe('placeholder visibility', () => {
     it('toggles placeholder and tree visibility when elements are attached and detached', async () => {
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const navigatorView = new Sources.NavigatorView.NavigatorView('test', networkProjectManager);
       renderElementIntoDOM(navigatorView);
       const placeholder = new UI.EmptyWidget.EmptyWidget('No content scripts', 'Explanation');
       navigatorView.setPlaceholder(placeholder);
-      await navigatorView.updateComplete;
 
       assert.isTrue(placeholder.isShowing());
       assert.isFalse(placeholder.element.parentElement?.hasAttribute('hidden'));
@@ -303,23 +302,20 @@ describeWithEnvironment('NavigatorView', () => {
       const mainFrame = await getMainFrame(target);
       const url = urlString`http://example.com/script.js`;
       const {project} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
-      await navigatorView.updateComplete;
 
       assert.isTrue(placeholder.element.parentElement?.hasAttribute('hidden'));
       assert.isFalse(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
 
       project.removeUISourceCode(url);
-      await navigatorView.updateComplete;
       assert.isFalse(placeholder.element.parentElement?.hasAttribute('hidden'));
       assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
     });
 
-    it('forwards contextmenu events on the placeholder to handleContextMenu', async () => {
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+    it('forwards contextmenu events on the placeholder to handleContextMenu', () => {
+      const navigatorView = new Sources.NavigatorView.NavigatorView('test', networkProjectManager);
       const contextMenuSpy = sinon.spy(navigatorView, 'handleContextMenu');
       const placeholder = new UI.EmptyWidget.EmptyWidget('No content scripts', 'Explanation');
       navigatorView.setPlaceholder(placeholder);
-      await navigatorView.updateComplete;
 
       const event = new MouseEvent('contextmenu', {bubbles: true});
       placeholder.element.dispatchEvent(event);
@@ -407,15 +403,13 @@ describeWithEnvironment('NavigatorView', () => {
       const viewSpy = sinon.spy<Sources.NavigatorView.View>((input, _output, targetElement) => {
         Sources.NavigatorView.DEFAULT_VIEW(input, _output, targetElement);
       });
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager], viewSpy);
-      navigatorView.performUpdate();
+      const navigatorView = new Sources.NavigatorView.NavigatorView('test', networkProjectManager, false, viewSpy);
       sinon.assert.calledOnce(viewSpy);
       assert.strictEqual(viewSpy.firstCall.args[0].treeElement, navigatorView.scriptsTree.element);
       assert.isNull(viewSpy.firstCall.args[0].placeholder);
 
       const placeholder = new UI.EmptyWidget.EmptyWidget('Empty', 'Description');
       navigatorView.setPlaceholder(placeholder);
-      await navigatorView.updateComplete;
       sinon.assert.calledTwice(viewSpy);
       assert.strictEqual(viewSpy.secondCall.args[0].placeholder, placeholder);
       assert.isFalse(viewSpy.secondCall.args[0].showTree);

@@ -214,7 +214,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             </div>
           `}
           ${awaitingApprovalStep ? html`
-            <div class=${inputWidgetClasses}>${renderPermissionPrompt(awaitingApprovalStep)}</div>
+            <div class=${inputWidgetClasses}>${renderPermissionPrompt(awaitingApprovalStep, input.disclaimerText)}</div>
           ` : html`<devtools-widget class=${inputWidgetClasses} ${widget(ChatInput, {
             isLoading: input.isLoading,
             blockedByCrossOrigin: input.blockedByCrossOrigin,

@@ -40,9 +40,9 @@ describeWithEnvironment('PermissionPrompt', () => {
   }
 
   function renderPrompt(step: AiAssistance.ChatMessage.Step, target = document.createElement('div')): HTMLElement {
-    Lit.render(
-        html`<style>${permissionPromptStyles}</style>${AiAssistance.PermissionPrompt.renderPermissionPrompt(step)}`,
-        target);
+    Lit.render(html`<style>${permissionPromptStyles}</style>${
+                   AiAssistance.PermissionPrompt.renderPermissionPrompt(step, 'Disclaimer text')}`,
+               target);
     return target;
   }
 
@@ -107,8 +107,9 @@ describeWithEnvironment('PermissionPrompt', () => {
     const target = renderPrompt(createStep());
 
     const footer = querySelectorErrorOnMissing(target, '.permission-prompt-footer');
-    assert.strictEqual(footer.textContent?.trim(),
-                       'Relevant data is sent to Google. Change permissions in settings at any time.');
+    assert.strictEqual(footer.querySelector('button.link')?.textContent, 'Relevant data');
+    assert.include(footer.textContent, 'is sent to Google');
+    assert.include(footer.textContent, '. Change permissions in settings at any time');
   });
 
   it('renders the ALLOW_ONCE prompt', async () => {

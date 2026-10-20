@@ -19,6 +19,7 @@ generate_css("css_files") {
     "./components/exportForAgentsDialog.css",
     "./components/optInChangeDialog.css",
     "./components/permissionPrompt.css",
+    "./components/relevantDataDisclaimer.css",
     "./components/walkthroughView.css",
   ]
 }
@@ -41,6 +42,7 @@ devtools_ui_module("ai_assistance") {
     "components/OptInChangeDialog.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
     "components/PermissionPrompt.ts",
+    "components/RelevantDataDisclaimer.ts",
     "components/WalkthroughUtils.ts",
     "components/WalkthroughView.ts",
   ]
@@ -146,6 +148,7 @@ devtools_ui_module("unittests") {
     "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/OptInChangeDialog.test.ts",
     "components/PermissionPrompt.test.ts",
+    "components/RelevantDataDisclaimer.test.ts",
     "components/WalkthroughUtils.test.ts",
     "components/WalkthroughView.test.ts",
   ]

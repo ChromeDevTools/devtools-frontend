@@ -12,9 +12,12 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {Step} from './ChatMessage.js';
+import {renderRelevantDataDisclaimer} from './RelevantDataDisclaimer.js';
 
 const {html} = Lit;
 const lockedString = i18n.i18n.lockedString;
+
+const RELEVANT_DATA_TOOLTIP_ID = 'relevant-data-link-permission-prompt';
 
 const UIStringsNotTranslate = {
   /**
@@ -34,9 +37,9 @@ const UIStringsNotTranslate = {
    */
   allowThisAction: 'Allow this action?',
   /**
-   * @description Footer of the permission prompt.
+   * @description Second sentence of the permission prompt disclaimer. Follows "Relevant data is sent to Google."
    */
-  relevantDataIsSentToGoogle: 'Relevant data is sent to Google. Change permissions in settings at any time.',
+  changePermissionsInSettings: 'Change permissions in settings at any time',
   /**
    * @description Heading text for the code block that shows the code to be executed after the user allows it.
    */
@@ -58,7 +61,7 @@ const UIStringsNotTranslate = {
  * TODO(b/516828269): Remove `renderSideEffectConfirmationUi` once the natural
  * language interface launches.
  */
-export function renderPermissionPrompt(step: Step): Lit.LitTemplate {
+export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.LitTemplate {
   if (step.state.type !== 'needs_approval') {
     return Lit.nothing;
   }
@@ -114,7 +117,9 @@ export function renderPermissionPrompt(step: Step): Lit.LitTemplate {
         @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE)}
       >${lockedString(UIStringsNotTranslate.allowThisTime)}</devtools-button>
     </div>
-    <p class="permission-prompt-footer">${lockedString(UIStringsNotTranslate.relevantDataIsSentToGoogle)}</p>
+    <div class="permission-prompt-footer">
+      ${renderRelevantDataDisclaimer(RELEVANT_DATA_TOOLTIP_ID, disclaimerText)}. ${lockedString(UIStringsNotTranslate.changePermissionsInSettings)}.
+    </div>
   </div>`;
   // clang-format on
 }

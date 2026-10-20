@@ -168,22 +168,28 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StorageView extends UI.Widget.VBox {
   private pieColors: Map<Protocol.Storage.StorageType, string>;
   private reportView: UI.ReportView.ReportView;
-  private target: SDK.Target.Target|null;
-  private securityOrigin: string|null;
-  private storageKey: string|null;
+  private target: SDK.Target.Target|null = null;
+  private securityOrigin: string|null = null;
+  private storageKey: string|null = null;
+  private subtitle: string|null = null;
   private settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
   private includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
   private includeThirdPartyCookiesCheckbox: UI.UIUtils.CheckboxLabel;
   private quotaRow: HTMLElement;
-  private quotaUsage: number|null;
-  private quotaQuota: number|null;
-  private quotaOverrideActive: boolean|null;
+  private quotaUsage: number|null = null;
+  private quotaQuota: number|null = null;
+  private quotaOverrideActive: boolean|null = null;
+  private pieChartSlices: PerfUI.PieChart.Slice[] = [];
   private pieChart: PerfUI.PieChart.PieChart;
-  private previousOverrideFieldValue: string;
+  private previousOverrideFieldValue = '';
+  private quotaOverrideEnabled = false;
+  private quotaOverrideError = '';
   private quotaOverrideCheckbox: UI.UIUtils.CheckboxLabel;
   private quotaOverrideControlRow: HTMLElement;
   private quotaOverrideEditor: HTMLInputElement;
   private quotaOverrideErrorMessage: HTMLElement;
+  private clearing = false;
+  private clearTimerId?: number;
   private clearButton: Buttons.Button.Button;
   private readonly throttler = new Common.Throttler.Throttler(1000);
 
@@ -201,9 +207,6 @@ export class StorageView extends UI.Widget.VBox {
 
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
-    this.target = null;
-    this.securityOrigin = null;
-    this.storageKey = null;
 
     this.settings = new Map();
     for (const type of AllStorageTypes) {
@@ -282,17 +285,12 @@ export class StorageView extends UI.Widget.VBox {
         'https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses',
         i18nString(UIStrings.learnMore), undefined, 'learn-more');
     learnMoreRow.appendChild(learnMore);
-    this.quotaUsage = null;
-    this.quotaQuota = null;
-    this.quotaOverrideActive = null;
     this.pieChart = new PerfUI.PieChart.PieChart();
-    this.populatePieChart(0, []);
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.setAttribute('jslog', `${VisualLogging.item('usage-breakdown')}`);
     usageBreakdownRow.appendChild(this.pieChart);
 
-    this.previousOverrideFieldValue = '';
     const quotaOverrideCheckboxRow = quota.appendRow();
     quotaOverrideCheckboxRow.classList.add('quota-override-row');
     this.quotaOverrideCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.simulateCustomStorage), false);
@@ -306,7 +304,6 @@ export class StorageView extends UI.Widget.VBox {
     this.quotaOverrideEditor.setAttribute(
         'jslog', `${VisualLogging.textField('quota-override').track({change: true})}`);
     this.quotaOverrideControlRow.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.mb)));
-    this.quotaOverrideControlRow.classList.add('hidden');
     this.quotaOverrideEditor.addEventListener('keyup', event => {
       if (event.key === 'Enter') {
         void this.applyQuotaOverrideFromInputField();
@@ -321,6 +318,7 @@ export class StorageView extends UI.Widget.VBox {
     const errorMessageRow = quota.appendRow();
     this.quotaOverrideErrorMessage = errorMessageRow.createChild('div', 'quota-override-error');
 
+    this.requestUpdate();
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
@@ -400,6 +398,18 @@ export class StorageView extends UI.Widget.VBox {
         SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, this.storageKeyChanged, this);
   }
 
+  override wasHidden(): void {
+    super.wasHidden();
+    if (this.clearTimerId !== undefined) {
+      window.clearTimeout(this.clearTimerId);
+      this.clearTimerId = undefined;
+    }
+    if (this.clearing) {
+      this.clearing = false;
+      this.requestUpdate();
+    }
+  }
+
   private originChanged(
       event: Common.EventTarget.EventTargetEvent<SDK.SecurityOriginManager.MainSecurityOriginChangedEvent>): void {
     const {mainSecurityOrigin, unreachableMainSecurityOrigin} = event.data;
@@ -416,43 +426,45 @@ export class StorageView extends UI.Widget.VBox {
     const oldOrigin = this.securityOrigin;
     if (unreachableMainOrigin) {
       this.securityOrigin = unreachableMainOrigin;
-      this.reportView.setSubtitle(i18nString(UIStrings.sFailedToLoad, {PH1: unreachableMainOrigin}));
+      this.subtitle = i18nString(UIStrings.sFailedToLoad, {PH1: unreachableMainOrigin});
     } else {
       this.securityOrigin = mainOrigin;
-      this.reportView.setSubtitle(mainOrigin);
+      this.subtitle = mainOrigin;
     }
 
     if (oldOrigin !== this.securityOrigin) {
-      this.quotaOverrideControlRow.classList.add('hidden');
-      this.quotaOverrideCheckbox.checked = false;
-      this.quotaOverrideErrorMessage.textContent = '';
+      this.quotaOverrideEnabled = false;
+      this.quotaOverrideError = '';
       this.quotaUsage = null;
       this.quotaQuota = null;
       this.quotaOverrideActive = null;
+      this.pieChartSlices = [];
     }
-    void this.performUpdate();
+    this.requestUpdate();
+    void this.refreshUsageAndQuota();
   }
 
   private updateStorageKey(mainStorageKey: string): void {
     const oldStorageKey = this.storageKey;
 
     this.storageKey = mainStorageKey;
-    this.reportView.setSubtitle(mainStorageKey);
+    this.subtitle = mainStorageKey;
 
     if (oldStorageKey !== this.storageKey) {
-      this.quotaOverrideControlRow.classList.add('hidden');
-      this.quotaOverrideCheckbox.checked = false;
-      this.quotaOverrideErrorMessage.textContent = '';
+      this.quotaOverrideEnabled = false;
+      this.quotaOverrideError = '';
     }
-    void this.performUpdate();
+    this.requestUpdate();
   }
 
   private async applyQuotaOverrideFromInputField(): Promise<void> {
     if (!this.target || !this.securityOrigin) {
-      this.quotaOverrideErrorMessage.textContent = i18nString(UIStrings.internalError);
+      this.quotaOverrideError = i18nString(UIStrings.internalError);
+      this.requestUpdate();
       return;
     }
-    this.quotaOverrideErrorMessage.textContent = '';
+    this.quotaOverrideError = '';
+    this.requestUpdate();
     const editorString = this.quotaOverrideEditor.value;
     if (editorString === '') {
       await this.clearQuotaForOrigin(this.target, this.securityOrigin);
@@ -461,17 +473,19 @@ export class StorageView extends UI.Widget.VBox {
     }
     const quota = parseFloat(editorString);
     if (!Number.isFinite(quota)) {
-      this.quotaOverrideErrorMessage.textContent = i18nString(UIStrings.pleaseEnterANumber);
+      this.quotaOverrideError = i18nString(UIStrings.pleaseEnterANumber);
+      this.requestUpdate();
       return;
     }
     if (quota < 0) {
-      this.quotaOverrideErrorMessage.textContent = i18nString(UIStrings.numberMustBeNonNegative);
+      this.quotaOverrideError = i18nString(UIStrings.numberMustBeNonNegative);
+      this.requestUpdate();
       return;
     }
     const cutoff = 9_000_000_000_000;
     if (quota >= cutoff) {
-      this.quotaOverrideErrorMessage.textContent =
-          i18nString(UIStrings.numberMustBeSmaller, {PH1: cutoff.toLocaleString()});
+      this.quotaOverrideError = i18nString(UIStrings.numberMustBeSmaller, {PH1: cutoff.toLocaleString()});
+      this.requestUpdate();
       return;
     }
     const bytesPerMB = 1000 * 1000;
@@ -488,16 +502,19 @@ export class StorageView extends UI.Widget.VBox {
   }
 
   private async onClickCheckbox(): Promise<void> {
-    if (this.quotaOverrideControlRow.classList.contains('hidden')) {
-      this.quotaOverrideControlRow.classList.remove('hidden');
-      this.quotaOverrideCheckbox.checked = true;
+    if (!this.quotaOverrideEnabled) {
+      this.quotaOverrideEnabled = true;
       this.quotaOverrideEditor.value = this.previousOverrideFieldValue;
-      window.setTimeout(() => this.quotaOverrideEditor.focus(), 500);
-    } else if (this.target && this.securityOrigin) {
-      this.quotaOverrideControlRow.classList.add('hidden');
-      this.quotaOverrideCheckbox.checked = false;
-      await this.clearQuotaForOrigin(this.target, this.securityOrigin);
-      this.quotaOverrideErrorMessage.textContent = '';
+      this.requestUpdate();
+      await this.updateComplete;
+      this.quotaOverrideEditor.focus();
+    } else {
+      this.quotaOverrideEnabled = false;
+      this.quotaOverrideError = '';
+      this.requestUpdate();
+      if (this.target && this.securityOrigin) {
+        await this.clearQuotaForOrigin(this.target, this.securityOrigin);
+      }
     }
   }
 
@@ -519,13 +536,17 @@ export class StorageView extends UI.Widget.VBox {
           this.target, this.storageKey, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
     }
 
-    this.clearButton.disabled = true;
-    const label = this.clearButton.textContent;
-    this.clearButton.textContent = i18nString(UIStrings.clearing);
-    window.setTimeout(() => {
-      this.clearButton.disabled = false;
-      this.clearButton.textContent = label;
-      this.clearButton.focus();
+    this.clearing = true;
+    this.requestUpdate();
+    window.clearTimeout(this.clearTimerId);
+    this.clearTimerId = window.setTimeout(async () => {
+      this.clearTimerId = undefined;
+      this.clearing = false;
+      this.requestUpdate();
+      await this.updateComplete;
+      if (this.isShowing()) {
+        this.clearButton.focus();
+      }
     }, 500);
 
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.SiteDataCleared));
@@ -578,24 +599,33 @@ export class StorageView extends UI.Widget.VBox {
     }
   }
 
-  override async performUpdate(): Promise<void> {
+  private async refreshUsageAndQuota(): Promise<void> {
+    if (!this.isShowing()) {
+      return;
+    }
     if (!this.securityOrigin || !this.target) {
-      this.quotaRow.textContent = '';
       this.quotaUsage = null;
       this.quotaQuota = null;
       this.quotaOverrideActive = null;
-      this.populatePieChart(0, []);
+      this.pieChartSlices = [];
+      this.requestUpdate();
       return;
     }
 
     const securityOrigin = this.securityOrigin;
     const response = await this.target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
+    if (this.securityOrigin !== securityOrigin) {
+      return;
+    }
     if (response.getError()) {
-      this.quotaRow.textContent = '';
       this.quotaUsage = null;
       this.quotaQuota = null;
       this.quotaOverrideActive = null;
-      this.populatePieChart(0, []);
+      this.pieChartSlices = [];
+      this.requestUpdate();
+      if (this.isShowing()) {
+        void this.throttler.schedule(() => this.refreshUsageAndQuota());
+      }
       return;
     }
 
@@ -608,35 +638,6 @@ export class StorageView extends UI.Widget.VBox {
       this.quotaQuota = response.quota;
       this.quotaOverrideActive = response.overrideActive;
 
-      this.quotaRow.textContent = '';
-      const quotaAsString = i18n.ByteUtilities.bytesToString(response.quota);
-      const usageAsString = i18n.ByteUtilities.bytesToString(response.usage);
-      const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, {PH1: quotaAsString});
-
-      let quota: string|HTMLElement = quotaAsString;
-      if (response.overrideActive) {
-        const element = document.createElement('b');
-        element.textContent = formattedQuotaAsString;
-        quota = element;
-      }
-
-      const element =
-          uiI18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota});
-      this.quotaRow.appendChild(element);
-      UI.Tooltip.Tooltip.install(
-          this.quotaRow,
-          i18nString(UIStrings.storageQuotaUsedWithBytes,
-                     {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()}));
-
-      if (!response.overrideActive && response.quota < 125829120) {  // 120 MiB
-        const icon = new Icon();
-        icon.name = 'info';
-        icon.style.color = 'var(--icon-info)';
-        icon.classList.add('small');
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.storageQuotaIsLimitedIn));
-        this.quotaRow.appendChild(icon);
-      }
-
       if (usageChanged) {
         const slices: PerfUI.PieChart.Slice[] = [];
         for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
@@ -648,21 +649,75 @@ export class StorageView extends UI.Widget.VBox {
           const color = this.pieColors.get(usageForType.storageType) || '#ccc';
           slices.push({value, color, title});
         }
-        this.populatePieChart(response.usage, slices);
+        this.pieChartSlices = slices;
       }
+      this.requestUpdate();
     }
 
-    void this.throttler.schedule(this.requestUpdate.bind(this));
+    if (this.isShowing()) {
+      void this.throttler.schedule(() => this.refreshUsageAndQuota());
+    }
   }
 
-  private populatePieChart(total: number, slices: PerfUI.PieChart.Slice[]): void {
+  override wasShown(): void {
+    super.wasShown();
+    void this.refreshUsageAndQuota();
+  }
+
+  override performUpdate(): void {
+    if (this.subtitle !== null) {
+      this.reportView.setSubtitle(this.subtitle);
+    }
+    this.renderQuotaRow();
+    this.populatePieChart();
+    this.quotaOverrideControlRow.classList.toggle('hidden', !this.quotaOverrideEnabled);
+    this.quotaOverrideCheckbox.checked = this.quotaOverrideEnabled;
+    this.quotaOverrideErrorMessage.textContent = this.quotaOverrideError;
+    this.clearButton.disabled = this.clearing;
+    this.clearButton.textContent = this.clearing ? i18nString(UIStrings.clearing) : i18nString(UIStrings.clearSelected);
+  }
+
+  private renderQuotaRow(): void {
+    this.quotaRow.textContent = '';
+    if (this.quotaUsage === null || this.quotaQuota === null) {
+      return;
+    }
+    const quotaAsString = i18n.ByteUtilities.bytesToString(this.quotaQuota);
+    const usageAsString = i18n.ByteUtilities.bytesToString(this.quotaUsage);
+    const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, {PH1: quotaAsString});
+
+    let quota: string|HTMLElement = quotaAsString;
+    if (this.quotaOverrideActive) {
+      const element = document.createElement('b');
+      element.textContent = formattedQuotaAsString;
+      quota = element;
+    }
+
+    const element = uiI18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota});
+    this.quotaRow.appendChild(element);
+    UI.Tooltip.Tooltip.install(
+        this.quotaRow,
+        i18nString(UIStrings.storageQuotaUsedWithBytes,
+                   {PH1: this.quotaUsage.toLocaleString(), PH2: this.quotaQuota.toLocaleString()}));
+
+    if (!this.quotaOverrideActive && this.quotaQuota < 125829120) {  // 120 MiB
+      const icon = new Icon();
+      icon.name = 'info';
+      icon.style.color = 'var(--icon-info)';
+      icon.classList.add('small');
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.storageQuotaIsLimitedIn));
+      this.quotaRow.appendChild(icon);
+    }
+  }
+
+  private populatePieChart(): void {
     this.pieChart.data = {
       chartName: i18nString(UIStrings.storageUsage),
       size: 110,
       formatter: i18n.ByteUtilities.bytesToString,
       showLegend: true,
-      total,
-      slices,
+      total: this.quotaUsage ?? 0,
+      slices: this.pieChartSlices,
     };
   }
 

@@ -36,14 +36,6 @@ async function getRequestRowInfo(devToolsPage: DevToolsPage, name: string) {
   return {status: statusColumn[index], time: timeColumn[index], type: typeColumn[index]};
 }
 
-async function getRequestRows(devToolsPage: DevToolsPage) {
-  return await devToolsPage.evaluate(() => {
-    const statusColumn = Array.from(document.querySelectorAll('.status-column'), node => node.textContent);
-    const nameColumn = Array.from(document.querySelectorAll('.name-column'), node => node.textContent);
-    return nameColumn.map((name, index) => ({name, status: statusColumn[index]}));
-  });
-}
-
 describe('The Network Tab', function() {
   // See byte formatting in front_end/core/i18n/ByteUtilities.ts
   const formatKbSize = (value: number) => {
@@ -267,26 +259,25 @@ describe('The Network Tab', function() {
                                                       inspectedPage,
                                                     }) => {
     await loadNetworkTab(devToolsPage, inspectedPage);
+    await setCacheDisabled(devToolsPage, true);
 
     await navigateToNetworkTab(devToolsPage, inspectedPage, 'send_beacon_on_unload.html');
-
-    await setCacheDisabled(devToolsPage, true);
-    await inspectedPage.bringToFront();
-    await inspectedPage.page.reload({waitUntil: 'networkidle0'});
-
-    await devToolsPage.bringToFront();
     await waitForSomeRequestsToAppear(devToolsPage, 1);
 
     await setKeepLog(devToolsPage, true);
 
-    await navigateToNetworkTab(devToolsPage, inspectedPage, 'fetch.html');
-    await waitForSomeRequestsToAppear(devToolsPage, 1);
+    // Trigger a renderer-initiated navigation so that `beforeunload` runs
+    // synchronously in the old frame and flushes the `Network.requestWillBeSent`
+    // notification for `sendBeacon` before the browser starts the navigation.
+    await Promise.all([
+      inspectedPage.page.waitForNavigation(),
+      inspectedPage.evaluate(() => {
+        window.location.href = 'fetch.html';
+      }),
+    ]);
 
     // We need to wait for the network log to update.
-    await devToolsPage.waitForFunction(async logger => {
-      // Log all rows so that a timeout reveals the actual state of the
-      // sendBeacon row(s).
-      logger.log(`Request rows: ${JSON.stringify(await getRequestRows(devToolsPage))}`);
+    await devToolsPage.waitForFunction(async () => {
       const {status} = await getRequestRowInfo(devToolsPage, 'sendBeacon');
       // Depending on timing of the reporting, the status information (404) might reach DevTools in time.
       return (status === '(unknown)' || status === '404Not Found');

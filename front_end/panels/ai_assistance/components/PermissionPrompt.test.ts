@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../../core/common/common.js';
 import * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {
   assertScreenshot,
@@ -107,9 +108,22 @@ describeWithEnvironment('PermissionPrompt', () => {
     const target = renderPrompt(createStep());
 
     const footer = querySelectorErrorOnMissing(target, '.permission-prompt-footer');
-    assert.strictEqual(footer.querySelector('button.link')?.textContent, 'Relevant data');
+    const links = Array.from(footer.querySelectorAll(':scope > button.link'));
+    assert.deepEqual(links.map(link => link.textContent), ['Relevant data', 'settings']);
     assert.include(footer.textContent, 'is sent to Google');
-    assert.include(footer.textContent, '. Change permissions in settings at any time');
+    assert.include(footer.textContent, 'Change permissions in settings at any time.');
+  });
+
+  it('reveals the always allowed tools setting when "settings" is clicked', () => {
+    const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+    const target = renderPrompt(createStep());
+
+    const links = Array.from(target.querySelectorAll<HTMLElement>('.permission-prompt-footer > button.link'));
+    links[1].click();
+
+    const setting = Common.Settings.Settings.instance().resolve(
+        AIAssistanceModel.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor);
+    sinon.assert.calledOnceWithExactly(reveal, setting, false);
   });
 
   it('renders the ALLOW_ONCE prompt', async () => {

@@ -929,7 +929,7 @@ describe('AiAgent2', () => {
   });
 
   describe('with always allowed tools when natural language interface is disabled', () => {
-    const ALWAYS_ALLOWED_TOOLS_SETTING = 'ai-assistance-always-allowed-tools';
+    const ALWAYS_ALLOWED_TOOLS_SETTING = AiAssistance.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor.name;
 
     beforeEach(() => {
       updateHostConfig({devToolsAiNaturalLanguageInterface: {enabled: false}});

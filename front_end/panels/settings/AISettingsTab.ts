@@ -17,10 +17,11 @@ import * as uiI18n from '../../ui/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import {PanelUtils} from '../utils/utils.js';
 
 import aiSettingsTabStyles from './aiSettingsTab.css.js';
 
-const {html, nothing, render, Directives: {ifDefined, classMap}} = Lit;
+const {html, nothing, render, Directives: {ifDefined, classMap, ref}} = Lit;
 
 const UIStrings = {
   /**
@@ -301,9 +302,13 @@ interface ViewInput {
   removeAllowedTool(name: AiAssistanceModel.Tool.ToolName): void;
 }
 
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+interface ViewOutput {
+  highlightAllowedTools?: () => void;
+}
 
-export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void => {
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, output, target): void => {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   const disabledReasonsExplainer = input.disabledReasons.length ? html`
@@ -430,7 +435,10 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
   `;
 
   const allowedTools = input.isNaturalLanguageInterfaceEnabled ? html`
-    <div class="allowed-tools-section" jslog=${VisualLogging.section('ai-allowed-tools')}>
+    <div class="allowed-tools-section" jslog=${VisualLogging.section('ai-allowed-tools')}
+      ${ref(el => {
+        output.highlightAllowedTools = el ? () => PanelUtils.highlightElement(el as HTMLElement) : undefined;
+      })}>
       <h2 class="allowed-tools-title">${lockedString(UIStringsNotTranslate.allowedTools)}</h2>
       <div class="allowed-tools-card">
         <div class="allowed-tools-description">${lockedString(UIStringsNotTranslate.allowedToolsDescription)}</div>
@@ -463,6 +471,7 @@ export const AI_SETTINGS_TAB_DEFAULT_VIEW: View = (input, _output, target): void
 
 export class AISettingsTab extends UI.Widget.VBox {
   #view: View;
+  #viewOutput: ViewOutput = {};
   #consoleInsightsSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #aiAnnotationsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
@@ -565,7 +574,7 @@ export class AISettingsTab extends UI.Widget.VBox {
       toggleSetting: this.#toggleSetting.bind(this),
       removeAllowedTool: this.#removeAllowedTool.bind(this),
     };
-    this.#view(viewInput, undefined, this.contentElement);
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 
   override wasShown(): void {
@@ -600,6 +609,17 @@ export class AISettingsTab extends UI.Widget.VBox {
 
   #removeAllowedTool(name: AiAssistanceModel.Tool.ToolName): void {
     this.#alwaysAllowedTools.remove(name);
+  }
+
+  /**
+   * Called by `SettingsScreen.Revealer` after this tab is shown via `Common.Revealer.reveal(setting)`.
+   */
+  highlightObject(object: Object): void {
+    if (!(object instanceof Common.Settings.Setting) ||
+        object.name !== AiAssistanceModel.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor.name) {
+      return;
+    }
+    void this.updateComplete.then(() => this.#viewOutput.highlightAllowedTools?.());
   }
 
   // Define all parameter needed to render a setting

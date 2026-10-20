@@ -7,6 +7,15 @@ import * as AiUtils from '../ai-utils/ai-utils.js';
 
 import type {ToolName} from './tools/Tool.js';
 
+/**
+ * AI tools the user allowed with "Yes, always allow".
+ */
+export const alwaysAllowedToolsSettingDescriptor: Common.Settings.SettingDescriptor<ToolName[]> = {
+  name: 'ai-assistance-always-allowed-tools',
+  type: Common.Settings.SettingType.ARRAY,
+  defaultValue: [],
+};
+
 export const enum Events {
   TOOLS_CHANGED = 'ToolsChanged',
 }
@@ -56,7 +65,7 @@ class SettingImpl implements Impl {
   readonly #setting: Common.Settings.Setting<ToolName[]>;
 
   constructor(settings: Common.Settings.Settings, onChange: () => void) {
-    this.#setting = settings.createSetting<ToolName[]>('ai-assistance-always-allowed-tools', []);
+    this.#setting = settings.resolve(alwaysAllowedToolsSettingDescriptor);
     this.#setting.addChangeListener(onChange);
   }
 

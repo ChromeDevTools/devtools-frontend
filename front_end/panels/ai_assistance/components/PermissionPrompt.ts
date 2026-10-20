@@ -5,6 +5,7 @@
 import '../../../ui/components/markdown_view/markdown_view.js';
 import '../../../ui/kit/kit.js';
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -37,14 +38,38 @@ const UIStringsNotTranslate = {
    */
   allowThisAction: 'Allow this action?',
   /**
-   * @description Second sentence of the permission prompt disclaimer. Follows "Relevant data is sent to Google."
+   * @description First part of the second sentence of the permission prompt disclaimer. Followed by a link with the text "settings".
    */
-  changePermissionsInSettings: 'Change permissions in settings at any time',
+  changePermissionsIn: 'Change permissions in ',
+  /**
+   * @description Link text in the permission prompt disclaimer. Opens the list of allowed tools in the AI settings.
+   */
+  settings: 'settings',
+  /**
+   * @description Last part of the second sentence of the permission prompt disclaimer. Preceded by a link with the text "settings".
+   */
+  atAnyTime: ' at any time',
   /**
    * @description Heading text for the code block that shows the code to be executed after the user allows it.
    */
   codeToExecute: 'Code to execute',
 } as const;
+
+function openAllowedToolsSettings(): void {
+  void Common.Revealer.reveal(Common.Settings.Settings.instance().resolve(
+      AiAssistanceModel.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor));
+}
+
+function renderChangePermissionsInSettings(): Lit.LitTemplate {
+  // clang-format off
+  return html`${lockedString(UIStringsNotTranslate.changePermissionsIn)}<button
+      class="link"
+      role="link"
+      jslog=${VisualLogging.link('ai-open-allowed-tools-settings').track({click: true})}
+      @click=${openAllowedToolsSettings}
+    >${lockedString(UIStringsNotTranslate.settings)}</button>${lockedString(UIStringsNotTranslate.atAnyTime)}`;
+  // clang-format on
+}
 
 /**
  * Renders the permission prompt for a step that needs approval.
@@ -118,7 +143,8 @@ export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.
       >${lockedString(UIStringsNotTranslate.allowThisTime)}</devtools-button>
     </div>
     <div class="permission-prompt-footer">
-      ${renderRelevantDataDisclaimer(RELEVANT_DATA_TOOLTIP_ID, disclaimerText)}. ${lockedString(UIStringsNotTranslate.changePermissionsInSettings)}.
+      ${renderRelevantDataDisclaimer(RELEVANT_DATA_TOOLTIP_ID, disclaimerText)}.
+      ${renderChangePermissionsInSettings()}.
     </div>
   </div>`;
   // clang-format on

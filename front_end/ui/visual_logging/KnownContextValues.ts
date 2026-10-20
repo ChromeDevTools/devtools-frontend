@@ -410,6 +410,7 @@ export const knownContextValues: Set<string> = new Set([
   'ai-export-for-agents.copy-to-clipboard',
   'ai-export-for-agents.save-as-markdown',
   'ai-hide-walkthrough-sidebar',
+  'ai-open-allowed-tools-settings',
   'ai-remove-allowed-tool',
   'ai-show-walkthrough-sidebar',
   'ai-v2-context-agent-change',

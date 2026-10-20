@@ -127,7 +127,7 @@ UI.ViewManager.registerViewExtension({
     return new Settings.AISettingsTab.AISettingsTab();
   },
   iconName: 'button-magic',
-  settings: ['console-insights-enabled'],
+  settings: ['console-insights-enabled', 'ai-assistance-always-allowed-tools'],
   condition: config => {
     return (config?.aidaAvailability?.enabled &&
             (config?.devToolsConsoleInsights?.enabled || config?.devToolsFreestyler?.enabled)) ??

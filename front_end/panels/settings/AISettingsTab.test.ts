@@ -376,7 +376,7 @@ describeWithEnvironment('AISettingsTab', () => {
         toggleSetting: () => {},
         removeAllowedTool: () => {},
       },
-                                                          undefined, target);
+                                                          {}, target);
     }
 
     beforeEach(() => {
@@ -385,9 +385,9 @@ describeWithEnvironment('AISettingsTab', () => {
 
     it('is hidden when the natural language interface is disabled', async () => {
       updateHostConfig({devToolsAiNaturalLanguageInterface: {enabled: false}});
-      Common.Settings.Settings.instance().createSetting<string[]>('ai-assistance-always-allowed-tools', []).set([
-        ToolName.GET_COOKIE_VALUES,
-      ]);
+      Common.Settings.Settings.instance()
+          .resolve(AiAssistanceModel.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor)
+          .set([ToolName.GET_COOKIE_VALUES]);
 
       const {view} = await setupWidget();
 
@@ -458,6 +458,43 @@ describeWithEnvironment('AISettingsTab', () => {
       renderView([]);
 
       await assertScreenshot('settings/ai_settings_allowed_tools_empty.png');
+    });
+
+    describe('highlightObject', () => {
+      async function showWidget(): Promise<{
+        widget: Settings.AISettingsTab.AISettingsTab,
+        highlightAllowedTools: sinon.SinonStub,
+      }> {
+        const highlightAllowedTools = sinon.stub();
+        const view = createViewFunctionStub(Settings.AISettingsTab.AISettingsTab, {highlightAllowedTools});
+        const widget = new Settings.AISettingsTab.AISettingsTab(view);
+        const container = document.createElement('div');
+        renderElementIntoDOM(container);
+        widget.markAsRoot();
+        widget.show(container);
+        await view.nextInput;
+        return {widget, highlightAllowedTools};
+      }
+
+      it('highlights the allowed tools section for the always allowed tools setting', async () => {
+        const {widget, highlightAllowedTools} = await showWidget();
+        const setting = Common.Settings.Settings.instance().resolve(
+            AiAssistanceModel.AlwaysAllowedTools.alwaysAllowedToolsSettingDescriptor);
+
+        widget.highlightObject(setting);
+        await widget.updateComplete;
+
+        sinon.assert.calledOnce(highlightAllowedTools);
+      });
+
+      it('ignores other settings', async () => {
+        const {widget, highlightAllowedTools} = await showWidget();
+
+        widget.highlightObject(Common.Settings.Settings.instance().moduleSetting('console-insights-enabled'));
+        await widget.updateComplete;
+
+        sinon.assert.notCalled(highlightAllowedTools);
+      });
     });
   });
 });

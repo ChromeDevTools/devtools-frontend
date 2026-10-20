@@ -24,8 +24,17 @@ agentic_review: {
       ".*\\.gni"
     ]
     path_expression_exclusion: [".*\\.test\\.ts"]
-    review_capability_skills: [
-      ".agents/skills/review-models-core/SKILL.md"
+    rules: [
+      ".agents/rules/models-and-core/core-trace-engine-handler-invariants.md",
+      ".agents/rules/models-and-core/core-sdk-model-and-target-lifecycle.md",
+      ".agents/rules/models-and-core/core-gn-build-and-module-layering.md",
+      ".agents/rules/models-and-core/core-ai-agent-context-and-prompt-discipline.md",
+      ".agents/rules/models-and-core/core-runtime-neutrality-and-platform-utils.md",
+      ".agents/rules/models-and-core/core-cdp-and-extension-error-handling.md",
+      ".agents/rules/models-and-core/core-security-origin-and-capability-guards.md",
+      ".agents/rules/models-and-core/core-sourcemap-and-workspace-mapping.md",
+      ".agents/rules/models-and-core/core-settings-and-storage-migration.md",
+      ".agents/rules/models-and-core/core-trace-insight-models-and-timing-types.md"
     ]
   }
   capability_groups: {
@@ -33,8 +42,26 @@ agentic_review: {
     path_expression_exclusion: [".*\\.test\\.ts"]
     review_capability_skills: [
       ".agents/skills/ui-widgets/SKILL.md",
-      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md",
-      ".agents/skills/review-ui-widgets/SKILL.md"
+      ".agents/skills/ui-eng-vision-orchestrator/SKILL.md"
+    ]
+    rules: [
+      ".agents/rules/ui-and-widgets/ui-modern-component-and-encapsulation-standards.md",
+      ".agents/rules/ui-and-widgets/ui-type-safety-and-exhaustiveness.md",
+      ".agents/rules/ui-and-widgets/ui-pure-view-and-presenter-separation.md",
+      ".agents/rules/ui-and-widgets/ui-lit-declarative-templates-and-directives.md",
+      ".agents/rules/ui-and-widgets/ui-widget-dom-and-listener-lifecycle.md",
+      ".agents/rules/ui-and-widgets/ui-accessibility-and-semantic-html.md",
+      ".agents/rules/ui-and-widgets/ui-performance-and-flamechart-rendering.md",
+      ".agents/rules/ui-and-widgets/ui-localization-and-uistrings-hygiene.md",
+      ".agents/rules/ui-and-widgets/ui-reactive-widget-update-lifecycle.md",
+      ".agents/rules/ui-and-widgets/ui-visual-logging-instrumentation.md",
+      ".agents/rules/ui-and-widgets/ui-css-scoping-and-flex-layout.md",
+      ".agents/rules/ui-and-widgets/ui-view-output-and-callback-contracts.md",
+      ".agents/rules/ui-and-widgets/ui-panel-and-meta-registration.md",
+      ".agents/rules/ui-and-widgets/ui-weak-dom-references-and-observer-cleanup.md",
+      ".agents/rules/ui-and-widgets/ui-security-and-output-sanitization.md",
+      ".agents/rules/ui-and-widgets/ui-declarative-child-widget-composition.md",
+      ".agents/rules/ui-and-widgets/ui-await-update-complete-post-render.md"
     ]
   }
   capability_groups: {
@@ -42,8 +69,18 @@ agentic_review: {
     review_capability_skills: [
       ".agents/skills/devtools-testing-guidance/SKILL.md",
       ".agents/skills/foundation-test-migration/SKILL.md",
-      ".agents/skills/fix-tests/SKILL.md",
-      ".agents/skills/review-tests/SKILL.md"
+      ".agents/skills/fix-tests/SKILL.md"
+    ]
+    rules: [
+      ".agents/rules/tests/test-shared-fixture-and-helper-reuse.md",
+      ".agents/rules/tests/test-modular-hooks-and-test-universe.md",
+      ".agents/rules/tests/test-deterministic-async-synchronization.md",
+      ".agents/rules/tests/test-strict-assertions-and-literal-expectations.md",
+      ".agents/rules/tests/test-view-and-presenter-isolation.md",
+      ".agents/rules/tests/test-public-api-and-encapsulation.md",
+      ".agents/rules/tests/test-single-responsibility-and-conciseness.md",
+      ".agents/rules/tests/test-type-safe-mocks-and-events.md",
+      ".agents/rules/tests/test-cleanup-mutated-globals-and-widgets.md"
     ]
   }
 }

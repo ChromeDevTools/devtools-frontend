@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -844,6 +845,89 @@ describeWithEnvironment('TabbedPaneElement', () => {
       for (const slot of slots) {
         assert.isNull(slot.parentElement);
       }
+    });
+
+    it('does not flicker infinitely when tab width without icon fits but with icon does not', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      render(html`
+        <devtools-tabbed-pane>
+          <div id="tab1" title="Tab 1">Content 1</div>
+          <div id="tab2" title="Tab 2">Content 2</div>
+          <span slot="icon-tab2" style="display: inline-block; width: 100px"></span>
+        </devtools-tabbed-pane>`,
+             container);
+
+      await doubleRaf();
+      const widget = UI.Widget.Widget.get(container.querySelector('devtools-tabbed-pane')!) as UI.TabbedPane.TabbedPane;
+
+      const tab1 = widget.tabsById.get('tab1')!;
+      const tab2 = widget.tabsById.get('tab2')!;
+      assert.isTrue(tab1.shown);
+      assert.isTrue(tab2.shown);
+
+      const tab1Width = tab1.width();
+      const tab2WidthWithoutIcon = tab2.width() - 100;
+
+      // Make the header wide enough for tab2 only if its icon is not counted.
+      container.style.width = `${tab1Width + tab2WidthWithoutIcon + 15}px`;
+      container.style.display = 'block';
+
+      const performUpdate = sinon.spy(widget, 'performUpdate');
+      widget.headerResized();
+
+      for (let i = 0; i < 20; i++) {
+        await raf();
+      }
+
+      assert.isAtMost(performUpdate.callCount, 5);
+      assert.isTrue(tab1.shown);
+      assert.isFalse(tab2.shown);
+    });
+
+    it('updates the tab width when the icon was removed while the tab was overflowed', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      function renderTabs(icon: boolean): void {
+        render(html`
+          <devtools-tabbed-pane>
+            <div id="tab1" title="Tab 1">Content 1</div>
+            <div id="tab2" title="Tab 2">Content 2</div>
+            ${icon ? html`<span slot="icon-tab2" style="display: inline-block; width: 40px"></span>` : nothing}
+          </devtools-tabbed-pane>`,
+               container);
+      }
+      renderTabs(true);
+      await doubleRaf();
+      const widget = UI.Widget.Widget.get(container.querySelector('devtools-tabbed-pane')!) as UI.TabbedPane.TabbedPane;
+      const tab1 = widget.tabsById.get('tab1')!;
+      const tab2 = widget.tabsById.get('tab2')!;
+      const tab2WidthWithoutIcon = tab2.width() - 40;
+
+      // Make the header wide enough for tab2 only if it has no icon.
+      container.style.width = `${tab1.width() + tab2WidthWithoutIcon + 15}px`;
+      container.style.display = 'block';
+      widget.headerResized();
+      await doubleRaf();
+      assert.isTrue(tab1.shown);
+      assert.isFalse(tab2.shown);
+
+      // No `slotchange` fires for the detached slot, so the tab keeps its
+      // width until it is shown again.
+      renderTabs(false);
+      await doubleRaf();
+      assert.isFalse(tab2.shown);
+
+      // Selecting tab2 re-attaches its header, which syncs the slot state
+      // and triggers a re-measurement, after which both tabs fit again.
+      widget.selectTab('tab2');
+      for (let i = 0; i < 5; i++) {
+        await raf();
+      }
+      assert.isTrue(tab1.shown);
+      assert.isTrue(tab2.shown);
+      assert.isAtMost(tab2.width(), tab2WidthWithoutIcon);
     });
   });
 });

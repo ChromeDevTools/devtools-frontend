@@ -816,7 +816,10 @@ export class TabbedPane extends TabbedPaneBase {
       if (this.tabsElement.children[i] !== tab.tabElement) {
         this.tabsElement.insertBefore(tab.tabElement, this.tabsElement.children[i] ?? null);
       }
-      tab.shown = true;
+      if (!tab.shown) {
+        tab.shown = true;
+        tab.slotsAttached();
+      }
     }
 
     this.maybeShowDropDown(tabsToShowIndexes.length !== this.#tabs.length);
@@ -1429,11 +1432,51 @@ export class TabbedPaneTab {
     // next slot assignment recalc, so anything retained by the <slot> stays
     // alive after the tab is closed if no recalc follows.
     container.addEventListener('slotchange', () => {
-      this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
-      container.style.display = this.#hasSlottedContent[kind] ? '' : 'none';
+      // A detached <slot> has no assigned nodes, so `slotchange` also fires
+      // when the tab header is removed from the DOM (e.g. moved into the
+      // overflow drop-down). That doesn't reflect a change to the slotted
+      // content, so keep the current state (and the cached width) so that
+      // the tab keeps measuring the same while hidden. The state is synced
+      // again in `slotsAttached` once the header is re-attached.
+      if (!slot.isConnected) {
+        return;
+      }
+      this.#updateSlottedContent(kind, container, slot);
       delete this.measuredWidth;
       this.tabbedPane.requestUpdate();
     });
+  }
+
+  #updateSlottedContent(kind: 'icon'|'suffix', container: HTMLElement, slot: HTMLSlotElement): boolean {
+    const hasSlottedContent = slot.assignedElements().length > 0;
+    if (hasSlottedContent === this.#hasSlottedContent[kind]) {
+      return false;
+    }
+    this.#hasSlottedContent[kind] = hasSlottedContent;
+    container.style.display = hasSlottedContent ? '' : 'none';
+    return true;
+  }
+
+  /**
+   * Called when the tab header is (re-)attached to the DOM. If the slotted
+   * content changed while the header was detached, no `slotchange` fires
+   * on re-attachment when the slot is still empty afterwards (its assigned
+   * nodes were already cleared on detach), so sync the state explicitly.
+   */
+  slotsAttached(): void {
+    let changed = false;
+    for (const kind of ['icon', 'suffix'] as const) {
+      const container = this.#slotContainers[kind];
+      const slot = container?.querySelector('slot');
+      if (container && slot?.isConnected) {
+        const updated = this.#updateSlottedContent(kind, container, slot);
+        changed = updated || changed;
+      }
+    }
+    if (changed) {
+      delete this.measuredWidth;
+      this.tabbedPane.requestUpdate();
+    }
   }
 
   clearSlots(): void {

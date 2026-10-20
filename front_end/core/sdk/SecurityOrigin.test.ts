@@ -38,6 +38,22 @@ describe('SecurityOrigin', () => {
       assert.isFalse(unc1.isSameOriginWith(unc2));
     });
 
+    it('treats collapsed file:// and file:/// URLs without a path as unique opaque origins', () => {
+      const fileEmpty1 = SDK.SecurityOrigin.SecurityOrigin.create('file://');
+      const fileEmpty2 = SDK.SecurityOrigin.SecurityOrigin.create('file://');
+      const fileRoot1 = SDK.SecurityOrigin.SecurityOrigin.create('file:///');
+      const fileRoot2 = SDK.SecurityOrigin.SecurityOrigin.create('file:///');
+
+      assert.isTrue(fileEmpty1.isOpaque());
+      assert.isTrue(fileEmpty2.isOpaque());
+      assert.isTrue(fileRoot1.isOpaque());
+      assert.isTrue(fileRoot2.isOpaque());
+
+      assert.isFalse(fileEmpty1.isSameOriginWith(fileEmpty2));
+      assert.isFalse(fileRoot1.isSameOriginWith(fileRoot2));
+      assert.isFalse(fileEmpty1.isSameOriginWith(fileRoot1));
+    });
+
     it('treats opaque URLs as unique opaque origins that do not match each other', () => {
       const data1 = SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,hello');
       const data2 = SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,hello');

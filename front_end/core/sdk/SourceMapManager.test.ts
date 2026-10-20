@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import type * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {addChildFrame, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
@@ -103,13 +104,13 @@ describe('SourceMapManager', () => {
   });
 
   class MockClient implements SDK.FrameAssociated.FrameAssociated {
-    constructor(
-        private target: SDK.Target.Target, private debugIdInternal: SDK.SourceMap.DebugId|null = null,
-        private initiatorUrl: Platform.DevToolsPath.UrlString|null = null) {
+    constructor(private target: SDK.Target.Target, private debugIdInternal: SDK.SourceMap.DebugId|null = null,
+                private initiatorUrl: Platform.DevToolsPath.UrlString|null = null,
+                private frameId: Protocol.Page.FrameId|null = null) {
     }
 
     createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator {
-      return {target: this.target, frameId: null, initiatorUrl: this.initiatorUrl};
+      return {target: this.target, frameId: this.frameId, initiatorUrl: this.initiatorUrl};
     }
 
     debugId(): SDK.SourceMap.DebugId|null {
@@ -387,6 +388,7 @@ describe('SourceMapManager', () => {
   });
 
   describe('SourceMapCache integration', () => {
+    const {SecurityOrigin} = SDK.SecurityOrigin;
     let sourceMapCache: SDK.SourceMapCache.SourceMapCache;
 
     beforeEach(async () => {
@@ -398,7 +400,7 @@ describe('SourceMapManager', () => {
       await sourceMapCache.disposeForTest();
     });
 
-    it('uses cached source map when debugId matches and origin matches', async () => {
+    it('uses cached source map when debugId, scriptOrigin, and loaderOrigin match', async () => {
       const loadResourceSpy = sinon.spy();
       const universe = new TestUniverse({
         pageResourceLoaderOptions: {
@@ -412,11 +414,16 @@ describe('SourceMapManager', () => {
           },
         },
       });
-      const target = universe.createTarget();
+      const originUrl = urlString`https://example.com`;
+      const origin = SecurityOrigin.create(originUrl);
+      const target = universe.createTarget({url: originUrl});
+      const mainFrame = getMainFrame(target, {
+        url: urlString`https://example.com/index.html`,
+        securityOrigin: originUrl,
+      });
       const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
       const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
-      const origin = urlString`https://example.com`;
-      const client = new MockClient(target, debugId, origin);
+      const client = new MockClient(target, debugId, originUrl, mainFrame.id);
 
       const cachedMap: SDK.SourceMap.SourceMapV3 = {
         version: 3,
@@ -424,7 +431,7 @@ describe('SourceMapManager', () => {
         mappings: '',
       };
 
-      await sourceMapCache.set(debugId, origin, cachedMap);
+      await sourceMapCache.set(debugId, origin, origin, cachedMap);
 
       sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL, SDK.SourceMap.SourceMapProvenance.CDP);
       const sourceMap = await sourceMapManager.sourceMapForClientPromise(client);
@@ -434,10 +441,12 @@ describe('SourceMapManager', () => {
       assert.strictEqual(loadResourceSpy.callCount, 0, 'loadResource should not have been called');
     });
 
-    it('does NOT use cached source map when debugId matches but origin does NOT match', async () => {
+    it('does NOT use cached source map when debugId matches but scriptOrigin does NOT match', async () => {
       const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
-      const cachedOrigin = urlString`https://example.com`;
-      const clientOrigin = urlString`https://malicious.com`;
+      const cachedOriginUrl = urlString`https://example.com`;
+      const clientOriginUrl = urlString`https://malicious.com`;
+      const cachedOrigin = SecurityOrigin.create(cachedOriginUrl);
+      const clientOrigin = SecurityOrigin.create(clientOriginUrl);
 
       const cachedMap: SDK.SourceMap.SourceMapV3 = {
         version: 3,
@@ -465,11 +474,15 @@ describe('SourceMapManager', () => {
           },
         },
       });
-      const target = universe.createTarget();
+      const target = universe.createTarget({url: cachedOriginUrl});
+      const mainFrame = getMainFrame(target, {
+        url: urlString`https://example.com/index.html`,
+        securityOrigin: cachedOriginUrl,
+      });
       const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
-      const client = new MockClient(target, debugId, clientOrigin);
+      const client = new MockClient(target, debugId, clientOriginUrl, mainFrame.id);
 
-      await sourceMapCache.set(debugId, cachedOrigin, cachedMap);
+      await sourceMapCache.set(debugId, cachedOrigin, cachedOrigin, cachedMap);
 
       sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL, SDK.SourceMap.SourceMapProvenance.CDP);
       const sourceMap = await sourceMapManager.sourceMapForClientPromise(client);
@@ -478,14 +491,269 @@ describe('SourceMapManager', () => {
       assert.deepEqual(sourceMap?.sourceURLs(), [urlString`http://localhost/network.ts`]);
       assert.strictEqual(loadResourceSpy.callCount, 1, 'loadResource should have been called');
 
-      const storedMap = await sourceMapCache.get(debugId, clientOrigin);
+      const storedMap = await sourceMapCache.get(debugId, clientOrigin, cachedOrigin);
       assert.deepEqual(storedMap, networkMap);
+    });
+
+    it('does NOT use cached source map when debugId and scriptOrigin match but loaderOrigin does NOT match',
+       async () => {
+         const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+         const scriptUrl = urlString`https://victim.com/app.js`;
+
+         const poisonedMap: SDK.SourceMap.SourceMapV3 = {
+           version: 3,
+           sources: ['forged.ts'],
+           mappings: '',
+           debugId,
+         };
+
+         const genuineMap: SDK.SourceMap.SourceMapV3 = {
+           version: 3,
+           sources: ['genuine.ts'],
+           mappings: '',
+           debugId,
+         };
+
+         let callCount = 0;
+         const universe = new TestUniverse({
+           pageResourceLoaderOptions: {
+             loadOverride: async () => {
+               callCount++;
+               return {
+                 success: true,
+                 content: JSON.stringify(callCount === 1 ? poisonedMap : genuineMap),
+                 errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+               };
+             },
+           },
+         });
+
+         const attackerTarget = universe.createTarget({
+           id: 'attacker' as Protocol.Target.TargetID,
+           url: 'https://attacker.com/index.html',
+         });
+         const attackerFrame = getMainFrame(attackerTarget, {
+           url: urlString`https://attacker.com/index.html`,
+           securityOrigin: 'https://attacker.com',
+         });
+         const attackerManager = new SDK.SourceMapManager.SourceMapManager(attackerTarget);
+         const attackerClient = new MockClient(attackerTarget, debugId, scriptUrl, attackerFrame.id);
+         attackerManager.attachSourceMap(attackerClient, sourceURL, sourceMappingURL,
+                                         SDK.SourceMap.SourceMapProvenance.CDP);
+         const attackerSourceMap = await attackerManager.sourceMapForClientPromise(attackerClient);
+         assert.deepEqual(attackerSourceMap?.sourceURLs(), [urlString`http://localhost/forged.ts`]);
+         assert.strictEqual(callCount, 1);
+
+         const victimTarget = universe.createTarget({
+           id: 'victim' as Protocol.Target.TargetID,
+           url: 'https://victim.com/index.html',
+         });
+         const victimFrame = getMainFrame(victimTarget, {
+           url: urlString`https://victim.com/index.html`,
+           securityOrigin: 'https://victim.com',
+         });
+         const victimManager = new SDK.SourceMapManager.SourceMapManager(victimTarget);
+         const victimClient = new MockClient(victimTarget, debugId, scriptUrl, victimFrame.id);
+         victimManager.attachSourceMap(victimClient, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+         const victimSourceMap = await victimManager.sourceMapForClientPromise(victimClient);
+         assert.deepEqual(victimSourceMap?.sourceURLs(), [urlString`http://localhost/genuine.ts`]);
+         assert.strictEqual(callCount, 2,
+                            'loadResource should be called for victim target despite matching scriptOrigin');
+
+         assert.deepEqual(await sourceMapCache.get(debugId, SecurityOrigin.create('https://victim.com'),
+                                                   SecurityOrigin.create('https://attacker.com')),
+                          poisonedMap);
+         assert.deepEqual(await sourceMapCache.get(debugId, SecurityOrigin.create('https://victim.com'),
+                                                   SecurityOrigin.create('https://victim.com')),
+                          genuineMap);
+       });
+
+    it('isolates cached source maps across different frames with different security origins', async () => {
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const scriptUrl = urlString`https://victim.com/app.js`;
+
+      const poisonedMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['forged.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      const genuineMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['genuine.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      let callCount = 0;
+      const universe = new TestUniverse({
+        pageResourceLoaderOptions: {
+          loadOverride: async () => {
+            callCount++;
+            return {
+              success: true,
+              content: JSON.stringify(callCount === 1 ? poisonedMap : genuineMap),
+              errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+            };
+          },
+        },
+      });
+
+      const target = universe.createTarget({url: 'https://victim.com/index.html'});
+      const mainFrame = getMainFrame(target, {
+        url: urlString`https://victim.com/index.html`,
+        securityOrigin: 'https://victim.com',
+      });
+      const childFrame = await addChildFrame(target, {
+        url: urlString`https://attacker.com/iframe.html`,
+        securityOrigin: 'https://attacker.com',
+      });
+
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+
+      const childClient = new MockClient(target, debugId, scriptUrl, childFrame.id);
+      sourceMapManager.attachSourceMap(childClient, sourceURL, sourceMappingURL, SDK.SourceMap.SourceMapProvenance.CDP);
+      const childSourceMap = await sourceMapManager.sourceMapForClientPromise(childClient);
+      assert.deepEqual(childSourceMap?.sourceURLs(), [urlString`http://localhost/forged.ts`]);
+      assert.strictEqual(callCount, 1);
+
+      const mainClient = new MockClient(target, debugId, scriptUrl, mainFrame.id);
+      sourceMapManager.attachSourceMap(mainClient, sourceURL, sourceMappingURL, SDK.SourceMap.SourceMapProvenance.CDP);
+      const mainSourceMap = await sourceMapManager.sourceMapForClientPromise(mainClient);
+      assert.deepEqual(mainSourceMap?.sourceURLs(), [urlString`http://localhost/genuine.ts`]);
+      assert.strictEqual(callCount, 2, 'main frame must not reuse cache entry from cross-origin child frame');
+    });
+
+    it('skips caching on a page target when frameId is missing, detached, or belongs to an opaque frame', async () => {
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const scriptUrl = urlString`https://victim.com/app.js`;
+      const victimOrigin = SecurityOrigin.create('https://victim.com');
+      const map: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['script.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      let callCount = 0;
+      const universe = new TestUniverse({
+        pageResourceLoaderOptions: {
+          loadOverride: async () => {
+            callCount++;
+            return {
+              success: true,
+              content: JSON.stringify(map),
+              errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+            };
+          },
+        },
+      });
+
+      const target = universe.createTarget({url: 'https://victim.com/index.html'});
+      getMainFrame(target, {
+        url: urlString`https://victim.com/index.html`,
+        securityOrigin: 'https://victim.com',
+      });
+      const opaqueFrame = await addChildFrame(target, {
+        url: urlString`https://victim.com/sandboxed.html`,
+        securityOrigin: 'null',
+      });
+
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+
+      const missingFrameClient = new MockClient(target, debugId, scriptUrl, null);
+      sourceMapManager.attachSourceMap(missingFrameClient, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      await sourceMapManager.sourceMapForClientPromise(missingFrameClient);
+      assert.strictEqual(callCount, 1);
+      assert.isNull(await sourceMapCache.get(debugId, victimOrigin, victimOrigin));
+
+      const detachedClient = new MockClient(target, debugId, scriptUrl, 'detached-frame' as Protocol.Page.FrameId);
+      sourceMapManager.attachSourceMap(detachedClient, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      await sourceMapManager.sourceMapForClientPromise(detachedClient);
+      assert.strictEqual(callCount, 2);
+      assert.isNull(await sourceMapCache.get(debugId, victimOrigin, victimOrigin));
+
+      const opaqueClient = new MockClient(target, debugId, scriptUrl, opaqueFrame.id);
+      sourceMapManager.attachSourceMap(opaqueClient, sourceURL, sourceMappingURL,
+                                       SDK.SourceMap.SourceMapProvenance.CDP);
+      await sourceMapManager.sourceMapForClientPromise(opaqueClient);
+      assert.strictEqual(callCount, 3);
+      assert.isNull(await sourceMapCache.get(debugId, victimOrigin, victimOrigin));
+    });
+
+    it('falls back to target URL for non-frame targets without ResourceTreeModel (e.g. workers)', async () => {
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const scriptUrl = urlString`https://victim.com/worker-chunk.js`;
+
+      const poisonedMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['forged.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      const genuineMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['genuine.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      let callCount = 0;
+      const universe = new TestUniverse({
+        pageResourceLoaderOptions: {
+          loadOverride: async () => {
+            callCount++;
+            return {
+              success: true,
+              content: JSON.stringify(callCount === 1 ? poisonedMap : genuineMap),
+              errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+            };
+          },
+        },
+      });
+
+      const parentTarget = universe.createTarget();
+      const attackerWorker = universe.createTarget({
+        id: 'attacker-worker' as Protocol.Target.TargetID,
+        type: SDK.Target.Type.Worker,
+        parentTarget,
+        url: 'https://attacker.com/worker.js',
+      });
+      const attackerManager = new SDK.SourceMapManager.SourceMapManager(attackerWorker);
+      const attackerClient = new MockClient(attackerWorker, debugId, scriptUrl, null);
+      attackerManager.attachSourceMap(attackerClient, sourceURL, sourceMappingURL,
+                                      SDK.SourceMap.SourceMapProvenance.CDP);
+      const attackerSourceMap = await attackerManager.sourceMapForClientPromise(attackerClient);
+      assert.deepEqual(attackerSourceMap?.sourceURLs(), [urlString`http://localhost/forged.ts`]);
+      assert.strictEqual(callCount, 1);
+
+      const victimWorker = universe.createTarget({
+        id: 'victim-worker' as Protocol.Target.TargetID,
+        type: SDK.Target.Type.Worker,
+        parentTarget,
+        url: 'https://victim.com/worker.js',
+      });
+      const victimManager = new SDK.SourceMapManager.SourceMapManager(victimWorker);
+      const victimClient = new MockClient(victimWorker, debugId, scriptUrl, null);
+      victimManager.attachSourceMap(victimClient, sourceURL, sourceMappingURL, SDK.SourceMap.SourceMapProvenance.CDP);
+      const victimSourceMap = await victimManager.sourceMapForClientPromise(victimClient);
+      assert.deepEqual(victimSourceMap?.sourceURLs(), [urlString`http://localhost/genuine.ts`]);
+      assert.strictEqual(callCount, 2, 'worker targets with different origins must not share a cache entry');
     });
 
     it('isolates cached source maps across different file:// URLs', async () => {
       const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
       const attackerFileUrl = urlString`file:///tmp/attacker/poison.js`;
       const victimFileUrl = urlString`file:///tmp/victim/dist/app.js`;
+      const victimFrameUrl = urlString`file:///tmp/victim/index.html`;
+      const attackerOrigin = SecurityOrigin.create(attackerFileUrl);
+      const victimScriptOrigin = SecurityOrigin.create(victimFileUrl);
+      const victimFrameOrigin = SecurityOrigin.create(victimFrameUrl);
 
       const poisonedMap: SDK.SourceMap.SourceMapV3 = {
         version: 3,
@@ -514,12 +782,16 @@ describe('SourceMapManager', () => {
           },
         },
       });
-      const target = universe.createTarget();
+      const target = universe.createTarget({url: victimFrameUrl});
+      const mainFrame = getMainFrame(target, {
+        url: victimFrameUrl,
+        securityOrigin: victimFrameUrl,
+      });
       const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
 
-      await sourceMapCache.set(debugId, attackerFileUrl, poisonedMap);
+      await sourceMapCache.set(debugId, attackerOrigin, victimFrameOrigin, poisonedMap);
 
-      const victimClient = new MockClient(target, debugId, victimFileUrl);
+      const victimClient = new MockClient(target, debugId, victimFileUrl, mainFrame.id);
       sourceMapManager.attachSourceMap(victimClient, sourceURL, sourceMappingURL,
                                        SDK.SourceMap.SourceMapProvenance.CDP);
       const victimSourceMap = await sourceMapManager.sourceMapForClientPromise(victimClient);
@@ -529,11 +801,11 @@ describe('SourceMapManager', () => {
       assert.strictEqual(loadResourceSpy.callCount, 1,
                          'loadResource should have been called for a different file:// path');
 
-      const storedVictimMap = await sourceMapCache.get(debugId, victimFileUrl);
+      const storedVictimMap = await sourceMapCache.get(debugId, victimScriptOrigin, victimFrameOrigin);
       assert.deepEqual(storedVictimMap, genuineMap);
 
-      // Same file:// path should hit the cache without re-fetching.
-      const sameVictimClient = new MockClient(target, debugId, victimFileUrl);
+      // Same file:// script and frame path should hit the cache without re-fetching.
+      const sameVictimClient = new MockClient(target, debugId, victimFileUrl, mainFrame.id);
       sourceMapManager.attachSourceMap(sameVictimClient, sourceURL, sourceMappingURL,
                                        SDK.SourceMap.SourceMapProvenance.CDP);
       const cachedVictimSourceMap = await sourceMapManager.sourceMapForClientPromise(sameVictimClient);
@@ -572,15 +844,19 @@ describe('SourceMapManager', () => {
         },
       });
       const target = universe.createTarget();
+      const mainFrame = getMainFrame(target, {
+        url: urlString`https://example.com/index.html`,
+        securityOrigin: 'https://example.com',
+      });
       const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
 
-      const anonymousClient1 = new MockClient(target, debugId, null);
+      const anonymousClient1 = new MockClient(target, debugId, null, mainFrame.id);
       sourceMapManager.attachSourceMap(anonymousClient1, sourceURL, sourceMappingURL,
                                        SDK.SourceMap.SourceMapProvenance.CDP);
       const sourceMap1 = await sourceMapManager.sourceMapForClientPromise(anonymousClient1);
       assert.deepEqual(sourceMap1?.sourceURLs(), [urlString`http://localhost/eval1.ts`]);
 
-      const anonymousClient2 = new MockClient(target, debugId, Platform.DevToolsPath.EmptyUrlString);
+      const anonymousClient2 = new MockClient(target, debugId, Platform.DevToolsPath.EmptyUrlString, mainFrame.id);
       sourceMapManager.attachSourceMap(anonymousClient2, sourceURL, sourceMappingURL,
                                        SDK.SourceMap.SourceMapProvenance.CDP);
       const sourceMap2 = await sourceMapManager.sourceMapForClientPromise(anonymousClient2);

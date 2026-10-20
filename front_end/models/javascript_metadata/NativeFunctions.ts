@@ -6409,7 +6409,13 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "openWindow",
-    signatures: [["url"]]
+    signatures: [["url"]],
+    receivers: ["Clients"]
+  },
+  {
+    name: "openWindow",
+    signatures: [["url","?options"]],
+    receivers: ["PaymentRequestEvent"]
   },
   {
     name: "waitUntil",
@@ -8470,6 +8476,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   {
     name: "executeTool",
     signatures: [["tool","?inputObject","?options"]]
+  },
+  {
+    name: "resumeTool",
+    signatures: [["token","callback"]]
   },
   {
     name: "TaskController",

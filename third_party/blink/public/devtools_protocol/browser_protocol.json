@@ -2976,7 +2976,7 @@
             "commands": [
                 {
                     "name": "trigger",
-                    "description": "Trigger autofill on a form identified by the fieldId.\nIf the field and related form cannot be autofilled, returns an error.",
+                    "description": "Trigger autofill on a form identified by the fieldId.\nIf the field and related form cannot be autofilled, returns an error.\nReturns once the values have been applied to the form fields.",
                     "parameters": [
                         {
                             "name": "fieldId",
@@ -4088,7 +4088,7 @@
                     "parameters": [
                         {
                             "name": "deviceId",
-                            "description": "Required non-empty identifier for the mock camera. This is mapped to an\ninternal virtual-device identifier and is not the MediaDeviceInfo.deviceId\nexposed to the page.",
+                            "description": "Required non-empty identifier for the mock camera within the current\nDevTools session. Different sessions can use the same identifier\nwithout replacing each other's cameras. This is not the\nMediaDeviceInfo.deviceId exposed to the page.",
                             "type": "string"
                         }
                     ]
@@ -18425,7 +18425,8 @@
                                 "SigningQuotaExceeded",
                                 "RefreshedAsWaiter",
                                 "TransientSigningError",
-                                "InScopeRefreshNotYetNeeded"
+                                "InScopeRefreshNotYetNeeded",
+                                "Canceled"
                             ]
                         },
                         {

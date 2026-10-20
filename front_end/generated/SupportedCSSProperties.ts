@@ -580,6 +580,7 @@ export const generatedProperties: CSSProperty[] = [
    "fill-opacity",
    "fill-rule",
    "filter",
+   "fit-tolerance",
    "flex-basis",
    "flex-direction",
    "flex-grow",
@@ -589,7 +590,6 @@ export const generatedProperties: CSSProperty[] = [
    "float",
    "flood-color",
    "flood-opacity",
-   "flow-tolerance",
    "font-display",
    "font-family",
    "font-feature-settings",
@@ -1332,6 +1332,15 @@ export const generatedProperties: CSSProperty[] = [
   "name": "border-block-end-color"
  },
  {
+  "longhands": [
+   "border-end-start-radius",
+   "border-end-end-radius"
+  ],
+  "name": "border-block-end-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
+ },
+ {
   "keywords": [
    "none",
    "hidden",
@@ -1367,6 +1376,15 @@ export const generatedProperties: CSSProperty[] = [
    "currentcolor"
   ],
   "name": "border-block-start-color"
+ },
+ {
+  "longhands": [
+   "border-start-start-radius",
+   "border-start-end-radius"
+  ],
+  "name": "border-block-start-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
  },
  {
   "keywords": [
@@ -1421,6 +1439,15 @@ export const generatedProperties: CSSProperty[] = [
  },
  {
   "name": "border-bottom-left-radius"
+ },
+ {
+  "longhands": [
+   "border-bottom-left-radius",
+   "border-bottom-right-radius"
+  ],
+  "name": "border-bottom-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
  },
  {
   "name": "border-bottom-right-radius"
@@ -1548,6 +1575,15 @@ export const generatedProperties: CSSProperty[] = [
   "name": "border-inline-end-color"
  },
  {
+  "longhands": [
+   "border-start-end-radius",
+   "border-end-end-radius"
+  ],
+  "name": "border-inline-end-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
+ },
+ {
   "keywords": [
    "none",
    "hidden",
@@ -1583,6 +1619,15 @@ export const generatedProperties: CSSProperty[] = [
    "currentcolor"
   ],
   "name": "border-inline-start-color"
+ },
+ {
+  "longhands": [
+   "border-start-start-radius",
+   "border-end-start-radius"
+  ],
+  "name": "border-inline-start-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
  },
  {
   "keywords": [
@@ -1636,6 +1681,15 @@ export const generatedProperties: CSSProperty[] = [
   "name": "border-left-color"
  },
  {
+  "longhands": [
+   "border-top-left-radius",
+   "border-bottom-left-radius"
+  ],
+  "name": "border-left-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
+ },
+ {
   "keywords": [
    "none",
    "hidden",
@@ -1680,6 +1734,15 @@ export const generatedProperties: CSSProperty[] = [
    "currentcolor"
   ],
   "name": "border-right-color"
+ },
+ {
+  "longhands": [
+   "border-top-right-radius",
+   "border-bottom-right-radius"
+  ],
+  "name": "border-right-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
  },
  {
   "keywords": [
@@ -1754,6 +1817,15 @@ export const generatedProperties: CSSProperty[] = [
  },
  {
   "name": "border-top-left-radius"
+ },
+ {
+  "longhands": [
+   "border-top-left-radius",
+   "border-top-right-radius"
+  ],
+  "name": "border-top-radius",
+  "runtime_flag": "CSSBorderRadiusSideShorthands",
+  "runtime_flag_status": "experimental"
  },
  {
   "name": "border-top-right-radius"
@@ -2830,6 +2902,15 @@ export const generatedProperties: CSSProperty[] = [
   "name": "filter"
  },
  {
+  "keywords": [
+   "normal",
+   "infinite"
+  ],
+  "name": "fit-tolerance",
+  "runtime_flag": "CSSGridLanesLayout",
+  "runtime_flag_status": "experimental"
+ },
+ {
   "devtools_keywords": [
    "none",
    "auto",
@@ -2910,15 +2991,6 @@ export const generatedProperties: CSSProperty[] = [
  },
  {
   "name": "flood-opacity"
- },
- {
-  "keywords": [
-   "normal",
-   "infinite"
-  ],
-  "name": "flow-tolerance",
-  "runtime_flag": "CSSGridLanesLayout",
-  "runtime_flag_status": "experimental"
  },
  {
   "devtools_keywords": [],
@@ -5523,7 +5595,7 @@ export const generatedProperties: CSSProperty[] = [
   ],
   "name": "text-decoration-skip-spaces",
   "runtime_flag": "CSSTextDecorationSkipSpaces",
-  "runtime_flag_status": "stable"
+  "runtime_flag_status": "experimental"
  },
  {
   "keywords": [
@@ -7444,6 +7516,12 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
    "none"
   ]
  },
+ "fit-tolerance": {
+  "values": [
+   "normal",
+   "infinite"
+  ]
+ },
  "flex": {
   "values": [
    "none",
@@ -7492,12 +7570,6 @@ export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "flood-color": {
   "values": [
    "currentcolor"
-  ]
- },
- "flow-tolerance": {
-  "values": [
-   "normal",
-   "infinite"
   ]
  },
  "font": {

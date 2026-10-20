@@ -190,7 +190,10 @@ export declare class DevToolsCloseButton extends HTMLElement {
     setTabbable(tabbable: boolean): void;
     focus(): void;
 }
-export declare function bindInput(input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => boolean, numeric: boolean, modifierMultiplier?: number): (arg0: string) => void;
+export declare function bindInput(input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => boolean, numeric: boolean, modifierMultiplier?: number): {
+    setValue: (arg0: string) => void;
+    cleanup: () => void;
+};
 export declare function trimText(context: CanvasRenderingContext2D, text: string, maxWidth: number, trimFunction: (arg0: string, arg1: number) => string): string;
 export declare function trimTextMiddle(context: CanvasRenderingContext2D, text: string, maxWidth: number): string;
 export declare function trimTextEnd(context: CanvasRenderingContext2D, text: string, maxWidth: number): string;
@@ -295,7 +298,10 @@ export declare function getDevToolsBoundingElement(): HTMLElement;
  * @deprecated Prefer {@link bindToSetting} as this function leaks the checkbox via the setting listener.
  */
 export declare const bindCheckbox: (input: CheckboxLabel, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions) => void;
-export declare const bindCheckboxImpl: (input: CheckboxLabel, apply: (value: boolean) => void, metric?: UserMetricOptions) => (value: boolean) => void;
+export declare const bindCheckboxImpl: (input: CheckboxLabel, apply: (value: boolean) => void, metric?: UserMetricOptions) => {
+    setValue: (value: boolean) => void;
+    cleanup: () => void;
+};
 export type BindToSettingOpts = ((newSettingValue: string) => boolean) | {
     validator?: (newSettingValue: string) => boolean;
     jslog?: boolean;

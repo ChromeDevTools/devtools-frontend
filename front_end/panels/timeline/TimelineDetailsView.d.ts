@@ -19,6 +19,8 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     private lazySelectorStatsView;
     static makeEventWidget(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): TimelineDetailsPane;
     constructor(delegate: TimelineModeViewDelegate);
+    wasShown(): void;
+    willHide(): void;
     /**
      * This selects a given tabbedPane tab.
      * Additionally, if provided a node, we open that node and

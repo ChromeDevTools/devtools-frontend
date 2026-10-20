@@ -397,7 +397,7 @@ function renderTitle(node, input) {
             if (isExpandable) {
                 if (!expanded) {
                     return html `${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderClosingTag()}`;
+                  >\u2026</span>\u200B${renderClosingTag()}`;
                 }
                 return openingTag;
             }

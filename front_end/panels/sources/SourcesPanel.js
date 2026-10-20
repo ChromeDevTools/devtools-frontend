@@ -671,6 +671,7 @@ export class SourcesPanel extends UI.Panel.Panel {
                 this.navigatorTabbedLocation.tabbedPane().selectTab(view.viewId(), true);
                 if (!skipReveal) {
                     this.#setNavigatorSidebarOpen(true);
+                    await navigatorView.updateComplete;
                     navigatorView.focus();
                 }
                 break;

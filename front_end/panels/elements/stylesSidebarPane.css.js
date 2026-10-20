@@ -228,6 +228,10 @@ export default `/**
   white-space: pre;
 }
 
+.styles-specificity-tooltip {
+  user-select: none;
+}
+
 .styles-sidebar-pane-toolbar-container {
   flex-shrink: 0;
   overflow: hidden;

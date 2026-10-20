@@ -89,6 +89,10 @@ const UIStringsNotTranslate = {
      */
     getHelpForError: 'Get help understanding this error',
     /**
+     * @description Link text to Chrome's Built-in AI documentation
+     */
+    chromesBuiltInAi: 'Chrome’s Built-in AI',
+    /**
      * @description Call to action for downloading an AI model
      */
     toUseDownload: 'To use Chrome’s Built-in AI here and elsewhere, download the AI model (~4 GB)',
@@ -139,7 +143,7 @@ function renderNoModel(input) {
             class="link"
             href=${BUILT_IN_AI_DOCUMENTATION}
           >
-            Chrome’s Built-in AI
+            ${lockedString(UIStringsNotTranslate.chromesBuiltInAi)}
           </devtools-link>
           , without any data leaving your device.
         </div>

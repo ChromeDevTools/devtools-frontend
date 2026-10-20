@@ -128,7 +128,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
     set bucketInfo(bucketInfo) {
         this.storageBucketInfo = bucketInfo;
         if (this.view) {
-            this.view.setStorageBucket(this.storageBucketInfo);
+            this.view.storageBucket = this.storageBucketInfo;
         }
     }
     onselect(selectedByUser) {
@@ -136,7 +136,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
         if (!this.view) {
             this.view = new StorageMetadataView.StorageMetadataView();
             this.view.enableStorageBucketControls(this.model);
-            this.view.setStorageBucket(this.storageBucketInfo);
+            this.view.storageBucket = this.storageBucketInfo;
         }
         this.showView(this.view);
         return false;

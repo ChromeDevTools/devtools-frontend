@@ -27,6 +27,7 @@ export type View = (input: ViewInput, output: undefined, target: HTMLElement) =>
 export declare const DEFAULT_VIEW: View;
 export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
     #private;
+    static readonly INJECT: readonly [typeof Bindings.NetworkProject.NetworkProjectManager];
     private placeholder;
     scriptsTree: UI.TreeOutline.TreeOutlineInShadow;
     private readonly uiSourceCodeNodes;
@@ -42,7 +43,10 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private groupByAuthored?;
     private groupByDomain?;
     private groupByFolder?;
-    constructor(jslogContext: string, networkProjectManager: Bindings.NetworkProject.NetworkProjectManager, enableAuthoredGrouping?: boolean, view?: View);
+    constructor(element?: HTMLElement, [networkProjectManager]?: UI.Widget.WidgetDependencies<typeof NavigatorView>, view?: View, options?: UI.Widget.WidgetOptions);
+    wasShown(): void;
+    get enableAuthoredGrouping(): boolean;
+    set enableAuthoredGrouping(enableAuthoredGrouping: boolean);
     private static treeElementOrder;
     static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void;
     private static treeElementsCompare;

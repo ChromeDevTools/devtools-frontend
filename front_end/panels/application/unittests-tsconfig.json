@@ -61,6 +61,7 @@
     "../../../../../../front_end/panels/application/IndexedDBModel.test.ts",
     "../../../../../../front_end/panels/application/IndexedDBViews.test.ts",
     "../../../../../../front_end/panels/application/KeyValueStorageItemsView.test.ts",
+    "../../../../../../front_end/panels/application/OpenedWindowDetailsView.test.ts",
     "../../../../../../front_end/panels/application/OriginTrialTreeView.test.ts",
     "../../../../../../front_end/panels/application/PreloadingTreeElement.test.ts",
     "../../../../../../front_end/panels/application/ReportingApiTreeElement.test.ts",

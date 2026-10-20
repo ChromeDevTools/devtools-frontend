@@ -15650,7 +15650,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
     }
   }
   constructor(target, view = DEFAULT_VIEW10) {
-    super();
+    super(target);
     this.#view = view;
   }
   static createGeneralHeadersView(request) {
@@ -17296,16 +17296,39 @@ var UIStrings20 = {
 var str_20 = i18n39.i18n.registerUIStrings("panels/network/RequestPreviewView.ts", UIStrings20);
 var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var RequestPreviewView = class extends UI21.Widget.VBox {
-  request;
-  contentViewPromise;
-  constructor(request) {
-    super({ jslog: `${VisualLogging14.pane("preview").track({ resize: true })}` });
+  #request;
+  contentViewPromise = null;
+  constructor(request, element) {
+    super(
+      request instanceof HTMLElement ? request : element,
+      { jslog: `${VisualLogging14.pane("preview").track({ resize: true })}` }
+    );
     this.element.classList.add("request-view");
-    this.request = request;
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
+  }
+  get request() {
+    return this.#request;
+  }
+  set request(request) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
     this.contentViewPromise = null;
+    this.detachChildWidgets();
+    this.element.removeChildren();
+    if (this.isShowing()) {
+      void this.doShowPreview();
+    }
   }
   async showPreview() {
+    const request = this.#request;
     const view = await this.createPreview();
+    if (this.#request !== request) {
+      return view;
+    }
     view.show(this.element);
     await view.updateComplete;
     if (!(view instanceof UI21.View.SimpleView)) {

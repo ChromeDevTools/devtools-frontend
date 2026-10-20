@@ -64,6 +64,9 @@
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/theme_support/bundle-tsconfig.ref.json"
     }
   ]
 }

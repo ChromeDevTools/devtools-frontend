@@ -291,9 +291,6 @@ export class AiAgent {
     disableServerSideLogging() {
         this.#serverSideLoggingActive = false;
     }
-    popPendingMultimodalInput() {
-        return undefined;
-    }
     /**
      * Preamble features appended to the `client_version` in metadata.
      * This is required ONLY for the Styling Agent for legacy reasons to serve

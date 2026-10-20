@@ -106,6 +106,7 @@
     "../../../../../../front_end/core/sdk/PaintProfiler.ts",
     "../../../../../../front_end/core/sdk/PerformanceMetricsModel.ts",
     "../../../../../../front_end/core/sdk/PreloadingModel.ts",
+    "../../../../../../front_end/core/sdk/PrivateVerificationTokensModel.ts",
     "../../../../../../front_end/core/sdk/RehydratingObject.ts",
     "../../../../../../front_end/core/sdk/RemoteObject.ts",
     "../../../../../../front_end/core/sdk/Resource.ts",

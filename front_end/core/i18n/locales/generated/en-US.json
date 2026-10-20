@@ -8705,6 +8705,9 @@
   "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "Mobile S"
   },
+  "panels/emulation/DeviceModeView.ts | presetSize": {
+    "message": "{PH1} – {PH2}px"
+  },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
     "message": "Screenshot copied to clipboard"
   },
@@ -8969,8 +8972,14 @@
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n, plural, =1 {# element} other {# elements}}"
   },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
+    "message": "learn more"
+  },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n, plural, =1 {1 website allowed to access cookies} other {# websites allowed to access cookies}}"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
+    "message": "(opt-out: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL issues count: {count}"
@@ -17549,8 +17558,8 @@
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
     "message": "Callback buffer size"
   },
-  "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "Callback interval"
+  "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
+    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Current time"

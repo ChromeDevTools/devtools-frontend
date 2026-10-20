@@ -24,16 +24,36 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPreviewView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends UI.Widget.VBox {
-    request;
-    contentViewPromise;
-    constructor(request) {
-        super({ jslog: `${VisualLogging.pane('preview').track({ resize: true })}` });
+    #request;
+    contentViewPromise = null;
+    constructor(request, element) {
+        super(request instanceof HTMLElement ? request : element, { jslog: `${VisualLogging.pane('preview').track({ resize: true })}` });
         this.element.classList.add('request-view');
-        this.request = request;
+        if (request && !(request instanceof HTMLElement)) {
+            this.#request = request;
+        }
+    }
+    get request() {
+        return this.#request;
+    }
+    set request(request) {
+        if (this.#request === request) {
+            return;
+        }
+        this.#request = request;
         this.contentViewPromise = null;
+        this.detachChildWidgets();
+        this.element.removeChildren();
+        if (this.isShowing()) {
+            void this.doShowPreview();
+        }
     }
     async showPreview() {
+        const request = this.#request;
         const view = await this.createPreview();
+        if (this.#request !== request) {
+            return view;
+        }
         view.show(this.element);
         await view.updateComplete;
         if (!(view instanceof UI.View.SimpleView)) {

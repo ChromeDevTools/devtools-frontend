@@ -24,6 +24,7 @@ export declare class FilesNavigatorView extends NavigatorView {
     handleContextMenu(event: Event): void;
 }
 export declare class OverridesNavigatorView extends NavigatorView {
+    #private;
     private readonly toolbar;
     private constructor();
     static instance(opts: {

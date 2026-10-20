@@ -86,6 +86,7 @@ core/sdk/OverlayModel.test.js
 core/sdk/OverlayPersistentHighlighter.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/PreloadingModel.test.js
+core/sdk/PrivateVerificationTokensModel.test.js
 core/sdk/RemoteObject.test.js
 core/sdk/Resource.test.js
 core/sdk/ResourceTreeModel.test.js
@@ -110,6 +111,7 @@ core/sdk/StorageKeyManager.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
 core/sdk/TraceObject.test.js
+core/sdk/WebAuthnModel.test.js
 core/text_utils/ContentData.test.js
 core/text_utils/Markdown.test.js
 core/text_utils/StaticContentProvider.test.js
@@ -418,6 +420,7 @@ panels/application/FrameDetailsView.test.js
 panels/application/IndexedDBModel.test.js
 panels/application/IndexedDBViews.test.js
 panels/application/KeyValueStorageItemsView.test.js
+panels/application/OpenedWindowDetailsView.test.js
 panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
 panels/application/ReportingApiTreeElement.test.js
@@ -523,6 +526,7 @@ panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
 panels/issues/AffectedLazyLoadImagesView.test.js
+panels/issues/AffectedMetadataAllowedSitesView.test.js
 panels/issues/AffectedSelectivePermissionsInterventionView.test.js
 panels/issues/IssueView.test.js
 panels/issues/IssuesPane.test.js

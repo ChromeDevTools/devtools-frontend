@@ -2,6 +2,7 @@ import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type TemplateResult } from '../../ui/lit/lit.js';
 import { CompatibilityTracksAppender, type DrawOverride } from './CompatibilityTracksAppender.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements PerfUI.FlameChart.FlameChartDataProvider {
@@ -81,8 +82,8 @@ export declare class TimelineFlameChartDataProvider extends Common.ObjectWrapper
     totalTime(): number;
     search(visibleWindow: Trace.Types.Timing.TraceWindowMicro, filter?: Trace.Extras.TraceFilter.TraceFilter): PerfUI.FlameChart.DataProviderSearchResult[];
     getEntryTypeForLevel(level: number): EntryType;
-    preparePopoverElement(entryIndex: number): Element | null;
-    preparePopoverForCollapsedArrow(entryIndex: number): Element | null;
+    preparePopoverElement(entryIndex: number): TemplateResult | null;
+    preparePopoverForCollapsedArrow(entryIndex: number): TemplateResult | null;
     getDrawOverride(entryIndex: number): DrawOverride | undefined;
     entryColor(entryIndex: number): string;
     private preparePatternCanvas;

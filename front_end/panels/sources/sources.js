@@ -6353,11 +6353,16 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   render5(
     html6`
         <style>${navigatorView_css_default}</style>
-        ${input.placeholder ? html6`
-          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
-            ${input.placeholder.element}
-          </devtools-widget>
-        ` : Lit3.nothing}
+        <slot name="header"></slot>
+        <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+          <slot name="placeholder">
+            ${input.placeholder ? html6`
+              <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
+                ${input.placeholder.element}
+              </devtools-widget>
+            ` : Lit3.nothing}
+          </slot>
+        </div>
         <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
           ${input.treeElement}
         </div>
@@ -6366,6 +6371,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   );
 };
 var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
+  static INJECT = [Bindings3.NetworkProject.NetworkProjectManager];
   placeholder;
   scriptsTree;
   uiSourceCodeNodes;
@@ -6377,15 +6383,17 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   navigatorGroupByFolderSetting;
   navigatorJustMyCodeSetting;
   navigatorGroupByAuthoredSetting;
+  #navigatorGroupByAuthoredChangeListener;
+  #enableAuthoredGrouping = false;
   #workspace;
   groupByFrame;
   groupByAuthored;
   groupByDomain;
   groupByFolder;
   #view;
-  constructor(jslogContext, networkProjectManager, enableAuthoredGrouping, view = DEFAULT_VIEW5) {
-    super({
-      jslog: `${VisualLogging5.pane(jslogContext).track({ resize: true })}`,
+  constructor(element, [networkProjectManager] = [Bindings3.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW5, options) {
+    super(element, {
+      ...options,
       useShadowDom: true
     });
     this.#view = view;
@@ -6396,7 +6404,8 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     this.scriptsTree.setComparator(_NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
     this.setDefaultFocusedElement(this.scriptsTree.element);
-    this.performUpdate();
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementAttached, () => this.requestUpdate());
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementsDetached, () => this.requestUpdate());
     this.uiSourceCodeNodes = new Platform5.MapUtilities.Multimap();
     this.subfolderNodes = /* @__PURE__ */ new Map();
     this.rootNode = new NavigatorRootTreeNode(this);
@@ -6410,12 +6419,6 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     this.navigatorJustMyCodeSetting = Common7.Settings.Settings.instance().resolve(SettingsUI2.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
     this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
-    if (enableAuthoredGrouping) {
-      this.navigatorGroupByAuthoredSetting = Common7.Settings.Settings.instance().resolve(
-        SettingsUI2.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor
-      );
-      this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
-    }
     Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
     this.initGrouping();
     Persistence3.Persistence.PersistenceImpl.instance().addEventListener(
@@ -6451,6 +6454,35 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
       this.frameAttributionRemoved,
       this
     );
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  get enableAuthoredGrouping() {
+    return this.#enableAuthoredGrouping;
+  }
+  set enableAuthoredGrouping(enableAuthoredGrouping) {
+    if (this.#enableAuthoredGrouping === enableAuthoredGrouping) {
+      return;
+    }
+    this.#enableAuthoredGrouping = enableAuthoredGrouping;
+    if (this.navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+      this.navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+      this.navigatorGroupByAuthoredSetting = void 0;
+      this.#navigatorGroupByAuthoredChangeListener = void 0;
+    }
+    if (enableAuthoredGrouping) {
+      this.navigatorGroupByAuthoredSetting = Common7.Settings.Settings.instance().resolve(
+        SettingsUI2.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor
+      );
+      this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
+      this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+    }
+    if (this.#workspace && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+      this.groupingChanged();
+    }
+    this.requestUpdate();
   }
   static treeElementOrder(treeElement) {
     if (boostOrderForNode.has(treeElement)) {
@@ -6495,9 +6527,7 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   setPlaceholder(placeholder2) {
     console.assert(!this.placeholder, "A placeholder widget was already set");
     this.placeholder = placeholder2;
-    this.performUpdate();
-    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementAttached, () => this.performUpdate());
-    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementsDetached, () => this.performUpdate());
+    this.requestUpdate();
   }
   performUpdate() {
     this.#view(
@@ -7286,6 +7316,7 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     this.sourceSelected(uiSourceCode, false);
     const node = this.revealUISourceCode(uiSourceCode, true);
     if (node) {
+      await this.updateComplete;
       this.rename(node, true);
     }
   }
@@ -15130,6 +15161,7 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
         this.navigatorTabbedLocation.tabbedPane().selectTab(view.viewId(), true);
         if (!skipReveal) {
           this.#setNavigatorSidebarOpen(true);
+          await navigatorView.updateComplete;
           navigatorView.focus();
         }
         break;
@@ -17905,6 +17937,7 @@ import * as Workspace28 from "../../models/workspace/workspace.js";
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
 import { Link } from "../../ui/kit/kit.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 import * as Snippets5 from "../snippets/snippets.js";
 
 // gen/front_end/panels/sources/sourcesNavigator.css.js
@@ -18022,7 +18055,10 @@ var i18nString23 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var networkNavigatorViewInstance;
 var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   constructor(networkProjectManager) {
-    super("navigator-network", networkProjectManager, true);
+    super(void 0, [networkProjectManager], void 0, {
+      jslog: `${VisualLogging14.pane("navigator-network").track({ resize: true })}`
+    });
+    this.enableAuthoredGrouping = true;
     this.registerRequiredCSS(sourcesNavigator_css_default);
     SDK14.TargetManager.TargetManager.instance().addEventListener(
       SDK14.TargetManager.Events.INSPECTED_URL_CHANGED,
@@ -18084,7 +18120,9 @@ var FilesNavigatorView = class extends NavigatorView {
   #eventListeners = [];
   #automaticFileSystemNudge;
   constructor(networkProjectManager) {
-    super("navigator-files", networkProjectManager);
+    super(void 0, [networkProjectManager], void 0, {
+      jslog: `${VisualLogging14.pane("navigator-files").track({ resize: true })}`
+    });
     this.registerRequiredCSS(sourcesNavigator_css_default);
     const placeholder2 = new UI22.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noWorkspace), i18nString23(UIStrings24.explainWorkspace));
     this.setPlaceholder(placeholder2);
@@ -18149,8 +18187,11 @@ var FilesNavigatorView = class extends NavigatorView {
 var overridesNavigatorViewInstance;
 var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView {
   toolbar;
+  #enableCheckbox;
   constructor(networkProjectManager) {
-    super("navigator-overrides", networkProjectManager);
+    super(void 0, [networkProjectManager], void 0, {
+      jslog: `${VisualLogging14.pane("navigator-overrides").track({ resize: true })}`
+    });
     const placeholder2 = new UI22.EmptyWidget.EmptyWidget(
       i18nString23(UIStrings24.noLocalOverrides),
       i18nString23(UIStrings24.explainLocalOverrides)
@@ -18200,10 +18241,10 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.toolbar.removeToolbarItems();
     const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI22.Toolbar.ToolbarSettingCheckbox(Common19.Settings.Settings.instance().resolve(
+      this.#enableCheckbox ??= new UI22.Toolbar.ToolbarSettingCheckbox(Common19.Settings.Settings.instance().resolve(
         Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
       ));
-      this.toolbar.appendToolbarItem(enableCheckbox);
+      this.toolbar.appendToolbarItem(this.#enableCheckbox);
       this.toolbar.appendToolbarItem(new UI22.Toolbar.ToolbarSeparator(true));
       const clearButton = new UI22.Toolbar.ToolbarButton(i18nString23(UIStrings24.clearConfiguration), "clear");
       clearButton.addEventListener(UI22.Toolbar.ToolbarButton.Events.CLICK, () => {
@@ -18237,7 +18278,9 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
 };
 var ContentScriptsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
-    super("navigator-content-scripts", networkProjectManager);
+    super(void 0, [networkProjectManager], void 0, {
+      jslog: `${VisualLogging14.pane("navigator-content-scripts").track({ resize: true })}`
+    });
     const placeholder2 = new UI22.EmptyWidget.EmptyWidget(
       i18nString23(UIStrings24.noContentScripts),
       i18nString23(UIStrings24.explainContentScripts)
@@ -18251,7 +18294,9 @@ var ContentScriptsNavigatorView = class extends NavigatorView {
 };
 var SnippetsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
-    super("navigator-snippets", networkProjectManager);
+    super(void 0, [networkProjectManager], void 0, {
+      jslog: `${VisualLogging14.pane("navigator-snippets").track({ resize: true })}`
+    });
     const placeholder2 = new UI22.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noSnippets), i18nString23(UIStrings24.explainSnippets));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/javascript/snippets/";
@@ -18485,7 +18530,7 @@ var objectValue_css_default = `/*
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
 import { Directives as Directives7, html as html22, nothing as nothing15, render as render14 } from "../../ui/lit/lit.js";
-import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
 var watchExpressionsSidebarPane_css_default = `/*
@@ -18956,7 +19001,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       container: {
         classes: ["watch-expressions"],
         attributes: {
-          jslog: `${VisualLogging14.section("sources.watch")}`,
+          jslog: `${VisualLogging15.section("sources.watch")}`,
           "aria-label": i18nString24(UIStrings25.addWatchExpression)
         },
         listeners: { contextmenu: onContextMenu.bind(void 0, void 0) }

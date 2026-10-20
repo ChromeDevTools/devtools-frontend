@@ -27,9 +27,11 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;
     isEditingStyle: boolean;
     readonly sectionByElement: WeakMap<Node, StylePropertiesSection>;
-    readonly linkifier: Components.Linkifier.Linkifier;
     userOperation: boolean;
     constructor(element?: HTMLElement, view?: View);
+    get linkifier(): Components.Linkifier.Linkifier;
+    wasShown(): void;
+    willHide(): void;
     get webCustomData(): WebCustomData | undefined;
     performUpdate(signal?: AbortSignal): Promise<void>;
     swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;

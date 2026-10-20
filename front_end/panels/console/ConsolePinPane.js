@@ -221,7 +221,7 @@ function renderResult(result, isEditing) {
         return nothing;
     }
     if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-        return html `<span class='object-value-calculate-value-button' title=${i18nString(UIStrings.evaluateAllowingSideEffects)}>(…)</span>`;
+        return html `<span class='object-value-calculate-value-button' title=${i18nString(UIStrings.evaluateAllowingSideEffects)}>(\u2026)</span>`;
     }
     const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
     if (renderedPreview === nothing && !isEditing) {

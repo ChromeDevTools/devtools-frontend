@@ -2049,7 +2049,6 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
         this.targetInfo = targetInfo;
         if (this.view) {
             this.view.setTargetInfo(targetInfo);
-            this.view.requestUpdate();
         }
     }
     windowClosed() {
@@ -2057,7 +2056,6 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
         this.isWindowClosed = true;
         if (this.view) {
             this.view.setIsWindowClosed(true);
-            this.view.requestUpdate();
         }
     }
     onselect(selectedByUser) {

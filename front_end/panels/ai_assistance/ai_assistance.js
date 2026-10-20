@@ -6915,47 +6915,6 @@ button.link {
   }
 }
 
-.floaty {
-  font: var(--sys-typescale-body4);
-  color: var(--sys-color-on-surface);
-  user-select: none;
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-end;
-  gap: var(--sys-size-2);
-  margin-bottom: var(--sys-size-2);
-
-  li {
-    background: var(--sys-color-surface3);
-    border-radius: var(--sys-shape-corner-small);
-    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-    padding: var(--sys-size-2) var(--sys-size-3);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sys-size-2);
-    min-height: var(--sys-size-8);
-  }
-
-  .context-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sys-size-2);
-  }
-
-  .open-floaty {
-    padding: 0;
-    border: none;
-
-    /* To align with other chips */
-    margin-bottom: var(--sys-size-1);
-  }
-}
-
 .chat-input-footer {
   display: flex;
   justify-content: center;

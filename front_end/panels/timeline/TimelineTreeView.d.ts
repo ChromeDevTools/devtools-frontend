@@ -93,7 +93,7 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     private onMouseMove;
     onHover(node: Trace.Extras.TraceTree.Node | null): void;
     onClick(node: Trace.Extras.TraceTree.Node | null): void;
-    childWasDetached(_widget: UI.Widget.Widget): void;
+    willHide(): void;
     onGridNodeOpened(): void;
     private onContextMenu;
     dataGridElementForEvent(event: Trace.Types.Events.Event | null): HTMLElement | null;
@@ -157,6 +157,9 @@ export declare class AggregatedTimelineTreeView extends TimelineTreeView {
     protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
     readonly stackView: TimelineStackView;
     constructor(element?: HTMLElement);
+    refreshTree(forceRefresh?: boolean): void;
+    wasShown(): void;
+    willHide(): void;
     setGroupBySetting(groupBy: AggregatedTimelineTreeView.GroupBy): void;
     set activeSelection(selection: TimelineSelection);
     private beautifyDomainName;

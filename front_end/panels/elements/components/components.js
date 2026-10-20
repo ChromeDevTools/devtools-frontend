@@ -2251,7 +2251,7 @@ var QueryContainer = class extends HTMLElement {
     const nodeTitle = this.#queryName || this.#container.nodeNameInCorrectCase();
     render10(html10`
       <style>${queryContainer_css_default}</style>
-      →
+      \u2192
       <a href="#" draggable=false class="container-link"
          jslog=${VisualLogging6.cssRuleHeader("container-query").track({ click: true })}
          @click=${this.#onContainerLinkClick}

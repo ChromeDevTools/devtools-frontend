@@ -60,6 +60,9 @@
       "path": "../front_end/models/bindings/bindings-tsconfig.ref.json"
     },
     {
+      "path": "../front_end/models/breakpoints/breakpoints-tsconfig.ref.json"
+    },
+    {
       "path": "../front_end/models/comment_manager/comment_manager-tsconfig.ref.json"
     },
     {
@@ -85,6 +88,9 @@
     },
     {
       "path": "../front_end/models/workspace/workspace-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/workspace/bundle-tsconfig.ref.json"
     },
     {
       "path": "../front_end/third_party/marked/bundle-tsconfig.ref.json"

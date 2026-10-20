@@ -4828,28 +4828,28 @@ function defaultView(input, output, target) {
       <div role=dialog class="css-value-trace monospace" @keydown=${onKeyDown}>
         ${substitutions.map(
       (line) => html6`
-          <span class="trace-line-icon" aria-label="is equal to">↳</span>
+          <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
           <span class="trace-line">${line}</span>`
     )}
         ${firstEvaluation && intermediateEvaluations.length === 0 ? html6`
-          <span class="trace-line-icon" aria-label="is equal to">↳</span>
+          <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
           <span class="trace-line">${firstEvaluation}</span>` : html6`
           <details @toggle=${input.onToggle} ?hidden=${hiddenSummary}>
             <summary tabindex=${ifDefined(summaryTabIndex)}>
-              <span class="trace-line-icon" aria-label="is equal to">↳</span>
+              <span class="trace-line-icon" aria-label="is equal to">\u21b3</span>
               <devtools-icon class="marker"></devtools-icon>
               <span class="trace-line">${firstEvaluation}</span>
             </summary>
             <div>
               ${intermediateEvaluations.map(
       (evaluation) => html6`
-                  <span class="trace-line-icon" aria-label="is equal to" >↳</span>
+                  <span class="trace-line-icon" aria-label="is equal to" >\u21b3</span>
                   <span class="trace-line">${evaluation}</span>`
     )}
             </div>
           </details>`}
         ${finalResult ? html6`
-          <span class="trace-line-icon" aria-label="is equal to" ?hidden=${singleResult}>↳</span>
+          <span class="trace-line-icon" aria-label="is equal to" ?hidden=${singleResult}>\u21b3</span>
           <span class=${classMap({ "trace-line": true, "full-row": singleResult })}>
             ${finalResult}
           </span>` : ""}
@@ -5007,7 +5007,7 @@ function escapeAsSingleQuotedJsString(text) {
 }
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
-var { html: html7, nothing, render: render4, Directives: { classMap: classMap2 } } = Lit5;
+var { html: html7, nothing, render: render4, Directives: { classMap: classMap2, ref: ref3 } } = Lit5;
 var ASTUtils = SDK4.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 var GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -5268,8 +5268,8 @@ var CSSWideKeywordRenderer = class extends CSSWideKeywordRendererBase {
     if (SDK4.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) || SDK4.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
       const color = Common.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
-        const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, swatch, match, context);
-        return [colorSwatch, swatch];
+        const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
+        return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${swatch}</devtools-widget>` : [colorSwatch, swatch];
       }
     }
     return [swatch];
@@ -5374,7 +5374,7 @@ var VariableRenderer = class extends VariableRendererBase {
     if (!color) {
       return [varSwatch];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch, match, context);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl("color", colorSwatch);
     if (fromFallback) {
       renderedFallback?.cssControls.get("color")?.forEach(
@@ -5383,7 +5383,7 @@ var VariableRenderer = class extends VariableRendererBase {
         })
       );
     }
-    return [colorSwatch, varSwatch];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` : [colorSwatch, varSwatch];
   }
 };
 var VariableNameRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.VariableNameMatch);
@@ -5518,7 +5518,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
     if (!color) {
       return [varSwatch];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch, match, context);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl("color", colorSwatch);
     if (fromFallback) {
       renderedFallback?.cssControls.get("color")?.forEach(
@@ -5527,7 +5527,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
         })
       );
     }
-    return [colorSwatch, varSwatch];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` : [colorSwatch, varSwatch];
   }
   #handleAttributeActivate(node, attribute) {
     if (!node) {
@@ -5613,27 +5613,22 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
   #getValueChild(match, context) {
-    const valueChild = document.createElement("span");
     if (match.node.name !== "CallExpression") {
-      valueChild.appendChild(document.createTextNode(match.text));
-      return { valueChild };
+      return { valueChild: html7`<span>${match.text}</span>` };
     }
     const func = context.matchedResult.ast.text(match.node.getChild("Callee"));
     const args = ASTUtils.siblings(match.node.getChild("ArgList"));
     const childTracingContexts = context.tracing?.evaluation([args], { match, context }) ?? void 0;
     const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
-    const { nodes, cssControls } = Renderer.renderInto(args, renderingContext, valueChild);
-    render4(
-      html7`${this.#treeElement?.getTracingTooltip(
-        func,
-        match.node,
-        this.#treeElement.matchedStyles(),
-        this.#treeElement.getComputedStyles() ?? /* @__PURE__ */ new Map(),
-        this.#treeElement.getComputedStyleExtraFields(),
-        renderingContext
-      ) ?? func}${nodes}`,
-      valueChild
-    );
+    const { nodes, cssControls } = Renderer.render(args, renderingContext);
+    const valueChild = html7`<span>${this.#treeElement?.getTracingTooltip(
+      func,
+      match.node,
+      this.#treeElement.matchedStyles(),
+      this.#treeElement.getComputedStyles() ?? /* @__PURE__ */ new Map(),
+      this.#treeElement.getComputedStyleExtraFields(),
+      renderingContext
+    ) ?? func}${nodes}</span>`;
     return { valueChild, cssControls, childTracingContexts };
   }
   render(match, context) {
@@ -5650,7 +5645,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       if (match.node.name === "CallExpression") {
         return Renderer.render(ASTUtils.children(match.node), context).nodes;
       }
-      return [document.createTextNode(colorText)];
+      return html7`${colorText}`;
     }
     if (match.node.name === "CallExpression" && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
@@ -5659,7 +5654,6 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         colorText2.textContent = displayColor.asString();
         const swatch2 = new _ColorRenderer(this.#stylesContainer, null).renderColorSwatch(
           displayColor.isGamutClipped() ? color : displayColor.nickname() ?? displayColor,
-          colorText2,
           match,
           context
         );
@@ -5670,10 +5664,10 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         return { placeholder: [swatch2, colorText2] };
       });
       if (evaluation) {
-        return evaluation;
+        return html7`${evaluation}`;
       }
     }
-    const swatch = this.renderColorSwatch(color, valueChild, match, context);
+    const swatch = this.renderColorSwatch(color, match, context);
     context.addControl("color", swatch);
     if (cssControls && match.node.name === "CallExpression" && context.ast.text(match.node.getChild("Callee")).match(/^(hsla?|hwba?)/)) {
       const [angle] = cssControls.get("angle") ?? [];
@@ -5694,11 +5688,11 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
         });
       }
     }
-    return [swatch, valueChild];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${swatch}${valueChild}</devtools-widget>` : html7`${swatch}${valueChild}`;
   }
-  // Renders a swatch for `color`, which stands for the text that is displayed in `valueChild`. When the user changes the
-  // color through the swatch, `valueChild` is replaced with the new text, which is recorded as the edit of `match`.
-  renderColorSwatch(color, valueChild, match, context) {
+  // Renders a swatch for `color`. When the user changes the color through the swatch, a `ValueEditEvent` is dispatched
+  // to update the enclosing `EditableContent`, and the new text is recorded as the edit of `match`.
+  renderColorSwatch(color, match, context) {
     const editable = this.#treeElement?.editable();
     const shiftClickMessage = i18nString4(UIStrings4.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString4(UIStrings4.openColorPickerS, { PH1: shiftClickMessage }) : "";
@@ -5708,13 +5702,14 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       swatch.renderColor(color);
     }
     if (this.#treeElement?.editable()) {
+      swatch.slot = "icon";
       const treeElement = this.#treeElement;
       const onColorChanged = () => {
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
       const onColorFormatChanged = (e) => {
         const text = e.data.color.getAuthoredText() ?? e.data.color.asString();
-        valueChild.textContent = text;
+        swatch.dispatchEvent(new ValueEditEvent(text));
         context.recordEdit(match, text);
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
@@ -5726,7 +5721,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       const swatchIcon = new ColorSwatchPopoverIcon(treeElement, treeElement.stylesContainer().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener("colorchanged" /* COLOR_CHANGED */, (ev) => {
         const text = ev.data.getAuthoredText() ?? ev.data.asString();
-        valueChild.textContent = text;
+        swatch.dispatchEvent(new ValueEditEvent(text));
         context.recordEdit(match, text);
         swatch.setColor(ev.data);
       });
@@ -5776,10 +5771,10 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
     if (!color) {
       return [content];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(void 0, content, match, context);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(void 0, match, context);
     context.addControl("color", colorSwatch);
     void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
-    return [colorSwatch, content];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` : [colorSwatch, content];
   }
   async applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls) {
     const activeColor = await this.#activeColor(match);
@@ -5904,7 +5899,7 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
         const initialColor = Common.Color.parse("#000");
         const colorText = document.createElement("span");
         colorText.textContent = initialColor.asString();
-        const swatch2 = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, colorText, match, context);
+        const swatch2 = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
         swatch2.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
           colorText.textContent = ev.data.color.asString();
         });
@@ -5994,9 +5989,9 @@ var ContrastColorRenderer = class extends ContrastColorRendererBase {
     if (!color) {
       return [content];
     }
-    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, content, match, context);
+    const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl("color", colorSwatch);
-    return [colorSwatch, content];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` : [colorSwatch, content];
   }
 };
 var AngleRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.AngleMatch);
@@ -6825,36 +6820,33 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
   render(match, context) {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     if (!this.#treeElement?.editable() || !InlineEditor.PositionAreaEditor.parsePositionArea(context.matchedResult.getComputedPropertyValueText())) {
-      return children;
+      return html7`${children}`;
     }
     const section5 = this.#treeElement.section();
     const key2 = section5 ? `${section5.getSectionIdx()}_${section5.nextEditorTriggerButtonIdx++}` : void 0;
-    const valueElement = document.createElement("span");
-    render4(children, valueElement);
-    const button = createIcon("grid-on", "position-area-swatch-icon");
-    button.title = i18nString4(UIStrings4.positionAreaEditorButton);
-    button.role = "button";
-    button.tabIndex = -1;
-    button.setAttribute("jslog", `${VisualLogging3.showStyleEditor().track({ click: true }).context("position-area")}`);
+    let button;
+    const edit = (value5) => {
+      button?.dispatchEvent(new ValueEditEvent(value5));
+      context.recordEdit(match, value5);
+    };
     const treeElement = this.#treeElement;
     const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
-    if (_PositionAreaRenderer.#active && popoverHelper.isShowing(_PositionAreaRenderer.#active.editor) && key2 !== void 0 && _PositionAreaRenderer.#active.key === key2) {
+    const isActive = Boolean(_PositionAreaRenderer.#active && popoverHelper.isShowing(_PositionAreaRenderer.#active.editor) && key2 !== void 0 && _PositionAreaRenderer.#active.key === key2);
+    if (isActive && _PositionAreaRenderer.#active) {
       _PositionAreaRenderer.#active.treeElement = treeElement;
-      _PositionAreaRenderer.#active.valueElement = valueElement;
-      _PositionAreaRenderer.#active.match = match;
-      _PositionAreaRenderer.#active.context = context;
-      popoverHelper.setAnchorElement(button);
+      _PositionAreaRenderer.#active.edit = edit;
     }
-    button.onclick = (event) => {
+    const onClick = (event) => {
       event.consume(true);
-      if (popoverHelper.isShowing()) {
+      if (popoverHelper.isShowing() || !button) {
         popoverHelper.hide(true);
         return;
       }
       const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
-      const active = { editor, key: key2, treeElement, valueElement, match, context };
+      const active = { editor, key: key2, treeElement, edit };
       _PositionAreaRenderer.#active = active;
-      editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueElement.textContent ?? "") ?? void 0;
+      const valueText = context.edits?.getEdit(match) ?? context.matchedResult.getComputedPropertyValueText();
+      editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueText) ?? void 0;
       const updateProperty = (propertyName, computedStyle) => {
         const matchedStyles = active.treeElement.matchedStyles();
         const resolved = matchedStyles.resolveProperty(propertyName, active.treeElement.property.ownerStyle);
@@ -6873,8 +6865,7 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
       void updateEditorProperties();
       const onPositionAreaChanged = (changeEvent) => {
         const area = InlineEditor.PositionAreaEditor.stringifyPositionArea(changeEvent.data);
-        active.valueElement.textContent = area;
-        active.context.recordEdit(active.match, area);
+        active.edit(area);
         void active.treeElement.applyStyleText(active.treeElement.renderedPropertyText(), false);
       };
       const onPropertyChanged = async (changeEvent) => {
@@ -6925,13 +6916,24 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
         this.#stylesContainer.setEditingStyle(false);
       });
     };
-    button.onmousedown = (event) => {
-      event.consume();
-    };
-    button.onmouseup = (event) => {
-      event.consume();
-    };
-    return [button, valueElement];
+    return html7`<devtools-widget ${widget(EditableContent)}><devtools-icon
+      ${ref3((e) => {
+      button = e;
+      if (e && isActive) {
+        popoverHelper.setAnchorElement(e);
+      }
+    })}
+      slot="icon"
+      name="grid-on"
+      class="position-area-swatch-icon"
+      title=${i18nString4(UIStrings4.positionAreaEditorButton)}
+      role="button"
+      tabindex="-1"
+      jslog=${VisualLogging3.showStyleEditor().track({ click: true }).context("position-area")}
+      @click=${onClick}
+      @mousedown=${(event) => event.consume()}
+      @mouseup=${(event) => event.consume()}
+    ></devtools-icon>${children}</devtools-widget>`;
   }
 };
 var PositionTryRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.PositionTryMatch);
@@ -10075,6 +10077,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
           variant: "rich",
           jslogContext: "elements.css-selector-specificity"
         }));
+        tooltip.classList.add("styles-specificity-tooltip");
         tooltip.hoverDelay = 500;
         const specificitySummary = formatSpecificitySummary(selector.specificity);
         const breakdownLines = getSpecificityBreakdownLines(selector.specificity);
@@ -11264,6 +11267,10 @@ var stylesSidebarPane_css_default = `/**
   white-space: pre;
 }
 
+.styles-specificity-tooltip {
+  user-select: none;
+}
+
 .styles-sidebar-pane-toolbar-container {
   flex-shrink: 0;
   overflow: hidden;
@@ -11673,21 +11680,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       this.hideAllPopovers,
       this
     );
-    this.linkifier.addEventListener(Components3.Linkifier.Events.LIVE_LOCATION_UPDATED, () => {
-      if (!this.filterRegex() || this.#filterUpdateScheduled) {
-        return;
-      }
-      this.#filterUpdateScheduled = true;
-      queueMicrotask(() => {
-        if (!this.#filterUpdateScheduled) {
-          return;
-        }
-        this.#filterUpdateScheduled = false;
-        if (this.filterRegex()) {
-          this.updateFilter();
-        }
-      });
-    });
+    this.linkifier.addEventListener(
+      Components3.Linkifier.Events.LIVE_LOCATION_UPDATED,
+      this.#onLiveLocationUpdated,
+      this
+    );
     this.decorator = new StylePropertyHighlighter(this);
     this.contentElement.classList.add("styles-pane");
     UI9.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, this.forceUpdate, this);
@@ -11732,6 +11729,21 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       };
       this.aiCodeCompletionProvider = StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
     }
+  }
+  #onLiveLocationUpdated() {
+    if (!this.filterRegex() || this.#filterUpdateScheduled) {
+      return;
+    }
+    this.#filterUpdateScheduled = true;
+    queueMicrotask(() => {
+      if (!this.#filterUpdateScheduled) {
+        return;
+      }
+      this.#filterUpdateScheduled = false;
+      if (this.filterRegex()) {
+        this.updateFilter();
+      }
+    });
   }
   get webCustomData() {
     if (!this.#webCustomData && Common4.Settings.Settings.instance().resolve(SettingsUI3.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).get()) {
@@ -12294,6 +12306,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     const focusedIndex = this.focusedSectionIndex();
     this.#elementsForSyncViewportCheck = [];
     this.linkifier.reset();
+    this.linkifier.addEventListener(
+      Components3.Linkifier.Events.LIVE_LOCATION_UPDATED,
+      this.#onLiveLocationUpdated,
+      this
+    );
     const node = this.node();
     if (this.#lastNode !== node) {
       this.#allKnownBlocks.clear();
@@ -15851,9 +15868,9 @@ import * as CodeHighlighter from "../../ui/components/code_highlighter/code_high
 import * as UI13 from "../../ui/legacy/legacy.js";
 import * as Lit7 from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
-var { Directives: { ref: ref3 }, html: html11, render: render9 } = Lit7;
+var { Directives: { ref: ref4 }, html: html11, render: render9 } = Lit7;
 var DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW = (input, _output, target) => {
-  const highlightNode = ref3((el) => {
+  const highlightNode = ref4((el) => {
     if (el) {
       el.textContent = input.text;
       void CodeHighlighter.CodeHighlighter.highlightNode(el, "text/css");
@@ -17059,7 +17076,7 @@ function buildChangeSelector(tracker, node) {
   }
   return void 0;
 }
-var { html: html14, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ifDefined: ifDefined2, ref: ref4, repeat, styleMap, until } } = Lit8;
+var { html: html14, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ifDefined: ifDefined2, ref: ref5, repeat, styleMap, until } } = Lit8;
 var { animateOn } = UI15.UIUtils;
 var { RegisteredAdorners } = ElementsComponents5.AdornerManager;
 var UIStrings14 = {
@@ -17308,7 +17325,7 @@ function emptyViewInput() {
 }
 function adornerRef() {
   let adorner3;
-  return ref4((el) => {
+  return ref5((el) => {
     if (adorner3) {
       ElementsPanel.instance().deregisterAdorner(adorner3);
     }
@@ -17378,7 +17395,7 @@ function renderTitle(node, input) {
       if (isExpandable) {
         if (!expanded) {
           return html14`${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand2 }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
-                  >…</span>\u200B${renderClosingTag()}`;
+                  >\u2026</span>\u200B${renderClosingTag()}`;
         }
         return openingTag;
       }
@@ -17389,7 +17406,7 @@ function renderTitle(node, input) {
         }
         const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
         const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-        const renderTextNode = ref4((el) => {
+        const renderTextNode = ref5((el) => {
           if (el) {
             el.textContent = textContent;
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
@@ -17408,7 +17425,7 @@ function renderTitle(node, input) {
     case Node.TEXT_NODE: {
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
         const text = node.nodeValue();
-        const highlightNode = ref4((el) => {
+        const highlightNode = ref5((el) => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/javascript").then(onHighlightSearchResults);
@@ -17418,7 +17435,7 @@ function renderTitle(node, input) {
       }
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
         const text = node.nodeValue();
-        const highlightNode = ref4((el) => {
+        const highlightNode = ref5((el) => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/css").then(onHighlightSearchResults);
@@ -17428,7 +17445,7 @@ function renderTitle(node, input) {
       }
       const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
       const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-      const renderTextNode = ref4((el) => {
+      const renderTextNode = ref5((el) => {
         if (el) {
           el.textContent = textContent;
           Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
@@ -17521,7 +17538,7 @@ function setValueWithEntities(element, value5) {
 function renderLinkifiedValue(value5, node) {
   const rewrittenHref = node ? node.resolveURL(value5) : null;
   if (rewrittenHref === null) {
-    return html14`<span ${ref4((el) => {
+    return html14`<span ${ref5((el) => {
       if (el) {
         setValueWithEntities(el, value5);
       }
@@ -17533,7 +17550,7 @@ function renderLinkifiedValue(value5, node) {
   }
   const isAnchor = node && node.nodeName().toLowerCase() === "a";
   if (isAnchor) {
-    return html14`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref4((el) => {
+    return html14`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref5((el) => {
       if (el) {
         ImagePreviewPopover.setImageUrl(el, rewrittenHref);
       }
@@ -17643,7 +17660,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   } else if (linkifyValue && relationPromise) {
     valueContent = until(relationPromise, value5);
   } else if (valueType === 0 /* UNKNOWN */ && !isRelation) {
-    valueContent = html14`<span ${ref4((el) => {
+    valueContent = html14`<span ${ref5((el) => {
       if (el) {
         setValueWithEntities(el, value5);
       }
@@ -17777,7 +17794,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   render11(html14`
     <div style=${styleMap({ "--indent": `${input.indent}px` })}
          @dblclick=${input.onDblClick}
-         ${ref4((el) => {
+         ${ref5((el) => {
     output.contentElement = el;
   })}>
       ${input.node ? html14`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input)}</span>` : nothing5}
@@ -17914,7 +17931,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       @mousedown=${(event) => event.stopPropagation()}
       @click=${(event) => event.stopPropagation()}
       class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
-        <devtools-text-editor .state=${input.editorState} ${ref4((el) => {
+        <devtools-text-editor .state=${input.editorState} ${ref5((el) => {
     output.editorRef = el;
   })}></devtools-text-editor>
       </div>` : nothing5}
@@ -26611,12 +26628,8 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   activeCSSAngle = null;
   isEditingStyle = false;
   sectionByElement = /* @__PURE__ */ new WeakMap();
-  // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
-  linkifier = new Components7.Linkifier.Linkifier(
-    23,
-    /* useLinkDecorator */
-    true
-  );
+  #linkifier = null;
+  #domNode = null;
   #webCustomData;
   userOperation = false;
   #sections = [];
@@ -26628,11 +26641,38 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   constructor(element, view = DEFAULT_VIEW12) {
     super(element, { useShadowDom: true });
     this.#view = view;
+  }
+  get linkifier() {
+    if (!this.#linkifier) {
+      this.#linkifier = new Components7.Linkifier.Linkifier(
+        23,
+        /* useLinkDecorator */
+        true
+      );
+    }
+    return this.#linkifier;
+  }
+  wasShown() {
+    super.wasShown();
     this.#computedStyleModelInternal.addEventListener(
       ComputedStyle4.ComputedStyleModel.Events.CSS_MODEL_CHANGED,
       this.#onCSSModelChanged,
       this
     );
+    if (this.#computedStyleModelInternal.node !== this.#domNode) {
+      this.#computedStyleModelInternal.node = this.#domNode;
+    }
+  }
+  willHide() {
+    super.willHide();
+    this.#computedStyleModelInternal.removeEventListener(
+      ComputedStyle4.ComputedStyleModel.Events.CSS_MODEL_CHANGED,
+      this.#onCSSModelChanged,
+      this
+    );
+    this.#computedStyleModelInternal.dispose();
+    this.#linkifier?.dispose();
+    this.#linkifier = null;
   }
   #rebuildAndUpdate() {
     void this.#rebuildThrottler.schedule(async () => {
@@ -26679,6 +26719,7 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
     if (!matchedStyles) {
       return;
     }
+    this.linkifier.reset();
     const newSections = [];
     let sectionIdx = 0;
     for (const style of matchedStyles.nodeStyles()) {
@@ -26721,11 +26762,14 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   }
   // TODO: Refactor StylesContainer to use getter for node(), so that we can have a `node` setter here: set node().
   set domNode(node) {
-    if (this.#computedStyleModelInternal.node === node) {
+    if (this.#domNode === node) {
       return;
     }
-    this.#computedStyleModelInternal.node = node;
-    this.forceUpdate();
+    this.#domNode = node;
+    if (this.isShowing()) {
+      this.#computedStyleModelInternal.node = node;
+      this.forceUpdate();
+    }
   }
   set filter(regex) {
     this.#filter = regex;

@@ -439,11 +439,4 @@ export default `/*
   }
 }
 
-.spark {
-  position: absolute;
-  top: var(--sys-size-2);
-
-  --icon-default: var(--sys-color-primary);
-}
-
 /*# sourceURL=${import.meta.resolve('./tabbedPane.css')} */`;

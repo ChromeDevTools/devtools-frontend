@@ -1551,6 +1551,7 @@ export class ConsoleView extends UI.Widget.VBox {
         this.createAiCodeCompletionSummaryToolbar();
     }
     cleanupAiCodeCompletion() {
+        this.aiCodeCompletionSummaryToolbar?.detach();
         this.aiCodeCompletionSummaryToolbarContainer?.remove();
         this.aiCodeCompletionSummaryToolbarContainer = undefined;
         this.aiCodeCompletionSummaryToolbar = undefined;

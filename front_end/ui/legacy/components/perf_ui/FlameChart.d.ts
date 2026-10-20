@@ -578,7 +578,7 @@ export interface FlameChartDataProvider {
      */
     timelineData(rebuild?: boolean): FlameChartTimelineData | null;
     preparePopoverElement(entryIndex: number): Element | TemplateResult | null;
-    preparePopoverForCollapsedArrow?(entryIndex: number): Element | null;
+    preparePopoverForCollapsedArrow?(entryIndex: number): Element | TemplateResult | null;
     canJumpToEntry(entryIndex: number): boolean;
     entryTitle(entryIndex: number): string | null;
     entryFont(entryIndex: number): string | null;

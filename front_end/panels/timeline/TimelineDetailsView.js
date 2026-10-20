@@ -76,6 +76,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     #parsedTrace = null;
     #eventToRelatedInsightsMap = null;
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+    #boundsStateWhenHidden;
     #entityMapper = null;
     static makeEventWidget(event, parsedTrace) {
         // Provide a mock delegate to satisfy the constructor requirements.
@@ -154,8 +155,30 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
             this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, { node, events });
         };
         this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
-        TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
         this.lazySelectorStatsView = null;
+    }
+    wasShown() {
+        super.wasShown();
+        TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+        const micro = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro;
+        const prev = this.#boundsStateWhenHidden;
+        if (prev && micro &&
+            (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds ||
+                prev.timelineTraceWindow !== micro.timelineTraceWindow)) {
+            if (this.selection) {
+                void this.setSelection(this.selection);
+            }
+            else {
+                this.scheduleUpdateContentsFromWindow();
+            }
+        }
+        this.#boundsStateWhenHidden = undefined;
+    }
+    willHide() {
+        TraceBounds.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
+        const micro = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro;
+        this.#boundsStateWhenHidden = micro ? { ...micro } : undefined;
+        super.willHide();
     }
     /**
      * This selects a given tabbedPane tab.

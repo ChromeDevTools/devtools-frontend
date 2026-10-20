@@ -169,11 +169,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
         <style>${navigatorViewStyles}</style>
-        ${input.placeholder ? html `
-          <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
-            ${input.placeholder.element}
-          </devtools-widget>
-        ` : Lit.nothing}
+        <slot name="header"></slot>
+        <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+          <slot name="placeholder">
+            ${input.placeholder ? html `
+              <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
+                ${input.placeholder.element}
+              </devtools-widget>
+            ` : Lit.nothing}
+          </slot>
+        </div>
         <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
           ${input.treeElement}
         </div>
@@ -181,6 +186,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class NavigatorView extends UI.Widget.VBox {
+    static INJECT = [Bindings.NetworkProject.NetworkProjectManager];
     placeholder;
     scriptsTree;
     uiSourceCodeNodes;
@@ -192,15 +198,17 @@ export class NavigatorView extends UI.Widget.VBox {
     navigatorGroupByFolderSetting;
     navigatorJustMyCodeSetting;
     navigatorGroupByAuthoredSetting;
+    #navigatorGroupByAuthoredChangeListener;
+    #enableAuthoredGrouping = false;
     #workspace;
     groupByFrame;
     groupByAuthored;
     groupByDomain;
     groupByFolder;
     #view;
-    constructor(jslogContext, networkProjectManager, enableAuthoredGrouping, view = DEFAULT_VIEW) {
-        super({
-            jslog: `${VisualLogging.pane(jslogContext).track({ resize: true })}`,
+    constructor(element, [networkProjectManager] = [Bindings.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW, options) {
+        super(element, {
+            ...options,
             useShadowDom: true,
         });
         this.#view = view;
@@ -211,7 +219,8 @@ export class NavigatorView extends UI.Widget.VBox {
         this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
         this.scriptsTree.setFocusable(false);
         this.setDefaultFocusedElement(this.scriptsTree.element);
-        this.performUpdate();
+        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.requestUpdate());
+        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.requestUpdate());
         this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
         this.subfolderNodes = new Map();
         this.rootNode = new NavigatorRootTreeNode(this);
@@ -224,10 +233,6 @@ export class NavigatorView extends UI.Widget.VBox {
         this.navigatorJustMyCodeSetting =
             Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorJustMyCodeSettingDescriptor);
         this.navigatorJustMyCodeSetting.addChangeListener(this.groupingChanged.bind(this));
-        if (enableAuthoredGrouping) {
-            this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
-            this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
-        }
         Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
         this.initGrouping();
         Persistence.Persistence.PersistenceImpl.instance().addEventListener(Persistence.Persistence.Events.BindingCreated, this.onBindingChanged, this);
@@ -239,6 +244,33 @@ export class NavigatorView extends UI.Widget.VBox {
         this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
         networkProjectManager.addEventListener("FrameAttributionAdded" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED */, this.frameAttributionAdded, this);
         networkProjectManager.addEventListener("FrameAttributionRemoved" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED */, this.frameAttributionRemoved, this);
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    get enableAuthoredGrouping() {
+        return this.#enableAuthoredGrouping;
+    }
+    set enableAuthoredGrouping(enableAuthoredGrouping) {
+        if (this.#enableAuthoredGrouping === enableAuthoredGrouping) {
+            return;
+        }
+        this.#enableAuthoredGrouping = enableAuthoredGrouping;
+        if (this.navigatorGroupByAuthoredSetting && this.#navigatorGroupByAuthoredChangeListener) {
+            this.navigatorGroupByAuthoredSetting.removeChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+            this.navigatorGroupByAuthoredSetting = undefined;
+            this.#navigatorGroupByAuthoredChangeListener = undefined;
+        }
+        if (enableAuthoredGrouping) {
+            this.navigatorGroupByAuthoredSetting = Common.Settings.Settings.instance().resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor);
+            this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
+            this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
+        }
+        if (this.#workspace && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+            this.groupingChanged();
+        }
+        this.requestUpdate();
     }
     static treeElementOrder(treeElement) {
         if (boostOrderForNode.has(treeElement)) {
@@ -282,9 +314,7 @@ export class NavigatorView extends UI.Widget.VBox {
     setPlaceholder(placeholder) {
         console.assert(!this.placeholder, 'A placeholder widget was already set');
         this.placeholder = placeholder;
-        this.performUpdate();
-        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.performUpdate());
-        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.performUpdate());
+        this.requestUpdate();
     }
     performUpdate() {
         this.#view({
@@ -996,6 +1026,7 @@ export class NavigatorView extends UI.Widget.VBox {
         this.sourceSelected(uiSourceCode, false);
         const node = this.revealUISourceCode(uiSourceCode, true);
         if (node) {
+            await this.updateComplete;
             this.rename(node, true);
         }
     }

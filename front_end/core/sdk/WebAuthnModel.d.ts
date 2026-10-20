@@ -16,10 +16,12 @@ export interface EventTypes {
 export declare class WebAuthnModel extends SDKModel<EventTypes> {
     #private;
     constructor(target: Target);
-    setVirtualAuthEnvEnabled(enable: boolean): Promise<Object>;
+    setVirtualAuthEnvEnabled(enable: boolean, enableUI?: boolean): Promise<Object>;
     addAuthenticator(options: Protocol.WebAuthn.VirtualAuthenticatorOptions): Promise<Protocol.WebAuthn.AuthenticatorId>;
     removeAuthenticator(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void>;
     setAutomaticPresenceSimulation(authenticatorId: Protocol.WebAuthn.AuthenticatorId, enabled: boolean): Promise<void>;
+    setUserVerified(authenticatorId: Protocol.WebAuthn.AuthenticatorId, isUserVerified: boolean): Promise<void>;
+    addCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, credential: Protocol.WebAuthn.Credential): Promise<void>;
     getCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<Protocol.WebAuthn.Credential[]>;
     removeCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, credentialId: string): Promise<void>;
     credentialAdded(params: Protocol.WebAuthn.CredentialAddedEvent): void;

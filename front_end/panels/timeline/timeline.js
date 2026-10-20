@@ -1972,6 +1972,7 @@ import * as Workspace6 from "../../models/workspace/workspace.js";
 import * as PerfUI16 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "../../ui/legacy/theme_support/theme_support.js";
+import { html as html8 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/timeline/Initiators.ts
 var Initiators_exports = {};
@@ -6236,6 +6237,11 @@ function* traceJsonGenerator(traceEvents, metadata) {
 }
 
 // ../../front_end/panels/timeline/StatusDialog.ts
+var StatusDialog_exports = {};
+__export(StatusDialog_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  StatusDialog: () => StatusDialog
+});
 import "../../ui/legacy/legacy.js";
 import * as i18n19 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
@@ -6488,7 +6494,7 @@ var StatusDialog = class extends UI3.Widget.VBox {
   remove() {
     this.element.parentNode?.classList.remove("opaque", "tinted");
     this.stopTimer();
-    this.element.remove();
+    this.detach();
   }
   showPane(parent, mode = "opaque") {
     this.show(parent);
@@ -15067,9 +15073,10 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   onClick(node) {
     this.dispatchEventToListeners(_TimelineTreeView.Events.TREE_ROW_CLICKED, { node });
   }
-  childWasDetached(_widget) {
-    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange);
-    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection);
+  willHide() {
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection, this);
+    super.willHide();
   }
   /**
    * This event fires when the user selects a row in the grid, either by
@@ -15348,16 +15355,34 @@ var treeNodeToGridNode = /* @__PURE__ */ new WeakMap();
 var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends TimelineTreeView {
   groupBySetting;
   stackView;
+  #builtGroupBy;
+  #onGroupByChanged = () => this.refreshTree();
   constructor(element) {
     super(element);
     this.groupBySetting = Common12.Settings.Settings.instance().createSetting(
       "timeline-tree-group-by",
       _AggregatedTimelineTreeView.GroupBy.None
     );
-    this.groupBySetting.addChangeListener(() => this.refreshTree());
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
+  }
+  refreshTree(forceRefresh = false) {
+    if (this.element.parentElement || forceRefresh) {
+      this.#builtGroupBy = this.groupBySetting.get();
+    }
+    super.refreshTree(forceRefresh);
+  }
+  wasShown() {
+    super.wasShown();
+    this.groupBySetting.addChangeListener(this.#onGroupByChanged);
+    if (this.#builtGroupBy !== void 0 && this.#builtGroupBy !== this.groupBySetting.get()) {
+      this.refreshTree();
+    }
+  }
+  willHide() {
+    this.groupBySetting.removeChangeListener(this.#onGroupByChanged);
+    super.willHide();
   }
   setGroupBySetting(groupBy) {
     this.groupBySetting.set(groupBy);
@@ -17606,6 +17631,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
   #parsedTrace = null;
   #eventToRelatedInsightsMap = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+  #boundsStateWhenHidden;
   #entityMapper = null;
   static makeEventWidget(event, parsedTrace) {
     const mockDelegate = {
@@ -17689,8 +17715,27 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, { node, events });
     };
     this.tabbedPane.addEventListener(UI15.TabbedPane.Events.TabSelected, this.tabSelected, this);
-    TraceBounds13.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
     this.lazySelectorStatsView = null;
+  }
+  wasShown() {
+    super.wasShown();
+    TraceBounds13.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+    const micro = TraceBounds13.TraceBounds.BoundsManager.instance().state()?.micro;
+    const prev = this.#boundsStateWhenHidden;
+    if (prev && micro && (prev.entireTraceBounds !== micro.entireTraceBounds || prev.minimapTraceBounds !== micro.minimapTraceBounds || prev.timelineTraceWindow !== micro.timelineTraceWindow)) {
+      if (this.selection) {
+        void this.setSelection(this.selection);
+      } else {
+        this.scheduleUpdateContentsFromWindow();
+      }
+    }
+    this.#boundsStateWhenHidden = void 0;
+  }
+  willHide() {
+    TraceBounds13.TraceBounds.removeListener(this.#onTraceBoundsChangeBound);
+    const micro = TraceBounds13.TraceBounds.BoundsManager.instance().state()?.micro;
+    this.#boundsStateWhenHidden = micro ? { ...micro } : void 0;
+    super.willHide();
   }
   /**
    * This selects a given tabbedPane tab.
@@ -21427,41 +21472,32 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
       this.dispatchEventToListeners("FlameChartItemHovered" /* FLAME_CHART_ITEM_HOVERED */, null);
       return null;
     }
-    const popoverElement = document.createElement("div");
-    const root = UI18.UIUtils.createShadowRootWithCoreStyles(popoverElement, { cssFile: timelineFlamechartPopover_css_default });
-    const popoverContents = root.createChild("div", "timeline-flamechart-popover");
-    popoverContents.createChild("span", timeElementClassName).textContent = time;
-    popoverContents.createChild("span", "popoverinfo-title").textContent = title;
     for (const warningElement of warningElements) {
       warningElement.classList.add("popoverinfo-warning");
-      popoverContents.appendChild(warningElement);
     }
-    for (const elem of additionalContent) {
+    return html8`
+      <style>${timelineFlamechartPopover_css_default}</style>
+      <div class="timeline-flamechart-popover">
+        <span class=${timeElementClassName}>${time}</span>
+        <span class="popoverinfo-title">${title}</span>
+        ${warningElements}
+        ${additionalContent.map((elem) => {
       const widget2 = UI18.Widget.Widget.get(elem);
-      if (widget2) {
-        widget2.show(
-          popoverContents,
-          void 0,
-          /* suppressOprhanWidgetError= */
-          true
-        );
-      } else {
-        popoverContents.appendChild(elem);
-      }
-    }
-    return popoverElement;
+      return widget2 ? UI18.Widget.widget(UI18.Widget.WrapperWidget, { widget: widget2 }) : elem;
+    })}
+      </div>`;
   }
   preparePopoverForCollapsedArrow(entryIndex) {
-    const element = document.createElement("div");
-    const root = UI18.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopover_css_default });
     const entry = this.entryData[entryIndex];
     const hiddenEntriesAmount = ModificationsManager.activeManager()?.getEntriesFilter().findHiddenDescendantsAmount(entry);
     if (!hiddenEntriesAmount) {
       return null;
     }
-    const contents = root.createChild("div", "timeline-flamechart-popover");
-    contents.createChild("span", "popoverinfo-title").textContent = hiddenEntriesAmount + " hidden";
-    return element;
+    return html8`
+      <style>${timelineFlamechartPopover_css_default}</style>
+      <div class="timeline-flamechart-popover">
+        <span class="popoverinfo-title">${hiddenEntriesAmount} hidden</span>
+      </div>`;
   }
   getDrawOverride(entryIndex) {
     const entryType = this.#entryTypeForIndex(entryIndex);
@@ -21501,11 +21537,12 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
   }
   preparePatternCanvas() {
     const size = 17;
-    const droppedFrameCanvas = document.createElement("canvas");
-    const partialFrameCanvas = document.createElement("canvas");
-    droppedFrameCanvas.width = droppedFrameCanvas.height = size;
-    partialFrameCanvas.width = partialFrameCanvas.height = size;
+    const droppedFrameCanvas = new OffscreenCanvas(size, size);
+    const partialFrameCanvas = new OffscreenCanvas(size, size);
     const ctx = droppedFrameCanvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx) {
+      throw new Error("Could not create 2d context");
+    }
     ctx.translate(size * 0.5, size * 0.5);
     ctx.rotate(Math.PI * 0.25);
     ctx.translate(-size * 0.5, -size * 0.5);
@@ -21515,6 +21552,9 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     }
     const droppedFramePattern = ctx.createPattern(droppedFrameCanvas, "repeat");
     const ctx2 = partialFrameCanvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx2) {
+      throw new Error("Could not create 2d context");
+    }
     ctx2.strokeStyle = "rgb(255, 255, 255)";
     ctx2.lineWidth = 2;
     ctx2.beginPath();
@@ -22615,6 +22655,7 @@ export {
   NetworkTrackAppender_exports as NetworkTrackAppender,
   RecordingMetadata_exports as RecordingMetadata,
   SaveFileFormatter_exports as SaveFileFormatter,
+  StatusDialog_exports as StatusDialog,
   TargetForEvent_exports as TargetForEvent,
   ThirdPartyTreeView_exports as ThirdPartyTreeView,
   ThreadAppender_exports as ThreadAppender,

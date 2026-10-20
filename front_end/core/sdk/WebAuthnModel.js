@@ -16,9 +16,9 @@ export class WebAuthnModel extends SDKModel {
         this.#agent = target.webAuthnAgent();
         target.registerWebAuthnDispatcher(new WebAuthnDispatcher(this));
     }
-    setVirtualAuthEnvEnabled(enable) {
+    setVirtualAuthEnvEnabled(enable, enableUI = true) {
         if (enable) {
-            return this.#agent.invoke_enable({ enableUI: true });
+            return this.#agent.invoke_enable({ enableUI });
         }
         return this.#agent.invoke_disable();
     }
@@ -31,6 +31,12 @@ export class WebAuthnModel extends SDKModel {
     }
     async setAutomaticPresenceSimulation(authenticatorId, enabled) {
         await this.#agent.invoke_setAutomaticPresenceSimulation({ authenticatorId, enabled });
+    }
+    async setUserVerified(authenticatorId, isUserVerified) {
+        await this.#agent.invoke_setUserVerified({ authenticatorId, isUserVerified });
+    }
+    async addCredential(authenticatorId, credential) {
+        await this.#agent.invoke_addCredential({ authenticatorId, credential });
     }
     async getCredentials(authenticatorId) {
         const response = await this.#agent.invoke_getCredentials({ authenticatorId });

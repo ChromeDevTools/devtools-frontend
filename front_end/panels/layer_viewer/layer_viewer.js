@@ -724,11 +724,15 @@ var LayerTreeOutline = class extends LayerTreeOutlineBase {
     this.#view = view;
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
-    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
   }
   wasShown() {
     super.wasShown();
-    this.requestUpdate();
+    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+    this.update();
+  }
+  willHide() {
+    this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.update, this);
+    super.willHide();
   }
   performUpdate() {
     this.#view(

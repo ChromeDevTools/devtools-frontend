@@ -1,12 +1,13 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/components/report_view/report_view.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.js';
 const UIStrings = {
     /**
@@ -85,17 +86,17 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/OpenedWindowDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const booleanToYesNo = (b) => b ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
-function linkifyIcon(iconType, title, eventHandler) {
-    const icon = createIcon(iconType, 'icon-link devtools-link');
-    const button = document.createElement('button');
-    UI.Tooltip.Tooltip.install(button, title);
-    button.classList.add('devtools-link', 'link-style', 'text-button');
-    button.appendChild(icon);
-    button.addEventListener('click', event => {
+function linkifyIcon(iconType, title, eventHandler, label) {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+    <button class="devtools-link link-style text-button" title=${title}
+        @click=${(event) => {
         event.consume(true);
         void eventHandler();
-    });
-    return button;
+    }}>${label ?? nothing}<devtools-icon class="icon-link devtools-link" name=${iconType}></devtools-icon>
+    </button>`;
+    // clang-format on
 }
 async function maybeCreateLinkToElementsPanel(opener) {
     let openerFrame = null;
@@ -112,66 +113,76 @@ async function maybeCreateLinkToElementsPanel(opener) {
     if (!linkTargetDOMNode) {
         return null;
     }
-    const linkElement = linkifyIcon('code-circle', i18nString(UIStrings.clickToOpenInElementsPanel), () => Common.Revealer.reveal(linkTargetDOMNode));
-    const label = document.createElement('span');
-    label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;
-    linkElement.insertBefore(label, linkElement.firstChild);
-    linkElement.addEventListener('mouseenter', () => {
+    const label = html `<span>${`<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`}</span>`;
+    const linkElement = linkifyIcon('code-circle', i18nString(UIStrings.clickToOpenInElementsPanel), () => Common.Revealer.reveal(linkTargetDOMNode), label);
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `
+    <span
+        @mouseenter=${() => {
         if (openerFrame) {
             void openerFrame.highlight();
         }
-    });
-    linkElement.addEventListener('mouseleave', () => {
+    }}
+        @mouseleave=${() => {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
-    });
-    return linkElement;
+    }}>${linkElement}</span>`;
+    // clang-format on
 }
+export const DEFAULT_OPENED_WINDOW_VIEW = (input, _output, target) => {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    render(html `
+    <style>${openedWindowDetailsViewStyles}</style>
+    <devtools-report class="frame-details-report-container" .data=${{ reportTitle: input.title }}>
+      <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="text-ellipsis" title=${input.url}>${input.url}</div>
+      </devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+      <devtools-report-section-header>${i18nString(UIStrings.security)}</devtools-report-section-header>
+      ${input.openerElement ? html `
+        <devtools-report-key>${i18nString(UIStrings.openerFrame)}</devtools-report-key>
+        <devtools-report-value>${input.openerElement}</devtools-report-value>
+      ` : nothing}
+      <devtools-report-key>${i18nString(UIStrings.accessToOpener)}</devtools-report-key>
+      <devtools-report-value title=${i18nString(UIStrings.showsWhetherTheOpenedWindowIs)}>
+        ${booleanToYesNo(input.canAccessOpener)}
+      </devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+    </devtools-report>
+  `, target);
+    // clang-format on
+};
 export class OpenedWindowDetailsView extends UI.Widget.VBox {
     targetInfo;
     isWindowClosed;
-    reportView;
-    documentSection;
-    #urlFieldValue;
-    securitySection;
-    openerElementField;
-    hasDOMAccessValue;
-    constructor(targetInfo, isWindowClosed) {
-        super();
-        this.registerRequiredCSS(openedWindowDetailsViewStyles);
+    #view;
+    constructor(targetInfo, isWindowClosed, view = DEFAULT_OPENED_WINDOW_VIEW) {
+        super(undefined, { useShadowDom: true });
         this.targetInfo = targetInfo;
         this.isWindowClosed = isWindowClosed;
-        this.contentElement.classList.add('frame-details-container');
-        // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-        this.reportView = new UI.ReportView.ReportView(this.buildTitle());
-        this.reportView.show(this.contentElement);
-        this.reportView.registerRequiredCSS(openedWindowDetailsViewStyles);
-        this.reportView.element.classList.add('frame-details-report-container');
-        this.documentSection = this.reportView.appendSection(i18nString(UIStrings.document));
-        this.#urlFieldValue =
-            this.documentSection.appendField(i18nString(UIStrings.url)).createChild('div', 'text-ellipsis');
-        this.securitySection = this.reportView.appendSection(i18nString(UIStrings.security));
-        this.openerElementField = this.securitySection.appendField(i18nString(UIStrings.openerFrame));
-        this.securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), false);
-        this.hasDOMAccessValue = this.securitySection.appendField(i18nString(UIStrings.accessToOpener));
-        UI.Tooltip.Tooltip.install(this.hasDOMAccessValue, i18nString(UIStrings.showsWhetherTheOpenedWindowIs));
+        this.#view = view;
+    }
+    wasShown() {
+        super.wasShown();
         this.requestUpdate();
     }
-    async performUpdate() {
-        this.reportView.setTitle(this.buildTitle());
-        this.#urlFieldValue.textContent = this.targetInfo.url;
-        this.#urlFieldValue.title = this.targetInfo.url;
-        this.hasDOMAccessValue.textContent = booleanToYesNo(this.targetInfo.canAccessOpener);
-        void this.maybeDisplayOpenerFrame();
-    }
-    async maybeDisplayOpenerFrame() {
-        this.openerElementField.removeChildren();
-        const linkElement = await maybeCreateLinkToElementsPanel(this.targetInfo.openerFrameId);
-        if (linkElement) {
-            this.openerElementField.append(linkElement);
-            this.securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), true);
+    async performUpdate(signal) {
+        const openerElement = await this.maybeDisplayOpenerFrame();
+        if (signal?.aborted) {
             return;
         }
-        this.securitySection.setFieldVisible(i18nString(UIStrings.openerFrame), false);
+        this.#view({
+            title: this.buildTitle(),
+            url: this.targetInfo.url,
+            openerElement,
+            canAccessOpener: this.targetInfo.canAccessOpener,
+        }, undefined, this.contentElement);
+    }
+    async maybeDisplayOpenerFrame() {
+        return await maybeCreateLinkToElementsPanel(this.targetInfo.openerFrameId);
     }
     buildTitle() {
         let title = this.targetInfo.title || i18nString(UIStrings.windowWithoutTitle);
@@ -182,36 +193,62 @@ export class OpenedWindowDetailsView extends UI.Widget.VBox {
     }
     setIsWindowClosed(isWindowClosed) {
         this.isWindowClosed = isWindowClosed;
+        this.requestUpdate();
     }
     setTargetInfo(targetInfo) {
         this.targetInfo = targetInfo;
+        this.requestUpdate();
     }
 }
+function renderCrossOriginPolicy(info) {
+    if (!info) {
+        return nothing;
+    }
+    const isEnabled = (value) => value !== "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */;
+    const enabled = isEnabled(info.value);
+    const value = enabled ? info.value : info.reportOnlyValue;
+    const endpoint = enabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html `${value}${!enabled && isEnabled(info.reportOnlyValue) ?
+        html `<span class="inline-comment">report-only</span>` : nothing}${endpoint ?
+        html `<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span><span>${endpoint}</span>` : nothing}`;
+    // clang-format on
+}
+export const DEFAULT_WORKER_VIEW = (input, _output, target) => {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    render(html `
+    <style>${openedWindowDetailsViewStyles}</style>
+    <devtools-report class="frame-details-report-container" .data=${{ reportTitle: input.title }}>
+      <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
+      <devtools-report-value>
+        <div class="text-ellipsis" title=${input.url}>${input.url}</div>
+      </devtools-report-value>
+      <devtools-report-key>${i18nString(UIStrings.type)}</devtools-report-key>
+      <devtools-report-value>${input.workerType}</devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+      <devtools-report-section-header>${i18nString(UIStrings.securityIsolation)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.crossoriginEmbedderPolicy)}</devtools-report-key>
+      <devtools-report-value>
+        ${renderCrossOriginPolicy(input.coepPolicy)}
+      </devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+    </devtools-report>
+  `, target);
+    // clang-format on
+};
 export class WorkerDetailsView extends UI.Widget.VBox {
     targetInfo;
-    reportView;
-    documentSection;
-    isolationSection;
-    coepPolicy;
-    constructor(targetInfo) {
-        super();
-        this.registerRequiredCSS(openedWindowDetailsViewStyles);
+    #view;
+    constructor(targetInfo, view = DEFAULT_WORKER_VIEW) {
+        super(undefined, { useShadowDom: true });
         this.targetInfo = targetInfo;
-        this.contentElement.classList.add('frame-details-container');
-        // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-        this.reportView =
-            new UI.ReportView.ReportView(this.targetInfo.title || this.targetInfo.url || i18nString(UIStrings.worker));
-        this.reportView.show(this.contentElement);
-        this.reportView.registerRequiredCSS(openedWindowDetailsViewStyles);
-        this.reportView.element.classList.add('frame-details-report-container');
-        this.documentSection = this.reportView.appendSection(i18nString(UIStrings.document));
-        const URLFieldValue = this.documentSection.appendField(i18nString(UIStrings.url)).createChild('div', 'text-ellipsis');
-        URLFieldValue.textContent = this.targetInfo.url;
-        URLFieldValue.title = this.targetInfo.url;
-        const workerType = this.documentSection.appendField(i18nString(UIStrings.type));
-        workerType.textContent = this.workerTypeToString(this.targetInfo.type);
-        this.isolationSection = this.reportView.appendSection(i18nString(UIStrings.securityIsolation));
-        this.coepPolicy = this.isolationSection.appendField(i18nString(UIStrings.crossoriginEmbedderPolicy));
+        this.#view = view;
+    }
+    wasShown() {
+        super.wasShown();
         this.requestUpdate();
     }
     workerTypeToString(type) {
@@ -226,39 +263,26 @@ export class WorkerDetailsView extends UI.Widget.VBox {
     async updateCoopCoepStatus() {
         const target = SDK.TargetManager.TargetManager.instance().targetById(this.targetInfo.targetId);
         if (!target) {
-            return;
+            return null;
         }
         const model = target.model(SDK.NetworkManager.NetworkManager);
         const info = model && await model.getSecurityIsolationStatus(null);
         if (!info) {
+            return null;
+        }
+        return info.coep;
+    }
+    async performUpdate(signal) {
+        const coepPolicy = await this.updateCoopCoepStatus();
+        if (signal?.aborted) {
             return;
         }
-        const coepIsEnabled = (value) => value !== "None" /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */;
-        this.fillCrossOriginPolicy(this.coepPolicy, coepIsEnabled, info.coep);
-    }
-    fillCrossOriginPolicy(field, isEnabled, info) {
-        if (!info) {
-            field.textContent = '';
-            return;
-        }
-        const enabled = isEnabled(info.value);
-        field.textContent = enabled ? info.value : info.reportOnlyValue;
-        if (!enabled && isEnabled(info.reportOnlyValue)) {
-            const reportOnly = document.createElement('span');
-            reportOnly.classList.add('inline-comment');
-            reportOnly.textContent = 'report-only';
-            field.appendChild(reportOnly);
-        }
-        const endpoint = enabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-        if (endpoint) {
-            const reportingEndpointPrefix = field.createChild('span', 'inline-name');
-            reportingEndpointPrefix.textContent = i18nString(UIStrings.reportingTo);
-            const reportingEndpointName = field.createChild('span');
-            reportingEndpointName.textContent = endpoint;
-        }
-    }
-    async performUpdate() {
-        await this.updateCoopCoepStatus();
+        this.#view({
+            title: this.targetInfo.title || this.targetInfo.url || i18nString(UIStrings.worker),
+            url: this.targetInfo.url,
+            workerType: this.workerTypeToString(this.targetInfo.type),
+            coepPolicy,
+        }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=OpenedWindowDetailsView.js.map

@@ -625,7 +625,6 @@ export declare abstract class AiAgent<T> {
      * data from prior turns to AIDA.
      */
     protected disableServerSideLogging(): void;
-    popPendingMultimodalInput(): MultimodalInput | undefined;
     /**
      * Preamble features appended to the `client_version` in metadata.
      * This is required ONLY for the Styling Agent for legacy reasons to serve

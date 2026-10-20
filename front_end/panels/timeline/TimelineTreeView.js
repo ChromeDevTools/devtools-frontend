@@ -635,9 +635,10 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     onClick(node) {
         this.dispatchEventToListeners("TreeRowClicked" /* TimelineTreeView.Events.TREE_ROW_CLICKED */, { node });
     }
-    childWasDetached(_widget) {
-        this.dataGrid.removeEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange);
-        this.dataGrid.removeEventListener("DeselectedNode" /* DataGrid.DataGrid.Events.DESELECTED_NODE */, this.#onDataGridDeselection);
+    willHide() {
+        this.dataGrid.removeEventListener("SelectedNode" /* DataGrid.DataGrid.Events.SELECTED_NODE */, this.#onDataGridSelectionChange, this);
+        this.dataGrid.removeEventListener("DeselectedNode" /* DataGrid.DataGrid.Events.DESELECTED_NODE */, this.#onDataGridDeselection, this);
+        super.willHide();
     }
     /**
      * This event fires when the user selects a row in the grid, either by
@@ -934,13 +935,31 @@ const treeNodeToGridNode = new WeakMap();
 export class AggregatedTimelineTreeView extends TimelineTreeView {
     groupBySetting;
     stackView;
+    #builtGroupBy;
+    #onGroupByChanged = () => this.refreshTree();
     constructor(element) {
         super(element);
         this.groupBySetting = Common.Settings.Settings.instance().createSetting('timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
-        this.groupBySetting.addChangeListener(() => this.refreshTree());
         this.init();
         this.stackView = new TimelineStackView(this);
         this.stackView.addEventListener("SelectionChanged" /* TimelineStackView.Events.SELECTION_CHANGED */, this.onStackViewSelectionChanged, this);
+    }
+    refreshTree(forceRefresh = false) {
+        if (this.element.parentElement || forceRefresh) {
+            this.#builtGroupBy = this.groupBySetting.get();
+        }
+        super.refreshTree(forceRefresh);
+    }
+    wasShown() {
+        super.wasShown();
+        this.groupBySetting.addChangeListener(this.#onGroupByChanged);
+        if (this.#builtGroupBy !== undefined && this.#builtGroupBy !== this.groupBySetting.get()) {
+            this.refreshTree();
+        }
+    }
+    willHide() {
+        this.groupBySetting.removeChangeListener(this.#onGroupByChanged);
+        super.willHide();
     }
     setGroupBySetting(groupBy) {
         this.groupBySetting.set(groupBy);

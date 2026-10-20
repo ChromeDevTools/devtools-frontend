@@ -26,9 +26,9 @@ export declare class StorageMetadataView extends UI.Widget.Widget {
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     get shadowRoot(): ShadowRoot | null;
-    setStorageKey(storageKey: string): void;
-    setStorageBucket(storageBucket: Protocol.Storage.StorageBucketInfo): void;
-    setShowOnlyBucket(show: boolean): void;
+    set storageKey(storageKey: string | undefined);
+    set storageBucket(storageBucket: Protocol.Storage.StorageBucketInfo | null | undefined);
+    set showOnlyBucket(show: boolean);
     enableStorageBucketControls(model: SDK.StorageBucketsModel.StorageBucketsModel): void;
     performUpdate(): void;
     getTitle(): string | undefined;

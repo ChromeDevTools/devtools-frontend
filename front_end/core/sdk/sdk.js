@@ -16323,10 +16323,10 @@ var CPUProfilerModel = class extends SDKModel {
     }
   }
 };
-var Events = /* @__PURE__ */ ((Events35) => {
-  Events35["CONSOLE_PROFILE_STARTED"] = "ConsoleProfileStarted";
-  Events35["CONSOLE_PROFILE_FINISHED"] = "ConsoleProfileFinished";
-  return Events35;
+var Events = /* @__PURE__ */ ((Events36) => {
+  Events36["CONSOLE_PROFILE_STARTED"] = "ConsoleProfileStarted";
+  Events36["CONSOLE_PROFILE_FINISHED"] = "ConsoleProfileFinished";
+  return Events36;
 })(Events || {});
 SDKModel.register(CPUProfilerModel, { capabilities: 4 /* JS */, autostart: true });
 var ProfileFinishedData = class {
@@ -16379,9 +16379,9 @@ var LogModel = class extends SDKModel {
     void this.#logAgent.invoke_clear();
   }
 };
-var Events2 = /* @__PURE__ */ ((Events35) => {
-  Events35["ENTRY_ADDED"] = "EntryAdded";
-  return Events35;
+var Events2 = /* @__PURE__ */ ((Events36) => {
+  Events36["ENTRY_ADDED"] = "EntryAdded";
+  return Events36;
 })(Events2 || {});
 SDKModel.register(LogModel, { capabilities: 8 /* LOG */, autostart: true });
 
@@ -18752,9 +18752,9 @@ var TreeSearch = class _TreeSearch extends TreeWalker {
 };
 
 // ../../front_end/core/sdk/CSSProperty.ts
-var Events3 = /* @__PURE__ */ ((Events35) => {
-  Events35["LOCAL_VALUE_UPDATED"] = "localValueUpdated";
-  return Events35;
+var Events3 = /* @__PURE__ */ ((Events36) => {
+  Events36["LOCAL_VALUE_UPDATED"] = "localValueUpdated";
+  return Events36;
 })(Events3 || {});
 var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper {
   ownerStyle;
@@ -24025,13 +24025,13 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     }
   }
 };
-var Events5 = /* @__PURE__ */ ((Events35) => {
-  Events35["FRAME_ADDED_TO_TARGET"] = "FrameAddedToTarget";
-  Events35["FRAME_NAVIGATED"] = "FrameNavigated";
-  Events35["FRAME_REMOVED"] = "FrameRemoved";
-  Events35["RESOURCE_ADDED"] = "ResourceAdded";
-  Events35["OUTERMOST_FRAME_NAVIGATED"] = "OutermostFrameNavigated";
-  return Events35;
+var Events5 = /* @__PURE__ */ ((Events36) => {
+  Events36["FRAME_ADDED_TO_TARGET"] = "FrameAddedToTarget";
+  Events36["FRAME_NAVIGATED"] = "FrameNavigated";
+  Events36["FRAME_REMOVED"] = "FrameRemoved";
+  Events36["RESOURCE_ADDED"] = "ResourceAdded";
+  Events36["OUTERMOST_FRAME_NAVIGATED"] = "OutermostFrameNavigated";
+  return Events36;
 })(Events5 || {});
 
 // ../../front_end/core/sdk/TargetManager.ts
@@ -24243,15 +24243,18 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     if (!this.#modelListeners.has(eventType)) {
       return;
     }
-    let wrappedListener = null;
+    const wrappedListeners = [];
     for (const info of this.#modelListeners.get(eventType)) {
       if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject) {
-        wrappedListener = info.wrappedListener;
+        wrappedListeners.push(info.wrappedListener);
         this.#modelListeners.delete(eventType, info);
       }
     }
-    if (wrappedListener) {
-      for (const model of this.models(modelClass)) {
+    if (wrappedListeners.length === 0) {
+      return;
+    }
+    for (const model of this.models(modelClass)) {
+      for (const wrappedListener of wrappedListeners) {
         model.removeEventListener(eventType, wrappedListener);
       }
     }
@@ -24485,12 +24488,12 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     return this.#scopeTarget;
   }
 };
-var Events6 = /* @__PURE__ */ ((Events35) => {
-  Events35["AVAILABLE_TARGETS_CHANGED"] = "AvailableTargetsChanged";
-  Events35["INSPECTED_URL_CHANGED"] = "InspectedURLChanged";
-  Events35["NAME_CHANGED"] = "NameChanged";
-  Events35["SUSPEND_STATE_CHANGED"] = "SuspendStateChanged";
-  return Events35;
+var Events6 = /* @__PURE__ */ ((Events36) => {
+  Events36["AVAILABLE_TARGETS_CHANGED"] = "AvailableTargetsChanged";
+  Events36["INSPECTED_URL_CHANGED"] = "InspectedURLChanged";
+  Events36["NAME_CHANGED"] = "NameChanged";
+  Events36["SUSPEND_STATE_CHANGED"] = "SuspendStateChanged";
+  return Events36;
 })(Events6 || {});
 var Observer = class {
   targetAdded(_target) {
@@ -24921,9 +24924,9 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     return this.#settings.createSetting("load-through-target", true);
   }
 };
-var Events7 = /* @__PURE__ */ ((Events35) => {
-  Events35["UPDATE"] = "Update";
-  return Events35;
+var Events7 = /* @__PURE__ */ ((Events36) => {
+  Events36["UPDATE"] = "Update";
+  return Events36;
 })(Events7 || {});
 
 // ../../front_end/core/sdk/SourceMapCache.ts
@@ -25204,12 +25207,12 @@ async function tryLoadSourceMap(resourceLoader, url, initiator) {
     return null;
   }
 }
-var Events8 = /* @__PURE__ */ ((Events35) => {
-  Events35["SourceMapWillAttach"] = "SourceMapWillAttach";
-  Events35["SourceMapFailedToAttach"] = "SourceMapFailedToAttach";
-  Events35["SourceMapAttached"] = "SourceMapAttached";
-  Events35["SourceMapDetached"] = "SourceMapDetached";
-  return Events35;
+var Events8 = /* @__PURE__ */ ((Events36) => {
+  Events36["SourceMapWillAttach"] = "SourceMapWillAttach";
+  Events36["SourceMapFailedToAttach"] = "SourceMapFailedToAttach";
+  Events36["SourceMapAttached"] = "SourceMapAttached";
+  Events36["SourceMapDetached"] = "SourceMapDetached";
+  return Events36;
 })(Events8 || {});
 
 // ../../front_end/core/sdk/CSSModel.ts
@@ -26082,19 +26085,19 @@ var CSSModel = class _CSSModel extends SDKModel {
     return this.agent;
   }
 };
-var Events9 = /* @__PURE__ */ ((Events35) => {
-  Events35["FontsUpdated"] = "FontsUpdated";
-  Events35["MediaQueryResultChanged"] = "MediaQueryResultChanged";
-  Events35["ModelWasEnabled"] = "ModelWasEnabled";
-  Events35["ModelDisposed"] = "ModelDisposed";
-  Events35["PositionTryOptionForced"] = "PositionTryOptionForced";
-  Events35["PseudoStateForced"] = "PseudoStateForced";
-  Events35["StartingStylesStateForced"] = "StartingStylesStateForced";
-  Events35["StyleSheetAdded"] = "StyleSheetAdded";
-  Events35["StyleSheetChanged"] = "StyleSheetChanged";
-  Events35["StyleSheetRemoved"] = "StyleSheetRemoved";
-  Events35["ComputedStyleUpdated"] = "ComputedStyleUpdated";
-  return Events35;
+var Events9 = /* @__PURE__ */ ((Events36) => {
+  Events36["FontsUpdated"] = "FontsUpdated";
+  Events36["MediaQueryResultChanged"] = "MediaQueryResultChanged";
+  Events36["ModelWasEnabled"] = "ModelWasEnabled";
+  Events36["ModelDisposed"] = "ModelDisposed";
+  Events36["PositionTryOptionForced"] = "PositionTryOptionForced";
+  Events36["PseudoStateForced"] = "PseudoStateForced";
+  Events36["StartingStylesStateForced"] = "StartingStylesStateForced";
+  Events36["StyleSheetAdded"] = "StyleSheetAdded";
+  Events36["StyleSheetChanged"] = "StyleSheetChanged";
+  Events36["StyleSheetRemoved"] = "StyleSheetRemoved";
+  Events36["ComputedStyleUpdated"] = "ComputedStyleUpdated";
+  return Events36;
 })(Events9 || {});
 var PseudoStateMarker = "pseudo-state-marker";
 var PositionTryOptionMarker = "position-try-option-marker";
@@ -27379,11 +27382,9 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   async hasStyleSheetText(url) {
     return await this.#windowControls.initializeStyleSheetText(url);
   }
-  inspectPanelShowRequested({ backendNodeId }) {
-    this.dispatchEventToListeners("InspectPanelShowRequested" /* INSPECT_PANEL_SHOW_REQUESTED */, backendNodeId);
+  inspectPanelShowRequested(_event) {
   }
-  inspectedElementWindowRestored({ backendNodeId }) {
-    this.dispatchEventToListeners("InspectedElementWindowRestored" /* INSPECTED_ELEMENT_WINDOW_RESTORED */, backendNodeId);
+  inspectedElementWindowRestored(_event) {
   }
 };
 var WindowControls = class _WindowControls {
@@ -27487,18 +27488,16 @@ var WindowControls = class _WindowControls {
     return _WindowControls.#transformStyleSheet(x, y, width, height, originalStyleSheet);
   }
 };
-var Events12 = /* @__PURE__ */ ((Events35) => {
-  Events35["INSPECT_MODE_WILL_BE_TOGGLED"] = "InspectModeWillBeToggled";
-  Events35["EXITED_INSPECT_MODE"] = "InspectModeExited";
-  Events35["HIGHLIGHT_NODE_REQUESTED"] = "HighlightNodeRequested";
-  Events35["SCREENSHOT_REQUESTED"] = "ScreenshotRequested";
-  Events35["PERSISTENT_GRID_OVERLAY_STATE_CHANGED"] = "PersistentGridOverlayStateChanged";
-  Events35["PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "PersistentFlexContainerOverlayStateChanged";
-  Events35["PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "PersistentScrollSnapOverlayStateChanged";
-  Events35["PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "PersistentContainerQueryOverlayStateChanged";
-  Events35["INSPECT_PANEL_SHOW_REQUESTED"] = "InspectPanelShowRequested";
-  Events35["INSPECTED_ELEMENT_WINDOW_RESTORED"] = "InspectedElementWindowRestored";
-  return Events35;
+var Events12 = /* @__PURE__ */ ((Events36) => {
+  Events36["INSPECT_MODE_WILL_BE_TOGGLED"] = "InspectModeWillBeToggled";
+  Events36["EXITED_INSPECT_MODE"] = "InspectModeExited";
+  Events36["HIGHLIGHT_NODE_REQUESTED"] = "HighlightNodeRequested";
+  Events36["SCREENSHOT_REQUESTED"] = "ScreenshotRequested";
+  Events36["PERSISTENT_GRID_OVERLAY_STATE_CHANGED"] = "PersistentGridOverlayStateChanged";
+  Events36["PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "PersistentFlexContainerOverlayStateChanged";
+  Events36["PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "PersistentScrollSnapOverlayStateChanged";
+  Events36["PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "PersistentContainerQueryOverlayStateChanged";
+  return Events36;
 })(Events12 || {});
 var DefaultHighlighter = class {
   #model;
@@ -28821,12 +28820,12 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
   }
 };
-var Events14 = /* @__PURE__ */ ((Events35) => {
-  Events35["ConsoleCleared"] = "ConsoleCleared";
-  Events35["MessageAdded"] = "MessageAdded";
-  Events35["MessageUpdated"] = "MessageUpdated";
-  Events35["CommandEvaluated"] = "CommandEvaluated";
-  return Events35;
+var Events14 = /* @__PURE__ */ ((Events36) => {
+  Events36["ConsoleCleared"] = "ConsoleCleared";
+  Events36["MessageAdded"] = "MessageAdded";
+  Events36["MessageUpdated"] = "MessageUpdated";
+  Events36["CommandEvaluated"] = "CommandEvaluated";
+  return Events36;
 })(Events14 || {});
 function extractExceptionMetaData(metaData) {
   if (!metaData) {
@@ -30959,22 +30958,22 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
   }
 };
-var Events11 = /* @__PURE__ */ ((Events35) => {
-  Events35["AttrModified"] = "AttrModified";
-  Events35["AttrRemoved"] = "AttrRemoved";
-  Events35["CharacterDataModified"] = "CharacterDataModified";
-  Events35["DOMMutated"] = "DOMMutated";
-  Events35["DocumentURLChanged"] = "DocumentURLChanged";
-  Events35["NodeInserted"] = "NodeInserted";
-  Events35["NodeRemoved"] = "NodeRemoved";
-  Events35["DocumentUpdated"] = "DocumentUpdated";
-  Events35["ChildNodeCountUpdated"] = "ChildNodeCountUpdated";
-  Events35["DistributedNodesChanged"] = "DistributedNodesChanged";
-  Events35["MarkersChanged"] = "MarkersChanged";
-  Events35["TopLayerElementsChanged"] = "TopLayerElementsChanged";
-  Events35["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
-  Events35["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
-  return Events35;
+var Events11 = /* @__PURE__ */ ((Events36) => {
+  Events36["AttrModified"] = "AttrModified";
+  Events36["AttrRemoved"] = "AttrRemoved";
+  Events36["CharacterDataModified"] = "CharacterDataModified";
+  Events36["DOMMutated"] = "DOMMutated";
+  Events36["DocumentURLChanged"] = "DocumentURLChanged";
+  Events36["NodeInserted"] = "NodeInserted";
+  Events36["NodeRemoved"] = "NodeRemoved";
+  Events36["DocumentUpdated"] = "DocumentUpdated";
+  Events36["ChildNodeCountUpdated"] = "ChildNodeCountUpdated";
+  Events36["DistributedNodesChanged"] = "DistributedNodesChanged";
+  Events36["MarkersChanged"] = "MarkersChanged";
+  Events36["TopLayerElementsChanged"] = "TopLayerElementsChanged";
+  Events36["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
+  Events36["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
+  return Events36;
 })(Events11 || {});
 var DOMDispatcher = class {
   #domModel;
@@ -31392,11 +31391,11 @@ var SecurityOriginManager = class extends SDKModel {
     });
   }
 };
-var Events15 = /* @__PURE__ */ ((Events35) => {
-  Events35["SecurityOriginAdded"] = "SecurityOriginAdded";
-  Events35["SecurityOriginRemoved"] = "SecurityOriginRemoved";
-  Events35["MainSecurityOriginChanged"] = "MainSecurityOriginChanged";
-  return Events35;
+var Events15 = /* @__PURE__ */ ((Events36) => {
+  Events36["SecurityOriginAdded"] = "SecurityOriginAdded";
+  Events36["SecurityOriginRemoved"] = "SecurityOriginRemoved";
+  Events36["MainSecurityOriginChanged"] = "MainSecurityOriginChanged";
+  return Events36;
 })(Events15 || {});
 SDKModel.register(SecurityOriginManager, { capabilities: 0 /* NONE */, autostart: false });
 
@@ -31468,11 +31467,11 @@ var StorageKeyComponent = /* @__PURE__ */ ((StorageKeyComponent2) => {
   StorageKeyComponent2["TOP_LEVEL_SITE_OPAQUE_NONCE_PRECURSOR"] = "6";
   return StorageKeyComponent2;
 })(StorageKeyComponent || {});
-var Events16 = /* @__PURE__ */ ((Events35) => {
-  Events35["STORAGE_KEY_ADDED"] = "StorageKeyAdded";
-  Events35["STORAGE_KEY_REMOVED"] = "StorageKeyRemoved";
-  Events35["MAIN_STORAGE_KEY_CHANGED"] = "MainStorageKeyChanged";
-  return Events35;
+var Events16 = /* @__PURE__ */ ((Events36) => {
+  Events36["STORAGE_KEY_ADDED"] = "StorageKeyAdded";
+  Events36["STORAGE_KEY_REMOVED"] = "StorageKeyRemoved";
+  Events36["MAIN_STORAGE_KEY_CHANGED"] = "MainStorageKeyChanged";
+  return Events36;
 })(Events16 || {});
 SDKModel.register(StorageKeyManager, { capabilities: 0 /* NONE */, autostart: false });
 
@@ -32046,28 +32045,28 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
   }
 };
-var Events4 = /* @__PURE__ */ ((Events35) => {
-  Events35["FrameAdded"] = "FrameAdded";
-  Events35["FrameNavigated"] = "FrameNavigated";
-  Events35["FrameNavigatedWithinDocument"] = "FrameNavigatedWithinDocument";
-  Events35["FrameDetached"] = "FrameDetached";
-  Events35["FrameResized"] = "FrameResized";
-  Events35["FrameWillNavigate"] = "FrameWillNavigate";
-  Events35["DocumentOpened"] = "DocumentOpened";
-  Events35["PrimaryPageChanged"] = "PrimaryPageChanged";
-  Events35["ResourceAdded"] = "ResourceAdded";
-  Events35["WillLoadCachedResources"] = "WillLoadCachedResources";
-  Events35["CachedResourcesLoaded"] = "CachedResourcesLoaded";
-  Events35["DOMContentLoaded"] = "DOMContentLoaded";
-  Events35["LifecycleEvent"] = "LifecycleEvent";
-  Events35["Load"] = "Load";
-  Events35["PageReloadRequested"] = "PageReloadRequested";
-  Events35["WillReloadPage"] = "WillReloadPage";
-  Events35["InterstitialShown"] = "InterstitialShown";
-  Events35["InterstitialHidden"] = "InterstitialHidden";
-  Events35["BackForwardCacheDetailsUpdated"] = "BackForwardCacheDetailsUpdated";
-  Events35["JavaScriptDialogOpening"] = "JavaScriptDialogOpening";
-  return Events35;
+var Events4 = /* @__PURE__ */ ((Events36) => {
+  Events36["FrameAdded"] = "FrameAdded";
+  Events36["FrameNavigated"] = "FrameNavigated";
+  Events36["FrameNavigatedWithinDocument"] = "FrameNavigatedWithinDocument";
+  Events36["FrameDetached"] = "FrameDetached";
+  Events36["FrameResized"] = "FrameResized";
+  Events36["FrameWillNavigate"] = "FrameWillNavigate";
+  Events36["DocumentOpened"] = "DocumentOpened";
+  Events36["PrimaryPageChanged"] = "PrimaryPageChanged";
+  Events36["ResourceAdded"] = "ResourceAdded";
+  Events36["WillLoadCachedResources"] = "WillLoadCachedResources";
+  Events36["CachedResourcesLoaded"] = "CachedResourcesLoaded";
+  Events36["DOMContentLoaded"] = "DOMContentLoaded";
+  Events36["LifecycleEvent"] = "LifecycleEvent";
+  Events36["Load"] = "Load";
+  Events36["PageReloadRequested"] = "PageReloadRequested";
+  Events36["WillReloadPage"] = "WillReloadPage";
+  Events36["InterstitialShown"] = "InterstitialShown";
+  Events36["InterstitialHidden"] = "InterstitialHidden";
+  Events36["BackForwardCacheDetailsUpdated"] = "BackForwardCacheDetailsUpdated";
+  Events36["JavaScriptDialogOpening"] = "JavaScriptDialogOpening";
+  return Events36;
 })(Events4 || {});
 var ResourceTreeFrame = class {
   #model;
@@ -33755,18 +33754,18 @@ var PauseOnExceptionsState = /* @__PURE__ */ ((PauseOnExceptionsState2) => {
   PauseOnExceptionsState2["PauseOnUncaughtExceptions"] = "uncaught";
   return PauseOnExceptionsState2;
 })(PauseOnExceptionsState || {});
-var Events10 = /* @__PURE__ */ ((Events35) => {
-  Events35["DebuggerWasEnabled"] = "DebuggerWasEnabled";
-  Events35["DebuggerWasDisabled"] = "DebuggerWasDisabled";
-  Events35["DebuggerPaused"] = "DebuggerPaused";
-  Events35["DebuggerResumed"] = "DebuggerResumed";
-  Events35["DebugInfoAttached"] = "DebugInfoAttached";
-  Events35["ParsedScriptSource"] = "ParsedScriptSource";
-  Events35["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
-  Events35["GlobalObjectCleared"] = "GlobalObjectCleared";
-  Events35["CallFrameSelected"] = "CallFrameSelected";
-  Events35["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
-  return Events35;
+var Events10 = /* @__PURE__ */ ((Events36) => {
+  Events36["DebuggerWasEnabled"] = "DebuggerWasEnabled";
+  Events36["DebuggerWasDisabled"] = "DebuggerWasDisabled";
+  Events36["DebuggerPaused"] = "DebuggerPaused";
+  Events36["DebuggerResumed"] = "DebuggerResumed";
+  Events36["DebugInfoAttached"] = "DebugInfoAttached";
+  Events36["ParsedScriptSource"] = "ParsedScriptSource";
+  Events36["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
+  Events36["GlobalObjectCleared"] = "GlobalObjectCleared";
+  Events36["CallFrameSelected"] = "CallFrameSelected";
+  Events36["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
+  return Events36;
 })(Events10 || {});
 var DebuggerDispatcher = class {
   #debuggerModel;
@@ -34360,13 +34359,13 @@ var HeapProfilerModel = class extends SDKModel {
     this.dispatchEventToListeners("ResetProfiles" /* RESET_PROFILES */, this);
   }
 };
-var Events18 = /* @__PURE__ */ ((Events35) => {
-  Events35["HEAP_STATS_UPDATED"] = "HeapStatsUpdate";
-  Events35["LAST_SEEN_OBJECT_ID"] = "LastSeenObjectId";
-  Events35["ADD_HEAP_SNAPSHOT_CHUNK"] = "AddHeapSnapshotChunk";
-  Events35["REPORT_HEAP_SNAPSHOT_PROGRESS"] = "ReportHeapSnapshotProgress";
-  Events35["RESET_PROFILES"] = "ResetProfiles";
-  return Events35;
+var Events18 = /* @__PURE__ */ ((Events36) => {
+  Events36["HEAP_STATS_UPDATED"] = "HeapStatsUpdate";
+  Events36["LAST_SEEN_OBJECT_ID"] = "LastSeenObjectId";
+  Events36["ADD_HEAP_SNAPSHOT_CHUNK"] = "AddHeapSnapshotChunk";
+  Events36["REPORT_HEAP_SNAPSHOT_PROGRESS"] = "ReportHeapSnapshotProgress";
+  Events36["RESET_PROFILES"] = "ResetProfiles";
+  return Events36;
 })(Events18 || {});
 var HeapProfilerDispatcher = class {
   #heapProfilerModel;
@@ -34718,17 +34717,17 @@ var RuntimeModel = class extends SDKModel {
     return response.exceptionDetails;
   }
 };
-var Events13 = /* @__PURE__ */ ((Events35) => {
-  Events35["BindingCalled"] = "BindingCalled";
-  Events35["ExecutionContextCreated"] = "ExecutionContextCreated";
-  Events35["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
-  Events35["ExecutionContextChanged"] = "ExecutionContextChanged";
-  Events35["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
-  Events35["ExceptionThrown"] = "ExceptionThrown";
-  Events35["ExceptionRevoked"] = "ExceptionRevoked";
-  Events35["ConsoleAPICalled"] = "ConsoleAPICalled";
-  Events35["QueryObjectRequested"] = "QueryObjectRequested";
-  return Events35;
+var Events13 = /* @__PURE__ */ ((Events36) => {
+  Events36["BindingCalled"] = "BindingCalled";
+  Events36["ExecutionContextCreated"] = "ExecutionContextCreated";
+  Events36["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
+  Events36["ExecutionContextChanged"] = "ExecutionContextChanged";
+  Events36["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
+  Events36["ExceptionThrown"] = "ExceptionThrown";
+  Events36["ExceptionRevoked"] = "ExceptionRevoked";
+  Events36["ConsoleAPICalled"] = "ConsoleAPICalled";
+  Events36["QueryObjectRequested"] = "QueryObjectRequested";
+  return Events36;
 })(Events13 || {});
 var RuntimeDispatcher = class {
   #runtimeModel;
@@ -35430,21 +35429,21 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     this.dispatcher.clearRequests();
   }
 };
-var Events17 = /* @__PURE__ */ ((Events35) => {
-  Events35["RequestStarted"] = "RequestStarted";
-  Events35["RequestUpdated"] = "RequestUpdated";
-  Events35["RequestFinished"] = "RequestFinished";
-  Events35["RequestUpdateDropped"] = "RequestUpdateDropped";
-  Events35["ResponseReceived"] = "ResponseReceived";
-  Events35["MessageGenerated"] = "MessageGenerated";
-  Events35["RequestRedirected"] = "RequestRedirected";
-  Events35["LoadingFinished"] = "LoadingFinished";
-  Events35["ReportingApiReportAdded"] = "ReportingApiReportAdded";
-  Events35["ReportingApiReportUpdated"] = "ReportingApiReportUpdated";
-  Events35["ReportingApiEndpointsChangedForOrigin"] = "ReportingApiEndpointsChangedForOrigin";
-  Events35["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
-  Events35["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
-  return Events35;
+var Events17 = /* @__PURE__ */ ((Events36) => {
+  Events36["RequestStarted"] = "RequestStarted";
+  Events36["RequestUpdated"] = "RequestUpdated";
+  Events36["RequestFinished"] = "RequestFinished";
+  Events36["RequestUpdateDropped"] = "RequestUpdateDropped";
+  Events36["ResponseReceived"] = "ResponseReceived";
+  Events36["MessageGenerated"] = "MessageGenerated";
+  Events36["RequestRedirected"] = "RequestRedirected";
+  Events36["LoadingFinished"] = "LoadingFinished";
+  Events36["ReportingApiReportAdded"] = "ReportingApiReportAdded";
+  Events36["ReportingApiReportUpdated"] = "ReportingApiReportUpdated";
+  Events36["ReportingApiEndpointsChangedForOrigin"] = "ReportingApiEndpointsChangedForOrigin";
+  Events36["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
+  Events36["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
+  return Events36;
 })(Events17 || {});
 var BlockingConditions = {
   key: "BLOCKING" /* BLOCKING */,
@@ -36583,10 +36582,10 @@ var RequestCondition = class _RequestCondition extends Common28.ObjectWrapper.Ob
   }
 };
 ((RequestCondition2) => {
-  let Events35;
-  ((Events36) => {
-    Events36["REQUEST_CONDITION_CHANGED"] = "request-condition-changed";
-  })(Events35 = RequestCondition2.Events || (RequestCondition2.Events = {}));
+  let Events36;
+  ((Events37) => {
+    Events37["REQUEST_CONDITION_CHANGED"] = "request-condition-changed";
+  })(Events36 = RequestCondition2.Events || (RequestCondition2.Events = {}));
 })(RequestCondition || (RequestCondition = {}));
 var RequestConditions = class _RequestConditions extends Common28.ObjectWrapper.ObjectWrapper {
   #setting;
@@ -36755,10 +36754,10 @@ var RequestConditions = class _RequestConditions extends Common28.ObjectWrapper.
   }
 };
 ((RequestConditions2) => {
-  let Events35;
-  ((Events36) => {
-    Events36["REQUEST_CONDITIONS_CHANGED"] = "request-conditions-changed";
-  })(Events35 = RequestConditions2.Events || (RequestConditions2.Events = {}));
+  let Events36;
+  ((Events37) => {
+    Events37["REQUEST_CONDITIONS_CHANGED"] = "request-conditions-changed";
+  })(Events36 = RequestConditions2.Events || (RequestConditions2.Events = {}));
 })(RequestConditions || (RequestConditions = {}));
 var AppliedNetworkConditions = class {
   constructor(conditions, appliedNetworkConditionsId, urlPattern) {
@@ -37035,15 +37034,15 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   }
 };
 ((MultitargetNetworkManager2) => {
-  let Events35;
-  ((Events36) => {
-    Events36["BLOCKED_PATTERNS_CHANGED"] = "BlockedPatternsChanged";
-    Events36["CONDITIONS_CHANGED"] = "ConditionsChanged";
-    Events36["USER_AGENT_CHANGED"] = "UserAgentChanged";
-    Events36["INTERCEPTORS_CHANGED"] = "InterceptorsChanged";
-    Events36["REQUEST_INTERCEPTED"] = "RequestIntercepted";
-    Events36["REQUEST_FULFILLED"] = "RequestFulfilled";
-  })(Events35 = MultitargetNetworkManager2.Events || (MultitargetNetworkManager2.Events = {}));
+  let Events36;
+  ((Events37) => {
+    Events37["BLOCKED_PATTERNS_CHANGED"] = "BlockedPatternsChanged";
+    Events37["CONDITIONS_CHANGED"] = "ConditionsChanged";
+    Events37["USER_AGENT_CHANGED"] = "UserAgentChanged";
+    Events37["INTERCEPTORS_CHANGED"] = "InterceptorsChanged";
+    Events37["REQUEST_INTERCEPTED"] = "RequestIntercepted";
+    Events37["REQUEST_FULFILLED"] = "RequestFulfilled";
+  })(Events36 = MultitargetNetworkManager2.Events || (MultitargetNetworkManager2.Events = {}));
 })(MultitargetNetworkManager || (MultitargetNetworkManager = {}));
 var InterceptedRequest = class _InterceptedRequest {
   #multitargetNetworkManager;
@@ -37524,9 +37523,9 @@ var CookieModel = class extends SDKModel {
   }
 };
 SDKModel.register(CookieModel, { capabilities: 16 /* NETWORK */, autostart: false });
-var Events20 = /* @__PURE__ */ ((Events35) => {
-  Events35["COOKIE_LIST_UPDATED"] = "CookieListUpdated";
-  return Events35;
+var Events20 = /* @__PURE__ */ ((Events36) => {
+  Events36["COOKIE_LIST_UPDATED"] = "CookieListUpdated";
+  return Events36;
 })(Events20 || {});
 
 // ../../front_end/core/sdk/CookieParser.ts
@@ -39745,17 +39744,17 @@ var NetworkRequest = class _NetworkRequest extends Common31.ObjectWrapper.Object
     return this.responseReceivedPromise;
   }
 };
-var Events19 = /* @__PURE__ */ ((Events35) => {
-  Events35["FINISHED_LOADING"] = "FinishedLoading";
-  Events35["TIMING_CHANGED"] = "TimingChanged";
-  Events35["REMOTE_ADDRESS_CHANGED"] = "RemoteAddressChanged";
-  Events35["REQUEST_HEADERS_CHANGED"] = "RequestHeadersChanged";
-  Events35["RESPONSE_HEADERS_CHANGED"] = "ResponseHeadersChanged";
-  Events35["WEBSOCKET_FRAME_ADDED"] = "WebsocketFrameAdded";
-  Events35["DIRECTSOCKET_CHUNK_ADDED"] = "DirectsocketChunkAdded";
-  Events35["EVENT_SOURCE_MESSAGE_ADDED"] = "EventSourceMessageAdded";
-  Events35["TRUST_TOKEN_RESULT_ADDED"] = "TrustTokenResultAdded";
-  return Events35;
+var Events19 = /* @__PURE__ */ ((Events36) => {
+  Events36["FINISHED_LOADING"] = "FinishedLoading";
+  Events36["TIMING_CHANGED"] = "TimingChanged";
+  Events36["REMOTE_ADDRESS_CHANGED"] = "RemoteAddressChanged";
+  Events36["REQUEST_HEADERS_CHANGED"] = "RequestHeadersChanged";
+  Events36["RESPONSE_HEADERS_CHANGED"] = "ResponseHeadersChanged";
+  Events36["WEBSOCKET_FRAME_ADDED"] = "WebsocketFrameAdded";
+  Events36["DIRECTSOCKET_CHUNK_ADDED"] = "DirectsocketChunkAdded";
+  Events36["EVENT_SOURCE_MESSAGE_ADDED"] = "EventSourceMessageAdded";
+  Events36["TRUST_TOKEN_RESULT_ADDED"] = "TrustTokenResultAdded";
+  return Events36;
 })(Events19 || {});
 var InitiatorType = /* @__PURE__ */ ((InitiatorType2) => {
   InitiatorType2["OTHER"] = "other";
@@ -40134,9 +40133,9 @@ var AccessibilityNode = class {
     return lines.join("");
   }
 };
-var Events21 = /* @__PURE__ */ ((Events35) => {
-  Events35["TREE_UPDATED"] = "TreeUpdated";
-  return Events35;
+var Events21 = /* @__PURE__ */ ((Events36) => {
+  Events36["TREE_UPDATED"] = "TreeUpdated";
+  return Events36;
 })(Events21 || {});
 var AccessibilityModel = class extends SDKModel {
   agent;
@@ -40616,11 +40615,11 @@ var AnimationModel = class extends SDKModel {
     await this.agent.invoke_enable();
   }
 };
-var Events22 = /* @__PURE__ */ ((Events35) => {
-  Events35["AnimationGroupStarted"] = "AnimationGroupStarted";
-  Events35["AnimationGroupUpdated"] = "AnimationGroupUpdated";
-  Events35["ModelReset"] = "ModelReset";
-  return Events35;
+var Events22 = /* @__PURE__ */ ((Events36) => {
+  Events36["AnimationGroupStarted"] = "AnimationGroupStarted";
+  Events36["AnimationGroupUpdated"] = "AnimationGroupUpdated";
+  Events36["ModelReset"] = "ModelReset";
+  return Events36;
 })(Events22 || {});
 var AnimationImpl = class _AnimationImpl {
   #animationModel;
@@ -41224,9 +41223,9 @@ var AutofillModel = class extends SDKModel {
   }
 };
 SDKModel.register(AutofillModel, { capabilities: 2 /* DOM */, autostart: true });
-var Events23 = /* @__PURE__ */ ((Events35) => {
-  Events35["ADDRESS_FORM_FILLED"] = "AddressFormFilled";
-  return Events35;
+var Events23 = /* @__PURE__ */ ((Events36) => {
+  Events36["ADDRESS_FORM_FILLED"] = "AddressFormFilled";
+  return Events36;
 })(Events23 || {});
 
 // ../../front_end/core/sdk/CategorizedBreakpoint.ts
@@ -41512,11 +41511,11 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
   static lastAnonymousTargetId = 0;
   static attachCallback;
 };
-var Events24 = /* @__PURE__ */ ((Events35) => {
-  Events35["TARGET_CREATED"] = "TargetCreated";
-  Events35["TARGET_DESTROYED"] = "TargetDestroyed";
-  Events35["TARGET_INFO_CHANGED"] = "TargetInfoChanged";
-  return Events35;
+var Events24 = /* @__PURE__ */ ((Events36) => {
+  Events36["TARGET_CREATED"] = "TargetCreated";
+  Events36["TARGET_DESTROYED"] = "TargetDestroyed";
+  Events36["TARGET_INFO_CHANGED"] = "TargetInfoChanged";
+  return Events36;
 })(Events24 || {});
 
 // ../../front_end/core/sdk/CompilerSourceMappingContentProvider.ts
@@ -42890,11 +42889,11 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common38.ObjectWr
   modelRemoved(_emulationModel) {
   }
 };
-var Events25 = /* @__PURE__ */ ((Events35) => {
-  Events35["RATE_CHANGED"] = "RateChanged";
-  Events35["HARDWARE_CONCURRENCY_CHANGED"] = "HardwareConcurrencyChanged";
-  Events35["CPU_PERFORMANCE_TIER_CHANGED"] = "CpuPerformanceTierChanged";
-  return Events35;
+var Events25 = /* @__PURE__ */ ((Events36) => {
+  Events36["RATE_CHANGED"] = "RateChanged";
+  Events36["HARDWARE_CONCURRENCY_CHANGED"] = "HardwareConcurrencyChanged";
+  Events36["CPU_PERFORMANCE_TIER_CHANGED"] = "CpuPerformanceTierChanged";
+  return Events36;
 })(Events25 || {});
 
 // ../../front_end/core/sdk/CrashReportContextModel.ts
@@ -43143,11 +43142,11 @@ var DOMDebuggerModel = class extends SDKModel {
     this.#domBreakpointsSetting.set(breakpoints);
   }
 };
-var Events26 = /* @__PURE__ */ ((Events35) => {
-  Events35["DOM_BREAKPOINT_ADDED"] = "DOMBreakpointAdded";
-  Events35["DOM_BREAKPOINT_TOGGLED"] = "DOMBreakpointToggled";
-  Events35["DOM_BREAKPOINTS_REMOVED"] = "DOMBreakpointsRemoved";
-  return Events35;
+var Events26 = /* @__PURE__ */ ((Events36) => {
+  Events36["DOM_BREAKPOINT_ADDED"] = "DOMBreakpointAdded";
+  Events36["DOM_BREAKPOINT_TOGGLED"] = "DOMBreakpointToggled";
+  Events36["DOM_BREAKPOINTS_REMOVED"] = "DOMBreakpointsRemoved";
+  return Events36;
 })(Events26 || {});
 var Marker = "breakpoint-marker";
 var DOMBreakpoint = class {
@@ -43661,13 +43660,13 @@ var DOMStorage = class _DOMStorage extends Common39.ObjectWrapper.ObjectWrapper 
   }
 };
 ((DOMStorage2) => {
-  let Events35;
-  ((Events36) => {
-    Events36["DOM_STORAGE_ITEMS_CLEARED"] = "DOMStorageItemsCleared";
-    Events36["DOM_STORAGE_ITEM_REMOVED"] = "DOMStorageItemRemoved";
-    Events36["DOM_STORAGE_ITEM_ADDED"] = "DOMStorageItemAdded";
-    Events36["DOM_STORAGE_ITEM_UPDATED"] = "DOMStorageItemUpdated";
-  })(Events35 = DOMStorage2.Events || (DOMStorage2.Events = {}));
+  let Events36;
+  ((Events37) => {
+    Events37["DOM_STORAGE_ITEMS_CLEARED"] = "DOMStorageItemsCleared";
+    Events37["DOM_STORAGE_ITEM_REMOVED"] = "DOMStorageItemRemoved";
+    Events37["DOM_STORAGE_ITEM_ADDED"] = "DOMStorageItemAdded";
+    Events37["DOM_STORAGE_ITEM_UPDATED"] = "DOMStorageItemUpdated";
+  })(Events36 = DOMStorage2.Events || (DOMStorage2.Events = {}));
 })(DOMStorage || (DOMStorage = {}));
 var DOMStorageModel = class extends SDKModel {
   #storageKeyManager;
@@ -43787,10 +43786,10 @@ var DOMStorageModel = class extends SDKModel {
   }
 };
 SDKModel.register(DOMStorageModel, { capabilities: 1048576 /* DOM_STORAGE */, autostart: false });
-var Events27 = /* @__PURE__ */ ((Events35) => {
-  Events35["DOM_STORAGE_ADDED"] = "DOMStorageAdded";
-  Events35["DOM_STORAGE_REMOVED"] = "DOMStorageRemoved";
-  return Events35;
+var Events27 = /* @__PURE__ */ ((Events36) => {
+  Events36["DOM_STORAGE_ADDED"] = "DOMStorageAdded";
+  Events36["DOM_STORAGE_REMOVED"] = "DOMStorageRemoved";
+  return Events36;
 })(Events27 || {});
 var DOMStorageDispatcher = class {
   model;
@@ -44094,9 +44093,9 @@ var IsolateManager = class _IsolateManager extends Common40.ObjectWrapper.Object
     }
   }
 };
-var Events28 = /* @__PURE__ */ ((Events35) => {
-  Events35["MEMORY_CHANGED"] = "MemoryChanged";
-  return Events35;
+var Events28 = /* @__PURE__ */ ((Events36) => {
+  Events36["MEMORY_CHANGED"] = "MemoryChanged";
+  return Events36;
 })(Events28 || {});
 var MemoryTrendWindowMs = 12e4;
 var PollIntervalMs = 2e3;
@@ -44238,9 +44237,9 @@ var IssuesModel = class extends SDKModel {
     return null;
   }
 };
-var Events29 = /* @__PURE__ */ ((Events35) => {
-  Events35["ISSUE_ADDED"] = "IssueAdded";
-  return Events35;
+var Events29 = /* @__PURE__ */ ((Events36) => {
+  Events36["ISSUE_ADDED"] = "IssueAdded";
+  return Events36;
 })(Events29 || {});
 SDKModel.register(IssuesModel, { capabilities: 32768 /* AUDITS */, autostart: true });
 
@@ -44875,10 +44874,10 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
   }
 };
 SDKModel.register(PreloadingModel, { capabilities: 2 /* DOM */, autostart: false });
-var Events30 = /* @__PURE__ */ ((Events35) => {
-  Events35["MODEL_UPDATED"] = "ModelUpdated";
-  Events35["WARNINGS_UPDATED"] = "WarningsUpdated";
-  return Events35;
+var Events30 = /* @__PURE__ */ ((Events36) => {
+  Events36["MODEL_UPDATED"] = "ModelUpdated";
+  Events36["WARNINGS_UPDATED"] = "WarningsUpdated";
+  return Events36;
 })(Events30 || {});
 var PreloadDispatcher = class {
   model;
@@ -45235,6 +45234,64 @@ var SourceRegistry = class {
   }
 };
 
+// ../../front_end/core/sdk/PrivateVerificationTokensModel.ts
+var PrivateVerificationTokensModel_exports = {};
+__export(PrivateVerificationTokensModel_exports, {
+  Events: () => Events31,
+  PrivateVerificationTokensModel: () => PrivateVerificationTokensModel
+});
+var PrivateVerificationTokensModel = class extends SDKModel {
+  #storageAgent;
+  constructor(target) {
+    super(target);
+    target.registerStorageDispatcher(this);
+    this.#storageAgent = target.storageAgent();
+  }
+  setTracking(enable) {
+    void this.#storageAgent.invoke_setPrivateVerificationTokensTracking({ enable });
+  }
+  async getTokens() {
+    const response = await this.#storageAgent.invoke_getPrivateVerificationTokens();
+    if (response.getError()) {
+      return [];
+    }
+    return response.tokens ?? [];
+  }
+  async getIssuerConfigs() {
+    const response = await this.#storageAgent.invoke_getPrivateVerificationTokensIssuerConfigs();
+    if (response.getError()) {
+      return [];
+    }
+    return response.configs ?? [];
+  }
+  async clearTokens(issuerOrigin) {
+    await this.#storageAgent.invoke_clearPrivateVerificationTokens({ issuerOrigin });
+  }
+  async deleteToken(tokenId) {
+    await this.#storageAgent.invoke_deletePrivateVerificationToken({ tokenId });
+  }
+  privateVerificationTokensUpdated() {
+    this.dispatchEventToListeners("TokensUpdated" /* TOKENS_UPDATED */);
+  }
+  cacheStorageContentUpdated(_event) {
+  }
+  cacheStorageListUpdated(_event) {
+  }
+  indexedDBContentUpdated(_event) {
+  }
+  indexedDBListUpdated(_event) {
+  }
+  storageBucketCreatedOrUpdated(_event) {
+  }
+  storageBucketDeleted(_event) {
+  }
+};
+SDKModel.register(PrivateVerificationTokensModel, { capabilities: 8192 /* STORAGE */, autostart: false });
+var Events31 = /* @__PURE__ */ ((Events36) => {
+  Events36["TOKENS_UPDATED"] = "TokensUpdated";
+  return Events36;
+})(Events31 || {});
+
 // ../../front_end/core/sdk/RehydratingObject.ts
 var RehydratingObject_exports = {};
 
@@ -45403,7 +45460,7 @@ SDKModel.register(ScreenCaptureModel, { capabilities: 64 /* SCREEN_CAPTURE */, a
 var ServiceWorkerCacheModel_exports = {};
 __export(ServiceWorkerCacheModel_exports, {
   Cache: () => Cache,
-  Events: () => Events32,
+  Events: () => Events33,
   ServiceWorkerCacheModel: () => ServiceWorkerCacheModel
 });
 import * as Common42 from "../common/common.js";
@@ -45412,7 +45469,7 @@ import * as i18n35 from "../i18n/i18n.js";
 // ../../front_end/core/sdk/StorageBucketsModel.ts
 var StorageBucketsModel_exports = {};
 __export(StorageBucketsModel_exports, {
-  Events: () => Events31,
+  Events: () => Events32,
   StorageBucketsModel: () => StorageBucketsModel
 });
 var StorageBucketsModel = class extends SDKModel {
@@ -45538,12 +45595,12 @@ var StorageBucketsModel = class extends SDKModel {
   }
 };
 SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* STORAGE */, autostart: false });
-var Events31 = /* @__PURE__ */ ((Events35) => {
-  Events35["BUCKET_ADDED"] = "BucketAdded";
-  Events35["BUCKET_REMOVED"] = "BucketRemoved";
-  Events35["BUCKET_CHANGED"] = "BucketChanged";
-  return Events35;
-})(Events31 || {});
+var Events32 = /* @__PURE__ */ ((Events36) => {
+  Events36["BUCKET_ADDED"] = "BucketAdded";
+  Events36["BUCKET_REMOVED"] = "BucketRemoved";
+  Events36["BUCKET_CHANGED"] = "BucketChanged";
+  return Events36;
+})(Events32 || {});
 
 // ../../front_end/core/sdk/ServiceWorkerCacheModel.ts
 var UIStrings16 = {
@@ -45781,12 +45838,12 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     this.#scheduleAsSoonAsPossible = true;
   }
 };
-var Events32 = /* @__PURE__ */ ((Events35) => {
-  Events35["CACHE_ADDED"] = "CacheAdded";
-  Events35["CACHE_REMOVED"] = "CacheRemoved";
-  Events35["CACHE_STORAGE_CONTENT_UPDATED"] = "CacheStorageContentUpdated";
-  return Events35;
-})(Events32 || {});
+var Events33 = /* @__PURE__ */ ((Events36) => {
+  Events36["CACHE_ADDED"] = "CacheAdded";
+  Events36["CACHE_REMOVED"] = "CacheRemoved";
+  Events36["CACHE_STORAGE_CONTENT_UPDATED"] = "CacheStorageContentUpdated";
+  return Events36;
+})(Events33 || {});
 var Cache = class {
   #model;
   storageKey;
@@ -45824,7 +45881,7 @@ SDKModel.register(ServiceWorkerCacheModel, { capabilities: 8192 /* STORAGE */, a
 // ../../front_end/core/sdk/ServiceWorkerManager.ts
 var ServiceWorkerManager_exports = {};
 __export(ServiceWorkerManager_exports, {
-  Events: () => Events33,
+  Events: () => Events34,
   ServiceWorkerManager: () => ServiceWorkerManager,
   ServiceWorkerRegistration: () => ServiceWorkerRegistration,
   ServiceWorkerRouterRule: () => ServiceWorkerRouterRule,
@@ -46053,12 +46110,12 @@ var ServiceWorkerManager = class extends SDKModel {
     void this.#agent.invoke_setForceUpdateOnPageLoad({ forceUpdateOnPageLoad });
   }
 };
-var Events33 = /* @__PURE__ */ ((Events35) => {
-  Events35["REGISTRATION_UPDATED"] = "RegistrationUpdated";
-  Events35["REGISTRATION_ERROR_ADDED"] = "RegistrationErrorAdded";
-  Events35["REGISTRATION_DELETED"] = "RegistrationDeleted";
-  return Events35;
-})(Events33 || {});
+var Events34 = /* @__PURE__ */ ((Events36) => {
+  Events36["REGISTRATION_UPDATED"] = "RegistrationUpdated";
+  Events36["REGISTRATION_ERROR_ADDED"] = "RegistrationErrorAdded";
+  Events36["REGISTRATION_DELETED"] = "RegistrationDeleted";
+  return Events36;
+})(Events34 || {});
 var ServiceWorkerDispatcher = class {
   #manager;
   constructor(manager) {
@@ -46407,16 +46464,16 @@ SDKModel.register(ServiceWorkerManager, { capabilities: 16384 /* SERVICE_WORKER 
 // ../../front_end/core/sdk/WebAuthnModel.ts
 var WebAuthnModel_exports = {};
 __export(WebAuthnModel_exports, {
-  Events: () => Events34,
+  Events: () => Events35,
   WebAuthnModel: () => WebAuthnModel
 });
-var Events34 = /* @__PURE__ */ ((Events35) => {
-  Events35["CREDENTIAL_ADDED"] = "CredentialAdded";
-  Events35["CREDENTIAL_ASSERTED"] = "CredentialAsserted";
-  Events35["CREDENTIAL_DELETED"] = "CredentialDeleted";
-  Events35["CREDENTIAL_UPDATED"] = "CredentialUpdated";
-  return Events35;
-})(Events34 || {});
+var Events35 = /* @__PURE__ */ ((Events36) => {
+  Events36["CREDENTIAL_ADDED"] = "CredentialAdded";
+  Events36["CREDENTIAL_ASSERTED"] = "CredentialAsserted";
+  Events36["CREDENTIAL_DELETED"] = "CredentialDeleted";
+  Events36["CREDENTIAL_UPDATED"] = "CredentialUpdated";
+  return Events36;
+})(Events35 || {});
 var WebAuthnModel = class extends SDKModel {
   #agent;
   constructor(target) {
@@ -46424,9 +46481,9 @@ var WebAuthnModel = class extends SDKModel {
     this.#agent = target.webAuthnAgent();
     target.registerWebAuthnDispatcher(new WebAuthnDispatcher(this));
   }
-  setVirtualAuthEnvEnabled(enable) {
+  setVirtualAuthEnvEnabled(enable, enableUI = true) {
     if (enable) {
-      return this.#agent.invoke_enable({ enableUI: true });
+      return this.#agent.invoke_enable({ enableUI });
     }
     return this.#agent.invoke_disable();
   }
@@ -46439,6 +46496,12 @@ var WebAuthnModel = class extends SDKModel {
   }
   async setAutomaticPresenceSimulation(authenticatorId, enabled) {
     await this.#agent.invoke_setAutomaticPresenceSimulation({ authenticatorId, enabled });
+  }
+  async setUserVerified(authenticatorId, isUserVerified) {
+    await this.#agent.invoke_setUserVerified({ authenticatorId, isUserVerified });
+  }
+  async addCredential(authenticatorId, credential) {
+    await this.#agent.invoke_addCredential({ authenticatorId, credential });
   }
   async getCredentials(authenticatorId) {
     const response = await this.#agent.invoke_getCredentials({ authenticatorId });
@@ -46539,6 +46602,7 @@ export {
   PaintProfiler_exports as PaintProfiler,
   PerformanceMetricsModel_exports as PerformanceMetricsModel,
   PreloadingModel_exports as PreloadingModel,
+  PrivateVerificationTokensModel_exports as PrivateVerificationTokensModel,
   RehydratingConnection_exports as RehydratingConnection,
   RehydratingObject_exports as RehydratingObject,
   RemoteObject_exports as RemoteObject,

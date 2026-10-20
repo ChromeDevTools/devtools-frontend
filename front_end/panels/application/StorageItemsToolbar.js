@@ -133,7 +133,7 @@ export class StorageItemsToolbar extends StorageItemsToolbarBase {
         this.requestUpdate();
     }
     setStorageKey(storageKey) {
-        this.metadataView.setStorageKey(storageKey);
+        this.metadataView.storageKey = storageKey;
     }
     filterChanged({ detail: text }) {
         this.filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;

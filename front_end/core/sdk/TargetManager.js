@@ -219,15 +219,18 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
         if (!this.#modelListeners.has(eventType)) {
             return;
         }
-        let wrappedListener = null;
+        const wrappedListeners = [];
         for (const info of this.#modelListeners.get(eventType)) {
             if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject) {
-                wrappedListener = info.wrappedListener;
+                wrappedListeners.push(info.wrappedListener);
                 this.#modelListeners.delete(eventType, info);
             }
         }
-        if (wrappedListener) {
-            for (const model of this.models(modelClass)) {
+        if (wrappedListeners.length === 0) {
+            return;
+        }
+        for (const model of this.models(modelClass)) {
+            for (const wrappedListener of wrappedListeners) {
                 model.removeEventListener(eventType, wrappedListener);
             }
         }

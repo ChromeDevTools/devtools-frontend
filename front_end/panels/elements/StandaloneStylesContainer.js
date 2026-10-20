@@ -34,8 +34,8 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
     activeCSSAngle = null;
     isEditingStyle = false;
     sectionByElement = new WeakMap();
-    // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
-    linkifier = new Components.Linkifier.Linkifier(23, /* useLinkDecorator */ true);
+    #linkifier = null;
+    #domNode = null;
     #webCustomData;
     userOperation = false;
     #sections = [];
@@ -47,7 +47,27 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
         this.#view = view;
+    }
+    get linkifier() {
+        if (!this.#linkifier) {
+            // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
+            this.#linkifier = new Components.Linkifier.Linkifier(23, /* useLinkDecorator */ true);
+        }
+        return this.#linkifier;
+    }
+    wasShown() {
+        super.wasShown();
         this.#computedStyleModelInternal.addEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
+        if (this.#computedStyleModelInternal.node !== this.#domNode) {
+            this.#computedStyleModelInternal.node = this.#domNode;
+        }
+    }
+    willHide() {
+        super.willHide();
+        this.#computedStyleModelInternal.removeEventListener("CSSModelChanged" /* ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED */, this.#onCSSModelChanged, this);
+        this.#computedStyleModelInternal.dispose();
+        this.#linkifier?.dispose();
+        this.#linkifier = null;
     }
     #rebuildAndUpdate() {
         void this.#rebuildThrottler.schedule(async () => {
@@ -99,6 +119,7 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
         if (!matchedStyles) {
             return;
         }
+        this.linkifier.reset();
         const newSections = [];
         let sectionIdx = 0;
         for (const style of matchedStyles.nodeStyles()) {
@@ -133,11 +154,14 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
     }
     // TODO: Refactor StylesContainer to use getter for node(), so that we can have a `node` setter here: set node().
     set domNode(node) {
-        if (this.#computedStyleModelInternal.node === node) {
+        if (this.#domNode === node) {
             return;
         }
-        this.#computedStyleModelInternal.node = node;
-        this.forceUpdate();
+        this.#domNode = node;
+        if (this.isShowing()) {
+            this.#computedStyleModelInternal.node = node;
+            this.forceUpdate();
+        }
     }
     set filter(regex) {
         this.#filter = regex;

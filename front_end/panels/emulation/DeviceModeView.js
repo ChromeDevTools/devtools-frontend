@@ -55,6 +55,12 @@ const UIStrings = {
      */
     laptopL: 'Laptop L',
     /**
+     * @description Label for a responsive preset button showing the device category and width in pixels.
+     * @example {Mobile S} PH1
+     * @example {320} PH2
+     */
+    presetSize: '{PH1} – {PH2}px',
+    /**
      * @description Message shown after a screenshot is copied to the clipboard.
      */
     screenshotCopied: 'Screenshot copied to clipboard',
@@ -112,7 +118,7 @@ export const DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
                    style="width: ${size * input.scale}px;"
                    jslog=${VisualLogging.action().track({ click: true }).context(`device-mode-preset-${size}px`)}
                    @click=${(e) => input.onApplyPresetSize(size, e)}>
-                <span>${titles[idx]} – ${size}px</span>
+                <span>${i18nString(UIStrings.presetSize, { PH1: titles[idx], PH2: size })}</span>
               </div>
             </div>
           `).reverse()}

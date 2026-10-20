@@ -47,6 +47,7 @@
   },
   "files": [
     "../../../../../../front_end/panels/issues/AffectedLazyLoadImagesView.test.ts",
+    "../../../../../../front_end/panels/issues/AffectedMetadataAllowedSitesView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedSelectivePermissionsInterventionView.test.ts",
     "../../../../../../front_end/panels/issues/IssueView.test.ts",
     "../../../../../../front_end/panels/issues/IssuesPane.test.ts",

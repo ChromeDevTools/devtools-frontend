@@ -1337,6 +1337,7 @@ export class StylePropertiesSection {
                     variant: 'rich',
                     jslogContext: 'elements.css-selector-specificity',
                 }));
+                tooltip.classList.add('styles-specificity-tooltip');
                 tooltip.hoverDelay = 500;
                 const specificitySummary = formatSpecificitySummary(selector.specificity);
                 const breakdownLines = getSpecificityBreakdownLines(selector.specificity);

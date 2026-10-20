@@ -163,7 +163,7 @@ class MessageLevelSelector {
         render(html `
       <div class="media-messages-level-dropdown-element">
         <div class="media-messages-level-dropdown-checkbox">
-          ${!item.overwrite && checked ? html `<div>✓</div>` : nothing}
+          ${!item.overwrite && checked ? html `<div>\u2713</div>` : nothing}
         </div>
         <span class="media-messages-level-dropdown-text">${item.title}</span>
       </div>

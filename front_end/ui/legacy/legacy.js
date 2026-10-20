@@ -5093,13 +5093,6 @@ var tabbedPane_css_default = `/*
   }
 }
 
-.spark {
-  position: absolute;
-  top: var(--sys-size-2);
-
-  --icon-default: var(--sys-color-primary);
-}
-
 /*# sourceURL=${import.meta.resolve("./tabbedPane.css")} */`;
 
 // ../../front_end/ui/legacy/Tooltip.ts
@@ -17065,10 +17058,11 @@ var DevToolsCloseButton = class extends HTMLElement {
 };
 customElements.define("dt-close-button", DevToolsCloseButton);
 function bindInput(input, apply, validate, numeric, modifierMultiplier) {
+  const onFocus = input.select.bind(input);
   input.addEventListener("change", onChange, false);
   input.addEventListener("input", onInput, false);
   input.addEventListener("keydown", onKeyDown, false);
-  input.addEventListener("focus", input.select.bind(input), false);
+  input.addEventListener("focus", onFocus, false);
   function onInput() {
     input.classList.toggle("error-input", !validate(input.value));
   }
@@ -17110,7 +17104,13 @@ function bindInput(input, apply, validate, numeric, modifierMultiplier) {
     input.classList.toggle("error-input", !valid);
     input.value = value;
   }
-  return setValue;
+  function cleanup() {
+    input.removeEventListener("change", onChange, false);
+    input.removeEventListener("input", onInput, false);
+    input.removeEventListener("keydown", onKeyDown, false);
+    input.removeEventListener("focus", onFocus, false);
+  }
+  return { setValue, cleanup };
 }
 function trimText(context, text, maxWidth, trimFunction) {
   const maxLength = 200;
@@ -17860,7 +17860,7 @@ function getDevToolsBoundingElement() {
   return InspectorView.maybeGetInspectorViewInstance()?.element || document.body;
 }
 var bindCheckbox = function(input, setting, metric) {
-  const setValue = bindCheckboxImpl(input, setting.set.bind(setting), metric);
+  const { setValue } = bindCheckboxImpl(input, setting.set.bind(setting), metric);
   setting.addChangeListener((event) => setValue(event.data));
   setValue(setting.get());
 };
@@ -17878,9 +17878,14 @@ var bindCheckboxImpl = function(input, apply, metric) {
       Host9.userMetrics.actionTaken(metric.toggle);
     }
   }
-  return function setValue(value) {
-    if (value !== input.checked) {
-      input.checked = value;
+  return {
+    setValue(value) {
+      if (value !== input.checked) {
+        input.checked = value;
+      }
+    },
+    cleanup() {
+      input.removeEventListener("change", onInputChanged, false);
     }
   };
 };
@@ -17897,19 +17902,16 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     }
   }
   let setValue;
+  let cleanup;
   function settingChanged() {
     setValue(setting.get());
   }
   if (setting.type() === Common15.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === "boolean") {
-    let attachedButton;
-    let clickListener;
     return Directives4.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
-        if (attachedButton && clickListener) {
-          attachedButton.removeEventListener("click", clickListener);
-          attachedButton = void 0;
-        }
+        cleanup?.();
+        cleanup = void 0;
         return;
       }
       if (jslog) {
@@ -17919,16 +17921,18 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
       }
       setting.addChangeListener(settingChanged);
       if (e instanceof Buttons6.Button.Button) {
-        attachedButton = e;
-        clickListener = () => {
+        const clickListener = () => {
           setting.set(!setting.get());
         };
         e.addEventListener("click", clickListener);
+        cleanup = () => {
+          e.removeEventListener("click", clickListener);
+        };
         setValue = (value) => {
           e.toggled = value;
         };
       } else {
-        setValue = bindCheckboxImpl(e, setting.set.bind(setting));
+        ({ setValue, cleanup } = bindCheckboxImpl(e, setting.set.bind(setting)));
       }
       setValue(setting.get());
     });
@@ -17938,13 +17942,15 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     return Directives4.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
+        cleanup?.();
+        cleanup = void 0;
         return;
       }
       if (jslogBuilder) {
         e.setAttribute("jslog", jslogBuilder.toString());
       }
       setting.addChangeListener(settingChanged);
-      setValue = bindInput(
+      ({ setValue, cleanup } = bindInput(
         e,
         setting.set.bind(setting),
         (value) => {
@@ -17957,7 +17963,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
         },
         /* numeric */
         false
-      );
+      ));
       setValue(setting.get());
     });
   }
@@ -17965,19 +17971,21 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     return Directives4.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
+        cleanup?.();
+        cleanup = void 0;
         return;
       }
       if (jslogBuilder) {
         e.setAttribute("jslog", jslogBuilder.toString());
       }
       setting.addChangeListener(settingChanged);
-      setValue = bindInput(
+      ({ setValue, cleanup } = bindInput(
         e,
         setting.set.bind(setting),
         stringValidator ?? (() => true),
         /* numeric */
         false
-      );
+      ));
       setValue(setting.get());
     });
   }

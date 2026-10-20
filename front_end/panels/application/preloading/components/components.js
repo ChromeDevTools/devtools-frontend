@@ -5342,7 +5342,7 @@ function renderSpeculationsInitiatedByThisPageSummarySections({ badges, revealRu
               jslog=${VisualLogging4.action("view-all-rules").track({ click: true })}>
             ${i18nString8(UIStrings8.viewAllRules)}
           </button>
-         ・
+         \u30fb
           <button class="link devtools-link" @click=${revealAttemptViewWithFilter}
               jslog=${VisualLogging4.action("view-all-speculations").track({ click: true })}>
            ${i18nString8(UIStrings8.viewAllSpeculations)}

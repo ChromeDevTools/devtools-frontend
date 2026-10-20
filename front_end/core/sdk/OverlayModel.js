@@ -704,11 +704,9 @@ export class OverlayModel extends SDKModel {
     async hasStyleSheetText(url) {
         return await this.#windowControls.initializeStyleSheetText(url);
     }
-    inspectPanelShowRequested({ backendNodeId }) {
-        this.dispatchEventToListeners("InspectPanelShowRequested" /* Events.INSPECT_PANEL_SHOW_REQUESTED */, backendNodeId);
+    inspectPanelShowRequested(_event) {
     }
-    inspectedElementWindowRestored({ backendNodeId }) {
-        this.dispatchEventToListeners("InspectedElementWindowRestored" /* Events.INSPECTED_ELEMENT_WINDOW_RESTORED */, backendNodeId);
+    inspectedElementWindowRestored(_event) {
     }
 }
 export class WindowControls {
@@ -815,8 +813,6 @@ export var Events;
     Events["PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "PersistentFlexContainerOverlayStateChanged";
     Events["PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "PersistentScrollSnapOverlayStateChanged";
     Events["PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "PersistentContainerQueryOverlayStateChanged";
-    Events["INSPECT_PANEL_SHOW_REQUESTED"] = "InspectPanelShowRequested";
-    Events["INSPECTED_ELEMENT_WINDOW_RESTORED"] = "InspectedElementWindowRestored";
 })(Events || (Events = {}));
 class DefaultHighlighter {
     #model;

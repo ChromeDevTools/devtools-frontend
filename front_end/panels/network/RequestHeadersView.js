@@ -263,7 +263,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
         }
     }
     constructor(target, view = DEFAULT_VIEW) {
-        super();
+        super(target);
         this.#view = view;
     }
     static createGeneralHeadersView(request) {

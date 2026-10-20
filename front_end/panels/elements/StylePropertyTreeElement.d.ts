@@ -38,7 +38,7 @@ declare const CSSWideKeywordRendererBase: RendererBase<SDK.CSSPropertyParserMatc
 export declare class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 export declare function handleVarDefinitionActivate(variable: string | SDK.CSSMatchedStyles.CSSValueSource, stylesContainer: StylesContainer): void;
 declare const VariableRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableMatch>;
@@ -73,14 +73,14 @@ declare const ColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Colo
 export declare class ColorRenderer extends ColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
-    renderColorSwatch(color: Common.Color.Color | undefined, valueChild: Node, match: SDK.CSSPropertyParser.Match, context: RenderingContext): InlineEditor.ColorSwatch.ColorSwatch;
+    render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Lit.LitTemplate;
+    renderColorSwatch(color: Common.Color.Color | undefined, match: SDK.CSSPropertyParser.Match, context: RenderingContext): InlineEditor.ColorSwatch.ColorSwatch;
 }
 declare const LightDarkColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LightDarkColorMatch>;
 export declare class LightDarkColorRenderer extends LightDarkColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
     applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement, dark: HTMLSpanElement, lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<void>;
 }
 declare const ColorMixRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMixMatch>;
@@ -93,7 +93,7 @@ declare const ContrastColorRendererBase: RendererBase<SDK.CSSPropertyParserMatch
 export declare class ContrastColorRenderer extends ContrastColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
 }
 declare const AngleRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AngleMatch>;
 export declare class AngleRenderer extends AngleRendererBase {
@@ -209,7 +209,7 @@ declare const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatche
 export declare class PositionAreaRenderer extends PositionAreaRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const PositionTryRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionTryMatch>;
 export declare class PositionTryRenderer extends PositionTryRendererBase {

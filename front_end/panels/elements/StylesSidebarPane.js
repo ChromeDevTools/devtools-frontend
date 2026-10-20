@@ -264,21 +264,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         this.sectionsContainer.contentElement.addEventListener('focusin', this.sectionsContainerFocusChanged.bind(this), false);
         this.sectionsContainer.contentElement.addEventListener('focusout', this.sectionsContainerFocusChanged.bind(this), false);
         this.#swatchPopoverHelper.addEventListener("WillShowPopover" /* InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER */, this.hideAllPopovers, this);
-        this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, () => {
-            if (!this.filterRegex() || this.#filterUpdateScheduled) {
-                return;
-            }
-            this.#filterUpdateScheduled = true;
-            queueMicrotask(() => {
-                if (!this.#filterUpdateScheduled) {
-                    return;
-                }
-                this.#filterUpdateScheduled = false;
-                if (this.filterRegex()) {
-                    this.updateFilter();
-                }
-            });
-        });
+        this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, this.#onLiveLocationUpdated, this);
         this.decorator = new StylePropertyHighlighter(this);
         this.contentElement.classList.add('styles-pane');
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
@@ -321,6 +307,21 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             this.aiCodeCompletionProvider =
                 StylesAiCodeCompletionProvider.StylesAiCodeCompletionProvider.createInstance(this.aiCodeCompletionConfig);
         }
+    }
+    #onLiveLocationUpdated() {
+        if (!this.filterRegex() || this.#filterUpdateScheduled) {
+            return;
+        }
+        this.#filterUpdateScheduled = true;
+        queueMicrotask(() => {
+            if (!this.#filterUpdateScheduled) {
+                return;
+            }
+            this.#filterUpdateScheduled = false;
+            if (this.filterRegex()) {
+                this.updateFilter();
+            }
+        });
     }
     get webCustomData() {
         if (!this.#webCustomData &&
@@ -906,6 +907,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         const focusedIndex = this.focusedSectionIndex();
         this.#elementsForSyncViewportCheck = [];
         this.linkifier.reset();
+        this.linkifier.addEventListener("liveLocationUpdated" /* Components.Linkifier.Events.LIVE_LOCATION_UPDATED */, this.#onLiveLocationUpdated, this);
         const node = this.node();
         if (this.#lastNode !== node) {
             // Clear inactive styles when a different node is selected.

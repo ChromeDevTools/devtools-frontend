@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
@@ -12,6 +11,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import { html } from '../../ui/lit/lit.js';
 import { CompatibilityTracksAppender } from './CompatibilityTracksAppender.js';
 import { initiatorsDataToDraw } from './Initiators.js';
 import { ModificationsManager } from './ModificationsManager.js';
@@ -739,37 +739,36 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             this.dispatchEventToListeners("FlameChartItemHovered" /* Events.FLAME_CHART_ITEM_HOVERED */, null);
             return null;
         }
-        const popoverElement = document.createElement('div');
-        const root = UI.UIUtils.createShadowRootWithCoreStyles(popoverElement, { cssFile: timelineFlamechartPopoverStyles });
-        const popoverContents = root.createChild('div', 'timeline-flamechart-popover');
-        popoverContents.createChild('span', timeElementClassName).textContent = time;
-        popoverContents.createChild('span', 'popoverinfo-title').textContent = title;
         for (const warningElement of warningElements) {
             warningElement.classList.add('popoverinfo-warning');
-            popoverContents.appendChild(warningElement);
         }
-        for (const elem of additionalContent) {
+        // clang-format off
+        return html `
+      <style>${timelineFlamechartPopoverStyles}</style>
+      <div class="timeline-flamechart-popover">
+        <span class=${timeElementClassName}>${time}</span>
+        <span class="popoverinfo-title">${title}</span>
+        ${warningElements}
+        ${additionalContent.map(elem => {
             const widget = UI.Widget.Widget.get(elem);
-            if (widget) {
-                widget.show(popoverContents, undefined, /* suppressOprhanWidgetError= */ true);
-            }
-            else {
-                popoverContents.appendChild(elem);
-            }
-        }
-        return popoverElement;
+            return widget ? UI.Widget.widget(UI.Widget.WrapperWidget, { widget }) : elem;
+        })}
+      </div>`;
+        // clang-format on
     }
     preparePopoverForCollapsedArrow(entryIndex) {
-        const element = document.createElement('div');
-        const root = UI.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopoverStyles });
         const entry = this.entryData[entryIndex];
         const hiddenEntriesAmount = ModificationsManager.activeManager()?.getEntriesFilter().findHiddenDescendantsAmount(entry);
         if (!hiddenEntriesAmount) {
             return null;
         }
-        const contents = root.createChild('div', 'timeline-flamechart-popover');
-        contents.createChild('span', 'popoverinfo-title').textContent = hiddenEntriesAmount + ' hidden';
-        return element;
+        // clang-format off
+        return html `
+      <style>${timelineFlamechartPopoverStyles}</style>
+      <div class="timeline-flamechart-popover">
+        <span class="popoverinfo-title">${hiddenEntriesAmount} hidden</span>
+      </div>`;
+        // clang-format on
     }
     getDrawOverride(entryIndex) {
         const entryType = this.#entryTypeForIndex(entryIndex);
@@ -814,11 +813,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     preparePatternCanvas() {
         // Set the candy stripe pattern to 17px so it repeats well.
         const size = 17;
-        const droppedFrameCanvas = document.createElement('canvas');
-        const partialFrameCanvas = document.createElement('canvas');
-        droppedFrameCanvas.width = droppedFrameCanvas.height = size;
-        partialFrameCanvas.width = partialFrameCanvas.height = size;
+        const droppedFrameCanvas = new OffscreenCanvas(size, size);
+        const partialFrameCanvas = new OffscreenCanvas(size, size);
         const ctx = droppedFrameCanvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+            throw new Error('Could not create 2d context');
+        }
         // Make a dense solid-line pattern.
         ctx.translate(size * 0.5, size * 0.5);
         ctx.rotate(Math.PI * 0.25);
@@ -829,6 +829,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
         const droppedFramePattern = ctx.createPattern(droppedFrameCanvas, 'repeat');
         const ctx2 = partialFrameCanvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx2) {
+            throw new Error('Could not create 2d context');
+        }
         // Make a sparse dashed-line pattern.
         ctx2.strokeStyle = 'rgb(255, 255, 255)';
         ctx2.lineWidth = 2;

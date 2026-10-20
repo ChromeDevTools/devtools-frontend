@@ -31,6 +31,7 @@ export declare class LayerTreeOutline extends LayerTreeOutlineBase implements Co
     private layerSnapshotMap?;
     constructor(layerViewHost: LayerViewHost, view?: View);
     wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
     focus(): void;
     selectObject(selection: Selection | null): void;

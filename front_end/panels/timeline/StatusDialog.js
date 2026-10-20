@@ -150,7 +150,7 @@ export class StatusDialog extends UI.Widget.VBox {
     remove() {
         this.element.parentNode?.classList.remove('opaque', 'tinted');
         this.stopTimer();
-        this.element.remove();
+        this.detach();
     }
     showPane(parent, mode = 'opaque') {
         this.show(parent);

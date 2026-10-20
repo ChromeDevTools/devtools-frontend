@@ -15,6 +15,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import { Link } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import { NavigatorView } from './NavigatorView.js';
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
@@ -105,7 +106,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkNavigatorViewInstance;
 export class NetworkNavigatorView extends NavigatorView {
     constructor(networkProjectManager) {
-        super('navigator-network', networkProjectManager, true);
+        super(undefined, [networkProjectManager], undefined, {
+            jslog: `${VisualLogging.pane('navigator-network').track({ resize: true })}`,
+        });
+        this.enableAuthoredGrouping = true;
         this.registerRequiredCSS(sourcesNavigatorStyles);
         SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
         // Record the sources tool load time after the file navigator has loaded.
@@ -164,7 +168,9 @@ export class FilesNavigatorView extends NavigatorView {
     #eventListeners = [];
     #automaticFileSystemNudge;
     constructor(networkProjectManager) {
-        super('navigator-files', networkProjectManager);
+        super(undefined, [networkProjectManager], undefined, {
+            jslog: `${VisualLogging.pane('navigator-files').track({ resize: true })}`,
+        });
         this.registerRequiredCSS(sourcesNavigatorStyles);
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noWorkspace), i18nString(UIStrings.explainWorkspace));
         this.setPlaceholder(placeholder);
@@ -224,8 +230,11 @@ export class FilesNavigatorView extends NavigatorView {
 let overridesNavigatorViewInstance;
 export class OverridesNavigatorView extends NavigatorView {
     toolbar;
+    #enableCheckbox;
     constructor(networkProjectManager) {
-        super('navigator-overrides', networkProjectManager);
+        super(undefined, [networkProjectManager], undefined, {
+            jslog: `${VisualLogging.pane('navigator-overrides').track({ resize: true })}`,
+        });
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noLocalOverrides), i18nString(UIStrings.explainLocalOverrides));
         this.setPlaceholder(placeholder);
         placeholder.link = 'https://developer.chrome.com/docs/devtools/overrides/';
@@ -265,8 +274,10 @@ export class OverridesNavigatorView extends NavigatorView {
         this.toolbar.removeToolbarItems();
         const project = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
         if (project) {
-            const enableCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor));
-            this.toolbar.appendToolbarItem(enableCheckbox);
+            // The checkbox can never stop listening to the setting, so create it
+            // only once and re-append it on every update.
+            this.#enableCheckbox ??= new UI.Toolbar.ToolbarSettingCheckbox(Common.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor));
+            this.toolbar.appendToolbarItem(this.#enableCheckbox);
             this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
             const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'clear');
             clearButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, () => {
@@ -304,7 +315,9 @@ export class OverridesNavigatorView extends NavigatorView {
 }
 export class ContentScriptsNavigatorView extends NavigatorView {
     constructor(networkProjectManager) {
-        super('navigator-content-scripts', networkProjectManager);
+        super(undefined, [networkProjectManager], undefined, {
+            jslog: `${VisualLogging.pane('navigator-content-scripts').track({ resize: true })}`,
+        });
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noContentScripts), i18nString(UIStrings.explainContentScripts));
         this.setPlaceholder(placeholder);
         placeholder.link = 'https://developer.chrome.com/extensions/content_scripts';
@@ -315,7 +328,9 @@ export class ContentScriptsNavigatorView extends NavigatorView {
 }
 export class SnippetsNavigatorView extends NavigatorView {
     constructor(networkProjectManager) {
-        super('navigator-snippets', networkProjectManager);
+        super(undefined, [networkProjectManager], undefined, {
+            jslog: `${VisualLogging.pane('navigator-snippets').track({ resize: true })}`,
+        });
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noSnippets), i18nString(UIStrings.explainSnippets));
         this.setPlaceholder(placeholder);
         placeholder.link =

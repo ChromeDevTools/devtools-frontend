@@ -86,6 +86,7 @@ core/sdk/OverlayModel.test.js
 core/sdk/OverlayPersistentHighlighter.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/PreloadingModel.test.js
+core/sdk/PrivateVerificationTokensModel.test.js
 core/sdk/RemoteObject.test.js
 core/sdk/Resource.test.js
 core/sdk/ResourceTreeModel.test.js
@@ -110,6 +111,7 @@ core/sdk/StorageKeyManager.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
 core/sdk/TraceObject.test.js
+core/sdk/WebAuthnModel.test.js
 core/text_utils/ContentData.test.js
 core/text_utils/Markdown.test.js
 core/text_utils/StaticContentProvider.test.js

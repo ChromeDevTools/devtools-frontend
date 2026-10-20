@@ -807,6 +807,10 @@ describe('AiAgent2', () => {
 
   async function runGetCookieValuesApprovalFlow(
       decision = AiAssistance.Tool.PermissionDecision.ALLOW_ONCE,
+      {alwaysAllowedTools, permissionPrompt}: {
+        alwaysAllowedTools?: AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools,
+        permissionPrompt?: AiAssistance.Tool.PermissionPrompt,
+      } = {},
       ): Promise<{
     responses: AiAssistance.AiAgent.ResponseData[],
     handlerStub: sinon.SinonStub,
@@ -833,10 +837,14 @@ describe('AiAgent2', () => {
       aidaClient,
       confirmSideEffectForTest: sinon.stub().returns(sideEffectPromise),
       originLock: defaultOriginLock,
+      alwaysAllowedTools,
     });
 
     const getCookieValuesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getCookieValues');
     assert.exists(getCookieValuesTool);
+    if (permissionPrompt) {
+      sinon.stub(getCookieValuesTool, 'permissionPrompt').value(permissionPrompt);
+    }
     const handlerStub = sinon.stub(getCookieValuesTool, 'handler').callsFake(async (_args, context, options) => {
       context.disableLogging();
       if (options?.approved !== true) {
@@ -871,6 +879,87 @@ describe('AiAgent2', () => {
 
     sinon.assert.calledTwice(handlerStub);
     assert.propertyVal(handlerStub.getCall(1).args[2], 'approved', true);
+  });
+
+  describe('with always allowed tools', () => {
+    beforeEach(() => {
+      updateHostConfig({devToolsAiNaturalLanguageInterface: {enabled: true}});
+    });
+
+    it('stores the tool when the user picks ALLOW_ALWAYS', async () => {
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+
+      await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.ALLOW_ALWAYS, {alwaysAllowedTools});
+
+      assert.isTrue(alwaysAllowedTools.isAllowed(AiAssistance.Tool.ToolName.GET_COOKIE_VALUES));
+    });
+
+    it('does not store the tool when the user picks ALLOW_ONCE', async () => {
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+
+      await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.ALLOW_ONCE, {alwaysAllowedTools});
+
+      assert.isFalse(alwaysAllowedTools.isAllowed(AiAssistance.Tool.ToolName.GET_COOKIE_VALUES));
+    });
+
+    it('skips the prompt for an always-allowed tool with an ALLOW_ONCE_OR_ALWAYS prompt', async () => {
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+      alwaysAllowedTools.allow(AiAssistance.Tool.ToolName.GET_COOKIE_VALUES);
+
+      const {responses, handlerStub} = await runGetCookieValuesApprovalFlow(
+          AiAssistance.Tool.PermissionDecision.REJECT,
+          {alwaysAllowedTools, permissionPrompt: AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS});
+
+      sinon.assert.calledOnce(handlerStub);
+      assert.propertyVal(handlerStub.getCall(0).args[2], 'approved', true);
+      assert.notExists(responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT));
+    });
+
+    it('still prompts for an always-allowed tool with an ALLOW_ONCE prompt', async () => {
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+      alwaysAllowedTools.allow(AiAssistance.Tool.ToolName.GET_COOKIE_VALUES);
+
+      const {responses, handlerStub} =
+          await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.REJECT, {alwaysAllowedTools});
+
+      sinon.assert.calledOnce(handlerStub);
+      assert.isNotOk(handlerStub.getCall(0).args[2]?.approved);
+      assert.exists(responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT));
+    });
+  });
+
+  describe('with always allowed tools when natural language interface is disabled', () => {
+    const ALWAYS_ALLOWED_TOOLS_SETTING = 'ai-assistance-always-allowed-tools';
+
+    beforeEach(() => {
+      updateHostConfig({devToolsAiNaturalLanguageInterface: {enabled: false}});
+    });
+
+    it('does not store the tool when the user picks ALLOW_ALWAYS', async () => {
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+
+      const {handlerStub} =
+          await runGetCookieValuesApprovalFlow(AiAssistance.Tool.PermissionDecision.ALLOW_ALWAYS, {alwaysAllowedTools});
+
+      sinon.assert.calledTwice(handlerStub);
+      assert.isFalse(alwaysAllowedTools.isAllowed(AiAssistance.Tool.ToolName.GET_COOKIE_VALUES));
+      assert.deepEqual(universe.settings.createSetting<string[]>(ALWAYS_ALLOWED_TOOLS_SETTING, []).get(), []);
+    });
+
+    it('still prompts for a tool stored in settings with an ALLOW_ONCE_OR_ALWAYS prompt', async () => {
+      universe.settings.createSetting<string[]>(ALWAYS_ALLOWED_TOOLS_SETTING, []).set([
+        AiAssistance.Tool.ToolName.GET_COOKIE_VALUES,
+      ]);
+      const alwaysAllowedTools = new AiAssistance.AlwaysAllowedTools.AlwaysAllowedTools(universe.settings);
+
+      const {responses, handlerStub} = await runGetCookieValuesApprovalFlow(
+          AiAssistance.Tool.PermissionDecision.REJECT,
+          {alwaysAllowedTools, permissionPrompt: AiAssistance.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS});
+
+      sinon.assert.calledOnce(handlerStub);
+      assert.isNotOk(handlerStub.getCall(0).args[2]?.approved);
+      assert.exists(responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT));
+    });
   });
 
   it('runs the tool with approved: true when the user picks ALLOW_ONCE', async () => {

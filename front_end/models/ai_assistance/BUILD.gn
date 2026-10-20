@@ -28,6 +28,7 @@ devtools_foundation_module("ai_assistance") {
   sources = [
     "AiAgent2.ts",
     "AiConversation.ts",
+    "AlwaysAllowedTools.ts",
     "ChangeManager.ts",
     "ConversationSummary.ts",
     "EvaluateAction.ts",
@@ -172,6 +173,7 @@ devtools_foundation_module("foundation_unittests") {
     "AiAgent2.test.ts",
     "AiConversation.test.ts",
     "AiHistoryStorage.test.ts",
+    "AlwaysAllowedTools.test.ts",
     "ChangeManager.test.ts",
     "ConversationSummary.test.ts",
     "EvaluateAction.test.ts",

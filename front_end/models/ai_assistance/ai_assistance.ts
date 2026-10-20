@@ -11,6 +11,7 @@ import * as StorageAgent from './agents/StorageAgent.js';
 import * as StylingAgent from './agents/StylingAgent.js';
 import * as AiAgent2 from './AiAgent2.js';
 import * as AiConversation from './AiConversation.js';
+import * as AlwaysAllowedTools from './AlwaysAllowedTools.js';
 import * as ChangeManager from './ChangeManager.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
@@ -81,6 +82,7 @@ export {
   AIContext,
   AiConversation,
   AIQueries,
+  AlwaysAllowedTools,
   ChangeManager,
   ContextSelectionAgent,
   ConversationSummary,

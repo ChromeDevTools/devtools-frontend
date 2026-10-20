@@ -12,12 +12,14 @@ import * as AiUtils from '../../ai-utils/ai-utils.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
+import type {AlwaysAllowedTools} from '../AlwaysAllowedTools.js';
 import {dispatchAiAssistanceDoneEvent} from '../DOMHelpers.js';
 import {
   type ContextHandlerResult,
   type DataHandlerResult,
   PermissionDecision,
-  type PermissionPrompt,
+  PermissionPrompt,
+  type ToolName,
 } from '../tools/Tool.js';
 
 const {debugLog, isStructuredLogEnabled} = AiUtils.Debug;
@@ -351,6 +353,7 @@ export interface AgentOptions {
   allowedOrigin?: () => AllowedOriginResult;
   lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
   targetManager?: SDK.TargetManager.TargetManager;
+  alwaysAllowedTools?: AlwaysAllowedTools;
 }
 
 export interface ParsedAnswer {
@@ -765,6 +768,7 @@ export abstract class AiAgent<T> {
   readonly #functionDeclarations = new Map<string, FunctionDeclaration<Record<string, unknown>, unknown>>();
   readonly #allowedOrigin?: () => AllowedOriginResult;
   readonly #targetManager: SDK.TargetManager.TargetManager;
+  readonly #alwaysAllowedTools?: AlwaysAllowedTools;
 
   /**
    * Used in the debug mode and evals.
@@ -801,6 +805,7 @@ export abstract class AiAgent<T> {
     this.#allowedOrigin = opts.allowedOrigin;
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     this.#targetManager = opts.targetManager ?? SDK.TargetManager.TargetManager.instance();
+    this.#alwaysAllowedTools = opts.alwaysAllowedTools;
   }
 
   async enhanceQuery(query: string, selected: ConversationContext<T>|null,
@@ -1344,7 +1349,9 @@ export abstract class AiAgent<T> {
     // results.
     const runHandler = async(handlerOptions?: FunctionHandlerOptions): Promise<ToolResult<unknown>> => {
       try {
-        return await call.handler(args, handlerOptions);
+        const isAlwaysAllowed = call.permissionPrompt === PermissionPrompt.ALLOW_ONCE_OR_ALWAYS &&
+            this.#alwaysAllowedTools?.isAllowed(name as ToolName);
+        return await call.handler(args, isAlwaysAllowed ? {...handlerOptions, approved: true} : handlerOptions);
       } catch (err) {
         debugLog(`[AiAgent] Tool '${name}' threw:`, err);
         return {error: `Error: ${err instanceof Error ? err.message : String(err)}`};
@@ -1402,6 +1409,9 @@ export abstract class AiAgent<T> {
         decision = await sideEffectConfirmationPromiseWithResolvers.promise;
       } finally {
         options?.signal?.removeEventListener('abort', onAbort);
+      }
+      if (decision === PermissionDecision.ALLOW_ALWAYS) {
+        this.#alwaysAllowedTools?.allow(name as ToolName);
       }
       if (decision === PermissionDecision.REJECT) {
         yield {

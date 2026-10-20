@@ -369,6 +369,7 @@ export const knownContextValues: Set<string> = new Set([
   'affected-resources',
   'affected-sources',
   'ai-annotations-enabled',
+  'ai-assistance-always-allowed-tools',
   'ai-assistance-enabled',
   'ai-assistance-history-entries',
   'ai-assistance-history-images',

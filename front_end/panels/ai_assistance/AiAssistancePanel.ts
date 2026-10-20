@@ -598,6 +598,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: AiAssistanceModel.AiSetting.AiSetting<boolean>;
   #changeManager = new AiAssistanceModel.ChangeManager.ChangeManager();
+  #alwaysAllowedTools =
+      new AiAssistanceModel.AlwaysAllowedTools.AlwaysAllowedTools(Common.Settings.Settings.instance());
   #mutex = new Common.Mutex.Mutex();
 
   #conversation?: AiAssistanceModel.AiConversation.AiConversation;
@@ -986,6 +988,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       isReadOnly: false,
       aidaClient: this.#aidaClient,
       changeManager: this.#changeManager,
+      alwaysAllowedTools: this.#alwaysAllowedTools,
       performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
       onInspectElement: this.#handleInspectElement.bind(this),
       networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -1016,6 +1019,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             isReadOnly: false,
             aidaClient: this.#aidaClient,
             changeManager: this.#changeManager,
+            alwaysAllowedTools: this.#alwaysAllowedTools,
             performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
             onInspectElement: this.#handleInspectElement.bind(this),
             networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -1523,6 +1527,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         isReadOnly: false,
         aidaClient: this.#aidaClient,
         changeManager: this.#changeManager,
+        alwaysAllowedTools: this.#alwaysAllowedTools,
         performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
         onInspectElement: this.#handleInspectElement.bind(this),
         networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),

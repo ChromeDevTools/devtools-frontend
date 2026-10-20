@@ -1109,6 +1109,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai-utils/debug.js",
   "front_end/models/ai_assistance/AiAgent2.js",
   "front_end/models/ai_assistance/AiConversation.js",
+  "front_end/models/ai_assistance/AlwaysAllowedTools.js",
   "front_end/models/ai_assistance/ChangeManager.js",
   "front_end/models/ai_assistance/ConversationSummary.js",
   "front_end/models/ai_assistance/DOMHelpers.js",

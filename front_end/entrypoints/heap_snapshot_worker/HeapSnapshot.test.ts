@@ -2585,6 +2585,57 @@ describe('HeapSnapshot', () => {
       assert.lengthOf(itemsEmpty, 0);
     });
 
+    it('accepts className RegExp filters and preserves their flags', async () => {
+      const snapshot = await createTestSnapshotForQueryObjects();
+
+      const insensitive = snapshot.queryObjects({className: /^myclass$/i});
+      assert.deepEqual(insensitive.serializeItemsRange(0, 100).items.map(i => i.name), ['MyClass']);
+
+      const sensitive = snapshot.queryObjects({className: /^myclass$/});
+      assert.isEmpty(sensitive.serializeItemsRange(0, 100).items);
+    });
+
+    it('accepts propertyName RegExp filters and preserves their flags', async () => {
+      const snapshot = await createTestSnapshotForQueryObjects();
+
+      const insensitive = snapshot.queryObjects({propertyName: /^FOO$/i});
+      assert.deepEqual(insensitive.serializeItemsRange(0, 100).items.map(i => i.name), ['MyClass']);
+
+      const sensitive = snapshot.queryObjects({propertyName: /^FOO$/});
+      assert.isEmpty(sensitive.serializeItemsRange(0, 100).items);
+    });
+
+    for (const flags of ['g', 'y', 'gy', 'giy']) {
+      it(`matches each class name independently with the ${flags} flag`, async () => {
+        const snapshot = await createTestSnapshotForQueryObjects();
+        const className = new RegExp('Class', flags);
+        className.lastIndex = 100;
+
+        const provider = snapshot.queryObjects({className});
+        assert.deepEqual(provider.serializeItemsRange(0, 100).items.map(i => i.name), ['MyClass', 'OtherClass']);
+        assert.strictEqual(className.lastIndex, 100);
+      });
+
+      it(`matches each property name independently with the ${flags} flag`, async () => {
+        const snapshot = await createTestSnapshotForQueryObjects();
+        const propertyName = new RegExp('o', flags);
+        propertyName.lastIndex = 100;
+
+        const provider = snapshot.queryObjects({propertyName});
+        assert.deepEqual(provider.serializeItemsRange(0, 100).items.map(i => i.name),
+                         ['Detached HTMLDivElement', 'MyClass']);
+        assert.strictEqual(propertyName.lastIndex, 100);
+      });
+    }
+
+    it('treats empty string filters as absent', async () => {
+      const snapshot = await createTestSnapshotForQueryObjects();
+      const provider = snapshot.queryObjects({className: '', propertyName: ''});
+
+      assert.deepEqual(provider.serializeItemsRange(0, 100).items.map(i => i.name),
+                       ['root', 'Detached HTMLDivElement', 'MyClass', 'OtherClass', 'AttachedNode']);
+    });
+
     it('filters by nodeType', async () => {
       const snapshot = await createTestSnapshotForQueryObjects();
 

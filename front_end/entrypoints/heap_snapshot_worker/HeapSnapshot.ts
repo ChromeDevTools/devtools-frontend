@@ -3628,8 +3628,18 @@ export abstract class HeapSnapshot {
 
     const matchingIndexes: number[] = [];
 
-    const classNamePattern = queryOptions.className ? new RegExp(queryOptions.className, 'i') : null;
-    const propertyNamePattern = queryOptions.propertyName ? new RegExp(queryOptions.propertyName, 'i') : null;
+    function toPattern(pattern?: string|RegExp): RegExp|undefined {
+      if (typeof pattern === 'string') {
+        return pattern ? new RegExp(pattern, 'i') : undefined;
+      }
+      if (pattern && (pattern.global || pattern.sticky)) {
+        return new RegExp(pattern.source, pattern.flags.replace(/[gy]/g, ''));
+      }
+      return pattern;
+    }
+
+    const classNamePattern = toPattern(queryOptions.className);
+    const propertyNamePattern = toPattern(queryOptions.propertyName);
     const targetNodeType = queryOptions.nodeType ? queryOptions.nodeType.toLowerCase() : null;
 
     const node = this.rootNode();

@@ -419,8 +419,8 @@ export interface ScriptWithoutScopes {
 }
 
 export interface HeapQueryOptions {
-  className?: string;
-  propertyName?: string;
+  className?: string|RegExp;
+  propertyName?: string|RegExp;
   nodeType?: string;
   minRetainedSize?: number;
   maxRetainedSize?: number;

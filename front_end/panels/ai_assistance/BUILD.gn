@@ -18,6 +18,7 @@ generate_css("css_files") {
     "./components/exploreWidget.css",
     "./components/exportForAgentsDialog.css",
     "./components/optInChangeDialog.css",
+    "./components/permissionPrompt.css",
     "./components/walkthroughView.css",
   ]
 }
@@ -39,6 +40,7 @@ devtools_ui_module("ai_assistance") {
     "components/MarkdownRendererWithCodeBlock.ts",
     "components/OptInChangeDialog.ts",
     "components/PerformanceAgentMarkdownRenderer.ts",
+    "components/PermissionPrompt.ts",
     "components/WalkthroughUtils.ts",
     "components/WalkthroughView.ts",
   ]
@@ -143,6 +145,7 @@ devtools_ui_module("unittests") {
     "components/ImageResize.test.ts",
     "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/OptInChangeDialog.test.ts",
+    "components/PermissionPrompt.test.ts",
     "components/WalkthroughUtils.test.ts",
     "components/WalkthroughView.test.ts",
   ]
@@ -177,4 +180,5 @@ devtools_ui_module("unittests") {
     "../timeline:bundle",
     "../timeline/components:bundle",
   ]
+  deps = [ ":css_files" ]
 }

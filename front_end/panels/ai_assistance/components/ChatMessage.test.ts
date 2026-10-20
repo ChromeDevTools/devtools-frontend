@@ -1261,9 +1261,7 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     describe('permission prompt', () => {
-      function createPermissionPromptMessage(
-          dialog: Partial<AiAssistance.ChatMessage.ConfirmSideEffectDialog> = {},
-          ): AiAssistance.ChatMessage.ModelChatMessage {
+      function createPermissionPromptMessage(): AiAssistance.ChatMessage.ModelChatMessage {
         return {
           entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
           parts: [
@@ -1277,7 +1275,6 @@ describeWithEnvironment('ChatMessage', () => {
                     permissionTitle: 'Allow reading cookie values?',
                     permissionPrompt: AIAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE,
                     onAnswer: () => {},
-                    ...dialog,
                   },
                 },
                 title: 'Reading cookie values and metadata',
@@ -1288,10 +1285,6 @@ describeWithEnvironment('ChatMessage', () => {
           rpcId: 99,
           id: '1',
         };
-      }
-
-      function getButtons(target: HTMLElement): HTMLElement[] {
-        return Array.from(target.querySelectorAll<HTMLElement>('.permission-prompt devtools-button'));
       }
 
       beforeEach(() => {
@@ -1306,84 +1299,11 @@ describeWithEnvironment('ChatMessage', () => {
         assert.isNotNull(target.querySelector('.side-effect-confirmation'));
       });
 
-      it('renders the title, description and code', () => {
+      it('renders the permission prompt instead of the legacy confirmation when the flag is on', () => {
         const target = renderView({message: createPermissionPromptMessage()});
+
+        assert.isNotNull(target.querySelector('.permission-prompt'));
         assert.isNull(target.querySelector('.side-effect-confirmation'));
-
-        const prompt = querySelectorErrorOnMissing(target, '.permission-prompt');
-        assert.strictEqual(prompt.querySelector('.permission-prompt-title')?.textContent,
-                           'Allow reading cookie values?');
-        assert.include(prompt.querySelector('.permission-prompt-description')?.textContent,
-                       'The AI wants to read the cookie "session"');
-
-        const codeBlock = querySelectorErrorOnMissing<HTMLElement&{code: string}>(prompt, 'devtools-code-block');
-        assert.strictEqual(codeBlock.code, 'getCookieValues({cookieNames: ["session"]})');
-        assert.strictEqual(codeBlock.shadowRoot?.querySelector('.heading-text')?.textContent, 'Code to execute');
-        assert.include(codeBlock.shadowRoot?.querySelector('.notice')?.textContent, 'Use code snippets with caution');
-      });
-
-      it('falls back to a generic title when the tool has none', () => {
-        const target = renderView({message: createPermissionPromptMessage({permissionTitle: undefined})});
-        assert.strictEqual(target.querySelector('.permission-prompt-title')?.textContent, 'Allow this action?');
-      });
-
-      it('offers Skip and Allow once for ALLOW_ONCE', () => {
-        const onAnswer = sinon.stub();
-        const target = renderView({message: createPermissionPromptMessage({onAnswer})});
-
-        const buttons = getButtons(target);
-        assert.deepEqual(buttons.map(b => b.textContent?.trim()), ['Skip', 'Yes, allow this time']);
-
-        buttons[0].click();
-        buttons[1].click();
-        assert.deepEqual(onAnswer.args.map(([decision]) => decision), [
-          AIAssistanceModel.Tool.PermissionDecision.REJECT,
-          AIAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE,
-        ]);
-      });
-
-      it('offers Skip, Always allow and Allow once for ALLOW_ONCE_OR_ALWAYS', () => {
-        const onAnswer = sinon.stub();
-        const target = renderView({
-          message: createPermissionPromptMessage({
-            onAnswer,
-            permissionPrompt: AIAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS,
-          }),
-        });
-
-        const buttons = getButtons(target);
-        assert.deepEqual(buttons.map(b => b.textContent?.trim()),
-                         ['Skip', 'Yes, always allow', 'Yes, allow this time']);
-
-        buttons[1].click();
-        sinon.assert.calledOnceWithExactly(onAnswer, AIAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS);
-      });
-
-      it('renders the data disclaimer', () => {
-        const target = renderView({message: createPermissionPromptMessage()});
-
-        const footer = querySelectorErrorOnMissing(target, '.permission-prompt-footer');
-        assert.strictEqual(footer.textContent?.trim(),
-                           'Relevant data is sent to Google. Change permissions in settings at any time.');
-      });
-
-      it('renders the ALLOW_ONCE prompt', async () => {
-        const target = document.createElement('div');
-        renderElementIntoDOM(target, {includeCommonStyles: true});
-        renderView({message: createPermissionPromptMessage()}, target);
-        await assertScreenshot('ai_assistance/permission_prompt_allow_once.png');
-      });
-
-      it('renders the ALLOW_ONCE_OR_ALWAYS prompt', async () => {
-        const target = document.createElement('div');
-        renderElementIntoDOM(target, {includeCommonStyles: true});
-        renderView({
-          message: createPermissionPromptMessage({
-            permissionPrompt: AIAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS,
-          }),
-        },
-                   target);
-        await assertScreenshot('ai_assistance/permission_prompt_allow_once_or_always.png');
       });
     });
 

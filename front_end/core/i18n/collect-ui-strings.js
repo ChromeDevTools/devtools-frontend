@@ -63,16 +63,18 @@ let collectedStrings = {};
 /** @type {string[]} */
 const files = [];
 for (const directory of inputDirectories) {
-  collectedStrings = {
-    ...collectedStrings,
-    ...collectAllStringsInDir(directory),
-  };
-
-  const fs = globSync('**/*.{js,ts,gn}', {
+  const directoryFiles = globSync('**/*.{js,ts,gn}', {
     cwd: directory,
     exclude: IGNORED_PATH_COMPONENTS,
   });
-  files.push(...fs.map(f => path.join(directory, f)));
+  collectedStrings = {
+    ...collectedStrings,
+    ...collectAllStringsInDir(
+        directory,
+        directoryFiles.filter(f => !f.endsWith('.gn')),
+        ),
+  };
+  files.push(...directoryFiles.map(f => path.join(directory, f)));
 }
 
 const outputDirectory = yargsObject['output-directory'];

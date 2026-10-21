@@ -10,6 +10,14 @@ import("//$devtools_root_location/config/gni/i18n.gni")
 node_action("collect_strings") {
   script = "front_end/core/i18n/collect-ui-strings.js"
 
+  # The script imports these files. A change to them can change the output.
+  inputs = [
+    devtools_location_prepend + "front_end/core/i18n/collect-ui-strings.js",
+    devtools_location_prepend + "scripts/build/ninja/write-if-changed.js",
+    devtools_location_prepend + "third_party/i18n/bake-ctc-to-lhl.js",
+    devtools_location_prepend + "third_party/i18n/collect-strings.js",
+  ]
+
   args = [ "--input-directories" ]
   foreach(dir, devtools_collection_directories) {
     args += [ rebase_path(dir, root_build_dir) ]

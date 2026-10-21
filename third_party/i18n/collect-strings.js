@@ -664,14 +664,16 @@ const strings = {};
  * Collects all LHL messsages defined in UIString from Javascript files in dir,
  * and converts them into CTC.
  * @param {string} directory
+ * @param {string[]} [files] The files to scan, relative to `directory`.
+ *     Defaults to all files that IGNORED_PATH_COMPONENTS keeps.
  * @return {Record<string, CtcMessage>}
  */
-export function collectAllStringsInDir(directory) {
+export function collectAllStringsInDir(directory, files) {
   // If CWD is contains "third_party" (e.g. in a full Chromium checkout) then
   // *all* paths will be ignored. To avoid this, make the directory relative to
   // CWD.
   directory = path.relative(process.cwd(), directory);
-  const files = fs.globSync('**/*.{js,ts}', {
+  files ??= fs.globSync('**/*.{js,ts}', {
     cwd: directory,
     exclude: IGNORED_PATH_COMPONENTS,
   });

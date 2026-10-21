@@ -191,6 +191,11 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     wasmDisassemblyInternal;
     contentSet;
     selfXssWarningDisabledSetting;
+    #textEditorIndentSetting;
+    #listeningToIndentSetting = false;
+    // The indentation that the content was last pretty printed with.
+    #prettyIndent = null;
+    #updatingPrettyIndent = false;
     constructor(lazyContent, options = {}, element, view = DEFAULT_VIEW) {
         // @ts-expect-error
         super(...(element ? [element] : []), {
@@ -223,9 +228,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.wasmDisassemblyInternal = null;
         this.contentSet = false;
         this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting('disable-self-xss-warning', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
-        Common.Settings.Settings.instance()
-            .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
-            .addChangeListener(this.#textEditorIndentChanged, this);
+        this.#textEditorIndentSetting =
+            Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor);
         this.performUpdate();
     }
     performUpdate() {
@@ -254,17 +258,28 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         this.#toolbarWidget.performUpdate();
     }
     disposeView() {
-        Common.Settings.Settings.instance()
-            .resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor)
-            .removeChangeListener(this.#textEditorIndentChanged, this);
+        this.#stopListeningToIndentSetting();
+    }
+    #stopListeningToIndentSetting() {
+        if (this.#listeningToIndentSetting) {
+            this.#textEditorIndentSetting.removeChangeListener(this.#textEditorIndentChanged, this);
+            this.#listeningToIndentSetting = false;
+        }
     }
     async #textEditorIndentChanged() {
         if (this.prettyInternal) {
             // Indentation settings changed, which are used for pretty printing as well,
             // so if the editor is currently pretty printed, just toggle the state here
             // to apply the new indentation settings.
-            await this.setPretty(false);
-            await this.setPretty(true);
+            this.#updatingPrettyIndent = true;
+            try {
+                await this.setPretty(false);
+                await this.setPretty(true);
+            }
+            finally {
+                this.#updatingPrettyIndent = false;
+            }
+            this.#revealPositionIfNeeded();
         }
     }
     placeholderEditorState(content) {
@@ -401,7 +416,8 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         if (this.prettyInternal) {
             const content = this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || '';
             this.textEditor.state = this.placeholderEditorState(i18nString(UIStrings.formatting));
-            const indent = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
+            const indent = this.#textEditorIndentSetting.get();
+            this.#prettyIndent = indent;
             const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(this.contentType, content, indent);
             this.formattedMap = formatInfo.formattedMapping;
             await this.setContent(formatInfo.formattedContent);
@@ -411,11 +427,11 @@ export class SourceFrameImpl extends SourceFrameImplBase {
             newSelection = textEditor.createSelection({ lineNumber: start[0], columnNumber: start[1] }, { lineNumber: end[0], columnNumber: end[1] });
         }
         else {
+            const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);
+            const end = this.prettyToRawLocation(endPos.lineNumber, endPos.columnNumber);
             this.formattedMap = null;
             await this.setContent(this.rawContent || '');
             this.baseDoc = textEditor.state.doc;
-            const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);
-            const end = this.prettyToRawLocation(endPos.lineNumber, endPos.columnNumber);
             newSelection = textEditor.createSelection({ lineNumber: start[0], columnNumber: start[1] }, { lineNumber: end[0], columnNumber: end[1] });
         }
         if (wasLoaded) {
@@ -486,10 +502,20 @@ export class SourceFrameImpl extends SourceFrameImplBase {
     wasShown() {
         super.wasShown();
         void this.ensureContentLoaded();
+        // `wasShown()` can be called again without `willHide()` in between, so only register once.
+        if (!this.#listeningToIndentSetting) {
+            this.#textEditorIndentSetting.addChangeListener(this.#textEditorIndentChanged, this);
+            this.#listeningToIndentSetting = true;
+        }
+        // The indentation might have changed while the frame was hidden.
+        if (this.prettyInternal && this.#prettyIndent !== this.#textEditorIndentSetting.get()) {
+            void this.#textEditorIndentChanged();
+        }
         this.wasShownOrLoaded();
     }
     willHide() {
         super.willHide();
+        this.#stopListeningToIndentSetting();
         this.clearPositionToReveal();
     }
     async toolbarItems() {
@@ -629,7 +655,7 @@ export class SourceFrameImpl extends SourceFrameImplBase {
         if (!this.positionToReveal) {
             return;
         }
-        if (!this.loaded || !this.isShowing()) {
+        if (!this.loaded || !this.isShowing() || this.#updatingPrettyIndent) {
             return;
         }
         const { from, to, shouldHighlight } = this.positionToReveal;

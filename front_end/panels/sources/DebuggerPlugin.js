@@ -1428,6 +1428,13 @@ export class DebuggerPlugin extends Plugin {
     async setBreakpoint(lineNumber, columnNumber, condition, enabled, isLogpoint) {
         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.breakpointsActiveSettingDescriptor).set(true);
         const bp = await this.breakpointManager.setBreakpoint(this.uiSourceCode, lineNumber, columnNumber, condition, enabled, isLogpoint, "USER_ACTION" /* Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION */);
+        // The breakpoint manager normalizes the location (for example to the
+        // authored file of a source-mapped script). Reveal it when it moved.
+        const uiLocation = new Workspace.UISourceCode.UILocation(this.uiSourceCode, lineNumber, columnNumber);
+        const normalizedLocation = await this.breakpointManager.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
+        if (normalizedLocation.id() !== uiLocation.id()) {
+            void Common.Revealer.reveal(normalizedLocation);
+        }
         this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
         if (bp) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.BREAKPOINT_ADDED);

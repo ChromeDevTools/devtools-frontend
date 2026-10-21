@@ -3983,8 +3983,8 @@ var SplitWidget = class extends SplitWidgetBase {
       widget2.element.slot = "main";
       if (this.#showMode === "OnlyMain" /* ONLY_MAIN */ || this.#showMode === "Both" /* BOTH */) {
         widget2.show(this.element);
-      } else {
-        this.#hideSide(widget2);
+      } else if (this.element instanceof SplitWidgetElement) {
+        widget2.hideWidget();
       }
     }
     this.resumeInvalidations();
@@ -4002,20 +4002,11 @@ var SplitWidget = class extends SplitWidgetBase {
       widget2.element.slot = "sidebar";
       if (this.#showMode === "OnlySidebar" /* ONLY_SIDEBAR */ || this.#showMode === "Both" /* BOTH */) {
         widget2.show(this.element);
-      } else {
-        this.#hideSide(widget2);
+      } else if (this.element instanceof SplitWidgetElement) {
+        widget2.hideWidget();
       }
     }
     this.resumeInvalidations();
-  }
-  #hideSide(widget2) {
-    if (this.element instanceof SplitWidgetElement) {
-      widget2.hideWidget();
-    } else {
-      this.#detaching = true;
-      widget2.detach();
-      this.#detaching = false;
-    }
   }
   mainWidget() {
     return this.#mainWidget;
@@ -4102,7 +4093,13 @@ var SplitWidget = class extends SplitWidgetBase {
         }
       }
       if (sideToHide) {
-        this.#hideSide(sideToHide);
+        if (this.element instanceof SplitWidgetElement) {
+          sideToHide.hideWidget();
+        } else {
+          this.#detaching = true;
+          sideToHide.detach();
+          this.#detaching = false;
+        }
       }
       this.#resizerElement.classList.add("hidden");
       shadowToShow.classList.remove("hidden");
@@ -4617,7 +4614,7 @@ var SplitWidgetElement = class extends WidgetElement {
         widget2.hideSidebar();
       } else if (newValue === "sidebar") {
         widget2.hideMain();
-      } else {
+      } else if (newValue === "both" || newValue === null) {
         widget2.showBoth();
       }
     }

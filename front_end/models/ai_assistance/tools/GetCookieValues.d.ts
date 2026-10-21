@@ -17,6 +17,7 @@ export declare class GetCookieValuesTool implements DataTool<GetCookieValuesArgs
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly permissionTitle: string;
+    readonly displayName: string;
     readonly description: string;
     readonly annotations: ToolAnnotation[];
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetCookieValuesArgs>;

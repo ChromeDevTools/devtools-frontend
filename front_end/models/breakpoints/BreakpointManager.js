@@ -255,10 +255,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
             const breakpointLocation = _a.breakpointLocationFromUiLocation(normalizedLocation);
             const breakpoint = this.#setBreakpoint(normalizedLocation.uiSourceCode, breakpointLocation.lineNumber, breakpointLocation.columnNumber, condition, enabled, isLogpoint, origin);
             if (uiSourceCode === compatibleUiSourceCode) {
-                if (normalizedLocation.id() !== uiLocation.id()) {
-                    // Only call this on the uiSourceCode that was initially selected for breakpoint setting.
-                    void Common.Revealer.reveal(normalizedLocation);
-                }
                 primaryBreakpoint = breakpoint;
             }
         }

@@ -9,9 +9,11 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../../ui/lit/lit.js';
 import { ChatInput } from './ChatInput.js';
-import { ChatMessage } from './ChatMessage.js';
+import { ChatMessage, } from './ChatMessage.js';
 import chatViewStyles from './chatView.css.js';
 import { ExportForAgentsDialog } from './ExportForAgentsDialog.js';
+import permissionPromptStyles from './permissionPrompt.css.js';
+import { renderPermissionPrompt } from './PermissionPrompt.js';
 export { ChatInput } from './ChatInput.js';
 const { ref, repeat, classMap, } = Directives;
 const { widget } = UI.Widget;
@@ -30,18 +32,30 @@ const UIStringsNotTranslate = {
 };
 const lockedString = i18n.i18n.lockedString;
 const SCROLL_ROUNDING_OFFSET = 1;
+function findStepAwaitingApproval(messages) {
+    const lastMessage = messages.at(-1);
+    if (lastMessage?.entity !== "model" /* ChatMessageEntity.MODEL */ ||
+        !AiAssistanceModel.AiUtils.isNaturalLanguageInterfaceEnabled()) {
+        return undefined;
+    }
+    return lastMessage.parts.findLast((p) => p.type === 'step' && p.step.state.type === 'needs_approval')
+        ?.step;
+}
 const DEFAULT_VIEW = (input, output, target) => {
     const chatUiClasses = classMap({
         'chat-ui': true,
         gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
     });
+    const awaitingApprovalStep = findStepAwaitingApproval(input.messages);
     const inputWidgetClasses = classMap({
         'chat-input-widget': true,
+        'permission-prompt-container': Boolean(awaitingApprovalStep),
         sticky: !input.isReadOnly,
     });
     // clang-format off
     render(html `
       <style>${chatViewStyles}</style>
+      <style>${permissionPromptStyles}</style>
       <div class=${chatUiClasses}>
         <main @scroll=${input.handleScroll} ${ref(element => { output.mainElement = element; })}>
           ${input.messages.length > 0 ? html `
@@ -101,7 +115,9 @@ const DEFAULT_VIEW = (input, output, target) => {
               </div>
             </div>
           `}
-          <devtools-widget class=${inputWidgetClasses} ${widget(ChatInput, {
+          ${awaitingApprovalStep ? html `
+            <div class=${inputWidgetClasses}>${renderPermissionPrompt(awaitingApprovalStep, input.disclaimerText)}</div>
+          ` : html `<devtools-widget class=${inputWidgetClasses} ${widget(ChatInput, {
         isLoading: input.isLoading,
         blockedByCrossOrigin: input.blockedByCrossOrigin,
         isTextInputDisabled: input.isTextInputDisabled,
@@ -123,7 +139,7 @@ const DEFAULT_VIEW = (input, output, target) => {
         onNewConversation: input.onNewConversation,
         onContextRemoved: input.onContextRemoved,
         onContextAdd: input.onContextAdd,
-    })} ${ref(element => { output.input = element; })}></devtools-widget>
+    })} ${ref(element => { output.input = element; })}></devtools-widget>`}
         </main>
       </div>
     `, target);

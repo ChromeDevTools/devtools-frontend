@@ -41,6 +41,16 @@ export class PieChart extends HTMLElement {
         this.slices = data.slices;
         this.render();
     }
+    get data() {
+        return {
+            chartName: this.chartName,
+            size: this.size,
+            formatter: this.formatter,
+            showLegend: this.showLegend,
+            total: this.total,
+            slices: [...this.slices],
+        };
+    }
     render() {
         this.lastAngle = -Math.PI / 2;
         // clang-format off

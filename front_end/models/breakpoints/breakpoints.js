@@ -296,9 +296,6 @@ var BreakpointManager = class _BreakpointManager extends Common.ObjectWrapper.Ob
         origin
       );
       if (uiSourceCode === compatibleUiSourceCode) {
-        if (normalizedLocation.id() !== uiLocation.id()) {
-          void Common.Revealer.reveal(normalizedLocation);
-        }
         primaryBreakpoint = breakpoint;
       }
     }

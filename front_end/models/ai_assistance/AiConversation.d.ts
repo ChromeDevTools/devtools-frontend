@@ -6,6 +6,7 @@ import type * as Trace from '../../models/trace/trace.js';
 import * as AiUtils from '../ai-utils/ai-utils.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { type AllowedOriginResult, type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
+import type { AlwaysAllowedTools } from './AlwaysAllowedTools.js';
 import type { ChangeManager } from './ChangeManager.js';
 import { type OriginLockState } from './tools/Tool.js';
 type AiHistoryStorage = AiUtils.AiHistoryStorage.AiHistoryStorage;
@@ -33,6 +34,7 @@ export interface AiConversationOptions {
     networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
     lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
     aiHistoryStorage?: AiHistoryStorage;
+    alwaysAllowedTools?: AlwaysAllowedTools;
     targetManager?: SDK.TargetManager.TargetManager;
 }
 export declare class AiConversation {

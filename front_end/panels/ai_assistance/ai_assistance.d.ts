@@ -8,6 +8,8 @@ export * as ChatMessage from './components/ChatMessage.js';
 export * as ExploreWidget from './components/ExploreWidget.js';
 export * as ExportForAgentsDialog from './components/ExportForAgentsDialog.js';
 export * as OptInChangeDialog from './components/OptInChangeDialog.js';
+export * as PermissionPrompt from './components/PermissionPrompt.js';
+export * as RelevantDataDisclaimer from './components/RelevantDataDisclaimer.js';
 export * as DisabledWidget from './components/DisabledWidget.js';
 export * as WalkthroughUtils from './components/WalkthroughUtils.js';
 export * as WalkthroughView from './components/WalkthroughView.js';

@@ -1611,6 +1611,7 @@ var Network;
     RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
     RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
     RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    RefreshEventDetailsRefreshResult2["Canceled"] = "Canceled";
   })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
   let TerminationEventDetailsDeletionReason;
   ((TerminationEventDetailsDeletionReason2) => {
@@ -6955,6 +6956,7 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
     const node = this.#treeElement ? this.#matchedStyles.nodeForStyle(this.#treeElement.property.ownerStyle) : this.#matchedStyles.node();
     const fallbackLabels = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
+      const isImportant = fallback.find((node2) => node2.name === "Important");
       const fallbackContent = document.createElement("span");
       if (i > 0) {
         fallbackContent.appendChild(document.createTextNode(", "));
@@ -6962,11 +6964,14 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
       if (!this.#treeElement?.inherited() && node === this.#matchedStyles.node() && i !== this.#matchedStyles.activePositionFallbackIndex()) {
         fallbackContent.classList.add("inactive-value");
       }
-      Renderer.renderInto(fallback, context, fallbackContent);
+      Renderer.renderInto(fallback.filter((node2) => node2.name !== "Important"), context, fallbackContent);
       fallbackLabels.push(
         context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim()
       );
       content.push(fallbackContent);
+      if (isImportant) {
+        content.push(document.createTextNode(" "), Renderer.render(isImportant, context).nodes);
+      }
     }
     if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() || !this.#treeElement.property.activeInStyle() || !node) {
       return html7`${content}`;

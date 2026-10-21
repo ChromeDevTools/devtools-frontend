@@ -137,6 +137,7 @@ models/ai-utils/AiUtils.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
+models/ai_assistance/AlwaysAllowedTools.test.js
 models/ai_assistance/ChangeManager.test.js
 models/ai_assistance/ConversationSummary.test.js
 models/ai_assistance/EvaluateAction.test.js

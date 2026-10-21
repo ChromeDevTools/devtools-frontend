@@ -1958,6 +1958,7 @@ export class PositionTryRenderer extends PositionTryRendererBase {
             this.#matchedStyles.node();
         const fallbackLabels = [];
         for (const [i, fallback] of match.fallbacks.entries()) {
+            const isImportant = fallback.find(node => node.name === 'Important');
             const fallbackContent = document.createElement('span');
             if (i > 0) {
                 fallbackContent.appendChild(document.createTextNode(', '));
@@ -1966,9 +1967,12 @@ export class PositionTryRenderer extends PositionTryRendererBase {
                 i !== this.#matchedStyles.activePositionFallbackIndex()) {
                 fallbackContent.classList.add('inactive-value');
             }
-            Renderer.renderInto(fallback, context, fallbackContent);
+            Renderer.renderInto(fallback.filter(node => node.name !== 'Important'), context, fallbackContent);
             fallbackLabels.push(context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim());
             content.push(fallbackContent);
+            if (isImportant) {
+                content.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
+            }
         }
         if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() ||
             !this.#treeElement.property.activeInStyle() || !node) {

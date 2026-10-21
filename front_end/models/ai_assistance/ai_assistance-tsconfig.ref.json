@@ -15,6 +15,7 @@
   "files": [
     "../../../../../../front_end/models/ai_assistance/AiAgent2.ts",
     "../../../../../../front_end/models/ai_assistance/AiConversation.ts",
+    "../../../../../../front_end/models/ai_assistance/AlwaysAllowedTools.ts",
     "../../../../../../front_end/models/ai_assistance/ChangeManager.ts",
     "../../../../../../front_end/models/ai_assistance/ConversationSummary.ts",
     "../../../../../../front_end/models/ai_assistance/EvaluateAction.ts",

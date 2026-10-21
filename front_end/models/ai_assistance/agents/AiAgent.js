@@ -218,6 +218,7 @@ export class AiAgent {
     #functionDeclarations = new Map();
     #allowedOrigin;
     #targetManager;
+    #alwaysAllowedTools;
     /**
      * Used in the debug mode and evals.
      */
@@ -246,6 +247,7 @@ export class AiAgent {
         this.#allowedOrigin = opts.allowedOrigin;
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         this.#targetManager = opts.targetManager ?? SDK.TargetManager.TargetManager.instance();
+        this.#alwaysAllowedTools = opts.alwaysAllowedTools;
     }
     async enhanceQuery(query) {
         return query;
@@ -705,7 +707,9 @@ export class AiAgent {
         // results.
         const runHandler = async (handlerOptions) => {
             try {
-                return await call.handler(args, handlerOptions);
+                const isAlwaysAllowed = call.permissionPrompt === "allow-once-or-always" /* PermissionPrompt.ALLOW_ONCE_OR_ALWAYS */ &&
+                    this.#alwaysAllowedTools?.isAllowed(name);
+                return await call.handler(args, isAlwaysAllowed ? { ...handlerOptions, approved: true } : handlerOptions);
             }
             catch (err) {
                 debugLog(`[AiAgent] Tool '${name}' threw:`, err);
@@ -753,6 +757,9 @@ export class AiAgent {
             }
             finally {
                 options?.signal?.removeEventListener('abort', onAbort);
+            }
+            if (decision === "allow-always" /* PermissionDecision.ALLOW_ALWAYS */) {
+                this.#alwaysAllowedTools?.allow(name);
             }
             if (decision === "reject" /* PermissionDecision.REJECT */) {
                 yield {

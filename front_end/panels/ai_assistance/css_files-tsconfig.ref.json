@@ -16,6 +16,8 @@
     "./components/exploreWidget.css.js",
     "./components/exportForAgentsDialog.css.js",
     "./components/optInChangeDialog.css.js",
+    "./components/permissionPrompt.css.js",
+    "./components/relevantDataDisclaimer.css.js",
     "./components/walkthroughView.css.js"
   ]
 }

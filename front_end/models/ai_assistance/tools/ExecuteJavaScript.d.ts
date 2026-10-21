@@ -10,6 +10,7 @@ export declare class ExecuteJavaScriptTool implements DataTool<ExecuteJavaScript
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly permissionTitle: string;
+    readonly displayName: string;
     readonly description: string;
     /**
      * Formats the code and checks it against the size limits. This method does

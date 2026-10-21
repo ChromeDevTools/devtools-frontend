@@ -13,6 +13,7 @@ export class GetCookieValuesTool {
     name = "getCookieValues" /* ToolName.GET_COOKIE_VALUES */;
     permissionPrompt = "allow-once" /* PermissionPrompt.ALLOW_ONCE */;
     permissionTitle = lockedString('Allow reading cookie values?');
+    displayName = lockedString('Read cookie values');
     description = 'Retrieve the values and detailed metadata of specific cookies by their names across origins.';
     annotations = ["redact-from-history" /* ToolAnnotation.REDACT_FROM_HISTORY */];
     parameters = {

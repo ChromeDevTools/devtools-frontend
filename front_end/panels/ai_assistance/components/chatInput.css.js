@@ -329,24 +329,6 @@ export default `/*
   }
 }
 
-.link {
-  color: var(--text-link);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-button.link {
-  border: none;
-  background: none;
-  font: inherit;
-
-  &:focus-visible {
-    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-    outline-offset: 0;
-    border-radius: var(--sys-shape-corner-extra-small);
-  }
-}
-
 .chat-input-footer {
   display: flex;
   justify-content: center;

@@ -20,6 +20,7 @@ export declare class GetStorageValuesTool implements DataTool<GetStorageValuesAr
     readonly name: ToolName;
     readonly permissionPrompt: PermissionPrompt;
     readonly permissionTitle: string;
+    readonly displayName: string;
     readonly description: string;
     readonly annotations: ToolAnnotation[];
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetStorageValuesArgs>;

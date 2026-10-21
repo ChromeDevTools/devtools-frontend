@@ -6644,6 +6644,7 @@ var Network;
     RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
     RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
     RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    RefreshEventDetailsRefreshResult2["Canceled"] = "Canceled";
   })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
   let TerminationEventDetailsDeletionReason;
   ((TerminationEventDetailsDeletionReason2) => {
@@ -8867,6 +8868,16 @@ var PieChart = class extends HTMLElement {
     this.total = data.total;
     this.slices = data.slices;
     this.render();
+  }
+  get data() {
+    return {
+      chartName: this.chartName,
+      size: this.size,
+      formatter: this.formatter,
+      showLegend: this.showLegend,
+      total: this.total,
+      slices: [...this.slices]
+    };
   }
   render() {
     this.lastAngle = -Math.PI / 2;

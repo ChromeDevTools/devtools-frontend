@@ -1878,6 +1878,7 @@ export var Network;
         RefreshEventDetailsRefreshResult["RefreshedAsWaiter"] = "RefreshedAsWaiter";
         RefreshEventDetailsRefreshResult["TransientSigningError"] = "TransientSigningError";
         RefreshEventDetailsRefreshResult["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+        RefreshEventDetailsRefreshResult["Canceled"] = "Canceled";
     })(RefreshEventDetailsRefreshResult = Network.RefreshEventDetailsRefreshResult || (Network.RefreshEventDetailsRefreshResult = {}));
     let TerminationEventDetailsDeletionReason;
     (function (TerminationEventDetailsDeletionReason) {

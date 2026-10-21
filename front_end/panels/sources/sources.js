@@ -3925,6 +3925,7 @@ var Network;
     RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
     RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
     RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    RefreshEventDetailsRefreshResult2["Canceled"] = "Canceled";
   })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
   let TerminationEventDetailsDeletionReason;
   ((TerminationEventDetailsDeletionReason2) => {
@@ -10865,6 +10866,11 @@ var DebuggerPlugin = class extends Plugin {
       isLogpoint,
       Breakpoints2.BreakpointManager.BreakpointOrigin.USER_ACTION
     );
+    const uiLocation = new Workspace12.UISourceCode.UILocation(this.uiSourceCode, lineNumber, columnNumber);
+    const normalizedLocation = await this.breakpointManager.debuggerWorkspaceBinding.normalizeUILocation(uiLocation);
+    if (normalizedLocation.id() !== uiLocation.id()) {
+      void Common10.Revealer.reveal(normalizedLocation);
+    }
     this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
     if (bp) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.BREAKPOINT_ADDED);

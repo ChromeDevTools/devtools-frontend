@@ -34,18 +34,6 @@ export default `/*
   container-name: --chat-ui-container;
 }
 
-.info-tooltip-container {
-  max-width: var(--sys-size-28);
-  padding: var(--sys-size-4) var(--sys-size-5);
-}
-
-.tooltip-link {
-  display: block;
-  margin-top: var(--sys-size-4);
-  color: var(--sys-color-primary);
-  padding-left: 0;
-}
-
 .chat-cancel-context-button {
   padding-bottom: 3px;
   padding-right: var(--sys-size-3);
@@ -64,24 +52,6 @@ export default `/*
 
     margin-left: var(--half-scrollbar-width);
     margin-right: calc(-1 * var(--half-scrollbar-width));
-  }
-}
-
-.link {
-  color: var(--text-link);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-button.link {
-  border: none;
-  background: none;
-  font: inherit;
-
-  &:focus-visible {
-    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-    outline-offset: 0;
-    border-radius: var(--sys-shape-corner-extra-small);
   }
 }
 
@@ -412,6 +382,11 @@ main {
       that the outline is rendered fully.
     */
     padding-bottom: var(--sys-size-1);
+  }
+
+  /* Same paddings as the \\'.input-form\\' in ChatInput so the permission prompt lines up with the input. */
+  &.permission-prompt-container {
+    padding: 0 var(--sys-size-5) var(--sys-size-5) var(--sys-size-5);
   }
 }
 

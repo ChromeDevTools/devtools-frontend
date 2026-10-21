@@ -137,6 +137,7 @@ models/ai-utils/AiUtils.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
+models/ai_assistance/AlwaysAllowedTools.test.js
 models/ai_assistance/ChangeManager.test.js
 models/ai_assistance/ConversationSummary.test.js
 models/ai_assistance/EvaluateAction.test.js
@@ -402,6 +403,8 @@ panels/ai_assistance/components/ExportForAgentsDialog.test.js
 panels/ai_assistance/components/ImageResize.test.js
 panels/ai_assistance/components/MarkdownRendererWithCodeBlock.test.js
 panels/ai_assistance/components/OptInChangeDialog.test.js
+panels/ai_assistance/components/PermissionPrompt.test.js
+panels/ai_assistance/components/RelevantDataDisclaimer.test.js
 panels/ai_assistance/components/WalkthroughUtils.test.js
 panels/ai_assistance/components/WalkthroughView.test.js
 panels/animation/AnimationTimeline.test.js

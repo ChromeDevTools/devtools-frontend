@@ -72,10 +72,11 @@ export class AiConversation {
     #networkTimeCalculator;
     #aiHistoryStorage;
     #targetManager;
+    #alwaysAllowedTools;
     constructor(options) {
         const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiUtils.AiHistoryStorage.AiHistoryStorage.instance(), 
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        targetManager = SDK.TargetManager.TargetManager.instance(), } = options;
+        targetManager = SDK.TargetManager.TargetManager.instance(), alwaysAllowedTools, } = options;
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -84,6 +85,7 @@ export class AiConversation {
         this.#lighthouseRecording = lighthouseRecording;
         this.#aiHistoryStorage = aiHistoryStorage;
         this.#targetManager = targetManager;
+        this.#alwaysAllowedTools = alwaysAllowedTools;
         this.id = id;
         this.#isReadOnly = isReadOnly;
         this.history = this.#reconstructHistory(data);
@@ -316,6 +318,7 @@ export class AiConversation {
             lighthouseRecording: this.#lighthouseRecording,
             history,
             targetManager: this.#targetManager,
+            alwaysAllowedTools: this.#alwaysAllowedTools,
         };
         this.#agent = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2({
             ...baseOptions,

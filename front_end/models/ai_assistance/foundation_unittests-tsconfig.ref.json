@@ -16,6 +16,7 @@
     "../../../../../../front_end/models/ai_assistance/AiAgent2.test.ts",
     "../../../../../../front_end/models/ai_assistance/AiConversation.test.ts",
     "../../../../../../front_end/models/ai_assistance/AiHistoryStorage.test.ts",
+    "../../../../../../front_end/models/ai_assistance/AlwaysAllowedTools.test.ts",
     "../../../../../../front_end/models/ai_assistance/ChangeManager.test.ts",
     "../../../../../../front_end/models/ai_assistance/ConversationSummary.test.ts",
     "../../../../../../front_end/models/ai_assistance/EvaluateAction.test.ts",

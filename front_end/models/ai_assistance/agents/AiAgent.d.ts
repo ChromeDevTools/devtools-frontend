@@ -6,7 +6,8 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
-import { type ContextHandlerResult, type DataHandlerResult, PermissionDecision, type PermissionPrompt } from '../tools/Tool.js';
+import type { AlwaysAllowedTools } from '../AlwaysAllowedTools.js';
+import { type ContextHandlerResult, type DataHandlerResult, PermissionDecision, PermissionPrompt } from '../tools/Tool.js';
 type UrlString = Platform.DevToolsPath.UrlString;
 /**
  * The types of event in the response stream that `AiConversation#run()`
@@ -307,6 +308,7 @@ export interface AgentOptions {
     allowedOrigin?: () => AllowedOriginResult;
     lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.RunTypes.RunResult>;
     targetManager?: SDK.TargetManager.TargetManager;
+    alwaysAllowedTools?: AlwaysAllowedTools;
 }
 export interface ParsedAnswer {
     answer: string;

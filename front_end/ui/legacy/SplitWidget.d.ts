@@ -50,6 +50,7 @@ export declare class SplitWidget extends SplitWidgetBase {
      */
     toggleSidebar(): boolean;
 }
+export type ShowAttribute = 'main' | 'sidebar' | 'both';
 export declare class SplitWidgetElement extends WidgetElement<SplitWidget> {
     static readonly observedAttributes: string[];
     constructor();

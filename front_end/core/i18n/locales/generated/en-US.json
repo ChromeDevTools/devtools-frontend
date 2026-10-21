@@ -1373,6 +1373,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | ViewTransitionPreventSvgFilterPaint": {
+    "message": "SVG filters cannot be applied to view transition content, such as ::view-transition-old() and ::view-transition-new(), as it may contain cross-origin iframes or plugins."
+  },
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() is deprecated. Use writeValueWithResponse() or writeValueWithoutResponse() instead."
   },
@@ -3098,9 +3101,6 @@
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "You can also use one of the suggested prompts above to start your conversation"
   },
-  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
-    "message": "Learn about AI in DevTools"
-  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Reveal the selected context item in DevTools"
   },
@@ -3172,6 +3172,9 @@
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | widgetPoint": {
     "message": "Use widgets to verify results or jump to source data for select debugging cases"
+  },
+  "panels/ai_assistance/components/RelevantDataDisclaimer.ts | learnAbout": {
+    "message": "Learn about AI in DevTools"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | close": {
     "message": "Close"

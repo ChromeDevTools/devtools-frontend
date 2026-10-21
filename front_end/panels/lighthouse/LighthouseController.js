@@ -425,7 +425,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
         }
         const mainTarget = this.manager.target();
         const origin = mainTarget.inspectedURL();
-        if (!origin) {
+        if (!origin?.startsWith('http')) {
             return '';
         }
         const usageData = await mainTarget.storageAgent().invoke_getUsageAndQuota({ origin });

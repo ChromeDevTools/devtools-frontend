@@ -30,6 +30,7 @@ export declare class PieChart extends HTMLElement {
     private readonly innerR;
     private lastAngle;
     set data(data: PieChartData);
+    get data(): PieChartData;
     private render;
     private onSliceClicked;
     private selectSlice;

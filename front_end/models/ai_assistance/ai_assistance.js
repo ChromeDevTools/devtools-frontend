@@ -2132,6 +2132,7 @@ var Network;
     RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
     RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
     RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    RefreshEventDetailsRefreshResult2["Canceled"] = "Canceled";
   })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
   let TerminationEventDetailsDeletionReason;
   ((TerminationEventDetailsDeletionReason2) => {
@@ -4252,6 +4253,7 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
   name = "executeJavaScript" /* EXECUTE_JAVASCRIPT */;
   permissionPrompt = "allow-once" /* ALLOW_ONCE */;
   permissionTitle = lockedString2("Allow running JavaScript on the page?");
+  displayName = lockedString2("Run JavaScript on the page");
   description = "This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.";
   /**
    * Formats the code and checks it against the size limits. This method does
@@ -4478,6 +4480,7 @@ var GetCookieValuesTool = class {
   name = "getCookieValues" /* GET_COOKIE_VALUES */;
   permissionPrompt = "allow-once" /* ALLOW_ONCE */;
   permissionTitle = lockedString3("Allow reading cookie values?");
+  displayName = lockedString3("Read cookie values");
   description = "Retrieve the values and detailed metadata of specific cookies by their names across origins.";
   annotations = ["redact-from-history" /* REDACT_FROM_HISTORY */];
   parameters = {
@@ -8376,6 +8379,7 @@ var GetStorageValuesTool = class {
   name = "getStorageValues" /* GET_STORAGE_VALUES */;
   permissionPrompt = "allow-once" /* ALLOW_ONCE */;
   permissionTitle = lockedString10("Allow reading storage values?");
+  displayName = lockedString10("Read storage values");
   description = "Retrieve specific string values from storage partitions for requested keys across origins.";
   annotations = ["redact-from-history" /* REDACT_FROM_HISTORY */];
   parameters = {
@@ -9435,6 +9439,7 @@ var AiAgent = class {
   #functionDeclarations = /* @__PURE__ */ new Map();
   #allowedOrigin;
   #targetManager;
+  #alwaysAllowedTools;
   /**
    * Used in the debug mode and evals.
    */
@@ -9459,6 +9464,7 @@ var AiAgent = class {
     this.#history = opts.history ?? [];
     this.#allowedOrigin = opts.allowedOrigin;
     this.#targetManager = opts.targetManager ?? SDK19.TargetManager.TargetManager.instance();
+    this.#alwaysAllowedTools = opts.alwaysAllowedTools;
   }
   async enhanceQuery(query) {
     return query;
@@ -9894,7 +9900,8 @@ var AiAgent = class {
     };
     const runHandler = async (handlerOptions) => {
       try {
-        return await call.handler(args, handlerOptions);
+        const isAlwaysAllowed = call.permissionPrompt === "allow-once-or-always" /* ALLOW_ONCE_OR_ALWAYS */ && this.#alwaysAllowedTools?.isAllowed(name);
+        return await call.handler(args, isAlwaysAllowed ? { ...handlerOptions, approved: true } : handlerOptions);
       } catch (err) {
         debugLog2(`[AiAgent] Tool '${name}' threw:`, err);
         return { error: `Error: ${err instanceof Error ? err.message : String(err)}` };
@@ -9939,6 +9946,9 @@ var AiAgent = class {
         decision = await sideEffectConfirmationPromiseWithResolvers.promise;
       } finally {
         options?.signal?.removeEventListener("abort", onAbort);
+      }
+      if (decision === "allow-always" /* ALLOW_ALWAYS */) {
+        this.#alwaysAllowedTools?.allow(name);
       }
       if (decision === "reject" /* REJECT */) {
         yield {
@@ -14906,6 +14916,7 @@ var AiConversation = class _AiConversation {
   #networkTimeCalculator;
   #aiHistoryStorage;
   #targetManager;
+  #alwaysAllowedTools;
   constructor(options) {
     const {
       type,
@@ -14920,7 +14931,8 @@ var AiConversation = class _AiConversation {
       lighthouseRecording,
       aiHistoryStorage = AiUtils9.AiHistoryStorage.AiHistoryStorage.instance(),
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      targetManager = SDK30.TargetManager.TargetManager.instance()
+      targetManager = SDK30.TargetManager.TargetManager.instance(),
+      alwaysAllowedTools
     } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
@@ -14930,6 +14942,7 @@ var AiConversation = class _AiConversation {
     this.#lighthouseRecording = lighthouseRecording;
     this.#aiHistoryStorage = aiHistoryStorage;
     this.#targetManager = targetManager;
+    this.#alwaysAllowedTools = alwaysAllowedTools;
     this.id = id;
     this.#isReadOnly = isReadOnly;
     this.history = this.#reconstructHistory(data);
@@ -15153,7 +15166,8 @@ ${item.text.trim()}`);
       networkTimeCalculator: this.#networkTimeCalculator,
       lighthouseRecording: this.#lighthouseRecording,
       history,
-      targetManager: this.#targetManager
+      targetManager: this.#targetManager,
+      alwaysAllowedTools: this.#alwaysAllowedTools
     };
     this.#agent = Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2({
       ...baseOptions,
@@ -15337,6 +15351,77 @@ function getPrimaryPageSecurityOrigin(targetManager) {
   return inspectedURL ? SDK30.SecurityOrigin.SecurityOrigin.create(inspectedURL) : void 0;
 }
 
+// ../../front_end/models/ai_assistance/AlwaysAllowedTools.ts
+var AlwaysAllowedTools_exports = {};
+__export(AlwaysAllowedTools_exports, {
+  AlwaysAllowedTools: () => AlwaysAllowedTools,
+  Events: () => Events,
+  alwaysAllowedToolsSettingDescriptor: () => alwaysAllowedToolsSettingDescriptor
+});
+import * as Common7 from "../../core/common/common.js";
+import * as AiUtils11 from "../ai-utils/ai-utils.js";
+var alwaysAllowedToolsSettingDescriptor = {
+  name: "ai-assistance-always-allowed-tools",
+  type: Common7.Settings.SettingType.ARRAY,
+  defaultValue: []
+};
+var Events = /* @__PURE__ */ ((Events2) => {
+  Events2["TOOLS_CHANGED"] = "ToolsChanged";
+  return Events2;
+})(Events || {});
+var AlwaysAllowedTools = class extends Common7.ObjectWrapper.ObjectWrapper {
+  #impl;
+  constructor(settings) {
+    super();
+    const onChange = () => this.dispatchEventToListeners("ToolsChanged" /* TOOLS_CHANGED */);
+    this.#impl = AiUtils11.AiUtils.isNaturalLanguageInterfaceEnabled() ? new SettingImpl(settings, onChange) : new DisabledImpl();
+  }
+  isAllowed(toolName) {
+    return this.#impl.isAllowed(toolName);
+  }
+  allow(toolName) {
+    this.#impl.allow(toolName);
+  }
+  remove(toolName) {
+    this.#impl.remove(toolName);
+  }
+  list() {
+    return this.#impl.list();
+  }
+};
+var SettingImpl = class {
+  #setting;
+  constructor(settings, onChange) {
+    this.#setting = settings.resolve(alwaysAllowedToolsSettingDescriptor);
+    this.#setting.addChangeListener(onChange);
+  }
+  isAllowed(toolName) {
+    return this.#setting.get().includes(toolName);
+  }
+  allow(toolName) {
+    this.#setting.set([.../* @__PURE__ */ new Set([...this.#setting.get(), toolName])]);
+  }
+  remove(toolName) {
+    const toolNames = this.#setting.get().filter((tn) => tn !== toolName);
+    this.#setting.set([...new Set(toolNames)]);
+  }
+  list() {
+    return [...new Set(this.#setting.get())];
+  }
+};
+var DisabledImpl = class {
+  isAllowed() {
+    return false;
+  }
+  allow() {
+  }
+  remove() {
+  }
+  list() {
+    return [];
+  }
+};
+
 // ../../front_end/models/ai_assistance/ConversationSummary.ts
 var ConversationSummary_exports = {};
 __export(ConversationSummary_exports, {
@@ -15344,8 +15429,8 @@ __export(ConversationSummary_exports, {
 });
 import * as Host37 from "../../core/host/host.js";
 import * as Root15 from "../../core/root/root.js";
-import * as AiUtils11 from "../ai-utils/ai-utils.js";
-var { runOneShotPrompt } = AiUtils11.AiUtils;
+import * as AiUtils13 from "../ai-utils/ai-utils.js";
+var { runOneShotPrompt } = AiUtils13.AiUtils;
 var preamble9 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
 
@@ -15477,8 +15562,8 @@ __export(PerformanceAnnotations_exports, {
 });
 import * as Host38 from "../../core/host/host.js";
 import * as Root16 from "../../core/root/root.js";
-import * as AiUtils13 from "../ai-utils/ai-utils.js";
-var { runOneShotPrompt: runOneShotPrompt2 } = AiUtils13.AiUtils;
+import * as AiUtils15 from "../ai-utils/ai-utils.js";
+var { runOneShotPrompt: runOneShotPrompt2 } = AiUtils15.AiUtils;
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -15596,7 +15681,7 @@ var Skill_exports = {};
 import {
   AiHistoryStorage as AiHistoryStorage2,
   AiSetting,
-  AiUtils as AiUtils15,
+  AiUtils as AiUtils17,
   BuiltInAi,
   Debug as Debug7
 } from "../ai-utils/ai-utils.js";
@@ -15610,7 +15695,8 @@ export {
   AiConversation_exports as AiConversation,
   AiHistoryStorage2 as AiHistoryStorage,
   AiSetting,
-  AiUtils15 as AiUtils,
+  AiUtils17 as AiUtils,
+  AlwaysAllowedTools_exports as AlwaysAllowedTools,
   BuiltInAi,
   ChangeManager_exports as ChangeManager,
   ContextSelectionAgent_exports as ContextSelectionAgent,

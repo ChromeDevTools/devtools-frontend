@@ -112,6 +112,13 @@ export declare class TextMatcher extends TextMatcherBase {
     accepts(): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): TextMatch | null;
 }
+export declare class ImportantMatch extends TextMatch {
+    computedText: () => string;
+}
+declare const ImportantMatcherBase: MatcherClass<ImportantMatch>;
+export declare class ImportantMatcher extends ImportantMatcherBase {
+    matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ImportantMatch | null;
+}
 export declare class AngleMatch implements Match {
     readonly text: string;
     readonly node: CodeMirror.SyntaxNode;

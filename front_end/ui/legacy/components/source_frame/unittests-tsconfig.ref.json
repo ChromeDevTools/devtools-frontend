@@ -39,6 +39,9 @@
       "path": "../../../../core/root/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {

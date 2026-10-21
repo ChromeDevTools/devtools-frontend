@@ -1663,6 +1663,7 @@ var Network;
     RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
     RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
     RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    RefreshEventDetailsRefreshResult2["Canceled"] = "Canceled";
   })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
   let TerminationEventDetailsDeletionReason;
   ((TerminationEventDetailsDeletionReason2) => {
@@ -3461,6 +3462,7 @@ var generatedProperties = [
       "fill-opacity",
       "fill-rule",
       "filter",
+      "fit-tolerance",
       "flex-basis",
       "flex-direction",
       "flex-grow",
@@ -3470,7 +3472,6 @@ var generatedProperties = [
       "float",
       "flood-color",
       "flood-opacity",
-      "flow-tolerance",
       "font-display",
       "font-family",
       "font-feature-settings",
@@ -4213,6 +4214,15 @@ var generatedProperties = [
     "name": "border-block-end-color"
   },
   {
+    "longhands": [
+      "border-end-start-radius",
+      "border-end-end-radius"
+    ],
+    "name": "border-block-end-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
+  },
+  {
     "keywords": [
       "none",
       "hidden",
@@ -4248,6 +4258,15 @@ var generatedProperties = [
       "currentcolor"
     ],
     "name": "border-block-start-color"
+  },
+  {
+    "longhands": [
+      "border-start-start-radius",
+      "border-start-end-radius"
+    ],
+    "name": "border-block-start-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
   },
   {
     "keywords": [
@@ -4302,6 +4321,15 @@ var generatedProperties = [
   },
   {
     "name": "border-bottom-left-radius"
+  },
+  {
+    "longhands": [
+      "border-bottom-left-radius",
+      "border-bottom-right-radius"
+    ],
+    "name": "border-bottom-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
   },
   {
     "name": "border-bottom-right-radius"
@@ -4429,6 +4457,15 @@ var generatedProperties = [
     "name": "border-inline-end-color"
   },
   {
+    "longhands": [
+      "border-start-end-radius",
+      "border-end-end-radius"
+    ],
+    "name": "border-inline-end-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
+  },
+  {
     "keywords": [
       "none",
       "hidden",
@@ -4464,6 +4501,15 @@ var generatedProperties = [
       "currentcolor"
     ],
     "name": "border-inline-start-color"
+  },
+  {
+    "longhands": [
+      "border-start-start-radius",
+      "border-end-start-radius"
+    ],
+    "name": "border-inline-start-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
   },
   {
     "keywords": [
@@ -4517,6 +4563,15 @@ var generatedProperties = [
     "name": "border-left-color"
   },
   {
+    "longhands": [
+      "border-top-left-radius",
+      "border-bottom-left-radius"
+    ],
+    "name": "border-left-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
+  },
+  {
     "keywords": [
       "none",
       "hidden",
@@ -4561,6 +4616,15 @@ var generatedProperties = [
       "currentcolor"
     ],
     "name": "border-right-color"
+  },
+  {
+    "longhands": [
+      "border-top-right-radius",
+      "border-bottom-right-radius"
+    ],
+    "name": "border-right-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
   },
   {
     "keywords": [
@@ -4635,6 +4699,15 @@ var generatedProperties = [
   },
   {
     "name": "border-top-left-radius"
+  },
+  {
+    "longhands": [
+      "border-top-left-radius",
+      "border-top-right-radius"
+    ],
+    "name": "border-top-radius",
+    "runtime_flag": "CSSBorderRadiusSideShorthands",
+    "runtime_flag_status": "experimental"
   },
   {
     "name": "border-top-right-radius"
@@ -5711,6 +5784,15 @@ var generatedProperties = [
     "name": "filter"
   },
   {
+    "keywords": [
+      "normal",
+      "infinite"
+    ],
+    "name": "fit-tolerance",
+    "runtime_flag": "CSSGridLanesLayout",
+    "runtime_flag_status": "experimental"
+  },
+  {
     "devtools_keywords": [
       "none",
       "auto",
@@ -5791,15 +5873,6 @@ var generatedProperties = [
   },
   {
     "name": "flood-opacity"
-  },
-  {
-    "keywords": [
-      "normal",
-      "infinite"
-    ],
-    "name": "flow-tolerance",
-    "runtime_flag": "CSSGridLanesLayout",
-    "runtime_flag_status": "experimental"
   },
   {
     "devtools_keywords": [],
@@ -8404,7 +8477,7 @@ var generatedProperties = [
     ],
     "name": "text-decoration-skip-spaces",
     "runtime_flag": "CSSTextDecorationSkipSpaces",
-    "runtime_flag_status": "stable"
+    "runtime_flag_status": "experimental"
   },
   {
     "keywords": [
@@ -10325,6 +10398,12 @@ var generatedPropertyValues = {
       "none"
     ]
   },
+  "fit-tolerance": {
+    "values": [
+      "normal",
+      "infinite"
+    ]
+  },
   "flex": {
     "values": [
       "none",
@@ -10373,12 +10452,6 @@ var generatedPropertyValues = {
   "flood-color": {
     "values": [
       "currentcolor"
-    ]
-  },
-  "flow-tolerance": {
-    "values": [
-      "normal",
-      "infinite"
     ]
   },
   "font": {
@@ -15844,7 +15917,7 @@ var SecurityOrigin = class _SecurityOrigin {
     }
     if (rawUrl.toLowerCase().startsWith("file://")) {
       const parsed = Common3.ParsedURL.ParsedURL.fromString(rawUrl);
-      if (!parsed) {
+      if (!parsed || parsed.path === "/") {
         return _SecurityOrigin.createUniqueOpaque();
       }
       const authority = parsed.host + (parsed.port ? ":" + parsed.port : "");
@@ -16751,6 +16824,8 @@ __export(CSSPropertyParserMatchers_exports, {
   FlexGridGridLanesMatcher: () => FlexGridGridLanesMatcher,
   GridTemplateMatch: () => GridTemplateMatch,
   GridTemplateMatcher: () => GridTemplateMatcher,
+  ImportantMatch: () => ImportantMatch,
+  ImportantMatcher: () => ImportantMatcher,
   LayoutType: () => LayoutType,
   LengthMatch: () => LengthMatch,
   LengthMatcher: () => LengthMatcher,
@@ -17095,6 +17170,16 @@ var TextMatcher = class extends TextMatcherBase {
       }
     }
     return null;
+  }
+};
+var ImportantMatch = class extends TextMatch {
+  computedText = () => "";
+};
+var ImportantMatcherBase = matcherBase(ImportantMatch);
+var ImportantMatcher = class extends ImportantMatcherBase {
+  // clang-format on
+  matches(node, matching) {
+    return node.name === "Important" ? new ImportantMatch(matching.ast.text(node), node) : null;
   }
 };
 var AngleMatch = class {
@@ -18074,7 +18159,7 @@ var CSSWideKeywordMatch = class {
     return this.matchedStyles.resolveGlobalKeyword(this.property, this.text);
   }
   computedText() {
-    return this.resolveProperty()?.value ?? null;
+    return this.resolveProperty()?.declaration.parseValue(this.matchedStyles, null)?.getComputedPropertyValueText().trim() ?? null;
   }
 };
 var CSSWideKeywordMatcherBase = matcherBase(CSSWideKeywordMatch);
@@ -18092,7 +18177,7 @@ var CSSWideKeywordMatcher = class extends CSSWideKeywordMatcherBase {
     if (node.name !== "ValueName" || parentNode?.name !== "Declaration") {
       return null;
     }
-    if (Array.from(ASTUtils.stripComments(ASTUtils.siblings(ASTUtils.declValue(parentNode)))).some((child) => !ASTUtils.equals(child, node))) {
+    if (Array.from(ASTUtils.stripComments(ASTUtils.siblings(ASTUtils.declValue(parentNode)))).filter((child) => child.name !== "Important").some((child) => !ASTUtils.equals(child, node))) {
       return null;
     }
     const text = matching.ast.text(node);
@@ -18127,16 +18212,14 @@ var PositionTryMatcher = class extends PositionTryMatcherBase {
     let preamble = [];
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
     const fallbacks = ASTUtils.split(valueNodes);
-    if (matching.ast.propertyName === "position-try" /* POSITION_TRY */) {
-      for (const [i, n] of fallbacks[0].entries()) {
-        const computedText = matching.getComputedText(n);
-        if (CSSMetadata.isCSSWideKeyword(computedText)) {
-          return null;
-        }
-        if (CSSMetadata.isPositionTryOrderKeyword(computedText)) {
-          preamble = fallbacks[0].splice(0, i + 1);
-          break;
-        }
+    for (const [i, n] of fallbacks[0].entries()) {
+      const computedText = matching.getComputedText(n);
+      if (CSSMetadata.isCSSWideKeyword(computedText)) {
+        return null;
+      }
+      if (matching.ast.propertyName === "position-try" /* POSITION_TRY */ && CSSMetadata.isPositionTryOrderKeyword(computedText)) {
+        preamble = fallbacks[0].splice(0, i + 1);
+        break;
       }
     }
     const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
@@ -18204,7 +18287,7 @@ var PositionAreaMatcher = class extends PositionAreaMatcherBase {
     if (valueNodes.length === 0) {
       return null;
     }
-    const computedText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+    const computedText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]).trim();
     if (CSSMetadata.isCSSWideKeyword(computedText)) {
       return null;
     }
@@ -18829,7 +18912,7 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
   }
   #matchers(matchedStyles, computedStyles) {
     const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
-    matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
+    matchers.push(new CSSWideKeywordMatcher(this, matchedStyles), new ImportantMatcher());
     return matchers;
   }
   ensureRanges() {
@@ -20314,14 +20397,16 @@ function cleanUserAgentPayload(payload) {
     ruleMatch.matchingSelectors = matchingSelectors.map((_, i) => i);
   }
 }
-function customHighlightNamesToMatchingSelectorIndices(ruleMatch) {
+function parseCustomHighlightName(selectorText) {
+  return selectorText.match(/::highlight\(([^)]+)\)/)?.[1] ?? null;
+}
+function customHighlightNamesToMatchingSelectorIndices(ruleMatch, highlightNames) {
   const highlightNamesToMatchingSelectors = /* @__PURE__ */ new Map();
   for (let i = 0; i < ruleMatch.matchingSelectors.length; i++) {
     const matchingSelectorIndex = ruleMatch.matchingSelectors[i];
     const selectorText = ruleMatch.rule.selectorList.selectors[matchingSelectorIndex].text;
-    const highlightNameMatch = selectorText.match(/::highlight\((.*)\)/);
-    if (highlightNameMatch) {
-      const highlightName = highlightNameMatch[1];
+    const highlightName = parseCustomHighlightName(selectorText);
+    if (highlightName) {
       const selectorsForName = highlightNamesToMatchingSelectors.get(highlightName);
       if (selectorsForName) {
         selectorsForName.push(matchingSelectorIndex);
@@ -20330,7 +20415,32 @@ function customHighlightNamesToMatchingSelectorIndices(ruleMatch) {
       }
     }
   }
+  const universalSelectors = highlightNamesToMatchingSelectors.get("*");
+  if (universalSelectors) {
+    for (const highlightName of highlightNames) {
+      const selectorsForName = highlightNamesToMatchingSelectors.get(highlightName) ?? [];
+      highlightNamesToMatchingSelectors.set(highlightName, [...selectorsForName, ...universalSelectors]);
+    }
+  }
   return highlightNamesToMatchingSelectors;
+}
+function getCustomHighlightNames(pseudoPayload) {
+  const highlightNames = /* @__PURE__ */ new Set();
+  for (const entryPayload of pseudoPayload) {
+    if (entryPayload.pseudoType !== DOM.PseudoType.Highlight || !entryPayload.matches) {
+      continue;
+    }
+    for (const ruleMatch of entryPayload.matches) {
+      for (const matchingSelectorIndex of ruleMatch.matchingSelectors) {
+        const selectorText = ruleMatch.rule.selectorList.selectors[matchingSelectorIndex].text;
+        const highlightName = parseCustomHighlightName(selectorText);
+        if (highlightName && highlightName !== "*") {
+          highlightNames.add(highlightName);
+        }
+      }
+    }
+  }
+  return highlightNames;
 }
 function queryMatches(style) {
   if (!style.parentRule) {
@@ -20645,10 +20755,10 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
    * This helper function takes a list of rule matches and generates separate NodeCascades
    * for each custom highlight name that was matched.
    */
-  buildSplitCustomHighlightCascades(rules, node, isInherited, pseudoCascades) {
+  buildSplitCustomHighlightCascades(rules, node, isInherited, highlightNames, pseudoCascades) {
     const splitHighlightRules = /* @__PURE__ */ new Map();
     for (let j = rules.length - 1; j >= 0; --j) {
-      const highlightNamesToMatchingSelectorIndices = customHighlightNamesToMatchingSelectorIndices(rules[j]);
+      const highlightNamesToMatchingSelectorIndices = customHighlightNamesToMatchingSelectorIndices(rules[j], highlightNames);
       for (const [highlightName, matchingSelectors] of highlightNamesToMatchingSelectorIndices) {
         const pseudoRule = new CSSStyleRule(this.#cssModel, rules[j].rule);
         this.#nodeForStyle.set(pseudoRule.style, node);
@@ -20689,6 +20799,9 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     }
     const pseudoCascades = /* @__PURE__ */ new Map();
     const customHighlightPseudoCascades = /* @__PURE__ */ new Map();
+    const highlightNames = getCustomHighlightNames(
+      [...pseudoPayload, ...(inheritedPseudoPayload || []).flatMap((entry) => entry.pseudoElements)]
+    );
     for (let i = 0; i < pseudoPayload.length; ++i) {
       const entryPayload = pseudoPayload[i];
       const pseudoElement = this.#node.pseudoElements().get(entryPayload.pseudoType)?.at(-1) || null;
@@ -20699,6 +20812,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
           rules,
           this.#node,
           false,
+          highlightNames,
           customHighlightPseudoCascades
         );
       } else {
@@ -20735,6 +20849,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
               rules,
               parentNode,
               true,
+              highlightNames,
               customHighlightPseudoCascades
             );
           } else {
@@ -21434,17 +21549,20 @@ var DOMInheritanceCascade = class {
     if (definedValue === void 0 || definedValue === null) {
       return null;
     }
-    if (definedValue.declaration.declaration instanceof CSSProperty && definedValue.declaration.value && CSSMetadata.isCSSWideKeyword(definedValue.declaration.value)) {
-      const resolvedProperty = this.resolveGlobalKeyword(definedValue.declaration.declaration, definedValue.declaration.value);
+    while (definedValue.declaration.declaration instanceof CSSProperty && definedValue.declaration.value) {
+      const value = matchDeclaration(`--${variableName}`, definedValue.declaration.value, [new ImportantMatcher()])?.getComputedPropertyValueText().trim();
+      if (!value || !CSSMetadata.isCSSWideKeyword(value)) {
+        break;
+      }
+      const resolvedProperty = this.resolveGlobalKeyword(definedValue.declaration.declaration, value);
       if (!resolvedProperty) {
         return definedValue;
       }
       const declaration2 = new CSSValueSource(resolvedProperty);
-      const { value } = declaration2;
-      if (!value) {
+      if (!declaration2.value) {
         return definedValue;
       }
-      definedValue = { declaration: declaration2, value };
+      definedValue = { declaration: declaration2, value: declaration2.value };
     }
     const ast = tokenizeDeclaration(`--${variableName}`, definedValue.value);
     if (!ast) {
@@ -21549,10 +21667,11 @@ var DOMInheritanceCascade = class {
           }
           return evaluateFallback(match.fallback, match.matching);
         }
-      )
+      ),
+      ...declaration2 ? [new ImportantMatcher()] : []
     ]);
     const decl = ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree));
-    const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : "";
+    const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]).trim() : "";
     const hasUnresolvedSubstitutions = decl.length > 0 && matching.hasUnresolvedSubstitutionsRange(decl[0], decl[decl.length - 1]);
     const computedText = hasUnresolvedSubstitutions ? null : declText;
     const outerComputedCSSVariables = computedCSSVariablesMap.get(outerNodeCascade);
@@ -24950,19 +25069,22 @@ var SourceMapCache = class _SourceMapCache {
   constructor(name) {
     this.#name = name;
   }
-  async set(debugId, securityOrigin, sourceMap) {
-    if (!securityOrigin || securityOrigin === "file://") {
+  async set(debugId, scriptOrigin, loaderOrigin, sourceMap) {
+    if (scriptOrigin.isOpaque() || loaderOrigin.isOpaque()) {
       return;
     }
     const cache = await this.#cache();
-    await cache?.put(_SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
+    await cache?.put(
+      _SourceMapCache.#urlForDebugId(debugId, scriptOrigin, loaderOrigin),
+      new Response(JSON.stringify(sourceMap))
+    );
   }
-  async get(debugId, securityOrigin) {
-    if (!securityOrigin || securityOrigin === "file://") {
+  async get(debugId, scriptOrigin, loaderOrigin) {
+    if (scriptOrigin.isOpaque() || loaderOrigin.isOpaque()) {
       return null;
     }
     const cache = await this.#cache();
-    const response = await cache?.match(_SourceMapCache.#urlForDebugId(debugId, securityOrigin));
+    const response = await cache?.match(_SourceMapCache.#urlForDebugId(debugId, scriptOrigin, loaderOrigin));
     return await response?.json() ?? null;
   }
   async #cache() {
@@ -24977,8 +25099,8 @@ var SourceMapCache = class _SourceMapCache {
     return await this.#cachePromise;
   }
   /** The Cache API only allows URL as keys, so we construct a simple one. Given that we have our own cache, we have no risk of conflicting URLs */
-  static #urlForDebugId(debugId, securityOrigin) {
-    return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(securityOrigin)}`;
+  static #urlForDebugId(debugId, scriptOrigin, loaderOrigin) {
+    return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(scriptOrigin.siteId())}&loader=${encodeURIComponent(loaderOrigin.siteId())}`;
   }
   async disposeForTest() {
     await Platform9.HostRuntime.HOST_RUNTIME.getCacheStorage()?.delete(this.#name);
@@ -24986,19 +25108,20 @@ var SourceMapCache = class _SourceMapCache {
 };
 var IN_MEMORY_INSTANCE = new class {
   #cache = /* @__PURE__ */ new Map();
-  async set(debugId, securityOrigin, sourceMap) {
-    if (!securityOrigin || securityOrigin === "file://") {
+  async set(debugId, scriptOrigin, loaderOrigin, sourceMap) {
+    if (scriptOrigin.isOpaque() || loaderOrigin.isOpaque()) {
       return;
     }
-    this.#cache.set(`${debugId}|${securityOrigin}`, sourceMap);
+    this.#cache.set(`${debugId}|${scriptOrigin.siteId()}|${loaderOrigin.siteId()}`, sourceMap);
   }
-  async get(debugId, securityOrigin) {
-    if (!securityOrigin || securityOrigin === "file://") {
+  async get(debugId, scriptOrigin, loaderOrigin) {
+    if (scriptOrigin.isOpaque() || loaderOrigin.isOpaque()) {
       return null;
     }
-    return this.#cache.get(`${debugId}|${securityOrigin}`) ?? null;
+    return this.#cache.get(`${debugId}|${scriptOrigin.siteId()}|${loaderOrigin.siteId()}`) ?? null;
   }
   async disposeForTest() {
+    this.#cache.clear();
   }
 }();
 
@@ -25170,29 +25293,47 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
     return Promise.all(this.#sourceMaps.keys().map((sourceMap) => sourceMap.waitForScopeInfo()));
   }
 };
-function getCacheOrigin(initiator) {
+function getScriptOrigin(initiator) {
   if (!initiator.initiatorUrl) {
     return null;
   }
-  const securityOrigin = SecurityOrigin.create(initiator.initiatorUrl);
-  if (securityOrigin.isOpaque() || securityOrigin.isFile() && securityOrigin.siteId() === "file:///") {
+  const origin = SecurityOrigin.create(initiator.initiatorUrl);
+  return origin.isOpaque() ? null : origin;
+}
+function getLoaderOrigin(initiator) {
+  if (!initiator.target) {
     return null;
   }
-  return securityOrigin.siteId();
+  const resourceTreeModel = initiator.target.model(ResourceTreeModel);
+  if (resourceTreeModel) {
+    if (!initiator.frameId) {
+      return null;
+    }
+    const origin2 = resourceTreeModel.frameForId(initiator.frameId)?.securityOrigin() ?? null;
+    return origin2 && !origin2.isOpaque() ? origin2 : null;
+  }
+  const targetUrl = initiator.target.inspectedURL() || initiator.target.targetInfo()?.url;
+  if (!targetUrl) {
+    return null;
+  }
+  const origin = SecurityOrigin.create(targetUrl);
+  return origin.isOpaque() ? null : origin;
 }
 async function loadSourceMap(resourceLoader, sourceMapCache, url, debugId, initiator) {
   try {
-    const cacheOrigin = debugId ? getCacheOrigin(initiator) : null;
-    if (debugId && cacheOrigin) {
-      const cachedSourceMap = await sourceMapCache.get(debugId, cacheOrigin);
+    const scriptOrigin = debugId ? getScriptOrigin(initiator) : null;
+    const loaderOrigin = debugId ? getLoaderOrigin(initiator) : null;
+    if (debugId && scriptOrigin && loaderOrigin) {
+      const cachedSourceMap = await sourceMapCache.get(debugId, scriptOrigin, loaderOrigin);
       if (cachedSourceMap) {
         return cachedSourceMap;
       }
     }
     const { content } = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
-    if (debugId && cacheOrigin && "debugId" in sourceMap && sourceMap.debugId === debugId) {
-      await sourceMapCache.set(sourceMap.debugId, cacheOrigin, sourceMap).catch();
+    if (debugId && scriptOrigin && loaderOrigin && "debugId" in sourceMap && sourceMap.debugId === debugId) {
+      await sourceMapCache.set(sourceMap.debugId, scriptOrigin, loaderOrigin, sourceMap).catch(() => {
+      });
     }
     return sourceMap;
   } catch (cause) {
@@ -35537,6 +35678,9 @@ var FetchDispatcher = class {
   authRequired({}) {
   }
 };
+function multicastMembership(event) {
+  return event.sourceAddress ? `${event.IPAddress}@${event.sourceAddress}` : event.IPAddress;
+}
 var NetworkDispatcher = class {
   #manager;
   #multitargetNetworkManager;
@@ -36388,8 +36532,9 @@ var NetworkDispatcher = class {
     if (!networkRequest.directSocketInfo.joinedMulticastGroups) {
       networkRequest.directSocketInfo.joinedMulticastGroups = /* @__PURE__ */ new Set();
     }
-    if (!networkRequest.directSocketInfo.joinedMulticastGroups.has(event.IPAddress)) {
-      networkRequest.directSocketInfo.joinedMulticastGroups.add(event.IPAddress);
+    const membership = multicastMembership(event);
+    if (!networkRequest.directSocketInfo.joinedMulticastGroups.has(membership)) {
+      networkRequest.directSocketInfo.joinedMulticastGroups.add(membership);
       this.updateNetworkRequest(networkRequest);
     }
   }
@@ -36398,7 +36543,7 @@ var NetworkDispatcher = class {
     if (!networkRequest?.directSocketInfo?.joinedMulticastGroups) {
       return;
     }
-    if (networkRequest.directSocketInfo.joinedMulticastGroups.delete(event.IPAddress)) {
+    if (networkRequest.directSocketInfo.joinedMulticastGroups.delete(multicastMembership(event))) {
       this.updateNetworkRequest(networkRequest);
     }
   }

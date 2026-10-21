@@ -1832,6 +1832,7 @@ var Network;
     RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
     RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
     RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    RefreshEventDetailsRefreshResult2["Canceled"] = "Canceled";
   })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
   let TerminationEventDetailsDeletionReason;
   ((TerminationEventDetailsDeletionReason2) => {
@@ -3477,7 +3478,7 @@ var LighthouseController = class extends Common.ObjectWrapper.ObjectWrapper {
     }
     const mainTarget = this.manager.target();
     const origin = mainTarget.inspectedURL();
-    if (!origin) {
+    if (!origin?.startsWith("http")) {
       return "";
     }
     const usageData = await mainTarget.storageAgent().invoke_getUsageAndQuota({ origin });

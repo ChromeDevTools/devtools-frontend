@@ -1,7 +1,6 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../../ui/components/tooltips/tooltips.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
@@ -15,6 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatInputStyles from './chatInput.css.js';
 import * as ImageResize from './ImageResize.js';
+import { renderRelevantDataDisclaimer } from './RelevantDataDisclaimer.js';
 const { html, Directives: { createRef, ref } } = Lit;
 const { widget } = UI.Widget;
 const UIStrings = {
@@ -26,10 +26,6 @@ const UIStrings = {
      * @description Label added to the button that reveals the selected context item in DevTools.
      */
     revealContextDescription: 'Reveal the selected context item in DevTools',
-    /**
-     * @description The footer disclaimer that links to more information about the AI feature.
-     */
-    learnAbout: 'Learn about AI in DevTools',
 };
 /*
 * Strings that don't need to be translated at this time.
@@ -144,45 +140,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         'single-line-layout': !input.context,
         disabled: input.isTextInputDisabled,
     });
-    const renderRelevantDataDisclaimer = (tooltipId) => {
+    const renderDisclaimer = (tooltipId) => {
         const classes = Lit.Directives.classMap({
             'chat-input-disclaimer': true,
             'hide-divider': !input.isLoading && input.blockedByCrossOrigin,
         });
-        // clang-format off
-        return html `
-      <div class=${classes}>
-        <button
-          class="link"
-          role="link"
-          aria-details=${tooltipId}
-          jslog=${VisualLogging.link('open-ai-settings').track({
-            click: true,
-        })}
-          @click=${(ev) => {
-            ev.preventDefault();
-            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-        }}
-        >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
-        <devtools-tooltip
-          id=${tooltipId}
-          variant="rich"
-        ><div class="info-tooltip-container">
-          ${input.disclaimerText}
-          <button
-            class="link tooltip-link"
-            role="link"
-            jslog=${VisualLogging.link('open-ai-settings').track({
-            click: true,
-        })}
-            @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-        }}>${i18nString(UIStrings.learnAbout)}
-          </button>
-        </div></devtools-tooltip>
-      </div>
-    `;
-        // clang-format on
+        return html `<div class=${classes}>${renderRelevantDataDisclaimer(tooltipId, input.disclaimerText)}</div>`;
     };
     // clang-format off
     Lit.render(html `
@@ -345,7 +308,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
-                  ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_CHAT_ID)}
+                  ${renderDisclaimer(RELEVANT_DATA_LINK_CHAT_ID)}
                 </div>
                 ${(input.multimodalInputEnabled && !input.blockedByCrossOrigin) ?
                 html `
@@ -433,7 +396,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     })}
       jslog=${VisualLogging.section('footer')}
     >
-      ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_FOOTER_ID)}
+      ${renderDisclaimer(RELEVANT_DATA_LINK_FOOTER_ID)}
     </footer>
   `, target);
     // clang-format on

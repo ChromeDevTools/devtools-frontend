@@ -1,4 +1,3 @@
-import '../../../ui/components/tooltips/tooltips.js';
 import type * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';

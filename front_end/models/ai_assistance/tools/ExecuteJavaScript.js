@@ -50,6 +50,7 @@ export class ExecuteJavaScriptTool {
     name = "executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */;
     permissionPrompt = "allow-once" /* PermissionPrompt.ALLOW_ONCE */;
     permissionTitle = lockedString('Allow running JavaScript on the page?');
+    displayName = lockedString('Run JavaScript on the page');
     description = 'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
     /**
      * Formats the code and checks it against the size limits. This method does

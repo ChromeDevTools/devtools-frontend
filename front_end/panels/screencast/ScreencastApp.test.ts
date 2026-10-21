@@ -8,9 +8,11 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Screencast from './screencast.js';
@@ -90,5 +92,46 @@ describeWithEnvironment('ScreencastApp', () => {
     assert.isTrue(Common.Settings.Settings.instance().settingForTest('screencast-enabled').get());
     sinon.assert.calledWithExactly(view.lastCall, {screencastEnabled: true, screenCaptureModel}, {},
                                    screencastApp.rootView?.contentElement);
+  });
+
+  it('attaches navigation listeners when shown, cleans up when hidden, and re-attaches when re-shown', async () => {
+    const target = createTarget();
+    const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(screenCaptureModel);
+    assert.exists(resourceTreeModel);
+    const navigationHistoryStub = sinon.stub(resourceTreeModel, 'navigationHistory').resolves(null);
+
+    const view = createViewFunctionStub(Screencast.ScreencastView.ScreencastView);
+    const screencastView = new Screencast.ScreencastView.ScreencastView(undefined, view);
+    screencastView.screenCaptureModel = screenCaptureModel;
+
+    sinon.assert.notCalled(navigationHistoryStub);
+
+    renderElementIntoDOM(screencastView);
+    sinon.assert.calledOnce(navigationHistoryStub);
+    await view.nextInput;
+
+    navigationHistoryStub.resetHistory();
+    screencastView.setHideOnDetach();
+    screencastView.detach();
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+      frame: sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame),
+      type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
+    });
+    sinon.assert.notCalled(navigationHistoryStub);
+
+    assert.exists(screencastView.element.parentElement);
+    screencastView.show(screencastView.element.parentElement);
+    sinon.assert.calledOnce(navigationHistoryStub);
+    await view.nextInput;
+
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+      frame: sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame),
+      type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
+    });
+    const input = await view.nextInput;
+    assert.strictEqual(input.progressPercent, 0.1);
+    sinon.assert.calledTwice(navigationHistoryStub);
   });
 });

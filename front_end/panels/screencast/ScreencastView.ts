@@ -455,9 +455,8 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
       this.resourceTreeModel = screenCaptureModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
       this.networkManager = screenCaptureModel.target().model(SDK.NetworkManager.NetworkManager);
       this.inputModel = screenCaptureModel.target().model(InputModel);
-      this.createNavigationBar();
-      this.updateGlasspane();
       if (this.isShowing()) {
+        this.createNavigationBar();
         this.#scheduleCasting();
       }
     } else {
@@ -494,6 +493,7 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
     super.wasShown();
     SDK.TargetManager.TargetManager.instance().addEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
                                                                 this.onSuspendStateChange, this);
+    this.createNavigationBar();
     this.updateGlasspane();
     this.#scheduleCasting();
     this.requestUpdate();
@@ -539,12 +539,9 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
       delete this.deferredCasting;
     }
     this.stopCasting();
+    this.#cleanup();
     SDK.TargetManager.TargetManager.instance().removeEventListener(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED,
                                                                    this.onSuspendStateChange, this);
-  }
-
-  override onDetach(): void {
-    this.#cleanup();
   }
 
   private async startCasting(): Promise<void> {

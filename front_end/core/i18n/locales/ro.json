@@ -228,7 +228,7 @@
     "message": "Principal"
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
-    "message": "Conținutul nu a putut fi încărcat pentru {PH1} ({PH2})"
+    "message": "Nu s-a putut încărca conținutul pentru {PH1} ({PH2})"
   },
   "core/sdk/Connections.ts | websocketConnectionFailed": {
     "message": "WebSocket deconectat. Asigură-te că --remote-allow-origins din instanța Chrome permite originea actuală."
@@ -399,7 +399,7 @@
     "message": "Acest cookie nu a specificat un atribut SameSite când a fost stocat, a fost setat în mod prestabilit la SameSite=Lax și a fost blocat deoarece solicitarea a fost trimisă de pe alt site și nu a fost inițiată printr-o navigare la nivel superior. Cookie-ul trebuia setat cu SameSite=None pentru a permite folosirea pe mai multe site-uri."
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
-    "message": "Acest cookie a fost blocat deoarece avea atributul „Secure” și conexiunea nu era securizată"
+    "message": "Acest cookie a fost blocat deoarece avea atributul Secure și conexiunea nu era securizată"
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
     "message": "Antetul Set-Cookie este ignorat ca răspuns de la adresa URL: {PH1}. Dimensiunea combinată a numelui și valorii trebuie să aibă cel mult 4096 de caractere."
@@ -434,8 +434,14 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "S-a întrerupt în depanator"
   },
+  "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
+    "message": "Can’t load resource for an unavailable cross-origin frame"
+  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Încărcarea a fost anulată ca urmare a reîncărcării paginii verificate"
+  },
+  "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
+    "message": "Can’t load http(s) resource without a target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Eroare la încărcarea jurnalului"
@@ -684,10 +690,10 @@
     "message": "Nu simula nicio deficiență de vedere"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
-    "message": "Nu simula {PH1} CSS"
+    "message": "Nu emula CSS {PH1}"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
-    "message": "Nu simula tipul media CSS"
+    "message": "Nu simula tipul de conținut media CSS"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateOsTextScale": {
     "message": "Nu simula scara textului pentru sistemul de operare"
@@ -1334,6 +1340,9 @@
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
     "message": "Restricția DtlsSrtpKeyAgreement a fost eliminată. Ai specificat o valoare true pentru această restricție, care nu a avut niciun efect, dar poți elimina restricția pentru un aspect ordonat."
   },
+  "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
+    "message": "RTCPeerConnection.createDTMFSender() este învechit și va fi eliminat. Folosește RTCRtpSender.dtmf."
+  },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "Metoda callback-based getStats() este învechită și va fi eliminată. Folosește spec-compliant getStats()."
   },
@@ -1556,6 +1565,9 @@
   "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
     "message": "Elementele etichetei"
   },
+  "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
+    "message": "Web permissions best practices"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestionarea intervențiilor pentru anunțuri care consumă multe resurse"
   },
@@ -1572,7 +1584,7 @@
     "message": "Îmbunătățiri"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
-    "message": "Eroare legată de pagină: pagina nu funcționează corect"
+    "message": "O problemă legată de o eroare de pagină: pagina nu funcționează corect"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "Erori de pagină"
@@ -2570,6 +2582,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | politeness": {
     "message": "Politețe"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInA11yTree": {
+    "message": "Afișează în arborele de accesibilitate"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInElements": {
+    "message": "Afișează în panoul Elemente"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "Ora"
   },
@@ -3080,14 +3098,11 @@
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Poți folosi și una dintre solicitările sugerate mai sus pentru a începe conversația"
   },
-  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
-    "message": "Află despre AI în DevTools"
-  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Afișează elementul contextual selectat în DevTools"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
-    "message": "Asistența AI nu este disponibilă în modul incognito sau în modul pentru invitați"
+    "message": "Asistența AI nu este disponibilă în modul incognito sau în Modul pentru invitați"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
     "message": "Această funcție este disponibilă numai dacă te-ai conectat la Chrome cu Contul Google"
@@ -3266,6 +3281,9 @@
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Culoarea fundalului"
   },
+  "panels/application/AppManifestView.ts | bundleId": {
+    "message": "Bundle ID"
+  },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Codul calculat al aplicației"
   },
@@ -3397,6 +3415,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Pagina nu este servită dintr-o origine securizată"
+  },
+  "panels/application/AppManifestView.ts | parentAppName": {
+    "message": "Parent app name"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platformă"
@@ -3669,7 +3690,7 @@
     "message": "DevTools va înregistra toată activitatea {PH1} timp de maximum trei zile, chiar și când este închisă."
   },
   "panels/application/BackgroundServiceView.ts | empty": {
-    "message": "gol"
+    "message": "vidă"
   },
   "panels/application/BackgroundServiceView.ts | event": {
     "message": "Eveniment"
@@ -3729,13 +3750,13 @@
     "message": "Cheia de stocare"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
-    "message": "Aria de acoperire pentru Service Worker"
+    "message": "Aria de acoperire a instrumentului Service Worker"
   },
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Marcaj temporal"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "Urmărirea ieșirilor imediate"
+    "message": "Ieșiri imediate ale monitorizării returnărilor cu notificare"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Șterge toate cookie-urile"
@@ -3783,7 +3804,7 @@
     "message": "Elementul de stocare a fost șters"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
-    "message": "Articole de stocare DOM"
+    "message": "Elemente de stocare DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "Elementele de stocare DOM au fost șterse"
@@ -4304,6 +4325,9 @@
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Acest cadru este considerat cadru de anunț, deoarece documentul său părinte este un cadru de anunțuri"
   },
+  "panels/application/FrameDetailsView.ts | refreshSpellCheckCustomDictionary": {
+    "message": "Actualizează dicționarul personalizat pentru verificarea ortografiei"
+  },
   "panels/application/FrameDetailsView.ts | reportingTo": {
     "message": "raportează către"
   },
@@ -4331,6 +4355,12 @@
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "Constructorul SharedArrayBuffer este disponibil, dar SABs nu se poate transfera prin postMessage"
   },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionary": {
+    "message": "Dicționar personalizat pentru verificarea ortografiei"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionaryExplanation": {
+    "message": "Cuvinte adăugate cu document.spellCheckCustomDictionary.addWords(). Verificatorul ortografic nu le semnalează în acest document."
+  },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Schema cadrului nu este securizată"
   },
@@ -4357,6 +4387,9 @@
   },
   "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ va necesita un context izolat cu origini multiple pe viitor"
+  },
+  "panels/application/FrameDetailsView.ts | words": {
+    "message": "Cuvinte"
   },
   "panels/application/FrameDetailsView.ts | yes": {
     "message": "Da"
@@ -4395,7 +4428,7 @@
     "message": "IDB"
   },
   "panels/application/IndexedDBViews.ts | indexedDb": {
-    "message": "BD indexată"
+    "message": "IndexedDB"
   },
   "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "Valoarea generatorului de chei: {PH1}"
@@ -4614,10 +4647,10 @@
     "message": "Selectează o intrare din memoria cache de mai sus pentru a o previzualiza"
   },
   "panels/application/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
-    "message": "Memoria cache pentru Service Worker"
+    "message": "Memorie cache Service Worker"
   },
   "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "Timpul de stocare în memoria cache"
+    "message": "Ora stocării în memoria cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "Număr total de intrări: {PH1}"
@@ -4644,19 +4677,19 @@
     "message": "Evită folosirea pentru rețea"
   },
   "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "Omite service worker și încarcă resurse din rețea"
+    "message": "Omite Service Worker și încarcă resurse din rețea"
   },
   "panels/application/ServiceWorkersView.ts | clients": {
     "message": "Clienți"
   },
   "panels/application/ServiceWorkersView.ts | focus": {
-    "message": "focalizare"
+    "message": "Focalizare"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Solicitări din rețea"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "La reîncărcarea paginii, forțează service worker să se actualizeze și activează-l"
+    "message": "La reîncărcarea paginii, forțează Service Worker să se actualizeze și activează-l"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "Sincronizare periodică"
@@ -4698,10 +4731,10 @@
     "message": "Vezi toate înregistrările"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "Service worker pentru {PH1}"
+    "message": "Service Worker pentru {PH1}"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "Service workers din alte origini"
+    "message": "Service Workers de la alte origini"
   },
   "panels/application/ServiceWorkersView.ts | source": {
     "message": "Sursă"
@@ -4728,13 +4761,13 @@
     "message": "Anulează înregistrarea"
   },
   "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "Anulează înregistrarea pentru service worker"
+    "message": "Anulează înregistrarea instrumentului service worker"
   },
   "panels/application/ServiceWorkersView.ts | update": {
     "message": "Actualizează"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
-    "message": "Ciclu de actualizare"
+    "message": "Ciclul de actualizare"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
     "message": "Actualizează la reîncărcare"
@@ -4773,7 +4806,7 @@
     "message": "Șterge elementele selectate"
   },
   "panels/application/StorageView.ts | clearSiteData": {
-    "message": "Șterge datele privind site-urile"
+    "message": "Șterge datele site-ului"
   },
   "panels/application/StorageView.ts | clearing": {
     "message": "Se șterge…"
@@ -4809,7 +4842,7 @@
     "message": "Numărul trebuie să fie mai mic decât {PH1}"
   },
   "panels/application/StorageView.ts | other": {
-    "message": "Altul"
+    "message": "Altele"
   },
   "panels/application/StorageView.ts | pleaseEnterANumber": {
     "message": "Introdu un număr"
@@ -4863,7 +4896,7 @@
     "message": "Anulată"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
-    "message": "Anulate: {PH1}"
+    "message": "S-a anulat {PH1}"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Șterge filtrele"
@@ -4896,7 +4929,7 @@
     "message": "Eroare"
   },
   "panels/application/WebMCPView.ts | failed": {
-    "message": "Nereușite: {PH1}"
+    "message": "Nu s-au încărcat {PH1}"
   },
   "panels/application/WebMCPView.ts | filter": {
     "message": "Filtru"
@@ -4914,7 +4947,7 @@
     "message": "În desfășurare"
   },
   "panels/application/WebMCPView.ts | inProgressCount": {
-    "message": "{PH1} în desfășurare"
+    "message": "{PH1} în curs"
   },
   "panels/application/WebMCPView.ts | input": {
     "message": "Intrare"
@@ -4932,7 +4965,7 @@
     "message": "Instrumentele WebMCP înregistrate pentru această pagină vor apărea aici. Încă nu s-au înregistrat sau detectat instrumente."
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
-    "message": "Instrumente disponibile: WebMCP"
+    "message": "Instrumente WebMCP disponibile"
   },
   "panels/application/WebMCPView.ts | origin": {
     "message": "Origine"
@@ -4942,6 +4975,9 @@
   },
   "panels/application/WebMCPView.ts | paste": {
     "message": "Inserează"
+  },
+  "panels/application/WebMCPView.ts | pasteTooltip": {
+    "message": "Inserează parametrii instrumentului din clipboard ca JSON"
   },
   "panels/application/WebMCPView.ts | pending": {
     "message": "În desfășurare"
@@ -4971,7 +5007,7 @@
     "message": "Înregistrarea acestui instrument a fost anulată"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
-    "message": "Total apeluri: {PH1}"
+    "message": "{PH1} apeluri în total"
   },
   "panels/application/WebMCPView.ts | viewInElementsPanel": {
     "message": "Afișează în panoul Elemente"
@@ -5121,7 +5157,7 @@
     "message": "Memoria cache înainte-înapoi este dezactivată de programul de redare anticipată"
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Pagina nu poate fi stocată în memoria cache deoarece are o instanță BroadcastChannel cu ascultători înregistrați"
+    "message": "Pagina nu poate fi stocată în memoria cache deoarece are o instanță BroadcastChannel cu listeneri înregistrați"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
     "message": "Paginile cu antetul cache-control:no-store nu pot intra în memoria cache înainte-înapoi"
@@ -5208,7 +5244,7 @@
     "message": "Memoria cache înainte-înapoi este dezactivată din cauza extensiilor"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Un dialog modal, precum retrimiterea formularelor sau caseta de dialog pentru parola http, s-a afișat pentru pagină la ieșire"
+    "message": "Un dialog modal, precum retrimiterea formularelor sau caseta de dialog pentru parola HTTP, s-a afișat pentru pagină la ieșire"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
     "message": "Pagina offline s-a afișat la ieșire"
@@ -5328,7 +5364,7 @@
     "message": "Paginile care folosesc modul picture-in-picture nu sunt eligibile momentan pentru memoria cache înainte-înapoi"
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "Paginile care afișează UI de printare nu sunt eligibile momentan pentru memoria cache înainte/înapoi"
+    "message": "Paginile care afișează interfața de printare nu sunt eligibile momentan pentru memoria cache înainte-înapoi"
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "Pagina s-a deschis folosind window.open() și altă filă are o referință la aceasta sau pagina a deschis o fereastră"
@@ -5427,10 +5463,10 @@
     "message": "Paginile care folosesc WebLocks nu sunt eligibile momentan pentru memoria cache înainte-înapoi"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Paginile care folosesc WebNfc nu sunt eligibile momentan pentru memoria cache înainte/înapoi"
+    "message": "Paginile care folosesc WebNfc nu sunt eligibile momentan pentru memoria cache înainte-înapoi"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Paginile care folosesc WebOTPService nu sunt eligibile momentan pentru bfcache"
+    "message": "Paginile care folosesc WebOTPService nu sunt eligibile momentan pentru memoria cache înainte-înapoi"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Paginile cu WebRTC nu pot intra în memoria cache înainte-înapoi"
@@ -5514,7 +5550,7 @@
     "message": "Se rulează testul…"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPending": {
-    "message": "În așteptarea asistenței"
+    "message": "Asistență în așteptare"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
     "message": "Suportul Chrome pentru aceste motive este în așteptare, ceea ce înseamnă că nu vor împiedica pagina să fie eligibilă pentru memoria cache înainte-înapoi într-o versiune ulterioară de Chrome"
@@ -5532,7 +5568,7 @@
     "message": "Adresa URL"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "Urmărirea ieșirilor imediate"
+    "message": "Acțiuni de remediere a erorilor privind monitorizarea returnărilor cu notificare"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Se caută posibile site-uri de monitorizare a returnărilor cu notificare"
@@ -5544,10 +5580,10 @@
     "message": "Forțează rularea"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
-    "message": "Aflați mai multe: acțiuni de remediere a erorilor privind urmărirea ieșirilor imediate"
+    "message": "Află mai multe: acțiuni de remediere a erorilor privind monitorizarea returnărilor cu notificare"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Starea nu a fost eliminată din niciun site de urmărire a ieșirilor imediate. Nu s-a identificat niciunul, iar cookie-urile terță parte nu sunt blocate."
+    "message": "Starea nu a fost eliminată din niciun site de monitorizare a returnărilor cu notificare. Nu s-a identificat niciunul sau iar cookie-urile terță parte nu sunt blocate."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "În funcțiune"
@@ -5580,7 +5616,7 @@
     "message": "Dă clic ca să afișezi solicitarea al cărei antet HTTP „Permissions-Policy” dezactivează această funcție"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "Dă clic ca să afișezi primul iframe care nu acceptă această funcție în panoul de elemente"
+    "message": "Dă clic ca să afișezi primul iframe care nu acceptă această funcție în panoul Elemente"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "dezactivat într-o structură fencedframe"
@@ -5607,7 +5643,7 @@
     "message": "manifest"
   },
   "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
-    "message": "Dorești ajutor? Citește {PH1}."
+    "message": "Ai nevoie de ajutor? Citește {PH1}."
   },
   "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
     "message": "S-a găsit o înregistrare validă a handlerului pentru protocol în {PH1}. Cu aplicația instalată, testează protocoalele înregistrate."
@@ -5679,7 +5715,7 @@
     "message": "Nu"
   },
   "panels/application/components/StorageMetadataView.ts | none": {
-    "message": "Fără"
+    "message": "Niciuna"
   },
   "panels/application/components/StorageMetadataView.ts | opaque": {
     "message": "(opacă)"
@@ -5973,13 +6009,13 @@
     "message": "O preluare anticipată anterioară către origine a primit un răspuns HTTP 503 cu antetul Retry-After pentru care timpul încă nu s-a scurs"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
-    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece originea respectivă avea un service worker înregistrat sau cookie-uri pe mai multe site-uri, dar preluarea anticipată a fost totuși adăugată în rețea și nu a fost folosită, pentru a ascunde faptul că utilizatorul avea o legătură anterioară cu acea origine."
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece originea respectivă avea un service worker înregistrat sau cookie-uri pe mai multe site-uri, dar preluarea anticipată a fost totuși adăugată în rețea și nu a fost folosită, pentru a ascunde faptul că utilizatorul avea o legătură anterioară cu acea origine"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
     "message": "A trecut prea mult timp între preluarea anticipată și utilizare, așadar s-a renunțat la preluarea anticipată."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
-    "message": "Preluarea anticipată nu a fost realizată deoarece setarea pentru Economisirea bateriei a fost activată"
+    "message": "Preluarea anticipată nu a fost realizată deoarece a fost activată setarea Economisirea bateriei"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
     "message": "Preluarea anticipată nu a fost realizată deoarece browserul este în modul incognito sau în modul pentru invitați"
@@ -5991,7 +6027,7 @@
     "message": "Adresa URL nu este eligibilă pentru preluare anticipată deoarece în contextul rețelei prestabilite este configurată să folosească un server proxy"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
-    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece gazda acesteia nu era unică (de ex., o adresă IP care nu poate fi rutată public sau un nume de gazdă care nu este controlat prin registru), dar preluarea anticipată trebuia să fie realizată prin proxy."
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece gazda acesteia nu era unică (de ex., o adresă IP care nu poate fi rutată public sau un nume de gazdă care nu este controlat prin registry), dar preluarea anticipată trebuia să fie realizată prin proxy."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
     "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece folosește altă partiție de stocare decât cea prestabilită"
@@ -6003,13 +6039,13 @@
     "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată, deoarece contextul rețelei prestabilite nu poate fi configurat să folosească proxy-ul de preluare anticipată pentru o solicitare de preluare anticipată cu origini multiple din același site"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
-    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece schema acesteia nu este https:."
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece schema acesteia nu este https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
     "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece provenea de pe mai multe site-uri, dar utilizatorul avea cookie-uri pentru originea respectivă"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
-    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece originea respectivă avea un service worker înregistrat care nu este acceptat momentan."
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece originea respectivă avea un service worker înregistrat care nu este acceptat momentan"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
     "message": "Preluarea anticipată nu a fost folosită deoarece era o preluare anticipată de pe mai multe site-uri, iar pentru adresa URL respectivă au fost adăugate cookie-uri în timpul preluării anticipate. Prin urmare, răspunsul preluat anticipat este învechit."
@@ -6033,7 +6069,7 @@
     "message": "Nu a fost folosită redarea anticipată, deoarece, în timpul activării, au fost calculați alți parametri de navigare (de exemplu, anteturi HTTP) decât în timpul solicitării inițiale de navigare pentru redarea anticipată"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
-    "message": "Redarea anticipată nu s-a folosit, deoarece în timpul activării, navigarea are o adresă URL eficientă, diferită de adresa sa URL normală. (De exemplu, pagina Filă nouă sau aplicații găzduite.)"
+    "message": "Redarea anticipată nu s-a folosit, deoarece în timpul activării navigarea are o adresă URL eficientă, diferită de adresa sa URL normală. (De exemplu, pagina Filă nouă sau aplicații găzduite.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
     "message": "Dintr-un motiv necunoscut, toate paginile redate anticipat au fost descărcate de browser (de exemplu, WebViewCompat.addWebMessageListener() a fost apelat în timpul redării anticipate)."
@@ -6108,7 +6144,7 @@
     "message": "Pagina redată anticipat a fost descărcată, deoarece browserul a fost supus unei presiuni critice a memoriei"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Redarea anticipată nu a fost realizată deoarece browserul se afla sub presiune critică de memorie"
+    "message": "Redarea anticipată nu s-a realizat, deoarece browserul se afla sub presiune critică de memorie"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
     "message": "Pagina redată anticipat includea conținut mixt"
@@ -6129,10 +6165,10 @@
     "message": "Navigarea cu redare anticipată a întâmpinat o eroare de rețea"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Redarea anticipată nu a fost realizată deoarece utilizatorul a dezactivat preîncărcarea în setările browserului"
+    "message": "Redarea anticipată nu s-a realizat, deoarece utilizatorul a dezactivat preîncărcarea în setările browserului"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
-    "message": "Redarea anticipată nu s-a realizat deoarece s-a folosit DevTools pentru a dezactiva redarea anticipată"
+    "message": "Redarea anticipată nu s-a realizat deoarece s-a folosit DevTools pentru a o dezactiva"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
     "message": "Navigarea anticipată nu a reușit, deoarece are o adresă URL eficientă, diferită de adresa sa URL normală. (De exemplu, pagina Filă nouă sau aplicații găzduite.)"
@@ -6593,6 +6629,39 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Afișează modificările"
   },
+  "panels/comments/CommentsPane.ts | clearComments": {
+    "message": "Șterge toate comentariile"
+  },
+  "panels/comments/CommentsPane.ts | deleteComment": {
+    "message": "Șterge comentariul"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | noSentComments": {
+    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+  },
+  "panels/comments/CommentsPane.ts | queued": {
+    "message": "Queued"
+  },
+  "panels/comments/CommentsPane.ts | seeResponse": {
+    "message": "Vezi răspunsul"
+  },
+  "panels/comments/CommentsPane.ts | sendToAgent": {
+    "message": "Trimite către agent"
+  },
+  "panels/comments/CommentsPane.ts | sent": {
+    "message": "Sent"
+  },
+  "panels/comments/CommentsPane.ts | working": {
+    "message": "Se procesează"
+  },
+  "panels/comments/comments-meta.ts | comments": {
+    "message": "Comentarii"
+  },
+  "panels/comments/comments-meta.ts | showComments": {
+    "message": "Afișează comentariile"
+  },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "Ai primit insigna {PH1}! A fost adăugată în Profilul de dezvoltator."
   },
@@ -6638,14 +6707,23 @@
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Introducerea comentariului"
   },
+  "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
+    "message": "Șterge comentariul din coadă"
+  },
+  "panels/common/CommentThreadWidget.ts | queueComment": {
+    "message": "Adaugă comentariul în coadă"
+  },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Răspuns:"
+  },
+  "panels/common/CommentThreadWidget.ts | save": {
+    "message": "Save"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Trimite către agent"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Trimis"
+    "message": "Sent"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Bifă de trimitere"
@@ -7758,7 +7836,7 @@
     "message": "Caută definiția grilei"
   },
   "panels/elements/DOMTreeContextMenu.ts | focus": {
-    "message": "Focalizează"
+    "message": "Focalizare"
   },
   "panels/elements/DOMTreeContextMenu.ts | hideElement": {
     "message": "Ascunde elementul"
@@ -7789,6 +7867,117 @@
   },
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "Grupează aceste elemente"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | children": {
+    "message": "Elemente subordonate:"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | copy": {
+    "message": "Copiază"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | creatorAdScriptAncestry": {
+    "message": "Arborele scriptului de anunț pentru creatori"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | cut": {
+    "message": "Decupează"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableContainer": {
+    "message": "Dezactivează suprapunerea containerului"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableFlexMode": {
+    "message": "Dezactivează modul Flex"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridLanesMode": {
+    "message": "Dezactivează modul cu benzi de grilă"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridMode": {
+    "message": "Dezactivează modul grilă"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableScrollSnap": {
+    "message": "Dezactivează suprapunerea derulare-tragere"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableStartingStyle": {
+    "message": "Dezactivează modul @starting-style"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | elementHasScrollableOverflow": {
+    "message": "Acest element are un element suplimentar în care se poate derula"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableContainer": {
+    "message": "Activează suprapunerea containerului"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableFlexMode": {
+    "message": "Activează modul Flex"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridLanesMode": {
+    "message": "Activează modul cu benzi de grilă"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridMode": {
+    "message": "Activează modul grilă"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableScrollSnap": {
+    "message": "Activează suprapunerea derulare-tragere"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableStartingStyle": {
+    "message": "Activează modul @starting-style"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | filterListRule": {
+    "message": "Regulă pentru lista de filtre"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceOpenPopover": {
+    "message": "Menține deschisă această fereastră pop-up"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceShowInterest": {
+    "message": "Declanșează interesul pentru acest element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceState": {
+    "message": "Forțează starea"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | noProvenanceAvailable": {
+    "message": "Nu sunt disponibile date despre proveniență"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | openMediaPanel": {
+    "message": "Accesează Panoul media"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | paste": {
+    "message": "Inserează"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | reveal": {
+    "message": "Afișează"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | rootScriptFilterListRule": {
+    "message": "Regulă pentru lista de filtre a scriptului rădăcină"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | selectAll": {
+    "message": "Selectează tot"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCommandForTarget": {
+    "message": "Afișează elementul asociat atributului commandfor"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCustomElementDefinition": {
+    "message": "Afișează definiția elementului personalizat"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showInterestTarget": {
+    "message": "Afișează elementul asociat atributului interesttarget"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showPopoverTarget": {
+    "message": "Afișează elementul asociat atributului popovertarget"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceOpenPopover": {
+    "message": "Închide această fereastră pop-up"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceShowInterest": {
+    "message": "Anulează interesul pentru acest element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Acest element a fost identificat ca anunț"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | useSInTheConsoleToReferToThis": {
+    "message": "Folosește {PH1} în consolă pentru a face referire la acest element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | valueIsTooLargeToEdit": {
+    "message": "<valoarea este prea mare pentru editare>"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | viewSourceCode": {
+    "message": "Vezi codul sursă"
   },
   "panels/elements/DOMTreeWidget.ts | pageDom": {
     "message": "DOM pentru pagină"
@@ -8069,6 +8258,9 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "cu ajutorul inspectorului"
   },
+  "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
+    "message": "Base"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copiază toate declarațiile ca JS"
   },
@@ -8089,6 +8281,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Copiază valoarea"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
+    "message": "Default"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Deschide editorul flexbox"
@@ -8126,8 +8321,11 @@
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "Deschide editorul position-area"
   },
+  "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
+    "message": "Force position-try option"
+  },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
-    "message": "Nu s-a definit {PH1}"
+    "message": "{PH1} nu este definit"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Shift + clic pentru a schimba formatul de culoare"
@@ -8217,7 +8415,7 @@
     "message": "Vezi proprietatea înregistrată"
   },
   "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
-    "message": "Nu s-a definit {PH1}"
+    "message": "{PH1} nu este definit"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Cale de navigare spre structura arbore DOM"
@@ -8271,7 +8469,7 @@
     "message": "Nu afișa zonele denumite ale grilei"
   },
   "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
-    "message": "Nu afișa dimensiunile separatoarelor de grilă"
+    "message": "Nu afișa dimensiunile rândurilor și coloanelor din grilă"
   },
   "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
     "message": "Nu afișa riglele la plasarea cursorului"
@@ -8504,6 +8702,15 @@
   "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "Dispozitiv mobil mic"
   },
+  "panels/emulation/DeviceModeView.ts | presetSize": {
+    "message": "{PH1} – {PH2}px"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopied": {
+    "message": "Screenshot copied to clipboard"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
+    "message": "Couldn’t copy screenshot to clipboard"
+  },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tabletă"
   },
@@ -8592,7 +8799,7 @@
     "message": "Solicitare din rețea"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
-    "message": "Asistența AI nu este disponibilă în modul incognito sau în modul pentru invitați"
+    "message": "Asistența AI nu este disponibilă în modul incognito sau în Modul pentru invitați"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "Această funcție este disponibilă numai când te conectezi la Chrome folosind Contul Google"
@@ -8762,8 +8969,14 @@
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n,plural, =1{# element}few{# elemente}other{# de elemente}}"
   },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
+    "message": "learn more"
+  },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{Un site are permisiunea de a accesa cookie-uri}few{# site-uri au permisiunea de a accesa cookie-uri}other{# de site-uri au permisiunea de a accesa cookie-uri}}"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
+    "message": "(opt-out: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Numărul de probleme privind adresa URL de blob: {count}"
@@ -8808,7 +9021,7 @@
     "message": "Necunoscută"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
-    "message": "S-a creat o variantă a obiectului SharedArrayBuffer într-un context care nu este izolat cu origini multiple"
+    "message": "S-a creat o variantă a unui obiect SharedArrayBuffer într-un context care nu este izolat cross-origin"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
     "message": "Blocată"
@@ -8820,7 +9033,7 @@
     "message": "{n,plural, =1{# încălcare}few{# încălcări}other{# de încălcări}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "Obiectul SharedArrayBuffer a fost transferat într-un context care nu este izolat cross-origin"
+    "message": "Obiectul SharedArrayBuffer a fost transferat într-un context care nu are blocarea accesului de la mai multe surse"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
     "message": "Locație sursă"
@@ -10226,6 +10439,9 @@
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Rețea"
   },
+  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
+    "message": "Înlocuiește valoarea raportată de navigator.connection.saveData în pagină"
+  },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Folosește valoarea prestabilită a browserului"
   },
@@ -10422,7 +10638,7 @@
     "message": "(necunoscut)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "Starea solicitării nu poate fi afișată aici deoarece pagina care a difuzat-o s-a descărcat în timp ce solicitarea se afla în perioada de difuzare sporadică. Poți să folosești chrome://net-export pentru a captura un jurnal de rețea și a vedea toate detaliile solicitării."
+    "message": "Starea solicitării nu poate fi afișată aici deoarece pagina care a emis-o s-a descărcat în timp ce solicitarea era în procesare. Poți să folosești chrome://net-export pentru a captura un jurnal de rețea și a vedea toate detaliile solicitării."
   },
   "panels/network/NetworkDataGridNode.ts | wasThrottled": {
     "message": "Solicitarea a fost limitată ({PH1})"
@@ -11022,7 +11238,7 @@
     "message": "Grupurile RegExp nu sunt permise"
   },
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
-    "message": "Datele de intrare pentru șablon trebuie completate"
+    "message": "Datele de intrare pentru model trebuie completate"
   },
   "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
     "message": "Șablonul de adresă URL a fost mutat în jos"
@@ -11091,7 +11307,7 @@
     "message": "Nu s-a amânat (s-a încercat actualizarea proactivă)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshNotPossible": {
-    "message": "Nu este amânată (solicitarea este în aria de acoperire a sesiunii, dar actualizarea proactivă nu este posibilă)"
+    "message": "Nu s-a amânat (solicitarea este în aria de acoperire a sesiunii dar actualizarea proactivă nu este posibilă)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "ID-ul sesiunii"
@@ -11864,8 +12080,17 @@
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
     "message": "Elementele detașate arată obiectele păstrate de o referință JS"
   },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsList": {
+    "message": "Lista elementelor detașate"
+  },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "Elemente detașate"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedNodes": {
+    "message": "Noduri detașate"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | nodeSize": {
+    "message": "Numărul de noduri"
   },
   "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
     "message": "Obține elemente detașate"
@@ -12689,6 +12914,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Anulează redarea repetată"
   },
+  "panels/recorder/RecordingView.ts | code": {
+    "message": "Cod"
+  },
   "panels/recorder/RecordingView.ts | codeFormat": {
     "message": "Formatul codului"
   },
@@ -12751,6 +12979,9 @@
   },
   "panels/recorder/RecordingView.ts | showCode": {
     "message": "Afișează codul"
+  },
+  "panels/recorder/RecordingView.ts | steps": {
+    "message": "Pași"
   },
   "panels/recorder/RecordingView.ts | timeout": {
     "message": "Timp limită: {value} ms"
@@ -13053,7 +13284,7 @@
     "message": "conținut mixt activ"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "Toate resursele din această pagină sunt afișate în siguranță."
+    "message": "Toate resursele de pe această pagină sunt difuzate în siguranță"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "toate difuzate în siguranță"
@@ -13071,7 +13302,7 @@
     "message": "Transparența certificatului"
   },
   "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
-    "message": "Chrome a identificat acest site ca fiind potențial fals sau fraudulos."
+    "message": "Chrome a stabilit că acest site ar putea fi fals sau fraudulos"
   },
   "panels/security/SecurityPanel.ts | cipher": {
     "message": "Cifru"
@@ -13098,10 +13329,10 @@
     "message": "Ascunde toate detaliile"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "În cazul în care consideri că este o greșeală, accesează https://g.co/chrome/lookalike-warnings."
+    "message": "În cazul în care consideri că este o greșeală, accesează https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "În cazul în care consideri că este o greșeală, accesează https://g.co/chrome/lookalike-warnings."
+    "message": "În cazul în care consideri că este o greșeală, accesează https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Informații"
@@ -13134,7 +13365,7 @@
     "message": "(Nu este cazul)"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
-    "message": "Nu sunt disponibile detalii de securitate pentru această origine."
+    "message": "Nu sunt disponibile detalii de securitate pentru această origine"
   },
   "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "Nicio informație despre securitate"
@@ -13167,10 +13398,10 @@
     "message": "Fixarea cheii publice este ocolită"
   },
   "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
-    "message": "Obiectul Public-Key-Pinning a fost ocolit de un certificat rădăcină local."
+    "message": "Fixarea cheii publice a fost ocolită de un certificat rădăcină local"
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "Reîncarcă pagina pentru a înregistra solicitările privind resursele HTTP."
+    "message": "Reîncarcă pagina pentru a înregistra solicitările de resurse HTTP"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "Resurse"
@@ -13224,73 +13455,73 @@
     "message": "Subject Alternative Name lipsește"
   },
   "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
-    "message": "Lanțul de certificate pentru acest site conține un certificat semnat folosind SHA-1."
+    "message": "Lanțul de certificate pentru acest site conține un certificat semnat folosind SHA-1"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "Certificatul pentru acest site nu conține o extensie Subject Alternative Name cu un nume de domeniu sau o adresă IP."
+    "message": "Certificatul pentru acest site nu conține o extensie Subject Alternative Name cu un nume de domeniu sau o adresă IP"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
-    "message": "Certificatul pentru acest site expiră în mai puțin de 48 de ore și trebuie reînnoit."
+    "message": "Certificatul pentru acest site expiră în mai puțin de 48 de ore și trebuie reînnoit"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
-    "message": "Conexiunea la acest site este criptată și autentificată cu {PH1}, {PH2} și {PH3}."
+    "message": "Conexiunea la acest site este criptată și autentificată folosind {PH1}, {PH2} și {PH3}"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "Conexiunea la acest site folosește un certificat de server de încredere valid, emis de {PH1}."
+    "message": "Conexiunea la acest site folosește un certificat de server valid și de încredere, emis de {PH1}"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
-    "message": "Detaliile de securitate de mai sus sunt de la primul răspuns inspectat."
+    "message": "Detaliile de securitate de mai sus provin din primul răspuns inspectat"
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Semnătura de server folosește funcția SHA-1, care este învechită. Activează un algoritm de semnare SHA-2. (Reține că acesta diferă de semnătura din certificat.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "Aceasta este o pagină de eroare."
+    "message": "Aceasta este o pagină de eroare"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
-    "message": "Originea nu este HTTPS Secure."
+    "message": "Această origine nu este o origine HTTPS secure"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "Pagina are o origine care nu este HTTP Secure."
+    "message": "Această pagină are o origine securizată non-HTTPS"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "Această pagină include un formular cu un atribut action nesecurizat."
+    "message": "Această pagină include un formular cu un atribut action nesecurizat"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "Această pagină include resurse HTTP."
+    "message": "Această pagină include resurse HTTP"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "Această pagină include resursele încărcate cu erori de certificate."
+    "message": "Această pagină include resurse care au fost încărcate cu erori de certificat"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "Această pagină este periculoasă (semnalată de Navigarea sigură Google)."
+    "message": "Această pagină este periculoasă (semnalată de Navigarea sigură Google)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "Această pagină este nesecurizată (HTTP necriptat)."
+    "message": "Această pagină nu este securizată (HTTP necriptat)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Această pagină este suspectă"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "Această pagină este suspectă (semnalată de Chrome)."
+    "message": "Această pagină este suspectă (marcată de Chrome)"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "Această solicitare respectă politica Chrome privind transparența certificatelor."
+    "message": "Această solicitare respectă politica Chrome privind transparența certificatelor"
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "Această solicitare nu respectă politica Chrome privind transparența certificatelor."
+    "message": "Această solicitare nu respectă politica Chrome privind transparența certificatelor"
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "Acest răspuns a fost încărcat din memoria cache. Este posibil să lipsească unele detalii despre securitate."
   },
   "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
-    "message": "Acest site nu are un certificat de încredere valid ({PH1})."
+    "message": "Acest site nu are un certificat valid și de încredere ({PH1})"
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "Numele de gazdă al acestui site este similar cu cel al site-ului {PH1}. Uneori, atacatorii imită site-uri aducând modificări mici, greu de observat, numelui de domeniu."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "Ca să verifici starea acestei pagini, accesează g.co/safebrowsingstatus."
+    "message": "Ca să verifici starea acestei pagini, accesează g.co/safebrowsingstatus"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "necunoscută"
@@ -13317,16 +13548,16 @@
     "message": "Afișează solicitările în Panoul de rețea"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "Ai permis recent rularea de conținut cu erori legate de certificat (cum ar fi scripturi sau cadre iframe) pe acest site."
+    "message": "Ai permis recent rularea pe acest site a conținutului încărcat cu erori de certificat (cum ar fi scripturi sau elemente iframe)"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "Ai permis recent rularea de conținut nesigur (cum ar fi scripturi sau cadre iframe) pe acest site."
+    "message": "Ai permis recent rularea de conținut nesecurizat (cum ar fi scripturi sau elemente iframe) pe acest site"
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "Conexiunea la această origine nu este sigură."
+    "message": "Conexiunea la această origine nu este sigură"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Pagina solicită resurse nesecurizate care au fost blocate."
+    "message": "Pagina a solicitat resurse nesecurizate care au fost blocate"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Originea principală"
@@ -13680,7 +13911,7 @@
     "message": "Pentru a genera explicații, mesajul de pe consolă, urmărirea stivei asociată, codul sursă asociat și anteturile de rețea asociate sunt trimise la Google. Aceste date pot fi examinate de evaluatori umani pentru a îmbunătăți funcția."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Pentru a genera explicații, mesajul de pe consolă, urmărirea stivei asociată, codul sursă asociat și anteturile de rețea asociate sunt trimise la Google. Aceste date nu vor fi folosite pentru a îmbunătăți modelele Google AI. Organizația poate să modifice oricând aceste setări."
+    "message": "Pentru a genera explicații, mesajul de pe consolă, urmărirea stivei asociată, codul sursă asociat și anteturile de rețea asociate sunt trimise la Google. Aceste date nu vor fi folosite pentru a îmbunătăți modelele Google AI. Organizația ta poate să modifice oricând aceste setări."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "În funcție de regiune, Google poate să nu colecteze date"
@@ -13755,7 +13986,7 @@
     "message": "Aceste funcții trimit date relevante la Google. Google colectează datele și feedbackul pentru a-și îmbunătăți produsele și serviciile cu ajutorul evaluatorilor umani. Evită să dezvălui informații sensibile sau cu caracter personal."
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogleNoLogging": {
-    "message": "Conținutul tău nu va fi folosit de evaluatori umani pentru a îmbunătăți AI. Organizația poate să modifice oricând aceste setări."
+    "message": "Conținutul tău nu va fi folosit de evaluatori umani pentru a îmbunătăți AI-ul. Organizația ta poate să modifice oricând aceste setări."
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "Afișează mai puțin"
@@ -14403,7 +14634,7 @@
     "message": "Află mai multe: tipuri de puncte de întrerupere"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
-    "message": "Înregistrează un mesaj pe consolă, nu întrerupe"
+    "message": "Înregistrează un mesaj în consolă, nu întrerupe"
   },
   "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "Mesaj de înregistrare în jurnal, de ex.'x is', x"
@@ -14975,6 +15206,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copiază conținutul șirului"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Bara laterală a depanatorului este ascunsă"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Bara laterală a depanatorului este afișată"
+  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Plasează aici dosarul pentru spațiul de lucru"
   },
@@ -14995,6 +15232,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Mai multe opțiuni"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Bara laterală a navigatorului este ascunsă"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Bara laterală a navigatorului este afișată"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Deschide în panoul Surse"
@@ -15174,7 +15417,7 @@
     "message": "Dezactivează urmăririle de stivă asincrone"
   },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
-    "message": "Nu focaliza pe panoul Surse când se declanșează un punct de întrerupere"
+    "message": "Nu focaliza panoul Surse când declanșezi un punct de întrerupere"
   },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Dezactivează completarea automată"
@@ -15210,13 +15453,13 @@
     "message": "Afișează valorile variabilelor inline în timpul remedierii erorilor"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
-    "message": "Nu se aplică automat o formatare stilizată pentru sursele minimizate"
+    "message": "Nu aplica automat o formatare stilizată pentru sursele minimizate"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "Nu afișa automat filele în bara laterală"
+    "message": "Nu afișa automat fișierele în bara laterală"
   },
   "panels/sources/sources-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "Nu captura urmăririle de stivă asincrone"
+    "message": "Nu captura urmăriri asincrone ale stivei"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
     "message": "Nu detecta indentarea"
@@ -15228,10 +15471,10 @@
     "message": "Nu întrerupe la excepții"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
-    "message": "Nu căuta în scripturile anonime și de conținut"
+    "message": "Nu căuta în scripturi anonime și de conținut"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Nu afișa caracterele pentru spații"
+    "message": "Nu afișa caracterele de spațiere"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "Focalizează pe panoul Surse când se declanșează un punct de întrerupere"
@@ -16143,7 +16386,7 @@
     "message": "Proprietatea legată de transformare depinde de dimensiunea pachetului"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget": {
-    "message": "Proprietatea legată de transform nu poate fi accelerată pentru țintă"
+    "message": "Proprietatea legată de transformare nu poate fi accelerată pentru țintă"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
     "message": "Motiv necunoscut"
@@ -17303,8 +17546,8 @@
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
     "message": "Dimensiunea memoriei temporare pentru apelare inversă"
   },
-  "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "Interval de apelare inversă"
+  "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
+    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Ora curentă"
@@ -18227,6 +18470,9 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Coordonate"
   },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
+    "message": "Elimină {propertyName}: {propertyValue}"
+  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Logic"
   },
@@ -18241,6 +18487,9 @@
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | positionAreaGridDescription": {
     "message": "Folosește tastele săgeți pentru a naviga, tasta de spațiu sau Enter pentru a selecta și tastele Shift + săgeți pentru a selecta un interval"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | selectButton": {
+    "message": "Adaugă {propertyName}: {propertyValue}"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Afișează ca obiect JavaScript"

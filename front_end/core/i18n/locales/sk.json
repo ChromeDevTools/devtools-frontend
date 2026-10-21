@@ -219,16 +219,16 @@
     "message": "Profil {PH1}"
   },
   "core/sdk/CSSStyleSheetHeader.ts | couldNotFindTheOriginalStyle": {
-    "message": "Pôvodnú šablónu kaskádových štýlov sa nepodarilo nájsť"
+    "message": "Couldn’t find the original style sheet"
   },
   "core/sdk/CSSStyleSheetHeader.ts | couldNotRetrieveSourceStyles": {
-    "message": "Štýly zdroja sa nepodarilo načítať"
+    "message": "Couldn’t retrieve source styles"
   },
   "core/sdk/ChildTargetManager.ts | main": {
     "message": "Hlavné"
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
-    "message": "Nepodarilo sa načítať obsah pre {PH1} ({PH2})"
+    "message": "Couldn’t load content for {PH1} ({PH2})"
   },
   "core/sdk/Connections.ts | websocketConnectionFailed": {
     "message": "Protokol WebSocket je odpojený. Uistite sa, že --remote-allow-origins v inštancii Chromu povoľuje aktuálny zdroj."
@@ -348,19 +348,19 @@
     "message": "Tento pokus o nastavenie súboru cookie prostredníctvom hlavičky Set-Cookie bol zablokovaný, pretože mal v názve predponu __Secure- alebo __Host- a porušoval ďalšie pravidlá pre súbory cookie s týmito predponami tak, ako je definované na https://tools.ietf.org/html/draft-west-cookie-prefixes-05"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "Tento pokus o nastavenie súboru cookie prostredníctvom hlavičky Set-Cookie bol zablokovaný, pretože nebol odoslaný cez zabezpečené pripojenie a prepísal by súbor cookie s atribútom Secure"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it wasn’t sent over a secure connection and would have overwritten a cookie with the \"Secure\" attribute"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "Tento pokus o nastavenie súboru cookie prostredníctvom hlavičky Set-Cookie bol zablokovaný, pretože mal atribút SameSite=None, ale nemal atribút Secure, bez ktorého sa hodnota SameSite=None nedá používať"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"SameSite=None\" attribute but didn’t have the \"Secure\" attribute, which is required in order to use \"SameSite=None\""
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "Tento pokus o nastavenie súboru cookie prostredníctvom hlavičky Set-Cookie bol zablokovaný, pretože mal atribút {PH1}, ale bol prijatý z odpovede pochádzajúcej z iného webu, ktorá nebola odpoveďou na navigáciu najvyššej úrovne"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which wasn’t the response to a top-level navigation"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "Táto hlavička Set-Cookie nemala určený atribút SameSite, bola obnovená na predvolenú hodnotu „SameSite=Lax“ a zablokovaná, pretože prišla v odpovedi z iného webu, ktorá nie je odpoveďou na navigáciu najvyššej úrovne. Hlavička Set-Cookie mala byť nastavená na hodnotu „SameSite=None“, aby bolo možné používanie z iného webu."
+    "message": "This \"Set-Cookie\" header didn’t specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which wasn’t the response to a top-level navigation. The \"Set-Cookie\" header had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "Tento pokus o nastavenie súboru cookie prostredníctvom hlavičky Set-Cookie bol zablokovaný, pretože mal atribút Secure, ale nebol prijatý cez zabezpečené pripojenie"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"Secure\" attribute but wasn’t received over a secure connection"
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Tento súbor cookie bol zablokovaný, pretože sa doména webovej adresy požiadavky presne nezhodovala s jeho doménou ani nebola subdoménou jeho hodnoty atribútu Domain"
@@ -384,28 +384,28 @@
     "message": "Tento súbor cookie bol zablokovaný, pretože je príliš veľký. Názov a hodnota môžu mať spoločne najviac 4 096 znakov."
   },
   "core/sdk/NetworkRequest.ts | notOnPath": {
-    "message": "Tento súbor cookie bol zablokovaný, pretože jeho cesta sa presne nezhodovala s cestou webovej adresy požiadavky alebo nebola jej nadradeným priečinkom"
+    "message": "This cookie was blocked because its path wasn’t an exact match for or a superdirectory of the request URL’s path"
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
-    "message": "Tento súbor cookie bol zablokovaný, pretože mal atribút SameSite=Lax a požiadavka bola vytvorená iným webom, pričom nebola iniciovaná navigáciou najvyššej úrovne"
+    "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute and the request was made from a different site and wasn’t initiated by a top-level navigation"
   },
   "core/sdk/NetworkRequest.ts | sameSiteNoneInsecure": {
-    "message": "Tento súbor cookie bol zablokovaný, pretože mal atribút SameSite=None, ale nebol označený ako „Secure“. Súbory cookie bez obmedzení SameSite musia byť označené ako „Secure“ a posielané cez zabezpečené pripojenie."
+    "message": "This cookie was blocked because it had the \"SameSite=None\" attribute but wasn’t marked \"Secure\". Cookies without SameSite restrictions must be marked \"Secure\" and sent over a secure connection."
   },
   "core/sdk/NetworkRequest.ts | sameSiteStrict": {
     "message": "Tento súbor cookie bol zablokovaný, pretože mal atribút SameSite=Strict a požiadavka bola odoslaná z iného webu. Zahŕňa to požiadavky navigácie najvyššej úrovne iniciované inými webmi."
   },
   "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
-    "message": "Tento súbor cookie nemal pri ukladaní určený atribút SameSite, bol obnovený na predvolenú hodnotu SameSite=Lax a zablokovaný, pretože požiadavka bola odoslaná iným webom, pričom nebola iniciovaná navigáciou najvyššej úrovne. Súbor cookie mal byť nastavený na hodnotu SameSite=None, aby bolo povolené používanie z iného webu."
+    "message": "This cookie didn’t specify a \"SameSite\" attribute when it was stored and was defaulted to \"SameSite=Lax\", and was blocked because the request was made from a different site and wasn’t initiated by a top-level navigation. The cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
-    "message": "Tento súbor cookie bol zablokovaný, pretože mal atribút Secure a pripojenie nebolo zabezpečené"
+    "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection wasn’t secure"
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
     "message": "Hlavička Set-Cookie je ignorovaná v odpovedi z webovej adresy: {PH1}. Názov a hodnota môžu mať spoločne najviac 4 096 znakov."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
-    "message": "Schéma tohto pripojenia nepovoľuje ukladanie súborov cookie"
+    "message": "The scheme of this connection isn’t allowed to store cookies"
   },
   "core/sdk/NetworkRequest.ts | thirdPartyPhaseout": {
     "message": "Tento súbor cookie bol zablokovaný. Môže to byť spôsobené experimentálnymi funkciami Chromu alebo konfiguráciou prehliadača. Viac sa dozviete na paneli Problémy."
@@ -434,8 +434,14 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Pozastavené v ladiacom nástroji"
   },
+  "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
+    "message": "Can’t load resource for an unavailable cross-origin frame"
+  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Načítanie bolo zrušené z dôvodu opätovného načítania kontrolovanej stránky"
+  },
+  "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
+    "message": "Can’t load http(s) resource without a target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Pri načítavaní denníka sa vyskytla chyba"
@@ -675,25 +681,25 @@
     "message": "Deaktivovať formát WebP"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
-    "message": "Neotvárať automaticky Nástroje pre vývojárov v prípade vyskakovacích okien"
+    "message": "Don’t auto-open DevTools for popups"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAFocusedPage": {
-    "message": "Neemulovať označenú stránku"
+    "message": "Don’t emulate a focused page"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAnyVisionDeficiency": {
-    "message": "Neemulovať žiadnu poruchu zraku"
+    "message": "Don’t emulate any vision deficiency"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
-    "message": "Neemulovať šablóny CSS {PH1}"
+    "message": "Don’t emulate CSS {PH1}"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
-    "message": "Neemulovať typ médií šablón CSS"
+    "message": "Don’t emulate CSS media type"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateOsTextScale": {
-    "message": "Neemulovať mierku textu operačného systému"
+    "message": "Don’t emulate OS text scale"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotHighlightAdFrames": {
-    "message": "Nezvýrazňovať rámy reklám"
+    "message": "Don’t highlight ad frames"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
     "message": "Emulovať označenú stránku"
@@ -1334,6 +1340,9 @@
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
     "message": "Obmedzenie DtlsSrtpKeyAgreement bolo odstránené. Pre toto obmedzenie ste špecifikovali hodnotu true, ktorá nemala žiadny účinok. Toto obmedzenie však môžete odstrániť pre poriadok."
   },
+  "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
+    "message": "RTCPeerConnection.createDTMFSender() is deprecated and will be removed. Please use RTCRtpSender.dtmf instead."
+  },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "Podpora metódy callback-based getStats() bola ukončená. Táto metóda bude odstránená. Použite namiesto nej spec-compliant getStats()."
   },
@@ -1556,6 +1565,9 @@
   "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
     "message": "Prvky štítka"
   },
+  "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
+    "message": "Web permissions best practices"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Riešenie intervencií voči zaťažujúcim reklamám"
   },
@@ -1572,7 +1584,7 @@
     "message": "Zlepšenia"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
-    "message": "Problém spočívajúci v chybe stránky: stránka nefunguje správne"
+    "message": "A page error issue: the page isn’t working correctly"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "Chyby na stránke"
@@ -2058,7 +2070,7 @@
     "message": "Klaster zmeny rozloženia @ {PH1}"
   },
   "models/trace/insights/CLSCulprits.ts | noCulprits": {
-    "message": "Nepodarilo sa rozpoznať žiadne príčiny zmien rozloženia"
+    "message": "Couldn’t detect any layout shift culprits"
   },
   "models/trace/insights/CLSCulprits.ts | noLayoutShifts": {
     "message": "Žiadne zmeny rozloženia"
@@ -2570,6 +2582,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | politeness": {
     "message": "Zdvorilosť"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInA11yTree": {
+    "message": "Reveal in Accessibility tree"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInElements": {
+    "message": "Odhaliť v paneli Prvky"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "Čas"
   },
@@ -2649,10 +2667,10 @@
     "message": "Prvok je inert"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
-    "message": "Prvok nebol vykreslený"
+    "message": "Element isn’t rendered"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsNotVisible": {
-    "message": "Prvok nie je viditeľný"
+    "message": "Element isn’t visible"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsPlaceholder": {
     "message": "Prvok je {PH1}"
@@ -3080,14 +3098,11 @@
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Konverzáciu môžete začať aj použitím jedného z navrhovaných pokynov uvedených vyššie"
   },
-  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
-    "message": "Ďalšie informácie o umelej inteligencii v nástrojoch pre vývojárov"
-  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Zobraziť vybranú položku kontextu v nástrojoch pre vývojárov"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
-    "message": "Pomoc umelej inteligencie nie je k dispozícii v režime inkognito ani režime pre hostí"
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
     "message": "Táto funkcia je k dispozícii, len keď máte v Chrome prihlásený vlastný účet Google"
@@ -3147,7 +3162,7 @@
     "message": "Četové správy, údaje prístupné pre tento web prostredníctvom panelov nástrojov pre vývojárov a webových rozhraní API a položky, ktoré vyberiete, napríklad požiadavky siete, súbory a stopy výkonu sa odosielajú Googlu. Môžu ich prezerať kontrolóri s cieľom zlepšiť túto funkciu. Toto je experimentálna funkcia umelej inteligencie, ktorá môže robiť chyby."
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
-    "message": "Četové správy, údaje prístupné pre tento web prostredníctvom panelov nástrojov pre vývojárov a webových rozhraní API a položky, ktoré vyberiete, napríklad požiadavky siete, súbory a stopy výkonu sa odosielajú Googlu. Obsah odoslaný tejto funkcii a obsah ňou vygenerovaný sa nebudú používať na zlepšovanie modelov umelej inteligencie od Googlu. Toto je experimentálna funkcia umelej inteligencie, ktorá môže robiť chyby."
+    "message": "Chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content submitted to and generated by this feature won’t be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right."
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
     "message": "Pomoc umelej inteligencie je teraz ešte lepšia"
@@ -3165,7 +3180,7 @@
     "message": "Skryť uvažovanie"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
-    "message": "Prebieha"
+    "message": "In progress"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Zobraziť návod na použitie agenta"
@@ -3265,6 +3280,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Farba pozadia"
+  },
+  "panels/application/AppManifestView.ts | bundleId": {
+    "message": "Bundle ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Vypočítaný identifikátor aplikácie"
@@ -3397,6 +3415,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Stránka sa nenačítava z bezpečného zdroja"
+  },
+  "panels/application/AppManifestView.ts | parentAppName": {
+    "message": "Parent app name"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platforma"
@@ -3657,22 +3678,22 @@
     "message": "Načítanie na pozadí"
   },
   "panels/application/BackgroundServiceView.ts | backgroundServices": {
-    "message": "Služby na pozadí"
+    "message": "Background services"
   },
   "panels/application/BackgroundServiceView.ts | backgroundSync": {
     "message": "Synchronizácia na pozadí"
   },
   "panels/application/BackgroundServiceView.ts | clear": {
-    "message": "Vymazať"
+    "message": "Clear"
   },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "Nástroje pre vývojárov budú nahrávať všetku aktivitu {PH1} maximálne tri dni, aj keď budú zavreté."
   },
   "panels/application/BackgroundServiceView.ts | empty": {
-    "message": "prázdne"
+    "message": "empty"
   },
   "panels/application/BackgroundServiceView.ts | event": {
-    "message": "Udalosť"
+    "message": "Event"
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Identifikátor inštancie"
@@ -3690,7 +3711,7 @@
     "message": "Upozornenia"
   },
   "panels/application/BackgroundServiceView.ts | origin": {
-    "message": "Pôvod"
+    "message": "Origin"
   },
   "panels/application/BackgroundServiceView.ts | paymentHandler": {
     "message": "Obslužný nástroj platieb"
@@ -3717,25 +3738,25 @@
     "message": "Zobraziť udalosti z iných domén"
   },
   "panels/application/BackgroundServiceView.ts | startRecordingEvents": {
-    "message": "Spustiť zaznamenávanie udalostí"
+    "message": "Start recording events"
   },
   "panels/application/BackgroundServiceView.ts | startRecordingToDebug": {
     "message": "Začnite ladiť služby na pozadí pomocou tlačidla {PH1} alebo stlačením klávesov {PH2}"
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
-    "message": "Zastavenie nahrávania udalostí"
+    "message": "Stop recording events"
   },
   "panels/application/BackgroundServiceView.ts | storageKey": {
-    "message": "Kľúč úložiska"
+    "message": "Storage key"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
-    "message": "Rozsah obsluhy"
+    "message": "Service Worker scope"
   },
   "panels/application/BackgroundServiceView.ts | timestamp": {
-    "message": "Časová pečiatka"
+    "message": "Timestamp"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "Zmiernenia sledovania okamžitých odchodov"
+    "message": "Bounce tracking mitigations"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Vymazať všetky súbory cookie"
@@ -3765,7 +3786,7 @@
     "message": "Zobrazovať dekódovanú webovú adresu"
   },
   "panels/application/CookieItemsView.ts | startAChat": {
-    "message": "Začať čet"
+    "message": "Start a chat"
   },
   "panels/application/CrashReportContextView.ts | filterByText": {
     "message": "Filtrovať podľa kľúča alebo hodnoty"
@@ -3783,16 +3804,16 @@
     "message": "Položka priestoru bola odstránená"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
-    "message": "Položky ukladacieho priestoru DOM"
+    "message": "DOM storage items"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "Položky ukladacieho preistoru DOM boli vymazané"
+    "message": "DOM storage items cleared"
   },
   "panels/application/DOMStorageItemsView.ts | explainItem": {
     "message": "Vysvetliť túto položku"
   },
   "panels/application/DOMStorageItemsView.ts | startAChat": {
-    "message": "Začať čet"
+    "message": "Start a chat"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
     "message": "Vymazať"
@@ -4206,10 +4227,10 @@
     "message": "Áno"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
-    "message": "Položky priestoru rozšírenia"
+    "message": "Extension storage items"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
-    "message": "Položky ukladacieho priestoru rozšírenia boli vymazané"
+    "message": "Extension storage items cleared"
   },
   "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "Nadradený rám je nezabezpečený kontext"
@@ -4304,6 +4325,9 @@
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Tento rám sa považuje za rám reklamy, pretože jeho nadradeným rámom je rám reklamy"
   },
+  "panels/application/FrameDetailsView.ts | refreshSpellCheckCustomDictionary": {
+    "message": "Refresh spell check custom dictionary"
+  },
   "panels/application/FrameDetailsView.ts | reportingTo": {
     "message": "odosiela hlásenia na"
   },
@@ -4330,6 +4354,12 @@
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "Konštruktor SharedArrayBuffer je k dispozícii, ale SABs nie je možné preniesť metódou postMessage"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionary": {
+    "message": "Spell check custom dictionary"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionaryExplanation": {
+    "message": "Words added with document.spellCheckCustomDictionary.addWords(). The spell checker doesn’t flag them in this document."
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Schéma rámu nie je zabezpečená"
@@ -4358,6 +4388,9 @@
   "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ bude v budúcnosti vyžadovať kontext izolovaný od zmiešaného pôvodu"
   },
+  "panels/application/FrameDetailsView.ts | words": {
+    "message": "Words"
+  },
   "panels/application/FrameDetailsView.ts | yes": {
     "message": "Áno"
   },
@@ -4383,10 +4416,10 @@
     "message": "Odstrániť databázu"
   },
   "panels/application/IndexedDBViews.ts | deleteSelected": {
-    "message": "Odstrániť vybrané"
+    "message": "Delete selected"
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
-    "message": "Rekurzívne rozbaliť"
+    "message": "Expand recursively"
   },
   "panels/application/IndexedDBViews.ts | filterByKey": {
     "message": "Filtrujte podľa kľúča (zobrazte si kľúče s väčšou alebo rovnakou hodnotou)"
@@ -4395,7 +4428,7 @@
     "message": "IDB"
   },
   "panels/application/IndexedDBViews.ts | indexedDb": {
-    "message": "Indexovaná databáza"
+    "message": "IndexedDB"
   },
   "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "Hodnota generátora kľúčov: {PH1}"
@@ -4404,7 +4437,7 @@
     "message": "Cesta kľúča: "
   },
   "panels/application/IndexedDBViews.ts | keyString": {
-    "message": "Kľúč"
+    "message": "Key"
   },
   "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
     "message": "Údaje zahrnuté vo vybranom úložisku objektov budú odstránené"
@@ -4416,7 +4449,7 @@
     "message": "Primárny kľúč"
   },
   "panels/application/IndexedDBViews.ts | refresh": {
-    "message": "Obnoviť"
+    "message": "Refresh"
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Obnoviť databázu"
@@ -4431,16 +4464,16 @@
     "message": "Niektoré vstupy mohli byť upravené"
   },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
-    "message": "Celkový počet záznamov: {PH1}"
+    "message": "Total entries: {PH1}"
   },
   "panels/application/IndexedDBViews.ts | valueString": {
-    "message": "Hodnota"
+    "message": "Value"
   },
   "panels/application/IndexedDBViews.ts | version": {
-    "message": "Verzia"
+    "message": "Version"
   },
   "panels/application/KeyValueStorageItemsView.ts | key": {
-    "message": "Kľúč"
+    "message": "Key"
   },
   "panels/application/KeyValueStorageItemsView.ts | noPreviewSelected": {
     "message": "Nebola vybraná žiadna hodnota"
@@ -4452,7 +4485,7 @@
     "message": "Vyberte hodnotu, ktorej ukážku chcete zobraziť"
   },
   "panels/application/KeyValueStorageItemsView.ts | value": {
-    "message": "Hodnota"
+    "message": "Value"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Prístup k otváraciemu nástroju"
@@ -4569,58 +4602,58 @@
     "message": "Kontrola reportov a koncových bodov rozhrania Reporting API"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
-    "message": "Ukladací priestor vyrovnávacej pamäte"
+    "message": "Cache storage"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorageDescription": {
     "message": "Na tejto stránke si môžete prezerať a odstraňovať údaje vyrovnávacej pamäte"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
-    "message": "Odstrániť"
+    "message": "Delete"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | noCacheStorage": {
     "message": "Nebolo rozpoznané žiadne ukladanie do vyrovnávacej pamäte"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
-    "message": "Obnoviť vyrovnávacie pamäte"
+    "message": "Refresh caches"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Vyrovnávacia pamäť"
   },
   "panels/application/ServiceWorkerCacheViews.ts | deleteSelected": {
-    "message": "Odstrániť vybrané"
+    "message": "Delete selected"
   },
   "panels/application/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "Filtrujte podľa cesty"
   },
   "panels/application/ServiceWorkerCacheViews.ts | headers": {
-    "message": "Hlavičky"
+    "message": "Headers"
   },
   "panels/application/ServiceWorkerCacheViews.ts | matchingEntriesS": {
     "message": "Zodpovedajúce vstupy: {PH1}"
   },
   "panels/application/ServiceWorkerCacheViews.ts | name": {
-    "message": "Názov"
+    "message": "Name"
   },
   "panels/application/ServiceWorkerCacheViews.ts | noCacheEntrySelected": {
     "message": "Nie je vybraný žiadny záznam vyrovnávacej pamäte"
   },
   "panels/application/ServiceWorkerCacheViews.ts | preview": {
-    "message": "Ukážka"
+    "message": "Preview"
   },
   "panels/application/ServiceWorkerCacheViews.ts | refresh": {
-    "message": "Obnoviť"
+    "message": "Refresh"
   },
   "panels/application/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
     "message": "Vybrať vstup vyrovnávacej pamäte vyššie na zobrazenie ukážky"
   },
   "panels/application/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
-    "message": "Vyrovnávacia pamäť Service Worker"
+    "message": "Service Worker cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "Čas uloženia vo vyrovnávacej pamäti"
+    "message": "Time cached"
   },
   "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
-    "message": "Celkový počet záznamov: {PH1}"
+    "message": "Total entries: {PH1}"
   },
   "panels/application/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
     "message": "⚠️ Nastaviť ignoreVary na hodnotu pravda pri hľadaní zhody s týmto vstupom"
@@ -4632,31 +4665,31 @@
     "message": "Čas začatia: {PH1}"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | timeline": {
-    "message": "Časová os"
+    "message": "Timeline"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | updateActivity": {
-    "message": "Aktivita aktualizácie"
+    "message": "Update activity"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
-    "message": "Verzia"
+    "message": "Version"
   },
   "panels/application/ServiceWorkersView.ts | bypassForNetwork": {
     "message": "Vynechanie siete"
   },
   "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "Obísť service worker a načítať zdroje zo siete"
+    "message": "Obísť Service Worker a načítať zdroje zo siete"
   },
   "panels/application/ServiceWorkersView.ts | clients": {
     "message": "Klienty"
   },
   "panels/application/ServiceWorkersView.ts | focus": {
-    "message": "označenie"
+    "message": "Focus"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Sieťové požiadavky"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "Pri opätovnom načítaní stránky presadiť aktualizáciu nastavenia service worker a aktivovať ho"
+    "message": "Pri opätovnom načítaní stránky presadiť aktualizáciu nastavenia Service Worker a aktivovať ho"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "Pravidelne synchronizovať"
@@ -4698,25 +4731,25 @@
     "message": "Zobraziť všetky registrácie"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "Service worker na {PH1}"
+    "message": "Service Worker na {PH1}"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "Obsluhy z iných pôvodov"
+    "message": "Service Workers from other origins"
   },
   "panels/application/ServiceWorkersView.ts | source": {
-    "message": "Zdroj"
+    "message": "Source"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "Začiatok"
+    "message": "Start"
   },
   "panels/application/ServiceWorkersView.ts | status": {
-    "message": "Stav"
+    "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "Zastaviť"
+    "message": "Stop"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
-    "message": "Synchronizovať"
+    "message": "Sync"
   },
   "panels/application/ServiceWorkersView.ts | syncTag": {
     "message": "Štítok synchronizácie"
@@ -4728,13 +4761,13 @@
     "message": "Zrušiť registráciu"
   },
   "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "Zrušiť registráciu obsluhy"
+    "message": "Unregister Service Worker"
   },
   "panels/application/ServiceWorkersView.ts | update": {
-    "message": "Aktualizovať"
+    "message": "Update"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
-    "message": "Cyklus aktualizácie"
+    "message": "Update cycle"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
     "message": "Aktualizovať pri opätovnom načítaní"
@@ -4752,13 +4785,13 @@
     "message": "Na tejto stránke si môžete prezerať a odstraňovať kontajnery úložiska a s nimi spojené rozhrania Storage APIs"
   },
   "panels/application/StorageItemsToolbar.ts | clearAll": {
-    "message": "Vymazať všetko"
+    "message": "Clear all"
   },
   "panels/application/StorageItemsToolbar.ts | deleteSelected": {
-    "message": "Odstrániť vybrané"
+    "message": "Delete selected"
   },
   "panels/application/StorageItemsToolbar.ts | refresh": {
-    "message": "Obnoviť"
+    "message": "Refresh"
   },
   "panels/application/StorageItemsToolbar.ts | refreshedStatus": {
     "message": "Tabuľka bola obnovená"
@@ -4767,37 +4800,37 @@
     "message": "Dáta webov boli vymazané"
   },
   "panels/application/StorageView.ts | cacheStorage": {
-    "message": "Ukladací priestor vyrovnávacej pamäte"
+    "message": "Cache storage"
   },
   "panels/application/StorageView.ts | clearSelected": {
     "message": "Vymazať vybrané"
   },
   "panels/application/StorageView.ts | clearSiteData": {
-    "message": "Vymazať dáta webu"
+    "message": "Clear site data"
   },
   "panels/application/StorageView.ts | clearing": {
     "message": "Vymazáva sa…"
   },
   "panels/application/StorageView.ts | cookies": {
-    "message": "Súbory cookie"
+    "message": "Cookies"
   },
   "panels/application/StorageView.ts | fileSystem": {
-    "message": "Systém súborov"
+    "message": "File system"
   },
   "panels/application/StorageView.ts | indexDB": {
     "message": "IndexedDB"
   },
   "panels/application/StorageView.ts | internalError": {
-    "message": "Interná chyba"
+    "message": "Internal error"
   },
   "panels/application/StorageView.ts | learnMore": {
-    "message": "Ďalšie informácie"
+    "message": "Learn more"
   },
   "panels/application/StorageView.ts | localAndSessionStorage": {
     "message": "Miestny ukladací priestor a ukladací priestor relácie"
   },
   "panels/application/StorageView.ts | localStorage": {
-    "message": "Miestny ukladací priestor"
+    "message": "Local storage"
   },
   "panels/application/StorageView.ts | mb": {
     "message": "MB"
@@ -4809,10 +4842,10 @@
     "message": "Číslo musí byť menšie ako {PH1}"
   },
   "panels/application/StorageView.ts | other": {
-    "message": "Iné"
+    "message": "Other"
   },
   "panels/application/StorageView.ts | pleaseEnterANumber": {
-    "message": "Zadajte číslo"
+    "message": "Enter a number"
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (nepodarilo sa načítať)"
@@ -4821,7 +4854,7 @@
     "message": "Obsluhy"
   },
   "panels/application/StorageView.ts | sessionStorage": {
-    "message": "Ukladací priestor relácie"
+    "message": "Session storage"
   },
   "panels/application/StorageView.ts | simulateCustomStorage": {
     "message": "Simulovať vlastnú kvótu priestoru"
@@ -4836,7 +4869,7 @@
     "message": "Využité: {PH1} bajtov z celkovej kvóty priestoru {PH2} bajtov"
   },
   "panels/application/StorageView.ts | storageTitle": {
-    "message": "Ukladací priestor"
+    "message": "Storage"
   },
   "panels/application/StorageView.ts | storageUsage": {
     "message": "Potrebný ukladací priestor"
@@ -4854,16 +4887,16 @@
     "message": "Použitie"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Tokeny súkromného stavu"
+    "message": "Private state tokens"
   },
   "panels/application/WebMCPView.ts | cancelCall": {
-    "message": "Zrušiť"
+    "message": "Cancel"
   },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Zrušené"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
-    "message": "Zrušené: {PH1}"
+    "message": "{PH1} canceled"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Vymazať filtre"
@@ -4872,7 +4905,7 @@
     "message": "Vymazať denník"
   },
   "panels/application/WebMCPView.ts | close": {
-    "message": "Zavrieť"
+    "message": "Close"
   },
   "panels/application/WebMCPView.ts | completed": {
     "message": "Dokončené"
@@ -4887,82 +4920,85 @@
     "message": "Deklaratívne"
   },
   "panels/application/WebMCPView.ts | description": {
-    "message": "Opis"
+    "message": "Description"
   },
   "panels/application/WebMCPView.ts | editAndRun": {
     "message": "Upraviť a spustiť"
   },
   "panels/application/WebMCPView.ts | error": {
-    "message": "Chyba"
+    "message": "Error"
   },
   "panels/application/WebMCPView.ts | failed": {
-    "message": "Neúspešné: {PH1}"
+    "message": "{PH1} failed"
   },
   "panels/application/WebMCPView.ts | filter": {
-    "message": "Filtrovať"
+    "message": "Filter"
   },
   "panels/application/WebMCPView.ts | flags": {
     "message": "Experimentálne funkcie"
   },
   "panels/application/WebMCPView.ts | frame": {
-    "message": "Rám"
+    "message": "Frame"
   },
   "panels/application/WebMCPView.ts | imperative": {
     "message": "Nevyhnutné"
   },
   "panels/application/WebMCPView.ts | inProgress": {
-    "message": "Prebieha"
+    "message": "In progress"
   },
   "panels/application/WebMCPView.ts | inProgressCount": {
-    "message": "Prebieha: {PH1}"
+    "message": "{PH1} in progress"
   },
   "panels/application/WebMCPView.ts | input": {
-    "message": "Vstup"
+    "message": "Input"
   },
   "panels/application/WebMCPView.ts | name": {
-    "message": "Názov"
+    "message": "Name"
   },
   "panels/application/WebMCPView.ts | noCallsPlaceholder": {
     "message": "Začnite interagovať so svojím agentom WebMCP a uvidíte tu volania a spúšťania nástrojov v reálnom čase"
   },
   "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
-    "message": "Aktivita nástroja"
+    "message": "Tool activity"
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholder": {
     "message": "Tu sa zobrazia zaregistrované nástroje WebMCP pre túto stránku. Zatiaľ neboli zaregistrované ani rozpoznané žiadne nástroje."
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
-    "message": "Dostupné nástroje WebMCP"
+    "message": "Available WebMCP tools"
   },
   "panels/application/WebMCPView.ts | origin": {
-    "message": "Pôvod"
+    "message": "Origin"
   },
   "panels/application/WebMCPView.ts | output": {
     "message": "Výstup"
   },
   "panels/application/WebMCPView.ts | paste": {
-    "message": "Prilepiť"
+    "message": "Paste"
+  },
+  "panels/application/WebMCPView.ts | pasteTooltip": {
+    "message": "Paste tool parameters from clipboard as JSON"
   },
   "panels/application/WebMCPView.ts | pending": {
-    "message": "Prebieha"
+    "message": "In progress"
   },
   "panels/application/WebMCPView.ts | revealTool": {
     "message": "Ukázať nástroj"
   },
   "panels/application/WebMCPView.ts | runTool": {
-    "message": "Spustiť nástroj"
+    "message": "Run tool"
   },
   "panels/application/WebMCPView.ts | status": {
-    "message": "Stav"
+    "message": "Status"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Typy stavov"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
-    "message": "Podrobnosti"
+    "message": "Details"
   },
   "panels/application/WebMCPView.ts | toolRegistry": {
-    "message": "Dostupné nástroje"
+    "message": "Available tools"
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Typy nástrojov"
@@ -4971,7 +5007,7 @@
     "message": "Registrácia tohto nástroja bola zrušená"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
-    "message": "Celkový počet volaní: {PH1}"
+    "message": "{PH1} total calls"
   },
   "panels/application/WebMCPView.ts | viewInElementsPanel": {
     "message": "Zobraziť na paneli Prvky"
@@ -5019,16 +5055,16 @@
     "message": "(Priemer: {PH1})"
   },
   "panels/application/components/AdsView.ts | cpu": {
-    "message": "Procesor"
+    "message": "CPU"
   },
   "panels/application/components/AdsView.ts | creatorAdScriptAncestry": {
-    "message": "Pôvod skriptu reklamy autora"
+    "message": "Creator ad script ancestry"
   },
   "panels/application/components/AdsView.ts | elementId": {
     "message": "Identifikátor prvku"
   },
   "panels/application/components/AdsView.ts | filterListRule": {
-    "message": "Pravidlo zoznamu filtrov"
+    "message": "Filter list rule"
   },
   "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
     "message": "Zvýrazniť zdroje súvisiace s reklamami"
@@ -5040,28 +5076,28 @@
     "message": "Počiatočný zdroj"
   },
   "panels/application/components/AdsView.ts | learnMore": {
-    "message": "Ďalšie informácie"
+    "message": "Learn more"
   },
   "panels/application/components/AdsView.ts | metrics": {
     "message": "Metriky"
   },
   "panels/application/components/AdsView.ts | network": {
-    "message": "Sieť"
+    "message": "Network"
   },
   "panels/application/components/AdsView.ts | noProvenance": {
     "message": "<žiadny pôvod>"
   },
   "panels/application/components/AdsView.ts | noProvenanceTooltip": {
-    "message": "Nie sú k dispozícii žiadne údaje o pôvode"
+    "message": "No provenance data is available"
   },
   "panels/application/components/AdsView.ts | notAvailable": {
-    "message": "–"
+    "message": "N/A"
   },
   "panels/application/components/AdsView.ts | rootScriptFilterListRule": {
-    "message": "Pravidlo zoznamu filtrov hlavného skriptu"
+    "message": "Root script filter list rule"
   },
   "panels/application/components/AdsView.ts | settings": {
-    "message": "Nastavenia"
+    "message": "Settings"
   },
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Celkové využitie procesora reklamami"
@@ -5076,10 +5112,10 @@
     "message": "Celkový objem dát v sieti spotrebovaný reklamami"
   },
   "panels/application/components/AdsView.ts | unnamed": {
-    "message": "<bez názvu>"
+    "message": "<unnamed>"
   },
   "panels/application/components/AdsView.ts | url": {
-    "message": "Webová adresa"
+    "message": "URL"
   },
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "Počet reklám v oblasti zobrazenia"
@@ -5103,7 +5139,7 @@
     "message": "Chrome rozpoznal pokus o spustenie JavaScriptu počas uloženia vo vyrovnávacej pamäti"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Stránky, ktoré požiadali o AppBanner, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that requested an AppBanner aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Spätná vyrovnávacia pamäť bola deaktivovaná experimentálnymi funkciami. Prejdite na chrome://flags/#back-forward-cache a aktivujte ju miestne v tomto zariadení."
@@ -5115,76 +5151,76 @@
     "message": "Spätná vyrovnávacia pamäť bola vypnutá z dôvodu nedostatočnej pamäte"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Delegát nepodporuje spätnú vyrovnávaciu pamäť"
+    "message": "Back/forward cache isn’t supported by delegate"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
     "message": "Spätná vyrovnávacia pamäť bola vypnutá. Dôvodom je modul predbežného vykresľovania."
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Stránka sa nedá uložiť do vyrovnávacej pamäte, pretože má inštanciu BroadcastChannel s registrovanými prijímačmi"
+    "message": "The page can’t be cached because it has a BroadcastChannel instance with registered listeners"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Stránky s hlavičkou cache‑control:no‑store nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages with cache-control:no-store header can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
     "message": "Vyrovnávacia pamäť bola zámerne vyčistená"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Táto stránka bola vylúčená z vyrovnávacej pamäte, aby sa do nej dala uložiť iná stránka"
+    "message": "The page was evicted from the cache to allow another page to be cached"
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Stránky s doplnkami momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages containing plugins aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentDiscarded": {
     "message": "Neurčené"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Stránky s rozhraním FileChooser API nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use FileChooser API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Stránky s rozhraním File System Access API momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use File System Access API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Stránky s nástrojom Media Device Dispatcher nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use Media Device Dispatcher aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
     "message": "V čase odchodu hral prehrávač médií"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Stránky s rozhraním MediaSession API a nastaveným stavom prehrávania nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use MediaSession API and set a playback state aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Stránky s rozhraním MediaSession API a nastavenými obslužnými nástrojmi akcií momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use MediaSession API and set action handlers aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
     "message": "Spätná vyrovnávacia pamäť je vypnutá. Príčinou je čítačka obrazovky."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Stránky s nástrojom SecurityHandler nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use SecurityHandler aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Stránky s rozhraním Serial API nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use Serial API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Stránky s rozhraním WebAuthetication API nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebAuthentication API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Stránky s rozhraním WebBluetooth API nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebBluetooth API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Stránky s rozhraním WebUSB API nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebUSB API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
     "message": "Spätná vyrovnávacia pamäť je vypnutá, pretože na stránke s hlavičkou Cache-Control: no-store sú súbory cookie zakázané"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Stránky s vyhradenou obsluhou alebo workletom momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use a dedicated worker or worklet aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Načítavanie dokumentu nebolo dokončené, než ste odišli preč"
+    "message": "The document didn’t finish loading before navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "V čase odchodu bol zobrazený banner aplikácie"
+    "message": "App banner was present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
     "message": "V čase odchodu bol zobrazený Správca hesiel Chromu"
@@ -5193,7 +5229,7 @@
     "message": "V čase odchodu prebiehala extrakcia pomocou nástroja DOM"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "V čase odchodu bol otvorený zobrazovač nástroja DOM Distiller"
+    "message": "DOM distiller viewer was present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
     "message": "Spätná vyrovnávacia pamäť je vypnutá. Príčinou sú rozšírenia používajúce četové rozhranie API."
@@ -5208,16 +5244,16 @@
     "message": "Spätná vyrovnávacia pamäť bola vypnutá. Príčinou sú rozšírenia."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "V čase odchodu bolo na stránke zobrazené modálne dialógové okno, ktoré sa mohlo napríklad týkať opätovného odoslania formulára alebo hesla HTTP"
+    "message": "Modal dialog such as form resubmission or HTTP password dialog was shown for the page upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
     "message": "V čase odchodu bola zobrazená offline stránka"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "V čase odchodu bol zobrazený intervenčný pruh s upozornením na nedostatok pamäte"
+    "message": "Out-of-memory intervention bar was present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "V čase odchodu boli zaznamenané žiadosti o povolenie"
+    "message": "Permission requests were present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
     "message": "V čase odchodu bola zobrazená možnosť blokovania vyskakovacích okien"
@@ -5235,22 +5271,22 @@
     "message": "Spätná vyrovnávacia pamäť je vypnutá pre chybu v dokumente"
   },
   "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
-    "message": "Stránky, ktoré používajú FencedFrames, sa nedajú uložiť do spätnej vyrovnávacej pamäte"
+    "message": "Pages using FencedFrames can’t be stored in back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Táto stránka bola vylúčená z vyrovnávacej pamäte, aby sa do nej dala uložiť iná stránka"
+    "message": "The page was evicted from the cache to allow another page to be cached"
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Stránky, ktoré udelili prístup k streamu médií, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have granted media stream access aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Stránky s určitými druhmi vloženého obsahu (napr. súbormi PDF) momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have certain kinds of embedded content (e.g. PDFs) aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Stránky s nástrojom IdleManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use IdleManager aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Stránky s otvoreným pripojením IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have an open IndexedDB connection aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
     "message": "Spätná vyrovnávacia pamäť bola vypnutá v dôsledku udalosti IndexedDB"
@@ -5259,13 +5295,13 @@
     "message": "Boli použité nevhodné rozhrania API"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Stránky, do ktorých rozšírenia vložili JavaScript, nemôžu momentálne používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that JavaScript is injected into by extensions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Stránky, do ktorých rozšírenia vložili šablónu StyleSheet, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that a StyleSheet is injected into by extensions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
-    "message": "Interná chyba"
+    "message": "Internal error"
   },
   "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
     "message": "Spätná vyrovnávacia pamäť je vypnutá, pretože nejaká sieťová požiadavka v jazyku JavaScript dostala zdroj s hlavičkou Cache-Control: no-store"
@@ -5274,16 +5310,16 @@
     "message": "Spätná vyrovnávacia pamäť bola vypnutá v dôsledku žiadosti so signálom keepalive"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Stránky so zámkou klávesnice momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use keyboard lock aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | loading": {
-    "message": "V čase odchodu načítavanie stránky nebolo dokončené"
+    "message": "The page didn’t finish loading before navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Stránky, ktorých hlavný zdroj má hlavičku cache‑control:no‑cache, nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages whose main resource has cache-control:no-cache can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Stránky, ktorých hlavný zdroj má hlavičku cache‑control:no‑store, nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages whose main resource has cache-control:no-store can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
     "message": "Navigácia bola zrušená, skôr ako došlo k obnoveniu stránky zo spätnej vyrovnávacej pamäte"
@@ -5292,7 +5328,7 @@
     "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože aktívne pripojenie k sieti dostalo príliš veľa dát. Chrome obmedzuje objem dát, ktoré môže dostávať stránka vo vyrovnávacej pamäti."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Stránky s načítavaním počas prenosu() alebo XHR momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have inflight fetch() or XHR aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
     "message": "Stránka bola vylúčená zo spätnej vyrovnávacej pamäte, pretože aktívna sieťová požiadavka zahŕňala presmerovanie"
@@ -5301,34 +5337,34 @@
     "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože pripojenie k sieti bolo príliš dlho otvorené. Chrome obmedzuje obdobie, počas ktorého môže stránka vo vyrovnávacej pamäti dostávať dáta."
   },
   "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Stránky bez platnej hlavičky odpovede nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages that don’t have a valid response head can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Navigácia sa uskutočnila v inom než hlavnom ráme"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Stránky s prebiehajúcimi transakciami IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages with ongoing indexed DB transactions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Stránky so sieťovou požiadavkou počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages with an in-flight network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Stránky so sieťovou požiadavkou na načítanie počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages with an in-flight fetch network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Stránky so sieťovou požiadavkou počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages with an in-flight network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Stránky so sieťovou požiadavkou XHR počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages with an in-flight XHR network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Stránky s nástrojom PaymentManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use PaymentManager aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Stránky s obrazom v obraze momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use Picture-in-Picture aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "Stránky zobrazujúce používateľské rozhranie na tlač momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that show printing UI aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "Stránka bola otvorená metódou window.open() a ďalšia karta na ňu odkazuje, prípadne daná stránka otvorila okno"
@@ -5340,25 +5376,25 @@
     "message": "Proces vykresľovacieho modulu pre danú stránku v spätnej vyrovnávacej pamäti bol zrušený"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Stránky, ktoré požiadali o povolenia na zaznamenávanie zvuku, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested audio capture permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Stránky, ktoré požiadali o povolenia pre senzory, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested sensor permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Stránky, ktoré požiadali o synchronizáciu na pozadí alebo načítanie povolení, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested background sync or fetch permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Stránky, ktoré požiadali o povolenia pre MIDI, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested MIDI permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Stránky, ktoré požiadali o povolenia posielať upozornenia, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested notifications permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Stránky, ktoré požiadali o prístup k ukladaciemu priestoru, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested storage access aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Stránky, ktoré požiadali o povolenia na snímanie videí, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have requested video capture permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
     "message": "Do vyrovnávacej pamäte sa dajú uložiť iba stránky, ktorých schéma webovej adresy je HTTP alebo HTTPS"
@@ -5379,25 +5415,25 @@
     "message": "Chrome sa reštartoval a vymazal záznamy v spätnej vyrovnávacej pamäti"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Stránky s rozhraním SharedWorker momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use SharedWorker aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
     "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože dostala správu z rozhrania SharedWorker"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Stránky s rozhraním SpeechRecognizer momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use SpeechRecognizer aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Stránky s rozhraním SpeechSynthesis momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use SpeechSynthesis aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Prvok iframe na stránke spustil navigáciu, ktorá nebola dokončená"
+    "message": "An iframe on the page started a navigation that didn’t complete"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Stránky, ktorých podzdroj má hlavičku cache‑control:no‑cache, nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages whose subresource has cache-control:no-cache can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Stránky, ktorých podzdroj má hlavičku cache‑control:no‑store, nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages whose subresource has cache-control:no-store can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | timeout": {
     "message": "Stránka prekročila maximálny čas v spätnej vyrovnávacej pamäti a vypršala"
@@ -5415,61 +5451,61 @@
     "message": "Prehliadač zmenil hlavičku prepísania používateľského agenta"
   },
   "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Stránky, ktoré udelili prístup na nahrávanie videa alebo zvuku, momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that have granted access to record video or audio aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Stránky s rozhraním WebDatabase momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebDatabase aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webHID": {
-    "message": "Stránky s rozhraním WebHID momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebHID aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Stránky s rozhraním WebLocks momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebLocks aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Stránky s rozhraním WebNfc momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebNfc aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Stránky s rozhraním WebOTPService momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebOTPService aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Stránky s rozhraním WebRTC nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages with WebRTC can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
     "message": "Spätná vyrovnávacia pamäť bola vypnutá, pretože bol použitý protokol WebRTC"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
-    "message": "Stránky s rozhraním WebShare momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebShare aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Stránky s protokolom WebSocket nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages with WebSocket can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
     "message": "Spätná vyrovnávacia pamäť je deaktivovaná, pretože bol použitý protokol WebSocket"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Stránky s rozhraním WebTransport nemajú prístup do spätnej vyrovnávacej pamäte"
+    "message": "Pages with WebTransport can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
     "message": "Spätná vyrovnávacia pamäť je vypnutá, pretože bol použitý protokol WebTransport"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
-    "message": "Stránky s rozhraním WebXR momentálne nemôžu používať spätnú vyrovnávaciu pamäť"
+    "message": "Pages that use WebXR aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Spätná vyrovnávacia pamäť"
+    "message": "Back/forward cache"
   },
   "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
     "message": "Chýba webová adresa [{PH1}]"
   },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
-    "message": "Identifikátor rozšírenia: "
+    "message": "Extension ID: "
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
-    "message": "Nemožno vykonať akciu"
+    "message": "Not actionable"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Tieto dôvody nie sú použiteľné, teda uloženiu do vyrovnávacej pamäte zabránilo niečo, nad čím stránka nemala priamu kontrolu"
+    "message": "These reasons aren’t actionable i.e. caching was prevented by something outside of the direct control of the page"
   },
   "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
     "message": "{n,plural, =1{# súbor}few{# súbory}many{# files}other{# súborov}}"
@@ -5478,7 +5514,7 @@
     "message": "{n,plural, =1{# rám}few{# rámy}many{# frames}other{# rámov}}"
   },
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
-    "message": "Rámy"
+    "message": "Frames"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
     "message": "{n,plural, =1{V {m} rámoch bol nájdený # problém}few{V {m} rámoch boli nájdené # problémy}many{# issues found in {m} frames}other{V {m} rámoch bolo nájdených # problémov}}"
@@ -5490,10 +5526,10 @@
     "message": "Ďalšie informácie: vhodnosť spätnej vyrovnávacej pamäte"
   },
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
-    "message": "Hlavný rám"
+    "message": "Main frame"
   },
   "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
-    "message": "Ďalšie informácie: nikdy nepoužívať obslužný nástroj uvoľnenia"
+    "message": "Learn more: never use unload handler"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Nezobrazené zo spätnej vyrovnávacej pamäte: ak chcete spustiť spätnú vyrovnávaciu pamäť, použite tlačidlá Späť a Ďalej v Chrome alebo pomocou testovacieho tlačidla nižšie automaticky navigujte tam a späť"
@@ -5514,25 +5550,25 @@
     "message": "Prebieha test"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPending": {
-    "message": "Čaká sa na podporu"
+    "message": "Pending support"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Čaká sa na podporu týchto dôvodov v Chrome, teda nezabránia stránke používať spätnú vyrovnávaciu pamäť v budúcej verzii Chromu"
+    "message": "Chrome support for these reasons is pending i.e. they won’t prevent the page from being eligible for back/forward cache in a future version of Chrome"
   },
   "panels/application/components/BackForwardCacheView.ts | testCompleted": {
     "message": "Test spätnej vyrovnávacej pamäte bol dokončený"
   },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
-    "message": "nie je k dispozícii"
+    "message": "unavailable"
   },
   "panels/application/components/BackForwardCacheView.ts | unknown": {
-    "message": "Neznámy stav"
+    "message": "Unknown status"
   },
   "panels/application/components/BackForwardCacheView.ts | url": {
-    "message": "Webová adresa"
+    "message": "URL"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "Zmiernenia sledovania okamžitých odchodov"
+    "message": "Bounce tracking mitigations"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Kontrolujú sa potenciálne weby so sledovaním s presmerovaním"
@@ -5544,13 +5580,13 @@
     "message": "Vynútiť spustenie"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
-    "message": "Ďalšie informácie: zmiernenia sledovania okamžitých odchodov"
+    "message": "Learn more: bounce tracking mitigations"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Stav nebol povolený pre žiadne potenciálne weby sledujúce okamžité odchody. Buď sa žiadne nezistili, alebo nie sú blokované súbory cookie tretích strán."
+    "message": "State wasn’t cleared for any potential bounce tracking sites. Either none were identified or third-party cookies aren’t blocked."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
-    "message": "Spustené"
+    "message": "Running"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Stav bol odstránený v prípade nasledujúcich webov:"
@@ -5559,28 +5595,28 @@
     "message": "Kopírovať kľúč"
   },
   "panels/application/components/CrashReportContextGrid.ts | copyValue": {
-    "message": "Kopírovať hodnotu"
+    "message": "Copy value"
   },
   "panels/application/components/CrashReportContextGrid.ts | key": {
-    "message": "Kľúč"
+    "message": "Key"
   },
   "panels/application/components/CrashReportContextGrid.ts | value": {
-    "message": "Hodnota"
+    "message": "Value"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
-    "message": "Tu nájdete zoznam koncových bodov, ktoré dostávajú reporty"
+    "message": "Here you will find the list of endpoints that get the reports"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nie sú k dispozícii žiadne koncové body"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
-    "message": "Povolené funkcie"
+    "message": "Allowed features"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
     "message": "Kliknutím odhalíte požiadavku, ktorej hlavička HTTP Permissions-Policy túto funkciu vypne"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "Kliknutím odhalíte najvrchnejší prvok iframe, ktorý nepovoľuje túto funkciu na paneli prvkov"
+    "message": "Click to reveal the top-most iframe which doesn’t allow this feature in the Elements panel"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "zakázané v strome fencedframe"
@@ -5592,13 +5628,13 @@
     "message": "v atribúte allow prvku iframe chýba"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
-    "message": "Vypnuté funkcie"
+    "message": "Disabled features"
   },
   "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
     "message": "Skryť podrobnosti"
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
-    "message": "Zobraziť podrobnosti"
+    "message": "Show details"
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Vybrať obslužný nástroj protokolu"
@@ -5607,7 +5643,7 @@
     "message": "manifest"
   },
   "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
-    "message": "Potrebujete pomoc? Prečítajte si {PH1}."
+    "message": "Need help? Read {PH1}."
   },
   "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
     "message": "V manifeste {PH1} bola nájdená platná registrácia obslužného nástroja protokolov. Po nainštalovaní aplikácie registrované protokoly otestujte."
@@ -5634,16 +5670,16 @@
     "message": "Časová pečiatka vygenerovania"
   },
   "panels/application/components/ReportsGrid.ts | learnMore": {
-    "message": "Ďalšie informácie"
+    "message": "Learn more"
   },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Nie sú k dispozícii žiadne prehľady"
   },
   "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
-    "message": "Tu nájdete reporty rozhrania Reporting API, ktoré daná stránka generuje"
+    "message": "Here you will find Reporting API reports that are generated by the page"
   },
   "panels/application/components/ReportsGrid.ts | status": {
-    "message": "Stav"
+    "message": "Status"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Názov segmentu"
@@ -5673,16 +5709,16 @@
     "message": "Je tretia strana"
   },
   "panels/application/components/StorageMetadataView.ts | loading": {
-    "message": "Načítava sa…"
+    "message": "Loading…"
   },
   "panels/application/components/StorageMetadataView.ts | no": {
-    "message": "Nie"
+    "message": "No"
   },
   "panels/application/components/StorageMetadataView.ts | none": {
-    "message": "Žiadna"
+    "message": "None"
   },
   "panels/application/components/StorageMetadataView.ts | opaque": {
-    "message": "(nepriehľadné)"
+    "message": "(opaque)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
     "message": "Frame origin"
@@ -5697,7 +5733,7 @@
     "message": "Web najvyššej úrovne"
   },
   "panels/application/components/StorageMetadataView.ts | yes": {
-    "message": "Áno"
+    "message": "Yes"
   },
   "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
     "message": "Áno, pretože reťazec pôvodu obsahuje zdroj tretej strany"
@@ -5718,10 +5754,10 @@
     "message": "Odstrániť všetky uložené tokeny súkromného stavu vydané zdrojom {PH1}"
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
-    "message": "Vydavateľ"
+    "message": "Issuer"
   },
   "panels/application/components/TrustTokensView.ts | learnMore": {
-    "message": "Ďalšie informácie"
+    "message": "Learn more"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokens": {
     "message": "Neboli zistené žiadne tokeny súkromného stavu"
@@ -5730,7 +5766,7 @@
     "message": "Počet uložených tokenov"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
-    "message": "Tokeny súkromného stavu"
+    "message": "Private state tokens"
   },
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "Na tejto stránke si môžete pozrieť všetky dostupné tokeny súkromného stavu v aktuálnom kontexte prehliadania"
@@ -5958,7 +5994,7 @@
     "message": "Predbežné načítanie bolo presmerované, ale vyskytol sa problém s presmerovaním"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
-    "message": "Predbežné načítanie sa nepodarilo, pretože hlavička Content‑Type danej odpovede nebola podporovaná"
+    "message": "The prefetch failed because the response’s Content-Type header wasn’t supported"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
     "message": "Nepodarilo sa predbežne načítať pre chybu siete"
@@ -5973,46 +6009,46 @@
     "message": "Pri predchádzajúcom predbežnom načítaní zdroja sa zobrazila odpoveď HTTP 503 s hlavičkou Retry‑After, ktorá ešte nevypršala"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože pre tento zdroj bola zaregistrovaná obsluha alebo súbory cookie viacerých webov, ale predbežné načítanie bolo napriek tomu umiestnené v sieti, ale k jeho použitiu nedošlo, aby bolo zamaskované, že používateľ má určitý predchádzajúci vzťah k danému zdroju"
+    "message": "The URL wasn’t eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
     "message": "Medzi predbežným načítaním a použitím uplynulo príliš veľa času, takže predbežné načítanie bolo zahodené"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
-    "message": "K predbežnému načítaniu nedošlo, pretože bolo zapnuté nastavenie Šetrič batérie"
+    "message": "The prefetch wasn’t performed because the Battery Saver setting was enabled"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
-    "message": "K predbežnému načítaniu nedošlo, pretože prehliadač je v režime inkognito alebo pre hostí"
+    "message": "The prefetch wasn’t performed because the browser is in Incognito or Guest mode"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
-    "message": "K predbežnému načítaniu nedošlo, pretože operačný systém je v režime Šetrič dát"
+    "message": "The prefetch wasn’t performed because the operating system is in Data Saver mode"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
     "message": "Táto webová adresa nespĺňala podmienky na predbežné načítanie, pretože v kontexte predvolenej siete je nakonfigurovaná tak, aby používala proxy server"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože jej hostiteľ nebol jedinečný (napr. adresa IP nie je verejne presmerovateľná, alebo názov hostiteľa nie je ovládaný cez register), ale proxy server vyžadoval predbežné načítanie"
+    "message": "The URL wasn’t eligible to be prefetched because its host wasn’t unique (e.g., a non publicly routable IP address or a hostname which isn’t registry-controlled), but the prefetch was required to be proxied"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože nepoužíva predvolenú časť úložiska"
+    "message": "The URL wasn’t eligible to be prefetched because it uses a non-default storage partition"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "K špekulatívnemu načítaniu nedošlo, pretože predbežné načítanie bolo vypnuté"
+    "message": "The prefetch wasn’t performed because speculative loading was disabled"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože kontext predvolenej siete sa nedá nakonfigurovať tak, aby požiadavka predbežného načítania zdrojov zmiešaného pôvodu na rovnakom webe používala proxy server predbežného načítania"
+    "message": "The URL wasn’t eligible to be prefetched because the default network context can’t be configured to use the prefetch proxy for a same-site cross-origin prefetch request"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože nemala schému https:"
+    "message": "The URL wasn’t eligible to be prefetched because its scheme wasn’t https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože bola z viacerých webov, ale používateľ mal pre daný zdroj súbory cookie"
+    "message": "The URL wasn’t eligible to be prefetched because it was cross-site, but the user had cookies for that origin"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné načítanie, pretože pre tento pôvod bola registrovaná obsluha, čo momentálne nie je podporované"
+    "message": "The URL wasn’t eligible to be prefetched because there was a registered service worker for that origin, which isn’t currently supported"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
-    "message": "Predbežné načítanie nebolo použité, pretože išlo o predbežné načítanie naprieč webmi a súbory cookie sa pre príslušnú webovú adresu pridali počas prebiehajúceho predbežného načítania. Preto je odpoveď predbežného načítania neaktuálna."
+    "message": "The prefetch wasn’t used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
     "message": "Predbežné načítanie zablokoval váš poskytovateľ internetu alebo správca siete"
@@ -6024,16 +6060,16 @@
     "message": "Predbežne vykreslená stránka bola aktivovaná pri iniciácii navigácie v hlavnom ráme iniciujúcej stránky"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
-    "message": "Predbežné vykresľovanie nebolo použité, pretože v čase aktivácie existovali iné okná s aktívnym odkazom nástroja na otváranie smerujúcim na iniciujúcu stránku, čo momentálne nie je podporované"
+    "message": "The prerender wasn’t used because during activation time, there were other windows with an active opener reference to the initiating page, which isn’t currently supported"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Predbežné vykresľovanie nebolo použité, pretože experimentálne funkcie karantény alebo pravidlá povolení spúšťajúcej stránky neboli kompatibilné s tými na príslušnej stránke predbežného vykresľovania"
+    "message": "The prerender wasn’t used because the sandboxing flags or permissions policy of the initiating page wasn’t compatible with those of the prerendering page"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Predbežné vykresľovanie nebolo použité, pretože počas aktivácie boli vypočítané iné navigačné parametre (napr. hlavičky HTTP) než počas pôvodnej žiadosti o navigáciu predbežného vykresľovania"
+    "message": "The prerender wasn’t used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
-    "message": "Predbežné vykresľovanie nebolo použité, pretože počas aktivácie mala navigácia platnú webovú adresu, ktorá sa líši od bežnej webovej adresy. (Napríklad stránka na novej karte alebo hostené aplikácie.)"
+    "message": "The prerender wasn’t used because during activation time, navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
     "message": "Prehliadač z určitého dôvodu uvoľnil všetky predbežne vykreslené stránky z pamäte (počas predbežného vykresľovania bola napríklad volaná metóda WebViewCompat.addWebMessageListener())."
@@ -6042,7 +6078,7 @@
     "message": "Predbežne vykreslená stránka požiadala o zvukový výstup, ktorý nie je momentálne podporovaný"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Predbežné vykresľovanie sa neuskutočnilo, pretože používateľ požiadal, aby prehliadač spotrebúval menej batérie"
+    "message": "The prerender wasn’t performed because the user requested that the browser use less battery"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Načítanie nejakého zdroja bolo zablokované"
@@ -6066,7 +6102,7 @@
     "message": "Predbežne vykreslená stránka navigovala na webovú adresu, ktorá presmerúvala na webovú adresu naprieč webmi"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Predbežné vykresľovanie sa neuskutočnilo, pretože používateľ požiadal, aby prehliadač využíval menej dát"
+    "message": "The prerender wasn’t performed because the user requested that the browser use less data"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "Predbežne vykreslená stránka sa pokúsila iniciovať sťahovanie, čo momentálne nie je podporované"
@@ -6075,10 +6111,10 @@
     "message": "Iniciujúca stránka nemôže vykonať predbežné vykresľovanie, pretože má platnú webovú adresu, ktorá sa líši od bežnej webovej adresy. (Napríklad stránka na novej karte alebo hostené aplikácie.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Webová adresa nespĺňala podmienky na predbežné vykreslenie, pretože jej schéma nebola http: ani https:"
+    "message": "The URL wasn’t eligible to be prerendered because its scheme wasn’t http: or https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Navigácia predbežného vykresľovania sa nepodarila, pretože presmerúvala na webovú adresu, ktorej schéma nebola http: ani https:"
+    "message": "The prerendering navigation failed because it redirected to a URL whose scheme wasn’t http: or https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
     "message": "Predbežne vykreslená stránka bola uvoľnená z pamäte, pretože metódou WebView.addJavaScriptInterface() bolo vložené nové rozhranie JavaScriptu"
@@ -6090,25 +6126,25 @@
     "message": "Navigácia predbežného vykresľovania vyžadovala overenie HTTP, ktoré momentálne nie je podporované"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Predbežné vykresľovanie sa neuskutočnilo, pretože zariadenie nemá dostatok celkovej pamäte systému na podporu predbežného vykresľovania"
+    "message": "The prerender wasn’t performed because this device doesn’t have enough total system memory to support prerendering"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Predbežné vykresľovanie, ktorého horlivosť je nastavená na možnosť eager, sa neuskutočnilo, pretože spúšťajúca stránka má príliš veľa prebiehajúcich predbežných vykresľovaní. Odstráňte ďalšie pravidlá špekulácie s nastavenou možnosťou eager, aby ste povolili ďalšie predbežné vykresľovanie."
+    "message": "The prerender whose eagerness is \"eager\" wasn’t performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules with \"eager\" to enable further prerendering."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Predbežné vykresľovanie spustené prehliadačom sa neuskutočnilo, pretože iniciujúca stránka má príliš veľa prebiehajúcich predbežných vykresľovaní"
+    "message": "The browser-triggered prerender wasn’t performed because the initiating page already has too many prerenders ongoing"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "Staré predbežné vykresľovanie, ktoré nebolo horlivé (teda malo horlivosť nastavenú na možnosť moderate alebo conservative a bolo spúšťané umiestnením kurzora myši na odkazy či kliknutím na ne), bolo automaticky zrušené, pretože sa začína nové nehorlivé predbežné vykresľovanie. Dá sa spustiť opätovnou interakciou s príslušným odkazom."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Predbežné vykresľovanie sa neuskutočnilo, pretože prehliadač prekročil limit pamäte predbežného vykresľovania"
+    "message": "The prerender wasn’t performed because the browser exceeded the prerendering memory limit"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
     "message": "Predbežne vykreslená stránka bola uvoľnená z pamäte, pretože pamäť prehliadača bola v kritickej miere zaťažená"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Predbežné vykresľovanie sa neuskutočnilo, pretože pamäť prehliadača bola závažne zaťažená"
+    "message": "The prerender wasn’t performed because the browser was under critical memory pressure"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
     "message": "Na predbežne vykreslenej stránke bol zmiešaný obsah"
@@ -6129,10 +6165,10 @@
     "message": "Pri navigácii predbežného vykresľovania sa vyskytla chyba siete"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Predbežné vykresľovanie sa neuskutočnilo, pretože používateľ v nastaveniach prehliadača vypol prednačítanie"
+    "message": "The prerender wasn’t performed because the user disabled preloading in their browser settings"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
-    "message": "K predbežnému vykresľovaniu nedošlo, pretože bolo vypnuté pomocou nástrojov pre vývojárov"
+    "message": "The prerender wasn’t performed because DevTools has been used to disable prerendering"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
     "message": "Navigácia predbežného vykresľovania sa nepodarila, pretože má platnú webovú adresu, ktorá sa líši od bežnej webovej adresy. (Napríklad stránka na novej karte alebo hostené aplikácie.)"
@@ -6593,6 +6629,39 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Zobraziť zmeny"
   },
+  "panels/comments/CommentsPane.ts | clearComments": {
+    "message": "Clear all comments"
+  },
+  "panels/comments/CommentsPane.ts | deleteComment": {
+    "message": "Delete comment"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | noSentComments": {
+    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+  },
+  "panels/comments/CommentsPane.ts | queued": {
+    "message": "Queued"
+  },
+  "panels/comments/CommentsPane.ts | seeResponse": {
+    "message": "See response"
+  },
+  "panels/comments/CommentsPane.ts | sendToAgent": {
+    "message": "Send to Agent"
+  },
+  "panels/comments/CommentsPane.ts | sent": {
+    "message": "Sent"
+  },
+  "panels/comments/CommentsPane.ts | working": {
+    "message": "Working"
+  },
+  "panels/comments/comments-meta.ts | comments": {
+    "message": "Comments"
+  },
+  "panels/comments/comments-meta.ts | showComments": {
+    "message": "Show Comments"
+  },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "Získali ste odznak {PH1}. Bol pridaný do vášho profilu vývojára."
   },
@@ -6627,7 +6696,7 @@
     "message": "Mobil strednej úrovne"
   },
   "panels/common/CPUThrottlingOption.ts | calibrationErrorDeviceTooWeak": {
-    "message": "Zariadenie nie je dostatočne výkonné"
+    "message": "Device isn’t powerful enough"
   },
   "panels/common/CPUThrottlingOption.ts | dSlowdown": {
     "message": "{PH1}× spomalenie"
@@ -6638,14 +6707,23 @@
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Pole na zadanie komentára"
   },
+  "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
+    "message": "Delete queued comment"
+  },
+  "panels/common/CommentThreadWidget.ts | queueComment": {
+    "message": "Queue comment"
+  },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Odpoveď:"
+  },
+  "panels/common/CommentThreadWidget.ts | save": {
+    "message": "Save"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Odoslať agentovi"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Odoslané"
+    "message": "Sent"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Ikona začiarknutia ako symbol odoslania"
@@ -6732,7 +6810,7 @@
     "message": "Prepojené so zdrojovou mapou: {PH1}"
   },
   "panels/common/common-meta.ts | comments": {
-    "message": "Komentáre"
+    "message": "Comments"
   },
   "panels/common/common-meta.ts | showComments": {
     "message": "Zobraziť komentáre"
@@ -7224,13 +7302,13 @@
     "message": "{n,plural, =1{# bajt, {percentage}}few{# bajty, {percentage}}many{# bajtu, {percentage}}other{# bajtov, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bajtov ({PH2}) patrí blokom jazyka JavaScript, ktoré (ešte) neboli spustené"
+    "message": "{PH1} bytes ({PH2}) belong to blocks of JavaScript that haven’t (yet) been executed"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
     "message": "{PH1} bajtov ({PH2}) patrí blokom jazyka JavaScript, ktoré boli spustené aspoň raz"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bajtov ({PH2}) patrí funkciám, ktoré (ešte) neboli spustené"
+    "message": "{PH1} bytes ({PH2}) belong to functions that haven’t (yet) been executed"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
     "message": "{PH1} bajtov ({PH2}) patrí funkciám, ktoré boli spustené aspoň raz"
@@ -7254,13 +7332,13 @@
     "message": "Vizualizácia použitia"
   },
   "panels/coverage/CoverageView.ts | activationNoCapture": {
-    "message": "Informácie o využití sa nepodarilo získať, pretože stránka bola predbežne vykreslená na pozadí"
+    "message": "Couldn’t capture coverage info because the page was prerendered in the background"
   },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Všetky"
   },
   "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
-    "message": "Informácie o využití sa nepodarilo získať, pretože stránka sa zobrazila zo spätnej vyrovnávacej pamäte"
+    "message": "Couldn’t capture coverage info because the page was served from the back/forward cache"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Vyberte granularitu využitia: „Na základe funkcie“ má nízku réžiu, „Na základe blokovania“ má významnú réžiu"
@@ -7584,7 +7662,7 @@
     "message": "Hodnota nastavenia {PH1} {PH2} je mimo podporovaného rozsahu [{PH3}, {PH4}] skupiny písiem {PH5}."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
-    "message": "Kotva bola definovaná, ale prvok nebol ukotvený. Bol umiestnený na základe nastavenia {POSITION}."
+    "message": "An anchor was defined but the element wasn’t anchor-positioned but positioned \"{POSITION}\""
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioningFix": {
     "message": "Nastavte pozíciu na hodnotu fixed alebo absolute"
@@ -7758,7 +7836,7 @@
     "message": "Vyhľadať definíciu mriežky"
   },
   "panels/elements/DOMTreeContextMenu.ts | focus": {
-    "message": "Zameranie"
+    "message": "Focus"
   },
   "panels/elements/DOMTreeContextMenu.ts | hideElement": {
     "message": "Skryť prvok"
@@ -7789,6 +7867,117 @@
   },
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "Zabaliť tieto položky"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | children": {
+    "message": "Podradené položky:"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | copy": {
+    "message": "Skopírovať"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | creatorAdScriptAncestry": {
+    "message": "Pôvod skriptu reklamy autora"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | cut": {
+    "message": "Vystrihnúť"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableContainer": {
+    "message": "Vypnúť prekrytie kontajnera"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableFlexMode": {
+    "message": "Zakázať režim Flex"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridLanesMode": {
+    "message": "Vypnúť režim pruhov mriežky"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridMode": {
+    "message": "Vypnúť režim mriežky"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableScrollSnap": {
+    "message": "Deaktivovať prekrytie typu posúvať a prichytiť"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableStartingStyle": {
+    "message": "Vypnúť režim @starting‑style"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | elementHasScrollableOverflow": {
+    "message": "Tento prvok má posúvateľnú rozšírenú ponuku"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableContainer": {
+    "message": "Zapnúť prekrytie kontajnera"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableFlexMode": {
+    "message": "Povoliť režim Flex"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridLanesMode": {
+    "message": "Zapnúť režim pruhov mriežky"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridMode": {
+    "message": "Zapnúť režim mriežky"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableScrollSnap": {
+    "message": "Aktivovať prekrytie typu posúvať a prichytiť"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableStartingStyle": {
+    "message": "Zapnúť režim @starting‑style"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | filterListRule": {
+    "message": "Pravidlo zoznamu filtrov"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceOpenPopover": {
+    "message": "Ponechať toto vyskakovacie okno otvorené"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceShowInterest": {
+    "message": "Spustiť záujem o tento prvok"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceState": {
+    "message": "Vynútiť stav"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | noProvenanceAvailable": {
+    "message": "Nie sú k dispozícii žiadne údaje o pôvode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | openMediaPanel": {
+    "message": "Prejsť na panel médií"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | paste": {
+    "message": "Prilepiť"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | reveal": {
+    "message": "Zobraziť"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | rootScriptFilterListRule": {
+    "message": "Pravidlo zoznamu filtrov hlavného skriptu"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | selectAll": {
+    "message": "Vybrať všetko"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCommandForTarget": {
+    "message": "Zobraziť prvok spojený s atribútom commandfor"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCustomElementDefinition": {
+    "message": "Zobraziť definíciu vlastného prvku"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showInterestTarget": {
+    "message": "Zobraziť prvok spojený s atribútom interesttarget"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showPopoverTarget": {
+    "message": "Zobraziť prvok spojený s atribútom popovertarget"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceOpenPopover": {
+    "message": "Prestať ponechávať toto vyskakovacie okno otvorené"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceShowInterest": {
+    "message": "Zrušiť záujem o tento prvok"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Tento prvok bol identifikovaný ako reklama"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | useSInTheConsoleToReferToThis": {
+    "message": "Na tento prvok odkazujte pomocou {PH1} v konzole"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | valueIsTooLargeToEdit": {
+    "message": "<hodnota sa nedá upraviť, pretože je príliš veľká>"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | viewSourceCode": {
+    "message": "Zobraziť zdrojový kód"
   },
   "panels/elements/DOMTreeWidget.ts | pageDom": {
     "message": "DOM stránky"
@@ -7899,7 +8088,7 @@
     "message": "Skryť bočný panel vypočítaných štýlov"
   },
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
-    "message": "Uzol sa na aktuálnej stránke nepodarilo nájsť"
+    "message": "Node can’t be found in the current page"
   },
   "panels/elements/ElementsPanel.ts | openInElementsPanel": {
     "message": "Otvoriť na Paneli Prvky"
@@ -7917,10 +8106,10 @@
     "message": "Štýly"
   },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
-    "message": "Odložený uzol DOM sa nepodarilo vybrať do platného uzla"
+    "message": "The deferred DOM Node couldn’t be resolved to a valid node"
   },
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
-    "message": "Vzdialený objekt sa nepodarilo vybrať do platného uzla"
+    "message": "The remote object couldn’t be resolved to a valid node"
   },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "Všetko"
@@ -8069,6 +8258,9 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "prostredníctvom kontroly"
   },
+  "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
+    "message": "Base"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopírovať všetky deklarácie ako JS"
   },
@@ -8089,6 +8281,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Skopírovať hodnotu"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
+    "message": "Default"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Otvoriť editor flexbox"
@@ -8126,8 +8321,11 @@
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "Otvoriť editor position-area"
   },
+  "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
+    "message": "Force position-try option"
+  },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
-    "message": "Funkcia {PH1} nie je definovaná"
+    "message": "{PH1} isn’t defined"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Stlačením klávesa Shift a kliknutím zmeníte formát farieb"
@@ -8217,7 +8415,7 @@
     "message": "Zobraziť registrovanú vlastnosť"
   },
   "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
-    "message": "Funkcia {PH1} nie je definovaná"
+    "message": "{PH1} isn’t defined"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Popis cesty stromu modelu DOM"
@@ -8238,10 +8436,10 @@
     "message": "Kompaktné"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
-    "message": "Odstrániť {propertyName}: {propertyValue}"
+    "message": "Remove {propertyName}: {propertyValue}"
   },
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
-    "message": "Pridať {propertyName}: {propertyValue}"
+    "message": "Add {propertyName}: {propertyValue}"
   },
   "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
     "message": "Popis dokumentácie k šablónam CSS"
@@ -8265,13 +8463,13 @@
     "message": "Podrobný popis kontroly"
   },
   "panels/elements/elements-meta.ts | doNotExtendGridLines": {
-    "message": "Nepredlžovať čiary mriežky"
+    "message": "Don’t extend grid lines"
   },
   "panels/elements/elements-meta.ts | doNotShowGridNamedAreas": {
-    "message": "Nezobrazovať pomenované oblasti mriežky"
+    "message": "Don’t show grid named areas"
   },
   "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
-    "message": "Nezobrazovať veľkosti sledovania mriežky"
+    "message": "Don’t show grid track sizes"
   },
   "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
     "message": "Nezobrazovať pravítka po umiestnení kurzora myši"
@@ -8504,6 +8702,15 @@
   "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "Malé mobilné zariadenie"
   },
+  "panels/emulation/DeviceModeView.ts | presetSize": {
+    "message": "{PH1} – {PH2}px"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopied": {
+    "message": "Screenshot copied to clipboard"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
+    "message": "Couldn’t copy screenshot to clipboard"
+  },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
@@ -8592,7 +8799,7 @@
     "message": "Požiadavka siete"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
-    "message": "Pomoc umelej inteligencie nie je k dispozícii v režime inkognito ani režime pre hostí"
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "Táto funkcia je k dispozícii, len keď máte v Chrome prihlásený vlastný účet Google"
@@ -8762,8 +8969,14 @@
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n,plural, =1{# prvok}few{# prvky}many{# elements}other{# prvkov}}"
   },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
+    "message": "learn more"
+  },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{K súborom cookie má povolený prístup 1 web}few{K súborom cookie majú povolený prístup # weby}many{# websites allowed to access cookies}other{K súborom cookie má povolený prístup # webov}}"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
+    "message": "(opt-out: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Počet problémov s webovou adresou Blob: {count}"
@@ -8808,7 +9021,7 @@
     "message": "Neznáme"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
-    "message": "Bola vytvorená inštancia atribútu SharedArrayBuffer v kontexte, ktorý nie je izolovaný od zmiešaného pôvodu"
+    "message": "A SharedArrayBuffer was instantiated in a context that isn’t cross-origin isolated"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
     "message": "Zablokované"
@@ -8820,7 +9033,7 @@
     "message": "{n,plural, =1{# porušenie}few{# porušenia}many{# violations}other{# porušení}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "Atribút SharedArrayBuffer bol prenesený do kontextu, ktorý nie je izolovaný od iných zdrojov"
+    "message": "SharedArrayBuffer was transferred to a context that isn’t cross-origin isolated"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
     "message": "Umiestnenie zdroja"
@@ -9543,7 +9756,7 @@
     "message": "Metóda obmedzenia"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "Inšpekciu pamäte sa nepodarilo otvoriť: vyrovnávacia pamäť sa nenašla"
+    "message": "Couldn’t open Memory inspector: buffer not found"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Otvoriť na paneli inšpekciu pamäte"
@@ -10188,7 +10401,7 @@
     "message": "Prehliadač sa nastaví na základe kontextu požiadavky"
   },
   "panels/network/FetchHeaderCommenting.ts | deprecatedBrowserDoesNotSend": {
-    "message": "Zastarané; prehliadač toto neodosiela"
+    "message": "Deprecated; browser doesn’t send this"
   },
   "panels/network/FetchHeaderCommenting.ts | deprecatedCookieHeader": {
     "message": "Zastaraná hlavička súboru cookie; prehliadač ju blokuje"
@@ -10226,6 +10439,9 @@
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Sieť"
   },
+  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
+    "message": "Prepísať hodnotu nahlásenú nástrojom navigator.connection.saveData na stránke"
+  },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Použiť predvolenú hodnotu prehliadača"
   },
@@ -10260,7 +10476,7 @@
     "message": "Konzola"
   },
   "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
-    "message": "Vyskakovacie okno prvku iframe v karanténe sa nedá navigovať na stránku COOP"
+    "message": "Sandboxed iframe’s popup can’t navigate to COOP page"
   },
   "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
     "message": "CORP nie je „same-origin“"
@@ -10422,7 +10638,7 @@
     "message": "(neznáme)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "Stav požiadavky tu nie je možné zobraziť, pretože načítanie stránky, ktorá ju odoslala, bolo zrušené počas prenosu požiadavky. Príkazom chrome://net-export môžete zaznamenať denník siete a zobraziť si všetky podrobnosti o požiadavke."
+    "message": "The request status can’t be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details."
   },
   "panels/network/NetworkDataGridNode.ts | wasThrottled": {
     "message": "Požiadavka bola obmedzená ({PH1})"
@@ -11019,10 +11235,10 @@
     "message": "Tento vzor sa nepodarilo analyzovať ako URLPattern"
   },
   "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
-    "message": "Skupiny regulárnych výrazov nie sú povolené"
+    "message": "RegExp groups aren’t allowed"
   },
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
-    "message": "Vstup vzoru nesmie byť prázdny"
+    "message": "Pattern input can’t be empty"
   },
   "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
     "message": "Vzor webovej adresy bol presunutý nadol"
@@ -11067,7 +11283,7 @@
     "message": "Zobraziť odfiltrované súbory cookie požiadavky"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Tento web má v inej sekcii súbory cookie, ktoré neboli odoslané s touto žiadosťou. {PH1}"
+    "message": "This site has cookies in another partition, that weren’t sent with this request. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Táto požiadavka nemá žiadne súbory cookie"
@@ -11079,19 +11295,19 @@
     "message": "Odložené (obnovenie)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotAllowed": {
-    "message": "Neodložené (požiadavka je v rozsahu relácie, ale iniciátor nemôže spustiť obnovenie)"
+    "message": "Not deferred (Request is in scope of session but initiator isn’t allowed to trigger refresh)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotYetNeeded": {
     "message": "Neodložené (požiadavka je v rozsahu relácie, ale súbory cookie sú stále prítomné)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | notInScope": {
-    "message": "Neodložené (požiadavka nie je v rozsahu relácie)"
+    "message": "Not deferred (Request isn’t in scope of session)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshAttempted": {
     "message": "Neodložené (bol vykonaný pokus o proaktívne obnovenie)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshNotPossible": {
-    "message": "Neodložené (požiadavka je v rozsahu relácie, ale proaktívne obnovenie nie je možné)"
+    "message": "Not deferred (Request is in scope of session but proactive refresh isn’t possible)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "Identifikátor relácie"
@@ -11589,7 +11805,7 @@
     "message": "Ďalšie informácie"
   },
   "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
-    "message": "K dispozícii sú iba predbežné hlavičky, pretože táto požiadavka nebola odoslaná cez sieť, ale z miestnej vyrovnávacej pamäte, ktorá neuchováva pôvodné hlavičky požiadaviek. Ak chcete zobraziť celé hlavičky požiadaviek, zakážte vyrovnávaciu pamäť."
+    "message": "Only provisional headers are available because this request wasn’t sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
     "message": "Predbežné hlavičky sa zobrazujú"
@@ -11661,7 +11877,7 @@
     "message": "Túto možnosť vyberte, ak sa zdroj a dokument zobrazujú z rovnakého webu"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
-    "message": "Túto možnosť vyberte iba vtedy, keď arbitrárny web s týmto zdrojom nepredstavuje bezpečnostné riziko"
+    "message": "Only choose this option if an arbitrary website including this resource doesn’t impose a security risk"
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
     "message": "Načítanie dokumentu vo vyskakovacom okne, ktoré otvoril prvok iframe v karanténe, bolo zablokované, pretože tento dokument špecifikoval pravidlá otvárača zmiešaného pôvodu"
@@ -11864,8 +12080,17 @@
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
     "message": "Odpojené prvky zobrazujú objekty ponechané odkazom JS"
   },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsList": {
+    "message": "Zoznam oddelených prvkov"
+  },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "Odpojené prvky"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedNodes": {
+    "message": "Odpojené uzly"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | nodeSize": {
+    "message": "Počet uzlov"
   },
   "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
     "message": "Získať odpojené prvky"
@@ -12689,6 +12914,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Zrušiť opätovné prehrávanie"
   },
+  "panels/recorder/RecordingView.ts | code": {
+    "message": "Code"
+  },
   "panels/recorder/RecordingView.ts | codeFormat": {
     "message": "Formát kódu"
   },
@@ -12752,11 +12980,14 @@
   "panels/recorder/RecordingView.ts | showCode": {
     "message": "Zobraziť kód"
   },
+  "panels/recorder/RecordingView.ts | steps": {
+    "message": "Steps"
+  },
   "panels/recorder/RecordingView.ts | timeout": {
     "message": "Časový limit: {value} ms"
   },
   "panels/recorder/RecordingView.ts | timeoutExplanation": {
-    "message": "Nastavenie časového limitu (v milisekundách) sa pri opätovnom prehrávaní nahrávky vzťahuje na všetky akcie. Ak sa napríklad prvok DOM identifikovaný selektorom CSS nezobrazí na stránke v rámci zadaného časového limitu, opätovné prehranie bude neúspešné a zobrazí sa chyba."
+    "message": "The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector doesn’t appear on the page within the specified timeout, the replay fails with an error."
   },
   "panels/recorder/RecordingView.ts | timeoutLabel": {
     "message": "Časový limit"
@@ -13053,7 +13284,7 @@
     "message": "aktívny zmiešaný obsah"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "Všetky zdroje na tejto stránke sú poskytované zabezpečene."
+    "message": "All resources on this page are served securely"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "všetky boli zobrazené zabezpečene"
@@ -13071,7 +13302,7 @@
     "message": "Transparentnosť certifikátov"
   },
   "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
-    "message": "Chrome určil, že tento web môže byť falošný alebo podvodný."
+    "message": "Chrome has determined that this site could be fake or fraudulent"
   },
   "panels/security/SecurityPanel.ts | cipher": {
     "message": "Šifra"
@@ -13098,10 +13329,10 @@
     "message": "Skryť úplné podrobnosti"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "Ak si myslíte, že sa to zobrazuje omylom, prejdite na https://g.co/chrome/lookalike-warnings."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "Ak si myslíte, že sa to zobrazuje omylom, prejdite na https://g.co/chrome/lookalike-warnings."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Informácie"
@@ -13134,7 +13365,7 @@
     "message": "(-)"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
-    "message": "Pre tento pôvod nie sú k dispozícii žiadne bezpečnostné podrobnosti."
+    "message": "No security details are available for this origin"
   },
   "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "Žiadne informácie o zabezpečení"
@@ -13167,10 +13398,10 @@
     "message": "Pripnutie verejného kľúča bolo obídené"
   },
   "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
-    "message": "Pripnutie verejného kľúča bolo obídené miestnym koreňovým certifikátom."
+    "message": "Public-Key-Pinning was bypassed by a local root certificate"
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "Ak chcete zaznamenať požiadavky pre zdroje HTTP, znova načítajte stránku."
+    "message": "Reload the page to record requests for HTTP resources"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "Zdroje"
@@ -13224,73 +13455,73 @@
     "message": "Chýba: Subject Alternative Name"
   },
   "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
-    "message": "Reťaz certifikátu pre tento web obsahuje certifikát podpísaný pomocou funkcie SHA-1."
+    "message": "The certificate chain for this site contains a certificate signed using SHA-1"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "Certifikát tohto webu neobsahuje rozšírenie Subject Alternative Name s názvom domény alebo adresou IP."
+    "message": "The certificate for this site doesn’t contain a Subject Alternative Name extension containing a domain name or IP address"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
-    "message": "Platnosť certifikátu pre tento web vyprší o menej ako 48 hodín a certifikát musí byť obnovený."
+    "message": "The certificate for this site expires in less than 48 hours and needs to be renewed"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
-    "message": "Spojenie s týmto webom je šifrované a overené pomocou {PH1}, {PH2} a {PH3}."
+    "message": "The connection to this site is encrypted and authenticated using {PH1}, {PH2}, and {PH3}"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "Spojenie s týmto webom používa platný dôveryhodný certifikát servera vydaný organizáciou {PH1}."
+    "message": "The connection to this site is using a valid, trusted server certificate issued by {PH1}"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
-    "message": "Podrobnosti o zabezpečení vyššie pochádzajú z prvej skontrolovanej odpovede."
+    "message": "The security details above are from the first inspected response"
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Podpis servera používa algoritmus SHA-1, ktorý je zastaraný. Aktivujte namiesto toho podpisový algoritmus SHA-2. (Upozorňujeme, že je odlišný od podpisu v certifikáte.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "Toto je stránka chyby."
+    "message": "This is an error page"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
-    "message": "Tento pôvod je zabezpečený a bez protokolu HTTPS."
+    "message": "This origin is a non-HTTPS secure origin"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "Táto stránka má zabezpečený pôvod bez protokolu HTTPS."
+    "message": "This page has a non-HTTPS secure origin"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "Táto stránka zahŕňa formulár s nezabezpečeným atribútom action."
+    "message": "This page includes a form with a non-secure action attribute"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "Táto stránka zahŕňa zdroje HTTP."
+    "message": "This page includes HTTP resources"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "Táto stránka zahŕňa zdroje, ktoré boli načítané s chybami certifikátu."
+    "message": "This page includes resources that were loaded with certificate errors"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "Táto stránka je nebezpečná (označená Bezpečným prehliadaním Google)."
+    "message": "This page is dangerous (flagged by Google Safe Browsing)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "Táto stránka nie je zabezpečená (nezašifrovaný protokol HTTP)."
+    "message": "This page is insecure (unencrypted HTTP)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Táto stránka je podozrivá"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "Táto stránka je podozrivá (nahlásená Chromom)."
+    "message": "This page is suspicious (flagged by Chrome)"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "Táto požiadavka je v súlade s pravidlami transparentnosti certifikátov Chromu."
+    "message": "This request complies with Chrome’s Certificate Transparency policy"
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "Táto požiadavka nie je v súlade s pravidlami transparentnosti certifikátov Chromu."
+    "message": "This request doesn’t comply with Chrome’s Certificate Transparency policy"
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "Táto odpoveď bola načítaná z vyrovnávacej pamäte. Niektoré podrobnosti o zabezpečení môžu chýbať."
   },
   "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
-    "message": "Tomuto webu chýba platný dôveryhodný certifikát ({PH1})."
+    "message": "This site is missing a valid, trusted certificate ({PH1})"
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "Názov hostiteľa tohto webu sa podobá doméne {PH1}. Útočníci niekedy weby napodobňujú tak, že v názve domény vykonajú drobné, ťažko odhaliteľné zmeny."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "Stav tejto stránky môžete skontrolovať na g.co/safebrowsingstatus."
+    "message": "To check this page’s status, visit g.co/safebrowsingstatus"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "neznáme"
@@ -13317,16 +13548,16 @@
     "message": "Zobraziť požiadavky na paneli Sieť"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "Nedávno ste povolili, aby sa na tomto webe spúšťal obsah načítavaný s chybami certifikátu (ako sú skripty alebo prvky iframe)."
+    "message": "You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "Nedávno ste povolili, aby sa na tomto webe spúšťal nezabezpečený obsah (ako sú skripty alebo prvky iframe)."
+    "message": "You have recently allowed non-secure content (such as scripts or iframes) to run on this site"
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "Spojenie s týmto zdrojom nie je zabezpečené."
+    "message": "Your connection to this origin isn’t secure"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Vaša stránka požadovala nezabezpečené zdroje, ktoré boli zablokované."
+    "message": "Your page requested non-secure resources that were blocked"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Hlavný pôvod"
@@ -13653,7 +13884,7 @@
     "message": "Na účely generovania vysvetlení sa Googlu odosielajú četové správy, údaje prístupné pre tento web prostredníctvom panelov nástrojov pre vývojárov a webových rozhraní API a položky, ktoré vyberiete, napríklad požiadavky siete, súbory a stopy výkonu. Môžu ich prezerať kontrolóri s cieľom zlepšiť túto funkciu. Toto je experimentálna funkcia umelej inteligencie, ktorá môže robiť chyby."
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLogging": {
-    "message": "Na účely generovania vysvetlení sa Googlu odosielajú četové správy, údaje prístupné pre tento web prostredníctvom panelov nástrojov pre vývojárov a webových rozhraní API a položky, ktoré vyberiete, napríklad požiadavky siete, súbory a stopy výkonu. Pomocou obsahu, ktorý odošlete a ktorý vygeneruje táto funkcia, sa nebudú zlepšovať modely umelej inteligencie od Googlu. Toto je experimentálna funkcia umelej inteligencie, ktorá môže robiť chyby."
+    "message": "To generate explanations, chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content you submit and that is generated by this feature won’t be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right."
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1": {
     "message": "Ladenie problémov so štýlmi, sieťou, výkonom, zdrojovým kódom, prístupnosťou a ukladacím priestorom pomocou umelej inteligencie v nástrojoch pre vývojárov"
@@ -13674,13 +13905,13 @@
     "message": "Váš vstup v konzole, história aktuálnej relácie konzoly, aktuálne kontrolovaná šablóna CSS a obsah aktuálne otvoreného súboru sa zdieľajú s Googlom, aby sa dali vygenerovať návrhy kódu. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Váš vstup v konzole, história aktuálnej relácie konzoly, aktuálne kontrolovaná šablóna CSS a obsah aktuálne otvoreného súboru sa zdieľajú s Googlom, aby sa dali vygenerovať návrhy kódu. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
+    "message": "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Správa konzoly, spojené sledovanie zásobníka, súvisiaci zdrojový kód a spojené hlavičky v sieti sa odosielajú Googlu na účely generovania vysvetlení. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Správa konzoly, spojené sledovanie zásobníka, súvisiaci zdrojový kód a spojené hlavičky v sieti sa odosielajú Googlu na účely generovania vysvetlení. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
+    "message": "To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "V závislosti od vášho regiónu môže Google prestať zhromažďovať údaje"
@@ -13716,7 +13947,7 @@
     "message": "Report sledovania výkonnosti sa odosiela Googlu na účely generovania návrhov poznámok. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Report sledovania výkonnosti sa odosiela Googlu na účely generovania návrhov poznámok. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
+    "message": "To generate annotation suggestions, your performance trace is sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | geoRestricted": {
     "message": "Táto funkcia nie je vo vašom regióne k dispozícii"
@@ -13734,7 +13965,7 @@
     "message": "Ďalšie informácie"
   },
   "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
-    "message": "Pomoc umelej inteligencie nie je k dispozícii v režime inkognito ani režime pre hostí"
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode"
   },
   "panels/settings/AISettingsTab.ts | notLoggedIn": {
     "message": "Táto funkcia je k dispozícii, len keď máte v Chrome prihlásený vlastný účet Google"
@@ -13755,7 +13986,7 @@
     "message": "Tieto funkcie odosielajú relevantné údaje Googlu. Google zhromažďuje tieto údaje aj spätnú väzbu na účely zlepšovania svojich produktov a služieb s pomocou kontrolórov. Nezdieľajte citlivé ani osobné údaje."
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogleNoLogging": {
-    "message": "Kontrolóri nebudú pomocou vášho obsahu zlepšovať umelú inteligenciu. Vaša organizácia môže tieto nastavenia kedykoľvek zmeniť."
+    "message": "Your content won’t be used by human reviewers to improve AI. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "Zobraziť menej"
@@ -13797,7 +14028,7 @@
     "message": "Hlavička alebo vlastnosť, na ktorú sa odkazuje"
   },
   "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
-    "message": "Neplatné pravidlá nebudú použité ani uložené"
+    "message": "Invalid rules won’t be applied or saved"
   },
   "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
     "message": "Vzor webovej adresy musí byť platný"
@@ -14103,13 +14334,13 @@
     "message": "Súradnica x výrezu"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutXAndWidthExceedDeviceWidth": {
-    "message": "Súčet súradnice x a šírky výrezu nesmie presiahnuť šírku zariadenia"
+    "message": "Cutout x plus width mustn’t exceed the device width"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutY": {
     "message": "Súradnica y výrezu"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutYAndHeightExceedDeviceHeight": {
-    "message": "Súčet súradnice y a výšky výrezu nesmie presiahnuť výšku zariadenia"
+    "message": "Cutout y plus height mustn’t exceed the device height"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | defaultDevices": {
     "message": "Predvolené zariadenia"
@@ -14160,7 +14391,7 @@
     "message": "Dolné vsadenie"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaHorizontalInsetsExceedWidth": {
-    "message": "{PH1}: vsadenia vľavo a vpravo nesmú presahovať šírku zariadenia"
+    "message": "{PH1}: Left and right insets mustn’t exceed the device width"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaLeft": {
     "message": "Vsadenie vľavo"
@@ -14175,7 +14406,7 @@
     "message": "{PH1}: {PH2} musí byť celé číslo od 0 do {PH3}"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
-    "message": "{PH1}: horné a dolné vsadenie nesmie presiahnuť výšku zariadenia"
+    "message": "{PH1}: Top and bottom insets mustn’t exceed the device height"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Reťazec používateľského agenta"
@@ -14403,7 +14634,7 @@
     "message": "Ďalšie informácie: typy zlomových bodov"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
-    "message": "Zapísať správu do denníka konzoly, nezalomiť"
+    "message": "Log a message to Console, don’t break"
   },
   "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "Správa denníka, napr. 'x is', x"
@@ -14721,7 +14952,7 @@
     "message": "Mapa zdroja bola v prípade tohto súboru preskočená"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
-    "message": "Ladiaci nástroj preskočí krokovanie prostredníctvom tohto skriptu a nezastaví sa na výnimkách"
+    "message": "The debugger will skip stepping through this script, and won’t stop on exceptions"
   },
   "panels/sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
     "message": "Tento skript je na zozname ignorovaných skriptov ladiaceho nástroja"
@@ -14760,7 +14991,7 @@
     "message": "Zadajte číslo, ktoré bude pridané do daného riadka"
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
-    "message": "Táto akcia sa nedá vrátiť späť"
+    "message": "This action can’t be undone"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Chcete odstrániť priečinok {PH1} z pracovného priestoru?"
@@ -14799,7 +15030,7 @@
     "message": "Chcete vylúčiť tento priečinok?"
   },
   "panels/sources/NavigatorView.ts | folderWillNotBeShown": {
-    "message": "Tento priečinok a jeho obsah sa v pracovnom priestore nebudú zobrazovať"
+    "message": "This folder and its contents won’t be shown in workspace"
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Vytvoriť kópiu…"
@@ -14853,7 +15084,7 @@
     "message": "Prepísať obsah"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "Súbor {PH1} je namapovaný na zdroj a nedá sa prepísať"
+    "message": "‘{PH1}’ is a source mapped file and can’t be overridden"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
     "message": "Chcete radšej prepísať {PH1}?"
@@ -14975,6 +15206,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopírovať obsah reťazca"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Bočný panel ladiaceho nástroja je skrytý"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Bočný panel ladiaceho nástroja je zobrazený"
+  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Tu vložte priečinok pracovného priestoru"
   },
@@ -14995,6 +15232,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Ďalšie možnosti"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Bočný panel navigačného nástroja je skrytý"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Bočný panel navigačného nástroja je zobrazený"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Otvoriť v paneli Zdroje"
@@ -15174,7 +15417,7 @@
     "message": "Deaktivovať asynchrónne sledovania zásobníka"
   },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
-    "message": "Pri spustení zlomového bodu neoznačiť panel Zdroje"
+    "message": "Don’t focus Sources panel when triggering a breakpoint"
   },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Deaktivovať automatické dopĺňanie"
@@ -15210,28 +15453,28 @@
     "message": "Zobrazovať v texte hodnoty premenných počas ladenia"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
-    "message": "Zákaz automatického formátovania komplexného kódu minifikovaných zdrojov"
+    "message": "Don’t automatically pretty print minified sources"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "Nezobrazovať automaticky súbory v bočnom paneli"
+    "message": "Don’t automatically reveal files in sidebar"
   },
   "panels/sources/sources-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "Nezaznamenávať asynchrónne sledovania zásobníka"
+    "message": "Don’t capture async stack traces"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
-    "message": "Nezisťovať odsadenie"
+    "message": "Don’t detect indentation"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
     "message": "Nezobrazovať hodnoty premenných v texte"
   },
   "panels/sources/sources-meta.ts | doNotPauseOnExceptions": {
-    "message": "Nepozastavovať na výnimkách"
+    "message": "Don’t pause on exceptions"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
-    "message": "Nevyhľadávať v anonymných skriptoch a skriptoch obsahu"
+    "message": "Don’t search in anonymous and content scripts"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Nezobrazovať prázdne znaky"
+    "message": "Don’t show whitespace characters"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "Pri spustení zlomového bodu označiť panel Zdroje"
@@ -16143,7 +16386,7 @@
     "message": "Vlastnosť súvisiaca s transformáciou závisí od veľkosti poľa"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget": {
-    "message": "Vlastnosť súvisiaca s transformáciou sa nedá zrýchliť v cieli"
+    "message": "Transform-related property can’t be accelerated on target"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
     "message": "Neznámy dôvod"
@@ -17303,8 +17546,8 @@
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
     "message": "Veľkosť vyrovnávacej pamäte spätného volania"
   },
-  "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "Interval spätného volania"
+  "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
+    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Aktuálny čas"
@@ -18227,6 +18470,9 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Súradnica"
   },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
+    "message": "Remove {propertyName}: {propertyValue}"
+  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Logické"
   },
@@ -18241,6 +18487,9 @@
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | positionAreaGridDescription": {
     "message": "Na navigáciu použite klávesy so šípkami, na výber medzerník alebo kláves Enter a na výber rozsahu Shift + šípky"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | selectButton": {
+    "message": "Add {propertyName}: {propertyValue}"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Zobraziť ako objekt JavaScript"

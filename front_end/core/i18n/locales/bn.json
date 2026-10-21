@@ -228,7 +228,7 @@
     "message": "প্রধান"
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
-    "message": "{PH1}-এর জন্য কন্টেন্ট লোড করা যায়নি ({PH2})"
+    "message": "{PH1} ({PH2})-এর জন্য কন্টেন্ট লোড করা যায়নি"
   },
   "core/sdk/Connections.ts | websocketConnectionFailed": {
     "message": "WebSocket ডিসকানেক্ট হয়ে গেছে। Chrome ইনস্ট্যান্সে --remote-allow-origins বর্তমান অরিজিনকে অনুমতি দেয় কিনা তা নিশ্চিত করুন।"
@@ -348,7 +348,7 @@
     "message": "\"Set-Cookie\" হেডারের মাধ্যমে কুকি সেট করার এই প্রচেষ্টা ব্লক করা হয়েছে কারণ এটি তার নামে \"__Secure-\" বা \"__Host-\" প্রিফিক্স ব্যবহার করেছে এবং তা https://tools.ietf.org/html/draft-west-cookie-prefixes-05-এ বর্ণিত এই প্রিফিক্স সহ কুকির জন্য প্রযোজ্য অতিরিক্ত নিয়মাবলী লঙ্ঘন করেছে"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "\"Set-Cookie\" হেডারের মাধ্যমে কুকি সেট করার এই প্রচেষ্টা ব্লক করা হয়েছে কারণ এটি সুরক্ষিত কানেকশন ব্যবহার করে পাঠানো হয়নি এবং \"Secure\" অ্যাট্রিবিউট যুক্ত একটি কুকিকে ওভাররাইট করেছে"
+    "message": "\"Set-Cookie\" হেডারের মাধ্যমে কুকি সেট করার এই প্রচেষ্টাটি ব্লক করা হয়েছে, কারণ এটি কোনও সুরক্ষিত কানেকশনের মাধ্যমে পাঠানো হয়নি এবং এটি \"Secure\" অ্যাট্রিবিউট যুক্ত কুকিকে ওভাররাইট করবে"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
     "message": "\"Set-Cookie\" হেডারের মাধ্যমে কুকি সেট করার এই প্রচেষ্টা ব্লক করা হয়েছে কারণ এটিতে \"SameSite=None\" অ্যাট্রিবিউট থাকলেও \"Secure\" অ্যাট্রিবিউট ছিল না, যা \"SameSite=None\" ব্যবহার করার জন্য প্রয়োজন পড়ে"
@@ -434,8 +434,14 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "ডিবাগারে পজ করা আছে"
   },
+  "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
+    "message": "Can’t load resource for an unavailable cross-origin frame"
+  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "পরীক্ষা করা পৃষ্ঠা রিলোড করার কারণে লোড করার প্রক্রিয়া বাতিল করা হয়েছে"
+  },
+  "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
+    "message": "Can’t load http(s) resource without a target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "লগ লোড করার সময় সমস্যা হয়েছে"
@@ -684,10 +690,10 @@
     "message": "কোনও দৃষ্টিশক্তির ঘাটতি ইমুলেট করবেন না"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
-    "message": "CSS {PH1}-কে ইমুলেট করবেন না"
+    "message": "CSS {PH1} ইমুলেট করবেন না"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
-    "message": "CSS মিডিয়া ধরন ইমুলেট করবেন না"
+    "message": "CSS মিডিয়ার ধরন ইমুলেট করবেন না"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateOsTextScale": {
     "message": "OS টেক্সট স্কেল ইমুলেট করবেন না"
@@ -1334,6 +1340,9 @@
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
     "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য true মানের উল্লেখ করেছেন, যার কোনও প্রভাব নেই তবে আপনি এই এই সীমাবদ্ধতা স্বচ্ছতার জন্য সরিয়ে দিতে পারবেন।"
   },
+  "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
+    "message": "RTCPeerConnection.createDTMFSender() বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। পরিবর্তে RTCRtpSender.dtmf ব্যবহার করুন।"
+  },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "কলব্যাক-নির্ভর getStats() বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। পরিবর্তে spec-compliant getStats() ব্যবহার করুন।"
   },
@@ -1341,7 +1350,7 @@
     "message": "Range.expand() বন্ধ করা হয়েছে। পরিবর্তে Selection.modify() ব্যবহার করুন।"
   },
   "generated/Deprecation.ts | RelatedWebsiteSets": {
-    "message": "Related Website Sets বন্ধ করা হয়েছে এবং সরানো হবে। আরও তথ্যের জন্য https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ দেখুন।"
+    "message": "Related Website Sets বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। আরও তথ্যের জন্য https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ দেখুন।"
   },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ এম্বেড করা ক্রেডেনশিয়াল (যেমন https://user:pass@host/) রয়েছে, তা ব্লক করা হয়েছে।"
@@ -1555,6 +1564,9 @@
   },
   "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
     "message": "লেবেল এলিমেন্ট"
+  },
+  "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
+    "message": "Web permissions best practices"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ভারি বিজ্ঞাপনে হস্তক্ষেপ সামলানো"
@@ -2058,7 +2070,7 @@
     "message": "লেআউট শিফ্ট ক্লাস্টার @ {PH1}"
   },
   "models/trace/insights/CLSCulprits.ts | noCulprits": {
-    "message": "লেআউট পরিবর্তনের কোনও কারণ শনাক্ত করা হয়নি"
+    "message": "লেআউট পরিবর্তনের কোনও কারণ শনাক্ত করা যায়নি"
   },
   "models/trace/insights/CLSCulprits.ts | noLayoutShifts": {
     "message": "লেআউটে কোনও পরিবর্তন করা হয়নি"
@@ -2570,6 +2582,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | politeness": {
     "message": "নম্রতা"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInA11yTree": {
+    "message": "অ্যাক্সেসিবিলিটি ট্রিতে দেখুন"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInElements": {
+    "message": "এলিমেন্টস প্যানেলে দেখুন"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "সময়"
   },
@@ -3080,14 +3098,11 @@
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "নিজের কথোপকথন চালু করতে আপনি উপরে সাজেক্ট করা কোনও একটি প্রম্পট ব্যবহার করতেও পারবেন"
   },
-  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
-    "message": "DevTools-এ AI ফিচার সম্পর্কে জানুন"
-  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "DevTools-এ বেছে নেওয়া প্রসঙ্গ প্রকাশ করুন"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
-    "message": "AI অ্যাসিস্ট্যান্স ছদ্মবেশী মোড বা গেস্ট মোডে উপলভ্য নেই"
+    "message": "ছদ্মবেশী মোড বা গেস্ট মোডে AI অ্যাসিস্ট্যান্স উপলভ্য নেই"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
     "message": "আপনার Google অ্যাকাউন্টের মাধ্যমে Chrome-এ সাইন-ইন করে থাকলে তবেই এই ফিচার উপলভ্য হবে"
@@ -3165,7 +3180,7 @@
     "message": "থিঙ্কিং লুকান"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
-    "message": "পর্যালোচনা করা হচ্ছে"
+    "message": "কাজ চলছে"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "এজেন্ট ওয়াকথ্রু দেখুন"
@@ -3265,6 +3280,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "ব্যাকগ্রাউন্ডের রঙ"
+  },
+  "panels/application/AppManifestView.ts | bundleId": {
+    "message": "Bundle ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "কম্পিউট করা অ্যাপ আইডি"
@@ -3397,6 +3415,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "পৃষ্ঠাটি নিরাপদ কোনও অরিজিন থেকে পাঠানো হয়নি"
+  },
+  "panels/application/AppManifestView.ts | parentAppName": {
+    "message": "Parent app name"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "প্ল্যাটফর্ম"
@@ -3726,10 +3747,10 @@
     "message": "ইভেন্ট রেকর্ড করা বন্ধ করুন"
   },
   "panels/application/BackgroundServiceView.ts | storageKey": {
-    "message": "স্টোরেজ কী"
+    "message": "স্টোরেজ 'কী'"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
-    "message": "সার্ভিস ওয়ার্কার স্কোপ"
+    "message": "সার্ভিস ওয়ার্কারের স্কোপ"
   },
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "টাইমস্ট্যাম্প"
@@ -4304,6 +4325,9 @@
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "এই ফ্রেমটি বিজ্ঞাপনের ফ্রেম হিসেবে বিবেচনা করা হয় কারণ এর পেরেন্ট ফ্রেম হল একটি বিজ্ঞাপনের ফ্রেম"
   },
+  "panels/application/FrameDetailsView.ts | refreshSpellCheckCustomDictionary": {
+    "message": "বানান পরীক্ষা করার কাস্টম ডিকশনারি রিফ্রেশ করুন"
+  },
   "panels/application/FrameDetailsView.ts | reportingTo": {
     "message": "এখানে রিপোর্ট করা হচ্ছে"
   },
@@ -4331,6 +4355,12 @@
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer কনস্ট্রাক্টর উপলভ্য আছে, তবে SABs, postMessage-এর মাধ্যমে ট্রান্সফার করা যাবে না"
   },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionary": {
+    "message": "বানান পরীক্ষা করার কাস্টম অভিধান"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionaryExplanation": {
+    "message": "document.spellCheckCustomDictionary.addWords()-এর সাথে যোগ করা শব্দ। বানান পরীক্ষক এই ডকুমেন্টে সেগুলি ফ্ল্যাগ করে না।"
+  },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "ফ্রেমের স্কিম নিরাপদ নয়"
   },
@@ -4357,6 +4387,9 @@
   },
   "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ ভবিষ্যতে ক্রস-অরিজিন আইসোলেটেড প্রসঙ্গ লাগবে"
+  },
+  "panels/application/FrameDetailsView.ts | words": {
+    "message": "শব্দ"
   },
   "panels/application/FrameDetailsView.ts | yes": {
     "message": "হ্যাঁ"
@@ -4386,7 +4419,7 @@
     "message": "বেছে নেওয়া আইটেম মুছুন"
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
-    "message": "বারংবার বড় করুন"
+    "message": "বারবার বড় করা"
   },
   "panels/application/IndexedDBViews.ts | filterByKey": {
     "message": "'কী' অনুযায়ী ফিল্টার করুন (এর চেয়ে বড় বা সমান 'কী' দেখুন)"
@@ -4395,7 +4428,7 @@
     "message": "IDB"
   },
   "panels/application/IndexedDBViews.ts | indexedDb": {
-    "message": "Indexed DB"
+    "message": "IndexedDB"
   },
   "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "কী জেনারেট করার মান: {PH1}"
@@ -4434,7 +4467,7 @@
     "message": "মোট এন্ট্রির সংখ্যা: {PH1}"
   },
   "panels/application/IndexedDBViews.ts | valueString": {
-    "message": "মান"
+    "message": "ভ্যালু"
   },
   "panels/application/IndexedDBViews.ts | version": {
     "message": "ভার্সন"
@@ -4452,7 +4485,7 @@
     "message": "প্রিভিউ করতে মান বেছে নিন"
   },
   "panels/application/KeyValueStorageItemsView.ts | value": {
-    "message": "মান"
+    "message": "ভ্যালু"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "ওপেনারের অ্যাক্সেস"
@@ -4587,7 +4620,7 @@
     "message": "ক্যাশে"
   },
   "panels/application/ServiceWorkerCacheViews.ts | deleteSelected": {
-    "message": "বেছে নেওয়া আইটেম মুছে দিন"
+    "message": "বেছে নেওয়া আইটেম মুছুন"
   },
   "panels/application/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "পাথ অনুযায়ী ফিল্টার করুন"
@@ -4617,7 +4650,7 @@
     "message": "Service Worker ক্যাশে"
   },
   "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "সময় সংক্রান্ত ডেটা ক্যাশে মেমরিতে সেভ করা হয়েছে"
+    "message": "ক্যাশে করার সময়"
   },
   "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "মোট এন্ট্রির সংখ্যা: {PH1}"
@@ -4644,7 +4677,7 @@
     "message": "নেটওয়ার্কের জন্য বাইপাস"
   },
   "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "service worker বাইপাস করুন ও নেটওয়ার্ক থেকে রিসোর্স লোড করুন"
+    "message": "Service Worker বাইপাস করুন ও নেটওয়ার্ক থেকে রিসোর্স লোড করুন"
   },
   "panels/application/ServiceWorkersView.ts | clients": {
     "message": "ক্লায়েন্ট"
@@ -4656,7 +4689,7 @@
     "message": "নেটওয়ার্কের সাথে যুক্ত অনুরোধ"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "পৃষ্ঠা আবার লোড করার পরে, জোর করে service worker আপডেট করুন এবং চালু করুন"
+    "message": "পৃষ্ঠা আবার লোড করার পরে, জোর করে Service Worker আপডেট করুন এবং চালু করুন"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "কিছু সময় পরপর সিঙ্ক করুন"
@@ -4698,13 +4731,13 @@
     "message": "সব রেজিস্ট্রেশন দেখুন"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "{PH1}-এর জন্য Service worker"
+    "message": "{PH1}-এর জন্য Service Worker"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "অন্যান্য উৎসের সার্ভিস ওয়ার্কার"
+    "message": "অন্যান্য অরিজিন থেকে সার্ভিস ওয়ার্কার"
   },
   "panels/application/ServiceWorkersView.ts | source": {
-    "message": "উৎস"
+    "message": "সোর্স"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
     "message": "শুরু করুন"
@@ -4728,13 +4761,13 @@
     "message": "আনরেজিস্টার করুন"
   },
   "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "সার্ভিস ওয়ার্কারের রেজিস্ট্রেশন বাতিল করুন"
+    "message": "সার্ভিস ওয়ার্কার আনরেজিস্টার করুন"
   },
   "panels/application/ServiceWorkersView.ts | update": {
     "message": "আপডেট করুন"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
-    "message": "সাইকেল আপডেট করুন"
+    "message": "আপডেট সাইকেল"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
     "message": "আবার লোড করার সময় আপডেট করুন"
@@ -4752,10 +4785,10 @@
     "message": "এই পেজে আপনি স্টোরেজ বাকেট এবং সেটির সাথে সম্পর্কিত Storage APIs দেখতে ও মুছে দিতে পারবেন"
   },
   "panels/application/StorageItemsToolbar.ts | clearAll": {
-    "message": "সব মুছে দিন"
+    "message": "সব মুছুন"
   },
   "panels/application/StorageItemsToolbar.ts | deleteSelected": {
-    "message": "বেছে নেওয়া আইটেম মুছে দিন"
+    "message": "বেছে নেওয়া আইটেম মুছুন"
   },
   "panels/application/StorageItemsToolbar.ts | refresh": {
     "message": "রিফ্রেশ করুন"
@@ -4788,7 +4821,7 @@
     "message": "IndexedDB"
   },
   "panels/application/StorageView.ts | internalError": {
-    "message": "অভ্যন্তরীণ সমস্যা"
+    "message": "ইন্টার্নাল সমস্যা"
   },
   "panels/application/StorageView.ts | learnMore": {
     "message": "আরও জানুন"
@@ -4797,7 +4830,7 @@
     "message": "স্থানীয় ও সেশন স্টোরেজ"
   },
   "panels/application/StorageView.ts | localStorage": {
-    "message": "স্থানীয় স্টোরেজ"
+    "message": "লোকাল স্টোরেজ"
   },
   "panels/application/StorageView.ts | mb": {
     "message": "এমবি"
@@ -4812,7 +4845,7 @@
     "message": "অন্যান্য"
   },
   "panels/application/StorageView.ts | pleaseEnterANumber": {
-    "message": "কোনও সংখ্যা লিখুন"
+    "message": "নম্বর লিখুন"
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (লোড করা যায়নি)"
@@ -4899,7 +4932,7 @@
     "message": "{PH1}টি করা যায়নি"
   },
   "panels/application/WebMCPView.ts | filter": {
-    "message": "ফিল্টার"
+    "message": "ফিল্টার করুন"
   },
   "panels/application/WebMCPView.ts | flags": {
     "message": "ফ্ল্যাগ করা"
@@ -4911,10 +4944,10 @@
     "message": "ইমপ্যারেটিভ"
   },
   "panels/application/WebMCPView.ts | inProgress": {
-    "message": "কাজ চলছে"
+    "message": "কপি করা চলছে"
   },
   "panels/application/WebMCPView.ts | inProgressCount": {
-    "message": "{PH1}টি কাজ চলছে"
+    "message": "{PH1}টিতে কাজ চলছে"
   },
   "panels/application/WebMCPView.ts | input": {
     "message": "ইনপুট"
@@ -4932,7 +4965,7 @@
     "message": "এই পৃষ্ঠার জন্য রেজিস্টার করা WebMCPটি টুল এখানে দেখানো হবে। এখনও পর্যন্ত কোনও টুল রেজিস্টার বা শনাক্ত করা হয়নি।"
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
-    "message": "WebMCP টুল উপলভ্য"
+    "message": "WebMCPটি টুল উপলভ্য আছে"
   },
   "panels/application/WebMCPView.ts | origin": {
     "message": "অরিজিন"
@@ -4943,14 +4976,17 @@
   "panels/application/WebMCPView.ts | paste": {
     "message": "পেস্ট করুন"
   },
+  "panels/application/WebMCPView.ts | pasteTooltip": {
+    "message": "ক্লিপবোর্ড থেকে JSON হিসেবে টুল প্যারামিটার পেস্ট করুন"
+  },
   "panels/application/WebMCPView.ts | pending": {
-    "message": "কাজ চলছে"
+    "message": "কপি করা চলছে"
   },
   "panels/application/WebMCPView.ts | revealTool": {
     "message": "টুল দেখুন"
   },
   "panels/application/WebMCPView.ts | runTool": {
-    "message": "টুল চালান"
+    "message": "টুল রান করুন"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "স্ট্যাটাস"
@@ -5076,7 +5112,7 @@
     "message": "বিজ্ঞাপনের জন্য যতটা নেটওয়ার্ক ডেটা ব্যবহার করা হয়েছে"
   },
   "panels/application/components/AdsView.ts | unnamed": {
-    "message": "<unnamed>"
+    "message": "<নামবিহীন>"
   },
   "panels/application/components/AdsView.ts | url": {
     "message": "URL"
@@ -5103,7 +5139,7 @@
     "message": "Chrome, ক্যাশেতে থাকাকালীন জাভাস্ক্রিপ্ট এক্সিকিউট করার চেষ্টা শনাক্ত করেছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner-এর অনুরোধ করেছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "AppBanner-এর অনুরোধ করেছে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "chrome://flags-এ ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে। এই ডিভাইসে স্থানীয়ভাবে চালু করতে chrome://flags/#back-forward-cache লিঙ্ক দেখুন।"
@@ -5115,76 +5151,76 @@
     "message": "মেমরিতে যথেষ্ট জায়গা নেই বলে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "ডেলিগেটে ব্যাক-ফরোয়ার্ড ক্যাশে কাজ করে না"
+    "message": "ডেলিগেটে, ব্যাক-ফরোয়ার্ড ক্যাশে কাজ করে না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
     "message": "প্রিরেন্ডারিংয়ের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "পেজটিতে রেজিস্টার করা শ্রোতা সহ BroadcastChannel ইন্সট্যান্স আছে বলে সেটি ক্যাশে করা যাবে না"
+    "message": "পৃষ্ঠাটিতে রেজিস্টার করা শ্রোতা সহ BroadcastChannel ইন্সট্যান্স আছে বলে সেটি ক্যাশে করা যাবে না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "'cache-control:no-store' হেডার সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "'cache-control:no-store' হেডার-সহ পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
     "message": "ক্যাশে ইচ্ছাকৃতভাবে পরিষ্কার করা হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "অন্য একটি পেজ ক্যাশেতে সেভ করার জন্য এই পেজটিকে সরিয়ে দেওয়া হয়েছে"
+    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠা ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "প্লাগ-ইন সহ পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "প্লাগ-ইন আছে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentDiscarded": {
     "message": "নির্দিষ্ট করা নেই"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "FileChooser API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "ফাইল সিস্টেম অ্যাক্সেস API ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "File System Access API ব্যবহার করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "মিডিয়া ডিভাইস ডিস্প্যাচার ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "মিডিয়া ডিভাইস ডিস্প্যাচার ব্যবহার করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
     "message": "পেজ ছেড়ে যাওয়ার সময় মিডিয়া প্লেয়ার চলছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API ব্যবহার এবং প্লেব্যাক স্টেট সেট করে, এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "MediaSession API ব্যবহার এবং প্লেব্যাক স্টেট সেট করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API ব্যবহার এবং অ্যাকশন হ্যান্ডলার সেট করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "MediaSession API ব্যবহার এবং অ্যাকশন হ্যান্ডলার সেট করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
     "message": "স্ক্রিন রিডারের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "SecurityHandler ব্যবহার করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "Serial API ব্যবহার করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API ব্যবহার করে, এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebAuthentication API ব্যবহার করে, এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebBluetooth API ব্যবহার করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API ব্যবহার করে এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebUSB API ব্যবহার করে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে, কারণ কুকি এমন পেজে বন্ধ করা আছে যেটি Cache-Control: no-store ব্যবহার করে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "ডেডিকেটেড ওয়ার্কার বা ওয়ার্কলেট ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ডেডিকেটেড ওয়ার্কার বা ওয়ার্কলেট ব্যবহার করে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে ডকুমেন্টটি সম্পূর্ণ লোড হয়নি"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "পেজ ছেড়ে যাওয়ার সময় অ্যাপ ব্যানার দেখা যাচ্ছিল"
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় অ্যাপ ব্যানার দেখা যাচ্ছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
     "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় Chrome পাসওয়ার্ড ম্যানেজার ছিল"
@@ -5193,7 +5229,7 @@
     "message": "পেজ ছেড়ে যাওয়ার সময় DOM ডিস্টিলেশন প্রসেস চলছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "পেজ ছেড়ে যাওয়ার সময় DOM ডিস্টিলার ভিউয়ার ছিল"
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় DOM ডিস্টিলার ভিউয়ার দেখা যাচ্ছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
     "message": "মেসেজিং API ব্যবহার করে এক্সটেনশনের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
@@ -5208,16 +5244,16 @@
     "message": "এক্সটেনশনের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "পেজ ছেড়ে যাওয়ার সময় পেজটির জন্য ফর্ম পুনরায় জমা দেওয়া বা http পাসওয়ার্ড ডায়ালগের মতো মডেল ডায়ালগ দেখানো হয়েছে"
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় পৃষ্ঠাটির জন্য, ফর্ম আবার জমা দেওয়া বা HTTP পাসওয়ার্ড ডায়ালগের মতো মডেল ডায়ালগ দেখানো হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
     "message": "পেজ ছেড়ে যাওয়ার সময় অফলাইন পেজটি দেখানো হয়েছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "পেজ ছেড়ে যাওয়ার সময় আউট-অফ-মেমরি ইন্টারভেনশন দেখা যাচ্ছিল"
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় আউট-অফ-মেমরি ইন্টারভেনশন দেখা যাচ্ছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "পেজ ছেড়ে যাওয়ার সময় অনুমতির অনুরোধ ছিল"
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় অনুমতির অনুরোধ দেখা যাচ্ছিল"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
     "message": "পেজ ছেড়ে যাওয়ার সময় পপ-আপ ব্লকার দেখানো হয়েছিল"
@@ -5235,22 +5271,22 @@
     "message": "ডকুমেন্টে সমস্যার জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
-    "message": "FencedFrames ব্যবহার করা পেজগুলি bfcache-এ সেভ করা যাবে না"
+    "message": "FencedFrames ব্যবহার করা পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যাবে না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "অন্য একটি পেজ ক্যাশেতে সেভ করার জন্য এই পেজটিকে সরিয়ে দেওয়া হয়েছে"
+    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠা ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "মিডিয়া স্ট্রিম কন্টেন্টে অ্যাক্সেস দেওয়া হয়েছে এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "মিডিয়া স্ট্রিম কন্টেন্টে অ্যাক্সেস দেওয়া হয়েছে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "যেসব পেজে নির্দিষ্ট ধরনের এম্বেড করা কন্টেন্ট (যেমন, পিডিএফ) রয়েছে, তা বর্তমানে ব্যাক/ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
+    "message": "যেসব পৃষ্ঠাতে নির্দিষ্ট ধরনের এম্বেড করা কন্টেন্ট (যেমন, PDF) আছে, সেগুলি বর্তমানে ব্যাক/ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "IdleManager ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "খোলা Indexed DB কানেকশন সহ পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "খোলা Indexed DB কানেকশন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
     "message": "IndexedDB ইভেন্টের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
@@ -5259,13 +5295,13 @@
     "message": "অনুপযুক্ত API ব্যবহার করা হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "এক্সটেনশনের ইঞ্জেক্ট করা JavaScript সহ পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "সেসব পৃষ্ঠায় এক্সটেনশন ইঞ্জেক্ট JavaScript ইঞ্জেক্ট করেছে সেগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "এক্সটেনশনের ইঞ্জেক্ট করা StyleSheet সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "সেসব পৃষ্ঠায় এক্সটেনশন StyleSheet ইঞ্জেক্ট করেছে সেগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
-    "message": "অভ্যন্তরীণ সমস্যা"
+    "message": "ইন্টার্নাল সমস্যা"
   },
   "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে কারণ কিছু জাভাস্ক্রিপ্ট সম্পর্কিত নেটওয়ার্ক রিকোয়েস্ট Cache-Control: no-store হেডার সহ রিসোর্স রিসিভ করেছে"
@@ -5274,16 +5310,16 @@
     "message": "সক্রিয়-রাখা অনুরোধের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "কীবোর্ড লক ব্যবহার করে এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "কীবোর্ড লক ব্যবহার করে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | loading": {
-    "message": "পেজ ছেড়ে যাওয়ার আগে সেটি সম্পূর্ণ লোড হয়নি"
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে সেটি সম্পূর্ণ লোড হয়নি"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
     "message": "'cache-control:no-cache' আছে এমন প্রধান রিসোর্স সহ পেজ কোনও ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "'cache-control:no-store' আছে এমন প্রধান রিসোর্স সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না"
+    "message": "'cache-control:no-store' আছে এমন প্রধান রিসোর্স-সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করার আগে নেভিগেশন বাতিল করা হয়েছে"
@@ -5292,7 +5328,7 @@
     "message": "কোনও অ্যাক্টিভ নেটওয়ার্ক কানেকশনের মাধ্যমে পৃষ্ঠাটিতে অনেক ডেটা পাঠানো হয়েছে, তাই ক্যাশে থেকে সেটি সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কত ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ইন-ফ্লাইট fetch() বা XHR আছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ইন-ফ্লাইট ফেচ() বা XHR আছে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
     "message": "অ্যাক্টিভ নেটওয়ার্ক রিকোয়েস্ট রিডাইরেক্ট করা হয়েছে বলে ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে"
@@ -5301,34 +5337,34 @@
     "message": "কোনও নেটওয়ার্ক কানেকশন অনেকক্ষণ খোলা ছিল বলে পৃষ্ঠাটি ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কতক্ষণ ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "সঠিক রেসপন্স হেড নেই, এমন পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "সঠিক রেসপন্স হেড নেই, এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "মেন ফ্রেম ছাড়া অন্য ফ্রেমে নেভিগেশন হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Indexed DB ট্রানজ্যাকশন চলছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "Indexed DB ট্রানজ্যাকশন চলছে, এমন পৃষ্ঠায় বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "ইন-ফ্লাইট নেটওয়ার্ক রিকোয়েস্ট সহ পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ইন-ফ্লাইট নেটওয়ার্ক রিকোয়েস্ট-সহ পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "ইন-ফ্লাইট ফেচ নেটওয়ার্কের অনুমতি চায় এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ইন-ফ্লাইট ফেচ নেটওয়ার্ক রিকোয়েস্ট আছে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায়, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ইন-ফ্লাইট নেটওয়ার্ক রিকোয়েস্ট-সহ পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "ইন-ফ্লাইট XHR নেটওয়ার্ক রিকোয়েস্ট সহ পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ইন-ফ্লাইট XHR নেটওয়ার্ক রিকোয়েস্ট আছে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "PaymentManager ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "ছবির-মধ্যে-ছবি ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ছবির-মধ্যে-ছবি ব্যবহার করে, এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "প্রিন্টিং UI দেখায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "প্রিন্টিং UI দেখায় এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "'window.open()' ব্যবহার করে পেজটি খোলা হয়েছিল এবং অন্য ট্যাবের সেটার রেফারেন্স রয়েছে অথবা পেজটি একটি উইন্ডো খুলেছে"
@@ -5340,25 +5376,25 @@
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পেজ রেন্ডার করার প্রসেস বন্ধ করে দেওয়া হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "অডিও রেকর্ড করার অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "অডিও রেকর্ড করার অনুমতি চেয়েছে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "সেন্সর অ্যাক্সেস করার অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "সেন্সর অ্যাক্সেস করার অনুমতি চেয়েছে, এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "ব্যাকগ্রাউন্ড সিঙ্ক বা ফেচের জন্য অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ব্যাকগ্রাউন্ড সিঙ্ক বা ফেচের জন্য অনুমতি চেয়েছে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI ডিভাইস অ্যাক্সেস করার অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "MIDI ডিভাইস অ্যাক্সেস করার অনুমতি চেয়েছে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "বিজ্ঞপ্তি সংক্রান্ত অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "বিজ্ঞপ্তির অনুমতি চেয়েছে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "স্টোরেজ অ্যাক্সেসের অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "স্টোরেজ অ্যাক্সেসের অনুমতি চেয়েছে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ভিডিও ক্যাপচার করার অনুমতি চেয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ভিডিও ক্যাপচার করার অনুমতি চেয়েছে, এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
     "message": "শুধু HTTP / HTTPS স্কিমের URL আছে এমন পেজ ক্যাশে করা যাবে"
@@ -5379,25 +5415,25 @@
     "message": "Chrome রিস্টার্ট হওয়ার পরে ব্যাক-ফরোয়ার্ড ক্যাশের সব এন্ট্রি মুছে দিয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "SharedWorker ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
     "message": "পেজটি ক্যাশে থেকে বার করে দেওয়া হয়েছে কারণ সেটি SharedWorker থেকে মেসেজ পেয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "SpeechRecognizer ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "SpeechSynthesis ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "পেজে কোনও iframe নেভিগেশন শুরু হলেও সম্পূর্ণ হয়নি"
+    "message": "পৃষ্ঠাটিতে যে iframe নেভিগেশন শুরু হয়েছিল তা সম্পূর্ণ হয়নি"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "'cache-control:no-cache' আছে এমন সাবরিসোর্স সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "'cache-control:no-cache' আছে এমন সাবরিসোর্স-সহ পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "'cache-control:no-store' আছে এমন সাবরিসোর্স সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না"
+    "message": "'cache-control:no-store' আছে এমন সাবরিসোর্স-সহ পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | timeout": {
     "message": "পেজটি ব্যাক-ফরোয়ার্ড ক্যাশেতে সর্বাধিক সময়ের সীমা ছাড়িয়ে গেছে এবং সেটি আর রিস্টোর করা হয়নি"
@@ -5415,46 +5451,46 @@
     "message": "ব্রাউজার ইউজার এজেন্ট ওভাররাইড হেডার পরিবর্তন করেছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ভিডিও বা অডিও রেকর্ড করার জন্য অ্যাক্সেসের অনুমতি দেওয়া হয়েছে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "ভিডিও বা অডিও রেকর্ড করার জন্য অ্যাক্সেসের অনুমতি দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase ব্যবহার করে এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebDatabase ব্যবহার করে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebHID ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebLocks ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebNfc ব্যবহার করে এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebOTPService ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebRTC আছে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে কারণ WebRTC ব্যবহার করা হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare সহ পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebShare ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না"
+    "message": "WebSocket আছে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
     "message": "ব্যাক/ফরোয়ার্ড ক্যাশে বন্ধ করা আছে কারণ WebSocket ব্যবহার করা হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport সহ পেজ ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না"
+    "message": "WebTransport আছে এমন পৃষ্ঠাগুলি ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার যায় না"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
     "message": "ব্যাক/ফরোয়ার্ড ক্যাশে বন্ধ করা আছে কারণ WebTransport ব্যবহার করা হয়েছে"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR ব্যবহার করে, এমন পেজ বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না"
+    "message": "WebXR ব্যবহার করে, এমন পৃষ্ঠাগুলি বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার জন্য উপযুক্ত নয়"
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ব্যাক/ফরোয়ার্ড ক্যাশে"
@@ -5469,7 +5505,7 @@
     "message": "অ্যাকশন নেওয়া যাবে না"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে না, অর্থাৎ সরাসরি পেজের নিয়ন্ত্রণাধীন নয় এমন বাইরের এন্টিটি ক্যাশে করতে বাধা দিয়েছে"
+    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে না, অর্থাৎ সরাসরি পৃষ্ঠার নিয়ন্ত্রণাধীন নয় এমন বাইরের এন্টিটি ক্যাশে করতে বাধা দিয়েছে।"
   },
   "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
     "message": "{n,plural, =1{#টি ফাইল}one{#টি ফাইল}other{#টি ফাইল}}"
@@ -5517,7 +5553,7 @@
     "message": "সহায়তা বাকি আছে"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "এই আইটেমগুলি এখনও Chrome-এ কাজ করে না, অর্থাৎ সেগুলি ভবিষ্যতের কোনও Chrome ভার্সনে ব্যাক/ফরোয়ার্ড ক্যাশের জন্য পৃষ্ঠাটিকে উপযুক্ত হিসেবে বিবেচিত হতে বাধা দেবে না"
+    "message": "এইসব কারণের জন্য Chrome-এর সহায়তা বর্তমানে পেন্ডিং আছে, অর্থাৎ এগুলি ভবিষ্যতের কোনও Chrome ভার্সনে পৃষ্ঠাটিকে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার উপযুক্ত হতে বাধা দেবে না।"
   },
   "panels/application/components/BackForwardCacheView.ts | testCompleted": {
     "message": "ব্যাক/ফরোয়ার্ড ক্যাশে সংক্রান্ত পরীক্ষা সম্পূর্ণ হয়েছে"
@@ -5550,7 +5586,7 @@
     "message": "কোনও সম্ভাব্য বাউন্স ট্র্যাকিং সাইটের জন্য স্টেট সরানো যায়নি। হয় কোনও কিছু শনাক্ত করা যায়নি বা থার্ড-পার্টি কুকি ব্লক করা হয়নি।"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
-    "message": "চলছে"
+    "message": "রান করছে"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "নিম্নলিখিত সাইটগুলির ক্ষেত্রে স্ট্যাটাস মুছে ফেলা হয়েছে:"
@@ -5562,25 +5598,25 @@
     "message": "ভ্যালু কপি করুন"
   },
   "panels/application/components/CrashReportContextGrid.ts | key": {
-    "message": "'কী'"
+    "message": "কী"
   },
   "panels/application/components/CrashReportContextGrid.ts | value": {
     "message": "ভ্যালু"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
-    "message": "যেসব এন্ডপয়েন্ট রিপোর্ট রিসিভ করে তার তালিকা আপনি এখানে দেখতে পাবেন"
+    "message": "যেসব এন্ডপয়েন্ট রিপোর্ট পায় তার তালিকা আপনি এখানে দেখতে পাবেন"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "দেখানোর মতো কোনও এন্ডপয়েন্ট নেই"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
-    "message": "যেসব ফিচার ব্যবহার করার অনুমোদন দেওয়া হয়েছে"
+    "message": "অনুমোদিত ফিচার"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
     "message": "যে অনুরোধের \"Permissions-Policy\" HTTP হেডার এই ফিচার বন্ধ করে দেয়, সেই অনুরোধ প্রকাশ করতে ক্লিক করুন"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "সবচেয়ে উপরে থাকা iframe-কে প্রকাশ করতে ক্লিক করুন যা 'এলিমেন্ট' প্যানেলে এই ফিচারকে অনুমোদন করে না"
+    "message": "সবচেয়ে উপরে থাকা সেই iframe-টি দেখতে ক্লিক করুন যা এলিমেন্ট প্যানেলে এই ফিচারটি ব্যবহারের অনুমতি দেয় না"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "fencedframe-এর মধ্যে থাকলে এটি বন্ধ রাখা হয়"
@@ -5592,7 +5628,7 @@
     "message": "iframe \"allow\" অ্যাট্রিবিউটে এটি পাওয়া যায়নি"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
-    "message": "যেসব ফিচার বন্ধ করা হয়েছে"
+    "message": "বন্ধ করা ফিচার"
   },
   "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
     "message": "বিবরণ লুকান"
@@ -5607,7 +5643,7 @@
     "message": "ম্যানিফেস্ট"
   },
   "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
-    "message": "সাহায্য চান? {PH1} পড়ুন।"
+    "message": "সাহায্য প্রয়োজন? {PH1} পড়ুন।"
   },
   "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
     "message": "{PH1}-এ একটি সঠিক প্রোটোকল হ্যান্ডলার রেজিস্ট্রেশন পাওয়া গেছে। অ্যাপ ইনস্টল করার সাথে, রেজিস্টার করা প্রোটোকল পরীক্ষা করুন।"
@@ -5640,7 +5676,7 @@
     "message": "দেখানোর মতো কোনও রিপোর্ট নেই"
   },
   "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
-    "message": "এখানে আপনি এই পেজের তৈরি করা রিপোর্টিং API রিপোর্ট দেখতে পাবেন"
+    "message": "এখানে আপনি এই পৃষ্ঠার জেনারেট করা Reporting API রিপোর্ট দেখতে পাবেন"
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "স্ট্যাটাস"
@@ -5673,16 +5709,16 @@
     "message": "থার্ড-পার্টি"
   },
   "panels/application/components/StorageMetadataView.ts | loading": {
-    "message": "লোড হচ্ছে…"
+    "message": "লোড করা হচ্ছে…"
   },
   "panels/application/components/StorageMetadataView.ts | no": {
     "message": "না"
   },
   "panels/application/components/StorageMetadataView.ts | none": {
-    "message": "কোনও মান নেই"
+    "message": "কোনওটিই নয়"
   },
   "panels/application/components/StorageMetadataView.ts | opaque": {
-    "message": "(অস্বচ্ছ)"
+    "message": "(স্পষ্ট নয়)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
     "message": "ফ্রেমের অরিজিন"
@@ -5958,7 +5994,7 @@
     "message": "প্রিফেচ রিডাইরেক্ট করা হয়েছিল, তবে রিডাইরেক্ট করার ক্ষেত্রে সমস্যা হয়েছিল"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
-    "message": "আগে থেকে লোড করা যায়নি কারণ উত্তরের Content Type সম্পর্কিত হেডার কাজ করেনি"
+    "message": "উত্তরের Content Type সম্পর্কিত হেডার কাজ না করায় প্রিফেচ করা যায়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
     "message": "নেটওয়ার্কের সমস্যা থাকার কারণে প্রিফেচ পারফর্ম করা যায়নি"
@@ -5973,43 +6009,43 @@
     "message": "অরিজিনের আগের প্রিফেচ 'পরে আবার চেষ্টা করুন' হেডারের সাথে HTTP 503 উত্তর পেয়েছে যার মেয়াদ এখনও শেষ হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
-    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ সেই অরিজিনের জন্য রেজিস্টার করা সার্ভিস ওয়ার্কার বা ক্রস-সাইট কুকি ছিল, তবে যেকোনও উপায়ে প্রিফেচ নেটওয়ার্কে রাখা হয়। ব্যবহারকারীর সেই অরিজিনের সাথে কোনও সম্পর্ক আছে তা আড়াল করতে এটি ব্যবহার করা হয়নি"
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ সেই অরিজিনের জন্য রেজিস্টার করা সার্ভিস ওয়ার্কার বা ক্রস-সাইট কুকি ছিল, তবে যেকোনও উপায়ে প্রিফেচ নেটওয়ার্কে রাখা হয়। অরিজিনের সাথে ব্যবহারকারীর যে পূর্ববর্তী সম্পর্ক আছে তা আড়াল করতে এটি ব্যবহার করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
     "message": "প্রিফেচ পারফর্ম ও ব্যবহার করার মধ্যে অনেকটা সময় পেরিয়ে গেছে, তাই প্রিফেচ বাতিল করা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
-    "message": "প্রিফেচ পারফর্ম করা যায়নি কারণ ব্যাটারি সেভার সেটিং চালু করা ছিল"
+    "message": "ব্যাটারি সেভার সেটিং চালু থাকার কারণে প্রিফেচ পারফর্ম করা যায়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
-    "message": "প্রিফেচ পারফর্ম করা যায়নি কারণ ব্রাউজার 'ছদ্মবেশী' বা 'গেস্ট' মোডে আছে"
+    "message": "ব্রাউজার 'ছদ্মবেশী' বা 'গেস্ট' মোডে থাকার কারণে প্রিফেচ পারফর্ম করা যায়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
-    "message": "অপারেটিং সিস্টেম 'ডেটা সেভার' মোডে থাকার জন্য প্রিফেচ পারফর্ম করা যায়নি"
+    "message": "অপারেটিং সিস্টেম, ডেটা সেভার মোডে থাকার জন্য প্রিফেচ পারফর্ম করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
     "message": "URL প্রিফেচ করার জন্য উপযুক্ত নয় কারণ, এটি ডিফল্ট নেটওয়ার্ক কনটেক্সটে প্রক্সি সার্ভার ব্যবহার করার জন্য কনফিগার করা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
-    "message": "URL প্রিফেচ করার জন্য উপযুক্ত ছিল না কারণ এর হোস্ট অনন্য ছিল না (যেমন, সর্বজনীনভাবে রুটেবল নয় এমন IP অ্যাড্রেস বা এমন হোস্টনেম যেটি রেজিস্ট্রি দ্বারা কন্ট্রোল করা হয় না) তবে প্রিফেচ, প্রক্সি করার প্রয়োজন ছিল"
+    "message": "URLটি প্রিফেচ করার উপযুক্ত ছিল না কারণ এর হোস্ট অনন্য ছিল না (যেমন, এমন একটি IP অ্যাড্রেস যা সর্বজনীনভাবে রুটেবল নয় অথবা এমন একটি হোস্টনেম যা রেজিস্ট্রি দ্বারা নিয়ন্ত্রিত নয়), কিন্তু প্রিফেচটি প্রক্সির মাধ্যমে হওয়া আবশ্যক ছিল।"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
-    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ এটি ডিফল্ট অবস্থায় নেই এমন স্টোরেজ পার্টিশন ব্যবহার করে"
+    "message": "URLটি প্রিফেচ করার উপযুক্ত ছিল না কারণ এটি একটি নন-ডিফল্ট স্টোরেজ পার্টিশন ব্যবহার করে"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "স্পেকুলেটিভ লোডিং বন্ধ করা ছিল বলে প্রিফেচ পারফর্ম করা যায়নি"
+    "message": "স্পেকুলেটিভ লোডিং বন্ধ করা ছিল বলে প্রিফেচ পারফর্ম করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ একই ধরনের সাইটের ক্রস-অরিজিনের প্রিফেচ সম্পর্কিত অনুরোধের জন্য প্রিফেচ প্রক্সি ব্যবহার করতে ডিফল্ট নেটওয়ার্ক কনটেক্সট কনফিগার করা যায়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
-    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ এর স্কিম https: ছিল না"
+    "message": "URLটির স্কিম https: না হওয়ায় এটি ফ্রিফেচ করার জন্য উপযুক্ত ছিল না"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
-    "message": "প্রিফেচ ক্রস-সাইট হওয়ার কারণে ব্যবহার করার উপযুক্ত ছিল না, তবে ব্যবহারকারীর কাছে সেই অরিজিনের জন্য কুকি ছিল"
+    "message": "ক্রস-সাইট হওয়ার কারণে URLটি প্রিফেচের উপযুক্ত ছিল না, তবে সেই অরিজিনের জন্য ব্যবহারকারীর কাছে কুকি ছিল"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
-    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ সেই অরিজিনের জন্য রেজিস্টার করা সার্ভিস ওয়ার্কার ছিল, যেটি বর্তমানে কাজ করে না"
+    "message": "সেই অরিজিনের জন্য একটি সার্ভিস ওয়ার্কার রেজিস্টার করা থাকায় URL প্রিফেচ করার উপযুক্ত ছিল না, এটি বর্তমানে কাজ করে না।"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
     "message": "প্রিফেচ ক্রস-সাইট হওয়ার কারণে সেটি ব্যবহার করা হয়নি এবং প্রিফেচটি চলার সময় সেই URL-এ কুকি যোগ করা হয়েছে, তাই প্রিফেচ করা উত্তর এখন পুরনো"
@@ -6024,16 +6060,16 @@
     "message": "ইনিশিয়েটিং পেজের মূল ফ্রেম নেভিগেশনের সময় প্রিরেন্ডার করা পেজ চালু করা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
-    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, শুরুর পেজে অ্যাক্টিভ ওপেনার রেফারেন্স সহ কিছু উইন্ডো ছিল, যা বর্তমানে ব্যবহার করা যাবে না"
+    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, ইনিশিয়েটিং পেজে অ্যাক্টিভ ওপেনার রেফারেন্স-সহ কিছু উইন্ডো ছিল, যা বর্তমানে ব্যবহার করা যাবে না"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
     "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ স্যান্ডবক্সিং ফ্ল্যাগ বা ইনিশিয়েটিং পেজের অনুমতি সংক্রান্ত নীতি প্রিরেন্ডারিং পেজের সাথে সামঞ্জস্যপূর্ণ ছিল না"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, আসল প্রিরেন্ডার নেভিগেশন অনুরোধের পরিবর্তে বিভিন্ন নেভিগেশন প্যারামিটার (যেমন HTTP হেডার) ক্যালকুলেট করা হয়েছিল"
+    "message": "চালু করার সময় আসল প্রিরেন্ডার নেভিগেশন অনুরোধের পরিবর্তে বিভিন্ন নেভিগেশন প্যারামিটার (যেমন HTTP হেডার) ক্যালকুলেট করা হয়েছিল বলে প্রিরেন্ডার ব্যবহার করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
-    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, নেভিগেশনের URL সাধারণ URL-এর থেকে আলাদা ছিল। (যেমন, নতুন ট্যাব পেজ বা হোস্ট করা অ্যাপ।)"
+    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, নেভিগেশনের URL সাধারণ URL-এর থেকে আলাদা ছিল। (যেমন, নতুন ট্যাব পৃষ্ঠা বা হোস্ট করা অ্যাপ।)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
     "message": "কিছু কারণে ব্রাউজার, প্রিরেন্ডার করা পেজ আনলোড করেছে (যেমন, প্রিরেন্ডার করার সময় WebViewCompat.addWebMessageListener()-কে কল করা হয়েছিল।)"
@@ -6042,7 +6078,7 @@
     "message": "প্রিরেন্ডার করা পেজ অডিও আউটপুটের জন্য অনুরোধ করেছে, বর্তমানে যা কাজ করবে না"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী অনুরোধ করেছিলেন যে ব্রাউজার যাতে কম ব্যাটারি ব্যবহার করে"
+    "message": "ব্যবহারকারী, ব্রাউজারের জন্য কম ব্যাটারি ব্যবহারের অনুরোধ করায় প্রিরেন্ডার পারফর্ম করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "কিছু রিসোর্স লোড ব্লক করা হয়েছে"
@@ -6066,7 +6102,7 @@
     "message": "প্রিরেন্ডার করা পেজ একটি URL-এ নেভিগেট করা হয়েছে যা একটি ক্রস-সাইট URL-এ রিডাইরেক্ট করা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজার যাতে কম ডেটা ব্যবহার করে সেজন্য ব্যবহারকারী অনুরোধ করেছেন"
+    "message": "ব্যবহারকারী ব্রাউজারে কম ডেটা ব্যবহারের অনুরোধ করায় প্রিরেন্ডার করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "প্রিরেন্ডার করা পেজ ডাউনলোড করার চেষ্টা করেছে, বর্তমানে যা কাজ করে না"
@@ -6075,7 +6111,7 @@
     "message": "ইনিশিয়েটিং পেজ প্রিরেন্ডারিং পারফর্ম করতে পারবে না, কারণ এতে একটি কার্যকর URL রয়েছে যা সাধারণ URL থেকে আলাদা। (যেমন, নতুন ট্যাব পেজ বা হোস্ট করা অ্যাপ।)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL প্রিরেন্ডার করার জন্য উপযুক্ত নয়, কারণ এর স্কিম, HTTP নয়: বা HTTPS নয়:"
+    "message": "URL প্রিরেন্ডার করার জন্য উপযুক্ত নয়, কারণ এর স্কিম, HTTP বা HTTPS নয়:"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ এটি এমন একটি URL-এ রিডাইরেক্ট করেছে যার স্কিম HTTP: বা HTTPS নয়:"
@@ -6090,25 +6126,25 @@
     "message": "প্রিরেন্ডারিং নেভিগেশনে HTTP সংক্রান্ত যাচাইকরণ প্রয়োজন যা বর্তমানে কাজ করবে না"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ প্রিরেন্ডারিং করার জন্য পর্যাপ্ত মোট সিস্টেম মেমরি এই ডিভাইসে নেই"
+    "message": "প্রিরেন্ডারিং করার জন্য পর্যাপ্ত মোট সিস্টেম মেমরি এই ডিভাইসে নেই বলে প্রিরেন্ডার পারফর্ম করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "যে প্রিরেন্ডারের eagerness হল \"eager\" সেটি পারফর্ম করা যায়নি কারণ, ইনিশিয়েটিং পেজে আগে থেকেই অনেকগুলি প্রিরেন্ডার চলছে। পরবর্তী প্রিরেন্ডারিং চালু করার জন্য \"eager\" রয়েছে এমন অন্যান্য স্পেকুলেশন রুল সরিয়ে দিন।"
+    "message": "যে প্রিরেন্ডারের ইগারনেস হল \"eager\" সেটি পারফর্ম করা হয়নি কারণ, ইনিশিয়েটিং পেজে আগে থেকেই অনেকগুলি প্রিরেন্ডার চলছে। পরবর্তী প্রিরেন্ডারিং চালু করার জন্য \"eager\" রয়েছে এমন অন্যান্য স্পেকুলেশন রুল সরিয়ে দিন।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "ব্রাউজার থেকে ট্রিগার হওয়া প্রিরেন্ডার পারফর্ম করা যায়নি কারণ, ইনিশিয়েটিং পেজে আগে থেকেই অনেকগুলি প্রিরেন্ডার চলছে"
+    "message": "ইনিশিয়েটিং পেজে আগে থেকেই অনেকগুলি প্রিরেন্ডার চলার কারণে ব্রাউজার থেকে ট্রিগার হওয়া প্রিরেন্ডার পারফর্ম করা যায়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "নতুন একটি নন-ইগার প্রিরেন্ডার চালু হওয়ার কারণে পুরনো নন-ইগার প্রিরেন্ডার (\"moderate\" বা \"conservative\" eagerness এবং একটি লিঙ্কের উপরে মাউস নিয়ে যাওয়া বা তাতে লিঙ্ক করার মাধ্যমে ট্রিগার হওয়ার কারণে) অটোমেটিক বাতিল হয়ে গেছে। লিঙ্কের সাথে আবার ইন্ট্যার‍্যাক্ট করার মাধ্যমে এটি আবার ট্রিগার করা যেতে পারে।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারটি প্রিরেন্ডারিং মেমরির সীমা অতিক্রম করে গেছে"
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারটি প্রিরেন্ডারিং মেমরির সীমা পেরিয়ে গেছে"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
     "message": "প্রিরেন্ডার করা পেজ আনলোড করা হয়েছে, কারণ ব্রাউজারে মেমরি অত্যন্ত কম ছিল"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারের মেমরি অত্যন্ত কম ছিল"
+    "message": "ব্রাউজারের মেমরি অত্যন্ত কম ছিল বলে প্রিরেন্ডার পারফর্ম করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
     "message": "প্রিরেন্ডার করা পেজে মিক্সড কন্টেন্ট রয়েছে"
@@ -6129,10 +6165,10 @@
     "message": "প্রিরেন্ডারিং নেভিগেশনে একটি নেটওয়ার্কের সমস্যা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী ব্রাউজার সেটিংসে প্রিলোডিং বন্ধ করে দিয়েছেন"
+    "message": "ব্যবহারকারী ব্রাউজার সেটিংসে প্রিলোডিং বন্ধ করে দিয়েছেন বলে প্রিরেন্ডার পারফর্ম করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি কারণ DevTools প্রিরেন্ডারিং বন্ধ করার জন্য ব্যবহার করা হয়েছে"
+    "message": "DevTools ব্যবহার করে প্রিরেন্ডারিং বন্ধ করে রাখা হয়েছে বলে প্রিরেন্ডার করা হয়নি"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
     "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ এটিতে একটি কার্যকর URL রয়েছে যা সাধারণ URL থেকে আলাদা। (যেমন, নতুন ট্যাব পেজ বা হোস্ট করা অ্যাপ।)"
@@ -6593,6 +6629,39 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "পরিবর্তনগুলি দেখুন"
   },
+  "panels/comments/CommentsPane.ts | clearComments": {
+    "message": "সব কমেন্ট মুছুন"
+  },
+  "panels/comments/CommentsPane.ts | deleteComment": {
+    "message": "কমেন্ট মুছুন"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | noSentComments": {
+    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+  },
+  "panels/comments/CommentsPane.ts | queued": {
+    "message": "Queued"
+  },
+  "panels/comments/CommentsPane.ts | seeResponse": {
+    "message": "উত্তর দেখুন"
+  },
+  "panels/comments/CommentsPane.ts | sendToAgent": {
+    "message": "এজেন্টকে পাঠান"
+  },
+  "panels/comments/CommentsPane.ts | sent": {
+    "message": "Sent"
+  },
+  "panels/comments/CommentsPane.ts | working": {
+    "message": "কাজ চলছে"
+  },
+  "panels/comments/comments-meta.ts | comments": {
+    "message": "কমেন্ট"
+  },
+  "panels/comments/comments-meta.ts | showComments": {
+    "message": "কমেন্ট দেখুন"
+  },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "আপনি {PH1} ব্যাজ জিতেছেন! সেটি আপনার Developer প্রোফাইলে যোগ করা হয়েছে।"
   },
@@ -6638,14 +6707,23 @@
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "কমেন্ট ইনপুট"
   },
+  "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
+    "message": "সারিবদ্ধ থাকা কমেন্ট মুছুন"
+  },
+  "panels/common/CommentThreadWidget.ts | queueComment": {
+    "message": "কমেন্ট সারিবদ্ধ করুন"
+  },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "উত্তর:"
+  },
+  "panels/common/CommentThreadWidget.ts | save": {
+    "message": "Save"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "এজেন্টকে পাঠান"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "পাঠানো হয়েছে"
+    "message": "Sent"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "পাঠানো কমেন্টের টিকচিহ্ন"
@@ -7254,13 +7332,13 @@
     "message": "ব্যবহারের ভিজ্যুয়ালাইজেশন"
   },
   "panels/coverage/CoverageView.ts | activationNoCapture": {
-    "message": "কভারেজ সম্পর্কিত তথ্য ক্যাপচার করা যায়নি কারণ পেজটি ব্যাকগ্রাউন্ডে প্রিরেন্ডার করা হয়েছিল"
+    "message": "কভারেজ সম্পর্কিত তথ্য ক্যাপচার করা যায়নি কারণ পৃষ্ঠাটি ব্যাকগ্রাউন্ডে প্রিরেন্ডার করা হয়েছিল"
   },
   "panels/coverage/CoverageView.ts | all": {
     "message": "সব"
   },
   "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
-    "message": "কভারেজ সম্পর্কিত তথ্য ক্যাপচার করা যায়নি কারণ পেজটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে দেখানো হয়েছিল"
+    "message": "কভারেজ সম্পর্কিত তথ্য ক্যাপচার করা যায়নি কারণ পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে দেখানো হয়েছিল"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "কভারেজ গ্র্যানুলারিটি বাছুন: ফাংশন পিছু ছোট ওভারহেড ও ব্লক পিছু অনেক বেশি ওভারহেড থাকে"
@@ -7584,7 +7662,7 @@
     "message": "ফন্ট-ফ্যামিলি \"{PH5}\"-এর জন্য সেটিংয়ের মান \"{PH1}\" {PH2} সাপোর্ট করা রেঞ্জ [{PH3}, {PH4}] ছাড়িয়ে গেছে।"
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
-    "message": "অ্যাঙ্কর নির্দিষ্ট করা হয়েছে, কিন্তু এলিমেন্টটি অ্যাঙ্কর-পজিশন করা হয়নি, তবে \"{POSITION}\" পজিশন করা হয়েছে"
+    "message": "একটি অ্যাঙ্কর নির্দিষ্ট করা হয়েছিল, কিন্তু এলিমেন্টটি অ্যাঙ্কর-পজিশনড ছিল না বরং \"{POSITION}\" হিসেবে পজিশন করা হয়েছিল"
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioningFix": {
     "message": "পজিশন \"স্থির\" বা \"অ্যাবসলিউট\" হিসেবে সেট করুন"
@@ -7790,6 +7868,117 @@
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "এই আইটেমগুলি র‍্যাপ করুন"
   },
+  "panels/elements/DOMTreeElementWidget.ts | children": {
+    "message": "অধীনস্থ কন্টেন্ট:"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | copy": {
+    "message": "কপি করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | creatorAdScriptAncestry": {
+    "message": "বিজ্ঞাপনের জন্য ক্রিয়েটরের স্ক্রিপ্টের সম্পূর্ণ ইতিহাস"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | cut": {
+    "message": "কাট করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableContainer": {
+    "message": "কন্টেনার ওভারলে বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableFlexMode": {
+    "message": "ফ্লেক্স মোড বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridLanesMode": {
+    "message": "গ্রিড-লেন মোড বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridMode": {
+    "message": "গ্রিড মোড বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableScrollSnap": {
+    "message": "'স্ক্রল-স্ন্যাপ ওভারলে' ফিচার বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableStartingStyle": {
+    "message": "@starting-style মোড বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | elementHasScrollableOverflow": {
+    "message": "এই এলিমেন্টের সাথে স্ক্রল করা যায় এমন ওভারফ্লো রয়েছে"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableContainer": {
+    "message": "কন্টেনার ওভারলে চালু করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableFlexMode": {
+    "message": "ফ্লেক্স মোড চালু করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridLanesMode": {
+    "message": "গ্রিড-লেন মোড চালু করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridMode": {
+    "message": "গ্রিড মোড চালু করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableScrollSnap": {
+    "message": "'স্ক্রল-স্ন্যাপ ওভারলে' ফিচার চালু করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableStartingStyle": {
+    "message": "@starting-style মোড চালু করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | filterListRule": {
+    "message": "তালিকার নিয়ম ফিল্টার করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceOpenPopover": {
+    "message": "এই পপ-ওভার খুলে রাখুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceShowInterest": {
+    "message": "এই এলিমেন্টে আগ্রহ ট্রিগার করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceState": {
+    "message": "ফোর্স স্টেট"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | noProvenanceAvailable": {
+    "message": "সোর্স সম্পর্কিত কোনও ডেটা উপলভ্য নেই"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | openMediaPanel": {
+    "message": "সরাসরি মিডিয়া প্যানেলে যান"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | paste": {
+    "message": "পেস্ট করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | reveal": {
+    "message": "প্রকাশ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | rootScriptFilterListRule": {
+    "message": "রুট স্ক্রিপ্টে ফিল্টার তালিকার নিয়ম"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | selectAll": {
+    "message": "সব বেছে নিন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCommandForTarget": {
+    "message": "commandfor অ্যাট্রিবিউটের সাথে সম্পর্কিত এলিমেন্ট দেখুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCustomElementDefinition": {
+    "message": "কাস্টম এলিমেন্টের সংজ্ঞা দেখুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showInterestTarget": {
+    "message": "interesttarget অ্যাট্রিবিউটের সাথে সম্পর্কিত এলিমেন্ট দেখুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showPopoverTarget": {
+    "message": "popovertarget অ্যাট্রিবিউটের সাথে সম্পর্কিত এলিমেন্ট দেখুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceOpenPopover": {
+    "message": "এই পপ-ওভার খুলে রাখা বন্ধ করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceShowInterest": {
+    "message": "এই এলিমেন্টের উপর থেকে আগ্রহ বাতিল করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "এই এলিমেন্টটি বিজ্ঞাপন হিসেবে শনাক্ত করা হয়েছে"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | useSInTheConsoleToReferToThis": {
+    "message": "এই এলিমেন্ট বোঝাতে কনসোলে {PH1} ব্যবহার করুন"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | valueIsTooLargeToEdit": {
+    "message": "<এডিট করার পক্ষে অনেক বড় মান>"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | viewSourceCode": {
+    "message": "উৎস কোড দেখুন"
+  },
   "panels/elements/DOMTreeWidget.ts | pageDom": {
     "message": "পৃষ্ঠা DOM"
   },
@@ -7899,7 +8088,7 @@
     "message": "কম্পিউটেড স্টাইল সাইডবার লুকান"
   },
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
-    "message": "বর্তমান পেজে নোড খুঁজে পাওয়া যায়নি"
+    "message": "বর্তমান পৃষ্ঠায় নোড খুঁজে পাওয়া যায়নি"
   },
   "panels/elements/ElementsPanel.ts | openInElementsPanel": {
     "message": "এলিমেন্ট প্যানেলে খুলুন"
@@ -8069,6 +8258,9 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "ইন্সপেক্টরের মাধ্যমে"
   },
+  "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
+    "message": "Base"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS হিসেবে সব ঘোষণা কপি করুন"
   },
@@ -8089,6 +8281,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "ভ্যালু কপি করুন"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
+    "message": "Default"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox এডিটর খুলুন"
@@ -8125,6 +8320,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "position-area এডিটর খুলুন"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
+    "message": "Force position-try option"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} নির্দিষ্ট করা হয়নি"
@@ -8265,10 +8463,10 @@
     "message": "বিস্তারিত পরীক্ষার টুলটিপ"
   },
   "panels/elements/elements-meta.ts | doNotExtendGridLines": {
-    "message": "গ্রিড লাইন বাড়াবেন না"
+    "message": "গ্রিড লাইন বাড়াবেন না"
   },
   "panels/elements/elements-meta.ts | doNotShowGridNamedAreas": {
-    "message": "গ্রিড নাম অঞ্চল দেখানো হবে না"
+    "message": "গ্রিডের নামযুক্ত আছে এমন অঞ্চলগুলি দেখাবেন না"
   },
   "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
     "message": "গ্রিড ট্র্যাকের সাইজ দেখাবেন না"
@@ -8504,6 +8702,15 @@
   "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "ছোট মোবাইল"
   },
+  "panels/emulation/DeviceModeView.ts | presetSize": {
+    "message": "{PH1} – {PH2}px"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopied": {
+    "message": "Screenshot copied to clipboard"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
+    "message": "Couldn’t copy screenshot to clipboard"
+  },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ট্যাবলেট"
   },
@@ -8592,7 +8799,7 @@
     "message": "নেটওয়ার্ক অনুরোধ"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
-    "message": "AI অ্যাসিস্ট্যান্স ছদ্মবেশী মোড বা গেস্ট মোডে উপলভ্য নেই"
+    "message": "ছদ্মবেশী মোড বা গেস্ট মোডে AI অ্যাসিস্ট্যান্স উপলভ্য নেই"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "আপনি শুধু Google অ্যাকাউন্টের মাধ্যমে Chrome-এ সাইন-ইন করলে তবেই এই ফিচারটি উপলভ্য হবে"
@@ -8762,8 +8969,14 @@
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n,plural, =1{#টি এলিমেন্ট}one{#টি এলিমেন্ট}other{#টি এলিমেন্ট}}"
   },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
+    "message": "learn more"
+  },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{১টি ওয়েবসাইটকে কুকি অ্যাক্সেস করার অনুমতি দেওয়া হয়েছে}one{#টি ওয়েবসাইটকে কুকি অ্যাক্সেস করার অনুমতি দেওয়া হয়েছে}other{#টি ওয়েবসাইটকে কুকি অ্যাক্সেস করার অনুমতি দেওয়া হয়েছে}}"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
+    "message": "(opt-out: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "BLOB URL সম্পর্কিত সমস্যার সংখ্যা: {count}"
@@ -8808,7 +9021,7 @@
     "message": "অজানা"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
-    "message": "SharedArrayBuffer এমন কোনও প্রসঙ্গে ইন্সট্যানশিয়েট করা হয়েছে যা ক্রস-অরিজিন আলাদা করা নয়"
+    "message": "SharedArrayBuffer এমন একটি কনটেক্সটে ইনস্ট্যান্টিয়েট করা হয়েছে, যা ক্রস-অরিজিন আইসোলেটেড নয়"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
     "message": "ব্লক করা আছে"
@@ -10226,6 +10439,9 @@
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "নেটওয়ার্ক"
   },
+  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
+    "message": "পেজে navigator.connection.saveData দ্বারা রিপোর্ট করা মান ওভাররাইড করুন"
+  },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "ডিফল্ট ব্রাউজার ব্যবহার করুন"
   },
@@ -10260,7 +10476,7 @@
     "message": "কনসোল"
   },
   "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
-    "message": "স্যান্ডবক্সড iframe-এর পপ-আপ COOP পেজে নেভিগেট করতে পারে না"
+    "message": "iframe-এর স্যান্ডবক্সড পপ-আপ COOP পৃষ্ঠায় নেভিগেট করতে পারে না"
   },
   "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
     "message": "CORP \"same-origin\" নয়"
@@ -10422,7 +10638,7 @@
     "message": "(অজানা)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "অনুরোধ ইস্যু করা পৃষ্ঠাটি, অনুরোধ প্রসেস হওয়ার সময় আনলোড হওয়ায় এই সংক্রান্ত স্ট্যাটাস এখানে দেখানো যাবে না। আপনি নেটওয়ার্ক লগ ক্যাপচার করতে এবং অনুরোধ সংক্রান্ত সব বিবরণ দেখতে chrome://net-export ব্যবহার করতে পারেন।"
+    "message": "অনুরোধটি প্রসেস হওয়ার সময় সেটি ইস্যু করা পৃষ্ঠাটি আনলোড হয়ে যাওয়ায়, অনুরোধের স্ট্যাটাস এখানে দেখানো যাচ্ছে না। নেটওয়ার্ক লগ ক্যাপচার করতে এবং অনুরোধের সব বিবরণ দেখতে আপনি chrome://net-export ব্যবহার করতে পারেন।"
   },
   "panels/network/NetworkDataGridNode.ts | wasThrottled": {
     "message": "অনুরোধ সাময়িকভাবে বন্ধ করা হয়েছে ({PH1})"
@@ -11019,7 +11235,7 @@
     "message": "এই প্যাটার্নটি URLPattern হিসেবে পার্স করা যায়নি"
   },
   "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
-    "message": "RegExp গ্রুপকে অনুমতি দেওয়া হয় না"
+    "message": "RegExp গ্রুপের অনুমতি নেই"
   },
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
     "message": "প্যাটার্ন ইনপুট খালি রাখা যাবে না"
@@ -11067,7 +11283,7 @@
     "message": "ফিল্টার করা অনুরোধের কুকি দেখুন"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "এই সাইটে অন্য পার্টিশনে কুকিজ আছে, যেগুলো এই অনুরোধের সাথে পাঠানো হয়নি। {PH1}"
+    "message": "এই সাইটের অন্য পার্টিশনে কুকি আছে, যেগুলি এই অনুরোধের সাথে পাঠানো হয়নি। {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "এই অনুরোধে কোনও কুকি নেই"
@@ -11589,7 +11805,7 @@
     "message": "আরও জানুন"
   },
   "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
-    "message": "শুধু প্রভিশনাল হেডার আছে। কারণ মূল অনুরোধের হেডার সেভ করা থাকে না এমন স্থানীয় ক্যাশে থেকে এই অনুরোধ পরিবেশন করা হয়েছে, নেটওয়ার্কের মাধ্যমে সেটি পাঠানো হয়নি। অনুরোধের সম্পূর্ণ হেডার দেখতে ক্যাশে বন্ধ করে দিন।"
+    "message": "শুধু প্রভিশনাল হেডারগুলিই দেখা যাচ্ছে, কারণ এই অনুরোধটি নেটওয়ার্কের মাধ্যমে না পাঠিয়ে সরাসরি লোকাল ক্যাশে থেকে দেখানো হয়েছে। লোকাল ক্যাশেতে অনুরোধের আসল হেডারগুলি সেভ করা থাকে না। সম্পূর্ণ রিকোয়েস্ট হেডার দেখতে ক্যাশে বন্ধ করুন।"
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
     "message": "প্রভিশনাল হেডার দেখানো হয়েছে"
@@ -11661,7 +11877,7 @@
     "message": "একই সাইট থেকে রিসোর্স ও ডকুমেন্ট পরিবেশন করা হলে এই বিকল্পটি বেছে নিন"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
-    "message": "এই রিসোর্স সহ যেকোনও ওয়েবসাইট থেকে নিরাপত্তাজনিত কোনও আশঙ্কা না থাকলে, তবেই শুধু এই বিকল্প বেছে নিন"
+    "message": "এই রিসোর্স-সহ যেকোনও ওয়েবসাইট থেকে নিরাপত্তাজনিত কোনও আশঙ্কা না থাকলে, শুধু তবেই এই বিকল্প বেছে নিন"
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
     "message": "একটি স্যান্ডবক্স করা আইফ্রেম দ্বারা খোলা পপআপে ডকুমেন্টটি লোড করতে দেওয়া হয়নি কারণ এটি একটি ক্রস-অরিজিন ওপেন নীতি নির্দিষ্ট করেছে"
@@ -11864,8 +12080,17 @@
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
     "message": "আলাদা করা এলিমেন্ট এমন সব অবজেক্ট দেখায়, যেগুলি কোনও JS রেফারেন্সের কারণে মেমরিতে রয়ে গেছে"
   },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsList": {
+    "message": "আলাদা করা এলিমেন্টের তালিকা"
+  },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "আলাদা করা হয়েছে এমন এলিমেন্ট"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedNodes": {
+    "message": "আলাদা করা যায় এমন নোড"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | nodeSize": {
+    "message": "নোডের সংখ্যা"
   },
   "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
     "message": "আলাদা করা এলিমেন্ট পান"
@@ -12689,6 +12914,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "রিপ্লে বাতিল করুন"
   },
+  "panels/recorder/RecordingView.ts | code": {
+    "message": "কোড"
+  },
   "panels/recorder/RecordingView.ts | codeFormat": {
     "message": "কোড ফর্ম্যাট"
   },
@@ -12752,11 +12980,14 @@
   "panels/recorder/RecordingView.ts | showCode": {
     "message": "কোড দেখুন"
   },
+  "panels/recorder/RecordingView.ts | steps": {
+    "message": "ধাপ"
+  },
   "panels/recorder/RecordingView.ts | timeout": {
     "message": "সময় শেষ: {value} মিলি.সে."
   },
   "panels/recorder/RecordingView.ts | timeoutExplanation": {
-    "message": "রেকর্ডিং রিপ্লে করার সময় টাইমআউট সেটিং (মিলিসেকেন্ডে) প্রতিটি অ্যাকশনের জন্য প্রযোজ্য। যেমন- যদি একটি CSS বাছাইকারী দ্বারা চিহ্নিত একটি DOM এলিমেন্ট নির্দিষ্ট সময়সীমার মধ্যে পৃষ্ঠায় উপস্থিত না হয় তাহলে রিপ্লেতে সমস্যা হয়।"
+    "message": "রেকর্ডিং রিপ্লে করার সময়, টাইমআউট সেটিংস (মিলিসেকেন্ডে) প্রতিটি অ্যাকশনের ক্ষেত্রেই প্রযোজ্য হবে। যেমন, CSS বাছাইকারী দ্বারা চিহ্নিত কোনও DOM এলিমেন্ট নির্দিষ্ট সময়ের মধ্যে পৃষ্ঠায় দেখে না গেলে, সমস্যার কারণে রিপ্লেটি চলবে না।"
   },
   "panels/recorder/RecordingView.ts | timeoutLabel": {
     "message": "সময় সমাপ্ত"
@@ -13053,7 +13284,7 @@
     "message": "অ্যাক্টিভ মিক্সড কন্টেন্ট"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "এই পৃষ্ঠার সব প্রপার্টি সুরক্ষিতভাবে পরিবেশন করা হয়।"
+    "message": "এই পৃষ্ঠার সব রিসোর্স নিরাপদে দেখানো হয়"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "সব রিসোর্স নিরাপদে পাঠানো হয়েছে"
@@ -13071,7 +13302,7 @@
     "message": "সার্টিফিকেট ট্রান্সপারেন্সি"
   },
   "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
-    "message": "এই সাইট জাল বা প্রতারণামূলক হতে পারে বলে Chrome শনাক্ত করেছে।"
+    "message": "এই সাইট জাল বা প্রতারণামূলক হতে পারে বলে Chrome শনাক্ত করেছে"
   },
   "panels/security/SecurityPanel.ts | cipher": {
     "message": "সাইফার"
@@ -13098,10 +13329,10 @@
     "message": "পূর্ণ বিবরণ লুকান"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "যদি আপনার মনে হয় যে এটি ভুল করে দেখানো হয়েছে তাহলে https://g.co/chrome/lookalike-warnings লিঙ্কে যান।"
+    "message": "যদি আপনার মনে হয় যে এটি ভুল করে দেখানো হয়েছে তাহলে https://g.co/chrome/lookalike-warnings লিঙ্কে যান"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "যদি আপনার মনে হয় যে এটি ভুল করে দেখানো হয়েছে তাহলে https://g.co/chrome/lookalike-warnings লিঙ্কে যান।"
+    "message": "যদি আপনার মনে হয় যে এটি ভুল করে দেখানো হয়েছে তাহলে https://g.co/chrome/lookalike-warnings লিঙ্কে যান"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "তথ্য"
@@ -13134,7 +13365,7 @@
     "message": "(প্রযোজ্য নয়)"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
-    "message": "এই উৎসের জন্য নিরাপত্তা সংক্রান্ত কোনও বিবরণ জানা নেই।"
+    "message": "এই অরিজিনের জন্য কোনও নিরাপত্তা সংক্রান্ত বিবরণ উপলভ্য নেই"
   },
   "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "নিরাপত্তা সংক্রান্ত কোনও তথ্য নেই"
@@ -13167,10 +13398,10 @@
     "message": "'সর্বজনীন কী' পিন করা হয়নি"
   },
   "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
-    "message": "স্থানীয় রুট সার্টিফিকেট পাবলিক-কী-পিনিং বাইপাস করে দিয়েছে।"
+    "message": "স্থানীয় মূল সার্টিফিকেট সর্বজনীন-কী-পিনিং বাইপাস করেছে"
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "HTTP রিসোর্সের জন্য অনুরোধ রেকর্ড করতে পৃষ্ঠাটি আবার লোড করুন।"
+    "message": "HTTP রিসোর্সের জন্য অনুরোধ রেকর্ড করতে পৃষ্ঠাটি আবার লোড করুন"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "রিসোর্স"
@@ -13224,73 +13455,73 @@
     "message": "Subject Alternative Name নেই"
   },
   "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
-    "message": "এই সাইটের জন্য ব্যবহৃত সার্টিফিকেট চেনে SHA-1-এর মাধ্যমে স্বাক্ষরিত একটি সার্টিফিকেট রয়েছে।"
+    "message": "এই সাইটের সার্টিফিকেট চেনে SHA-1 ব্যবহার করে স্বাক্ষর করা সার্টিফিকেট আছে"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "এই সাইটের সার্টিফিকেটে ডোমেনের নাম বা আইপি অ্যাড্রেস সহ কোনও Subject Alternative Name এক্সটেনশন নেই।"
+    "message": "এই সাইটের সার্টিফিকেটে ডোমেনের নাম বা IP অ্যাড্রেস সহ কোনও Subject Alternative Name এক্সটেনশন নেই"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
-    "message": "এই সাইটের সার্টিফিকেটের মেয়াদ ৪৮ ঘণ্টার মধ্যে শেষ হয়ে যাচ্ছে, সেটি রিনিউ করতে হবে।"
+    "message": "এই সাইটের সার্টিফিকেটের মেয়াদ ৪৮ ঘণ্টারও কম সময়ের মধ্যে শেষ হয়ে যাবে এবং এটি রিনিউ করতে হবে"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
-    "message": "{PH1}, {PH2} এবং {PH3} ব্যবহার করে এই সাইটে এই কানেকশন এনক্রিপ্ট ও যাচাই করা হয়েছে।"
+    "message": "{PH1}, {PH2} ও {PH3} ব্যবহার করে এই সাইটের কানেকশন এনক্রিপ্ট ও যাচাই করা হয়েছে"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "এই সাইটের কানেকশন {PH1}-এর ইস্যু করা একটি সঠিক, বিশ্বাসযোগ্য সার্ভার সার্টিফিকেট ব্যবহার করছে।"
+    "message": "এই সাইটের কানেকশন {PH1}-এর ইস্যু করা সঠিক, বিশ্বস্ত সার্ভার সার্টিফিকেট ব্যবহার করছে"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
-    "message": "উপরে উল্লিখিত নিরাপত্তার বিবরণ প্রথম পরীক্ষিত প্রতিক্রিয়া থেকে দেখানো হচ্ছে।"
+    "message": "উপরে উল্লিখিত নিরাপত্তার বিবরণ প্রথম পরীক্ষিত উত্তর থেকে দেখানো হচ্ছে"
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "সার্ভার সিগনেচার SHA-1 ব্যবহার করে, যেটি পুরনো হয়ে গেছে। এর পরিবর্তে, SHA-2 সিগনেচার অ্যালগরিদম চালু করুন। (মনে রাখবেন, সার্টিফিকেটের সিগনেচার এটির থেকে আলাদা হয়।)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "এই পৃষ্ঠাতে কোনও সমস্যা আছে।"
+    "message": "এটি সমস্যা সংক্রান্ত পেজ"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
-    "message": "এটি একটি নন-HTTPS নিরাপদ উৎস।"
+    "message": "এই অরিজিন হল সুরক্ষিত হলেও সেটি HTTPS নয়"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "এই পৃষ্ঠাটি নন-HTTPS নিরাপদ উৎস থেকে দেখানো হচ্ছে।"
+    "message": "এই পৃষ্ঠার অরিজিন সুরক্ষিত হলেও সেটি HTTPS নয়"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "এই পেজে একটি ফর্ম রয়েছে যার action অ্যাট্রিবিউট সুরক্ষিত নয়।"
+    "message": "এই পৃষ্ঠায় অসুরক্ষিত action অ্যাট্রিবিউট-সহ একটি ফর্ম রয়েছে"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "এই পৃষ্ঠায় HTTP রিসোর্স আছে।"
+    "message": "এই পৃষ্ঠায় HTTP রিসোর্স অন্তর্ভুক্ত আছে"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "সার্টিফিকেটে সমস্যা আছে এমন কিছু রিসোর্স এই পৃষ্ঠায় আছে।"
+    "message": "সার্টিফিকেটে সমস্যা আছে এমন কিছু রিসোর্স এই পৃষ্ঠায় আছে"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "এই পৃষ্ঠাটি বিপদজনক (Google Safe Browsing থেকে ফ্ল্যাগ করা হয়েছে)।"
+    "message": "এই পৃষ্ঠাটি বিপজ্জনক (Google Safe Browsing-এর মাধ্যমে ফ্ল্যাগ করা হয়েছে)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "এই পৃষ্ঠাটি সুরক্ষিত নয় (HTTP এনক্রিপ্ট করা নেই)।"
+    "message": "এই পৃষ্ঠাটি সুরক্ষিত নয় (এনক্রিপ্ট না করা HTTP)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "এই পৃষ্ঠাটি সন্দেহজনক"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "এই পৃষ্ঠাটি সন্দেহজনক (Chrome ফ্ল্যাগ করেছে)।"
+    "message": "এই পৃষ্ঠাটি সন্দেহজনক (Chrome-এর মাধ্যমে ফ্ল্যাগ করা হয়েছে)"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "এই অনুরোধ Chrome-এর সার্টিফিকেট ট্রান্সপারেন্সি নীতি মেনে চলে।"
+    "message": "এই অনুরোধ Chrome-এর সার্টিফিকেট ট্রান্সপারেন্সি নীতি মেনে চলে"
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "এই অনুরোধ Chrome-এর সার্টিফিকেট ট্রান্সপারেন্সি নীতি মেনে চলে না।"
+    "message": "এই অনুরোধ Chrome-এর সার্টিফিকেট ট্রান্সপারেন্সি নীতি মেনে চলে না"
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "এই উত্তরটি ক্যাশে থেকে লোড করা হয়েছে। কিছু নিরাপত্তা সংক্রান্ত বিবরণ বাদ যেতে পারে।"
   },
   "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
-    "message": "এই সাইটের জন্য কোনও সঠিক, বিশ্বাসযোগ্য সার্টিফিকেট ({PH1}) নেই।"
+    "message": "এই সাইটে সঠিক, বিশ্বস্ত সার্টিফিকেট ({PH1}) নেই"
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "এই সাইটের হোস্টনেম {PH1}-এর মতো মনে হচ্ছে। কখনও ডোমেন নামের মধ্যে খুব ছোট বা সহজে দেখা যায় না এমন পরিবর্তন করে হ্যাকাররা সাইট নকল করে।"
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "এই পেজের স্ট্যাটাস দেখতে g.co/safebrowsingstatus লিঙ্কে যান।"
+    "message": "এই পৃষ্ঠার স্ট্যাটাস দেখতে g.co/safebrowsingstatus লিঙ্কে যান"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "অজানা"
@@ -13317,16 +13548,16 @@
     "message": "নেটওয়ার্ক প্যানেলে অনুরোধ দেখুন"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "এই সাইট রান করার জন্য আপনি সম্প্রতি সার্টিফিকেট সমস্যা (যেমন স্ক্রিপ্ট বা iframes) সহ লোড হওয়া কন্টেন্ট অনুমোদন করেছেন।"
+    "message": "আপনি সম্প্রতি এই সাইটে সার্টিফিকেট সংক্রান্ত সমস্যাসহ লোড করা কন্টেন্ট (যেমন স্ক্রিপ্ট বা iframe) চালানোর অনুমতি দিয়েছেন"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "আপনি সম্প্রতি এই সাইটে অসুরক্ষিত কন্টেন্ট (স্ক্রিপ্ট বা iframe) রান করানোর অনুমতি দিয়েছেন।"
+    "message": "আপনি সম্প্রতি এই সাইটে অসুরক্ষিত কন্টেন্ট (যেমন স্ক্রিপ্ট বা iframe) চালানোর অনুমতি দিয়েছেন"
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "এই অরিজিনের সাথে আপনার কানেকশন সুরক্ষিত নয়।"
+    "message": "এই অরিজিনের সাথে আপনার কানেকশন সুরক্ষিত নয়"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "আপনার পৃষ্ঠা নিরাপদ নয় এমন রিসোর্স অনুরোধ করেছে, তাই সেগুলি ব্লক করা হয়েছে।"
+    "message": "আপনার পৃষ্ঠা অসুরক্ষিত রিসোর্সের জন্য অনুরোধ করেছে যা ব্লক করা হয়েছে"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "মূল উৎস"
@@ -13674,13 +13905,13 @@
     "message": "কোডের সাজেশন জেনারেট করতে আপনার কনসোল ইনপুট, বর্তমানে পরীক্ষিত CSS, কনসোল সেশনের ইতিহাস এবং খোলা ফাইলের কন্টেন্ট Google-এর সাথে শেয়ার করা হয়। এই ফিচার উন্নত করার জন্য এই ডেটা হিউম্যান রিভিউয়ার দেখতে পারেন।"
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "কোডের সাজেশন জেনারেট করতে আপনার কনসোল ইনপুট, বর্তমানে পরীক্ষিত CSS, কনসোল সেশনের ইতিহাস এবং খোলা ফাইলের কন্টেন্ট Google-এর সাথে শেয়ার করা হয়। এই ডেটা Google's AI মডেল উন্নত করতে ব্যবহার করা হবে না। আপনার সংস্থা এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
+    "message": "কোডের সাজেশন জেনারেট করতে আপনার কনসোল ইনপুট, বর্তমানে পরীক্ষিত CSS, কনসোল সেশনের ইতিহাস এবং খোলা ফাইলের কন্টেন্ট Google-এর সাথে শেয়ার করা হয়। এই ডেটা Google-এর AI মডেল উন্নত করতে ব্যবহার করা হবে না। আপনার প্রতিষ্ঠান এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "ব্যাখ্যা তৈরি করার জন্য কনসোল মেসেজ, সংশ্লিষ্ট স্ট্যাক ট্রেস, সম্পর্কিত সোর্স কোড ও সংশ্লিষ্ট নেটওয়ার্ক হেডার Google-এ পাঠানো হয়। এই ফিচার উন্নত করার জন্য এই ডেটা হিউম্যান রিভিউয়ার দেখতে পারেন।"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "ব্যাখ্যা তৈরি করার জন্য কনসোল মেসেজ, সংশ্লিষ্ট স্ট্যাক ট্রেস, সম্পর্কিত সোর্স কোড ও সংশ্লিষ্ট নেটওয়ার্ক হেডার Google-এ পাঠানো হয়। এই ডেটা Google-এর AI মডেল উন্নত করতে ব্যবহার করা হবে না। আপনার প্রতিষ্ঠান এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
+    "message": "ব্যাখ্যা তৈরি করার জন্য কনসোল মেসেজ, সংশ্লিষ্ট স্ট্যাক ট্রেস, এই ধরনের সোর্স কোড ও সংশ্লিষ্ট নেটওয়ার্ক হেডার Google-এ পাঠানো হয়। এই ডেটা Google-এর AI মডেল উন্নত করতে ব্যবহার করা হবে না। আপনার প্রতিষ্ঠান এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "আপনার এলাকার উপর ভিত্তি করে ডেটা সংগ্রহ করার কাজ থেকে Google নিজেকে সরিয়ে নিতে পারে"
@@ -13716,7 +13947,7 @@
     "message": "অ্যানোটেশনের সাজেশন তৈরি করতে আপনার পারফর্ম্যান্স ট্রেস Google-এ পাঠানো হয়। এই ফিচার উন্নত করার জন্য এই ডেটা হিউম্যান রিভিউয়ার দেখতে পারেন।"
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "অ্যানোটেশনের সাজেশন তৈরি করতে আপনার পারফর্ম্যান্স ট্রেস Google-এ পাঠানো হয়। এই ডেটা Google's AI মডেল উন্নত করতে ব্যবহার করা হবে না। আপনার সংস্থা এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
+    "message": "অ্যানোটেশনের সাজেশন তৈরি করতে আপনার পারফর্ম্যান্স ট্রেস Google-এ পাঠানো হয়। এই ডেটা Google-এর AI মডেল উন্নত করতে ব্যবহার করা হবে না। আপনার প্রতিষ্ঠান এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
   },
   "panels/settings/AISettingsTab.ts | geoRestricted": {
     "message": "এই ফিচারটি আপনার অঞ্চলে উপলভ্য নেই"
@@ -13734,7 +13965,7 @@
     "message": "আরও জানুন"
   },
   "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
-    "message": "AI অ্যাসিস্ট্যান্স ছদ্মবেশী মোড বা গেস্ট মোডে উপলভ্য নেই"
+    "message": "ছদ্মবেশী মোড বা গেস্ট মোডে AI অ্যাসিস্ট্যান্স উপলভ্য নেই"
   },
   "panels/settings/AISettingsTab.ts | notLoggedIn": {
     "message": "আপনি শুধু Google অ্যাকাউন্টের মাধ্যমে Chrome-এ সাইন-ইন করলে তবেই এই ফিচারটি উপলভ্য হবে"
@@ -13755,7 +13986,7 @@
     "message": "এই ফিচার, Google-এ প্রাসঙ্গিক ডেটা পাঠায়। Google তার প্রোডাক্ট ও পরিষেবা উন্নত করার জন্য এই ডেটা ও মতামত সংগ্রহ করে এবং হিউম্যান রিভিউয়ারদের সাহায্যে এই কাজ করা হয়। কোনও সংবেদনশীল বা ব্যক্তিগত তথ্য শেয়ার করবেন না।"
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogleNoLogging": {
-    "message": "AI উন্নত করার জন্য হিউম্যান রিভিউয়ার আপনার কন্টেন্ট ব্যবহার করবেন না। আপনার প্রতিষ্ঠান এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারবে।"
+    "message": "AI উন্নত করার জন্য হিউম্যান রিভিউয়ার আপনার কন্টেন্ট ব্যবহার করবেন না। আপনার প্রতিষ্ঠান এই সেটিংস যেকোনও সময় পরিবর্তন করতে পারে।"
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "কম দেখুন"
@@ -14175,7 +14406,7 @@
     "message": "{PH1}: {PH2} অবশ্যই ০ থেকে {PH3}-এর মধ্যে একটি পূর্ণসংখ্যা হতে হবে"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
-    "message": "{PH1}: উপরের ও নিচের ইনসেট ডিভাইসের উচ্চতার চেয়ে বেশি হলে চলবে না"
+    "message": "{PH1}: উপরের ও নিচের ইনসেট, ডিভাইসের উচ্চতার চেয়ে বেশি হলে চলবে না"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "ইউজার এজেন্ট স্ট্রিং"
@@ -14403,7 +14634,7 @@
     "message": "আরও জানুন: ব্রেকপয়েন্টের ধরন"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
-    "message": "কনসোলে একটি মেসেজ লগ করুন, ব্রেক করবেন না"
+    "message": "কনসোলে মেসেজ লগ করুন, ব্রেক করবেন না"
   },
   "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "লগ মেসেজ, যেমন. 'x is', x"
@@ -14760,7 +14991,7 @@
     "message": "ওই লাইনে যেতে, একটি সংখ্যা লিখুন"
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
-    "message": "একবার মুছে দিলে এই তথ্য আর ফিরে পাবেন না"
+    "message": "একবার মুছে ফেললে আর আগের অবস্থায় ফিরিয়ে আনা যাবে না"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "ওয়ার্কস্পেস থেকে ‘{PH1}’ সরাতে চান?"
@@ -14853,7 +15084,7 @@
     "message": "কন্টেন্ট ওভাররাইড করুন"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "‘{PH1}’ সোর্স থেকে ম্যাপ করা একটি ফাইল এবং এটি ওভাররাইড করা যাবে না"
+    "message": "‘{PH1}’ হল সোর্স থেকে ম্যাপ করা ফাইল এবং এটি ওভাররাইড করা যাবে না"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
     "message": "পরিবর্তে ‘{PH1}’ ওভাররাইড করতে চান?"
@@ -14975,6 +15206,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "স্ট্রিংয়ের কন্টেন্ট কপি করুন"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ডিবাগার সাইডবার লুকানো হয়েছে"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ডিবাগার সাইডবার দেখানো হচ্ছে"
+  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "ওয়ার্কস্পেস ফোল্ডার টেনে এনে এখানে রাখুন"
   },
@@ -14995,6 +15232,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "আরও বিকল্প"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "নেভিগেটর সাইডবার লুকানো হয়েছে"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "নেভিগেটর সাইডবার দেখানো হচ্ছে"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "সোর্স প্যানেলে খুলুন"
@@ -15174,7 +15417,7 @@
     "message": "এসিঙ্ক স্ট্যাক ট্রেস বন্ধ করুন"
   },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
-    "message": "ব্রেকপয়েন্ট ট্রিগার করার সময় সোর্স প্যানেলে ফোকাস করবেন না"
+    "message": "ব্রেকপয়েন্ট ট্রিগার করার সময় সোর্স প্যানেলে ফোকাস করবেন না"
   },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "অটোমেটিক পূরণের বিকল্প বন্ধ করুন"
@@ -15210,28 +15453,28 @@
     "message": "ডিবাগ করার সময় ভেরিয়েবলের মান ইনলাইনে দেখান"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
-    "message": "ছোট সাইজের সোর্সকে অটোমেটিক সুন্দর প্রিন্টের ফর্ম্যাটিং করবেন না"
+    "message": "ছোট করা সোর্সগুলি অটোমেটিক সুন্দর প্রিন্ট করবেন না"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "সাইডবারে ফাইল অটোমেটিক দেখাবেন না"
+    "message": "সাইডবারে অটোমেটিক ফাইল দেখাবেন না"
   },
   "panels/sources/sources-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "এসিঙ্ক স্ট্যাক ট্রেস ক্যাপচার করবেন না"
+    "message": "অ্যাসিঙ্ক স্ট্যাক ট্রেস ক্যাপচার করবেন না"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
-    "message": "ইন্ডেন্টেশন শনাক্ত করবে না"
+    "message": "ইন্ডেন্টেশন শনাক্ত করবেন না"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
     "message": "ভেরিয়েবলের মান ইনলাইনে দেখাবেন না"
   },
   "panels/sources/sources-meta.ts | doNotPauseOnExceptions": {
-    "message": "এক্সেপ্রেশনের ক্ষেত্রে পজ করার দরকার নেই"
+    "message": "এক্সেপশনে পজ করবেন না"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "বেনামী ও কন্টেন্ট স্ক্রিপ্টে সার্চ করবেন না"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "হোয়াইটস্পেস অক্ষর দেখতে চাই না"
+    "message": "হোয়াইটস্পেস অক্ষর দেখাবেন না"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "ব্রেকপয়েন্ট ট্রিগার করার সময় সোর্স প্যানেলে ফোকাস করুন"
@@ -17303,8 +17546,8 @@
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
     "message": "কলব্যাক বাফার সাইজ"
   },
-  "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "কলব্যাক ইন্টার্ভেল"
+  "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
+    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "বর্তমান সময়"
@@ -18227,6 +18470,9 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "স্থানাঙ্ক"
   },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
+    "message": "{propertyName} সরান: {propertyValue}"
+  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "লজিক্যাল"
   },
@@ -18241,6 +18487,9 @@
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | positionAreaGridDescription": {
     "message": "নেভিগেট করতে তিরচিহ্ন কী, বেছে নিতে Space বা Enter এবং রেঞ্জ বেছে নিতে Shift + তিরচিহ্ন কী ব্যবহার করুন"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | selectButton": {
+    "message": "{propertyName} যোগ করুন: {propertyValue}"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "জাভাস্ক্রিপ্ট অবজেক্ট হিসেবে দেখুন"

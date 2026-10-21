@@ -219,16 +219,16 @@
     "message": "Профиль {PH1}"
   },
   "core/sdk/CSSStyleSheetHeader.ts | couldNotFindTheOriginalStyle": {
-    "message": "Түпнуска стилдер жадыбалы табылган жок"
+    "message": "Couldn’t find the original style sheet"
   },
   "core/sdk/CSSStyleSheetHeader.ts | couldNotRetrieveSourceStyles": {
-    "message": "Булактын стилдери алынган жок"
+    "message": "Couldn’t retrieve source styles"
   },
   "core/sdk/ChildTargetManager.ts | main": {
     "message": "Негизги"
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
-    "message": "{PH1} ({PH2}) үчүн мазмун жүктөлбөй койду"
+    "message": "Couldn’t load content for {PH1} ({PH2})"
   },
   "core/sdk/Connections.ts | websocketConnectionFailed": {
     "message": "WebSocket ажыратылды. Chrome'до --remote-allow-origins учурдагы баштапкы булакка уруксат берилерин текшериңиз."
@@ -348,19 +348,19 @@
     "message": "Бул \"Set-Cookie\" аталышы аркылуу cookie файлын түзүү аракети бөгөттөлгөн, анткени анын аталышында \"__Secure-\" же \"__Host-\" префикси камтылган, ошондой эле https://tools.ietf.org/html/draft-west-cookie-prefixes-05 сайтында белгиленгендей, бул префикстерге карата колдонулган cookie файлдарына байланыштуу кошумча эрежелерди бузган"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "Бул \"Set-Cookie\" аталышы аркылуу cookie файлын тууралоо аракети бөгөттөлгөн, анткени ал коопсуз туташуу аркылуу жөнөтүлгөн эмес жана \"Secure\" атрибуту бар cookie файлын кайрадан жазып коюшу мүмкүн эле"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it wasn’t sent over a secure connection and would have overwritten a cookie with the \"Secure\" attribute"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "Бул \"Set-Cookie\" аталышы аркылуу cookie файлын тууралоо аракети бөгөттөлгөн, анткени анда \"SameSite=None\" атрибуту болгону менен, \"SameSite=None\" атрибутун колдонуу үчүн талап кылынган \"Secure\" атрибуту жок"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"SameSite=None\" attribute but didn’t have the \"Secure\" attribute, which is required in order to use \"SameSite=None\""
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "Бул \"Set-Cookie\" аталышы аркылуу cookie файлын түзүү аракети бөгөттөлгөн, анткени ал \"{PH1}\" атрибутуна ээ болуп, бирок жогорку деңгээлдеги багыт аныктоого жооп бербеген түрдүү сайттардагы жооптон келип чыккан"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which wasn’t the response to a top-level navigation"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "Бул \"Set-Cookie\" аталышында \"SameSite\" атрибуту көрсөтүлгөн эмес жана демейки боюнча \"SameSite=Lax\" деп коюлган. Ал жогорку деңгээлдеги багыт алууга жооп бербеген түрдүү сайттардын жообунан алынгандыгы үчүн бөгөттөлгөн. Түрдүү сайттарда колдонуу үчүн \"Set-Cookie\" аталышы \"SameSite=None\" менен орнотулушу керек болчу."
+    "message": "This \"Set-Cookie\" header didn’t specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which wasn’t the response to a top-level navigation. The \"Set-Cookie\" header had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "Бул \"Set-Cookie\" аталышы аркылуу cookie файлын түзүү аракети бөгөттөлгөн, анткени ал \"Secure\" атрибутка ээ болуп, бирок кооптуу туташуу аркылуу алынды"
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"Secure\" attribute but wasn’t received over a secure connection"
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Сурамдын URL дарегинин домени cookie файлынын доменине дал келбегендиктен жана ал cookie файлынын домендик атрибут маанисинин субдомени болгондуктан, бул cookie файлы бөгөттөлгөн"
@@ -384,28 +384,28 @@
     "message": "Бул cookie файлы өтө чоң болгондуктан улам бөгөттөлдү. Аталышы менен мааниси биригип, 4096 символдон ашпашы керек."
   },
   "core/sdk/NetworkRequest.ts | notOnPath": {
-    "message": "Бул cookie файлы бөгөттөлгөн, анткени анын жолу сурам URL дарегинин негизги каталогуна дал келбейт"
+    "message": "This cookie was blocked because its path wasn’t an exact match for or a superdirectory of the request URL’s path"
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
-    "message": "Бул cookie файлы бөгөттөлгөн, анткени анда \"SameSite=Lax\" атрибуту болуп, бирок сурам башка вебсайттан жөнөтүлгөн жана ал жогорку деңгээлдеги багыт аныктоо тарабынан түзүлгөн эмес"
+    "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute and the request was made from a different site and wasn’t initiated by a top-level navigation"
   },
   "core/sdk/NetworkRequest.ts | sameSiteNoneInsecure": {
-    "message": "Бул cookie файлы \"SameSite=None\" атрибутуна ээ болгону менен, \"Secure\" деп белгиленбегендиги үчүн бөгөттөлгөн. SameSite чектөөлөрү жок cookie файлдары \"Secure\" деп белгиленип, коопсуз туташуу аркылуу жөнөтүлүшү керек."
+    "message": "This cookie was blocked because it had the \"SameSite=None\" attribute but wasn’t marked \"Secure\". Cookies without SameSite restrictions must be marked \"Secure\" and sent over a secure connection."
   },
   "core/sdk/NetworkRequest.ts | sameSiteStrict": {
     "message": "Бул cookie файлы бөгөттөлгөн, анткени анда \"SameSite=Strict\" атрибуту болгон жана сурам башка сайттан аткарылган. Бул башка сайттардын жогорку деңгээлдеги багыт алуу сурамдарын камтыйт."
   },
   "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
-    "message": "Бул cookie файлы сакталганда \"SameSite\" атрибуту көрсөтүлбөгөндүктөн, демейки мааниси \"SameSite=Lax\" деп коюлган. Сурам башка сайттан жөнөтүлүп, ал жогорку деңгээлдеги багыт аныктоо тарабынан түзүлбөгөндүктөн, бул cookie файлы бөгөттөлгөн. Түрдүү сайттарда колдонуу үчүн бул cookie файл \"SameSite=None\" менен орнотулушу керек болчу."
+    "message": "This cookie didn’t specify a \"SameSite\" attribute when it was stored and was defaulted to \"SameSite=Lax\", and was blocked because the request was made from a different site and wasn’t initiated by a top-level navigation. The cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
-    "message": "Бул cookie файлы бөгөттөлгөн, анткени анда \"Secure\" атрибуту бар жана туташуу кооптуу"
+    "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection wasn’t secure"
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
     "message": "\"Set-Cookie\" аталышы URL'ден жооп катарында четке кагылат: {PH1}. Аталышы менен мааниси биригип, 4096 символдон ашпашы керек."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
-    "message": "Бул туташуунун схемасына cookie файлдарын сактоого уруксат берилбейт"
+    "message": "The scheme of this connection isn’t allowed to store cookies"
   },
   "core/sdk/NetworkRequest.ts | thirdPartyPhaseout": {
     "message": "Бул cookie файлы Chrome flag параметрлеринен же серепчинин конфигурациясынан улам бөгөттөлгөн. Кеңири маалыматты Маселер панелинен табууга болот."
@@ -434,8 +434,14 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Мүчүлүштүктөрдү оңдогучта тындырылды"
   },
+  "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
+    "message": "Can’t load resource for an unavailable cross-origin frame"
+  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Текшерилген баракча кайра жүктөлгөндүктөн, жүктөө аракети жокко чыгарылды"
+  },
+  "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
+    "message": "Can’t load http(s) resource without a target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Таржымалды жүктөө катасы"
@@ -675,25 +681,25 @@
     "message": "WebP форматын өчүрүү"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
-    "message": "Калкып чыгуучу терезелер үчүн DevTools автоматтык түрдө ачылбасын"
+    "message": "Don’t auto-open DevTools for popups"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAFocusedPage": {
-    "message": "Тандалган барактар эмуляцияланбасын"
+    "message": "Don’t emulate a focused page"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAnyVisionDeficiency": {
-    "message": "Көрүү жетишсиздиги эмуляцияланбасын"
+    "message": "Don’t emulate any vision deficiency"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
-    "message": "CSS {PH1} атрибуту эмуляцияланбасын"
+    "message": "Don’t emulate CSS {PH1}"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCssMediaType": {
-    "message": "CSS медиа түрү эмуляцияланбасын"
+    "message": "Don’t emulate CSS media type"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateOsTextScale": {
-    "message": "OS текстин масштабдоо эмуляцияланбасын"
+    "message": "Don’t emulate OS text scale"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotHighlightAdFrames": {
-    "message": "Жарнама фреймдери бөлүп көрсөтүлбөсүн"
+    "message": "Don’t highlight ad frames"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAFocusedPage": {
     "message": "Тандалган баракты эмуляциялоо"
@@ -1334,6 +1340,9 @@
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
     "message": "DtlsSrtpKeyAgreement чектөөсү өчүрүлдү. Бул чектөө үчүн true маанисин көрсөттүңүз. Анын эч кандай таасири жок, бирок тактык үчүн бул чектөөнү өчүрүп койсоңуз болот."
   },
+  "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
+    "message": "RTCPeerConnection.createDTMFSender() is deprecated and will be removed. Please use RTCRtpSender.dtmf instead."
+  },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "Кайра чалууга негизделген getStats() жактырылган жок жана өчүрүлөт. Анын ордуна мүнөздөмөлөргө ылайыктуу getStats() функциясын колдонуңуз."
   },
@@ -1341,7 +1350,7 @@
     "message": "Range.expand() жактырылган жок. Анын ордуна Selection.modify() объектин колдонуңуз."
   },
   "generated/Deprecation.ts | RelatedWebsiteSets": {
-    "message": "Related Website Sets мындан ары колдоого алынбайт жана өчүрүлөт. Кеңири маалымат алуу үчүн https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ баракчасына өтүңүз."
+    "message": "Related Website Sets эскирди, андыктан өчүрүлөт. Кеңири маалымат алуу үчүн https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ баракчасына өтүңүз."
   },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
     "message": "URL даректеринде жалгаштырылган эсептик дайындар камтылган (мисалы, https://user:pass@host/) кошумча булактардын сурамдары бөгөттөлдү."
@@ -1556,6 +1565,9 @@
   "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
     "message": "Энбелгинин элементтери"
   },
+  "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
+    "message": "Web permissions best practices"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Олуттуу жарнама кийлигишүүлөрүнө чара көрүү"
   },
@@ -1572,7 +1584,7 @@
     "message": "Жакшыртуулар"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
-    "message": "Баракчада ката кетти: барак туура иштебей жатат"
+    "message": "A page error issue: the page isn’t working correctly"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "Барактагы каталар"
@@ -2058,7 +2070,7 @@
     "message": "Калыптын жылуу кластери @ {PH1}"
   },
   "models/trace/insights/CLSCulprits.ts | noCulprits": {
-    "message": "Калыпты жылдырган тарап аныкталган жок"
+    "message": "Couldn’t detect any layout shift culprits"
   },
   "models/trace/insights/CLSCulprits.ts | noLayoutShifts": {
     "message": "Калып жылдырылган жок"
@@ -2570,6 +2582,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | politeness": {
     "message": "Сыпайылык"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInA11yTree": {
+    "message": "Reveal in Accessibility tree"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInElements": {
+    "message": "Элементтер панелинде көрсөтүү"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "Убакыт"
   },
@@ -2649,10 +2667,10 @@
     "message": "Элемент inert"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsNotRendered": {
-    "message": "Элемент түзүлгөн жок"
+    "message": "Element isn’t rendered"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsNotVisible": {
-    "message": "Элемент көрүнбөй турат"
+    "message": "Element isn’t visible"
   },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsPlaceholder": {
     "message": "Элемент {PH1}"
@@ -3080,14 +3098,11 @@
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Сүйлөшүүңүздү баштоо үчүн жогоруда сунушталган кеңештердин бирин колдонсоңуз да болот"
   },
-  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
-    "message": "Иштеп чыгуучунун куралдарындагы ЖИ жөнүндө кеңири маалымат алыңыз"
-  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Иштеп чыгуучунун куралдарында тандалган контексттик объектти көрсөтүү"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notAvailableInIncognitoMode": {
-    "message": "ЖИ жардам Жашыруун режимде же Конок режиминде жеткиликтүү эмес"
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
     "message": "Бул функция Chrome'го Google аккаунтуңуз менен киргенде гана жеткиликтүү"
@@ -3147,7 +3162,7 @@
     "message": "Чат билдирүүлөрү, Иштеп чыгуучунун куралдарынын панелдери жана Web API'лери аркылуу бул сайт үчүн жеткиликтүү маалымат жана тармак сурамдары, файлдар жана майнаптуулук маалыматы сыяктуу сиз тандаган нерселер Google'га жөнөтүлүп, бул функцияны жакшыртуу максатында аларды адистер карап чыгышы мүмкүн. Бул ЖИ функциясы сыноодон өтүп жаткандыктан, кээде туура эмес иштеши мүмкүн."
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
-    "message": "Чат билдирүүлөрү, Иштеп чыгуучунун куралдарынын панелдери жана Web API'лери аркылуу бул сайтта жеткиликтүү болгон маалымат жана тармак сурамдары, файлдар жана майнаптуулук маалыматы сыяктуу сиз тандаган нерселер Google'га жөнөтүлөт. Бул функцияга тапшырылган жана ал тарабынан түзүлгөн контент Google'дун ЖИ үлгүлөрүн жакшыртуу үчүн колдонулбайт. Бул ЖИ функциясы сыноодон өтүп жаткандыктан, кээде туура эмес иштеши мүмкүн."
+    "message": "Chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content submitted to and generated by this feature won’t be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right."
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
     "message": "ЖИ жардамчысы жакшырды"
@@ -3165,7 +3180,7 @@
     "message": "Ойлорду жашыруу"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | inProgress": {
-    "message": "Каралууда"
+    "message": "In progress"
   },
   "panels/ai_assistance/components/WalkthroughView.ts | showAgentWalkthrough": {
     "message": "Агенттин көрсөтмөлөрүн көрсөтүү"
@@ -3265,6 +3280,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Фондун түсү"
+  },
+  "panels/application/AppManifestView.ts | bundleId": {
+    "message": "Bundle ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Эсептелген колдонмо идентификатору"
@@ -3397,6 +3415,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Барак кооптуу булактан алынды"
+  },
+  "panels/application/AppManifestView.ts | parentAppName": {
+    "message": "Parent app name"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформа"
@@ -3657,22 +3678,22 @@
     "message": "Фондогу үлгү"
   },
   "panels/application/BackgroundServiceView.ts | backgroundServices": {
-    "message": "Фондогу кызматтар"
+    "message": "Background services"
   },
   "panels/application/BackgroundServiceView.ts | backgroundSync": {
     "message": "Фонду шайкештирүү"
   },
   "panels/application/BackgroundServiceView.ts | clear": {
-    "message": "Тазалоо"
+    "message": "Clear"
   },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools бардык {PH1} аракеттерин ал жабылып турса да, 3 күнгө чейин жаздырат."
   },
   "panels/application/BackgroundServiceView.ts | empty": {
-    "message": "бош"
+    "message": "empty"
   },
   "panels/application/BackgroundServiceView.ts | event": {
-    "message": "Иш-чара"
+    "message": "Event"
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Үлгү идентификатор"
@@ -3690,7 +3711,7 @@
     "message": "Билдирмелер"
   },
   "panels/application/BackgroundServiceView.ts | origin": {
-    "message": "Түпнуска"
+    "message": "Origin"
   },
   "panels/application/BackgroundServiceView.ts | paymentHandler": {
     "message": "Төлөм маркери"
@@ -3717,25 +3738,25 @@
     "message": "Башка домендерден иш-чараларды көрсөтүү"
   },
   "panels/application/BackgroundServiceView.ts | startRecordingEvents": {
-    "message": "Иш-чараларды жаздырып баштоо"
+    "message": "Start recording events"
   },
   "panels/application/BackgroundServiceView.ts | startRecordingToDebug": {
     "message": "\"{PH1}\" же {PH2} баскычтарын басып, фондогу кызматтардагы мүчүлүштүктөрдү оңдоп баштаңыз"
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
-    "message": "Жаздырууну токтотуу"
+    "message": "Stop recording events"
   },
   "panels/application/BackgroundServiceView.ts | storageKey": {
-    "message": "Сактагычтын ачкычы"
+    "message": "Storage key"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
-    "message": "Кызмат иштеткичинин мүмкүнчүлүгү"
+    "message": "Service Worker scope"
   },
   "panels/application/BackgroundServiceView.ts | timestamp": {
-    "message": "Убакыт белгиси"
+    "message": "Timestamp"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "Баш тартууларга көз салууну жумшартуу"
+    "message": "Bounce tracking mitigations"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Бардык cookie файлдарын тазалоо"
@@ -3765,7 +3786,7 @@
     "message": "Чечмеленген URL'ди көрсөтүү"
   },
   "panels/application/CookieItemsView.ts | startAChat": {
-    "message": "Маекти баштоо"
+    "message": "Start a chat"
   },
   "panels/application/CrashReportContextView.ts | filterByText": {
     "message": "Ачкыч же маани боюнча чыпкалоо"
@@ -3783,16 +3804,16 @@
     "message": "Сактагычтагы нерсе өчүрүлдү"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
-    "message": "DOM Сактагычындагы нерселер"
+    "message": "DOM storage items"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "DOM сактагычындагы нерселер тазаланды"
+    "message": "DOM storage items cleared"
   },
   "panels/application/DOMStorageItemsView.ts | explainItem": {
     "message": "Бул нерсени түшүндүрүп бер"
   },
   "panels/application/DOMStorageItemsView.ts | startAChat": {
-    "message": "Маекти баштоо"
+    "message": "Start a chat"
   },
   "panels/application/DeviceBoundSessionsTreeElement.ts | clear": {
     "message": "Тазалоо"
@@ -4206,10 +4227,10 @@
     "message": "Ооба"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
-    "message": "Кеңейтүүнү сактагыч элементтери"
+    "message": "Extension storage items"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
-    "message": "Кеңейтүүнү сактагыч тазаланды"
+    "message": "Extension storage items cleared"
   },
   "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "Алкактын аталык элементи кооптуу"
@@ -4304,6 +4325,9 @@
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Бул фрейм жарнама фрейми катары кабыл алынат, себеби анын негизги фрейми да ошондой"
   },
+  "panels/application/FrameDetailsView.ts | refreshSpellCheckCustomDictionary": {
+    "message": "Refresh spell check custom dictionary"
+  },
   "panels/application/FrameDetailsView.ts | reportingTo": {
     "message": "төмөнкүгө кабарланууда:"
   },
@@ -4330,6 +4354,12 @@
   },
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer конструктору жеткиликтүү, бирок SABs postMessage аркылуу өткөрүлбөйт"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionary": {
+    "message": "Spell check custom dictionary"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionaryExplanation": {
+    "message": "Words added with document.spellCheckCustomDictionary.addWords(). The spell checker doesn’t flag them in this document."
   },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Алкактын схемасы кооптуу"
@@ -4358,6 +4388,9 @@
   "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ кийин башка булактардан обочолонгон контекстти талап кылат"
   },
+  "panels/application/FrameDetailsView.ts | words": {
+    "message": "Words"
+  },
   "panels/application/FrameDetailsView.ts | yes": {
     "message": "Ооба"
   },
@@ -4383,10 +4416,10 @@
     "message": "Дайындар базасын жок кылуу"
   },
   "panels/application/IndexedDBViews.ts | deleteSelected": {
-    "message": "Тандалган нерсени өчүрүү"
+    "message": "Delete selected"
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
-    "message": "Кайталануучу түрдө кеңейтүү"
+    "message": "Expand recursively"
   },
   "panels/application/IndexedDBViews.ts | filterByKey": {
     "message": "Ачкыч боюнча чыпкалоо (ачкычтарды чоңураак же барабар көрсөтүү)"
@@ -4395,7 +4428,7 @@
     "message": "IDB"
   },
   "panels/application/IndexedDBViews.ts | indexedDb": {
-    "message": "Индекстелген ДБ"
+    "message": "IndexedDB"
   },
   "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "Ачкычты алуу мааниси: {PH1}"
@@ -4404,7 +4437,7 @@
     "message": "Ачкычтын жолу: "
   },
   "panels/application/IndexedDBViews.ts | keyString": {
-    "message": "Ачкыч"
+    "message": "Key"
   },
   "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
     "message": "Тандалган объекттердин сактагычындагы маалымат өчүрүлөт"
@@ -4416,7 +4449,7 @@
     "message": "Негизги ачкыч"
   },
   "panels/application/IndexedDBViews.ts | refresh": {
-    "message": "Жаңыртуу"
+    "message": "Refresh"
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Дайындар базасын жаңыртуу"
@@ -4431,16 +4464,16 @@
     "message": "Айрым киргизүүлөр өзгөргөн болушу мүмкүн"
   },
   "panels/application/IndexedDBViews.ts | totalEntriesS": {
-    "message": "Жалпы саны: {PH1}"
+    "message": "Total entries: {PH1}"
   },
   "panels/application/IndexedDBViews.ts | valueString": {
-    "message": "Маани"
+    "message": "Value"
   },
   "panels/application/IndexedDBViews.ts | version": {
-    "message": "Версия"
+    "message": "Version"
   },
   "panels/application/KeyValueStorageItemsView.ts | key": {
-    "message": "Ачкыч"
+    "message": "Key"
   },
   "panels/application/KeyValueStorageItemsView.ts | noPreviewSelected": {
     "message": "Эч бир маани тандалган жок"
@@ -4452,7 +4485,7 @@
     "message": "Алдын ала көрүү үчүн маанини тандаңыз"
   },
   "panels/application/KeyValueStorageItemsView.ts | value": {
-    "message": "Маани"
+    "message": "Value"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Ачкычка өтүү"
@@ -4569,58 +4602,58 @@
     "message": "Reporting API отчетторду жана аяктоо чекиттерин текшерүү"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
-    "message": "Кеш сактагычы"
+    "message": "Cache storage"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorageDescription": {
     "message": "Бул баракта кэш дайындарын көрүп жана жок кыла аласыз"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
-    "message": "Жок кылуу"
+    "message": "Delete"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | noCacheStorage": {
     "message": "Кэш сактагыч табылган жок"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
-    "message": "Кештерди жаңыртуу"
+    "message": "Refresh caches"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Кеш"
   },
   "panels/application/ServiceWorkerCacheViews.ts | deleteSelected": {
-    "message": "Тандалгандарды өчүрүү"
+    "message": "Delete selected"
   },
   "panels/application/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "Жол боюнча чыпкалоо"
   },
   "panels/application/ServiceWorkerCacheViews.ts | headers": {
-    "message": "Аталыштары"
+    "message": "Headers"
   },
   "panels/application/ServiceWorkerCacheViews.ts | matchingEntriesS": {
     "message": "Дал келген жазуулар: {PH1}"
   },
   "panels/application/ServiceWorkerCacheViews.ts | name": {
-    "message": "Аталышы"
+    "message": "Name"
   },
   "panels/application/ServiceWorkerCacheViews.ts | noCacheEntrySelected": {
     "message": "Кэш жазуусу тандалган жок"
   },
   "panels/application/ServiceWorkerCacheViews.ts | preview": {
-    "message": "Алдын-ала көрүү"
+    "message": "Preview"
   },
   "panels/application/ServiceWorkerCacheViews.ts | refresh": {
-    "message": "Жаңыртуу"
+    "message": "Refresh"
   },
   "panels/application/ServiceWorkerCacheViews.ts | selectACacheEntryAboveToPreview": {
     "message": "Алдын ала көрүү үчүн жогорудан кеш жазуусун тандаңыз"
   },
   "panels/application/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
-    "message": "Service Worker кеши"
+    "message": "Service Worker cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "Кештелген убакыт"
+    "message": "Time cached"
   },
   "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
-    "message": "Жалпы саны: {PH1}"
+    "message": "Total entries: {PH1}"
   },
   "panels/application/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
     "message": "⚠️ Бул киргизүүгө дал келгенде ignoreVary үчүн true маанисин коюңуз"
@@ -4632,31 +4665,31 @@
     "message": "Баштоо убакыты: {PH1}"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | timeline": {
-    "message": "Убакыт түрмөгү"
+    "message": "Timeline"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | updateActivity": {
-    "message": "Жаңыртуу аракети"
+    "message": "Update activity"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
-    "message": "Версия"
+    "message": "Version"
   },
   "panels/application/ServiceWorkersView.ts | bypassForNetwork": {
     "message": "Тармакка айланып өтүү"
   },
   "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "service worker айланып өтүп, тармактагы ресурстарды жүктөө"
+    "message": "Service Worker айланып өтүп, тармактагы ресурстарды жүктөө"
   },
   "panels/application/ServiceWorkersView.ts | clients": {
     "message": "Кардарлар"
   },
   "panels/application/ServiceWorkersView.ts | focus": {
-    "message": "фокус"
+    "message": "Focus"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Тармактык сурамдар"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "Баракты кайрадан жүктөгөндө, service worker элементин жаңыртып, жандандырыңыз"
+    "message": "Баракты кайрадан жүктөгөндө, Service Worker элементин жаңыртып, жандандырыңыз"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "Маал-маалы менен шайкештирүү"
@@ -4698,25 +4731,25 @@
     "message": "Бардык каттоолорду көрсөтүү"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "Service worker – {PH1}"
+    "message": "Service Worker – {PH1}"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "Башка булактардан кызмат иштеткичтер"
+    "message": "Service Workers from other origins"
   },
   "panels/application/ServiceWorkersView.ts | source": {
-    "message": "Булак"
+    "message": "Source"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "Баштоо"
+    "message": "Start"
   },
   "panels/application/ServiceWorkersView.ts | status": {
-    "message": "Абалы"
+    "message": "Status"
   },
   "panels/application/ServiceWorkersView.ts | stopString": {
-    "message": "Токтотуу"
+    "message": "Stop"
   },
   "panels/application/ServiceWorkersView.ts | syncString": {
-    "message": "Шайкештирүү"
+    "message": "Sync"
   },
   "panels/application/ServiceWorkersView.ts | syncTag": {
     "message": "Шайкештирүү тэги"
@@ -4728,13 +4761,13 @@
     "message": "Каттоодон чыгуу"
   },
   "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "Кызмат иштеткичти каттоодон чыгаруу"
+    "message": "Unregister Service Worker"
   },
   "panels/application/ServiceWorkersView.ts | update": {
-    "message": "Жаңыртуу"
+    "message": "Update"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
-    "message": "Циклди жаңыртуу"
+    "message": "Update cycle"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
     "message": "Кайрадан жүктөгөндө жаңыртуу"
@@ -4752,13 +4785,13 @@
     "message": "Бул бетте сактагычтарды жана аларга байланыштуу Storage APIs көрүп жана жок кыла аласыз"
   },
   "panels/application/StorageItemsToolbar.ts | clearAll": {
-    "message": "Баарын тазалоо"
+    "message": "Clear all"
   },
   "panels/application/StorageItemsToolbar.ts | deleteSelected": {
-    "message": "Тандалгандарды өчүрүү"
+    "message": "Delete selected"
   },
   "panels/application/StorageItemsToolbar.ts | refresh": {
-    "message": "Жаңыртуу"
+    "message": "Refresh"
   },
   "panels/application/StorageItemsToolbar.ts | refreshedStatus": {
     "message": "Жадыбал жаңырды"
@@ -4767,37 +4800,37 @@
     "message": "Сайттагы маалымат тазаланды"
   },
   "panels/application/StorageView.ts | cacheStorage": {
-    "message": "Кеш сактагычы"
+    "message": "Cache storage"
   },
   "panels/application/StorageView.ts | clearSelected": {
     "message": "Тандалгандарды тазалоо"
   },
   "panels/application/StorageView.ts | clearSiteData": {
-    "message": "Сайттагы маалыматты тазалоо"
+    "message": "Clear site data"
   },
   "panels/application/StorageView.ts | clearing": {
     "message": "Тазаланууда…"
   },
   "panels/application/StorageView.ts | cookies": {
-    "message": "Cookie файлдары"
+    "message": "Cookies"
   },
   "panels/application/StorageView.ts | fileSystem": {
-    "message": "Файл тутуму"
+    "message": "File system"
   },
   "panels/application/StorageView.ts | indexDB": {
     "message": "IndexedDB"
   },
   "panels/application/StorageView.ts | internalError": {
-    "message": "Ички ката"
+    "message": "Internal error"
   },
   "panels/application/StorageView.ts | learnMore": {
-    "message": "Кененирээк"
+    "message": "Learn more"
   },
   "panels/application/StorageView.ts | localAndSessionStorage": {
     "message": "Жергиликтүү жана сеанстагы сактагыч"
   },
   "panels/application/StorageView.ts | localStorage": {
-    "message": "Жергиликтүү сактагыч"
+    "message": "Local storage"
   },
   "panels/application/StorageView.ts | mb": {
     "message": "Mб"
@@ -4809,10 +4842,10 @@
     "message": "Сан {PH1} кичирээк болушу керек"
   },
   "panels/application/StorageView.ts | other": {
-    "message": "Башка"
+    "message": "Other"
   },
   "panels/application/StorageView.ts | pleaseEnterANumber": {
-    "message": "Номер киргизиңиз"
+    "message": "Enter a number"
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (жүктөлбөй койду)"
@@ -4821,7 +4854,7 @@
     "message": "Кызмат иштеткичтер"
   },
   "panels/application/StorageView.ts | sessionStorage": {
-    "message": "Сеанс сактагычы"
+    "message": "Session storage"
   },
   "panels/application/StorageView.ts | simulateCustomStorage": {
     "message": "Жеке cактоо квотасына окшоштуруу"
@@ -4836,7 +4869,7 @@
     "message": "Cактагычтагы {PH2} байт орундан {PH1} байт колдонулду"
   },
   "panels/application/StorageView.ts | storageTitle": {
-    "message": "Сактагыч"
+    "message": "Storage"
   },
   "panels/application/StorageView.ts | storageUsage": {
     "message": "Сактагычтын колдонулушу"
@@ -4854,16 +4887,16 @@
     "message": "Колдонулушу"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Жеке абал токендери"
+    "message": "Private state tokens"
   },
   "panels/application/WebMCPView.ts | cancelCall": {
-    "message": "Жокко чыгаруу"
+    "message": "Cancel"
   },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "Жокко чыгарылды"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
-    "message": "Жокко чыгарылды: {PH1}"
+    "message": "{PH1} canceled"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Чыпкаларды тазалоо"
@@ -4872,7 +4905,7 @@
     "message": "Таржымалды тазалоо"
   },
   "panels/application/WebMCPView.ts | close": {
-    "message": "Жабуу"
+    "message": "Close"
   },
   "panels/application/WebMCPView.ts | completed": {
     "message": "Бүттү"
@@ -4887,82 +4920,85 @@
     "message": "Декларативдик"
   },
   "panels/application/WebMCPView.ts | description": {
-    "message": "Учкай маалымат"
+    "message": "Description"
   },
   "panels/application/WebMCPView.ts | editAndRun": {
     "message": "Түзөтүү жана иштетүү"
   },
   "panels/application/WebMCPView.ts | error": {
-    "message": "Ката"
+    "message": "Error"
   },
   "panels/application/WebMCPView.ts | failed": {
-    "message": "Аткарылган жок: {PH1}"
+    "message": "{PH1} failed"
   },
   "panels/application/WebMCPView.ts | filter": {
-    "message": "Чыпка"
+    "message": "Filter"
   },
   "panels/application/WebMCPView.ts | flags": {
     "message": "Желектер"
   },
   "panels/application/WebMCPView.ts | frame": {
-    "message": "Фрейм"
+    "message": "Frame"
   },
   "panels/application/WebMCPView.ts | imperative": {
     "message": "Буйрук ыңгай"
   },
   "panels/application/WebMCPView.ts | inProgress": {
-    "message": "Аткарылууда"
+    "message": "In progress"
   },
   "panels/application/WebMCPView.ts | inProgressCount": {
-    "message": "Аткарылууда: {PH1}"
+    "message": "{PH1} in progress"
   },
   "panels/application/WebMCPView.ts | input": {
-    "message": "Киргизүү"
+    "message": "Input"
   },
   "panels/application/WebMCPView.ts | name": {
-    "message": "Аталышы"
+    "message": "Name"
   },
   "panels/application/WebMCPView.ts | noCallsPlaceholder": {
     "message": "Куралдарды чакыруу жана аткаруу аракеттерин анык убакытта көрүү үчүн WebMCP агенти менен аракеттешип баштаңыз"
   },
   "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
-    "message": "Куралга байланыштуу аракеттер"
+    "message": "Tool activity"
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholder": {
     "message": "Бул барак үчүн катталган WebMCP куралдары ушул жерде көрүнөт. Куралдар катталып же аныктала элек."
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
-    "message": "Жеткиликтүү WebMCP куралдары"
+    "message": "Available WebMCP tools"
   },
   "panels/application/WebMCPView.ts | origin": {
-    "message": "Каяктан"
+    "message": "Origin"
   },
   "panels/application/WebMCPView.ts | output": {
     "message": "Чыккан маалымат"
   },
   "panels/application/WebMCPView.ts | paste": {
-    "message": "Чаптоо"
+    "message": "Paste"
+  },
+  "panels/application/WebMCPView.ts | pasteTooltip": {
+    "message": "Paste tool parameters from clipboard as JSON"
   },
   "panels/application/WebMCPView.ts | pending": {
-    "message": "Аткарылууда"
+    "message": "In progress"
   },
   "panels/application/WebMCPView.ts | revealTool": {
     "message": "Куралды көрсөтүү"
   },
   "panels/application/WebMCPView.ts | runTool": {
-    "message": "Куралды иштетүү"
+    "message": "Run tool"
   },
   "panels/application/WebMCPView.ts | status": {
-    "message": "Абалы"
+    "message": "Status"
   },
   "panels/application/WebMCPView.ts | statusTypes": {
     "message": "Абалдын түрлөрү"
   },
   "panels/application/WebMCPView.ts | toolDetails": {
-    "message": "Чоо-жайы"
+    "message": "Details"
   },
   "panels/application/WebMCPView.ts | toolRegistry": {
-    "message": "Жеткиликтүү куралдар"
+    "message": "Available tools"
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Курал түрлөрү"
@@ -4971,7 +5007,7 @@
     "message": "Бул курал катталган эмес"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
-    "message": "Чалуулардын жалпы саны: {PH1}"
+    "message": "{PH1} total calls"
   },
   "panels/application/WebMCPView.ts | viewInElementsPanel": {
     "message": "Элементтер панелинде көрүү"
@@ -5019,16 +5055,16 @@
     "message": "(Орто эсеп менен: {PH1})"
   },
   "panels/application/components/AdsView.ts | cpu": {
-    "message": "Процессор"
+    "message": "CPU"
   },
   "panels/application/components/AdsView.ts | creatorAdScriptAncestry": {
-    "message": "Түзүү үчүн колдонулган жарнама скриптинин шилтемеси"
+    "message": "Creator ad script ancestry"
   },
   "panels/application/components/AdsView.ts | elementId": {
     "message": "Элементтин идентификатору"
   },
   "panels/application/components/AdsView.ts | filterListRule": {
-    "message": "Чыпкалардын тизмесинин эрежеси"
+    "message": "Filter list rule"
   },
   "panels/application/components/AdsView.ts | highlightAdRelatedResources": {
     "message": "Жарнамага тиешелүү булактарды бөлүп көрсөтүү"
@@ -5040,28 +5076,28 @@
     "message": "Баштапкы булак"
   },
   "panels/application/components/AdsView.ts | learnMore": {
-    "message": "Кеңири маалымат"
+    "message": "Learn more"
   },
   "panels/application/components/AdsView.ts | metrics": {
     "message": "Көрсөткүчтөр"
   },
   "panels/application/components/AdsView.ts | network": {
-    "message": "Тармак"
+    "message": "Network"
   },
   "panels/application/components/AdsView.ts | noProvenance": {
     "message": "<келип чыгышы белгисиз>"
   },
   "panels/application/components/AdsView.ts | noProvenanceTooltip": {
-    "message": "Келип чыгышы тууралуу маалымат жок"
+    "message": "No provenance data is available"
   },
   "panels/application/components/AdsView.ts | notAvailable": {
-    "message": "Жок"
+    "message": "N/A"
   },
   "panels/application/components/AdsView.ts | rootScriptFilterListRule": {
-    "message": "Баштапкы скрипт менен тизмени чыпкалоо эрежеси"
+    "message": "Root script filter list rule"
   },
   "panels/application/components/AdsView.ts | settings": {
-    "message": "Параметрлер"
+    "message": "Settings"
   },
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Жарнамалар тарабынан процессордун жалпы колдонулушу"
@@ -5103,7 +5139,7 @@
     "message": "Chrome кештөө учурунда JavaScript'ти аткаруу аракетин аныктады"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner'ди суранган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that requested an AppBanner aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Баракты кештөө белгилөөлөр тарабынан өчүрүлдү. Бул түзмөктө иштетүү үчүн chrome://flags/#back-forward-cache бөлүмүнө баш багыңыз."
@@ -5115,76 +5151,76 @@
     "message": "Эстутум жетишсиз болгондуктан, баракты кештөө өчүрүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Баракты кештөө өкүл тарабынан колдоого алынбайт"
+    "message": "Back/forward cache isn’t supported by delegate"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
     "message": "Баракты кештөө алдын ала чагылдыргыч үчүн өчүрүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Катталган угуучулары бар BroadcastChannel үлгүсүнөн улам баракты кештөөгө болбойт"
+    "message": "The page can’t be cached because it has a BroadcastChannel instance with registered listeners"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store деген аталышы бар барактарды кештөөгө болбойт"
+    "message": "Pages with cache-control:no-store header can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
     "message": "Кеш атайын тазаланган"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды"
+    "message": "The page was evicted from the cache to allow another page to be cached"
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Плагиндерди камтыган барактарды учурда кештөөгө болбойт"
+    "message": "Pages containing plugins aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentDiscarded": {
     "message": "Белгисиз"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API'ни колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use FileChooser API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API'ни колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use File System Access API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Media Device Dispatcher'ди колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use Media Device Dispatcher aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
     "message": "Башка жерге өтүү аракетинде медиа ойноткуч ойноп жаткан"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API'ни колдонгон жана ойнотуу абалы коюлган барактарды кештөөгө болбойт"
+    "message": "Pages that use MediaSession API and set a playback state aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API'ни колдонгон жана аракет иштеткичтери коюлган барактарды кештөөгө болбойт"
+    "message": "Pages that use MediaSession API and set action handlers aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
     "message": "Экрандагыны окугучтан улам баракты кештөө өчүрүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler'ди колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use SecurityHandler aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API'ни колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use Serial API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API'ни колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use WebAuthentication API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API'ни колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use WebBluetooth API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API'ни колдонгон барактарды кештөөгө болбойт"
+    "message": "Pages that use WebUSB API aren’t eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
     "message": "Cache-Control: no-store колдонулган баракта cookie файлдары өчүрүлгөндүктөн, баракты кештөө өчүрүлгөн"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Дайындалган жумушчуну же жумуш топтомун колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use a dedicated worker or worklet aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Документ чыгуу аракетине чейин жүктөлүп бүткөн жок"
+    "message": "The document didn’t finish loading before navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "Баш жерге өтүү аракетинде колдонмонун көрнөк-жарнагы ачылып турду"
+    "message": "App banner was present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
     "message": "Башка жерге өтүү аракетинде Chrome Сырсөздөрдү башкаргыч ачылып турду"
@@ -5193,7 +5229,7 @@
     "message": "Башка жерге өтүү аракетинде DOM дистилляция процесси жүрүп жатты"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "Башка жерге өтүү аракетинде DOM Distiller Viewer ачылып турду"
+    "message": "DOM distiller viewer was present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
     "message": "Жазышуу API'син колдонгон кеңейтүүлөрдөн улам баракты кештөө өчүрүлдү"
@@ -5208,16 +5244,16 @@
     "message": "Кеңейтүүлөрдөн улам баракты кештөө өчүрүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Башка жерге өтүү аракетинде форманы кайра тапшыруу же http сырсөзүнүн диалогу сыяктуу модалдык диалог көрсөтүлдү"
+    "message": "Modal dialog such as form resubmission or HTTP password dialog was shown for the page upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
     "message": "Башка жерге өтүү аракетинде офлайн барак көрсөтүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Башка жерге өтүү аракетинде Out-Of-Memory Intervention тилкеси ачылып турду"
+    "message": "Out-of-memory intervention bar was present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "Башка жерге өтүү аракетинде уруксат сурамдары чыкты"
+    "message": "Permission requests were present upon navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
     "message": "Башка жерге өтүү аракетинде калкып чыкма терезелерди бөгөттөгүч ачылып турду"
@@ -5235,22 +5271,22 @@
     "message": "Документтеги катадан улам баракты кештөө өчүрүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
-    "message": "FencedFrames колдонулган барактарды төмөнкүдө сактоого болбойт: bfcache"
+    "message": "Pages using FencedFrames can’t be stored in back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды"
+    "message": "The page was evicted from the cache to allow another page to be cached"
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Медианы алып ойнотууга уруксат берген барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have granted media stream access aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Белгилүү бир жалгаштырылган контенти (мисалы, PDF файлдары) бар барактар учурда кэштөөгө жарамдуу эмес"
+    "message": "Pages that have certain kinds of embedded content (e.g. PDFs) aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager'ди колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use IdleManager aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "IndexedDB туташуусу ачык барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have an open IndexedDB connection aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
     "message": "IndexedDB иш-чарасынан улам баракты кештөө өчүрүлдү"
@@ -5259,13 +5295,13 @@
     "message": "Жараксыз API'лер колдонулду"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "JavaScript кеңейтүүлөр тарабынан киргизилген барактарды учурда кештөөгө болбойт"
+    "message": "Pages that JavaScript is injected into by extensions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "StyleSheet кеңейтүүлөр тарабынан киргизилген барактарды учурда кештөөгө болбойт"
+    "message": "Pages that a StyleSheet is injected into by extensions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
-    "message": "Ички ката"
+    "message": "Internal error"
   },
   "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
     "message": "Кандайдыр бир JavaScript тармак сурамы Cache-Control: no-store аталышындыгы булакты алгандыктан, баракты кештөө функциясы өчүрүлгөн"
@@ -5274,16 +5310,16 @@
     "message": "Байланышты текшерүүчү билдирүү сурамынан улам баракты кештөө өчүрүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Баскычтопту кулпулоону колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use keyboard lock aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | loading": {
-    "message": "Барак башка жерге өтүү аракетине чейин жүктөлүп бүткөн жок"
+    "message": "The page didn’t finish loading before navigating away"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Негизги булагында cache-control:no-cache бар барактарды кештөөгө болбойт"
+    "message": "Pages whose main resource has cache-control:no-cache can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Негизги булагында cache-control:no-store бар барактарды кештөөгө болбойт"
+    "message": "Pages whose main resource has cache-control:no-store can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
     "message": "Өтүү аракети барак кештөөдөн калыбына келтирилгенге чейин жокко чыгарылды"
@@ -5292,7 +5328,7 @@
     "message": "Жигердүү тармакка туташуу өтө көп маалымат алгандыктан, барак кештен чыгарылды. Chrome барак кештелип жатканда ала турган маалыматты чектейт."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "fetch() же XHR мааниси менен барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have inflight fetch() or XHR aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
     "message": "Жигердүү тармак сурамында башка дарекке багыттама болгондуктан, барак кештөөдөн чыгарылды"
@@ -5301,34 +5337,34 @@
     "message": "Тармакка туташуу көпкө чейин ачык тургандыктан, барак кештен чыгарылды. Chrome барак кештелип жатканда маалымат ала турган убакытты чектейт."
   },
   "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Жообунун аталышы жараксыз барактарды кештөөгө болбойт"
+    "message": "Pages that don’t have a valid response head can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Негизги фреймден тышкары фреймдеги элементтерге өтүү аракеттери"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Индекстелген DB транзакциялары бар баракты учурда кештөөгө болбойт"
+    "message": "Pages with ongoing indexed DB transactions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Жигердүү тармактык сурамы менен барактарды учурда кештөөгө болбойт"
+    "message": "Pages with an in-flight network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Жигердүү тармактык сурам менен барактарды учурда кештөөгө болбойт"
+    "message": "Pages with an in-flight fetch network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Жигердүү тармактык сурамы менен барактарды учурда кештөөгө болбойт"
+    "message": "Pages with an in-flight network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Учурдагы XHR тармактык сурамы менен барактарды учурда кештөөгө болбойт"
+    "message": "Pages with an in-flight XHR network request aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager'ди колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use PaymentManager aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Cүрөттөгү сүрөт функциясын колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use Picture-in-Picture aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "Printing UI көрсөтүлгөн барактарды учурда кештөөгө болбойт"
+    "message": "Pages that show printing UI aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "Барак \"window.open()\" аркылуу ачылган жана башка өтмөктө ага шилтеме бар, же болбосо баракта терезе ачылган"
@@ -5340,25 +5376,25 @@
     "message": "Баракты кештөөдө үлгүдөн алып тартуу процесси үзгүлтүккө учурады"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Аудио жаздырууга уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested audio capture permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Сенсорго уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested sensor permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Фондо шайкештирүү же алууга уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested background sync or fetch permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI'ге уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested MIDI permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Билдирмеге уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested notifications permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Сактагычка кирүүгө уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested storage access aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Видео жаздырууга уруксат сураган барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have requested video capture permissions aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
     "message": "URL cхемасы HTTP / HTTPS болгон барактарды гана кештөөгө болот"
@@ -5379,25 +5415,25 @@
     "message": "Chrome өчүрүлүп күйгүзүлүп, баракты кештөө жазууларын тазалады"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker'ни колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use SharedWorker aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
     "message": "Барак кештөөдөн чыгарылды, анткени SharedWorker'ден билдирүү жөнөтүлдү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer'ди колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use SpeechRecognizer aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis'ти колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use SpeechSynthesis aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Барактагы iframe аягына чыга элек өтүү аракетин баштады"
+    "message": "An iframe on the page started a navigation that didn’t complete"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Кошумча булагында cache-control:no-cache бар барактарды кештөөгө болбойт"
+    "message": "Pages whose subresource has cache-control:no-cache can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Кошумча булагында cache-control:no-store бар барактарды кештөөгө болбойт"
+    "message": "Pages whose subresource has cache-control:no-store can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | timeout": {
     "message": "Баракты кештөө убакыты чектен ашып, мөөнөтү бүттү"
@@ -5415,61 +5451,61 @@
     "message": "Серепчи колдонуучу агентинин аталышын өзгөрттү"
   },
   "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Видео же аудио жаздырууга уруксат берген барактарды учурда кештөөгө болбойт"
+    "message": "Pages that have granted access to record video or audio aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase'ди колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebDatabase aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID'ни колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebHID aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks'ту колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebLocks aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc'ни колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebNfc aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService'ты колдогон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebOTPService aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC менен барактарды кештөөгө болбойт"
+    "message": "Pages with WebRTC can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTCUsedWithCCNS": {
     "message": "WebRTC колдонулгандыктан, баракты кештөө өчүрүлгөн"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare'ни колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebShare aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket менен барактарды кештөөгө болбойт"
+    "message": "Pages with WebSocket can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocketUsedWithCCNS": {
     "message": "WebSocket колдонулгандыктан, баракты кештөө өчүрүлгөн"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport менен барактарды кештөөгө болбойт"
+    "message": "Pages with WebTransport can’t enter back/forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webTransportUsedWithCCNS": {
     "message": "WebTransport колдонулгандыктан, баракты кештөө өчүрүлгөн"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR'ди колдонгон барактарды учурда кештөөгө болбойт"
+    "message": "Pages that use WebXR aren’t currently eligible for back/forward cache"
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Баракты кештөө"
+    "message": "Back/forward cache"
   },
   "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
     "message": "Бош URL [{PH1}]"
   },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
-    "message": "Кеңейтүүнүн идентификатору: "
+    "message": "Extension ID: "
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
-    "message": "Эч нерсе кылууга болбойт"
+    "message": "Not actionable"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Бул себептерге карата чара көрүүгө болбойт, мисалы, барак түздөн-түз көзөмөлдөбөгөн нерсе кештөөгө тоскоол болууда"
+    "message": "These reasons aren’t actionable i.e. caching was prevented by something outside of the direct control of the page"
   },
   "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
     "message": "{n,plural, =1{# файл}other{# файл}}"
@@ -5478,7 +5514,7 @@
     "message": "{n,plural, =1{# фрейм}other{# фрейм}}"
   },
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
-    "message": "Фреймдер"
+    "message": "Frames"
   },
   "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
     "message": "{n,plural, =1{{m} фреймде # көйгөй табылды}other{{m} фреймде # көйгөй табылды}}"
@@ -5490,10 +5526,10 @@
     "message": "Кеңири маалымат: баракты кештөөгө жарамдуулук"
   },
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
-    "message": "Негизги фрейм"
+    "message": "Main frame"
   },
   "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
-    "message": "Кеңири маалымат: Чыгарып салууну иштеткичти эч качан колдонбоңуз"
+    "message": "Learn more: never use unload handler"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Баракты кештөөдөн алынган жок: баракты кештөө үчүн Chrome'дун кештөө баскычтарын колдонуңуз же автоматтык түрдө чыгуу же кайтуу үчүн төмөндөгү сыноо баскычын басыңыз"
@@ -5514,25 +5550,25 @@
     "message": "Тест аткарылууда"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPending": {
-    "message": "Колдоо күтүлүүдө"
+    "message": "Pending support"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Ушул себептерден улам Chrome'ду колдоого алуу күтүлүүдө, мисалы, Chrome'дун кийинки версиясында алар баракты кештөөгө тоскоол болбойт"
+    "message": "Chrome support for these reasons is pending i.e. they won’t prevent the page from being eligible for back/forward cache in a future version of Chrome"
   },
   "panels/application/components/BackForwardCacheView.ts | testCompleted": {
     "message": "Баракты кештөө сыноосу соңуна чыкты"
   },
   "panels/application/components/BackForwardCacheView.ts | unavailable": {
-    "message": "жеткиликсиз"
+    "message": "unavailable"
   },
   "panels/application/components/BackForwardCacheView.ts | unknown": {
-    "message": "Абалы белгисиз"
+    "message": "Unknown status"
   },
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "Баш тартууларга көз салууну жумшартуу"
+    "message": "Bounce tracking mitigations"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Мүмкүн болгон башка дарекке багыттап көз салуу сайттары текшерилүүдө"
@@ -5544,13 +5580,13 @@
     "message": "Мажбурлап иштетүү"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
-    "message": "Кеңири маалымат: Баш тартууларга көз салууну жумшартуу"
+    "message": "Learn more: bounce tracking mitigations"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Мүмкүн болуучу баш тартууларга көз салган сайттар үчүн абал тазаланган жок. Эч бири аныкталган эмес же үчүнчү тараптын cookie файлдары бөгөттөлгөн эмес."
+    "message": "State wasn’t cleared for any potential bounce tracking sites. Either none were identified or third-party cookies aren’t blocked."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
-    "message": "Иштеп жатат"
+    "message": "Running"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Абал төмөнкү сайттар үчүн өчүрүлдү:"
@@ -5559,28 +5595,28 @@
     "message": "Ачкычты көчүрүү"
   },
   "panels/application/components/CrashReportContextGrid.ts | copyValue": {
-    "message": "Маанини көчүрүү"
+    "message": "Copy value"
   },
   "panels/application/components/CrashReportContextGrid.ts | key": {
-    "message": "Ачкыч"
+    "message": "Key"
   },
   "panels/application/components/CrashReportContextGrid.ts | value": {
-    "message": "Маани"
+    "message": "Value"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
-    "message": "Бул жерде отчёттор келип түшкөн аяккы чекиттердин тизмесин көрөсүз"
+    "message": "Here you will find the list of endpoints that get the reports"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Көрсөтүлө турган аяктоо чекиттери жок"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
-    "message": "Уруксат берилген функциялар"
+    "message": "Allowed features"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
     "message": "\"Permissions-Policy\" HTTP аталышы бул функцияны өчүргөн сурамды көрсөтүү үчүн басыңыз"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "Элементтер панелинде бул функцияга уруксат бербеген эң мыкты iframe терезелерин көрсөтүү үчүн басыңыз"
+    "message": "Click to reveal the top-most iframe which doesn’t allow this feature in the Elements panel"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "fencedframe ичинде өчүрүлдү"
@@ -5592,13 +5628,13 @@
     "message": "\"allow\" атрибутунда жок"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
-    "message": "Өчүрүлгөн функциялар"
+    "message": "Disabled features"
   },
   "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
     "message": "Чоо-жайын жашыруу"
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
-    "message": "Чоо-жайын көрсөтүү"
+    "message": "Show details"
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Протокол иштеткичти тандоо"
@@ -5607,7 +5643,7 @@
     "message": "манифест"
   },
   "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
-    "message": "Жардам керекпи? Төмөнкүнү окуңуз: {PH1}."
+    "message": "Need help? Read {PH1}."
   },
   "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
     "message": "{PH1} ичинде жарактуу протокол иштеткичи катталганы аныкталды. Колдонмону орнотуп, катталган протоколдорду сынаңыз."
@@ -5634,16 +5670,16 @@
     "message": "Даярдалган убакыт"
   },
   "panels/application/components/ReportsGrid.ts | learnMore": {
-    "message": "Кененирээк"
+    "message": "Learn more"
   },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Көрсөтүлө турган кабарлар жок"
   },
   "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
-    "message": "Бул жерде ушул бетте түзүлгөн api отчётторун көрөсүз"
+    "message": "Here you will find Reporting API reports that are generated by the page"
   },
   "panels/application/components/ReportsGrid.ts | status": {
-    "message": "Абалы"
+    "message": "Status"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Сегмент аталышы"
@@ -5673,16 +5709,16 @@
     "message": "Үчүнчү тарап"
   },
   "panels/application/components/StorageMetadataView.ts | loading": {
-    "message": "Жүктөлүүдө…"
+    "message": "Loading…"
   },
   "panels/application/components/StorageMetadataView.ts | no": {
-    "message": "Жок"
+    "message": "No"
   },
   "panels/application/components/StorageMetadataView.ts | none": {
-    "message": "Жок"
+    "message": "None"
   },
   "panels/application/components/StorageMetadataView.ts | opaque": {
-    "message": "(бүдөмүк)"
+    "message": "(opaque)"
   },
   "panels/application/components/StorageMetadataView.ts | origin": {
     "message": "Түпнуска URL"
@@ -5697,7 +5733,7 @@
     "message": "Жогорку деңгээлдеги сайт"
   },
   "panels/application/components/StorageMetadataView.ts | yes": {
-    "message": "Ооба"
+    "message": "Yes"
   },
   "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
     "message": "Ооба, анткени ата-тек чынжыры үчүнчү тараптын булагын камтыйт"
@@ -5718,10 +5754,10 @@
     "message": "{PH1} тарабынан берилген бардык сакталган жеке абал токендерин өчүрүү"
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
-    "message": "Берүүчү"
+    "message": "Issuer"
   },
   "panels/application/components/TrustTokensView.ts | learnMore": {
-    "message": "Кененирээк"
+    "message": "Learn more"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokens": {
     "message": "Жеке абал токендери аныкталган жок"
@@ -5730,7 +5766,7 @@
     "message": "Сакталган токендердин саны"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
-    "message": "Жеке абал токендери"
+    "message": "Private state tokens"
   },
   "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
     "message": "Бул бетте учурдагы серептөө контекстиндеги бардык жеткиликтүү жеке абал токендерин көрөсүз"
@@ -5958,7 +5994,7 @@
     "message": "Алдын ала алуу багытталды, бирок анда көйгөй келип чыкты"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
-    "message": "Жооптун Content-Type аталышы колдоого алынбагандыктан, алдын ала алуу аткарылган жок"
+    "message": "The prefetch failed because the response’s Content-Type header wasn’t supported"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
     "message": "Тармак катасынан улам алдын ала алуу аткарылган жок"
@@ -5973,46 +6009,46 @@
     "message": "Мурунку алдын ала алуу мөөнөтү бүтө элек Retry-After аталышы менен HTTP 503 жообун алды"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
-    "message": "Булак үчүн катталган тейлөө кызматкери же түрдүү сайттардын cookie файлдары болуп, бирок алдын ала алуу баары бир тармакка коюлуп, ал колдонуучунун булак менен болгон мурунку байланышын жашыруу үчүн колдонулбагандыктан, URL дареги алдын ала алынган жок"
+    "message": "The URL wasn’t eligible to be prefetched because there was a registered service worker or cross-site cookies for that origin, but the prefetch was put on the network anyways and not used, to disguise that the user had some kind of previous relationship with the origin"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
     "message": "Алдын ала алуу менен колдонуунун ортосунда өтө көп убакыт өткөндүктөн, алдын ала алуу өчүрүлдү"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
-    "message": "Батареяны үнөмдөгүч параметри иштетилгендиктен, алдын ала алуу аткарылган жок"
+    "message": "The prefetch wasn’t performed because the Battery Saver setting was enabled"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
-    "message": "Серепчи Жашыруун же Конок режиминде болгондуктан, алдын ала алуу аткарылган жок"
+    "message": "The prefetch wasn’t performed because the browser is in Incognito or Guest mode"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
-    "message": "Операциялык тутум Трафикти үнөмдөө режиминде болгондуктан, алдын ала алуу аткарылган жок"
+    "message": "The prefetch wasn’t performed because the operating system is in Data Saver mode"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
     "message": "URL демейки тармак контекстинде прокси серверин колдонууга конфигурациялангандыктан, ал алдын ала алынган жок"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
-    "message": "URL дарегинин башкы түйүнү өзгөчө болбогондуктан (мис., жалпыга ачык багытталбаган IP дарек же реестр тарабынан көзөмөлдөнбөгөн түйүндүн аталышы), ал алдын ала алынган жок. Ал эми алдын ала алуу прокси аркылуу аткарылышы керек болчу"
+    "message": "The URL wasn’t eligible to be prefetched because its host wasn’t unique (e.g., a non publicly routable IP address or a hostname which isn’t registry-controlled), but the prefetch was required to be proxied"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
-    "message": "URL демейкиден башка сактагыч бөлүмүн колдонгондуктан, ал алдын ала алынган жок"
+    "message": "The URL wasn’t eligible to be prefetched because it uses a non-default storage partition"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Спекуляциялык жүктөө өчүрүлгөндүктөн, алдын ала алуу аткарылган жок"
+    "message": "The prefetch wasn’t performed because speculative loading was disabled"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
-    "message": "Демейки тармак контексти бир эле сайттын түрдүү булактарынан алдын ала алуу сурамы үчүн алдын ала алуу проксисин колдонууга конфигурацияланбагандыктан, URL дареги алдын ала алынган жок"
+    "message": "The URL wasn’t eligible to be prefetched because the default network context can’t be configured to use the prefetch proxy for a same-site cross-origin prefetch request"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
-    "message": "URL дарегинин схемасы https: эмес болгондуктан, ал алдын ала алынган жок"
+    "message": "The URL wasn’t eligible to be prefetched because its scheme wasn’t https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
-    "message": "URL түрдүү сайттарга таандык болуп, бирок колдонуучунун ал булак үчүн cookie файлдары болгондуктан, ал алдын ала алынган жок"
+    "message": "The URL wasn’t eligible to be prefetched because it was cross-site, but the user had cookies for that origin"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
-    "message": "Бул URL боюнча алдын алуу мүмкүн болгон жок, анткени булак үчүн учурда колдоого алынбаган Service Worker катталган"
+    "message": "The URL wasn’t eligible to be prefetched because there was a registered service worker for that origin, which isn’t currently supported"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
-    "message": "Алдын ала алуу түрдүү сайттарда болгодуктан, ал колдонулган жок. Алдын ала алуу аткырылып жатканда cookie файлдары ошол URL дарегине кошулгандыктан, алдын ала алынган жооп эскирип калган"
+    "message": "The prefetch wasn’t used because it was a cross-site prefetch, and cookies were added for that URL while the prefetch was ongoing, so the prefetched response is now out-of-date"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
     "message": "Алдын ала алуу Интернет кызматын жабдуучу же тармак администраторуңуз тарабынан бөгөттөлгөн"
@@ -6024,16 +6060,16 @@
     "message": "Алдын ала көрсөтүлгөн барак негизги алкагынын багытын баштоо учурунда иштетилди"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
-    "message": "Алдын ала көрсөтүү колдонулган жок, анткени иштетүү учурунда баштапкы бетке багыттаган ачык шилтемеси бар башка терезелер болчу жана ал учурда колдоого алынбайт"
+    "message": "The prerender wasn’t used because during activation time, there were other windows with an active opener reference to the initiating page, which isn’t currently supported"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Баштапкы беттин сыноо чөйрөсүнүн желекчелери же уруксаттар саясаты алдын ала көрсөтүү бетинин саясаты менен шайкеш келбегендиктен, алдын ала көрсөтүү колдонулган жок"
+    "message": "The prerender wasn’t used because the sandboxing flags or permissions policy of the initiating page wasn’t compatible with those of the prerendering page"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Иштетүү учурунда баштапкы алдын ала көрсөтүүгө өтүү сурамына караганда башка өтүү параметрлери (мис., HTTP аталыштары) эсептелгендиктен, алдын ала көрсөтүү колдонулган жок"
+    "message": "The prerender wasn’t used because during activation time, different navigation parameters (e.g., HTTP headers) were calculated than during the original prerendering navigation request"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
-    "message": "Алдын ала көрсөтүү колдонулган жок, анткени иштетүү учурунда багыттоонун кадимки URL дарегинен айырмаланган натыйжалуу URL'и бар. (Мисалы, жаңы өтмөк барагы же жайгаштырылуучу колдонмолор.)"
+    "message": "The prerender wasn’t used because during activation time, navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
     "message": "Кандайдыр бир себептен улам серепчи алдын ала көрсөтүлгөн бардык барактарды чыгарып алды (мисалы, алдын ала көрсөтүп жатканда WebViewCompat.addWebMessageListener() чакырылды.)"
@@ -6042,7 +6078,7 @@
     "message": "Алдын ала көрсөтүлгөн барак учурда колдоого алынбаган аудио чыгарылышты суранды"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Колдонуучу серепчинин батареяны азыраак колдонуусун сурангандыктан, алдын ала көрсөтүү аткарылган жок"
+    "message": "The prerender wasn’t performed because the user requested that the browser use less battery"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Айрым булактарды жүктөө бөгөттөлдү"
@@ -6066,7 +6102,7 @@
     "message": "Алдын ала көрсөтүлгөн бет башка сайттардын URL дарегине багытталган URL'ге өттү"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Колдонуучу серепчиден азыраак дайындарды колдонууну сурангандыктан, алдын ала көрсөтүү аткарылган жок"
+    "message": "The prerender wasn’t performed because the user requested that the browser use less data"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "Алдын ала көрсөтүлгөн барак учурда колдоого алынбаган жүктөп алууну баштоого аракет кылды"
@@ -6075,10 +6111,10 @@
     "message": "Баштапкы беттин кадимки URL дарегинен айырмаланган натыйжалуу URL'и болгондуктан, ал алдын ала көрсөтүүнү аткара албайт. (Мисалы, жаңы өтмөк барагы же жайгаштырылуучу колдонмолор.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL дарегинин схемасы http: же https: эмес болгондуктан, ал алдын ала көрсөтүлүүгө жарамдуу эмес болчу."
+    "message": "The URL wasn’t eligible to be prerendered because its scheme wasn’t http: or https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Алдын ала көрсөтүүгө өтүү аткарылган жок, анткени ал схемасы http: же https: эмес болгон URL дарегине багытталган"
+    "message": "The prerendering navigation failed because it redirected to a URL whose scheme wasn’t http: or https:"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusJavaScriptInterfaceAdded": {
     "message": "WebView.addJavascriptInterface() жаңы JavaScript интерфейсин киргизгендиктен, алдын ала көрсөтүлгөн барак чыгарылып алынды"
@@ -6090,25 +6126,25 @@
     "message": "Алдын ала көрсөтүүгө өтүү үчүн учурда колдоого алынбаган HTTP аутентификациясын талап кылды"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Алдын ала көрсөтүлгөн жок, анткени бул түзмөктө жалпы тутумдук эстутум жетишсиз"
+    "message": "The prerender wasn’t performed because this device doesn’t have enough total system memory to support prerendering"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Мааниси \"eager\" болгон алдын ала көрсөтүү аткарылган жок, анткени баштапкы бетте өтө көп алдын ала көрсөтүүлөр аткарылууда. Алдын ала көрсөтүүнү иштетүү үчүн \"eager\" дегенге тиешелүү спекуляциялык эрежелерди өчүрүңүз."
+    "message": "The prerender whose eagerness is \"eager\" wasn’t performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules with \"eager\" to enable further prerendering."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Баштапкы бетте өтө көп алдын ала көрсөтүүлөр аткарылып жаткандыктан, серепчи менен иштеген алдын ала көрсөтүү аткарылган жок"
+    "message": "The browser-triggered prerender wasn’t performed because the initiating page already has too many prerenders ongoing"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "Башка алдын ала көрсөтүү башталгандыктан, эски алдын ала көрсөтүү (\"moderate\" же \"conservative\" интенсивдүүлүк менен жана үстүнө алып келгенде же шилтеме басылганда иштетилет) автоматтык түрдө жокко чыгарылды. Муну шилтеме аркылуу кайра иштетсе болот."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Серепчи алдын ала көрсөтүү эстутумунун чегинен ашып кеткендикен, алдын ала көрсөтүү аткарылган жок"
+    "message": "The prerender wasn’t performed because the browser exceeded the prerendering memory limit"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
     "message": "Серепчиде олуттуу эстутум кысылуусунан улам, алдын ала көрсөтүлгөн барак чыгарылып алынган"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Серепчиде олуттуу эстутум кысылуулсунан улам, алдын ала көрсөтүү аткарылган жок"
+    "message": "The prerender wasn’t performed because the browser was under critical memory pressure"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
     "message": "Алдын ала көрсөтүлгөн баракта аралаш контент камтылган"
@@ -6129,10 +6165,10 @@
     "message": "Алдын ала көрсөтүүгө өтүүдө тармак катасы келип чыкты"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Колдонуучу серепчинин параметрлеринен алдын ала жүктөөнү өчүрүп койгондуктан, алдын ала көрсөтүү аткарылган жок"
+    "message": "The prerender wasn’t performed because the user disabled preloading in their browser settings"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
-    "message": "Иштеп чыгуучунун куралдары алдын ала көрсөтүүнү өчүрүү үчүн колдонулгандыктан, алдын ала көрсөтүү аткарылган жок"
+    "message": "The prerender wasn’t performed because DevTools has been used to disable prerendering"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
     "message": "Алдын ала көрсөтүүгө багытталган жок, анткени анын кадимки URL дарегинен айырмаланган натыйжалуу URL'и бар. (Мисалы, жаңы өтмөк барагы же жайгаштырылуучу колдонмолор.)"
@@ -6593,6 +6629,39 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Өзгөрүүлөрдү көрсөтүү"
   },
+  "panels/comments/CommentsPane.ts | clearComments": {
+    "message": "Clear all comments"
+  },
+  "panels/comments/CommentsPane.ts | deleteComment": {
+    "message": "Delete comment"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | noSentComments": {
+    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+  },
+  "panels/comments/CommentsPane.ts | queued": {
+    "message": "Queued"
+  },
+  "panels/comments/CommentsPane.ts | seeResponse": {
+    "message": "See response"
+  },
+  "panels/comments/CommentsPane.ts | sendToAgent": {
+    "message": "Send to Agent"
+  },
+  "panels/comments/CommentsPane.ts | sent": {
+    "message": "Sent"
+  },
+  "panels/comments/CommentsPane.ts | working": {
+    "message": "Working"
+  },
+  "panels/comments/comments-meta.ts | comments": {
+    "message": "Comments"
+  },
+  "panels/comments/comments-meta.ts | showComments": {
+    "message": "Show Comments"
+  },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "\"{PH1}\" төшбелгисине ээ болдуңуз! Ал Иштеп чыгуучу профилиңизге кошулду."
   },
@@ -6627,7 +6696,7 @@
     "message": "Мүмкүнчүлүктөрү орточо мобилдик түзмөк"
   },
   "panels/common/CPUThrottlingOption.ts | calibrationErrorDeviceTooWeak": {
-    "message": "Түзмөктүн күчү жетишсиз"
+    "message": "Device isn’t powerful enough"
   },
   "panels/common/CPUThrottlingOption.ts | dSlowdown": {
     "message": "{PH1}× жайлатуу"
@@ -6638,14 +6707,23 @@
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Пикирди киргизүү"
   },
+  "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
+    "message": "Delete queued comment"
+  },
+  "panels/common/CommentThreadWidget.ts | queueComment": {
+    "message": "Queue comment"
+  },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Жооп:"
+  },
+  "panels/common/CommentThreadWidget.ts | save": {
+    "message": "Save"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Агентке жөнөтүү"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Жөнөтүлдү"
+    "message": "Sent"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Жөнөтүлгөнүн билдирген чымчыкча белгиси"
@@ -6732,7 +6810,7 @@
     "message": "Баштапкы картага байланыштырылды: {PH1}"
   },
   "panels/common/common-meta.ts | comments": {
-    "message": "Жорумдар"
+    "message": "Comments"
   },
   "panels/common/common-meta.ts | showComments": {
     "message": "Пикирлерди көрсөтүү"
@@ -7224,13 +7302,13 @@
     "message": "{n,plural, =1{# байт, {percentage}}other{# байт, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} байт ({PH2}) бир да жолу аткарыла элек JavaScript блокторуна таандык"
+    "message": "{PH1} bytes ({PH2}) belong to blocks of JavaScript that haven’t (yet) been executed"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
     "message": "{PH1} байт ({PH2}) кеминде бир жолу аткарылган JavaScript блокторуна таандык"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} байт ({PH2}) аткарыла элек функцияларга таандык"
+    "message": "{PH1} bytes ({PH2}) belong to functions that haven’t (yet) been executed"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
     "message": "{PH1} байт ({PH2}) кеминде бир жолу аткарылган функцияларга таандык"
@@ -7254,13 +7332,13 @@
     "message": "Колдонулушун визуалдаштыруу"
   },
   "panels/coverage/CoverageView.ts | activationNoCapture": {
-    "message": "Барак фондо алдын ала көрсөтүлгөндүктөн, иштөө аймагынын маалыматы жаздырылган жок"
+    "message": "Couldn’t capture coverage info because the page was prerendered in the background"
   },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Баары"
   },
   "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
-    "message": "Бул барак баракты кештөө аркылуу тейленгендиктен, иштөө аймагынынын маалыматы жаздырылган жок"
+    "message": "Couldn’t capture coverage info because the page was served from the back/forward cache"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Аймактын майдаланышын тандоо: Функция боюнча көтөрүү төмөн, ал эми бөгөттөө боюнча көтөрүү олуттуу"
@@ -7584,7 +7662,7 @@
     "message": "\"{PH1}\" {PH2} параметринин мааниси {PH5} ариптеринин топтому үчүн колдоого алынган диапазондун [{PH3}, {PH4}] тышында."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
-    "message": "Анкер аныкталды, бирок элемент анкерге карата жайгаштырылбай, \"{POSITION}\" абалында жайгаштырылган"
+    "message": "An anchor was defined but the element wasn’t anchor-positioned but positioned \"{POSITION}\""
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioningFix": {
     "message": "Позицияны \"бекитилген\" же \"абсолюттук\" деп коюңуз"
@@ -7758,7 +7836,7 @@
     "message": "Торчо аныктамасын издөө"
   },
   "panels/elements/DOMTreeContextMenu.ts | focus": {
-    "message": "Фокус"
+    "message": "Focus"
   },
   "panels/elements/DOMTreeContextMenu.ts | hideElement": {
     "message": "Элементти жашыруу"
@@ -7789,6 +7867,117 @@
   },
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "Бул элементтерди ороп коюу"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | children": {
+    "message": "Балдар:"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | copy": {
+    "message": "Көчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | creatorAdScriptAncestry": {
+    "message": "Түзүү үчүн колдонулган жарнама скриптинин шилтемеси"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | cut": {
+    "message": "Кесүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableContainer": {
+    "message": "Контейнердин оверлейин өчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableFlexMode": {
+    "message": "Ийкемдүү режимди өчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridLanesMode": {
+    "message": "Grid-lanes режимин өчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridMode": {
+    "message": "Торчо режимин өчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableScrollSnap": {
+    "message": "Сыдырууда кесиндинин үстүнө келүүнү өчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableStartingStyle": {
+    "message": "@starting-style режимин өчүрүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | elementHasScrollableOverflow": {
+    "message": "Бул элементтин сыдырылуучу кошумча менюсу бар"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableContainer": {
+    "message": "Контейнердин оверлейин иштетүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableFlexMode": {
+    "message": "Ийкемдүү режимди иштетүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridLanesMode": {
+    "message": "Grid-lanes режимин иштетүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridMode": {
+    "message": "Торчо режимин иштетүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableScrollSnap": {
+    "message": "Сыдырууда кесиндинин үстүнө келүүнү күйгүзүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableStartingStyle": {
+    "message": "@starting-style режимин иштетүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | filterListRule": {
+    "message": "Чыпкалардын тизмесинин эрежеси"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceOpenPopover": {
+    "message": "Бул калкыма терезе ачык калсын"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceShowInterest": {
+    "message": "Бул элементке кызыгууну жаратыңыз"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceState": {
+    "message": "Мажбурлоо абалы"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | noProvenanceAvailable": {
+    "message": "Келип чыгышы тууралуу маалымат жок"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | openMediaPanel": {
+    "message": "Медиа панелине секирүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | paste": {
+    "message": "Чаптоо"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | reveal": {
+    "message": "Ачыкка чыгаруу"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | rootScriptFilterListRule": {
+    "message": "Баштапкы скрипт менен тизмени чыпкалоо эрежеси"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | selectAll": {
+    "message": "Баарын тандоо"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCommandForTarget": {
+    "message": "commandfor атрибутуна байланышкан элементти көрсөтүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCustomElementDefinition": {
+    "message": "Жеке элементтин аныктамасын көрсөтүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showInterestTarget": {
+    "message": "interesttarget атрибутуна байланышкан элементти көрсөтүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showPopoverTarget": {
+    "message": "popovertarget атрибутуна байланышкан элементти көрсөтүү"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceOpenPopover": {
+    "message": "Бул калкыма терезе жабылсын"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceShowInterest": {
+    "message": "Бул элементке болгон кызыгууну жокко чыгаруу"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Бул элемент жарнама катары аныкталды"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | useSInTheConsoleToReferToThis": {
+    "message": "Бул элементке шилтеме берүү үчүн консолдо {PH1} колдонуңуз"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | valueIsTooLargeToEdit": {
+    "message": "<маани өтө чоң болгондуктан, аны түзөтүү мүмкүн эмес>"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | viewSourceCode": {
+    "message": "Кодду көрүү"
   },
   "panels/elements/DOMTreeWidget.ts | pageDom": {
     "message": "DOM барагы"
@@ -7899,7 +8088,7 @@
     "message": "Эсептелген стилдердин капталдагы тактасын жашыруу"
   },
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
-    "message": "Түйүн учурдагы барактан табылган жок"
+    "message": "Node can’t be found in the current page"
   },
   "panels/elements/ElementsPanel.ts | openInElementsPanel": {
     "message": "Элементтер тактасында ачуу"
@@ -7917,10 +8106,10 @@
     "message": "Стилдер"
   },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
-    "message": "Кийинкиге калтырылган DOM Түйүнү жарактуу түйүнгө которулбай койду"
+    "message": "The deferred DOM Node couldn’t be resolved to a valid node"
   },
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
-    "message": "Алыскы объект жарактуу түйүнгө дал келген жок"
+    "message": "The remote object couldn’t be resolved to a valid node"
   },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "Баары"
@@ -8069,6 +8258,9 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "текшерүүчү аркылуу"
   },
+  "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
+    "message": "Base"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Бардык декларацияларды JS катары көчүрүү"
   },
@@ -8089,6 +8281,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Маанини көчүрүү"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
+    "message": "Default"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox түзөткүчүн ачуу"
@@ -8126,8 +8321,11 @@
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "position-area түзөткүчүн ачуу"
   },
+  "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
+    "message": "Force position-try option"
+  },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
-    "message": "{PH1} аныкталган жок"
+    "message": "{PH1} isn’t defined"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Түсүн өзгөртүү үчүн Shift + Чыкылдатууну басыңыз"
@@ -8217,7 +8415,7 @@
     "message": "Катталган объектти көрүү"
   },
   "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
-    "message": "{PH1} аныкталган жок"
+    "message": "{PH1} isn’t defined"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM дарагынын чабыттоо тилкелери"
@@ -8238,10 +8436,10 @@
     "message": "Тыгыз"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
-    "message": "{propertyName}: {propertyValue} элементин өчүрүү"
+    "message": "Remove {propertyName}: {propertyValue}"
   },
   "panels/elements/components/StylePropertyEditor.ts | selectButton": {
-    "message": "{propertyName} кошуу: {propertyValue}"
+    "message": "Add {propertyName}: {propertyValue}"
   },
   "panels/elements/elements-meta.ts | CSSDocumentationTooltip": {
     "message": "CSS документтериндеги калкып чыгуучу кеңеш"
@@ -8265,13 +8463,13 @@
     "message": "Текшерүү үчүн калкып чыгуучу кеңештин чоо-жайы"
   },
   "panels/elements/elements-meta.ts | doNotExtendGridLines": {
-    "message": "Тор сызыктары узартылбасын"
+    "message": "Don’t extend grid lines"
   },
   "panels/elements/elements-meta.ts | doNotShowGridNamedAreas": {
-    "message": "Торчо түрүндөгү аталыштары бар аймактар көрсөтүлбөсүн"
+    "message": "Don’t show grid named areas"
   },
   "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
-    "message": "Торчонун чыйыр өлчөмдөрү көрсөтүлбөсүн"
+    "message": "Don’t show grid track sizes"
   },
   "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
     "message": "Үстүнө алып келүүдө сызгычтар көрсөтүлбөсүн"
@@ -8504,6 +8702,15 @@
   "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "Кичинекей мобилдик түзмөктөр"
   },
+  "panels/emulation/DeviceModeView.ts | presetSize": {
+    "message": "{PH1} – {PH2}px"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopied": {
+    "message": "Screenshot copied to clipboard"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
+    "message": "Couldn’t copy screenshot to clipboard"
+  },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
   },
@@ -8592,7 +8799,7 @@
     "message": "Тармак сурамы"
   },
   "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
-    "message": "ЖИ жардам Жашыруун режимде же Конок режиминде жеткиликтүү эмес"
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "Бул функция Chrome'го Google аккаунтуңуз менен киргенде гана жеткиликтүү"
@@ -8762,8 +8969,14 @@
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n,plural, =1{# элемент}other{# элемент}}"
   },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
+    "message": "learn more"
+  },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 вебсайт cookie файлдарын колдоно алат}other{# вебсайт cookie файлдарын колдоно алат}}"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
+    "message": "(opt-out: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL маселелеринин саны:{count}"
@@ -8808,7 +9021,7 @@
     "message": "Белгисиз"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
-    "message": "SharedArrayBuffer башка булактардан обочолонбогон контекстте түзүлгөн"
+    "message": "A SharedArrayBuffer was instantiated in a context that isn’t cross-origin isolated"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
     "message": "Бөгөттөлдү"
@@ -8820,7 +9033,7 @@
     "message": "{n,plural, =1{# бузуу}other{# бузуу}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
-    "message": "SharedArrayBuffer булактар аралык окчундатылган контекстте өткөрүлгөн"
+    "message": "SharedArrayBuffer was transferred to a context that isn’t cross-origin isolated"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
     "message": "Булактын жайгашкан жери"
@@ -9543,7 +9756,7 @@
     "message": "Жөнгө салуу ыкмасы"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "Эстутумду текшергич ачылбай койду: буфер табылган жок"
+    "message": "Couldn’t open Memory inspector: buffer not found"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Эстутумду текшергич панелинде ачыңыз"
@@ -10188,7 +10401,7 @@
     "message": "Серепчи сурамдын контекстине жараша туураланат"
   },
   "panels/network/FetchHeaderCommenting.ts | deprecatedBrowserDoesNotSend": {
-    "message": "Эскирген; серепчи муну жөнөтпөйт"
+    "message": "Deprecated; browser doesn’t send this"
   },
   "panels/network/FetchHeaderCommenting.ts | deprecatedCookieHeader": {
     "message": "Эскирген cookie файлынын аталышы; серепчи аны бөгөттөйт"
@@ -10226,6 +10439,9 @@
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Тармак"
   },
+  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
+    "message": "Бул беттеги navigator.connection.saveData параметри тарабынан көрсөтүлгөн маанини өзгөртүп коюуңуз"
+  },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Демейки серепчини колдонуу"
   },
@@ -10260,7 +10476,7 @@
     "message": "Консоль"
   },
   "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
-    "message": "Сыноо чөйрөсүнүн iframe калкып чыгуучу терезеси COOP бетине багытталбайт"
+    "message": "Sandboxed iframe’s popup can’t navigate to COOP page"
   },
   "panels/network/NetworkDataGridNode.ts | corpNotSameOrigin": {
     "message": "CORP \"same-origin\" эмес"
@@ -10422,7 +10638,7 @@
     "message": "(белгисиз)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "Сурамдын абалы бул жерде көрсөтүлбөйт, себеби аны чыгарган барак сурам иштелип жатканда аны чыгарып алган. chrome://net-export аркылуу тармактык журналды сүрөткө тартып, сурамдын бардык чоо-жайын көрүүгө болот."
+    "message": "The request status can’t be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details."
   },
   "panels/network/NetworkDataGridNode.ts | wasThrottled": {
     "message": "Сурамдын ылдамдыгы чектелди ({PH1})"
@@ -11019,10 +11235,10 @@
     "message": "Бул үлгү URLPattern үлгүсү катары талданган жок"
   },
   "panels/network/RequestConditionsDrawer.ts | patternFailedWithRegExpGroups": {
-    "message": "RegExp топторуна уруксат берилбейт"
+    "message": "RegExp groups aren’t allowed"
   },
   "panels/network/RequestConditionsDrawer.ts | patternInputCannotBeEmpty": {
-    "message": "Үлгү бош болбошу керек"
+    "message": "Pattern input can’t be empty"
   },
   "panels/network/RequestConditionsDrawer.ts | patternMovedDown": {
     "message": "URL үлгүсү ылдый жылдырылды"
@@ -11067,7 +11283,7 @@
     "message": "Чыпкаланган сурамдардын cookie файлдарын көрсөтүү"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "Бул сайтта ушул сурам менен жөнөтүлбөгөн cookie файлдары бар. {PH1}"
+    "message": "This site has cookies in another partition, that weren’t sent with this request. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Бул сурамдын cookie файлдары жок"
@@ -11079,19 +11295,19 @@
     "message": "Кийинкиге калтырылган (Жаңыртуу)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotAllowed": {
-    "message": "Кийинкиге калтырылган жок (сурам сеанстын алкагында, бирок демилгечиге жаңыртууга уруксат берилген эмес)"
+    "message": "Not deferred (Request is in scope of session but initiator isn’t allowed to trigger refresh)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | inScopeRefreshNotYetNeeded": {
     "message": "Кийинкиге калтырылган жок (сурам сеанстын алкагында, бирок cookie файлдары дагы эле бар)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | notInScope": {
-    "message": "Кийинкиге калтырылган жок (сурам сеанстын алкагында эмес)"
+    "message": "Not deferred (Request isn’t in scope of session)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshAttempted": {
     "message": "Кийинкиге калтырылган жок (активдүү жаңыртуу аракети жасалды)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | proactiveRefreshNotPossible": {
-    "message": "Кийинкиге калтырылган жок (сурам сеанстын алкагында, бирок алдын ала жаңыртууга болбойт)"
+    "message": "Not deferred (Request is in scope of session but proactive refresh isn’t possible)"
   },
   "panels/network/RequestDeviceBoundSessionsView.ts | sessionId": {
     "message": "Сеанстын идентификатору"
@@ -11589,7 +11805,7 @@
     "message": "Кеңири маалымат"
   },
   "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
-    "message": "Бул сурам тармак аркылуу эмес, сурамдын баштапкы аталыштарын сактабаган жергиликтүү кештен алынгандыктан, шарттуу аталыштар гана жеткиликтүү. Сурам аталыштарын толугу менен көрүү үчүн кешти өчүрүңүз."
+    "message": "Only provisional headers are available because this request wasn’t sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
     "message": "Убактылуу аталыштар көрсөтүлдү"
@@ -11661,7 +11877,7 @@
     "message": "Эгер булак менен документ бир сайттан алынса, бул параметрди тандаңыз"
   },
   "panels/network/components/ResponseHeaderSection.ts | onlyChooseThisOptionIfAn": {
-    "message": "Бул параметрди ушул булак көрсөтүлгөн арбитражга берилген вебсайт коопсуз болсо гана тандаңыз"
+    "message": "Only choose this option if an arbitrary website including this resource doesn’t impose a security risk"
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
     "message": "Бул документте түрдүү булактардан ачуу эрежелери көрсөтүлгөндүктөн, анын сыноо чөйрөсүндөгү iframe терезеси аркылуу ачылган калкып чыгуучу терезеде жүктөө аракети бөгөттөлгөн"
@@ -11864,8 +12080,17 @@
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
     "message": "Ажыратылган элементтер JS шилтемеси аркылуу сакталган объекттерди көрсөтөт"
   },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsList": {
+    "message": "Ажыратылган элементтердин тизмеси"
+  },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "Ажыратылган элементтер"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedNodes": {
+    "message": "Ажыратылган түйүндөр"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | nodeSize": {
+    "message": "Түйүндөрдүн саны"
   },
   "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
     "message": "Ажыратылган элементтерди алуу"
@@ -12689,6 +12914,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Кайра ойнотууну токтотуу"
   },
+  "panels/recorder/RecordingView.ts | code": {
+    "message": "Code"
+  },
   "panels/recorder/RecordingView.ts | codeFormat": {
     "message": "Коддун форматы"
   },
@@ -12752,11 +12980,14 @@
   "panels/recorder/RecordingView.ts | showCode": {
     "message": "Кодду көрсөтүү"
   },
+  "panels/recorder/RecordingView.ts | steps": {
+    "message": "Steps"
+  },
   "panels/recorder/RecordingView.ts | timeout": {
     "message": "Таймаут: {value} мсек."
   },
   "panels/recorder/RecordingView.ts | timeoutExplanation": {
-    "message": "Таймаут параметри (миллисекунд менен) жаздырууну ойнотуудагы ар бир аракетке карата колдонулат. Мисалы, эгер CSS тандагычы аныктаган DOM элементи белгилүү бир убакыттын ичинде баракта көрүнбөсө, ката кетип, жаздыруу ойнотулбай калат."
+    "message": "The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector doesn’t appear on the page within the specified timeout, the replay fails with an error."
   },
   "panels/recorder/RecordingView.ts | timeoutLabel": {
     "message": "Таймаут"
@@ -13053,7 +13284,7 @@
     "message": "жигердүү аралаш мазмун"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "Бул барактагы бардык булактар коопсуз."
+    "message": "All resources on this page are served securely"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "баары коопсуз түрдө жүктөлдү"
@@ -13071,7 +13302,7 @@
     "message": "Тастыктаманын тунуктугу"
   },
   "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
-    "message": "Chrome бул жалган сайт болушу мүмкүн экенин аныктады."
+    "message": "Chrome has determined that this site could be fake or fraudulent"
   },
   "panels/security/SecurityPanel.ts | cipher": {
     "message": "Шифр"
@@ -13098,10 +13329,10 @@
     "message": "Толук чоо-жайын жашыруу"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "Эгер бул жаңылыш көрсөтүлүп жатат деп ойлосоңуз, https://g.co/chrome/lookalike-warnings баракчасына баш багыңыз."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "Эгер бул жаңылыш көрсөтүлүп жатат деп ойлосоңуз, https://g.co/chrome/lookalike-warnings баракчасына баш багыңыз."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Маалымат"
@@ -13134,7 +13365,7 @@
     "message": "(жок)"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
-    "message": "Бул булактын коопсуздугу тууралуу маалымат жеткиликсиз."
+    "message": "No security details are available for this origin"
   },
   "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "Коопсуздук маалымат жок"
@@ -13167,10 +13398,10 @@
     "message": "Жалпыга ачык ачкычты кадап коюу айланып өтүлдү"
   },
   "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
-    "message": "Жалпыга ачык ачкычты кадоо аракетин жергиликтүү негизги тастыктама четке какты."
+    "message": "Public-Key-Pinning was bypassed by a local root certificate"
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "HTTP булактары үчүн сурамдарды жаздыруу үчүн баракты кайрадан жүктөңүз."
+    "message": "Reload the page to record requests for HTTP resources"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "Булактар"
@@ -13224,73 +13455,73 @@
     "message": "Subject Alternative Name табылбай жатат"
   },
   "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
-    "message": "Бул сайттын тастыктамалар чынжырында SHA-1 алгоритми менен кол коюлган тастыктама камтылган."
+    "message": "The certificate chain for this site contains a certificate signed using SHA-1"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "Бул сайттын тастыктамасында домен аталышын же IP даректи камтыган Subject Alternative Name кеңейтүүсү жок."
+    "message": "The certificate for this site doesn’t contain a Subject Alternative Name extension containing a domain name or IP address"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
-    "message": "Бул сайттын тастыктамасынын мөөнөтү 48 саатка жетпей бүтөт. Аны жаңыртуу керектелет."
+    "message": "The certificate for this site expires in less than 48 hours and needs to be renewed"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
-    "message": "Бул сайт менен болгон байланыш {PH1}, {PH2} жана {PH3} аркылуу шифрленип, аутентификацияланган."
+    "message": "The connection to this site is encrypted and authenticated using {PH1}, {PH2}, and {PH3}"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "Бул сайтка байланышуу жарактуу, ишенимдүү сервер тастыктамасын {PH1} чыгарган."
+    "message": "The connection to this site is using a valid, trusted server certificate issued by {PH1}"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
-    "message": "Жогоруда берилген коопсуздук маалыматы биринчи текшерилген жооптон алынды."
+    "message": "The security details above are from the first inspected response"
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Сервер колтамгасы эскирип калган SHA-1 алгоритмин колдонот. Анын ордуна SHA-2 колтамга алгоритмин иштетиңиз. (Бул тастыктамадагы колтамгадан айырмаланат.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "Бул ката барагы."
+    "message": "This is an error page"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
-    "message": "Бул барак HTTPS боюнча кооптуу деп эсептелген булактан алынган."
+    "message": "This origin is a non-HTTPS secure origin"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "Бул барак HTTPS боюнча кооптуу деп эсептелген булактан алынган."
+    "message": "This page has a non-HTTPS secure origin"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "Бул баракта кооптуу action атрибуту камтылган форма бар."
+    "message": "This page includes a form with a non-secure action attribute"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "Бул баракта HTTP булактары камтылган."
+    "message": "This page includes HTTP resources"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "Бул баракта тастыктама каталары менен жүктөлгөн булактар бар."
+    "message": "This page includes resources that were loaded with certificate errors"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "Бул копптуу баракча (Google Коопсуз серептөө белгиледи)."
+    "message": "This page is dangerous (flagged by Google Safe Browsing)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "Бул кооптуу баракча (шифрленбеген HTTP)."
+    "message": "This page is insecure (unencrypted HTTP)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Бул шектүү баракча"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "Бул шектүү баракча (Chrome белгиледи)."
+    "message": "This page is suspicious (flagged by Chrome)"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "Бул сурам Chrome'дун Тастыктама тунуктугу боюнча саясатына шайкеш келет."
+    "message": "This request complies with Chrome’s Certificate Transparency policy"
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "Бул сурам Chrome'дун Тастыктама тунуктугу боюнча саясатына жооп бербейт."
+    "message": "This request doesn’t comply with Chrome’s Certificate Transparency policy"
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "Бул жооп кэштен жүктөлдү. Айрым коопсуздук маалыматы жок болушу мүмкүн."
   },
   "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
-    "message": "Бул сайттын жарамдуу жана ишенимдүү тастыктамасы жок ({PH1})."
+    "message": "This site is missing a valid, trusted certificate ({PH1})"
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "Бул сайттагы түйүндүн аталышы {PH1} сайтына окшош көрүнүшү мүмкүн. Чабуулчулар кээ бир учурларда домендин аталышына кичинекей, көзгө көрүнбөгөн өзгөртүүлөрдү киргизип, сайттарды туурашат."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "Бул барактын абалын текшерүү үчүн g.co/safebrowsingstatus бөлүмүнө өтүңүз."
+    "message": "To check this page’s status, visit g.co/safebrowsingstatus"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "белгисиз"
@@ -13317,16 +13548,16 @@
     "message": "Сурамдарды Тармак панелинде көрсөтүү"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "Жакында тастыктамасында каталары бар мазмунду (скриптер же iframe терезелери сыяктуу) ушул сайтта иштетүүгө уруксат бердиңиз."
+    "message": "You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "Жакында ушул сайтта кооптуу мазмунду (скрипттер же iframe терезелери сыяктуу) иштетүүгө уруксат бердиңиз."
+    "message": "You have recently allowed non-secure content (such as scripts or iframes) to run on this site"
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "Бул булакка туташуу коопсуз эмес."
+    "message": "Your connection to this origin isn’t secure"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Барагыңыз бөгөттөлгөн кооптуу булактарга сурам жөнөттү."
+    "message": "Your page requested non-secure resources that were blocked"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Негизги булак"
@@ -13653,7 +13884,7 @@
     "message": "Түшүндүрмөлөрдү түзүү үчүн чат билдирүүлөрү, Иштеп чыгуучунун куралдарынын панелдери жана Web API'лери аркылуу бул сайт үчүн жеткиликтүү маалымат жана тармак сурамдары, файлдар жана майнаптуулук маалыматы сыяктуу сиз тандаган нерселер Google'га жөнөтүлөт жана бул функцияны жакшыртуу үчүн адистер тарабынан каралышы мүмкүн. Бул ЖИ функциясы сыноодон өтүп жаткандыктан, кээде туура эмес иштеши мүмкүн."
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLogging": {
-    "message": "Түшүндүрмөлөрдү түзүү үчүн чат билдирүүлөрү, Иштеп чыгуучунун куралдарынын панелдери жана Web API'лери аркылуу бул сайтта жеткиликтүү болгон маалымат жана тармак сурамдары, файлдар жана майнаптуулук маалыматы сыяктуу сиз тандаган нерселер Google'га жөнөтүлөт. Сиз тапшырган жана бул функция тарабынан түзүлгөн контент Google'дун ЖИ үлгүлөрүн жакшыртуу үчүн колдонулбайт. Бул ЖИ функциясы сыноодон өтүп жаткандыктан, кээде туура эмес иштеши мүмкүн."
+    "message": "To generate explanations, chat messages, data accessible for this site via DevTools panels and Web APIs, and items you select such as network requests, files, and performance traces are sent to Google. The content you submit and that is generated by this feature won’t be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right."
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1": {
     "message": "DevTools куралдар топтомундагы ЖИ жардамчысы менен стилдештирүү, тармак, майнаптуулук, код, жеткиликтүүлүк жана сактагычтагы мүчүлүштүктөрдү оңдоңуз"
@@ -13674,13 +13905,13 @@
     "message": "Код сунуштарын түзүү үчүн консолго киргизген маалыматыңыз, учурдагы консоль сеансынын таржымалы, учурда текшерилип жаткан CSS жана ачылып турган файлдын контенти Google менен бөлүшүлөт. Бул функцияны жакшыртуу үчүн бул маалыматты түзөтүүчү адамдар көрүшү мүмкүн."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Код сунуштарын түзүү үчүн консолго киргизген маалыматыңыз, учурдагы консоль сеансынын таржымалы, учурда текшерилип жаткан CSS жана ачылып турган файлдын контенти Google менен бөлүшүлөт. Бул маалымат Google'дун ЖИ үлгүлөрүн жакшыртуу үчүн колдонулбайт. Уюмуңуз бул параметрлерди каалаган убакта өзгөртө алат."
+    "message": "To generate code suggestions, your console input, the history of your current console session, the currently inspected CSS, and the contents of the currently open file are shared with Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Консолдогу билдирүү, байланышкан стекти трассирлөө, тиешелүү код жана байланышкан тармактын аталыштары түшүндүрмөлөрдү түзүү үчүн Google'га жөнөтүлөт. Бул маалыматты түзөтүүчү адамдар бул функцияны жакшыртуу үчүн көрүшү мүмкүн."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Консолдогу билдирүү, байланышкан стекти трассирлөө, тиешелүү код жана байланышкан тармактын аталыштары түшүндүрмөлөрдү түзүү үчүн Google'га жөнөтүлөт. Бул маалымат Google'дун ЖИ үлгүлөрүн жакшыртуу үчүн колдонулбайт. Уюмуңуз бул параметрлерди каалаган убакта өзгөртө алат."
+    "message": "To generate explanations, the console message, associated stack trace, related source code, and the associated network headers are sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Аймакка жараша Google маалымат чогултпашы мүмкүн"
@@ -13716,7 +13947,7 @@
     "message": "Аннотация сунуштарын түзүү үчүн майнаптуулук маалыматыңыз Google'га жөнөтүлөт. Бул функцияны жакшыртуу үчүн бул маалыматты түзөтүүчү адамдар көрүшү мүмкүн."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Аннотация сунуштарын түзүү үчүн майнаптуулук маалыматыңыз Google'га жөнөтүлөт. Бул маалымат Google'дун ЖИ үлгүлөрүн жакшыртуу үчүн колдонулбайт. Уюмуңуз бул параметрлерди каалаган убакта өзгөртө алат."
+    "message": "To generate annotation suggestions, your performance trace is sent to Google. This data won’t be used to improve Google’s AI models. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | geoRestricted": {
     "message": "Бул функция сиз жашаган аймакта жеткиликсиз"
@@ -13734,7 +13965,7 @@
     "message": "Кененирээк"
   },
   "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
-    "message": "Жашыруун же Конок режиминде ЖИден жардам алууга болбойт"
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode"
   },
   "panels/settings/AISettingsTab.ts | notLoggedIn": {
     "message": "Бул функция Chrome'го Google аккаунтуңуз менен киргенде гана жеткиликтүү"
@@ -13755,7 +13986,7 @@
     "message": "Бул функциялар Google'га тиешелүү маалыматтарды жөнөтөт. Google бул маалыматты жана пикирди адистердин жардамы менен кызматтарын жакшыртуу үчүн колдонот. Купуя же жеке маалыматтарды тапшырбаңыз."
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogleNoLogging": {
-    "message": "Мазмунуңузду түзөтүүчү адамдары ЖИ жакшыртуу үчүн колдонбойт. Уюмуңуз бул параметрлерди каалаган убакта өзгөртө алат."
+    "message": "Your content won’t be used by human reviewers to improve AI. Your organization may change these settings at any time."
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "Азыраак көрсөтүү"
@@ -13797,7 +14028,7 @@
     "message": "Шилтеме берилген аталыш / касиет"
   },
   "panels/settings/BackendLinkingSettingsTab.ts | invalidRulesWarning": {
-    "message": "Жараксыз эрежелер колдонулбайт же сакталбайт"
+    "message": "Invalid rules won’t be applied or saved"
   },
   "panels/settings/BackendLinkingSettingsTab.ts | invalidUrlPattern": {
     "message": "URL үлгүсү жарактуу болушу керек"
@@ -14103,13 +14334,13 @@
     "message": "Х огун кесип өтүү"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutXAndWidthExceedDeviceWidth": {
-    "message": "Кесүүчү жердин туурасы жана x мааниси түзмөктүн туурасынан ашпашы керек"
+    "message": "Cutout x plus width mustn’t exceed the device width"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutY": {
     "message": "Y огун кесип өтүү"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | cutoutYAndHeightExceedDeviceHeight": {
-    "message": "Кесүүчү жердин бийиктиги жана бийиктиги түзмөктүн бийиктигинен ашпашы керек"
+    "message": "Cutout y plus height mustn’t exceed the device height"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | defaultDevices": {
     "message": "Демейки түзмөктөр"
@@ -14160,7 +14391,7 @@
     "message": "Төмөнкү кыстарма"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaHorizontalInsetsExceedWidth": {
-    "message": "{PH1}: Сол жана оң жактагы кыстармалар түзмөктүн туурасынан ашпашы керек"
+    "message": "{PH1}: Left and right insets mustn’t exceed the device width"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaLeft": {
     "message": "Сол жактагы кыстарма"
@@ -14175,7 +14406,7 @@
     "message": "{PH1}: {PH2} 0 менен {PH3} ортосундагы бүтүн сан болушу керек"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
-    "message": "{PH1}: Жогорку жана төмөнкү кыстармалар түзмөктүн бийиктигинен ашпашы керек"
+    "message": "{PH1}: Top and bottom insets mustn’t exceed the device height"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Колдонуучу агент сабы"
@@ -14403,7 +14634,7 @@
     "message": "Кеңири маалымат: Ажырым чекиттеринин түрлөрү"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
-    "message": "Консолго билдирүү жөнөтүңүз, бузбаңыз"
+    "message": "Log a message to Console, don’t break"
   },
   "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "Таржымал билдирүүсү, мис. 'x is', x"
@@ -14721,7 +14952,7 @@
     "message": "Бул файл үчүн булак картасы өткөрүлүп жиберилди"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
-    "message": "Мүчүлүштүктөрдү оңдогуч скрипттерди өткөрүп жиберет, ал эми өзгөчө учурларга токтолбойт"
+    "message": "The debugger will skip stepping through this script, and won’t stop on exceptions"
   },
   "panels/sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
     "message": "Бул скрипт мүчүлүштүктөрдү оңдогучтун четке кагылгандар тизмесинде"
@@ -14760,7 +14991,7 @@
     "message": "Ошол сапка өтүү үчүн номерди териңиз"
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
-    "message": "Бул аракетти артка кайтаруу мүмкүн эмес"
+    "message": "This action can’t be undone"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Workspace кызматынан \"{PH1}\" өчүрүлсүнбү?"
@@ -14799,7 +15030,7 @@
     "message": "Бул папка чыгарылып салынсынбы?"
   },
   "panels/sources/NavigatorView.ts | folderWillNotBeShown": {
-    "message": "Бул папка жана андагы материалдар иштөө аймагында көрсөтүлбөйт"
+    "message": "This folder and its contents won’t be shown in workspace"
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Көчүрүү…"
@@ -14853,7 +15084,7 @@
     "message": "Мазмунду өзгөртүп коюу"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
-    "message": "\"{PH1}\" баштапкы коду өзгөртүлгөн файл жана аны өзгөртүүгө болбойт"
+    "message": "‘{PH1}’ is a source mapped file and can’t be overridden"
   },
   "panels/sources/PersistenceActions.ts | overrideSourceMappedFileWarning": {
     "message": "Анын ордуна ‘{PH1}’ өзгөртүлсүнбү?"
@@ -14975,6 +15206,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Саптын мазмундарын көчүрүү"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Капталдагы мүчүлүштүктөрдү оңдогуч тактасы жашырылды"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Капталдагы мүчүлүштүктөрдү оңдогуч тактасы көрсөтүлдү"
+  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Иштөө аймагынын папкасын бул жерге алып келиңиз"
   },
@@ -14995,6 +15232,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Дагы параметрлер"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Капталдагы навигатор тактасы жашырылды"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Капталдагы навигатор тактасы көрсөтүлдү"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Булактар панелинен ачуу"
@@ -15174,7 +15417,7 @@
     "message": "Шайкештирилбеген стекти трассирлөөнү өчүрүү"
   },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
-    "message": "Ажырым чекитине жеткенде Булактар панелин көрсөтпөө"
+    "message": "Don’t focus Sources panel when triggering a breakpoint"
   },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Сөздү автоматтык түрдө бүтүрүүнү өчүрүү"
@@ -15210,28 +15453,28 @@
     "message": "Мүчүлүштүктөрдү оңдоо учурунда саптагы өзгөрүлмө маанилерди көрсөтүү"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyPrettyPrintMinifiedSources": {
-    "message": "Кичирейтилген булактар автоматтык түрдө форматталбасын"
+    "message": "Don’t automatically pretty print minified sources"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "Капталдагы тактада жайгашкан файлдар автоматтык түрдө ачылбасын"
+    "message": "Don’t automatically reveal files in sidebar"
   },
   "panels/sources/sources-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "Шайкештирилбеген стек трассирлөөлөрү тартылбасын"
+    "message": "Don’t capture async stack traces"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
-    "message": "Чегинүү аныкталбасын"
+    "message": "Don’t detect indentation"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
     "message": "Өзгөрмөлөрдүн маанилери сапта көрсөтүлбөсүн"
   },
   "panels/sources/sources-meta.ts | doNotPauseOnExceptions": {
-    "message": "Өзгөчө учурларда тындырылбасын"
+    "message": "Don’t pause on exceptions"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
-    "message": "Жашыруун жана мазмундуу скрипттерден изделбесин"
+    "message": "Don’t search in anonymous and content scripts"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Боштук белгилери көрсөтүлбөсүн"
+    "message": "Don’t show whitespace characters"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "Ажырым чекитине жеткенде Булактар панелин көрсөтүү"
@@ -16143,7 +16386,7 @@
     "message": "Өзгөртүүгө байланыштуу касиет талаанын өлчөмүнө жараша болот"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget": {
-    "message": "Өзгөртүүгө байланыштуу касиетти максатка карата тездетүүгө болбойт"
+    "message": "Transform-related property can’t be accelerated on target"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
     "message": "Белгисиз себеп"
@@ -17303,8 +17546,8 @@
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
     "message": "Кайра чалуу буферинин өлчөмү"
   },
-  "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "Кайра чалуулардын интервалы"
+  "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
+    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Азыркы убакыт"
@@ -18227,6 +18470,9 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Координата"
   },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
+    "message": "Remove {propertyName}: {propertyValue}"
+  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Логикалык"
   },
@@ -18241,6 +18487,9 @@
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | positionAreaGridDescription": {
     "message": "Өтүү үчүн жебе баскычтарын, тандоо үчүн Боштук же Enter баскычтарын, ал эми диапазонду тандоо үчүн Shift + жебе баскычтарын колдонуңуз"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | selectButton": {
+    "message": "Add {propertyName}: {propertyValue}"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "JavaScript объекти катары көрсөтүү"

@@ -354,10 +354,10 @@
     "message": "Na-block ang pagsubok na itong magtakda ng cookie sa pamamagitan ng header na \"Set-Cookie\" dahil mayroon itong attribute na \"SameSite=None\" pero wala itong attribute na \"Secure,\" na nire-require para magamit ang \"SameSite=None\""
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "Na-block ang pagtatangkang ito na magtakda ng cookie sa pamamagitan ng header na \"Set-Cookie\" dahil mayroon itong attribute na \"{PH1}\" pero nagmula ito sa isang cross-site na sagot na hindi sagot sa top-level na navigation"
+    "message": "Na-block ang pagtatangkang ito na magtakda ng cookie sa pamamagitan ng header na \"Set-Cookie\" dahil mayroon itong attribute na \"{PH1}\" pero nagmula ito sa isang cross-site na sagot na hindi sagot sa top-level na pag-navigate"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "Hindi tumukoy ang header na \"Set-Cookie\" na ito ng attribute na \"SameSite\" at na-default ito sa \"SameSite=Lax,\" at na-block ito dahil nagmula ito sa isang cross-site na sagot na hindi sagot sa top-level na navigation. Dapat ay nakatakda ang header na \"Set-Cookie\" sa \"SameSite=None\" para ma-enable ang cross-site na paggamit."
+    "message": "Hindi tumukoy ang header na \"Set-Cookie\" na ito ng attribute na \"SameSite\" at na-default ito sa \"SameSite=Lax,\" at na-block ito dahil nagmula ito sa isang cross-site na sagot na hindi sagot sa top-level na pag-navigate. Dapat ay nakatakda ang header na \"Set-Cookie\" sa \"SameSite=None\" para ma-enable ang cross-site na paggamit."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
     "message": "Na-block ang pagsubok na itong magtakda ng cookie sa pamamagitan ng header na \"Set-Cookie\" dahil mayroon itong attribute na \"Secure\" pero hindi ito natanggap sa pamamagitan ng secure na koneksyon"
@@ -384,10 +384,10 @@
     "message": "Na-block ang cookie na ito dahil napakalaki nito. Hindi dapat mas mababa sa o katumbas ng 4096 na character ang pinagsamang haba ng pangalan at value."
   },
   "core/sdk/NetworkRequest.ts | notOnPath": {
-    "message": "Na-block ang cookie na ito dahil ang path nito ay hindi eksaktong tugma para sa o superdirectory ng path ng URL ng request"
+    "message": "Na-block ang cookie na ito dahil hindi eksaktong tugma ang path nito para sa o superdirectory ng path ng URL ng request"
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
-    "message": "Na-block ang cookie na ito dahil mayroon itong attribute na \"SameSite=Lax\" at isinagawa ang request mula sa ibang site at hindi ito sinimulan sa pamamagitan ng pinakamataas na level ng pag-navigate"
+    "message": "Na-block ang cookie na ito dahil mayroon itong attribute na \"SameSite=Lax\" at isinagawa ang request mula sa ibang site at hindi ito sinimulan sa pamamagitan ng top-level na pag-navigate"
   },
   "core/sdk/NetworkRequest.ts | sameSiteNoneInsecure": {
     "message": "Na-block ang cookie na ito dahil mayroon itong attribute na \"SameSite=None\" pero hindi ito namarkahang \"Secure.\" Ang cookies na walang paghihigpit ng SameSite ay dapat may markang \"Secure\" at ipinadala sa pamamagitan ng secure na koneksyon."
@@ -396,7 +396,7 @@
     "message": "Na-block ang cookie na ito dahil mayroon itong attribute na \"SameSite=Strict\" at ginawa ang kahilingan mula sa ibang site. Kabilang dito ang mga kahilingan sa pinakamataas na antas na navigation na sinimulan ng iba pang site."
   },
   "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
-    "message": "Hindi tumukoy ang cookie na ito ng attribute na \"SameSite\" noong naka-store ito at na-default ito sa \"SameSite=Lax,\" at na-block ito dahil ginawa ang request mula sa ibang site at hindi ito sinimulan sa top-level na navigation. Dapat ay nakatakda ang cookie sa \"SameSite=None\" para ma-enable ang cross-site na paggamit."
+    "message": "Hindi tumukoy ang cookie na ito ng attribute na \"SameSite\" noong naka-store ito at na-default ito sa \"SameSite=Lax,\" at na-block ito dahil ginawa ang request mula sa ibang site at hindi ito sinimulan sa top-level na pag-navigate. Dapat ay nakatakda ang cookie sa \"SameSite=None\" para ma-enable ang cross-site na paggamit."
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Na-block ang cookie na ito dahil mayroon itong attribute na \"Secure\" at hindi secure ang koneksyon"
@@ -434,8 +434,14 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Na-pause sa debugger"
   },
+  "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
+    "message": "Hindi ma-load ang resource para sa hindi available na cross-origin na frame"
+  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Nakansela ang pag-load dahil sa pag-reload ng sinisiyasat na page"
+  },
+  "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
+    "message": "Hindi ma-load ang http(s) resource nang walang target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Nagka-error sa pag-load ng log"
@@ -681,7 +687,7 @@
     "message": "Huwag mag-emulate ng naka-focus na page"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateAnyVisionDeficiency": {
-    "message": "Huwag i-emulate ang anumang problema sa paningin"
+    "message": "Huwag mag-emulate ng anumang kapansanan sa paningin"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotEmulateCss": {
     "message": "Huwag i-emulate ang CSS {PH1}"
@@ -1334,6 +1340,9 @@
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
     "message": "Inalis ang paghihigpit na DtlsSrtpKeyAgreement. Tinukoy mo ang isang true na value para sa paghihigpit na ito, na walang epekto, pero puwede mong alisin ang paghihigpit na ito para sa kaayusan."
   },
+  "generated/Deprecation.ts | RTCPeerConnectionCreateDTMFSender": {
+    "message": "Hindi na ginagamit at aalisin na ang RTCPeerConnection.createDTMFSender(). Gamitin na lang ang RTCRtpSender.dtmf."
+  },
   "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
     "message": "Hindi na ginagamit at aalisin na ang nakabatay sa callback na getStats(). Gamitin na lang ang sumusunod sa spec na getStats()."
   },
@@ -1556,6 +1565,9 @@
   "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
     "message": "Ang mga element ng label"
   },
+  "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
+    "message": "Pinakamahuhusay na kagawian sa mga pahintulot sa web"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Pangangasiwa ng mga interbensyon sa mabigat na ad"
   },
@@ -1572,7 +1584,7 @@
     "message": "Mga pagpapahusay"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
-    "message": "Isyu na error sa page: hindi gumagana nang maayos ang page"
+    "message": "Isang isyu na error sa page: hindi gumagana nang tama ang page"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
     "message": "Mga error sa page"
@@ -2570,6 +2582,12 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | politeness": {
     "message": "Pagiging Magalang"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInA11yTree": {
+    "message": "Ipakita sa Accessibility tree"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | revealInElements": {
+    "message": "Ipakita sa panel ng Mga Element"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
     "message": "Oras"
   },
@@ -3080,9 +3098,6 @@
   "panels/ai_assistance/components/ChatInput.ts | inputTextAriaDescription": {
     "message": "Puwede mo ring gamitin ang isa sa mga iminumungkahing prompt sa itaas para simulan ang iyong pag-uusap"
   },
-  "panels/ai_assistance/components/ChatInput.ts | learnAbout": {
-    "message": "Alamin ang tungkol sa AI sa DevTools"
-  },
   "panels/ai_assistance/components/ChatInput.ts | revealContextDescription": {
     "message": "Ipakita ang napiling item ng konteksto sa DevTools"
   },
@@ -3147,7 +3162,7 @@
     "message": "Ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance at posibleng makita ng mga taong tagasuri para mapahusay ang feature na ito. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | privacyDisclaimerEnterpriseNoLogging": {
-    "message": "Ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance. Hindi gagamitin ang content na isinumite at binuo ng feature na ito para pahusayin ang mga model ng Google AI. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
+    "message": "Ipinapadala sa Google ang mga chat message, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga network request, file, at trace ng performance. Hindi gagamitin ang content na isinumite at binuo ng feature na ito para pahusayin ang mga AI model ng Google Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
   },
   "panels/ai_assistance/components/OptInChangeDialog.ts | title": {
     "message": "Mas pinahusay ang Tulong ng AI"
@@ -3265,6 +3280,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Kulay ng background"
+  },
+  "panels/application/AppManifestView.ts | bundleId": {
+    "message": "Bundle ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Nakalkulang app ID"
@@ -3397,6 +3415,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Hindi inihahatid ang page mula sa isang secure na origin"
+  },
+  "panels/application/AppManifestView.ts | parentAppName": {
+    "message": "Pangalan ng parent app"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platform"
@@ -3726,7 +3747,7 @@
     "message": "Ihinto ang pag-record ng mga event"
   },
   "panels/application/BackgroundServiceView.ts | storageKey": {
-    "message": "Storage Key"
+    "message": "Storage key"
   },
   "panels/application/BackgroundServiceView.ts | swScope": {
     "message": "Saklaw ng Service Worker"
@@ -3735,7 +3756,7 @@
     "message": "Timestamp"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "Mga pagpigil sa bounce tracking"
+    "message": "Mga pag-mitigate sa bounce tracking"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "I-clear ang lahat ng cookies"
@@ -3783,10 +3804,10 @@
     "message": "Na-delete ang item sa storage"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
-    "message": "Mga Item sa Storage ng DOM"
+    "message": "Mga item sa storage ng DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "Na-clear ang mga DOM Storage Item"
+    "message": "Na-clear ang mga item sa storage ng DOM"
   },
   "panels/application/DOMStorageItemsView.ts | explainItem": {
     "message": "Ipaliwanag ang item na ito"
@@ -4206,10 +4227,10 @@
     "message": "Oo"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
-    "message": "Mga Item sa Storage ng Extension"
+    "message": "Mga item sa storage ng extension"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
-    "message": "Na-clear ang Mga Item sa Storage ng Extension"
+    "message": "Na-clear ang mga item sa storage ng extension"
   },
   "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "Ang frame ancestor ay isang hindi secure na konteksto"
@@ -4304,6 +4325,9 @@
   "panels/application/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Itinuturing na ad frame ang frame na ito dahil ad frame ang parent frame nito"
   },
+  "panels/application/FrameDetailsView.ts | refreshSpellCheckCustomDictionary": {
+    "message": "I-refresh ang custom na diksyunaryo ng spell check"
+  },
   "panels/application/FrameDetailsView.ts | reportingTo": {
     "message": "nag-uulat sa"
   },
@@ -4331,6 +4355,12 @@
   "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "Available ang constructor ng SharedArrayBuffer pero hindi maililipat ang SABs sa pamamagitan ng postMessage"
   },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionary": {
+    "message": "Custom na diksyunaryo ng spell check"
+  },
+  "panels/application/FrameDetailsView.ts | spellCheckCustomDictionaryExplanation": {
+    "message": "Mga salitang idinagdag gamit ang document.spellCheckCustomDictionary.addWords(). Hindi ifa-flag ng spell checker ang mga ito sa dokumentong ito."
+  },
   "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Hindi secure ang scheme ng frame"
   },
@@ -4357,6 +4387,9 @@
   },
   "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "Mangangailangan ang ⚠️ ng cross-origin na na-isolate na konteksto sa hinaharap"
+  },
+  "panels/application/FrameDetailsView.ts | words": {
+    "message": "Mga Salita"
   },
   "panels/application/FrameDetailsView.ts | yes": {
     "message": "Oo"
@@ -4386,7 +4419,7 @@
     "message": "I-delete ang pinili"
   },
   "panels/application/IndexedDBViews.ts | expandRecursively": {
-    "message": "Palawakin sa Recursive na Paraan"
+    "message": "I-expand sa recursive na paraan"
   },
   "panels/application/IndexedDBViews.ts | filterByKey": {
     "message": "I-filter ayon sa key (magpakita ng mga key na mas mataas o katumbas ng)"
@@ -4395,7 +4428,7 @@
     "message": "IDB"
   },
   "panels/application/IndexedDBViews.ts | indexedDb": {
-    "message": "Naka-index na DB"
+    "message": "IndexedDB"
   },
   "panels/application/IndexedDBViews.ts | keyGeneratorValueS": {
     "message": "Value ng tagabuo ng key: {PH1}"
@@ -4581,13 +4614,13 @@
     "message": "Walang na-detect na storage ng cache"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
-    "message": "I-refresh ang Mga Cache"
+    "message": "I-refresh ang mga cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | deleteSelected": {
-    "message": "I-delete ang Pinili"
+    "message": "I-delete ang pinili"
   },
   "panels/application/ServiceWorkerCacheViews.ts | filterByPath": {
     "message": "I-filter ayon sa path"
@@ -4614,10 +4647,10 @@
     "message": "Pumili ng cache entry sa itaas na ipe-preview"
   },
   "panels/application/ServiceWorkerCacheViews.ts | serviceWorkerCache": {
-    "message": "Cache ng Service Worker"
+    "message": "Service Worker cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | timeCached": {
-    "message": "Tagal ng Pag-cache"
+    "message": "Oras na na-cache"
   },
   "panels/application/ServiceWorkerCacheViews.ts | totalEntriesS": {
     "message": "Kabuuang mga entry: {PH1}"
@@ -4635,7 +4668,7 @@
     "message": "Timeline"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | updateActivity": {
-    "message": "Aktibidad sa Pag-update"
+    "message": "Aktibidad sa pag-update"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Bersyon"
@@ -4644,19 +4677,19 @@
     "message": "Bypass para sa network"
   },
   "panels/application/ServiceWorkersView.ts | bypassTheServiceWorkerAndLoad": {
-    "message": "I-bypass ang service worker at mag-load ng mga resource mula sa network"
+    "message": "I-bypass ang Service Worker at mag-load ng mga resource mula sa network"
   },
   "panels/application/ServiceWorkersView.ts | clients": {
     "message": "Mga Kliyente"
   },
   "panels/application/ServiceWorkersView.ts | focus": {
-    "message": "focus"
+    "message": "I-focus"
   },
   "panels/application/ServiceWorkersView.ts | networkRequests": {
     "message": "Mga kahilingan sa network"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "Sa pag-reload ng page, puwersahang i-update ang service worker, at i-activate ito"
+    "message": "Sa pag-reload ng page, puwersahang i-update ang Service Worker, at i-activate ito"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "Pana-panahong pag-sync"
@@ -4698,16 +4731,16 @@
     "message": "Tingnan ang lahat ng pagpaparehistro"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
-    "message": "Service worker para sa {PH1}"
+    "message": "Service Worker para sa {PH1}"
   },
   "panels/application/ServiceWorkersView.ts | serviceWorkersFromOtherOrigins": {
-    "message": "Mga service worker mula sa iba pang pinagmulan"
+    "message": "Mga Service Worker mula sa iba pang origin"
   },
   "panels/application/ServiceWorkersView.ts | source": {
     "message": "Source"
   },
   "panels/application/ServiceWorkersView.ts | startString": {
-    "message": "Magsimula"
+    "message": "Simulan"
   },
   "panels/application/ServiceWorkersView.ts | status": {
     "message": "Status"
@@ -4728,13 +4761,13 @@
     "message": "I-unregister"
   },
   "panels/application/ServiceWorkersView.ts | unregisterServiceWorker": {
-    "message": "I-unregister ang service worker"
+    "message": "I-unregister ang Service Worker"
   },
   "panels/application/ServiceWorkersView.ts | update": {
     "message": "I-update"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
-    "message": "Cycle ng Pag-update"
+    "message": "Cycle ng pag-update"
   },
   "panels/application/ServiceWorkersView.ts | updateOnReload": {
     "message": "I-update sa pag-reload"
@@ -4752,10 +4785,10 @@
     "message": "Sa page na ito, puwede mong tingnan at i-delete ang mga storage bucket, at Storage APIs na nauugnay sa mga ito"
   },
   "panels/application/StorageItemsToolbar.ts | clearAll": {
-    "message": "I-clear Lahat"
+    "message": "I-clear lahat"
   },
   "panels/application/StorageItemsToolbar.ts | deleteSelected": {
-    "message": "I-delete ang Pinili"
+    "message": "I-delete ang pinili"
   },
   "panels/application/StorageItemsToolbar.ts | refresh": {
     "message": "I-refresh"
@@ -4782,13 +4815,13 @@
     "message": "Cookies"
   },
   "panels/application/StorageView.ts | fileSystem": {
-    "message": "System ng File"
+    "message": "System ng file"
   },
   "panels/application/StorageView.ts | indexDB": {
     "message": "IndexedDB"
   },
   "panels/application/StorageView.ts | internalError": {
-    "message": "Internal error"
+    "message": "Internal na error"
   },
   "panels/application/StorageView.ts | learnMore": {
     "message": "Matuto pa"
@@ -4863,7 +4896,7 @@
     "message": "Kinansela"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
-    "message": "{PH1} (na) Nakansela"
+    "message": "Nakansela na ang {PH1}"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "I-clear ang mga filter"
@@ -4896,7 +4929,7 @@
     "message": "Error"
   },
   "panels/application/WebMCPView.ts | failed": {
-    "message": "{PH1} (na) Hindi Naisagawa"
+    "message": "Hindi naisagawa ang {PH1}"
   },
   "panels/application/WebMCPView.ts | filter": {
     "message": "Filter"
@@ -4911,10 +4944,10 @@
     "message": "Imperative"
   },
   "panels/application/WebMCPView.ts | inProgress": {
-    "message": "Isinasagawa"
+    "message": "Kasalukuyang isinasagawa"
   },
   "panels/application/WebMCPView.ts | inProgressCount": {
-    "message": "{PH1} (na) Kasalukuyang Isinasagawa"
+    "message": "Kasalukuyang isinasagawa ang {PH1}"
   },
   "panels/application/WebMCPView.ts | input": {
     "message": "Input"
@@ -4926,13 +4959,13 @@
     "message": "Simulang makipag-interact sa iyong WebMCP agent para makita ang mga real-time na pag-call at pag-execute ng tool dito"
   },
   "panels/application/WebMCPView.ts | noCallsPlaceholderTitle": {
-    "message": "Aktibidad ng Tool"
+    "message": "Aktibidad ng tool"
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholder": {
     "message": "Lalabas dito ang mga nakarehistrong tool ng WebMCP para sa page na ito. Wala pang narehistro o na-detect na tool."
   },
   "panels/application/WebMCPView.ts | noToolsPlaceholderTitle": {
-    "message": "Mga Available na Tool ng WebMCP"
+    "message": "Mga available na tool ng WebMCP"
   },
   "panels/application/WebMCPView.ts | origin": {
     "message": "Origin"
@@ -4943,14 +4976,17 @@
   "panels/application/WebMCPView.ts | paste": {
     "message": "I-paste"
   },
+  "panels/application/WebMCPView.ts | pasteTooltip": {
+    "message": "I-paste ang mga parameter ng tool mula sa clipboard bilang JSON"
+  },
   "panels/application/WebMCPView.ts | pending": {
-    "message": "Isinasagawa"
+    "message": "Kasalukuyang isinasagawa"
   },
   "panels/application/WebMCPView.ts | revealTool": {
     "message": "Ipakita ang tool"
   },
   "panels/application/WebMCPView.ts | runTool": {
-    "message": "Paganahin ang Tool"
+    "message": "Paganahin ang tool"
   },
   "panels/application/WebMCPView.ts | status": {
     "message": "Status"
@@ -4962,7 +4998,7 @@
     "message": "Mga Detalye"
   },
   "panels/application/WebMCPView.ts | toolRegistry": {
-    "message": "Mga Available na Tool"
+    "message": "Mga available na tool"
   },
   "panels/application/WebMCPView.ts | toolTypes": {
     "message": "Mga uri ng tool"
@@ -4971,7 +5007,7 @@
     "message": "Na-unregister ang tool na ito"
   },
   "panels/application/WebMCPView.ts | totalCalls": {
-    "message": "Kabuuang {PH1} (na) tawag"
+    "message": "{PH1} (na) kabuuang tawag"
   },
   "panels/application/WebMCPView.ts | viewInElementsPanel": {
     "message": "Tingnan sa Elements panel"
@@ -5103,7 +5139,7 @@
     "message": "Naka-detect ang Chrome ng pagsubok na i-execute ang JavaScript habang nasa cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nag-request ng AppBanner"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng AppBanner"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Dini-disable ng mga pag-flag ang back/forward cache. Bumisita sa chrome://flags/#back-forward-cache para lokal itong i-enable sa device na ito."
@@ -5115,7 +5151,7 @@
     "message": "Naka-disable ang back-forward cache dahil sa hindi sapat na memory"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Hindi sinusuportahan ng pag-delegate ang back/forward cache"
+    "message": "Hindi sinusuportahan ng pag-delegate ang back-forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
     "message": "Naka-disable ang back-forward cache para sa prerenderer"
@@ -5124,7 +5160,7 @@
     "message": "Hindi puwedeng i-cache ang page dahil mayroon itong instance na BroadcastChannel na may mga nakarehistrong listener"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na may header na cache-control:no-store"
+    "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may header na cache-control:no-store"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
     "message": "Sadyang na-clear ang cache"
@@ -5151,10 +5187,10 @@
     "message": "May nagpe-play na media player noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng MediaSession API at nagtakda ng status ng pag-playback"
+    "message": "Hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng MediaSession API at nagtakda ng status ng pag-playback"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng MediaSession API at nagtatakda ng mga tagapangasiwa ng aksyon"
+    "message": "Hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng MediaSession API at nagtatakda ng mga tagapangasiwa ng aksyon"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
     "message": "Naka-disable ang back-forward cache dahil sa screen reader"
@@ -5169,7 +5205,7 @@
     "message": "Hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebAuthentication API"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng WebBluetooth API"
+    "message": "Hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebBluetooth API"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebUSB API"
@@ -5184,7 +5220,7 @@
     "message": "Hindi natapos mag-load ang dokumento bago nag-navigate paalis dito"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "May App Banner noong nag-navigate paalis"
+    "message": "May banner ng app noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
     "message": "May Password Manager ng Chrome noong nag-navigate paalis"
@@ -5193,7 +5229,7 @@
     "message": "Isinasagawa ang DOM distillation noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "May DOM Distiller Viewer noong nag-navigate paalis"
+    "message": "May DOM distiller viewer noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
     "message": "Naka-disable ang back/forward cache dahil gumagamit ang mga extension ng messaging API"
@@ -5208,13 +5244,13 @@
     "message": "Naka-disable ang back-forward cache dahil sa mga extension"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Ipinakita ang modal dialog, gaya ng dialog para sa pagsusumite ulit ng form o http password, para sa page noong nag-navigate paalis"
+    "message": "Ipinakita ang modal dialog, gaya ng dialog para sa pagsusumite ulit ng form o HTTP password, para sa page noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
     "message": "Ipinakita ang offline na page noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "May Out-Of-Memory Intervention bar noong nag-navigate paalis"
+    "message": "May intervention bar na wala nang memory noong nag-navigate paalis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
     "message": "May mga request sa pahintulot noong nag-navigate paalis"
@@ -5235,13 +5271,13 @@
     "message": "Naka-disable ang back-forward cache dahil sa isang error sa dokumento"
   },
   "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
-    "message": "Hindi puwedeng i-store sa bfcache ang mga page na gumagamit ng FencedFrames"
+    "message": "Hindi puwedeng i-store sa back-forward cache ang mga page na gumagamit ng FencedFrames"
   },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Inalis sa cache ang page para mapayagang ma-cache ang isa pang page"
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nagbigay ng access sa pag-stream ng media"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nagbigay ng access sa pag-stream ng media"
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may ilang partikular na uri ng naka-embed na content (hal. mga PDF)"
@@ -5250,7 +5286,7 @@
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng IdleManager"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na may bukas na IndexedDBConnection"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may bukas na IndexedDBConnection"
   },
   "panels/application/components/BackForwardCacheStrings.ts | indexedDBEvent": {
     "message": "Naka-disable ang back-forward cache dahil sa event na IndexedDB"
@@ -5274,13 +5310,13 @@
     "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng Keyboard lock"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng keyboard lock"
   },
   "panels/application/components/BackForwardCacheStrings.ts | loading": {
     "message": "Hindi natapos mag-load ang page bago nag-navigate paalis dito"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na may pangunahing resource na may cache-control:no-cache"
+    "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may pangunahing resource na may cache-control:no-cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
     "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may pangunahing resource na may cache-control:no-store"
@@ -5301,34 +5337,34 @@
     "message": "Inalis sa cache ang page dahil masyadong matagal na nakabukas ang isang koneksyon ng network. Nililimitahan ng Chrome ang haba ng oras na puwedeng makatanggap ng data ang isa page habang naka-cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na walang valid na header ng sagot"
+    "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na walang valid na header ng sagot"
   },
   "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Nangyari ang pag-navigate sa isang frame bukod pa sa pangunahing frame"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang page na may mga kasalukuyang naka-index na transaksyon sa DB"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may mga kasalukuyang naka-index na transaksyon sa DB"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may in-flight na network request"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na may in-flight na request sa fetch network"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may in-flight na network request gamit ang fetch."
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may in-flight na network request"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Kasalukuyang hindi available para sa back-forward cache ang mga page na may in-flight na request sa network gamit ang XHR"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na may in-flight na network request gamit ang XHR"
   },
   "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng PaymentManager"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng PaymentManager"
   },
   "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng Picture-in-Picture"
   },
   "panels/application/components/BackForwardCacheStrings.ts | printing": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nagpapakita ng UI sa Pag-print"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nagpapakita ng UI sa pag-print"
   },
   "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
     "message": "Binuksan ang page gamit ang 'window.open()' at may ibang tab na tumutukoy rito, o may binuksang window ang page"
@@ -5343,7 +5379,7 @@
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng mga pahintulot sa pag-capture ng audio"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nag-request ng mga pahintulot sa sensor"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng mga pahintulot sa sensor"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng mga pahintulot sa pag-sync o pag-fetch sa background"
@@ -5355,7 +5391,7 @@
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng mga pahintulot sa mga notification"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nag-request ng access sa storage"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng access sa storage"
   },
   "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na nag-request ng mga pahintulot sa pag-capture ng video"
@@ -5379,7 +5415,7 @@
     "message": "Ni-restart at na-clear ng Chrome ang mga entry sa back-forward cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng SharedWorker"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng SharedWorker"
   },
   "panels/application/components/BackForwardCacheStrings.ts | sharedWorkerMessage": {
     "message": "Inalis ang page sa cache dahil nakatanggap ito ng mensahe mula sa SharedWorker"
@@ -5388,13 +5424,13 @@
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng SpeechRecognizer"
   },
   "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng SpeechSynthesis"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng SpeechSynthesis"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
     "message": "May iframe sa page na nagsimula ng pag-navigate na hindi natapos"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Hindi puwedeng pumasok sa back/forward cache ang mga page na may subresource na may cache-control:no-cache"
+    "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may subresource na may cache-control:no-cache"
   },
   "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
     "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may subresource na may cache-control:no-store"
@@ -5430,7 +5466,7 @@
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebNfc"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Kasalukuyang hindi kwalipikado para sa bfcache ang mga page na gumagamit ng WebOTPService"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebOTPService"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may WebRTC"
@@ -5439,7 +5475,7 @@
     "message": "Naka-disable ang back-forward cache dahil ginamit ang WebRTC"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng WebShare"
+    "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebShare"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Hindi puwedeng pumasok sa back-forward cache ang mga page na may WebSocket"
@@ -5457,19 +5493,19 @@
     "message": "Kasalukuyang hindi kwalipikado para sa back-forward cache ang mga page na gumagamit ng WebXR"
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Back/forward cache"
+    "message": "Back-forward cache"
   },
   "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
     "message": "Blangkong URL [{PH1}]"
   },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
-    "message": "Extension id: "
+    "message": "Extension ID: "
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
-    "message": "Hindi Maaaksyunan"
+    "message": "Hindi maaaksyunan"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Hindi naaaksyunan ang mga dahilang ito, ibig sabihin, ang pag-cache ay pinigilan ng isang bagay sa labas ng direktang kontrol ng page"
+    "message": "Hindi naaaksyunan ang mga dahilang ito, ibig sabihin, ang pag-cache ay pinigilan ng isang bagay kung saan walang direktang kontrol ang page"
   },
   "panels/application/components/BackForwardCacheView.ts | filesPerIssue": {
     "message": "{n,plural, =1{# file}one{# file}other{# na file}}"
@@ -5490,10 +5526,10 @@
     "message": "Matuto pa: pagiging kwalipikado sa back/forward cache"
   },
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
-    "message": "Pangunahing Frame"
+    "message": "Pangunahing frame"
   },
   "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
-    "message": "Matuto pa: Huwag kailanman gumamit ng tagapangasiwa ng pag-unload"
+    "message": "Matuto pa: huwag kailanman gumamit ng tagapangasiwa ng pag-unload"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Hindi inihahatid mula sa back-forward cache: para ma-trigger ang back-forward cache, gamitin ang mga back/forward button ng Chrome, o gamitin ang button ng pag-test sa ibaba para awtomatikong mag-navigate palayo at pabalik"
@@ -5514,7 +5550,7 @@
     "message": "Nagpapatakbo ng test"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPending": {
-    "message": "Nakabinbin ang Suporta"
+    "message": "Nakabinbing suporta"
   },
   "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
     "message": "Nakabinbin ang suporta ng Chrome para sa mga dahilang ito, ibig sabihin, hindi pipigilan ng mga ito ang page sa pagiging kwalipikado para sa back-forward cache sa bersyon sa hinaharap ng Chrome"
@@ -5526,13 +5562,13 @@
     "message": "hindi available"
   },
   "panels/application/components/BackForwardCacheView.ts | unknown": {
-    "message": "Hindi Alam ang Status"
+    "message": "Hindi alam na status"
   },
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "Mga pagpigil sa bounce tracking"
+    "message": "Mga pag-mitigate sa bounce tracking"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Sinusuri ang mga posibleng site ng bounce tracking"
@@ -5544,10 +5580,10 @@
     "message": "Sapilitang patakbuhin"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
-    "message": "Matuto pa: Mga Pagpigil sa Bounce Tracking"
+    "message": "Matuto pa: mga pag-mitigate sa bounce tracking"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Hindi na-clear ang status para sa anumang posibleng site ng bounce tracking. Posibleng walang natukoy o na-block ang third-party na cookies."
+    "message": "Hindi na-clear ang status para sa anumang posibleng site ng bounce tracking. Posibleng walang natukoy o hindi na-block ang third-party na cookies."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Tumatakbo"
@@ -5568,19 +5604,19 @@
     "message": "Value"
   },
   "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
-    "message": "Makikita mo rito ang listahan ng mga endpoint na makakatanggap ng mga ulat"
+    "message": "Makikita mo rito ang listahan ng mga endpoint na nakakakuha ng mga ulat"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Walang maipapakitang endpoint"
   },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
-    "message": "Mga Pinapayagang Feature"
+    "message": "Mga pinapayagang feature"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
     "message": "I-click para ipakita ang request na may header ng HTTP na \"Permissions-Policy\" na nagdi-disable sa feature na ito"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "I-click para ipakita ang pinakamataas na iframe na hindi nagpapahintulot sa feature na ito sa panel ng mga element"
+    "message": "I-click para ipakita ang pinakamataas na iframe na hindi nagpapahintulot sa feature na ito sa panel ng Mga Element"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "naka-disable sa loob ng isang fencedframe"
@@ -5592,7 +5628,7 @@
     "message": "nawawala sa iframe ang \"allow\" na attribute"
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
-    "message": "Mga Naka-disable na Feature"
+    "message": "Mga naka-disable na feature"
   },
   "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
     "message": "Itago ang mga detalye"
@@ -5640,7 +5676,7 @@
     "message": "Walang maipapakitang ulat"
   },
   "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
-    "message": "Makikita mo rito ang mga ulat ng reporting api na binuo ng page"
+    "message": "Makikita mo rito ang mga ulat ng Reporting API na binuo ng page"
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Status"
@@ -5718,7 +5754,7 @@
     "message": "I-delete ang lahat ng naka-store na private state token na ibinigay ng {PH1}"
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
-    "message": "Nagbigay"
+    "message": "Nag-isyu"
   },
   "panels/application/components/TrustTokensView.ts | learnMore": {
     "message": "Matuto pa"
@@ -5958,7 +5994,7 @@
     "message": "Na-redirect ang pag-prefetch, pero nagkaproblema sa pag-redirect"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
-    "message": "Hindi naisagawa ang pag-prefetch dahil hindi sinusuportahan ang Content-Type na header ng sagot"
+    "message": "Hindi nakapag-prefetch dahil hindi sinusuportahan ang Content-Type na header ng sagot"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
     "message": "Hindi naisagawa ang pag-prefetch dahil sa error sa network"
@@ -5994,7 +6030,7 @@
     "message": "Hindi kwalipikadong ma-prefetch ang URL dahil hindi natatangi ang host nito (hal., isang hindi pampublikong routable na IP address o hostname na hindi kinokontrol ng registry), pero ni-require na i-proxy ang pag-prefetch"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
-    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil gumagamit ito ng hindi default na partition ng storage"
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil gumagamit ito ng hindi default na partition sa storage"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
     "message": "Hindi naisagawa ang pag-prefetch dahil naka-disable ang speculative na pag-load"
@@ -6024,16 +6060,16 @@
     "message": "Na-activate ang na-prerender na page sa pag-navigate ng pangunahing frame ng panimulang page"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
-    "message": "Hindi ginamit ang pag-prerender dahil noong panahon ng pag-activate, may iba pang window na may aktibong opener na naka-reference sa panimulang page, na kasalukuyang hindi sinusuportahan"
+    "message": "Hindi ginamit ang pag-prerender dahil noong panahon ng pag-activate, may iba pang window na may aktibong opener na naka-reference sa page na nag-i-initiate, na kasalukuyang hindi sinusuportahan"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Hindi ginamit ang pag-prerender dahil hindi compatible ang mga flag ng pag-sandbox o patakaran sa mga pahintulot ng panimulang page sa mga nasa page sa pag-prerender"
+    "message": "Hindi ginamit ang pag-prerender dahil hindi compatible ang mga flag ng pag-sandbox o patakaran sa mga pahintulot ng page na nag-i-initiate sa mga nasa page sa pag-prerender"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Hindi ginamit ang pag-prerender dahil noong panahon ng pag-activate, iba ang mga parameter sa pag-navigate (hal., mga header ng HTTP) na nakalkula kumpara sa orihinal na request sa pag-navigate sa pag-prerender"
+    "message": "Hindi ginamit ang pag-prerender dahil noong panahon ng pag-activate, iba't ibang parameter sa pag-navigate (hal., mga HTTP header) ang kinalkula kumpara sa orihinal na request sa pag-navigate sa pag-prerender"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
-    "message": "Hindi ginamit ang prerender dahil noong panahon ng pag-activate, mayroong may bisang URL ang pag-navigate na iba sa normal nitong URL. (Halimbawa, ang Page ng Bagong Tab, o mga hino-host na app.)"
+    "message": "Hindi ginamit ang pag-prerender dahil noong panahon ng pag-activate, may gumaganang URL ang pag-navigate na iba sa normal nitong URL. (Halimbawa, ang Page ng Bagong Tab, o mga hino-host na app.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAllPrerenderingCanceled": {
     "message": "Na-unload ng browser ang lahat ng na-prerender na page sa hindi alam na dahilan. (Halimbawa, na-call ang WebViewCompat.addWebMessageListener() habang nagpi-prerender.)"
@@ -6042,7 +6078,7 @@
     "message": "Nag-request ang na-prerender na page ng audio output, na kasalukuyang hindi sinusuportahan"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Hindi naisagawa ang prerender dahil ni-request ng user na magtipid ng baterya ang browser"
+    "message": "Hindi naisagawa ang pag-prerender dahil na-request ng user na magtipid ng baterya ang browser"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Na-block ang ilang load ng resource"
@@ -6066,7 +6102,7 @@
     "message": "Ang na-prerender na page ay nag-navigate sa isang URL na nag-redirect sa isang cross-site na URL"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Hindi naisagawa ang prerender dahil ni-request ng user na magtipid sa data ang browser"
+    "message": "Hindi naisagawa ang pag-prerender dahil na-request ng user na magtipid sa data ang browser"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "Sinubukan ng na-prerender na page na magsimula ng pag-download, na kasalukuyang hindi sinusuportahan"
@@ -6075,7 +6111,7 @@
     "message": "Hindi puwedeng magsagawa ng pag-prerender ang panimulang page, dahil mayroon itong may bisang URL na iba sa normal nitong URL. (Halimbawa, ang Page ng Bagong Tab, o mga hino-host na app.)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Hindi kwalipikadong i-prerender ang URL dahil hindi http: o https: ang scheme nito"
+    "message": "Hindi kwalipikadong ma-prerender ang URL dahil hindi http: o https: ang scheme nito"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
     "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil nag-redirect ito sa isang URL na hindi http: o https: ang scheme"
@@ -6093,10 +6129,10 @@
     "message": "Hindi naisagawa ang pag-prerender dahil walang sapat na kabuuang memory ng system ang device na ito para suportahan ang pag-prerender"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Hindi naisagawa ang pag-prerender na ang eagerness ay \"eager\" dahil masyado nang maraming kasalukuyang pag-prerender ang panimulang page. Alisin ang iba pang panuntunan sa speculation na may \"eager\" para ma-enable ang higit pang pag-prerender."
+    "message": "Hindi naisagawa ang pag-prerender na ang eagerness ay \"eager\" dahil masyado nang maraming kasalukuyang pag-prerender ang page na nag-i-initiate. Alisin ang iba pang panuntunan sa speculation na may \"eager\" para ma-enable ang higit pang pag-prerender."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Hindi naisagawa ang pag-prerender na na-trigger ng browser dahil masyado nang maraming kasalukuyang pag-prerender ang panimulang page"
+    "message": "Hindi naisagawa ang pag-prerender na na-trigger ng browser dahil masyado nang maraming kasalukuyang pag-prerender ang page na nag-i-initiate"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "Awtomatikong nakansela ang dating non-eager na pag-prerender (na may \"moderate\" o \"conservative\" na eagerness at nati-trigger sa pamamagitan ng pag-hover o pag-click sa mga link) dahil sa pagsisimula ng bagong non-eager na pag-prerender. Mati-trigger ito ulit sa pamamagitan ng pakikipag-interact ulit sa link."
@@ -6593,6 +6629,39 @@
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Ipakita ang Mga Pagbabago"
   },
+  "panels/comments/CommentsPane.ts | clearComments": {
+    "message": "I-clear ang lahat ng komento"
+  },
+  "panels/comments/CommentsPane.ts | deleteComment": {
+    "message": "I-delete ang komento"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "Walang naka-queue na komento. Magdagdag ng mga komento sa mga element sa DevTools na ipapadala sa iyong AI coding agent."
+  },
+  "panels/comments/CommentsPane.ts | noSentComments": {
+    "message": "Walang naipadalang komento. Magpadala ng mga komento sa iyong AI coding agent para makita ang mga ito rito."
+  },
+  "panels/comments/CommentsPane.ts | queued": {
+    "message": "Naka-queue"
+  },
+  "panels/comments/CommentsPane.ts | seeResponse": {
+    "message": "Tingnan ang sagot"
+  },
+  "panels/comments/CommentsPane.ts | sendToAgent": {
+    "message": "Ipadala sa Agent"
+  },
+  "panels/comments/CommentsPane.ts | sent": {
+    "message": "Naipadala"
+  },
+  "panels/comments/CommentsPane.ts | working": {
+    "message": "Gumagana"
+  },
+  "panels/comments/comments-meta.ts | comments": {
+    "message": "Mga Komento"
+  },
+  "panels/comments/comments-meta.ts | showComments": {
+    "message": "Ipakita ang Mga Komento"
+  },
   "panels/common/BadgeNotification.ts | activityBasedBadgeAwardMessage": {
     "message": "Nakuha mo ang {PH1} badge! Idinagdag ito sa iyong Profile ng Developer."
   },
@@ -6638,8 +6707,17 @@
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Input ng komento"
   },
+  "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
+    "message": "I-delete ang naka-queue na komento"
+  },
+  "panels/common/CommentThreadWidget.ts | queueComment": {
+    "message": "I-queue ang komento"
+  },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Sagot:"
+  },
+  "panels/common/CommentThreadWidget.ts | save": {
+    "message": "I-save"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Ipadala sa agent"
@@ -7230,7 +7308,7 @@
     "message": "{PH1} byte ({PH2}) ang kasama sa mga block ng JavaScript na na-execute kahit isang beses lang"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bytes ({PH2}) ang kabilang sa mga function na hindi (pa) na-execute"
+    "message": "{PH1} byte ({PH2}) ang kabilang sa mga function na hindi (pa) na-execute"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
     "message": "{PH1} byte ({PH2}) ang nabibilang sa mga function na na-execute nang kahit isang beses"
@@ -7758,7 +7836,7 @@
     "message": "Maghanap ng pagtukoy ng grid"
   },
   "panels/elements/DOMTreeContextMenu.ts | focus": {
-    "message": "Mag-focus"
+    "message": "I-focus"
   },
   "panels/elements/DOMTreeContextMenu.ts | hideElement": {
     "message": "Itago ang element"
@@ -7789,6 +7867,117 @@
   },
   "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
     "message": "I-wrap ang mga item na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | children": {
+    "message": "Children:"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | copy": {
+    "message": "Kopyahin"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | creatorAdScriptAncestry": {
+    "message": "Ancestry ng script ng creator ad"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | cut": {
+    "message": "I-cut"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableContainer": {
+    "message": "I-disable ang overlay ng container"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableFlexMode": {
+    "message": "I-disable ang flex mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridLanesMode": {
+    "message": "I-disable ang grid-lanes mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableGridMode": {
+    "message": "I-disable ang grid mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableScrollSnap": {
+    "message": "I-disable ang overlay ng scroll-snap"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | disableStartingStyle": {
+    "message": "I-disable ang @starting-style mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | elementHasScrollableOverflow": {
+    "message": "May naso-scroll na overflow ang element na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableContainer": {
+    "message": "I-enable ang overlay ng container"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableFlexMode": {
+    "message": "I-enable ang flex mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridLanesMode": {
+    "message": "I-enable ang grid-lanes mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableGridMode": {
+    "message": "I-enable ang grid mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableScrollSnap": {
+    "message": "I-enable ang overlay ng scroll-snap"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | enableStartingStyle": {
+    "message": "I-enable ang @starting-style mode"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | filterListRule": {
+    "message": "Panuntunan sa listahan ng filter"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceOpenPopover": {
+    "message": "Panatilihing nakabukas ang popover na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceShowInterest": {
+    "message": "I-trigger ang interes sa element na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | forceState": {
+    "message": "Ipilit ang status"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | noProvenanceAvailable": {
+    "message": "Walang available na data ng provenance"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | openMediaPanel": {
+    "message": "Pumunta sa panel ng Media"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | paste": {
+    "message": "I-paste"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | reveal": {
+    "message": "Ipakita"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | rootScriptFilterListRule": {
+    "message": "Panuntunan sa listahan ng filter ng root script"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | selectAll": {
+    "message": "Piliin lahat"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCommandForTarget": {
+    "message": "Ipakita ang element na nauugnay sa attribute na commandfor"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showCustomElementDefinition": {
+    "message": "Ipakita ang kahulugan ng custom na element"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showInterestTarget": {
+    "message": "Ipakita ang element na nauugnay sa attribute na interesttarget"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | showPopoverTarget": {
+    "message": "Ipakita ang element na nauugnay sa attribute na popovertarget"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceOpenPopover": {
+    "message": "Ihinto ang pagpapanatili sa popover na ito na nakabukas"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | stopForceShowInterest": {
+    "message": "Kanselahin ang interes sa element na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | thisElementWasIdentifiedAsAnAd": {
+    "message": "Natukoy na ad ang element na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | useSInTheConsoleToReferToThis": {
+    "message": "Gamitin ang {PH1} sa console para tumukoy sa element na ito"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | valueIsTooLargeToEdit": {
+    "message": "<masyadong malaki para i-edit ang value>"
+  },
+  "panels/elements/DOMTreeElementWidget.ts | viewSourceCode": {
+    "message": "Tingnan ang source code"
   },
   "panels/elements/DOMTreeWidget.ts | pageDom": {
     "message": "DOM ng page"
@@ -7917,7 +8106,7 @@
     "message": "Mga Istilo"
   },
   "panels/elements/ElementsPanel.ts | theDeferredDomNodeCouldNotBe": {
-    "message": "Hindi magawang valid na node ang na-defer na DOM Node"
+    "message": "Hindi ma-resolve sa valid na node ang na-defer na DOM Node"
   },
   "panels/elements/ElementsPanel.ts | theRemoteObjectCouldNotBe": {
     "message": "Hindi magawang valid na node ang remote na object"
@@ -8069,6 +8258,9 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "sa pamamagitan ng inspector"
   },
+  "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
+    "message": "Base"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopyahin ang lahat ng declaration bilang JS"
   },
@@ -8089,6 +8281,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Kopyahin ang value"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
+    "message": "Default"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Buksan ang flexbox editor"
@@ -8125,6 +8320,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | positionAreaEditorButton": {
     "message": "Buksan ang position-area editor"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
+    "message": "Opsyong sapilitang position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Hindi tinukoy ang {PH1}"
@@ -8265,13 +8463,13 @@
     "message": "Detalyadong tooltip sa pagsiyasat"
   },
   "panels/elements/elements-meta.ts | doNotExtendGridLines": {
-    "message": "Huwag i-extend ang mga grid line"
+    "message": "Huwag i-extend ang mga linya ng grid"
   },
   "panels/elements/elements-meta.ts | doNotShowGridNamedAreas": {
-    "message": "Huwag ipakita ang mga may pangalang bahagi ng grid"
+    "message": "Huwag ipakita ang mga pinangalanang bahagi ng grid"
   },
   "panels/elements/elements-meta.ts | doNotShowGridTrackSizes": {
-    "message": "Huwag ipakita ang mga laki ng track sa grid"
+    "message": "Huwag ipakita ang mga laki ng grid track"
   },
   "panels/elements/elements-meta.ts | doNotShowRulersOnHover": {
     "message": "Huwag ipakita ang mga ruler kapag nag-hover"
@@ -8503,6 +8701,15 @@
   },
   "panels/emulation/DeviceModeView.ts | mobileS": {
     "message": "Mobile S"
+  },
+  "panels/emulation/DeviceModeView.ts | presetSize": {
+    "message": "{PH1} – {PH2}px"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopied": {
+    "message": "Nakopya sa clipboard ang screenshot"
+  },
+  "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
+    "message": "Hindi makopya ang screenshot sa clipboard"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
@@ -8762,8 +8969,14 @@
   "panels/issues/AffectedLazyLoadImagesView.ts | nElements": {
     "message": "{n,plural, =1{# element}one{# element}other{# element}}"
   },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
+    "message": "matuto pa"
+  },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 website ang pinapayagang mag-access ng cookies}one{# website ang pinapayagang mag-access ng cookies}other{# na website ang pinapayagang mag-access ng cookies}}"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
+    "message": "(nag-opt out: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Bilang ng mga isyu ng blob URL: {count}"
@@ -8808,7 +9021,7 @@
     "message": "Hindi alam"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
-    "message": "May na-instantiate na SharedArrayBuffer sa isang kontekstong hindi cross-origin isolated"
+    "message": "Na-instantiate ang isang SharedArrayBuffer sa isang kontekstong hindi naka-isolate ang cross-origin"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
     "message": "Naka-block"
@@ -10226,6 +10439,9 @@
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Network"
   },
+  "panels/network/NetworkConfigView.ts | saveDataSettingTooltip": {
+    "message": "I-override ang value na iniulat ng navigator.connection.saveData sa page"
+  },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
     "message": "Gamitin ang default ng browser"
   },
@@ -10422,7 +10638,7 @@
     "message": "(hindi alam)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "Hindi puwedeng ipakita rito ang status ng kahilingan dahil nag-unload ang page na nagbigay nito habang in flight ang kahilingan. Puwede mong gamitin ang chrome://net-export para mag-capture ng log ng network at tingnan ang lahat ng detalye ng kahilingan."
+    "message": "Hindi maipapakita rito ang status ng request dahil nag-unload ang page na nag-isyu nito habang nasa flight ang request. Puwede mong gamitin ang chrome://net-export para mag-capture ng log ng network at tingnan ang lahat ng detalye ng request."
   },
   "panels/network/NetworkDataGridNode.ts | wasThrottled": {
     "message": "Na-throttle ang request ({PH1})"
@@ -11067,7 +11283,7 @@
     "message": "Ipakita ang na-filter na cookies ng request"
   },
   "panels/network/RequestCookiesView.ts | siteHasCookieInOtherPartition": {
-    "message": "May cookies ang site na ito sa ibang partition na hindi naipadala kasama ng kahilingang ito. {PH1}"
+    "message": "May cookies ang site na ito sa ibang partition, na hindi naipadala kasama ng request na ito. {PH1}"
   },
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "Walang cookie ang request na ito"
@@ -11589,7 +11805,7 @@
     "message": "Matuto pa"
   },
   "panels/network/components/RequestHeaderSection.ts | onlyProvisionalHeadersAre": {
-    "message": "Mga provisional na header lang ang available dahil hindi naipadala ang kahilingang ito sa network at sa halip ay inihatid mula sa isang lokal na cache na hindi nagso-store ng mga orihinal na header ng kahilingan. I-disable ang cache para makita ang mga kumpletong header ng kahilingan."
+    "message": "Mga provisional na header lang ang available dahil hindi naipadala ang request na ito sa network at sa halip ay inihatid ito mula sa isang lokal na cache, na hindi nagso-store ng mga orihinal na header ng request. I-disable ang cache para makita ang mga kumpletong header ng kahilingan."
   },
   "panels/network/components/RequestHeaderSection.ts | provisionalHeadersAreShown": {
     "message": "Ipinapakita ang mga provisional na header"
@@ -11864,8 +12080,17 @@
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
     "message": "Nagpapakita ang mga naka-detach na element ng mga object na pinapanatili ng reference ng JS"
   },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsList": {
+    "message": "Listahan ng mga naka-detach na element"
+  },
   "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
     "message": "Mga naka-detach na element"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedNodes": {
+    "message": "Mga naka-detache na node"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | nodeSize": {
+    "message": "Bilang ng node"
   },
   "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
     "message": "Kunin ang mga naka-detach na element"
@@ -12689,6 +12914,9 @@
   "panels/recorder/RecordingView.ts | cancelReplay": {
     "message": "Kanselahin ang pag-replay"
   },
+  "panels/recorder/RecordingView.ts | code": {
+    "message": "Code"
+  },
   "panels/recorder/RecordingView.ts | codeFormat": {
     "message": "Format ng code"
   },
@@ -12752,11 +12980,14 @@
   "panels/recorder/RecordingView.ts | showCode": {
     "message": "Ipakita ang code"
   },
+  "panels/recorder/RecordingView.ts | steps": {
+    "message": "Mga hakbang"
+  },
   "panels/recorder/RecordingView.ts | timeout": {
     "message": "Timeout: {value} ms"
   },
   "panels/recorder/RecordingView.ts | timeoutExplanation": {
-    "message": "Nalalapat ang setting (sa millisecond) sa bawat pagkilos kapag nire-replay ang recording. Halimbawa, kung hindi lalabas sa page ang isang DOM element na natukoy ng isang CSS selector sa loob ng natukoy na timeout, papalya ang pag-replay na may error."
+    "message": "Ia-apply ang setting ng timeout (sa millisecond) sa bawat aksyon kapag nire-replay ang recording. Halimbawa, kung hindi lalabas sa page ang isang DOM element na natukoy ng isang CSS selector sa loob ng natukoy na timeout, mabibigo ang pag-replay nang may error."
   },
   "panels/recorder/RecordingView.ts | timeoutLabel": {
     "message": "Timeout"
@@ -13053,7 +13284,7 @@
     "message": "aktibong halo-halong content"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "Secure na inihahatid ang lahat ng resource sa page na ito."
+    "message": "Secure na inihahatid ang lahat ng resource sa page na ito"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "secure na naihatid ang lahat"
@@ -13071,7 +13302,7 @@
     "message": "Transparency ng Certificate"
   },
   "panels/security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
-    "message": "Natukoy ng Chrome na posibleng peke o mapanloko ang site na ito."
+    "message": "Natukoy ng Chrome na puwedeng peke o mapanloko ang site na ito"
   },
   "panels/security/SecurityPanel.ts | cipher": {
     "message": "Cipher"
@@ -13098,10 +13329,10 @@
     "message": "Itago ang mga buong detalye"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "Kung naniniwala kang hindi dapat ito ipinapakita, bisitahin ang https://g.co/chrome/lookalike-warnings."
+    "message": "Kung naniniwala kang hindi dapat ito ipinapakita, bisitahin ang https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "Kung naniniwala kang hindi dapat ito ipinapakita, bisitahin ang https://g.co/chrome/lookalike-warnings."
+    "message": "Kung naniniwala kang hindi dapat ito ipinapakita, bisitahin ang https://g.co/chrome/lookalike-warnings"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Impormasyon"
@@ -13134,7 +13365,7 @@
     "message": "(n/a)"
   },
   "panels/security/SecurityPanel.ts | noSecurityDetailsAreAvailableFor": {
-    "message": "Walang available na panseguridad na detalye para sa pinagmulang ito."
+    "message": "Walang available na detalye ng seguridad para sa origin na ito"
   },
   "panels/security/SecurityPanel.ts | noSecurityInformation": {
     "message": "Walang impormasyon sa seguridad"
@@ -13167,10 +13398,10 @@
     "message": "Na-bypass ang Pag-pin ng Pampublikong Key"
   },
   "panels/security/SecurityPanel.ts | publickeypinningWasBypassedByA": {
-    "message": "Na-bypass ng isang lokal na root certificate ang Pag-pin ng Pampublikong Key."
+    "message": "Na-bypass ng lokal na root certificate ang Public-Key-Pinning"
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
-    "message": "I-reload ang page para i-record ang mga kahilingan para sa mga HTTP resource."
+    "message": "I-reload ang page para i-record ang mga request para sa mga HTTP resource"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "Mga Resource"
@@ -13224,73 +13455,73 @@
     "message": "Nawawala ang Subject Alternative Name"
   },
   "panels/security/SecurityPanel.ts | theCertificateChainForThisSite": {
-    "message": "Naglalaman ang chain ng certificate para sa site na ito ng certificate na naka-sign gamit ang SHA-1."
+    "message": "Ang chain ng certificate para sa site na ito ay may certificate na na-sign gamit ang SHA-1"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "Ang certificate para sa site na ito ay walang extension na Subject Alternative Name na may domain name o IP address."
+    "message": "Ang certificate para sa site na ito ay walang extension na Subject Alternative Name na may domain name o IP address"
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
-    "message": "Mag-e-expire ang certificate para sa site na ito sa loob ng hindi bababa sa 48 oras at kailangan itong ma-renew."
+    "message": "Mag-e-expire ang certificate para sa site na ito sa loob ng wala pang 48 oras at kailangan itong i-renew"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIs": {
-    "message": "Naka-encrypt at na-authenticate ang koneksyon sa site na ito gamit ang {PH1}, {PH2}, at {PH3}."
+    "message": "Na-encrypt at na-authenticate ang koneksyon sa site na ito gamit ang {PH1}, {PH2}, at {PH3}"
   },
   "panels/security/SecurityPanel.ts | theConnectionToThisSiteIsUsingA": {
-    "message": "Gumagamit ang koneksyon sa site na ito ng valid at mapagkakatiwalaang certificate ng server na inisyu ng {PH1}."
+    "message": "Gumagamit ang koneksyon sa site na ito ng valid at pinagkakatiwalaang certificate ng server na ibinigay ng {PH1}"
   },
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
-    "message": "Mula sa unang siniyasat na sagot ang mga panseguridad na detalye sa itaas."
+    "message": "Ang mga detalye ng seguridad sa itaas ay mula sa unang siniyasat na sagot"
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Gumagamit ang signature ng server ng lumang SHA-1. Mag-enable na lang ng SHA-2 signature algorithm. (Tandaang iba ito sa signature sa certificate.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "Isa itong page ng error."
+    "message": "Isa itong error page"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
-    "message": "May hindi HTTPS secure na pinagmulan ang pinagmulan na ito."
+    "message": "Ang origin na ito ay isang non-HTTPS na secure na origin"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "May hindi HTTPS secure na pinagmulan ang page na ito."
+    "message": "May hindi HTTPS secure na origin ang page na ito"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "May form sa page na ito na may hindi secure na attribute na action."
+    "message": "May form sa page na ito na may hindi secure na attribute na action"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "May mga HTTP resource ang page na ito."
+    "message": "May mga HTTP resource ang page na ito"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "May mga resource na na-load sa page na ito na may mga error sa certificate."
+    "message": "May mga resource ang page na ito na na-load nang may mga error sa certificate"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "Mapanganib ang page na ito (na-flag ng Ligtas na Pag-browse sa Google)."
+    "message": "Mapanganib ang page na ito (na-flag ng Ligtas na Pag-browse sa Google)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "Hindi secure ang page na ito (hindi naka-encrypt na HTTP)."
+    "message": "Hindi secure ang page na ito (hindi naka-encrypt na HTTP)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Kahina-hinala ang page na ito"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "Kahina-hinala ang page na ito (na-flag ng Chrome)."
+    "message": "Kahina-hinala ang page na ito (na-flag ng Chrome)"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "Sumusunod ang request na ito sa patakaran sa Transparency ng Certificate ng Chrome."
+    "message": "Sumusunod ang request na ito sa patakaran sa Transparency ng Certificate ng Chrome"
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "Hindi sumusunod ang request na ito sa patakaran sa Transparency ng Certificate ng Chrome."
+    "message": "Hindi sumusunod ang request na ito sa patakaran sa Transparency ng Certificate ng Chrome"
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "Na-load ang sagot na ito mula sa cache. Posibleng nawawala ang ilang detalye ng seguridad."
   },
   "panels/security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
-    "message": "Walang valid at mapagkakatiwalaang certificate ({PH1}) ang site na ito."
+    "message": "Ang site na ito ay walang valid at pinagkakatiwalaang certificate ({PH1})"
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
     "message": "Mukhang katulad ng {PH1} ang hostname ng site na ito. Kung minsan, ginagaya ng mga attacker ang mga site sa pamamagitan ng paggawa ng mga maliit at mahirap makitang pagbabago sa domain name."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "Para tingnan ang status ng page na ito, bisitahin ang g.co/safebrowsingstatus."
+    "message": "Para tingnan ang status ng page na ito, bisitahin ang g.co/safebrowsingstatus"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "hindi alam"
@@ -13317,16 +13548,16 @@
     "message": "Tingnan ang mga request sa Network panel"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "Nagpahintulot ka kamakailan ng content na na-load nang may mga error sa certificate (gaya ng mga script o iframe) para patakbuhin sa site na ito."
+    "message": "Pinayagan mo kamakailan ang content na na-load nang may mga error sa certificate (gaya ng mga script o iframe) na patakbuhin sa site na ito"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "Nagpahintulot ka kamakailan ng hindi secure na content (gaya ng mga script o iframe) na tumakbo sa site na ito"
+    "message": "Pinayagan mo kamakailan ang hindi secure na content (gaya ng mga script o iframe) na patakbuhin sa site na ito"
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "Hindi secure ang iyong koneksyon sa origin na ito."
+    "message": "Hindi secure ang iyong koneksyon sa origin na ito"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Humiling ang iyong page ng mga hindi secure na resource na na-block."
+    "message": "Nag-request ang iyong page ng mga hindi secure na resource na na-block"
   },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Pangunahing pinagmulan"
@@ -13653,7 +13884,7 @@
     "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance at posibleng makita ng mga taong tagasuri para mapahusay ang feature na ito. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceThingsToConsiderNoLogging": {
-    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mga mensahe sa chat, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga request sa network, file, at trace ng performance. Hindi gagamitin ang content na isusumite mo at bubuuin ng feature na ito para pahusayin ang mga model ng Google AI. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mga chat message, data na naa-access para sa site na ito sa pamamagitan ng mga panel ng DevTools at Web API, at mga item na pipiliin mo gaya ng mga network request, file, at trace ng performance. Hindi gagamitin ang content na isusumite mo at bubuuin ng feature na ito para pahusayin ang mga model ng Google AI. Isa itong pang-eksperimentong feature ng AI at hindi ito palaging tama."
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem1": {
     "message": "Mag-debug ng mga isyu sa pag-style, network, performance, source code, accessibility, at storage gamit ang Tulong ng AI sa DevTools"
@@ -13674,13 +13905,13 @@
     "message": "Para makabuo ng mga suhestyon sa code, shine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, ang kasalukuyang sinisiyasat na CSS, at ang mga content ng kasalukuyang nakabukas na file. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
   },
   "panels/settings/AISettingsTab.ts | codeSuggestionsSendDataNoLogging": {
-    "message": "Para makabuo ng mga suhestyon sa code, shine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, ang kasalukuyang sinisiyasat na CSS, at ang mga content ng kasalukuyang nakabukas na file. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
+    "message": "Para makabuo ng mga suhestyon sa code, sine-share sa Google ang iyong input sa console, ang history ng kasalukuyan mong session sa console, ang kasalukuyang sinisiyasat na CSS, at ang mga content ng kasalukuyang nakabukas na file. Hindi gagamitin ang data na ito para pahusayin ang mga AI model ng Google. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
+    "message": "Para bumuo ng mga paliwanag, ipinapadala sa Google ang mensahe sa console, nauugnay na stack trace, nauugnay na source code, at mga nauugnay na header ng network. Hindi gagamitin ang data na ito para pahusayin ang mga model ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Posibleng hindi mangolekta ng data ang Google depende sa iyong rehiyon"
@@ -13716,7 +13947,7 @@
     "message": "Para makabuo ng mga suhestyon sa anotasyon, ipinapadala sa Google ang trace ng iyong performance. Puwedeng makita ng mga taong tagasuri ang data na ito para mapahusay ang feature na ito."
   },
   "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
-    "message": "Para makabuo ng mga suhestyon sa anotasyon, ipinapadala sa Google ang trace ng iyong performance. Hindi gagamitin ang data na ito para pahusayin ang mga modelo ng Google AI. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
+    "message": "Para makabuo ng mga suhestyon sa anotasyon, ipinapadala sa Google ang trace ng iyong performance. Hindi gagamitin ang data na ito para pahusayin ang mga AI model ng Google. Posibleng baguhin ng iyong organisasyon ang mga setting na ito anumang oras."
   },
   "panels/settings/AISettingsTab.ts | geoRestricted": {
     "message": "Hindi available ang feature na ito sa iyong rehiyon"
@@ -14175,7 +14406,7 @@
     "message": "{PH1}: Dapat integer ang {PH2} mula 0 hanggang {PH3}"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
-    "message": "{PH1}: Hindi dapat lumampas sa taas ng device ang mga inset sa itaas at ibaba"
+    "message": "{PH1}: Hindi dapat lumampas sa taas ng device ang mga itaas at ibabang inset"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "String ng user agent"
@@ -14403,7 +14634,7 @@
     "message": "Matuto pa: Mga uri ng breakpoint"
   },
   "panels/sources/BreakpointEditDialog.ts | logAMessageToConsoleDoNotBreak": {
-    "message": "Mag-log ng mensahe sa Console, huwag putulin"
+    "message": "Mag-log ng mensahe sa Console, huwag mag-break"
   },
   "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
     "message": "Mensahe sa log, hal. 'x is', x"
@@ -14448,7 +14679,7 @@
     "message": "Logpoint: {PH1}"
   },
   "panels/sources/BreakpointsView.ts | pauseOnCaughtExceptions": {
-    "message": "Mag-pause sa mga natukoy na exception"
+    "message": "Mag-pause sa mga na-catch na exception"
   },
   "panels/sources/BreakpointsView.ts | pauseOnUncaughtExceptions": {
     "message": "Mag-pause sa mga hindi na-catch na exception"
@@ -14721,7 +14952,7 @@
     "message": "Nilaktawan ang source map para sa file na ito"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
-    "message": "Lalaktawan ng debugger ang pagsasagawa sa script na ito at hindi ito hihinto sa mga exception"
+    "message": "Lalaktawan ng debugger ang pagsasagawa sa script na ito, at hindi ito hihinto sa mga exception"
   },
   "panels/sources/DebuggerPlugin.ts | thisScriptIsOnTheDebuggersIgnore": {
     "message": "Ang script na ito ay nasa listahan ng babalewalain ng debugger"
@@ -14975,6 +15206,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopyahin ang mga content ng string"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Nakatago ang sidebar ng debugger"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Ipinapakita ang sidebar ng debugger"
+  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "I-drop ang folder ng workspace dito"
   },
@@ -14995,6 +15232,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Higit pang opsyon"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Nakatago ang sidebar ng navigator"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Ipinapakita ang sidebar ng navigator"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Buksan sa panel na Mga Source"
@@ -15174,7 +15417,7 @@
     "message": "Mag-disable ng mga async na stack trace"
   },
   "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
-    "message": "Huwag mag-focus sa panel na Mga Source kapag nagti-trigger ng breakpoint"
+    "message": "Huwag i-focus ang Panel ng mga source kapag nagti-trigger ng breakpoint"
   },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "I-disable ang autocompletion"
@@ -15228,10 +15471,10 @@
     "message": "Huwag mag-pause sa mga exception"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
-    "message": "Huwag maghanap sa mga anonymous at content script"
+    "message": "Huwag maghanap sa mga anonymous at script ng content"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Huwag ipakita ang mga whitespace na character"
+    "message": "Huwag ipakita ang mga whitespace character"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "Mag-focus sa panel na Mga Source kapag nagti-trigger ng breakpoint"
@@ -17303,8 +17546,8 @@
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
     "message": "Laki ng buffer ng callback"
   },
-  "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "Interval ng callback"
+  "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
+    "message": "Interval ng callback: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Kasalukuyang oras"
@@ -18227,6 +18470,9 @@
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | coordinate": {
     "message": "Coordinate"
   },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | deselectButton": {
+    "message": "Alisin ang {propertyName}: {propertyValue}"
+  },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | logical": {
     "message": "Logical"
   },
@@ -18241,6 +18487,9 @@
   },
   "ui/legacy/components/inline_editor/PositionAreaEditor.ts | positionAreaGridDescription": {
     "message": "Gamitin ang mga arrow key para mag-navigate, Space o Enter para pumili, at Shift + mga arrow key para pumili ng saklaw"
+  },
+  "ui/legacy/components/inline_editor/PositionAreaEditor.ts | selectButton": {
+    "message": "Idagdag ang {propertyName}: {propertyValue}"
   },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ipakita bilang object ng JavaScript"

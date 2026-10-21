@@ -110,6 +110,17 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
         Math.max(0, a - a, b - b);
       `,
     },
+    {
+      name: 'allows comparing micro to micro',
+      code: `
+        type Micro = number&{_tag: 'MicroSeconds'};
+        type Milli = number&{_tag: 'MilliSeconds'};
+
+        const a = 0 as Micro;
+        const b = 0 as Micro;
+        const c = [a < b, a <= b, a > b, a >= b, a === b, a !== b];
+      `,
+    },
   ],
 
   invalid: [
@@ -301,6 +312,62 @@ new RuleTester(typeCheckingOptions).run('validate-timing-types', rule, {
           // @ts-expect-error It's not on the types, but this is totally fine.
           message: 'Type mismatch: the parameters of Math.max do not all match in type. Got: Micro, Milli',
           type: TSESTree.AST_NODE_TYPES.CallExpression,
+        },
+      ],
+    },
+    {
+      name: 'disallows comparing micro and milli',
+      code: `
+        type Micro = number&{_tag: 'MicroSeconds'};
+        type Milli = number&{_tag: 'MilliSeconds'};
+
+        const a = 0 as Micro;
+        const b = 0 as Milli;
+        const c = [a < b, a <= b, a > b, a >= b];
+      `,
+      errors: [
+        {
+          // @ts-expect-error It's not on the types, but this is totally fine.
+          message: 'Type mismatch: (Micro < Milli)',
+          type: TSESTree.AST_NODE_TYPES.BinaryExpression,
+        },
+        {
+          // @ts-expect-error It's not on the types, but this is totally fine.
+          message: 'Type mismatch: (Micro <= Milli)',
+          type: TSESTree.AST_NODE_TYPES.BinaryExpression,
+        },
+        {
+          // @ts-expect-error It's not on the types, but this is totally fine.
+          message: 'Type mismatch: (Micro > Milli)',
+          type: TSESTree.AST_NODE_TYPES.BinaryExpression,
+        },
+        {
+          // @ts-expect-error It's not on the types, but this is totally fine.
+          message: 'Type mismatch: (Micro >= Milli)',
+          type: TSESTree.AST_NODE_TYPES.BinaryExpression,
+        },
+      ],
+    },
+    {
+      name: 'disallows checking micro and milli for equality',
+      code: `
+        type Micro = number&{_tag: 'MicroSeconds'};
+        type Milli = number&{_tag: 'MilliSeconds'};
+
+        const a = 0 as Micro;
+        const b = 0 as Milli;
+        const c = [a === b, a !== b];
+      `,
+      errors: [
+        {
+          // @ts-expect-error It's not on the types, but this is totally fine.
+          message: 'Type mismatch: (Micro === Milli)',
+          type: TSESTree.AST_NODE_TYPES.BinaryExpression,
+        },
+        {
+          // @ts-expect-error It's not on the types, but this is totally fine.
+          message: 'Type mismatch: (Micro !== Milli)',
+          type: TSESTree.AST_NODE_TYPES.BinaryExpression,
         },
       ],
     },

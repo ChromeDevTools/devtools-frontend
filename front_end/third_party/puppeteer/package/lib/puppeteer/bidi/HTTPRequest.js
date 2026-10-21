@@ -1,5 +1,6 @@
 var _a;
 import { HTTPRequest, STATUS_TEXTS, handleError, InterceptResolutionAction, } from '../api/HTTPRequest.js';
+import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { stringToBase64 } from '../util/encoding.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
@@ -211,18 +212,29 @@ export class BidiHTTPRequest extends HTTPRequest {
         const credentials = this.#frame.page()._credentials;
         if (credentials && !this.#authenticationHandled) {
             this.#authenticationHandled = true;
-            void this.#request.continueWithAuth({
+            await this.#request
+                .continueWithAuth({
                 action: 'provideCredentials',
                 credentials: {
                     type: 'password',
                     username: credentials.username,
                     password: credentials.password,
                 },
+            })
+                .catch(error => {
+                // The request may have been canceled or the page closed before the
+                // auth challenge could be answered. Tolerate these errors instead of
+                // rejecting, which would surface as an unhandled rejection.
+                this.#logger(DEBUG_PREFIXES.error)?.(error);
             });
         }
         else {
-            void this.#request.continueWithAuth({
+            await this.#request
+                .continueWithAuth({
                 action: 'cancel',
+            })
+                .catch(error => {
+                this.#logger(DEBUG_PREFIXES.error)?.(error);
             });
         }
     };

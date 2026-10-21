@@ -354,6 +354,22 @@ export class CdpPage extends Page {
         const { windowId } = await this.#primaryTargetClient.send('Browser.getWindowForTarget');
         return windowId.toString();
     }
+    async tabInfo() {
+        const { targetInfo } = await this.#tabTargetClient.send('Target.getTargetInfo');
+        const data = targetInfo.embedderData;
+        if (typeof data?.tabStripIndex !== 'number') {
+            return null;
+        }
+        const tabInfo = {
+            index: data.tabStripIndex,
+            active: data.tabActive ?? false,
+            pinned: data.tabPinned ?? false,
+        };
+        if (data.tabGroupId) {
+            tabInfo.groupId = data.tabGroupId;
+        }
+        return tabInfo;
+    }
     async #onFileChooser(event) {
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {

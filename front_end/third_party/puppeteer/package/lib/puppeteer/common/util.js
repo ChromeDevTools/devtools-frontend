@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { filter, from, fromEvent, map, mergeMap, NEVER, Observable, timer, } from '../../third_party/rxjs/rxjs.js';
+import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-polyfill.js';
 import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { mergeUint8Arrays, stringToTypedArray } from '../util/encoding.js';
@@ -367,5 +368,27 @@ export function filterAsync(predicate) {
             return value;
         }));
     });
+}
+/**
+ * @internal
+ */
+export function assertSupportedUrlRestrictions(options) {
+    if (options.blocklist?.length && options.allowlist?.length) {
+        throw new Error('Cannot specify both blocklist and allowlist');
+    }
+    if (options.protocol === 'webDriverBiDi' &&
+        (options.blocklist || options.allowlist)) {
+        throw new Error('blocklist and allowlist are only supported with the CDP protocol');
+    }
+    if (options.blocklist) {
+        for (const rule of options.blocklist) {
+            new URLPattern(rule);
+        }
+    }
+    if (options.allowlist) {
+        for (const rule of options.allowlist) {
+            new URLPattern(rule);
+        }
+    }
 }
 //# sourceMappingURL=util.js.map

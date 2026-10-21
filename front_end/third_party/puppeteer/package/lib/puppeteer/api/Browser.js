@@ -1,5 +1,6 @@
 import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { fromEmitterEvent, filterAsync, timeout, fromAbortSignal, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
@@ -81,6 +82,27 @@ export class Browser extends EventEmitter {
      */
     get logger() {
         return this.#logger;
+    }
+    /**
+     * Sets the network conditions (blocklist or allowlist) and re-applies the
+     * conditions to all targets.
+     * To clear all network conditions, omit the argument or pass `null`.
+     *
+     * @param conditions - The network conditions to apply.
+     *
+     * @remarks
+     * Currently only supported for Chrome and the CDP protocol.
+     *
+     * Targets that are already on a blocked URL when `restrictNetwork` is called
+     * will remain attached and stay on the blocked page. This is a behavior difference
+     * compared to launching the browser with network restrictions, where such targets
+     * are detached immediately upon initial attach.
+     *
+     * @experimental
+     */
+    restrictNetwork(conditions) {
+        void conditions;
+        throw new UnsupportedOperation();
     }
     /**
      * Waits until a {@link Target | target} matching the given `predicate`

@@ -8,7 +8,7 @@ import type * as Bidi from 'webdriver-bidi-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { ContinueRequestOverridesInternal, InterceptResolutionState, ResponseForRequestInternal } from '../api/HTTPRequest.js';
 import { HTTPRequest, type ResourceType } from '../api/HTTPRequest.js';
-import type { Logger } from '../common/Debug.js';
+import { type Logger } from '../common/Debug.js';
 import type { Request } from './core/Request.js';
 import type { BidiFrame } from './Frame.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';

@@ -68,5 +68,20 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     _continue(overrides?: ContinueRequestOverridesInternal): Promise<void>;
     _respond(response: Partial<ResponseForRequestInternal>): Promise<void>;
     _abort(errorReason: Protocol.Network.ErrorReason | null): Promise<void>;
+    /**
+     * The overrides sent with `Fetch.continueRequest`, or an empty object if
+     * the request was not continued.
+     *
+     * @internal
+     */
+    get _continueOverrides(): ContinueRequestOverridesInternal;
+    /**
+     * Re-sends the resolution the user already chose to the current
+     * `_interceptionId`. Used when Chrome restarts a request under a new
+     * interception id.
+     *
+     * @internal
+     */
+    _replayInterception(): Promise<void>;
 }
 //# sourceMappingURL=HTTPRequest.d.ts.map

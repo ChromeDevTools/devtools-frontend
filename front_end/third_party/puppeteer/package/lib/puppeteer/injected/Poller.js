@@ -41,13 +41,20 @@ export class MutationPoller {
     #observer;
     #observedRoots = new WeakSet();
     #deferred;
+    #stopped = false;
     constructor(fn, root) {
         this.#fn = fn;
         this.#root = root;
     }
     async start() {
+        if (this.#stopped) {
+            return;
+        }
         const deferred = (this.#deferred = Deferred.create());
         const result = await this.#fn();
+        if (this.#stopped) {
+            return;
+        }
         if (result) {
             deferred.resolve(result);
             return;
@@ -110,7 +117,10 @@ export class MutationPoller {
         } while (walker.nextNode());
     }
     async stop() {
-        assert(this.#deferred, 'Polling never started.');
+        this.#stopped = true;
+        if (!this.#deferred) {
+            return;
+        }
         if (!this.#deferred.finished()) {
             this.#deferred.reject(new Error('Polling stopped'));
         }
@@ -130,12 +140,19 @@ export class MutationPoller {
 export class RAFPoller {
     #fn;
     #deferred;
+    #stopped = false;
     constructor(fn) {
         this.#fn = fn;
     }
     async start() {
+        if (this.#stopped) {
+            return;
+        }
         const deferred = (this.#deferred = Deferred.create());
         const result = await this.#fn();
+        if (this.#stopped) {
+            return;
+        }
         if (result) {
             deferred.resolve(result);
             return;
@@ -155,7 +172,10 @@ export class RAFPoller {
         window.requestAnimationFrame(poll);
     }
     async stop() {
-        assert(this.#deferred, 'Polling never started.');
+        this.#stopped = true;
+        if (!this.#deferred) {
+            return;
+        }
         if (!this.#deferred.finished()) {
             this.#deferred.reject(new Error('Polling stopped'));
         }
@@ -173,13 +193,20 @@ export class IntervalPoller {
     #ms;
     #interval;
     #deferred;
+    #stopped = false;
     constructor(fn, ms) {
         this.#fn = fn;
         this.#ms = ms;
     }
     async start() {
+        if (this.#stopped) {
+            return;
+        }
         const deferred = (this.#deferred = Deferred.create());
         const result = await this.#fn();
+        if (this.#stopped) {
+            return;
+        }
         if (result) {
             deferred.resolve(result);
             return;
@@ -194,7 +221,10 @@ export class IntervalPoller {
         }, this.#ms);
     }
     async stop() {
-        assert(this.#deferred, 'Polling never started.');
+        this.#stopped = true;
+        if (!this.#deferred) {
+            return;
+        }
         if (!this.#deferred.finished()) {
             this.#deferred.reject(new Error('Polling stopped'));
         }

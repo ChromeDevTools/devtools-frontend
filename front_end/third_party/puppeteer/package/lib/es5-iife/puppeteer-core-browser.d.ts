@@ -440,6 +440,24 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
    */
   abstract target(): Target;
   /**
+   * Sets the network conditions (blocklist or allowlist) and re-applies the
+   * conditions to all targets.
+   * To clear all network conditions, omit the argument or pass `null`.
+   *
+   * @param conditions - The network conditions to apply.
+   *
+   * @remarks
+   * Currently only supported for Chrome and the CDP protocol.
+   *
+   * Targets that are already on a blocked URL when `restrictNetwork` is called
+   * will remain attached and stay on the blocked page. This is a behavior difference
+   * compared to launching the browser with network restrictions, where such targets
+   * are detached immediately upon initial attach.
+   *
+   * @experimental
+   */
+  restrictNetwork(conditions?: NetworkRestrictions | null): Promise<void>;
+  /**
    * Waits until a {@link Target | target} matching the given `predicate`
    * appears and returns it.
    *
@@ -5993,6 +6011,25 @@ export declare interface NetworkConditions {
 }
 
 /**
+ * @experimental
+ * @public
+ */
+export declare interface NetworkRestrictions {
+  /**
+   * A list of {@link https://urlpattern.spec.whatwg.org/ | URLPattern} strings to block.
+   * Mutually exclusive with {@link NetworkRestrictions.allowlist}.
+   * Passing `[]` or omitting this option means no restriction.
+   */
+  blocklist?: string[];
+  /**
+   * A list of {@link https://urlpattern.spec.whatwg.org/ | URLPattern} strings to allow.
+   * Mutually exclusive with {@link NetworkRestrictions.blocklist}.
+   * Passing `[]` or omitting this option means no restriction.
+   */
+  allowlist?: string[];
+}
+
+/**
  * @public
  */
 export declare interface NewDocumentScriptEvaluation {
@@ -6129,13 +6166,17 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * Consider using {@link BrowserContext.overridePermissions} to grant
    * permissions for the page to read its geolocation.
    *
+   * Pass `null` to remove the geolocation override.
+   *
    * @example
    *
    * ```ts
    * await page.setGeolocation({latitude: 59.95, longitude: 30.31667});
+   * // Later, go back to the browser's real geolocation:
+   * await page.setGeolocation(null);
    * ```
    */
-  abstract setGeolocation(options: GeolocationOptions): Promise<void>;
+  abstract setGeolocation(options: GeolocationOptions | null): Promise<void>;
   /**
    * A target this page was created from.
    *
@@ -7983,6 +8024,17 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @experimental
    */
   abstract windowId(): Promise<WindowId>;
+  /**
+   * Returns information about the browser tab of this page. The result is a
+   * snapshot and is not updated when the tab changes.
+   *
+   * @returns `null` if the page is not in a tab strip, for example, in
+   * `chrome-headless-shell`. Chrome before M150 does not report tab
+   * information, so the method also returns `null` there.
+   *
+   * @experimental
+   */
+  abstract tabInfo(): Promise<TabInfo | null>;
   [disposeSymbol](): void;
   [asyncDisposeSymbol](): Promise<void>;
   /**
@@ -8624,6 +8676,7 @@ declare namespace Puppeteer_2 {
     LaunchPWAOptions,
     GetPWAStateOptions,
     PWAState,
+    NetworkRestrictions,
     BrowserContextEvents,
     CDPEvents,
     CDPSessionEvents,
@@ -8679,6 +8732,7 @@ declare namespace Puppeteer_2 {
     NewDocumentScriptEvaluation,
     ReloadOptions,
     HeapSnapshotOptions,
+    TabInfo,
     WritableDestination,
     WebWorkerEvents,
     VisibilityOption,
@@ -9701,6 +9755,31 @@ export declare type SupportedWebDriverCapability = Exclude<
 >;
 
 /**
+ * Information about the browser tab of a page. See {@link Page.tabInfo}.
+ *
+ * @public
+ * @experimental
+ */
+export declare interface TabInfo {
+  /**
+   * Zero-based index of the tab in its window's tab strip.
+   */
+  index: number;
+  /**
+   * Whether the tab is the active tab in its window.
+   */
+  active: boolean;
+  /**
+   * Whether the tab is pinned.
+   */
+  pinned: boolean;
+  /**
+   * ID of the tab group the tab belongs to, if any.
+   */
+  groupId?: string;
+}
+
+/**
  * Target represents a
  * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
  * In CDP a target is something that can be debugged, such as a frame, a page or a
@@ -10481,6 +10560,15 @@ export declare interface WsOptions {
    * @defaultValue `256 * 1024 * 1024`
    */
   maxPayload?: number;
+  /**
+   * Time in milliseconds to wait for the WebSocket opening handshake before
+   * failing. Without it, connecting to a host that accepts the TCP connection
+   * but never answers the upgrade request waits until the operating system
+   * gives up. Node.js only.
+   *
+   * @defaultValue no timeout
+   */
+  handshakeTimeout?: number;
 }
 
 export {};

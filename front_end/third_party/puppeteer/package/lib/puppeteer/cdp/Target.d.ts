@@ -41,6 +41,7 @@ export declare class CdpTarget extends Target {
     asPage(): Promise<Page>;
     _subtype(): string | undefined;
     _session(): CdpCDPSession | undefined;
+    _setSession(session: CdpCDPSession): void;
     _addChildTarget(target: CdpTarget): void;
     _removeChildTarget(target: CdpTarget): void;
     _childTargets(): ReadonlySet<CdpTarget>;

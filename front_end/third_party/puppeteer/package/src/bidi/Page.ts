@@ -32,6 +32,7 @@ import {
   PageEvent,
   type NewDocumentScriptEvaluation,
   type ScreenshotOptions,
+  type TabInfo,
 } from '../api/Page.js';
 import type {Target} from '../api/Target.js';
 import {Coverage} from '../cdp/Coverage.js';
@@ -252,6 +253,10 @@ export class BidiPage extends Page {
     return this.#frame.browsingContext.windowId;
   }
 
+  override tabInfo(): Promise<TabInfo | null> {
+    throw new UnsupportedOperation();
+  }
+
   override openDevTools(): Promise<Page> {
     throw new UnsupportedOperation();
   }
@@ -343,7 +348,14 @@ export class BidiPage extends Page {
     return this.#frame.browsingContext.isJavaScriptEnabled();
   }
 
-  override async setGeolocation(options: GeolocationOptions): Promise<void> {
+  override async setGeolocation(
+    options: GeolocationOptions | null,
+  ): Promise<void> {
+    if (options === null) {
+      return await this.#frame.browsingContext.setGeolocationOverride({
+        coordinates: null,
+      });
+    }
     const {longitude, latitude, accuracy = 0} = options;
     if (longitude < -180 || longitude > 180) {
       throw new Error(

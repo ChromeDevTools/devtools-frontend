@@ -12,14 +12,6 @@ import type { Logger } from './Debug.js';
  *
  * @internal
  */
-export declare function assertSupportedUrlRestrictions(options: {
-    allowlist?: string[];
-    blocklist?: string[];
-    protocol?: string;
-}): void;
-/**
- * @internal
- */
 export declare function _connectToBrowser(options: ConnectOptions & {
     logger: Logger;
 }): Promise<Browser>;

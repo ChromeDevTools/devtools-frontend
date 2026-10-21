@@ -244,6 +244,9 @@ let BidiPage = (() => {
         async windowId() {
             return this.#frame.browsingContext.windowId;
         }
+        tabInfo() {
+            throw new UnsupportedOperation();
+        }
         openDevTools() {
             throw new UnsupportedOperation();
         }
@@ -336,6 +339,11 @@ let BidiPage = (() => {
             return this.#frame.browsingContext.isJavaScriptEnabled();
         }
         async setGeolocation(options) {
+            if (options === null) {
+                return await this.#frame.browsingContext.setGeolocationOverride({
+                    coordinates: null,
+                });
+            }
             const { longitude, latitude, accuracy = 0 } = options;
             if (longitude < -180 || longitude > 180) {
                 throw new Error(`Invalid longitude "${longitude}": precondition -180 <= LONGITUDE <= 180 failed.`);

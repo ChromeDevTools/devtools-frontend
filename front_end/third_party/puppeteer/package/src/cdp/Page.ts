@@ -33,6 +33,7 @@ import {
   type NewDocumentScriptEvaluation,
   type ScreenshotClip,
   type ScreenshotOptions,
+  type TabInfo,
   type WaitTimeoutOptions,
 } from '../api/Page.js';
 import {WebWorker, WebWorkerEvent} from '../api/WebWorker.js';
@@ -447,6 +448,25 @@ export class CdpPage extends Page {
     return windowId.toString();
   }
 
+  override async tabInfo(): Promise<TabInfo | null> {
+    const {targetInfo} = await this.#tabTargetClient.send(
+      'Target.getTargetInfo',
+    );
+    const data = targetInfo.embedderData as TabEmbedderData | undefined;
+    if (typeof data?.tabStripIndex !== 'number') {
+      return null;
+    }
+    const tabInfo: TabInfo = {
+      index: data.tabStripIndex,
+      active: data.tabActive ?? false,
+      pinned: data.tabPinned ?? false,
+    };
+    if (data.tabGroupId) {
+      tabInfo.groupId = data.tabGroupId;
+    }
+    return tabInfo;
+  }
+
   async #onFileChooser(
     event: Protocol.Page.FileChooserOpenedEvent,
   ): Promise<void> {
@@ -553,7 +573,9 @@ export class CdpPage extends Page {
     }
   }
 
-  override async setGeolocation(options: GeolocationOptions): Promise<void> {
+  override async setGeolocation(
+    options: GeolocationOptions | null,
+  ): Promise<void> {
     return await this.#emulationManager.setGeolocation(options);
   }
 
@@ -1380,6 +1402,16 @@ export class CdpPage extends Page {
   ): CdpScreenRecording {
     return new CdpScreenRecording(this, options, this.logger);
   }
+}
+
+/**
+ * Shape of `TargetInfo.embedderData` for tab targets.
+ */
+interface TabEmbedderData {
+  tabStripIndex?: number;
+  tabActive?: boolean;
+  tabPinned?: boolean;
+  tabGroupId?: string;
 }
 
 const supportedMetrics = new Set<string>([

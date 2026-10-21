@@ -49,7 +49,7 @@ export declare class EmulationManager implements ClientProvider {
     emulateCPUThrottling(factor: number | null): Promise<void>;
     emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
     emulateMediaType(type?: string): Promise<void>;
-    setGeolocation(options: GeolocationOptions): Promise<void>;
+    setGeolocation(options: GeolocationOptions | null): Promise<void>;
     /**
      * Resets default white background
      */

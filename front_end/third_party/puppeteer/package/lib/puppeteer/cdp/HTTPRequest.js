@@ -1,4 +1,4 @@
-import { headersArray, HTTPRequest, STATUS_TEXTS, handleError, } from '../api/HTTPRequest.js';
+import { headersArray, HTTPRequest, InterceptResolutionAction, STATUS_TEXTS, handleError, } from '../api/HTTPRequest.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { mergeUint8Arrays, stringToBase64, stringToTypedArray, } from '../util/encoding.js';
 /**
@@ -17,6 +17,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     #frame;
     #initiator;
     #logger;
+    #resolution = null;
     get client() {
         return this.#client;
     }
@@ -122,6 +123,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     async _continue(overrides = {}) {
         const { url, method, postData, headers } = overrides;
         this.interception.handled = true;
+        this.#resolution = { action: InterceptResolutionAction.Continue, overrides };
         const postDataBinaryBase64 = postData
             ? stringToBase64(postData)
             : undefined;
@@ -143,6 +145,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     }
     async _respond(response) {
         this.interception.handled = true;
+        this.#resolution = { action: InterceptResolutionAction.Respond, response };
         let parsedBody;
         if (response.body) {
             parsedBody = HTTPRequest.getResponse(response.body);
@@ -182,6 +185,7 @@ export class CdpHTTPRequest extends HTTPRequest {
     }
     async _abort(errorReason) {
         this.interception.handled = true;
+        this.#resolution = { action: InterceptResolutionAction.Abort, errorReason };
         if (this._interceptionId === undefined) {
             throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.failRequest');
         }
@@ -193,6 +197,34 @@ export class CdpHTTPRequest extends HTTPRequest {
             .catch(error => {
             return handleError(error, this.#logger);
         });
+    }
+    /**
+     * The overrides sent with `Fetch.continueRequest`, or an empty object if
+     * the request was not continued.
+     *
+     * @internal
+     */
+    get _continueOverrides() {
+        return this.#resolution?.action === InterceptResolutionAction.Continue
+            ? this.#resolution.overrides
+            : {};
+    }
+    /**
+     * Re-sends the resolution the user already chose to the current
+     * `_interceptionId`. Used when Chrome restarts a request under a new
+     * interception id.
+     *
+     * @internal
+     */
+    async _replayInterception() {
+        switch (this.#resolution?.action) {
+            case InterceptResolutionAction.Continue:
+                return await this._continue(this.#resolution.overrides);
+            case InterceptResolutionAction.Respond:
+                return await this._respond(this.#resolution.response);
+            case InterceptResolutionAction.Abort:
+                return await this._abort(this.#resolution.errorReason);
+        }
     }
 }
 //# sourceMappingURL=HTTPRequest.js.map

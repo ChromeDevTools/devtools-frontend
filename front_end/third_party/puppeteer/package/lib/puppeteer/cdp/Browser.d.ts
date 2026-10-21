@@ -5,7 +5,7 @@
  */
 import type { ChildProcess } from 'node:child_process';
 import type { CreatePageOptions, DebugInfo, ExtensionInstallOptions } from '../api/Browser.js';
-import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type InstallPWAOptions, type UninstallPWAOptions, type LaunchPWAOptions, type GetPWAStateOptions, type PWAState } from '../api/Browser.js';
+import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type InstallPWAOptions, type UninstallPWAOptions, type LaunchPWAOptions, type GetPWAStateOptions, type PWAState, type NetworkRestrictions } from '../api/Browser.js';
 import type { Extension } from '../api/Extension.js';
 import type { Page } from '../api/Page.js';
 import type { Logger } from '../common/Debug.js';
@@ -27,6 +27,7 @@ export declare class CdpBrowser extends BrowserBase {
     _detach(): void;
     process(): ChildProcess | null;
     _targetManager(): TargetManager;
+    restrictNetwork(conditions?: NetworkRestrictions | null): Promise<void>;
     _getIsPageTargetCallback(): IsPageTargetCallback | undefined;
     createBrowserContext(options?: BrowserContextOptions): Promise<CdpBrowserContext>;
     browserContexts(): CdpBrowserContext[];

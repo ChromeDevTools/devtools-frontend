@@ -1,16 +1,17 @@
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = {  default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t && e && e.__esModule) return e; var r, c, a = Object.defineProperty, n = {  default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c && {}.hasOwnProperty.call(e, c) && ((r = a && Object.getOwnPropertyDescriptor(e, c)) && (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _checkInRHS(e) { if (Object(e) !== e) throw TypeError("right-hand side of 'in' should be an object, got " + (null !== e ? typeof e : "null")); return e; }
 function _classPrivateGetter(s, r, a) { return a(_assertClassBrand(s, r)); }
 function _classPrivateMethodInitSpec(e, a) { _checkPrivateRedeclaration(e, a), a.add(e); }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _toPrimitive(t, e) { if ("object" != typeof t || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
 function _classPrivateFieldInitSpec(e, t, a) { _checkPrivateRedeclaration(e, t), t.set(e, a); }
 function _checkPrivateRedeclaration(e, t) { if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object"); }
-function _classPrivateFieldSet(s, a, r) { return s.set(_assertClassBrand(s, a), r), r; }
 function _classPrivateFieldGet(s, a) { return s.get(_assertClassBrand(s, a)); }
+function _classPrivateFieldSet(s, a, r) { return s.set(_assertClassBrand(s, a), r), r; }
 function _assertClassBrand(e, t, n) { if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n; throw new TypeError("Private element is not present on this object"); }
-var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Class4_brand, _i3, _n2, _t3, _e2, _s2, _l2) {
+var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Class2_brand, _i3, _n2, _t3, _e2, _s2, _l2, _PuppeteerURL, _LazyArg, _ARIAQueryHandler) {
   'use strict';
 
   /**
@@ -2548,6 +2549,100 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   };
 
   /**
+   * @license
+   * Copyright 2018 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * The base class for all Puppeteer-specific errors
+   *
+   * @public
+   */
+  class PuppeteerError extends Error {
+    /**
+     * @internal
+     */
+    constructor(message, options) {
+      super(message, options);
+      this.name = this.constructor.name;
+    }
+    /**
+     * @internal
+     */
+    get [Symbol.toStringTag]() {
+      return this.constructor.name;
+    }
+  }
+  /**
+   * TimeoutError is emitted whenever certain operations are terminated due to
+   * timeout.
+   *
+   * @remarks
+   * Example operations are {@link Page.waitForSelector | page.waitForSelector} or
+   * {@link PuppeteerNode.launch | puppeteer.launch}.
+   *
+   * @public
+   */
+  class TimeoutError extends PuppeteerError {}
+  /**
+   * TouchError is thrown when an attempt is made to move or end a touch that does
+   * not exist.
+   * @public
+   */
+  class TouchError extends PuppeteerError {}
+  /**
+   * ProtocolError is emitted whenever there is an error from the protocol.
+   *
+   * @public
+   */
+  var _code = /*#__PURE__*/new WeakMap();
+  var _originalMessage = /*#__PURE__*/new WeakMap();
+  class ProtocolError extends PuppeteerError {
+    constructor(...args) {
+      super(...args);
+      _classPrivateFieldInitSpec(this, _code, void 0);
+      _classPrivateFieldInitSpec(this, _originalMessage, '');
+    }
+    set code(code) {
+      _classPrivateFieldSet(_code, this, code);
+    }
+    /**
+     * @readonly
+     * @public
+     */
+    get code() {
+      return _classPrivateFieldGet(_code, this);
+    }
+    set originalMessage(originalMessage) {
+      _classPrivateFieldSet(_originalMessage, this, originalMessage);
+    }
+    /**
+     * @readonly
+     * @public
+     */
+    get originalMessage() {
+      return _classPrivateFieldGet(_originalMessage, this);
+    }
+  }
+  /**
+   * Puppeteer will throw this error if a method is not
+   * supported by the currently used protocol
+   *
+   * @public
+   */
+  class UnsupportedOperation extends PuppeteerError {}
+  /**
+   * @internal
+   */
+  class TargetCloseError extends ProtocolError {}
+  /**
+   * Thrown if underlying protocol connection has been closed.
+   *
+   * @public
+   */
+  class ConnectionClosedError extends ProtocolError {}
+
+  /**
   MIT License
    Copyright (c) 2021 Jason Miller
    Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3067,6 +3162,944 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
 
   /**
+  Copyright 2020 Intel Corporation
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+    The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  */
+  // node_modules/urlpattern-polyfill/dist/urlpattern.js
+  var Pe = Object.defineProperty;
+  var a = (e, t) => Pe(e, "name", {
+    value: t,
+    configurable: true
+  });
+  var P = class P {
+    constructor(t, r, n, c, l, f) {
+      _defineProperty(this, "type", 3);
+      _defineProperty(this, "name", "");
+      _defineProperty(this, "prefix", "");
+      _defineProperty(this, "value", "");
+      _defineProperty(this, "suffix", "");
+      _defineProperty(this, "modifier", 3);
+      this.type = t, this.name = r, this.prefix = n, this.value = c, this.suffix = l, this.modifier = f;
+    }
+    hasCustomName() {
+      return this.name !== "" && typeof this.name != "number";
+    }
+  };
+  a(P, "Part");
+  var Re = /[$_\p{ID_Start}]/u;
+  var Ee = /[$_\u200C\u200D\p{ID_Continue}]/u;
+  var v = ".*";
+  function Oe(e, t) {
+    return (t ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(e);
+  }
+  a(Oe, "isASCII");
+  function D(e, t = false) {
+    let r = [],
+      n = 0;
+    for (; n < e.length;) {
+      let c = e[n],
+        l = a(function (f) {
+          if (!t) throw new TypeError(f);
+          r.push({
+            type: "INVALID_CHAR",
+            index: n,
+            value: e[n++]
+          });
+        }, "ErrorOrInvalid");
+      if (c === "*") {
+        r.push({
+          type: "ASTERISK",
+          index: n,
+          value: e[n++]
+        });
+        continue;
+      }
+      if (c === "+" || c === "?") {
+        r.push({
+          type: "OTHER_MODIFIER",
+          index: n,
+          value: e[n++]
+        });
+        continue;
+      }
+      if (c === "\\") {
+        r.push({
+          type: "ESCAPED_CHAR",
+          index: n++,
+          value: e[n++]
+        });
+        continue;
+      }
+      if (c === "{") {
+        r.push({
+          type: "OPEN",
+          index: n,
+          value: e[n++]
+        });
+        continue;
+      }
+      if (c === "}") {
+        r.push({
+          type: "CLOSE",
+          index: n,
+          value: e[n++]
+        });
+        continue;
+      }
+      if (c === ":") {
+        let f = "",
+          s = n + 1;
+        for (; s < e.length;) {
+          let i = e.substr(s, 1);
+          if (s === n + 1 && Re.test(i) || s !== n + 1 && Ee.test(i)) {
+            f += e[s++];
+            continue;
+          }
+          break;
+        }
+        if (!f) {
+          l(`Missing parameter name at ${n}`);
+          continue;
+        }
+        r.push({
+          type: "NAME",
+          index: n,
+          value: f
+        }), n = s;
+        continue;
+      }
+      if (c === "(") {
+        let f = 1,
+          s = "",
+          i = n + 1,
+          o = false;
+        if (e[i] === "?") {
+          l(`Pattern cannot start with "?" at ${i}`);
+          continue;
+        }
+        for (; i < e.length;) {
+          if (!Oe(e[i], false)) {
+            l(`Invalid character '${e[i]}' at ${i}.`), o = true;
+            break;
+          }
+          if (e[i] === "\\") {
+            s += e[i++] + e[i++];
+            continue;
+          }
+          if (e[i] === ")") {
+            if (f--, f === 0) {
+              i++;
+              break;
+            }
+          } else if (e[i] === "(" && (f++, e[i + 1] !== "?")) {
+            l(`Capturing groups are not allowed at ${i}`), o = true;
+            break;
+          }
+          s += e[i++];
+        }
+        if (o) continue;
+        if (f) {
+          l(`Unbalanced pattern at ${n}`);
+          continue;
+        }
+        if (!s) {
+          l(`Missing pattern at ${n}`);
+          continue;
+        }
+        r.push({
+          type: "REGEX",
+          index: n,
+          value: s
+        }), n = i;
+        continue;
+      }
+      r.push({
+        type: "CHAR",
+        index: n,
+        value: e[n++]
+      });
+    }
+    return r.push({
+      type: "END",
+      index: n,
+      value: ""
+    }), r;
+  }
+  a(D, "lexer");
+  function F(e, t = {}) {
+    let r = D(e);
+    t.delimiter ??= "/#?", t.prefixes ??= "./";
+    let n = `[^${x(t.delimiter)}]+?`,
+      c = [],
+      l = 0,
+      f = 0,
+      i = /* @__PURE__ */new Set(),
+      o = a(u => {
+        if (f < r.length && r[f].type === u) return r[f++].value;
+      }, "tryConsume"),
+      h = a(() => o("OTHER_MODIFIER") ?? o("ASTERISK"), "tryConsumeModifier"),
+      p = a(u => {
+        let d = o(u);
+        if (d !== void 0) return d;
+        let {
+          type: g,
+          index: y
+        } = r[f];
+        throw new TypeError(`Unexpected ${g} at ${y}, expected ${u}`);
+      }, "mustConsume"),
+      A = a(() => {
+        let u = "",
+          d;
+        for (; d = o("CHAR") ?? o("ESCAPED_CHAR");) u += d;
+        return u;
+      }, "consumeText"),
+      xe = a(u => u, "DefaultEncodePart"),
+      N = t.encodePart || xe,
+      H = "",
+      $ = a(u => {
+        H += u;
+      }, "appendToPendingFixedValue"),
+      M = a(() => {
+        H.length && (c.push(new P(3, "", "", N(H), "", 3)), H = "");
+      }, "maybeAddPartFromPendingFixedValue"),
+      X = a((u, d, g, y, Z) => {
+        let m = 3;
+        switch (Z) {
+          case "?":
+            m = 1;
+            break;
+          case "*":
+            m = 0;
+            break;
+          case "+":
+            m = 2;
+            break;
+        }
+        if (!d && !g && m === 3) {
+          $(u);
+          return;
+        }
+        if (M(), !d && !g) {
+          if (!u) return;
+          c.push(new P(3, "", "", N(u), "", m));
+          return;
+        }
+        let S;
+        g ? g === "*" ? S = v : S = g : S = n;
+        let k = 2;
+        S === n ? (k = 1, S = "") : S === v && (k = 0, S = "");
+        let E;
+        if (d ? E = d : g && (E = l++), i.has(E)) throw new TypeError(`Duplicate name '${E}'.`);
+        i.add(E), c.push(new P(k, E, N(u), S, N(y), m));
+      }, "addPart");
+    for (; f < r.length;) {
+      let u = o("CHAR"),
+        d = o("NAME"),
+        g = o("REGEX");
+      if (!d && !g && (g = o("ASTERISK")), d || g) {
+        let m = u ?? "";
+        t.prefixes.indexOf(m) === -1 && ($(m), m = ""), M();
+        let S = h();
+        X(m, d, g, "", S);
+        continue;
+      }
+      let y = u ?? o("ESCAPED_CHAR");
+      if (y) {
+        $(y);
+        continue;
+      }
+      if (o("OPEN")) {
+        let m = A(),
+          S = o("NAME"),
+          k = o("REGEX");
+        !S && !k && (k = o("ASTERISK"));
+        let E = A();
+        p("CLOSE");
+        let be = h();
+        X(m, S, k, E, be);
+        continue;
+      }
+      M(), p("END");
+    }
+    return c;
+  }
+  a(F, "parse");
+  function x(e) {
+    return e.replace(/([.+*?^${}()[\]|/\\])/g, "\\$1");
+  }
+  a(x, "escapeString");
+  function B(e) {
+    return e && e.ignoreCase ? "ui" : "u";
+  }
+  a(B, "flags");
+  function q(e, t, r) {
+    return W(F(e, r), t, r);
+  }
+  a(q, "stringToRegexp");
+  function T(e) {
+    switch (e) {
+      case 0:
+        return "*";
+      case 1:
+        return "?";
+      case 2:
+        return "+";
+      case 3:
+        return "";
+    }
+  }
+  a(T, "modifierToString");
+  function W(e, t, r = {}) {
+    r.delimiter ??= "/#?", r.prefixes ??= "./", r.sensitive ??= false, r.strict ??= false, r.end ??= true, r.start ??= true, r.endsWith = "";
+    let n = r.start ? "^" : "";
+    for (let s of e) {
+      if (s.type === 3) {
+        s.modifier === 3 ? n += x(s.value) : n += `(?:${x(s.value)})${T(s.modifier)}`;
+        continue;
+      }
+      t && t.push(s.name);
+      let i = `[^${x(r.delimiter)}]+?`,
+        o = s.value;
+      if (s.type === 1 ? o = i : s.type === 0 && (o = v), !s.prefix.length && !s.suffix.length) {
+        s.modifier === 3 || s.modifier === 1 ? n += `(${o})${T(s.modifier)}` : n += `((?:${o})${T(s.modifier)})`;
+        continue;
+      }
+      if (s.modifier === 3 || s.modifier === 1) {
+        n += `(?:${x(s.prefix)}(${o})${x(s.suffix)})`, n += T(s.modifier);
+        continue;
+      }
+      n += `(?:${x(s.prefix)}`, n += `((?:${o})(?:`, n += x(s.suffix), n += x(s.prefix), n += `(?:${o}))*)${x(s.suffix)})`, s.modifier === 0 && (n += "?");
+    }
+    let c = `[${x(r.endsWith)}]|$`,
+      l = `[${x(r.delimiter)}]`;
+    if (r.end) return r.strict || (n += `${l}?`), r.endsWith.length ? n += `(?=${c})` : n += "$", new RegExp(n, B(r));
+    r.strict || (n += `(?:${l}(?=${c}))?`);
+    let f = false;
+    if (e.length) {
+      let s = e[e.length - 1];
+      s.type === 3 && s.modifier === 3 && (f = r.delimiter.indexOf(s) > -1);
+    }
+    return f || (n += `(?=${l}|${c})`), new RegExp(n, B(r));
+  }
+  a(W, "partsToRegexp");
+  var b = {
+    delimiter: "",
+    prefixes: "",
+    sensitive: true,
+    strict: true
+  };
+  var J = {
+    delimiter: ".",
+    prefixes: "",
+    sensitive: true,
+    strict: true
+  };
+  var Q = {
+    delimiter: "/",
+    prefixes: "/",
+    sensitive: true,
+    strict: true
+  };
+  function ee(e, t) {
+    return e.length ? e[0] === "/" ? true : !t || e.length < 2 ? false : (e[0] == "\\" || e[0] == "{") && e[1] == "/" : false;
+  }
+  a(ee, "isAbsolutePathname");
+  function te(e, t) {
+    return e.startsWith(t) ? e.substring(t.length, e.length) : e;
+  }
+  a(te, "maybeStripPrefix");
+  function ke(e, t) {
+    return e.endsWith(t) ? e.substr(0, e.length - t.length) : e;
+  }
+  a(ke, "maybeStripSuffix");
+  function _(e) {
+    return !e || e.length < 2 ? false : e[0] === "[" || (e[0] === "\\" || e[0] === "{") && e[1] === "[";
+  }
+  a(_, "treatAsIPv6Hostname");
+  var re = ["ftp", "file", "http", "https", "ws", "wss"];
+  function U(e) {
+    if (!e) return true;
+    for (let t of re) if (e.test(t)) return true;
+    return false;
+  }
+  a(U, "isSpecialScheme");
+  function ne(e, t) {
+    if (e = te(e, "#"), t || e === "") return e;
+    let r = new URL("https://example.com");
+    return r.hash = e, r.hash ? r.hash.substring(1, r.hash.length) : "";
+  }
+  a(ne, "canonicalizeHash");
+  function se(e, t) {
+    if (e = te(e, "?"), t || e === "") return e;
+    let r = new URL("https://example.com");
+    return r.search = e, r.search ? r.search.substring(1, r.search.length) : "";
+  }
+  a(se, "canonicalizeSearch");
+  function ie(e, t) {
+    return t || e === "" ? e : _(e) ? K(e) : j(e);
+  }
+  a(ie, "canonicalizeHostname");
+  function ae(e, t) {
+    if (t || e === "") return e;
+    let r = new URL("https://example.com");
+    return r.password = e, r.password;
+  }
+  a(ae, "canonicalizePassword");
+  function oe(e, t) {
+    if (t || e === "") return e;
+    let r = new URL("https://example.com");
+    return r.username = e, r.username;
+  }
+  a(oe, "canonicalizeUsername");
+  function ce(e, t, r) {
+    if (r || e === "") return e;
+    if (t && !re.includes(t)) return new URL(`${t}:${e}`).pathname;
+    let n = e[0] == "/";
+    return e = new URL(n ? e : "/-" + e, "https://example.com").pathname, n || (e = e.substring(2, e.length)), e;
+  }
+  a(ce, "canonicalizePathname");
+  function le(e, t, r) {
+    return z(t) === e && (e = ""), r || e === "" ? e : G(e);
+  }
+  a(le, "canonicalizePort");
+  function fe(e, t) {
+    return e = ke(e, ":"), t || e === "" ? e : w(e);
+  }
+  a(fe, "canonicalizeProtocol");
+  function z(e) {
+    switch (e) {
+      case "ws":
+      case "http":
+        return "80";
+      case "wws":
+      case "https":
+        return "443";
+      case "ftp":
+        return "21";
+      default:
+        return "";
+    }
+  }
+  a(z, "defaultPortForProtocol");
+  function w(e) {
+    if (e === "") return e;
+    if (/^[-+.A-Za-z0-9]*$/.test(e)) return e.toLowerCase();
+    throw new TypeError(`Invalid protocol '${e}'.`);
+  }
+  a(w, "protocolEncodeCallback");
+  function he(e) {
+    if (e === "") return e;
+    let t = new URL("https://example.com");
+    return t.username = e, t.username;
+  }
+  a(he, "usernameEncodeCallback");
+  function ue(e) {
+    if (e === "") return e;
+    let t = new URL("https://example.com");
+    return t.password = e, t.password;
+  }
+  a(ue, "passwordEncodeCallback");
+  function j(e) {
+    if (e === "") return e;
+    if (/[\t\n\r #%/:<>?@[\]^\\|]/g.test(e)) throw new TypeError(`Invalid hostname '${e}'`);
+    let t = new URL("https://example.com");
+    return t.hostname = e, t.hostname;
+  }
+  a(j, "hostnameEncodeCallback");
+  function K(e) {
+    if (e === "") return e;
+    if (/[^0-9a-fA-F[\]:]/g.test(e)) throw new TypeError(`Invalid IPv6 hostname '${e}'`);
+    return e.toLowerCase();
+  }
+  a(K, "ipv6HostnameEncodeCallback");
+  function G(e) {
+    if (e === "" || /^[0-9]*$/.test(e) && parseInt(e) <= 65535) return e;
+    throw new TypeError(`Invalid port '${e}'.`);
+  }
+  a(G, "portEncodeCallback");
+  function de(e) {
+    if (e === "") return e;
+    let t = new URL("https://example.com");
+    return t.pathname = e[0] !== "/" ? "/-" + e : e, e[0] !== "/" ? t.pathname.substring(2, t.pathname.length) : t.pathname;
+  }
+  a(de, "standardURLPathnameEncodeCallback");
+  function pe(e) {
+    return e === "" ? e : new URL(`data:${e}`).pathname;
+  }
+  a(pe, "pathURLPathnameEncodeCallback");
+  function ge(e) {
+    if (e === "") return e;
+    let t = new URL("https://example.com");
+    return t.search = e, t.search.substring(1, t.search.length);
+  }
+  a(ge, "searchEncodeCallback");
+  function me(e) {
+    if (e === "") return e;
+    let t = new URL("https://example.com");
+    return t.hash = e, t.hash.substring(1, t.hash.length);
+  }
+  a(me, "hashEncodeCallback");
+  var C = (_i2 = /*#__PURE__*/new WeakMap(), _n = /*#__PURE__*/new WeakMap(), _t = /*#__PURE__*/new WeakMap(), _e = /*#__PURE__*/new WeakMap(), _s = /*#__PURE__*/new WeakMap(), _l = /*#__PURE__*/new WeakMap(), _o = /*#__PURE__*/new WeakMap(), _d = /*#__PURE__*/new WeakMap(), _p = /*#__PURE__*/new WeakMap(), _g = /*#__PURE__*/new WeakMap(), _Class2_brand = /*#__PURE__*/new WeakSet(), class C {
+    constructor(_t2) {
+      _classPrivateMethodInitSpec(this, _Class2_brand);
+      _classPrivateFieldInitSpec(this, _i2, void 0);
+      _classPrivateFieldInitSpec(this, _n, []);
+      _classPrivateFieldInitSpec(this, _t, {});
+      _classPrivateFieldInitSpec(this, _e, 0);
+      _classPrivateFieldInitSpec(this, _s, 1);
+      _classPrivateFieldInitSpec(this, _l, 0);
+      _classPrivateFieldInitSpec(this, _o, 0);
+      _classPrivateFieldInitSpec(this, _d, 0);
+      _classPrivateFieldInitSpec(this, _p, 0);
+      _classPrivateFieldInitSpec(this, _g, false);
+      _classPrivateFieldSet(_i2, this, _t2);
+    }
+    get result() {
+      return _classPrivateFieldGet(_t, this);
+    }
+    parse() {
+      for (_classPrivateFieldSet(_n, this, D(_classPrivateFieldGet(_i2, this), true)); _classPrivateFieldGet(_e, this) < _classPrivateFieldGet(_n, this).length; _classPrivateFieldSet(_e, this, _classPrivateFieldGet(_e, this) + _classPrivateFieldGet(_s, this))) {
+        if (_classPrivateFieldSet(_s, this, 1), _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].type === "END") {
+          if (_classPrivateFieldGet(_o, this) === 0) {
+            _assertClassBrand(_Class2_brand, this, _b2).call(this), _assertClassBrand(_Class2_brand, this, _f).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 9, 1) : _assertClassBrand(_Class2_brand, this, _h).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class2_brand, this, _r).call(this, 7, 0);
+            continue;
+          } else if (_classPrivateFieldGet(_o, this) === 2) {
+            _assertClassBrand(_Class2_brand, this, _u).call(this, 5);
+            continue;
+          }
+          _assertClassBrand(_Class2_brand, this, _r).call(this, 10, 0);
+          break;
+        }
+        if (_classPrivateFieldGet(_d, this) > 0) if (_assertClassBrand(_Class2_brand, this, _A).call(this)) _classPrivateFieldSet(_d, this, _classPrivateFieldGet(_d, this) - 1);else continue;
+        if (_assertClassBrand(_Class2_brand, this, _T).call(this)) {
+          _classPrivateFieldSet(_d, this, _classPrivateFieldGet(_d, this) + 1);
+          continue;
+        }
+        switch (_classPrivateFieldGet(_o, this)) {
+          case 0:
+            _assertClassBrand(_Class2_brand, this, _P).call(this) && _assertClassBrand(_Class2_brand, this, _u).call(this, 1);
+            break;
+          case 1:
+            if (_assertClassBrand(_Class2_brand, this, _P).call(this)) {
+              _assertClassBrand(_Class2_brand, this, _C).call(this);
+              let t = 7,
+                r = 1;
+              _assertClassBrand(_Class2_brand, this, _E).call(this) ? (t = 2, r = 3) : _classPrivateFieldGet(_g, this) && (t = 2), _assertClassBrand(_Class2_brand, this, _r).call(this, t, r);
+            }
+            break;
+          case 2:
+            _assertClassBrand(_Class2_brand, this, _S).call(this) ? _assertClassBrand(_Class2_brand, this, _u).call(this, 3) : (_assertClassBrand(_Class2_brand, this, _x).call(this) || _assertClassBrand(_Class2_brand, this, _h).call(this) || _assertClassBrand(_Class2_brand, this, _f).call(this)) && _assertClassBrand(_Class2_brand, this, _u).call(this, 5);
+            break;
+          case 3:
+            _assertClassBrand(_Class2_brand, this, _O).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 4, 1) : _assertClassBrand(_Class2_brand, this, _S).call(this) && _assertClassBrand(_Class2_brand, this, _r).call(this, 5, 1);
+            break;
+          case 4:
+            _assertClassBrand(_Class2_brand, this, _S).call(this) && _assertClassBrand(_Class2_brand, this, _r).call(this, 5, 1);
+            break;
+          case 5:
+            _assertClassBrand(_Class2_brand, this, _y).call(this) ? _classPrivateFieldSet(_p, this, _classPrivateFieldGet(_p, this) + 1) : _assertClassBrand(_Class2_brand, this, _w).call(this) && _classPrivateFieldSet(_p, this, _classPrivateFieldGet(_p, this) - 1), _assertClassBrand(_Class2_brand, this, _k).call(this) && !_classPrivateFieldGet(_p, this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 6, 1) : _assertClassBrand(_Class2_brand, this, _x).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 7, 0) : _assertClassBrand(_Class2_brand, this, _h).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class2_brand, this, _f).call(this) && _assertClassBrand(_Class2_brand, this, _r).call(this, 9, 1);
+            break;
+          case 6:
+            _assertClassBrand(_Class2_brand, this, _x).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 7, 0) : _assertClassBrand(_Class2_brand, this, _h).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class2_brand, this, _f).call(this) && _assertClassBrand(_Class2_brand, this, _r).call(this, 9, 1);
+            break;
+          case 7:
+            _assertClassBrand(_Class2_brand, this, _h).call(this) ? _assertClassBrand(_Class2_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class2_brand, this, _f).call(this) && _assertClassBrand(_Class2_brand, this, _r).call(this, 9, 1);
+            break;
+          case 8:
+            _assertClassBrand(_Class2_brand, this, _f).call(this) && _assertClassBrand(_Class2_brand, this, _r).call(this, 9, 1);
+            break;
+        }
+      }
+      _classPrivateFieldGet(_t, this).hostname !== void 0 && _classPrivateFieldGet(_t, this).port === void 0 && (_classPrivateFieldGet(_t, this).port = "");
+    }
+  });
+  function _r(t, r) {
+    switch (_classPrivateFieldGet(_o, this)) {
+      case 0:
+        break;
+      case 1:
+        _classPrivateFieldGet(_t, this).protocol = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 2:
+        break;
+      case 3:
+        _classPrivateFieldGet(_t, this).username = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 4:
+        _classPrivateFieldGet(_t, this).password = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 5:
+        _classPrivateFieldGet(_t, this).hostname = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 6:
+        _classPrivateFieldGet(_t, this).port = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 7:
+        _classPrivateFieldGet(_t, this).pathname = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 8:
+        _classPrivateFieldGet(_t, this).search = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+      case 9:
+        _classPrivateFieldGet(_t, this).hash = _assertClassBrand(_Class2_brand, this, _c2).call(this);
+        break;
+    }
+    _classPrivateFieldGet(_o, this) !== 0 && t !== 10 && ([1, 2, 3, 4].includes(_classPrivateFieldGet(_o, this)) && [6, 7, 8, 9].includes(t) && (_classPrivateFieldGet(_t, this).hostname ??= ""), [1, 2, 3, 4, 5, 6].includes(_classPrivateFieldGet(_o, this)) && [8, 9].includes(t) && (_classPrivateFieldGet(_t, this).pathname ??= _classPrivateFieldGet(_g, this) ? "/" : ""), [1, 2, 3, 4, 5, 6, 7].includes(_classPrivateFieldGet(_o, this)) && t === 9 && (_classPrivateFieldGet(_t, this).search ??= "")), _assertClassBrand(_Class2_brand, this, _R).call(this, t, r);
+  }
+  function _R(t, r) {
+    _classPrivateFieldSet(_o, this, t), _classPrivateFieldSet(_l, this, _classPrivateFieldGet(_e, this) + r), _classPrivateFieldSet(_e, this, _classPrivateFieldGet(_e, this) + r), _classPrivateFieldSet(_s, this, 0);
+  }
+  function _b2() {
+    _classPrivateFieldSet(_e, this, _classPrivateFieldGet(_l, this)), _classPrivateFieldSet(_s, this, 0);
+  }
+  function _u(t) {
+    _assertClassBrand(_Class2_brand, this, _b2).call(this), _classPrivateFieldSet(_o, this, t);
+  }
+  function _m(t) {
+    return t < 0 && (t = _classPrivateFieldGet(_n, this).length - t), t < _classPrivateFieldGet(_n, this).length ? _classPrivateFieldGet(_n, this)[t] : _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_n, this).length - 1];
+  }
+  function _a3(t, r) {
+    let n = _assertClassBrand(_Class2_brand, this, _m).call(this, t);
+    return n.value === r && (n.type === "CHAR" || n.type === "ESCAPED_CHAR" || n.type === "INVALID_CHAR");
+  }
+  function _P() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), ":");
+  }
+  function _E() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this) + 1, "/") && _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this) + 2, "/");
+  }
+  function _S() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "@");
+  }
+  function _O() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), ":");
+  }
+  function _k() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), ":");
+  }
+  function _x() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "/");
+  }
+  function _h() {
+    if (_assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "?")) return true;
+    if (_classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].value !== "?") return false;
+    let t = _assertClassBrand(_Class2_brand, this, _m).call(this, _classPrivateFieldGet(_e, this) - 1);
+    return t.type !== "NAME" && t.type !== "REGEX" && t.type !== "CLOSE" && t.type !== "ASTERISK";
+  }
+  function _f() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "#");
+  }
+  function _T() {
+    return _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].type == "OPEN";
+  }
+  function _A() {
+    return _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].type == "CLOSE";
+  }
+  function _y() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "[");
+  }
+  function _w() {
+    return _assertClassBrand(_Class2_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "]");
+  }
+  function _c2() {
+    let t = _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)],
+      r = _assertClassBrand(_Class2_brand, this, _m).call(this, _classPrivateFieldGet(_l, this)).index;
+    return _classPrivateFieldGet(_i2, this).substring(r, t.index);
+  }
+  function _C() {
+    let t = {};
+    Object.assign(t, b), t.encodePart = w;
+    let r = q(_assertClassBrand(_Class2_brand, this, _c2).call(this), void 0, t);
+    _classPrivateFieldSet(_g, this, U(r));
+  }
+  a(C, "Parser");
+  var V = ["protocol", "username", "password", "hostname", "port", "pathname", "search", "hash"];
+  var O = "*";
+  function Se(e, t) {
+    if (typeof e != "string") throw new TypeError("parameter 1 is not of type 'string'.");
+    let r = new URL(e, t);
+    return {
+      protocol: r.protocol.substring(0, r.protocol.length - 1),
+      username: r.username,
+      password: r.password,
+      hostname: r.hostname,
+      port: r.port,
+      pathname: r.pathname,
+      search: r.search !== "" ? r.search.substring(1, r.search.length) : void 0,
+      hash: r.hash !== "" ? r.hash.substring(1, r.hash.length) : void 0
+    };
+  }
+  a(Se, "extractValues");
+  function R(e, t) {
+    return t ? I(e) : e;
+  }
+  a(R, "processBaseURLString");
+  function L(e, t, r) {
+    let n;
+    if (typeof t.baseURL == "string") try {
+      n = new URL(t.baseURL), t.protocol === void 0 && (e.protocol = R(n.protocol.substring(0, n.protocol.length - 1), r)), !r && t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.username === void 0 && (e.username = R(n.username, r)), !r && t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.username === void 0 && t.password === void 0 && (e.password = R(n.password, r)), t.protocol === void 0 && t.hostname === void 0 && (e.hostname = R(n.hostname, r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && (e.port = R(n.port, r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.pathname === void 0 && (e.pathname = R(n.pathname, r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.pathname === void 0 && t.search === void 0 && (e.search = R(n.search.substring(1, n.search.length), r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.pathname === void 0 && t.search === void 0 && t.hash === void 0 && (e.hash = R(n.hash.substring(1, n.hash.length), r));
+    } catch {
+      throw new TypeError(`invalid baseURL '${t.baseURL}'.`);
+    }
+    if (typeof t.protocol == "string" && (e.protocol = fe(t.protocol, r)), typeof t.username == "string" && (e.username = oe(t.username, r)), typeof t.password == "string" && (e.password = ae(t.password, r)), typeof t.hostname == "string" && (e.hostname = ie(t.hostname, r)), typeof t.port == "string" && (e.port = le(t.port, e.protocol, r)), typeof t.pathname == "string") {
+      if (e.pathname = t.pathname, n && !ee(e.pathname, r)) {
+        let c = n.pathname.lastIndexOf("/");
+        c >= 0 && (e.pathname = R(n.pathname.substring(0, c + 1), r) + e.pathname);
+      }
+      e.pathname = ce(e.pathname, e.protocol, r);
+    }
+    return typeof t.search == "string" && (e.search = se(t.search, r)), typeof t.hash == "string" && (e.hash = ne(t.hash, r)), e;
+  }
+  a(L, "applyInit");
+  function I(e) {
+    return e.replace(/([+*?:{}()\\])/g, "\\$1");
+  }
+  a(I, "escapePatternString");
+  function Te(e) {
+    return e.replace(/([.+*?^${}()[\]|/\\])/g, "\\$1");
+  }
+  a(Te, "escapeRegexpString");
+  function Ae(e, t) {
+    t.delimiter ??= "/#?", t.prefixes ??= "./", t.sensitive ??= false, t.strict ??= false, t.end ??= true, t.start ??= true, t.endsWith = "";
+    let r = ".*",
+      n = `[^${Te(t.delimiter)}]+?`,
+      c = /[$_\u200C\u200D\p{ID_Continue}]/u,
+      l = "";
+    for (let f = 0; f < e.length; ++f) {
+      let s = e[f];
+      if (s.type === 3) {
+        if (s.modifier === 3) {
+          l += I(s.value);
+          continue;
+        }
+        l += `{${I(s.value)}}${T(s.modifier)}`;
+        continue;
+      }
+      let i = s.hasCustomName(),
+        o = !!s.suffix.length || !!s.prefix.length && (s.prefix.length !== 1 || !t.prefixes.includes(s.prefix)),
+        h = f > 0 ? e[f - 1] : null,
+        p = f < e.length - 1 ? e[f + 1] : null;
+      if (!o && i && s.type === 1 && s.modifier === 3 && p && !p.prefix.length && !p.suffix.length) if (p.type === 3) {
+        let A = p.value.length > 0 ? p.value[0] : "";
+        o = c.test(A);
+      } else o = !p.hasCustomName();
+      if (!o && !s.prefix.length && h && h.type === 3) {
+        let A = h.value[h.value.length - 1];
+        o = t.prefixes.includes(A);
+      }
+      o && (l += "{"), l += I(s.prefix), i && (l += `:${s.name}`), s.type === 2 ? l += `(${s.value})` : s.type === 1 ? i || (l += `(${n})`) : s.type === 0 && (!i && (!h || h.type === 3 || h.modifier !== 3 || o || s.prefix !== "") ? l += "*" : l += `(${r})`), s.type === 1 && i && s.suffix.length && c.test(s.suffix[0]) && (l += "\\"), l += I(s.suffix), o && (l += "}"), s.modifier !== 3 && (l += T(s.modifier));
+    }
+    return l;
+  }
+  a(Ae, "partsToPattern");
+  var Y = (_i3 = /*#__PURE__*/new WeakMap(), _n2 = /*#__PURE__*/new WeakMap(), _t3 = /*#__PURE__*/new WeakMap(), _e2 = /*#__PURE__*/new WeakMap(), _s2 = /*#__PURE__*/new WeakMap(), _l2 = /*#__PURE__*/new WeakMap(), class Y {
+    constructor(t = {}, r, n) {
+      _classPrivateFieldInitSpec(this, _i3, void 0);
+      _classPrivateFieldInitSpec(this, _n2, {});
+      _classPrivateFieldInitSpec(this, _t3, {});
+      _classPrivateFieldInitSpec(this, _e2, {});
+      _classPrivateFieldInitSpec(this, _s2, {});
+      _classPrivateFieldInitSpec(this, _l2, false);
+      try {
+        let c;
+        if (typeof r == "string" ? c = r : n = r, typeof t == "string") {
+          let i = new C(t);
+          if (i.parse(), t = i.result, c === void 0 && typeof t.protocol != "string") throw new TypeError("A base URL must be provided for a relative constructor string.");
+          t.baseURL = c;
+        } else {
+          if (!t || typeof t != "object") throw new TypeError("parameter 1 is not of type 'string' and cannot convert to dictionary.");
+          if (c) throw new TypeError("parameter 1 is not of type 'string'.");
+        }
+        typeof n > "u" && (n = {
+          ignoreCase: false
+        });
+        let l = {
+            ignoreCase: n.ignoreCase === true
+          },
+          f = {
+            pathname: O,
+            protocol: O,
+            username: O,
+            password: O,
+            hostname: O,
+            port: O,
+            search: O,
+            hash: O
+          };
+        _classPrivateFieldSet(_i3, this, L(f, t, true)), z(_classPrivateFieldGet(_i3, this).protocol) === _classPrivateFieldGet(_i3, this).port && (_classPrivateFieldGet(_i3, this).port = "");
+        let s;
+        for (s of V) {
+          if (!(s in _classPrivateFieldGet(_i3, this))) continue;
+          let i = {},
+            o = _classPrivateFieldGet(_i3, this)[s];
+          switch (_classPrivateFieldGet(_t3, this)[s] = [], s) {
+            case "protocol":
+              Object.assign(i, b), i.encodePart = w;
+              break;
+            case "username":
+              Object.assign(i, b), i.encodePart = he;
+              break;
+            case "password":
+              Object.assign(i, b), i.encodePart = ue;
+              break;
+            case "hostname":
+              Object.assign(i, J), _(o) ? i.encodePart = K : i.encodePart = j;
+              break;
+            case "port":
+              Object.assign(i, b), i.encodePart = G;
+              break;
+            case "pathname":
+              U(_classPrivateFieldGet(_n2, this).protocol) ? (Object.assign(i, Q, l), i.encodePart = de) : (Object.assign(i, b, l), i.encodePart = pe);
+              break;
+            case "search":
+              Object.assign(i, b, l), i.encodePart = ge;
+              break;
+            case "hash":
+              Object.assign(i, b, l), i.encodePart = me;
+              break;
+          }
+          try {
+            _classPrivateFieldGet(_s2, this)[s] = F(o, i), _classPrivateFieldGet(_n2, this)[s] = W(_classPrivateFieldGet(_s2, this)[s], _classPrivateFieldGet(_t3, this)[s], i), _classPrivateFieldGet(_e2, this)[s] = Ae(_classPrivateFieldGet(_s2, this)[s], i), _classPrivateFieldSet(_l2, this, _classPrivateFieldGet(_l2, this) || _classPrivateFieldGet(_s2, this)[s].some(h => h.type === 2));
+          } catch {
+            throw new TypeError(`invalid ${s} pattern '${_classPrivateFieldGet(_i3, this)[s]}'.`);
+          }
+        }
+      } catch (c) {
+        throw new TypeError(`Failed to construct 'URLPattern': ${c.message}`);
+      }
+    }
+    get [Symbol.toStringTag]() {
+      return "URLPattern";
+    }
+    test(t = {}, r) {
+      let n = {
+        pathname: "",
+        protocol: "",
+        username: "",
+        password: "",
+        hostname: "",
+        port: "",
+        search: "",
+        hash: ""
+      };
+      if (typeof t != "string" && r) throw new TypeError("parameter 1 is not of type 'string'.");
+      if (typeof t > "u") return false;
+      try {
+        typeof t == "object" ? n = L(n, t, false) : n = L(n, Se(t, r), false);
+      } catch {
+        return false;
+      }
+      let c;
+      for (c of V) if (!_classPrivateFieldGet(_n2, this)[c].exec(n[c])) return false;
+      return true;
+    }
+    exec(t = {}, r) {
+      let n = {
+        pathname: "",
+        protocol: "",
+        username: "",
+        password: "",
+        hostname: "",
+        port: "",
+        search: "",
+        hash: ""
+      };
+      if (typeof t != "string" && r) throw new TypeError("parameter 1 is not of type 'string'.");
+      if (typeof t > "u") return;
+      try {
+        typeof t == "object" ? n = L(n, t, false) : n = L(n, Se(t, r), false);
+      } catch {
+        return null;
+      }
+      let c = {};
+      r ? c.inputs = [t, r] : c.inputs = [t];
+      let l;
+      for (l of V) {
+        let f = _classPrivateFieldGet(_n2, this)[l].exec(n[l]);
+        if (!f) return null;
+        let s = {};
+        for (let [i, o] of _classPrivateFieldGet(_t3, this)[l].entries()) if (typeof o == "string" || typeof o == "number") {
+          let h = f[i + 1];
+          s[o] = h;
+        }
+        c[l] = {
+          input: n[l] ?? "",
+          groups: s
+        };
+      }
+      return c;
+    }
+    static compareComponent(t, r, n) {
+      let c = a((i, o) => {
+          for (let h of ["type", "modifier", "prefix", "value", "suffix"]) {
+            if (i[h] < o[h]) return -1;
+            if (i[h] === o[h]) continue;
+            return 1;
+          }
+          return 0;
+        }, "comparePart"),
+        l = new P(3, "", "", "", "", 3),
+        f = new P(0, "", "", "", "", 3),
+        s = a((i, o) => {
+          let h = 0;
+          for (; h < Math.min(i.length, o.length); ++h) {
+            let p = c(i[h], o[h]);
+            if (p) return p;
+          }
+          return i.length === o.length ? 0 : c(i[h] ?? l, o[h] ?? l);
+        }, "comparePartList");
+      return !_classPrivateFieldGet(_e2, r)[t] && !_classPrivateFieldGet(_e2, n)[t] ? 0 : _classPrivateFieldGet(_e2, r)[t] && !_classPrivateFieldGet(_e2, n)[t] ? s(_classPrivateFieldGet(_s2, r)[t], [f]) : !_classPrivateFieldGet(_e2, r)[t] && _classPrivateFieldGet(_e2, n)[t] ? s([f], _classPrivateFieldGet(_s2, n)[t]) : s(_classPrivateFieldGet(_s2, r)[t], _classPrivateFieldGet(_s2, n)[t]);
+    }
+    get protocol() {
+      return _classPrivateFieldGet(_e2, this).protocol;
+    }
+    get username() {
+      return _classPrivateFieldGet(_e2, this).username;
+    }
+    get password() {
+      return _classPrivateFieldGet(_e2, this).password;
+    }
+    get hostname() {
+      return _classPrivateFieldGet(_e2, this).hostname;
+    }
+    get port() {
+      return _classPrivateFieldGet(_e2, this).port;
+    }
+    get pathname() {
+      return _classPrivateFieldGet(_e2, this).pathname;
+    }
+    get search() {
+      return _classPrivateFieldGet(_e2, this).search;
+    }
+    get hash() {
+      return _classPrivateFieldGet(_e2, this).hash;
+    }
+    get hasRegExpGroups() {
+      return _classPrivateFieldGet(_l2, this);
+    }
+  });
+  a(Y, "URLPattern");
+
+  // node_modules/urlpattern-polyfill/index.js
+  if (!globalThis.URLPattern) {
+    globalThis.URLPattern = Y;
+  }
+
+  /**
    * @license
    * Copyright 2020 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
@@ -3154,102 +4187,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.14.0';
+  const packageVersion = '25.15.0';
   // x-release-please-end
-
-  /**
-   * @license
-   * Copyright 2018 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * The base class for all Puppeteer-specific errors
-   *
-   * @public
-   */
-  class PuppeteerError extends Error {
-    /**
-     * @internal
-     */
-    constructor(message, options) {
-      super(message, options);
-      this.name = this.constructor.name;
-    }
-    /**
-     * @internal
-     */
-    get [Symbol.toStringTag]() {
-      return this.constructor.name;
-    }
-  }
-  /**
-   * TimeoutError is emitted whenever certain operations are terminated due to
-   * timeout.
-   *
-   * @remarks
-   * Example operations are {@link Page.waitForSelector | page.waitForSelector} or
-   * {@link PuppeteerNode.launch | puppeteer.launch}.
-   *
-   * @public
-   */
-  class TimeoutError extends PuppeteerError {}
-  /**
-   * TouchError is thrown when an attempt is made to move or end a touch that does
-   * not exist.
-   * @public
-   */
-  class TouchError extends PuppeteerError {}
-  /**
-   * ProtocolError is emitted whenever there is an error from the protocol.
-   *
-   * @public
-   */
-  var _code = /*#__PURE__*/new WeakMap();
-  var _originalMessage = /*#__PURE__*/new WeakMap();
-  class ProtocolError extends PuppeteerError {
-    constructor(...args) {
-      super(...args);
-      _classPrivateFieldInitSpec(this, _code, void 0);
-      _classPrivateFieldInitSpec(this, _originalMessage, '');
-    }
-    set code(code) {
-      _classPrivateFieldSet(_code, this, code);
-    }
-    /**
-     * @readonly
-     * @public
-     */
-    get code() {
-      return _classPrivateFieldGet(_code, this);
-    }
-    set originalMessage(originalMessage) {
-      _classPrivateFieldSet(_originalMessage, this, originalMessage);
-    }
-    /**
-     * @readonly
-     * @public
-     */
-    get originalMessage() {
-      return _classPrivateFieldGet(_originalMessage, this);
-    }
-  }
-  /**
-   * Puppeteer will throw this error if a method is not
-   * supported by the currently used protocol
-   *
-   * @public
-   */
-  class UnsupportedOperation extends PuppeteerError {}
-  /**
-   * @internal
-   */
-  class TargetCloseError extends ProtocolError {}
-  /**
-   * Thrown if underlying protocol connection has been closed.
-   *
-   * @public
-   */
-  class ConnectionClosedError extends ProtocolError {}
 
   /**
    * @license
@@ -3741,6 +4680,27 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }));
     });
   }
+  /**
+   * @internal
+   */
+  function assertSupportedUrlRestrictions(options) {
+    if (options.blocklist?.length && options.allowlist?.length) {
+      throw new Error('Cannot specify both blocklist and allowlist');
+    }
+    if (options.protocol === 'webDriverBiDi' && (options.blocklist || options.allowlist)) {
+      throw new Error('blocklist and allowlist are only supported with the CDP protocol');
+    }
+    if (options.blocklist) {
+      for (const rule of options.blocklist) {
+        new Y(rule);
+      }
+    }
+    if (options.allowlist) {
+      for (const rule of options.allowlist) {
+        new Y(rule);
+      }
+    }
+  }
 
   /**
    * @internal
@@ -3802,6 +4762,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     get logger() {
       return _classPrivateFieldGet(_logger2, this);
+    }
+    /**
+     * Sets the network conditions (blocklist or allowlist) and re-applies the
+     * conditions to all targets.
+     * To clear all network conditions, omit the argument or pass `null`.
+     *
+     * @param conditions - The network conditions to apply.
+     *
+     * @remarks
+     * Currently only supported for Chrome and the CDP protocol.
+     *
+     * Targets that are already on a blocked URL when `restrictNetwork` is called
+     * will remain attached and stay on the blocked page. This is a behavior difference
+     * compared to launching the browser with network restrictions, where such targets
+     * are detached immediately upon initial attach.
+     *
+     * @experimental
+     */
+    restrictNetwork(conditions) {
+      throw new UnsupportedOperation();
     }
     /**
      * Waits until a {@link Target | target} matching the given `predicate`
@@ -5141,7 +6121,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }) => {
     return cssQuerySelectorAll(element, selector);
   });
-  const source = "\"use strict\";var g=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)g(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&g(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(g({},\"__esModule\",{value:!0}),t);var Se={};l(Se,{default:()=>Te});module.exports=z(Se);var b=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends b{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#s&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#t;#o;#n=new Promise(e=>{this.#o=e});#s;#l;constructor(e){e&&e.timeout>0&&(this.#l=new p(e.message),this.#s=setTimeout(()=>{this.reject(this.#l)},e.timeout))}#i(e){clearTimeout(this.#s),this.#t=e,this.#o()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#i(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#i(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#t}#a;valueOrThrow(){return this.#a||(this.#a=(async()=>{if(await this.#n,this.#r)throw this.#t;return this.#t})()),this.#a}};var W=new Map,F=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var E={};l(E,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var v={};l(v,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{CustomQuerySelectorRegistry:()=>y,customQuerySelectors:()=>P});var y=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new y;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var oe={childList:!0,subtree:!0,attributes:!0};function ne(t){return t.nodeType===Node.ELEMENT_NODE||t.nodeType===Node.DOCUMENT_FRAGMENT_NODE}function se(t){return t.parentNode??t.host??null}function ie(t,e){let r=t,o;for(;o=se(r);){if(e.has(o))return!0;r=o}return!1}var w=class{#e;#r;#t;#o=new WeakSet;#n;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#n=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new WeakSet,this.#t=new MutationObserver(async o=>{this.#l(o);let n=await this.#e();n&&(e.resolve(n),await this.stop())}),this.#s(this.#r)}#s(e){!this.#t||this.#o.has(e)||(this.#o.add(e),this.#t.observe(e,oe),this.#i(e))}#l(e){let r=new Set;for(let o of e)for(let n of o.addedNodes)ne(n)&&r.add(n);for(let o of r)ie(o,r)||this.#i(o)}#i(e){let r=document.createTreeWalker(e,NodeFilter.SHOW_ELEMENT);do{let{shadowRoot:o}=r.currentNode;o&&this.#s(o)}while(r.nextNode())}async stop(){u(this.#n,\"Polling never started.\"),this.#n.finished()||this.#n.reject(new Error(\"Polling stopped\")),this.#t&&(this.#t.disconnect(),this.#t=void 0)}result(){return u(this.#n,\"Polling never started.\"),this.#n.valueOrThrow()}},N=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},T=class{#e;#r;#t;#o;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#o=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#t=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#o,\"Polling never started.\"),this.#o.finished()||this.#o.reject(new Error(\"Polling stopped\")),this.#t&&(clearInterval(this.#t),this.#t=void 0)}result(){return u(this.#o,\"Polling never started.\"),this.#o.valueOrThrow()}};var L={};l(L,{PCombinator:()=>V,pQuerySelector:()=>we,pQuerySelectorAll:()=>B});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>m});var le=new Set([\"checkbox\",\"image\",\"radio\"]),ae=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!le.has(t.type),ce=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!ce.has(t.nodeName)&&!document.head?.contains(t),O=new WeakMap,H=t=>{for(;t;)O.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},j=new WeakSet,I,ue=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)H(r.target)})),I},d=t=>{let e=O.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(ae(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{H(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),j.has(t)||(ue().observe(t,{childList:!0,characterData:!0,subtree:!0}),j.add(t))}return O.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>fe,pierce:()=>S,pierceAll:()=>M});var de=[\"hidden\",\"collapse\"],fe=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement??t.parentNode?.host:t;if(!r)return e===!1;let o=window.getComputedStyle(r),n=o&&!de.includes(o.visibility)&&!me(r);return e===n?t:!1};function me(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var he=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*S(t){he(t)?yield t.shadowRoot:yield t}function*M(t){t=S(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var _={};l(_,{xpathQuerySelectorAll:()=>D});var D=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,i[h]=null};var pe=/[-\\w\\P{ASCII}*]/u,V=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(V||{}),U=t=>\"querySelectorAll\"in t,q=class{#e;#r=[];#t=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#o()}async run(){for(typeof this.#t==\"string\"&&this.#t.trimStart()===\":scope\"&&this.#o();this.#t!==void 0;this.#o()){let e=this.#t;typeof e==\"string\"?e[0]&&pe.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){U(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!U(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*D(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#o(){if(this.#r.length!==0){this.#t=this.#r.shift();return}if(this.#e.length===0){this.#t=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,S),this.#o();break}case\">>>\":{this.elements=a.flatMap(this.elements,M),this.#o();break}default:this.#r=e,this.#o();break}}},Q=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},ye=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new Q;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},B=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return ye(a.flatMap(r,o=>{let n=new q(t,o);return n.run(),n.elements}))},we=async function(t,e){for await(let r of B(t,e))return r;return null};var Ne=Object.freeze({...E,...A,...R,...L,...C,...k,..._,...v,Deferred:c,createFunction:F,createTextContent:d,IntervalPoller:T,isSuitableNodeForTextMatching:f,MutationPoller:w,RAFPoller:N}),Te=Ne;\n";
+  const source = "\"use strict\";var b=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)b(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&b(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(b({},\"__esModule\",{value:!0}),t);var Se={};l(Se,{default:()=>Te});module.exports=z(Se);var g=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},h=class extends g{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#s&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#t;#o;#n=new Promise(e=>{this.#o=e});#s;#l;constructor(e){e&&e.timeout>0&&(this.#l=new h(e.message),this.#s=setTimeout(()=>{this.reject(this.#l)},e.timeout))}#a(e){clearTimeout(this.#s),this.#t=e,this.#o()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#a(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#a(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#t}#i;valueOrThrow(){return this.#i||(this.#i=(async()=>{if(await this.#n,this.#r)throw this.#t;return this.#t})()),this.#i}};var W=new Map,F=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var E={};l(E,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var v={};l(v,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var P={};l(P,{CustomQuerySelectorRegistry:()=>p,customQuerySelectors:()=>A});var p=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},A=new p;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var y=(t,e)=>{if(!t)throw new Error(e)};var oe={childList:!0,subtree:!0,attributes:!0};function ne(t){return t.nodeType===Node.ELEMENT_NODE||t.nodeType===Node.DOCUMENT_FRAGMENT_NODE}function se(t){return t.parentNode??t.host??null}function ie(t,e){let r=t,o;for(;o=se(r);){if(e.has(o))return!0;r=o}return!1}var w=class{#e;#r;#t;#o=new WeakSet;#n;#s=!1;constructor(e,r){this.#e=e,this.#r=r}async start(){if(this.#s)return;let e=this.#n=c.create(),r=await this.#e();if(!this.#s){if(r){e.resolve(r);return}this.#o=new WeakSet,this.#t=new MutationObserver(async o=>{this.#a(o);let n=await this.#e();n&&(e.resolve(n),await this.stop())}),this.#l(this.#r)}}#l(e){!this.#t||this.#o.has(e)||(this.#o.add(e),this.#t.observe(e,oe),this.#i(e))}#a(e){let r=new Set;for(let o of e)for(let n of o.addedNodes)ne(n)&&r.add(n);for(let o of r)ie(o,r)||this.#i(o)}#i(e){let r=document.createTreeWalker(e,NodeFilter.SHOW_ELEMENT);do{let{shadowRoot:o}=r.currentNode;o&&this.#l(o)}while(r.nextNode())}async stop(){this.#s=!0,this.#n&&(this.#n.finished()||this.#n.reject(new Error(\"Polling stopped\")),this.#t&&(this.#t.disconnect(),this.#t=void 0))}result(){return y(this.#n,\"Polling never started.\"),this.#n.valueOrThrow()}},N=class{#e;#r;#t=!1;constructor(e){this.#e=e}async start(){if(this.#t)return;let e=this.#r=c.create(),r=await this.#e();if(this.#t)return;if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){this.#t=!0,this.#r&&(this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\")))}result(){return y(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},T=class{#e;#r;#t;#o;#n=!1;constructor(e,r){this.#e=e,this.#r=r}async start(){if(this.#n)return;let e=this.#o=c.create(),r=await this.#e();if(!this.#n){if(r){e.resolve(r);return}this.#t=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}}async stop(){this.#n=!0,this.#o&&(this.#o.finished()||this.#o.reject(new Error(\"Polling stopped\")),this.#t&&(clearInterval(this.#t),this.#t=void 0))}result(){return y(this.#o,\"Polling never started.\"),this.#o.valueOrThrow()}};var L={};l(L,{PCombinator:()=>V,pQuerySelector:()=>we,pQuerySelectorAll:()=>B});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>f});var le=new Set([\"checkbox\",\"image\",\"radio\"]),ae=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!le.has(t.type),ce=new Set([\"SCRIPT\",\"STYLE\"]),d=t=>!ce.has(t.nodeName)&&!document.head?.contains(t),O=new WeakMap,H=t=>{for(;t;)O.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},j=new WeakSet,I,ue=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)H(r.target)})),I},u=t=>{let e=O.get(t);if(e||(e={full:\"\",immediate:[]},!d(t)))return e;let r=\"\";if(ae(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{H(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=u(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=u(t.shadowRoot).full),j.has(t)||(ue().observe(t,{childList:!0,characterData:!0,subtree:!0}),j.add(t))}return O.set(t,e),e};var f=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&d(o)){let n;o.shadowRoot?n=f(o.shadowRoot,e):n=f(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&d(t)&&u(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>fe,pierce:()=>S,pierceAll:()=>M});var de=[\"hidden\",\"collapse\"],fe=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement??t.parentNode?.host:t;if(!r)return e===!1;let o=window.getComputedStyle(r),n=o&&!de.includes(o.visibility)&&!me(r);return e===n?t:!1};function me(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var he=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*S(t){he(t)?yield t.shadowRoot:yield t}function*M(t){t=S(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var _={};l(_,{xpathQuerySelectorAll:()=>D});var D=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let m=0;m<i.length;m++)s=i[m],yield s,i[m]=null};var pe=/[-\\w\\P{ASCII}*]/u,V=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(V||{}),U=t=>\"querySelectorAll\"in t,q=class{#e;#r=[];#t=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#o()}async run(){for(typeof this.#t==\"string\"&&this.#t.trimStart()===\":scope\"&&this.#o();this.#t!==void 0;this.#o()){let e=this.#t;typeof e==\"string\"?e[0]&&pe.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){U(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!U(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*f(r,e.value);break;case\"xpath\":yield*D(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=A.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#o(){if(this.#r.length!==0){this.#t=this.#r.shift();return}if(this.#e.length===0){this.#t=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,S),this.#o();break}case\">>>\":{this.elements=a.flatMap(this.elements,M),this.#o();break}default:this.#r=e,this.#o();break}}},Q=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},ye=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new Q;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},B=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return ye(a.flatMap(r,o=>{let n=new q(t,o);return n.run(),n.elements}))},we=async function(t,e){for await(let r of B(t,e))return r;return null};var Ne=Object.freeze({...E,...P,...R,...L,...C,...k,..._,...v,Deferred:c,createFunction:F,createTextContent:u,IntervalPoller:T,isSuitableNodeForTextMatching:d,MutationPoller:w,RAFPoller:N}),Te=Ne;\n";
 
   /**
    * @license
@@ -5243,19 +6223,19 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * register.
      */
     register(name, handler) {
-      var _Class;
+      var _Class4;
       assert(!_classPrivateFieldGet(_handlers2, this).has(name), `Cannot register over existing handler: ${name}`);
       assert(/^[a-zA-Z]+$/.test(name), `Custom query handler names may only contain [a-zA-Z]`);
       assert(handler.queryAll || handler.queryOne, `At least one query method must be implemented.`);
-      const Handler = (_Class = class Handler extends QueryHandler {}, _defineProperty(_Class, "querySelectorAll", interpolateFunction((node, selector, PuppeteerUtil) => {
+      const Handler = (_Class4 = class Handler extends QueryHandler {}, _defineProperty(_Class4, "querySelectorAll", interpolateFunction((node, selector, PuppeteerUtil) => {
         return PuppeteerUtil.customQuerySelectors.get(PLACEHOLDER('name')).querySelectorAll(node, selector);
       }, {
         name: JSON.stringify(name)
-      })), _defineProperty(_Class, "querySelector", interpolateFunction((node, selector, PuppeteerUtil) => {
+      })), _defineProperty(_Class4, "querySelector", interpolateFunction((node, selector, PuppeteerUtil) => {
         return PuppeteerUtil.customQuerySelectors.get(PLACEHOLDER('name')).querySelector(node, selector);
       }, {
         name: JSON.stringify(name)
-      })), _Class);
+      })), _Class4);
       const registerScript = interpolateFunction(PuppeteerUtil => {
         PuppeteerUtil.customQuerySelectors.register(PLACEHOLDER('name'), {
           queryAll: PLACEHOLDER('queryAll'),
@@ -6053,7 +7033,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * @public
    */
-  let JSHandle = ((_ref, _Class2) => {
+  let JSHandle = ((_ref, _Class5) => {
     let _classDecorators = [moveable];
     let _classDescriptor;
     let _classExtraInitializers = [];
@@ -6063,7 +7043,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     let _getProperties_decorators;
     var _logger4 = /*#__PURE__*/new WeakMap();
     _ref = (_getProperty_decorators = [throwIfDisposed()], _getProperties_decorators = [throwIfDisposed()], disposeSymbol);
-    _Class2 = class {
+    _Class5 = class {
       /**
        * @internal
        */
@@ -6155,10 +7135,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         return this.dispose();
       }
     };
-    _classThis = _Class2;
+    _classThis = _Class5;
     (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
-      __esDecorate$7(_Class2, null, _getProperty_decorators, {
+      __esDecorate$7(_Class5, null, _getProperty_decorators, {
         kind: "method",
         name: "getProperty",
         static: false,
@@ -6169,7 +7149,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
-      __esDecorate$7(_Class2, null, _getProperties_decorators, {
+      __esDecorate$7(_Class5, null, _getProperties_decorators, {
         kind: "method",
         name: "getProperties",
         static: false,
@@ -12009,7 +12989,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         try {
           await recording._start();
         } catch (error) {
-          void recording.stop();
+          // Clean up the recording. Ignore errors from stop() so the original
+          // error from _start() is the one that propagates.
+          await recording.stop().catch(() => {});
           throw error;
         }
         if (stream) {
@@ -12717,9 +13699,19 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             }), _classPrivateFieldGet(_polling, this), _classPrivateFieldGet(_fn, this), ..._classPrivateFieldGet(_args, this)));
             break;
         }
+        // Avoid starting a poller created after the task has already terminated.
+        if (_classPrivateFieldGet(_result, this).finished()) {
+          await this.terminate();
+          return;
+        }
         await _classPrivateFieldGet(_poller, this).evaluate(poller => {
           void poller.start();
         });
+        // Termination already stops the poller; only skip the result round trip.
+        if (_classPrivateFieldGet(_result, this).finished()) {
+          await this.terminate();
+          return;
+        }
         const result = await _classPrivateFieldGet(_poller, this).evaluateHandle(poller => {
           return poller.result();
         });
@@ -15427,6 +16419,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         });
       }
       async setGeolocation(options) {
+        if (options === null) {
+          await _classPrivateFieldGet(_geoLocationState, this).setState({
+            active: true
+          });
+          return;
+        }
         const {
           longitude,
           latitude,
@@ -15708,11 +16706,15 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           if (!state.active) {
             return;
           }
-          await client.send('Emulation.setGeolocationOverride', state.geoLocation ? {
+          if (!state.geoLocation) {
+            await client.send('Emulation.clearGeolocationOverride');
+            return;
+          }
+          await client.send('Emulation.setGeolocationOverride', {
             longitude: state.geoLocation.longitude,
             latitude: state.geoLocation.latitude,
             accuracy: state.geoLocation.accuracy
-          } : undefined);
+          });
         }, "#setGeolocation")
       }, _private_setGeolocation_decorators, {
         kind: "method",
@@ -18260,6 +19262,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _frame4 = /*#__PURE__*/new WeakMap();
   var _initiator = /*#__PURE__*/new WeakMap();
   var _logger17 = /*#__PURE__*/new WeakMap();
+  var _resolution = /*#__PURE__*/new WeakMap();
   class CdpHTTPRequest extends HTTPRequest {
     get client() {
       return _classPrivateFieldGet(_client1, this);
@@ -18281,6 +19284,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _frame4, void 0);
       _classPrivateFieldInitSpec(this, _initiator, void 0);
       _classPrivateFieldInitSpec(this, _logger17, void 0);
+      _classPrivateFieldInitSpec(this, _resolution, null);
       _classPrivateFieldSet(_logger17, this, logger);
       _classPrivateFieldSet(_client1, this, client);
       this.id = data.requestId;
@@ -18377,6 +19381,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         headers
       } = overrides;
       this.interception.handled = true;
+      _classPrivateFieldSet(_resolution, this, {
+        action: exports.InterceptResolutionAction.Continue,
+        overrides
+      });
       const postDataBinaryBase64 = postData ? stringToBase64(postData) : undefined;
       if (this._interceptionId === undefined) {
         throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
@@ -18394,6 +19402,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     async _respond(response) {
       this.interception.handled = true;
+      _classPrivateFieldSet(_resolution, this, {
+        action: exports.InterceptResolutionAction.Respond,
+        response
+      });
       let parsedBody;
       if (response.body) {
         parsedBody = HTTPRequest.getResponse(response.body);
@@ -18429,6 +19441,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     async _abort(errorReason) {
       this.interception.handled = true;
+      _classPrivateFieldSet(_resolution, this, {
+        action: exports.InterceptResolutionAction.Abort,
+        errorReason
+      });
       if (this._interceptionId === undefined) {
         throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.failRequest');
       }
@@ -18438,6 +19454,32 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }).catch(error => {
         return handleError(error, _classPrivateFieldGet(_logger17, this));
       });
+    }
+    /**
+     * The overrides sent with `Fetch.continueRequest`, or an empty object if
+     * the request was not continued.
+     *
+     * @internal
+     */
+    get _continueOverrides() {
+      return _classPrivateFieldGet(_resolution, this)?.action === exports.InterceptResolutionAction.Continue ? _classPrivateFieldGet(_resolution, this).overrides : {};
+    }
+    /**
+     * Re-sends the resolution the user already chose to the current
+     * `_interceptionId`. Used when Chrome restarts a request under a new
+     * interception id.
+     *
+     * @internal
+     */
+    async _replayInterception() {
+      switch (_classPrivateFieldGet(_resolution, this)?.action) {
+        case exports.InterceptResolutionAction.Continue:
+          return await this._continue(_classPrivateFieldGet(_resolution, this).overrides);
+        case exports.InterceptResolutionAction.Respond:
+          return await this._respond(_classPrivateFieldGet(_resolution, this).response);
+        case exports.InterceptResolutionAction.Abort:
+          return await this._abort(_classPrivateFieldGet(_resolution, this).errorReason);
+      }
     }
   }
 
@@ -19187,20 +20229,52 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _assertClassBrand(_NetworkManager_brand, this, _onRequestWithoutNetworkInstrumentation).call(this, client, event);
       return;
     }
-    const requestWillBeSentEvent = (() => {
-      const requestWillBeSentEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(networkRequestId);
-      // redirect requests have the same `requestId`,
-      if (requestWillBeSentEvent && (requestWillBeSentEvent.request.url !== event.request.url || requestWillBeSentEvent.request.method !== event.request.method)) {
-        _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(networkRequestId);
+    const requestWillBeSentEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(networkRequestId);
+    if (!requestWillBeSentEvent) {
+      // Chrome may restart a request and send a second Fetch.requestPaused
+      // for a request Puppeteer already emitted (crbug.com/1196004). Repoint
+      // that request instead of emitting a duplicate that never finishes.
+      const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(networkRequestId);
+      if (request && _assertClassBrand(_NetworkManager_brand, this, _isRestartedRequest).call(this, request, event)) {
+        _assertClassBrand(_NetworkManager_brand, this, _onRequestRestarted).call(this, request, fetchRequestId);
         return;
       }
-      return requestWillBeSentEvent;
-    })();
-    if (requestWillBeSentEvent) {
-      _assertClassBrand(_NetworkManager_brand, this, _patchRequestEventHeaders).call(this, requestWillBeSentEvent, event);
-      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSentEvent, fetchRequestId);
-    } else {
       _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event);
+      return;
+    }
+    // Redirect requests have the same `requestId`. Wait for the redirect's
+    // own Network.requestWillBeSent.
+    if (requestWillBeSentEvent.request.url !== event.request.url || requestWillBeSentEvent.request.method !== event.request.method) {
+      _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(networkRequestId);
+      _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event);
+      return;
+    }
+    _assertClassBrand(_NetworkManager_brand, this, _patchRequestEventHeaders).call(this, requestWillBeSentEvent, event);
+    _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSentEvent, fetchRequestId);
+  }
+  function _isRestartedRequest(request, event) {
+    // Only a request with no response yet can be restarted. Redirects are
+    // excluded by id because in a same-URL redirect, the pause can arrive
+    // before the response does.
+    if (event.redirectedRequestId || request.response()) {
+      return false;
+    }
+    // Chrome usually pauses the request the user continued to, but can pause
+    // the original if it restarts before the overrides are applied.
+    const overrides = request._continueOverrides;
+    const eventUrl = event.request.url + (event.request.urlFragment ?? '');
+    const urlMatches = eventUrl === request.url() || eventUrl === overrides.url || event.request.url === overrides.url;
+    const methodMatches = event.request.method === request.method() || event.request.method === overrides.method;
+    return urlMatches && methodMatches;
+  }
+  function _onRequestRestarted(request, fetchRequestId) {
+    request._interceptionId = fetchRequestId;
+    if (_classPrivateFieldGet(_userRequestInterceptionEnabled, this)) {
+      // If the user already resolved the interception, the restarted job needs
+      // the same resolution or the request hangs.
+      void request._replayInterception().catch(err => {
+        _classPrivateFieldGet(_logger18, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
+      });
     }
   }
   function _patchRequestEventHeaders(requestWillBeSentEvent, requestPausedEvent) {
@@ -19259,6 +20333,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     request._fromMemoryCache = fromMemoryCache;
     _classPrivateFieldGet(_networkEventManager, this).storeRequest(event.requestId, request);
+    _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(event.requestId);
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
   }
@@ -22054,15 +23129,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         this.stopped = true;
         try {
+          if (!_classPrivateFieldGet(_streamHandle, this)) {
+            // `_start()` did not succeed, so there is no recording to stop.
+            return;
+          }
           const {
             client
           } = this.page.mainFrame();
           await client.send('Page.stopScreenRecording').catch(err => {
             this.logger(DEBUG_PREFIXES.error)?.(err);
           });
-          if (!_classPrivateFieldGet(_streamHandle, this)) {
-            throw new Error('Screen recording stream handle is missing.');
-          }
           let eof = false;
           while (!eof) {
             const {
@@ -22808,6 +23884,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         windowId
       } = await _classPrivateFieldGet(_primaryTargetClient, this).send('Browser.getWindowForTarget');
       return windowId.toString();
+    }
+    async tabInfo() {
+      const {
+        targetInfo
+      } = await _classPrivateFieldGet(_tabTargetClient, this).send('Target.getTargetInfo');
+      const data = targetInfo.embedderData;
+      if (typeof data?.tabStripIndex !== 'number') {
+        return null;
+      }
+      const tabInfo = {
+        index: data.tabStripIndex,
+        active: data.tabActive ?? false,
+        pinned: data.tabPinned ?? false
+      };
+      if (data.tabGroupId) {
+        tabInfo.groupId = data.tabGroupId;
+      }
+      return tabInfo;
     }
     _client() {
       return _classPrivateFieldGet(_primaryTargetClient, this);
@@ -23982,6 +25076,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     _session() {
       return _classPrivateFieldGet(_session, this);
     }
+    _setSession(session) {
+      _classPrivateFieldSet(_session, this, session);
+      _classPrivateFieldGet(_session, this).setTarget(this);
+    }
     _addChildTarget(target) {
       _classPrivateFieldGet(_childTargets, this).add(target);
     }
@@ -24159,944 +25257,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   class OtherTarget extends CdpTarget {}
 
   /**
-  Copyright 2020 Intel Corporation
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-    The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
-  */
-  // node_modules/urlpattern-polyfill/dist/urlpattern.js
-  var Pe = Object.defineProperty;
-  var a = (e, t) => Pe(e, "name", {
-    value: t,
-    configurable: true
-  });
-  var P = class P {
-    constructor(t, r, n, c, l, f) {
-      _defineProperty(this, "type", 3);
-      _defineProperty(this, "name", "");
-      _defineProperty(this, "prefix", "");
-      _defineProperty(this, "value", "");
-      _defineProperty(this, "suffix", "");
-      _defineProperty(this, "modifier", 3);
-      this.type = t, this.name = r, this.prefix = n, this.value = c, this.suffix = l, this.modifier = f;
-    }
-    hasCustomName() {
-      return this.name !== "" && typeof this.name != "number";
-    }
-  };
-  a(P, "Part");
-  var Re = /[$_\p{ID_Start}]/u;
-  var Ee = /[$_\u200C\u200D\p{ID_Continue}]/u;
-  var v = ".*";
-  function Oe(e, t) {
-    return (t ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(e);
-  }
-  a(Oe, "isASCII");
-  function D(e, t = false) {
-    let r = [],
-      n = 0;
-    for (; n < e.length;) {
-      let c = e[n],
-        l = a(function (f) {
-          if (!t) throw new TypeError(f);
-          r.push({
-            type: "INVALID_CHAR",
-            index: n,
-            value: e[n++]
-          });
-        }, "ErrorOrInvalid");
-      if (c === "*") {
-        r.push({
-          type: "ASTERISK",
-          index: n,
-          value: e[n++]
-        });
-        continue;
-      }
-      if (c === "+" || c === "?") {
-        r.push({
-          type: "OTHER_MODIFIER",
-          index: n,
-          value: e[n++]
-        });
-        continue;
-      }
-      if (c === "\\") {
-        r.push({
-          type: "ESCAPED_CHAR",
-          index: n++,
-          value: e[n++]
-        });
-        continue;
-      }
-      if (c === "{") {
-        r.push({
-          type: "OPEN",
-          index: n,
-          value: e[n++]
-        });
-        continue;
-      }
-      if (c === "}") {
-        r.push({
-          type: "CLOSE",
-          index: n,
-          value: e[n++]
-        });
-        continue;
-      }
-      if (c === ":") {
-        let f = "",
-          s = n + 1;
-        for (; s < e.length;) {
-          let i = e.substr(s, 1);
-          if (s === n + 1 && Re.test(i) || s !== n + 1 && Ee.test(i)) {
-            f += e[s++];
-            continue;
-          }
-          break;
-        }
-        if (!f) {
-          l(`Missing parameter name at ${n}`);
-          continue;
-        }
-        r.push({
-          type: "NAME",
-          index: n,
-          value: f
-        }), n = s;
-        continue;
-      }
-      if (c === "(") {
-        let f = 1,
-          s = "",
-          i = n + 1,
-          o = false;
-        if (e[i] === "?") {
-          l(`Pattern cannot start with "?" at ${i}`);
-          continue;
-        }
-        for (; i < e.length;) {
-          if (!Oe(e[i], false)) {
-            l(`Invalid character '${e[i]}' at ${i}.`), o = true;
-            break;
-          }
-          if (e[i] === "\\") {
-            s += e[i++] + e[i++];
-            continue;
-          }
-          if (e[i] === ")") {
-            if (f--, f === 0) {
-              i++;
-              break;
-            }
-          } else if (e[i] === "(" && (f++, e[i + 1] !== "?")) {
-            l(`Capturing groups are not allowed at ${i}`), o = true;
-            break;
-          }
-          s += e[i++];
-        }
-        if (o) continue;
-        if (f) {
-          l(`Unbalanced pattern at ${n}`);
-          continue;
-        }
-        if (!s) {
-          l(`Missing pattern at ${n}`);
-          continue;
-        }
-        r.push({
-          type: "REGEX",
-          index: n,
-          value: s
-        }), n = i;
-        continue;
-      }
-      r.push({
-        type: "CHAR",
-        index: n,
-        value: e[n++]
-      });
-    }
-    return r.push({
-      type: "END",
-      index: n,
-      value: ""
-    }), r;
-  }
-  a(D, "lexer");
-  function F(e, t = {}) {
-    let r = D(e);
-    t.delimiter ??= "/#?", t.prefixes ??= "./";
-    let n = `[^${x(t.delimiter)}]+?`,
-      c = [],
-      l = 0,
-      f = 0,
-      i = /* @__PURE__ */new Set(),
-      o = a(u => {
-        if (f < r.length && r[f].type === u) return r[f++].value;
-      }, "tryConsume"),
-      h = a(() => o("OTHER_MODIFIER") ?? o("ASTERISK"), "tryConsumeModifier"),
-      p = a(u => {
-        let d = o(u);
-        if (d !== void 0) return d;
-        let {
-          type: g,
-          index: y
-        } = r[f];
-        throw new TypeError(`Unexpected ${g} at ${y}, expected ${u}`);
-      }, "mustConsume"),
-      A = a(() => {
-        let u = "",
-          d;
-        for (; d = o("CHAR") ?? o("ESCAPED_CHAR");) u += d;
-        return u;
-      }, "consumeText"),
-      xe = a(u => u, "DefaultEncodePart"),
-      N = t.encodePart || xe,
-      H = "",
-      $ = a(u => {
-        H += u;
-      }, "appendToPendingFixedValue"),
-      M = a(() => {
-        H.length && (c.push(new P(3, "", "", N(H), "", 3)), H = "");
-      }, "maybeAddPartFromPendingFixedValue"),
-      X = a((u, d, g, y, Z) => {
-        let m = 3;
-        switch (Z) {
-          case "?":
-            m = 1;
-            break;
-          case "*":
-            m = 0;
-            break;
-          case "+":
-            m = 2;
-            break;
-        }
-        if (!d && !g && m === 3) {
-          $(u);
-          return;
-        }
-        if (M(), !d && !g) {
-          if (!u) return;
-          c.push(new P(3, "", "", N(u), "", m));
-          return;
-        }
-        let S;
-        g ? g === "*" ? S = v : S = g : S = n;
-        let k = 2;
-        S === n ? (k = 1, S = "") : S === v && (k = 0, S = "");
-        let E;
-        if (d ? E = d : g && (E = l++), i.has(E)) throw new TypeError(`Duplicate name '${E}'.`);
-        i.add(E), c.push(new P(k, E, N(u), S, N(y), m));
-      }, "addPart");
-    for (; f < r.length;) {
-      let u = o("CHAR"),
-        d = o("NAME"),
-        g = o("REGEX");
-      if (!d && !g && (g = o("ASTERISK")), d || g) {
-        let m = u ?? "";
-        t.prefixes.indexOf(m) === -1 && ($(m), m = ""), M();
-        let S = h();
-        X(m, d, g, "", S);
-        continue;
-      }
-      let y = u ?? o("ESCAPED_CHAR");
-      if (y) {
-        $(y);
-        continue;
-      }
-      if (o("OPEN")) {
-        let m = A(),
-          S = o("NAME"),
-          k = o("REGEX");
-        !S && !k && (k = o("ASTERISK"));
-        let E = A();
-        p("CLOSE");
-        let be = h();
-        X(m, S, k, E, be);
-        continue;
-      }
-      M(), p("END");
-    }
-    return c;
-  }
-  a(F, "parse");
-  function x(e) {
-    return e.replace(/([.+*?^${}()[\]|/\\])/g, "\\$1");
-  }
-  a(x, "escapeString");
-  function B(e) {
-    return e && e.ignoreCase ? "ui" : "u";
-  }
-  a(B, "flags");
-  function q(e, t, r) {
-    return W(F(e, r), t, r);
-  }
-  a(q, "stringToRegexp");
-  function T(e) {
-    switch (e) {
-      case 0:
-        return "*";
-      case 1:
-        return "?";
-      case 2:
-        return "+";
-      case 3:
-        return "";
-    }
-  }
-  a(T, "modifierToString");
-  function W(e, t, r = {}) {
-    r.delimiter ??= "/#?", r.prefixes ??= "./", r.sensitive ??= false, r.strict ??= false, r.end ??= true, r.start ??= true, r.endsWith = "";
-    let n = r.start ? "^" : "";
-    for (let s of e) {
-      if (s.type === 3) {
-        s.modifier === 3 ? n += x(s.value) : n += `(?:${x(s.value)})${T(s.modifier)}`;
-        continue;
-      }
-      t && t.push(s.name);
-      let i = `[^${x(r.delimiter)}]+?`,
-        o = s.value;
-      if (s.type === 1 ? o = i : s.type === 0 && (o = v), !s.prefix.length && !s.suffix.length) {
-        s.modifier === 3 || s.modifier === 1 ? n += `(${o})${T(s.modifier)}` : n += `((?:${o})${T(s.modifier)})`;
-        continue;
-      }
-      if (s.modifier === 3 || s.modifier === 1) {
-        n += `(?:${x(s.prefix)}(${o})${x(s.suffix)})`, n += T(s.modifier);
-        continue;
-      }
-      n += `(?:${x(s.prefix)}`, n += `((?:${o})(?:`, n += x(s.suffix), n += x(s.prefix), n += `(?:${o}))*)${x(s.suffix)})`, s.modifier === 0 && (n += "?");
-    }
-    let c = `[${x(r.endsWith)}]|$`,
-      l = `[${x(r.delimiter)}]`;
-    if (r.end) return r.strict || (n += `${l}?`), r.endsWith.length ? n += `(?=${c})` : n += "$", new RegExp(n, B(r));
-    r.strict || (n += `(?:${l}(?=${c}))?`);
-    let f = false;
-    if (e.length) {
-      let s = e[e.length - 1];
-      s.type === 3 && s.modifier === 3 && (f = r.delimiter.indexOf(s) > -1);
-    }
-    return f || (n += `(?=${l}|${c})`), new RegExp(n, B(r));
-  }
-  a(W, "partsToRegexp");
-  var b = {
-    delimiter: "",
-    prefixes: "",
-    sensitive: true,
-    strict: true
-  };
-  var J = {
-    delimiter: ".",
-    prefixes: "",
-    sensitive: true,
-    strict: true
-  };
-  var Q = {
-    delimiter: "/",
-    prefixes: "/",
-    sensitive: true,
-    strict: true
-  };
-  function ee(e, t) {
-    return e.length ? e[0] === "/" ? true : !t || e.length < 2 ? false : (e[0] == "\\" || e[0] == "{") && e[1] == "/" : false;
-  }
-  a(ee, "isAbsolutePathname");
-  function te(e, t) {
-    return e.startsWith(t) ? e.substring(t.length, e.length) : e;
-  }
-  a(te, "maybeStripPrefix");
-  function ke(e, t) {
-    return e.endsWith(t) ? e.substr(0, e.length - t.length) : e;
-  }
-  a(ke, "maybeStripSuffix");
-  function _(e) {
-    return !e || e.length < 2 ? false : e[0] === "[" || (e[0] === "\\" || e[0] === "{") && e[1] === "[";
-  }
-  a(_, "treatAsIPv6Hostname");
-  var re = ["ftp", "file", "http", "https", "ws", "wss"];
-  function U(e) {
-    if (!e) return true;
-    for (let t of re) if (e.test(t)) return true;
-    return false;
-  }
-  a(U, "isSpecialScheme");
-  function ne(e, t) {
-    if (e = te(e, "#"), t || e === "") return e;
-    let r = new URL("https://example.com");
-    return r.hash = e, r.hash ? r.hash.substring(1, r.hash.length) : "";
-  }
-  a(ne, "canonicalizeHash");
-  function se(e, t) {
-    if (e = te(e, "?"), t || e === "") return e;
-    let r = new URL("https://example.com");
-    return r.search = e, r.search ? r.search.substring(1, r.search.length) : "";
-  }
-  a(se, "canonicalizeSearch");
-  function ie(e, t) {
-    return t || e === "" ? e : _(e) ? K(e) : j(e);
-  }
-  a(ie, "canonicalizeHostname");
-  function ae(e, t) {
-    if (t || e === "") return e;
-    let r = new URL("https://example.com");
-    return r.password = e, r.password;
-  }
-  a(ae, "canonicalizePassword");
-  function oe(e, t) {
-    if (t || e === "") return e;
-    let r = new URL("https://example.com");
-    return r.username = e, r.username;
-  }
-  a(oe, "canonicalizeUsername");
-  function ce(e, t, r) {
-    if (r || e === "") return e;
-    if (t && !re.includes(t)) return new URL(`${t}:${e}`).pathname;
-    let n = e[0] == "/";
-    return e = new URL(n ? e : "/-" + e, "https://example.com").pathname, n || (e = e.substring(2, e.length)), e;
-  }
-  a(ce, "canonicalizePathname");
-  function le(e, t, r) {
-    return z(t) === e && (e = ""), r || e === "" ? e : G(e);
-  }
-  a(le, "canonicalizePort");
-  function fe(e, t) {
-    return e = ke(e, ":"), t || e === "" ? e : w(e);
-  }
-  a(fe, "canonicalizeProtocol");
-  function z(e) {
-    switch (e) {
-      case "ws":
-      case "http":
-        return "80";
-      case "wws":
-      case "https":
-        return "443";
-      case "ftp":
-        return "21";
-      default:
-        return "";
-    }
-  }
-  a(z, "defaultPortForProtocol");
-  function w(e) {
-    if (e === "") return e;
-    if (/^[-+.A-Za-z0-9]*$/.test(e)) return e.toLowerCase();
-    throw new TypeError(`Invalid protocol '${e}'.`);
-  }
-  a(w, "protocolEncodeCallback");
-  function he(e) {
-    if (e === "") return e;
-    let t = new URL("https://example.com");
-    return t.username = e, t.username;
-  }
-  a(he, "usernameEncodeCallback");
-  function ue(e) {
-    if (e === "") return e;
-    let t = new URL("https://example.com");
-    return t.password = e, t.password;
-  }
-  a(ue, "passwordEncodeCallback");
-  function j(e) {
-    if (e === "") return e;
-    if (/[\t\n\r #%/:<>?@[\]^\\|]/g.test(e)) throw new TypeError(`Invalid hostname '${e}'`);
-    let t = new URL("https://example.com");
-    return t.hostname = e, t.hostname;
-  }
-  a(j, "hostnameEncodeCallback");
-  function K(e) {
-    if (e === "") return e;
-    if (/[^0-9a-fA-F[\]:]/g.test(e)) throw new TypeError(`Invalid IPv6 hostname '${e}'`);
-    return e.toLowerCase();
-  }
-  a(K, "ipv6HostnameEncodeCallback");
-  function G(e) {
-    if (e === "" || /^[0-9]*$/.test(e) && parseInt(e) <= 65535) return e;
-    throw new TypeError(`Invalid port '${e}'.`);
-  }
-  a(G, "portEncodeCallback");
-  function de(e) {
-    if (e === "") return e;
-    let t = new URL("https://example.com");
-    return t.pathname = e[0] !== "/" ? "/-" + e : e, e[0] !== "/" ? t.pathname.substring(2, t.pathname.length) : t.pathname;
-  }
-  a(de, "standardURLPathnameEncodeCallback");
-  function pe(e) {
-    return e === "" ? e : new URL(`data:${e}`).pathname;
-  }
-  a(pe, "pathURLPathnameEncodeCallback");
-  function ge(e) {
-    if (e === "") return e;
-    let t = new URL("https://example.com");
-    return t.search = e, t.search.substring(1, t.search.length);
-  }
-  a(ge, "searchEncodeCallback");
-  function me(e) {
-    if (e === "") return e;
-    let t = new URL("https://example.com");
-    return t.hash = e, t.hash.substring(1, t.hash.length);
-  }
-  a(me, "hashEncodeCallback");
-  var C = (_i2 = /*#__PURE__*/new WeakMap(), _n = /*#__PURE__*/new WeakMap(), _t = /*#__PURE__*/new WeakMap(), _e = /*#__PURE__*/new WeakMap(), _s = /*#__PURE__*/new WeakMap(), _l = /*#__PURE__*/new WeakMap(), _o = /*#__PURE__*/new WeakMap(), _d = /*#__PURE__*/new WeakMap(), _p = /*#__PURE__*/new WeakMap(), _g = /*#__PURE__*/new WeakMap(), _Class4_brand = /*#__PURE__*/new WeakSet(), class C {
-    constructor(_t2) {
-      _classPrivateMethodInitSpec(this, _Class4_brand);
-      _classPrivateFieldInitSpec(this, _i2, void 0);
-      _classPrivateFieldInitSpec(this, _n, []);
-      _classPrivateFieldInitSpec(this, _t, {});
-      _classPrivateFieldInitSpec(this, _e, 0);
-      _classPrivateFieldInitSpec(this, _s, 1);
-      _classPrivateFieldInitSpec(this, _l, 0);
-      _classPrivateFieldInitSpec(this, _o, 0);
-      _classPrivateFieldInitSpec(this, _d, 0);
-      _classPrivateFieldInitSpec(this, _p, 0);
-      _classPrivateFieldInitSpec(this, _g, false);
-      _classPrivateFieldSet(_i2, this, _t2);
-    }
-    get result() {
-      return _classPrivateFieldGet(_t, this);
-    }
-    parse() {
-      for (_classPrivateFieldSet(_n, this, D(_classPrivateFieldGet(_i2, this), true)); _classPrivateFieldGet(_e, this) < _classPrivateFieldGet(_n, this).length; _classPrivateFieldSet(_e, this, _classPrivateFieldGet(_e, this) + _classPrivateFieldGet(_s, this))) {
-        if (_classPrivateFieldSet(_s, this, 1), _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].type === "END") {
-          if (_classPrivateFieldGet(_o, this) === 0) {
-            _assertClassBrand(_Class4_brand, this, _b2).call(this), _assertClassBrand(_Class4_brand, this, _f).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 9, 1) : _assertClassBrand(_Class4_brand, this, _h).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class4_brand, this, _r).call(this, 7, 0);
-            continue;
-          } else if (_classPrivateFieldGet(_o, this) === 2) {
-            _assertClassBrand(_Class4_brand, this, _u).call(this, 5);
-            continue;
-          }
-          _assertClassBrand(_Class4_brand, this, _r).call(this, 10, 0);
-          break;
-        }
-        if (_classPrivateFieldGet(_d, this) > 0) if (_assertClassBrand(_Class4_brand, this, _A).call(this)) _classPrivateFieldSet(_d, this, _classPrivateFieldGet(_d, this) - 1);else continue;
-        if (_assertClassBrand(_Class4_brand, this, _T).call(this)) {
-          _classPrivateFieldSet(_d, this, _classPrivateFieldGet(_d, this) + 1);
-          continue;
-        }
-        switch (_classPrivateFieldGet(_o, this)) {
-          case 0:
-            _assertClassBrand(_Class4_brand, this, _P).call(this) && _assertClassBrand(_Class4_brand, this, _u).call(this, 1);
-            break;
-          case 1:
-            if (_assertClassBrand(_Class4_brand, this, _P).call(this)) {
-              _assertClassBrand(_Class4_brand, this, _C).call(this);
-              let t = 7,
-                r = 1;
-              _assertClassBrand(_Class4_brand, this, _E).call(this) ? (t = 2, r = 3) : _classPrivateFieldGet(_g, this) && (t = 2), _assertClassBrand(_Class4_brand, this, _r).call(this, t, r);
-            }
-            break;
-          case 2:
-            _assertClassBrand(_Class4_brand, this, _S).call(this) ? _assertClassBrand(_Class4_brand, this, _u).call(this, 3) : (_assertClassBrand(_Class4_brand, this, _x).call(this) || _assertClassBrand(_Class4_brand, this, _h).call(this) || _assertClassBrand(_Class4_brand, this, _f).call(this)) && _assertClassBrand(_Class4_brand, this, _u).call(this, 5);
-            break;
-          case 3:
-            _assertClassBrand(_Class4_brand, this, _O).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 4, 1) : _assertClassBrand(_Class4_brand, this, _S).call(this) && _assertClassBrand(_Class4_brand, this, _r).call(this, 5, 1);
-            break;
-          case 4:
-            _assertClassBrand(_Class4_brand, this, _S).call(this) && _assertClassBrand(_Class4_brand, this, _r).call(this, 5, 1);
-            break;
-          case 5:
-            _assertClassBrand(_Class4_brand, this, _y).call(this) ? _classPrivateFieldSet(_p, this, _classPrivateFieldGet(_p, this) + 1) : _assertClassBrand(_Class4_brand, this, _w).call(this) && _classPrivateFieldSet(_p, this, _classPrivateFieldGet(_p, this) - 1), _assertClassBrand(_Class4_brand, this, _k).call(this) && !_classPrivateFieldGet(_p, this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 6, 1) : _assertClassBrand(_Class4_brand, this, _x).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 7, 0) : _assertClassBrand(_Class4_brand, this, _h).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class4_brand, this, _f).call(this) && _assertClassBrand(_Class4_brand, this, _r).call(this, 9, 1);
-            break;
-          case 6:
-            _assertClassBrand(_Class4_brand, this, _x).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 7, 0) : _assertClassBrand(_Class4_brand, this, _h).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class4_brand, this, _f).call(this) && _assertClassBrand(_Class4_brand, this, _r).call(this, 9, 1);
-            break;
-          case 7:
-            _assertClassBrand(_Class4_brand, this, _h).call(this) ? _assertClassBrand(_Class4_brand, this, _r).call(this, 8, 1) : _assertClassBrand(_Class4_brand, this, _f).call(this) && _assertClassBrand(_Class4_brand, this, _r).call(this, 9, 1);
-            break;
-          case 8:
-            _assertClassBrand(_Class4_brand, this, _f).call(this) && _assertClassBrand(_Class4_brand, this, _r).call(this, 9, 1);
-            break;
-        }
-      }
-      _classPrivateFieldGet(_t, this).hostname !== void 0 && _classPrivateFieldGet(_t, this).port === void 0 && (_classPrivateFieldGet(_t, this).port = "");
-    }
-  });
-  function _r(t, r) {
-    switch (_classPrivateFieldGet(_o, this)) {
-      case 0:
-        break;
-      case 1:
-        _classPrivateFieldGet(_t, this).protocol = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 2:
-        break;
-      case 3:
-        _classPrivateFieldGet(_t, this).username = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 4:
-        _classPrivateFieldGet(_t, this).password = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 5:
-        _classPrivateFieldGet(_t, this).hostname = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 6:
-        _classPrivateFieldGet(_t, this).port = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 7:
-        _classPrivateFieldGet(_t, this).pathname = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 8:
-        _classPrivateFieldGet(_t, this).search = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-      case 9:
-        _classPrivateFieldGet(_t, this).hash = _assertClassBrand(_Class4_brand, this, _c2).call(this);
-        break;
-    }
-    _classPrivateFieldGet(_o, this) !== 0 && t !== 10 && ([1, 2, 3, 4].includes(_classPrivateFieldGet(_o, this)) && [6, 7, 8, 9].includes(t) && (_classPrivateFieldGet(_t, this).hostname ??= ""), [1, 2, 3, 4, 5, 6].includes(_classPrivateFieldGet(_o, this)) && [8, 9].includes(t) && (_classPrivateFieldGet(_t, this).pathname ??= _classPrivateFieldGet(_g, this) ? "/" : ""), [1, 2, 3, 4, 5, 6, 7].includes(_classPrivateFieldGet(_o, this)) && t === 9 && (_classPrivateFieldGet(_t, this).search ??= "")), _assertClassBrand(_Class4_brand, this, _R).call(this, t, r);
-  }
-  function _R(t, r) {
-    _classPrivateFieldSet(_o, this, t), _classPrivateFieldSet(_l, this, _classPrivateFieldGet(_e, this) + r), _classPrivateFieldSet(_e, this, _classPrivateFieldGet(_e, this) + r), _classPrivateFieldSet(_s, this, 0);
-  }
-  function _b2() {
-    _classPrivateFieldSet(_e, this, _classPrivateFieldGet(_l, this)), _classPrivateFieldSet(_s, this, 0);
-  }
-  function _u(t) {
-    _assertClassBrand(_Class4_brand, this, _b2).call(this), _classPrivateFieldSet(_o, this, t);
-  }
-  function _m(t) {
-    return t < 0 && (t = _classPrivateFieldGet(_n, this).length - t), t < _classPrivateFieldGet(_n, this).length ? _classPrivateFieldGet(_n, this)[t] : _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_n, this).length - 1];
-  }
-  function _a3(t, r) {
-    let n = _assertClassBrand(_Class4_brand, this, _m).call(this, t);
-    return n.value === r && (n.type === "CHAR" || n.type === "ESCAPED_CHAR" || n.type === "INVALID_CHAR");
-  }
-  function _P() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), ":");
-  }
-  function _E() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this) + 1, "/") && _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this) + 2, "/");
-  }
-  function _S() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "@");
-  }
-  function _O() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), ":");
-  }
-  function _k() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), ":");
-  }
-  function _x() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "/");
-  }
-  function _h() {
-    if (_assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "?")) return true;
-    if (_classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].value !== "?") return false;
-    let t = _assertClassBrand(_Class4_brand, this, _m).call(this, _classPrivateFieldGet(_e, this) - 1);
-    return t.type !== "NAME" && t.type !== "REGEX" && t.type !== "CLOSE" && t.type !== "ASTERISK";
-  }
-  function _f() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "#");
-  }
-  function _T() {
-    return _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].type == "OPEN";
-  }
-  function _A() {
-    return _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)].type == "CLOSE";
-  }
-  function _y() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "[");
-  }
-  function _w() {
-    return _assertClassBrand(_Class4_brand, this, _a3).call(this, _classPrivateFieldGet(_e, this), "]");
-  }
-  function _c2() {
-    let t = _classPrivateFieldGet(_n, this)[_classPrivateFieldGet(_e, this)],
-      r = _assertClassBrand(_Class4_brand, this, _m).call(this, _classPrivateFieldGet(_l, this)).index;
-    return _classPrivateFieldGet(_i2, this).substring(r, t.index);
-  }
-  function _C() {
-    let t = {};
-    Object.assign(t, b), t.encodePart = w;
-    let r = q(_assertClassBrand(_Class4_brand, this, _c2).call(this), void 0, t);
-    _classPrivateFieldSet(_g, this, U(r));
-  }
-  a(C, "Parser");
-  var V = ["protocol", "username", "password", "hostname", "port", "pathname", "search", "hash"];
-  var O = "*";
-  function Se(e, t) {
-    if (typeof e != "string") throw new TypeError("parameter 1 is not of type 'string'.");
-    let r = new URL(e, t);
-    return {
-      protocol: r.protocol.substring(0, r.protocol.length - 1),
-      username: r.username,
-      password: r.password,
-      hostname: r.hostname,
-      port: r.port,
-      pathname: r.pathname,
-      search: r.search !== "" ? r.search.substring(1, r.search.length) : void 0,
-      hash: r.hash !== "" ? r.hash.substring(1, r.hash.length) : void 0
-    };
-  }
-  a(Se, "extractValues");
-  function R(e, t) {
-    return t ? I(e) : e;
-  }
-  a(R, "processBaseURLString");
-  function L(e, t, r) {
-    let n;
-    if (typeof t.baseURL == "string") try {
-      n = new URL(t.baseURL), t.protocol === void 0 && (e.protocol = R(n.protocol.substring(0, n.protocol.length - 1), r)), !r && t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.username === void 0 && (e.username = R(n.username, r)), !r && t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.username === void 0 && t.password === void 0 && (e.password = R(n.password, r)), t.protocol === void 0 && t.hostname === void 0 && (e.hostname = R(n.hostname, r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && (e.port = R(n.port, r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.pathname === void 0 && (e.pathname = R(n.pathname, r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.pathname === void 0 && t.search === void 0 && (e.search = R(n.search.substring(1, n.search.length), r)), t.protocol === void 0 && t.hostname === void 0 && t.port === void 0 && t.pathname === void 0 && t.search === void 0 && t.hash === void 0 && (e.hash = R(n.hash.substring(1, n.hash.length), r));
-    } catch {
-      throw new TypeError(`invalid baseURL '${t.baseURL}'.`);
-    }
-    if (typeof t.protocol == "string" && (e.protocol = fe(t.protocol, r)), typeof t.username == "string" && (e.username = oe(t.username, r)), typeof t.password == "string" && (e.password = ae(t.password, r)), typeof t.hostname == "string" && (e.hostname = ie(t.hostname, r)), typeof t.port == "string" && (e.port = le(t.port, e.protocol, r)), typeof t.pathname == "string") {
-      if (e.pathname = t.pathname, n && !ee(e.pathname, r)) {
-        let c = n.pathname.lastIndexOf("/");
-        c >= 0 && (e.pathname = R(n.pathname.substring(0, c + 1), r) + e.pathname);
-      }
-      e.pathname = ce(e.pathname, e.protocol, r);
-    }
-    return typeof t.search == "string" && (e.search = se(t.search, r)), typeof t.hash == "string" && (e.hash = ne(t.hash, r)), e;
-  }
-  a(L, "applyInit");
-  function I(e) {
-    return e.replace(/([+*?:{}()\\])/g, "\\$1");
-  }
-  a(I, "escapePatternString");
-  function Te(e) {
-    return e.replace(/([.+*?^${}()[\]|/\\])/g, "\\$1");
-  }
-  a(Te, "escapeRegexpString");
-  function Ae(e, t) {
-    t.delimiter ??= "/#?", t.prefixes ??= "./", t.sensitive ??= false, t.strict ??= false, t.end ??= true, t.start ??= true, t.endsWith = "";
-    let r = ".*",
-      n = `[^${Te(t.delimiter)}]+?`,
-      c = /[$_\u200C\u200D\p{ID_Continue}]/u,
-      l = "";
-    for (let f = 0; f < e.length; ++f) {
-      let s = e[f];
-      if (s.type === 3) {
-        if (s.modifier === 3) {
-          l += I(s.value);
-          continue;
-        }
-        l += `{${I(s.value)}}${T(s.modifier)}`;
-        continue;
-      }
-      let i = s.hasCustomName(),
-        o = !!s.suffix.length || !!s.prefix.length && (s.prefix.length !== 1 || !t.prefixes.includes(s.prefix)),
-        h = f > 0 ? e[f - 1] : null,
-        p = f < e.length - 1 ? e[f + 1] : null;
-      if (!o && i && s.type === 1 && s.modifier === 3 && p && !p.prefix.length && !p.suffix.length) if (p.type === 3) {
-        let A = p.value.length > 0 ? p.value[0] : "";
-        o = c.test(A);
-      } else o = !p.hasCustomName();
-      if (!o && !s.prefix.length && h && h.type === 3) {
-        let A = h.value[h.value.length - 1];
-        o = t.prefixes.includes(A);
-      }
-      o && (l += "{"), l += I(s.prefix), i && (l += `:${s.name}`), s.type === 2 ? l += `(${s.value})` : s.type === 1 ? i || (l += `(${n})`) : s.type === 0 && (!i && (!h || h.type === 3 || h.modifier !== 3 || o || s.prefix !== "") ? l += "*" : l += `(${r})`), s.type === 1 && i && s.suffix.length && c.test(s.suffix[0]) && (l += "\\"), l += I(s.suffix), o && (l += "}"), s.modifier !== 3 && (l += T(s.modifier));
-    }
-    return l;
-  }
-  a(Ae, "partsToPattern");
-  var Y = (_i3 = /*#__PURE__*/new WeakMap(), _n2 = /*#__PURE__*/new WeakMap(), _t3 = /*#__PURE__*/new WeakMap(), _e2 = /*#__PURE__*/new WeakMap(), _s2 = /*#__PURE__*/new WeakMap(), _l2 = /*#__PURE__*/new WeakMap(), class Y {
-    constructor(t = {}, r, n) {
-      _classPrivateFieldInitSpec(this, _i3, void 0);
-      _classPrivateFieldInitSpec(this, _n2, {});
-      _classPrivateFieldInitSpec(this, _t3, {});
-      _classPrivateFieldInitSpec(this, _e2, {});
-      _classPrivateFieldInitSpec(this, _s2, {});
-      _classPrivateFieldInitSpec(this, _l2, false);
-      try {
-        let c;
-        if (typeof r == "string" ? c = r : n = r, typeof t == "string") {
-          let i = new C(t);
-          if (i.parse(), t = i.result, c === void 0 && typeof t.protocol != "string") throw new TypeError("A base URL must be provided for a relative constructor string.");
-          t.baseURL = c;
-        } else {
-          if (!t || typeof t != "object") throw new TypeError("parameter 1 is not of type 'string' and cannot convert to dictionary.");
-          if (c) throw new TypeError("parameter 1 is not of type 'string'.");
-        }
-        typeof n > "u" && (n = {
-          ignoreCase: false
-        });
-        let l = {
-            ignoreCase: n.ignoreCase === true
-          },
-          f = {
-            pathname: O,
-            protocol: O,
-            username: O,
-            password: O,
-            hostname: O,
-            port: O,
-            search: O,
-            hash: O
-          };
-        _classPrivateFieldSet(_i3, this, L(f, t, true)), z(_classPrivateFieldGet(_i3, this).protocol) === _classPrivateFieldGet(_i3, this).port && (_classPrivateFieldGet(_i3, this).port = "");
-        let s;
-        for (s of V) {
-          if (!(s in _classPrivateFieldGet(_i3, this))) continue;
-          let i = {},
-            o = _classPrivateFieldGet(_i3, this)[s];
-          switch (_classPrivateFieldGet(_t3, this)[s] = [], s) {
-            case "protocol":
-              Object.assign(i, b), i.encodePart = w;
-              break;
-            case "username":
-              Object.assign(i, b), i.encodePart = he;
-              break;
-            case "password":
-              Object.assign(i, b), i.encodePart = ue;
-              break;
-            case "hostname":
-              Object.assign(i, J), _(o) ? i.encodePart = K : i.encodePart = j;
-              break;
-            case "port":
-              Object.assign(i, b), i.encodePart = G;
-              break;
-            case "pathname":
-              U(_classPrivateFieldGet(_n2, this).protocol) ? (Object.assign(i, Q, l), i.encodePart = de) : (Object.assign(i, b, l), i.encodePart = pe);
-              break;
-            case "search":
-              Object.assign(i, b, l), i.encodePart = ge;
-              break;
-            case "hash":
-              Object.assign(i, b, l), i.encodePart = me;
-              break;
-          }
-          try {
-            _classPrivateFieldGet(_s2, this)[s] = F(o, i), _classPrivateFieldGet(_n2, this)[s] = W(_classPrivateFieldGet(_s2, this)[s], _classPrivateFieldGet(_t3, this)[s], i), _classPrivateFieldGet(_e2, this)[s] = Ae(_classPrivateFieldGet(_s2, this)[s], i), _classPrivateFieldSet(_l2, this, _classPrivateFieldGet(_l2, this) || _classPrivateFieldGet(_s2, this)[s].some(h => h.type === 2));
-          } catch {
-            throw new TypeError(`invalid ${s} pattern '${_classPrivateFieldGet(_i3, this)[s]}'.`);
-          }
-        }
-      } catch (c) {
-        throw new TypeError(`Failed to construct 'URLPattern': ${c.message}`);
-      }
-    }
-    get [Symbol.toStringTag]() {
-      return "URLPattern";
-    }
-    test(t = {}, r) {
-      let n = {
-        pathname: "",
-        protocol: "",
-        username: "",
-        password: "",
-        hostname: "",
-        port: "",
-        search: "",
-        hash: ""
-      };
-      if (typeof t != "string" && r) throw new TypeError("parameter 1 is not of type 'string'.");
-      if (typeof t > "u") return false;
-      try {
-        typeof t == "object" ? n = L(n, t, false) : n = L(n, Se(t, r), false);
-      } catch {
-        return false;
-      }
-      let c;
-      for (c of V) if (!_classPrivateFieldGet(_n2, this)[c].exec(n[c])) return false;
-      return true;
-    }
-    exec(t = {}, r) {
-      let n = {
-        pathname: "",
-        protocol: "",
-        username: "",
-        password: "",
-        hostname: "",
-        port: "",
-        search: "",
-        hash: ""
-      };
-      if (typeof t != "string" && r) throw new TypeError("parameter 1 is not of type 'string'.");
-      if (typeof t > "u") return;
-      try {
-        typeof t == "object" ? n = L(n, t, false) : n = L(n, Se(t, r), false);
-      } catch {
-        return null;
-      }
-      let c = {};
-      r ? c.inputs = [t, r] : c.inputs = [t];
-      let l;
-      for (l of V) {
-        let f = _classPrivateFieldGet(_n2, this)[l].exec(n[l]);
-        if (!f) return null;
-        let s = {};
-        for (let [i, o] of _classPrivateFieldGet(_t3, this)[l].entries()) if (typeof o == "string" || typeof o == "number") {
-          let h = f[i + 1];
-          s[o] = h;
-        }
-        c[l] = {
-          input: n[l] ?? "",
-          groups: s
-        };
-      }
-      return c;
-    }
-    static compareComponent(t, r, n) {
-      let c = a((i, o) => {
-          for (let h of ["type", "modifier", "prefix", "value", "suffix"]) {
-            if (i[h] < o[h]) return -1;
-            if (i[h] === o[h]) continue;
-            return 1;
-          }
-          return 0;
-        }, "comparePart"),
-        l = new P(3, "", "", "", "", 3),
-        f = new P(0, "", "", "", "", 3),
-        s = a((i, o) => {
-          let h = 0;
-          for (; h < Math.min(i.length, o.length); ++h) {
-            let p = c(i[h], o[h]);
-            if (p) return p;
-          }
-          return i.length === o.length ? 0 : c(i[h] ?? l, o[h] ?? l);
-        }, "comparePartList");
-      return !_classPrivateFieldGet(_e2, r)[t] && !_classPrivateFieldGet(_e2, n)[t] ? 0 : _classPrivateFieldGet(_e2, r)[t] && !_classPrivateFieldGet(_e2, n)[t] ? s(_classPrivateFieldGet(_s2, r)[t], [f]) : !_classPrivateFieldGet(_e2, r)[t] && _classPrivateFieldGet(_e2, n)[t] ? s([f], _classPrivateFieldGet(_s2, n)[t]) : s(_classPrivateFieldGet(_s2, r)[t], _classPrivateFieldGet(_s2, n)[t]);
-    }
-    get protocol() {
-      return _classPrivateFieldGet(_e2, this).protocol;
-    }
-    get username() {
-      return _classPrivateFieldGet(_e2, this).username;
-    }
-    get password() {
-      return _classPrivateFieldGet(_e2, this).password;
-    }
-    get hostname() {
-      return _classPrivateFieldGet(_e2, this).hostname;
-    }
-    get port() {
-      return _classPrivateFieldGet(_e2, this).port;
-    }
-    get pathname() {
-      return _classPrivateFieldGet(_e2, this).pathname;
-    }
-    get search() {
-      return _classPrivateFieldGet(_e2, this).search;
-    }
-    get hash() {
-      return _classPrivateFieldGet(_e2, this).hash;
-    }
-    get hasRegExpGroups() {
-      return _classPrivateFieldGet(_l2, this);
-    }
-  });
-  a(Y, "URLPattern");
-
-  // node_modules/urlpattern-polyfill/index.js
-  if (!globalThis.URLPattern) {
-    globalThis.URLPattern = Y;
-  }
-
-  /**
    * @license
    * Copyright 2022 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
@@ -25132,6 +25292,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _initialAttachDone = /*#__PURE__*/new WeakMap();
   var _blocklist = /*#__PURE__*/new WeakMap();
   var _allowlist = /*#__PURE__*/new WeakMap();
+  var _networkConditionsSessions = /*#__PURE__*/new WeakMap();
   var _logger25 = /*#__PURE__*/new WeakMap();
   var _TargetManager_brand = /*#__PURE__*/new WeakSet();
   var _silentDetach = /*#__PURE__*/new WeakMap();
@@ -25193,6 +25354,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _initialAttachDone, false);
       _classPrivateFieldInitSpec(this, _blocklist, []);
       _classPrivateFieldInitSpec(this, _allowlist, []);
+      /**
+       * All live sessions that network conditions are applied to, including
+       * sessions that are not exposed via a target's `_session()` (e.g. workers,
+       * manually attached targets and kept service worker sessions). Used to
+       * re-apply network conditions at runtime.
+       */
+      _classPrivateFieldInitSpec(this, _networkConditionsSessions, new Map());
       _classPrivateFieldInitSpec(this, _logger25, void 0);
       _classPrivateFieldInitSpec(this, _silentDetach, async (session, parentSession) => {
         await session.send('Runtime.runIfWaitingForDebugger').catch(error => {
@@ -25211,6 +25379,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       });
       _classPrivateFieldInitSpec(this, _onSessionDetached, session => {
         _assertClassBrand(_TargetManager_brand, this, _removeAttachmentListeners).call(this, session);
+        _classPrivateFieldGet(_networkConditionsSessions, this).delete(session);
       });
       _classPrivateFieldInitSpec(this, _onTargetCreated, async event => {
         _classPrivateFieldGet(_discoveredTargetsByTargetId, this).set(event.targetInfo.targetId, event.targetInfo);
@@ -25273,6 +25442,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           throw new Error(`Session ${event.sessionId} was not created.`);
         }
         if (!_classPrivateFieldGet(_connection4, this).isAutoAttached(targetInfo.targetId)) {
+          _classPrivateFieldGet(_networkConditionsSessions, this).set(session, targetInfo);
           await _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo);
           return;
         }
@@ -25295,10 +25465,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         // service worker instead: network conditions are reset when the session
         // that set them detaches, so staying attached is what keeps the rules
         // enforced for requests the worker issues, including the ones it forwards
-        // on behalf of controlled pages. As a consequence, the browser never
-        // idle-terminates service workers while rules are configured.
+        // on behalf of controlled pages. Kept sessions are not released when rules
+        // are cleared, so the browser never idle-terminates these service workers
+        // once rules have been configured.
         if (targetInfo.type === 'service_worker') {
           if (_assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this)) {
+            _classPrivateFieldGet(_networkConditionsSessions, this).set(session, targetInfo);
             // The rules are applied before the worker is resumed so that requests
             // made during `install` are covered as well:
             // #maybeSetupNetworkConditions dispatches its commands synchronously,
@@ -25310,7 +25482,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
               _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
             });
             await networkConditionsSetUp;
-            if (!this.isUrlAllowed(targetInfo.url) || _classPrivateFieldGet(_ignoredTargets, this).has(targetInfo.targetId) || !_classPrivateFieldGet(_discoveredTargetsByTargetId, this).has(targetInfo.targetId)) {
+            // An already exposed WorkerTarget (created on the silent-detach path)
+            // proceeds to #attachServiceWorkerTarget() even when its script URL is
+            // now disallowed, so the target receives the kept session.
+            if (!this.isUrlAllowed(targetInfo.url) && !_classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId) || _classPrivateFieldGet(_ignoredTargets, this).has(targetInfo.targetId) || !_classPrivateFieldGet(_discoveredTargetsByTargetId, this).has(targetInfo.targetId)) {
               return;
             }
             _assertClassBrand(_TargetManager_brand, this, _attachServiceWorkerTarget).call(this, targetInfo, session, parentSession);
@@ -25360,6 +25535,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (parentTarget?.type() === 'tab') {
           _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, parentTarget._targetId);
         }
+        _classPrivateFieldGet(_networkConditionsSessions, this).set(session, targetInfo);
         // The browser might be shutting down here, so we
         // ignore potential errors.
         await Promise.all([session.send('Target.setAutoAttach', {
@@ -25417,8 +25593,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * acknowledged; for worker targets that only happens once the worker is
        * running, so it must not be awaited before `Runtime.runIfWaitingForDebugger`.
        */
-      _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, (session, targetInfo) => {
-        if (!_assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this)) {
+      _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, (session, targetInfo, forceClear) => {
+        if (!_assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this) && !forceClear) {
           return Promise.resolve();
         }
         const matchedNetworkConditions = [];
@@ -25454,15 +25630,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (needsNetwork) {
           promises.push(session.send('Network.enable'));
         }
+        // When clearing network conditions (lists are empty), we must explicitly pass
+        // `offline: false` to force CDP to clear any previously set global offline state.
+        // When an allowlist is active, we must pass `undefined` to prevent globally
+        // overriding the allowlist's catch-all offline rule. When a blocklist is
+        // active, we pass `true`.
+        let offline = undefined;
+        if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
+          offline = false;
+        } else if (_classPrivateFieldGet(_blocklist, this).length > 0) {
+          offline = true;
+        }
         promises.push(session.send('Network.emulateNetworkConditionsByRule', {
-          offline: _classPrivateFieldGet(_blocklist, this).length > 0 ? true : undefined,
+          offline,
           matchedNetworkConditions
         }));
         return Promise.all(promises).catch(error => {
           _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
         });
       });
-      if (blocklist && allowlist) {
+      if (blocklist?.length && allowlist?.length) {
         throw new Error('Cannot specify both blockList and allowList');
       }
       _classPrivateFieldSet(_connection4, this, connection);
@@ -25513,6 +25700,28 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     getDiscoveredTargetInfos() {
       return _classPrivateFieldGet(_discoveredTargetsByTargetId, this);
     }
+    async setNetworkConditions(conditions) {
+      const blocklist = conditions?.blocklist ?? [];
+      const allowlist = conditions?.allowlist ?? [];
+      assertSupportedUrlRestrictions({
+        blocklist: conditions?.blocklist,
+        allowlist: conditions?.allowlist
+      });
+      const wasActive = _assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this);
+      // Map both lists before assigning so that an invalid pattern does not
+      // leave the manager in a partially updated state.
+      const newBlocklist = _assertClassBrand(_TargetManager_brand, this, _mapPatterns).call(this, blocklist);
+      const newAllowlist = _assertClassBrand(_TargetManager_brand, this, _mapPatterns).call(this, allowlist);
+      _classPrivateFieldSet(_blocklist, this, newBlocklist);
+      _classPrivateFieldSet(_allowlist, this, newAllowlist);
+      const isActive = _assertClassBrand(_TargetManager_brand, this, _hasNetworkRules).call(this);
+      if (isActive && !wasActive) {
+        await _assertClassBrand(_TargetManager_brand, this, _attachToServiceWorkers).call(this);
+      }
+      if (isActive || wasActive) {
+        await _assertClassBrand(_TargetManager_brand, this, _reapplyNetworkConditions).call(this, wasActive && !isActive);
+      }
+    }
   }
 
   /**
@@ -25556,7 +25765,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     _assertClassBrand(_TargetManager_brand, this, _setupAttachmentListeners).call(this, session);
     if (isExistingTarget) {
-      session.setTarget(target);
+      target._setSession(session);
     } else {
       target._initialize();
       _classPrivateFieldGet(_attachedTargetsByTargetId, this).set(targetInfo.targetId, target);
@@ -25582,6 +25791,40 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
   function _hasNetworkRules() {
     return _classPrivateFieldGet(_blocklist, this).length > 0 || _classPrivateFieldGet(_allowlist, this).length > 0;
+  }
+  async function _reapplyNetworkConditions(forceClear) {
+    const promises = [];
+    // Iterate over all tracked sessions rather than `target._session()`, as
+    // the latter is undefined for workers and targets that were not
+    // auto-attached.
+    for (const [session, targetInfo] of _classPrivateFieldGet(_networkConditionsSessions, this)) {
+      if (session.detached) {
+        _classPrivateFieldGet(_networkConditionsSessions, this).delete(session);
+        continue;
+      }
+      promises.push(_classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo, forceClear).catch(error => {
+        _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+      }));
+    }
+    await Promise.all(promises);
+  }
+  async function _attachToServiceWorkers() {
+    const trackedTargetIds = new Set();
+    for (const [session, targetInfo] of _classPrivateFieldGet(_networkConditionsSessions, this)) {
+      if (!session.detached) {
+        trackedTargetIds.add(targetInfo.targetId);
+      }
+    }
+    const promises = [];
+    for (const targetInfo of _classPrivateFieldGet(_discoveredTargetsByTargetId, this).values()) {
+      if (targetInfo.type !== 'service_worker' || trackedTargetIds.has(targetInfo.targetId) || _classPrivateFieldGet(_ignoredTargets, this).has(targetInfo.targetId)) {
+        continue;
+      }
+      promises.push(_classPrivateFieldGet(_connection4, this)._createSession(targetInfo, true).catch(error => {
+        _classPrivateFieldGet(_logger25, this)?.call(this, DEBUG_PREFIXES.error)?.(error);
+      }));
+    }
+    await Promise.all(promises);
   }
   function _mapPatterns(rules) {
     const result = [];
@@ -25625,13 +25868,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   class CdpBrowser extends Browser {
     static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport = undefined, downloadBehavior = undefined, process = undefined, closeCallback = undefined, targetFilterCallback = undefined, isPageTargetCallback = undefined, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist = undefined, allowlist = undefined, logger) {
       const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist, logger);
-      if (allowlist) {
-        const version = await _assertClassBrand(_CdpBrowser_brand, browser, _getVersion).call(browser);
-        const majorVersion = parseInt(version.product.match(/\d+/)?.[0] ?? '0', 10);
-        if (majorVersion < 149) {
-          throw new Error('The allowlist option require Chrome 149 or greater.');
-        }
-      }
       if (acceptInsecureCerts) {
         await connection.send('Security.setIgnoreCertificateErrors', {
           ignore: true
@@ -25749,6 +25985,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     _targetManager() {
       return _classPrivateFieldGet(_targetManager3, this);
+    }
+    async restrictNetwork(conditions) {
+      await _classPrivateFieldGet(_targetManager3, this).setNetworkConditions(conditions);
+      // Only update the state once the target manager has accepted the new
+      // conditions so that failures (e.g. invalid URL patterns) do not leave
+      // the browser and connection out of sync with the target manager.
+      _classPrivateFieldSet(_hasNetworkRestrictions, this, Boolean(conditions?.blocklist && conditions.blocklist.length > 0 || conditions?.allowlist && conditions.allowlist.length > 0));
+      _classPrivateFieldGet(_connection5, this).rejectEmulateNetworkConditionsCalls = _classPrivateFieldGet(_hasNetworkRestrictions, this);
     }
     _getIsPageTargetCallback() {
       return _classPrivateFieldGet(_isPageTargetCallback, this);
@@ -26388,8 +26632,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   class BrowserWebSocketTransport {
     static create(url, _headers, logger,
     // Accepted so this stays call-compatible with NodeWebSocketTransport, which
-    // BrowserConnector picks between at runtime. The keep-alive options are
-    // Node-only: the browser WebSocket API exposes no ping frame.
+    // BrowserConnector picks between at runtime. The keep-alive and handshake
+    // timeout options are Node-only: the browser WebSocket API exposes neither
+    // ping frames nor a handshake timeout.
     _options) {
       return new Promise((resolve, reject) => {
         const ws = new WebSocket(url);
@@ -28259,27 +28504,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * @internal
    */
-  function assertSupportedUrlRestrictions(options) {
-    if (options.blocklist && options.allowlist) {
-      throw new Error('Cannot specify both blocklist and allowlist');
-    }
-    if (options.protocol === 'webDriverBiDi' && (options.blocklist || options.allowlist)) {
-      throw new Error('blocklist and allowlist are only supported with the CDP protocol');
-    }
-    if (options.blocklist) {
-      for (const rule of options.blocklist) {
-        new Y(rule);
-      }
-    }
-    if (options.allowlist) {
-      for (const rule of options.allowlist) {
-        new Y(rule);
-      }
-    }
-  }
-  /**
-   * @internal
-   */
   async function _connectToBrowser(options) {
     assertSupportedUrlRestrictions(options);
     const {
@@ -28538,8 +28762,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '155.0.8059.79',
-    'chrome-headless-shell': '155.0.8059.79',
+    chrome: '155.0.8059.84',
+    'chrome-headless-shell': '155.0.8059.84',
     firefox: 'stable_158.0'
   });
 
@@ -28689,6 +28913,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports._keyDefinitions = _keyDefinitions;
   exports.addPageBinding = addPageBinding;
   exports.assert = assert;
+  exports.assertSupportedUrlRestrictions = assertSupportedUrlRestrictions;
   exports.asyncDisposeSymbol = asyncDisposeSymbol;
   exports.bindIsolatedHandle = bindIsolatedHandle;
   exports.connect = connect;

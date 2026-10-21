@@ -14,7 +14,7 @@ import type { WaitForOptions } from '../api/Frame.js';
 import { type HeadersInput } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Credentials, GeolocationOptions, HeapSnapshotOptions, MediaFeature, PageEvents, RecordOptions, ReloadOptions, WaitTimeoutOptions } from '../api/Page.js';
-import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
+import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions, type TabInfo } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
 import { Coverage } from '../cdp/Coverage.js';
 import type { NetworkConditions } from '../cdp/NetworkManager.js';
@@ -75,6 +75,7 @@ export declare class BidiPage extends Page {
         contentHeight: number;
     }): Promise<void>;
     windowId(): Promise<WindowId>;
+    tabInfo(): Promise<TabInfo | null>;
     openDevTools(): Promise<Page>;
     hasDevTools(): Promise<boolean>;
     focusedFrame(): Promise<BidiFrame>;
@@ -89,7 +90,7 @@ export declare class BidiPage extends Page {
     getDefaultTimeout(): number;
     getDefaultNavigationTimeout(): number;
     isJavaScriptEnabled(): boolean;
-    setGeolocation(options: GeolocationOptions): Promise<void>;
+    setGeolocation(options: GeolocationOptions | null): Promise<void>;
     setJavaScriptEnabled(enabled: boolean): Promise<void>;
     emulateMediaType(type?: string): Promise<void>;
     emulateCPUThrottling(factor: number | null): Promise<void>;

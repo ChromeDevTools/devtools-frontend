@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { TargetFilterCallback } from '../api/Browser.js';
+import type { NetworkRestrictions } from '../api/Browser.js';
 import { type Logger } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { CdpCDPSession } from './CdpSession.js';
@@ -40,5 +41,6 @@ export declare class TargetManager extends EventEmitter<TargetManagerEvents> imp
      * Helper to validate URL against blocklist patterns
      */
     isUrlAllowed: (url: string) => boolean;
+    setNetworkConditions(conditions?: NetworkRestrictions | null): Promise<void>;
 }
 //# sourceMappingURL=TargetManager.d.ts.map

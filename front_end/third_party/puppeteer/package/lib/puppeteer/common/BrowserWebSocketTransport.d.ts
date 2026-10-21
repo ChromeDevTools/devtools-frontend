@@ -13,6 +13,7 @@ export declare class BrowserWebSocketTransport implements ConnectionTransport {
     static create(url: string, _headers: Record<string, string> | undefined, logger: Logger, _options?: {
         keepAlive?: boolean;
         keepAliveIntervalMs?: number;
+        handshakeTimeout?: number;
     }): Promise<BrowserWebSocketTransport>;
     onmessage?: (message: string) => void;
     onclose?: () => void;

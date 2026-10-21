@@ -30,6 +30,7 @@ export class NodeWebSocketTransport {
                 perMessageDeflate: false,
                 allowSynchronousEvents: false,
                 maxPayload: options.maxPayload ?? DEFAULT_MAX_PAYLOAD_BYTES,
+                handshakeTimeout: options.handshakeTimeout,
                 headers: {
                     'User-Agent': `Puppeteer ${packageVersion}`,
                     ...headers,

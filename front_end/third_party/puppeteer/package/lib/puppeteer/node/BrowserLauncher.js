@@ -10,10 +10,9 @@ import { Browser as InstalledBrowser, CDP_WEBSOCKET_ENDPOINT_REGEX, launch, Time
 import { firstValueFrom, from, mergeMap, race, timer, } from '../../third_party/rxjs/rxjs.js';
 import { CdpBrowser } from '../cdp/Browser.js';
 import { Connection } from '../cdp/Connection.js';
-import { assertSupportedUrlRestrictions } from '../common/BrowserConnector.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { TimeoutError } from '../common/Errors.js';
-import { DEFAULT_VIEWPORT } from '../common/util.js';
+import { assertSupportedUrlRestrictions, DEFAULT_VIEWPORT, } from '../common/util.js';
 import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.js';
 import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';

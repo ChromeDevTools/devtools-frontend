@@ -36,6 +36,10 @@ export interface NodeWebSocketTransportOptions {
      * Maximum allowed message size in bytes.
      */
     maxPayload?: number;
+    /**
+     * Time in milliseconds to wait for the opening handshake.
+     */
+    handshakeTimeout?: number;
 }
 /**
  * @internal

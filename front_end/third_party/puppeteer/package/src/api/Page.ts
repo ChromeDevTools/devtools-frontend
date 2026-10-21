@@ -753,6 +753,31 @@ export interface HeapSnapshotOptions {
 }
 
 /**
+ * Information about the browser tab of a page. See {@link Page.tabInfo}.
+ *
+ * @public
+ * @experimental
+ */
+export interface TabInfo {
+  /**
+   * Zero-based index of the tab in its window's tab strip.
+   */
+  index: number;
+  /**
+   * Whether the tab is the active tab in its window.
+   */
+  active: boolean;
+  /**
+   * Whether the tab is pinned.
+   */
+  pinned: boolean;
+  /**
+   * ID of the tab group the tab belongs to, if any.
+   */
+  groupId?: string;
+}
+
+/**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
  * in the browser.
@@ -986,13 +1011,17 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * Consider using {@link BrowserContext.overridePermissions} to grant
    * permissions for the page to read its geolocation.
    *
+   * Pass `null` to remove the geolocation override.
+   *
    * @example
    *
    * ```ts
    * await page.setGeolocation({latitude: 59.95, longitude: 30.31667});
+   * // Later, go back to the browser's real geolocation:
+   * await page.setGeolocation(null);
    * ```
    */
-  abstract setGeolocation(options: GeolocationOptions): Promise<void>;
+  abstract setGeolocation(options: GeolocationOptions | null): Promise<void>;
 
   /**
    * A target this page was created from.
@@ -2780,7 +2809,9 @@ export abstract class Page extends EventEmitter<PageEvents> {
     try {
       await recording._start();
     } catch (error) {
-      void recording.stop();
+      // Clean up the recording. Ignore errors from stop() so the original
+      // error from _start() is the one that propagates.
+      await recording.stop().catch(() => {});
       throw error;
     }
 
@@ -3458,6 +3489,18 @@ export abstract class Page extends EventEmitter<PageEvents> {
    * @experimental
    */
   abstract windowId(): Promise<WindowId>;
+
+  /**
+   * Returns information about the browser tab of this page. The result is a
+   * snapshot and is not updated when the tab changes.
+   *
+   * @returns `null` if the page is not in a tab strip, for example, in
+   * `chrome-headless-shell`. Chrome before M150 does not report tab
+   * information, so the method also returns `null` there.
+   *
+   * @experimental
+   */
+  abstract tabInfo(): Promise<TabInfo | null>;
 
   override [disposeSymbol](): void {
     return void this[asyncDisposeSymbol]().catch(error => {

@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /**
+ * A stopped poller is single-use and does not restart.
+ *
  * @internal
  */
 export interface Poller<T> {

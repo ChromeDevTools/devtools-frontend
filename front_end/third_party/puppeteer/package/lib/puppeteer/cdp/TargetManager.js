@@ -7,6 +7,7 @@ import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-pol
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { DEBUG_PREFIXES } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
+import { assertSupportedUrlRestrictions } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { DisposableStack } from '../util/disposable.js';
@@ -74,10 +75,17 @@ export class TargetManager extends EventEmitter {
     #initialAttachDone = false;
     #blocklist = [];
     #allowlist = [];
+    /**
+     * All live sessions that network conditions are applied to, including
+     * sessions that are not exposed via a target's `_session()` (e.g. workers,
+     * manually attached targets and kept service worker sessions). Used to
+     * re-apply network conditions at runtime.
+     */
+    #networkConditionsSessions = new Map();
     #logger;
     constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, blocklist, allowlist, logger) {
         super(undefined, logger);
-        if (blocklist && allowlist) {
+        if (blocklist?.length && allowlist?.length) {
             throw new Error('Cannot specify both blockList and allowList');
         }
         this.#connection = connection;
@@ -171,6 +179,7 @@ export class TargetManager extends EventEmitter {
     };
     #onSessionDetached = (session) => {
         this.#removeAttachmentListeners(session);
+        this.#networkConditionsSessions.delete(session);
     };
     #onTargetCreated = async (event) => {
         this.#discoveredTargetsByTargetId.set(event.targetInfo.targetId, event.targetInfo);
@@ -234,6 +243,7 @@ export class TargetManager extends EventEmitter {
             throw new Error(`Session ${event.sessionId} was not created.`);
         }
         if (!this.#connection.isAutoAttached(targetInfo.targetId)) {
+            this.#networkConditionsSessions.set(session, targetInfo);
             await this.#maybeSetupNetworkConditions(session, targetInfo);
             return;
         }
@@ -256,10 +266,12 @@ export class TargetManager extends EventEmitter {
         // service worker instead: network conditions are reset when the session
         // that set them detaches, so staying attached is what keeps the rules
         // enforced for requests the worker issues, including the ones it forwards
-        // on behalf of controlled pages. As a consequence, the browser never
-        // idle-terminates service workers while rules are configured.
+        // on behalf of controlled pages. Kept sessions are not released when rules
+        // are cleared, so the browser never idle-terminates these service workers
+        // once rules have been configured.
         if (targetInfo.type === 'service_worker') {
             if (this.#hasNetworkRules()) {
+                this.#networkConditionsSessions.set(session, targetInfo);
                 // The rules are applied before the worker is resumed so that requests
                 // made during `install` are covered as well:
                 // #maybeSetupNetworkConditions dispatches its commands synchronously,
@@ -271,7 +283,11 @@ export class TargetManager extends EventEmitter {
                     this.#logger?.(DEBUG_PREFIXES.error)?.(error);
                 });
                 await networkConditionsSetUp;
-                if (!this.isUrlAllowed(targetInfo.url) ||
+                // An already exposed WorkerTarget (created on the silent-detach path)
+                // proceeds to #attachServiceWorkerTarget() even when its script URL is
+                // now disallowed, so the target receives the kept session.
+                if ((!this.isUrlAllowed(targetInfo.url) &&
+                    !this.#attachedTargetsByTargetId.has(targetInfo.targetId)) ||
                     this.#ignoredTargets.has(targetInfo.targetId) ||
                     !this.#discoveredTargetsByTargetId.has(targetInfo.targetId)) {
                     return;
@@ -328,6 +344,7 @@ export class TargetManager extends EventEmitter {
         if (parentTarget?.type() === 'tab') {
             this.#finishInitializationIfReady(parentTarget._targetId);
         }
+        this.#networkConditionsSessions.set(session, targetInfo);
         // The browser might be shutting down here, so we
         // ignore potential errors.
         await Promise.all([
@@ -357,7 +374,7 @@ export class TargetManager extends EventEmitter {
         }
         this.#setupAttachmentListeners(session);
         if (isExistingTarget) {
-            session.setTarget(target);
+            target._setSession(session);
         }
         else {
             target._initialize();
@@ -423,6 +440,64 @@ export class TargetManager extends EventEmitter {
         }
         return true;
     };
+    async setNetworkConditions(conditions) {
+        const blocklist = conditions?.blocklist ?? [];
+        const allowlist = conditions?.allowlist ?? [];
+        assertSupportedUrlRestrictions({
+            blocklist: conditions?.blocklist,
+            allowlist: conditions?.allowlist,
+        });
+        const wasActive = this.#hasNetworkRules();
+        // Map both lists before assigning so that an invalid pattern does not
+        // leave the manager in a partially updated state.
+        const newBlocklist = this.#mapPatterns(blocklist);
+        const newAllowlist = this.#mapPatterns(allowlist);
+        this.#blocklist = newBlocklist;
+        this.#allowlist = newAllowlist;
+        const isActive = this.#hasNetworkRules();
+        if (isActive && !wasActive) {
+            await this.#attachToServiceWorkers();
+        }
+        if (isActive || wasActive) {
+            await this.#reapplyNetworkConditions(wasActive && !isActive);
+        }
+    }
+    async #reapplyNetworkConditions(forceClear) {
+        const promises = [];
+        // Iterate over all tracked sessions rather than `target._session()`, as
+        // the latter is undefined for workers and targets that were not
+        // auto-attached.
+        for (const [session, targetInfo] of this.#networkConditionsSessions) {
+            if (session.detached) {
+                this.#networkConditionsSessions.delete(session);
+                continue;
+            }
+            promises.push(this.#maybeSetupNetworkConditions(session, targetInfo, forceClear).catch(error => {
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+            }));
+        }
+        await Promise.all(promises);
+    }
+    async #attachToServiceWorkers() {
+        const trackedTargetIds = new Set();
+        for (const [session, targetInfo] of this.#networkConditionsSessions) {
+            if (!session.detached) {
+                trackedTargetIds.add(targetInfo.targetId);
+            }
+        }
+        const promises = [];
+        for (const targetInfo of this.#discoveredTargetsByTargetId.values()) {
+            if (targetInfo.type !== 'service_worker' ||
+                trackedTargetIds.has(targetInfo.targetId) ||
+                this.#ignoredTargets.has(targetInfo.targetId)) {
+                continue;
+            }
+            promises.push(this.#connection._createSession(targetInfo, true).catch(error => {
+                this.#logger?.(DEBUG_PREFIXES.error)?.(error);
+            }));
+        }
+        await Promise.all(promises);
+    }
     #mapPatterns(rules) {
         const result = [];
         for (const rule of rules ?? []) {
@@ -438,8 +513,8 @@ export class TargetManager extends EventEmitter {
      * acknowledged; for worker targets that only happens once the worker is
      * running, so it must not be awaited before `Runtime.runIfWaitingForDebugger`.
      */
-    #maybeSetupNetworkConditions = (session, targetInfo) => {
-        if (!this.#hasNetworkRules()) {
+    #maybeSetupNetworkConditions = (session, targetInfo, forceClear) => {
+        if (!this.#hasNetworkRules() && !forceClear) {
             return Promise.resolve();
         }
         const matchedNetworkConditions = [];
@@ -477,8 +552,20 @@ export class TargetManager extends EventEmitter {
         if (needsNetwork) {
             promises.push(session.send('Network.enable'));
         }
+        // When clearing network conditions (lists are empty), we must explicitly pass
+        // `offline: false` to force CDP to clear any previously set global offline state.
+        // When an allowlist is active, we must pass `undefined` to prevent globally
+        // overriding the allowlist's catch-all offline rule. When a blocklist is
+        // active, we pass `true`.
+        let offline = undefined;
+        if (this.#blocklist.length === 0 && this.#allowlist.length === 0) {
+            offline = false;
+        }
+        else if (this.#blocklist.length > 0) {
+            offline = true;
+        }
         promises.push(session.send('Network.emulateNetworkConditionsByRule', {
-            offline: this.#blocklist.length > 0 ? true : undefined,
+            offline,
             matchedNetworkConditions,
         }));
         return Promise.all(promises).catch(error => {

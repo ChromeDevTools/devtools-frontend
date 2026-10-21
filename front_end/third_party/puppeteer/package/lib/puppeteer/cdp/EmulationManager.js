@@ -227,13 +227,15 @@ let EmulationManager = (() => {
                     if (!state.active) {
                         return;
                     }
-                    await client.send('Emulation.setGeolocationOverride', state.geoLocation
-                        ? {
-                            longitude: state.geoLocation.longitude,
-                            latitude: state.geoLocation.latitude,
-                            accuracy: state.geoLocation.accuracy,
-                        }
-                        : undefined);
+                    if (!state.geoLocation) {
+                        await client.send('Emulation.clearGeolocationOverride');
+                        return;
+                    }
+                    await client.send('Emulation.setGeolocationOverride', {
+                        longitude: state.geoLocation.longitude,
+                        latitude: state.geoLocation.latitude,
+                        accuracy: state.geoLocation.accuracy,
+                    });
                 }, "#setGeolocation") }, _private_setGeolocation_decorators, { kind: "method", name: "#setGeolocation", static: false, private: true, access: { has: obj => #setGeolocation in obj, get: obj => obj.#setGeolocation }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, _private_setDefaultBackgroundColor_descriptor = { value: __setFunctionName(async function (client, state) {
                     if (!state.active) {
@@ -435,6 +437,10 @@ let EmulationManager = (() => {
         }
         get #setGeolocation() { return _private_setGeolocation_descriptor.value; }
         async setGeolocation(options) {
+            if (options === null) {
+                await this.#geoLocationState.setState({ active: true });
+                return;
+            }
             const { longitude, latitude, accuracy = 0 } = options;
             if (longitude < -180 || longitude > 180) {
                 throw new Error(`Invalid longitude "${longitude}": precondition -180 <= LONGITUDE <= 180 failed.`);

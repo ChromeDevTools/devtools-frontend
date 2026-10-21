@@ -5,8 +5,9 @@ import { DEBUG_PREFIXES } from './Debug.js';
 export class BrowserWebSocketTransport {
     static create(url, _headers, logger, 
     // Accepted so this stays call-compatible with NodeWebSocketTransport, which
-    // BrowserConnector picks between at runtime. The keep-alive options are
-    // Node-only: the browser WebSocket API exposes no ping frame.
+    // BrowserConnector picks between at runtime. The keep-alive and handshake
+    // timeout options are Node-only: the browser WebSocket API exposes neither
+    // ping frames nor a handshake timeout.
     _options) {
         return new Promise((resolve, reject) => {
             const ws = new WebSocket(url);

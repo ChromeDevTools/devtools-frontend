@@ -15,7 +15,7 @@ import type { HeadersInput } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import type { Credentials, HeapSnapshotOptions, RecordOptions, ReloadOptions } from '../api/Page.js';
-import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
+import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type TabInfo, type WaitTimeoutOptions } from '../api/Page.js';
 import type { Cookie, DeleteCookiesRequest, CookieParam, CookiePartitionKey, CookieSameSite } from '../common/Cookie.js';
 import { type Logger } from '../common/Debug.js';
 import { FileChooser } from '../common/FileChooser.js';
@@ -48,6 +48,7 @@ export declare class CdpPage extends Page {
         contentHeight: number;
     }): Promise<void>;
     windowId(): Promise<WindowId>;
+    tabInfo(): Promise<TabInfo | null>;
     _client(): CDPSession;
     _isUrlAllowed(url: string): boolean;
     isServiceWorkerBypassed(): boolean;
@@ -56,7 +57,7 @@ export declare class CdpPage extends Page {
     openDevTools(): Promise<Page>;
     hasDevTools(): Promise<boolean>;
     waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
-    setGeolocation(options: GeolocationOptions): Promise<void>;
+    setGeolocation(options: GeolocationOptions | null): Promise<void>;
     target(): CdpTarget;
     browser(): Browser;
     browserContext(): BrowserContext;

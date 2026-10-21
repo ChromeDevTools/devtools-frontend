@@ -26,13 +26,6 @@ export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
     static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport = undefined, downloadBehavior = undefined, process = undefined, closeCallback = undefined, targetFilterCallback = undefined, isPageTargetCallback = undefined, waitForInitiallyDiscoveredTargets = true, networkEnabled = true, issuesEnabled = true, handleDevToolsAsPage = false, blocklist = undefined, allowlist = undefined, logger) {
         const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist, logger);
-        if (allowlist) {
-            const version = await browser.#getVersion();
-            const majorVersion = parseInt(version.product.match(/\d+/)?.[0] ?? '0', 10);
-            if (majorVersion < 149) {
-                throw new Error('The allowlist option require Chrome 149 or greater.');
-            }
-        }
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -106,6 +99,16 @@ export class CdpBrowser extends BrowserBase {
     }
     _targetManager() {
         return this.#targetManager;
+    }
+    async restrictNetwork(conditions) {
+        await this.#targetManager.setNetworkConditions(conditions);
+        // Only update the state once the target manager has accepted the new
+        // conditions so that failures (e.g. invalid URL patterns) do not leave
+        // the browser and connection out of sync with the target manager.
+        this.#hasNetworkRestrictions = Boolean((conditions?.blocklist && conditions.blocklist.length > 0) ||
+            (conditions?.allowlist && conditions.allowlist.length > 0));
+        this.#connection.rejectEmulateNetworkConditionsCalls =
+            this.#hasNetworkRestrictions;
     }
     #setIsPageTargetCallback(isPageTargetCallback) {
         this.#isPageTargetCallback =

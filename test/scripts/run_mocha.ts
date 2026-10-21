@@ -33,7 +33,7 @@ export function loadScriptTests(): string[] {
                         exclude: p => p.includes('/fixtures/') || p.includes('\\fixtures\\'),
                       });
                     })
-                    .filter(f => f.endsWith('.test.ts') || f.endsWith('.test.js') || f.endsWith('_test.js'))
+                    .filter(f => f.endsWith('.test.ts') || f.endsWith('.test.js'))
                     .map(t => path.normalize(t))
                     .filter(
                         t => TestConfig.tests.some((spec: string) => {

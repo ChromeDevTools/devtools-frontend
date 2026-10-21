@@ -54,8 +54,8 @@ allowed-tools:
 ---
 Test`;
     const result = parseSkill(content);
-    assert.deepEqual(
-        result, {name: 'styling', description: undefined, allowedTools: ['tool1', 'tool2'], instructions: 'Test'});
+    assert.deepEqual(result,
+                     {name: 'styling', description: undefined, allowedTools: ['tool1', 'tool2'], instructions: 'Test'});
   });
 
   it('handles multi-line body with markdown', () => {

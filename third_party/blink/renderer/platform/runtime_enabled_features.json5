@@ -392,6 +392,10 @@
       status: "stable",
     },
     {
+      name: "AIPageContentIncludeMathML",
+      status: "stable",
+    },
+    {
       name: "AIPageContentIncludeSVGSubtree",
       status: "stable"
     },
@@ -1748,7 +1752,7 @@
     },
     {
       name: "CSSCustomHighlightUniversalSelector",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "CSSCustomMedia",
@@ -1916,7 +1920,7 @@
       // :muted, and :volume-locked for media elements.
       // https://drafts.csswg.org/selectors/#resource-pseudos
       name: "CSSMediaElementPseudos",
-      status: "experimental",
+      status: "stable",
     },
     {
       // https://drafts.csswg.org/css-values-5/#progress
@@ -2746,7 +2750,7 @@
       // See https://crbug.com/40943926 and
       // https://html.spec.whatwg.org/multipage/dnd.html#security-risks-in-the-drag-and-drop-model
       name: "DragThresholdRequiresMouseMovement",
-      status: "test"
+      status: "stable",
     },
     {
       // See: crrev.com/c/7874048
@@ -4148,6 +4152,7 @@
     {
       // crbug.com/542686223 crbug.com/568304685
       name: "LineBreakerHanKerningEnd",
+      status: "stable",
     },
     {
       // Reverse origin trial allowing sites to opt out of Local Network Access
@@ -4214,9 +4219,7 @@
       // PerformanceLongAnimationFrameTiming and forcedStyleDuration and
       // forcedLayoutDuration to PerformanceScriptTiming
       name: "LongAnimationFrameStyleDuration",
-      origin_trial_feature_name: "LongAnimationFrameStyleDuration",
-      origin_trial_allows_third_party: true,
-      status: "experimental",
+      status: "stable",
     },
     {
       // Extends the Long Animation Frame (LoAF) API to Web Workers. Reports a
@@ -4508,8 +4511,16 @@
       status: "stable",
     },
     {
+      // Clamp a column-count:auto multicol container's max-content inline
+      // size to column-width per css-sizing-4. Kill switch for
+      // crbug.com/41459384.
+      name: "MulticolColumnWidthMaxContentClamp",
+      status: "stable",
+    },
+    {
       // Support Nastaliq script. crbug.com/569667449
       name: "NastaliqScript",
+      status: "stable",
     },
     {
       name: "NavigateEventDeferCrossDocumentCommit",
@@ -6485,6 +6496,10 @@
       status: "stable",
     },
     {
+      name: "SvgHyperlinkElementUtils",
+      status: "experimental",
+    },
+    {
       name: "SvgIgnoreNegativeEllipseRadii",
       status: "stable",
     },
@@ -6855,7 +6870,17 @@
       base_feature: "none",
     },
     {
+      // If enabled and opted-in per property, style tracks the animating
+      // element(s) that each property's computed value is derived from.
+      // Used when deciding which animations can run on the compositor.
       name: "TrackAnimatedSources",
+      status: "stable",
+    },
+    {
+      // Also tracks properties that inherit-by-default, such as `color`.
+      // On a separate flag to collect data on runtime performance impact.
+      name: "TrackAnimatedSourcesForInheritedProperties",
+      depends_on: ["TrackAnimatedSources"],
       status: "test",
     },
     {

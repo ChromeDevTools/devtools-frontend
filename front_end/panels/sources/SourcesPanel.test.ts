@@ -129,6 +129,22 @@ describeWithEnvironment('SourcesPanel', () => {
     assert.isNull(context.flavor(Workspace.UISourceCode.UISourceCode));
   });
 
+  it('clears the UISourceCode flavor when a duplicate editor for it is closed', () => {
+    setUpEnvironment();
+    const sources = new Sources.SourcesPanel.SourcesPanel();
+    const context = UI.Context.Context.instance();
+    const canonicalSourceCode = createStubUISourceCode();
+    const duplicateSourceCode = createStubUISourceCode();
+    canonicalSourceCode.canonicalScriptId.returns('script1');
+    duplicateSourceCode.canonicalScriptId.returns('script1');
+    context.setFlavor(Workspace.UISourceCode.UISourceCode, duplicateSourceCode);
+
+    sources.sourcesView().dispatchEventToListeners(Sources.SourcesView.Events.EDITOR_CLOSED,
+                                                   {uiSourceCode: canonicalSourceCode, wasSelected: true});
+
+    assert.isNull(context.flavor(Workspace.UISourceCode.UISourceCode));
+  });
+
   it('keeps the UISourceCode flavor when the editor for another file is closed', () => {
     setUpEnvironment();
     const sources = new Sources.SourcesPanel.SourcesPanel();

@@ -916,7 +916,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   #editorClosed({data: {uiSourceCode}}: Common.EventTarget.EventTargetEvent<EditorClosedEvent>): void {
     const context = UI.Context.Context.instance();
-    if (context.flavor(Workspace.UISourceCode.UISourceCode) === uiSourceCode) {
+    const currentFlavor = context.flavor(Workspace.UISourceCode.UISourceCode);
+    const flavorScriptId = currentFlavor?.canonicalScriptId();
+    if (currentFlavor === uiSourceCode || (flavorScriptId && flavorScriptId === uiSourceCode.canonicalScriptId())) {
       context.setFlavor(Workspace.UISourceCode.UISourceCode, null);
     }
   }

@@ -337,7 +337,7 @@ export class UISourceCodeFrame extends UISourceCodeFrameBase {
   private reloadPlugins(): void {
     this.disposePlugins();
     this.loadPlugins();
-    if (!this.loaded) {
+    if (!pluginCompartment.get(this.textEditor.state)) {
       // Until the content is loaded the editor still holds the placeholder
       // state, which doesn't contain `pluginCompartment` at all. Reconfiguring
       // a compartment that isn't part of the state is a no-op, so the plugins

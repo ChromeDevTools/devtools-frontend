@@ -346,6 +346,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         const icon = !hasLoadError ?
             (PanelCommon.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode) ?? undefined) :
             undefined;
+        const viewSourceCode = this.#tabViewSourceCodes.get(tabId) ?? uiSourceCode;
         return {
           tabId,
           title: titleForFile(uiSourceCode),
@@ -357,8 +358,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
           disconnectedAutomaticFileSystemRoot,
           icon,
           widget: (this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) ?
-              this.#getOrCreateSourceView(this.#currentFile) :
-              this.getCreatedSourceView(uiSourceCode),
+              this.#getOrCreateSourceView(viewSourceCode) :
+              this.getCreatedSourceView(viewSourceCode),
         };
       }),
       activeTabId: this.#currentFile ? this.#tabIdForUISourceCode(this.#currentFile) : undefined,
@@ -457,6 +458,12 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   readonly #tabDelegate: EditorContainerTabDelegate;
   #tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
   #files: Map<string, Workspace.UISourceCode.UISourceCode>;
+  /**
+   * Maps a tab id to the UISourceCode whose view is currently bound to that
+   * tab. This can differ from the canonical UISourceCode in `#files` when the
+   * tab's view was recycled to show a duplicate script with the same URL.
+   */
+  readonly #tabViewSourceCodes = new Map<string, Workspace.UISourceCode.UISourceCode>();
   readonly #loadErrorFiles = new Set<Workspace.UISourceCode.UISourceCode>();
   #previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
   #history: History;
@@ -602,7 +609,9 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   }
 
   fileViews(): UI.Widget.Widget[] {
-    return Array.from(this.#files.values()).map(getViewByUISourceCode).filter(Boolean) as UI.Widget.Widget[];
+    return Array.from(this.#files.entries())
+               .map(([tabId, file]) => getViewByUISourceCode(this.#tabViewSourceCodes.get(tabId) ?? file))
+               .filter(Boolean) as UI.Widget.Widget[];
   }
 
   showSourceLocation(uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -785,12 +794,29 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     this.#removeViewListeners();
     this.#currentFile = uiSourceCode;
 
+    let tabId: string;
     try {
       // Selecting the tab may cause showFile to be called again, but with the canonical source code,
       // which is not what we want, so we prevent reentrant calls.
       this.#reentrantShow = true;
-      const tabId = this.#tabIds.get(canonicalSourceCode) || this.#appendFileTab(canonicalSourceCode);
+      tabId = this.#tabIds.get(canonicalSourceCode) || this.#appendFileTab(canonicalSourceCode);
       this.#appendHistory(tabId);
+
+      const tabViewSourceCode = this.#tabViewSourceCodes.get(tabId) ?? canonicalSourceCode;
+      const tabView = this.#getOrCreateSourceView(tabViewSourceCode);
+      if (tabView instanceof UISourceCodeFrame && tabViewSourceCode !== uiSourceCode) {
+        // We are showing a different UISourceCode in the same tab (because it has the same URL). This
+        // commonly happens when switching between workers or iframes containing the same code, and while the
+        // contents are usually identical they may not be and it is important to show users when they aren't.
+        this.#recycleUISourceCodeFrame(tabView, uiSourceCode);
+        if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem) {
+          // Disable editing, because it may confuse users that only one of the copies of this code changes.
+          uiSourceCode.disableEdit();
+        }
+      } else {
+        this.#getOrCreateSourceView(uiSourceCode);
+      }
+      this.#tabViewSourceCodes.set(tabId, uiSourceCode);
 
       this.#scheduleUpdate();
     } finally {
@@ -802,22 +828,8 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
     }
 
     const previousView = this.#currentView;
-    if (uiSourceCode) {
-      this.#getOrCreateSourceView(uiSourceCode);
-    }
     this.#currentView = this.visibleView;
     this.#addViewListeners();
-
-    if (this.#currentView instanceof UISourceCodeFrame && this.#currentView.uiSourceCode() !== uiSourceCode) {
-      // We are showing a different UISourceCode in the same tab (because it has the same URL). This
-      // commonly happens when switching between workers or iframes containing the same code, and while the
-      // contents are usually identical they may not be and it is important to show users when they aren't.
-      this.#recycleUISourceCodeFrame(this.#currentView, uiSourceCode);
-      if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem) {
-        // Disable editing, because it may confuse users that only one of the copies of this code changes.
-        uiSourceCode.disableEdit();
-      }
-    }
 
     const eventData = {
       currentFile: this.#currentFile,
@@ -954,6 +966,11 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
         tabIds.push(tabId);
       } else {
         this.#removeSourceFrame(uiSourceCode);
+        for (const [k, v] of this.#tabViewSourceCodes) {
+          if (v === uiSourceCode) {
+            this.#tabViewSourceCodes.delete(k);
+          }
+        }
       }
       for (const [k, v] of this.#uriToUISourceCode) {
         if (v === uiSourceCode) {
@@ -999,6 +1016,7 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
   #appendFileTab(uiSourceCode: Workspace.UISourceCode.UISourceCode, index?: number, ignoreHistory?: boolean): string {
     const tabId = this.#generateTabId();
     this.#tabIds.set(uiSourceCode, tabId);
+    this.#tabViewSourceCodes.set(tabId, uiSourceCode);
 
     if (index !== undefined) {
       const entries = Array.from(this.#files.entries());
@@ -1064,6 +1082,11 @@ export class TabbedEditorContainer extends TabbedEditorContainerBase {
       this.#removeViewListeners();
       this.#currentView = null;
       this.#currentFile = null;
+    }
+    const viewSourceCode = this.#tabViewSourceCodes.get(tabId);
+    if (viewSourceCode) {
+      this.#removeSourceFrame(viewSourceCode);
+      this.#tabViewSourceCodes.delete(tabId);
     }
     if (uiSourceCode) {
       this.#tabIds.delete(uiSourceCode);

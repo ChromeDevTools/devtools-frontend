@@ -156,6 +156,45 @@ describe('TabbedEditorContainer', () => {
       sinon.assert.calledOnce(addFileSystemStub);
     });
 
+    it('does not leak duplicate script source frames when inactive tab is closed', async () => {
+      const editorContainer = new Sources.TabbedEditorContainer.TabbedEditorContainer();
+      const url = urlString`http://localhost/script.js`;
+      const url2 = urlString`http://localhost/script2.js`;
+      renderElementIntoDOM(editorContainer);
+      const disposeSpy = sinon.spy(Sources.UISourceCodeFrame.UISourceCodeFrame.prototype, 'dispose');
+      try {
+        const {uiSourceCode: canonicalScript} = createContentProviderUISourceCode({
+          url,
+          mimeType: 'text/javascript',
+          universe: testUniverse,
+        });
+        editorContainer.showFile(canonicalScript);
+        await raf();
+        const {uiSourceCode: duplicateScript} = createContentProviderUISourceCode({
+          url,
+          mimeType: 'text/javascript',
+          universe: testUniverse,
+        });
+        editorContainer.showFile(duplicateScript);
+        await raf();
+        const {uiSourceCode: otherScript} = createContentProviderUISourceCode({
+          url: url2,
+          mimeType: 'text/javascript',
+          universe: testUniverse,
+        });
+        editorContainer.showFile(otherScript);
+        await raf();
+        editorContainer.closeFile(canonicalScript);
+        await raf();
+        const isDisposed = disposeSpy.thisValues.some((val: Sources.UISourceCodeFrame.UISourceCodeFrame) =>
+                                                          val.uiSourceCode?.() === duplicateScript);
+        assert.isTrue(isDisposed, 'Duplicate script source frame was not disposed');
+      } finally {
+        disposeSpy.restore();
+        editorContainer.detach();
+      }
+    });
+
     it('renders open tabs correctly', async () => {
       const container = document.createElement('div');
       container.style.width = '800px';

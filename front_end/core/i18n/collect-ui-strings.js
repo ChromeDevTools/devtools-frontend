@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {globSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import * as fs from 'node:fs';
+import {createRequire} from 'node:module';
 import * as path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
@@ -58,12 +60,33 @@ if (inputDirectories.length === 0) {
   throw new Error('Provide at least one directory!');
 }
 
+const outputDirectory = yargsObject['output-directory'];
+
+// The parse results depend on collect-strings.js and the TypeScript version,
+// so a change to either one discards the cache.
+const cachePath = path.join(outputDirectory, 'collected-ui-strings.cache.json');
+const collectStringsSource = fs.readFileSync(new URL('../../../third_party/i18n/collect-strings.js', import.meta.url));
+const typescriptVersion = createRequire(import.meta.url)('typescript/package.json').version;
+const cacheVersion = createHash('sha256').update(collectStringsSource).update(typescriptVersion).digest('hex');
+/** @type {Record<string, {source: string, parsed: object}>} */
+let savedFiles = {};
+try {
+  const saved = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+  if (saved.version === cacheVersion) {
+    savedFiles = saved.files;
+  }
+} catch {
+  // Without a cache, all UIStrings get parsed again.
+}
+const cache = new Map(Object.entries(savedFiles));
+const initialCacheSize = cache.size;
+
 /** @type {Record<string, CtcMessage>} */
 let collectedStrings = {};
 /** @type {string[]} */
 const files = [];
 for (const directory of inputDirectories) {
-  const directoryFiles = globSync('**/*.{js,ts,gn}', {
+  const directoryFiles = fs.globSync('**/*.{js,ts,gn}', {
     cwd: directory,
     exclude: IGNORED_PATH_COMPONENTS,
   });
@@ -72,20 +95,21 @@ for (const directory of inputDirectories) {
     ...collectAllStringsInDir(
         directory,
         directoryFiles.filter(f => !f.endsWith('.gn')),
+        cache,
         ),
   };
   files.push(...directoryFiles.map(f => path.join(directory, f)));
 }
 
-const outputDirectory = yargsObject['output-directory'];
-await convertCtcToLhLAndSave(outputDirectory, 'en-US', collectedStrings);
+const tasks = [convertCtcToLhLAndSave(outputDirectory, 'en-US', collectedStrings)];
 if (yargsObject['include-en-xl']) {
-  await convertCtcToLhLAndSave(
+  tasks.push(convertCtcToLhLAndSave(
       outputDirectory,
       'en-XL',
       createPsuedoLocaleStrings(collectedStrings),
-  );
+      ));
 }
+await Promise.all(tasks);
 
 // Write the depfile. This is necessary to properly rebuild en-US.json/en-XL.json
 // when any of the input TS files change. We also re-build when any GN file changes,
@@ -95,3 +119,23 @@ ${path.join(outputDirectory, 'en-US.json')}: ${files.join(' ')}
 `;
 
 await writeIfChanged(path.join(outputDirectory, 'collected-ui-strings.d'), depfile);
+
+// Drop the entries of deleted files, and save the cache only if it changed.
+let cacheChanged = false;
+await Promise.all(
+    Array.from(cache.entries()).map(async ([file, entry]) => {
+      if (savedFiles[file] !== entry) {
+        cacheChanged = true;
+      }
+      try {
+        await fs.promises.access(file);
+      } catch {
+        cache.delete(file);
+        cacheChanged = true;
+      }
+    }),
+);
+if (cacheChanged || cache.size !== initialCacheSize) {
+  const serialized = JSON.stringify({version: cacheVersion, files: Object.fromEntries(cache)});
+  await writeIfChanged(cachePath, serialized);
+}

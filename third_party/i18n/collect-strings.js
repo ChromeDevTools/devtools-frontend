@@ -666,9 +666,12 @@ const strings = {};
  * @param {string} directory
  * @param {string[]} [files] The files to scan, relative to `directory`.
  *     Defaults to all files that IGNORED_PATH_COMPONENTS keeps.
+ * @param {Map<string, {source: string, parsed: Record<string, ParsedUIString>}>} [cache]
+ *     The parsed UIStrings of each file from an earlier run. Files with the
+ *     same UIStrings source reuse the parse. New parses are added.
  * @return {Record<string, CtcMessage>}
  */
-export function collectAllStringsInDir(directory, files) {
+export function collectAllStringsInDir(directory, files, cache) {
   // If CWD is contains "third_party" (e.g. in a full Chromium checkout) then
   // *all* paths will be ignored. To avoid this, make the directory relative to
   // CWD.
@@ -690,7 +693,12 @@ export function collectAllStringsInDir(directory, files) {
     // just parse the UIStrings substring to avoid ES version issues, save time, etc
     const justUIStrings = `const ${regexMatch[1]};`;
 
-    const parsedMessages = parseUIStrings(justUIStrings);
+    let cached = cache?.get(absolutePath);
+    if (cached?.source !== justUIStrings) {
+      cached = {source: justUIStrings, parsed: parseUIStrings(justUIStrings)};
+      cache?.set(absolutePath, cached);
+    }
+    const parsedMessages = cached.parsed;
     for (const [key, parsed] of Object.entries(parsedMessages)) {
       const {message, description, meaning, examples} = parsed;
 

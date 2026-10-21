@@ -49,14 +49,21 @@ minify_json("i18n_locales") {
       remote_devtools_locales + bundled_devtools_locales - generated_locales) {
     sources += [ "$devtools_locale_directory/$locale.json" ]
   }
+}
 
-  sources += get_target_outputs(":collect_strings")
+# Minify the generated locales in a separate action, so that a change to a UI
+# string does not minify all translated locales again.
+minify_json("i18n_generated_locales") {
+  sources = get_target_outputs(":collect_strings")
 
   deps = [ ":collect_strings" ]
 }
 
 group("locales") {
-  public_deps = [ ":i18n_locales" ]
+  public_deps = [
+    ":i18n_generated_locales",
+    ":i18n_locales",
+  ]
 
   data = []
 

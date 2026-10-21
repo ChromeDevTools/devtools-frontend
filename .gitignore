@@ -39,6 +39,9 @@ npm-debug.log
 /build
 /buildtools
 /out
+# Transient directories of `scripts/deps/manage_node_deps.py --filter`.
+/node_modules.filtered
+/node_modules.old
 /third_party/*
 !/third_party/emscripten-releases/
 /third_party/emscripten-releases/*

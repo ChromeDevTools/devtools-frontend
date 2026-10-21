@@ -72,6 +72,33 @@ lot of (shared) transitive dependencies, updating the packages on a specific day
 increases the chances that shared dependencies are deduplicated and thus result
 in smaller repository sizes.
 
+#### Producing the `node_modules` archive
+
+`manage_node_deps.py` can also package `node_modules` as a single,
+reproducible archive for distribution through Google Cloud Storage
+(`gs://chromium-nodejs/devtools-frontend/<sha256>`), the same way Chromium's
+WebUI toolchain and chromium-bidi ship their npm dependencies:
+
+```bash
+./dt install-deps --filter --archive   # npm install, filter, build out/node_modules.tar.gz
+./dt install-deps --upload             # ...and upload + update the DEPS entry (needs bucket access)
+./dt install-deps --check              # rebuild the archive and compare it with DEPS
+```
+
+*   `--filter` applies the rsync filter rules in `scripts/deps/npm_exclude.txt`
+    to `node_modules`, removing tests, docs, source maps and other files the
+    build does not need, and verifies that every `node_modules/` path
+    referenced from GN or Python build files still exists. The filtered tree
+    replaces `node_modules`, so you build and test with exactly what bots get.
+*   `--archive` writes a deterministic `out/node_modules.tar.gz` (sorted
+    entries, zeroed timestamps and ownership): the same tree always yields the
+    same sha256, so the hash in `DEPS` can be reproduced by reviewers.
+*   `--upload` is a no-op when the object already exists; otherwise it runs
+    depot_tools' `upload_to_google_storage_first_class.py` and
+    `gclient setdep` for the `node_modules` entry in `DEPS`.
+*   `--skip-install` operates on the existing tree without running
+    `npm install`.
+
 > **WARNING:** Updating tools such as Rollup and TypeScript will cause all build
 > cache output to be purged, as they are part of all DevTools modules. Whenever
 > you are updating either of these tools, update these at the end of a working

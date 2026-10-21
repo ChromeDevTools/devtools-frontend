@@ -77,7 +77,9 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   }
 
   private splitTextIntoClasses(text: string): string[] {
-    return text.split(/[,\s]/).map(className => className.trim()).filter(className => className.length);
+    return text.split(/[,\s]/)
+        .map(className => className.trim().replace(/^\./, ''))
+        .filter(className => className.length);
   }
 
   private onKeyDown(event: KeyboardEvent): void {

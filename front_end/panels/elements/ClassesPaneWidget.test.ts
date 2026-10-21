@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
@@ -48,6 +49,31 @@ describeWithEnvironment('ClassesPaneWidget', () => {
 
   it('updates UI on in scope update event', updatesUiOnEvent(true));
   it('does not update UI on out of scope update event', updatesUiOnEvent(false));
+
+  it('strips leading dot when applying dot-prefixed classes', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    view = new Elements.ClassesPaneWidget.ClassesPaneWidget();
+    renderElementIntoDOM(view);
+
+    const model = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(model);
+    const node = new SDK.DOMModel.DOMNode(model);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    sinon.stub(node, 'enclosingElementOrSelf').returns(node);
+    sinon.stub(node, 'getAttribute').withArgs('class').returns('');
+    const setAttributeValue = expectCall(sinon.stub(node, 'setAttributeValuePromise'), {
+      fakeFn: (_name: string, _value: string) => Promise.resolve(null),
+    });
+
+    const input = view.contentElement.querySelector('.new-class-input');
+    assert.instanceOf(input, HTMLElement);
+    input.textContent = '.btn';
+    input.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+
+    const [name, value] = await setAttributeValue;
+    assert.strictEqual(name, 'class');
+    assert.strictEqual(value, 'btn');
+  });
 
   describe('ClassNamePrompt', () => {
     let domModel: SDK.DOMModel.DOMModel;

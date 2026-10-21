@@ -6,9 +6,27 @@
  */
 
 import * as fs from 'node:fs';
+import {createRequire, enableCompileCache} from 'node:module';
 import * as path from 'node:path';
 
-import * as tsc from 'typescript';
+/** @type {typeof import('typescript')|undefined} */
+let typescript;
+
+/**
+ * TODO(victorporof): Check if this can be removed once TS v7.1 is released.
+ * Loads TypeScript with `require` on first use. When an ES module imports this
+ * large CommonJS package, Node also detects its format and scans its exports.
+ * `require` skips both steps. The Node compile cache keeps the compiled package
+ * on disk for the next run.
+ * @return {typeof import('typescript')}
+ */
+function loadTypeScript() {
+  if (!typescript) {
+    enableCompileCache();
+    typescript = createRequire(import.meta.url)('typescript');
+  }
+  return typescript;
+}
 
 export {collectAndBakeCtcStrings} from './bake-ctc-to-lhl.js';
 
@@ -540,6 +558,7 @@ export function createPsuedoLocaleStrings(messages) {
  * @return {string}
  */
 function getIdentifier(node) {
+  const tsc = loadTypeScript();
   if (!node.name || !tsc.isIdentifier(node.name)) {
     throw new Error('no Identifier found');
   }
@@ -553,6 +572,7 @@ function getIdentifier(node) {
  * @return {string}
  */
 function getToken(node) {
+  const tsc = loadTypeScript();
   if (!node.initializer) {
     throw new Error('no Token found');
   }
@@ -574,6 +594,7 @@ function getToken(node) {
  * @return {Record<string, ParsedUIString>}
  */
 export function parseUIStrings(sourceStr) {
+  const tsc = loadTypeScript();
   const tsAst = tsc.createSourceFile(
       'uistrings',
       sourceStr,

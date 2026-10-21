@@ -5,7 +5,11 @@
 import {afterEach, beforeEach} from 'mocha';
 
 import * as i18n from '../core/i18n/i18n.js';
-import EnUsLocaleData from '../core/i18n/locales/en-US.json' with {type : 'json'};
+
+// The build generates en-US.json from all UIStrings. A non-literal import
+// specifier keeps TypeScript from reading it, so a change to a UI string does
+// not type-check this module again.
+const EN_US_LOCALE_DATA_URL = '../core/i18n/locales/en-US.json';
 
 export async function initializeGlobalLocaleVars(): Promise<void> {
   // Expose the locale.
@@ -22,7 +26,8 @@ export async function initializeGlobalLocaleVars(): Promise<void> {
     return;
   }
 
-  i18n.i18n.registerLocaleDataForTest('en-US', EnUsLocaleData);
+  const {default: enUsLocaleData} = await import(EN_US_LOCALE_DATA_URL, {with: {type: 'json'}});
+  i18n.i18n.registerLocaleDataForTest('en-US', enUsLocaleData);
 }
 
 export function deinitializeGlobalLocaleVars(): void {

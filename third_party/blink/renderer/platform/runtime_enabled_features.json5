@@ -2609,13 +2609,6 @@
       base_feature: "none",
     },
     {
-      // Kill switch for including non-exposed <object> and <embed> elements in
-      // document named properties. crbug.com/551807991
-      // Lands in M155 and can be removed in M157.
-      name: "DocumentNamedPropertiesIgnoreExposedness",
-      status: "stable",
-    },
-    {
       // Fix iframe unload events not firing during document.open()
       // https://crbug.com/40947017
       // Lands in M144; remove this flag in M146 after the milestone rolls.
@@ -4601,6 +4594,12 @@
       depends_on: ["SetHTMLCanRunScripts", "TrustedTypesCreateParserOptions"]
     },
     {
+      // Kill switch for the NodeIterator position fix after subtree removal.
+      // https://crbug.com/532607274
+      name: "NodeIteratorRemovalFix",
+      status: "stable",
+    },
+    {
       // Fix for https://crbug.com/482862753
       name: "NoExtendSelectionToUserSelectNoneOutOfFlow",
       status: "stable"
@@ -6003,8 +6002,8 @@
       status: "test",
     },
     {
-      // Adds the `shadowRoots` option to the Focusable constructors (and the
-      // constructor that takes a Focusable), which exposes focusable items
+      // Adds the `exposedShadowRoots` option to the Focusable constructors (and
+      // the constructor that takes a Focusable), which exposes focusable items
       // inside those shadow trees.
       // https://crbug.com/565786176
       name: "SequentialFocusPrimitivesShadowRoots",
@@ -6881,7 +6880,7 @@
       // On a separate flag to collect data on runtime performance impact.
       name: "TrackAnimatedSourcesForInheritedProperties",
       depends_on: ["TrackAnimatedSources"],
-      status: "test",
+      status: "experimental",
     },
     {
       name: "TransferableRTCDataChannel",
@@ -7896,6 +7895,22 @@
       // https://crbug.com/553155942
       name: "WindowOpenAttributionSrc",
       status: "stable",
+    },
+    {
+      // Supports the "split", "splitposition", and "splitsize" features in
+      // window.open(), which request that the new content be opened in a split
+      // tab alongside the opener.
+      //
+      // The base::Feature is enabled by default, and serves as a kill switch
+      // for the browser-side implementation. The Blink side follows the
+      // "test" status unless the base::Feature is overridden, in which case
+      // both sides follow the override. This keeps the renderer and browser
+      // consistent, so that the browser can reject split requests from a
+      // renderer when the base::Feature is disabled.
+      name: "WindowOpenSplitTab",
+      status: "test",
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "overridden",
     },
     {
       // Fixes an issue where Ctrl+Right Arrow skips punctuation before a newline.

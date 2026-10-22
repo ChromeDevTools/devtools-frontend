@@ -533,14 +533,18 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     const scrollBottom = scrollTop + this.scrollContainer.offsetHeight;
     if (height >= scrollTop && height < scrollBottom) {
       if (!node.dataGrid) {
-        this.updateVisibleNodes(false);
+        this.updateVisibleNodes(true);
       }
       return Promise.resolve(node);
     }
 
     const scrollGap = 40;
     this.scrollContainer.scrollTop = Math.max(0, height - scrollGap);
-    this.updateVisibleNodes(false);
+    this.updateVisibleNodes(true);
+    if (!node.dataGrid) {
+      this.scrollContainer.scrollTop = Math.max(0, height - scrollGap);
+      this.updateVisibleNodes(true);
+    }
     return new Promise(resolve => {
       if (this.scrollToResolveCallback) {
         this.scrollToResolveCallback();
@@ -551,7 +555,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
         if (!this.scrollToResolveCallback) {
           return;
         }
-        this.updateVisibleNodes(false);
+        this.updateVisibleNodes(!node.dataGrid);
         this.scrollToResolveCallback();
         this.scrollToResolveCallback = null;
       });

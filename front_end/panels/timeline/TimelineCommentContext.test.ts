@@ -123,8 +123,10 @@ describe('TimelineCommentContext', function() {
       assert.include(lines, 'Source: webpack:///src/app.ts:41:4');
     });
 
-    it('includes every ancestor in the call path', async function() {
+    it('keeps the outermost and innermost entries of a long call path', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
+      // The deepest entry has 35 ancestors: 6 entries that lead into a
+      // recursive fibonacci function, then 29 fibonacci calls.
       const deepestEntry = findDeepestEntry(parsedTrace);
 
       const lines = Timeline.TimelineCommentContext.agentContextForEntry(deepestEntry, null, parsedTrace);
@@ -133,11 +135,8 @@ describe('TimelineCommentContext', function() {
         'Task',
         'Event: click',
         'v8.callFunction',
-        'Function call',
-        'Optimize code',
-        '(anonymous)',
-        // The page computes fibonacci recursively.
-        ...Array<string>(29).fill('fibonacci'),
+        '… (18 more)',
+        ...Array<string>(14).fill('fibonacci'),
         'V8.OptimizeConcurrentPrepare',
       ];
       assert.include(lines, `Call path: ${expectedNames.join(' > ')}`);

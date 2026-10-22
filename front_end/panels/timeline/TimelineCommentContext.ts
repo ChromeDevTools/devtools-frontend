@@ -8,6 +8,17 @@ import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 
 /**
+ * A long call path keeps this many outermost entries, which usually say why
+ * the code ran, such as `Task > Event: click > Function call`.
+ */
+const CALL_PATH_OUTER_ENTRIES = 3;
+/**
+ * A long call path keeps this many innermost entries, ending with the
+ * commented entry itself.
+ */
+const CALL_PATH_INNER_ENTRIES = 15;
+
+/**
  * Returns the English label of a trace warning. These lines are read by the
  * AI agent, not shown in the UI, so they are not localized.
  */
@@ -73,6 +84,10 @@ function sourceLocationForEntry(event: Trace.Types.Events.Event, parsedTrace: Tr
  * Returns the names of the entry's ancestors and the entry itself, outermost
  * first, for example `Task > Timer fired > Function call > handleClick`, or
  * null if the entry has no ancestors.
+ *
+ * JS call stacks can be hundreds of entries deep, so a long call path keeps
+ * only its outermost and innermost entries and says how many it skipped, for
+ * example `Task > Event: click > Function call > … (240 more) > render > …`.
  */
 function callPathForEntry(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): string|null {
   const node = parsedTrace.data.Renderer.entryToNode.get(event) ?? parsedTrace.data.Samples.entryToNode.get(event);
@@ -86,6 +101,11 @@ function callPathForEntry(event: Trace.Types.Events.Event, parsedTrace: Trace.Tr
   // The walk goes from the entry up to the root, so reverse it to put the
   // outermost entry first.
   names.reverse();
+  const skippedCount = names.length - CALL_PATH_OUTER_ENTRIES - CALL_PATH_INNER_ENTRIES;
+  // Replacing a single entry with a placeholder would not shorten the path.
+  if (skippedCount > 1) {
+    names.splice(CALL_PATH_OUTER_ENTRIES, skippedCount, `… (${skippedCount} more)`);
+  }
   return names.join(' > ');
 }
 

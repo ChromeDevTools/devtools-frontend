@@ -1478,6 +1478,154 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    function findElementsTreeWidget(treeElement: UI.TreeOutline.TreeElement):
+        Elements.ElementsTreeElement.ElementsTreeWidget|null {
+      const widgetElement = treeElement.listItemElement.querySelector('devtools-widget');
+      if (!widgetElement) {
+        return null;
+      }
+      return UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+    }
+
+    // Dispatches a mousedown event and returns the defaultPrevented state at
+    // the DOMTreeWidget element. Listeners that other tests leave on
+    // document.body (for example, a soft context menu) can call
+    // preventDefault() later in the bubble phase. This check ignores them.
+    function dispatchMouseDown(domTree: Elements.DOMTreeWidget.DOMTreeWidget, target: Element,
+                               init: MouseEventInit = {}): boolean {
+      let defaultPrevented: boolean|undefined;
+      const listener = (event: Event): void => {
+        defaultPrevented = event.defaultPrevented;
+      };
+      domTree.element.addEventListener('mousedown', listener);
+      try {
+        target.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, composed: true, cancelable: true, ...init}));
+      } finally {
+        domTree.element.removeEventListener('mousedown', listener);
+      }
+      assert.isDefined(defaultPrevented, 'the mousedown event must reach the DOMTreeWidget element');
+      return Boolean(defaultPrevented);
+    }
+
+    describe('mouse interaction with an active inline attribute editor', () => {
+      async function setupEditingTree() {
+        const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+        sinon.stub(domModel, 'requestDocument').resolves(null);
+        const {domTree} = setupDOMTreeWidget(target);
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'foo bar baz']},
+            {nodeId: 3, nodeName: 'SPAN'},
+          ],
+        });
+        const children = rootNode.children();
+        assert.exists(children);
+        const pNode = children[0];
+
+        domTree.rootDOMNode = rootNode;
+        domTree.selectEnabled = true;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.selectDOMNode(pNode);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const rootTreeElement = tree.getInternalTreeOutlineForTest().rootElement().children()[0];
+        const [pTreeElement, spanTreeElement] = rootTreeElement.children();
+        assert.isTrue(pTreeElement.selected);
+        const pWidget = findElementsTreeWidget(pTreeElement);
+        assert.exists(pWidget);
+
+        pWidget.triggerEditAttribute('class');
+        await waitForTreeUpdates();
+        assert.isTrue(pWidget.isEditing);
+
+        const editingElement = pTreeElement.listItemElement.querySelector<HTMLElement>('.being-edited');
+        assert.exists(editingElement);
+        assert.strictEqual((editingElement.getRootNode() as ShadowRoot).activeElement, editingElement,
+                           'precondition: the editor must own the focus');
+        return {domTree, pWidget, pTreeElement, spanTreeElement, editingElement};
+      }
+
+      it('keeps the editor open and focused on mousedown inside the editor', async () => {
+        const {domTree, pWidget, pTreeElement, editingElement} = await setupEditingTree();
+        try {
+          const defaultPrevented = dispatchMouseDown(domTree, editingElement);
+
+          assert.isTrue(pWidget.isEditing);
+          assert.isTrue(pTreeElement.selected);
+          assert.isFalse(defaultPrevented, 'the browser must place the caret');
+          assert.strictEqual((editingElement.getRootNode() as ShadowRoot).activeElement, editingElement);
+          assert.isTrue(UI.UIUtils.isEditing());
+        } finally {
+          pWidget.editing?.cancel();
+          domTree.detach();
+        }
+      });
+
+      it('allows the native word selection on double click inside the editor', async () => {
+        const {domTree, pWidget, editingElement} = await setupEditingTree();
+        try {
+          const defaultPrevented = dispatchMouseDown(domTree, editingElement, {detail: 2});
+
+          assert.isTrue(pWidget.isEditing);
+          assert.isFalse(defaultPrevented);
+          assert.strictEqual((editingElement.getRootNode() as ShadowRoot).activeElement, editingElement);
+        } finally {
+          pWidget.editing?.cancel();
+          domTree.detach();
+        }
+      });
+
+      it('commits the editor on mousedown on another row', async () => {
+        const {domTree, pWidget, pTreeElement, spanTreeElement} = await setupEditingTree();
+        try {
+          spanTreeElement.listItemElement.dispatchEvent(
+              new MouseEvent('mousedown', {bubbles: true, composed: true, cancelable: true}));
+
+          assert.isFalse(pWidget.isEditing);
+          assert.isFalse(pTreeElement.selected);
+          assert.isTrue(spanTreeElement.selected);
+          assert.isTrue(spanTreeElement.listItemElement.hasFocus());
+        } finally {
+          pWidget.editing?.cancel();
+          domTree.detach();
+        }
+      });
+    });
+
+    it('prevents the native word selection on double click outside of an inline editor', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['class', 'foo bar'],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.selectEnabled = true;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const widget = findElementsTreeWidget(tree.getInternalTreeOutlineForTest().rootElement().children()[0]);
+        assert.exists(widget);
+        const attrElement = widget.contentElement.querySelector('.webkit-html-attribute');
+        assert.exists(attrElement);
+
+        assert.isFalse(dispatchMouseDown(domTree, attrElement, {detail: 1}));
+        assert.isTrue(dispatchMouseDown(domTree, attrElement, {detail: 2}));
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('handles clipboard operations (cut, copy, paste, .in-clipboard styling, and events) in declarative view',
        async () => {
          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);

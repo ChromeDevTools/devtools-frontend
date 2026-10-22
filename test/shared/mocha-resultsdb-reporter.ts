@@ -57,8 +57,9 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
   htmlResult: fs.WriteStream|undefined;
 
   localResultsPath(): string|undefined {
-    return !ResultsDb.available() && this.suitePrefix ? path.join(GEN_DIR, 'test', this.suitePrefix, 'results.html') :
-                                                        undefined;
+    return !ResultsDb.available() && this.suitePrefix && fs.existsSync(GEN_DIR) ?
+        path.join(GEN_DIR, 'test', this.suitePrefix, 'results.html') :
+        undefined;
   }
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {

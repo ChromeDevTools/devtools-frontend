@@ -151,7 +151,7 @@ export function isAIAgent(): boolean {
 
 const getDefaultArtifactDir = () => {
   const artifactsPath = path.join(BUILD_ROOT, 'artifacts');
-  if (!fs.existsSync(artifactsPath)) {
+  if (fs.existsSync(BUILD_ROOT) && !fs.existsSync(artifactsPath)) {
     fs.mkdirSync(artifactsPath, {recursive: true});
   }
   return artifactsPath;

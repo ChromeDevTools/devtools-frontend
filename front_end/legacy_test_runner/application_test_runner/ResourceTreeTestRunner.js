@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Main from '../../entrypoints/main/main.js';
 import * as Application from '../../panels/application/application.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -88,8 +87,7 @@ export const dumpResourcesTree = function() {
   dump(Application.ResourcesPanel.ResourcesPanel.instance().sidebar.resourcesSection.treeElement, '');
 
   if (!testSourceNavigator) {
-    testSourceNavigator =
-        new Sources.SourcesNavigator.NetworkNavigatorView(Main.MainImpl.MainImpl.universeForTest.networkProjectManager);
+    testSourceNavigator = new Sources.SourcesNavigator.NetworkNavigatorView();
     testSourceNavigator.show(UI.InspectorView.InspectorView.instance().element);
   }
 

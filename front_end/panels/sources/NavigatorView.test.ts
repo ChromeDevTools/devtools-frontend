@@ -90,8 +90,8 @@ describeWithEnvironment('NavigatorView', () => {
     const childFrame = await addChildFrame(target);
     const {project} = addResourceAndUISourceCode(url, childFrame, '', 'text/html');
 
-    const navigatorView =
-        Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+    const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+    await navigatorView.updateComplete;
     const children = navigatorView.scriptsTree.rootElement().children();
     assert.lengthOf(children, 1, 'The NavigatorView root node should have 1 child before node removal');
     assert.strictEqual(children[0].title, 'top');
@@ -137,8 +137,8 @@ describeWithEnvironment('NavigatorView', () => {
         },
       });
 
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
       const topChildren = navigatorView.scriptsTree.rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
@@ -181,8 +181,8 @@ describeWithEnvironment('NavigatorView', () => {
         },
       });
 
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
       const topChildren = navigatorView.scriptsTree.rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
@@ -228,8 +228,8 @@ describeWithEnvironment('NavigatorView', () => {
         },
       });
 
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
       const topChildren = navigatorView.scriptsTree.rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
@@ -259,8 +259,8 @@ describeWithEnvironment('NavigatorView', () => {
         },
       });
 
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
       const topChildren = navigatorView.scriptsTree.rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
@@ -276,8 +276,8 @@ describeWithEnvironment('NavigatorView', () => {
       const url = urlString`*bad url*`;
       addResourceAndUISourceCode(url, mainFrame, '', 'text/html');
 
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
       const topChildren = navigatorView.scriptsTree.rootElement().children();
       assert.lengthOf(topChildren, 1);
       assert.strictEqual(topChildren[0].title, 'top');
@@ -337,8 +337,7 @@ describeWithEnvironment('NavigatorView', () => {
           sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
       const fileSystem = new Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem(
           {root, uuid, state: 'connecting'}, automaticFileSystemManager, workspace);
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
       const treeElement = groupNode.treeNode();
@@ -352,8 +351,7 @@ describeWithEnvironment('NavigatorView', () => {
           sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
       const fileSystem = new Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem(
           {root, uuid, state: 'disconnected'}, automaticFileSystemManager, workspace);
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
       const treeElement = groupNode.treeNode();
@@ -386,8 +384,7 @@ describeWithEnvironment('NavigatorView', () => {
       addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
       const uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
 
-      const navigatorView =
-          Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true, networkProjectManager});
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const sourceSelectedSpy = sinon.spy(navigatorView, 'sourceSelected');
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
       const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
@@ -408,7 +405,7 @@ describeWithEnvironment('NavigatorView', () => {
         Sources.NavigatorView.DEFAULT_VIEW(input, _output, targetElement);
       });
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager], viewSpy);
-      navigatorView.performUpdate();
+      await navigatorView.updateComplete;
       sinon.assert.calledOnce(viewSpy);
       assert.strictEqual(viewSpy.firstCall.args[0].treeElement, navigatorView.scriptsTree.element);
       assert.isNull(viewSpy.firstCall.args[0].placeholder);

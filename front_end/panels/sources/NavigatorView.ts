@@ -205,7 +205,25 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   // clang-format on
 };
 
-export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
+export const enum Events {
+  UI_SOURCE_CODE_ADDED = 'ui-source-code-added',
+  SOURCE_SELECTED = 'source-selected',
+}
+
+export interface SourceSelectedEvent {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  focusSource: boolean;
+}
+
+export interface EventTypes {
+  [Events.UI_SOURCE_CODE_ADDED]: Workspace.UISourceCode.UISourceCode;
+  [Events.SOURCE_SELECTED]: SourceSelectedEvent;
+}
+
+const NavigatorViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+
+export class NavigatorView extends NavigatorViewBase implements SDK.TargetManager.Observer {
   static override readonly INJECT: readonly[typeof Bindings.NetworkProject.NetworkProjectManager] =
       [Bindings.NetworkProject.NetworkProjectManager] as const;
 
@@ -223,7 +241,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private navigatorGroupByAuthoredSetting?: Common.Settings.Setting<boolean>;
   #navigatorGroupByAuthoredChangeListener?: () => void;
   #enableAuthoredGrouping = false;
-  #workspace!: Workspace.Workspace.WorkspaceImpl;
+  #projectFilter?: (project: Workspace.Workspace.Project) => boolean;
+  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  #initialized = false;
   private groupByFrame?: boolean;
   private groupByAuthored?: boolean;
   private groupByDomain?: boolean;
@@ -286,12 +306,11 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         SDK.TargetManager.Events.NAME_CHANGED, this.targetNameChanged, this);
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
-    this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
-    this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
     networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
                                            this.frameAttributionAdded, this);
     networkProjectManager.addEventListener(Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
                                            this.frameAttributionRemoved, this);
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -319,7 +338,22 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
       this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
     }
-    if (this.#workspace && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+    if (this.#initialized && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+      this.groupingChanged();
+    }
+    this.requestUpdate();
+  }
+
+  get projectFilter(): ((project: Workspace.Workspace.Project) => boolean)|undefined {
+    return this.#projectFilter;
+  }
+
+  set projectFilter(projectFilter: ((project: Workspace.Workspace.Project) => boolean)|undefined) {
+    if (this.#projectFilter === projectFilter) {
+      return;
+    }
+    this.#projectFilter = projectFilter;
+    if (this.#initialized) {
       this.groupingChanged();
     }
     this.requestUpdate();
@@ -378,6 +412,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   override performUpdate(): void {
+    if (!this.#initialized) {
+      this.#initialized = true;
+      this.initGrouping();
+      this.resetWorkspace(this.#workspace);
+      this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+    }
     this.#view({
       treeElement: this.scriptsTree.element,
       placeholder: this.placeholder,
@@ -502,6 +542,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   acceptProject(project: Workspace.Workspace.Project): boolean {
+    if (this.#projectFilter) {
+      return this.#projectFilter(project);
+    }
     return !project.isServiceProject();
   }
 
@@ -558,7 +601,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     } else {
       this.addUISourceCodeNode(uiSourceCode, null);
     }
-    this.uiSourceCodeAdded(uiSourceCode);
+    this.dispatchEventToListeners(Events.UI_SOURCE_CODE_ADDED, uiSourceCode);
   }
 
   private addUISourceCodeNode(
@@ -586,9 +629,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       uiSourceCodeNode.updateTitleBubbleUp();
     }
     this.selectDefaultTreeNode();
-  }
-
-  uiSourceCodeAdded(_uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
   }
 
   private uiSourceCodeAddedCallback(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>):
@@ -912,6 +952,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
+    this.dispatchEventToListeners(Events.SOURCE_SELECTED, {uiSourceCode, focusSource});
     void Common.Revealer.reveal(uiSourceCode, !focusSource);
   }
 

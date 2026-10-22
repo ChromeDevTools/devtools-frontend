@@ -18,11 +18,15 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import {Link} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
+
+const {html, render, Directives: {ref}} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -110,13 +114,72 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkNavigatorViewInstance: NetworkNavigatorView;
 
-export class NetworkNavigatorView extends NavigatorView {
-  private constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-network').track({resize: true})}`,
-    });
-    this.enableAuthoredGrouping = true;
-    this.registerRequiredCSS(sourcesNavigatorStyles);
+export interface SourcesNavigatorViewOutput {
+  navigatorView?: UI.Widget.WidgetElement<NavigatorView>;
+}
+
+export abstract class SourcesNavigatorView extends UI.Widget.VBox {
+  protected readonly viewOutput: SourcesNavigatorViewOutput = {};
+  protected readonly projectFilter: (project: Workspace.Workspace.Project) => boolean = this.acceptProject.bind(this);
+
+  protected get navigatorView(): NavigatorView|undefined {
+    return this.viewOutput.navigatorView?.getWidget();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  abstract acceptProject(project: Workspace.Workspace.Project): boolean;
+
+  revealUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, select?: boolean): void {
+    this.navigatorView?.revealUISourceCode(uiSourceCode, select);
+  }
+}
+
+export interface NetworkNavigatorViewInput {
+  projectFilter: (project: Workspace.Workspace.Project) => boolean;
+  onUISourceCodeAdded: (uiSourceCode: Workspace.UISourceCode.UISourceCode) => void;
+}
+
+export type NetworkNavigatorViewFunc =
+    (input: NetworkNavigatorViewInput, output: SourcesNavigatorViewOutput, target: HTMLElement) => void;
+
+export const NETWORK_NAVIGATOR_DEFAULT_VIEW: NetworkNavigatorViewFunc = (input, output, target) => {
+  // We cannot use `widgetRef` here because `Lit.Directives.ref` runs while the
+  // template is still in a detached `DocumentFragment` before `render` inserts
+  // it into `target`, which prevents `NavigatorView`'s `INJECT` lookup from
+  // finding the `Universe` in the DOM. Instead, pass out the `WidgetElement`
+  // via `ref` and read `getWidget()` when accessed.
+  // clang-format off
+  render(
+      html`
+        <style>${sourcesNavigatorStyles}</style>
+        <devtools-widget
+          jslog=${VisualLogging.pane('navigator-network').track({resize: true})}
+          @ui-source-code-added=${(e: CustomEvent<Workspace.UISourceCode.UISourceCode>) => input.onUISourceCodeAdded(e.detail)}
+          ${widget(NavigatorView, {
+            enableAuthoredGrouping: true,
+            projectFilter: input.projectFilter,
+          })}
+          ${ref(e => {
+            if (e instanceof UI.Widget.WidgetElement) {
+              output.navigatorView = e;
+            }
+          })}
+        ></devtools-widget>
+      `,
+      target);
+  // clang-format on
+};
+
+export class NetworkNavigatorView extends SourcesNavigatorView {
+  #view: NetworkNavigatorViewFunc;
+
+  constructor(element?: HTMLElement, view: NetworkNavigatorViewFunc = NETWORK_NAVIGATOR_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
 
@@ -127,14 +190,22 @@ export class NetworkNavigatorView extends NavigatorView {
 
   static instance(opts: {
     forceNew: boolean|null,
-    networkProjectManager: Bindings.NetworkProject.NetworkProjectManager,
-  }): NetworkNavigatorView {
-    const {forceNew, networkProjectManager} = opts;
+  } = {forceNew: null}): NetworkNavigatorView {
+    const {forceNew} = opts;
     if (!networkNavigatorViewInstance || forceNew) {
-      networkNavigatorViewInstance = new NetworkNavigatorView(networkProjectManager);
+      networkNavigatorViewInstance = new NetworkNavigatorView();
     }
 
     return networkNavigatorViewInstance;
+  }
+
+  override async performUpdate(): Promise<void> {
+    this.#view({
+      projectFilter: this.projectFilter,
+      onUISourceCodeAdded: this.uiSourceCodeAdded.bind(this),
+    },
+               this.viewOutput, this.contentElement);
+    await this.navigatorView?.updateComplete;
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {
@@ -144,11 +215,15 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 
   onScopeChange(): void {
+    const navigatorView = this.navigatorView;
+    if (!navigatorView) {
+      return;
+    }
     for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
       if (!this.acceptProject(project)) {
-        this.removeProject(project);
+        navigatorView.removeProject(project);
       } else {
-        this.tryAddProject(project);
+        navigatorView.tryAddProject(project);
       }
     }
   }
@@ -162,14 +237,14 @@ export class NetworkNavigatorView extends NavigatorView {
     if (!inspectedURL) {
       return;
     }
-    for (const uiSourceCode of this.workspace().uiSourceCodes()) {
+    for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
       if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL) {
         this.revealUISourceCode(uiSourceCode, true);
       }
     }
   }
 
-  override uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {

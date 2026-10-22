@@ -204,10 +204,9 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showPage),
   order: 2,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
-  async loadView(universe) {
+  async loadView() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.NetworkNavigatorView.instance(
-        {forceNew: null, networkProjectManager: universe.networkProjectManager});
+    return Sources.SourcesNavigator.NetworkNavigatorView.instance();
   },
 });
 

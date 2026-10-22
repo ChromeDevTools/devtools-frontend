@@ -14,7 +14,12 @@ import {TestRunner} from '../test_runner/test_runner.js';
  * @param {boolean=} dumpIcons
  */
 export const dumpNavigatorView = function(navigatorView, dumpIcons) {
-  dumpNavigatorTreeOutline(navigatorView.scriptsTree);
+  navigatorView.performUpdate();
+  const innerNavigatorView = navigatorView instanceof Sources.NavigatorView.NavigatorView ?
+      navigatorView :
+      navigatorView.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
+  innerNavigatorView.performUpdate();
+  dumpNavigatorTreeOutline(innerNavigatorView.scriptsTree);
 
   /**
    * @param {string} prefix
@@ -71,12 +76,17 @@ export const dumpNavigatorViewInAllModes = function(view) {
  */
 export const dumpNavigatorViewInMode = function(view, mode) {
   TestRunner.addResult(view instanceof Sources.SourcesNavigator.NetworkNavigatorView ? 'Sources:' : 'Content Scripts:');
-  view.groupByFrame = mode.includes('frame');
-  view.groupByDomain = mode.includes('domain');
-  view.groupByFolder = mode.includes('folder');
-  view.resetForTest();
+  view.performUpdate();
+  const navigatorView = view instanceof Sources.NavigatorView.NavigatorView ?
+      view :
+      view.children().find(child => child instanceof Sources.NavigatorView.NavigatorView);
+  navigatorView.performUpdate();
+  navigatorView.groupByFrame = mode.includes('frame');
+  navigatorView.groupByDomain = mode.includes('domain');
+  navigatorView.groupByFolder = mode.includes('folder');
+  navigatorView.resetForTest();
   TestRunner.addResult('-------- Setting mode: [' + mode + ']');
-  dumpNavigatorView(view);
+  dumpNavigatorView(navigatorView);
 };
 
 /**

@@ -617,6 +617,58 @@ describe('TreeViewElement', () => {
     assert.strictEqual((input.getRootNode() as Document | ShadowRoot).activeElement, input);
   });
 
+  it('does not steal focus from focused child inside selected listItemElement on mousedown', async () => {
+    const component = await makeTree(html`<devtools-tree .template=${html`
+      <ul role="tree">
+         <li role="treeitem">
+           <input type="text" />
+           Node
+         </li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const node = treeOutline.rootElement().children()[0];
+    node.select();
+    assert.isTrue(node.selected);
+
+    const input = node.listItemElement.querySelector('input');
+    assert.isNotNull(input);
+    input.focus();
+    assert.strictEqual((input.getRootNode() as Document | ShadowRoot).activeElement, input);
+
+    const event = new MouseEvent('mousedown', {bubbles: true, composed: true, cancelable: true});
+    input.dispatchEvent(event);
+    assert.isTrue(node.selected);
+    assert.strictEqual((input.getRootNode() as Document | ShadowRoot).activeElement, input);
+  });
+
+  it('moves focus to another row on mousedown while a child of the selected row has focus', async () => {
+    const component = await makeTree(html`<devtools-tree .template=${html`
+      <ul role="tree">
+         <li role="treeitem">
+           <input type="text" />
+           First Node
+         </li>
+         <li role="treeitem">Second Node</li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const [firstNode, secondNode] = treeOutline.rootElement().children();
+    firstNode.select();
+
+    const input = firstNode.listItemElement.querySelector('input');
+    assert.isNotNull(input);
+    input.focus();
+    assert.strictEqual((input.getRootNode() as Document | ShadowRoot).activeElement, input);
+
+    const event = new MouseEvent('mousedown', {bubbles: true, composed: true, cancelable: true});
+    secondNode.listItemElement.dispatchEvent(event);
+    assert.isFalse(firstNode.selected);
+    assert.isTrue(secondNode.selected);
+    assert.isTrue(secondNode.listItemElement.hasFocus());
+    assert.strictEqual((input.getRootNode() as Document | ShadowRoot).activeElement, secondNode.listItemElement);
+  });
+
   it('applies jslog contexts to tree elements', async () => {
     const component = await makeTree(html`
       <devtools-tree

@@ -118,7 +118,6 @@ devtools_ui_module("application") {
     "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
-    "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",

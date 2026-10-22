@@ -8,17 +8,20 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
 import {Icon, Link} from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {IndexedDBModel} from './IndexedDBModel.js';
 import {ResourcesPanel} from './ResourcesPanel.js';
 import storageViewStyles from './storageView.css.js';
+
+const {ref} = Directives;
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**
@@ -162,6 +165,68 @@ export const storagePieColors: Map<Protocol.Storage.StorageType, string> =
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ClearSiteDataViewInput {
+  settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
+  includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
+  includeThirdPartyCookiesDisabled: boolean;
+  clearing: boolean;
+  onClear: () => void;
+}
+
+export interface ClearSiteDataViewOutput {
+  focusClearButton?: () => void;
+}
+
+export type ClearSiteDataView = (input: ClearSiteDataViewInput, output: ClearSiteDataViewOutput, target: HTMLElement) =>
+    void;
+
+export const CLEAR_SITE_DATA_DEFAULT_VIEW: ClearSiteDataView = (input, output, target) => {
+  function renderSettingCheckbox(title: Platform.UIString.LocalizedString, settingName: Protocol.Storage.StorageType,
+                                 className: string): LitTemplate {
+    const setting = input.settings.get(settingName);
+    if (!setting) {
+      throw new Error(`Missing setting for storage type: ${settingName}`);
+    }
+    return html`<devtools-checkbox class=${className} title=${title} ${bindToSetting(setting)}>${
+        title}</devtools-checkbox>`;
+  }
+
+  // clang-format off
+  render(html`
+    <div class="report-row clear-site-data-checkboxes-row">
+      <div class="clear-site-data-checkbox-column">
+        ${renderSettingCheckbox(i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage, 'cache-storage-checkbox')}
+        ${renderSettingCheckbox(i18nString(UIStrings.fileSystem), Protocol.Storage.StorageType.File_systems, 'file-systems-checkbox')}
+        ${renderSettingCheckbox(i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb, 'indexeddb-checkbox')}
+        ${renderSettingCheckbox(i18nString(UIStrings.localAndSessionStorage), Protocol.Storage.StorageType.Local_storage, 'local-and-session-storage-checkbox')}
+      </div>
+      <div class="clear-site-data-checkbox-column">
+        ${renderSettingCheckbox(i18nString(UIStrings.unregisterServiceWorker), Protocol.Storage.StorageType.Service_workers, 'unregister-service-worker-checkbox')}
+        ${renderSettingCheckbox(i18nString(UIStrings.cookies), Protocol.Storage.StorageType.Cookies, 'cookies-checkbox cookies-row')}
+        <div class="include-third-party-cookies-row">
+          <devtools-checkbox class="third-party-cookies-checkbox"
+              title=${i18nString(UIStrings.thirdPartyCookies)}
+              ?disabled=${input.includeThirdPartyCookiesDisabled}
+              ${bindToSetting(input.includeThirdPartyCookiesSetting)}>
+            ${i18nString(UIStrings.thirdPartyCookies)}
+          </devtools-checkbox>
+        </div>
+      </div>
+    </div>
+    <div class="report-row clear-selected-button-row">
+      <devtools-button id="storage-view-clear-button"
+          .variant=${Buttons.Button.Variant.OUTLINED}
+          .disabled=${input.clearing}
+          .jslogContext=${'storage.clear-site-data'}
+          @click=${input.onClear}
+          ${ref(e => {
+            output.focusClearButton = e instanceof HTMLElement ? () => e.focus() : undefined;
+          })}
+          >${input.clearing ? i18nString(UIStrings.clearing) : i18nString(UIStrings.clearSelected)}</devtools-button>
+    </div>`, target);
+  // clang-format on
+};
+
 /**
  * @implements {SDK.TargetManager.Observer}
  */
@@ -174,7 +239,9 @@ export class StorageView extends UI.Widget.VBox {
   private subtitle: string|null = null;
   private settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
   private includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
-  private includeThirdPartyCookiesCheckbox: UI.UIUtils.CheckboxLabel;
+  private readonly clearSiteDataView: ClearSiteDataView;
+  private readonly clearSiteDataViewOutput: ClearSiteDataViewOutput = {};
+  private readonly clearSiteDataFieldList: HTMLElement;
   private quotaRow: HTMLElement;
   private quotaUsage: number|null = null;
   private quotaQuota: number|null = null;
@@ -190,12 +257,19 @@ export class StorageView extends UI.Widget.VBox {
   private quotaOverrideErrorMessage: HTMLElement;
   private clearing = false;
   private clearTimerId?: number;
-  private clearButton: Buttons.Button.Button;
   private readonly throttler = new Common.Throttler.Throttler(1000);
+  private readonly boundOnCookiesSettingChanged = (event: Common.EventTarget.EventTargetEvent<boolean>): void => {
+    this.onCookiesSettingChanged(event.data);
+  };
+  private readonly boundOnIncludeThirdPartyCookiesSettingChanged =
+      (event: Common.EventTarget.EventTargetEvent<boolean>): void => {
+        this.onIncludeThirdPartyCookiesSettingChanged(event.data);
+      };
 
-  constructor() {
+  constructor(clearSiteDataView: ClearSiteDataView = CLEAR_SITE_DATA_DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.registerRequiredCSS(storageViewStyles);
+    this.clearSiteDataView = clearSiteDataView;
 
     this.contentElement.classList.add('clear-storage-container');
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('clear-storage')}`);
@@ -221,59 +295,8 @@ export class StorageView extends UI.Widget.VBox {
 
     const clearSiteData = this.reportView.appendSection(i18nString(UIStrings.clearSiteData));
     clearSiteData.element.setAttribute('jslog', `${VisualLogging.section('clear-storage')}`);
-
-    const clearSiteDataCheckboxesRow = clearSiteData.appendRow();
-    clearSiteDataCheckboxesRow.classList.add('clear-site-data-checkboxes-row');
-    const leftColumn = clearSiteDataCheckboxesRow.createChild('div', 'clear-site-data-checkbox-column');
-    this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.cacheStorage),
-                               Protocol.Storage.StorageType.Cache_storage, 'cache-storage-checkbox');
-    this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.fileSystem), Protocol.Storage.StorageType.File_systems,
-                               'file-systems-checkbox');
-    this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb,
-                               'indexeddb-checkbox');
-    this.appendSettingCheckbox(leftColumn, i18nString(UIStrings.localAndSessionStorage),
-                               Protocol.Storage.StorageType.Local_storage, 'local-and-session-storage-checkbox');
-
-    const rightColumn = clearSiteDataCheckboxesRow.createChild('div', 'clear-site-data-checkbox-column');
-    this.appendSettingCheckbox(rightColumn, i18nString(UIStrings.unregisterServiceWorker),
-                               Protocol.Storage.StorageType.Service_workers, 'unregister-service-worker-checkbox');
-    const cookiesCheckbox = this.appendSettingCheckbox(rightColumn, i18nString(UIStrings.cookies),
-                                                       Protocol.Storage.StorageType.Cookies, 'cookies-checkbox');
-    cookiesCheckbox.classList.add('cookies-row');
-
-    const includeThirdPartyCookiesRow = rightColumn.createChild('div', 'include-third-party-cookies-row');
-    this.includeThirdPartyCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.thirdPartyCookies), this.includeThirdPartyCookiesSetting);
-    this.includeThirdPartyCookiesCheckbox.classList.add('third-party-cookies-checkbox');
-    includeThirdPartyCookiesRow.appendChild(this.includeThirdPartyCookiesCheckbox);
-
-    const clearButtonRow = clearSiteData.appendRow();
-    clearButtonRow.classList.add('clear-selected-button-row');
-    this.clearButton = UI.UIUtils.createTextButton(i18nString(UIStrings.clearSelected), this.clear.bind(this),
-                                                   {jslogContext: 'storage.clear-site-data'});
-    this.clearButton.id = 'storage-view-clear-button';
-    clearButtonRow.appendChild(this.clearButton);
-
+    this.clearSiteDataFieldList = clearSiteData.getFieldElement();
     clearSiteData.markFieldListAsGroup();
-
-    const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
-    if (cookiesSetting) {
-      cookiesSetting.addChangeListener(event => this.onCookiesSettingChanged(event.data));
-    }
-    this.includeThirdPartyCookiesSetting.addChangeListener(
-        event => this.onIncludeThirdPartyCookiesSettingChanged(event.data));
-    cookiesCheckbox.addEventListener('change', () => {
-      this.syncCheckboxAttributeState(cookiesCheckbox);
-      if (!cookiesCheckbox.checked && this.includeThirdPartyCookiesCheckbox.checked) {
-        this.includeThirdPartyCookiesCheckbox.click();
-      }
-      this.onCookiesSettingChanged(cookiesCheckbox.checked);
-    });
-    this.includeThirdPartyCookiesCheckbox.addEventListener('change', () => {
-      this.syncCheckboxAttributeState(this.includeThirdPartyCookiesCheckbox);
-      this.onIncludeThirdPartyCookiesSettingChanged(this.includeThirdPartyCookiesCheckbox.checked);
-    });
-    this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
 
     const quota = this.reportView.appendSection(i18nString(UIStrings.usage));
     quota.element.setAttribute('jslog', `${VisualLogging.section('usage')}`);
@@ -318,52 +341,28 @@ export class StorageView extends UI.Widget.VBox {
     const errorMessageRow = quota.appendRow();
     this.quotaOverrideErrorMessage = errorMessageRow.createChild('div', 'quota-override-error');
 
-    this.requestUpdate();
+    const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
+    this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
-  private appendSettingCheckbox(container: HTMLElement, title: Platform.UIString.LocalizedString,
-                                settingName: Protocol.Storage.StorageType,
-                                className?: string): UI.UIUtils.CheckboxLabel {
-    const setting = this.settings.get(settingName);
-    if (!setting) {
-      throw new Error(`Missing setting for storage type: ${settingName}`);
-    }
-    const checkbox = SettingsUI.SettingsUI.createSettingCheckbox(title, setting);
-    if (className) {
-      checkbox.classList.add(className);
-    }
-    container.appendChild(checkbox);
-    return checkbox;
-  }
-
   private onCookiesSettingChanged(cookiesEnabled: boolean): void {
-    if (!cookiesEnabled) {
-      this.includeThirdPartyCookiesCheckbox.toggleAttribute('checked', true);
-      this.includeThirdPartyCookiesCheckbox.toggleAttribute('checked', false);
-      if (this.includeThirdPartyCookiesSetting.get()) {
-        this.includeThirdPartyCookiesSetting.set(false);
-      }
+    // Unchecking general cookies clearing must also uncheck third-party cookies.
+    if (!cookiesEnabled && this.includeThirdPartyCookiesSetting.get()) {
+      this.includeThirdPartyCookiesSetting.set(false);
+      return;
     }
-    this.updateThirdPartyCookiesCheckboxState();
+    this.requestUpdate();
   }
 
   private onIncludeThirdPartyCookiesSettingChanged(includeThirdPartyCookiesEnabled: boolean): void {
     const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
+    // Checking third-party cookies requires general cookies clearing to be enabled.
     if (includeThirdPartyCookiesEnabled && cookiesSetting && !cookiesSetting.get()) {
       cookiesSetting.set(true);
       return;
     }
-    this.updateThirdPartyCookiesCheckboxState();
-  }
-
-  private syncCheckboxAttributeState(checkbox: UI.UIUtils.CheckboxLabel): void {
-    checkbox.toggleAttribute('checked', checkbox.checked);
-  }
-
-  private updateThirdPartyCookiesCheckboxState(): void {
-    const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
-    this.includeThirdPartyCookiesCheckbox.disabled = !cookiesSetting?.get();
+    this.requestUpdate();
   }
 
   targetAdded(target: SDK.Target.Target): void {
@@ -396,6 +395,13 @@ export class StorageView extends UI.Widget.VBox {
         target.model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
     storageKeyManager.removeEventListener(
         SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, this.storageKeyChanged, this);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
+    cookiesSetting?.removeChangeListener(this.boundOnCookiesSettingChanged);
+    this.includeThirdPartyCookiesSetting.removeChangeListener(this.boundOnIncludeThirdPartyCookiesSettingChanged);
   }
 
   override wasHidden(): void {
@@ -545,7 +551,7 @@ export class StorageView extends UI.Widget.VBox {
       this.requestUpdate();
       await this.updateComplete;
       if (this.isShowing()) {
-        this.clearButton.focus();
+        this.clearSiteDataViewOutput.focusClearButton?.();
       }
     }, 500);
 
@@ -661,6 +667,10 @@ export class StorageView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
+    const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
+    cookiesSetting?.addChangeListener(this.boundOnCookiesSettingChanged);
+    this.includeThirdPartyCookiesSetting.addChangeListener(this.boundOnIncludeThirdPartyCookiesSettingChanged);
+    this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
     void this.refreshUsageAndQuota();
   }
 
@@ -668,13 +678,20 @@ export class StorageView extends UI.Widget.VBox {
     if (this.subtitle !== null) {
       this.reportView.setSubtitle(this.subtitle);
     }
+    const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
+    this.clearSiteDataView({
+      settings: this.settings,
+      includeThirdPartyCookiesSetting: this.includeThirdPartyCookiesSetting,
+      includeThirdPartyCookiesDisabled: !cookiesSetting?.get(),
+      clearing: this.clearing,
+      onClear: () => this.clear(),
+    },
+                           this.clearSiteDataViewOutput, this.clearSiteDataFieldList);
     this.renderQuotaRow();
     this.populatePieChart();
     this.quotaOverrideControlRow.classList.toggle('hidden', !this.quotaOverrideEnabled);
     this.quotaOverrideCheckbox.checked = this.quotaOverrideEnabled;
     this.quotaOverrideErrorMessage.textContent = this.quotaOverrideError;
-    this.clearButton.disabled = this.clearing;
-    this.clearButton.textContent = this.clearing ? i18nString(UIStrings.clearing) : i18nString(UIStrings.clearSelected);
   }
 
   private renderQuotaRow(): void {

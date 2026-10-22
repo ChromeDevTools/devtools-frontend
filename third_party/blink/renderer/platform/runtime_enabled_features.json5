@@ -1984,6 +1984,12 @@
       name: "CSSProgressNotation",
       status: "stable",
     },
+    // https://drafts.csswg.org/css-values-5/#progress
+    // progress() no-clamp keyword and equal start and end values
+    {
+      name: "CSSProgressNotationNoClamp",
+      status: "experimental",
+    },
     {
       // For ::column pseudo-element for fragment styling.
       // https://github.com/flackr/carousel/blob/main/fragmentation/README.md
@@ -2447,6 +2453,11 @@
         "ChromeOS": "stable",
         "default": "experimental",
       },
+    },
+    {
+      name: "DeviceBoundSessionJsApi",
+      status: "experimental",
+      base_feature: "none",
     },
     {
       name: "DeviceOrientationRequestPermission",
@@ -4286,6 +4297,10 @@
     {
       // CSS margin-trim property: https://drafts.csswg.org/css-box-4/#margin-trim
       name: "MarginTrim",
+      status: "stable",
+    },
+    {
+      name: "MarkAncestorsOnDisplayLockUnlock",
       status: "stable",
     },
     {

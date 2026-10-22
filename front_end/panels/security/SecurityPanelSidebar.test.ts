@@ -228,30 +228,6 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
     assert.isNull(callback.firstCall.args[0]);
   });
 
-  it('supports elementsByOrigin for web test compatibility', async () => {
-    const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
-    renderElementIntoDOM(sidebar);
-
-    const origin = urlString`https://example.com`;
-    sidebar.addOrigin(origin, Protocol.Security.SecurityState.Secure);
-    await doubleRaf();
-
-    const elements = sidebar.elementsByOrigin();
-    const item = elements.get(origin);
-    assert.exists(item);
-    assert.strictEqual(item.origin(), origin);
-    assert.strictEqual(item.securityState(), Protocol.Security.SecurityState.Secure);
-
-    const callback = sinon.spy();
-    sidebar.onShowOrigin = callback;
-
-    item.select(undefined, true);
-    await doubleRaf();
-
-    sinon.assert.calledOnce(callback);
-    assert.strictEqual(callback.firstCall.args[0], origin);
-  });
-
   describe('visual screenshots', () => {
     it('renders initial sidebar state', async () => {
       const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();

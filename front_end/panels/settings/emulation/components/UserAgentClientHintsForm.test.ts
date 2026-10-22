@@ -49,8 +49,8 @@ describe('UserAgentClientHintsForm', () => {
   };
 
   /**
-   * Returns a deep copy of the test metadata. The component can change the
-   * brand arrays in place, so each test must use its own copy.
+   * Returns a deep copy of the test metadata, so that each test uses its own
+   * brand arrays.
    */
   const createTestMetaData = (): typeof testMetaData => structuredClone(testMetaData);
 
@@ -355,6 +355,45 @@ describe('UserAgentClientHintsForm', () => {
                              getElementWithinComponent(component, `#${addButtonId}`, HTMLElement));
         });
 
+        it('does not change the given brand array when a row is deleted', () => {
+          const component = renderUserAgentClientHintsForm();
+          const metaData = createTestMetaData();
+          const givenBrands = [
+            {brand: 'First', version: '1'},
+            {brand: 'Second', version: '2'},
+          ];
+          metaData[metaDataKey] = givenBrands;
+          component.value = {metaData};
+
+          const deleteIcons = getElementsWithinComponent(component, '.delete-icon', HTMLElement);
+          const deleteIcon =
+              [...deleteIcons].find(icon => icon.closest('.brand-row')?.querySelector(brandInputSelector));
+          assert.exists(deleteIcon);
+          dispatchClickEvent(deleteIcon);
+
+          assert.deepEqual(component.value.metaData?.[metaDataKey], [{brand: 'Second', version: '2'}]);
+          assert.deepEqual(givenBrands, [
+            {brand: 'First', version: '1'},
+            {brand: 'Second', version: '2'},
+          ]);
+        });
+
+        it('does not change the default metadata when a default row is deleted', () => {
+          const firstComponent = renderUserAgentClientHintsForm();
+          firstComponent.value = {};
+          const deleteIcons = getElementsWithinComponent(firstComponent, '.delete-icon', HTMLElement);
+          const deleteIcon =
+              [...deleteIcons].find(icon => icon.closest('.brand-row')?.querySelector(brandInputSelector));
+          assert.exists(deleteIcon);
+          dispatchClickEvent(deleteIcon);
+          assert.deepEqual(firstComponent.value.metaData?.[metaDataKey], []);
+
+          const secondComponent = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
+          renderElementIntoDOM(secondComponent, {allowMultipleChildren: true});
+          secondComponent.value = {};
+          assert.deepEqual(secondComponent.value.metaData?.[metaDataKey], [{brand: '', version: ''}]);
+        });
+
         it('updates the brand name and version on input', async () => {
           const component = renderUserAgentClientHintsForm();
           const metaData = createTestMetaData();
@@ -471,6 +510,16 @@ describe('UserAgentClientHintsForm', () => {
       const component = renderUserAgentClientHintsForm();
       const metaData = createTestMetaData();
       metaData.brands = [{brand: 'Brand\u2603', version: '1'}];
+      component.value = {metaData};
+
+      assert.deepEqual(component.validate(),
+                       {valid: false, errorMessage: 'Not representable as structured headers string'});
+    });
+
+    it('returns invalid for a full version list brand that is not representable', () => {
+      const component = renderUserAgentClientHintsForm();
+      const metaData = createTestMetaData();
+      metaData.fullVersionList = [{brand: 'Brand', version: '1.\u2603'}];
       component.value = {metaData};
 
       assert.deepEqual(component.validate(),

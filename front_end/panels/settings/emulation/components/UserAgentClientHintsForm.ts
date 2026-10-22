@@ -361,10 +361,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   #handleUseragentDelete = (index: number): void => {
     const {brands = []} = this.#metaData;
-    brands.splice(index, 1);
     this.#metaData = {
       ...this.#metaData,
-      brands,
+      brands: brands.filter((_, brandIndex) => brandIndex !== index),
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
@@ -381,10 +380,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   #handleFullVersionListDelete = (index: number): void => {
     const {fullVersionList = []} = this.#metaData;
-    fullVersionList.splice(index, 1);
     this.#metaData = {
       ...this.#metaData,
-      fullVersionList,
+      fullVersionList: fullVersionList.filter((_, brandIndex) => brandIndex !== index),
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
@@ -904,7 +902,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
     for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
       if (metaDataKey === 'brands' || metaDataKey === 'fullVersionList') {
         // for structured fields, check each individual brand/version
-        const isBrandValid = this.#metaData.brands?.every(({brand, version}) => {
+        const brandList = metaDataValue as Protocol.Emulation.UserAgentBrandVersion[] | undefined;
+        const isBrandValid = (brandList ?? []).every(({brand, version}) => {
           const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
               brand, i18nString(UIStrings.notRepresentable));
           const brandVersionResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(

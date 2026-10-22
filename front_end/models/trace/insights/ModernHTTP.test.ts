@@ -3,10 +3,16 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {after, before, describe, it} from 'mocha';
 
-import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {
+  createContextForNavigation,
+  getFirstOrError,
+  getInsightOrError,
+  processTrace,
+} from '../../../testing/InsightHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 const {determineHttp1Requests: determineNonHttp2Resources} = Trace.Insights.ModernHTTP;
@@ -346,6 +352,43 @@ describe('Cache', function() {
     assert.deepEqual(insight.metricSavings, {
       FCP: 0 as Trace.Types.Timing.Milli,
       LCP: 0 as Trace.Types.Timing.Milli,
+    });
+  });
+
+  describe('Lightrider', () => {
+    before(() => {
+      // @ts-expect-error
+      globalThis.isLightrider = true;
+    });
+
+    after(() => {
+      // @ts-expect-error
+      delete globalThis.isLightrider;
+    });
+
+    it('uses X-ProtocolIsH2 header to detect HTTP/2 in Lightrider', async function() {
+      const traceEvents = structuredClone([...await TraceLoader.rawEvents(this, 'http1.1.json.gz')]);
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+
+      for (const event of traceEvents) {
+        if (Trace.Types.Events.isResourceReceiveResponse(event)) {
+          event.args.data.headers = [
+            ...(event.args.data.headers ?? []),
+            {name: 'X-ProtocolIsH2', value: 'true'},
+          ];
+        }
+      }
+
+      await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
+      const data = processor.data;
+      if (!data) {
+        throw new Error('missing data');
+      }
+
+      const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+      const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
+      const insight = Trace.Insights.Models.ModernHTTP.generateInsight(data, context);
+      assert.deepEqual(insight.http1Requests, []);
     });
   });
 });

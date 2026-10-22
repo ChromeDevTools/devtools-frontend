@@ -67,6 +67,29 @@ describe('devtools-link', () => {
       link.setAttribute('allow-privileged', '');
       assert.isTrue(link.allowPrivileged);
     });
+
+    it('does not open a privileged href on click without allow-privileged', () => {
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const link = new Link();
+      link.setAttribute('href', 'devtools://devtools/bundled/devtools_app.html');
+      renderElementIntoDOM(link);
+
+      link.click();
+
+      sinon.assert.notCalled(stub);
+    });
+
+    it('opens a privileged href on click with allow-privileged', () => {
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const link = new Link();
+      link.setAttribute('href', 'devtools://devtools/bundled/devtools_app.html');
+      link.setAttribute('allow-privileged', '');
+      renderElementIntoDOM(link);
+
+      link.click();
+
+      sinon.assert.calledOnceWithExactly(stub, urlString`devtools://devtools/bundled/devtools_app.html`);
+    });
   });
 
   describe('keyboard activation', () => {

@@ -701,7 +701,9 @@ function renderLinkifiedValue(value: string, node: SDK.DOMModel.DOMNode): Lit.Te
   if (value.startsWith('data:')) {
     value = Platform.StringUtilities.trimMiddle(value, 60);
   }
-  const isAnchor = node && node.nodeName().toLowerCase() === 'a';
+  // Page-authored hrefs must not open privileged URLs (e.g. `devtools://` or `chrome://`) on click. Anchors with
+  // other schemes fall through to the Linkifier, which renders privileged URLs as inert text.
+  const isAnchor = node && node.nodeName().toLowerCase() === 'a' && Common.ParsedURL.hasWebSafeScheme(rewrittenHref);
   if (isAnchor) {
     return html`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref(el => {
       if (el) {

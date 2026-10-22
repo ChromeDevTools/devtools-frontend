@@ -182,6 +182,37 @@ describe('openInNewTab', () => {
     sinon.assert.callCount(stub, 0);
   });
 
+  for (const url of ['devtools://devtools/bundled/devtools_app.html?ws=evil.example:9222',
+                     'chrome-untrusted://terminal/',
+                     'chrome-extension://abcdefghijklmnopabcdefghijklmnop/options.html',
+                     'file:///etc/passwd',
+                     'blob:devtools://devtools/0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0',
+  ]) {
+    it(`does nothing for ${url} when privileged navigation is not allowed`, () => {
+      const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+      openInNewTab(url);
+
+      sinon.assert.notCalled(stub);
+    });
+
+    it(`opens ${url} via host bindings when privileged navigation is allowed`, () => {
+      const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+      openInNewTab(url, /* allowPrivileged=*/ true);
+
+      sinon.assert.calledOnceWithExactly(stub, urlString`${new URL(url)}`);
+    });
+  }
+
+  it('does nothing for javascript: urls even when privileged navigation is allowed', () => {
+    const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+    openInNewTab('javascript:alert("Hey")', /* allowPrivileged=*/ true);
+
+    sinon.assert.notCalled(stub);
+  });
+
   describeWithEnvironment('chrome:// link', () => {
     it('calls invoke_createTarget for chrome:// links when privileged navigation is allowed', async () => {
       const target = createTarget();
@@ -193,17 +224,15 @@ describe('openInNewTab', () => {
       assert.deepEqual(spy.firstCall.firstArg, {url: 'chrome://settings/'});
     });
 
-    it('falls back to InspectorFrontendHost for chrome:// links when privileged navigation is not allowed',
-       async () => {
-         const target = createTarget();
-         const spy = sinon.spy(target.targetAgent(), 'invoke_createTarget');
-         const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+    it('does nothing for chrome:// links when privileged navigation is not allowed', async () => {
+      const target = createTarget();
+      const spy = sinon.spy(target.targetAgent(), 'invoke_createTarget');
+      const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
 
-         openInNewTab('chrome://settings');
+      openInNewTab('chrome://settings');
 
-         sinon.assert.notCalled(spy);
-         sinon.assert.calledOnce(stub);
-         assert.strictEqual(stub.args[0][0], 'chrome://settings/');
-       });
+      sinon.assert.notCalled(spy);
+      sinon.assert.notCalled(stub);
+    });
   });
 });

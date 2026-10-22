@@ -7,6 +7,7 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -937,6 +938,40 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
       const linkElement = attributeValueElement?.querySelector('.devtools-link');
       assert.strictEqual(linkElement?.tagName.toLowerCase(), 'devtools-link');
     });
+
+    for (const href of ['devtools://devtools/bundled/devtools_app.html?ws=evil.example:9222',
+                        'chrome://settings/reset',
+                        'chrome-untrusted://terminal/',
+                        'file:///etc/passwd',
+                        'blob:devtools://devtools/0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0',
+    ]) {
+      it(`does not render a clickable devtools-link for a privileged <a href="${href}">`, () => {
+        const nodePayload = {
+          nodeId: 1 as Protocol.DOM.NodeId,
+          backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'A',
+          localName: 'a',
+          nodeValue: '',
+          attributes: ['href', href],
+          childNodeCount: 0,
+        };
+        const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
+        sinon.stub(node, 'resolveURL').callsFake(url => Platform.DevToolsPath.urlString`${url}`);
+        const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+
+        const treeElement = renderTreeNode(node);
+        const attributeValueElement = treeElement.contentElement.querySelector('.webkit-html-attribute-value');
+        assert.exists(attributeValueElement);
+        assert.isNull(attributeValueElement.querySelector('devtools-link'));
+        assert.isNull(attributeValueElement.querySelector('button'));
+
+        for (const element of attributeValueElement.querySelectorAll<HTMLElement>('*')) {
+          element.click();
+        }
+        sinon.assert.notCalled(openInNewTabStub);
+      });
+    }
 
     it('renders href attribute on SVG image as a link', () => {
       const nodePayload = {

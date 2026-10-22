@@ -138,7 +138,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
                       str_, valueId,
                       Object.fromEntries(Object.entries(placeholders).map(
                           ([key, {title, href}]) =>
-                              [key, html`<devtools-link href=${href}>${title}</devtools-link>`])));
+                              [key, html`<devtools-link href=${href} allow-privileged>${title}</devtools-link>`])));
                   return html`
                       <div class="key">${key}</div>
                       <div class="value">${value}</div>

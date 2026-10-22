@@ -28,7 +28,7 @@ export class LinkContextMenuProvider implements Provider<Node> {
     const node: Link = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        UIHelpers.openInNewTab(node.href);
+        UIHelpers.openInNewTab(node.href, node.allowPrivileged);
       }
     }, {jslogContext: 'open-in-new-tab'});
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

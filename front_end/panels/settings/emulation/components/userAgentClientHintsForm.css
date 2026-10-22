@@ -82,6 +82,7 @@ hr.section-separator {
   border-radius: var(--sys-size-2);
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   background-color: var(--sys-color-cdt-base-container);
+  font-family: inherit;
   font-size: inherit;
   height: 18px;
 }

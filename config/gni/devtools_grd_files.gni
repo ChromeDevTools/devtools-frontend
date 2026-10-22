@@ -2105,6 +2105,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/timeline/TargetForEvent.js",
   "front_end/panels/timeline/ThirdPartyTreeView.js",
   "front_end/panels/timeline/ThreadAppender.js",
+  "front_end/panels/timeline/TimelineCommentContext.js",
   "front_end/panels/timeline/TimelineCommentController.js",
   "front_end/panels/timeline/TimelineController.js",
   "front_end/panels/timeline/TimelineDetailsView.js",

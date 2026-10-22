@@ -9,6 +9,7 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Overlays from './overlays/overlays.js';
+import {agentContextForEntry} from './TimelineCommentContext.js';
 import type {TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import type {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 
@@ -338,9 +339,21 @@ export class TimelineCommentController {
           durationMicro,
           chartLocation,
         },
+        agentContext: this.#agentContextFor(entry),
       },
       anchorElement: canvas,
       highlightRect,
     };
+  }
+
+  /**
+   * Returns the lines that describe the entry to the AI agent, or undefined
+   * if no trace is active.
+   */
+  #agentContextFor(entry: ResolvedEntry): string[]|undefined {
+    if (!this.#parsedTrace) {
+      return undefined;
+    }
+    return agentContextForEntry(entry.event, this.#parsedTrace);
   }
 }

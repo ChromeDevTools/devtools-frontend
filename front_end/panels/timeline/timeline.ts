@@ -23,6 +23,7 @@ import * as StatusDialog from './StatusDialog.js';
 import * as TargetForEvent from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import * as ThreadAppender from './ThreadAppender.js';
+import * as TimelineCommentContext from './TimelineCommentContext.js';
 import * as TimelineCommentController from './TimelineCommentController.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
@@ -69,6 +70,7 @@ export {
   TargetForEvent,
   ThirdPartyTreeView,
   ThreadAppender,
+  TimelineCommentContext,
   TimelineCommentController,
   TimelineController,
   TimelineDetailsView,

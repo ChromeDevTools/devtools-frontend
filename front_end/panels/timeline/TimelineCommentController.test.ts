@@ -189,6 +189,19 @@ describe('TimelineCommentController', function() {
       assert.isTrue(result.highlightRect?.visible);
     });
 
+    it('adds the entry\'s event name to the agent context', async function() {
+      const {flameChartView} = await setupFlameChartView(this);
+      const flameChart = flameChartView.getMainFlameChart();
+      const canvas = flameChart.getCanvas();
+
+      const result = resolverFor(canvas).resolve(canvas, clientCoordinatesForEntry(flameChart, 0));
+
+      assert.isNotNull(result);
+      const {agentContext} = result.anchor;
+      assert.isOk(agentContext);
+      assert.include(agentContext, 'Trace event: frame');
+    });
+
     it('resolves a timeline anchor for an entry on the network flame chart', async function() {
       const {flameChartView} = await setupFlameChartView(this);
       const flameChart = flameChartView.getNetworkFlameChart();

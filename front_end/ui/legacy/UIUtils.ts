@@ -345,7 +345,7 @@ export function isBeingEdited(node?: Node|null): boolean {
 
   let currentElement: (Element|null)|Element = element;
   while (currentElement) {
-    if (elementsBeingEdited.has(element)) {
+    if (elementsBeingEdited.has(currentElement)) {
       return true;
     }
     currentElement = currentElement.parentElementOrShadowHost();

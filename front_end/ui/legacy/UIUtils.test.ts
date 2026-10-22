@@ -51,6 +51,35 @@ describe('UIUtils', () => {
     });
   });
 
+  describe('isBeingEdited', () => {
+    it('returns true for the edited element and its descendants', () => {
+      const parent = document.createElement('div');
+      const child = parent.createChild('span');
+      const grandChild = child.createChild('b');
+      UI.UIUtils.markBeingEdited(parent, true);
+      try {
+        assert.isTrue(UI.UIUtils.isBeingEdited(parent));
+        assert.isTrue(UI.UIUtils.isBeingEdited(child));
+        assert.isTrue(UI.UIUtils.isBeingEdited(grandChild));
+      } finally {
+        UI.UIUtils.markBeingEdited(parent, false);
+      }
+      assert.isFalse(UI.UIUtils.isBeingEdited(parent));
+      assert.isFalse(UI.UIUtils.isBeingEdited(grandChild));
+    });
+
+    it('returns false for an element outside of the edited subtree', () => {
+      const edited = document.createElement('div');
+      const other = document.createElement('div');
+      UI.UIUtils.markBeingEdited(edited, true);
+      try {
+        assert.isFalse(UI.UIUtils.isBeingEdited(other));
+      } finally {
+        UI.UIUtils.markBeingEdited(edited, false);
+      }
+    });
+  });
+
   describe('LongClickController', () => {
     it('does not invoke callback when disposed', () => {
       const clock = sinon.useFakeTimers({toFake: ['setTimeout']});

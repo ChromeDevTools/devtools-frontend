@@ -25,6 +25,7 @@ ts_e2e_library("elements") {
     "flexbox-editor.test.ts",
     "grid-editor.test.ts",
     "grid-lanes-editor.test.ts",
+    "inline-attribute-editing.test.ts",
     "inspect-element.test.ts",
     "layout-pane.test.ts",
     "oopif-elements.test.ts",

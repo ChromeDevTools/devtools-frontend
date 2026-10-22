@@ -11,7 +11,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as SDK from './sdk.js';
 
@@ -120,5 +120,74 @@ describe('WebAuthnModel', () => {
     const request = captureRequest('WebAuthn.removeCredential', {});
     await model.removeCredential(AUTHENTICATOR_ID, CREDENTIAL.credentialId);
     assert.deepEqual(await request, {authenticatorId: AUTHENTICATOR_ID, credentialId: CREDENTIAL.credentialId});
+  });
+  describe('when the backend returns an error', () => {
+    const ERROR_MESSAGE = 'Could not find a virtual authenticator matching the ID';
+
+    function failWith(method: ProtocolClient.CDPConnection.Command): void {
+      connection.setFailureHandler(method, () => ({
+                                             message: ERROR_MESSAGE,
+                                             code: ProtocolClient.CDPConnection.CDPErrorStatus.INVALID_PARAMS,
+                                           }));
+    }
+
+    async function assertRejects(promise: Promise<unknown>): Promise<void> {
+      try {
+        await promise;
+      } catch (error) {
+        assert.instanceOf(error, Error);
+        assert.include(error.message, ERROR_MESSAGE);
+        return;
+      }
+      assert.fail('Expected the promise to reject');
+    }
+
+    it('rejects setVirtualAuthEnvEnabled(true)', async () => {
+      failWith('WebAuthn.enable');
+      await assertRejects(model.setVirtualAuthEnvEnabled(true));
+    });
+
+    it('rejects setVirtualAuthEnvEnabled(false)', async () => {
+      failWith('WebAuthn.disable');
+      await assertRejects(model.setVirtualAuthEnvEnabled(false));
+    });
+
+    it('rejects addAuthenticator', async () => {
+      failWith('WebAuthn.addVirtualAuthenticator');
+      await assertRejects(model.addAuthenticator({
+        protocol: Protocol.WebAuthn.AuthenticatorProtocol.Ctap2,
+        transport: Protocol.WebAuthn.AuthenticatorTransport.Internal,
+      }));
+    });
+
+    it('rejects removeAuthenticator', async () => {
+      failWith('WebAuthn.removeVirtualAuthenticator');
+      await assertRejects(model.removeAuthenticator(AUTHENTICATOR_ID));
+    });
+
+    it('rejects setAutomaticPresenceSimulation', async () => {
+      failWith('WebAuthn.setAutomaticPresenceSimulation');
+      await assertRejects(model.setAutomaticPresenceSimulation(AUTHENTICATOR_ID, true));
+    });
+
+    it('rejects setUserVerified', async () => {
+      failWith('WebAuthn.setUserVerified');
+      await assertRejects(model.setUserVerified(AUTHENTICATOR_ID, true));
+    });
+
+    it('rejects addCredential', async () => {
+      failWith('WebAuthn.addCredential');
+      await assertRejects(model.addCredential(AUTHENTICATOR_ID, CREDENTIAL));
+    });
+
+    it('rejects getCredentials', async () => {
+      failWith('WebAuthn.getCredentials');
+      await assertRejects(model.getCredentials(AUTHENTICATOR_ID));
+    });
+
+    it('rejects removeCredential', async () => {
+      failWith('WebAuthn.removeCredential');
+      await assertRejects(model.removeCredential(AUTHENTICATOR_ID, CREDENTIAL.credentialId));
+    });
   });
 });

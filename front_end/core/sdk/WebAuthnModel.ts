@@ -22,6 +22,13 @@ export interface EventTypes {
   [Events.CREDENTIAL_UPDATED]: Protocol.WebAuthn.CredentialUpdatedEvent;
 }
 
+function throwIfError(response: Protocol.ProtocolResponseWithError): void {
+  const error = response.getError();
+  if (error) {
+    throw new Error(error);
+  }
+}
+
 export class WebAuthnModel extends SDKModel<EventTypes> {
   readonly #agent: ProtocolProxyApi.WebAuthnApi;
   constructor(target: Target) {
@@ -30,44 +37,44 @@ export class WebAuthnModel extends SDKModel<EventTypes> {
     target.registerWebAuthnDispatcher(new WebAuthnDispatcher(this));
   }
 
-  setVirtualAuthEnvEnabled(enable: boolean, enableUI = true): Promise<Object> {
-    if (enable) {
-      return this.#agent.invoke_enable({enableUI});
-    }
-    return this.#agent.invoke_disable();
+  async setVirtualAuthEnvEnabled(enable: boolean, enableUI = true): Promise<void> {
+    const response = enable ? await this.#agent.invoke_enable({enableUI}) : await this.#agent.invoke_disable();
+    throwIfError(response);
   }
 
   async addAuthenticator(options: Protocol.WebAuthn.VirtualAuthenticatorOptions):
       Promise<Protocol.WebAuthn.AuthenticatorId> {
     const response = await this.#agent.invoke_addVirtualAuthenticator({options});
+    throwIfError(response);
     return response.authenticatorId;
   }
 
   async removeAuthenticator(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {
-    await this.#agent.invoke_removeVirtualAuthenticator({authenticatorId});
+    throwIfError(await this.#agent.invoke_removeVirtualAuthenticator({authenticatorId}));
   }
 
   async setAutomaticPresenceSimulation(authenticatorId: Protocol.WebAuthn.AuthenticatorId, enabled: boolean):
       Promise<void> {
-    await this.#agent.invoke_setAutomaticPresenceSimulation({authenticatorId, enabled});
+    throwIfError(await this.#agent.invoke_setAutomaticPresenceSimulation({authenticatorId, enabled}));
   }
 
   async setUserVerified(authenticatorId: Protocol.WebAuthn.AuthenticatorId, isUserVerified: boolean): Promise<void> {
-    await this.#agent.invoke_setUserVerified({authenticatorId, isUserVerified});
+    throwIfError(await this.#agent.invoke_setUserVerified({authenticatorId, isUserVerified}));
   }
 
   async addCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId,
                       credential: Protocol.WebAuthn.Credential): Promise<void> {
-    await this.#agent.invoke_addCredential({authenticatorId, credential});
+    throwIfError(await this.#agent.invoke_addCredential({authenticatorId, credential}));
   }
 
   async getCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<Protocol.WebAuthn.Credential[]> {
     const response = await this.#agent.invoke_getCredentials({authenticatorId});
+    throwIfError(response);
     return response.credentials;
   }
 
   async removeCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, credentialId: string): Promise<void> {
-    await this.#agent.invoke_removeCredential({authenticatorId, credentialId});
+    throwIfError(await this.#agent.invoke_removeCredential({authenticatorId, credentialId}));
   }
 
   credentialAdded(params: Protocol.WebAuthn.CredentialAddedEvent): void {

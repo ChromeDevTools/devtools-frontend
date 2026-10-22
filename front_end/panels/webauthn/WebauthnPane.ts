@@ -753,20 +753,22 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.VirtualAuthenticatorEnvironmentEnabled);
         this.#hasBeenEnabled = true;
       }
-      if (this.#model) {
-        await this.#model.setVirtualAuthEnvEnabled(enable);
-      }
+      try {
+        if (this.#model) {
+          await this.#model.setVirtualAuthEnvEnabled(enable);
+        }
 
-      if (enable) {
-        await this.#loadInitialAuthenticators();
-      } else {
-        this.#removeAuthenticatorSections();
+        if (enable) {
+          await this.#loadInitialAuthenticators();
+        } else {
+          this.#removeAuthenticatorSections();
+        }
+        this.#enabled = enable;
+      } finally {
+        this.#isEnabling = undefined;
+        this.requestUpdate();
+        resolve();
       }
-
-      this.#isEnabling = undefined;
-      this.#enabled = enable;
-      this.requestUpdate();
-      resolve();
     });
   }
 

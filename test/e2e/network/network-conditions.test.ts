@@ -180,6 +180,7 @@ describe('The Network Tab', () => {
     await devToolsPage.typeText('Test User Agent String');
     await devToolsPage.tabForward();       // focus help button
     await devToolsPage.pressKey('Space');  // open client hints section
+    await devToolsPage.waitFor('#form-container:not(.hide-container)');
     await devToolsPage.tabForward();       // focus info icon
     await devToolsPage.tabForward();       // focus help link
 
@@ -191,12 +192,14 @@ describe('The Network Tab', () => {
     await devToolsPage.tabForward();       // focus delete brand button
     await devToolsPage.tabForward();       // focus add brand button
     await devToolsPage.pressKey('Enter');  // add a second brand
+    await devToolsPage.waitFor('#ua-brand-2-input:focus');
     await devToolsPage.typeText('Test Brand 2');
     await devToolsPage.tabForward();  // focus brand version
     await devToolsPage.typeText('100');
     await devToolsPage.tabForward();       // focus delete brand button
     await devToolsPage.tabForward();       // focus add brand button
     await devToolsPage.pressKey('Enter');  // add a third brand
+    await devToolsPage.waitFor('#ua-brand-3-input:focus');
     await devToolsPage.typeText('Test Brand 3');
     await devToolsPage.tabForward();  // focus brand version
     await devToolsPage.typeText('101');

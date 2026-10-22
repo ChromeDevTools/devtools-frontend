@@ -351,12 +351,7 @@ export interface Delegate<T> {
   commitEdit(item: T, editor: Editor<T>, isNew: boolean): void;
 }
 
-export interface CustomEditorControl<T> extends HTMLElement {
-  value: T;
-  validate: () => ValidatorResult;
-}
-
-export type EditorControl<T = string> = (HTMLInputElement|HTMLSelectElement|CustomEditorControl<T>);
+export type EditorControl = HTMLInputElement|HTMLSelectElement;
 
 export class Editor<T> {
   element: HTMLDivElement;
@@ -455,17 +450,6 @@ export class Editor<T> {
     this.controls.push(select);
     this.validators.push((item, index) => validator(item, index, select));
     return select;
-  }
-
-  createCustomControl<S, U extends CustomEditorControl<S>>(
-      name: string, ctor: {new(): U},
-      validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): CustomEditorControl<S> {
-    const control = new ctor();
-    const editorControl = control as unknown as CustomEditorControl<string>;
-    this.controlByName.set(name, editorControl);
-    this.controls.push(control);
-    this.validators.push((item, index) => validator(item, index, editorControl));
-    return control;
   }
 
   /**

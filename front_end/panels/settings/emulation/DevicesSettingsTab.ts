@@ -260,6 +260,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   private muteUpdate: boolean;
   private emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
   private editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
+  readonly #userAgentClientHintsForm = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
 
   constructor() {
     super({jslog: `${VisualLogging.pane('devices')}`});
@@ -471,10 +472,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         uaType === EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH) {
       device.capabilities.push(EmulationModel.EmulatedDevices.Capability.TOUCH);
     }
-    const userAgentControlValue =
-        (editor.control('ua-metadata') as
-         UI.ListWidget.CustomEditorControl<EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData>)
-            .value.metaData;
+    const userAgentControlValue = this.#userAgentClientHintsForm.value.metaData;
     const hasUserAgentOverride = device.userAgent.trim().length > 0;
     device.userAgentMetadata = null;
     if (hasUserAgentOverride && userAgentControlValue) {
@@ -517,9 +515,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
           device.touch() ? EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH : EmulationModel.DeviceModeModel.UA.DESKTOP;
     }
     editor.control('ua-type').value = uaType;
-    (editor.control('ua-metadata') as
-     UI.ListWidget.CustomEditorControl<EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData>)
-        .value = {metaData: device.userAgentMetadata || undefined};
+    this.#userAgentClientHintsForm.value = {metaData: device.userAgentMetadata || undefined};
     return editor;
   }
 
@@ -693,18 +689,15 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     uaType.classList.add('device-edit-fixed');
     ua.appendChild(uaType);
 
-    const uaMetadata = editor.createCustomControl(
-        'ua-metadata', EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm,
-        userAgentMetadataValidator);
+    const uaMetadata = this.#userAgentClientHintsForm;
     uaMetadata.value = {};
-    uaMetadata.addEventListener('clienthintschange', () => editor.requestValidation(), false);
-    content.appendChild(uaMetadata);
+    uaMetadata.addEventListener(EmulationComponents.UserAgentClientHintsForm.Events.CLIENT_HINTS_CHANGE,
+                                () => editor.requestValidation());
+    // The editor content is not in the DOM yet, so show the form as a root widget.
+    uaMetadata.show(content, undefined, /* suppressOrphanWidgetError= */ true);
+    editor.addCustomControl(uaMetadata.element, () => uaMetadata.validate());
 
     return editor;
-
-    function userAgentMetadataValidator(): UI.ListWidget.ValidatorResult {
-      return uaMetadata.validate();
-    }
 
     function userAgentValidator(
         _item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,

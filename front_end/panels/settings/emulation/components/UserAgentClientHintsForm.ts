@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import '../../../../ui/kit/kit.js';
-import '../../../../ui/legacy/legacy.js';
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../../ui/components/input/input.js';
-import type * as UI from '../../../../ui/legacy/legacy.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as EmulationUtils from '../utils/utils.js';
@@ -193,20 +193,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/components/UserAgentClientHintsForm.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ClientHintsChangeEvent extends Event {
-  static readonly eventName = 'clienthintschange';
-  constructor() {
-    super(ClientHintsChangeEvent.eventName);
-  }
+export const enum Events {
+  CLIENT_HINTS_CHANGE = 'clienthintschange',
+  CLIENT_HINTS_SUBMIT = 'clienthintssubmit',
 }
 
-export class ClientHintsSubmitEvent extends Event {
-  static readonly eventName = 'clienthintssubmit';
-  detail: {value: Protocol.Emulation.UserAgentMetadata};
+export interface EventTypes {
+  [Events.CLIENT_HINTS_CHANGE]: Protocol.Emulation.UserAgentMetadata;
+  [Events.CLIENT_HINTS_SUBMIT]: Protocol.Emulation.UserAgentMetadata;
+}
 
-  constructor(value: Protocol.Emulation.UserAgentMetadata) {
-    super(ClientHintsSubmitEvent.eventName);
-    this.detail = {value};
+declare global {
+  interface HTMLElementEventMap {
+    [Events.CLIENT_HINTS_CHANGE]: CustomEvent<Protocol.Emulation.UserAgentMetadata>;
+    [Events.CLIENT_HINTS_SUBMIT]: CustomEvent<Protocol.Emulation.UserAgentMetadata>;
   }
 }
 
@@ -297,12 +297,22 @@ export interface ViewOutput {
   focusAddBrandButton?: (list: BrandList) => void;
 }
 
+type View = typeof DEFAULT_VIEW;
+
+const UserAgentClientHintsFormBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+
 /**
  * Component for user agent client hints form, it is used in device settings panel
  * and network conditions panel. It is customizable through showMobileCheckbox and showSubmitButton.
+ *
+ * The form dispatches {@link Events.CLIENT_HINTS_CHANGE} when the user changes
+ * a value, and {@link Events.CLIENT_HINTS_SUBMIT} when the user submits the
+ * form. The widget element also dispatches each event as a DOM `CustomEvent`
+ * with the metadata in `detail`.
  */
-export class UserAgentClientHintsForm extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export class UserAgentClientHintsForm extends UserAgentClientHintsFormBase {
+  readonly #view: View;
   readonly #viewOutput: ViewOutput = {};
 
   #isFormOpened = false;
@@ -312,6 +322,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
   #showSubmitButton = false;
   #useragentModifiedAriaMessage = '';
 
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
   set value(data: UserAgentClientHintsFormData) {
     const {metaData = DEFAULT_METADATA, showMobileCheckbox = false, showSubmitButton = false} = data;
     this.#metaData = {
@@ -320,7 +335,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     };
     this.#showMobileCheckbox = showMobileCheckbox;
     this.#showSubmitButton = showSubmitButton;
-    this.performUpdate();
+    this.requestUpdate();
   }
 
   get value(): UserAgentClientHintsFormData {
@@ -330,13 +345,23 @@ export class UserAgentClientHintsForm extends HTMLElement {
   }
 
   set disabled(disableForm: boolean) {
+    if (this.#isFormDisabled === disableForm) {
+      return;
+    }
     this.#isFormDisabled = disableForm;
-    this.#isFormOpened = false;
-    this.performUpdate();
+    if (disableForm) {
+      this.#isFormOpened = false;
+    }
+    this.requestUpdate();
   }
 
   get disabled(): boolean {
     return this.#isFormDisabled;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   #handleTreeClick = (key?: string): void => {
@@ -347,7 +372,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       return;
     }
     this.#isFormOpened = !this.#isFormOpened;
-    this.performUpdate();
+    this.requestUpdate();
   };
 
   #handleBrandInputChange = (list: BrandList, index: number, brandInputType: BrandInputType, value: string): void => {
@@ -371,20 +396,21 @@ export class UserAgentClientHintsForm extends HTMLElement {
       ...this.#metaData,
       [list]: updatedBrands,
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.performUpdate();
+    this.dispatchEventToListeners(Events.CLIENT_HINTS_CHANGE, this.#metaData);
+    this.requestUpdate();
   };
 
-  #handleBrandDelete = (list: BrandList, index: number): void => {
+  #handleBrandDelete = async(list: BrandList, index: number): Promise<void> => {
     const {[list]: brands = []} = this.#metaData;
     const updatedBrands = brands.filter((_, brandIndex) => brandIndex !== index);
     this.#metaData = {
       ...this.#metaData,
       [list]: updatedBrands,
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.dispatchEventToListeners(Events.CLIENT_HINTS_CHANGE, this.#metaData);
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
-    this.performUpdate();
+    this.requestUpdate();
+    await this.updateComplete;
 
     // after deleting a brand row, focus on next Brand input if available,
     // otherwise focus on the "Add Brand" button
@@ -395,7 +421,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     }
   };
 
-  #handleBrandAdd = (list: BrandList): void => {
+  #handleBrandAdd = async(list: BrandList): Promise<void> => {
     const {[list]: brands} = this.#metaData;
     const updatedBrands = [
       ...(Array.isArray(brands) ? brands : []),
@@ -408,9 +434,10 @@ export class UserAgentClientHintsForm extends HTMLElement {
       ...this.#metaData,
       [list]: updatedBrands,
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.dispatchEventToListeners(Events.CLIENT_HINTS_CHANGE, this.#metaData);
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.addedBrand);
-    this.performUpdate();
+    this.requestUpdate();
+    await this.updateComplete;
     this.#viewOutput.focusBrandInput?.(list, updatedBrands.length - 1);
   };
 
@@ -427,8 +454,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
       ...this.#metaData,
       formFactors: currentFormFactors,
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.performUpdate();
+    this.dispatchEventToListeners(Events.CLIENT_HINTS_CHANGE, this.#metaData);
+    this.requestUpdate();
   };
 
   #handleInputChange = (stateKey: keyof Protocol.Emulation.UserAgentMetadata, value: string|boolean): void => {
@@ -437,15 +464,15 @@ export class UserAgentClientHintsForm extends HTMLElement {
         ...this.#metaData,
         [stateKey]: value,
       };
-      this.performUpdate();
+      this.requestUpdate();
     }
-    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.dispatchEventToListeners(Events.CLIENT_HINTS_CHANGE, this.#metaData);
   };
 
   #handleSubmit = (): void => {
     if (this.#showSubmitButton) {
-      this.dispatchEvent(new ClientHintsSubmitEvent(this.#metaData));
-      this.performUpdate();
+      this.dispatchEventToListeners(Events.CLIENT_HINTS_SUBMIT, this.#metaData);
+      this.requestUpdate();
     }
   };
 
@@ -493,7 +520,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     return {valid: true};
   };
 
-  performUpdate(): void {
+  override performUpdate(): void {
     const input: ViewInput = {
       brands: this.#metaData.brands ?? [{brand: '', version: ''}],
       fullVersionList: this.#metaData.fullVersionList ?? [{brand: '', version: ''}],
@@ -510,19 +537,19 @@ export class UserAgentClientHintsForm extends HTMLElement {
       showSubmitButton: this.#showSubmitButton,
       useragentModifiedAriaMessage: this.#useragentModifiedAriaMessage,
       onTreeToggle: this.#handleTreeClick,
-      onBrandAdd: this.#handleBrandAdd,
-      onBrandDelete: this.#handleBrandDelete,
+      onBrandAdd: list => void this.#handleBrandAdd(list),
+      onBrandDelete: (list, index) => void this.#handleBrandDelete(list, index),
       onBrandInputChange: this.#handleBrandInputChange,
       onTextFieldChange: this.#handleInputChange,
       onMobileChange: mobile => this.#handleInputChange('mobile', mobile),
       onFormFactorChange: this.#handleFormFactorCheckboxChange,
       onSubmit: this.#handleSubmit,
     };
-    DEFAULT_VIEW(input, this.#viewOutput, this.#shadow);
+    this.#view(input, this.#viewOutput, this.contentElement);
   }
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement|ShadowRoot): void => {
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const renderInputWithLabel = (label: string, placeholder: string, value: string,
                                 stateKey: TextField): Lit.TemplateResult => {
     const handleInputChange = (event: KeyboardEvent): void => {
@@ -937,11 +964,3 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   // clang-format on
   Lit.render(template, target);
 };
-
-customElements.define('devtools-user-agent-client-hints-form', UserAgentClientHintsForm);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-user-agent-client-hints-form': UserAgentClientHintsForm;
-  }
-}

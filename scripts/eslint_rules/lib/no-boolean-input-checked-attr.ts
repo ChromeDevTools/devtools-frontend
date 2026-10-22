@@ -7,6 +7,16 @@ import {createRule} from './utils/ruleCreator.ts';
 
 type MessageIds = 'noBooleanInputChecked'|'noBooleanOptionSelected';
 
+/**
+ * Elements whose `checked` state must be bound as a property. For `<input>`,
+ * the `checked` attribute only sets the default state and stops affecting the
+ * live state once the user interacts with it. `<devtools-checkbox>` (see
+ * `UI.UIUtils.CheckboxLabel` in front_end/ui/legacy/UIUtils.ts) exposes the
+ * live state of its inner checkbox via the `checked` property, so it should be
+ * bound the same way for consistency.
+ */
+const CHECKED_PROPERTY_TAGS = new Set(['input', 'devtools-checkbox']);
+
 function getCurrentTag(htmlSubstring: string): string|null {
   let i = 0;
   let currentTag: string|null = null;
@@ -80,13 +90,13 @@ export default createRule<[], MessageIds>({
     type: 'problem',
     docs: {
       description:
-          'Ensure Lit templates use property bindings .checked on <input> and .selected on <option> instead of boolean attributes ?checked / ?selected',
+          'Ensure Lit templates use property bindings .checked on <input> and <devtools-checkbox> and .selected on <option> instead of boolean attributes ?checked / ?selected',
       category: 'Possible Errors',
     },
     fixable: 'code',
     messages: {
       noBooleanInputChecked:
-          'Use property binding .checked=${...} instead of boolean attribute binding ?checked=${...} on <input> elements.',
+          'Use property binding .checked=${...} instead of boolean attribute binding ?checked=${...} on <input> and <devtools-checkbox> elements.',
       noBooleanOptionSelected:
           'Use property binding .selected=${...} instead of boolean attribute binding ?selected=${...} on <option> elements.',
     },
@@ -124,7 +134,7 @@ export default createRule<[], MessageIds>({
 
           const currentTag = getCurrentTag(htmlUpToAttribute);
 
-          const isInputChecked = attrName === 'checked' && currentTag === 'input';
+          const isInputChecked = attrName === 'checked' && currentTag !== null && CHECKED_PROPERTY_TAGS.has(currentTag);
           const isOptionSelected = attrName === 'selected' && currentTag === 'option';
 
           if (!isInputChecked && !isOptionSelected) {

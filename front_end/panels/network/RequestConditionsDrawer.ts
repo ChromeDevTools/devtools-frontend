@@ -150,7 +150,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     <style>${requestConditionsDrawerStyles}</style>
     <devtools-toolbar jslog=${VisualLogging.toolbar()}>
       <devtools-checkbox
-        ?checked=${input.enabled}
+        .checked=${input.enabled}
         @click=${input.toggleEnabled}
         .jslogContext=${'network.enable-request-blocking'}>
         ${i18nString(UIStrings.enableBlockingAndThrottling)}

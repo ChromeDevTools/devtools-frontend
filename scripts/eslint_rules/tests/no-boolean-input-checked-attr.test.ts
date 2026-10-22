@@ -19,8 +19,13 @@ new RuleTester().run('no-boolean-input-checked-attr', rule, {
       filename: 'front_end/ui/components/my-component.ts',
     },
     {
-      name: 'allows boolean attribute ?checked on custom elements like <devtools-checkbox>',
-      code: 'Lit.html`<devtools-checkbox ?checked=${isChecked}>Label</devtools-checkbox>`',
+      name: 'allows property binding .checked on <devtools-checkbox>',
+      code: 'Lit.html`<devtools-checkbox .checked=${isChecked}>Label</devtools-checkbox>`',
+      filename: 'front_end/ui/components/my-component.ts',
+    },
+    {
+      name: 'allows boolean attribute ?checked on other custom elements',
+      code: 'Lit.html`<devtools-switch ?checked=${isChecked}></devtools-switch>`',
       filename: 'front_end/ui/components/my-component.ts',
     },
     {
@@ -88,6 +93,22 @@ new RuleTester().run('no-boolean-input-checked-attr', rule, {
       filename: 'front_end/ui/components/my-component.ts',
       errors: [{messageId: 'noBooleanInputChecked'}],
       output: 'Lit.html`<input type="checkbox" .checked=\n  ${isChecked}>`',
+    },
+    {
+      name: 'disallows boolean attribute ?checked on <devtools-checkbox>',
+      code: 'Lit.html`<devtools-checkbox ?checked=${isChecked}>Label</devtools-checkbox>`',
+      filename: 'front_end/ui/components/my-component.ts',
+      errors: [{messageId: 'noBooleanInputChecked'}],
+      output: 'Lit.html`<devtools-checkbox .checked=${isChecked}>Label</devtools-checkbox>`',
+    },
+    {
+      name: 'disallows boolean attribute ?checked on multiline <devtools-checkbox> with other bindings',
+      code:
+          'Lit.html`<devtools-checkbox\n  title=${title}\n  ?checked=${isChecked}\n  @change=${onChange}>${label}</devtools-checkbox>`',
+      filename: 'front_end/ui/components/my-component.ts',
+      errors: [{messageId: 'noBooleanInputChecked'}],
+      output:
+          'Lit.html`<devtools-checkbox\n  title=${title}\n  .checked=${isChecked}\n  @change=${onChange}>${label}</devtools-checkbox>`',
     },
   ],
 });

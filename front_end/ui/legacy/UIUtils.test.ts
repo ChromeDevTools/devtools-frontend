@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {querySelectorErrorOnMissing, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createFakeSetting} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -1070,6 +1070,37 @@ describe('bindToSetting (devtools-button)', () => {
 
     assert.isFalse(input.isConnected);
     assert.isTrue(input.toggled);
+  });
+});
+
+describe('CheckboxLabel', () => {
+  it('treats a non-boolean falsy checked value as unchecked instead of toggling', () => {
+    const checkbox = document.createElement('devtools-checkbox');
+    checkbox.checked = true;
+    assert.isTrue(checkbox.checked);
+
+    checkbox.checked = undefined as unknown as boolean;
+    assert.isFalse(checkbox.checked);
+
+    checkbox.checked = undefined as unknown as boolean;
+    assert.isFalse(checkbox.checked);
+  });
+
+  it('stays unchecked across re-renders of a .checked binding that is undefined', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    function renderCheckbox(checked: boolean|undefined): void {
+      Lit.render(html`<devtools-checkbox .checked=${checked}>Label</devtools-checkbox>`, container);
+    }
+
+    renderCheckbox(true);
+    renderCheckbox(undefined);
+    const checkbox = querySelectorErrorOnMissing<UI.UIUtils.CheckboxLabel>(container, 'devtools-checkbox');
+    assert.isFalse(checkbox.checked);
+
+    renderCheckbox(false);
+    renderCheckbox(undefined);
+    assert.isFalse(checkbox.checked);
   });
 });
 

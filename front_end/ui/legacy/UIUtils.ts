@@ -1244,7 +1244,10 @@ export class CheckboxLabel extends HTMLElement {
   }
 
   set checked(checked: boolean) {
-    this.toggleAttribute('checked', checked);
+    // Coerce explicitly: `toggleAttribute(name, undefined)` toggles the
+    // attribute instead of removing it, which would flip the state when a
+    // Lit `.checked=${...}` binding receives `undefined`.
+    this.toggleAttribute('checked', Boolean(checked));
   }
 
   get small(): boolean {

@@ -442,7 +442,7 @@ export const EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW: ExperimentsSettingsTabView =
                         class="experiment-label"
                         name=${experiment.name}
                         title=${experiment.title}
-                        ?checked=${experiment.isEnabled()}
+                        .checked=${experiment.isEnabled()}
                         .jslogContext=${experiment.name}
                         @click=${(e: Event) => {
                           const checkbox = e.currentTarget as UI.UIUtils.CheckboxLabel;

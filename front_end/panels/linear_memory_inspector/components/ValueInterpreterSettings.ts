@@ -65,7 +65,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
             return html`
                 <devtools-checkbox
                   title=${valueTypeToLocalizedString(type)}
-                  ?checked=${input.valueTypes.has(type)}
+                  .checked=${input.valueTypes.has(type)}
                   @change=${(e: Event) => {
                     const checkbox = e.target as HTMLInputElement;
                     input.onToggle(type, checkbox.checked);

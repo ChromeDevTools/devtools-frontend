@@ -21,6 +21,7 @@
     "serviceWorkerUpdateCycleView.css.js",
     "serviceWorkersView.css.js",
     "storageView.css.js",
+    "subAppsView.css.js",
     "webMCPView.css.js"
   ]
 }

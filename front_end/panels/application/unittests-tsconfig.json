@@ -72,6 +72,7 @@
     "../../../../../../front_end/panels/application/ServiceWorkersView.test.ts",
     "../../../../../../front_end/panels/application/StorageBucketsTreeElement.test.ts",
     "../../../../../../front_end/panels/application/StorageView.test.ts",
+    "../../../../../../front_end/panels/application/SubAppsView.test.ts",
     "../../../../../../front_end/panels/application/WebMCPView.test.ts",
     "../../../../../../front_end/panels/application/preloading/PreloadingView.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",

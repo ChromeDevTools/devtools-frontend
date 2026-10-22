@@ -2633,6 +2633,9 @@
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | recordingBlockedWarning": {
     "message": "Recording was blocked for some frames:"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | resizeAnnouncementsPane": {
+    "message": "Resize announcements pane"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | startRecording": {
     "message": "Start recording"
   },
@@ -6217,6 +6220,27 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "Usage"
+  },
+  "panels/application/SubAppsView.ts | manifestId": {
+    "message": "Manifest ID"
+  },
+  "panels/application/SubAppsView.ts | manifestIdAndStartUrl": {
+    "message": "Manifest ID / Start URL"
+  },
+  "panels/application/SubAppsView.ts | name": {
+    "message": "Name"
+  },
+  "panels/application/SubAppsView.ts | scope": {
+    "message": "Scope"
+  },
+  "panels/application/SubAppsView.ts | siblingSubApps": {
+    "message": "Sibling Sub Apps"
+  },
+  "panels/application/SubAppsView.ts | startUrl": {
+    "message": "Start URL"
+  },
+  "panels/application/SubAppsView.ts | subApps": {
+    "message": "Sub Apps"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"

@@ -119,11 +119,11 @@ export class Layers3DView extends Layers3DViewBase {
     whiteTexture;
     gl;
     dimensionsForAutoscale;
-    needsUpdate;
     updateScheduled;
     panelToolbar;
     showSlowScrollRectsSetting;
     showPaintsSetting;
+    #chromeWindowSetting;
     mouseDownX;
     mouseDownY;
     #view;
@@ -142,10 +142,8 @@ export class Layers3DView extends Layers3DViewBase {
         this.panelToolbar = this.transformController.toolbar();
         this.showPaintsSetting = this.createVisibilitySetting(SettingsUI.LayerViewerSettings.showPaintsSettingDescriptor, this.panelToolbar);
         this.showSlowScrollRectsSetting = this.createVisibilitySetting(SettingsUI.LayerViewerSettings.showSlowScrollRectsSettingDescriptor, this.panelToolbar);
-        this.showPaintsSetting.addChangeListener(this.updatePaints, this);
-        Common.Settings.Settings.instance()
-            .resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor)
-            .addChangeListener(this.updateData, this);
+        this.#chromeWindowSetting =
+            Common.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor);
         this.performUpdate();
         this.lastSelection = {};
         this.layerTree = null;
@@ -155,7 +153,6 @@ export class Layers3DView extends Layers3DViewBase {
         this.rects = [];
         this.snapshotLayers = new Map();
         this.layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
-        this.layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
     }
     performUpdate() {
         const output = {};
@@ -176,7 +173,7 @@ export class Layers3DView extends Layers3DViewBase {
         this.layerTree = layerTree;
         this.layerTexture = null;
         delete this.oldTextureScale;
-        if (this.showPaints()) {
+        if (this.showPaintsSetting.get()) {
             this.textureManager.setLayerTree(layerTree);
         }
         this.updateData();
@@ -199,18 +196,23 @@ export class Layers3DView extends Layers3DViewBase {
         this.updateData();
     }
     willHide() {
-        super.willHide();
+        this.showPaintsSetting.removeChangeListener(this.updatePaints, this);
+        this.showSlowScrollRectsSetting.removeChangeListener(this.updateData, this);
+        this.#chromeWindowSetting.removeChangeListener(this.updateData, this);
+        this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.updateData, this);
         this.textureManager.suspend();
+        super.willHide();
     }
     wasShown() {
         super.wasShown();
+        this.showPaintsSetting.addChangeListener(this.updatePaints, this);
+        this.showSlowScrollRectsSetting.addChangeListener(this.updateData, this);
+        this.#chromeWindowSetting.addChangeListener(this.updateData, this);
+        this.layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
         this.textureManager.resume();
-        if (!this.needsUpdate) {
-            return;
-        }
         this.performUpdate();
         this.resizeCanvas();
-        this.updateData();
+        this.updatePaints();
     }
     updateLayerSnapshot(layer) {
         this.textureManager.layerNeedsUpdate(layer);
@@ -515,7 +517,7 @@ export class Layers3DView extends Layers3DViewBase {
         if (this.layerTree) {
             this.layerTree.forEachLayer(this.calculateLayerRect.bind(this));
         }
-        if (this.showSlowScrollRectsSetting && this.showSlowScrollRectsSetting.get() && this.layerTree) {
+        if (this.showSlowScrollRectsSetting.get() && this.layerTree) {
             this.layerTree.forEachLayer(this.calculateLayerScrollRects.bind(this));
         }
         if (this.layerTexture && this.visibleLayers.has(this.layerTexture.layer)) {
@@ -526,7 +528,7 @@ export class Layers3DView extends Layers3DViewBase {
             rect.texture = this.layerTexture.texture;
             this.appendRect(rect);
         }
-        else if (this.showPaints() && this.layerTree) {
+        else if (this.showPaintsSetting.get() && this.layerTree) {
             this.layerTree.forEachLayer(this.calculateLayerTileRects.bind(this));
         }
     }
@@ -602,8 +604,8 @@ export class Layers3DView extends Layers3DViewBase {
         if (!viewport) {
             return;
         }
-        const drawChrome = Common.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor).get() &&
-            this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(undefined) < 0;
+        const drawChrome = this.#chromeWindowSetting.get() && this.chromeTextures.length >= 3 &&
+            this.chromeTextures.indexOf(undefined) < 0;
         const z = (this.maxDepth + 1) * LayerSpacing;
         const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);
         let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
@@ -665,7 +667,6 @@ export class Layers3DView extends Layers3DViewBase {
     }
     updateData() {
         if (!this.isShowing()) {
-            this.needsUpdate = true;
             return;
         }
         // Debounce into the next frame (double rAF).
@@ -729,7 +730,6 @@ export class Layers3DView extends Layers3DViewBase {
     }
     createVisibilitySetting(descriptor, toolbar) {
         const setting = Common.Settings.Settings.instance().resolve(descriptor);
-        setting.addChangeListener(this.updateData, this);
         toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
         return setting;
     }
@@ -777,17 +777,13 @@ export class Layers3DView extends Layers3DViewBase {
         event.stopPropagation();
     }
     updatePaints() {
-        if (this.showPaints()) {
+        if (this.showPaintsSetting.get()) {
             this.textureManager.setLayerTree(this.layerTree);
-            this.textureManager.forceUpdate();
         }
         else {
             this.textureManager.reset();
         }
         this.updateData();
-    }
-    showPaints() {
-        return this.showPaintsSetting ? this.showPaintsSetting.get() : false;
     }
 }
 export var OutlineType;
@@ -912,9 +908,6 @@ export class LayerTextureManager {
                 }
             });
         }
-        if (!oldLayers.length) {
-            this.forceUpdate();
-        }
         for (const layer of oldLayers) {
             if (newLayers.has(layer)) {
                 continue;
@@ -967,11 +960,6 @@ export class LayerTextureManager {
         if (this.active) {
             void this.throttler.schedule(this.update.bind(this));
         }
-    }
-    forceUpdate() {
-        this.queue.forEach(layer => this.updateLayer(layer));
-        this.queue = [];
-        void this.update();
     }
     update() {
         const layer = this.queue.shift();

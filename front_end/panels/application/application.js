@@ -20507,6 +20507,157 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
+// ../../front_end/panels/application/SubAppsView.ts
+var SubAppsView_exports = {};
+__export(SubAppsView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW14,
+  SubAppsView: () => SubAppsView,
+  i18nString: () => i18nString30
+});
+import "../../ui/kit/kit.js";
+import "../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n59 from "../../core/i18n/i18n.js";
+import * as UI31 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
+import * as VisualLogging20 from "../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/application/subAppsView.css.js
+var subAppsView_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    padding: var(--sys-size-9);
+    height: 100%;
+    display: flex;
+  }
+
+  .heading {
+    font-size: 15px;
+  }
+
+  devtools-data-grid {
+    margin-top: var(--sys-size-9);
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./subAppsView.css")} */`;
+
+// ../../front_end/panels/application/SubAppsView.ts
+var { html: html20 } = Lit3;
+var UIStrings30 = {
+  /**
+   * @description Heading label for Sub Apps view
+   */
+  subApps: "Sub Apps",
+  /**
+   * @description Heading label for Sibling Sub Apps view
+   */
+  siblingSubApps: "Sibling Sub Apps",
+  /**
+   * @description Column header for the sub-app name
+   */
+  name: "Name",
+  /**
+   * @description Column header for the sub-app scope
+   */
+  scope: "Scope",
+  /**
+   * @description Column header when Manifest ID and Start URL are identical across all sub-apps
+   */
+  manifestIdAndStartUrl: "Manifest ID / Start URL",
+  /**
+   * @description Column header for Manifest ID
+   */
+  manifestId: "Manifest ID",
+  /**
+   * @description Column header for Start URL
+   */
+  startUrl: "Start URL"
+};
+var str_30 = i18n59.i18n.registerUIStrings("panels/application/SubAppsView.ts", UIStrings30);
+var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
+function stripOrigin(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.pathname + parsed.search + parsed.hash;
+  } catch {
+    return url;
+  }
+}
+var DEFAULT_VIEW14 = (input, output, target) => {
+  const hasDistinctManifestId = input.subApps.some((subApp) => subApp.manifestId && subApp.startUrl && subApp.manifestId !== subApp.startUrl);
+  const headingText = input.isSiblingSubApps ? i18nString30(UIStrings30.siblingSubApps) : i18nString30(UIStrings30.subApps);
+  Lit3.render(html20`
+    <style>${subAppsView_css_default}</style>
+    <style>${UI31.inspectorCommonStyles}</style>
+    <div jslog=${VisualLogging20.pane("sub-apps")}>
+      <span class="heading">${headingText}</span>
+      <devtools-data-grid striped inline role="grid" aria-label=${headingText}>
+        <table>
+          <tr>
+            <th id="name" weight="10" sortable>${i18nString30(UIStrings30.name)}</th>
+            <th id="scope" weight="10" sortable>${i18nString30(UIStrings30.scope)}</th>
+            ${hasDistinctManifestId ? html20`
+              <th id="manifest-id" weight="10" sortable>${i18nString30(UIStrings30.manifestId)}</th>
+              <th id="start-url" weight="10" sortable>${i18nString30(UIStrings30.startUrl)}</th>
+            ` : html20`
+              <th id="manifest-id-start-url" weight="10" sortable>${i18nString30(UIStrings30.manifestIdAndStartUrl)}</th>
+            `}
+          </tr>
+          ${input.subApps.map((subApp) => html20`
+            <tr>
+              <td>${subApp.name}</td>
+              <td title=${subApp.scope}>${stripOrigin(subApp.scope)}</td>
+              ${hasDistinctManifestId ? html20`
+                <td title=${subApp.manifestId}>${stripOrigin(subApp.manifestId)}</td>
+                <td title=${subApp.startUrl}>${stripOrigin(subApp.startUrl)}</td>
+              ` : html20`
+                <td title=${subApp.manifestId || subApp.startUrl}>${stripOrigin(subApp.manifestId || subApp.startUrl)}</td>
+              `}
+            </tr>
+          `)}
+        </table>
+      </devtools-data-grid>
+    </div>
+  `, target);
+};
+var SubAppsView = class extends UI31.Widget.VBox {
+  #subApps = [];
+  #isSiblingSubApps = false;
+  #view;
+  constructor(element, view = DEFAULT_VIEW14) {
+    super(element);
+    this.#view = view;
+  }
+  get subApps() {
+    return this.#subApps;
+  }
+  set subApps(subApps) {
+    if (subApps === this.#subApps) {
+      return;
+    }
+    this.#subApps = subApps;
+    this.requestUpdate();
+  }
+  get isSiblingSubApps() {
+    return this.#isSiblingSubApps;
+  }
+  set isSiblingSubApps(isSiblingSubApps) {
+    if (isSiblingSubApps === this.#isSiblingSubApps) {
+      return;
+    }
+    this.#isSiblingSubApps = isSiblingSubApps;
+    this.requestUpdate();
+  }
+  async performUpdate() {
+    this.#view({ subApps: this.#subApps, isSiblingSubApps: this.#isSiblingSubApps }, void 0, this.contentElement);
+  }
+};
+
 // ../../front_end/panels/application/application.ts
 import * as Components5 from "./components/components.js";
 export {
@@ -20543,6 +20694,7 @@ export {
   StorageBucketsTreeElement_exports as StorageBucketsTreeElement,
   StorageItemsToolbar_exports as StorageItemsToolbar,
   StorageView_exports as StorageView,
+  SubAppsView_exports as SubAppsView,
   TrustTokensTreeElement_exports as TrustTokensTreeElement,
   WebMCPTreeElement_exports as WebMCPTreeElement,
   WebMCPView_exports as WebMCPView

@@ -12203,7 +12203,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   reloadPlugins() {
     this.disposePlugins();
     this.loadPlugins();
-    if (!this.loaded) {
+    if (!pluginCompartment.get(this.textEditor.state)) {
       return;
     }
     const editor = this.textEditor;
@@ -12924,6 +12924,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
           }
         }
         const icon = !hasLoadError ? PanelCommon2.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode) ?? void 0 : void 0;
+        const viewSourceCode = this.#tabViewSourceCodes.get(tabId2) ?? uiSourceCode;
         return {
           tabId: tabId2,
           title: titleForFile(uiSourceCode),
@@ -12934,7 +12935,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
           hasUnsavedCommittedChanges,
           disconnectedAutomaticFileSystemRoot,
           icon,
-          widget: this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId() ? this.#getOrCreateSourceView(this.#currentFile) : this.getCreatedSourceView(uiSourceCode)
+          widget: this.#currentFile?.canonicalScriptId() === uiSourceCode.canonicalScriptId() ? this.#getOrCreateSourceView(viewSourceCode) : this.getCreatedSourceView(viewSourceCode)
         };
       }),
       activeTabId: this.#currentFile ? this.#tabIdForUISourceCode(this.#currentFile) : void 0,
@@ -13037,6 +13038,12 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   #tabDelegate;
   #tabIds;
   #files;
+  /**
+   * Maps a tab id to the UISourceCode whose view is currently bound to that
+   * tab. This can differ from the canonical UISourceCode in `#files` when the
+   * tab's view was recycled to show a duplicate script with the same URL.
+   */
+  #tabViewSourceCodes = /* @__PURE__ */ new Map();
   #loadErrorFiles = /* @__PURE__ */ new Set();
   #previouslyViewedFilesSetting;
   #history;
@@ -13165,7 +13172,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     return this.#currentFile ? getViewByUISourceCode(this.#currentFile) || null : null;
   }
   fileViews() {
-    return Array.from(this.#files.values()).map(getViewByUISourceCode).filter(Boolean);
+    return Array.from(this.#files.entries()).map(([tabId2, file]) => getViewByUISourceCode(this.#tabViewSourceCodes.get(tabId2) ?? file)).filter(Boolean);
   }
   showSourceLocation(uiSourceCode, location, omitFocus, omitHighlight) {
     const currentFrame = this.#currentView instanceof UISourceCodeFrame ? this.#currentView : null;
@@ -13329,10 +13336,22 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
     }
     this.#removeViewListeners();
     this.#currentFile = uiSourceCode;
+    let tabId2;
     try {
       this.#reentrantShow = true;
-      const tabId2 = this.#tabIds.get(canonicalSourceCode) || this.#appendFileTab(canonicalSourceCode);
+      tabId2 = this.#tabIds.get(canonicalSourceCode) || this.#appendFileTab(canonicalSourceCode);
       this.#appendHistory(tabId2);
+      const tabViewSourceCode = this.#tabViewSourceCodes.get(tabId2) ?? canonicalSourceCode;
+      const tabView = this.#getOrCreateSourceView(tabViewSourceCode);
+      if (tabView instanceof UISourceCodeFrame && tabViewSourceCode !== uiSourceCode) {
+        this.#recycleUISourceCodeFrame(tabView, uiSourceCode);
+        if (uiSourceCode.project().type() !== Workspace17.Workspace.projectTypes.FileSystem) {
+          uiSourceCode.disableEdit();
+        }
+      } else {
+        this.#getOrCreateSourceView(uiSourceCode);
+      }
+      this.#tabViewSourceCodes.set(tabId2, uiSourceCode);
       this.#scheduleUpdate();
     } finally {
       this.#reentrantShow = false;
@@ -13341,17 +13360,8 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       this.#editorSelectedByUserAction();
     }
     const previousView = this.#currentView;
-    if (uiSourceCode) {
-      this.#getOrCreateSourceView(uiSourceCode);
-    }
     this.#currentView = this.visibleView;
     this.#addViewListeners();
-    if (this.#currentView instanceof UISourceCodeFrame && this.#currentView.uiSourceCode() !== uiSourceCode) {
-      this.#recycleUISourceCodeFrame(this.#currentView, uiSourceCode);
-      if (uiSourceCode.project().type() !== Workspace17.Workspace.projectTypes.FileSystem) {
-        uiSourceCode.disableEdit();
-      }
-    }
     const eventData = {
       currentFile: this.#currentFile,
       currentView: this.#currentView,
@@ -13469,6 +13479,11 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
         tabIds.push(tabId2);
       } else {
         this.#removeSourceFrame(uiSourceCode);
+        for (const [k, v] of this.#tabViewSourceCodes) {
+          if (v === uiSourceCode) {
+            this.#tabViewSourceCodes.delete(k);
+          }
+        }
       }
       for (const [k, v] of this.#uriToUISourceCode) {
         if (v === uiSourceCode) {
@@ -13509,6 +13524,7 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
   #appendFileTab(uiSourceCode, index, ignoreHistory) {
     const tabId2 = this.#generateTabId();
     this.#tabIds.set(uiSourceCode, tabId2);
+    this.#tabViewSourceCodes.set(tabId2, uiSourceCode);
     if (index !== void 0) {
       const entries = Array.from(this.#files.entries());
       entries.splice(index, 0, [tabId2, uiSourceCode]);
@@ -13565,6 +13581,11 @@ var TabbedEditorContainer = class _TabbedEditorContainer extends TabbedEditorCon
       this.#removeViewListeners();
       this.#currentView = null;
       this.#currentFile = null;
+    }
+    const viewSourceCode = this.#tabViewSourceCodes.get(tabId2);
+    if (viewSourceCode) {
+      this.#removeSourceFrame(viewSourceCode);
+      this.#tabViewSourceCodes.delete(tabId2);
     }
     if (uiSourceCode) {
       this.#tabIds.delete(uiSourceCode);
@@ -15285,7 +15306,9 @@ var SourcesPanel = class _SourcesPanel extends UI16.Panel.Panel {
   }
   #editorClosed({ data: { uiSourceCode } }) {
     const context = UI16.Context.Context.instance();
-    if (context.flavor(Workspace21.UISourceCode.UISourceCode) === uiSourceCode) {
+    const currentFlavor = context.flavor(Workspace21.UISourceCode.UISourceCode);
+    const flavorScriptId = currentFlavor?.canonicalScriptId();
+    if (currentFlavor === uiSourceCode || flavorScriptId && flavorScriptId === uiSourceCode.canonicalScriptId()) {
       context.setFlavor(Workspace21.UISourceCode.UISourceCode, null);
     }
   }

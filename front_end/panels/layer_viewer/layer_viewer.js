@@ -1314,11 +1314,11 @@ var Layers3DView = class extends Layers3DViewBase {
   whiteTexture;
   gl;
   dimensionsForAutoscale;
-  needsUpdate;
   updateScheduled;
   panelToolbar;
   showSlowScrollRectsSetting;
   showPaintsSetting;
+  #chromeWindowSetting;
   mouseDownX;
   mouseDownY;
   #view;
@@ -1345,8 +1345,7 @@ var Layers3DView = class extends Layers3DViewBase {
       SettingsUI.LayerViewerSettings.showSlowScrollRectsSettingDescriptor,
       this.panelToolbar
     );
-    this.showPaintsSetting.addChangeListener(this.updatePaints, this);
-    Common5.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor).addChangeListener(this.updateData, this);
+    this.#chromeWindowSetting = Common5.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor);
     this.performUpdate();
     this.lastSelection = {};
     this.layerTree = null;
@@ -1356,7 +1355,6 @@ var Layers3DView = class extends Layers3DViewBase {
     this.rects = [];
     this.snapshotLayers = /* @__PURE__ */ new Map();
     this.layerViewHost.setLayerSnapshotMap(this.snapshotLayers);
-    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
   }
   performUpdate() {
     const output = {};
@@ -1381,7 +1379,7 @@ var Layers3DView = class extends Layers3DViewBase {
     this.layerTree = layerTree;
     this.layerTexture = null;
     delete this.oldTextureScale;
-    if (this.showPaints()) {
+    if (this.showPaintsSetting.get()) {
       this.textureManager.setLayerTree(layerTree);
     }
     this.updateData();
@@ -1404,18 +1402,23 @@ var Layers3DView = class extends Layers3DViewBase {
     this.updateData();
   }
   willHide() {
-    super.willHide();
+    this.showPaintsSetting.removeChangeListener(this.updatePaints, this);
+    this.showSlowScrollRectsSetting.removeChangeListener(this.updateData, this);
+    this.#chromeWindowSetting.removeChangeListener(this.updateData, this);
+    this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.updateData, this);
     this.textureManager.suspend();
+    super.willHide();
   }
   wasShown() {
     super.wasShown();
+    this.showPaintsSetting.addChangeListener(this.updatePaints, this);
+    this.showSlowScrollRectsSetting.addChangeListener(this.updateData, this);
+    this.#chromeWindowSetting.addChangeListener(this.updateData, this);
+    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.updateData, this);
     this.textureManager.resume();
-    if (!this.needsUpdate) {
-      return;
-    }
     this.performUpdate();
     this.resizeCanvas();
-    this.updateData();
+    this.updatePaints();
   }
   updateLayerSnapshot(layer) {
     this.textureManager.layerNeedsUpdate(layer);
@@ -1711,7 +1714,7 @@ var Layers3DView = class extends Layers3DViewBase {
     if (this.layerTree) {
       this.layerTree.forEachLayer(this.calculateLayerRect.bind(this));
     }
-    if (this.showSlowScrollRectsSetting && this.showSlowScrollRectsSetting.get() && this.layerTree) {
+    if (this.showSlowScrollRectsSetting.get() && this.layerTree) {
       this.layerTree.forEachLayer(this.calculateLayerScrollRects.bind(this));
     }
     if (this.layerTexture && this.visibleLayers.has(this.layerTexture.layer)) {
@@ -1721,7 +1724,7 @@ var Layers3DView = class extends Layers3DViewBase {
       rect.setVertices(layer.quad(), this.depthForLayer(layer));
       rect.texture = this.layerTexture.texture;
       this.appendRect(rect);
-    } else if (this.showPaints() && this.layerTree) {
+    } else if (this.showPaintsSetting.get() && this.layerTree) {
       this.layerTree.forEachLayer(this.calculateLayerTileRects.bind(this));
     }
   }
@@ -1796,7 +1799,7 @@ var Layers3DView = class extends Layers3DViewBase {
     if (!viewport) {
       return;
     }
-    const drawChrome = Common5.Settings.Settings.instance().resolve(SettingsUI.LayerViewerSettings.chromeWindowSettingDescriptor).get() && this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(void 0) < 0;
+    const drawChrome = this.#chromeWindowSetting.get() && this.chromeTextures.length >= 3 && this.chromeTextures.indexOf(void 0) < 0;
     const z = (this.maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this.scale);
     let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
@@ -1857,7 +1860,6 @@ var Layers3DView = class extends Layers3DViewBase {
   }
   updateData() {
     if (!this.isShowing()) {
-      this.needsUpdate = true;
       return;
     }
     if (!this.updateScheduled) {
@@ -1917,7 +1919,6 @@ var Layers3DView = class extends Layers3DViewBase {
   }
   createVisibilitySetting(descriptor, toolbar2) {
     const setting = Common5.Settings.Settings.instance().resolve(descriptor);
-    setting.addChangeListener(this.updateData, this);
     toolbar2.appendToolbarItem(new UI4.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;
   }
@@ -1972,16 +1973,12 @@ var Layers3DView = class extends Layers3DViewBase {
     event.stopPropagation();
   }
   updatePaints() {
-    if (this.showPaints()) {
+    if (this.showPaintsSetting.get()) {
       this.textureManager.setLayerTree(this.layerTree);
-      this.textureManager.forceUpdate();
     } else {
       this.textureManager.reset();
     }
     this.updateData();
-  }
-  showPaints() {
-    return this.showPaintsSetting ? this.showPaintsSetting.get() : false;
   }
 };
 var OutlineType = /* @__PURE__ */ ((OutlineType2) => {
@@ -2084,9 +2081,6 @@ var LayerTextureManager = class {
         }
       });
     }
-    if (!oldLayers.length) {
-      this.forceUpdate();
-    }
     for (const layer of oldLayers) {
       if (newLayers.has(layer)) {
         continue;
@@ -2138,11 +2132,6 @@ var LayerTextureManager = class {
     if (this.active) {
       void this.throttler.schedule(this.update.bind(this));
     }
-  }
-  forceUpdate() {
-    this.queue.forEach((layer) => this.updateLayer(layer));
-    this.queue = [];
-    void this.update();
   }
   update() {
     const layer = this.queue.shift();

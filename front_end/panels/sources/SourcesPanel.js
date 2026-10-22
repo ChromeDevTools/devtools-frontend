@@ -774,7 +774,9 @@ export class SourcesPanel extends UI.Panel.Panel {
     }
     #editorClosed({ data: { uiSourceCode } }) {
         const context = UI.Context.Context.instance();
-        if (context.flavor(Workspace.UISourceCode.UISourceCode) === uiSourceCode) {
+        const currentFlavor = context.flavor(Workspace.UISourceCode.UISourceCode);
+        const flavorScriptId = currentFlavor?.canonicalScriptId();
+        if (currentFlavor === uiSourceCode || (flavorScriptId && flavorScriptId === uiSourceCode.canonicalScriptId())) {
             context.setFlavor(Workspace.UISourceCode.UISourceCode, null);
         }
     }

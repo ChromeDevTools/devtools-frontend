@@ -45,6 +45,7 @@
     "../../../../../../front_end/panels/application/StorageBucketsTreeElement.ts",
     "../../../../../../front_end/panels/application/StorageItemsToolbar.ts",
     "../../../../../../front_end/panels/application/StorageView.ts",
+    "../../../../../../front_end/panels/application/SubAppsView.ts",
     "../../../../../../front_end/panels/application/TrustTokensTreeElement.ts",
     "../../../../../../front_end/panels/application/WebMCPTreeElement.ts",
     "../../../../../../front_end/panels/application/WebMCPView.ts",

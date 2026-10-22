@@ -21,7 +21,7 @@ export class LinkContextMenuProvider {
         const node = targetNode;
         contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
             if (node.href) {
-                UIHelpers.openInNewTab(node.href);
+                UIHelpers.openInNewTab(node.href, node.allowPrivileged);
             }
         }, { jslogContext: 'open-in-new-tab' });
         contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

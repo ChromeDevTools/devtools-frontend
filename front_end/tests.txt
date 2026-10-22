@@ -434,6 +434,7 @@ panels/application/ServiceWorkerUpdateCycleView.test.js
 panels/application/ServiceWorkersView.test.js
 panels/application/StorageBucketsTreeElement.test.js
 panels/application/StorageView.test.js
+panels/application/SubAppsView.test.js
 panels/application/WebMCPView.test.js
 panels/application/preloading/PreloadingView.test.js
 panels/application/components/AdsView.test.js

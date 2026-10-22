@@ -106,7 +106,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             <div id="contents">
               <devtools-report>
                 ${input.warnings.map(({ key, valueId, placeholders = {} }) => {
-            const value = i18nTemplate(str_, valueId, Object.fromEntries(Object.entries(placeholders).map(([key, { title, href }]) => [key, html `<devtools-link href=${href}>${title}</devtools-link>`])));
+            const value = i18nTemplate(str_, valueId, Object.fromEntries(Object.entries(placeholders).map(([key, { title, href }]) => [key, html `<devtools-link href=${href} allow-privileged>${title}</devtools-link>`])));
             return html `
                       <div class="key">${key}</div>
                       <div class="value">${value}</div>

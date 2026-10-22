@@ -1500,6 +1500,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
         return button;
     }
     #cleanupAiCodeCompletion() {
+        this.#aiCodeCompletionSummaryToolbar?.detach();
         this.#aiCodeCompletionSummaryToolbarContainer?.remove();
         this.#aiCodeCompletionSummaryToolbarContainer = undefined;
         this.#aiCodeCompletionSummaryToolbar = undefined;

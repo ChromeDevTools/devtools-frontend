@@ -16,6 +16,8 @@
  *   Chrome ("stable", "beta", "dev", or "canary").
  *
  * @param url the URL to open in a new tab.
+ * @param allowPrivileged whether to also open URLs with privileged or other non-web-safe schemes. By default,
+ *     only URLs with web-safe schemes (see `Common.ParsedURL.hasWebSafeScheme`) are opened.
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */

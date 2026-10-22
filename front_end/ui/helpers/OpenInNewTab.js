@@ -54,12 +54,19 @@ import * as SDK from '../../core/sdk/sdk.js';
  *   Chrome ("stable", "beta", "dev", or "canary").
  *
  * @param url the URL to open in a new tab.
+ * @param allowPrivileged whether to also open URLs with privileged or other non-web-safe schemes. By default,
+ *     only URLs with web-safe schemes (see `Common.ParsedURL.hasWebSafeScheme`) are opened.
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */
 export function openInNewTab(url, allowPrivileged) {
     url = new URL(url);
     if (Common.ParsedURL.schemeIs(url, 'javascript:')) {
+        return;
+    }
+    // Only open URLs with privileged or other non-web-safe schemes (such as `chrome:`, `devtools:`, or `file:`)
+    // when the caller explicitly allows it.
+    if (!allowPrivileged && !Common.ParsedURL.hasWebSafeScheme(url)) {
         return;
     }
     // Navigating to a chrome:// link via a normal anchor doesn't work, so we "navigate"

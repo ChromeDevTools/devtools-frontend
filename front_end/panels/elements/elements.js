@@ -12974,6 +12974,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     return button;
   }
   #cleanupAiCodeCompletion() {
+    this.#aiCodeCompletionSummaryToolbar?.detach();
     this.#aiCodeCompletionSummaryToolbarContainer?.remove();
     this.#aiCodeCompletionSummaryToolbarContainer = void 0;
     this.#aiCodeCompletionSummaryToolbar = void 0;
@@ -17553,7 +17554,7 @@ function renderLinkifiedValue(value5, node) {
   if (value5.startsWith("data:")) {
     value5 = Platform7.StringUtilities.trimMiddle(value5, 60);
   }
-  const isAnchor = node && node.nodeName().toLowerCase() === "a";
+  const isAnchor = node && node.nodeName().toLowerCase() === "a" && Common9.ParsedURL.hasWebSafeScheme(rewrittenHref);
   if (isAnchor) {
     return html14`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref5((el) => {
       if (el) {

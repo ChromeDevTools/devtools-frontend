@@ -58,6 +58,9 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../core/sdk/bundle-tsconfig.ref.json"
     },
     {
@@ -65,6 +68,9 @@
     },
     {
       "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/settings/bundle-tsconfig.ref.json"
     }
   ]
 }

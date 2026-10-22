@@ -9,6 +9,9 @@ function openInNewTab(url, allowPrivileged) {
   if (Common.ParsedURL.schemeIs(url, "javascript:")) {
     return;
   }
+  if (!allowPrivileged && !Common.ParsedURL.hasWebSafeScheme(url)) {
+    return;
+  }
   if (allowPrivileged && Common.ParsedURL.schemeIs(url, "chrome:")) {
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (rootTarget === null) {

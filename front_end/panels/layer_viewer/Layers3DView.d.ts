@@ -39,11 +39,10 @@ export declare class Layers3DView extends Layers3DViewBase implements LayerView 
     private whiteTexture?;
     private gl?;
     private dimensionsForAutoscale?;
-    private needsUpdate?;
     private updateScheduled?;
     private panelToolbar;
-    private showSlowScrollRectsSetting?;
-    private showPaintsSetting?;
+    private readonly showSlowScrollRectsSetting;
+    private readonly showPaintsSetting;
     private mouseDownX?;
     private mouseDownY?;
     constructor(layerViewHost: LayerViewHost, view?: View);
@@ -91,7 +90,6 @@ export declare class Layers3DView extends Layers3DViewBase implements LayerView 
     private onMouseUp;
     private onDoubleClick;
     private updatePaints;
-    private showPaints;
 }
 export declare enum OutlineType {
     Hovered = "hovered",
@@ -142,7 +140,6 @@ export declare class LayerTextureManager {
     setScale(scale: number): void;
     tilesForLayer(layer: SDK.LayerTreeBase.Layer): Tile[];
     layerNeedsUpdate(layer: SDK.LayerTreeBase.Layer): void;
-    forceUpdate(): void;
     private update;
     private updateLayer;
     private updateTextures;

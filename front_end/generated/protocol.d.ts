@@ -12424,11 +12424,27 @@ export declare namespace Network {
     }
     interface DirectUDPSocketJoinedMulticastGroupEvent {
         identifier: RequestId;
+        /**
+         * Multicast group address.
+         */
         IPAddress: string;
+        /**
+         * Source address of a source-specific multicast (SSM) membership. Absent
+         * for any-source multicast (ASM) memberships.
+         */
+        sourceAddress?: string;
     }
     interface DirectUDPSocketLeftMulticastGroupEvent {
         identifier: RequestId;
+        /**
+         * Multicast group address.
+         */
         IPAddress: string;
+        /**
+         * Source address of a source-specific multicast (SSM) membership. Absent
+         * for any-source multicast (ASM) memberships.
+         */
+        sourceAddress?: string;
     }
     /**
      * Fired upon direct_socket.UDPSocket creation.

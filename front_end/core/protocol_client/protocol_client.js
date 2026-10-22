@@ -832,8 +832,8 @@ function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerEvent("Network.directTCPSocketClosed", ["identifier", "timestamp"]);
   inspectorBackend2.registerEvent("Network.directTCPSocketChunkSent", ["identifier", "data", "timestamp"]);
   inspectorBackend2.registerEvent("Network.directTCPSocketChunkReceived", ["identifier", "data", "timestamp"]);
-  inspectorBackend2.registerEvent("Network.directUDPSocketJoinedMulticastGroup", ["identifier", "IPAddress"]);
-  inspectorBackend2.registerEvent("Network.directUDPSocketLeftMulticastGroup", ["identifier", "IPAddress"]);
+  inspectorBackend2.registerEvent("Network.directUDPSocketJoinedMulticastGroup", ["identifier", "IPAddress", "sourceAddress"]);
+  inspectorBackend2.registerEvent("Network.directUDPSocketLeftMulticastGroup", ["identifier", "IPAddress", "sourceAddress"]);
   inspectorBackend2.registerEvent("Network.directUDPSocketCreated", ["identifier", "options", "timestamp", "initiator"]);
   inspectorBackend2.registerEvent("Network.directUDPSocketOpened", ["identifier", "localAddr", "localPort", "timestamp", "remoteAddr", "remotePort"]);
   inspectorBackend2.registerEvent("Network.directUDPSocketAborted", ["identifier", "errorMessage", "timestamp"]);

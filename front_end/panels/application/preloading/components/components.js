@@ -4324,7 +4324,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         str_4,
         valueId,
         Object.fromEntries(Object.entries(placeholders).map(
-          ([key2, { title, href }]) => [key2, html3`<devtools-link href=${href}>${title}</devtools-link>`]
+          ([key2, { title, href }]) => [key2, html3`<devtools-link href=${href} allow-privileged>${title}</devtools-link>`]
         ))
       );
       return html3`

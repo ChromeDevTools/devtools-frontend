@@ -813,8 +813,8 @@ export function registerCommands(inspectorBackend) {
     inspectorBackend.registerEvent("Network.directTCPSocketClosed", ["identifier", "timestamp"]);
     inspectorBackend.registerEvent("Network.directTCPSocketChunkSent", ["identifier", "data", "timestamp"]);
     inspectorBackend.registerEvent("Network.directTCPSocketChunkReceived", ["identifier", "data", "timestamp"]);
-    inspectorBackend.registerEvent("Network.directUDPSocketJoinedMulticastGroup", ["identifier", "IPAddress"]);
-    inspectorBackend.registerEvent("Network.directUDPSocketLeftMulticastGroup", ["identifier", "IPAddress"]);
+    inspectorBackend.registerEvent("Network.directUDPSocketJoinedMulticastGroup", ["identifier", "IPAddress", "sourceAddress"]);
+    inspectorBackend.registerEvent("Network.directUDPSocketLeftMulticastGroup", ["identifier", "IPAddress", "sourceAddress"]);
     inspectorBackend.registerEvent("Network.directUDPSocketCreated", ["identifier", "options", "timestamp", "initiator"]);
     inspectorBackend.registerEvent("Network.directUDPSocketOpened", ["identifier", "localAddr", "localPort", "timestamp", "remoteAddr", "remotePort"]);
     inspectorBackend.registerEvent("Network.directUDPSocketAborted", ["identifier", "errorMessage", "timestamp"]);

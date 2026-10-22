@@ -42,7 +42,7 @@ const argv = yargs(hideBin(process.argv))
                  .version(false)
                  .parseSync();
 
-const {target, watch, skipInitialBuild, buildTargets} = argv;
+const {target, watch, skipInitialBuild, buildTarget: buildTargets} = argv;
 const timeFormatter = new Intl.NumberFormat('en-US', {
   style: 'unit',
   unit: 'second',

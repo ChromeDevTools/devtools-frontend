@@ -5,6 +5,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import {pipeline, Readable} from 'node:stream';
+import {parseArgs} from 'node:util';
 import zlib from 'node:zlib';
 
 const {promises: pfs} = fs;
@@ -146,24 +147,36 @@ async function compressFile(filename) {
   await writeFileAtomic(hashFilename, `${currHash} ${compressedSize}`);
 }
 
-async function main(argv) {
-  const fileListPosition = argv.indexOf('--file_list');
-  const fileList = argv[fileListPosition + 1];
+async function main() {
+  const {values} = parseArgs({
+    options: {
+      'file-list': {
+        type: 'string',
+      },
+      depfile: {
+        type: 'string',
+      },
+    },
+    strict: true,
+  });
+
+  const {'file-list': fileList, depfile} = values;
+  if (!fileList) {
+    throw new Error('Missing required --file-list argument');
+  }
   const fileListContents = await readTextFile(fileList);
   const files = fileListContents.split(/\s+/).filter(Boolean);
   await Promise.all(files.map(filename => filename.trim()).map(compressFile));
 
-  const depfileIndex = argv.indexOf('--depfile');
-  if (depfileIndex !== -1 && files.length > 0) {
-    const depfilePath = argv[depfileIndex + 1];
+  if (depfile && files.length > 0) {
     const firstOutput = (files[0] + '.compressed').replaceAll('\\', '/');
     const normalizedFiles = files.map(f => f.replaceAll('\\', '/'));
     const depfileContent = `${firstOutput}: ${normalizedFiles.join(' ')}\n`;
-    await writeTextFile(depfilePath, depfileContent);
+    await writeTextFile(depfile, depfileContent);
   }
 }
 
-main(process.argv).catch(err => {
+main().catch(err => {
   console.log('compress_files.js failure', err);
   process.exit(1);
 });

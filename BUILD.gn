@@ -167,7 +167,7 @@ if (!is_debug) {
     }
 
     args = [
-      "--file_list",
+      "--file-list",
       "{{response_file_name}}",
       "--depfile",
       rebase_path(depfile, root_build_dir),

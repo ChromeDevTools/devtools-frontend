@@ -5,6 +5,7 @@
 import {load as yamlLoad} from 'js-yaml';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import {parseArgs} from 'node:util';
 
 import {writeIfChanged} from './ninja/write-if-changed.js';
 
@@ -41,10 +42,28 @@ export function parseSkill(content) {
 }
 
 async function runMain() {
-  const [, , buildTimestamp, inputFile, outputFile] = process.argv;
+  const {values} = parseArgs({
+    options: {
+      'build-timestamp': {
+        type: 'string',
+      },
+      input: {
+        type: 'string',
+      },
+      output: {
+        type: 'string',
+      },
+    },
+    strict: true,
+  });
+
+  const {'build-timestamp': buildTimestamp, input, output} = values;
+  if (!buildTimestamp || !input || !output) {
+    throw new Error('Missing required arguments: --build-timestamp, --input, and --output must be provided');
+  }
   const year = new Date(Number(buildTimestamp) * 1000).getUTCFullYear();
 
-  const content = await fs.readFile(inputFile, 'utf-8');
+  const content = await fs.readFile(input, 'utf-8');
   const skill = parseSkill(content);
 
   const outputContent = `// Copyright ${year} The Chromium Authors. All rights reserved.
@@ -55,7 +74,7 @@ async function runMain() {
 export const skill = ${JSON.stringify(skill, null, 2)};
 `;
 
-  const dtsOutputFile = outputFile.replace(/\.js$/, '.d.ts');
+  const dtsOutputFile = output.replace(/\.js$/, '.d.ts');
   const dtsContent = `// Copyright ${year} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -70,9 +89,9 @@ export declare const skill: {
 `;
 
   // Ensure target directory exists
-  await fs.mkdir(path.dirname(outputFile), {recursive: true});
+  await fs.mkdir(path.dirname(output), {recursive: true});
 
-  await writeIfChanged(outputFile, outputContent);
+  await writeIfChanged(output, outputContent);
   await writeIfChanged(dtsOutputFile, dtsContent);
 }
 

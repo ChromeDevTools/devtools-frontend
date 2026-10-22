@@ -68,15 +68,20 @@ template("generate_css") {
     inputs +=
         [ devtools_location_prepend + "node_modules/cssnano/package.json" ]
 
-    _minify = is_debug
-
     args = [
+      "--build-timestamp",
       build_timestamp,
-      "$_minify",
+      "--src-dir",
       _src,
+      "--target-gen-dir",
       _dest,
+      "--files",
       string_join(",", sources),
     ]
+
+    if (is_debug) {
+      args += [ "--debug" ]
+    }
 
     outputs = _css_outputs
 

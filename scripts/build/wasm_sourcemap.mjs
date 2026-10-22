@@ -3,14 +3,27 @@
 // found in the LICENSE file.
 
 import * as fs from 'node:fs';
+import {parseArgs} from 'node:util';
 import * as sourceMap from 'source-map';
 
-if (process.argv.length !== 4) {
-  throw new Error(`usage: ${process.argv[1]} <input.map> <offset>`);
+const {values} = parseArgs({
+  options: {
+    input: {
+      type: 'string',
+    },
+    offset: {
+      type: 'string',
+    },
+  },
+  strict: true,
+});
+
+if (!values.input || values.offset === undefined) {
+  throw new Error('usage: wasm_sourcemap.mjs --input <input.map> --offset <offset>');
 }
 
-const offset = Number(process.argv[3] || 0);
-const sourceMapContents = JSON.parse(fs.readFileSync(process.argv[2], 'utf-8'));
+const offset = Number(values.offset || 0);
+const sourceMapContents = JSON.parse(fs.readFileSync(values.input, 'utf-8'));
 const sourceMapConsumer = new sourceMap.SourceMapConsumer(sourceMapContents);
 
 const sourceMappings = [];

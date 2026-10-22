@@ -93,6 +93,7 @@ async function main() {
         type: 'string',
       },
     },
+    strict: true,
   });
 
   const targetGenDir = values['target-gen-dir'];

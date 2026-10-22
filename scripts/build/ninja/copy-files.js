@@ -3,10 +3,30 @@
 // found in the LICENSE file.
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {parseArgs} from 'node:util';
 
 import {writeIfChanged} from './write-if-changed.js';
 
-const [, , src, dest, files] = process.argv;
+const {values} = parseArgs({
+  options: {
+    src: {
+      type: 'string',
+    },
+    dest: {
+      type: 'string',
+    },
+    files: {
+      type: 'string',
+    },
+  },
+  strict: true,
+});
+
+const {src, dest, files} = values;
+
+if (!src || !dest || !files) {
+  throw new Error('Missing required arguments: --src, --dest, and --files must be provided');
+}
 
 await Promise.all(files.split(',').map(async file => {
   const srcPath = path.join(src, file);

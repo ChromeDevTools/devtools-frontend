@@ -17,11 +17,17 @@ template("minify_json") {
 
     _dest = rebase_path(target_gen_dir, root_build_dir)
 
-    args = [ _dest ]
+    args = [
+      "--dest",
+      _dest,
+    ]
     outputs = []
 
     foreach(_input, sources) {
-      args += [ rebase_path(_input, root_build_dir) ]
+      args += [
+        "--files",
+        rebase_path(_input, root_build_dir),
+      ]
 
       # Input can be from anywhere but all minified json files land in
       # $target_gen_dir.

@@ -58,9 +58,12 @@ node_action("devtools_json") {
 
   script = "scripts/build/generate_devtools_json.mjs"
 
-  args = [ rebase_path(
-          "$target_gen_dir/.well-known/appspecific/com.chrome.devtools.json",
-          root_build_dir) ]
+  args = [
+    "--output",
+    rebase_path(
+        "$target_gen_dir/.well-known/appspecific/com.chrome.devtools.json",
+        root_build_dir),
+  ]
 
   outputs =
       [ "$target_gen_dir/.well-known/appspecific/com.chrome.devtools.json" ]

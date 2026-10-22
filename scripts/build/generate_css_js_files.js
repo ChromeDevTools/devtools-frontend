@@ -5,6 +5,7 @@ import cssnano from 'cssnano';
 import cssnanoPresetLite from 'cssnano-preset-lite';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import {parseArgs} from 'node:util';
 import postcss from 'postcss';
 
 import {writeIfChanged} from './ninja/write-if-changed.js';
@@ -40,10 +41,42 @@ export default \`${stylesheetContents}
 }
 
 async function runMain() {
-  const [, , buildTimestamp, isDebugString, srcDir, targetGenDir, files] = process.argv;
+  const {values} = parseArgs({
+    options: {
+      'build-timestamp': {
+        type: 'string',
+      },
+      debug: {
+        type: 'boolean',
+        default: false,
+      },
+      'src-dir': {
+        type: 'string',
+      },
+      'target-gen-dir': {
+        type: 'string',
+      },
+      files: {
+        type: 'string',
+      },
+    },
+    strict: true,
+  });
+
+  const {
+    'build-timestamp': buildTimestamp,
+    debug: isDebug,
+    'src-dir': srcDir,
+    'target-gen-dir': targetGenDir,
+    files,
+  } = values;
+
+  if (!buildTimestamp || !srcDir || !targetGenDir || !files) {
+    throw new Error(
+        'Missing required arguments: --build-timestamp, --src-dir, --target-gen-dir, and --files must be provided');
+  }
 
   const filenames = files.split(',');
-  const isDebug = isDebugString === 'true';
 
   await Promise.all(filenames.map(async fileName => {
     const contents = await fs.readFile(path.join(srcDir, fileName), {

@@ -4,48 +4,43 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import yargs from 'yargs';
-import {hideBin} from 'yargs/helpers';
+import {parseArgs} from 'node:util';
 
 import {writeIfChanged} from './ninja/write-if-changed.js';
 
-const {template, outDirectory, entrypoints} = yargs(
-                                                  hideBin(process.argv),
-                                                  )
-                                                  .parseSync();
+const {values} = parseArgs({
+  options: {
+    template: {
+      type: 'string',
+    },
+    'out-directory': {
+      type: 'string',
+    },
+    entrypoints: {
+      type: 'string',
+      multiple: true,
+    },
+  },
+  strict: true,
+});
 
-if (!template) {
+const {template, 'out-directory': outDirectory, entrypoints} = values;
+
+if (!template || !outDirectory || !entrypoints || entrypoints.length === 0) {
   throw new Error(
-      'Must specify --template location with the location of the HTML entrypoint template.',
+      'Missing required arguments: --template, --out-directory, and --entrypoints must be provided',
   );
 }
 
-if (!outDirectory) {
-  throw new Error(
-      'Must specify --out-directory location where the outputs must live.',
-  );
-}
-
-if (!entrypoints) {
-  throw new Error('Must specify at least one entrypoint name.');
-}
-
-if (!Array.isArray(entrypoints)) {
-  throw new Error('Must specify multiple entrypoints as array');
-}
-
-const templatePath = String(template);
-const outDirectoryPath = String(outDirectory);
-
-const templateContent = await fs.readFile(templatePath, 'utf-8');
+const templateContent = await fs.readFile(template, 'utf-8');
 
 await Promise.all(entrypoints.map(async entrypoint => {
   const rewrittenTemplateContent = templateContent.replace(
       new RegExp('%ENTRYPOINT_NAME%', 'g'),
-      String(entrypoint),
+      entrypoint,
   );
   await writeIfChanged(
-      path.join(outDirectoryPath, `${entrypoint}.html`),
+      path.join(outDirectory, `${entrypoint}.html`),
       rewrittenTemplateContent,
   );
 }));

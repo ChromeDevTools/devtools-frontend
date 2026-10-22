@@ -4,10 +4,28 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {parseArgs} from 'node:util';
 
 import {writeIfChanged} from './write-if-changed.js';
 
-const [, , dest, ...files] = process.argv;
+const {values} = parseArgs({
+  options: {
+    dest: {
+      type: 'string',
+    },
+    files: {
+      type: 'string',
+      multiple: true,
+    },
+  },
+  strict: true,
+});
+
+const {dest, files} = values;
+
+if (!dest || !files || files.length === 0) {
+  throw new Error('Missing required arguments: --dest and --files must be provided');
+}
 
 await Promise.all(files.map(async file => {
   const filename = path.basename(file);

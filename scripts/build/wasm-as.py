@@ -72,7 +72,8 @@ def script_main(args):
     sourcemap2json = path.realpath(
         path.join(REPO_DIR, 'scripts', 'build', 'wasm_sourcemap.mjs'))
     sourcemap_contents = subprocess.check_output([
-        sys.executable, node, '--output', sourcemap2json, sourcemap,
+        sys.executable, node, '--output', sourcemap2json, '--input', sourcemap,
+        '--offset',
         '%s' % (offset)
     ])
 

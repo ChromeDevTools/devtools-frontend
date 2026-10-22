@@ -4,6 +4,7 @@
 
 import("./node.gni")
 import("./vars.gni")
+
 template("copy_to_gen") {
   node_action(target_name) {
     forward_variables_from(invoker,
@@ -20,8 +21,11 @@ template("copy_to_gen") {
     _copy_dest = rebase_path(target_gen_dir, root_build_dir)
 
     args = [
+      "--src",
       _copy_src,
+      "--dest",
       _copy_dest,
+      "--files",
       string_join(",", sources),
     ]
 
@@ -43,6 +47,7 @@ template("copy_to_gen_with_grd") {
          "Test resources can't be included in the release bundle!")
 
   _copy_target = "${target_name}_gen"
+
   copy_to_gen(_copy_target) {
     forward_variables_from(invoker,
                            [

@@ -37,8 +37,11 @@ action_foreach("_generate_skills") {
   args = [
     rebase_path("../../../../scripts/build/build_ai_skills.mjs",
                 root_build_dir),
+    "--build-timestamp",
     build_timestamp,
+    "--input",
     "{{source}}",
+    "--output",
     rebase_path("$target_gen_dir/{{source_name_part}}.skill.js",
                 root_build_dir),
   ]

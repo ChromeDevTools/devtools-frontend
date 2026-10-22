@@ -69,27 +69,29 @@ template("bundle") {
     depfile = _depfile
 
     args = [
+      "--entrypoint",
       rebase_path(invoker.entrypoint, root_build_dir),
+      "--outfile",
       rebase_path(invoker.output_file_location, root_build_dir),
-      "--rootDir",
+      "--root-dir",
       rebase_path("//", root_build_dir),
-      "--rootGenDir",
+      "--root-gen-dir",
       rebase_path(root_gen_dir, root_build_dir),
       "--depfile",
       rebase_path(_depfile, root_build_dir),
     ]
 
     if (_sourcemap) {
-      args += [ "--configSourcemaps" ]
+      args += [ "--sourcemap" ]
     }
 
     if (!_bundle_all) {
       args += [
-        "--entrypointsFile",
+        "--entrypoints-file",
         rebase_path(_entrypoints_file, root_build_dir),
       ]
     } else {
-      args += [ "--bundleAll" ]
+      args += [ "--bundle-all" ]
     }
 
     if (defined(invoker.format)) {
@@ -101,19 +103,19 @@ template("bundle") {
 
     if (defined(invoker.global_name)) {
       args += [
-        "--globalName",
+        "--global-name",
         invoker.global_name,
       ]
     }
 
     if (defined(invoker.css_style_sheet) && invoker.css_style_sheet) {
-      args += [ "--cssStyleSheet" ]
+      args += [ "--css-style-sheet" ]
     }
 
     if (defined(invoker.max_size)) {
       if (!is_debug) {
         args += [
-          "--maxSize",
+          "--max-size",
           "${invoker.max_size}",
         ]
       } else {

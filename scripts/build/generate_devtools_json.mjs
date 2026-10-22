@@ -2,12 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { join, dirname } from 'node:path';
+import { dirname, join } from 'node:path';
+import { parseArgs } from 'node:util';
 import { v5 } from 'uuid';
 
 import { writeIfChanged } from './ninja/write-if-changed.js';
 
-const [, , outputLocation] = process.argv;
+const { values } = parseArgs({
+  options: {
+    output: {
+      type: 'string',
+    },
+  },
+  strict: true,
+});
+
+const { output } = values;
+
+if (!output) {
+  throw new Error('Must specify --output location.');
+}
 
 const root = join(dirname(dirname(import.meta.dirname)), 'front_end');
 
@@ -24,4 +38,4 @@ const devtools = {
     uuid,
   },
 };
-await writeIfChanged(outputLocation, JSON.stringify(devtools, null, 2));
+await writeIfChanged(output, JSON.stringify(devtools, null, 2));

@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {parseArgs} from 'node:util';
 
 import {devtoolsRootPath} from '../devtools_paths.js';
 
@@ -28,49 +29,86 @@ process.env.ESBUILD_BINARY_PATH = path.join(
 
 const esbuild = await import('esbuild');
 
-const entryPoints = [process.argv[2]];
-const outfile = process.argv[3];
-const additionalArgs = process.argv.slice(4);
-const useSourceMaps = additionalArgs.includes('--configSourcemaps');
-const minify = additionalArgs.includes('--minify');
-const bundleAll = additionalArgs.includes('--bundleAll');
-const cssStyleSheet = additionalArgs.includes('--cssStyleSheet');
+const {values} = parseArgs({
+  options: {
+    entrypoint: {
+      type: 'string',
+    },
+    outfile: {
+      type: 'string',
+    },
+    sourcemap: {
+      type: 'boolean',
+      default: false,
+    },
+    minify: {
+      type: 'boolean',
+      default: false,
+    },
+    'bundle-all': {
+      type: 'boolean',
+      default: false,
+    },
+    'css-style-sheet': {
+      type: 'boolean',
+      default: false,
+    },
+    format: {
+      type: 'string',
+      default: 'esm',
+    },
+    'global-name': {
+      type: 'string',
+    },
+    'max-size': {
+      type: 'string',
+    },
+    'root-dir': {
+      type: 'string',
+    },
+    'root-gen-dir': {
+      type: 'string',
+    },
+    depfile: {
+      type: 'string',
+    },
+    'entrypoints-file': {
+      type: 'string',
+    },
+  },
+  strict: true,
+});
 
-const formatFlagIndex = additionalArgs.indexOf('--format');
-const format =
-    formatFlagIndex !== -1 ? /** @type {import('esbuild').Format} */ (additionalArgs[formatFlagIndex + 1]) : 'esm';
+const {
+  entrypoint,
+  outfile,
+  sourcemap,
+  minify,
+  'bundle-all': bundleAll,
+  'css-style-sheet': cssStyleSheet,
+  'global-name': globalName,
+  'root-dir': rootDir,
+  'root-gen-dir': rootGenDir,
+  depfile,
+  'entrypoints-file': entrypointsFile,
+} = values;
 
-const globalNameFlagIndex = additionalArgs.indexOf('--globalName');
-const globalName = globalNameFlagIndex !== -1 ? additionalArgs[globalNameFlagIndex + 1] : undefined;
+const format = /** @type {import('esbuild').Format} */ (values.format);
+const maxSize = values['max-size'] !== undefined ? Number(values['max-size']) : undefined;
 
-const maxSizeFlagIndex = additionalArgs.indexOf('--maxSize');
-const maxSize = maxSizeFlagIndex !== -1 ? Number(additionalArgs[maxSizeFlagIndex + 1]) : undefined;
-
-const rootDirFlagIndex = additionalArgs.indexOf('--rootDir');
-const rootDir = rootDirFlagIndex !== -1 ? additionalArgs[rootDirFlagIndex + 1] : undefined;
-
-const rootGenDirFlagIndex = additionalArgs.indexOf('--rootGenDir');
-const rootGenDir = rootGenDirFlagIndex !== -1 ? additionalArgs[rootGenDirFlagIndex + 1] : undefined;
-
-const depfileFlagIndex = additionalArgs.indexOf('--depfile');
-const depfile = depfileFlagIndex !== -1 ? additionalArgs[depfileFlagIndex + 1] : undefined;
-
-const entrypointsFileFlagIndex = additionalArgs.indexOf('--entrypointsFile');
-const entrypointsFile = entrypointsFileFlagIndex !== -1 ? additionalArgs[entrypointsFileFlagIndex + 1] : undefined;
+if (!entrypoint || !outfile || !rootDir || !rootGenDir) {
+  throw new Error(
+      'Missing required arguments: --entrypoint, --outfile, --root-dir, and --root-gen-dir must be provided');
+}
+const entryPoints = [entrypoint];
 
 if (!bundleAll) {
   if (!entrypointsFile) {
-    throw new Error('Missing required --entrypointsFile argument');
+    throw new Error('Missing required --entrypoints-file argument');
   }
   if (!fs.existsSync(entrypointsFile)) {
     throw new Error(`Entrypoints file does not exist: ${entrypointsFile}`);
   }
-}
-if (!rootDir) {
-  throw new Error('Missing required --rootDir argument');
-}
-if (!rootGenDir) {
-  throw new Error('Missing required --rootGenDir argument');
 }
 
 const outdir = path.dirname(outfile);
@@ -115,7 +153,7 @@ try {
     globalName,
     platform: 'browser',
     plugins: [plugin],
-    sourcemap: useSourceMaps,
+    sourcemap,
     minify,
     metafile: Boolean(depfile),
   });

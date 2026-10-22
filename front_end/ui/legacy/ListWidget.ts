@@ -364,9 +364,9 @@ export class Editor<T> {
   private commitButton: Buttons.Button.Button;
   private readonly cancelButton: Buttons.Button.Button;
   private errorMessageContainer: HTMLElement;
-  private readonly controls: EditorControl[] = [];
+  private readonly controls: HTMLElement[] = [];
   private readonly controlByName = new Map<string, EditorControl>();
-  private readonly validators: Array<(arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult> = [];
+  private readonly validators: Array<(item: T, index: number) => ValidatorResult> = [];
   private commit: (() => void)|null = null;
   private cancel: (() => void)|null = null;
   private item: T|null = null;
@@ -429,7 +429,7 @@ export class Editor<T> {
     ARIAUtils.setLabel(input, title);
     this.controlByName.set(name, input);
     this.controls.push(input);
-    this.validators.push(validator);
+    this.validators.push((item, index) => validator(item, index, input));
     return input;
   }
 
@@ -453,7 +453,7 @@ export class Editor<T> {
     select.addEventListener('blur', this.validateControls.bind(this, false), false);
     this.controlByName.set(name, select);
     this.controls.push(select);
-    this.validators.push(validator);
+    this.validators.push((item, index) => validator(item, index, select));
     return select;
   }
 
@@ -461,10 +461,22 @@ export class Editor<T> {
       name: string, ctor: {new(): U},
       validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): CustomEditorControl<S> {
     const control = new ctor();
-    this.controlByName.set(name, control as unknown as CustomEditorControl<string>);
-    this.controls.push(control as unknown as CustomEditorControl<string>);
-    this.validators.push(validator);
+    const editorControl = control as unknown as CustomEditorControl<string>;
+    this.controlByName.set(name, editorControl);
+    this.controls.push(control);
+    this.validators.push((item, index) => validator(item, index, editorControl));
     return control;
+  }
+
+  /**
+   * Adds an existing element, for example the element of a widget, as an
+   * editor control. The editor marks the element as invalid when the
+   * validator fails. The caller keeps its own reference to the control to
+   * read and write its value.
+   */
+  addCustomControl(element: HTMLElement, validator: (item: T, index: number) => ValidatorResult): void {
+    this.controls.push(element);
+    this.validators.push(validator);
   }
 
   control(name: string): EditorControl {
@@ -480,7 +492,7 @@ export class Editor<T> {
     this.errorMessageContainer.textContent = '';
     for (let index = 0; index < this.controls.length; ++index) {
       const input = this.controls[index];
-      const {valid, errorMessage} = this.validators[index].call(null, (this.item as T), this.index, input);
+      const {valid, errorMessage} = this.validators[index].call(null, (this.item as T), this.index);
 
       input.classList.toggle('error-input', !valid && !forceValid);
       if (valid || forceValid) {

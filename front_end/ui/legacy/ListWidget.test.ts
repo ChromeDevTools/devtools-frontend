@@ -48,6 +48,59 @@ describe('ListWidget', () => {
       }
       assert.isTrue(committed);
     });
+
+    describe('addCustomControl', () => {
+      const getCommitButton = (editor: UI.ListWidget.Editor<string>) => {
+        const commitButton =
+            [...editor.element.querySelectorAll('devtools-button')].find(button => button.innerHTML === 'Commit');
+        assert.exists(commitButton);
+        return commitButton;
+      };
+
+      it('marks the control as invalid and disables the commit button when the validator fails', () => {
+        const editor = new UI.ListWidget.Editor<string>();
+        renderElementIntoDOM(editor.element);
+        const control = document.createElement('div');
+        editor.contentElement().appendChild(control);
+        let valid = true;
+        const validatorCalls: Array<{item: string, index: number}> = [];
+        editor.addCustomControl(control, (item, index) => {
+          validatorCalls.push({item, index});
+          return valid ? {valid: true} : {valid: false, errorMessage: 'Custom error'};
+        });
+        editor.beginEdit('test', 3, 'Commit', () => {}, () => {});
+        assert.deepEqual(validatorCalls, [{item: 'test', index: 3}]);
+
+        valid = false;
+        editor.requestValidation();
+
+        assert.isTrue(control.classList.contains('error-input'));
+        assert.strictEqual(control.getAttribute('aria-invalid'), 'true');
+        assert.isTrue(getCommitButton(editor).disabled);
+        assert.include(editor.element.querySelector('.list-widget-input-validation-error')?.textContent,
+                       'Custom error');
+
+        valid = true;
+        editor.requestValidation();
+
+        assert.isFalse(control.classList.contains('error-input'));
+        assert.isFalse(control.hasAttribute('aria-invalid'));
+        assert.isFalse(getCommitButton(editor).disabled);
+      });
+
+      it('focuses the control when the control is the first control', () => {
+        const editor = new UI.ListWidget.Editor<string>();
+        renderElementIntoDOM(editor.element);
+        const control = document.createElement('div');
+        control.tabIndex = 0;
+        editor.contentElement().appendChild(control);
+        editor.addCustomControl(control, () => ({valid: true}));
+
+        editor.beginEdit('test', 0, 'Commit', () => {}, () => {});
+
+        assert.strictEqual(document.activeElement, control);
+      });
+    });
   });
 
   it('adds a new item even when the empty string', () => {

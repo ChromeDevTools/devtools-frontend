@@ -354,6 +354,29 @@ export class TimelineCommentController {
     if (!this.#parsedTrace) {
       return undefined;
     }
-    return agentContextForEntry(entry.event, this.#parsedTrace);
+    return agentContextForEntry(entry.event, this.#trackNameFor(entry), this.#parsedTrace);
+  }
+
+  /**
+   * Returns the name of the track that contains the entry. Groups are stored
+   * in level order and nested groups follow their parent, so the entry's
+   * track is the last group that starts at or above the entry's level. The
+   * data provider's groupForEvent() is not used because it only knows tracks
+   * built by track appenders, and not, for example, the Frames track.
+   */
+  #trackNameFor(entry: ResolvedEntry): string|null {
+    const timelineData = entry.flameChart.timelineData();
+    if (!timelineData) {
+      return null;
+    }
+    const level = timelineData.entryLevels[entry.entryIndex];
+    let trackName: string|null = null;
+    for (const group of timelineData.groups) {
+      if (group.startLevel > level) {
+        break;
+      }
+      trackName = group.name;
+    }
+    return trackName;
   }
 }

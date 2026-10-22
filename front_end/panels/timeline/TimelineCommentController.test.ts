@@ -189,17 +189,21 @@ describe('TimelineCommentController', function() {
       assert.isTrue(result.highlightRect?.visible);
     });
 
-    it('adds the entry\'s event name to the agent context', async function() {
+    it('adds the entry\'s event name and track to the agent context', async function() {
       const {flameChartView} = await setupFlameChartView(this);
       const flameChart = flameChartView.getMainFlameChart();
       const canvas = flameChart.getCanvas();
 
+      // Entry 0 is a frame in the Frames track. The data provider's
+      // groupForEvent() does not know that track, so this also checks that the
+      // track name comes from the flame chart groups.
       const result = resolverFor(canvas).resolve(canvas, clientCoordinatesForEntry(flameChart, 0));
 
       assert.isNotNull(result);
       const {agentContext} = result.anchor;
       assert.isOk(agentContext);
       assert.include(agentContext, 'Trace event: frame');
+      assert.include(agentContext, 'Track: Frames');
     });
 
     it('resolves a timeline anchor for an entry on the network flame chart', async function() {

@@ -11,16 +11,17 @@ import * as Timeline from './timeline.js';
 
 describe('TimelineCommentContext', function() {
   describe('agentContextForEntry', () => {
-    it('describes the event name, timing, warnings and traced page of an entry', async function() {
+    it('describes the event name, timing, track, warnings and traced page of an entry', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
       const longTask = parsedTrace.data.Warnings.perWarning.get('LONG_TASK')?.at(0);
       assert.isOk(longTask);
 
-      const lines = Timeline.TimelineCommentContext.agentContextForEntry(longTask, parsedTrace);
+      const lines = Timeline.TimelineCommentContext.agentContextForEntry(longTask, 'Main', parsedTrace);
 
       assert.deepEqual(lines, [
         'Trace event: RunTask',
         'Timing: starts at 4,264\xA0ms, duration 143\xA0ms, self time 53\xA0μs',
+        'Track: Main',
         'Warnings: Long task',
         'Traced page: https://b2607f8b04800100000289cb1c0a82ba72253000000000000000001.proxy.googlers.com/long-interaction/index.html?x=35',
       ]);
@@ -32,7 +33,7 @@ describe('TimelineCommentContext', function() {
       const request = parsedTrace.data.NetworkRequests.byTime.at(0);
       assert.isOk(request);
 
-      const lines = Timeline.TimelineCommentContext.agentContextForEntry(request, parsedTrace);
+      const lines = Timeline.TimelineCommentContext.agentContextForEntry(request, null, parsedTrace);
 
       assert.deepEqual(lines, [
         'Trace event: SyntheticNetworkRequest',

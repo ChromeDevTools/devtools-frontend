@@ -29,7 +29,7 @@ function labelForWarning(warning: Trace.Handlers.ModelHandlers.Warnings.Warning)
  * Describes a flame chart entry for the AI agent that receives comments on
  * it. The entry title is already sent as the anchor's text signature, so the
  * lines add what identifies the entry in the trace: the trace event name, the
- * entry's timing, its warnings and the page that was traced.
+ * entry's timing, its track, its warnings and the page that was traced.
  *
  * Times are relative to the start of the trace, which is where the
  * Performance panel's time ruler starts.
@@ -38,6 +38,7 @@ function labelForWarning(warning: Trace.Handlers.ModelHandlers.Warnings.Warning)
  */
 export function agentContextForEntry(
     event: Trace.Types.Events.Event,
+    trackName: string|null,
     parsedTrace: Trace.TraceModel.ParsedTrace,
     ): string[] {
   const {micros} = AIAssistance.UnitFormatters;
@@ -54,6 +55,10 @@ export function agentContextForEntry(
     timing.push(`self time ${micros(selfTime)}`);
   }
   lines.push(`Timing: ${timing.join(', ')}`);
+
+  if (trackName) {
+    lines.push(`Track: ${trackName}`);
+  }
 
   const warnings = parsedTrace.data.Warnings.perEvent.get(event);
   if (warnings?.length) {

@@ -47,7 +47,7 @@ export function getRemoteBase(location: string = globalObject.self?.location?.to
     return null;
   }
 
-  return {base: `devtools://devtools/remote/serve_file/${version[1]}/`, version: version[1]};
+  return {base: `devtools://devtools-remote/remote/serve_file/${version[1]}/`, version: version[1]};
 }
 
 export function getPathName(): string {

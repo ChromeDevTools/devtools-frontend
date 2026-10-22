@@ -31,7 +31,7 @@ describe('Runtime', () => {
       it('provides remote base info', () => {
         assert.deepEqual(Root.Runtime.getRemoteBase(fullLocation), {
           version,
-          base: `devtools://devtools/remote/serve_file/${version}/`,
+          base: `devtools://devtools-remote/remote/serve_file/${version}/`,
         });
       });
 

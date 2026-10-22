@@ -49,7 +49,7 @@ export function getAllSupportedDevToolsLocales(): string[] {
 function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier, location: string): string {
   const remoteBase = Root.Runtime.getRemoteBase(location);
   if (remoteBase?.version && !BUNDLED_LOCALES.has(locale)) {
-    return REMOTE_FETCH_PATTERN.replace('@HOST@', 'devtools://devtools')
+    return REMOTE_FETCH_PATTERN.replace('@HOST@', 'devtools://devtools-remote')
         .replace('@VERSION@', remoteBase.version)
         .replace('@LOCALE@', locale);
   }

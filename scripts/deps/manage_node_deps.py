@@ -6,30 +6,28 @@
 """
 Use this script to update node_modules instead of running npm install
 manually. To upgrade a dependency, change the version number in package.json
-and run this script, which can be done with `./dt install-deps` locally.
+and run `./dt install-deps`.
 
-Without options the script runs `npm install`, post-processes the tree and
-checks licenses, exactly as it always did. The options below add the steps
-needed to ship node_modules as a single archive in Google Cloud Storage
-(gs://chromium-nodejs/devtools-frontend/<sha256>) instead of git:
+node_modules is not checked into git: `gclient sync` extracts it from the
+archive pinned by the `node_modules` entry in DEPS
+(gs://chromium-nodejs/devtools-frontend/<sha256>). This script produces that
+archive. Without options it runs `npm install`, post-processes the tree,
+checks licenses, applies scripts/deps/npm_exclude.txt (rsync filter rules
+that drop files the build and tests don't need), verifies that every
+node_modules/ path referenced from GN or Python build files still exists and
+writes a deterministic out/node_modules.tar.gz.
 
-  --filter      Apply scripts/deps/npm_exclude.txt (rsync filter rules) to
-                node_modules, removing files the build and tests don't need.
-  --archive     Build a deterministic node_modules.tar.gz from node_modules.
-  --upload      Upload the archive to GCS and point the `node_modules` entry
-                in DEPS at it (implies --archive).
-  --check       Rebuild the archive from node_modules and compare it with
-                the `node_modules` entry in DEPS.
-  --verify-references
-                Check that every node_modules/ path referenced from GN or
-                Python build files still exists.
-  --skip-install
-                Don't run `npm install`; operate on the existing tree.
+  --upload        Also upload the archive to GCS (a no-op when it already
+                  exists) and point the `node_modules` entry in DEPS at it.
+  --check         Only rebuild the archive from node_modules and compare it
+                  with the `node_modules` entry in DEPS.
+  --skip-install  Don't run `npm install`; operate on the existing tree.
 
 A typical dependency bump is:
 
-  ./dt install-deps --filter --archive   # or --upload, if you have access
-  ./dt build && ./dt test                # verify the filtered tree
+  ./dt install-deps            # or --upload, if you have access to the bucket
+  ./dt build && ./dt test      # verify the new tree
+  git cl upload                # package.json, package-lock.json and DEPS
 """
 
 import argparse
@@ -203,49 +201,6 @@ def remove_package_json_entries():
     return False
 
 
-def addClangFormat():
-    with open(path.join(devtools_paths.node_modules_path(), '.clang-format'),
-              'w+') as clang_format_file:
-        try:
-            clang_format_file.write('DisableFormat: true\n')
-        except:
-            print('Unable to write .clang-format file')
-            return True
-    return False
-
-
-def addOwnersFile():
-    with open(path.join(devtools_paths.node_modules_path(), 'OWNERS'),
-              'w+') as owners_file:
-        try:
-            owners_file.write('file://config/owner/INFRA_OWNERS\n')
-        except:
-            print('Unable to write OWNERS file')
-            return True
-    return False
-
-
-def addReadme():
-    with open(path.join(devtools_paths.node_modules_path(), 'README.md'),
-              'w+') as readme_file:
-        try:
-            readme_file.write(
-                'This directory hosts all packages downloaded from NPM that are used in either the build system or infrastructure scripts.\n'
-            )
-            readme_file.write(
-                'If you want to make any changes to this directory, please see "scripts/deps/manage_node_deps.py".\n'
-            )
-        except:
-            print('Unable to write README.md file')
-            return True
-    return False
-
-
-def add_marker_files():
-    """Writes the files PRESUBMIT.py expects at the root of node_modules."""
-    return addClangFormat() or addOwnersFile() or addReadme()
-
-
 def fixChaiExports():
     file_path = path.join(devtools_paths.node_modules_path(), 'chai',
                           'package.json')
@@ -348,9 +303,6 @@ def run_npm_command():
         return True
 
     if strip_private_fields():
-        return True
-
-    if add_marker_files():
         return True
 
     fixChaiExports()
@@ -851,6 +803,58 @@ def check_archive(archive_path, deps_file=None, node_modules=None):
     return False
 
 
+# --- Presubmit support ------------------------------------------------------
+
+# Files whose content determines what ends up in the archive. PRESUBMIT.py
+# requires the DEPS entry to change together with them.
+ARCHIVE_INPUT_FILES = ('package-lock.json', 'scripts/deps/npm_exclude.txt')
+ARCHIVE_INPUT_DIRS = ('scripts/deps/node_module_patches/', )
+# The parts of package.json that affect node_modules (not `scripts` etc.).
+PACKAGE_JSON_DEPENDENCY_KEYS = ('dependencies', 'devDependencies',
+                                'optionalDependencies', 'overrides')
+
+
+def package_json_dependencies(text):
+    data = json.loads(text)
+    return {key: data.get(key) for key in PACKAGE_JSON_DEPENDENCY_KEYS}
+
+
+def archive_inputs_changed(changed_files,
+                           old_package_json=None,
+                           new_package_json=None):
+    """Returns the changed repo-relative paths that require a new archive.
+
+    old/new_package_json are the file contents when package.json changed.
+    """
+    hits = [
+        f for f in changed_files
+        if f in ARCHIVE_INPUT_FILES or f.startswith(ARCHIVE_INPUT_DIRS)
+    ]
+    if old_package_json is not None and (
+            package_json_dependencies(old_package_json)
+            != package_json_dependencies(new_package_json)):
+        hits.append('package.json')
+    return sorted(hits)
+
+
+def deps_entry_changed(old_deps_text, new_deps_text):
+    return parse_deps_entry(old_deps_text) != parse_deps_entry(new_deps_text)
+
+
+def check_deps_entry(deps_text):
+    """Returns problems with the node_modules entry, as strings."""
+    entry = parse_deps_entry(deps_text)
+    if entry is None:
+        return ['DEPS has no gcs entry named %r.' % DEPS_ENTRY_NAME]
+    expected = '%s/%s' % (GCS_PREFIX, entry['sha256sum'])
+    if entry['object_name'] != expected:
+        return [
+            'DEPS: %r object_name must be %s (objects are named by their '
+            'sha256).' % (DEPS_ENTRY_NAME, expected)
+        ]
+    return []
+
+
 # --- Entry point ------------------------------------------------------------
 
 
@@ -861,18 +865,10 @@ def parse_args(argv):
     parser.add_argument('--skip-install',
                         action='store_true',
                         help="Don't run npm install; use the existing tree.")
-    parser.add_argument('--filter',
-                        action='store_true',
-                        help='Apply scripts/deps/npm_exclude.txt.')
     parser.add_argument('--exclude-file',
                         default=None,
-                        help='Exclude list to use with --filter.')
-    parser.add_argument('--verify-references',
-                        action='store_true',
-                        help='Check paths referenced by GN/Python files.')
-    parser.add_argument('--archive',
-                        action='store_true',
-                        help='Build a deterministic node_modules.tar.gz.')
+                        help='Exclude list '
+                        '(default: scripts/deps/npm_exclude.txt).')
     parser.add_argument('--archive-path',
                         default=None,
                         help='Where to write the archive '
@@ -882,7 +878,7 @@ def parse_args(argv):
                         help='Upload the archive to GCS and update DEPS.')
     parser.add_argument('--check',
                         action='store_true',
-                        help='Compare a rebuilt archive with DEPS.')
+                        help='Only compare a rebuilt archive with DEPS.')
     parser.add_argument('--deps-file',
                         default=None,
                         help='DEPS file to read/update (default: ./DEPS).')
@@ -893,39 +889,26 @@ def main(argv=None):
     args = parse_args(argv if argv is not None else sys.argv[1:])
     archive_path = args.archive_path or default_archive_path()
 
-    if not args.skip_install and not args.check:
-        if run_npm_command():
-            print('npm command failed')
-            return 1
-
-    if args.filter:
-        if filter_node_modules(args.exclude_file):
-            return 1
-        # PRESUBMIT.py expects these at the root of node_modules.
-        if add_marker_files():
-            return 1
-        if verify_references():
-            return 1
-    elif args.verify_references:
-        if verify_references():
-            return 1
-
     try:
         if args.check:
             return 1 if check_archive(archive_path, args.deps_file) else 0
 
-        if args.archive or args.upload:
-            archive_node_modules(archive_path)
+        if not args.skip_install and run_npm_command():
+            print('npm command failed')
+            return 1
+        if filter_node_modules(args.exclude_file):
+            return 1
+        if verify_references():
+            return 1
+        archive_node_modules(archive_path)
     except ValueError as error:
         # Raised by create_archive() for a missing/empty tree or a symlink
         # that gclient would refuse; never upload such an archive.
         print(f'Cannot archive node_modules: {error}')
         return 1
 
-    if args.upload:
-        if upload_archive(archive_path, args.deps_file):
-            return 1
-
+    if args.upload and upload_archive(archive_path, args.deps_file):
+        return 1
     return 0
 
 

@@ -39,7 +39,9 @@ npm-debug.log
 /build
 /buildtools
 /out
-# Transient directories of `scripts/deps/manage_node_deps.py --filter`.
+# Extracted from the archive pinned in DEPS and managed by gclient sync
+# (see scripts/deps/manage_node_deps.py), plus its transient directories.
+/node_modules
 /node_modules.filtered
 /node_modules.old
 /third_party/*

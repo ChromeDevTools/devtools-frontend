@@ -334,6 +334,14 @@ Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code)
 to check out Chromium. The DevTools front-end code is located inside the
 `third_party/devtools-frontend/src/` folder (after running `gclient sync`).
 
+`node_modules/` is not part of the devtools-frontend git tree: `gclient sync`,
+run from `chromium/src`, downloads the archive pinned in
+`third_party/devtools-frontend/src/DEPS` and extracts it (see
+[dependencies.md](cookbook/dependencies.md)). Whenever you check out a
+different DevTools revision or branch in `third_party/devtools-frontend/src`,
+run `gclient sync` again before building; `git checkout` or `git rebase`
+alone do not update `node_modules/`.
+
 ### Build
 
 The [instructions](https://www.chromium.org/developers/how-tos/get-the-code) on
@@ -437,6 +445,13 @@ git checkout my-change-frontend
 git rebase
 popd
 ```
+
+Finish with another `gclient sync` so that `node_modules/` (and the other
+dependencies pinned in the DevTools `DEPS`) match the DevTools revision you
+ended up on. If you switch back and forth across the revision that moved
+`node_modules/` out of git, `gclient sync` repairs the directory on its own
+(`ensure_node_modules` hook); in the worst case it asks you to run it once
+more.
 
 ## Integrated checkout
 

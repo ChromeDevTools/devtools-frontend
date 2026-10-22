@@ -1,0 +1,63 @@
+# rsync filter rules that scripts/deps/manage_node_deps.py applies to
+# node_modules before archiving it for gs://chromium-nodejs (see
+# docs/cookbook/dependencies.md). `+ pattern` keeps, `pattern` drops, and the
+# first matching rule wins, so keeps come first. Any change here changes the
+# archive: re-run `./dt install-deps --upload`.
+#
+# ---- keep ----
++ /.bin/
++ /.bin/***
+# tsc needs every declaration file.
++ *.d.ts
++ *.d.mts
++ *.d.cts
+# license-checker reads these.
++ LICENSE*
++ LICENCE*
++ NOTICE*
++ COPYING*
++ ThirdPartyNoticeText.txt
++ package.json
+# karma serves these at test time; the blanket *.html below would break unit
+# tests.
++ /karma/static/***
+# ---- drop ----
+# Dotfiles and dotdirs inside packages (.github, .eslintrc*, .nycrc, ...).
+*/.*
+*/example/
+*/examples/
+*/test/
+*/tests/
+*/__tests__/
+*/docs/
+*/doc/
+*/coverage/
+*/lcov-report/
+lcov.info
+*.md
+*.markdown
+*.map
+*.ts
+*.mts
+*.cts
+*.html
+*.png
+*.svg
+*.woff
+*.woff2
+*.yml
+*.yaml
+*.lock
+*.sh
+*.flow
+Makefile
+CHANGELOG*
+CHANGES*
+HISTORY*
+# TypeScript's localized diagnostics; tsc only reads them with --locale.
+typescript/lib/*/diagnosticMessages.generated.json
+# Never archive gclient's stamp files or a stale archive.
+node_modules.tar.gz
+.*_hash
+.*_is_first_class_gcs
+.*_content_names

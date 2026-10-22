@@ -259,6 +259,25 @@ deps = {
           },
       ],
   },
+  # npm packages for the build and test toolchain, extracted into
+  # node_modules/ from a deterministic archive produced by
+  # scripts/deps/manage_node_deps.py (see docs/cookbook/dependencies.md).
+  # Only `non_git_source`: devtools-frontend is in Chromium's recursedeps, so
+  # this one entry serves standalone and Chromium checkouts alike.
+  'node_modules': {
+    'dep_type': 'gcs',
+    'bucket': 'chromium-nodejs',
+    'condition': 'non_git_source',
+    'objects': [
+      {
+        'object_name': 'devtools-frontend/27b3307712c47af800bdfd7bea41c7f4659cb257d8c42aa1e5863f4fffd885b0',
+        'sha256sum': '27b3307712c47af800bdfd7bea41c7f4659cb257d8c42aa1e5863f4fffd885b0',
+        'size_bytes': 30475889,
+        'generation': 1792590747426105,
+        'output_file': 'node_modules.tar.gz',
+      },
+    ],
+  },
   "scripts/ai_assistance/suite/outputs": {
     "dep_type": "gcs",
     'condition': 'checkout_ai_evals == True',
@@ -383,6 +402,17 @@ deps = {
 }
 
 hooks = [
+  {
+    # gclient re-extracts the `node_modules` archive based on its stamp
+    # files, not on the extracted tree. Checking out a revision from before
+    # node_modules left git and coming back leaves a valid stamp next to an
+    # empty directory; this re-extracts the archive gclient keeps there.
+    # Unconditional so that it also runs in Chromium checkouts (recursedeps);
+    # it is a no-op wherever gclient did not extract the archive (Cog).
+    'name': 'ensure_node_modules',
+    'pattern': '.',
+    'action': ['python3', 'scripts/deps/ensure_node_modules.py'],
+  },
   {
     # Ensure that the DEPS'd "depot_tools" has its self-update capability
     # disabled.

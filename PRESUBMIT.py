@@ -457,60 +457,81 @@ def CheckTestExpectations(input_api, output_api):
         message='Test expectations')
 
 
-_UPDATE_NODE_DEPENDENCIES_FOOTER = 'Update-Node-Dependencies'
+_SKIP_NODE_MODULES_CHECK_FOOTER = 'Skip-Node-Modules-Check'
+
+
+def _ImportManageNodeDeps(input_api):
+    original_sys_path = sys.path
+    try:
+        sys.path = sys.path + [
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts',
+                                   'deps')
+        ]
+        import manage_node_deps
+        return manage_node_deps
+    finally:
+        sys.path = original_sys_path
 
 
 def CheckNodeModules(input_api, output_api):
-    files = ['.clang-format', 'OWNERS', 'README.md']
+    """node_modules/ is the archive pinned in DEPS, extracted by gclient sync.
+
+    Checks that it is present, that the DEPS object is content-addressed and
+    that the files the archive is built from change together with DEPS.
+    """
+    if input_api.is_committing:
+        report = output_api.PresubmitError
+    else:
+        report = output_api.PresubmitPromptWarning
+
+    node_modules = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                          'node_modules')
+    if not input_api.os_path.isdir(node_modules):
+        return [
+            report('node_modules/ is missing. Run `gclient sync` to '
+                   'download it.')
+        ]
+
+    manage_node_deps = _ImportManageNodeDeps(input_api)
+    affected = {
+        f.LocalPath().replace(input_api.os_path.sep, '/'): f
+        for f in input_api.AffectedFiles()
+    }
+    package_json = affected.get('package.json')
+    inputs = manage_node_deps.archive_inputs_changed(
+        affected.keys(),
+        '\n'.join(package_json.OldContents()) if package_json else None,
+        '\n'.join(package_json.NewContents()) if package_json else None)
+
     results = []
-    for file in files:
-        file_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                           'node_modules', file)
-        if not Path(file_path).is_file():
-            results.extend([
-                output_api.PresubmitError(
-                    "node_modules/%s is missing. Use `scripts/tools/dt.py install-deps` to re-create it."
-                    % file)
-            ])
+    archive_changed = False
+    deps = affected.get('DEPS')
+    if deps:
+        old_deps = '\n'.join(deps.OldContents())
+        new_deps = '\n'.join(deps.NewContents())
+        results.extend(
+            output_api.PresubmitError(problem)
+            for problem in manage_node_deps.check_deps_entry(new_deps))
+        archive_changed = manage_node_deps.deps_entry_changed(
+            old_deps, new_deps)
 
-    node_module_files = _GetAffectedFiles(input_api, [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules')
-    ], [], [])
-
-    if len(node_module_files) == 0:
+    if input_api.change.GitFootersFromDescription().get(
+            _SKIP_NODE_MODULES_CHECK_FOOTER):
         return results
 
-    reasons = input_api.change.GitFootersFromDescription().get(
-        _UPDATE_NODE_DEPENDENCIES_FOOTER, [])
-
-    if len(reasons):
-        if ''.join(reasons).strip() == '':
-            return [
-                output_api.PresubmitError(
-                    '{key} is specified without the reason. Please provide the reason '
-                    'in "{key}: <reason>"'.format(
-                        key=_UPDATE_NODE_DEPENDENCIES_FOOTER))
-            ]
-        input_api.logging.info('node_modules check is being ignored')
-        return []
-
-    # Fail on CQ when checking diffs.
-    # Warn locally or when checking the whole tree (due to legacy headers).
-    if input_api.is_committing and not input_api.no_diffs:
-        report_type = output_api.PresubmitError
-    else:
-        report_type = output_api.PresubmitPromptWarning
-
-    message = (
-        "{key}: <reason> footer must be present.\n".format(
-            key=_UPDATE_NODE_DEPENDENCIES_FOOTER) +
-        "This is third party code and should not be modified manually.\n" +
-        "`node_modules` are mainly used in testing infra\n" +
-        "For bug fixes and features usually you should not need this change.\n"
-        + "Was this change intentional?")
-
-    results.extend([report_type(message)])
-
+    if inputs and not archive_changed:
+        results.append(
+            report('%s changed but the node_modules archive in DEPS did '
+                   'not. Run `./dt install-deps --upload`, or add a '
+                   '"%s: <reason>" footer if no new archive is needed.' %
+                   (', '.join(inputs), _SKIP_NODE_MODULES_CHECK_FOOTER)))
+    elif (archive_changed and not inputs
+          and 'scripts/deps/manage_node_deps.py' not in affected):
+        results.append(
+            output_api.PresubmitPromptWarning(
+                'The node_modules archive in DEPS changed, but none of '
+                'package.json, package-lock.json, npm_exclude.txt or the '
+                'patches did. Was this intentional?'))
     return results
 
 

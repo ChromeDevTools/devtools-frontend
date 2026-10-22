@@ -1,2 +1,0 @@
-export type LitTargetKind = "memberFunctionElement" | "functionElement" | "constructorImplementationElement" | "variableElement" | "classElement" | "interfaceElement" | "moduleElement" | "memberVariableElement" | "constElement" | "enumElement" | "keyword" | "constElement" | "alias" | "moduleElement" | "member" | "label" | "unknown";
-//# sourceMappingURL=lit-target-kind.d.ts.map

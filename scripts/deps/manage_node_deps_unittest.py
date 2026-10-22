@@ -355,6 +355,57 @@ class DepsTest(unittest.TestCase):
         check_call.assert_not_called()
 
 
+class PresubmitSupportTest(unittest.TestCase):
+
+    PKG = ('{"name": "x", "scripts": {"test": "a"}, '
+           '"devDependencies": {"typescript": "6.0.2"}}')
+
+    def test_package_json_scripts_change_is_not_an_archive_input(self):
+        new = self.PKG.replace('"test": "a"', '"test": "b"')
+        self.assertEqual(
+            manage_node_deps.archive_inputs_changed(['package.json'], self.PKG,
+                                                    new), [])
+
+    def test_package_json_dependency_change_is_an_archive_input(self):
+        new = self.PKG.replace('6.0.2', '6.0.3')
+        self.assertEqual(
+            manage_node_deps.archive_inputs_changed(['package.json'], self.PKG,
+                                                    new), ['package.json'])
+
+    def test_lockfile_exclude_list_and_patches_are_archive_inputs(self):
+        changed = [
+            'DEPS', 'front_end/a.ts', 'package-lock.json',
+            'scripts/deps/npm_exclude.txt',
+            'scripts/deps/node_module_patches/karma-mocha.patch'
+        ]
+        self.assertEqual(manage_node_deps.archive_inputs_changed(changed), [
+            'package-lock.json',
+            'scripts/deps/node_module_patches/karma-mocha.patch',
+            'scripts/deps/npm_exclude.txt'
+        ])
+
+    def test_deps_entry_changed(self):
+        old = DepsTest.DEPS
+        self.assertFalse(manage_node_deps.deps_entry_changed(old, old))
+        self.assertTrue(
+            manage_node_deps.deps_entry_changed(
+                old, old.replace('1790681952304657', '1790681952304658')))
+        self.assertTrue(manage_node_deps.deps_entry_changed(
+            'deps = {}\n', old))
+
+    def test_check_deps_entry(self):
+        self.assertEqual(manage_node_deps.check_deps_entry(DepsTest.DEPS), [])
+        wrong_name = DepsTest.DEPS.replace(
+            "'object_name': 'devtools-frontend/%s'" % ('a' * 64),
+            "'object_name': 'devtools-frontend/latest'")
+        self.assertEqual(manage_node_deps.check_deps_entry(wrong_name), [
+            "DEPS: 'node_modules' object_name must be devtools-frontend/%s "
+            '(objects are named by their sha256).' % ('a' * 64)
+        ])
+        self.assertEqual(manage_node_deps.check_deps_entry('deps = {}\n'),
+                         ["DEPS has no gcs entry named 'node_modules'."])
+
+
 class ReferencesTest(unittest.TestCase):
 
     def setUp(self):
@@ -512,46 +563,105 @@ class FilterTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.node_modules + '.old'))
         self.assertFalse(os.path.exists(self.node_modules + '.filtered'))
 
+    def test_repo_exclude_list(self):
+        """Executable summary of scripts/deps/npm_exclude.txt."""
+        exclude = os.path.join(
+            os.path.dirname(os.path.abspath(manage_node_deps.__file__)),
+            'npm_exclude.txt')
+        tree = os.path.join(self.tmp, 'repo_tree')
+        kept = [
+            '.bin/pkg',
+            '.package-lock.json',
+            'pkg/package.json',
+            'pkg/index.js',
+            'pkg/index.d.ts',
+            'pkg/types.d.mts',
+            'pkg/LICENSE',
+            'pkg/LICENSE.md',
+            'pkg/NOTICE',
+            'karma/static/context.html',
+            'typescript/lib/typescript.js',
+            'typescript/lib/lib.dom.d.ts',
+            'typescript/ThirdPartyNoticeText.txt',
+        ]
+        dropped = [
+            'pkg/README.md',
+            'pkg/CHANGELOG.md',
+            'pkg/index.js.map',
+            'pkg/src/index.ts',
+            'pkg/test/index_test.js',
+            'pkg/docs/api.html',
+            'pkg/.github/workflows/ci.yml',
+            'pkg/.eslintrc',
+            'pkg/logo.png',
+            'typescript/lib/fr/diagnosticMessages.generated.json',
+            'node_modules.tar.gz',
+            '.devtools-frontend_x_hash',
+        ]
+        for rel in kept + dropped:
+            if rel == '.bin/pkg':
+                symlink(tree, rel, '../pkg/index.js')
+            else:
+                write(tree, rel)
+        with contextlib.redirect_stdout(io.StringIO()):
+            failed = manage_node_deps.filter_node_modules(
+                exclude, tree, os.path.join(self.tmp, 'staging'))
+        self.assertFalse(failed)
+        remaining = set()
+        for dirpath, _, filenames in os.walk(tree):
+            for filename in filenames:
+                remaining.add(
+                    os.path.relpath(os.path.join(dirpath, filename), tree))
+        self.assertEqual(remaining, set(kept))
+
 
 class MainTest(unittest.TestCase):
 
     def setUp(self):
         for name in ('run_npm_command', 'filter_node_modules',
-                     'add_marker_files', 'verify_references',
-                     'archive_node_modules', 'upload_archive',
-                     'check_archive'):
+                     'verify_references', 'archive_node_modules',
+                     'upload_archive', 'check_archive'):
             patcher = mock.patch.object(manage_node_deps,
                                         name,
                                         return_value=False)
             setattr(self, name, patcher.start())
             self.addCleanup(patcher.stop)
 
-    def test_default_only_installs(self):
-        self.assertEqual(manage_node_deps.main([]), 0)
+    def test_default_installs_filters_and_archives(self):
+        argv = ['--archive-path', '/tmp/x.tar.gz']
+        self.assertEqual(manage_node_deps.main(argv), 0)
         self.run_npm_command.assert_called_once()
-        self.filter_node_modules.assert_not_called()
-        self.archive_node_modules.assert_not_called()
+        self.filter_node_modules.assert_called_once_with(None)
+        self.verify_references.assert_called_once()
+        self.archive_node_modules.assert_called_once_with('/tmp/x.tar.gz')
         self.upload_archive.assert_not_called()
 
     def test_install_failure_stops(self):
         self.run_npm_command.return_value = True
         with contextlib.redirect_stdout(io.StringIO()):
-            self.assertEqual(manage_node_deps.main(['--filter']), 1)
+            self.assertEqual(manage_node_deps.main([]), 1)
         self.filter_node_modules.assert_not_called()
+        self.archive_node_modules.assert_not_called()
 
-    def test_filter_then_archive(self):
-        argv = [
-            '--skip-install', '--filter', '--archive', '--archive-path',
-            '/tmp/x.tar.gz'
-        ]
+    def test_filter_failure_stops(self):
+        self.filter_node_modules.return_value = True
+        self.assertEqual(manage_node_deps.main(['--skip-install']), 1)
+        self.verify_references.assert_not_called()
+        self.archive_node_modules.assert_not_called()
+
+    def test_missing_reference_stops(self):
+        self.verify_references.return_value = True
+        self.assertEqual(manage_node_deps.main(['--skip-install']), 1)
+        self.archive_node_modules.assert_not_called()
+
+    def test_skip_install_uses_given_exclude_file(self):
+        argv = ['--skip-install', '--exclude-file', '/tmp/x.txt']
         self.assertEqual(manage_node_deps.main(argv), 0)
         self.run_npm_command.assert_not_called()
-        self.filter_node_modules.assert_called_once_with(None)
-        self.add_marker_files.assert_called_once()
-        self.verify_references.assert_called_once()
-        self.archive_node_modules.assert_called_once_with('/tmp/x.tar.gz')
+        self.filter_node_modules.assert_called_once_with('/tmp/x.txt')
+        self.archive_node_modules.assert_called_once()
 
-    def test_upload_implies_archive(self):
+    def test_upload_after_archive(self):
         argv = [
             '--skip-install', '--upload', '--archive-path', '/tmp/x.tar.gz'
         ]
@@ -559,13 +669,21 @@ class MainTest(unittest.TestCase):
         self.archive_node_modules.assert_called_once_with('/tmp/x.tar.gz')
         self.upload_archive.assert_called_once_with('/tmp/x.tar.gz', None)
 
-    def test_check_does_not_install(self):
+    def test_archive_error_stops_before_upload(self):
+        self.archive_node_modules.side_effect = ValueError('empty')
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(
+                manage_node_deps.main(['--skip-install', '--upload']), 1)
+        self.upload_archive.assert_not_called()
+
+    def test_check_only_compares(self):
         argv = [
             '--check', '--archive-path', '/tmp/x.tar.gz', '--deps-file',
             '/tmp/DEPS'
         ]
         self.assertEqual(manage_node_deps.main(argv), 0)
         self.run_npm_command.assert_not_called()
+        self.filter_node_modules.assert_not_called()
         self.check_archive.assert_called_once_with('/tmp/x.tar.gz',
                                                    '/tmp/DEPS')
         self.archive_node_modules.assert_not_called()

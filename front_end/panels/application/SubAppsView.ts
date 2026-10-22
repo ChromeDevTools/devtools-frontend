@@ -18,11 +18,11 @@ const UIStrings = {
   /**
    * @description Heading label for Sub Apps view
    */
-  subApps: 'Sub Apps',
+  subApps: 'Sub apps',
   /**
    * @description Heading label for Sibling Sub Apps view
    */
-  siblingSubApps: 'Sibling Sub Apps',
+  siblingSubApps: 'Sibling sub apps',
   /**
    * @description Column header for the sub-app name
    */

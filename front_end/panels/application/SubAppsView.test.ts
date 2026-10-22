@@ -106,19 +106,19 @@ describeWithEnvironment('SubAppsView', () => {
 
     const component = await renderSubAppsView(subApps, false);
     const heading = component.contentElement.querySelector('.heading');
-    assert.strictEqual(heading?.textContent?.trim(), 'Sub Apps');
+    assert.strictEqual(heading?.textContent?.trim(), 'Sub apps');
     const dataGrid = component.contentElement.querySelector('devtools-data-grid');
     assert.isNotNull(dataGrid);
     assert.strictEqual(dataGrid?.getAttribute('role'), 'grid');
-    assert.strictEqual(dataGrid?.getAttribute('aria-label'), 'Sub Apps');
+    assert.strictEqual(dataGrid?.getAttribute('aria-label'), 'Sub apps');
 
     component.isSiblingSubApps = true;
     await component.updateComplete;
     await raf();
     const siblingHeading = component.contentElement.querySelector('.heading');
-    assert.strictEqual(siblingHeading?.textContent?.trim(), 'Sibling Sub Apps');
+    assert.strictEqual(siblingHeading?.textContent?.trim(), 'Sibling sub apps');
     const siblingGrid = component.contentElement.querySelector('devtools-data-grid');
-    assert.strictEqual(siblingGrid?.getAttribute('aria-label'), 'Sibling Sub Apps');
+    assert.strictEqual(siblingGrid?.getAttribute('aria-label'), 'Sibling sub apps');
   });
 
   it('re-renders only when assigned values change', async () => {

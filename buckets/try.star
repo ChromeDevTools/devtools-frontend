@@ -267,6 +267,40 @@ luci.cq_group(
         timeout_weight = 4,
     ),
     verifiers = branch_verifiers(),
+    post_actions = [
+        cq.post_action_gerrit_label_votes(
+            name = "presubmit-verified-success",
+            conditions = [
+                cq.post_action_triggering_condition(
+                    mode = cq.MODE_DRY_RUN,
+                    statuses = [cq.STATUS_SUCCEEDED],
+                ),
+                cq.post_action_triggering_condition(
+                    mode = cq.MODE_FULL_RUN,
+                    statuses = [cq.STATUS_SUCCEEDED],
+                ),
+            ],
+            labels = {
+                "Presubmit-Verified": 1,
+            },
+        ),
+        cq.post_action_gerrit_label_votes(
+            name = "presubmit-verified-failure",
+            conditions = [
+                cq.post_action_triggering_condition(
+                    mode = cq.MODE_DRY_RUN,
+                    statuses = [cq.STATUS_FAILED],
+                ),
+                cq.post_action_triggering_condition(
+                    mode = cq.MODE_FULL_RUN,
+                    statuses = [cq.STATUS_FAILED],
+                ),
+            ],
+            labels = {
+                "Presubmit-Verified": -1,
+            },
+        ),
+    ],
 )
 
 luci.cq_group(

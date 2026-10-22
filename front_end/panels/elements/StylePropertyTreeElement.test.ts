@@ -4770,6 +4770,43 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
             sinon.match.object,
         );
       });
+
+      it('tracks only net property changes from StyleEditorWidget when the popover closes', async () => {
+        const section = await createLiveSection('display: flex; flex-direction: row;', {inline: true});
+        const triggerButton = Elements.StyleEditorWidget.StyleEditorWidget.createTriggerButton(
+            stylesSidebarPane, section, ElementsComponents.StylePropertyEditor.FlexboxEditor, 'Open flexbox editor',
+            'test-flex');
+        triggerButton.click();
+        await waitFor(() => stylesSidebarPane.swatchPopoverHelper().isShowing());
+
+        const widget = Elements.StyleEditorWidget.StyleEditorWidget.instance();
+        await widget.onPropertySelected(
+            new ElementsComponents.StylePropertyEditor.PropertySelectedEvent('flex-direction', 'column'));
+        await widget.onPropertySelected(
+            new ElementsComponents.StylePropertyEditor.PropertySelectedEvent('flex-direction', 'column-reverse'));
+        await widget.onPropertySelected(
+            new ElementsComponents.StylePropertyEditor.PropertySelectedEvent('justify-content', 'center'));
+        await widget.onPropertyDeselected(
+            new ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent('justify-content', 'center'));
+        await widget.onPropertySelected(
+            new ElementsComponents.StylePropertyEditor.PropertySelectedEvent('align-items', 'stretch'));
+
+        sinon.assert.notCalled(changeTracker.trackChange);
+
+        stylesSidebarPane.swatchPopoverHelper().hide(true);
+
+        sinon.assert.calledTwice(changeTracker.trackChange);
+        sinon.assert.calledWithExactly(
+            changeTracker.trackChange.firstCall,
+            'Changed style property "flex-direction" from "row" to "column-reverse" in rule "element.style"',
+            sinon.match.object,
+        );
+        sinon.assert.calledWithExactly(
+            changeTracker.trackChange.secondCall,
+            'Added style property "align-items: stretch" to rule "element.style"',
+            sinon.match.object,
+        );
+      });
     });
   });
 

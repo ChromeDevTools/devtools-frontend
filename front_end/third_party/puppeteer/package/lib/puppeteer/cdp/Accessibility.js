@@ -253,6 +253,7 @@ class AXNode {
     #ignored;
     #cachedHasFocusableChild;
     #realm;
+    #loaderId;
     constructor(realm, payload) {
         this.payload = payload;
         this.#role = this.payload.role ? this.payload.role.value : 'Unknown';
@@ -262,6 +263,7 @@ class AXNode {
             ? this.payload.description.value
             : undefined;
         this.#realm = realm;
+        this.#loaderId = realm.environment._loaderId;
         for (const property of this.payload.properties || []) {
             if (property.name === 'editable') {
                 this.#richlyEditable = property.value.value === 'richtext';
@@ -463,6 +465,11 @@ class AXNode {
                     if (!this.payload.backendDOMNodeId) {
                         return null;
                     }
+                    // After a navigation, the backend node ID can belong to a different
+                    // node in the new document, for example in a new renderer process.
+                    if (this.#realm.environment._loaderId !== this.#loaderId) {
+                        return null;
+                    }
                     const handle = __addDisposableResource(env_2, await this.#realm.adoptBackendNode(this.payload.backendDOMNodeId), false);
                     // Since Text nodes are not elements, we want to
                     // return a handle to the parent element for them.
@@ -488,7 +495,7 @@ class AXNode {
             backendNodeId: this.payload.backendDOMNodeId,
             // LoaderId is an experimental mechanism to establish unique IDs across
             // navigations.
-            loaderId: this.#realm.environment._loaderId,
+            loaderId: this.#loaderId,
         };
         const userStringProperties = [
             'name',

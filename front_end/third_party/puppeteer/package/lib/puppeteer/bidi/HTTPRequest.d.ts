@@ -30,6 +30,7 @@ export declare class BidiHTTPRequest extends HTTPRequest {
     postData(): string | undefined;
     hasPostData(): boolean;
     fetchPostData(): Promise<string | undefined>;
+    content(): Promise<Uint8Array | undefined>;
     headers(): Record<string, string>;
     response(): BidiHTTPResponse | null;
     failure(): {

@@ -38,7 +38,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import * as Bidi from 'webdriver-bidi-protocol';
-import { ProtocolError, UnsupportedOperation } from '../../common/Errors.js';
+import { ProtocolError } from '../../common/Errors.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
@@ -63,7 +63,7 @@ let Request = (() => {
             return request;
         }
         #responseContentPromise = (__runInitializers(this, _instanceExtraInitializers), null);
-        #requestBodyPromise = null;
+        #requestContentPromise = null;
         #error;
         #redirect;
         #response;
@@ -121,6 +121,8 @@ let Request = (() => {
                     return;
                 }
                 this.#error = event.errorText;
+                this.#event.request.headers = event.request.headers;
+                this.#event.request.timings = event.request.timings;
                 this.emit('error', this.#error);
                 this.dispose();
             });
@@ -131,6 +133,7 @@ let Request = (() => {
                     return;
                 }
                 this.#response = event.response;
+                this.#event.request.headers = event.request.headers;
                 this.#event.request.timings = event.request.timings;
                 this.emit('response', this.#response);
             });
@@ -141,6 +144,7 @@ let Request = (() => {
                     return;
                 }
                 this.#response = event.response;
+                this.#event.request.headers = event.request.headers;
                 this.#event.request.timings = event.request.timings;
                 this.emit('success', this.#response);
                 // In case this is a redirect.
@@ -238,24 +242,27 @@ let Request = (() => {
                 body,
             });
         }
-        async fetchPostData() {
+        async getRequestContent() {
             if (!this.hasPostData) {
                 return undefined;
             }
-            if (!this.#requestBodyPromise) {
-                this.#requestBodyPromise = (async () => {
+            if (!this.#requestContentPromise) {
+                this.#requestContentPromise = (async () => {
                     const data = await this.#session.send('network.getData', {
                         dataType: Bidi.Network.DataType.Request,
                         request: this.id,
                     });
-                    if (data.result.bytes.type === 'string') {
-                        return data.result.bytes.value;
-                    }
-                    // TODO: support base64 response.
-                    throw new UnsupportedOperation(`Collected request body data of type ${data.result.bytes.type} is not supported`);
+                    return stringToTypedArray(data.result.bytes.value, data.result.bytes.type === 'base64');
                 })();
             }
-            return await this.#requestBodyPromise;
+            return await this.#requestContentPromise;
+        }
+        async fetchPostData() {
+            const content = await this.getRequestContent();
+            if (content === undefined) {
+                return undefined;
+            }
+            return new TextDecoder().decode(content);
         }
         async getResponseContent() {
             if (!this.#responseContentPromise) {

@@ -97,6 +97,15 @@ export class BidiHTTPRequest extends HTTPRequest {
     async fetchPostData() {
         return await this.#request.fetchPostData();
     }
+    async content() {
+        try {
+            return await this.#request.getRequestContent();
+        }
+        catch (err) {
+            this.#logger?.(DEBUG_PREFIXES.error)?.(err);
+            return;
+        }
+    }
     headers() {
         // Callers should not be allowed to mutate internal structure.
         const headers = {};

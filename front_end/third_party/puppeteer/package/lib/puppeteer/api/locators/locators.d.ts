@@ -222,6 +222,8 @@ export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
      * method is chosen based on the type. `contenteditable`, select, textarea and
      * input elements are supported. For checkboxes, radio buttons and switches
      * specify a boolean value.
+     * Read-only elements and values the element does not accept are rejected without
+     * modifying the element.
      */
     fill<ElementType extends Element>(this: Locator<ElementType>, value: string | boolean, options?: Readonly<LocatorFillOptions>): Promise<void>;
     /**

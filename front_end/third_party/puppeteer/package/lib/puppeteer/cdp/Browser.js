@@ -273,24 +273,34 @@ export class CdpBrowser extends BrowserBase {
         return response.targetId;
     }
     async installExtension(path, options) {
+        const existingTargetIds = new Set(this._targetManager().getDiscoveredTargetInfos().keys());
         const { id } = await this.#connection.send('Extensions.loadUnpacked', {
             path,
             enableInIncognito: options?.enabledInIncognito ?? false,
         });
+        await this.#destroyExtensionServiceWorkerTargets(id, existingTargetIds);
         this.#extensions.delete(id);
         return id;
     }
     async uninstallExtension(id) {
         await this.#connection.send('Extensions.uninstall', { id });
-        // Currently sending the Extensions.uninstall command does not trigger
-        // the Target.targetDestroyed event for service workers. This causes
-        // flakiness in the extension tests.
+        await this.#destroyExtensionServiceWorkerTargets(id);
+        this.#extensions.delete(id);
+    }
+    async #destroyExtensionServiceWorkerTargets(id, existingTargetIds) {
+        // Currently sending Extensions.loadUnpacked (when re-installing an
+        // existing extension) or Extensions.uninstall does not trigger the
+        // Target.targetDestroyed event for replaced/uninstalled service workers.
+        // This causes flakiness in extension tests and leaves stale targets in
+        // browser.targets().
         // TODO(nroscino): Remove this once the event is correctly emitted.
         const targetDestroyedPromises = [];
         for (const [targetId, targetInfo] of this._targetManager()
             .getDiscoveredTargetInfos()
             .entries()) {
-            if (targetInfo.url.includes(id) && targetInfo.type === 'service_worker') {
+            if ((!existingTargetIds || existingTargetIds.has(targetId)) &&
+                targetInfo.url.includes(id) &&
+                targetInfo.type === 'service_worker') {
                 this._targetManager().addToIgnoreTarget(targetId);
                 targetDestroyedPromises.push(new Promise(resolve => {
                     return setTimeout(() => {
@@ -303,7 +313,6 @@ export class CdpBrowser extends BrowserBase {
             }
         }
         await Promise.all(targetDestroyedPromises);
-        this.#extensions.delete(id);
     }
     async installPWA(options) {
         if (this.#hasNetworkRestrictions) {

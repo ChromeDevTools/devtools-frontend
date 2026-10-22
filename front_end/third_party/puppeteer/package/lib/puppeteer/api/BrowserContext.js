@@ -130,34 +130,36 @@ export class BrowserContext extends EventEmitter {
         const cookiesToDelete = cookies.filter(cookie => {
             return filters.some(filter => {
                 if (filter.name === cookie.name) {
-                    if (filter.domain !== undefined && filter.domain === cookie.domain) {
-                        return true;
+                    if (filter.domain !== undefined && filter.domain !== cookie.domain) {
+                        return false;
                     }
-                    if (filter.path !== undefined && filter.path === cookie.path) {
-                        return true;
+                    if (filter.path !== undefined && filter.path !== cookie.path) {
+                        return false;
                     }
-                    if (filter.partitionKey !== undefined &&
-                        cookie.partitionKey !== undefined) {
+                    if (filter.partitionKey !== undefined) {
+                        if (cookie.partitionKey === undefined) {
+                            return false;
+                        }
                         if (typeof cookie.partitionKey !== 'object') {
                             throw new Error('Unexpected string partition key');
                         }
-                        if (typeof filter.partitionKey === 'string') {
-                            if (filter.partitionKey === cookie.partitionKey?.sourceOrigin) {
-                                return true;
-                            }
+                        const filterKey = typeof filter.partitionKey === 'string'
+                            ? { sourceOrigin: filter.partitionKey }
+                            : filter.partitionKey;
+                        if (filterKey.sourceOrigin !== cookie.partitionKey.sourceOrigin) {
+                            return false;
                         }
-                        else {
-                            if (filter.partitionKey.sourceOrigin ===
-                                cookie.partitionKey?.sourceOrigin) {
-                                return true;
-                            }
+                        if (filterKey.hasCrossSiteAncestor !== undefined &&
+                            filterKey.hasCrossSiteAncestor !==
+                                cookie.partitionKey.hasCrossSiteAncestor) {
+                            return false;
                         }
                     }
                     if (filter.url !== undefined) {
                         const url = new URL(filter.url);
-                        if (url.hostname === cookie.domain &&
-                            url.pathname === cookie.path) {
-                            return true;
+                        if (url.hostname !== cookie.domain ||
+                            url.pathname !== cookie.path) {
+                            return false;
                         }
                     }
                     return true;

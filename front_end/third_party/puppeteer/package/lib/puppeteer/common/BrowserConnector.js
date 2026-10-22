@@ -7,7 +7,7 @@ import { _connectToBiDiBrowser } from '../bidi/BrowserConnector.js';
 import { _connectToCdpBrowser } from '../cdp/BrowserConnector.js';
 import { environment, isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
-import { isErrorLike } from '../util/ErrorLike.js';
+import { isErrnoException, isErrorLike } from '../util/ErrorLike.js';
 import { assertSupportedUrlRestrictions } from './util.js';
 const getWebSocketTransportClass = async () => {
     return isNode
@@ -104,6 +104,12 @@ async function getConnectionTransport(options) {
             };
         }
         catch (error) {
+            if (isErrnoException(error) &&
+                (error.code === 'EPERM' || error.code === 'EACCES')) {
+                throw new Error(`Could not read DevToolsActivePort for ${options.channel} at ${portPath}: permission denied`, {
+                    cause: error,
+                });
+            }
             throw new Error(`Could not find DevToolsActivePort for ${options.channel} at ${portPath}`, {
                 cause: error,
             });

@@ -204,7 +204,7 @@ export class HTTPRequest {
      *
      * Headers are copied to the new Request instance. The request URL and
      * method are preserved. The body is built from
-     * {@link HTTPRequest.fetchPostData} when the request has post data,
+     * {@link HTTPRequest.content} when the request has post data,
      * otherwise the Request is created without a body. For `GET` and
      * `HEAD` requests the body is always omitted, as required by the
      * Fetch API.
@@ -216,7 +216,7 @@ export class HTTPRequest {
         const headers = new Headers(this.headers());
         let body = null;
         if (method !== 'GET' && method !== 'HEAD' && this.hasPostData()) {
-            body = ((await this.fetchPostData()) ?? null);
+            body = (await this.content()) ?? null;
         }
         return new Request(this.url(), {
             method,

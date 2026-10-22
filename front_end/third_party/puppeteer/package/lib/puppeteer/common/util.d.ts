@@ -105,6 +105,8 @@ export declare const unitToPixels: {
     in: number;
     cm: number;
     mm: number;
+    pt: number;
+    pc: number;
 };
 /**
  * @internal

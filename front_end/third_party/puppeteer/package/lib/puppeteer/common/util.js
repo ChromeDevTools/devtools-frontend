@@ -258,10 +258,10 @@ export function parsePDFOptions(options = {}, lengthUnit = 'in') {
         tagged: true,
         waitForFonts: true,
     };
-    let width = 8.5;
-    let height = 11;
+    let width = paperFormats.letter[lengthUnit].width;
+    let height = paperFormats.letter[lengthUnit].height;
     if (options.format) {
-        const format = paperFormats[options.format.toLowerCase()][lengthUnit];
+        const format = paperFormats[options.format.toLowerCase()]?.[lengthUnit];
         assert(format, 'Unknown paper format: ' + options.format);
         width = format.width;
         height = format.height;
@@ -295,8 +295,10 @@ export function parsePDFOptions(options = {}, lengthUnit = 'in') {
 export const unitToPixels = {
     px: 1,
     in: 96,
-    cm: 37.8,
-    mm: 3.78,
+    cm: 96 / 2.54,
+    mm: 96 / 25.4,
+    pt: 96 / 72,
+    pc: 16,
 };
 function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
     if (typeof parameter === 'undefined') {

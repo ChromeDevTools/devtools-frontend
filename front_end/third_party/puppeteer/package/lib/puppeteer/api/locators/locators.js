@@ -317,18 +317,52 @@ export class Locator extends EventEmitter {
         ], signal), tap(() => {
             return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
-            return from(handle.evaluate(el => {
+            return from(handle.evaluate((el, newValue) => {
                 if (el instanceof HTMLSelectElement) {
+                    if (!Array.from(el.options).some(option => {
+                        return option.value === newValue;
+                    })) {
+                        throw new Error(`Element has no option with the value "${newValue}".`);
+                    }
                     return 'select';
                 }
                 if (el instanceof HTMLTextAreaElement) {
+                    if (el.readOnly) {
+                        throw new Error('Element is read-only.');
+                    }
                     return 'typeable-input';
                 }
                 if (el instanceof HTMLInputElement) {
+                    if (el.type === 'checkbox' || el.type === 'radio') {
+                        return 'checkable-input';
+                    }
+                    if (el.readOnly &&
+                        [
+                            'text',
+                            'search',
+                            'url',
+                            'tel',
+                            'email',
+                            'password',
+                            'number',
+                            'date',
+                            'month',
+                            'week',
+                            'time',
+                            'datetime-local',
+                        ].includes(el.type)) {
+                        throw new Error('Element is read-only.');
+                    }
+                    if (el.type !== 'file' && String(newValue) !== '') {
+                        // Validate without modifying the element before a possible retry.
+                        const probe = document.createElement('input');
+                        probe.type = el.type;
+                        probe.value = String(newValue);
+                        if (probe.value === '') {
+                            throw new Error(`Element did not accept the value "${newValue}".`);
+                        }
+                    }
                     switch (el.type) {
-                        case 'checkbox':
-                        case 'radio':
-                            return 'checkable-input';
                         case 'text':
                         case 'url':
                         case 'tel':
@@ -351,7 +385,7 @@ export class Locator extends EventEmitter {
                     return 'contenteditable';
                 }
                 return 'unknown';
-            }))
+            }, value))
                 .pipe(mergeMap(inputType => {
                 const fillDirectly = () => {
                     return from(handle.focus()).pipe(mergeMap(() => {
@@ -584,6 +618,8 @@ export class Locator extends EventEmitter {
      * method is chosen based on the type. `contenteditable`, select, textarea and
      * input elements are supported. For checkboxes, radio buttons and switches
      * specify a boolean value.
+     * Read-only elements and values the element does not accept are rejected without
+     * modifying the element.
      */
     fill(value, options) {
         return firstValueFrom(this.#fill(value, options));

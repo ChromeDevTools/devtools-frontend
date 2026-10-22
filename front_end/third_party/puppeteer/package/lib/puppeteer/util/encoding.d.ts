@@ -6,7 +6,7 @@
 /**
  * @internal
  */
-export declare function stringToTypedArray(string: string, base64Encoded?: boolean): Uint8Array;
+export declare function stringToTypedArray(string: string, base64Encoded?: boolean): Uint8Array<ArrayBuffer>;
 /**
  * @internal
  */
@@ -18,5 +18,5 @@ export declare function typedArrayToBase64(typedArray: Uint8Array): string;
 /**
  * @internal
  */
-export declare function mergeUint8Arrays(items: Uint8Array[]): Uint8Array;
+export declare function mergeUint8Arrays(items: Uint8Array[]): Uint8Array<ArrayBuffer>;
 //# sourceMappingURL=encoding.d.ts.map

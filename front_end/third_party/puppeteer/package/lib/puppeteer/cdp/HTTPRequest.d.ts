@@ -19,6 +19,11 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     _response: CdpHTTPResponse | null;
     get client(): CDPSession;
     set client(newClient: CDPSession);
+    /**
+     * @internal
+     */
+    get _fetchClient(): CDPSession;
+    set _fetchClient(fetchClient: CDPSession);
     constructor(client: CDPSession, frame: Frame | null, interceptionId: string | undefined, allowInterception: boolean, data: {
         /**
          * Request identifier.
@@ -44,7 +49,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
          * Type of this resource.
          */
         type?: Protocol.Network.ResourceType;
-    }, redirectChain: CdpHTTPRequest[], logger: Logger);
+    }, redirectChain: CdpHTTPRequest[], logger: Logger, fetchClient?: CDPSession);
     updateHeaders(headers: Protocol.Network.Headers): void;
     url(): string;
     resourceType(): ResourceType;
@@ -52,6 +57,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     postData(): string | undefined;
     hasPostData(): boolean;
     fetchPostData(): Promise<string | undefined>;
+    content(): Promise<Uint8Array | undefined>;
     headers(): Record<string, string>;
     response(): CdpHTTPResponse | null;
     frame(): Frame | null;

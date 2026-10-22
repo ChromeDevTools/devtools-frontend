@@ -166,7 +166,11 @@ let CdpFrame = (() => {
                 if (error) {
                     throw error;
                 }
-                return await watcher.navigationResponse();
+                const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
+                if (result instanceof Error) {
+                    throw result;
+                }
+                return result ?? null;
             }
             finally {
                 watcher.dispose();

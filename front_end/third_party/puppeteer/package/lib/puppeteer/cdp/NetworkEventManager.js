@@ -3,6 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { CDPSession } from '../api/CDPSession.js';
 import { CdpHTTPRequest } from './HTTPRequest.js';
 /**
  * Helper class to track network events by request ID
@@ -99,8 +100,8 @@ export class NetworkEventManager {
         }
         return inFlightRequestCounter;
     }
-    storeRequestWillBeSent(networkRequestId, event) {
-        this.#requestWillBeSentMap.set(networkRequestId, event);
+    storeRequestWillBeSent(networkRequestId, event, client) {
+        this.#requestWillBeSentMap.set(networkRequestId, { event, client });
     }
     getRequestWillBeSent(networkRequestId) {
         return this.#requestWillBeSentMap.get(networkRequestId);
@@ -114,8 +115,8 @@ export class NetworkEventManager {
     forgetRequestPaused(networkRequestId) {
         this.#requestPausedMap.delete(networkRequestId);
     }
-    storeRequestPaused(networkRequestId, event) {
-        this.#requestPausedMap.set(networkRequestId, event);
+    storeRequestPaused(networkRequestId, event, client) {
+        this.#requestPausedMap.set(networkRequestId, { event, client });
     }
     getRequest(networkRequestId) {
         return this.#httpRequestsMap.get(networkRequestId);
@@ -142,6 +143,9 @@ export class NetworkEventManager {
                     dataType: 'Map',
                     value: Array.from(value.entries()), // or with spread: value: [...value]
                 };
+            }
+            else if (value instanceof CDPSession) {
+                return value.id();
             }
             else if (value instanceof CdpHTTPRequest) {
                 return {

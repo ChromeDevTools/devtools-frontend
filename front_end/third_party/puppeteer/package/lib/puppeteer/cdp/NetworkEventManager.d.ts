@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
+import { CDPSession } from '../api/CDPSession.js';
 import { CdpHTTPRequest } from './HTTPRequest.js';
 /**
  * @internal
@@ -23,6 +24,19 @@ export type FetchRequestId = string;
 export interface RedirectInfo {
     event: Protocol.Network.RequestWillBeSentEvent;
     fetchRequestId?: FetchRequestId;
+    client: CDPSession;
+    fetchClient: CDPSession;
+}
+/**
+ * A stored event and the session that sent it. A worker request can get its
+ * Network events on the worker session and its Fetch events on the page
+ * session.
+ *
+ * @internal
+ */
+export interface SessionEvent<T> {
+    event: T;
+    client: CDPSession;
 }
 /**
  * @internal
@@ -42,12 +56,12 @@ export declare class NetworkEventManager {
     queueRedirectInfo(fetchRequestId: FetchRequestId, redirectInfo: RedirectInfo): void;
     takeQueuedRedirectInfo(fetchRequestId: FetchRequestId): RedirectInfo | undefined;
     inFlightRequestsCount(): number;
-    storeRequestWillBeSent(networkRequestId: NetworkRequestId, event: Protocol.Network.RequestWillBeSentEvent): void;
-    getRequestWillBeSent(networkRequestId: NetworkRequestId): Protocol.Network.RequestWillBeSentEvent | undefined;
+    storeRequestWillBeSent(networkRequestId: NetworkRequestId, event: Protocol.Network.RequestWillBeSentEvent, client: CDPSession): void;
+    getRequestWillBeSent(networkRequestId: NetworkRequestId): SessionEvent<Protocol.Network.RequestWillBeSentEvent> | undefined;
     forgetRequestWillBeSent(networkRequestId: NetworkRequestId): void;
-    getRequestPaused(networkRequestId: NetworkRequestId): Protocol.Fetch.RequestPausedEvent | undefined;
+    getRequestPaused(networkRequestId: NetworkRequestId): SessionEvent<Protocol.Fetch.RequestPausedEvent> | undefined;
     forgetRequestPaused(networkRequestId: NetworkRequestId): void;
-    storeRequestPaused(networkRequestId: NetworkRequestId, event: Protocol.Fetch.RequestPausedEvent): void;
+    storeRequestPaused(networkRequestId: NetworkRequestId, event: Protocol.Fetch.RequestPausedEvent, client: CDPSession): void;
     getRequest(networkRequestId: NetworkRequestId): CdpHTTPRequest | undefined;
     storeRequest(networkRequestId: NetworkRequestId, request: CdpHTTPRequest): void;
     forgetRequest(networkRequestId: NetworkRequestId): void;

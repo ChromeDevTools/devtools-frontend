@@ -4187,7 +4187,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.15.0';
+  const packageVersion = '25.16.0';
   // x-release-please-end
 
   /**
@@ -4574,10 +4574,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       tagged: true,
       waitForFonts: true
     };
-    let width = 8.5;
-    let height = 11;
+    let width = paperFormats.letter[lengthUnit].width;
+    let height = paperFormats.letter[lengthUnit].height;
     if (options.format) {
-      const format = paperFormats[options.format.toLowerCase()][lengthUnit];
+      const format = paperFormats[options.format.toLowerCase()]?.[lengthUnit];
       assert(format, 'Unknown paper format: ' + options.format);
       width = format.width;
       height = format.height;
@@ -4609,8 +4609,10 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   const unitToPixels = {
     px: 1,
     in: 96,
-    cm: 37.8,
-    mm: 3.78
+    cm: 96 / 2.54,
+    mm: 96 / 25.4,
+    pt: 96 / 72,
+    pc: 16
   };
   function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
     if (typeof parameter === 'undefined') {
@@ -5206,30 +5208,33 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const cookiesToDelete = cookies.filter(cookie => {
         return filters.some(filter => {
           if (filter.name === cookie.name) {
-            if (filter.domain !== undefined && filter.domain === cookie.domain) {
-              return true;
+            if (filter.domain !== undefined && filter.domain !== cookie.domain) {
+              return false;
             }
-            if (filter.path !== undefined && filter.path === cookie.path) {
-              return true;
+            if (filter.path !== undefined && filter.path !== cookie.path) {
+              return false;
             }
-            if (filter.partitionKey !== undefined && cookie.partitionKey !== undefined) {
+            if (filter.partitionKey !== undefined) {
+              if (cookie.partitionKey === undefined) {
+                return false;
+              }
               if (typeof cookie.partitionKey !== 'object') {
                 throw new Error('Unexpected string partition key');
               }
-              if (typeof filter.partitionKey === 'string') {
-                if (filter.partitionKey === cookie.partitionKey?.sourceOrigin) {
-                  return true;
-                }
-              } else {
-                if (filter.partitionKey.sourceOrigin === cookie.partitionKey?.sourceOrigin) {
-                  return true;
-                }
+              const filterKey = typeof filter.partitionKey === 'string' ? {
+                sourceOrigin: filter.partitionKey
+              } : filter.partitionKey;
+              if (filterKey.sourceOrigin !== cookie.partitionKey.sourceOrigin) {
+                return false;
+              }
+              if (filterKey.hasCrossSiteAncestor !== undefined && filterKey.hasCrossSiteAncestor !== cookie.partitionKey.hasCrossSiteAncestor) {
+                return false;
               }
             }
             if (filter.url !== undefined) {
               const url = new URL(filter.url);
-              if (url.hostname === cookie.domain && url.pathname === cookie.path) {
-                return true;
+              if (url.hostname !== cookie.domain || url.pathname !== cookie.path) {
+                return false;
               }
             }
             return true;
@@ -7578,6 +7583,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      * method is chosen based on the type. `contenteditable`, select, textarea and
      * input elements are supported. For checkboxes, radio buttons and switches
      * specify a boolean value.
+     * Read-only elements and values the element does not accept are rejected without
+     * modifying the element.
      */
     fill(value, options) {
       return firstValueFrom(_assertClassBrand(_Locator_brand, this, _fill).call(this, value, options));
@@ -7619,18 +7626,38 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     return this._wait(options).pipe(this.operators.conditions([_classPrivateFieldGet(_ensureElementIsInTheViewportIfNeeded, this), _classPrivateFieldGet(_waitForStableBoundingBoxIfNeeded, this), _classPrivateFieldGet(_waitForEnabledIfNeeded, this)], signal), tap(() => {
       return this.emit(exports.LocatorEvent.Action, undefined);
     }), mergeMap(handle => {
-      return from(handle.evaluate(el => {
+      return from(handle.evaluate((el, newValue) => {
         if (el instanceof HTMLSelectElement) {
+          if (!Array.from(el.options).some(option => {
+            return option.value === newValue;
+          })) {
+            throw new Error(`Element has no option with the value "${newValue}".`);
+          }
           return 'select';
         }
         if (el instanceof HTMLTextAreaElement) {
+          if (el.readOnly) {
+            throw new Error('Element is read-only.');
+          }
           return 'typeable-input';
         }
         if (el instanceof HTMLInputElement) {
+          if (el.type === 'checkbox' || el.type === 'radio') {
+            return 'checkable-input';
+          }
+          if (el.readOnly && ['text', 'search', 'url', 'tel', 'email', 'password', 'number', 'date', 'month', 'week', 'time', 'datetime-local'].includes(el.type)) {
+            throw new Error('Element is read-only.');
+          }
+          if (el.type !== 'file' && String(newValue) !== '') {
+            // Validate without modifying the element before a possible retry.
+            const probe = document.createElement('input');
+            probe.type = el.type;
+            probe.value = String(newValue);
+            if (probe.value === '') {
+              throw new Error(`Element did not accept the value "${newValue}".`);
+            }
+          }
           switch (el.type) {
-            case 'checkbox':
-            case 'radio':
-              return 'checkable-input';
             case 'text':
             case 'url':
             case 'tel':
@@ -7653,7 +7680,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           return 'contenteditable';
         }
         return 'unknown';
-      })).pipe(mergeMap(inputType => {
+      }, value)).pipe(mergeMap(inputType => {
         const fillDirectly = () => {
           return from(handle.focus()).pipe(mergeMap(() => {
             return from(handle.evaluate((input, newValue) => {
@@ -11264,7 +11291,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
      *
      * Headers are copied to the new Request instance. The request URL and
      * method are preserved. The body is built from
-     * {@link HTTPRequest.fetchPostData} when the request has post data,
+     * {@link HTTPRequest.content} when the request has post data,
      * otherwise the Request is created without a body. For `GET` and
      * `HEAD` requests the body is always omitted, as required by the
      * Fetch API.
@@ -11276,7 +11303,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const headers = new Headers(this.headers());
       let body = null;
       if (method !== 'GET' && method !== 'HEAD' && this.hasPostData()) {
-        body = (await this.fetchPostData()) ?? null;
+        body = (await this.content()) ?? null;
       }
       return new Request(this.url(), {
         method,
@@ -14440,6 +14467,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
   var _ignored = /*#__PURE__*/new WeakMap();
   var _cachedHasFocusableChild = /*#__PURE__*/new WeakMap();
   var _realm2 = /*#__PURE__*/new WeakMap();
+  var _loaderId = /*#__PURE__*/new WeakMap();
   var _AXNode_brand = /*#__PURE__*/new WeakSet();
   class AXNode {
     constructor(realm, payload) {
@@ -14463,12 +14491,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _ignored, void 0);
       _classPrivateFieldInitSpec(this, _cachedHasFocusableChild, void 0);
       _classPrivateFieldInitSpec(this, _realm2, void 0);
+      _classPrivateFieldInitSpec(this, _loaderId, void 0);
       this.payload = payload;
       _classPrivateFieldSet(_role, this, this.payload.role ? this.payload.role.value : 'Unknown');
       _classPrivateFieldSet(_ignored, this, this.payload.ignored);
       _classPrivateFieldSet(_name2, this, this.payload.name ? this.payload.name.value : '');
       _classPrivateFieldSet(_description, this, this.payload.description ? this.payload.description.value : undefined);
       _classPrivateFieldSet(_realm2, this, realm);
+      _classPrivateFieldSet(_loaderId, this, realm.environment._loaderId);
       for (const property of this.payload.properties || []) {
         if (property.name === 'editable') {
           _classPrivateFieldSet(_richlyEditable, this, property.value.value === 'richtext');
@@ -14637,6 +14667,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             if (!this.payload.backendDOMNodeId) {
               return null;
             }
+            // After a navigation, the backend node ID can belong to a different
+            // node in the new document, for example in a new renderer process.
+            if (_classPrivateFieldGet(_realm2, this).environment._loaderId !== _classPrivateFieldGet(_loaderId, this)) {
+              return null;
+            }
             const handle = __addDisposableResource$5(env_2, await _classPrivateFieldGet(_realm2, this).adoptBackendNode(this.payload.backendDOMNodeId), false);
             // Since Text nodes are not elements, we want to
             // return a handle to the parent element for them.
@@ -14658,7 +14693,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         backendNodeId: this.payload.backendDOMNodeId,
         // LoaderId is an experimental mechanism to establish unique IDs across
         // navigations.
-        loaderId: _classPrivateFieldGet(_realm2, this).environment._loaderId
+        loaderId: _classPrivateFieldGet(_loaderId, this)
       };
       const userStringProperties = ['name', 'value', 'description', 'keyshortcuts', 'roledescription', 'valuetext', 'url'];
       const getUserStringPropertyValue = key => {
@@ -18622,7 +18657,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           if (error) {
             throw error;
           }
-          return await watcher.navigationResponse();
+          const result = await Deferred.race([watcher.terminationPromise(), watcher.navigationResponse()]);
+          if (result instanceof Error) {
+            throw result;
+          }
+          return result ?? null;
         } finally {
           watcher.dispose();
         }
@@ -19252,12 +19291,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   var _client1 = /*#__PURE__*/new WeakMap();
+  var _fetchClient = /*#__PURE__*/new WeakMap();
   var _isNavigationRequest = /*#__PURE__*/new WeakMap();
   var _url4 = /*#__PURE__*/new WeakMap();
   var _resourceType = /*#__PURE__*/new WeakMap();
   var _method = /*#__PURE__*/new WeakMap();
   var _hasPostData = /*#__PURE__*/new WeakMap();
   var _postData = /*#__PURE__*/new WeakMap();
+  var _postDataBytes = /*#__PURE__*/new WeakMap();
+  var _hasCompletePostData = /*#__PURE__*/new WeakMap();
   var _headers2 = /*#__PURE__*/new WeakMap();
   var _frame4 = /*#__PURE__*/new WeakMap();
   var _initiator = /*#__PURE__*/new WeakMap();
@@ -19270,16 +19312,28 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     set client(newClient) {
       _classPrivateFieldSet(_client1, this, newClient);
     }
-    constructor(client, frame, interceptionId, allowInterception, data, redirectChain, logger) {
+    /**
+     * @internal
+     */
+    get _fetchClient() {
+      return _classPrivateFieldGet(_fetchClient, this);
+    }
+    set _fetchClient(fetchClient) {
+      _classPrivateFieldSet(_fetchClient, this, fetchClient);
+    }
+    constructor(client, frame, interceptionId, allowInterception, data, redirectChain, logger, fetchClient = client) {
       super();
       _defineProperty(this, "id", void 0);
       _classPrivateFieldInitSpec(this, _client1, void 0);
+      _classPrivateFieldInitSpec(this, _fetchClient, void 0);
       _classPrivateFieldInitSpec(this, _isNavigationRequest, void 0);
       _classPrivateFieldInitSpec(this, _url4, void 0);
       _classPrivateFieldInitSpec(this, _resourceType, void 0);
       _classPrivateFieldInitSpec(this, _method, void 0);
       _classPrivateFieldInitSpec(this, _hasPostData, false);
       _classPrivateFieldInitSpec(this, _postData, void 0);
+      _classPrivateFieldInitSpec(this, _postDataBytes, void 0);
+      _classPrivateFieldInitSpec(this, _hasCompletePostData, false);
       _classPrivateFieldInitSpec(this, _headers2, {});
       _classPrivateFieldInitSpec(this, _frame4, void 0);
       _classPrivateFieldInitSpec(this, _initiator, void 0);
@@ -19287,6 +19341,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldInitSpec(this, _resolution, null);
       _classPrivateFieldSet(_logger17, this, logger);
       _classPrivateFieldSet(_client1, this, client);
+      _classPrivateFieldSet(_fetchClient, this, fetchClient);
       this.id = data.requestId;
       _classPrivateFieldSet(_isNavigationRequest, this, data.requestId === data.loaderId && data.type === 'Document');
       this._interceptionId = interceptionId;
@@ -19294,11 +19349,15 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _classPrivateFieldSet(_resourceType, this, (data.type || 'other').toLowerCase());
       _classPrivateFieldSet(_method, this, data.request.method);
       if (data.request.postDataEntries && data.request.postDataEntries.length > 0) {
-        _classPrivateFieldSet(_postData, this, new TextDecoder().decode(mergeUint8Arrays(data.request.postDataEntries.map(entry => {
+        _classPrivateFieldSet(_hasCompletePostData, this, data.request.postDataEntries.every(entry => {
+          return !!entry.bytes;
+        }));
+        _classPrivateFieldSet(_postDataBytes, this, mergeUint8Arrays(data.request.postDataEntries.map(entry => {
           return entry.bytes ? stringToTypedArray(entry.bytes, true) : null;
         }).filter(entry => {
           return entry !== null;
-        }))));
+        })));
+        _classPrivateFieldSet(_postData, this, new TextDecoder().decode(_classPrivateFieldGet(_postDataBytes, this)));
       } else {
         _classPrivateFieldSet(_postData, this, data.request.postData);
       }
@@ -19330,11 +19389,22 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return _classPrivateFieldGet(_hasPostData, this);
     }
     async fetchPostData() {
+      const content = await this.content();
+      if (content === undefined) {
+        return undefined;
+      }
+      return new TextDecoder().decode(content);
+    }
+    async content() {
+      if (this._interceptionId !== undefined && this.interception.enabled && !this.isInterceptResolutionHandled() && _classPrivateFieldGet(_hasCompletePostData, this)) {
+        // Chrome may wait for the paused request to continue before returning data.
+        return _classPrivateFieldGet(_postDataBytes, this);
+      }
       try {
         const result = await _classPrivateFieldGet(_client1, this).send('Network.getRequestPostData', {
           requestId: this.id
         });
-        return result.postData;
+        return stringToTypedArray(result.postData, result.base64Encoded);
       } catch (err) {
         _classPrivateFieldGet(_logger17, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
         return;
@@ -19389,7 +19459,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (this._interceptionId === undefined) {
         throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
       }
-      await _classPrivateFieldGet(_client1, this).send('Fetch.continueRequest', {
+      await _classPrivateFieldGet(_fetchClient, this).send('Fetch.continueRequest', {
         requestId: this._interceptionId,
         url,
         method,
@@ -19413,6 +19483,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const responseHeaders = {};
       if (response.headers) {
         for (const [header, value] of Object.entries(response.headers)) {
+          if (value === undefined) {
+            continue;
+          }
           responseHeaders[header.toLowerCase()] = Array.isArray(value) ? value.map(item => {
             return String(item);
           }) : String(value);
@@ -19428,7 +19501,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (this._interceptionId === undefined) {
         throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.fulfillRequest');
       }
-      await _classPrivateFieldGet(_client1, this).send('Fetch.fulfillRequest', {
+      await _classPrivateFieldGet(_fetchClient, this).send('Fetch.fulfillRequest', {
         requestId: this._interceptionId,
         responseCode: status,
         responsePhrase: STATUS_TEXTS[status],
@@ -19448,7 +19521,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (this._interceptionId === undefined) {
         throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.failRequest');
       }
-      await _classPrivateFieldGet(_client1, this).send('Fetch.failRequest', {
+      await _classPrivateFieldGet(_fetchClient, this).send('Fetch.failRequest', {
         requestId: this._interceptionId,
         errorReason: errorReason || 'Failed'
       }).catch(error => {
@@ -19815,8 +19888,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
       return inFlightRequestCounter;
     }
-    storeRequestWillBeSent(networkRequestId, event) {
-      _classPrivateFieldGet(_requestWillBeSentMap, this).set(networkRequestId, event);
+    storeRequestWillBeSent(networkRequestId, event, client) {
+      _classPrivateFieldGet(_requestWillBeSentMap, this).set(networkRequestId, {
+        event,
+        client
+      });
     }
     getRequestWillBeSent(networkRequestId) {
       return _classPrivateFieldGet(_requestWillBeSentMap, this).get(networkRequestId);
@@ -19830,8 +19906,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     forgetRequestPaused(networkRequestId) {
       _classPrivateFieldGet(_requestPausedMap, this).delete(networkRequestId);
     }
-    storeRequestPaused(networkRequestId, event) {
-      _classPrivateFieldGet(_requestPausedMap, this).set(networkRequestId, event);
+    storeRequestPaused(networkRequestId, event, client) {
+      _classPrivateFieldGet(_requestPausedMap, this).set(networkRequestId, {
+        event,
+        client
+      });
     }
     getRequest(networkRequestId) {
       return _classPrivateFieldGet(_httpRequestsMap, this).get(networkRequestId);
@@ -19858,6 +19937,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
             dataType: 'Map',
             value: Array.from(value.entries()) // or with spread: value: [...value]
           };
+        } else if (value instanceof CDPSession) {
+          return value.id();
         } else if (value instanceof CdpHTTPRequest) {
           return {
             dataType: 'CdpHTTPRequest',
@@ -20163,17 +20244,19 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       const {
         requestId: networkRequestId
       } = event;
-      _classPrivateFieldGet(_networkEventManager, this).storeRequestWillBeSent(networkRequestId, event);
+      _classPrivateFieldGet(_networkEventManager, this).storeRequestWillBeSent(networkRequestId, event, client);
       /**
        * CDP may have sent a Fetch.requestPaused event already. Check for it.
+       * It may come from another session, e.g. the page for a worker request.
        */
-      const requestPausedEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestPaused(networkRequestId);
-      if (requestPausedEvent) {
+      const requestPaused = _classPrivateFieldGet(_networkEventManager, this).getRequestPaused(networkRequestId);
+      if (requestPaused) {
         const {
-          requestId: fetchRequestId
-        } = requestPausedEvent;
+          event: requestPausedEvent,
+          client: fetchClient
+        } = requestPaused;
         _assertClassBrand(_NetworkManager_brand, this, _patchRequestEventHeaders).call(this, event, requestPausedEvent);
-        _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, event, fetchRequestId);
+        _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, event, requestPausedEvent.requestId, fetchClient);
         _classPrivateFieldGet(_networkEventManager, this).forgetRequestPaused(networkRequestId);
       }
       return;
@@ -20229,28 +20312,32 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       _assertClassBrand(_NetworkManager_brand, this, _onRequestWithoutNetworkInstrumentation).call(this, client, event);
       return;
     }
-    const requestWillBeSentEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(networkRequestId);
-    if (!requestWillBeSentEvent) {
+    const requestWillBeSent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(networkRequestId);
+    if (!requestWillBeSent) {
       // Chrome may restart a request and send a second Fetch.requestPaused
       // for a request Puppeteer already emitted (crbug.com/1196004). Repoint
       // that request instead of emitting a duplicate that never finishes.
       const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(networkRequestId);
       if (request && _assertClassBrand(_NetworkManager_brand, this, _isRestartedRequest).call(this, request, event)) {
-        _assertClassBrand(_NetworkManager_brand, this, _onRequestRestarted).call(this, request, fetchRequestId);
+        _assertClassBrand(_NetworkManager_brand, this, _onRequestRestarted).call(this, client, request, fetchRequestId);
         return;
       }
-      _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event);
+      _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event, client);
       return;
     }
+    const {
+      event: requestWillBeSentEvent,
+      client: networkClient
+    } = requestWillBeSent;
     // Redirect requests have the same `requestId`. Wait for the redirect's
     // own Network.requestWillBeSent.
     if (requestWillBeSentEvent.request.url !== event.request.url || requestWillBeSentEvent.request.method !== event.request.method) {
       _classPrivateFieldGet(_networkEventManager, this).forgetRequestWillBeSent(networkRequestId);
-      _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event);
+      _classPrivateFieldGet(_networkEventManager, this).storeRequestPaused(networkRequestId, event, client);
       return;
     }
     _assertClassBrand(_NetworkManager_brand, this, _patchRequestEventHeaders).call(this, requestWillBeSentEvent, event);
-    _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSentEvent, fetchRequestId);
+    _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, networkClient, requestWillBeSentEvent, fetchRequestId, client);
   }
   function _isRestartedRequest(request, event) {
     // Only a request with no response yet can be restarted. Redirects are
@@ -20267,8 +20354,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     const methodMatches = event.request.method === request.method() || event.request.method === overrides.method;
     return urlMatches && methodMatches;
   }
-  function _onRequestRestarted(request, fetchRequestId) {
+  function _onRequestRestarted(client, request, fetchRequestId) {
     request._interceptionId = fetchRequestId;
+    request._fetchClient = client;
     if (_classPrivateFieldGet(_userRequestInterceptionEnabled, this)) {
       // If the user already resolved the interception, the restarted job needs
       // the same resolution or the request hangs.
@@ -20292,7 +20380,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
   }
-  function _onRequest2(client, event, fetchRequestId, fromMemoryCache = false) {
+  function _onRequest2(client, event, fetchRequestId, fetchClient = client, fromMemoryCache = false) {
     let redirectChain = [];
     if (event.redirectResponse) {
       // We want to emit a response and requestfinished for the
@@ -20308,7 +20396,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         if (!redirectResponseExtraInfo) {
           _classPrivateFieldGet(_networkEventManager, this).queueRedirectInfo(event.requestId, {
             event,
-            fetchRequestId
+            fetchRequestId,
+            client,
+            fetchClient
           });
           return;
         }
@@ -20326,7 +20416,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       }
     }
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
-    const request = new CdpHTTPRequest(client, frame, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain, _classPrivateFieldGet(_logger18, this));
+    const request = new CdpHTTPRequest(client, frame, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain, _classPrivateFieldGet(_logger18, this), fetchClient);
     const extraInfo = _classPrivateFieldGet(_networkEventManager, this).requestExtraInfo(event.requestId).shift();
     if (extraInfo) {
       request.updateHeaders(extraInfo.headers);
@@ -20346,7 +20436,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
   }
   function _onRequestServedFromCache(client, event) {
-    const requestWillBeSentEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(event.requestId);
+    const requestWillBeSent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(event.requestId);
     let request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
     // Requests served from memory cannot be intercepted.
     if (request) {
@@ -20354,8 +20444,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     }
     // If request ended up being served from cache, we need to convert
     // requestWillBeSentEvent to a HTTP request.
-    if (!request && requestWillBeSentEvent) {
-      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSentEvent, undefined, true);
+    if (!request && requestWillBeSent) {
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSent.event, undefined, client, true);
       request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
     }
     if (!request) {
@@ -20415,7 +20505,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     const redirectInfo = _classPrivateFieldGet(_networkEventManager, this).takeQueuedRedirectInfo(event.requestId);
     if (redirectInfo) {
       _classPrivateFieldGet(_networkEventManager, this).responseExtraInfo(event.requestId).push(event);
-      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, redirectInfo.event, redirectInfo.fetchRequestId);
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, redirectInfo.client, redirectInfo.event, redirectInfo.fetchRequestId, redirectInfo.fetchClient);
       return;
     }
     // We may have skipped response and loading events because we didn't have
@@ -20490,7 +20580,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return;
     }
     _assertClassBrand(_NetworkManager_brand, this, _adoptCdpSessionIfNeeded).call(this, client, request);
-    request._failureText = event.errorText;
+    request._failureText = event.errorText || event.blockedReason || null;
     const response = request.response();
     if (response) {
       response._resolveBody();
@@ -24569,6 +24659,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       if (!_classPrivateFieldGet(_fileChooserDeferreds, this).size) {
         return;
       }
+      if (!event.backendNodeId) {
+        return;
+      }
       const frame = _classPrivateFieldGet(_frameManager3, this).frame(event.frameId);
       assert(frame, 'This should never happen.');
       // This is guaranteed to be an HTMLInputElement handle by the event.
@@ -26102,12 +26195,14 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       return response.targetId;
     }
     async installExtension(path, options) {
+      const existingTargetIds = new Set(this._targetManager().getDiscoveredTargetInfos().keys());
       const {
         id
       } = await _classPrivateFieldGet(_connection5, this).send('Extensions.loadUnpacked', {
         path,
         enableInIncognito: options?.enabledInIncognito ?? false
       });
+      await _assertClassBrand(_CdpBrowser_brand, this, _destroyExtensionServiceWorkerTargets).call(this, id, existingTargetIds);
       _classPrivateFieldGet(_extensions, this).delete(id);
       return id;
     }
@@ -26115,25 +26210,7 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
       await _classPrivateFieldGet(_connection5, this).send('Extensions.uninstall', {
         id
       });
-      // Currently sending the Extensions.uninstall command does not trigger
-      // the Target.targetDestroyed event for service workers. This causes
-      // flakiness in the extension tests.
-      // TODO(nroscino): Remove this once the event is correctly emitted.
-      const targetDestroyedPromises = [];
-      for (const [targetId, targetInfo] of this._targetManager().getDiscoveredTargetInfos().entries()) {
-        if (targetInfo.url.includes(id) && targetInfo.type === 'service_worker') {
-          this._targetManager().addToIgnoreTarget(targetId);
-          targetDestroyedPromises.push(new Promise(resolve => {
-            return setTimeout(() => {
-              _classPrivateFieldGet(_connection5, this).emit('Target.targetDestroyed', {
-                targetId: targetId
-              });
-              resolve(null);
-            }, 0);
-          }));
-        }
-      }
-      await Promise.all(targetDestroyedPromises);
+      await _assertClassBrand(_CdpBrowser_brand, this, _destroyExtensionServiceWorkerTargets).call(this, id);
       _classPrivateFieldGet(_extensions, this).delete(id);
     }
     async installPWA(options) {
@@ -26329,6 +26406,29 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
     _classPrivateFieldSet(_isPageTargetCallback, this, isPageTargetCallback || (target => {
       return target.type() === 'page' || target.type() === 'background_page' || target.type() === 'webview' || _classPrivateFieldGet(_handleDevToolsAsPage, this) && target.type() === 'other' && isDevToolsPageTarget(target.url());
     }));
+  }
+  async function _destroyExtensionServiceWorkerTargets(id, existingTargetIds) {
+    // Currently sending Extensions.loadUnpacked (when re-installing an
+    // existing extension) or Extensions.uninstall does not trigger the
+    // Target.targetDestroyed event for replaced/uninstalled service workers.
+    // This causes flakiness in extension tests and leaves stale targets in
+    // browser.targets().
+    // TODO(nroscino): Remove this once the event is correctly emitted.
+    const targetDestroyedPromises = [];
+    for (const [targetId, targetInfo] of this._targetManager().getDiscoveredTargetInfos().entries()) {
+      if ((!existingTargetIds || existingTargetIds.has(targetId)) && targetInfo.url.includes(id) && targetInfo.type === 'service_worker') {
+        this._targetManager().addToIgnoreTarget(targetId);
+        targetDestroyedPromises.push(new Promise(resolve => {
+          return setTimeout(() => {
+            _classPrivateFieldGet(_connection5, this).emit('Target.targetDestroyed', {
+              targetId: targetId
+            });
+            resolve(null);
+          }, 0);
+        }));
+      }
+    }
+    await Promise.all(targetDestroyedPromises);
   }
   async function _getVersion() {
     if (!_classPrivateFieldGet(_version2, this)) {
@@ -26662,8 +26762,8 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
         }
       });
       // Silently log all errors - we don't know what to do with them.
-      _classPrivateFieldGet(_ws, this).addEventListener('error', () => {
-        _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error);
+      _classPrivateFieldGet(_ws, this).addEventListener('error', err => {
+        _classPrivateFieldGet(_logger26, this)?.call(this, DEBUG_PREFIXES.error)?.(err);
       });
     }
     send(message) {
@@ -28594,6 +28694,11 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
           endpointUrl: browserWSEndpoint
         };
       } catch (error) {
+        if (isErrnoException(error) && (error.code === 'EPERM' || error.code === 'EACCES')) {
+          throw new Error(`Could not read DevToolsActivePort for ${options.channel} at ${portPath}: permission denied`, {
+            cause: error
+          });
+        }
         throw new Error(`Could not find DevToolsActivePort for ${options.channel} at ${portPath}`, {
           cause: error
         });
@@ -28762,9 +28867,9 @@ var Puppeteer = function (exports, _i2, _n, _t, _e, _s, _l, _o, _d, _p, _g, _Cla
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '155.0.8059.84',
-    'chrome-headless-shell': '155.0.8059.84',
-    firefox: 'stable_158.0'
+    chrome: '156.0.8078.47',
+    'chrome-headless-shell': '156.0.8078.47',
+    firefox: 'stable_158.0.1'
   });
 
   /**

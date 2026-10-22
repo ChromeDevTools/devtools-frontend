@@ -376,6 +376,9 @@ export class CdpPage extends Page {
             if (!this.#fileChooserDeferreds.size) {
                 return;
             }
+            if (!event.backendNodeId) {
+                return;
+            }
             const frame = this.#frameManager.frame(event.frameId);
             assert(frame, 'This should never happen.');
             // This is guaranteed to be an HTMLInputElement handle by the event.

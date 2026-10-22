@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/kit/kit.js';
+import '../../ui/legacy/components/perf_ui/perf_ui.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -10,17 +13,16 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import {Icon, Link} from '../../ui/kit/kit.js';
-import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {IndexedDBModel} from './IndexedDBModel.js';
 import {ResourcesPanel} from './ResourcesPanel.js';
 import storageViewStyles from './storageView.css.js';
 
-const {ref} = Directives;
+const {classMap, ifDefined, live, ref} = Directives;
 const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
@@ -227,6 +229,109 @@ export const CLEAR_SITE_DATA_DEFAULT_VIEW: ClearSiteDataView = (input, output, t
   // clang-format on
 };
 
+export interface UsageViewInput {
+  quotaUsage: number|null;
+  quotaQuota: number|null;
+  quotaOverrideActive: boolean|null;
+  pieChartSlices: PerfUI.PieChart.Slice[];
+  quotaOverrideEnabled: boolean;
+  quotaOverrideValue: string;
+  quotaOverrideError: string;
+  onToggleQuotaOverride: () => void;
+  onQuotaOverrideInput: (value: string) => void;
+  onApplyQuotaOverride: (value: string) => void;
+}
+
+export interface UsageViewOutput {
+  focusQuotaOverrideEditor?: () => void;
+}
+
+export type UsageView = (input: UsageViewInput, output: UsageViewOutput, target: HTMLElement) => void;
+
+export const USAGE_DEFAULT_VIEW: UsageView = (input, output, target) => {
+  function quotaTooltip(): string|undefined {
+    if (input.quotaUsage === null || input.quotaQuota === null) {
+      return undefined;
+    }
+    return i18nString(UIStrings.storageQuotaUsedWithBytes,
+                      {PH1: input.quotaUsage.toLocaleString(), PH2: input.quotaQuota.toLocaleString()});
+  }
+
+  function renderQuotaRow(): LitTemplate {
+    if (input.quotaUsage === null || input.quotaQuota === null) {
+      return nothing;
+    }
+    const quotaAsString = i18n.ByteUtilities.bytesToString(input.quotaQuota);
+    const usageAsString = i18n.ByteUtilities.bytesToString(input.quotaUsage);
+    const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, {PH1: quotaAsString});
+    const quota = input.quotaOverrideActive ? html`<b>${formattedQuotaAsString}</b>` : quotaAsString;
+    // clang-format off
+    return html`
+      ${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota})}
+      ${!input.quotaOverrideActive && input.quotaQuota < 125829120 /* 120 MiB */ ? html`
+        <devtools-icon name="info" class="small" style="color: var(--icon-info)"
+            title=${i18nString(UIStrings.storageQuotaIsLimitedIn)}></devtools-icon>` : nothing}`;
+    // clang-format on
+  }
+
+  const pieChartData: PerfUI.PieChart.PieChartData = {
+    chartName: i18nString(UIStrings.storageUsage),
+    size: 110,
+    formatter: i18n.ByteUtilities.bytesToString,
+    showLegend: true,
+    total: input.quotaUsage ?? 0,
+    slices: input.pieChartSlices,
+  };
+  const onEditorInput = (event: Event): void => {
+    input.onQuotaOverrideInput((event.target as HTMLInputElement).value);
+  };
+  const onEditorKeyUp = (event: KeyboardEvent): void => {
+    if (event.key === 'Enter' && !event.isComposing) {
+      input.onApplyQuotaOverride((event.target as HTMLInputElement).value);
+      event.consume(true);
+    }
+  };
+  const onEditorFocusOut = (event: FocusEvent): void => {
+    input.onApplyQuotaOverride((event.target as HTMLInputElement).value);
+    event.consume(true);
+  };
+  // clang-format off
+  render(html`
+    <div class="report-row report-row-selectable quota-usage-row" jslog=${VisualLogging.item('storage-usage')}
+        title=${ifDefined(quotaTooltip())}>${renderQuotaRow()}</div>
+    <div class="report-row">
+      <devtools-link href="https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses"
+          jslogcontext="learn-more">${i18nString(UIStrings.learnMore)}</devtools-link>
+    </div>
+    <div class="report-row usage-breakdown-row" jslog=${VisualLogging.item('usage-breakdown')}>
+      <devtools-perf-piechart .data=${pieChartData}></devtools-perf-piechart>
+    </div>
+    <div class="report-row quota-override-row">
+      <devtools-checkbox .checked=${live(input.quotaOverrideEnabled)}
+          title=${i18nString(UIStrings.simulateCustomStorage)}
+          @change=${input.onToggleQuotaOverride}
+          jslog=${VisualLogging.toggle('simulate-custom-quota').track({change: true})}>
+        ${i18nString(UIStrings.simulateCustomStorage)}
+      </devtools-checkbox>
+    </div>
+    <div class=${classMap({'report-row': true, hidden: !input.quotaOverrideEnabled})}>
+      <input class="quota-override-notification-editor"
+          aria-label=${i18nString(UIStrings.simulateCustomStorage)}
+          placeholder=${i18nString(UIStrings.pleaseEnterANumber)}
+          .value=${live(input.quotaOverrideValue)}
+          @input=${onEditorInput}
+          @keyup=${onEditorKeyUp}
+          @focusout=${onEditorFocusOut}
+          ${ref(e => {
+            output.focusQuotaOverrideEditor = e instanceof HTMLElement ? () => e.focus() : undefined;
+          })}
+          jslog=${VisualLogging.textField('quota-override').track({change: true})}>
+      <label>${i18nString(UIStrings.mb)}</label>
+    </div>
+    <div class="report-row"><div class="quota-override-error">${input.quotaOverrideError}</div></div>`, target);
+  // clang-format on
+};
+
 /**
  * @implements {SDK.TargetManager.Observer}
  */
@@ -242,19 +347,17 @@ export class StorageView extends UI.Widget.VBox {
   private readonly clearSiteDataView: ClearSiteDataView;
   private readonly clearSiteDataViewOutput: ClearSiteDataViewOutput = {};
   private readonly clearSiteDataFieldList: HTMLElement;
-  private quotaRow: HTMLElement;
+  private readonly usageView: UsageView;
+  private readonly usageViewOutput: UsageViewOutput = {};
+  private readonly usageFieldList: HTMLElement;
   private quotaUsage: number|null = null;
   private quotaQuota: number|null = null;
   private quotaOverrideActive: boolean|null = null;
   private pieChartSlices: PerfUI.PieChart.Slice[] = [];
-  private pieChart: PerfUI.PieChart.PieChart;
   private previousOverrideFieldValue = '';
+  private quotaOverrideFieldValue = '';
   private quotaOverrideEnabled = false;
   private quotaOverrideError = '';
-  private quotaOverrideCheckbox: UI.UIUtils.CheckboxLabel;
-  private quotaOverrideControlRow: HTMLElement;
-  private quotaOverrideEditor: HTMLInputElement;
-  private quotaOverrideErrorMessage: HTMLElement;
   private clearing = false;
   private clearTimerId?: number;
   private readonly throttler = new Common.Throttler.Throttler(1000);
@@ -266,10 +369,12 @@ export class StorageView extends UI.Widget.VBox {
         this.onIncludeThirdPartyCookiesSettingChanged(event.data);
       };
 
-  constructor(clearSiteDataView: ClearSiteDataView = CLEAR_SITE_DATA_DEFAULT_VIEW) {
+  constructor(clearSiteDataView: ClearSiteDataView = CLEAR_SITE_DATA_DEFAULT_VIEW,
+              usageView: UsageView = USAGE_DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.registerRequiredCSS(storageViewStyles);
     this.clearSiteDataView = clearSiteDataView;
+    this.usageView = usageView;
 
     this.contentElement.classList.add('clear-storage-container');
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('clear-storage')}`);
@@ -300,46 +405,7 @@ export class StorageView extends UI.Widget.VBox {
 
     const quota = this.reportView.appendSection(i18nString(UIStrings.usage));
     quota.element.setAttribute('jslog', `${VisualLogging.section('usage')}`);
-    this.quotaRow = quota.appendSelectableRow();
-    this.quotaRow.classList.add('quota-usage-row');
-    this.quotaRow.setAttribute('jslog', `${VisualLogging.item('storage-usage')}`);
-    const learnMoreRow = quota.appendRow();
-    const learnMore = Link.create(
-        'https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses',
-        i18nString(UIStrings.learnMore), undefined, 'learn-more');
-    learnMoreRow.appendChild(learnMore);
-    this.pieChart = new PerfUI.PieChart.PieChart();
-    const usageBreakdownRow = quota.appendRow();
-    usageBreakdownRow.classList.add('usage-breakdown-row');
-    usageBreakdownRow.setAttribute('jslog', `${VisualLogging.item('usage-breakdown')}`);
-    usageBreakdownRow.appendChild(this.pieChart);
-
-    const quotaOverrideCheckboxRow = quota.appendRow();
-    quotaOverrideCheckboxRow.classList.add('quota-override-row');
-    this.quotaOverrideCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.simulateCustomStorage), false);
-    this.quotaOverrideCheckbox.setAttribute(
-        'jslog', `${VisualLogging.toggle('simulate-custom-quota').track({change: true})}`);
-    quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
-    this.quotaOverrideCheckbox.addEventListener('click', this.onClickCheckbox.bind(this), false);
-    this.quotaOverrideControlRow = quota.appendRow();
-    this.quotaOverrideEditor = this.quotaOverrideControlRow.createChild('input', 'quota-override-notification-editor');
-    this.quotaOverrideEditor.setAttribute('placeholder', i18nString(UIStrings.pleaseEnterANumber));
-    this.quotaOverrideEditor.setAttribute(
-        'jslog', `${VisualLogging.textField('quota-override').track({change: true})}`);
-    this.quotaOverrideControlRow.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.mb)));
-    this.quotaOverrideEditor.addEventListener('keyup', event => {
-      if (event.key === 'Enter') {
-        void this.applyQuotaOverrideFromInputField();
-        event.consume(true);
-      }
-    });
-    this.quotaOverrideEditor.addEventListener('focusout', event => {
-      void this.applyQuotaOverrideFromInputField();
-      event.consume(true);
-    });
-
-    const errorMessageRow = quota.appendRow();
-    this.quotaOverrideErrorMessage = errorMessageRow.createChild('div', 'quota-override-error');
+    this.usageFieldList = quota.getFieldElement();
 
     const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
     this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
@@ -463,18 +529,18 @@ export class StorageView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  private async applyQuotaOverrideFromInputField(): Promise<void> {
+  private async applyQuotaOverrideFromInputField(editorString: string): Promise<void> {
+    this.quotaOverrideFieldValue = editorString;
     if (!this.target || !this.securityOrigin) {
       this.quotaOverrideError = i18nString(UIStrings.internalError);
       this.requestUpdate();
       return;
     }
     this.quotaOverrideError = '';
-    this.requestUpdate();
-    const editorString = this.quotaOverrideEditor.value;
     if (editorString === '') {
       await this.clearQuotaForOrigin(this.target, this.securityOrigin);
       this.previousOverrideFieldValue = '';
+      this.requestUpdate();
       return;
     }
     const quota = parseFloat(editorString);
@@ -497,8 +563,9 @@ export class StorageView extends UI.Widget.VBox {
     const bytesPerMB = 1000 * 1000;
     const quotaInBytes = Math.round(quota * bytesPerMB);
     const quotaFieldValue = `${quotaInBytes / bytesPerMB}`;
-    this.quotaOverrideEditor.value = quotaFieldValue;
     this.previousOverrideFieldValue = quotaFieldValue;
+    this.quotaOverrideFieldValue = quotaFieldValue;
+    this.requestUpdate();
     await this.target.storageAgent().invoke_overrideQuotaForOrigin(
         {origin: this.securityOrigin, quotaSize: quotaInBytes});
   }
@@ -510,10 +577,10 @@ export class StorageView extends UI.Widget.VBox {
   private async onClickCheckbox(): Promise<void> {
     if (!this.quotaOverrideEnabled) {
       this.quotaOverrideEnabled = true;
-      this.quotaOverrideEditor.value = this.previousOverrideFieldValue;
+      this.quotaOverrideFieldValue = this.previousOverrideFieldValue;
       this.requestUpdate();
       await this.updateComplete;
-      this.quotaOverrideEditor.focus();
+      this.usageViewOutput.focusQuotaOverrideEditor?.();
     } else {
       this.quotaOverrideEnabled = false;
       this.quotaOverrideError = '';
@@ -687,55 +754,25 @@ export class StorageView extends UI.Widget.VBox {
       onClear: () => this.clear(),
     },
                            this.clearSiteDataViewOutput, this.clearSiteDataFieldList);
-    this.renderQuotaRow();
-    this.populatePieChart();
-    this.quotaOverrideControlRow.classList.toggle('hidden', !this.quotaOverrideEnabled);
-    this.quotaOverrideCheckbox.checked = this.quotaOverrideEnabled;
-    this.quotaOverrideErrorMessage.textContent = this.quotaOverrideError;
-  }
-
-  private renderQuotaRow(): void {
-    this.quotaRow.textContent = '';
-    if (this.quotaUsage === null || this.quotaQuota === null) {
-      return;
-    }
-    const quotaAsString = i18n.ByteUtilities.bytesToString(this.quotaQuota);
-    const usageAsString = i18n.ByteUtilities.bytesToString(this.quotaUsage);
-    const formattedQuotaAsString = i18nString(UIStrings.storageWithCustomMarker, {PH1: quotaAsString});
-
-    let quota: string|HTMLElement = quotaAsString;
-    if (this.quotaOverrideActive) {
-      const element = document.createElement('b');
-      element.textContent = formattedQuotaAsString;
-      quota = element;
-    }
-
-    const element = uiI18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota});
-    this.quotaRow.appendChild(element);
-    UI.Tooltip.Tooltip.install(
-        this.quotaRow,
-        i18nString(UIStrings.storageQuotaUsedWithBytes,
-                   {PH1: this.quotaUsage.toLocaleString(), PH2: this.quotaQuota.toLocaleString()}));
-
-    if (!this.quotaOverrideActive && this.quotaQuota < 125829120) {  // 120 MiB
-      const icon = new Icon();
-      icon.name = 'info';
-      icon.style.color = 'var(--icon-info)';
-      icon.classList.add('small');
-      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.storageQuotaIsLimitedIn));
-      this.quotaRow.appendChild(icon);
-    }
-  }
-
-  private populatePieChart(): void {
-    this.pieChart.data = {
-      chartName: i18nString(UIStrings.storageUsage),
-      size: 110,
-      formatter: i18n.ByteUtilities.bytesToString,
-      showLegend: true,
-      total: this.quotaUsage ?? 0,
-      slices: this.pieChartSlices,
-    };
+    this.usageView({
+      quotaUsage: this.quotaUsage,
+      quotaQuota: this.quotaQuota,
+      quotaOverrideActive: this.quotaOverrideActive,
+      pieChartSlices: this.pieChartSlices,
+      quotaOverrideEnabled: this.quotaOverrideEnabled,
+      quotaOverrideValue: this.quotaOverrideFieldValue,
+      quotaOverrideError: this.quotaOverrideError,
+      onToggleQuotaOverride: () => {
+        void this.onClickCheckbox();
+      },
+      onQuotaOverrideInput: value => {
+        this.quotaOverrideFieldValue = value;
+      },
+      onApplyQuotaOverride: value => {
+        void this.applyQuotaOverrideFromInputField(value);
+      },
+    },
+                   this.usageViewOutput, this.usageFieldList);
   }
 
   static getStorageTypeName(type: Protocol.Storage.StorageType): string {

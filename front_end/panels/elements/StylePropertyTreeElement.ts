@@ -56,7 +56,7 @@ import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
 import type {StylesContainer} from './StylesContainer.js';
 import {CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME} from './StylesSidebarPane.js';
 
-const {html, nothing, render, Directives: {classMap, ref}} = Lit;
+const {html, nothing, render, Directives: {classMap, ref, until}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -877,25 +877,28 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     this.#matchedStyles = matchedStyles;
   }
 
+  #renderContent(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, light: Lit.LitTemplate,
+                 dark: Lit.LitTemplate, activeColor?: CodeMirror.SyntaxNode[]): Lit.LitTemplate {
+    const lightClasses = classMap({'inactive-value': activeColor === match.dark});
+    const darkClasses = classMap({'inactive-value': activeColor === match.light});
+    return html`<span>light-dark(<span class=${lightClasses}>${light}</span>, <span class=${darkClasses}>${
+        dark}</span>)</span>`;
+  }
+
   override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
-    const content = document.createElement('span');
-    content.appendChild(document.createTextNode('light-dark('));
-    const light = content.appendChild(document.createElement('span'));
-    content.appendChild(document.createTextNode(', '));
-    const dark = content.appendChild(document.createElement('span'));
-    content.appendChild(document.createTextNode(')'));
-    const {cssControls: lightControls} = Renderer.renderInto(match.light, context, light);
-    const {cssControls: darkControls} = Renderer.renderInto(match.dark, context, dark);
+                  context: RenderingContext): Lit.LitTemplate {
+    const {nodes: light, cssControls: lightControls} = Renderer.render(match.light, context);
+    const {nodes: dark, cssControls: darkControls} = Renderer.render(match.dark, context);
+    const content = this.#renderContent(match, light, dark);
 
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
-      return [content];
+      return content;
     }
 
     const color = Common.Color.parse(
         context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1]));
     if (!color) {
-      return [content];
+      return content;
     }
 
     // Pass an undefined color here to insert a placeholder swatch that will be filled in from the async
@@ -903,36 +906,33 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     const colorSwatch =
         new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(undefined, match, context);
     context.addControl('color', colorSwatch);
-    void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
+    const styledContent =
+        until(this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls), content);
 
     return this.#treeElement?.editable() ?
-        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :
-        [colorSwatch, content];
+        html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${styledContent}</devtools-widget>` :
+        html`${colorSwatch}${styledContent}`;
   }
 
   async applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext,
-                         colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement,
-                         dark: HTMLSpanElement, lightControls: CSSControlMap,
-                         darkControls: CSSControlMap): Promise<void> {
+                         colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: Lit.LitTemplate,
+                         dark: Lit.LitTemplate, lightControls: CSSControlMap,
+                         darkControls: CSSControlMap): Promise<Lit.LitTemplate> {
     const activeColor = await this.#activeColor(match);
-    if (context.signal?.aborted) {
-      return;
-    }
-    if (!activeColor) {
-      return;
+    if (context.signal?.aborted || !activeColor) {
+      return this.#renderContent(match, light, dark);
     }
 
     const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get('color');
     activeColorSwatches?.forEach(
         swatch => swatch.addEventListener(
             InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => colorSwatch.setColor(ev.data.color)));
-    const inactiveColor = (activeColor === match.light) ? dark : light;
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common.Color.parse(colorText);
-    inactiveColor.classList.add('inactive-value');
     if (color) {
       colorSwatch.renderColor(color);
     }
+    return this.#renderContent(match, light, dark, activeColor);
   }
 
   // Returns the syntax node group corresponding the active color scheme:

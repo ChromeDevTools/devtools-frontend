@@ -123,9 +123,13 @@ describeWithEnvironment('CommentsPane', () => {
     const [t1] = seedThreads(commentManager);
     const {view} = await createWidget(commentManager);
 
-    view.input.onThreadClick(t1);
+    view.input.onThreadClick(t1, {left: 16, top: 450});
 
-    sinon.assert.calledOnceWithExactly(revealStub, t1, false);
+    sinon.assert.calledOnceWithExactly(
+        revealStub,
+        new CommentManager.CommentThread.RevealableThread(t1, {left: 16, top: 450}),
+        false,
+    );
   });
 
   it('sends all active threads to agent when send to agent button is clicked', async () => {
@@ -287,6 +291,9 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
 
     const threadItem = target.querySelector('.comment-thread-item') as HTMLElement;
     threadItem.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true}));
-    sinon.assert.calledOnceWithExactly(onThreadClick, mockThreadData.thread);
+    sinon.assert.calledOnceWithMatch(onThreadClick, mockThreadData.thread, sinon.match({
+      left: sinon.match.number,
+      top: sinon.match.number,
+    }));
   });
 });

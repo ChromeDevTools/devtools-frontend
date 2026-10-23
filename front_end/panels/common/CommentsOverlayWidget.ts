@@ -27,6 +27,7 @@ export interface ViewInput {
   onPinClick: (threadId: string) => void;
   activeThread: CommentManager.CommentManager.CommentThread|null;
   activePin: Comments.CommentOverlayManager.PinPositionData|null;
+  fallbackPosition?: {left: number, top: number}|null;
   title: Title;
   onAddComment: (text: string) => void;
   onDeleteQueuedComment: () => void;
@@ -48,6 +49,7 @@ const POPUP_HEIGHT = 220;
 const AUTO_CLOSE_DELAY_MS = 2000;
 
 const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  const popupPosition = input.activePin ?? input.fallbackPosition;
   // clang-format off
   render(html`
     <style>${commentsOverlayStyles}</style>
@@ -91,23 +93,26 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
           </div>
         `,
       )}
-      ${input.activePin && input.activeThread ? repeat(
-        [{pin: input.activePin, thread: input.activeThread}],
+      ${popupPosition && input.activeThread ? repeat(
+        [{position: popupPosition, thread: input.activeThread}],
         item => item.thread.id,
         item => {
-          const popupTop = Math.min(
-            Math.max(POPUP_MARGIN, item.pin.top + PIN_HEIGHT),
-            Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT),
-          );
+          // Clamp horizontal position so the popup stays within the viewport with POPUP_MARGIN padding.
           const popupLeft = Math.min(
-            Math.max(POPUP_MARGIN, item.pin.left),
+            Math.max(POPUP_MARGIN, item.position.left),
             Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN),
           );
+          // When anchored to a pin (`activePin`), place the popup below the pin (`top + PIN_HEIGHT`).
+          // When unanchored (`fallbackPosition` from a drawer row), place the anchor point just above
+          // the row (`top - POPUP_MARGIN`) and shift the popup up by its own height via `translateY(-100%)`.
+          const topOffset = input.activePin ? item.position.top + PIN_HEIGHT : item.position.top - POPUP_MARGIN;
+          const maxTop = target.clientHeight - (input.activePin ? POPUP_HEIGHT : POPUP_MARGIN);
+          const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
           return html`
             <div
               class="comment-popup-widget"
               style=${styleMap({
-                transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)`,
+                transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${input.activePin ? '' : ' translateY(-100%)'}`,
               })}>
               ${UI.Widget.widget(CommentThreadWidget, {
                 title: input.title,
@@ -136,11 +141,13 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   readonly #commentManager: CommentManager.CommentManager.CommentManager;
   #commentOverlayManager: Comments.CommentOverlayManager.CommentOverlayManager;
   #activeThreadId: string|null = null;
+  #fallbackPosition: {left: number, top: number}|null = null;
   #closeTimeoutId: number|null = null;
   #cachedTitle: Title = {text: ''};
   #cachedTitleAnchor: CommentManager.CommentManager.CommentAnchorSignature|null = null;
 
   #setActiveThreadId(threadId: string|null): void {
+    this.#fallbackPosition = null;
     if (this.#activeThreadId !== threadId) {
       this.#clearCloseTimeout();
       this.#activeThreadId = threadId;
@@ -403,6 +410,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       onPinClick: this.#handlePinClick,
       activeThread,
       activePin,
+      fallbackPosition: this.#fallbackPosition,
       title,
       onAddComment: (text: string) => {
         if (!activeThread) {
@@ -471,10 +479,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.#renderWithTitle(activeThread, title);
   }
 
-  openThread(threadId: string): void {
+  openThread(threadId: string, fallbackPosition?: {left: number, top: number}): void {
     this.#clearCloseTimeout();
     this.#commentOverlayManager.clearDraftThreads();
     this.#setActiveThreadId(threadId);
+    this.#fallbackPosition = fallbackPosition ?? null;
     this.requestUpdate();
   }
 }
@@ -496,20 +505,21 @@ function getOrCreateOverlayWidget(
   return widgetInstance;
 }
 
-export class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.CommentManager.CommentThread> {
-  async reveal(thread: CommentManager.CommentManager.CommentThread): Promise<void> {
+export class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.CommentThread.RevealableThread> {
+  async reveal({thread, position}: CommentManager.CommentThread.RevealableThread): Promise<void> {
     const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
     if (panelId && UI.InspectorView.InspectorView.instance().hasPanel(panelId)) {
       await UI.InspectorView.InspectorView.instance().showPanel(panelId);
     }
 
     const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
+    thread.setOrphaned(!element);
     if (element) {
       element.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'smooth'});
     }
 
     const overlay = getOrCreateOverlayWidget();
-    overlay.openThread(thread.id);
+    overlay.openThread(thread.id, position);
   }
 }
 

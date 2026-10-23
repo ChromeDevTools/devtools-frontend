@@ -131,6 +131,11 @@
     flex-shrink: 0;
   }
 
+  .comment-thread-item.orphaned .comment-pin-badge {
+    background-color: var(--sys-color-surface-variant);
+    color: var(--sys-color-on-surface-subtle);
+  }
+
   .anchor-chip {
     display: flex;
     height: calc(var(--sys-size-8) + var(--sys-size-2));
@@ -147,6 +152,26 @@
     min-width: 0;
     flex-shrink: 0;
     pointer-events: none;
+  }
+
+  .anchor-chip.orphaned {
+    border-style: dashed;
+    border-color: var(--sys-color-neutral-outline);
+    background: transparent;
+    color: var(--sys-color-state-disabled);
+    gap: var(--sys-size-3);
+  }
+
+  .anchor-chip.orphaned .anchor-chip-text {
+    color: var(--sys-color-state-disabled);
+  }
+
+  .orphaned-label {
+    flex-shrink: 0;
+    color: var(--sys-color-on-surface-subtle);
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body5-size);
+    font-style: italic;
   }
 
   .anchor-chip devtools-widget,

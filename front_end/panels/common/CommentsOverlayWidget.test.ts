@@ -767,4 +767,64 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       widget.detach();
     }
   });
+
+  it('shows the comment thread popup at the fallback position when not anchored to any element', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const thread = commentManager.createCommentThread(
+        {
+          vePath: 'Panel: elements > TreeItem: removed-node',
+          textSignature: 'div.removed',
+        },
+        'Comment on removed element',
+    );
+    thread.save();
+
+    widget.openThread(thread.id, {left: 28, top: 450});
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNull(widget.contentElement.querySelector('.comment-pin'));
+    const popup = widget.contentElement.querySelector('.comment-popup-widget') as HTMLElement;
+    assert.isNotNull(popup);
+    assert.include(popup.style.transform, 'translateY(-100%)');
+
+    widget.detach();
+  });
+
+  it('passes activePin and fallbackPosition to view input when opening an anchored thread', async () => {
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+    await view.nextInput;
+
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: rematched-target');
+    testEl.textContent = 'rematched element';
+    testEl.getBoundingClientRect = () => new DOMRect(100, 120, 150, 30);
+    renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+    const thread = overlayManager.createComment(testEl, 'Anchored comment');
+    assert.isNotNull(thread);
+    thread.save();
+    await view.nextInput;
+
+    widget.openThread(thread.id, {left: 16, top: 450});
+    const updatedInput = await view.nextInput;
+
+    assert.lengthOf(updatedInput.pins, 1);
+    assert.strictEqual(updatedInput.activePin, updatedInput.pins[0]);
+    assert.deepEqual(updatedInput.fallbackPosition, {left: 16, top: 450});
+
+    testEl.remove();
+    widget.detach();
+  });
 });

@@ -58,6 +58,10 @@ const UIStrings = {
    * @description Tab label for sent and resolved comments in the comments drawer.
    */
   sent: 'Sent',
+  /**
+   * @description Label shown next to an element anchor in the comments drawer when the target DOM node has been removed or can no longer be found.
+   */
+  removed: 'removed',
 } as const;
 
 const UIStringsNotTranslate = {
@@ -85,7 +89,10 @@ export interface ViewInput {
   threads: ThreadViewData[];
   onTabSelect: (tab: Tab) => void;
   onClearAll: () => void;
-  onThreadClick: (thread: CommentManager.CommentManager.CommentThread) => void;
+  onThreadClick: (
+      thread: CommentManager.CommentManager.CommentThread,
+      fallbackPosition?: {left: number, top: number},
+      ) => void;
   onDeleteThread: (threadId: string) => void;
   onSendToAgent: () => void;
 }
@@ -148,6 +155,12 @@ function renderThreadStatus(
 export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const isQueued = input.activeTab === 'queued';
   const isSent = input.activeTab === 'sent';
+  const onThreadClick = (e: Event, thread: CommentManager.CommentManager.CommentThread): void => {
+    const rowEl = e.currentTarget as HTMLElement;
+    const rowRect = rowEl.getBoundingClientRect();
+    const badgeRect = rowEl.querySelector('.comment-pin-badge')?.getBoundingClientRect();
+    input.onThreadClick(thread, {left: badgeRect?.left ?? rowRect.left, top: rowRect.top});
+  };
   // clang-format off
   render(html`
     <style>${commentsPaneStyles}</style>
@@ -192,22 +205,23 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
             item => item.thread.id,
             item => html`
               <li
-                class="comment-thread-item"
+                class="comment-thread-item ${item.thread.isOrphaned ? 'orphaned' : ''}"
                 role="listitem"
                 tabindex="0"
-                @click=${() => input.onThreadClick(item.thread)}
+                @click=${(e: Event) => onThreadClick(e, item.thread)}
                 @keydown=${(e: KeyboardEvent) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    input.onThreadClick(item.thread);
+                    onThreadClick(e, item.thread);
                   }
                 }}
                 jslog=${VisualLogging.item('comment-thread').track({ click: true })}>
                 <div class="comment-pin-badge" aria-hidden="true"></div>
-                <span class="anchor-chip">
+                <span class="anchor-chip ${item.thread.isOrphaned ? 'orphaned' : ''}">
                   ${'node' in item.title ?
-                    widget(CommonPanels.DOMLinkifier.DOMNodeLink, { node: item.title.node, options: { preventKeyboardFocus: true } }) :
+                    widget(CommonPanels.DOMLinkifier.DOMNodeLink, { node: item.title.node, options: { preventKeyboardFocus: true, disabled: item.thread.isOrphaned } }) :
                     html`<span class="anchor-chip-text">${item.title.text}</span>`}
+                  ${item.thread.isOrphaned ? html`<span class="orphaned-label">(${i18nString(UIStrings.removed)})</span>` : Lit.nothing}
                 </span>
                 <div class="comment-text">${item.commentText}</div>
                 ${renderThreadStatus(item.thread, input.onDeleteThread)}
@@ -311,8 +325,11 @@ export class CommentsPane extends UI.Widget.Widget {
     this.requestUpdate();
   };
 
-  #handleThreadClick = (thread: CommentManager.CommentManager.CommentThread): void => {
-    void Common.Revealer.reveal(thread);
+  #handleThreadClick = (
+      thread: CommentManager.CommentManager.CommentThread,
+      position?: {left: number, top: number},
+      ): void => {
+    void Common.Revealer.reveal(new CommentManager.CommentThread.RevealableThread(thread, position));
   };
 
   #handleDeleteThread = (threadId: string): void => {

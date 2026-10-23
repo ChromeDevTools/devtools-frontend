@@ -97,6 +97,7 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   readonly anchor: CommentAnchorSignature;
   /** True for comments generated from the change tracker. */
   readonly isGeneratedComment: boolean;
+  #isOrphaned = false;
   comments: Comment[];
   status: CommentThreadStatus = 'DRAFT';
   transmitted: boolean = false;
@@ -106,6 +107,18 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.anchor = options.anchor;
     this.comments = options.comments ?? [];
     this.isGeneratedComment = Boolean(options.isGeneratedComment);
+  }
+
+  get isOrphaned(): boolean {
+    return this.#isOrphaned;
+  }
+
+  setOrphaned(isOrphaned: boolean): void {
+    if (this.#isOrphaned === isOrphaned) {
+      return;
+    }
+    this.#isOrphaned = isOrphaned;
+    this.dispatchEventToListeners(Events.CHANGED);
   }
 
   /**
@@ -187,5 +200,13 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     this.status = 'RESOLVED';
     this.dispatchEventToListeners(Events.CHANGED);
+  }
+}
+
+export class RevealableThread {
+  constructor(
+      readonly thread: CommentThread,
+      readonly position?: {left: number, top: number},
+  ) {
   }
 }

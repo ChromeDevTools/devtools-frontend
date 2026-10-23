@@ -232,9 +232,9 @@ UI.ViewManager.registerViewExtension({
   order: 5,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: () => Root.Runtime.getPathName() !== '/bundled/worker_app.html' && !Root.Runtime.Runtime.isTraceApp(),
-  async loadView(universe) {
+  async loadView() {
     const Sources = await loadSourcesModule();
-    return new Sources.SourcesNavigator.ContentScriptsNavigatorView(universe.networkProjectManager);
+    return new Sources.SourcesNavigator.ContentScriptsNavigatorView();
   },
 });
 

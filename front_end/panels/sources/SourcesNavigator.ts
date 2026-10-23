@@ -27,6 +27,7 @@ import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const {html, render, Directives: {ref}} = Lit;
+const {urlString} = Platform.DevToolsPath;
 const {bindToAction, bindToSetting} = UI.UIUtils;
 const {widget} = UI.Widget;
 
@@ -546,15 +547,57 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
   }
 }
 
-export class ContentScriptsNavigatorView extends NavigatorView {
-  constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-content-scripts').track({resize: true})}`,
-    });
-    const placeholder = new UI.EmptyWidget.EmptyWidget(
-        i18nString(UIStrings.noContentScripts), i18nString(UIStrings.explainContentScripts));
-    this.setPlaceholder(placeholder);
-    placeholder.link = 'https://developer.chrome.com/extensions/content_scripts' as Platform.DevToolsPath.UrlString;
+export interface ContentScriptsNavigatorViewInput {
+  projectFilter: (project: Workspace.Workspace.Project) => boolean;
+}
+
+export type ContentScriptsNavigatorViewFunc =
+    (input: ContentScriptsNavigatorViewInput, output: SourcesNavigatorViewOutput, target: HTMLElement) => void;
+
+export const CONTENT_SCRIPTS_NAVIGATOR_DEFAULT_VIEW: ContentScriptsNavigatorViewFunc = (input, output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${sourcesNavigatorStyles}</style>
+        <devtools-widget
+          jslog=${VisualLogging.pane('navigator-content-scripts').track({resize: true})}
+          ${widget(NavigatorView, {
+            projectFilter: input.projectFilter,
+          })}
+          ${ref(e => {
+            if (e instanceof UI.Widget.WidgetElement) {
+              output.navigatorView = e;
+            }
+          })}
+        >
+          <devtools-widget
+            slot="placeholder"
+            ${widget(UI.EmptyWidget.EmptyWidget, {
+              header: i18nString(UIStrings.noContentScripts),
+              text: i18nString(UIStrings.explainContentScripts),
+              link: urlString`https://developer.chrome.com/extensions/content_scripts`,
+            })}
+          ></devtools-widget>
+        </devtools-widget>
+      `,
+      target);
+  // clang-format on
+};
+
+export class ContentScriptsNavigatorView extends SourcesNavigatorView {
+  readonly #view: ContentScriptsNavigatorViewFunc;
+
+  constructor(element?: HTMLElement, view: ContentScriptsNavigatorViewFunc = CONTENT_SCRIPTS_NAVIGATOR_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override async performUpdate(): Promise<void> {
+    this.#view({
+      projectFilter: this.projectFilter,
+    },
+               this.viewOutput, this.contentElement);
+    await this.navigatorView?.updateComplete;
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {

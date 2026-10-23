@@ -664,40 +664,32 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
     super();
     this.#treeElement = treeElement;
   }
-  override render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch,
+                  context: RenderingContext): Lit.LitTemplate {
     const color = context.findParent(match.node, SDK.CSSPropertyParserMatchers.ColorMatch);
     if (!color?.relativeColor) {
-      return [document.createTextNode(match.text)];
+      return html`${match.text}`;
     }
 
     const value = match.getColorChannelValue(color.relativeColor);
 
     if (value === null) {
-      return [document.createTextNode(match.text)];
+      return html`${match.text}`;
     }
 
-    const evaluation =
-        context.tracing?.applyEvaluation([], () => ({placeholder: [document.createTextNode(value.toFixed(3))]}));
+    const evaluation = context.tracing?.applyEvaluation([], () => ({placeholder: html`${value.toFixed(3)}`}));
     if (evaluation) {
       return evaluation;
     }
 
-    const span = document.createElement('span');
-    span.append(match.text);
     const tooltipId = this.#treeElement?.getTooltipId('relative-color-channel');
     if (!tooltipId) {
-      return [span];
+      return html`<span>${match.text}</span>`;
     }
-    span.setAttribute('aria-details', tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip({
-      id: tooltipId,
-      variant: 'rich',
-      anchor: span,
-      jslogContext: 'elements.relative-color-channel',
-    });
-    tooltip.append(value.toFixed(3));
-
-    return [span, tooltip];
+    return html`<span aria-details=${tooltipId}>${match.text}</span><devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.relative-color-channel>${value.toFixed(3)}</devtools-tooltip>`;
   }
 }
 

@@ -324,8 +324,9 @@ export class TracingContext {
   // evaluation callback is run. The callback should return synchronously an array of Nodes as placeholder to be
   // rendered immediately and optionally a callback for asynchronous updates of the placeholder nodes. The callback
   // returns a boolean indicating whether the update was successful or not.
-  applyEvaluation(children: TracingContext[],
-                  evaluation: () => ({placeholder: Node[], asyncEvalCallback?: () => Promise<boolean>})): Node[]|null {
+  applyEvaluation<T extends Node[]|LitTemplate = Node[]>(
+      children: TracingContext[], evaluation: () => ({placeholder: T, asyncEvalCallback?: () => Promise<boolean>})): T
+      |null {
     if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
       this.#setHasMoreEvaluations(true);
       children.forEach(child => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));

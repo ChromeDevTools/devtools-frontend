@@ -528,6 +528,40 @@ describe('NetworkAnalyzer', () => {
       assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
     });
 
+    it('should strip #hash fragments from trace ResourceSendRequest URLs and link initiators', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const trace = toLanternTrace(parsedTrace.traceEvents);
+      const byTime = parsedTrace.data.NetworkRequests.byTime.map(request => {
+        if (request.args.data.url !== 'https://www.paulirish.com/') {
+          return request;
+        }
+        const cloned = structuredClone(request);
+        cloned.args.data.url = 'https://www.paulirish.com/#fragment';
+        return cloned;
+      });
+      const data = {
+        ...parsedTrace.data,
+        NetworkRequests: {
+          ...parsedTrace.data.NetworkRequests,
+          byTime,
+        },
+      };
+
+      const requestsWithHash = Trace.LanternComputationData.createNetworkRequests(trace, data);
+      const mainDocument = NetworkAnalyzer.findResourceForUrl(requestsWithHash, 'https://www.paulirish.com/');
+      assert.isOk(mainDocument);
+      assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
+
+      const graph = Trace.LanternComputationData.createGraph(requestsWithHash, trace, data, {
+        requestedUrl: 'https://www.paulirish.com/',
+        mainDocumentUrl: 'https://www.paulirish.com/',
+      });
+      assert.strictEqual(graph.type, 'network');
+      const dependents = graph.getDependents();
+      assert.isAbove(dependents.length, 0);
+      assert.isOk(dependents.some(node => node.getDependents().length > 0));
+    });
+
     it('should match redirect request when cross-origin redirect URL path was scrubbed to origin in trace',
        async function() {
          const parsedTrace = await TraceLoader.traceEngine(this, 'cross-origin-redirect.json.gz');

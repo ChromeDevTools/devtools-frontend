@@ -1730,6 +1730,11 @@ class TreeViewTreeElement extends TreeElement {
     return super.onselect(selectedByUser);
   }
 
+  override async expandRecursively(maxDepth?: number): Promise<void> {
+    await super.expandRecursively(maxDepth);
+    this.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({expanded: true, recursively: true}));
+  }
+
   override onenter(): boolean {
     const enterEvent = new TreeViewElement.EnterEvent();
     const shouldExpand = this.listItemElement.dispatchEvent(enterEvent);
@@ -2129,8 +2134,8 @@ export namespace TreeViewElement {
     }
   }
 
-  export class ExpandEvent extends CustomEvent<{expanded: boolean}> {
-    constructor(detail: {expanded: boolean}) {
+  export class ExpandEvent extends CustomEvent<{expanded: boolean, recursively?: boolean}> {
+    constructor(detail: {expanded: boolean, recursively?: boolean}) {
       super('expand', {detail});
     }
   }

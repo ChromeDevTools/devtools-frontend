@@ -75,7 +75,7 @@ interface ViewInput {
     scope: SDK.DebuggerModel.ScopeChainEntry,
     objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree,
   }>|null;
-  onToggle: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, expanded: boolean) => void;
+  onToggle: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, expanded: boolean, recursively?: boolean) => void;
   onContextMenu: (
       objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree,
       contextMenu: UI.ContextMenu.ContextMenu,
@@ -100,9 +100,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
               class="scope-chain-sidebar-pane-section"
               aria-label=${title}
               ?open=${objectTree.expanded}
-              @expand=${(e: Event) => {
-                const customEvent = e as UI.TreeOutline.TreeViewElement.ExpandEvent;
-                input.onToggle(objectTree, customEvent.detail.expanded);
+              @expand=${(e: UI.TreeOutline.TreeViewElement.ExpandEvent) => {
+                input.onToggle(objectTree, e.detail.expanded, e.detail.recursively);
               }}
               @contextmenu=${(e: Event) => {
                 const contextMenu = new UI.ContextMenu.ContextMenu(e);
@@ -232,7 +231,11 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
       linkifier: this.#linkifier,
       isPaused: Boolean(this.#scopeChainModel),
       scopeChain: this.#scopeChain,
-      onToggle: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, expanded: boolean) => {
+      onToggle: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, expanded: boolean, recursively = false) => {
+        if (expanded && recursively) {
+          void objectTree.expandRecursively().then(() => this.requestUpdate());
+          return;
+        }
         objectTree.expanded = expanded;
         this.requestUpdate();
       },

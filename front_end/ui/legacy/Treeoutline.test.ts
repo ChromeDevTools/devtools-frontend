@@ -480,6 +480,28 @@ describe('TreeViewElement', () => {
     sinon.assert.notCalled(onExpand1);
   });
 
+  it('sends an `expand` event with `recursively: true` when a node is expanded recursively', async () => {
+    const onExpand = sinon.stub<[UI.TreeOutline.TreeViewElement.ExpandEvent]>();
+    const component = await makeTree(html`
+     <devtools-tree
+       .template=${html`
+         <ul role="tree">
+           <li @expand=${onExpand} role="treeitem">first subtree
+             <ul role="group">
+               <li role="treeitem">in first subtree</li>
+             </ul>
+           </li>
+         </ul>`}></devtools-tree>`);
+
+    const firstChild = component.getInternalTreeOutlineForTest().rootElement().firstChild();
+    assert.exists(firstChild);
+    await firstChild.expandRecursively();
+    assert.deepEqual(onExpand.args.map(arg => arg[0].detail), [
+      {expanded: true},
+      {expanded: true, recursively: true},
+    ]);
+  });
+
   it('clones event handlers from the `ul` onto list item elements', async () => {
     const onExpand = sinon.stub<[UI.TreeOutline.TreeViewElement.ExpandEvent]>();
     const component = await makeTree(html`

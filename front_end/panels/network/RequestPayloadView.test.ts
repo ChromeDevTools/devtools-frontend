@@ -444,7 +444,10 @@ describeWithEnvironment('RequestPayloadView', () => {
     sinon.assert.calledOnce(showStub);
 
     rootElement.dispatchEvent(new UI.TreeOutline.TreeViewElement.ExpandEvent({expanded: false}));
-    sinon.assert.calledWith(onPayloadToggle, false);
+    sinon.assert.calledWith(onPayloadToggle, false, undefined);
+
+    rootElement.dispatchEvent(new UI.TreeOutline.TreeViewElement.ExpandEvent({expanded: true, recursively: true}));
+    sinon.assert.calledWith(onPayloadToggle, true, true);
   });
 
   it('handles payload context menu operations in presenter', async () => {
@@ -528,6 +531,14 @@ describeWithEnvironment('RequestPayloadView', () => {
     assert.isTrue(objectTree.expanded);
     input.onPayloadToggle(false);
     assert.isFalse(objectTree.expanded);
+
+    const expandRecursivelySpy = sinon.spy(objectTree, 'expandRecursively');
+    input.onPayloadToggle(true, true);
+    sinon.assert.calledOnce(expandRecursivelySpy);
+    await expandRecursivelySpy.returnValues[0];
+    assert.isTrue(objectTree.expanded);
+    assert.exists(objectTree.children?.properties);
+    assert.isTrue(objectTree.children.properties[0].expanded);
   });
 
   it('sets binaryPayloadContentData for base64-encoded request bodies', async () => {

@@ -125,7 +125,7 @@ export interface ViewInput {
   queryParameters: SDK.NetworkRequest.NameValue[]|null;
   objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null;
   onPayloadContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
-  onPayloadToggle(expanded: boolean): void;
+  onPayloadToggle(expanded: boolean, recursively?: boolean): void;
 
   /** Raw binary content data for the request body (when base64-encoded by backend). */
   binaryPayloadContentData: TextUtils.ContentData.ContentData|null;
@@ -204,7 +204,9 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
           toggle-on-click
           ?open=${objectTree.expanded}
-          @expand=${(e: UI.TreeOutline.TreeViewElement.ExpandEvent) => input.onPayloadToggle(e.detail.expanded)}
+          @expand=${
+        (e: UI.TreeOutline.TreeViewElement.ExpandEvent) =>
+            input.onPayloadToggle(e.detail.expanded, e.detail.recursively)}
           @contextmenu=${onPayloadContextMenu}>
         ${objectTree.object.description}
         ${objectTree.object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
@@ -500,10 +502,15 @@ export class RequestPayloadView extends UI.Widget.VBox {
             },
         );
       },
-      onPayloadToggle: (expanded: boolean): void => {
-        if (this.#objectTree) {
-          this.#objectTree.expanded = expanded;
+      onPayloadToggle: (expanded: boolean, recursively = false): void => {
+        if (!this.#objectTree) {
+          return;
         }
+        if (expanded && recursively) {
+          void this.#objectTree.expandRecursively();
+          return;
+        }
+        this.#objectTree.expanded = expanded;
       },
       binaryPayloadContentData: this.#binaryPayloadContentData,
       requestUrl: this.request?.url() ?? Platform.DevToolsPath.EmptyUrlString,

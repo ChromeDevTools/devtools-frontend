@@ -108,6 +108,7 @@ devtools_ui_module("unittests") {
     "ResourceSourceFrame.test.ts",
     "SourceFrame.test.ts",
     "StreamingContentHexView.test.ts",
+    "XMLView.test.ts",
   ]
 
   ts_deps = [

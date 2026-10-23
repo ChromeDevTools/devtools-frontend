@@ -6763,4 +6763,53 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
   });
+
+  it('expands nodes recursively on recursive expand event', async () => {
+    const {domTree, domModel} = setupDOMTreeWidget(target);
+    try {
+      const rootNode = createTestDOMTree(domModel, {
+        nodeId: 1,
+        nodeName: 'DIV',
+        children: [
+          {
+            nodeId: 2,
+            nodeName: 'SECTION',
+            children: [
+              {
+                nodeId: 3,
+                nodeName: 'SPAN',
+                children: [
+                  {nodeId: 4, nodeName: 'B'},
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      const sectionChildren = rootNode.children();
+      assert.exists(sectionChildren);
+      const sectionNode = sectionChildren[0];
+      const spanChildren = sectionNode.children();
+      assert.exists(spanChildren);
+      const spanNode = spanChildren[0];
+
+      domTree.rootDOMNode = rootNode;
+      domTree.performUpdate();
+      await waitForTreeUpdates();
+
+      assert.isFalse(domTree.isNodeExpanded(rootNode));
+      assert.isFalse(domTree.isNodeExpanded(sectionNode));
+      assert.isFalse(domTree.isNodeExpanded(spanNode));
+
+      const rootTreeElement = requireTreeElement(domTree, rootNode);
+      await rootTreeElement.expandRecursively();
+      await waitForTreeUpdates();
+
+      assert.isTrue(domTree.isNodeExpanded(rootNode));
+      assert.isTrue(domTree.isNodeExpanded(sectionNode));
+      assert.isTrue(domTree.isNodeExpanded(spanNode));
+    } finally {
+      domTree.detach();
+    }
+  });
 });

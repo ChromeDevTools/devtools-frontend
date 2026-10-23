@@ -120,7 +120,7 @@ interface ViewInput {
   selectedClosingTag: boolean;
 
   onSelect: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, selectedByUser: boolean) => void;
-  onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+  onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean, recursively?: boolean) => void;
   onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
   onClearMaxRows: () => void;
   onHoverNode: (node: SDK.DOMModel.DOMNode|null, showInfo: boolean, isClosingTag: boolean) => void;
@@ -659,7 +659,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
       if (!isCollapsible) {
         return;
       }
-      input.onExpand(node, event.detail.expanded);
+      input.onExpand(node, event.detail.expanded, event.detail.recursively);
     };
 
     const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
@@ -1789,7 +1789,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         node.highlight();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
       },
-      onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => {
+      onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean, recursively = false) => {
+        if (expanded && recursively) {
+          void this.expandRecursively(node);
+          return;
+        }
         this.setNodeExpanded(node, expanded);
       },
       onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => {

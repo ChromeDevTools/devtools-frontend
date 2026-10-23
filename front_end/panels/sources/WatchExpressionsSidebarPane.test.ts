@@ -590,4 +590,40 @@ describeWithEnvironment('WatchExpression', () => {
     const clearedDatalist = textPromptElement.querySelector('datalist');
     assert.isNull(clearedDatalist);
   });
+
+  it('expands watch expression result recursively', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: {bar: 'baz'}});
+    const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    debuggerModel.selectedCallFrame.returns(null);
+    executionContext.debuggerModel = debuggerModel;
+    executionContext.evaluateWithSelectedFrameFallback.resolves({object, exceptionDetails: undefined});
+    sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
+
+    const setting = Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []);
+    setting.set(['obj']);
+
+    const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
+    renderElementIntoDOM(pane);
+    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const watchExpression = pane.watchExpressions[0];
+    const resultTree = watchExpression.result;
+    assert.exists(resultTree);
+    assert.isFalse(resultTree.expanded);
+
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    assert.exists(treeElement);
+    const rootItem = treeElement.getInternalTreeOutlineForTest().rootElement().firstChild();
+    assert.exists(rootItem);
+
+    await rootItem.expandRecursively();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isTrue(resultTree.expanded);
+    const fooProperty = resultTree.children?.properties?.find(p => p.name === 'foo');
+    assert.exists(fooProperty);
+    assert.isTrue(fooProperty.expanded);
+  });
 });

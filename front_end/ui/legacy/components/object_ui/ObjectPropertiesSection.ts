@@ -613,7 +613,7 @@ export abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrap
     }
   }
 
-  async expandRecursively(maxDepth: number): Promise<void> {
+  async expandRecursively(maxDepth = 3): Promise<void> {
     for (const node of this.#walk(maxDepth, n => n.canExpandRecursively)) {
       await node.populateChildrenIfNeeded();
       node.expanded = true;
@@ -1313,10 +1313,15 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  onExpand = (expanded: boolean): void => {
-    if (this.#root) {
-      this.#root.expanded = expanded;
+  onExpand = (expanded: boolean, recursively = false): void => {
+    if (!this.#root) {
+      return;
     }
+    if (expanded && recursively) {
+      void this.#root.expandRecursively();
+      return;
+    }
+    this.#root.expanded = expanded;
   };
   override performUpdate(): void {
     if (!this.#root) {
@@ -1442,7 +1447,7 @@ export function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.Contex
 
 interface ObjectTreeViewInput extends ContextMenuHandlers {
   onShowAllProperties: (node: ObjectTreeNode) => void;
-  onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
+  onExpand: (node: ObjectTreeNodeBase, expanded: boolean, recursively?: boolean) => void;
   renderAsSubtree: boolean;
   objectTree?: ObjectTree;
   linkifier?: Components.Linkifier.Linkifier;
@@ -1466,7 +1471,7 @@ const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
     };
 
     const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      input.onExpand(property, e.detail.expanded);
+      input.onExpand(property, e.detail.expanded, e.detail.recursively);
       e.consume(true);
     };
     const childCount = (property.children?.properties?.length ?? 0) +
@@ -1510,7 +1515,7 @@ const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
 
   function renderArrayGroup(child: ArrayGroupTreeNode): LitTemplate {
     const onExpand = (e: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
-      input.onExpand(child, e.detail.expanded);
+      input.onExpand(child, e.detail.expanded, e.detail.recursively);
       e.consume(true);
     };
 
@@ -1684,7 +1689,11 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     }
   }
 
-  onExpand = (node: ObjectTreeNodeBase, expanded: boolean): void => {
+  onExpand = (node: ObjectTreeNodeBase, expanded: boolean, recursively = false): void => {
+    if (expanded && recursively) {
+      void node.expandRecursively().then(() => this.requestUpdate());
+      return;
+    }
     if (node.expanded !== expanded) {
       node.expanded = expanded;
       this.requestUpdate();
@@ -1822,7 +1831,7 @@ interface ObjectPropertiesSectionViewInput {
   skipProto: boolean;
   showOverflow: boolean;
   onRootItemContextMenu: (menu: UI.ContextMenu.ContextMenu) => void;
-  onExpand: (expanded: boolean) => void;
+  onExpand: (expanded: boolean, recursively?: boolean) => void;
 }
 
 type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) =>
@@ -1849,8 +1858,8 @@ export const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView
         <style>${objectPropertiesSectionStyles}</style>
         <li role="treeitem" class="object-properties-section-root-element" toggle-on-click ?open=${
                      input.objectTree.expanded} @expand=${
-                     (e: Event) => input.onExpand((e as UI.TreeOutline.TreeViewElement.ExpandEvent)
-                                                      .detail.expanded)} @contextmenu=${onRootItemContextMenuHandler}>
+                     (e: UI.TreeOutline.TreeViewElement.ExpandEvent) => input.onExpand(
+                         e.detail.expanded, e.detail.recursively)} @contextmenu=${onRootItemContextMenuHandler}>
           ${input.title}
           <ul role="group" ${widget(ObjectTreeWidget, {
                    objectTree: input.objectTree,

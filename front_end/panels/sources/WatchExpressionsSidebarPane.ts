@@ -101,7 +101,7 @@ interface ViewInput {
   onCopyWatchExpression(watchExpression: WatchExpression): void;
   onDeleteAll(): unknown;
   onAddExpression(): unknown;
-  onExpand(e: WatchExpression, expanded: boolean): unknown;
+  onExpand(e: WatchExpression, expanded: boolean, recursively?: boolean): unknown;
   watchExpressions: WatchExpression[];
 }
 export interface WatchExpressionPromptViewInput {
@@ -352,7 +352,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           class=${classMap({'watch-expression-tree-item': true, 'watch-expression-editing': e.editing })}
           ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(undefined, e)}
-          @expand=${(event: UI.TreeOutline.TreeViewElement.ExpandEvent) => input.onExpand(e, event.detail.expanded)}
+          @expand=${(event: UI.TreeOutline.TreeViewElement.ExpandEvent) => input.onExpand(e, event.detail.expanded, event.detail.recursively)}
           role=treeitem>
             <devtools-widget ${widget(WatchExpressionPromptWidget, {
               expression: e,
@@ -549,10 +549,15 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
         this.saveExpressions();
         this.requestUpdate();
       },
-      onExpand: (e: WatchExpression, expanded: boolean): void => {
-        if (e.result) {
-          e.result.expanded = expanded;
+      onExpand: (e: WatchExpression, expanded: boolean, recursively = false): void => {
+        if (!e.result) {
+          return;
         }
+        if (expanded && recursively) {
+          void e.result.expandRecursively().then(() => this.requestUpdate());
+          return;
+        }
+        e.result.expanded = expanded;
       },
     },
                {}, this.contentElement);

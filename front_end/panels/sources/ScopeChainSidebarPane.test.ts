@@ -14,13 +14,14 @@ import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
-import {expectCall} from '../../testing/ExpectStubCall.js';
+import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {stubFrame} from '../../testing/StackTraceHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -109,8 +110,55 @@ describe('ScopeChainSidebarPane', () => {
     }
 
     const {scopeChain} = view.input;
-    assert.isNotNull(scopeChain);
-    const localScope = scopeChain![0];
+    assert.exists(scopeChain);
+    const localScope = scopeChain[0];
     assert.isFalse(localScope.objectTree.readOnly);
+  });
+
+  it('expands scope object tree recursively on recursive expand', async () => {
+    const source = 'function f(a) { debugger } f(1)';
+    const scopes = '          {              }';
+    parseScopeChain(scopes);
+
+    const functionScopeObject = backend.createSimpleRemoteObject([{name: 'a', value: 1}]);
+    const callFrame = await backend.createCallFrame(target, {url: 'file:///tmp/example.js', content: source}, scopes,
+                                                    null, [functionScopeObject]);
+
+    const pane = new Sources.ScopeChainSidebarPane.ScopeChainSidebarPane();
+    renderElementIntoDOM(pane);
+
+    const debuggableFrame = stubFrame<StackTrace.StackTrace.DebuggableFrame>({
+      sdkFrame: callFrame,
+      line: 0,
+      column: 0,
+    });
+
+    const flavor = StackTrace.StackTrace.DebuggableFrameFlavor.for(debuggableFrame);
+
+    const sidebarUpdated = expectCall(sinon.stub(pane, 'sidebarPaneUpdatedForTest'));
+    pane.flavorChanged(flavor);
+    await sidebarUpdated;
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const tree = pane.contentElement.querySelector('devtools-tree');
+    assert.exists(tree);
+    const scopeElement = tree.getInternalTreeOutlineForTest().rootElement().firstChild();
+    assert.exists(scopeElement);
+
+    scopeElement.collapse();
+    await UI.Widget.Widget.allUpdatesComplete;
+    assert.isFalse(scopeElement.expanded);
+
+    const expandRecursivelySpy =
+        sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.prototype, 'expandRecursively');
+    const updateAfterExpand = spyCall(pane, 'performUpdate');
+    await scopeElement.expandRecursively();
+    await updateAfterExpand;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    sinon.assert.calledOnce(expandRecursivelySpy);
+    assert.isTrue(scopeElement.expanded);
+    assert.strictEqual(scopeElement.childCount(), 2);
   });
 });

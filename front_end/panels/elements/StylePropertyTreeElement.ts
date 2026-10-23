@@ -477,11 +477,9 @@ export class VariableNameRenderer extends VariableNameRendererBase {
     this.#matchedStyles = matchedStyles;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Node[] {
-    const varSwatch = document.createElement('span');
+  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Lit.LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
-      render(html`${match.text}`, varSwatch);
-      return [varSwatch];
+      return html`${match.text}`;
     }
 
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
@@ -494,27 +492,16 @@ export class VariableNameRenderer extends VariableNameRendererBase {
     const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
-    render(html`
-        <devtools-link-swatch class=css-var-link .data=${{
-            tooltip,
-            text: match.text,
-            isDefined,
-            onLinkActivate,
-          }}>
-        </devtools-link-swatch>
-        ${tooltipId ? html`
-          <devtools-tooltip
-            id=${tooltipId}
-            variant=rich
-            jslogContext=elements.css-var
-          >
-            ${tooltipContents}
-          </devtools-tooltip>
-        ` : ''}
-    `, varSwatch);
+    return html`<devtools-link-swatch class=css-var-link .data=${{
+        tooltip,
+        text: match.text,
+        isDefined,
+        onLinkActivate,
+      }}></devtools-link-swatch>${tooltipId ? html`<devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
     // clang-format on
-
-    return [varSwatch];
   }
 }
 

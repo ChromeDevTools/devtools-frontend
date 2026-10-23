@@ -3074,23 +3074,22 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     const openTooltipPromise1 = new Promise<unknown>(r => openTooltipStub.callsFake(r));
     const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red, blue)');
     stylePropertyTreeElement.updateTitle();
-    const tooltip = stylePropertyTreeElement.valueElement?.querySelector(
-                        'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])') as Tooltips.Tooltip.Tooltip |
-        null | undefined;
+    assert.exists(stylePropertyTreeElement.valueElement);
+    renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+    const tooltip = stylePropertyTreeElement.valueElement.querySelector<Tooltips.Tooltip.Tooltip>(
+        'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])');
     assert.exists(tooltip);
-    renderElementIntoDOM(tooltip);
     tooltip.showTooltip();
     await openTooltipPromise1;
-    tooltip.remove();
+    stylePropertyTreeElement.valueElement.remove();
 
     const openTooltipPromise2 = new Promise<unknown>(r => openTooltipStub.callsFake(r));
     stylePropertyTreeElement.updateTitle();
-    const tooltip2 =
-        stylePropertyTreeElement.valueElement?.querySelector(
-            'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])') as Tooltips.Tooltip.Tooltip |
-        null | undefined;
+    assert.exists(stylePropertyTreeElement.valueElement);
+    renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+    const tooltip2 = stylePropertyTreeElement.valueElement.querySelector<Tooltips.Tooltip.Tooltip>(
+        'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])');
     assert.exists(tooltip2);
-    renderElementIntoDOM(tooltip2);
     await openTooltipPromise2;
     assert.notStrictEqual(tooltip, tooltip2);
   });

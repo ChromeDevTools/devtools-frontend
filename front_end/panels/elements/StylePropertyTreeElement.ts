@@ -992,7 +992,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     this.#treeElement = treeElement;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Lit.LitTemplate {
     const hookUpColorArg = (node: Node, onChange: (newColorText: string) => void): boolean => {
       if (node instanceof InlineEditor.ColorMixSwatch.ColorMixSwatch ||
           node instanceof InlineEditor.ColorSwatch.ColorSwatch) {
@@ -1020,23 +1020,20 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
     const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
 
-    const contentChild = document.createElement('span');
-    const color1 = Renderer.renderInto(match.color1, color1RenderingContext, contentChild);
-    const color2 = Renderer.renderInto(match.color2, color2RenderingContext, contentChild);
-    render(html`${
-               this.#treeElement?.getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles,
-                                                    this.#computedStyleExtraFields, context) ??
-               'color-mix'}(${
-               match.space.length ? html`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` :
-                                    ''}${color1.nodes}, ${color2.nodes})`,
-           contentChild);
+    const color1 = Renderer.render(match.color1, color1RenderingContext);
+    const color2 = Renderer.render(match.color2, color2RenderingContext);
+    const contentChild = html`<span>${
+        this.#treeElement?.getTracingTooltip('color-mix', match.node, this.#matchedStyles, this.#computedStyles,
+                                             this.#computedStyleExtraFields, context) ??
+        'color-mix'}(${match.space.length ? html`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ''}${
+        color1.nodes}, ${color2.nodes})</span>`;
 
     const color1Controls = color1.cssControls.get('color') ?? [];
     const color2Controls = color2.cssControls.get('color') ?? [];
 
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 ||
         color2Controls.length !== 1) {
-      return [contentChild];
+      return contentChild;
     }
 
     const space = match.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
@@ -1048,11 +1045,10 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     if (nodeId !== undefined && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const initialColor = Common.Color.parse('#000') as Common.Color.Color;
-        const colorText = document.createElement('span');
-        colorText.textContent = initialColor.asString();
+        const {promise, resolve} = Promise.withResolvers<string>();
         const swatch = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
         swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
-          colorText.textContent = ev.data.color.asString();
+          resolve(ev.data.color.asString());
         });
         context.addControl('color', swatch);
         const asyncEvalCallback = async(): Promise<boolean> => {
@@ -1069,7 +1065,10 @@ export class ColorMixRenderer extends ColorMixRendererBase {
           }
           return false;
         };
-        return {placeholder: [swatch, colorText], asyncEvalCallback};
+        return {
+          placeholder: html`${swatch}<span>${until(promise, initialColor.asString())}</span>`,
+          asyncEvalCallback,
+        };
       });
       if (evaluation) {
         return evaluation;
@@ -1079,7 +1078,7 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
     if (!hookUpColorArg(color1Controls[0], text => swatch.setFirstColor(text)) ||
         !hookUpColorArg(color2Controls[0], text => swatch.setSecondColor(text))) {
-      return [contentChild];
+      return contentChild;
     }
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
@@ -1087,34 +1086,31 @@ export class ColorMixRenderer extends ColorMixRendererBase {
     context.addControl('color', swatch);
 
     if (context.tracing) {
-      return [swatch, contentChild];
+      return html`${swatch}${contentChild}`;
     }
 
     const tooltipId = this.#treeElement?.getTooltipId('color-mix');
     if (!tooltipId) {
-      return [swatch, contentChild];
+      return html`${swatch}${contentChild}`;
     }
     swatch.setAttribute('aria-details', tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip({
-      id: tooltipId,
-      variant: 'rich',
-      anchor: swatch,
-      jslogContext: 'elements.css-color-mix',
-    });
-    const colorTextSpan = tooltip.appendChild(document.createElement('span'));
-    tooltip.onbeforetoggle = e => {
-      if ((e as ToggleEvent).newState !== 'open') {
-        return;
-      }
-      const color = swatch.mixedColor();
-      if (!color) {
-        return;
-      }
-      const rgb = color.as(Common.Color.Format.HEX);
-      colorTextSpan.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
-    };
-
-    return [swatch, contentChild, tooltip];
+    // clang-format off
+    return html`${swatch}${contentChild}<devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.css-color-mix
+        @beforetoggle=${(e: ToggleEvent) => {
+          if (e.newState !== 'open') {
+            return;
+          }
+          const color = swatch.mixedColor();
+          if (!color || !(e.target instanceof HTMLElement)) {
+            return;
+          }
+          const rgb = color.as(Common.Color.Format.HEX);
+          e.target.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
+        }}></devtools-tooltip>`;
+    // clang-format on
   }
 }
 

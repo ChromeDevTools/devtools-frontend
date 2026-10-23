@@ -210,33 +210,32 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
       readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null) {
     super();
   }
-  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Lit.LitTemplate {
     const [, fallbackNodes] = ASTUtils.callArgs(match.node);
     if (match.value) {
       const substitution = context.tracing?.substitution();
       if (substitution) {
         if (match.varNameIsValid) {
-          return [document.createTextNode(match.value)];
+          return html`${match.value}`;
         }
         return Renderer.render(fallbackNodes, substitution.renderingContext(context)).nodes;
       }
     }
 
-    const span = document.createElement('span');
     const func =
         this.treeElement?.getTracingTooltip(
             'env', match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields, context) ??
         'env';
     const valueClass = classMap({'inactive-value': !match.varNameIsValid});
     const fallbackClass = classMap({'inactive-value': match.varNameIsValid});
-    render(
-        html`${func}(<span class=${valueClass}>${match.varName}</span>${
-            fallbackNodes ?
-                html`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` :
-                nothing})`,
-        span, {host: span});
-    return [span];
+    // clang-format off
+    return html`<span>${
+      func}(<span class=${valueClass}>${match.varName}</span>${
+      fallbackNodes
+        ? html`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>`
+        : nothing
+    })</span>`;
+    // clang-format on
   }
 }
 const FlexGridRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch> =

@@ -1270,10 +1270,10 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
     }
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Node[] {
-    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
+  override render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Lit.LitTemplate {
     const {metric, jslogContext, ruleBlock, isDefined} = this.#getLinkData(match);
-    swatch.data = {
+    // clang-format off
+    const swatch = html`<devtools-link-swatch .data=${{
       text: match.text,
       tooltip: isDefined ? undefined : {title: i18nString(UIStrings.sIsNotDefined, {PH1: match.text})},
       isDefined,
@@ -1290,37 +1290,30 @@ export class LinkableNameRenderer extends LinkableNameRendererBase {
         }
       },
       jslogContext,
-    };
+    } as InlineEditor.LinkSwatch.LinkSwatchRenderData}></devtools-link-swatch>`;
 
     if (match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION ||
         match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION_NAME) {
-      const el = document.createElement('span');
-      el.appendChild(swatch);
-
       const node = this.#stylesContainer.node();
-      if (node) {
-        const animationModel = node.domModel().target().model(SDK.AnimationModel.AnimationModel);
-        void animationModel?.getAnimationGroupForAnimation(match.text, node.id).then(maybeAnimationGroup => {
-          if (!maybeAnimationGroup) {
-            return;
-          }
-
-          const icon = createIcon('animation', 'open-in-animations-panel');
-          icon.setAttribute('jslog', `${VisualLogging.link('open-in-animations-panel').track({click: true})}`);
-          icon.setAttribute('role', 'button');
-          icon.setAttribute('title', i18nString(UIStrings.jumpToAnimationsPanel));
-          icon.addEventListener('mouseup', ev => {
-            ev.consume(true);
-
-            void Common.Revealer.reveal(maybeAnimationGroup);
-          });
-          el.insertBefore(icon, swatch);
-        });
-      }
-      return [el];
+      const animationModel = node?.domModel().target().model(SDK.AnimationModel.AnimationModel);
+      const icon = node && animationModel ?
+          until(animationModel.getAnimationGroupForAnimation(match.text, node.id).then(maybeAnimationGroup =>
+              maybeAnimationGroup ? html`<devtools-icon
+                  class="open-in-animations-panel"
+                  name="animation"
+                  jslog=${VisualLogging.link('open-in-animations-panel').track({click: true})}
+                  role="button"
+                  title=${i18nString(UIStrings.jumpToAnimationsPanel)}
+                  @mouseup=${(ev: Event) => {
+                    ev.consume(true);
+                    void Common.Revealer.reveal(maybeAnimationGroup);
+                  }}></devtools-icon>` : Lit.nothing)) :
+          Lit.nothing;
+      return html`<span>${icon}${swatch}</span>`;
     }
+    // clang-format on
 
-    return [swatch];
+    return swatch;
   }
 }
 

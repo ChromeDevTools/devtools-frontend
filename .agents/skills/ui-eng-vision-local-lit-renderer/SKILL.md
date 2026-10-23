@@ -126,6 +126,12 @@ existing element containers.
 
 12. **Composing Child `UI.Widget`s & Pre-Existing Instances**:
 
+    *   **Prefer `${widget(ChildWidgetClass, {params})}` Over `<devtools-widget>`**:
+        Prefer `${widget(ChildWidgetClass, {params})}` directly as a child
+        expression instead of `<devtools-widget ${widget(ChildWidgetClass, {params})}></devtools-widget>`.
+        Only use an explicit `<devtools-widget>` tag when you need to set other
+        HTML attributes/classes, apply additional directives (such as `widgetRef`
+        or `ref`), or provide child nodes.
     *   **Strongly Prefer Two-Argument `widget(ChildWidgetClass, {params})`**:
         When instantiating child widgets in a Lit template, strongly prefer the
         two-argument form `widget(ChildWidgetClass, {propA: input.a, propB: input.b})`
@@ -136,6 +142,12 @@ existing element containers.
         `setFoo()` methods instead of setters, convert them into `set foo()`
         setters on the child widget so you can use the two-argument `widget()`
         directive.
+    *   **No Widget References on `ViewOutput`**: Do not store child widget
+        references on `ViewOutput` (e.g., `output.childWidget = w`) as a final
+        result (only acceptable temporarily in intermediate CLs). Supply all
+        configuration through setters on the child widget, or if imperative
+        actions are strictly required, expose individual functions on `ViewOutput`
+        (e.g., `output.doLayout = () => w.doLayout()`).
     *   **Pre-Existing Widget Instances (`UI.Widget.WrapperWidget`)**: Use
         `${widget(UI.Widget.WrapperWidget, {widget: input.childWidget})}` when
         embedding widgets owned by `UI.ViewManager`

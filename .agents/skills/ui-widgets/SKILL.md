@@ -59,6 +59,7 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 ### Composition
 
 * To render a child widget, the parent's View MUST use the lit-html directive `UI.Widget.widget`.
+* **Prefer `${widget(WidgetClass, {params})}` directly as a child expression** over `<devtools-widget ${widget(WidgetClass, {params})}></devtools-widget>`. Only use an explicit `<devtools-widget>` tag when you need to set other HTML attributes/classes, apply additional directives (such as `widgetRef` or `ref`), or provide child nodes.
 * **Strongly prefer the two-argument `widget(WidgetClass, {params})` form** over the single-argument factory callback `widget(element => new WidgetClass(element, ...))`. The two-argument form automatically updates properties and calls `requestUpdate()` on subsequent renders, whereas a factory callback only runs once on initial instantiation.
 * If a child widget currently exposes imperative setter methods (e.g., `setStorageKey(key)` or `setStorageBucket(bucket)`) instead of public properties/setters, convert them into standard TypeScript setters (`set storageKey(key)`, `set storageBucket(bucket)`) on the child widget so it can be instantiated and updated declaratively via the two-argument `widget(WidgetClass, {params})` directive.
 * Configuration is passed via the parameters.
@@ -110,7 +111,7 @@ render(html`
 
 ### Legacy Interop & Refs
 *   **Raw Elements:** Use `Directives.ref` (from `ui/lit/lit.js`) to obtain a reference to a raw `HTMLElement` if needed for imperative APIs (e.g., `splitWidget.installResizer(element)`).
-*   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget if you need to call methods on it directly (though declarative data flow is preferred).
+*   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget inside the view function if you need to call imperative methods on it. **Do NOT store child widget instances on `ViewOutput` as a final result** (doing so is only acceptable temporarily in intermediate migration CLs). Instead, either supply all needed configuration declaratively through setters/inputs on the child widget, or if imperative calls are strictly necessary, expose narrow action functions on `ViewOutput` (e.g., `output.doLayout = () => splitWidget.doLayout()`, `output.revealPosition = pos => childWidget.revealPosition(pos)`). Do not keep `get*ForTest()` methods that return child widget instances via `ViewOutput`; tests should query rendered `<devtools-widget>` elements via `.getWidget()` or assert on `ViewInput` via `createViewFunctionStub`.
 
 ### Dependencies
 

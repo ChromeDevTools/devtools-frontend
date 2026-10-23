@@ -6,31 +6,44 @@
 import '../../../kit/kit.js';
 
 import type {Icon} from '../../../kit/kit.js';
-import {html, render} from '../../../lit/lit.js';
+import {Directives, html, render} from '../../../lit/lit.js';
 
 import type {CSSShadowModel} from './CSSShadowEditor.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
 export class CSSShadowSwatch extends HTMLElement {
+  readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #icon: Icon;
-  readonly #model: CSSShadowModel;
+  #model?: CSSShadowModel;
 
-  constructor(model: CSSShadowModel) {
+  constructor(model?: CSSShadowModel) {
     super();
     this.#model = model;
+    const icon = Directives.createRef<Icon>();
 
     // clang-format off
     render(html`
         <style>${cssShadowSwatchStyles}</style>
-        <devtools-icon tabindex=-1 name="shadow" class="shadow-swatch-icon"></devtools-icon>`,
-        this, {host: this});
+        <devtools-icon ${Directives.ref(icon)} tabindex=-1 name="shadow" class="shadow-swatch-icon"></devtools-icon>`,
+        this.#shadow, {host: this});
     // clang-format on
 
-    this.#icon = this.querySelector('devtools-icon') as Icon;
+    this.#icon = icon.value as Icon;
   }
 
   model(): CSSShadowModel {
+    return this.cssShadowModel;
+  }
+
+  get cssShadowModel(): CSSShadowModel {
+    if (!this.#model) {
+      throw new Error('No model set on CSSShadowSwatch');
+    }
     return this.#model;
+  }
+
+  set cssShadowModel(model: CSSShadowModel) {
+    this.#model = model;
   }
 
   iconElement(): Icon {

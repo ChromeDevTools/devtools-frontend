@@ -130,6 +130,11 @@ const UIStrings = {
    */
   positionAreaEditorButton: 'Open `position-area` editor',
   /**
+   * @description Tooltip text for an icon that opens the shadow editor. The shadow editor is a tool
+   * which allows the user to edit CSS shadow properties.
+   */
+  openShadowEditor: 'Open shadow editor',
+  /**
    * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration as JavaScript property.
    */
   copyCssDeclarationAsJs: 'Copy declaration as JS',
@@ -1609,7 +1614,7 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     return parts;
   }
 
-  renderContents(span: HTMLSpanElement): void {
+  renderContents(): Lit.LitTemplate {
     const parts: Array<string|Lit.LitTemplate> = [];
     for (const part of this.#parts()) {
       if (parts.length > 0) {
@@ -1617,7 +1622,7 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
       }
       parts.push(typeof part === 'string' ? part : Renderer.render(part.node, part.context).nodes);
     }
-    render(html`${parts}`, span);
+    return html`${parts}`;
   }
   // The text of the shadow as `renderContents` renders it, including the changes that renderers recorded for its parts.
   text(): string {
@@ -1629,6 +1634,85 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
       return context.edits?.textRange(node, node) ?? context.ast.text(node);
     });
     return texts.join(' ');
+  }
+}
+
+interface ShadowWidgetViewInput {
+  model: ShadowModel;
+  showPopover: (swatch: InlineEditor.Swatches.CSSShadowSwatch) => void;
+}
+
+type ShadowWidgetView = (input: ShadowWidgetViewInput, output: undefined, target: HTMLElement) => void;
+
+const SHADOW_WIDGET_DEFAULT_VIEW: ShadowWidgetView = (input, _output, target) => {
+  // clang-format off
+  render(html`<css-shadow-swatch
+    role="button"
+    .cssShadowModel=${input.model}
+    title=${i18nString(UIStrings.openShadowEditor)}
+    jslog=${VisualLogging.showStyleEditor('css-shadow').track({click: true})}
+    @click=${function(this: InlineEditor.Swatches.CSSShadowSwatch, event: Event) {
+      event.consume(true);
+      input.showPopover(this);
+    }}
+    @keydown=${function(this: InlineEditor.Swatches.CSSShadowSwatch, event: KeyboardEvent) {
+      if (!event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+        event.consume(true);
+        input.showPopover(this);
+      }
+    }}
+    @mousedown=${(event: Event) => event.consume()}
+  ></css-shadow-swatch>${input.model.renderContents()}`, target);
+  // clang-format on
+};
+
+class ShadowWidget extends UI.Widget.Widget {
+  readonly #view: ShadowWidgetView;
+  #model?: ShadowModel;
+  #treeElement?: StylePropertyTreeElement;
+  #popoverHelper?: ShadowSwatchPopoverHelper;
+
+  constructor(element?: HTMLElement, view: ShadowWidgetView = SHADOW_WIDGET_DEFAULT_VIEW) {
+    super(element);
+    this.element.classList.remove('vbox', 'flex-auto', 'widget');
+    this.#view = view;
+  }
+
+  set model(model: ShadowModel) {
+    if (this.#model === model) {
+      return;
+    }
+    this.#model = model;
+    this.performUpdate();
+  }
+
+  set treeElement(treeElement: StylePropertyTreeElement) {
+    if (this.#treeElement === treeElement) {
+      return;
+    }
+    this.#treeElement = treeElement;
+    this.#popoverHelper =
+        new ShadowSwatchPopoverHelper(treeElement, treeElement.stylesContainer().swatchPopoverHelper());
+    this.#popoverHelper.addEventListener(ShadowEvents.SHADOW_CHANGED, () => {
+      this.performUpdate();
+      void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+    });
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#model || !this.#popoverHelper) {
+      return;
+    }
+    const popoverHelper = this.#popoverHelper;
+    this.#view({
+      model: this.#model,
+      showPopover: swatch => {
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
+        popoverHelper.showPopover(swatch);
+      },
+    },
+               undefined, this.contentElement);
   }
 }
 
@@ -1762,22 +1846,8 @@ export class ShadowRenderer extends ShadowRendererBase {
         continue;
       }
 
-      const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
-      swatch.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-shadow').track({click: true})}`);
-      swatch.iconElement().addEventListener('click', () => {
-        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
-      });
-
-      const contents = document.createElement('span');
-      model.renderContents(contents);
-      const popoverHelper = new ShadowSwatchPopoverHelper(
-          this.#treeElement, this.#treeElement.stylesContainer().swatchPopoverHelper(), swatch);
-      const treeElement = this.#treeElement;
-      popoverHelper.addEventListener(ShadowEvents.SHADOW_CHANGED, () => {
-        model.renderContents(contents);
-        void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
-      });
-      result.push(swatch, contents);
+      result.push(
+          html`<devtools-widget ${widget(ShadowWidget, {model, treeElement: this.#treeElement})}></devtools-widget>`);
       texts.push(() =>
                      isImportant ? `${model.text()} ${nestedEdits.textRange(isImportant, isImportant)}` : model.text());
 

@@ -566,6 +566,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       treeElement.updateTitle();
       const {valueElement} = treeElement;
       assert.exists(valueElement);
+      renderElementIntoDOM(valueElement, {allowMultipleChildren: true});
       const check = (message: string, expected: string): void => {
         assert.strictEqual(treeElement.renderedPropertyText(), expected, message);
       };
@@ -718,7 +719,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       // The shadow editor renders the colors of its shadow anew with every change, which discards edits made to them
       // before. In the app, opening the color picker closes the shadow editor, so the colors are only edited once the
       // shadow editor is done with the shadow here as well. For that reason, the swatches are looked up late.
-      const angle = first.nextElementSibling?.querySelector('devtools-css-angle');
+      const angle = first.parentElement?.querySelector('devtools-css-angle');
       assert.exists(angle);
       parts[0] = 'inset 12px 13px 14px 15px hsl(200deg, 50%, 25%)';
       edit('changing the hue', text(),
@@ -731,7 +732,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
            () => typeIntoShadowEditor(secondEditor, 'blur', '3px'));
       commit(text());
 
-      const color = second.nextElementSibling?.querySelector('devtools-color-swatch');
+      const color = second.parentElement?.querySelector('devtools-color-swatch');
       assert.exists(color);
       parts[1] = '1px 2px 3px #ff8000';
       edit('picking a color for the second shadow', text(), () => pickColor(color, '#ff8000'));
@@ -1494,9 +1495,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         assert.exists(stylePropertyTreeElement.valueElement);
         renderElementIntoDOM(stylePropertyTreeElement.valueElement, {allowMultipleChildren: true});
 
-        assert.strictEqual(
-            stylePropertyTreeElement.valueElement?.firstElementChild instanceof InlineEditor.Swatches.CSSShadowSwatch,
-            success);
+        assert.strictEqual(stylePropertyTreeElement.valueElement?.firstElementChild?.firstElementChild instanceof
+                               InlineEditor.Swatches.CSSShadowSwatch,
+                           success);
         assert.strictEqual(stylePropertyTreeElement.valueElement?.innerText, value);
       };
 
@@ -1562,10 +1563,12 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     it('renders the shadow swatch and color swatch', () => {
       const stylePropertyTreeElement = getTreeElement('box-shadow', 'inset 10px 10px blue');
       stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
 
-      assert.instanceOf(
-          stylePropertyTreeElement.valueElement?.firstElementChild, InlineEditor.Swatches.CSSShadowSwatch);
-      const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
+      assert.instanceOf(stylePropertyTreeElement.valueElement.firstElementChild?.firstElementChild,
+                        InlineEditor.Swatches.CSSShadowSwatch);
+      const colorSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-color-swatch');
       assert.exists(colorSwatch);
       assert.strictEqual(colorSwatch.color?.asString(), 'blue');
     });
@@ -1573,30 +1576,36 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     it('renders multiple icons for multiple shadows', () => {
       const stylePropertyTreeElement = getTreeElement('box-shadow', 'inset 10px 11px blue, notashadow, 6px 5px red');
       stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
 
-      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 2);
-      assert.strictEqual((swatches[0].nextElementSibling as HTMLElement).innerText, 'inset 10px 11px blue');
-      assert.strictEqual((swatches[1].nextElementSibling as HTMLElement).innerText, '6px 5px red');
+      assert.strictEqual(swatches[0].parentElement?.innerText, 'inset 10px 11px blue');
+      assert.strictEqual(swatches[1].parentElement?.innerText, '6px 5px red');
     });
 
     it('correctly parses text-shadow', () => {
       const stylePropertyTreeElement =
           getTreeElement('text-shadow', 'inset 10px 11px blue, 6px 5px red, 5px 5px 0 0 yellow');
       stylePropertyTreeElement.updateTitle();
-      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 1);
-      assert.strictEqual((swatches[0].nextElementSibling as HTMLElement).innerText, '6px 5px red');
+      assert.strictEqual(swatches[0].parentElement?.innerText, '6px 5px red');
     });
 
     it('renders a color-mix child', () => {
       const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px color-mix(in srgb, red, blue)');
       stylePropertyTreeElement.updateTitle();
-      assert.instanceOf(
-          stylePropertyTreeElement.valueElement?.firstElementChild, InlineEditor.Swatches.CSSShadowSwatch);
-      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-mix-swatch');
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      assert.instanceOf(stylePropertyTreeElement.valueElement.firstElementChild?.firstElementChild,
+                        InlineEditor.Swatches.CSSShadowSwatch);
+      const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-mix-swatch');
       assert.exists(swatches);
     });
 
@@ -1611,8 +1620,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 2);
-      assert.strictEqual((swatches[0].nextElementSibling as HTMLElement).innerText, 'var(--offset) red');
-      assert.strictEqual((swatches[1].nextElementSibling as HTMLElement).innerText, 'var(--shadow)');
+      assert.strictEqual(swatches[0].parentElement?.innerText, 'var(--offset) red');
+      assert.strictEqual(swatches[1].parentElement?.innerText, 'var(--shadow)');
     });
 
     it('opens a shadow editor with the correct values', () => {
@@ -1621,7 +1630,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement =
           getTreeElement('box-shadow', 'var(--offset) red, inset 8px 9px 10px 11px yellow');
       stylePropertyTreeElement.updateTitle();
-      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 2);
 
@@ -1704,7 +1715,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       mockVariableMap['--props'] = '12px 13px red';
       const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px red, var(--props)');
       stylePropertyTreeElement.updateTitle();
-      const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 2);
 
@@ -1843,11 +1856,11 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
           SDK.CSSPropertyParserMatchers.ShadowType.BOX_SHADOW, properties, renderingContext);
 
       const container = document.createElement('div');
-      model.renderContents(container);
+      Lit.render(model.renderContents(), container);
       assert.strictEqual(container.innerText, '10px y var()');
 
       model.setBlurRadius(new InlineEditor.CSSShadowEditor.CSSLength(12, 'px'));
-      model.renderContents(container);
+      Lit.render(model.renderContents(), container);
       assert.strictEqual(container.innerText, '10px y 12px spread');
       assert.deepEqual(properties.map(p => p.source), [null, null, null, null]);
     });

@@ -46,11 +46,7 @@ export interface Delegate<T> {
     beginEdit(item: T): Editor<T>;
     commitEdit(item: T, editor: Editor<T>, isNew: boolean): void;
 }
-export interface CustomEditorControl<T> extends HTMLElement {
-    value: T;
-    validate: () => ValidatorResult;
-}
-export type EditorControl<T = string> = (HTMLInputElement | HTMLSelectElement | CustomEditorControl<T>);
+export type EditorControl = HTMLInputElement | HTMLSelectElement;
 export declare class Editor<T> {
     #private;
     element: HTMLDivElement;
@@ -68,9 +64,13 @@ export declare class Editor<T> {
     contentElement(): Element;
     createInput(name: string, type: string, title: string, validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): HTMLInputElement;
     createSelect(name: string, options: string[], validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult, title?: string): HTMLSelectElement;
-    createCustomControl<S, U extends CustomEditorControl<S>>(name: string, ctor: {
-        new (): U;
-    }, validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): CustomEditorControl<S>;
+    /**
+     * Adds an existing element, for example the element of a widget, as an
+     * editor control. The editor marks the element as invalid when the
+     * validator fails. The caller keeps its own reference to the control to
+     * read and write its value.
+     */
+    addCustomControl(element: HTMLElement, validator: (item: T, index: number) => ValidatorResult): void;
     control(name: string): EditorControl;
     private validateControls;
     requestValidation(): void;

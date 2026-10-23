@@ -16,7 +16,7 @@ export interface EventTypes {
 export declare class WebAuthnModel extends SDKModel<EventTypes> {
     #private;
     constructor(target: Target);
-    setVirtualAuthEnvEnabled(enable: boolean, enableUI?: boolean): Promise<Object>;
+    setVirtualAuthEnvEnabled(enable: boolean, enableUI?: boolean): Promise<void>;
     addAuthenticator(options: Protocol.WebAuthn.VirtualAuthenticatorOptions): Promise<Protocol.WebAuthn.AuthenticatorId>;
     removeAuthenticator(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void>;
     setAutomaticPresenceSimulation(authenticatorId: Protocol.WebAuthn.AuthenticatorId, enabled: boolean): Promise<void>;

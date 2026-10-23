@@ -529,6 +529,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             event.stopPropagation();
             input.onContextMenu(node, event);
         };
+        // Prevent the native word selection on double click. The double click
+        // starts inline editing instead. Inside an active inline editor the
+        // native selection must stay enabled.
+        const onMouseDown = (event) => {
+            if (event.detail < 2 || UI.UIUtils.isBeingEdited(event.target)) {
+                return;
+            }
+            event.preventDefault();
+        };
         const onDragStart = (event) => {
             event.stopPropagation();
             const currentTarget = event.currentTarget;
@@ -567,6 +576,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           @select=${on((event) => onSelect(false, Boolean(event.detail?.selectedByUser)))}
           @expand=${on(onExpand)}
           @mousemove=${on(onMouseMove(/* isClosingTag= */ false))}
+          @mousedown=${on(onMouseDown)}
           @contextmenu=${on(onContextMenu)}
           @dragstart=${on(onDragStart)}
           @dragover=${on(onDragOver(/* isClosingTag= */ false))}
@@ -649,6 +659,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     @select=${on((event) => onSelect(true, Boolean(event.detail?.selectedByUser)))}
                     @contextmenu=${on(onContextMenu)}
                     @mousemove=${on(onMouseMove(/* isClosingTag= */ true))}
+                    @mousedown=${on(onMouseDown)}
                     @dragstart=${on(onDragStart)}
                     @dragover=${on(onDragOver(/* isClosingTag= */ true))}
                     @dragleave=${on(onDragLeave)}

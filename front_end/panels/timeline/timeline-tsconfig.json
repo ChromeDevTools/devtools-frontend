@@ -68,6 +68,7 @@
     "../../../../../../front_end/panels/timeline/TargetForEvent.ts",
     "../../../../../../front_end/panels/timeline/ThirdPartyTreeView.ts",
     "../../../../../../front_end/panels/timeline/ThreadAppender.ts",
+    "../../../../../../front_end/panels/timeline/TimelineCommentContext.ts",
     "../../../../../../front_end/panels/timeline/TimelineCommentController.ts",
     "../../../../../../front_end/panels/timeline/TimelineController.ts",
     "../../../../../../front_end/panels/timeline/TimelineDetailsView.ts",

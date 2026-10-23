@@ -1,7 +1,6 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../settings/emulation/components/components.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -11,6 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as EmulationComponents from '../settings/emulation/components/components.js';
 import networkConfigViewStyles from './networkConfigView.css.js';
 const { ref } = Directives;
 const UIStrings = {
@@ -160,12 +160,15 @@ function renderUserAgentSection(input, output) {
     </devtools-checkbox>
     <div class=${Directives.classMap({ 'network-config-ua-custom': true, checked: input.useCustomUA })}>
       ${renderUserAgentSelectAndInput(input, output, title)}
-      <devtools-user-agent-client-hints-form
-          .value=${input.clientHintsValue}
-          .disabled=${!input.useCustomUA}
-          @clienthintschange=${(e) => input.onClientHintsChange(e.target.value.metaData)}
-          @clienthintssubmit=${(e) => input.onClientHintsSubmit(e.detail.value)}>
-      </devtools-user-agent-client-hints-form>
+      <devtools-widget
+          class="user-agent-client-hints-form"
+          @clienthintschange=${(e) => input.onClientHintsChange(e.detail)}
+          @clienthintssubmit=${(e) => input.onClientHintsSubmit(e.detail)}
+          ${UI.Widget.widget(EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm, {
+        value: input.clientHintsValue,
+        disabled: !input.useCustomUA,
+    })}>
+      </devtools-widget>
     </div>
     <span class="status-text">${input.clientHintsStatusText}</span>
   `);

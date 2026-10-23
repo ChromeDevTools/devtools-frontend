@@ -3572,6 +3572,7 @@ var StyleEditorWidget_exports = {};
 __export(StyleEditorWidget_exports, {
   StyleEditorWidget: () => StyleEditorWidget
 });
+import * as Elements2 from "../../models/elements/elements.js";
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 
@@ -8544,6 +8545,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI7.Widget.VBox {
   section;
   editorContainer;
   #triggerKey;
+  #initialProperties = null;
   constructor() {
     super({ useShadowDom: true });
     this.contentElement.tabIndex = 0;
@@ -8577,6 +8579,9 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI7.Widget.VBox {
   bindContext(stylesContainer, section5) {
     this.stylesContainer = stylesContainer;
     this.section = section5;
+    if (!this.#initialProperties) {
+      this.#initialProperties = this.editor ? getAuthoredStyles(section5, this.editor.getEditableProperties()) : /* @__PURE__ */ new Map();
+    }
     this.editor?.addEventListener("propertyselected", this.onPropertySelected);
     this.editor?.addEventListener("propertydeselected", this.onPropertyDeselected);
   }
@@ -8591,6 +8596,27 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI7.Widget.VBox {
     this.section = void 0;
     this.editor?.removeEventListener("propertyselected", this.onPropertySelected);
     this.editor?.removeEventListener("propertydeselected", this.onPropertyDeselected);
+  }
+  #trackChanges() {
+    const initialProperties = this.#initialProperties;
+    this.#initialProperties = null;
+    if (!this.editor || !this.section || !this.stylesContainer || !initialProperties) {
+      return;
+    }
+    const finalProperties = getAuthoredStyles(this.section, this.editor.getEditableProperties());
+    const node = this.stylesContainer.node() ?? this.section.matchedStyles.node();
+    const ruleHeader = this.section.headerText();
+    for (const { propertyName } of this.editor.getEditableProperties()) {
+      const oldValue = initialProperties.get(propertyName) ?? "";
+      const newValue = finalProperties.get(propertyName) ?? "";
+      Elements2.StyleChanges.trackStylePropertyEdit(this.stylesContainer.changeTracker, node, {
+        ruleHeader,
+        oldName: oldValue ? propertyName : "",
+        oldValue,
+        newName: newValue ? propertyName : "",
+        newValue
+      });
+    }
   }
   async render() {
     if (!this.editor) {
@@ -8639,6 +8665,7 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI7.Widget.VBox {
       const onStylesUpdateCompleted = widget5.requestUpdate.bind(widget5);
       stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
       popoverHelper.show(widget5, triggerButton, () => {
+        widget5.#trackChanges();
         widget5.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener("scroll", onScroll);
@@ -15852,7 +15879,7 @@ import * as i18n32 from "../../core/i18n/i18n.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
 import * as Badges4 from "../../models/badges/badges.js";
 import * as ChangeTracker5 from "../../models/change_tracker/change_tracker.js";
-import * as Elements3 from "../../models/elements/elements.js";
+import * as Elements4 from "../../models/elements/elements.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter5 from "../../ui/components/code_highlighter/code_highlighter.js";
 import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
@@ -16419,7 +16446,7 @@ import * as AIAssistance from "../../models/ai-utils/ai-utils.js";
 import * as Badges3 from "../../models/badges/badges.js";
 import * as Bindings5 from "../../models/bindings/bindings.js";
 import * as ChangeTracker3 from "../../models/change_tracker/change_tracker.js";
-import * as Elements2 from "../../models/elements/elements.js";
+import * as Elements3 from "../../models/elements/elements.js";
 import * as IssuesManager2 from "../../models/issues_manager/issues_manager.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
@@ -18989,7 +19016,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
       const changeTracker = this.changeTracker;
       this.node.setAttribute(attributeName, newText, (error) => {
         if (!error) {
-          Elements2.DOMChanges.trackAttributeEdit(
+          Elements3.DOMChanges.trackAttributeEdit(
             changeTracker,
             this.node,
             buildChangeSelector(changeTracker, this.node),
@@ -19043,7 +19070,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
         return;
       }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      Elements2.DOMChanges.trackTagNameEdit(
+      Elements3.DOMChanges.trackTagNameEdit(
         changeTracker,
         newNode,
         buildChangeSelector(changeTracker, newNode),
@@ -19061,7 +19088,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     const changeTracker = this.changeTracker;
     textNode.setNodeValue(newText, (error) => {
       if (!error && oldValue !== newText) {
-        Elements2.DOMChanges.trackTextNodeEdit(
+        Elements3.DOMChanges.trackTextNodeEdit(
           changeTracker,
           textNode,
           buildChangeSelector(changeTracker, textNode),
@@ -19178,7 +19205,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     const selector = buildChangeSelector(changeTracker, this.node);
     await this.node.removeNode((err) => {
       if (!err) {
-        Elements2.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
+        Elements3.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
       }
     });
   }
@@ -19200,7 +19227,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
         const selector = buildChangeSelector(changeTracker, node);
         node.setOuterHTML(value5, (error) => {
           if (!error) {
-            Elements2.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value5);
+            Elements3.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value5);
           }
           selectNode(error);
         });
@@ -20976,6 +21003,12 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       event.stopPropagation();
       input.onContextMenu(node, event);
     };
+    const onMouseDown = (event) => {
+      if (event.detail < 2 || UI17.UIUtils.isBeingEdited(event.target)) {
+        return;
+      }
+      event.preventDefault();
+    };
     const onDragStart = (event) => {
       event.stopPropagation();
       const currentTarget = event.currentTarget;
@@ -21014,6 +21047,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       /* isClosingTag= */
       false
     ))}
+          @mousedown=${on(onMouseDown)}
           @contextmenu=${on(onContextMenu)}
           @dragstart=${on(onDragStart)}
           @dragover=${on(onDragOver(
@@ -21105,6 +21139,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       /* isClosingTag= */
       true
     ))}
+                    @mousedown=${on(onMouseDown)}
                     @dragstart=${on(onDragStart)}
                     @dragover=${on(onDragOver(
       /* isClosingTag= */
@@ -21498,7 +21533,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   #addUpdateRecord(node) {
     let record = this.#updateRecords.get(node);
     if (!record) {
-      record = new Elements3.ElementUpdateRecord.ElementUpdateRecord();
+      record = new Elements4.ElementUpdateRecord.ElementUpdateRecord();
       this.#updateRecords.set(node, record);
     }
     return record;
@@ -22182,7 +22217,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     const isHidden = this.isToggledToHidden(node);
     if (isHidden !== wasHidden) {
       const changeTracker = this.changeTracker;
-      Elements3.DOMChanges.trackVisibilityToggle(
+      Elements4.DOMChanges.trackVisibilityToggle(
         changeTracker,
         node,
         buildChangeSelector(changeTracker, node),
@@ -22204,7 +22239,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     const selector = buildChangeSelector(changeTracker, node);
     await node.removeNode((err) => {
       if (!err) {
-        Elements3.DOMChanges.trackNodeRemoval(changeTracker, node, selector);
+        Elements4.DOMChanges.trackNodeRemoval(changeTracker, node, selector);
       }
     });
   }
@@ -22293,7 +22328,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     void node.duplicate().then(({ error, node: newNode }) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements3.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
+        Elements4.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
     });
   }
@@ -22418,7 +22453,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements3.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
+        Elements4.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
       this.selectNodeAfterEdit(wasExpanded, error, newNode);
     });
@@ -22643,7 +22678,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     node.moveTo(parentNode, anchor, (error, newNode) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements3.DOMChanges.trackNodeMove(
+        Elements4.DOMChanges.trackNodeMove(
           changeTracker,
           newNode,
           buildChangeSelector(changeTracker, newNode),
@@ -22750,7 +22785,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       clipboardNode.moveTo(targetNode, null, (error, newNode) => {
         if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements3.DOMChanges.trackNodePaste(
+          Elements4.DOMChanges.trackNodePaste(
             changeTracker,
             newNode,
             buildChangeSelector(changeTracker, newNode),
@@ -22765,7 +22800,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       clipboardNode.copyTo(targetNode, null, (error, newNode) => {
         if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements3.DOMChanges.trackNodePaste(
+          Elements4.DOMChanges.trackNodePaste(
             changeTracker,
             newNode,
             buildChangeSelector(changeTracker, newNode),
@@ -26338,7 +26373,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     UI25.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
   }
   splitTextIntoClasses(text) {
-    return text.split(/[,\s]/).map((className) => className.trim()).filter((className) => className.length);
+    return text.split(/[,\s]/).map((className) => className.trim().replace(/^\./, "")).filter((className) => className.length);
   }
   onKeyDown(event) {
     if (!(event.key === "Enter") && !Platform12.KeyboardUtilities.isEscKey(event)) {

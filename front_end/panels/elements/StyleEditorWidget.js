@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import * as Elements from '../../models/elements/elements.js';
 import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
@@ -15,6 +16,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     section;
     editorContainer;
     #triggerKey;
+    #initialProperties = null;
     constructor() {
         super({ useShadowDom: true });
         this.contentElement.tabIndex = 0;
@@ -48,6 +50,10 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     bindContext(stylesContainer, section) {
         this.stylesContainer = stylesContainer;
         this.section = section;
+        if (!this.#initialProperties) {
+            this.#initialProperties =
+                this.editor ? getAuthoredStyles(section, this.editor.getEditableProperties()) : new Map();
+        }
         this.editor?.addEventListener('propertyselected', this.onPropertySelected);
         this.editor?.addEventListener('propertydeselected', this.onPropertyDeselected);
     }
@@ -62,6 +68,27 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         this.section = undefined;
         this.editor?.removeEventListener('propertyselected', this.onPropertySelected);
         this.editor?.removeEventListener('propertydeselected', this.onPropertyDeselected);
+    }
+    #trackChanges() {
+        const initialProperties = this.#initialProperties;
+        this.#initialProperties = null;
+        if (!this.editor || !this.section || !this.stylesContainer || !initialProperties) {
+            return;
+        }
+        const finalProperties = getAuthoredStyles(this.section, this.editor.getEditableProperties());
+        const node = this.stylesContainer.node() ?? this.section.matchedStyles.node();
+        const ruleHeader = this.section.headerText();
+        for (const { propertyName } of this.editor.getEditableProperties()) {
+            const oldValue = initialProperties.get(propertyName) ?? '';
+            const newValue = finalProperties.get(propertyName) ?? '';
+            Elements.StyleChanges.trackStylePropertyEdit(this.stylesContainer.changeTracker, node, {
+                ruleHeader,
+                oldName: oldValue ? propertyName : '',
+                oldValue,
+                newName: newValue ? propertyName : '',
+                newValue,
+            });
+        }
     }
     async render() {
         if (!this.editor) {
@@ -111,6 +138,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
             const onStylesUpdateCompleted = widget.requestUpdate.bind(widget);
             stylesContainer.addStyleUpdateListener(onStylesUpdateCompleted);
             popoverHelper.show(widget, triggerButton, () => {
+                widget.#trackChanges();
                 widget.unbindContext();
                 if (scrollerElement) {
                     scrollerElement.removeEventListener('scroll', onScroll);

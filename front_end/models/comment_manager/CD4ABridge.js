@@ -71,6 +71,9 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper {
                 `line ${thread.anchor.editor.lineNumber}`;
             details.push(`- Editor: ${editorInfo}`);
         }
+        for (const line of thread.anchor.agentContext ?? []) {
+            details.push(`- ${line}`);
+        }
         if (details.length === 0) {
             return rawText;
         }

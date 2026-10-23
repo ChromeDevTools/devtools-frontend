@@ -5781,7 +5781,10 @@ var TabbedPane = class extends TabbedPaneBase {
       if (this.tabsElement.children[i] !== tab.tabElement) {
         this.tabsElement.insertBefore(tab.tabElement, this.tabsElement.children[i] ?? null);
       }
-      tab.shown = true;
+      if (!tab.shown) {
+        tab.shown = true;
+        tab.slotsAttached();
+      }
     }
     this.maybeShowDropDown(tabsToShowIndexes.length !== this.#tabs.length);
     this.#dispatchOverflowTabsChangedIfNeeded();
@@ -6280,11 +6283,43 @@ var TabbedPaneTab = class {
     this.#slotContainers[kind] = container;
     container.style.display = "none";
     container.addEventListener("slotchange", () => {
-      this.#hasSlottedContent[kind] = slot.assignedElements().length > 0;
-      container.style.display = this.#hasSlottedContent[kind] ? "" : "none";
+      if (!slot.isConnected) {
+        return;
+      }
+      this.#updateSlottedContent(kind, container, slot);
       delete this.measuredWidth;
       this.tabbedPane.requestUpdate();
     });
+  }
+  #updateSlottedContent(kind, container, slot) {
+    const hasSlottedContent = slot.assignedElements().length > 0;
+    if (hasSlottedContent === this.#hasSlottedContent[kind]) {
+      return false;
+    }
+    this.#hasSlottedContent[kind] = hasSlottedContent;
+    container.style.display = hasSlottedContent ? "" : "none";
+    return true;
+  }
+  /**
+   * Called when the tab header is (re-)attached to the DOM. If the slotted
+   * content changed while the header was detached, no `slotchange` fires
+   * on re-attachment when the slot is still empty afterwards (its assigned
+   * nodes were already cleared on detach), so sync the state explicitly.
+   */
+  slotsAttached() {
+    let changed = false;
+    for (const kind of ["icon", "suffix"]) {
+      const container = this.#slotContainers[kind];
+      const slot = container?.querySelector("slot");
+      if (container && slot?.isConnected) {
+        const updated = this.#updateSlottedContent(kind, container, slot);
+        changed = updated || changed;
+      }
+    }
+    if (changed) {
+      delete this.measuredWidth;
+      this.tabbedPane.requestUpdate();
+    }
   }
   clearSlots() {
     this.#slotContainers.icon?.removeChildren();
@@ -16257,7 +16292,7 @@ function isBeingEdited(node) {
   }
   let currentElement = element;
   while (currentElement) {
-    if (elementsBeingEdited.has(element)) {
+    if (elementsBeingEdited.has(currentElement)) {
       return true;
     }
     currentElement = currentElement.parentElementOrShadowHost();
@@ -20570,7 +20605,7 @@ var Editor = class {
     setLabel(input, title);
     this.controlByName.set(name, input);
     this.controls.push(input);
-    this.validators.push(validator);
+    this.validators.push((item8, index) => validator(item8, index, input));
     return input;
   }
   createSelect(name, options, validator, title) {
@@ -20593,15 +20628,18 @@ var Editor = class {
     select.addEventListener("blur", this.validateControls.bind(this, false), false);
     this.controlByName.set(name, select);
     this.controls.push(select);
-    this.validators.push(validator);
+    this.validators.push((item8, index) => validator(item8, index, select));
     return select;
   }
-  createCustomControl(name, ctor, validator) {
-    const control = new ctor();
-    this.controlByName.set(name, control);
-    this.controls.push(control);
+  /**
+   * Adds an existing element, for example the element of a widget, as an
+   * editor control. The editor marks the element as invalid when the
+   * validator fails. The caller keeps its own reference to the control to
+   * read and write its value.
+   */
+  addCustomControl(element, validator) {
+    this.controls.push(element);
     this.validators.push(validator);
-    return control;
   }
   control(name) {
     const control = this.controlByName.get(name);
@@ -20615,7 +20653,7 @@ var Editor = class {
     this.errorMessageContainer.textContent = "";
     for (let index = 0; index < this.controls.length; ++index) {
       const input = this.controls[index];
-      const { valid, errorMessage } = this.validators[index].call(null, this.item, this.index, input);
+      const { valid, errorMessage } = this.validators[index].call(null, this.item, this.index);
       input.classList.toggle("error-input", !valid && !forceValid);
       if (valid || forceValid) {
         setInvalid(input, false);
@@ -24480,7 +24518,7 @@ var TreeElement = class {
   select(omitFocus, selectedByUser) {
     omitFocus = omitFocus || this.disableSelectFocus;
     if (!this.treeOutline || !this.selectable || this.selected) {
-      if (!omitFocus) {
+      if (!omitFocus && !this.listItemElement.hasFocus()) {
         this.listItemElement.focus();
       }
       return false;

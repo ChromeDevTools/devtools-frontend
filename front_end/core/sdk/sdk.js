@@ -46619,6 +46619,12 @@ var Events35 = /* @__PURE__ */ ((Events36) => {
   Events36["CREDENTIAL_UPDATED"] = "CredentialUpdated";
   return Events36;
 })(Events35 || {});
+function throwIfError(response) {
+  const error = response.getError();
+  if (error) {
+    throw new Error(error);
+  }
+}
 var WebAuthnModel = class extends SDKModel {
   #agent;
   constructor(target) {
@@ -46626,34 +46632,34 @@ var WebAuthnModel = class extends SDKModel {
     this.#agent = target.webAuthnAgent();
     target.registerWebAuthnDispatcher(new WebAuthnDispatcher(this));
   }
-  setVirtualAuthEnvEnabled(enable, enableUI = true) {
-    if (enable) {
-      return this.#agent.invoke_enable({ enableUI });
-    }
-    return this.#agent.invoke_disable();
+  async setVirtualAuthEnvEnabled(enable, enableUI = true) {
+    const response = enable ? await this.#agent.invoke_enable({ enableUI }) : await this.#agent.invoke_disable();
+    throwIfError(response);
   }
   async addAuthenticator(options) {
     const response = await this.#agent.invoke_addVirtualAuthenticator({ options });
+    throwIfError(response);
     return response.authenticatorId;
   }
   async removeAuthenticator(authenticatorId) {
-    await this.#agent.invoke_removeVirtualAuthenticator({ authenticatorId });
+    throwIfError(await this.#agent.invoke_removeVirtualAuthenticator({ authenticatorId }));
   }
   async setAutomaticPresenceSimulation(authenticatorId, enabled) {
-    await this.#agent.invoke_setAutomaticPresenceSimulation({ authenticatorId, enabled });
+    throwIfError(await this.#agent.invoke_setAutomaticPresenceSimulation({ authenticatorId, enabled }));
   }
   async setUserVerified(authenticatorId, isUserVerified) {
-    await this.#agent.invoke_setUserVerified({ authenticatorId, isUserVerified });
+    throwIfError(await this.#agent.invoke_setUserVerified({ authenticatorId, isUserVerified }));
   }
   async addCredential(authenticatorId, credential) {
-    await this.#agent.invoke_addCredential({ authenticatorId, credential });
+    throwIfError(await this.#agent.invoke_addCredential({ authenticatorId, credential }));
   }
   async getCredentials(authenticatorId) {
     const response = await this.#agent.invoke_getCredentials({ authenticatorId });
+    throwIfError(response);
     return response.credentials;
   }
   async removeCredential(authenticatorId, credentialId) {
-    await this.#agent.invoke_removeCredential({ authenticatorId, credentialId });
+    throwIfError(await this.#agent.invoke_removeCredential({ authenticatorId, credentialId }));
   }
   credentialAdded(params) {
     this.dispatchEventToListeners("CredentialAdded" /* CREDENTIAL_ADDED */, params);

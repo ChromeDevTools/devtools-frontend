@@ -3,6 +3,18 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare const storagePieColors: Map<Protocol.Storage.StorageType, string>;
+export interface ClearSiteDataViewInput {
+    settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
+    includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
+    includeThirdPartyCookiesDisabled: boolean;
+    clearing: boolean;
+    onClear: () => void;
+}
+export interface ClearSiteDataViewOutput {
+    focusClearButton?: () => void;
+}
+export type ClearSiteDataView = (input: ClearSiteDataViewInput, output: ClearSiteDataViewOutput, target: HTMLElement) => void;
+export declare const CLEAR_SITE_DATA_DEFAULT_VIEW: ClearSiteDataView;
 /**
  * @implements {SDK.TargetManager.Observer}
  */
@@ -12,29 +24,37 @@ export declare class StorageView extends UI.Widget.VBox {
     private target;
     private securityOrigin;
     private storageKey;
+    private subtitle;
     private settings;
     private includeThirdPartyCookiesSetting;
-    private includeThirdPartyCookiesCheckbox;
+    private readonly clearSiteDataView;
+    private readonly clearSiteDataViewOutput;
+    private readonly clearSiteDataFieldList;
     private quotaRow;
     private quotaUsage;
     private quotaQuota;
     private quotaOverrideActive;
+    private pieChartSlices;
     private pieChart;
     private previousOverrideFieldValue;
+    private quotaOverrideEnabled;
+    private quotaOverrideError;
     private quotaOverrideCheckbox;
     private quotaOverrideControlRow;
     private quotaOverrideEditor;
     private quotaOverrideErrorMessage;
-    private clearButton;
+    private clearing;
+    private clearTimerId?;
     private readonly throttler;
-    constructor();
-    private appendSettingCheckbox;
+    private readonly boundOnCookiesSettingChanged;
+    private readonly boundOnIncludeThirdPartyCookiesSettingChanged;
+    constructor(clearSiteDataView?: ClearSiteDataView);
     private onCookiesSettingChanged;
     private onIncludeThirdPartyCookiesSettingChanged;
-    private syncCheckboxAttributeState;
-    private updateThirdPartyCookiesCheckboxState;
     targetAdded(target: SDK.Target.Target): void;
     targetRemoved(target: SDK.Target.Target): void;
+    willHide(): void;
+    wasHidden(): void;
     private originChanged;
     private storageKeyChanged;
     private updateOrigin;
@@ -44,7 +64,10 @@ export declare class StorageView extends UI.Widget.VBox {
     private onClickCheckbox;
     private clear;
     static clear(target: SDK.Target.Target, storageKey: string | null, originForCookies: string | null, selectedStorageTypes: string[], includeThirdPartyCookies: boolean): void;
-    performUpdate(): Promise<void>;
+    private refreshUsageAndQuota;
+    wasShown(): void;
+    performUpdate(): void;
+    private renderQuotaRow;
     private populatePieChart;
     static getStorageTypeName(type: Protocol.Storage.StorageType): string;
     /**

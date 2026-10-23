@@ -12838,6 +12838,7 @@ var StorageView_exports = {};
 __export(StorageView_exports, {
   ActionDelegate: () => ActionDelegate2,
   AllStorageTypes: () => AllStorageTypes,
+  CLEAR_SITE_DATA_DEFAULT_VIEW: () => CLEAR_SITE_DATA_DEFAULT_VIEW,
   StorageRevealable: () => StorageRevealable,
   StorageRevealer: () => StorageRevealer,
   StorageView: () => StorageView,
@@ -12847,11 +12848,12 @@ import * as Common16 from "../../core/common/common.js";
 import * as i18n51 from "../../core/i18n/i18n.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
+import * as Buttons10 from "../../ui/components/buttons/buttons.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import { Icon, Link } from "../../ui/kit/kit.js";
 import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI2 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
+import { Directives as Directives7, html as html18, render as render19 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/ResourcesPanel.ts
@@ -15769,6 +15771,8 @@ var storageView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./storageView.css")} */`;
 
 // ../../front_end/panels/application/StorageView.ts
+var { ref: ref3 } = Directives7;
+var { bindToSetting: bindToSetting2 } = UI26.UIUtils;
 var UIStrings26 = {
   /**
    * @description Text in the storage view that expresses the amount of used and available storage quota.
@@ -15912,30 +15916,85 @@ var storagePieColors = /* @__PURE__ */ new Map([
 ]);
 var str_26 = i18n51.i18n.registerUIStrings("panels/application/StorageView.ts", UIStrings26);
 var i18nString26 = i18n51.i18n.getLocalizedString.bind(void 0, str_26);
+var CLEAR_SITE_DATA_DEFAULT_VIEW = (input, output, target) => {
+  function renderSettingCheckbox(title, settingName, className) {
+    const setting = input.settings.get(settingName);
+    if (!setting) {
+      throw new Error(`Missing setting for storage type: ${settingName}`);
+    }
+    return html18`<devtools-checkbox class=${className} title=${title} ${bindToSetting2(setting)}>${title}</devtools-checkbox>`;
+  }
+  render19(html18`
+    <div class="report-row clear-site-data-checkboxes-row">
+      <div class="clear-site-data-checkbox-column">
+        ${renderSettingCheckbox(i18nString26(UIStrings26.cacheStorage), Storage.StorageType.Cache_storage, "cache-storage-checkbox")}
+        ${renderSettingCheckbox(i18nString26(UIStrings26.fileSystem), Storage.StorageType.File_systems, "file-systems-checkbox")}
+        ${renderSettingCheckbox(i18nString26(UIStrings26.indexDB), Storage.StorageType.Indexeddb, "indexeddb-checkbox")}
+        ${renderSettingCheckbox(i18nString26(UIStrings26.localAndSessionStorage), Storage.StorageType.Local_storage, "local-and-session-storage-checkbox")}
+      </div>
+      <div class="clear-site-data-checkbox-column">
+        ${renderSettingCheckbox(i18nString26(UIStrings26.unregisterServiceWorker), Storage.StorageType.Service_workers, "unregister-service-worker-checkbox")}
+        ${renderSettingCheckbox(i18nString26(UIStrings26.cookies), Storage.StorageType.Cookies, "cookies-checkbox cookies-row")}
+        <div class="include-third-party-cookies-row">
+          <devtools-checkbox class="third-party-cookies-checkbox"
+              title=${i18nString26(UIStrings26.thirdPartyCookies)}
+              ?disabled=${input.includeThirdPartyCookiesDisabled}
+              ${bindToSetting2(input.includeThirdPartyCookiesSetting)}>
+            ${i18nString26(UIStrings26.thirdPartyCookies)}
+          </devtools-checkbox>
+        </div>
+      </div>
+    </div>
+    <div class="report-row clear-selected-button-row">
+      <devtools-button id="storage-view-clear-button"
+          .variant=${Buttons10.Button.Variant.OUTLINED}
+          .disabled=${input.clearing}
+          .jslogContext=${"storage.clear-site-data"}
+          @click=${input.onClear}
+          ${ref3((e) => {
+    output.focusClearButton = e instanceof HTMLElement ? () => e.focus() : void 0;
+  })}
+          >${input.clearing ? i18nString26(UIStrings26.clearing) : i18nString26(UIStrings26.clearSelected)}</devtools-button>
+    </div>`, target);
+};
 var StorageView = class _StorageView extends UI26.Widget.VBox {
   pieColors;
   reportView;
-  target;
-  securityOrigin;
-  storageKey;
+  target = null;
+  securityOrigin = null;
+  storageKey = null;
+  subtitle = null;
   settings;
   includeThirdPartyCookiesSetting;
-  includeThirdPartyCookiesCheckbox;
+  clearSiteDataView;
+  clearSiteDataViewOutput = {};
+  clearSiteDataFieldList;
   quotaRow;
-  quotaUsage;
-  quotaQuota;
-  quotaOverrideActive;
+  quotaUsage = null;
+  quotaQuota = null;
+  quotaOverrideActive = null;
+  pieChartSlices = [];
   pieChart;
-  previousOverrideFieldValue;
+  previousOverrideFieldValue = "";
+  quotaOverrideEnabled = false;
+  quotaOverrideError = "";
   quotaOverrideCheckbox;
   quotaOverrideControlRow;
   quotaOverrideEditor;
   quotaOverrideErrorMessage;
-  clearButton;
+  clearing = false;
+  clearTimerId;
   throttler = new Common16.Throttler.Throttler(1e3);
-  constructor() {
+  boundOnCookiesSettingChanged = (event) => {
+    this.onCookiesSettingChanged(event.data);
+  };
+  boundOnIncludeThirdPartyCookiesSettingChanged = (event) => {
+    this.onIncludeThirdPartyCookiesSettingChanged(event.data);
+  };
+  constructor(clearSiteDataView = CLEAR_SITE_DATA_DEFAULT_VIEW) {
     super({ useShadowDom: true });
     this.registerRequiredCSS(storageView_css_default);
+    this.clearSiteDataView = clearSiteDataView;
     this.contentElement.classList.add("clear-storage-container");
     this.contentElement.setAttribute("jslog", `${VisualLogging18.pane("clear-storage")}`);
     this.pieColors = storagePieColors;
@@ -15943,9 +16002,6 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     this.reportView.registerRequiredCSS(storageView_css_default);
     this.reportView.element.classList.add("clear-storage-header");
     this.reportView.show(this.contentElement);
-    this.target = null;
-    this.securityOrigin = null;
-    this.storageKey = null;
     this.settings = /* @__PURE__ */ new Map();
     for (const type of AllStorageTypes) {
       this.settings.set(
@@ -15959,83 +16015,8 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     this.includeThirdPartyCookiesSetting = Common16.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
     const clearSiteData = this.reportView.appendSection(i18nString26(UIStrings26.clearSiteData));
     clearSiteData.element.setAttribute("jslog", `${VisualLogging18.section("clear-storage")}`);
-    const clearSiteDataCheckboxesRow = clearSiteData.appendRow();
-    clearSiteDataCheckboxesRow.classList.add("clear-site-data-checkboxes-row");
-    const leftColumn = clearSiteDataCheckboxesRow.createChild("div", "clear-site-data-checkbox-column");
-    this.appendSettingCheckbox(
-      leftColumn,
-      i18nString26(UIStrings26.cacheStorage),
-      Storage.StorageType.Cache_storage,
-      "cache-storage-checkbox"
-    );
-    this.appendSettingCheckbox(
-      leftColumn,
-      i18nString26(UIStrings26.fileSystem),
-      Storage.StorageType.File_systems,
-      "file-systems-checkbox"
-    );
-    this.appendSettingCheckbox(
-      leftColumn,
-      i18nString26(UIStrings26.indexDB),
-      Storage.StorageType.Indexeddb,
-      "indexeddb-checkbox"
-    );
-    this.appendSettingCheckbox(
-      leftColumn,
-      i18nString26(UIStrings26.localAndSessionStorage),
-      Storage.StorageType.Local_storage,
-      "local-and-session-storage-checkbox"
-    );
-    const rightColumn = clearSiteDataCheckboxesRow.createChild("div", "clear-site-data-checkbox-column");
-    this.appendSettingCheckbox(
-      rightColumn,
-      i18nString26(UIStrings26.unregisterServiceWorker),
-      Storage.StorageType.Service_workers,
-      "unregister-service-worker-checkbox"
-    );
-    const cookiesCheckbox = this.appendSettingCheckbox(
-      rightColumn,
-      i18nString26(UIStrings26.cookies),
-      Storage.StorageType.Cookies,
-      "cookies-checkbox"
-    );
-    cookiesCheckbox.classList.add("cookies-row");
-    const includeThirdPartyCookiesRow = rightColumn.createChild("div", "include-third-party-cookies-row");
-    this.includeThirdPartyCookiesCheckbox = SettingsUI2.SettingsUI.createSettingCheckbox(
-      i18nString26(UIStrings26.thirdPartyCookies),
-      this.includeThirdPartyCookiesSetting
-    );
-    this.includeThirdPartyCookiesCheckbox.classList.add("third-party-cookies-checkbox");
-    includeThirdPartyCookiesRow.appendChild(this.includeThirdPartyCookiesCheckbox);
-    const clearButtonRow = clearSiteData.appendRow();
-    clearButtonRow.classList.add("clear-selected-button-row");
-    this.clearButton = UI26.UIUtils.createTextButton(
-      i18nString26(UIStrings26.clearSelected),
-      this.clear.bind(this),
-      { jslogContext: "storage.clear-site-data" }
-    );
-    this.clearButton.id = "storage-view-clear-button";
-    clearButtonRow.appendChild(this.clearButton);
+    this.clearSiteDataFieldList = clearSiteData.getFieldElement();
     clearSiteData.markFieldListAsGroup();
-    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
-    if (cookiesSetting) {
-      cookiesSetting.addChangeListener((event) => this.onCookiesSettingChanged(event.data));
-    }
-    this.includeThirdPartyCookiesSetting.addChangeListener(
-      (event) => this.onIncludeThirdPartyCookiesSettingChanged(event.data)
-    );
-    cookiesCheckbox.addEventListener("change", () => {
-      this.syncCheckboxAttributeState(cookiesCheckbox);
-      if (!cookiesCheckbox.checked && this.includeThirdPartyCookiesCheckbox.checked) {
-        this.includeThirdPartyCookiesCheckbox.click();
-      }
-      this.onCookiesSettingChanged(cookiesCheckbox.checked);
-    });
-    this.includeThirdPartyCookiesCheckbox.addEventListener("change", () => {
-      this.syncCheckboxAttributeState(this.includeThirdPartyCookiesCheckbox);
-      this.onIncludeThirdPartyCookiesSettingChanged(this.includeThirdPartyCookiesCheckbox.checked);
-    });
-    this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
     const quota = this.reportView.appendSection(i18nString26(UIStrings26.usage));
     quota.element.setAttribute("jslog", `${VisualLogging18.section("usage")}`);
     this.quotaRow = quota.appendSelectableRow();
@@ -16049,16 +16030,11 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
       "learn-more"
     );
     learnMoreRow.appendChild(learnMore);
-    this.quotaUsage = null;
-    this.quotaQuota = null;
-    this.quotaOverrideActive = null;
     this.pieChart = new PerfUI.PieChart.PieChart();
-    this.populatePieChart(0, []);
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add("usage-breakdown-row");
     usageBreakdownRow.setAttribute("jslog", `${VisualLogging18.item("usage-breakdown")}`);
     usageBreakdownRow.appendChild(this.pieChart);
-    this.previousOverrideFieldValue = "";
     const quotaOverrideCheckboxRow = quota.appendRow();
     quotaOverrideCheckboxRow.classList.add("quota-override-row");
     this.quotaOverrideCheckbox = UI26.UIUtils.CheckboxLabel.create(i18nString26(UIStrings26.simulateCustomStorage), false);
@@ -16076,7 +16052,6 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
       `${VisualLogging18.textField("quota-override").track({ change: true })}`
     );
     this.quotaOverrideControlRow.appendChild(UI26.UIUtils.createLabel(i18nString26(UIStrings26.mb)));
-    this.quotaOverrideControlRow.classList.add("hidden");
     this.quotaOverrideEditor.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
         void this.applyQuotaOverrideFromInputField();
@@ -16089,29 +16064,16 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     });
     const errorMessageRow = quota.appendRow();
     this.quotaOverrideErrorMessage = errorMessageRow.createChild("div", "quota-override-error");
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
+    this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
     SDK22.TargetManager.TargetManager.instance().observeTargets(this);
   }
-  appendSettingCheckbox(container, title, settingName, className) {
-    const setting = this.settings.get(settingName);
-    if (!setting) {
-      throw new Error(`Missing setting for storage type: ${settingName}`);
-    }
-    const checkbox = SettingsUI2.SettingsUI.createSettingCheckbox(title, setting);
-    if (className) {
-      checkbox.classList.add(className);
-    }
-    container.appendChild(checkbox);
-    return checkbox;
-  }
   onCookiesSettingChanged(cookiesEnabled) {
-    if (!cookiesEnabled) {
-      this.includeThirdPartyCookiesCheckbox.toggleAttribute("checked", true);
-      this.includeThirdPartyCookiesCheckbox.toggleAttribute("checked", false);
-      if (this.includeThirdPartyCookiesSetting.get()) {
-        this.includeThirdPartyCookiesSetting.set(false);
-      }
+    if (!cookiesEnabled && this.includeThirdPartyCookiesSetting.get()) {
+      this.includeThirdPartyCookiesSetting.set(false);
+      return;
     }
-    this.updateThirdPartyCookiesCheckboxState();
+    this.requestUpdate();
   }
   onIncludeThirdPartyCookiesSettingChanged(includeThirdPartyCookiesEnabled) {
     const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
@@ -16119,14 +16081,7 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
       cookiesSetting.set(true);
       return;
     }
-    this.updateThirdPartyCookiesCheckboxState();
-  }
-  syncCheckboxAttributeState(checkbox) {
-    checkbox.toggleAttribute("checked", checkbox.checked);
-  }
-  updateThirdPartyCookiesCheckboxState() {
-    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
-    this.includeThirdPartyCookiesCheckbox.disabled = !cookiesSetting?.get();
+    this.requestUpdate();
   }
   targetAdded(target) {
     if (target !== SDK22.TargetManager.TargetManager.instance().primaryPageTarget()) {
@@ -16168,6 +16123,23 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
       this
     );
   }
+  willHide() {
+    super.willHide();
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
+    cookiesSetting?.removeChangeListener(this.boundOnCookiesSettingChanged);
+    this.includeThirdPartyCookiesSetting.removeChangeListener(this.boundOnIncludeThirdPartyCookiesSettingChanged);
+  }
+  wasHidden() {
+    super.wasHidden();
+    if (this.clearTimerId !== void 0) {
+      window.clearTimeout(this.clearTimerId);
+      this.clearTimerId = void 0;
+    }
+    if (this.clearing) {
+      this.clearing = false;
+      this.requestUpdate();
+    }
+  }
   originChanged(event) {
     const { mainSecurityOrigin, unreachableMainSecurityOrigin } = event.data;
     this.updateOrigin(mainSecurityOrigin, unreachableMainSecurityOrigin);
@@ -16180,38 +16152,40 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     const oldOrigin = this.securityOrigin;
     if (unreachableMainOrigin) {
       this.securityOrigin = unreachableMainOrigin;
-      this.reportView.setSubtitle(i18nString26(UIStrings26.sFailedToLoad, { PH1: unreachableMainOrigin }));
+      this.subtitle = i18nString26(UIStrings26.sFailedToLoad, { PH1: unreachableMainOrigin });
     } else {
       this.securityOrigin = mainOrigin;
-      this.reportView.setSubtitle(mainOrigin);
+      this.subtitle = mainOrigin;
     }
     if (oldOrigin !== this.securityOrigin) {
-      this.quotaOverrideControlRow.classList.add("hidden");
-      this.quotaOverrideCheckbox.checked = false;
-      this.quotaOverrideErrorMessage.textContent = "";
+      this.quotaOverrideEnabled = false;
+      this.quotaOverrideError = "";
       this.quotaUsage = null;
       this.quotaQuota = null;
       this.quotaOverrideActive = null;
+      this.pieChartSlices = [];
     }
-    void this.performUpdate();
+    this.requestUpdate();
+    void this.refreshUsageAndQuota();
   }
   updateStorageKey(mainStorageKey) {
     const oldStorageKey = this.storageKey;
     this.storageKey = mainStorageKey;
-    this.reportView.setSubtitle(mainStorageKey);
+    this.subtitle = mainStorageKey;
     if (oldStorageKey !== this.storageKey) {
-      this.quotaOverrideControlRow.classList.add("hidden");
-      this.quotaOverrideCheckbox.checked = false;
-      this.quotaOverrideErrorMessage.textContent = "";
+      this.quotaOverrideEnabled = false;
+      this.quotaOverrideError = "";
     }
-    void this.performUpdate();
+    this.requestUpdate();
   }
   async applyQuotaOverrideFromInputField() {
     if (!this.target || !this.securityOrigin) {
-      this.quotaOverrideErrorMessage.textContent = i18nString26(UIStrings26.internalError);
+      this.quotaOverrideError = i18nString26(UIStrings26.internalError);
+      this.requestUpdate();
       return;
     }
-    this.quotaOverrideErrorMessage.textContent = "";
+    this.quotaOverrideError = "";
+    this.requestUpdate();
     const editorString = this.quotaOverrideEditor.value;
     if (editorString === "") {
       await this.clearQuotaForOrigin(this.target, this.securityOrigin);
@@ -16220,16 +16194,19 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     }
     const quota = parseFloat(editorString);
     if (!Number.isFinite(quota)) {
-      this.quotaOverrideErrorMessage.textContent = i18nString26(UIStrings26.pleaseEnterANumber);
+      this.quotaOverrideError = i18nString26(UIStrings26.pleaseEnterANumber);
+      this.requestUpdate();
       return;
     }
     if (quota < 0) {
-      this.quotaOverrideErrorMessage.textContent = i18nString26(UIStrings26.numberMustBeNonNegative);
+      this.quotaOverrideError = i18nString26(UIStrings26.numberMustBeNonNegative);
+      this.requestUpdate();
       return;
     }
     const cutoff = 9e12;
     if (quota >= cutoff) {
-      this.quotaOverrideErrorMessage.textContent = i18nString26(UIStrings26.numberMustBeSmaller, { PH1: cutoff.toLocaleString() });
+      this.quotaOverrideError = i18nString26(UIStrings26.numberMustBeSmaller, { PH1: cutoff.toLocaleString() });
+      this.requestUpdate();
       return;
     }
     const bytesPerMB = 1e3 * 1e3;
@@ -16245,16 +16222,19 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     await target.storageAgent().invoke_overrideQuotaForOrigin({ origin });
   }
   async onClickCheckbox() {
-    if (this.quotaOverrideControlRow.classList.contains("hidden")) {
-      this.quotaOverrideControlRow.classList.remove("hidden");
-      this.quotaOverrideCheckbox.checked = true;
+    if (!this.quotaOverrideEnabled) {
+      this.quotaOverrideEnabled = true;
       this.quotaOverrideEditor.value = this.previousOverrideFieldValue;
-      window.setTimeout(() => this.quotaOverrideEditor.focus(), 500);
-    } else if (this.target && this.securityOrigin) {
-      this.quotaOverrideControlRow.classList.add("hidden");
-      this.quotaOverrideCheckbox.checked = false;
-      await this.clearQuotaForOrigin(this.target, this.securityOrigin);
-      this.quotaOverrideErrorMessage.textContent = "";
+      this.requestUpdate();
+      await this.updateComplete;
+      this.quotaOverrideEditor.focus();
+    } else {
+      this.quotaOverrideEnabled = false;
+      this.quotaOverrideError = "";
+      this.requestUpdate();
+      if (this.target && this.securityOrigin) {
+        await this.clearQuotaForOrigin(this.target, this.securityOrigin);
+      }
     }
   }
   clear() {
@@ -16278,13 +16258,17 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
         includeThirdPartyCookies
       );
     }
-    this.clearButton.disabled = true;
-    const label = this.clearButton.textContent;
-    this.clearButton.textContent = i18nString26(UIStrings26.clearing);
-    window.setTimeout(() => {
-      this.clearButton.disabled = false;
-      this.clearButton.textContent = label;
-      this.clearButton.focus();
+    this.clearing = true;
+    this.requestUpdate();
+    window.clearTimeout(this.clearTimerId);
+    this.clearTimerId = window.setTimeout(async () => {
+      this.clearTimerId = void 0;
+      this.clearing = false;
+      this.requestUpdate();
+      await this.updateComplete;
+      if (this.isShowing()) {
+        this.clearSiteDataViewOutput.focusClearButton?.();
+      }
     }, 500);
     UI26.ARIAUtils.LiveAnnouncer.alert(i18nString26(UIStrings26.SiteDataCleared));
   }
@@ -16329,23 +16313,32 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
       }
     }
   }
-  async performUpdate() {
+  async refreshUsageAndQuota() {
+    if (!this.isShowing()) {
+      return;
+    }
     if (!this.securityOrigin || !this.target) {
-      this.quotaRow.textContent = "";
       this.quotaUsage = null;
       this.quotaQuota = null;
       this.quotaOverrideActive = null;
-      this.populatePieChart(0, []);
+      this.pieChartSlices = [];
+      this.requestUpdate();
       return;
     }
     const securityOrigin = this.securityOrigin;
     const response = await this.target.storageAgent().invoke_getUsageAndQuota({ origin: securityOrigin });
+    if (this.securityOrigin !== securityOrigin) {
+      return;
+    }
     if (response.getError()) {
-      this.quotaRow.textContent = "";
       this.quotaUsage = null;
       this.quotaQuota = null;
       this.quotaOverrideActive = null;
-      this.populatePieChart(0, []);
+      this.pieChartSlices = [];
+      this.requestUpdate();
+      if (this.isShowing()) {
+        void this.throttler.schedule(() => this.refreshUsageAndQuota());
+      }
       return;
     }
     const usageChanged = this.quotaUsage !== response.usage;
@@ -16355,33 +16348,6 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
       this.quotaUsage = response.usage;
       this.quotaQuota = response.quota;
       this.quotaOverrideActive = response.overrideActive;
-      this.quotaRow.textContent = "";
-      const quotaAsString = i18n51.ByteUtilities.bytesToString(response.quota);
-      const usageAsString = i18n51.ByteUtilities.bytesToString(response.usage);
-      const formattedQuotaAsString = i18nString26(UIStrings26.storageWithCustomMarker, { PH1: quotaAsString });
-      let quota = quotaAsString;
-      if (response.overrideActive) {
-        const element2 = document.createElement("b");
-        element2.textContent = formattedQuotaAsString;
-        quota = element2;
-      }
-      const element = uiI18n.getFormatLocalizedString(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
-      this.quotaRow.appendChild(element);
-      UI26.Tooltip.Tooltip.install(
-        this.quotaRow,
-        i18nString26(
-          UIStrings26.storageQuotaUsedWithBytes,
-          { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }
-        )
-      );
-      if (!response.overrideActive && response.quota < 125829120) {
-        const icon = new Icon();
-        icon.name = "info";
-        icon.style.color = "var(--icon-info)";
-        icon.classList.add("small");
-        UI26.Tooltip.Tooltip.install(icon, i18nString26(UIStrings26.storageQuotaIsLimitedIn));
-        this.quotaRow.appendChild(icon);
-      }
       if (usageChanged) {
         const slices = [];
         for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
@@ -16393,19 +16359,84 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
           const color = this.pieColors.get(usageForType.storageType) || "#ccc";
           slices.push({ value, color, title });
         }
-        this.populatePieChart(response.usage, slices);
+        this.pieChartSlices = slices;
       }
+      this.requestUpdate();
     }
-    void this.throttler.schedule(this.requestUpdate.bind(this));
+    if (this.isShowing()) {
+      void this.throttler.schedule(() => this.refreshUsageAndQuota());
+    }
   }
-  populatePieChart(total, slices) {
+  wasShown() {
+    super.wasShown();
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
+    cookiesSetting?.addChangeListener(this.boundOnCookiesSettingChanged);
+    this.includeThirdPartyCookiesSetting.addChangeListener(this.boundOnIncludeThirdPartyCookiesSettingChanged);
+    this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
+    void this.refreshUsageAndQuota();
+  }
+  performUpdate() {
+    if (this.subtitle !== null) {
+      this.reportView.setSubtitle(this.subtitle);
+    }
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
+    this.clearSiteDataView(
+      {
+        settings: this.settings,
+        includeThirdPartyCookiesSetting: this.includeThirdPartyCookiesSetting,
+        includeThirdPartyCookiesDisabled: !cookiesSetting?.get(),
+        clearing: this.clearing,
+        onClear: () => this.clear()
+      },
+      this.clearSiteDataViewOutput,
+      this.clearSiteDataFieldList
+    );
+    this.renderQuotaRow();
+    this.populatePieChart();
+    this.quotaOverrideControlRow.classList.toggle("hidden", !this.quotaOverrideEnabled);
+    this.quotaOverrideCheckbox.checked = this.quotaOverrideEnabled;
+    this.quotaOverrideErrorMessage.textContent = this.quotaOverrideError;
+  }
+  renderQuotaRow() {
+    this.quotaRow.textContent = "";
+    if (this.quotaUsage === null || this.quotaQuota === null) {
+      return;
+    }
+    const quotaAsString = i18n51.ByteUtilities.bytesToString(this.quotaQuota);
+    const usageAsString = i18n51.ByteUtilities.bytesToString(this.quotaUsage);
+    const formattedQuotaAsString = i18nString26(UIStrings26.storageWithCustomMarker, { PH1: quotaAsString });
+    let quota = quotaAsString;
+    if (this.quotaOverrideActive) {
+      const element2 = document.createElement("b");
+      element2.textContent = formattedQuotaAsString;
+      quota = element2;
+    }
+    const element = uiI18n.getFormatLocalizedString(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
+    this.quotaRow.appendChild(element);
+    UI26.Tooltip.Tooltip.install(
+      this.quotaRow,
+      i18nString26(
+        UIStrings26.storageQuotaUsedWithBytes,
+        { PH1: this.quotaUsage.toLocaleString(), PH2: this.quotaQuota.toLocaleString() }
+      )
+    );
+    if (!this.quotaOverrideActive && this.quotaQuota < 125829120) {
+      const icon = new Icon();
+      icon.name = "info";
+      icon.style.color = "var(--icon-info)";
+      icon.classList.add("small");
+      UI26.Tooltip.Tooltip.install(icon, i18nString26(UIStrings26.storageQuotaIsLimitedIn));
+      this.quotaRow.appendChild(icon);
+    }
+  }
+  populatePieChart() {
     this.pieChart.data = {
       chartName: i18nString26(UIStrings26.storageUsage),
       size: 110,
       formatter: i18n51.ByteUtilities.bytesToString,
       showLegend: true,
-      total,
-      slices
+      total: this.quotaUsage ?? 0,
+      slices: this.pieChartSlices
     };
   }
   static getStorageTypeName(type) {
@@ -16540,7 +16571,7 @@ __export(WebMCPTreeElement_exports, {
 });
 import { createIcon as createIcon9 } from "../../ui/kit/kit.js";
 import * as UI29 from "../../ui/legacy/legacy.js";
-import { html as html19, render as render20 } from "../../ui/lit/lit.js";
+import { html as html20, render as render21 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/application/WebMCPView.ts
 var WebMCPView_exports = {};
@@ -16568,15 +16599,15 @@ import * as Platform10 from "../../core/platform/platform.js";
 import * as SDK23 from "../../core/sdk/sdk.js";
 import * as WebMCP2 from "../../models/web_mcp/web_mcp.js";
 import * as Adorners from "../../ui/components/adorners/adorners.js";
-import * as Buttons10 from "../../ui/components/buttons/buttons.js";
+import * as Buttons11 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI28 from "../../ui/legacy/legacy.js";
 import {
-  Directives as Directives7,
-  html as html18,
+  Directives as Directives8,
+  html as html19,
   nothing as nothing12,
-  render as render19
+  render as render20
 } from "../../ui/lit/lit.js";
 import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
 import * as Console2 from "../console/console.js";
@@ -17298,7 +17329,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
     }, { jslogContext: "webmcp.copy-tool-description" });
     void contextMenu.show();
   };
-  render19(html18`
+  render20(html19`
     <style>${webMCPView_css_default}</style>
     <style>${UI28.FilterBar.filterStyles}</style>
     <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view" jslog=${VisualLogging19.pane("webmcp-view")}>
@@ -17307,7 +17338,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
           <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
             <devtools-button title=${i18nString28(UIStrings28.clearLog)}
                              .iconName=${"clear"}
-                             .variant=${Buttons10.Button.Variant.TOOLBAR}
+                             .variant=${Buttons11.Button.Variant.TOOLBAR}
                              .jslogContext=${"clear"}
                              @click=${input.onClearLogClick}></devtools-button>
             <div class="toolbar-divider"></div>
@@ -17323,19 +17354,19 @@ var DEFAULT_VIEW13 = (input, output, target) => {
             <div class="toolbar-spacer"></div>
             <devtools-button title=${i18nString28(UIStrings28.clearFilters)}
                              .iconName=${"filter-clear"}
-                             .variant=${Buttons10.Button.Variant.TOOLBAR}
+                             .variant=${Buttons11.Button.Variant.TOOLBAR}
                              .jslogContext=${"clear-filter"}
                              @click=${() => input.onFilterChange({ text: "" })}
                              ?hidden=${!isFilterActive}></devtools-button>
           </devtools-toolbar>
         </div>
-        ${input.toolCalls.length > 0 ? html18`
+        ${input.toolCalls.length > 0 ? html19`
           <devtools-split-view name="webmcp-call-split-view"
                                direction="column"
                                sidebar-position="second"
                                show=${input.selectedCall ? "both" : "main"}>
             <div slot="main" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-              <devtools-data-grid striped .template=${html18`
+              <devtools-data-grid striped .template=${html19`
                 <table>
                   <style>${webMCPView_css_default}</style>
                   <tr>
@@ -17343,16 +17374,16 @@ var DEFAULT_VIEW13 = (input, output, target) => {
                       ${i18nString28(UIStrings28.name)}
                     </th>
                     <th id="status" weight="20">${i18nString28(UIStrings28.status)}</th>
-                            ${!input.selectedCall ? html18`
+                            ${!input.selectedCall ? html19`
                     <th id="input" weight="30">${i18nString28(UIStrings28.input)}</th>
                     <th id="output" weight="30">${i18nString28(UIStrings28.output)}</th>
                             ` : nothing12}
                   </tr>
-                      ${Directives7.repeat(
+                      ${Directives8.repeat(
     input.toolCalls,
     (call) => call.invocationId + "-" + (call.result?.status ?? ""),
-    (call) => html18`
-                    <tr class=${Directives7.classMap({
+    (call) => html19`
+                    <tr class=${Directives8.classMap({
       "status-error": call.result?.status === WebMCP.InvocationStatus.Error,
       "status-cancelled": call.result?.status === WebMCP.InvocationStatus.Canceled,
       selected: call === input.selectedCall
@@ -17400,11 +17431,11 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       input.onCallSelect(call, "webmcp.call-outputs" /* OUTPUT */);
     }}>
                         <div class="status-cell">
-                          ${iconName(call) ? html18`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
+                          ${iconName(call) ? html19`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
                           <span>${statusString(call)}</span>
                         </div>
                       </td>
-                      ${!input.selectedCall ? html18`
+                      ${!input.selectedCall ? html19`
                         <td @click=${(e) => {
       e.stopPropagation();
       input.onCallSelect(call, "webmcp.call-inputs" /* INPUT */);
@@ -17427,27 +17458,27 @@ var DEFAULT_VIEW13 = (input, output, target) => {
                 <devtools-button
                   slot="left"
                   .iconName=${"cross"}
-                  .size=${Buttons10.Button.Size.SMALL}
-                  .variant=${Buttons10.Button.Variant.ICON}
+                  .size=${Buttons11.Button.Size.SMALL}
+                  .variant=${Buttons11.Button.Variant.ICON}
                   .jslogContext=${"close"}
                   title=${i18nString28(UIStrings28.close)}
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
                 <devtools-widget
                   id=${"webmcp.tool-details" /* DETAILS */}
-                  ?selected=${Directives7.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
+                  ?selected=${Directives8.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
                   label=${i18nString28(UIStrings28.toolDetails)}
                   ${widget12(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-inputs" /* INPUT */}
-                  ?selected=${Directives7.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
+                  ?selected=${Directives8.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
                   label=${i18nString28(UIStrings28.input)}
                   ${widget12(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-outputs" /* OUTPUT */}
-                  ?selected=${Directives7.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
+                  ?selected=${Directives8.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
                   label=${i18nString28(UIStrings28.output)}
                   ${widget12(PayloadWidget, {
     valueObject: input.selectedCall?.result?.output,
@@ -17478,7 +17509,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
   )}</span>
             </devtools-toolbar>
           </div>
-        ` : html18`
+        ` : html19`
         ${UI28.Widget.widget(UI28.EmptyWidget.EmptyWidget, {
     header: i18nString28(UIStrings28.noCallsPlaceholderTitle),
     text: i18nString28(UIStrings28.noCallsPlaceholder)
@@ -17492,22 +17523,22 @@ var DEFAULT_VIEW13 = (input, output, target) => {
                            show=${input.selectedTool ? "both" : "main"}>
         <div slot="main" class="tool-list" jslog=${VisualLogging19.section("tool-list")}>
           <div class="section-title">${i18nString28(UIStrings28.toolRegistry)}</div>
-          ${tools.length === 0 ? html18`
+          ${tools.length === 0 ? html19`
           ${UI28.Widget.widget(UI28.EmptyWidget.EmptyWidget, {
     header: i18nString28(UIStrings28.noToolsPlaceholderTitle),
     text: i18nString28(UIStrings28.noToolsPlaceholder)
   })}
-          ` : html18`
+          ` : html19`
             <devtools-list class="square-corners">
-              ${tools.map((tool) => html18`
-                    <div class=${Directives7.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
+              ${tools.map((tool) => html19`
+                    <div class=${Directives8.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
                          jslog=${VisualLogging19.item().track({ click: true }).context("tool")}
                          @click=${() => input.onToolSelect(tool)}
                          @contextmenu=${(e) => onToolContextMenu(e, tool)}>
                     <div class="tool-name-container">
                       <div class="tool-name source-code">${tool.name}</div>
                     <div class="tool-icons">
-                      ${getIconGroupsFromStats(toolStats.stats.get(tool)).map((group) => html18`
+                      ${getIconGroupsFromStats(toolStats.stats.get(tool)).map((group) => html19`
                         <icon-button
                           .data=${{
     groups: [group],
@@ -17527,15 +17558,15 @@ var DEFAULT_VIEW13 = (input, output, target) => {
           <div class="section-title">
             <devtools-button
               .iconName=${"cross"}
-              .size=${Buttons10.Button.Size.SMALL}
-              .variant=${Buttons10.Button.Variant.ICON}
+              .size=${Buttons11.Button.Size.SMALL}
+              .variant=${Buttons11.Button.Variant.ICON}
               .jslogContext=${"close"}
               title=${i18nString28(UIStrings28.close)}
               @click=${() => input.onToolSelect(null)}
             ></devtools-button>
             <span>${i18nString28(UIStrings28.toolDetails)}</span>
           </div>
-          ${input.selectedTool ? html18`
+          ${input.selectedTool ? html19`
             <div class="sidebar-tool-details">
               ${widget12(ToolDetailsWidget, { tool: input.selectedTool.tool })}
             </div>
@@ -17544,8 +17575,8 @@ var DEFAULT_VIEW13 = (input, output, target) => {
               <div style="flex: auto;"></div>
               <devtools-button
                 .iconName=${"import"}
-                .size=${Buttons10.Button.Size.SMALL}
-                .variant=${Buttons10.Button.Variant.TEXT}
+                .size=${Buttons11.Button.Size.SMALL}
+                .variant=${Buttons11.Button.Variant.TEXT}
                 .jslogContext=${"paste"}
                 title=${i18nString28(UIStrings28.pasteTooltip)}
                 @click=${input.onPaste}
@@ -17570,8 +17601,8 @@ var DEFAULT_VIEW13 = (input, output, target) => {
             ></devtools-widget>
             <devtools-button
               class="webmcp-run-tool-button"
-              .variant=${Buttons10.Button.Variant.OUTLINED}
-              .size=${Buttons10.Button.Size.SMALL}
+              .variant=${Buttons11.Button.Variant.OUTLINED}
+              .size=${Buttons11.Button.Size.SMALL}
               .jslogContext=${"run-tool"}
               @click=${() => {
     if (editorWidget && input.selectedTool) {
@@ -17818,7 +17849,7 @@ var WebMCPView = class _WebMCPView extends UI28.Widget.VBox {
 };
 var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   if (input.valueObject === void 0 && input.valueString === void 0 && !input.errorText && !input.symbolizedError) {
-    render19(nothing12, target);
+    render20(nothing12, target);
     return;
   }
   const isParsable = input.valueObject !== void 0;
@@ -17829,7 +17860,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
       propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
     objectTree.expanded = true;
-    return html18`<devtools-tree .template=${html18`
+    return html19`<devtools-tree .template=${html19`
           <style>${ObjectUI2.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI2.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <ul role="tree">
@@ -17840,13 +17871,13 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
           </ul>
         `}></devtools-tree>`;
   };
-  const createSourceText = (text) => html18`<div class="payload-value source-code">${text}</div>`;
-  const createErrorText = (text) => html18`<div class="payload-value source-code error-text">${text}</div>`;
+  const createSourceText = (text) => html19`<div class="payload-value source-code">${text}</div>`;
+  const createErrorText = (text) => html19`<div class="payload-value source-code error-text">${text}</div>`;
   const createException = (error) => {
     if (!error) {
       return nothing12;
     }
-    return html18`
+    return html19`
       <div class="payload-value source-code error-text">
         <devtools-widget
           ${UI28.Widget.widget(Console2.SymbolizedErrorWidget.SymbolizedErrorWidget, { error })}
@@ -17854,8 +17885,8 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
       </div>
     `;
   };
-  render19(
-    html18`
+  render20(
+    html19`
     <style>${webMCPView_css_default}</style>
     <style>${symbolizedErrorWidget_css_default}</style>
     <div class="call-payload-view">
@@ -17934,7 +17965,7 @@ var PayloadWidget = class extends UI28.Widget.Widget {
 };
 var TOOL_DETAILS_VIEW = (input, output, target) => {
   if (!input.tool) {
-    render19(nothing12, target);
+    render20(nothing12, target);
     return;
   }
   const tool = input.tool;
@@ -17945,22 +17976,22 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
     type: "unit"
   });
   const formattedFlags = formatter.format(flags);
-  render19(html18`
+  render20(html19`
     <style>${webMCPView_css_default}</style>
     <div class="tool-details-grid">
       <div class="label">${i18nString28(UIStrings28.name)}</div>
       <div class="value source-code">${tool.name}</div>
       <div class="label">${i18nString28(UIStrings28.description)}</div>
       <div class="value">${tool.description}</div>
-      ${flags.length > 0 ? html18`
+      ${flags.length > 0 ? html19`
       <div class="label">${i18nString28(UIStrings28.flags)}</div>
       <div class="value">${formattedFlags}</div>
       ` : nothing12}
-      ${tool.frame ? html18`
+      ${tool.frame ? html19`
       <div class="label">${i18nString28(UIStrings28.frame)}</div>
       <div class="value">${Components4.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
       ` : nothing12}
-      ${origin instanceof SDK23.DOMModel.DOMNode ? html18`
+      ${origin instanceof SDK23.DOMModel.DOMNode ? html19`
       <div class="label">${i18nString28(UIStrings28.origin)}</div>
       <div class="value tool-origin-container">
         <span
@@ -17980,11 +18011,11 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
            aria-label=${i18nString28(UIStrings28.viewInElementsPanel)}
            .iconName=${"select-element"}
            .jslogContext=${"elements.select-element"}
-           .size=${Buttons10.Button.Size.SMALL}
-           .variant=${Buttons10.Button.Variant.ICON}
+           .size=${Buttons11.Button.Size.SMALL}
+           .variant=${Buttons11.Button.Variant.ICON}
            @click=${() => input.revealNode(origin)}
            ></devtools-button>
-      </div>` : origin ? html18`
+      </div>` : origin ? html19`
       <div class="label">${i18nString28(UIStrings28.origin)}</div>
       <div class="value stack-trace">
         ${widget12(
@@ -17993,7 +18024,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
   )}
       </div>` : nothing12}
     </div>
-    ${input.isUnregistered ? html18`
+    ${input.isUnregistered ? html19`
       <div class="call-to-action">
         <div class="call-to-action-body">
           <div class="explanation">
@@ -18285,7 +18316,7 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
     const newBadge = UI29.UIUtils.maybeCreateNewBadge("web-mcp");
     if (newBadge) {
       const fragment = document.createDocumentFragment();
-      render20(html19`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
+      render21(html20`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
       this.listItemElement.appendChild(fragment);
     }
   }
@@ -20547,7 +20578,7 @@ var subAppsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./subAppsView.css")} */`;
 
 // ../../front_end/panels/application/SubAppsView.ts
-var { html: html20 } = Lit3;
+var { html: html21 } = Lit3;
 var UIStrings30 = {
   /**
    * @description Heading label for Sub Apps view
@@ -20591,7 +20622,7 @@ function stripOrigin(url) {
 var DEFAULT_VIEW14 = (input, output, target) => {
   const hasDistinctManifestId = input.subApps.some((subApp) => subApp.manifestId && subApp.startUrl && subApp.manifestId !== subApp.startUrl);
   const headingText = input.isSiblingSubApps ? i18nString30(UIStrings30.siblingSubApps) : i18nString30(UIStrings30.subApps);
-  Lit3.render(html20`
+  Lit3.render(html21`
     <style>${subAppsView_css_default}</style>
     <style>${UI31.inspectorCommonStyles}</style>
     <div jslog=${VisualLogging20.pane("sub-apps")}>
@@ -20601,21 +20632,21 @@ var DEFAULT_VIEW14 = (input, output, target) => {
           <tr>
             <th id="name" weight="10" sortable>${i18nString30(UIStrings30.name)}</th>
             <th id="scope" weight="10" sortable>${i18nString30(UIStrings30.scope)}</th>
-            ${hasDistinctManifestId ? html20`
+            ${hasDistinctManifestId ? html21`
               <th id="manifest-id" weight="10" sortable>${i18nString30(UIStrings30.manifestId)}</th>
               <th id="start-url" weight="10" sortable>${i18nString30(UIStrings30.startUrl)}</th>
-            ` : html20`
+            ` : html21`
               <th id="manifest-id-start-url" weight="10" sortable>${i18nString30(UIStrings30.manifestIdAndStartUrl)}</th>
             `}
           </tr>
-          ${input.subApps.map((subApp) => html20`
+          ${input.subApps.map((subApp) => html21`
             <tr>
               <td>${subApp.name}</td>
               <td title=${subApp.scope}>${stripOrigin(subApp.scope)}</td>
-              ${hasDistinctManifestId ? html20`
+              ${hasDistinctManifestId ? html21`
                 <td title=${subApp.manifestId}>${stripOrigin(subApp.manifestId)}</td>
                 <td title=${subApp.startUrl}>${stripOrigin(subApp.startUrl)}</td>
-              ` : html20`
+              ` : html21`
                 <td title=${subApp.manifestId || subApp.startUrl}>${stripOrigin(subApp.manifestId || subApp.startUrl)}</td>
               `}
             </tr>

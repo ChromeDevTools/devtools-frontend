@@ -331,6 +331,9 @@ var CD4ABridge = class extends Common3.ObjectWrapper.ObjectWrapper {
       const editorInfo = thread.anchor.editor.filePath ? `${thread.anchor.editor.filePath}:${thread.anchor.editor.lineNumber}` : `line ${thread.anchor.editor.lineNumber}`;
       details.push(`- Editor: ${editorInfo}`);
     }
+    for (const line of thread.anchor.agentContext ?? []) {
+      details.push(`- ${line}`);
+    }
     if (details.length === 0) {
       return rawText;
     }

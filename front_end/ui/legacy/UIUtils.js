@@ -292,7 +292,7 @@ export function isBeingEdited(node) {
     }
     let currentElement = element;
     while (currentElement) {
-        if (elementsBeingEdited.has(element)) {
+        if (elementsBeingEdited.has(currentElement)) {
             return true;
         }
         currentElement = currentElement.parentElementOrShadowHost();

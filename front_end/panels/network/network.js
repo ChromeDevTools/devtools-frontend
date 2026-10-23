@@ -4229,7 +4229,6 @@ __export(NetworkConfigView_exports, {
   NetworkConfigView: () => NetworkConfigView,
   userAgentGroups: () => userAgentGroups
 });
-import "../settings/emulation/components/components.js";
 import * as Common4 from "../../core/common/common.js";
 import * as i18n9 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
@@ -4239,6 +4238,7 @@ import * as UI5 from "../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html5, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
+import * as EmulationComponents from "../settings/emulation/components/components.js";
 
 // gen/front_end/panels/network/networkConfigView.css.js
 var networkConfigView_css_default = `/*
@@ -4269,7 +4269,7 @@ var networkConfigView_css_default = `/*
   flex: 2 0 200px;
 }
 
-.network-config-fields span:first-of-type {
+.network-config-fields > span:first-of-type {
   padding: 3px 0;
 }
 
@@ -4317,12 +4317,12 @@ var networkConfigView_css_default = `/*
   line-height: var(--sys-size-9);
 }
 
-.network-config-ua input {
+.network-config-ua-custom > input {
   display: block;
   width: calc(100% - var(--sys-size-9));
 }
 
-.network-config-ua input[type="text"],
+.network-config-ua-custom > input[type="text"],
 .network-config-ua select {
   margin-top: var(--sys-size-5);
 }
@@ -4335,20 +4335,20 @@ var networkConfigView_css_default = `/*
 .network-config-ua-custom {
   padding-bottom: var(--sys-size-5);
 
-  input,
-  devtools-user-agent-client-hints-form {
+  > input,
+  > .user-agent-client-hints-form {
     opacity: 38%;
     pointer-events: none;
   }
 
-  &.checked input,
-  &.checked devtools-user-agent-client-hints-form {
+  &.checked > input,
+  &.checked > .user-agent-client-hints-form {
     opacity: revert;
     pointer-events: revert;
   }
 }
 
-devtools-user-agent-client-hints-form {
+.user-agent-client-hints-form {
   display: block;
   margin-top: var(--sys-size-7);
   width: min(100%, 400px);
@@ -4509,14 +4509,15 @@ function renderUserAgentSection(input, output) {
     </devtools-checkbox>
     <div class=${Directives4.classMap({ "network-config-ua-custom": true, checked: input.useCustomUA })}>
       ${renderUserAgentSelectAndInput(input, output, title)}
-      <devtools-user-agent-client-hints-form
-          .value=${input.clientHintsValue}
-          .disabled=${!input.useCustomUA}
-          @clienthintschange=${(e) => input.onClientHintsChange(
-    e.target.value.metaData
-  )}
-          @clienthintssubmit=${(e) => input.onClientHintsSubmit(e.detail.value)}>
-      </devtools-user-agent-client-hints-form>
+      <devtools-widget
+          class="user-agent-client-hints-form"
+          @clienthintschange=${(e) => input.onClientHintsChange(e.detail)}
+          @clienthintssubmit=${(e) => input.onClientHintsSubmit(e.detail)}
+          ${UI5.Widget.widget(EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm, {
+    value: input.clientHintsValue,
+    disabled: !input.useCustomUA
+  })}>
+      </devtools-widget>
     </div>
     <span class="status-text">${input.clientHintsStatusText}</span>
   `);

@@ -42,6 +42,22 @@ export interface CommentAnchorSignature {
     editor?: EditorAnchorSignature;
     /** Optional timeline flamechart anchor coordinates for Performance panel trace entries */
     timeline?: TimelineAnchorSignature;
+    /**
+     * Optional formatted lines that give the AI agent context about the
+     * anchored target beyond the VE path and text signature, for example the
+     * timing and warnings of a Performance panel trace entry. CD4ABridge
+     * appends each line to the comment text that it sends to the agent.
+     *
+     * These lines are only context for the agent. They are not used to
+     * re-match the anchor to its target; the other fields of this signature
+     * do that.
+     *
+     * Currently only the Performance panel sets this field. Before adding
+     * context here, consider whether it belongs in a new field on this
+     * signature instead. This field is only for text that is already
+     * formatted for the agent, not for data that other code needs to read.
+     */
+    agentContext?: string[];
 }
 export interface Comment {
     author: 'DEVELOPER' | 'AGENT';

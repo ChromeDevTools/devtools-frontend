@@ -1,7 +1,6 @@
-import '../settings/emulation/components/components.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as EmulationComponents from '../settings/emulation/components/components.js';
+import * as EmulationComponents from '../settings/emulation/components/components.js';
 export interface NetworkConfigViewInput {
     disableCache: boolean;
     onDisableCacheChange: (checked: boolean) => void;

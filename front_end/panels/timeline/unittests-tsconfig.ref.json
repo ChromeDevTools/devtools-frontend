@@ -22,6 +22,7 @@
     "../../../../../../front_end/panels/timeline/RecordingMetadata.test.ts",
     "../../../../../../front_end/panels/timeline/SaveFileFormatter.test.ts",
     "../../../../../../front_end/panels/timeline/ThirdPartyTreeView.test.ts",
+    "../../../../../../front_end/panels/timeline/TimelineCommentContext.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineCommentController.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineController.test.ts",
     "../../../../../../front_end/panels/timeline/TimelineDetailsView.test.ts",

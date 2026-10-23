@@ -1076,7 +1076,9 @@ export class TreeElement {
     select(omitFocus, selectedByUser) {
         omitFocus = omitFocus || this.disableSelectFocus;
         if (!this.treeOutline || !this.selectable || this.selected) {
-            if (!omitFocus) {
+            // An inline editor or other interactive child may already hold the focus
+            // inside this row; re-selecting must not take it away from them.
+            if (!omitFocus && !this.listItemElement.hasFocus()) {
                 this.listItemElement.focus();
             }
             return false;

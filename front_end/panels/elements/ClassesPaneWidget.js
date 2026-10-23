@@ -69,7 +69,9 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
     }
     splitTextIntoClasses(text) {
-        return text.split(/[,\s]/).map(className => className.trim()).filter(className => className.length);
+        return text.split(/[,\s]/)
+            .map(className => className.trim().replace(/^\./, ''))
+            .filter(className => className.length);
     }
     onKeyDown(event) {
         if (!(event.key === 'Enter') && !Platform.KeyboardUtilities.isEscKey(event)) {

@@ -200,6 +200,13 @@ export declare class TabbedPaneTab {
     setDelegate(delegate: TabbedPaneTabDelegate): void;
     private createIconElement;
     private createSuffixElement;
+    /**
+     * Called when the tab header is (re-)attached to the DOM. If the slotted
+     * content changed while the header was detached, no `slotchange` fires
+     * on re-attachment when the slot is still empty afterwards (its assigned
+     * nodes were already cleared on detach), so sync the state explicitly.
+     */
+    slotsAttached(): void;
     clearSlots(): void;
     private createMeasureClone;
     createTabElement(measuring: boolean): HTMLElement;

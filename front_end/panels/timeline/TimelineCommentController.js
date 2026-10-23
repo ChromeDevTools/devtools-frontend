@@ -6,6 +6,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as Comments from '../../ui/comments/comments.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Overlays from './overlays/overlays.js';
+import { agentContextForEntry } from './TimelineCommentContext.js';
 /**
  * Connects the Performance panel flame charts to the shared comments system.
  *
@@ -274,10 +275,43 @@ export class TimelineCommentController {
                     durationMicro,
                     chartLocation,
                 },
+                agentContext: this.#agentContextFor(entry),
             },
             anchorElement: canvas,
             highlightRect,
         };
+    }
+    /**
+     * Returns the lines that describe the entry to the AI agent, or undefined
+     * if no trace is active.
+     */
+    #agentContextFor(entry) {
+        if (!this.#parsedTrace) {
+            return undefined;
+        }
+        return agentContextForEntry(entry.event, this.#trackNameFor(entry), this.#parsedTrace);
+    }
+    /**
+     * Returns the name of the track that contains the entry. Groups are stored
+     * in level order and nested groups follow their parent, so the entry's
+     * track is the last group that starts at or above the entry's level. The
+     * data provider's groupForEvent() is not used because it only knows tracks
+     * built by track appenders, and not, for example, the Frames track.
+     */
+    #trackNameFor(entry) {
+        const timelineData = entry.flameChart.timelineData();
+        if (!timelineData) {
+            return null;
+        }
+        const level = timelineData.entryLevels[entry.entryIndex];
+        let trackName = null;
+        for (const group of timelineData.groups) {
+            if (group.startLevel > level) {
+                break;
+            }
+            trackName = group.name;
+        }
+        return trackName;
     }
 }
 //# sourceMappingURL=TimelineCommentController.js.map

@@ -64,6 +64,9 @@
     },
     {
       "path": "../../../../ui/components/buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/lit/bundle-tsconfig.ref.json"
     }
   ]
 }

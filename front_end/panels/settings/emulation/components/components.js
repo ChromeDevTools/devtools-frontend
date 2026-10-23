@@ -8,16 +8,17 @@ var __export = (target, all) => {
 var UserAgentClientHintsForm_exports = {};
 __export(UserAgentClientHintsForm_exports, {
   ALL_PROTOCOL_FORM_FACTORS: () => ALL_PROTOCOL_FORM_FACTORS,
-  ClientHintsChangeEvent: () => ClientHintsChangeEvent,
-  ClientHintsSubmitEvent: () => ClientHintsSubmitEvent,
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  Events: () => Events,
   UserAgentClientHintsForm: () => UserAgentClientHintsForm
 });
 import "../../../../ui/kit/kit.js";
-import "../../../../ui/legacy/legacy.js";
+import * as Common from "../../../../core/common/common.js";
 import * as i18n from "../../../../core/i18n/i18n.js";
 import * as Platform from "../../../../core/platform/platform.js";
 import * as Buttons from "../../../../ui/components/buttons/buttons.js";
 import * as Input from "../../../../ui/components/input/input.js";
+import * as UI from "../../../../ui/legacy/legacy.js";
 import * as Lit from "../../../../ui/lit/lit.js";
 import * as VisualLogging from "../../../../ui/visual_logging/visual_logging.js";
 import * as EmulationUtils from "../utils/utils.js";
@@ -29,163 +30,178 @@ var userAgentClientHintsForm_css_default = `/*
  * found in the LICENSE file.
  */
 
-.root {
-  color: var(--sys-color-on-surface);
-  width: 100%;
-}
+@scope to (devtools-widget > *) {
+  /* Host styles can now reach the elements of this form. For example,
+   * the inspector common styles set "box-sizing: border-box" on all
+   * elements, and ListWidget editors set margins on all inputs. Restore
+   * the default box sizing and input margins of the browser. */
+  :scope * {
+    box-sizing: revert;
+  }
 
-.tree-title {
-  font-weight: 700;
-  display: flex;
-  align-items: center;
+  :scope input {
+    margin: revert;
+  }
 
-  & > [aria-controls="form-container"] {
-    margin-left: var(--sys-size-2);
-    padding-right: var(--sys-size-3);
+  .root {
+    color: var(--sys-color-on-surface);
+    width: 100%;
+  }
 
-    & > [name="triangle-right"],
-    & > [name="triangle-down"] {
-      vertical-align: bottom;
-    }
+  .tree-title {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
 
-    &[aria-expanded="true"] > [name="triangle-right"] {
-      display: none;
-    }
+    & > [aria-controls="form-container"] {
+      margin-left: var(--sys-size-2);
+      padding-right: var(--sys-size-3);
 
-    &[aria-expanded="false"] > [name="triangle-down"] {
-      display: none;
+      & > [name="triangle-right"],
+      & > [name="triangle-down"] {
+        vertical-align: bottom;
+      }
+
+      &[aria-expanded="true"] > [name="triangle-right"] {
+        display: none;
+      }
+
+      &[aria-expanded="false"] > [name="triangle-down"] {
+        display: none;
+      }
     }
   }
-}
 
-.form-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  align-items: center;
-  gap: var(--sys-size-5) 10px;
-  padding: 0 10px;
-}
+  .form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    align-items: center;
+    gap: var(--sys-size-5) 10px;
+    padding: 0 10px;
+  }
 
-.full-row {
-  grid-column: 1 / 5;
-}
+  .full-row {
+    grid-column: 1 / 5;
+  }
 
-.form-factors-checkbox-group {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--sys-size-4) 10px;
-}
+  .form-factors-checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sys-size-4) 10px;
+  }
 
-.form-factor-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-4);
-  white-space: nowrap;
-}
+  .form-factor-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-4);
+    white-space: nowrap;
+  }
 
-hr.section-separator {
-  grid-column: 1 / 5; /* Ensures the separator spans all columns */
-  border: none;
-  margin-top: var(--sys-size-1);
-}
+  hr.section-separator {
+    grid-column: 1 / 5; /* Ensures the separator spans all columns */
+    border: none;
+    margin-top: var(--sys-size-1);
+  }
 
-.half-row {
-  grid-column: span 2;
-}
+  .half-row {
+    grid-column: span 2;
+  }
 
-.mobile-checkbox-container {
-  display: flex;
-}
+  .mobile-checkbox-container {
+    display: flex;
+  }
 
-.device-model-input {
-  grid-column: 1 / 4;
-}
+  .device-model-input {
+    grid-column: 1 / 4;
+  }
 
-.input-field {
-  color: var(--sys-color-on-surface);
-  padding: 3px var(--sys-size-4);
-  border-radius: var(--sys-size-2);
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  background-color: var(--sys-color-cdt-base-container);
-  font-size: inherit;
-  height: 18px;
-}
-
-.input-field::placeholder {
-    color: var(--sys-color-on-surface-subtle);
-}
-
-.input-field:focus {
-  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
-  outline-style: none;
-}
-
-.add-container {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: var(--sys-size-4);
-}
-
-.add-icon {
-  margin-right: 5px;
-}
-
-.brand-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: space-between;
-}
-
-.brand-row > input {
-  width: 100%;
-}
-
-.info-icon {
-  margin-left: 5px;
-  margin-right: var(--sys-size-1);
-  height: var(--sys-size-8);
-  width: var(--sys-size-8);
-}
-
-.link,
-.devtools-link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  outline-offset: var(--sys-size-2);
-  font-weight: 400;
-}
-
-devtools-icon + .link {
-  margin-inline-start: var(--sys-size-2);
-}
-
-.hide-container {
-  display: none;
-}
-
-.input-field-label-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-@media (forced-colors: active) {
   .input-field {
-    border: var(--sys-size-1) solid;
+    color: var(--sys-color-on-surface);
+    padding: 3px var(--sys-size-4);
+    border-radius: var(--sys-size-2);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    background-color: var(--sys-color-cdt-base-container);
+    font-family: inherit;
+    font-size: inherit;
+    height: 18px;
   }
 
-  .tree-title[aria-disabled="true"] {
-    color: GrayText;
+  .input-field::placeholder {
+      color: var(--sys-color-on-surface-subtle);
+  }
+
+  .input-field:focus {
+    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+    outline-style: none;
+  }
+
+  .add-container {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-4);
+  }
+
+  .add-icon {
+    margin-right: 5px;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .brand-row > input {
+    width: 100%;
+  }
+
+  .info-icon {
+    margin-left: 5px;
+    margin-right: var(--sys-size-1);
+    height: var(--sys-size-8);
+    width: var(--sys-size-8);
+  }
+
+  .link,
+  .devtools-link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    outline-offset: var(--sys-size-2);
+    font-weight: 400;
+  }
+
+  devtools-icon + .link {
+    margin-inline-start: var(--sys-size-2);
+  }
+
+  .hide-container {
+    display: none;
+  }
+
+  .input-field-label-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (forced-colors: active) {
+    .input-field {
+      border: var(--sys-size-1) solid;
+    }
+
+    .tree-title[aria-disabled="true"] {
+      color: GrayText;
+    }
   }
 }
 
 /*# sourceURL=${import.meta.resolve("./userAgentClientHintsForm.css")} */`;
 
 // ../../front_end/panels/settings/emulation/components/UserAgentClientHintsForm.ts
-var { html } = Lit;
+var { html, Directives: { ref } } = Lit;
 var UIStrings = {
   /**
    * @description Title for user agent client hints form.
@@ -356,20 +372,11 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/settings/emulation/components/UserAgentClientHintsForm.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var ClientHintsChangeEvent = class _ClientHintsChangeEvent extends Event {
-  static eventName = "clienthintschange";
-  constructor() {
-    super(_ClientHintsChangeEvent.eventName);
-  }
-};
-var ClientHintsSubmitEvent = class _ClientHintsSubmitEvent extends Event {
-  static eventName = "clienthintssubmit";
-  detail;
-  constructor(value) {
-    super(_ClientHintsSubmitEvent.eventName);
-    this.detail = { value };
-  }
-};
+var Events = /* @__PURE__ */ ((Events2) => {
+  Events2["CLIENT_HINTS_CHANGE"] = "clienthintschange";
+  Events2["CLIENT_HINTS_SUBMIT"] = "clienthintssubmit";
+  return Events2;
+})(Events || {});
 var DEFAULT_METADATA = {
   brands: [
     {
@@ -400,14 +407,28 @@ var ALL_PROTOCOL_FORM_FACTORS = [
   UIStrings.formFactorEInk,
   UIStrings.formFactorWatch
 ];
-var UserAgentClientHintsForm = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var BRAND_INPUT_ID_PREFIXES = {
+  brands: "ua",
+  fullVersionList: "fvl"
+};
+var ADD_BRAND_BUTTON_IDS = {
+  brands: "add-brand-button",
+  fullVersionList: "add-fvl-brand-button"
+};
+var UserAgentClientHintsFormBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+var UserAgentClientHintsForm = class extends UserAgentClientHintsFormBase {
+  #view;
+  #viewOutput = {};
   #isFormOpened = false;
   #isFormDisabled = false;
   #metaData = DEFAULT_METADATA;
   #showMobileCheckbox = false;
   #showSubmitButton = false;
   #useragentModifiedAriaMessage = "";
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
   set value(data) {
     const { metaData = DEFAULT_METADATA, showMobileCheckbox = false, showSubmitButton = false } = data;
     this.#metaData = {
@@ -416,7 +437,7 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     };
     this.#showMobileCheckbox = showMobileCheckbox;
     this.#showSubmitButton = showSubmitButton;
-    this.#render();
+    this.requestUpdate();
   }
   get value() {
     return {
@@ -424,19 +445,22 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     };
   }
   set disabled(disableForm) {
+    if (this.#isFormDisabled === disableForm) {
+      return;
+    }
     this.#isFormDisabled = disableForm;
-    this.#isFormOpened = false;
-    this.#render();
+    if (disableForm) {
+      this.#isFormOpened = false;
+    }
+    this.requestUpdate();
   }
   get disabled() {
     return this.#isFormDisabled;
   }
-  #handleTreeExpand = (event) => {
-    if (event.code === "Space" || event.code === "Enter" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
-      event.consume(true);
-      this.#handleTreeClick(event.code);
-    }
-  };
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
   #handleTreeClick = (key) => {
     if (this.#isFormDisabled) {
       return;
@@ -445,10 +469,10 @@ var UserAgentClientHintsForm = class extends HTMLElement {
       return;
     }
     this.#isFormOpened = !this.#isFormOpened;
-    this.#render();
+    this.requestUpdate();
   };
-  #handleUseragentInputChange = (value, index, brandInputType) => {
-    const updatedUseragent = this.#metaData.brands?.map((browserBrand, brandIndex) => {
+  #handleBrandInputChange = (list, index, brandInputType, value) => {
+    const updatedBrands = this.#metaData[list]?.map((browserBrand, brandIndex) => {
       if (brandIndex === index) {
         const { brand, version } = browserBrand;
         if (brandInputType === "brandName") {
@@ -466,124 +490,46 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     });
     this.#metaData = {
       ...this.#metaData,
-      brands: updatedUseragent
+      [list]: updatedBrands
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#render();
+    this.dispatchEventToListeners("clienthintschange" /* CLIENT_HINTS_CHANGE */, this.#metaData);
+    this.requestUpdate();
   };
-  #handleFullVersionListInputChange = (value, index, brandInputType) => {
-    const fullVersionList = this.#metaData.fullVersionList?.map((browserBrand, brandIndex) => {
-      if (brandIndex === index) {
-        const { brand, version } = browserBrand;
-        if (brandInputType === "brandName") {
-          return {
-            brand: value,
-            version
-          };
-        }
-        return {
-          brand,
-          version: value
-        };
-      }
-      return browserBrand;
-    });
+  #handleBrandDelete = async (list, index) => {
+    const { [list]: brands = [] } = this.#metaData;
+    const updatedBrands = brands.filter((_, brandIndex) => brandIndex !== index);
     this.#metaData = {
       ...this.#metaData,
-      fullVersionList
+      [list]: updatedBrands
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#render();
-  };
-  #handleUseragentDelete = (index) => {
-    const { brands = [] } = this.#metaData;
-    brands.splice(index, 1);
-    this.#metaData = {
-      ...this.#metaData,
-      brands
-    };
-    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.dispatchEventToListeners("clienthintschange" /* CLIENT_HINTS_CHANGE */, this.#metaData);
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
-    this.#render();
-    let nextFocusElement = this.shadowRoot?.getElementById(`ua-brand-${index + 1}-input`);
-    if (!nextFocusElement) {
-      nextFocusElement = this.shadowRoot?.getElementById("add-brand-button");
+    this.requestUpdate();
+    await this.updateComplete;
+    if (index < updatedBrands.length) {
+      this.#viewOutput.focusBrandInput?.(list, index);
+    } else {
+      this.#viewOutput.focusAddBrandButton?.(list);
     }
-    nextFocusElement?.focus();
   };
-  #handleFullVersionListDelete = (index) => {
-    const { fullVersionList = [] } = this.#metaData;
-    fullVersionList.splice(index, 1);
-    this.#metaData = {
-      ...this.#metaData,
-      fullVersionList
-    };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#useragentModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
-    this.#render();
-    let nextFocusElement = this.shadowRoot?.getElementById(`fvl-brand-${index + 1}-input`);
-    if (!nextFocusElement) {
-      nextFocusElement = this.shadowRoot?.getElementById("add-fvl-brand-button");
-    }
-    nextFocusElement?.focus();
-  };
-  #handleAddUseragentBrandClick = () => {
-    const { brands } = this.#metaData;
-    this.#metaData = {
-      ...this.#metaData,
-      brands: [
-        ...Array.isArray(brands) ? brands : [],
-        {
-          brand: "",
-          version: ""
-        }
-      ]
-    };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#useragentModifiedAriaMessage = i18nString(UIStrings.addedBrand);
-    this.#render();
-    const brandInputElements = this.shadowRoot?.querySelectorAll(".ua-brand-name-input");
-    if (brandInputElements) {
-      const lastBrandInputElement = Array.from(brandInputElements).pop();
-      if (lastBrandInputElement) {
-        lastBrandInputElement.focus();
+  #handleBrandAdd = async (list) => {
+    const { [list]: brands } = this.#metaData;
+    const updatedBrands = [
+      ...Array.isArray(brands) ? brands : [],
+      {
+        brand: "",
+        version: ""
       }
-    }
-  };
-  #handleAddUseragentBrandKeyPress = (event) => {
-    if (event.code === "Space" || event.code === "Enter") {
-      event.preventDefault();
-      this.#handleAddUseragentBrandClick();
-    }
-  };
-  #handleAddFullVersionListBrandClick = () => {
-    const { fullVersionList } = this.#metaData;
+    ];
     this.#metaData = {
       ...this.#metaData,
-      fullVersionList: [
-        ...Array.isArray(fullVersionList) ? fullVersionList : [],
-        {
-          brand: "",
-          version: ""
-        }
-      ]
+      [list]: updatedBrands
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.dispatchEventToListeners("clienthintschange" /* CLIENT_HINTS_CHANGE */, this.#metaData);
     this.#useragentModifiedAriaMessage = i18nString(UIStrings.addedBrand);
-    this.#render();
-    const brandInputElements = this.shadowRoot?.querySelectorAll(".fvl-brand-name-input");
-    if (brandInputElements) {
-      const lastBrandInputElement = Array.from(brandInputElements).pop();
-      if (lastBrandInputElement) {
-        lastBrandInputElement.focus();
-      }
-    }
-  };
-  #handleAddFullVersionListBrandKeyPress = (event) => {
-    if (event.code === "Space" || event.code === "Enter") {
-      event.preventDefault();
-      this.#handleAddFullVersionListBrandClick();
-    }
+    this.requestUpdate();
+    await this.updateComplete;
+    this.#viewOutput.focusBrandInput?.(list, updatedBrands.length - 1);
   };
   #handleFormFactorCheckboxChange = (formFactorValue, isChecked) => {
     let currentFormFactors = [...this.#metaData.formFactors || []];
@@ -598,8 +544,8 @@ var UserAgentClientHintsForm = class extends HTMLElement {
       ...this.#metaData,
       formFactors: currentFormFactors
     };
-    this.dispatchEvent(new ClientHintsChangeEvent());
-    this.#render();
+    this.dispatchEventToListeners("clienthintschange" /* CLIENT_HINTS_CHANGE */, this.#metaData);
+    this.requestUpdate();
   };
   #handleInputChange = (stateKey, value) => {
     if (stateKey in this.#metaData) {
@@ -607,408 +553,21 @@ var UserAgentClientHintsForm = class extends HTMLElement {
         ...this.#metaData,
         [stateKey]: value
       };
-      this.#render();
+      this.requestUpdate();
     }
-    this.dispatchEvent(new ClientHintsChangeEvent());
+    this.dispatchEventToListeners("clienthintschange" /* CLIENT_HINTS_CHANGE */, this.#metaData);
   };
-  #handleSubmit = (event) => {
-    event.preventDefault();
+  #handleSubmit = () => {
     if (this.#showSubmitButton) {
-      this.dispatchEvent(new ClientHintsSubmitEvent(this.#metaData));
-      this.#render();
+      this.dispatchEventToListeners("clienthintssubmit" /* CLIENT_HINTS_SUBMIT */, this.#metaData);
+      this.requestUpdate();
     }
   };
-  #renderInputWithLabel(label, placeholder, value, stateKey) {
-    const handleInputChange = (event) => {
-      const value2 = event.target.value;
-      this.#handleInputChange(stateKey, value2);
-    };
-    return html`
-      <label class="full-row label input-field-label-container">
-        ${label}
-        <input
-          class="input-field"
-          type="text"
-          @input=${handleInputChange}
-          .value=${value}
-          placeholder=${placeholder}
-          jslog=${VisualLogging.textField().track({ change: true }).context(Platform.StringUtilities.toKebabCase(stateKey))}
-          />
-      </label>
-    `;
-  }
-  #renderPlatformSection() {
-    const { platform, platformVersion } = this.#metaData;
-    const handlePlatformNameChange = (event) => {
-      const value = event.target.value;
-      this.#handleInputChange("platform", value);
-    };
-    const handlePlatformVersionChange = (event) => {
-      const value = event.target.value;
-      this.#handleInputChange("platformVersion", value);
-    };
-    return html`
-      <span class="full-row label">${i18nString(UIStrings.platformLabel)}</span>
-      <div class="full-row brand-row" aria-label=${i18nString(UIStrings.platformProperties)} role="group">
-        <input
-          class="input-field half-row"
-          type="text"
-          @input=${handlePlatformNameChange}
-          .value=${platform}
-          placeholder=${i18nString(UIStrings.platformPlaceholder)}
-          aria-label=${i18nString(UIStrings.platformLabel)}
-          jslog=${VisualLogging.textField("platform").track({
-      change: true
-    })}
-        />
-        <input
-          class="input-field half-row"
-          type="text"
-          @input=${handlePlatformVersionChange}
-          .value=${platformVersion}
-          placeholder=${i18nString(UIStrings.platformVersion)}
-          aria-label=${i18nString(UIStrings.platformVersion)}
-          jslog=${VisualLogging.textField("platform-version").track({
-      change: true
-    })}
-        />
-      </div>
-    `;
-  }
-  #renderDeviceModelSection() {
-    const { model, mobile } = this.#metaData;
-    const handleDeviceModelChange = (event) => {
-      const value = event.target.value;
-      this.#handleInputChange("model", value);
-    };
-    const handleMobileChange = (event) => {
-      const value = event.target.checked;
-      this.#handleInputChange("mobile", value);
-    };
-    const mobileCheckboxInput = this.#showMobileCheckbox ? html`
-      <label class="mobile-checkbox-container">
-        <input type="checkbox" @input=${handleMobileChange} .checked=${mobile}
-          jslog=${VisualLogging.toggle("mobile").track({
-      click: true
-    })}
-        />
-        ${i18nString(UIStrings.mobileCheckboxLabel)}
-      </label>
-    ` : Lit.nothing;
-    return html`
-      <span class="full-row label">${i18nString(UIStrings.deviceModel)}</span>
-      <div class="full-row brand-row" aria-label=${i18nString(UIStrings.deviceProperties)} role="group">
-        <input
-          class="input-field ${this.#showMobileCheckbox ? "device-model-input" : "full-row"}"
-          type="text"
-          @input=${handleDeviceModelChange}
-          .value=${model}
-          placeholder=${i18nString(UIStrings.deviceModel)}
-          jslog=${VisualLogging.textField("model").track({
-      change: true
-    })}
-        />
-        ${mobileCheckboxInput}
-      </div>
-    `;
-  }
-  #renderUseragent() {
-    const {
-      brands = [
-        {
-          brand: "",
-          version: ""
-        }
-      ]
-    } = this.#metaData;
-    const brandElements = brands.map((brandRow, index) => {
-      const { brand, version } = brandRow;
-      const handleDeleteClick = () => {
-        this.#handleUseragentDelete(index);
-      };
-      const handleKeyPress = (event) => {
-        if (event.code === "Space" || event.code === "Enter") {
-          event.preventDefault();
-          handleDeleteClick();
-        }
-      };
-      const handleBrandChange = (event) => {
-        const value = event.target.value;
-        this.#handleUseragentInputChange(value, index, "brandName");
-      };
-      const handleVersionChange = (event) => {
-        const value = event.target.value;
-        this.#handleUseragentInputChange(value, index, "brandVersion");
-      };
-      return html`
-        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
-          <input
-            class="input-field ua-brand-name-input"
-            type="text"
-            @input=${handleBrandChange}
-            .value=${brand}
-            id="ua-brand-${index + 1}-input"
-            placeholder=${i18nString(UIStrings.brandName)}
-            aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
-        PH1: index + 1
-      })}
-            jslog=${VisualLogging.textField("brand-name").track({
-        change: true
-      })}
-          />
-          <input
-            class="input-field"
-            type="text"
-            @input=${handleVersionChange}
-            .value=${version}
-            placeholder=${i18nString(UIStrings.significantBrandVersionPlaceholder)}
-            aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
-        PH1: index + 1
-      })}
-            jslog=${VisualLogging.textField("brand-version").track({
-        change: true
-      })}
-          />
-          <devtools-icon name="bin"
-            title=${i18nString(UIStrings.brandUserAgentDelete)}
-            class="medium delete-icon"
-            tabindex="0"
-            role="button"
-            @click=${handleDeleteClick}
-            @keypress=${handleKeyPress}
-            aria-label=${i18nString(UIStrings.brandUserAgentDelete)}
-          >
-          </devtools-icon>
-        </div>
-      `;
-    });
-    return html`
-      <span class="full-row label">${i18nString(UIStrings.useragent)}</span>
-      ${brandElements}
-      <div
-        class="add-container full-row"
-        role="button"
-        tabindex="0"
-        id="add-brand-button"
-        aria-label=${i18nString(UIStrings.addBrand)}
-        @click=${this.#handleAddUseragentBrandClick}
-        @keypress=${this.#handleAddUseragentBrandKeyPress}
-      >
-        <devtools-icon
-          aria-hidden="true" name="plus" class="medium">
-        </devtools-icon>
-        ${i18nString(UIStrings.addBrand)}
-      </div>
-    `;
-  }
-  #renderFullVersionList() {
-    const {
-      fullVersionList = [
-        {
-          brand: "",
-          version: ""
-        }
-      ]
-    } = this.#metaData;
-    const elements = fullVersionList.map((brandRow, index) => {
-      const { brand, version } = brandRow;
-      const handleDeleteClick = () => {
-        this.#handleFullVersionListDelete(index);
-      };
-      const handleKeyPress = (event) => {
-        if (event.code === "Space" || event.code === "Enter") {
-          event.preventDefault();
-          handleDeleteClick();
-        }
-      };
-      const handleBrandChange = (event) => {
-        const value = event.target.value;
-        this.#handleFullVersionListInputChange(value, index, "brandName");
-      };
-      const handleVersionChange = (event) => {
-        const value = event.target.value;
-        this.#handleFullVersionListInputChange(value, index, "brandVersion");
-      };
-      return html`
-        <div
-          class="full-row brand-row"
-          aria-label=${i18nString(UIStrings.brandProperties)}
-          jslog=${VisualLogging.section("full-version")}
-          role="group">
-          <input
-            class="input-field fvl-brand-name-input"
-            type="text"
-            @input=${handleBrandChange}
-            .value=${brand}
-            id="fvl-brand-${index + 1}-input"
-            placeholder=${i18nString(UIStrings.brandName)}
-            aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
-        PH1: index + 1
-      })}
-            jslog=${VisualLogging.textField("brand-name").track({
-        change: true
-      })}
-          />
-          <input
-            class="input-field"
-            type="text"
-            @input=${handleVersionChange}
-            .value=${version}
-            placeholder=${i18nString(UIStrings.brandVersionPlaceholder)}
-            aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
-        PH1: index + 1
-      })}
-            jslog=${VisualLogging.textField("brand-version").track({
-        change: true
-      })}
-          />
-          <devtools-icon name="bin" 
-            title=${i18nString(UIStrings.brandFullVersionListDelete)}
-            class="medium delete-icon"
-            tabindex="0"
-            role="button"
-            @click=${handleDeleteClick}
-            @keypress=${handleKeyPress}
-            aria-label=${i18nString(UIStrings.brandFullVersionListDelete)}
-          >
-          </devtools-icon>
-        </div>
-      `;
-    });
-    return html`
-      <span class="full-row label">${i18nString(UIStrings.fullVersionList)}</span>
-      ${elements}
-      <div
-        class="add-container full-row"
-        role="button"
-        tabindex="0"
-        id="add-fvl-brand-button"
-        aria-label=${i18nString(UIStrings.addBrand)}
-        @click=${this.#handleAddFullVersionListBrandClick}
-        @keypress=${this.#handleAddFullVersionListBrandKeyPress}
-      >
-        <devtools-icon name="plus" class="medium"
-          aria-hidden="true">
-        </devtools-icon>
-        ${i18nString(UIStrings.addBrand)}
-      </div>
-    `;
-  }
-  #renderFormFactorsSection() {
-    const checkboxElements = ALL_PROTOCOL_FORM_FACTORS.map((ffValue) => {
-      const isChecked = this.#metaData.formFactors?.includes(ffValue) || false;
-      const labelStringId = `formFactor${ffValue}`;
-      const label = i18nString(UIStrings[labelStringId]);
-      return html`
-        <label class="form-factor-checkbox-label">
-          <input
-            type="checkbox"
-            .checked=${isChecked}
-            value=${ffValue}
-            jslog=${VisualLogging.toggle(Platform.StringUtilities.toKebabCase(ffValue)).track({
-        click: true
-      })}
-            @change=${(e) => this.#handleFormFactorCheckboxChange(ffValue, e.target.checked)}
-          />
-          ${label}
-        </label>
-      `;
-    });
-    return html`
-      <span class="full-row label" jslog=${VisualLogging.sectionHeader("form-factors")}>
-        ${i18nString(UIStrings.formFactorsTitle)}
-      </span>
-      <div class="full-row form-factors-checkbox-group" role="group" aria-label=${i18nString(UIStrings.formFactorsGroupAriaLabel)}>
-        ${checkboxElements}
-      </div>
-    `;
-  }
-  #render() {
-    const { fullVersion, architecture } = this.#metaData;
-    const useragentSection = this.#renderUseragent();
-    const fullVersionListSection = this.#renderFullVersionList();
-    const fullBrowserInput = this.#renderInputWithLabel(
-      i18nString(UIStrings.fullBrowserVersion),
-      i18nString(UIStrings.fullBrowserVersionPlaceholder),
-      fullVersion || "",
-      "fullVersion"
-    );
-    const formFactorsSection = this.#renderFormFactorsSection();
-    const platformSection = this.#renderPlatformSection();
-    const architectureInput = this.#renderInputWithLabel(
-      i18nString(UIStrings.architecture),
-      i18nString(UIStrings.architecturePlaceholder),
-      architecture,
-      "architecture"
-    );
-    const deviceModelSection = this.#renderDeviceModelSection();
-    const submitButton = this.#showSubmitButton ? html`
-      <devtools-button
-        .variant=${Buttons.Button.Variant.OUTLINED}
-        .type=${"submit"}
-      >
-        ${i18nString(UIStrings.update)}
-      </devtools-button>
-    ` : Lit.nothing;
-    const output = html`
-      <style>${Input.checkboxStyles}</style>
-      <style>${userAgentClientHintsForm_css_default}</style>
-      <section class="root">
-        <div class="tree-title">
-          <div
-            role=button
-            @click=${this.#handleTreeClick}
-            tabindex=${this.#isFormDisabled ? "-1" : "0"}
-            @keydown=${this.#handleTreeExpand}
-            aria-expanded=${this.#isFormOpened}
-            aria-controls=form-container
-            aria-disabled=${this.#isFormDisabled}
-            aria-label=${i18nString(UIStrings.title)}
-            jslog=${VisualLogging.toggleSubpane().track({ click: true })}>
-            <devtools-icon name=triangle-right></devtools-icon>
-            <devtools-icon name=triangle-down></devtools-icon>
-            ${i18nString(UIStrings.title)}
-          </div>
-          <devtools-icon tabindex=${this.#isFormDisabled ? "-1" : "0"} class=info-icon name=info aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)} title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
-          <devtools-link
-           tabindex=${this.#isFormDisabled ? "-1" : "0"}
-           href="https://web.dev/user-agent-client-hints/"
-           class="link"
-           aria-label=${i18nString(UIStrings.learnMore)}
-           jslogcontext="learn-more"
-          >
-            ${i18nString(UIStrings.learnMore)}
-          </devtools-link>
-        </div>
-        <form
-          id="form-container"
-          class="form-container ${this.#isFormOpened ? "" : "hide-container"}"
-          @submit=${this.#handleSubmit}
-        >
-          ${useragentSection}
-          <hr class="section-separator">
-          ${fullVersionListSection}
-          <hr class="section-separator">
-          ${fullBrowserInput}
-          <hr class="section-separator">
-          ${formFactorsSection}
-          <hr class="section-separator">
-          ${platformSection}
-          <hr class="section-separator">
-          ${architectureInput}
-          <hr class="section-separator">
-          ${deviceModelSection}
-          ${submitButton}
-        </form>
-        <div aria-live="polite" aria-label=${this.#useragentModifiedAriaMessage}></div>
-      </section>
-    `;
-    Lit.render(output, this.#shadow, { host: this });
-  }
   validate = () => {
     for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
       if (metaDataKey === "brands" || metaDataKey === "fullVersionList") {
-        const isBrandValid = this.#metaData.brands?.every(({ brand, version }) => {
+        const brandList = metaDataValue;
+        const isBrandValid = (brandList ?? []).every(({ brand, version }) => {
           const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
             brand,
             i18nString(UIStrings.notRepresentable)
@@ -1053,8 +612,438 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     }
     return { valid: true };
   };
+  performUpdate() {
+    const input = {
+      brands: this.#metaData.brands ?? [{ brand: "", version: "" }],
+      fullVersionList: this.#metaData.fullVersionList ?? [{ brand: "", version: "" }],
+      fullVersion: this.#metaData.fullVersion || "",
+      formFactors: this.#metaData.formFactors ?? [],
+      platform: this.#metaData.platform,
+      platformVersion: this.#metaData.platformVersion,
+      architecture: this.#metaData.architecture,
+      model: this.#metaData.model,
+      mobile: this.#metaData.mobile,
+      isFormOpened: this.#isFormOpened,
+      isFormDisabled: this.#isFormDisabled,
+      showMobileCheckbox: this.#showMobileCheckbox,
+      showSubmitButton: this.#showSubmitButton,
+      useragentModifiedAriaMessage: this.#useragentModifiedAriaMessage,
+      onTreeToggle: this.#handleTreeClick,
+      onBrandAdd: (list) => void this.#handleBrandAdd(list),
+      onBrandDelete: (list, index) => void this.#handleBrandDelete(list, index),
+      onBrandInputChange: this.#handleBrandInputChange,
+      onTextFieldChange: this.#handleInputChange,
+      onMobileChange: (mobile) => this.#handleInputChange("mobile", mobile),
+      onFormFactorChange: this.#handleFormFactorCheckboxChange,
+      onSubmit: this.#handleSubmit
+    };
+    this.#view(input, this.#viewOutput, this.contentElement);
+  }
 };
-customElements.define("devtools-user-agent-client-hints-form", UserAgentClientHintsForm);
+var DEFAULT_VIEW = (input, output, target) => {
+  const renderInputWithLabel = (label, placeholder, value, stateKey) => {
+    const handleInputChange = (event) => {
+      const value2 = event.target.value;
+      input.onTextFieldChange(stateKey, value2);
+    };
+    return html`
+      <label class="full-row label input-field-label-container">
+        ${label}
+        <input
+          class="input-field"
+          type="text"
+          @input=${handleInputChange}
+          .value=${value}
+          placeholder=${placeholder}
+          jslog=${VisualLogging.textField().track({ change: true }).context(Platform.StringUtilities.toKebabCase(stateKey))}
+          />
+      </label>
+    `;
+  };
+  const renderPlatformSection = () => {
+    const handlePlatformNameChange = (event) => {
+      const value = event.target.value;
+      input.onTextFieldChange("platform", value);
+    };
+    const handlePlatformVersionChange = (event) => {
+      const value = event.target.value;
+      input.onTextFieldChange("platformVersion", value);
+    };
+    return html`
+      <span class="full-row label">${i18nString(UIStrings.platformLabel)}</span>
+      <div class="full-row brand-row" aria-label=${i18nString(UIStrings.platformProperties)} role="group">
+        <input
+          class="input-field half-row"
+          type="text"
+          @input=${handlePlatformNameChange}
+          .value=${input.platform}
+          placeholder=${i18nString(UIStrings.platformPlaceholder)}
+          aria-label=${i18nString(UIStrings.platformLabel)}
+          jslog=${VisualLogging.textField("platform").track({
+      change: true
+    })}
+        />
+        <input
+          class="input-field half-row"
+          type="text"
+          @input=${handlePlatformVersionChange}
+          .value=${input.platformVersion}
+          placeholder=${i18nString(UIStrings.platformVersion)}
+          aria-label=${i18nString(UIStrings.platformVersion)}
+          jslog=${VisualLogging.textField("platform-version").track({
+      change: true
+    })}
+        />
+      </div>
+    `;
+  };
+  const renderDeviceModelSection = () => {
+    const handleDeviceModelChange = (event) => {
+      const value = event.target.value;
+      input.onTextFieldChange("model", value);
+    };
+    const handleMobileChange = (event) => {
+      const value = event.target.checked;
+      input.onMobileChange(value);
+    };
+    const mobileCheckboxInput = input.showMobileCheckbox ? html`
+      <label class="mobile-checkbox-container">
+        <input type="checkbox" @input=${handleMobileChange} .checked=${input.mobile}
+          jslog=${VisualLogging.toggle("mobile").track({
+      click: true
+    })}
+        />
+        ${i18nString(UIStrings.mobileCheckboxLabel)}
+      </label>
+    ` : Lit.nothing;
+    return html`
+      <span class="full-row label">${i18nString(UIStrings.deviceModel)}</span>
+      <div class="full-row brand-row" aria-label=${i18nString(UIStrings.deviceProperties)} role="group">
+        <input
+          class="input-field ${input.showMobileCheckbox ? "device-model-input" : "full-row"}"
+          type="text"
+          @input=${handleDeviceModelChange}
+          .value=${input.model}
+          placeholder=${i18nString(UIStrings.deviceModel)}
+          jslog=${VisualLogging.textField("model").track({
+      change: true
+    })}
+        />
+        ${mobileCheckboxInput}
+      </div>
+    `;
+  };
+  const renderUseragent = () => {
+    const brandElements = input.brands.map((brandRow, index) => {
+      const { brand, version } = brandRow;
+      const handleDeleteClick = () => {
+        input.onBrandDelete("brands", index);
+      };
+      const handleKeyPress = (event) => {
+        if (event.code === "Space" || event.code === "Enter") {
+          event.preventDefault();
+          handleDeleteClick();
+        }
+      };
+      const handleBrandChange = (event) => {
+        const value = event.target.value;
+        input.onBrandInputChange("brands", index, "brandName", value);
+      };
+      const handleVersionChange = (event) => {
+        const value = event.target.value;
+        input.onBrandInputChange("brands", index, "brandVersion", value);
+      };
+      return html`
+        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
+          <input
+            class="input-field ua-brand-name-input"
+            type="text"
+            @input=${handleBrandChange}
+            .value=${brand}
+            id="ua-brand-${index + 1}-input"
+            placeholder=${i18nString(UIStrings.brandName)}
+            aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
+        PH1: index + 1
+      })}
+            jslog=${VisualLogging.textField("brand-name").track({
+        change: true
+      })}
+          />
+          <input
+            class="input-field"
+            type="text"
+            @input=${handleVersionChange}
+            .value=${version}
+            placeholder=${i18nString(UIStrings.significantBrandVersionPlaceholder)}
+            aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
+        PH1: index + 1
+      })}
+            jslog=${VisualLogging.textField("brand-version").track({
+        change: true
+      })}
+          />
+          <devtools-icon name="bin"
+            title=${i18nString(UIStrings.brandUserAgentDelete)}
+            class="medium delete-icon"
+            tabindex="0"
+            role="button"
+            @click=${handleDeleteClick}
+            @keypress=${handleKeyPress}
+            aria-label=${i18nString(UIStrings.brandUserAgentDelete)}
+          >
+          </devtools-icon>
+        </div>
+      `;
+    });
+    const handleAddBrandKeyPress = (event) => {
+      if (event.code === "Space" || event.code === "Enter") {
+        event.preventDefault();
+        input.onBrandAdd("brands");
+      }
+    };
+    return html`
+      <span class="full-row label">${i18nString(UIStrings.useragent)}</span>
+      ${brandElements}
+      <div
+        class="add-container full-row"
+        role="button"
+        tabindex="0"
+        id="add-brand-button"
+        aria-label=${i18nString(UIStrings.addBrand)}
+        @click=${() => input.onBrandAdd("brands")}
+        @keypress=${handleAddBrandKeyPress}
+      >
+        <devtools-icon
+          aria-hidden="true" name="plus" class="medium">
+        </devtools-icon>
+        ${i18nString(UIStrings.addBrand)}
+      </div>
+    `;
+  };
+  const renderFullVersionList = () => {
+    const elements = input.fullVersionList.map((brandRow, index) => {
+      const { brand, version } = brandRow;
+      const handleDeleteClick = () => {
+        input.onBrandDelete("fullVersionList", index);
+      };
+      const handleKeyPress = (event) => {
+        if (event.code === "Space" || event.code === "Enter") {
+          event.preventDefault();
+          handleDeleteClick();
+        }
+      };
+      const handleBrandChange = (event) => {
+        const value = event.target.value;
+        input.onBrandInputChange("fullVersionList", index, "brandName", value);
+      };
+      const handleVersionChange = (event) => {
+        const value = event.target.value;
+        input.onBrandInputChange("fullVersionList", index, "brandVersion", value);
+      };
+      return html`
+        <div
+          class="full-row brand-row"
+          aria-label=${i18nString(UIStrings.brandProperties)}
+          jslog=${VisualLogging.section("full-version")}
+          role="group">
+          <input
+            class="input-field fvl-brand-name-input"
+            type="text"
+            @input=${handleBrandChange}
+            .value=${brand}
+            id="fvl-brand-${index + 1}-input"
+            placeholder=${i18nString(UIStrings.brandName)}
+            aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
+        PH1: index + 1
+      })}
+            jslog=${VisualLogging.textField("brand-name").track({
+        change: true
+      })}
+          />
+          <input
+            class="input-field"
+            type="text"
+            @input=${handleVersionChange}
+            .value=${version}
+            placeholder=${i18nString(UIStrings.brandVersionPlaceholder)}
+            aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
+        PH1: index + 1
+      })}
+            jslog=${VisualLogging.textField("brand-version").track({
+        change: true
+      })}
+          />
+          <devtools-icon name="bin"
+            title=${i18nString(UIStrings.brandFullVersionListDelete)}
+            class="medium delete-icon"
+            tabindex="0"
+            role="button"
+            @click=${handleDeleteClick}
+            @keypress=${handleKeyPress}
+            aria-label=${i18nString(UIStrings.brandFullVersionListDelete)}
+          >
+          </devtools-icon>
+        </div>
+      `;
+    });
+    const handleAddBrandKeyPress = (event) => {
+      if (event.code === "Space" || event.code === "Enter") {
+        event.preventDefault();
+        input.onBrandAdd("fullVersionList");
+      }
+    };
+    return html`
+      <span class="full-row label">${i18nString(UIStrings.fullVersionList)}</span>
+      ${elements}
+      <div
+        class="add-container full-row"
+        role="button"
+        tabindex="0"
+        id="add-fvl-brand-button"
+        aria-label=${i18nString(UIStrings.addBrand)}
+        @click=${() => input.onBrandAdd("fullVersionList")}
+        @keypress=${handleAddBrandKeyPress}
+      >
+        <devtools-icon name="plus" class="medium"
+          aria-hidden="true">
+        </devtools-icon>
+        ${i18nString(UIStrings.addBrand)}
+      </div>
+    `;
+  };
+  const renderFormFactorsSection = () => {
+    const checkboxElements = ALL_PROTOCOL_FORM_FACTORS.map((ffValue) => {
+      const isChecked = input.formFactors.includes(ffValue);
+      const labelStringId = `formFactor${ffValue}`;
+      const label = i18nString(UIStrings[labelStringId]);
+      return html`
+        <label class="form-factor-checkbox-label">
+          <input
+            type="checkbox"
+            .checked=${isChecked}
+            value=${ffValue}
+            jslog=${VisualLogging.toggle(Platform.StringUtilities.toKebabCase(ffValue)).track({
+        click: true
+      })}
+            @change=${(e) => input.onFormFactorChange(ffValue, e.target.checked)}
+          />
+          ${label}
+        </label>
+      `;
+    });
+    return html`
+      <span class="full-row label" jslog=${VisualLogging.sectionHeader("form-factors")}>
+        ${i18nString(UIStrings.formFactorsTitle)}
+      </span>
+      <div class="full-row form-factors-checkbox-group" role="group" aria-label=${i18nString(UIStrings.formFactorsGroupAriaLabel)}>
+        ${checkboxElements}
+      </div>
+    `;
+  };
+  const useragentSection = renderUseragent();
+  const fullVersionListSection = renderFullVersionList();
+  const fullBrowserInput = renderInputWithLabel(
+    i18nString(UIStrings.fullBrowserVersion),
+    i18nString(UIStrings.fullBrowserVersionPlaceholder),
+    input.fullVersion,
+    "fullVersion"
+  );
+  const formFactorsSection = renderFormFactorsSection();
+  const platformSection = renderPlatformSection();
+  const architectureInput = renderInputWithLabel(
+    i18nString(UIStrings.architecture),
+    i18nString(UIStrings.architecturePlaceholder),
+    input.architecture,
+    "architecture"
+  );
+  const deviceModelSection = renderDeviceModelSection();
+  const handleTreeKeyDown = (event) => {
+    if (event.code === "Space" || event.code === "Enter" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
+      event.consume(true);
+      input.onTreeToggle(event.code);
+    }
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    input.onSubmit();
+  };
+  const setFormElement = (element) => {
+    if (!(element instanceof HTMLFormElement)) {
+      output.focusBrandInput = void 0;
+      output.focusAddBrandButton = void 0;
+      return;
+    }
+    output.focusBrandInput = (list, index) => {
+      element.querySelector(`#${BRAND_INPUT_ID_PREFIXES[list]}-brand-${index + 1}-input`)?.focus();
+    };
+    output.focusAddBrandButton = (list) => {
+      element.querySelector(`#${ADD_BRAND_BUTTON_IDS[list]}`)?.focus();
+    };
+  };
+  const submitButton = input.showSubmitButton ? html`
+    <devtools-button
+      .variant=${Buttons.Button.Variant.OUTLINED}
+      .type=${"submit"}
+    >
+      ${i18nString(UIStrings.update)}
+    </devtools-button>
+  ` : Lit.nothing;
+  const template = html`
+    <style>${Input.checkboxStyles}</style>
+    <style>${userAgentClientHintsForm_css_default}</style>
+    <section class="root">
+      <div class="tree-title">
+        <div
+          role=button
+          @click=${() => input.onTreeToggle()}
+          tabindex=${input.isFormDisabled ? "-1" : "0"}
+          @keydown=${handleTreeKeyDown}
+          aria-expanded=${input.isFormOpened}
+          aria-controls=form-container
+          aria-disabled=${input.isFormDisabled}
+          aria-label=${i18nString(UIStrings.title)}
+          jslog=${VisualLogging.toggleSubpane().track({ click: true })}>
+          <devtools-icon name=triangle-right></devtools-icon>
+          <devtools-icon name=triangle-down></devtools-icon>
+          ${i18nString(UIStrings.title)}
+        </div>
+        <devtools-icon tabindex=${input.isFormDisabled ? "-1" : "0"} class=info-icon name=info aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)} title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
+        <devtools-link
+         tabindex=${input.isFormDisabled ? "-1" : "0"}
+         href="https://web.dev/user-agent-client-hints/"
+         class="link"
+         aria-label=${i18nString(UIStrings.learnMore)}
+         jslogcontext="learn-more"
+        >
+          ${i18nString(UIStrings.learnMore)}
+        </devtools-link>
+      </div>
+      <form
+        id="form-container"
+        class="form-container ${input.isFormOpened ? "" : "hide-container"}"
+        @submit=${handleSubmit}
+        ${ref(setFormElement)}
+      >
+        ${useragentSection}
+        <hr class="section-separator">
+        ${fullVersionListSection}
+        <hr class="section-separator">
+        ${fullBrowserInput}
+        <hr class="section-separator">
+        ${formFactorsSection}
+        <hr class="section-separator">
+        ${platformSection}
+        <hr class="section-separator">
+        ${architectureInput}
+        <hr class="section-separator">
+        ${deviceModelSection}
+        ${submitButton}
+      </form>
+      <div aria-live="polite" aria-label=${input.useragentModifiedAriaMessage}></div>
+    </section>
+  `;
+  Lit.render(template, target);
+};
 export {
   UserAgentClientHintsForm_exports as UserAgentClientHintsForm
 };

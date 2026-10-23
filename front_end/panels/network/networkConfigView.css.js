@@ -31,7 +31,7 @@ export default `/*
   flex: 2 0 200px;
 }
 
-.network-config-fields span:first-of-type {
+.network-config-fields > span:first-of-type {
   padding: 3px 0;
 }
 
@@ -79,12 +79,12 @@ export default `/*
   line-height: var(--sys-size-9);
 }
 
-.network-config-ua input {
+.network-config-ua-custom > input {
   display: block;
   width: calc(100% - var(--sys-size-9));
 }
 
-.network-config-ua input[type="text"],
+.network-config-ua-custom > input[type="text"],
 .network-config-ua select {
   margin-top: var(--sys-size-5);
 }
@@ -97,20 +97,20 @@ export default `/*
 .network-config-ua-custom {
   padding-bottom: var(--sys-size-5);
 
-  input,
-  devtools-user-agent-client-hints-form {
+  > input,
+  > .user-agent-client-hints-form {
     opacity: 38%;
     pointer-events: none;
   }
 
-  &.checked input,
-  &.checked devtools-user-agent-client-hints-form {
+  &.checked > input,
+  &.checked > .user-agent-client-hints-form {
     opacity: revert;
     pointer-events: revert;
   }
 }
 
-devtools-user-agent-client-hints-form {
+.user-agent-client-hints-form {
   display: block;
   margin-top: var(--sys-size-7);
   width: min(100%, 400px);

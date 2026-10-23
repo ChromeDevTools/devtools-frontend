@@ -32,6 +32,7 @@
     "../../../../../../test/e2e/elements/flexbox-editor.test.ts",
     "../../../../../../test/e2e/elements/grid-editor.test.ts",
     "../../../../../../test/e2e/elements/grid-lanes-editor.test.ts",
+    "../../../../../../test/e2e/elements/inline-attribute-editing.test.ts",
     "../../../../../../test/e2e/elements/inspect-element.test.ts",
     "../../../../../../test/e2e/elements/layout-pane.test.ts",
     "../../../../../../test/e2e/elements/oopif-elements.test.ts",

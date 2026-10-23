@@ -69,6 +69,7 @@ elements/filter-matched-styles.test.js
 elements/flexbox-editor.test.js
 elements/grid-editor.test.js
 elements/grid-lanes-editor.test.js
+elements/inline-attribute-editing.test.js
 elements/inspect-element.test.js
 elements/layout-pane.test.js
 elements/oopif-elements.test.js

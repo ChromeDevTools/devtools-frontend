@@ -41,15 +41,12 @@ class PostProcessTest(unittest.TestCase):
         tmpdir = tempfile.TemporaryDirectory()
         self.addCleanup(tmpdir.cleanup)
         self.tmp = tmpdir.name
-        self.node_modules = os.path.join(self.tmp, 'node_modules')
         self.package_json = os.path.join(self.tmp, 'package.json')
-        for name, value in (('node_modules_path', self.node_modules),
-                            ('package_json_path', self.package_json)):
-            patcher = mock.patch.object(manage_node_deps.devtools_paths,
-                                        name,
-                                        return_value=value)
-            patcher.start()
-            self.addCleanup(patcher.stop)
+        patcher = mock.patch.object(manage_node_deps.devtools_paths,
+                                    'package_json_path',
+                                    return_value=self.package_json)
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def read(self, relpath):
         with open(os.path.join(self.tmp, relpath), encoding='utf-8') as f:
@@ -82,42 +79,6 @@ class PostProcessTest(unittest.TestCase):
                   }
                 }
                 """))
-
-    def test_strip_private_fields_removes_underscore_keys(self):
-        write(
-            self.node_modules, 'pkg/package.json',
-            textwrap.dedent("""\
-                {
-                  "name": "pkg",
-                  "_resolved": "https://registry.npmjs.org/pkg/-/pkg-1.0.0.tgz",
-                  "version": "1.0.0",
-                  "_integrity": "sha512-abc"
-                }
-                """))
-        with contextlib.redirect_stdout(io.StringIO()):
-            failed = manage_node_deps.strip_private_fields()
-        self.assertFalse(failed)
-        self.assertEqual(
-            self.read('node_modules/pkg/package.json'),
-            textwrap.dedent("""\
-                {
-                  "name": "pkg",
-                  "version": "1.0.0"
-                }
-                """))
-
-    def test_strip_private_fields_leaves_clean_files_untouched(self):
-        # Re-serializing would still change files without private fields,
-        # e.g. json.dump escapes non-ASCII that npm writes verbatim. Such
-        # files must stay byte-identical so a plain install leaves a clean
-        # tree clean.
-        original = '{"name":"fast-uri","author":{"name":"Gürgün Dayıoğlu"}}\n'
-        write(self.node_modules, 'fast-uri/package.json', original)
-        with contextlib.redirect_stdout(io.StringIO()):
-            failed = manage_node_deps.strip_private_fields()
-        self.assertFalse(failed)
-        self.assertEqual(self.read('node_modules/fast-uri/package.json'),
-                         original)
 
 
 class ArchiveTest(unittest.TestCase):

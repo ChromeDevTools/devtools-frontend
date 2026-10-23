@@ -144,42 +144,6 @@ def ensure_licenses():
     return exec_command(cmd)
 
 
-def strip_private_fields():
-    # npm adds private fields which need to be stripped.
-    packages = []
-    for root, _, filenames in os.walk(devtools_paths.node_modules_path()):
-        if 'package.json' in filenames:
-            packages.append(path.join(root, 'package.json'))
-
-    for pkg in packages:
-        with open(pkg, 'r+') as pkg_file:
-            try:
-                pkg_data = load_json_file(pkg_file)
-
-                # Remove anything that begins with an underscore, as these are
-                # the private fields in a package.json
-                private_keys = [
-                    key for key in pkg_data.keys() if key.find('_') == 0
-                ]
-                if not private_keys:
-                    # Don't rewrite files that need no change: json.dump
-                    # would still alter them (e.g. by escaping non-ASCII
-                    # text that npm writes verbatim).
-                    continue
-                for key in private_keys:
-                    pkg_data.pop(key)
-
-                pkg_file.truncate(0)
-                pkg_file.seek(0)
-                json.dump(pkg_data, pkg_file, indent=2, separators=(',', ': '))
-                pkg_file.write('\n')
-            except:
-                print('Unable to fix: %s, %s' % (pkg, sys.exc_info()))
-                return True
-
-    return False
-
-
 def remove_package_json_entries():
     with open(devtools_paths.package_json_path(), 'r+') as pkg_file:
         try:
@@ -300,9 +264,6 @@ def run_npm_command():
         return True
 
     if remove_package_json_entries():
-        return True
-
-    if strip_private_fields():
         return True
 
     fixChaiExports()

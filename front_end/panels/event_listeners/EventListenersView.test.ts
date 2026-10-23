@@ -6,14 +6,22 @@ import {assert} from 'chai';
 import {it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as EventListeners from './event_listeners.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('EventListenersView', () => {
   setupLocaleHooks();
@@ -298,42 +306,6 @@ describeWithEnvironment('EventListenersView', () => {
     assert.lengthOf(siblingMouseoverTreeElement.children(), 1);
   });
 
-  it('resets the linkifier on view updates', async () => {
-    const target = createTarget();
-    const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
-    assert.exists(domDebuggerModel);
-    const {eventTarget} = createMockEventTarget(target);
-    const clickListener = createMockListener({
-      domDebuggerModel,
-      eventTarget,
-      type: 'click',
-    });
-    sinon.stub(domDebuggerModel, 'eventListeners').withArgs(eventTarget).resolves([clickListener]);
-
-    const view = createViewFunctionStub(EventListeners.EventListenersView.EventListenersView);
-    const eventListenersView = new EventListeners.EventListenersView.EventListenersView(undefined, view);
-
-    eventListenersView.objects = [];
-    const {linkifier} = await view.nextInput;
-    const resetSpy = sinon.spy(linkifier, 'reset');
-
-    eventListenersView.objects = [eventTarget];
-    await view.nextInput;
-    sinon.assert.calledOnce(resetSpy);
-
-    eventListenersView.filter = {showFramework: true, showPassive: true, showBlocking: true};
-    await view.nextInput;
-    sinon.assert.calledTwice(resetSpy);
-
-    view.input.togglePassiveListener(clickListener);
-    await view.nextInput;
-    sinon.assert.calledThrice(resetSpy);
-
-    view.input.removeListener(clickListener);
-    await view.nextInput;
-    sinon.assert.callCount(resetSpy, 4);
-  });
-
   it('does not show stale event listeners when objects change while loading', async () => {
     const target = createTarget();
     const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
@@ -380,6 +352,69 @@ describeWithEnvironment('EventListenersView', () => {
     await eventListenersView.updateComplete;
 
     assert.deepEqual([...view.input.listeners.keys()], ['click2']);
+  });
+
+  it('reveals the source location when the listener link is clicked', async () => {
+    const {debuggerWorkspaceBinding} = setUpEnvironment();
+    const target = createTarget();
+    const domDebuggerModel = target.model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.exists(domDebuggerModel);
+    assert.exists(debuggerModel);
+
+    const {uiSourceCode, project} = createContentProviderUISourceCode({
+      url: urlString`https://example.com/script.js`,
+      mimeType: 'text/javascript',
+    });
+    const uiLocation = uiSourceCode.uiLocation(10, 5);
+    sinon.stub(debuggerWorkspaceBinding, 'rawLocationToUILocation').resolves(uiLocation);
+    const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+    const {eventTarget} = createMockEventTarget(target);
+    const location = new SDK.DebuggerModel.Location(debuggerModel, '1' as Protocol.Runtime.ScriptId, 10, 5);
+    const clickListener = createMockListener({
+      domDebuggerModel,
+      eventTarget,
+      type: 'click',
+      location,
+    });
+    const objectTree =
+        new ObjectUI.ObjectPropertiesSection.ObjectTree(SDK.RemoteObject.RemoteObject.fromLocalObject({}), {
+          readOnly: false,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+        });
+
+    const container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+
+    const viewInput = {
+      listeners: new Map([['click', [{object: eventTarget, listener: clickListener, objectTree}]]]),
+      togglePassiveListener: () => {},
+      removeListener: () => false,
+      reveal: () => {},
+    };
+    EventListeners.EventListenersView.DEFAULT_VIEW(viewInput, {}, container);
+
+    await UI.Widget.Widget.allUpdatesComplete;
+    const tree = container.querySelector('devtools-tree');
+    assert.exists(tree);
+    tree.flushPendingUpdatesForTesting();
+    await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+
+    const [clickTreeElement] = tree.getInternalTreeOutlineForTest().rootElement().children();
+    assert.exists(clickTreeElement);
+    const [clickBar] = clickTreeElement.children();
+    assert.exists(clickBar);
+
+    const link = clickBar.listItemElement.querySelector<HTMLElement>('.event-listener-tree-subtitle .devtools-link');
+    assert.exists(link);
+    assert.strictEqual(link.textContent, 'script.js:11');
+
+    link.click();
+    sinon.assert.calledOnceWithExactly(revealStub, uiLocation, /* omitFocus= */ false);
+
+    project.dispose();
+    container.remove();
   });
 
   it('renders the event listeners view screenshot', async () => {

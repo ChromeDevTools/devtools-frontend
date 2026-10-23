@@ -544,6 +544,11 @@ class FilterTest(unittest.TestCase):
             'typescript/lib/typescript.js',
             'typescript/lib/lib.dom.d.ts',
             'typescript/ThirdPartyNoticeText.txt',
+            'web-component-analyzer/node_modules/typescript/lib/typescript.js',
+            'web-component-analyzer/node_modules/typescript/lib/lib.dom.d.ts',
+            'devtools-protocol/types/protocol.d.ts',
+            'vscode-css-languageservice/lib/umd/cssLanguageService.js',
+            'vscode-html-languageservice/lib/umd/htmlLanguageService.js',
         ]
         dropped = [
             'pkg/README.md',
@@ -556,8 +561,20 @@ class FilterTest(unittest.TestCase):
             'pkg/.eslintrc',
             'pkg/logo.png',
             'typescript/lib/fr/diagnosticMessages.generated.json',
+            'web-component-analyzer/node_modules/typescript/lib/tsc.js',
+            'web-component-analyzer/node_modules/typescript/lib/tsserver.js',
+            'web-component-analyzer/node_modules/typescript/lib/'
+            'tsserverlibrary.js',
+            'web-component-analyzer/node_modules/typescript/lib/'
+            'typingsInstaller.js',
+            'devtools-protocol/json/browser_protocol.json',
+            'devtools-protocol/pdl/browser_protocol.pdl',
+            'vscode-css-languageservice/lib/esm/cssLanguageService.js',
+            'vscode-html-languageservice/lib/esm/htmlLanguageService.js',
             'node_modules.tar.gz',
             '.devtools-frontend_x_hash',
+            '.clang-format',
+            '.cache/eslint/x',
         ]
         for rel in kept + dropped:
             if rel == '.bin/pkg':

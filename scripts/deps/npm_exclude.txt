@@ -7,6 +7,8 @@
 # ---- keep ----
 + /.bin/
 + /.bin/***
+# npm's hidden lockfile; without it npm re-reads every package.json.
++ /.package-lock.json
 # tsc needs every declaration file.
 + *.d.ts
 + *.d.mts
@@ -24,6 +26,11 @@
 # ---- drop ----
 # Dotfiles and dotdirs inside packages (.github, .eslintrc*, .nycrc, ...).
 */.*
+# Dotfiles at the root of node_modules belong to no package: tool caches
+# (.cache/), gclient's stamp files, the .clang-format left over from when the
+# tree was tracked in git. The archive must not depend on how a tree was
+# produced.
+/.*
 */example/
 */examples/
 */test/
@@ -56,6 +63,25 @@ CHANGES*
 HISTORY*
 # TypeScript's localized diagnostics; tsc only reads them with --locale.
 typescript/lib/*/diagnosticMessages.generated.json
+# ---- package-specific drops ----
+# Unlike the generic rules above, each of these was measured and verified
+# with a full build, test and lint run; the reference check only knows paths
+# mentioned in GN and Python files, not what Node loads at runtime.
+# web-component-analyzer (used by lit-analyzer) ships its own TypeScript and
+# only loads lib/typescript.js from it, not the compiler, language server and
+# typings installer binaries (25 MB).
+/web-component-analyzer/node_modules/typescript/lib/tsc.js
+/web-component-analyzer/node_modules/typescript/lib/tsserver.js
+/web-component-analyzer/node_modules/typescript/lib/tsserverlibrary.js
+/web-component-analyzer/node_modules/typescript/lib/typingsInstaller.js
+# Only the declarations in devtools-protocol/types are used; the build reads
+# the protocol itself from Blink and V8, not from these JSON and PDL copies.
+/devtools-protocol/json/
+/devtools-protocol/pdl/
+# lit-analyzer require()s these, which resolves to the UMD build (`main`);
+# the ESM build is for bundlers only.
+/vscode-css-languageservice/lib/esm/
+/vscode-html-languageservice/lib/esm/
 # Never archive gclient's stamp files or a stale archive.
 node_modules.tar.gz
 .*_hash

@@ -111,10 +111,12 @@ that shared dependencies are deduplicated and thus result in a smaller archive.
 `scripts/deps/npm_exclude.txt` holds rsync filter rules that drop files the
 build and tests don't need (tests, docs, source maps, non-declaration
 TypeScript sources, dotfiles, ...) before the archive is built. Keep rules come
-first and the first matching rule wins. Stick to generic patterns: anything
-package-specific must be measured and verified with a full build and test run,
-because the reference check only knows about paths mentioned in GN and Python
-files, not about what Node resolves at runtime.
+first and the first matching rule wins. Prefer generic patterns. A
+package-specific rule goes into the "package-specific drops" section with a
+comment saying why the files are unused, and must be measured and verified
+with a full build, test and lint run, because the reference check only knows
+about paths mentioned in GN and Python files, not about what Node resolves at
+runtime. Check such rules again when the package in question is updated.
 
 > **WARNING:** Updating tools such as Rollup and TypeScript will cause all build
 > cache output to be purged, as they are part of all DevTools modules. Whenever

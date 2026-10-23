@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Buksan ang cubic bezier editor"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Buksan ang editor ng shadow"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Nailapat ang filter: {PH1}. Kabuuang resulta: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Walang naka-set up na mga workspace"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Alisin"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "I-rename…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Patakbuhin"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "I-save bilang…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Hindi na-save ang file sa disk"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Pumili ng folder para sa mga override"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "I-activate ang mga breakpoint"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Manual na magdagdag ng folder"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Magdagdag ng folder sa workspace"

@@ -435,13 +435,13 @@
     "message": "ডিবাগাৰত পজ কৰা হৈছে"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "এটা উপলব্ধ নোহোৱা ক্ৰছ-অৰিজিন ফ্ৰে’মৰ বাবে সম্পদ ল’ড কৰিব নোৱাৰি"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "নিৰীক্ষণ কৰা পৃষ্ঠাখন পুনৰ ল’ড কৰাৰ বাবে ল’ড কৰা বাতিল হৈছে"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "কোনো লক্ষ্য অবিহনে http(s) সম্পদ ল’ড কৰিব নোৱাৰি"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "লগ ল’ড কৰাত আসোঁৱাহ হৈছে"
@@ -1566,7 +1566,7 @@
     "message": "লেবেলৰ উপাদান"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "ৱেবৰ অনুমতিৰ উত্তম কাৰ্যপ্ৰণালী"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "বিজ্ঞাপনৰ অত্যধিক হস্তক্ষেপৰ পৰিচালনা"
@@ -3282,7 +3282,7 @@
     "message": "নেপথ্যৰ ৰং"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "বাণ্ডল আইডি"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "গণনা কৰা এপৰ আইডি"
@@ -3417,7 +3417,7 @@
     "message": "পৃষ্ঠাখন এটা সুৰক্ষিত উৎসৰ পৰা প্ৰদান কৰা হোৱা নাই"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "অভিভাৱক এপৰ নাম"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "প্লেটফ’ৰ্ম"
@@ -6636,13 +6636,13 @@
     "message": "মন্তব্য মচক"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "শাৰীত থকা কোনো মন্তব্য নাই। আপোনাৰ AI ক’ডিং এজেণ্টলৈ পঠিয়াবলৈ বিকাশকৰ্তাৰ সঁজুলিত থকা উপাদানসমূহত মন্তব্য যোগ দিয়ক।"
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "কোনো পঠিওৱা মন্তব্য নাই। আপোনাৰ AI ক’ডিং এজেণ্টলৈ মন্তব্য পঠিয়াওক যাতে সেইবোৰ ইয়াত দেখা পায়।"
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "শাৰীত ৰখা হৈছে"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "সঁহাৰি চাওক"
@@ -6651,7 +6651,7 @@
     "message": "এজেণ্টলৈ পঠিয়াওক"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "পঠিওৱা হ’ল"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "কাম কৰি আছে"
@@ -6717,13 +6717,13 @@
     "message": "সঁহাৰি:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "ছেভ কৰক"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "এজেণ্টলৈ পঠিয়াওক"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "পঠিওৱা হ’ল"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "পঠিওৱা চেকমাৰ্ক"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Cubic Bezier সম্পাদক খোলক"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "শ্বেড’ এডিটৰ খোলক"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ফিল্টাৰ প্ৰয়োগ কৰা হৈছে: {PH1}। মুঠ ফলাফল: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "নিৰীক্ষকৰ জৰিয়তে"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "আধাৰ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "আটাইবোৰ ঘোষণাক JS হিচাপে প্ৰতিলিপি কৰক"
@@ -8283,7 +8280,7 @@
     "message": "মান প্ৰতিলিপি কৰক"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ডিফ’ল্ট"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexboxৰ সম্পাদক খোলক"
@@ -8322,7 +8319,7 @@
     "message": "position-area সম্পাদক খোলক"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try বিকল্প বলপূৰ্বক প্ৰয়োগ কৰক"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} সংজ্ঞায়িত কৰা হোৱা নাই"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "স্ক্ৰীনশ্বটৰ প্ৰতিলিপি কৰি ক্লিপব’ৰ্ডত ৰখা হ’ল"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "স্ক্ৰীনশ্বট ক্লিপব’ৰ্ডলৈ প্ৰতিলিপি কৰিব পৰা নগ’ল"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "টেবলেট"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# টা উপাদান}one{# টা উপাদান}other{# টা উপাদান}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "অধিক জানক"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{১ টা ৱেবছাইটক কুকি এক্সেছ কৰাৰ অনুমতি দিয়া হৈছে}one{# টা ৱেবছাইটক কুকি এক্সেছ কৰাৰ অনুমতি দিয়া হৈছে}other{# টা ৱেবছাইটক কুকি এক্সেছ কৰাৰ অনুমতি দিয়া হৈছে}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(অপ্ট-আউট: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "ব্ল’ব URL সম্পৰ্কীয় সমস্যাৰ সংখ্যা: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "কোনো ৱৰ্কস্পেছ ছেট আপ কৰা হোৱা নাই"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "আঁতৰাওক"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "নতুন নাম দিয়ক…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "চলাওক"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "এই হিচাপে ছেভ কৰক…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ফাইলটো ডিস্কত ছেভ কৰিব পৰা নগ’ল"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "অ’ভাৰৰাইডৰ বাবে ফ’ল্ডাৰ বাছনি কৰক"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ব্ৰেকপইণ্ট সক্ৰিয় কৰক"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "মেনুৱেলী ফ’ল্ডাৰ যোগ কৰক"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ৱৰ্কস্পেছত ফ’ল্ডাৰ যোগ দিয়ক"
@@ -17547,7 +17526,7 @@
     "message": "কলবেক বাফাৰৰ আকাৰ"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "কলবেকৰ অন্তৰাল: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "বর্তমান সময়"

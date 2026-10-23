@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "បើក​កម្មវិធីកែ​បេស៊ីយេ​គូប"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "បើក​កម្មវិធីកែ​ស្រមោល"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "បានប្រើតម្រង៖ {PH1}។ លទ្ធផលសរុប៖ {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "មិនបានរៀបចំលំហការងារទេ"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "ដកចេញ"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "ប្ដូរ​ឈ្មោះ…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "ដំណើរការ"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "រក្សាទុកជា…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "មិនអាច​រក្សាទុក​ឯកសារទៅ​ថាស​បានទេ"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ជ្រើសរើស​ថត​សម្រាប់​ការលុបពីលើ"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "បើកដំណើរការ​ចំណុចផ្អាក"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "បញ្ចូល​ថត​ដោយផ្ទាល់ដៃ"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "បញ្ចូល​ថត​ទៅក្នុង​លំហការងារ"

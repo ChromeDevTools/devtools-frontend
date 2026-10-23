@@ -435,13 +435,13 @@
     "message": "En pausa no depurador"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Non se puido cargar o recurso para un marco de orixe cruzada non dispoñible"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "A carga cancelouse debido a que a páxina inspeccionada se volveu cargar"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Non se pode cargar o recurso http(s) sen un obxectivo"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Non se puido cargar o rexistro"
@@ -1566,7 +1566,7 @@
     "message": "Elementos da etiqueta"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Prácticas recomendadas en relación cos permisos web"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Controlar intervencións de anuncios que consomen moitos recursos"
@@ -3282,7 +3282,7 @@
     "message": "Cor do fondo"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Indentifcador do lote"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Código de aplicación computado"
@@ -3417,7 +3417,7 @@
     "message": "A páxina non se publicou desde unha orixe segura"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Nome da aplicación principal"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Plataforma"
@@ -6636,13 +6636,13 @@
     "message": "Eliminar o comentario"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Non hai ningún comentario na cola. Engade comentarios sobre os elementos de DevTools para enviarlle ao teu axente de programación de IA."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Non se enviou ningún comentario. Os comentarios que lle mandes ao teu axente de programación de IA aparecerán aquí."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Na cola"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Ver resposta"
@@ -6651,7 +6651,7 @@
     "message": "Enviar ao axente"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Comentarios enviados"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "En curso"
@@ -6717,13 +6717,13 @@
     "message": "Resposta:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Gardar"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Enviar ao axente"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Comentarios enviados"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Marca de verificación de envío"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Abrir editor de cúbicas de Bézier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Abrir editor de sombras"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Aplicouse o filtro: {PH1}. Resultados totais: {PH2}"
   },
@@ -8283,7 +8280,7 @@
     "message": "Copiar valor"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Opción predeterminada"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Abrir editor (flexbox)"
@@ -8322,7 +8319,7 @@
     "message": "Abrir editor (position-area)"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Forzar opción position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Non se definiu {PH1}"
@@ -8703,13 +8700,13 @@
     "message": "Mobile S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1}: {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Copiouse unha captura de pantalla no portapapeis"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Non se puido copiar a captura de pantalla no portapapeis"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tableta"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# elemento}other{# elementos}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "máis información"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 sitio web con permiso para acceder ás cookies}other{# sitios web con permiso para acceder ás cookies}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(rexeitamento: {PH1} %, {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Reconto de problemas do URL do blob: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Non se configurou ningún espazo de traballo"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Quitar"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Cambiar nome…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Executar"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Gardar como…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Produciuse un erro ao gardar o ficheiro no disco"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Seleccionar cartafol para anulacións"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activar puntos de interrupción"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Engadir cartafol manualmente"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Engadir cartafol ao espazo de traballo"
@@ -17547,7 +17526,7 @@
     "message": "Tamaño do búfer de retrochamada"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Intervalo de retrochamada: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Hora actual"

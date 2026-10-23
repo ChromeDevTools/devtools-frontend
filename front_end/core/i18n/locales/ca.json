@@ -435,13 +435,13 @@
     "message": "En pausa al depurador"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "No es pot carregar el recurs d'un marc d'origen creuat no disponible"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "La càrrega s'ha cancel·lat perquè la pàgina inspeccionada s'ha tornat a carregar"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "No es pot carregar el recurs http(s) sense un objectiu"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Hi ha hagut un error en carregar el registre"
@@ -1566,7 +1566,7 @@
     "message": "Elements de l'etiqueta"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Pràctiques recomanades per als permisos web"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestiona les intervencions d'anuncis pesats"
@@ -3282,7 +3282,7 @@
     "message": "Color de fons"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Identificador de paquet"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Identificador d'aplicació calculat"
@@ -3417,7 +3417,7 @@
     "message": "La pàgina no es difon des d'un origen segur"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Nom de l'aplicació superior"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Plataforma"
@@ -6636,13 +6636,13 @@
     "message": "Delete comment"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "No hi ha cap comentari a la cua. Afegeix comentaris als elements de DevTools per enviar-los al teu agent de codificació d'IA."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "No hi ha cap comentari enviat. Envia comentaris al teu agent de codificació d'IA per veure'ls aquí."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "A la cua"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "See response"
@@ -6651,7 +6651,7 @@
     "message": "Send to Agent"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Enviats"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Working"
@@ -6717,13 +6717,13 @@
     "message": "Resposta:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Desa"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Envia a l'agent"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Enviats"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "S'ha enviat la marca de selecció"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Obre l'editor de corbes cúbiques de Bézier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Obre l'editor d'ombres"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filtre aplicat: {PH1}. Resultats totals: {PH2}"
   },
@@ -8283,7 +8280,7 @@
     "message": "Copia el valor"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Predeterminat"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Obre l'editor flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Obre l'editor position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Força l'opció position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} isn’t defined"
@@ -8703,13 +8700,13 @@
     "message": "Mòbil S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} píxels"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "La captura de pantalla s'ha copiat al porta-retalls"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "No s'ha pogut copiar la captura de pantalla al porta-retalls"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tauleta"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}other{# elements}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "més informació"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 lloc web amb permís per accedir a les galetes}other{# llocs web amb permís per accedir a les galetes}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(desactivació: {PH1} % - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Nombre de problemes amb l'URL de blob: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "No s'ha configurat cap àrea de treball"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Suprimeix"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Canvia el nom…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Executa"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Anomena i desa…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "No s'ha pogut desar el fitxer al disc"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Selecciona una carpeta per a les substitucions"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activa els punts de ruptura"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Afegeix una carpeta manualment"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Afegeix la carpeta a l'àrea de treball"
@@ -17547,7 +17526,7 @@
     "message": "Mida de la memòria cau de la crida de retorn"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Interval de crida de retorn: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Hora actual"

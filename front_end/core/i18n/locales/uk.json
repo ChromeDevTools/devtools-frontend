@@ -435,13 +435,13 @@
     "message": "Призупинено в налагоджувачі"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Не вдалося завантажити ресурс для недоступного міждоменного фрейму"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Завантаження скасовано через перезавантаження сторінки, що перевіряється"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Не можна завантажити ресурс http(s) без цілі"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Не вдалося завантажити журнал"
@@ -1566,7 +1566,7 @@
     "message": "Елементи міток"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Практичні поради щодо вебдозволів"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Обробка важких оголошень"
@@ -3282,7 +3282,7 @@
     "message": "Колір фону"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Ідентифікатор пакета"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Обчислений ідентифікатор додатка"
@@ -3417,7 +3417,7 @@
     "message": "Сторінка завантажується не з надійного джерела"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Назва батьківського додатка"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформа"
@@ -6636,13 +6636,13 @@
     "message": "Видалити коментар"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Немає коментарів у черзі. Додайте коментарі до елементів в Інструментах розробника, щоб надіслати їх ШІ-агенту з програмування."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Немає надісланих коментарів. Щоб коментарі з’явилися тут, надішліть їх ШІ-агенту з програмування."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "У черзі"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Переглянути відповідь"
@@ -6651,7 +6651,7 @@
     "message": "Надіслати агенту"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Надіслано"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Виконується"
@@ -6717,13 +6717,13 @@
     "message": "Відповідь:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Зберегти"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Надіслати агенту"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Надіслано"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Прапорець \"Надіслано\""
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Відкрити редактор кривої Безьє"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Відкрити редактор тіней"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Застосовано фільтр: {PH1}. Загальна кількість результатів: {PH2}."
   },
@@ -8259,7 +8256,7 @@
     "message": "через інспектор"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Базовий"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Копіювати всі декларації як JS"
@@ -8283,7 +8280,7 @@
     "message": "Копіювати значення"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "За умовчанням"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Відкрити редактор flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Відкрити редактор position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Примусово застосувати опцію position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Назву {PH1} не визначено"
@@ -8703,13 +8700,13 @@
     "message": "Невеликий мобільний пристрій"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} пікс."
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Знімок екрана скопійовано в буфер обміну"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Не вдалося скопіювати знімок екрана в буфер обміну"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# елемент}one{# елемент}few{# елементи}many{# елементів}other{# елемента}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "докладніше"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 веб-сайт має доступ до файлів cookie}one{# веб-сайт має доступ до файлів cookie}few{# веб-сайти мають доступ до файлів cookie}many{# веб-сайтів мають доступ до файлів cookie}other{# веб-сайту мають доступ до файлів cookie}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(вимкнено: {PH1}% – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Кількість проблем із URL-адресами великих двійкових об’єктів: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Робочі області не налаштовано"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Вилучити"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Перейменувати…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Виконати"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Зберегти як…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Не вдалося зберегти файл на диск"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Виберіть папку для перевизначень"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активувати точки зупину"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Додати папку вручну"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Додати папку в робочу область"
@@ -17547,7 +17526,7 @@
     "message": "Розмір буфера зворотного виклику"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Інтервал зворотного виклику: μ = {PH1} мс, σ = {PH2} мс"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Поточний час"

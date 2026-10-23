@@ -435,13 +435,13 @@
     "message": "Začasno zaustavljeno v iskalniku napak"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Vira za nerazpoložljiv okvir z drugim izvorom ni mogoče naložiti"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Nalaganje preklicano zaradi vnovičnega nalaganja pregledane strani"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Vira http(s) ni mogoče naložiti brez cilja"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Napaka pri nalaganju dnevnika"
@@ -1566,7 +1566,7 @@
     "message": "Elementi oznake"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Najboljši postopki za spletna dovoljenja"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Obravnavanje posegov v intenzivne oglase"
@@ -3282,7 +3282,7 @@
     "message": "Barva ozadja"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ID paketa"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Izračunani ID aplikacije"
@@ -3417,7 +3417,7 @@
     "message": "Stran ni poslana iz varnega izvora"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Ime nadrejene aplikacije"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Okolje"
@@ -6636,13 +6636,13 @@
     "message": "Izbris komentarja"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Ni komentarjev v čakalni vrsti. Dodajte komentarje o elementih v orodjih za razvijalce, ki jih želite poslati agentu za kodiranje z umetno inteligenco."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Ni poslanih komentarjev. Komentarje pošljite agentu za kodiranje z umetno inteligenco, da bodo prikazani tukaj."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "V čakalni vrsti"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Pokaži odgovor"
@@ -6651,7 +6651,7 @@
     "message": "Pošlji agentu"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Poslano"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Obdelava"
@@ -6717,13 +6717,13 @@
     "message": "Odziv:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Shrani"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Pošiljanje agentu"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Poslano"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Kljukica za poslano"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Odpiranje kubičnega Bezierjevega urejevalnika"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Odpri urejevalnik senc"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filter je uporabljen: {PH1}. Skupno število rezultatov: {PH2}."
   },
@@ -8259,7 +8256,7 @@
     "message": "prek pregledovalnika"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Osnovno"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiraj vse izjave kot JS"
@@ -8283,7 +8280,7 @@
     "message": "Kopiraj vrednost"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Privzeto"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Odpri urejevalnik za flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Odpri urejevalnik za position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Prisilna uporaba možnosti position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Lastnost »{PH1}« ni določena"
@@ -8703,13 +8700,13 @@
     "message": "Majhna mobilna naprava"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} slikovnih pik"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Posnetek zaslona je bil kopiran v odložišče"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Posnetka zaslona ni bilo mogoče kopirati v odložišče"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablični računalnik"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}one{# element}two{# elementa}few{# elementi}other{# elementov}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "Več o tem"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 spletnemu mestu je dovoljen dostop do piškotkov}one{# spletnemu mestu je dovoljen dostop do piškotkov}two{# spletnima mestoma je dovoljen dostop do piškotkov}few{# spletnim mestom je dovoljen dostop do piškotkov}other{# spletnim mestom je dovoljen dostop do piškotkov}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(onemogočeno: {PH1} % – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Število težav z URL-jem za zbirko dvojiških podatkov: {count}."
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Ni nastavljenih delovnih prostorov"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Odstranitev"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Preimenuj …"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Zaženi"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Shrani kot …"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Datoteke ni bilo mogoče shraniti na disk"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Izberi mapo za preglasitve"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivirajte prekinitvene točke"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Ročno dodaj mapo"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Dodaj mapo v delovni prostor"
@@ -17547,7 +17526,7 @@
     "message": "Velikost medpomnilnika pri povratnem klicu"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Interval povratnega klica: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Trenutni čas"

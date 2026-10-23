@@ -435,13 +435,13 @@
     "message": "డీబగ్గర్‌లో పాజ్ చేయబడింది"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "అందుబాటులో లేని క్రాస్-ఆరిజిన్ ఫ్రేమ్ కోసం రిసోర్స్‌ను లోడ్ చేయడం సాధ్యపడదు"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "ఇన్స్పెక్ట్ చేయబడిన పేజీ రీలోడ్ కారణంగా లోడ్ రద్దు చేయబడింది"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "టార్గెట్ లేకుండా http(s) రిసోర్స్‌ను లోడ్ చేయడం సాధ్యం కాదు"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "లాగ్‌ను లోడ్ చేయడంలో ఎర్రర్"
@@ -1566,7 +1566,7 @@
     "message": "లేబుల్ ఎలిమెంట్‌లు"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "వెబ్ అనుమతులకు సంబంధించిన బెస్ట్ ప్రాక్టీసులు"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "భారీ యాడ్ ఇంటర్‌వెన్షన్‌లను హ్యాండిల్ చేయడం"
@@ -3282,7 +3282,7 @@
     "message": "బ్యాక్‌గ్రౌండ్ రంగు"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "బండిల్ ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "కంప్యూటెడ్ యాప్ ID"
@@ -3417,7 +3417,7 @@
     "message": "పేజీని సురక్షిత ఆరిజిన్ నుండి అందించలేదు"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "పేరెంట్ యాప్ పేరు"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "ప్లాట్‌ఫామ్"
@@ -6636,13 +6636,13 @@
     "message": "కామెంట్‌ను తొలగించండి"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "క్యూలో ఉన్న కామెంట్‌లు ఏవీ లేవు. మీ AI కోడింగ్ ఏజెంట్‌కు పంపడానికి DevToolsలోని ఎలిమెంట్‌లపై కామెంట్‌లను జోడించండి."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "పంపిన కామెంట్‌లు ఏవీ లేవు. మీ AI కోడింగ్ ఏజెంట్‌కు కామెంట్‌లను పంపండి, తద్వారా అవి ఇక్కడ కనిపిస్తాయి."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "క్యూలో ఉంది"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "సమాధానాన్ని చూడండి"
@@ -6651,7 +6651,7 @@
     "message": "ఏజెంట్‌కు పంపు"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "వెళ్లింది"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "పనిచేస్తోంది"
@@ -6717,13 +6717,13 @@
     "message": "సమాధానం:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "సేవ్ చేయి"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "ఏజెంట్‌కు పంపండి"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "వెళ్లింది"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "పంపినట్లు తెలిపే చెక్ మార్క్"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "క్యూబిక్ బెజియర్ ఎడిటర్‌ను తెరవండి"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "ఛాయా ఎడిటర్‌ను తెరవండి"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ఫిల్టర్ వర్తింపజేయబడింది: {PH1}. మొత్తం ఫలితాలు: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "ఇన్స్పెక్టర్ ద్వారా"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "బేస్"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "అన్ని డిక్లరేషన్‌లను JSగా కాపీ చేయండి"
@@ -8283,7 +8280,7 @@
     "message": "విలువను కాపీ చేయండి"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ఆటోమేటిక్ సెట్టింగ్"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox ఎడిటర్‌ను తెరవండి"
@@ -8322,7 +8319,7 @@
     "message": "position-area ఎడిటర్‌ను తెరవండి"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try ఆప్షన్‌ను ఫోర్స్ చేయండి"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} డిఫైన్ చేయలేదు"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "స్క్రీన్‌షాట్ క్లిప్‌బోర్డ్‌కు కాపీ అయింది"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "స్క్రీన్‌షాట్‌ను క్లిప్‌బోర్డ్‌కు కాపీ చేయడం సాధ్యపడలేదు"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "టాబ్లెట్"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# ఎలిమెంట్}other{# ఎలిమెంట్‌లు}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "మరింత తెలుసుకోండి"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{కుక్కీలను యాక్సెస్ చేయడానికి 1 వెబ్‌సైట్ అనుమతించబడింది}other{కుక్కీలను యాక్సెస్ చేయడానికి # వెబ్‌సైట్‌లు అనుమతించబడ్డాయి}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(సమ్మతి నిలిపివేత: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL సమస్యల సంఖ్య: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "వర్క్ స్పేస్‌లు ఏవీ సెటప్ చేయబడలేదు"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "తీసివేయండి"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "పేరు మార్చండి…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "రన్ చేయండి"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "ఇలా సేవ్ చేయాలి…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ఫైల్‌ను డిస్క్‌కు సేవ్ చేయడంలో విఫలమైంది"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ఓవర్‌రైడ్‌ల కోసం ఫోల్డర్‌ను ఎంచుకోండి"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "బ్రేక్ పాయింట్‌లను యాక్టివేట్ చేయండి"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "మాన్యువల్‌గా ఫోల్డర్‌ను జోడించండి"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "వర్క్‌స్పేస్‌కు ఫోల్డర్‌ను జోడించండి"
@@ -17547,7 +17526,7 @@
     "message": "కాల్‌బ్యాక్ బఫర్ సైజ్"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "కాల్‌బ్యాక్ ఇంటర్‌వెల్: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "ప్రస్తుత సమయం"

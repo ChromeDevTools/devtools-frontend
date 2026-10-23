@@ -435,13 +435,13 @@
     "message": "تم الإيقاف مؤقتًا في برنامج تصحيح الأخطاء."
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "يتعذّر تحميل المورد لإطار متعدّد المصادر غير متاح"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "تم إلغاء تحميل خرائط المصادر بسبب إعادة تحميل الصفحة التي تم فحصها."
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "يتعذر تحميل مورد http(s)‎ بدون تحديد الوجهة المستهدفة"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "حدث خطأ أثناء تحميل السجلّ"
@@ -1566,7 +1566,7 @@
     "message": "عناصر التصنيف"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "أفضل الممارسات المتعلّقة بأذونات الويب"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "التعامل مع مشاكل تداخل الإعلانات التي تستهلك موارد الشبكة"
@@ -3282,7 +3282,7 @@
     "message": "لون الخلفية"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "معرِّف الحزمة"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "رقم التعريف المحتسب للتطبيق"
@@ -3417,7 +3417,7 @@
     "message": "مصدر الصفحة غير آمن"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "اسم التطبيق الرئيسي"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "النظام الأساسي"
@@ -6636,13 +6636,13 @@
     "message": "حذف التعليق"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "ما مِن تعليقات في قائمة الانتظار. يمكنك إضافة تعليقات على العناصر في \"أدوات مطوّري البرامج\" لإرسالها إلى وكيل الذكاء الاصطناعي للترميز."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "ما مِن تعليقات مُرسَلة. يمكنك إرسال تعليقات إلى وكيل الذكاء الاصطناعي للترميز حتى يتم عرضها هنا."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "في قائمة الانتظار"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "عرض الردّ"
@@ -6651,7 +6651,7 @@
     "message": "الإرسال إلى الوكيل"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "تم الإرسال"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "جارٍ المعالجة"
@@ -6717,13 +6717,13 @@
     "message": "الردّ:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "حفظ"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "الإرسال إلى الوكيل"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "تم الإرسال"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "علامة صح تؤكد إرسال التعليقات"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "يُرجى فتح محرِّر cubic bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "فتح أداة تعديل خصائص التظليل"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "تم تطبيق الفلتر \"{PH1}\". إجمالي عدد النتائج: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "من خلال أداة الفحص"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "النمط الأساسي"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "نسخ جميع التعريفات بتنسيق JavaScript"
@@ -8283,7 +8280,7 @@
     "message": "نسخ القيمة"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "تلقائي"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "فتح محرِّر \"flexbox\""
@@ -8322,7 +8319,7 @@
     "message": "فتح محرِّر \"position-area\""
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "فرض الخيار \"position-try\""
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "لم يتم تحديد {PH1}"
@@ -8703,13 +8700,13 @@
     "message": "جهاز جوّال بشاشة صغيرة الحجم"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "‫\"{PH1}\" ‏– {PH2} بكسل"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "تم نسخ لقطة الشاشة إلى الحافظة"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "تعذّر نسخ لقطة الشاشة إلى الحافظة"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "جهاز لوحي"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{عنصر واحد}zero{‫# عنصر}two{عنصران}few{‫# عناصر}many{‫# عنصرًا}other{‫# عنصر}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "مزيد من المعلومات"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{يُسمح لموقع إلكتروني واحد بالوصول إلى ملفات تعريف الارتباط.}zero{يُسمح لـ # موقع إلكتروني بالوصول إلى ملفات تعريف الارتباط.}two{يُسمح لموقعَين إلكترونيَّين بالوصول إلى ملفات تعريف الارتباط.}few{يُسمح لـ # مواقع إلكترونية بالوصول إلى ملفات تعريف الارتباط.}many{يُسمح لـ # موقعًا إلكترونيًا بالوصول إلى ملفات تعريف الارتباط.}other{يُسمح لـ # موقع إلكتروني بالوصول إلى ملفات تعريف الارتباط.}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(نسبة إيقاف ملفات تعريف الارتباط: %{PH1} - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "عدد المشاكل في عنوان URL الخاص بالكائنات الثنائية الكبيرة (BLOB): {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "لم يتم إعداد أي مساحات عمل"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "إزالة"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "إعادة التسمية…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "تشغيل"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "حفظ بتنسيق…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "تعذَّر حفظ الملف على القرص"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "اختيار مجلّد لعمليات الإلغاء"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "تفعيل نقاط الإيقاف"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "إضافة مجلد يدويًا"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "إضافة مجلّد إلى مساحة العمل"
@@ -17547,7 +17526,7 @@
     "message": "حجم ذاكرة التخزين المؤقت لمعاودة الاتصال"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "الفاصل الزمني لمعاودة الاتصال: μ = {PH1} ملي ثانية، σ = {PH2} ملي ثانية"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "الوقت الحالي"

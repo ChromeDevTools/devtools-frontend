@@ -435,13 +435,13 @@
     "message": "已在偵錯工具中暫停"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "無法為不可用的跨來源頁框載入資源"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "由於系統重新載入已檢查的網頁，因此載入已取消"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "沒有目標，因此無法載入 http(s) 資源"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "載入記錄時發生錯誤"
@@ -1566,7 +1566,7 @@
     "message": "標籤元素"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "網絡權限最佳做法"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "處理重度耗資源廣告的干預機制"
@@ -3282,7 +3282,7 @@
     "message": "背景顏色"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "套件 ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "運算的應用程式 ID"
@@ -3417,7 +3417,7 @@
     "message": "頁面並非透過安全來源提供"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "父應用程式名稱"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "平台"
@@ -6636,13 +6636,13 @@
     "message": "刪除留言"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "沒有已排入序列的留言。請在開發人員工具中為元素加入留言，以傳送給 AI 編碼代理。"
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "沒有已傳送的留言。你傳送給 AI 編碼代理的留言會在這裡顯示。"
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "已排入序列"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "查看答覆"
@@ -6651,7 +6651,7 @@
     "message": "傳送給代理"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "已傳送"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "執行中"
@@ -6717,13 +6717,13 @@
     "message": "答覆："
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "儲存"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "傳送俾代理"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "已傳送"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "已傳送剔號"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "開啟三次方貝茲編輯器"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "開啟陰影編輯器"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "已套用篩選器：{PH1}。總結果：{PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "透過檢查工具"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "基礎"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "以 JS 格式複製所有聲明"
@@ -8283,7 +8280,7 @@
     "message": "複製值"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "預設"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "開啟 flexbox 編輯器"
@@ -8322,7 +8319,7 @@
     "message": "開啟 position-area 編輯器"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "強制執行 position-try 選項"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "未定義 {PH1}"
@@ -8703,13 +8700,13 @@
     "message": "小型流動裝置"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} 像素"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "螢幕截圖已複製到剪貼簿"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "螢幕截圖無法複製到剪貼簿"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "平板電腦"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# 個元素}other{# 個元素}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "瞭解詳情"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{已允許 1 個網站存取 Cookie}other{已允許 # 個網站存取 Cookie}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(退出使用：{PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob 網址問題數目：{count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "未設定工作區"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "移除"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "重新命名…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "執行"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "另存新檔…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "無法儲存檔案至磁碟"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "選取要覆寫的資料夾"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "啟用中斷點"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "手動新增資料夾"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "將資料夾新增至工作區"
@@ -17547,7 +17526,7 @@
     "message": "回呼緩衝區大小"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "回調間隔：μ = {PH1} 毫秒，σ = {PH2} 毫秒"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "目前時間"

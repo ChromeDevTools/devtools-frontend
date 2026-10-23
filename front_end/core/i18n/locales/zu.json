@@ -435,13 +435,13 @@
     "message": "Iphunyuziwe ekulungiseni amaphutha"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Ayikwazi ukulayisha insiza yohlaka olungatholakali oludabuka emithonjeni ehlukene"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Ukulayisha kukhanseliwe ngenxa yokulayisha kabusha kwekhasi elihlolwayo"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Ayikwazi ukulayisha insiza ye-http(s) ngaphandle kwethagethi"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Iphutha lokulayisha iphutha"
@@ -1566,7 +1566,7 @@
     "message": "Izakhi zelebula"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Izimvume zewebhu imikhuba ehamba phambili"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ukuphatha ukungenelela okusindayo kwezikhangiso"
@@ -3282,7 +3282,7 @@
     "message": "Umbala ongemuva"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "I-ID Yenqwaba"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "I-ID ye-app ebaliwe"
@@ -3417,7 +3417,7 @@
     "message": "Ikhasi alilethwa lisuka endaweni evikelekile."
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Igama le-app yomzali"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Inkundla"
@@ -6636,13 +6636,13 @@
     "message": "Susa ukuphawula"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Akukho ukuphawula kulayini. Faka ukuphawula ezintweni ezikuDevTools ukuze uthumele ku-ejenti yakho yokubhala ikhodi ye-AI."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Akukho ukuphawula okuthunyelwe. Thumela ukuphawula ku-ejenti yakho yokubhala ngekhodi ye-AI ukuze ukubone lapha."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Kukulayini"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Bona impendulo"
@@ -6651,7 +6651,7 @@
     "message": "Thumela Ku-ejenti"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Kuthunyelwe"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Kuyasebenza"
@@ -6717,13 +6717,13 @@
     "message": "Impendulo:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Londoloza"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Thumela ku-ejenti"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Kuthunyelwe"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Uqhwi othunyelwe"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Vula umhleli we-cubic bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Vula umhleli wesithunzi"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Isihlungi esisetshenzisiwe: {PH1}. Isamba semiphumela: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "ngesihloli"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Isisekelo"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopisha zonke izimemezelo njenge-JS"
@@ -8283,7 +8280,7 @@
     "message": "Kopisha inani"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Okuzenzakalelayo"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Vula isihleli se-flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Vula isihleli se-position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Phoqa okungakhethwa kukho kwe-position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "I-{PH1} ayichaziwe"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Isithombe-skrini sikopishwe ebhodini lokunameka"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Ayikwazanga ukukopisha isithombe-skrini ebhodini lokunameka"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Ithebhulethi"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{Isakhi esi-#}one{Izakhi ezi-#}other{Izakhi ezi-#}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "funda kabanzi"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{Iwebhusayithi e-1 evunyelwe ukufinyelela amakhukhi}one{Amawebhusayithi angu-# avunyelwe ukufinyelela amakhukhi}other{Amawebhusayithi angu-# avunyelwe ukufinyelela amakhukhi}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(khetha ukuphuma: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Isibalo sezinkinga zeBlob URL: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Azikho izindawo zokusebenza ezisethiwe"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Susa"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Qamba kabusha…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Ukusebenza"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Londoloza njengokuthi…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Yehlulekile ukulondoloza ifayela kudiski"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Khetha ifolda yokukhishwa"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Ama-breakpoint asebenzayo"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Faka ifolda ngesandla"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Engeza ifolda endaweni yokusebenzela"
@@ -17547,7 +17526,7 @@
     "message": "Usayizi webhafa yokuphinda ufonelwe"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Isikhawu sokufonela: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Isikhathi samanje"

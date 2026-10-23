@@ -435,13 +435,13 @@
     "message": "Pausado no depurador"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Não é possível carregar o recurso para um frame entre origens indisponível"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Carregamento cancelado devido à atualização da página inspecionada"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Não é possível carregar o recurso http(s) sem um destino"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Erro ao carregar o registro"
@@ -1566,7 +1566,7 @@
     "message": "Elementos do rótulo"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Práticas recomendadas de permissões da web"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Processamento de intervenções de anúncios pesados"
@@ -3282,7 +3282,7 @@
     "message": "Cor do plano de fundo"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ID do pacote"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ID calculado do app"
@@ -3417,7 +3417,7 @@
     "message": "A origem de exibição da página não é segura"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Nome do app pai"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Plataforma"
@@ -6636,13 +6636,13 @@
     "message": "Excluir comentário"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Nenhum comentário na fila. Adicione comentários sobre elementos no DevTools para enviar ao seu agente de programação de IA."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Nenhum comentário enviado. Envie comentários ao seu agente de programação de IA para que eles apareçam aqui."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Na fila"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Ver resposta"
@@ -6651,7 +6651,7 @@
     "message": "Enviar para o agente"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Enviado"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Trabalhando"
@@ -6717,13 +6717,13 @@
     "message": "Resposta:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Salvar"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Enviar para o agente"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Enviado"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Marca de seleção de envio"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Abrir o editor cubic-bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Abrir o editor de sombras"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filtro aplicado: {PH1}. Resultados totais: {PH2}"
   },
@@ -8283,7 +8280,7 @@
     "message": "Copiar valor"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Padrão"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Abrir editor de flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Abrir editor de position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Forçar opção position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} não está definido"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "A captura de tela foi copiada para a área de transferência"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Não foi possível copiar a captura de tela para a área de transferência"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# elemento}one{# elemento}other{# elementos}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "saiba mais"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 site com permissão para acessar cookies}one{# site com permissão para acessar cookies}other{# sites com permissão para acessar cookies}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(recusa: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Número de problemas de URL blob: {count}"
@@ -14541,7 +14538,7 @@
     "message": "Mostrar dispositivos"
   },
   "panels/settings/settings-meta.ts | aiInnovations": {
-    "message": "Inovações de IA"
+    "message": "Inovações com IA"
   },
   "panels/settings/settings-meta.ts | backendLinking": {
     "message": "Vinculação de back-end"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Nenhum espaço de trabalho configurado"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Remover"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Renomear…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Executar"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Salvar como…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Falha ao salvar o arquivo no disco"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Selecionar pasta para substituições"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Ativar pontos de interrupção"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Adicionar pasta manualmente"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Adicionar pasta ao espaço de trabalho"
@@ -17547,7 +17526,7 @@
     "message": "Tamanho do buffer de callback"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Intervalo de callback: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Hora atual"

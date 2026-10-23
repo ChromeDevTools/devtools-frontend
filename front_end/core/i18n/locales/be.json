@@ -435,13 +435,13 @@
     "message": "Прыпынена ў адладчыку"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Немагчыма загрузіць рэсурс для недаступнага фрэйма з розных крыніц"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Загрузка скасавана з-за перазагрузкі старонкі, якая правяраецца"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Немагчыма загрузіць рэсурс http(s) без мэтавага аб’екта"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Пры загрузцы журнала адбылася памылка"
@@ -1566,7 +1566,7 @@
     "message": "Элементы label"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Рэкамендацыі па дазволах для інтэрнэту"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Апрацоўка ўмяшанняў у выпадку цяжкай рэкламы"
@@ -3282,7 +3282,7 @@
     "message": "Колер фону"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Ідэнтыфікатар пакета"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Вылічаны ідэнтыфікатар праграмы"
@@ -3417,7 +3417,7 @@
     "message": "Старонка не паказваецца з бяспечнай крыніцы"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Назва бацькоўскай праграмы"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформа"
@@ -6636,13 +6636,13 @@
     "message": "Выдаліць каментарый"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Няма каментарыяў у чарзе. Дадайце каментарыі да элементаў у інструментах распрацоўшчыка, якія будуць адпраўлены агенту AI па стварэнні кода."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Няма адпраўленых каментарыяў. Адпраўце каментарыі агенту AI па стварэнні кода, і яны з’явяцца тут."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "У чарзе"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Паглядзець адказ"
@@ -6651,7 +6651,7 @@
     "message": "Адправіць агенту"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Адпраўлена"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Працуе"
@@ -6717,13 +6717,13 @@
     "message": "Адказ:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Захаваць"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Адправіць агенту"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Адпраўлена"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Птушка \"Адпраўлена\""
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Адкрыць рэдактар кубічных крывых Безье"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Адкрыць рэдактар ценяў"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Фільтр прыменены: {PH1}. Усяго вынікаў: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "праз інспектар"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Базавы"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Скапіраваць усе абвяшчэнні як JS"
@@ -8283,7 +8280,7 @@
     "message": "Скапіраваць значэнне"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Стандартна"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Адкрыць рэдактар \"flexbox\""
@@ -8322,7 +8319,7 @@
     "message": "Адкрыць рэдактар \"position-area\""
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Прымусова прымяніць варыянт position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Імя \"{PH1}\" не вызначана"
@@ -8703,13 +8700,13 @@
     "message": "Малая мабільная прылада"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} пікс."
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Здымак экрана скапіраваны ў буфер абмену"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Не ўдалося скапіраваць здымак экрана ў буфер абмену"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшэт"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# элемент}one{# элемент}few{# элементы}many{# элементаў}other{# элемента}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "даведацца больш"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 вэб-сайту дазволены доступ да файлаў cookie}one{# вэб-сайту дазволены доступ да файлаў cookie}few{# вэб-сайтам дазволены доступ да файлаў cookie}many{# вэб-сайтам дазволены доступ да файлаў cookie}other{# вэб-сайта дазволены доступ да файлаў cookie}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(адмовіліся: {PH1}% – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Колькасць праблем з URL-адрасамі двайковага аб’екту: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Працоўныя вобласці не наладжаны"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Выдаліць"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Перайменаваць…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Выканаць"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Захаваць як…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Не ўдалося захаваць файл на дыск"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Выбраць папку для перавызначэнняў"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Актываваць пункты прыпынення"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Дадаць папку ўручную"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Дадаць папку ў працоўную вобласць"
@@ -17547,7 +17526,7 @@
     "message": "Памер буфера зваротнага выкліку"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Інтэрвал зваротных выклікаў: μ = {PH1} мс, σ = {PH2} мс"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Бягучы час"

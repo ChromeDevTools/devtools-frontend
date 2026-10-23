@@ -435,13 +435,13 @@
     "message": "Debagerda pauza qilindi"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Mavjud boʻlmagan turli manbali freym uchun resurs yuklanmadi"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Tekshiruvdagi sahifa qayta yuklangani sababli yuklash bekor qilindi"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Belgilangan manzilsiz http(s) resursini yuklash imkonsiz"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Jurnal yuklanmadi"
@@ -1566,7 +1566,7 @@
     "message": "Label elementlari"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Veb ruxsatlari boʻyicha tavsiyalar"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ogʻir reklama aralashuvlari bilan ishlash"
@@ -3282,7 +3282,7 @@
     "message": "Orqa fon rangi"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Jamlanma ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Hisoblangan ilova identifikatori"
@@ -3417,7 +3417,7 @@
     "message": "Sahifa xavfsiz manbadan yuklanmadi"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Yuqori ilova nomi"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platforma"
@@ -6636,13 +6636,13 @@
     "message": "Fikrni oʻchirish"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Navbatda fikrlar yoʻq. AI kod yozish agentiga yuborish uchun DevTools ichidagi elementlarga fikrlar qoʻshing."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Yuborilgan fikrlar topilmadi. AI kod yozish agentiga fikrlar yuboring va ularni shu yerda koʻring."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Navbatda"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Javobni ochish"
@@ -6651,7 +6651,7 @@
     "message": "Agentga yuborish"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Yuborilgan"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Bajarilmoqda..."
@@ -6717,13 +6717,13 @@
     "message": "Javob:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Saqlash"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Agentga yuborish"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Yuborilgan"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Yuborilganlik belgisi"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Cubic bezier muharririni ochish"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Soya muharririni ochish"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filtr tatbiq etildi: {PH1}. Jami natijalar: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "inspektor orqali"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Asos"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Barcha bayonotlarni JS shaklida nusxalash"
@@ -8283,7 +8280,7 @@
     "message": "Qiymatni nusxalash"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Standart"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox muharririni ochish"
@@ -8322,7 +8319,7 @@
     "message": "position-area muharririni ochish"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try parametrini majburan yoqish"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} belgilanmagan"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Skrinshot nusxalandi"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Skrinshot vaqtinchalik xotiraga nusxalanmadi"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Planshet"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# ta element}other{# ta element}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "batafsil"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 sayt uchun cookie fayllarga ruxsat berilgan}other{# sayt uchun cookie fayllarga ruxsat berilgan}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(voz kechish: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL muammolari soni: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Ish maydonlari sozlanmagan"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Olib tashlash"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Qayta nomlash…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Ishga tushirish"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Saqlab olish…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Fayl diskka saqlanmadi"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Oʻzgaradigan jildni tanlang"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Uzilish nuqtalarini faollashtirish"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Jildni mustaqil kiritish"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Ishchi maydonga jild kiritish"
@@ -17547,7 +17526,7 @@
     "message": "Teskari chaqiruv buferi hajmi"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Teskari chaqiruv intervali: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Hozirgi vaqt"

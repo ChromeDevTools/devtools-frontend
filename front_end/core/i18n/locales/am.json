@@ -435,13 +435,13 @@
     "message": "አራሚ ውስጥ ለአፍታ ቆሟል"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "ለማይገኝ ተሻጋሪ-መነሻ ክፈፍ ንብረትን መጫን አልተቻለም"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "በተፈተሸ ገፅ እንደገና መጫን ምክንያት ጭነት ተሰርዟል"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "ያለ ዒላማ የኤችቲቲፒኤ(ስ) ንብረትን መጫን አይቻልም"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "ምዝግብ ማስታወሻ በመጫን ላይ ስሕተት"
@@ -1566,7 +1566,7 @@
     "message": "የመሰየሚያው ክፍለ አካላት"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "የድር ፈቃዶች ምርጥ ልምዶች"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ከባድ የማስታወቂያ ጣልቃ ገብነቶችን ማስተናገድ"
@@ -3282,7 +3282,7 @@
     "message": "የዳራ ቀለም"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "የቅርቅብ መታወቂያ"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "የተሰላ የመተግበሪያ መታወቂያ"
@@ -3417,7 +3417,7 @@
     "message": "ገጽ ደህንነቱ ከተጠበቀ ምንጭ አይሰጥም"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "የወላጅ መተግበሪያ ስም"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "መሠረተ ሥርዓት"
@@ -6636,13 +6636,13 @@
     "message": "አስተያየት ሰርዝ"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "ምንም የተሰለፉ አስተያየቶች የሉም። ወደ ሰው ሠራሽ አስተውሎት ኮድ ወኪልዎ ለመላክ በDevTools ውስጥ ባሉ ክፍለ አካላት ላይ አስተያየቶችን ያክሉ።"
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "ምንም የተላኩ አስተያየቶች የሉም። እዚህ ለማየት አስተያየቶችን ወደ ሰው ሠራሽ አስተውሎት ኮድ ወኪልዎ ይላኩ።"
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "ተሰልፏል"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "ምላሹን አሳይ"
@@ -6651,7 +6651,7 @@
     "message": "ወደ ወኪል ላክ"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "ተልኳል"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "በሥራ ላይ"
@@ -6717,13 +6717,13 @@
     "message": "ምላሽ፦"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "አስቀምጥ"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "ወደ ወኪል ላክ"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "ተልኳል"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "የተላከ ምልክት ማድረጊያ"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "የኩብ ቢዛየር አርታዒን ይክፈቱ"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "የጥላ አርታዒን ይክፈቱ"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ማጣሪያ ተተግብሯል፦ {PH1}። ጠቅላላ ውጤቶች፦ {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "በመርማሪ በኩል"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "መሠረት"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ሁሉንም መግለጫዎች እንደ JS ይቅዱ"
@@ -8283,7 +8280,7 @@
     "message": "እሴትን ቅዳ"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ነባሪ"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "የflexbox አርታዒ ክፈት"
@@ -8322,7 +8319,7 @@
     "message": "የposition-area አርታዒ ክፈት"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "የposition-try አማራጭን አስገድድ"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} አልተገለጸም"
@@ -8703,13 +8700,13 @@
     "message": "Mobile S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2}ፒክሰል"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "ቅጽበታዊ ገጽ ዕይታ ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "ቅጽበታዊ ገጽ ዕይታን ወደ ቅንጥብ ሰሌዳ መቅዳት አልተቻለም"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ጡባዊ"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# ክፍለ-አካል}one{# ክፍለ አካላት}other{# ክፍለ አካላት}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "የበለጠ ለመረዳት"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{ኩኪዎችን እንዲደርስ የተፈቀደለት 1 ድር ጣቢያ}one{ኩኪዎችን እንዲደርስ የተፈቀደለት # ድር ጣቢያ}other{ኩኪዎችን እንዲደርሱ የተፈቀደላቸው # ድር ጣቢያዎች}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(መርጦ መውጣት፦ {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "የBlob ዩአርኤል ችግሮች ቁጥር፦ {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "ምንም መሥሪያ ቦታዎች አልተዋቀሩም"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "አስወግድ"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "እንደገና ሰይም…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "አሂድ"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "አስቀምጥ እንደ…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ፋይሉን ወደ ዲስክ ማስቀመጥ አልተሳካም"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ለመሻሮች አቃፊን ይምረጡ"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "መግቻ ቦታዎችን ያግብሩ"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "አቃፊን በእጅ አክል"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "አቃፊን ወደ መሥሪያ ቦታ ያክሉ"
@@ -17547,7 +17526,7 @@
     "message": "የመልሶ ጥሪ ቋት መጠን"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "የመልሶ ጥሪ ክፍተት፦ μ = {PH1} ሚሰ፣ σ = {PH2} ሚሰ"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "የአሁኑ ሰዓት"

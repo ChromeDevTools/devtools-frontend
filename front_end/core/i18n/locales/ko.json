@@ -435,13 +435,13 @@
     "message": "디버거에서 일시중지됨"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "사용할 수 없는 교차 출처 프레임의 리소스를 로드할 수 없습니다."
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "검사된 페이지의 새로고침으로 인해 로드가 취소됨"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "대상 없이 http(s) 리소스를 로드할 수 없습니다."
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "로그를 로드하는 중에 오류가 발생했습니다."
@@ -1566,7 +1566,7 @@
     "message": "라벨 요소"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "웹 권한 권장사항"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "과도한 광고 개입 처리"
@@ -3282,7 +3282,7 @@
     "message": "배경 색상"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "번들 ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "계산된 앱 ID"
@@ -3417,7 +3417,7 @@
     "message": "페이지가 안전한 출처에서 제공되지 않았습니다."
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "상위 앱 이름"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "플랫폼"
@@ -6636,13 +6636,13 @@
     "message": "댓글 삭제"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "대기 중인 댓글이 없습니다. DevTools의 요소에 댓글을 추가하여 AI 코딩 에이전트에 전송하세요."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "전송된 댓글이 없습니다. AI 코딩 에이전트에 댓글을 보내면 여기에서 확인할 수 있습니다."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "대기 중"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "대답 보기"
@@ -6651,7 +6651,7 @@
     "message": "에이전트로 전송"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "전송됨"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "작업 중"
@@ -6717,13 +6717,13 @@
     "message": "응답:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "저장"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "에이전트로 전송"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "전송됨"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "전송됨 체크표시"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "cubic bezier 에디터 열기"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "섀도우 편집기 열기"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "필터 적용됨: {PH1}. 총 결과: {PH2}개"
   },
@@ -8283,7 +8280,7 @@
     "message": "값 복사"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "기본"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox 편집기 열기"
@@ -8322,7 +8319,7 @@
     "message": "position-area 편집기 열기"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try 옵션 강제 적용"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1}이(가) 정의되지 않음"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "클립보드에 스크린샷이 복사되었습니다"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "스크린샷을 클립보드에 복사할 수 없습니다"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "태블릿"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{요소 #개}other{요소 #개}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "자세히 알아보기"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{쿠키 액세스가 허용된 웹사이트 1개}other{쿠키 액세스가 허용된 웹사이트 #개}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(선택 해제: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL 문제 수: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "설정된 작업공간 없음"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "삭제"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "이름 바꾸기…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "실행"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "다른 이름으로 저장…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "파일을 디스크에 저장할 수 없습니다."
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "재정의할 폴더 선택"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "중단점 활성화"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "수동으로 폴더 추가"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "작업공간에 폴더 추가"
@@ -17547,7 +17526,7 @@
     "message": "콜백 버퍼 사이즈"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "콜백 간격: μ = {PH1}ms, σ = {PH2}ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "현재 시간"

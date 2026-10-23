@@ -435,13 +435,13 @@
     "message": "ডিবাগারে পজ করা আছে"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "অনুপলভ্য ক্রস-অরিজিন ফ্রেমের জন্য রিসোর্স লোড করা যাচ্ছে না"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "পরীক্ষা করা পৃষ্ঠা রিলোড করার কারণে লোড করার প্রক্রিয়া বাতিল করা হয়েছে"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "টার্গেট ছাড়া http(s) রিসোর্স লোড করা যাচ্ছে না"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "লগ লোড করার সময় সমস্যা হয়েছে"
@@ -1566,7 +1566,7 @@
     "message": "লেবেল এলিমেন্ট"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "ওয়েব সংক্রান্ত অনুমতির পেশাদার পদ্ধতি"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ভারি বিজ্ঞাপনে হস্তক্ষেপ সামলানো"
@@ -3282,7 +3282,7 @@
     "message": "ব্যাকগ্রাউন্ডের রঙ"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "বান্ডেল আইডি"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "কম্পিউট করা অ্যাপ আইডি"
@@ -3417,7 +3417,7 @@
     "message": "পৃষ্ঠাটি নিরাপদ কোনও অরিজিন থেকে পাঠানো হয়নি"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "পেরেন্ট অ্যাপের নাম"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "প্ল্যাটফর্ম"
@@ -6636,13 +6636,13 @@
     "message": "কমেন্ট মুছুন"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "সারিতে কোনও কমেন্ট নেই। আপনার AI কোডিং এজেন্টকে পাঠানোর জন্য DevTools-এর এলিমেন্টে কমেন্ট যোগ করুন।"
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "কোনও কমেন্ট পাঠানো হয়নি। আপনার AI কোডিং এজেন্টকে কমেন্ট পাঠান যাতে সেগুলি এখানে দেখা যায়।"
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "সারিবদ্ধ করা হয়েছে"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "উত্তর দেখুন"
@@ -6651,7 +6651,7 @@
     "message": "এজেন্টকে পাঠান"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "পাঠানো হয়েছে"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "কাজ চলছে"
@@ -6717,13 +6717,13 @@
     "message": "উত্তর:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "সেভ করুন"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "এজেন্টকে পাঠান"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "পাঠানো হয়েছে"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "পাঠানো কমেন্টের টিকচিহ্ন"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "cubic bezier এডিটর খুলুন"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "শ্যাডো এডিটর খুলুন"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ফিল্টার প্রয়োগ করা হয়েছে: {PH1}. মোট ফলাফল: {PH2}টি"
   },
@@ -8259,7 +8256,7 @@
     "message": "ইন্সপেক্টরের মাধ্যমে"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "বেস"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS হিসেবে সব ঘোষণা কপি করুন"
@@ -8283,7 +8280,7 @@
     "message": "ভ্যালু কপি করুন"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ডিফল্ট"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox এডিটর খুলুন"
@@ -8322,7 +8319,7 @@
     "message": "position-area এডিটর খুলুন"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try বিকল্প ফোর্স করুন"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} নির্দিষ্ট করা হয়নি"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "ক্লিপবোর্ডে স্ক্রিনশট কপি করা হয়েছে"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "ক্লিপবোর্ডে স্ক্রিনশট কপি করা যায়নি"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ট্যাবলেট"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{#টি এলিমেন্ট}one{#টি এলিমেন্ট}other{#টি এলিমেন্ট}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "আরও জানুন"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{১টি ওয়েবসাইটকে কুকি অ্যাক্সেস করার অনুমতি দেওয়া হয়েছে}one{#টি ওয়েবসাইটকে কুকি অ্যাক্সেস করার অনুমতি দেওয়া হয়েছে}other{#টি ওয়েবসাইটকে কুকি অ্যাক্সেস করার অনুমতি দেওয়া হয়েছে}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(বন্ধ করুন: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "BLOB URL সম্পর্কিত সমস্যার সংখ্যা: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "কোনও ওয়ার্কস্পেস সেট-আপ করা হয়নি"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "সরিয়ে দিন"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "নাম পরিবর্তন করুন…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "রান করুন"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "এই হিসেবে সেভ করুন…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ডিস্কে ফাইল সেভ করা যায়নি"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ওভাররাইড করার জন্য ফোল্ডার বেছে নিন"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ব্রেকপয়েন্ট চালু করুন"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "ম্যানুয়ালি ফোল্ডার যোগ করুন"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ওয়ার্কস্পেসে ফোল্ডার যোগ করুন"
@@ -17547,7 +17526,7 @@
     "message": "কলব্যাক বাফার সাইজ"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "কলব্যাক ইন্টার্ভেল: μ = {PH1} মিলি.সে., σ = {PH2} মিলি.সে."
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "বর্তমান সময়"

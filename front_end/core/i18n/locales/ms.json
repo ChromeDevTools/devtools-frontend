@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Buka editor cubic bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Buka editor bebayang"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Penapis digunakan: {PH1}. Jumlah hasil: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Tiada persediaan ruang kerja"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Alih keluar"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Namakan semula…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Jalankan"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Simpan sebagai…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Gagal menyimpan fail pada cakera"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Pilih folder untuk penggantian"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktifkan titik putus"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Tambahkan folder secara manual"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Tambahkan folder pada ruang kerja"

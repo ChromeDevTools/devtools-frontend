@@ -435,13 +435,13 @@
     "message": "ಡೀಬಗರ್‌ನಲ್ಲಿ ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "ಲಭ್ಯವಿಲ್ಲದ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಫ್ರೇಮ್‌ಗಾಗಿ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "ತಪಾಸಣೆ ಮಾಡಲಾದ ಪುಟವನ್ನು ಮತ್ತೊಮ್ಮೆ ಲೋಡ್ ಮಾಡಿದ ಕಾರಣ ಲೋಡ್ ಮಾಡುವಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ."
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "ಟಾರ್ಗೆಟ್ ಇಲ್ಲದೆ http(s) ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "ಲಾಗ್ ಲೋಡ್ ಮಾಡುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ"
@@ -1566,7 +1566,7 @@
     "message": "ಲೇಬಲ್ ಎಲಿಮೆಂಟ್‌ಗಳು"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "ವೆಬ್ ಅನುಮತಿಗಳ ಅತ್ಯುತ್ತಮ ಅಭ್ಯಾಸಗಳು"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ಹೆಚ್ಚಿನ ಜಾಹೀರಾತು ಹಸ್ತಕ್ಷೇಪಗಳನ್ನು ನಿರ್ವಹಿಸುವುದು"
@@ -3282,7 +3282,7 @@
     "message": "ಹಿನ್ನೆಲೆ ಬಣ್ಣ"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ಬಂಡಲ್ ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ಕಂಪ್ಯೂಟ್ ಮಾಡಿದ ಆ್ಯಪ್ ID"
@@ -3417,7 +3417,7 @@
     "message": "ಪುಟವನ್ನು ಸುರಕ್ಷಿತ ಆರಿಜಿನ್‌ನಿಂದ ಒದಗಿಸಲಾಗಿಲ್ಲ"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "ಪೇರೆಂಟ್ ಆ್ಯಪ್ ಹೆಸರು"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "ಪ್ಲಾಟ್‌ಫಾರ್ಮ್"
@@ -6636,13 +6636,13 @@
     "message": "ಕಾಮೆಂಟ್ ಅಳಿಸಿ"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "ಸರದಿಯಲ್ಲಿ ಯಾವುದೇ ಕಾಮೆಂಟ್‌ಗಳಿಲ್ಲ. ನಿಮ್ಮ AI ಕೋಡಿಂಗ್ ಏಜೆಂಟ್‌ಗೆ ಕಳುಹಿಸಲು DevTools ಎಲಿಮೆಂಟ್‌ಗಳ ಮೇಲೆ ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "ಕಳುಹಿಸಿದ ಯಾವುದೇ ಕಾಮೆಂಟ್‌ಗಳಿಲ್ಲ. ಅವುಗಳನ್ನು ಇಲ್ಲಿ ನೋಡಲು ನಿಮ್ಮ AI ಕೋಡಿಂಗ್ ಏಜೆಂಟ್‌ಗೆ ಪ್ರತಿಕ್ರಿಯೆಗಳನ್ನು ಕಳುಹಿಸಿ."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "ಸರದಿಯಲ್ಲಿರಿಸಲಾಗಿದೆ"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ನೋಡಿ"
@@ -6651,7 +6651,7 @@
     "message": "ಏಜೆಂಟ್‌ಗೆ ಕಳುಹಿಸಿ"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "ಕಳುಹಿಸಲಾಗಿದೆ"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದೆ"
@@ -6717,13 +6717,13 @@
     "message": "ಪ್ರತಿಕ್ರಿಯೆ:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "ಸೇವ್‌ ಮಾಡಿ"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "ಏಜೆಂಟ್‌ಗೆ ಕಳುಹಿಸಿ"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "ಕಳುಹಿಸಲಾಗಿದೆ"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "ಕಳುಹಿಸಲಾಗಿದೆ ಎಂಬ ಚೆಕ್‌ಮಾರ್ಕ್"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "ಕ್ಯುಬಿಕ್ ಬೆಝೀರ್ ಎಡಿಟರ್ ತೆರೆಯಿರಿ"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "ಶ್ಯಾಡೋ ಎಡಿಟರ್ ತೆರೆಯಿರಿ"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ಅನ್ವಯಿಸಲಾದ ಫಿಲ್ಟರ್: {PH1}. ಒಟ್ಟು ಫಲಿತಾಂಶಗಳು: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ಮೂಲಕ"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "ಬೇಸ್"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS ನಂತೆ ಎಲ್ಲಾ ಘೋಷಣೆಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
@@ -8283,7 +8280,7 @@
     "message": "ಮೌಲ್ಯವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ಡೀಫಾಲ್ಟ್"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox ಎಡಿಟರ್ ಅನ್ನು ತೆರೆಯಿರಿ"
@@ -8322,7 +8319,7 @@
     "message": "position-area ಎಡಿಟರ್ ಅನ್ನು ತೆರೆಯಿರಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try ಆಯ್ಕೆಯನ್ನು ಒತ್ತಾಯಿಸಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} ಅನ್ನು ವ್ಯಾಖ್ಯಾನಿಸಲಾಗಿಲ್ಲ"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಅನ್ನು ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಅನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಕಾಪಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ಟ್ಯಾಬ್ಲೆಟ್"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# ಎಲಿಮೆಂಟ್}one{# ಎಲಿಮೆಂಟ್‌ಗಳು}other{# ಎಲಿಮೆಂಟ್‌ಗಳು}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 ವೆಬ್‌ಸೈಟ್‌ಗೆ ಕುಕೀಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಅನುಮತಿಯಿದೆ}one{# ವೆಬ್‌ಸೈಟ್‌ಗಳಿಗೆ ಕುಕೀಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಅನುಮತಿಯಿದೆ}other{# ವೆಬ್‌ಸೈಟ್‌ಗಳಿಗೆ ಕುಕೀಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಅನುಮತಿಯಿದೆ}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(ಆಯ್ಕೆಯಿಂದ ಹೊರಗುಳಿಯಿರಿ: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL ಸಮಸ್ಯೆಗಳ ಎಣಿಕೆ: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "ಯಾವುದೇ ಕಾರ್ಯಸ್ಥಳಗಳನ್ನು ಸೆಟಪ್ ಮಾಡಲಾಗಿಲ್ಲ"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "ತೆಗೆದುಹಾಕಿ"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "ಮರುಹೆಸರಿಸಿ…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "ರನ್"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "ಈ ರೀತಿ ಸೇವ್ ಮಾಡಿ…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ಫೈಲ್ ಅನ್ನು ಡಿಸ್ಕ್‌ನಲ್ಲಿ ಸೇವ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ಓವರ್‌ರೈಡ್‌ಗಳಿಗಾಗಿ ಫೋಲ್ಡರ್ ಆಯ್ಕೆ ಮಾಡಿ"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "ಫೋಲ್ಡರ್ ಅನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ಸೇರಿಸಿ"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ಫೋಲ್ಡರ್ ಅನ್ನು ಕಾರ್ಯಸ್ಥಳದಲ್ಲಿ ಸೇರಿಸಿ"
@@ -17547,7 +17526,7 @@
     "message": "ಕಾಲ್‌ಬ್ಯಾಕ್ ಬಫರ್ ಗಾತ್ರ"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "ಕಾಲ್‌ಬ್ಯಾಕ್ ಮಧ್ಯಂತರ: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "ಪ್ರಸ್ತುತ ಸಮಯ"

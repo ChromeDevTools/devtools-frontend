@@ -435,13 +435,13 @@
     "message": "S-a întrerupt în depanator"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Nu se poate încărca resursa pentru un cadru cross-origin indisponibil"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Încărcarea a fost anulată ca urmare a reîncărcării paginii verificate"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Nu se poate încărca resursa http(s) fără o țintă"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Eroare la încărcarea jurnalului"
@@ -1566,7 +1566,7 @@
     "message": "Elementele etichetei"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Recomandări privind permisiunile web"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestionarea intervențiilor pentru anunțuri care consumă multe resurse"
@@ -3282,7 +3282,7 @@
     "message": "Culoarea fundalului"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ID-ul pachetului"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Codul calculat al aplicației"
@@ -3417,7 +3417,7 @@
     "message": "Pagina nu este servită dintr-o origine securizată"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Numele aplicației principale"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platformă"
@@ -6636,13 +6636,13 @@
     "message": "Șterge comentariul"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Nu există comentarii în așteptare. Adaugă comentarii la elementele din DevTools pentru a le trimite agentului de programare AI."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Nu există comentarii trimise. Trimite comentarii agentului de programare AI pentru a le vedea aici."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "În coadă"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Vezi răspunsul"
@@ -6651,7 +6651,7 @@
     "message": "Trimite către agent"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Trimis"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Se procesează"
@@ -6717,13 +6717,13 @@
     "message": "Răspuns:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Salvează"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Trimite către agent"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Trimis"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Bifă de trimitere"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Deschide editorul Curbă Bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Deschide editorul de proprietăți neafișate"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filtrul a fost aplicat: {PH1}. Rezultate totale: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "cu ajutorul inspectorului"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Bază"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copiază toate declarațiile ca JS"
@@ -8283,7 +8280,7 @@
     "message": "Copiază valoarea"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Prestabilit"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Deschide editorul flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Deschide editorul position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Forțează opțiunea position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} nu este definit"
@@ -8703,13 +8700,13 @@
     "message": "Dispozitiv mobil mic"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Captura de ecran a fost copiată în clipboard"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Nu s-a putut copia captura de ecran în clipboard"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tabletă"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}few{# elemente}other{# de elemente}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "află mai multe"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{Un site are permisiunea de a accesa cookie-uri}few{# site-uri au permisiunea de a accesa cookie-uri}other{# de site-uri au permisiunea de a accesa cookie-uri}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(renunțare: {PH1} % – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Numărul de probleme privind adresa URL de blob: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Nu sunt configurate spații de lucru"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Elimină"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Redenumește…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Rulează"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Salvează ca…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Fișierul nu a putut fi salvat pe disc"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Selectează dosarul pentru modificări"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activează punctele de întrerupere"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Adaugă manual un dosar"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Adaugă dosarul la spațiul de lucru"
@@ -17547,7 +17526,7 @@
     "message": "Dimensiunea memoriei temporare pentru apelare inversă"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Interval de apelare inversă: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Ora curentă"

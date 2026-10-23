@@ -435,13 +435,13 @@
     "message": "නිදොස් කිරීම විරාම කරන ලදි"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "ලබා ගත නොහැකි හරස්-ප්‍රභව රාමුවක් සඳහා සම්පත පූරණය කළ නොහැක"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "පරීක්ෂා කළ පිටුවේ නැවත පූරණය නිසා පූරණය අවලංගු කරන ලදි"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "ඉලක්කයක් නොමැතිව http(s) සම්පත පූරණය කළ නොහැක"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "ලොගය පූරණය කිරීමේ දෝෂයකි"
@@ -1566,7 +1566,7 @@
     "message": "ලේබල් මූලාංග"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "වෙබ් අවසර හොඳම භාවිතයන්"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "බරපතළ වෙළඳ දැන්වීම් මැදිහත්වීම් පාලනය කිරීම"
@@ -3282,7 +3282,7 @@
     "message": "පසුබිම් වර්ණය"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "පැකේජ ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ආගණිත යෙදුම් ID"
@@ -3417,7 +3417,7 @@
     "message": "පිටුව සුරක්ෂිත මූලාශ්‍රයකින් සපයා නැත"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "මූලික යෙදුමේ නම"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "වේදිකාව"
@@ -6636,13 +6636,13 @@
     "message": "අදහස මකන්න"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "පෝලිම්ගත අදහස් නොමැත. ඔබගේ AI කේතන නියෝජිතයා වෙත යැවීමට DevTools හි මූලාංග පිළිබඳ අදහස් එක් කරන්න."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "යැවූ අදහස් නැත. ඔබේ AI කේතන නියෝජිතයා වෙත අදහස් යවා ඒවා මෙහි බලන්න."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "පෙළ ගසන ලදි"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "ප්‍රතිචාරය බලන්න"
@@ -6651,7 +6651,7 @@
     "message": "නියෝජිතයාට යවන්න"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "යවන ලදී"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "වැඩ කිරීම"
@@ -6717,13 +6717,13 @@
     "message": "ප්‍රතිචාරය:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "සුරකින්න"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "නියෝජිතයාට යවන්න"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "යවන ලදී"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "යැවූ පිරික්සුම් සලකුණ"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "කියුබික් බෙසියර් සංස්කාරකය විවෘත කරන්න"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "සෙවනැලි සංස්කාරක විවෘත කරන්න"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "පෙරහන යොදන ලදි: {PH1}. මුළු ප්‍රතිඵල: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "පරීක්ෂක හරහා"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "පාදම"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "සියලුම ප්‍රකාශ JS ලෙස පිටපත් කරන්න"
@@ -8283,7 +8280,7 @@
     "message": "අගය පිටපත් කරන්න"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "පෙරනිමි"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox සංස්කාරක විවෘත කරන්න"
@@ -8322,7 +8319,7 @@
     "message": "position-area සංස්කාරක විවෘත කරන්න"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try විකල්පය බල කරන්න"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} නිර්වචනය කර නැත"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "තිර රුව පසුරු පුවරුවට පිටපත් කරන ලදි"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "තිර රුව පසුරු පුවරුවට පිටපත් කිරීමට නොහැකි විය"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ටැබ්ලටය"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{මූලාංග #}one{මූලාංග #}other{මූලාංග #}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "තව දැන ගන්න"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 වෙබ් අඩවියකට කුකීස් වෙත ප්‍රවේශ වීමට ඉඩ දී ඇත}one{වෙබ් අඩවි #කට කුකීස් වෙත ප්‍රවේශ වීමට ඉඩ දී ඇත}other{වෙබ් අඩවි #කට කුකීස් වෙත ප්‍රවේශ වීමට ඉඩ දී ඇත}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(ඉවත් කරන්න: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL ගැටලු ගණන: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "කාර්ය ඉඩ සකසා නැත"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "ඉවත් කරන්න"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "යළි නම් කරන්න…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "ධාවනය කරන්න"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "ලෙස සුරකින්න…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ගොනුව තැටියට සුරැකීමට නොහැකි විය"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ප්‍රතික්ෂේප කිරීම් සඳහා ෆෝල්ඩරය තෝරන්න"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "බිඳුම් ලක්ෂ්‍ය සක්‍රිය කරන්න"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "ෆෝල්ඩරය හස්තීයව එක් කරන්න"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "කාර්ය ඉඩට ෆෝල්ඩරය එක් කරන්න"
@@ -17547,7 +17526,7 @@
     "message": "ආපසු ඇමතුම් අන්තරාචයේ ප්‍රමාණය"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "ප්‍රතිචාර කාල පරතරය: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "වර්තමාන වේලාව"

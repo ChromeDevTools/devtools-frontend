@@ -435,13 +435,13 @@
     "message": "Keskeytetty virheenkorjauksessa"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Ei voi ladata resurssia, joka on peräisin eri lähteestä ja jonka kehys ei ole saatavilla"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Lataus peruutettiin tarkistettavan sivun uudelleenlatauksen vuoksi"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "HTTP(S)-resurssia ei voi ladata ilman kohdetta"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Virhe lokia ladattaessa"
@@ -1566,7 +1566,7 @@
     "message": "Tunniste-elementit"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Verkkolupien parhaat käytännöt"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Raskaisiin mainoksiin puuttumisen käsittely"
@@ -3282,7 +3282,7 @@
     "message": "Taustaväri"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Paketin tunnus"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Laskettu sovellustunnus"
@@ -3417,7 +3417,7 @@
     "message": "Sivu ei ole peräisin turvallisesta lähteestä"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Ylätason sovelluksen nimi"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Alusta"
@@ -6636,13 +6636,13 @@
     "message": "Poista kommentti"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Ei jonossa olevia kommentteja. Lisää DevToolsin elementteihin kommentteja, jotka lähetetään tekoälykoodausagentille."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Ei lähetettyjä kommentteja. Lähetä kommentteja tekoälykoodausagentille, niin näet ne täällä."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Jonossa"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Näytä vastaus"
@@ -6651,7 +6651,7 @@
     "message": "Lähetä agentille"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Lähetetty"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Käsitellään"
@@ -6717,13 +6717,13 @@
     "message": "Vastaus:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Tallenna"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Lähetä agentille"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Lähetetty"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Lähetetty-valintamerkki"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Avaa kuutiollisen bezier-käyrän muokkaaja"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Näytä varjoeditori"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Suodatin lisätty: {PH1}. Tulokset yhteensä: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "tarkastajan kautta"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Pohja"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopioi kaikki määrittelyt JS-muodossa"
@@ -8283,7 +8280,7 @@
     "message": "Kopioi arvo"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Oletus"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Avaa muokkaustyökalu: flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Avaa muokkaustyökalu: position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Pakota position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} on määrittämätön"
@@ -8703,13 +8700,13 @@
     "message": "Pieni mobiililaite"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Kuvakaappaus kopioitu leikepöydälle"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Kuvakaappausta ei saatu kopioitua leikepöydälle"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tabletti"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# elementti}other{# elementtiä}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "lue lisää"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 verkkosivusto saa pääsyn evästeisiin}other{# verkkosivustoa saa pääsyn evästeisiin}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(kieltäytyminen: {PH1} % – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob-URL-ongelmien määrä: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Työtiloja ei ole otettu käyttöön"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Poista"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Nimeä uudelleen…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Suorita"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Tallenna nimellä…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Tiedostoa ei saatu tallennettua levylle"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Valitse ohitusten kansio"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivoi pysäytyspisteet"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Lisää kansio manuaalisesti"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Lisää kansio työtilaan"
@@ -17547,7 +17526,7 @@
     "message": "Vastakutsun puskurin koko"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Vastakutsun aikaväli: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Aika nyt"

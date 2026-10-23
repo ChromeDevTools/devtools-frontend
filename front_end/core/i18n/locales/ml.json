@@ -435,13 +435,13 @@
     "message": "ഡീബഗ്ഗറിൽ താൽക്കാലികമായി നിർത്തി"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "ലഭ്യമല്ലാത്ത ക്രോസ് ഒറിജിൻ ഫ്രെയിമിനുള്ള ഉറവിടം ലോഡ് ചെയ്യാനാകുന്നില്ല"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "പരിശോധിച്ച പേജ് റീലോഡ് ചെയ്യുന്നതിനാൽ ലോഡ് ചെയ്യൽ റദ്ദാക്കി"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "ടാർഗറ്റ് ഇല്ലാതെ http(s) ഉറവിടം ലോഡ് ചെയ്യാനാകില്ല"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "ലോഗ് ലോഡ് ചെയ്യുന്നതിൽ പിശക്"
@@ -1566,7 +1566,7 @@
     "message": "ലേബൽ എലമെന്റുകൾ"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "വെബ് അനുമതികളുമായി ബന്ധപ്പെട്ട മികച്ച പ്രവർത്തനരീതികൾ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ഹെവി ആഡ് ഇന്റർവെൻഷനുകൾ കൈകാര്യം ചെയ്യുന്നു"
@@ -3282,7 +3282,7 @@
     "message": "പശ്ചാത്തല നിറം"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ബണ്ടിൽ ഐഡി"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "കമ്പ്യൂട്ട് ചെയ്ത ആപ്പ് ഐഡി"
@@ -3417,7 +3417,7 @@
     "message": "സുരക്ഷിത ഉറവിടത്തിൽ നിന്നല്ല പേജ് നൽകുന്നത്"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "പേരന്റ് ആപ്പിന്റെ പേര്"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "പ്ലാറ്റ്‌ഫോം"
@@ -6636,13 +6636,13 @@
     "message": "അഭിപ്രായം ഇല്ലാതാക്കുക"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "ക്യൂവിലുള്ള കമന്റുകളൊന്നുമില്ല. നിങ്ങളുടെ AI കോഡിംഗ് ഏജന്റിന് അയയ്ക്കാൻ DevTools-ലെ ഘടകങ്ങളിൽ കമന്റുകൾ ചേർക്കുക."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "അയച്ച കമന്റുകളൊന്നുമില്ല. നിങ്ങളുടെ AI കോഡിംഗ് ഏജന്റിന് കമന്റുകൾ അയയ്ക്കുക, അവ ഇവിടെ കാണാം."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "ക്യൂ ചെയ്തു"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "പ്രതികരണം കാണുക"
@@ -6651,7 +6651,7 @@
     "message": "ഏജന്റിന് അയയ്ക്കുക"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "അയച്ചു"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "പ്രോസസ് ചെയ്യുന്നു"
@@ -6717,13 +6717,13 @@
     "message": "പ്രതികരണം:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "സംരക്ഷിക്കുക"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "ഏജന്റിന് അയയ്ക്കുക"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "അയച്ചു"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "അയച്ചതിന്റെ ചെക്ക്‌മാർക്ക്"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "ക്യൂബിക് ബെസിയർ എഡിറ്റർ തുറക്കുക"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "ഷാഡോ എഡിറ്റർ തുറക്കുക"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ബാധകമാക്കിയ ഫിൽട്ടർ: {PH1}. ആകെ ഫലങ്ങൾ: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "ഇൻസ്‌പെക്‌ടർ വഴി"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "ബേസ്"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "എല്ലാ പ്രസ്‌താവനകളും JS ആയി പകർത്തുക"
@@ -8283,7 +8280,7 @@
     "message": "മൂല്യം പകർത്തുക"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ഡിഫോൾട്ട്"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox എഡിറ്റർ തുറക്കുക"
@@ -8322,7 +8319,7 @@
     "message": "position-area എഡിറ്റർ തുറക്കുക"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try ഓപ്ഷൻ നിർബന്ധമാക്കുക"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} നിർവ്വചിച്ചിട്ടില്ല"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "സ്ക്രീൻഷോട്ട് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "ക്ലിപ്പ്‌ബോർഡിലേക്ക് സ്ക്രീൻഷോട്ട് പകർത്താനായില്ല"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ടാബ്‌ലെറ്റ്"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# എലമെന്റ്}other{# എലമെന്റുകൾ}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "കൂടുതലറിയുക"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{കുക്കികൾ ആക്‌സസ് ചെയ്യാൻ ഒരു വെബ്‌സൈറ്റിന് അനുമതിയുണ്ട്}other{കുക്കികൾ ആക്‌സസ് ചെയ്യാൻ # വെബ്‌സൈറ്റുകൾക്ക് അനുമതിയുണ്ട്}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(ഓപ്റ്റ് ഔട്ട്: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL-മായി ബന്ധപ്പെട്ട പ്രശ്നങ്ങളുടെ എണ്ണം: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "വർക്ക്‌സ്‌പെയ്‌സുകൾ ഒന്നും സജ്ജീകരിച്ചിട്ടില്ല"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "നീക്കം ചെയ്യുക"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "പേരുമാറ്റുക…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "റൺ ചെയ്യുക"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ഡിസ്ക്കിലേക്ക് ഫയൽ സംരക്ഷിക്കാനായില്ല"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "അസാധുവാക്കലുകൾക്കായി ഫോൾഡർ തിരഞ്ഞെടുക്കുക"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ബ്രേക്ക്‌പോയിന്റുകൾ സജീവമാക്കുക"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "ഫോൾഡർ മാനുവലായി ചേർക്കുക"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "വർക്ക്‌സ്‌പെയ്‌സിലേക്ക് ഫോൾഡർ ചേർക്കുക"
@@ -17547,7 +17526,7 @@
     "message": "കോൾബാക്ക് ബഫർ വലുപ്പം"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "കോൾബാക്ക് ഇടവേള: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "നിലവിലെ സമയം"

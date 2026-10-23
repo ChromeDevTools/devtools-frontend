@@ -435,13 +435,13 @@
     "message": "Pausats i felsökningsverktyget"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Det går inte att läsa in resursen för en otillgänglig ram med korsursprung"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Inläsningen avbröts på grund av ny inläsning av granskad sida"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Det går inte att läsa in http(s)-resursen utan ett mål"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Det gick inte att läsa in loggen"
@@ -1566,7 +1566,7 @@
     "message": "Etikettelementen"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Rekommenderade metoder för webbplatsbehörigheter"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Hantera åtgärder mot tunga annonser"
@@ -3282,7 +3282,7 @@
     "message": "Bakgrundsfärg"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Paket-id"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Beräknat app-id"
@@ -3417,7 +3417,7 @@
     "message": "Sidan visas inte från en säker källa"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Namn på överordnad app"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Plattform"
@@ -6636,13 +6636,13 @@
     "message": "Radera kommentar"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Inga kommentarer i kön. Lägg till kommentarer om element i DevTools som ska skickas till din AI-kodningsagent."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Inga skickade kommentarer. Skicka kommentarer till din AI-kodningsagent för att se dem här."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "I kö"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Se svar"
@@ -6651,7 +6651,7 @@
     "message": "Skicka till agent"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Skickad"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Arbetar"
@@ -6717,13 +6717,13 @@
     "message": "Svar:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Spara"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Skicka till agent"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Skickad"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Bockmarkering för skickat"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Öppna redigeraren för kubisk Béizerkurva"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Öppna skuggredigerare"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Tillämpat filter: {PH1}. Totalt antal resultat: {PH2}."
   },
@@ -8259,7 +8256,7 @@
     "message": "via granskningsverktyget"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Bas"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiera alla deklarationer som JS"
@@ -8283,7 +8280,7 @@
     "message": "Kopiera värde"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Standard"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Öppna flexbox-redigerare"
@@ -8322,7 +8319,7 @@
     "message": "Öppna position-area-redigeraren"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Tvinga fram alternativet position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} har inte definierats"
@@ -8703,13 +8700,13 @@
     "message": "Liten mobil enhet"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Skärmbilden har kopierats till Urklipp"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Det gick inte att kopiera skärmbilden till urklipp"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Surfplatta"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}other{# element}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "läs mer"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 webbplats har åtkomst till cookies}other{# webbplatser har åtkomst till cookies}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(har valt bort: {PH1} % – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Antalet problem med blob-webbadresser: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Inga arbetsytor har ställts in"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Ta bort"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Byt namn …"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Kör"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Spara som …"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Det gick inte att spara filen på disken"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Välj mapp för åsidosättningar"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivera brytpunkter"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Lägg till en mapp manuellt"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Lägg till mapp i arbetsytan"
@@ -17547,7 +17526,7 @@
     "message": "Buffertstorlek för återuppringning"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Intervall för återuppringning: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Aktuell tid"

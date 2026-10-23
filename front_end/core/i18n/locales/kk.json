@@ -435,13 +435,13 @@
     "message": "Түзеткіште кідіртілді."
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Қолжетімсіз доменаралық кадр үшін ресурс жүктелмеді."
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Тексерілген беттің қайта жүктелуіне байланысты жүктеу процесінен бас тартылды."
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "http(s) ресурсын мақсатсыз жүктеу мүмкін емес."
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Журналды жүктеу кезінде қате пайда болды"
@@ -1566,7 +1566,7 @@
     "message": "Белгі элементтері"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Веб-рұқсаттарға қатысты кеңестер"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ауыр жарнама үзілістерін түзету"
@@ -3282,7 +3282,7 @@
     "message": "Фон түсі"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Пакет идентификаторы"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Қолданбаның есептелген идентификаторы"
@@ -3417,7 +3417,7 @@
     "message": "Бет қауіпті дереккөзден жүктелген."
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Негізгі қолданба атауы"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформа"
@@ -6636,13 +6636,13 @@
     "message": "Пікірді жою"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Кезекте тұрған пікірлер жоқ. Жасанды интеллектілі кодтау агентіне жіберу үшін әзірлеуші құралдарындағы элементтерге пікірлер қосыңыз."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Жіберілген пікірлер жоқ. Пікірлерді осы жерден көру үшін оларды жасанды интеллектілі кодтау агентіне жіберіңіз."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Кезекте"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Жауапты көру"
@@ -6651,7 +6651,7 @@
     "message": "Агентке жіберу"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Жіберілді"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Өңделіп жатыр"
@@ -6717,13 +6717,13 @@
     "message": "Жауап:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Сақтау"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Агентке жіберу"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Жіберілді"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Жіберілгені туралы құсбелгі"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Cubic bezier редакторын ашу"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Көлеңке редакторын ашу"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Сүзгі қолданылды: {PH1}. Жалпы нәтижелер: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "инспектор арқылы"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Негізгі"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Барлық мәлімдемені JS ретінде көшіру"
@@ -8283,7 +8280,7 @@
     "message": "Мәнді көшіру"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Әдепкі"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox редакторын ашу"
@@ -8322,7 +8319,7 @@
     "message": "position-area редакторын ашу"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try опциясын мәжбүрлеп қолдану"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} анықталмаған"
@@ -8703,13 +8700,13 @@
     "message": "Mobile S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1}–{PH2} пиксель"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Скриншот буферге көшірілді."
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Скриншот буферге көшірілмеді."
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# элемент}other{# элемент}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "толық ақпарат"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 веб-сайтта cookie файлдарын пайдалануға рұқсат берілді}other{# веб-сайтта cookie файлдарын пайдалануға рұқсат берілді}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(бас тарту: {PH1}% – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "BLOB-тың URL мекенжайына қатысты мәселелер саны: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Ешбір жұмыс орны реттелмеген."
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Өшіру"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Атын өзгерту…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Іске қосу"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Басқаша сақтау…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Файл дискіге сақталмады."
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Қайта анықталған мәндер үшін қалтаны таңдау"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Тоқтату нүктелерін белсендіру"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Қалтаны қолмен қосу"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Қалтаны жұмыс орнына қосу"
@@ -17547,7 +17526,7 @@
     "message": "Кері қоңырау шалу буферінің өлшемі"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Кері қоңырау шалу аралығы: μ = {PH1} мс, σ = {PH2} мс"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Қазіргі уақыт"

@@ -435,13 +435,13 @@
     "message": "Satt på pause i feilsøking"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Kan ikke laste inn ressursen for en utilgjengelig ramme med annet opphav"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Lasting kansellert på grunn av omlasting av den inspiserte siden"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Kan ikke laste inn http(s)-ressursen uten mål"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Feil ved innlasting av loggen"
@@ -1566,7 +1566,7 @@
     "message": "Etikettelementene"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Anbefalte fremgangsmåter for nettillatelser"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Håndtering av tunge annonseintervensjoner"
@@ -3282,7 +3282,7 @@
     "message": "Bakgrunnsfarge"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Pakke-ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Beregnet app-ID"
@@ -3417,7 +3417,7 @@
     "message": "Siden vises ikke fra et sikkert opphav"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Navn på overordnet app"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Plattform"
@@ -6636,13 +6636,13 @@
     "message": "Slett kommentaren"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Ingen kommentarer er i køen. Legg til kommentarer på elementer i utviklerverktøy som skal sendes til AI-kodeagenten."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Ingen sendte kommentarer. Send kommentarer til AI-kodeagenten for å se dem her."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "I kø"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Se svaret"
@@ -6651,7 +6651,7 @@
     "message": "Send til agenten"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Sendt"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Arbeider"
@@ -6717,13 +6717,13 @@
     "message": "Svar:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Lagre"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Send til agenten"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Sendt"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Sendt-haketegn"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Åpne cubic bezier-redigeringsprogram"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Åpne skyggeredigering"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filter brukt: {PH1}. Totalt antall resultater: {PH2}"
   },
@@ -8283,7 +8280,7 @@
     "message": "Kopier verdi"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Standard"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Åpne flexbox-redigeringsprogrammet"
@@ -8322,7 +8319,7 @@
     "message": "Åpne position-area-redigeringsprogrammet"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Fremtving position-try-alternativet"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} er ikke definert"
@@ -8703,13 +8700,13 @@
     "message": "Mobil S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} piksler"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Skjermbildet er kopiert til utklippstavlen"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Kunne ikke kopiere skjermbildet til utklippstavlen"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Nettbrett"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}other{# elementer}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "finn ut mer"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 nettsted har tilgang til informasjonskapsler}other{# nettsteder har tilgang til informasjonskapsler}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(valgt bort: {PH1} % – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Antall problemer med blob-nettadressen: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Ingen arbeidsområder er konfigurert"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Fjern"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Endre navn …"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Kjør"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Lagre som …"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Kunne ikke lagre filen på disken"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Velg mappe for overstyringer"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktiver stoppunkter"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Legg til mappe manuelt"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Legg til mappe i arbeidsområde"
@@ -17547,7 +17526,7 @@
     "message": "Bufferstørrelse for tilbakekall"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Intervall på tilbakeringing: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Gjeldende tid"

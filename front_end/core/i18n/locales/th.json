@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "เปิดเครื่องมือแก้ไข cubic bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "เปิดตัวแก้ไขเงา"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "ใช้ตัวกรองแล้ว: {PH1} ผลลัพธ์ทั้งหมด: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "ไม่ได้ตั้งค่าพื้นที่ทำงาน"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "นำออก"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "เปลี่ยนชื่อ…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "เรียกใช้"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "บันทึกเป็น…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "บันทึกไฟล์ไปยังดิสก์ไม่สำเร็จ"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "เลือกโฟลเดอร์สำหรับการลบล้าง"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "เปิดใช้งานเบรกพอยท์"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "เพิ่มโฟลเดอร์ด้วยตนเอง"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "เพิ่มโฟลเดอร์ไปยังพื้นที่ทำงาน"

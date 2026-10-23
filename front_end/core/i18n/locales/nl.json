@@ -435,13 +435,13 @@
     "message": "Onderbroken in debugger"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Kan bron niet laden voor een niet-beschikbaar cross-origin-frame"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Laden is geannuleerd wegens opnieuw laden van geïnspecteerde pagina"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Kan http(s)-bron niet laden zonder doel"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Fout bij het laden van logboek"
@@ -1566,7 +1566,7 @@
     "message": "Labelelementen"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Best practices voor webrechten"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Interventie voor zware advertenties verwerken"
@@ -3282,7 +3282,7 @@
     "message": "Achtergrondkleur"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Bundel-ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Berekende app-ID"
@@ -3417,7 +3417,7 @@
     "message": "De pagina wordt niet weergegeven vanuit een beveiligde oorsprong"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Naam van bovenliggende app"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platform"
@@ -6636,13 +6636,13 @@
     "message": "Reactie verwijderen"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Geen reacties in de wachtrij. Voeg opmerkingen toe aan elementen in DevTools om naar je AI-programmeeragent te sturen."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Geen gestuurde reacties. Stuur opmerkingen naar je AI-programmeeragent om ze hier te zien."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "In wachtrij"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Reactie weergeven"
@@ -6651,7 +6651,7 @@
     "message": "Naar agent sturen"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Verzonden"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Werken"
@@ -6717,13 +6717,13 @@
     "message": "Antwoord:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Opslaan"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Naar agent sturen"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Verzonden"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Vinkje voor verstuurd"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Cubic-bezier-editor openen"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Schaduw-editor openen"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filter toegepast: {PH1}. Totaal aantal resultaten: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "via Inspector"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Basis"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Alle declaraties kopiëren als JS"
@@ -8283,7 +8280,7 @@
     "message": "Waarde kopiëren"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Standaard"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox-editor openen"
@@ -8322,7 +8319,7 @@
     "message": "position-area-editor openen"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Optie position-try afdwingen"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} is niet gedefinieerd"
@@ -8703,13 +8700,13 @@
     "message": "Mobiel S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Screenshot gekopieerd naar klembord"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Kan screenshot niet kopiëren naar klembord"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}other{# elementen}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "meer informatie"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 website mag toegang tot cookies hebben}other{# websites mogen toegang tot cookies hebben}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(afmelding: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Aantal problemen met blob-URL's: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Geen werkruimtes ingesteld"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Verwijderen"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Naam wijzigen…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Uitvoeren"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Opslaan als…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Kan bestand niet op schijf opslaan"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Selecteer een map voor overschrijvingen"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Breakpoints activeren"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Map handmatig toevoegen"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Map toevoegen aan werkruimte"
@@ -17547,7 +17526,7 @@
     "message": "Buffergrootte voor callbacks"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Callback-interval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Huidige tijd"

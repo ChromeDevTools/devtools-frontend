@@ -435,13 +435,13 @@
     "message": "Siluris peatatud"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Ressurssi ei saa laadida, kuna domeeniväline raam pole saadaval"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Laadimine tühistati uuritava lehe uuesti laadimise tõttu"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "HTTP(S)-allikat ei saa ilma sihtmärgita laadida"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Viga logi laadimisel"
@@ -1566,7 +1566,7 @@
     "message": "Sildi elemendid"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Veebilubade head tavad"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ressurssimahukate reklaamide sekkumiste käitlemine"
@@ -3282,7 +3282,7 @@
     "message": "Taustavärv"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Kogumi ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Arvutatud rakenduse ID"
@@ -3417,7 +3417,7 @@
     "message": "Lehte ei esitata turvalisest lähtekohast."
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Ülemrakenduse nimi"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platvorm"
@@ -6636,13 +6636,13 @@
     "message": "Kommentaari kustutamine"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Järjekorras pole kommentaare. Lisage arendaja tööriistades elementidele kommentaare, et saata need oma AI-kodeerimisagendile."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Saadetud kommentaare pole. Saatke oma AI-kodeerimisagendile kommentaare, et neid siin näha."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Järjekorras"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Kuva vastus"
@@ -6651,7 +6651,7 @@
     "message": "Saada agendile"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Saadetud"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Töötab"
@@ -6717,13 +6717,13 @@
     "message": "Vastus:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Salvesta"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Saada agendile"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Saadetud"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Saadetuse märge"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Ava kuubipõhise Bézier' kõvera redaktor"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Ava varjuredaktor"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filter rakendatud: {PH1}. Tulemusi kokku: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "inspektori kaudu"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Baas"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopeeri kõik deklaratsioonid JS-ina"
@@ -8283,7 +8280,7 @@
     "message": "Kopeeri väärtus"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Vaikeseade"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Ava paigutuse flexbox redaktor"
@@ -8322,7 +8319,7 @@
     "message": "Ava redaktor position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Jõusta valik position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} on määratlemata"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Ekraanipilt on lõikelauale kopeeritud"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Ekraanipilti ei saanud lõikelauale kopeerida"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tahvelarvuti"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}other{# elementi}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "lisateave"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 veebisait võib küpsistele juurde pääseda}other{# veebisaiti võivad küpsistele juurde pääseda}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(loobumine: {PH1}% – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Bloobi URL-i probleemide arv: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Ühtegi tööruumi pole seadistatud"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Eemalda"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Muuda nime …"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Käita"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Salvesta nimega…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Faili ei saanud kettale salvestada."
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Valige alistamiste jaoks kaust"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktiveeri katkestuspunktid"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Lisa kaust käsitsi"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Lisa kaust tööruumi"
@@ -17547,7 +17526,7 @@
     "message": "Tagasihelistamise puhvri suurus"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Tagasikutse intervall: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Praegune kellaaeg"

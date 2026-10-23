@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Шоо дөрвөлжин безье засварлагчийг нээх"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Сүүдэр засварлагчийг нээх"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Ашигласан шүүлтүүр: {PH1}. Нийт илэрц: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Ямар ч ажлын талбар тохируулаагүй"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Хасах"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Нэр өөрчлөх…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Ажиллуулах"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Дараах байдлаар хадгалах…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Файлыг дискт хадгалж чадсангүй"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Дарах фолдер сонгох"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Хугарлын цэгүүдийг идэвхжүүлэх"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Гар аргаар фолдер нэмэх"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Ажлын талбарт фолдер нэмэх"

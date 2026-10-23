@@ -435,13 +435,13 @@
     "message": "已在调试程序中暂停"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "无法为不可用的跨域框架加载资源"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "由于系统重新加载已检查的网页，加载操作已取消"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "缺少目标，无法加载 http(s) 资源"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "加载日志时出错"
@@ -1566,7 +1566,7 @@
     "message": "标签元素"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Web 权限最佳实践"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "针对消耗过多资源的广告的干预措施"
@@ -3282,7 +3282,7 @@
     "message": "背景颜色"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "软件包 ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "计算出的应用 ID"
@@ -3417,7 +3417,7 @@
     "message": "网页并非来自安全源"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "父级应用名称"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "平台"
@@ -6636,13 +6636,13 @@
     "message": "删除评论"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "没有已加入队列的评论。在开发者工具中为元素添加评论，即可发送给 AI 编码智能体。"
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "没有已发送的评论。向 AI 编码智能体发送评论后，即可在此处查看。"
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "已加入队列"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "查看回答"
@@ -6651,7 +6651,7 @@
     "message": "发送给智能体"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "已发送"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "正在处理"
@@ -6717,13 +6717,13 @@
     "message": "回答："
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "保存"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "发送给智能体"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "已发送"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "已发送对勾标记"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "打开三次贝塞尔曲线编辑器"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "打开阴影编辑器"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "已应用过滤条件：{PH1}。结果总数：{PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "通过检查器"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "基础"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "以 JS 格式复制所有声明"
@@ -8283,7 +8280,7 @@
     "message": "复制值"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "默认"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "打开“flexbox”编辑器"
@@ -8322,7 +8319,7 @@
     "message": "打开 position-area 编辑器"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "强制执行 position-try 选项"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "未定义 {PH1}"
@@ -8703,13 +8700,13 @@
     "message": "小型移动设备"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} 像素"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "屏幕截图已复制到剪贴板"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "无法将屏幕截图复制到剪贴板"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "平板电脑"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# 个元素}other{# 个元素}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "了解详情"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{已允许 1 个网站访问 Cookie}other{已允许 # 个网站访问 Cookie}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "（选择停用率：{PH1}% - {PH2}）"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob 网址问题数量：{count} 个"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "未设置任何工作区"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "移除"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "重命名…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "运行"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "另存为…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "未能将文件保存到磁盘"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "选择放置替换项的文件夹"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "启用断点"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "手动添加文件夹"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "向工作区添加文件夹"
@@ -17547,7 +17526,7 @@
     "message": "回调缓冲区空间"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "回调间隔：μ = {PH1} 毫秒，σ = {PH2} 毫秒"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "当前时间"

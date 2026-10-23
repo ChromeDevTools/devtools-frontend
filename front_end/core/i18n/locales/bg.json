@@ -435,13 +435,13 @@
     "message": "Поставено на пауза в инструмента за откриване и отстраняване на грешки"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Ресурсът за неналична рамка с различен произход не може да се зареди"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Зареждането е анулирано поради презареждане на проверяваната страница"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Ресурсът с http(s) не може да се зареди без цел"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Грешка при зареждането на регистрационния файл"
@@ -1566,7 +1566,7 @@
     "message": "Елементите на етикета"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Най-добри практики за разрешенията за мрежата"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Мерки за справяне с ресурсоемки реклами"
@@ -3282,7 +3282,7 @@
     "message": "Цвят на фона"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ID на пакета"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Изчислен идентификатор на приложението"
@@ -3417,7 +3417,7 @@
     "message": "Страницата не е показана от защитен източник"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Име на основното приложение"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформа"
@@ -6636,13 +6636,13 @@
     "message": "Изтриване на коментара"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Няма коментари в опашката. Добавете коментари за елементите в DevTools, които да бъдат изпратени до AI агента ви за програмиране."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Няма изпратени коментари. Изпратете коментари до AI агента си за програмиране, за да ги видите тук."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "На опашката"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Преглед на отговора"
@@ -6651,7 +6651,7 @@
     "message": "Изпращане до агента"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Изпратени"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Обработва се"
@@ -6717,13 +6717,13 @@
     "message": "Отговор:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Запазване"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Изпращане до агента"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Изпратени"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Отметка за изпращане"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Отваряне на редактора на кубични криви на Безие"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Отваряне на редактора на сенки"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Приложен филтър: {PH1}. Общ брой резултати: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "чрез инструмента за проверка"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Основа"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Копиране на всички декларации като JS"
@@ -8283,7 +8280,7 @@
     "message": "Копиране на стойността"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "По подразбиране"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Отваряне на редактора за flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Отваряне на редактора за position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Принудително прилагане на опцията „position-try“"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} не е дефинирано"
@@ -8703,13 +8700,13 @@
     "message": "Малко мобилно у-во"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Екранната снимка е копирана в буферната памет"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Екранната снимка не бе копирана в буферната памет"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Таблет"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# елемент}other{# елемента}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "научете повече"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 уебсайт има разрешение за достъп до „бисквитките“}other{# уебсайта имат разрешение за достъп до „бисквитките“}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(отказали се: {PH1}% – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Брой проблеми с URL адресите от типа BLOB: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Няма настроени работни пространства"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Премахване"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Преименуване…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Стартиране"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Запазване като…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Запазването на файла в диска не бе успешно"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Избиране на папка за замяна на настройки"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активиране на точките на прекъсване"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Ръчно добавяне на папка"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Добавяне на папката към работното пространство"
@@ -17547,7 +17526,7 @@
     "message": "Размер на буферната памет за обратни извиквания"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Интервал за обратно извикване: μ = {PH1} мсек, σ = {PH2} мсек"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Текущ час"

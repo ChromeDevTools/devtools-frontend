@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "کیوبک بیزیر ایڈیٹر کھولیں"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "شیڈو ایڈیٹر کھولیں"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "فلٹر لاگو کر دیا گیا: {PH1} کل نتائج: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "کوئی ورک اسپیس سیٹ اپ نہیں کیا گیا"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "ہٹائیں"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "نام تبدیل کریں…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "چلائیں"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "محفوظ کریں بطور…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "فائل کو ڈسک میں محفوظ کرنے میں ناکام"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "اوور رائیڈز کیلئے فولڈر منتخب کریں"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "بریک پوائنٹس فعال کریں"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "فولڈر کو دستی طور پر شامل کریں"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ورک اسپیس میں فولڈر شامل کریں"

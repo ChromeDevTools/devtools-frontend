@@ -435,13 +435,13 @@
     "message": "დაპაუზებულია შეცდომების გამმართველში"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "რესურსის ჩატვირთვა შეუძლებელია მიუწვდომელი ჯვარედინი წარმოშობის ჩარჩოსთვის"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "ჩატვირთვა გაუქმდა ინსპექტირებული გვერდის გადატვირთვის გამო"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Http(s) რესურსის ჩატვირთვა შეუძლებელია სამიზნის გარეშე"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "ჩანაწერების ჩატვირთვის შეცდომა"
@@ -1566,7 +1566,7 @@
     "message": "ლეიბლის ელემენტები"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "ვებნებართვების საუკეთესო პრაქტიკები"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "რეკლამის ჩარევის მძიმე შემთხვევებთან გამკლავება"
@@ -3282,7 +3282,7 @@
     "message": "ფონის ფერი"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ნაკრების ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "აპის გამოთვლილი ID"
@@ -3417,7 +3417,7 @@
     "message": "გვერდი არ არის მოწოდებული უსაფრთხო წყაროდან"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "მშობელი აპის სახელი"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "პლატფორმა"
@@ -6636,13 +6636,13 @@
     "message": "კომენტარის წაშლა"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "რიგში კომენტარები არ არის. დაამატეთ კომენტარები DevTools-ის ელემენტებზე, რათა გაუგზავნოთ თქვენს AI კოდირების აგენტს."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "გაგზავნილი კომენტარები არ არის. გაუგზავნეთ კომენტარები თქვენს AI კოდირების აგენტს, რათა ისინი აქ იხილოთ."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "რიგშია"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "პასუხის ნახვა"
@@ -6651,7 +6651,7 @@
     "message": "აგენტთან გაგზავნა"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "გაიგზავნა"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "მუშაობს"
@@ -6717,13 +6717,13 @@
     "message": "პასუხი:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "შენახვა"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "აგენტთან გაგზავნა"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "გაიგზავნა"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "გაგზავნის თოლიას ნიშანი"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "ბეზიეს მრუდის რედაქტორის გახსნა"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "ჩრდილთა რედაქტორის გახსნა"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "გამოყენებული ფილტრი: {PH1}. სულ შედეგები: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "ინსპექტორის მეშვეობით"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "კორპუსი"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ყველა დეკლარაციის კოპირება JS-ის სახით"
@@ -8283,7 +8280,7 @@
     "message": "მნიშვნელობის კოპირება"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "ნაგულისხმევი"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox-ის რედაქტორის გახსნა"
@@ -8322,7 +8319,7 @@
     "message": "position-area-ის რედაქტორის გახსნა"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try ვარიანტის იძულება"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} არ არის განსაზღვრული"
@@ -8703,13 +8700,13 @@
     "message": "მობილური (მცირე)"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} — {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "ეკრანის ანაბეჭდი დაკოპირდა გაცვლის ბუფერში"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "ეკრანის ანაბეჭდის კოპირება გაცვლის ბუფერში ვერ მოხერხდა"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ტაბლეტი"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# ელემენტი}other{# ელემენტი}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "შეიტყვეთ მეტი"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 ვებსაიტისთვის დაშვებულია ქუქი-ჩანაწერებზე წვდომა}other{# ვებსაიტისთვის დაშვებულია ქუქი-ჩანაწერებზე წვდომა}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(უარის თქმა: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL პრობლემების რაოდენობა: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "სამუშაო სივრცეები არ არის დაყენებული"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "წაშლა"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "გადარქმევა…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "გაშვება"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "შეინახეთ, როგორც…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ფაილის დისკზე შენახვა ვერ მოხერხდა"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "აირჩიეთ საქაღალდე უგულებელყოფებისთვის"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "წყვეტის წერტილების გააქტიურება"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "საქაღალდის ხელით დამატება"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "საქაღალდის დამატება სამუშაო სივრცეში"
@@ -17547,7 +17526,7 @@
     "message": "უკუგამოძახების ბუფერის ზომა"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "გადმორეკვის ინტერვალი: μ = {PH1} მწმ, σ = {PH2} მწმ"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "მიმდინარე დრო"

@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "פתיחת עורך cubic bezier"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "פתיחת עורך הצלליות (shadow editor)"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "הופעל מסנן: {PH1}. סה\"כ תוצאות: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "לא הוגדרו סביבות עבודה"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "הסרה"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "שינוי שם…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "הרצה"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "שמירה בשם…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "שמירת הקובץ בדיסק נכשלה"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "יש לבחור תיקייה לשינויים מברירת המחדל"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "הפעלת נקודות עצירה (breakpoint)"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "הוספת תיקייה באופן ידני"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "הוספת תיקייה לסביבת העבודה"

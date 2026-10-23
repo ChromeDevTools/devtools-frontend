@@ -435,13 +435,13 @@
     "message": "Sat på pause i debugger"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Ressourcen kan ikke indlæses for en utilgængelig ramme med krydsoprindelse"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Indlæsningen er annulleret på grund af genindlæsning af inspiceret side"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Http(s)-ressourcen kan ikke indlæses uden et mål"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Der opstod en fejl under indlæsningen af loggen"
@@ -1566,7 +1566,7 @@
     "message": "Etiketelementerne"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Bedste praksis for webtilladelser"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Håndtering af indgriben ved tung annonce"
@@ -3282,7 +3282,7 @@
     "message": "Baggrundsfarve"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Pakke-id"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Beregnet app-id"
@@ -3417,7 +3417,7 @@
     "message": "Siden vises ikke fra en sikker oprindelse"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Navn på overordnet app"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platform"
@@ -6636,13 +6636,13 @@
     "message": "Slet kommentar"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Der er ingen kommentarer i kø. Føj kommentarer til elementer i Udviklerværktøjer, som skal sendes til din AI-kodningsagent."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Der er ingen sendte kommentarer. Send kommentarer til din AI-kodningsagent for at se dem her."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "I kø"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Se svar"
@@ -6651,7 +6651,7 @@
     "message": "Send til agent"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Sendt"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Arbejder"
@@ -6717,13 +6717,13 @@
     "message": "Svar:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Gem"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Send til agent"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Sendt"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Flueben for sendt"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Åbn kubisk bezier-redigeringsværktøj"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Åbn skyggeredigeringsværktøj"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Anvendt filter: {PH1}. Resultater i alt: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "via inspektør"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Grundlæggende"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiér alle erklæringer som JavaScript"
@@ -8283,7 +8280,7 @@
     "message": "Kopiér værdi"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Standard"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Åbn redigeringsværktøjet for flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Åbn redigeringsværktøjet for position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Gennemtving valgmuligheden position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} er ikke defineret"
@@ -8703,13 +8700,13 @@
     "message": "Lille mobilenhed"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Screenshottet er kopieret til udklipsholderen"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Screenshottet kunne ikke kopieres til udklipsholderen"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}one{# element}other{# element}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "få flere oplysninger"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 website har adgang til cookies}one{# website har adgang til cookies}other{# websites har adgang til cookies}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(fravalg: {PH1} % – {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Antal problemer med blob-webadressen: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Der er ikke konfigureret nogen arbejdsområder"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Fjern"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Omdøb…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Kør"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Gem som…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Filen kunne ikke gemmes på disken"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Vælg mappe til tilsidesættelser"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivér stoppunkter"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Tilføj mappe manuelt"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Føj mappen til arbejdsområde"
@@ -17547,7 +17526,7 @@
     "message": "Bufferstørrelse for tilbagekald"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Tilbagekaldsinterval: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Aktuelt klokkeslæt"

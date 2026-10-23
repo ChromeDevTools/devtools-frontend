@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "क्यूबिक बेज़ियर एडिटर खोलें"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "गहरे रंग वाले हिस्से में बदलाव करने वाला टूल खोलें"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "फ़िल्टर लागू किया गया: {PH1}. कुल नतीजे: {PH2}"
   },
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "कोई फ़ाइल फ़ोल्डर सेट अप नहीं किया गया"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "हटाएं"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "नाम बदलें…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "चलाएं"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "इस फ़ॉर्मैट में सेव करें…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "फ़ाइल को डिस्क में सेव नहीं किया जा सका"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "बदलने के लिए फ़ोल्डर चुनें"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ब्रेकपॉइंट चालू करें"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "मैन्युअल तरीके से फ़ोल्डर जोड़ें"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "फ़ाइल फ़ोल्डर में फ़ोल्डर जोड़ें"

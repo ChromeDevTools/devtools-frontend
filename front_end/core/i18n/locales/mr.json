@@ -435,13 +435,13 @@
     "message": "डीबगरमध्ये थांबवले"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "उपलब्ध नसलेल्या क्रॉस-ओरिजिन फ्रेमसाठी स्रोत लोड करू शकत नाही"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "परीक्षण केलेल्या पेजच्या रीलोडमुळे लोड करणे रद्द केले गेले"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "लक्ष्याशिवाय http(s) स्रोत लोड करू शकत नाही"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "लॉग लोड करताना एरर आली"
@@ -1566,7 +1566,7 @@
     "message": "लेबल घटक"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "वेब परवानग्यांसंबंधित सर्वोत्तम पद्धती"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "मोठ्या प्रमाणावरील जाहिरात हस्तक्षेप हाताळणे"
@@ -3282,7 +3282,7 @@
     "message": "बॅकग्राउंड रंग"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "बंडल आयडी"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "काँप्युट केलेला अ‍ॅप आयडी"
@@ -3417,7 +3417,7 @@
     "message": "पेज सुरक्षित ओरिजिनवरून दाखवलेले नाही"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "मुख्य अ‍ॅपचे नाव"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "प्लॅटफॉर्म"
@@ -6636,13 +6636,13 @@
     "message": "टिप्पणी हटवा"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "कोणत्याही टिप्पण्या क्यूमध्ये नाहीत. तुमच्या AI कोडिंग एजंटला पाठवण्यासाठी DevTools मधील घटकांवर टिप्पण्या जोडा."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "पाठवलेल्या कोणत्याही टिप्पण्या नाहीत. तुमच्या AI कोडिंग एजंटला टिप्पण्या पाठवून त्या इथे पहा."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "क्यूमध्ये आहे"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "प्रतिसाद पहा"
@@ -6651,7 +6651,7 @@
     "message": "एजंटला पाठवा"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "पाठवले"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "काम करत आहे"
@@ -6717,13 +6717,13 @@
     "message": "प्रतिसाद:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "सेव्ह करा"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "एजंटला पाठवा"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "पाठवले"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "पाठवले आहे हे दाखवणारी बरोबरची खूण"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "क्यूबिक बेझिअर संपादक उघडा"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "शॅडो संपादक उघडा"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "फिल्टर लागू केला आहे: {PH1}. एकूण परिणाम: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "परीक्षकाद्वारे"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "बेस"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "सर्व घोषणा JS म्हणून कॉपी करा"
@@ -8283,7 +8280,7 @@
     "message": "मूल्य कॉपी करा"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "डीफॉल्ट"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox संपादक उघडा"
@@ -8322,7 +8319,7 @@
     "message": "position-area संपादक उघडा"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try पर्याय सक्तीने लागू करा"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} परिभाषित केलेले नाही"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "क्लिपबोर्डवर स्क्रीनशॉट कॉपी केला"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "स्क्रीनशॉट क्लिपबोर्डवर कॉपी करता आला नाही"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "टॅबलेट"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# घटक}other{# घटक}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "अधिक जाणून घ्या"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{१ वेबसाइटला कुकी अ‍ॅक्सेस करण्याची अनुमती आहे}other{# वेबसाइटना कुकी अ‍ॅक्सेस करण्याची अनुमती आहे}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(निवड रद्द करा: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "BLOB URL समस्यांची संख्या: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "वर्कस्पेस सेट केल्या नाहीत"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "काढून टाका"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "नाव बदला…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "रन करा"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "असे म्हणून सेव्ह करा…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "डिस्कवर फाइल सेव्ह करता आली नाही"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ओव्हरराइडसाठी फोल्डर निवडा"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ब्रेकपॉइंट ॲक्टिव्हेट करा"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "फोल्डर मॅन्युअली जोडा"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "वर्कस्पेसवर फोल्डर जोडा"
@@ -17547,7 +17526,7 @@
     "message": "कॉलबॅक बफरचा आकार"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "कॉलबॅक मध्यांतर: μ = {PH1} मिसे, σ = {PH2} मिसे"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "वर्तमान वेळ"

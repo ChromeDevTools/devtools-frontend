@@ -435,13 +435,13 @@
     "message": "Dijeda di debugger"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Tidak dapat memuat resource untuk frame lintas origin yang tidak tersedia"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Pemuatan dibatalkan karena halaman yang telah diperiksa dimuat ulang"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Tidak dapat memuat resource http(s) tanpa target"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Terjadi error saat memuat log"
@@ -1566,7 +1566,7 @@
     "message": "Elemen label"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Praktik terbaik izin web"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Menangani intervensi iklan berat"
@@ -3282,7 +3282,7 @@
     "message": "Warna latar belakang"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "ID Paket"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "ID aplikasi komputasi"
@@ -3417,7 +3417,7 @@
     "message": "Halaman tidak ditayangkan dari origin yang aman"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Nama aplikasi induk"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platform"
@@ -6636,13 +6636,13 @@
     "message": "Hapus komentar"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Tidak ada komentar dalam antrean. Tambahkan komentar pada elemen di DevTools untuk dikirim ke agen coding AI Anda."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Tidak ada komentar yang dikirim. Kirim komentar ke agen coding AI Anda untuk melihatnya di sini."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Dalam antrean"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Lihat respons"
@@ -6651,7 +6651,7 @@
     "message": "Kirim ke Agen"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Terkirim"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Bekerja"
@@ -6717,13 +6717,13 @@
     "message": "Respons:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Simpan"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Kirim ke agen"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Terkirim"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Tanda centang terkirim"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Buka editor bezier kubik"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Buka editor bayangan"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filter yang diterapkan: {PH1} Total hasil: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "melalui pemeriksa"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Dasar"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Salin semua deklarasi sebagai JS"
@@ -8322,7 +8319,7 @@
     "message": "Buka editor position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Paksa opsi position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} tidak ditentukan"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Screenshot disalin ke papan klip"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Tidak dapat menyalin screenshot ke papan klip"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# elemen}other{# elemen}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "pelajari lebih lanjut"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 situs diizinkan untuk mengakses cookie}other{# situs diizinkan untuk mengakses cookie}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(memilih tidak ikut: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Jumlah masalah URL Blob: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Tidak ada ruang kerja yang disiapkan"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Hapus"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Ganti nama…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Jalankan"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Simpan sebagai…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Gagal menyimpan file ke disk"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Pilih folder untuk penggantian"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktifkan titik henti sementara"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Tambahkan folder secara manual"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Tambahkan folder ke ruang kerja"
@@ -17547,7 +17526,7 @@
     "message": "Ukuran buffer callback"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Interval callback: μ = {PH1} md, σ = {PH2} md"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Waktu saat ini"

@@ -435,13 +435,13 @@
     "message": "Sazlayıcıda pauza verilib"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Əlçatmaz, çarpaz mənşəli çərçivə üçün resursu yükləmək mümkün deyil"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Yoxlanılan səhifənin yenidən yüklənməsi ilə əlaqədar yükləmə ləğv edildi"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Hədəf olmadan http(s) resursunu yükləmək mümkün deyil"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Jurnal yüklənərkən xəta baş verdi"
@@ -1566,7 +1566,7 @@
     "message": "Etiket elementləri"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Veb-icazələri üzrə ən yaxşı təcrübələr"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Çoxsaylı reklam müdaxilələrinin idarəsi"
@@ -3282,7 +3282,7 @@
     "message": "Arxa fon rəngi"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Paket ID-si"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Hesablanmış tətbiq ID-si"
@@ -3417,7 +3417,7 @@
     "message": "Səhifə təhlükəsiz mənbədən təqdim edilməyib"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Əsas tətbiq adı"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platforma"
@@ -6636,13 +6636,13 @@
     "message": "Şərhi silin"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Növbədə olan şərh yoxdur. Sİ kodlaşdırma agentinə göndərmək üçün DevTools-da elementlərə şərhlər əlavə edin."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Göndərilmiş şərh yoxdur. Sİ kodlaşdırma agentinizə şərhlər göndərərək burada baxın."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Növbədədir"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Cavaba baxın"
@@ -6651,7 +6651,7 @@
     "message": "Agentə göndərin"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Göndərildi"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "İşləyir"
@@ -6717,13 +6717,13 @@
     "message": "Cavab:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Yadda saxlayın"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Agentə göndərin"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Göndərildi"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Göndərilmiş təsdiq işarəsi"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Cubic bezier redaktorunu açın"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Kölgə redaktorunu açın"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Filtr tətbiq edildi: {PH1}. Ümumi nəticələr: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "yoxlayıcı vasitəsilə"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Baza"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Bütün bəyannamələri JS olaraq kopyalayın"
@@ -8283,7 +8280,7 @@
     "message": "Dəyəri kopyalayın"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Defolt"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox redaktorunu açın"
@@ -8322,7 +8319,7 @@
     "message": "position-area redaktorunu açın"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try seçimini tətbiq edin"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} müəyyənləşdirilməyib"
@@ -8703,13 +8700,13 @@
     "message": "Mobil S"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1}-{PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Ekran şəkli mübadilə buferinə kopiyalandı"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Skrinşotu mübadilə buferinə kopiyalamaq mümkün olmadı"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Planşet"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# element}other{# element}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "ətraflı məlumat"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 veb saytın kukilərə daxil olmasına icazə verilib}other{# veb saytın kukilərə daxil olmasına icazə verilib}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(imtina: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Blob URL problemlərinin sayı: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "İş yeri ayarlanmayıb"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Silin"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Adını dəyişin…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "İşə salın"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Belə yadda saxlayın:"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Faylı diskdə yadda saxlamaq alınmadı"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Əvəzetmələr üçün qovluq seçin"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Kəsilmə nöqtələrini aktivləşdirin"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Manual olaraq qovluq əlavə edin"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "İş sahəsinə qovluq əlavə edin"
@@ -17547,7 +17526,7 @@
     "message": "Geri zəng buferləmə ölçüsü"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Geri zəng intervalı: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Cari vaxt"

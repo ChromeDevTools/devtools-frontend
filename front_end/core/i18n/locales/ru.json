@@ -435,13 +435,13 @@
     "message": "Приостановлено в отладчике."
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Не удалось загрузить ресурс для недоступного фрейма из другого источника."
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Загрузка отменена из-за перезапуска проверенной страницы."
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Не удалось загрузить ресурс HTTP(S) без целевого объекта."
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Ошибка при загрузке журнала"
@@ -1566,7 +1566,7 @@
     "message": "Элементы Label"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Рекомендации по работе с разрешениями для сайтов"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Работа с масштабными рекламными кампаниями"
@@ -3282,7 +3282,7 @@
     "message": "Цвет фона"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Идентификатор пакета"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Вычисленный идентификатор приложения"
@@ -3417,7 +3417,7 @@
     "message": "Страница загружена из незащищенного источника."
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Название родительского приложения"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Платформа"
@@ -6636,13 +6636,13 @@
     "message": "Удалить комментарий"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Нет комментариев в очереди. Добавьте комментарии к элементам в инструментах разработчика, чтобы отправить их ИИ-агенту программирования."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Нет отправленных комментариев. Они появятся здесь, когда вы отправите комментарии ИИ-агенту программирования."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "В очереди"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Посмотреть ответ"
@@ -6651,7 +6651,7 @@
     "message": "Отправить агенту"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Отправлено"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Работаю"
@@ -6717,13 +6717,13 @@
     "message": "Ответ:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Сохранить"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Отправить агенту"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Отправлено"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Значок отправки"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Открыть редактор кривой Безье"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Открыть редактор теней"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Применен фильтр \"{PH1}\". Всего результатов: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "через инспектор"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Базовый"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Копировать все объявления как JS"
@@ -8283,7 +8280,7 @@
     "message": "Скопировать значение"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "По умолчанию"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Открыть редактор flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Открыть редактор position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Принудительно включить position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Свойство {PH1} не определено"
@@ -8703,13 +8700,13 @@
     "message": "Небольшое мобильное устройство"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} — {PH2} пкс"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Скриншот скопирован в буфер обмена."
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Не удалось скопировать скриншот в буфер обмена."
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# элемент}one{# элемент}few{# элемента}many{# элементов}other{# элемента}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "Подробнее…"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 сайту разрешен доступ к файлам cookie}one{# сайту разрешен доступ к файлам cookie}few{# сайтам разрешен доступ к файлам cookie}many{# сайтам разрешен доступ к файлам cookie}other{# сайта разрешен доступ к файлам cookie}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(отказ: {PH1} % — {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Проблем, связанных с BLOB URL: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Рабочие области не настроены"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Удалить"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Переименовать…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Запустить"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Сохранить как…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Не удалось сохранить файл на диск."
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Выбрать папку для переопределений"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активировать точки останова"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Добавить папку вручную"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Добавить папку в рабочую область"
@@ -17547,7 +17526,7 @@
     "message": "Размер буфера обратного вызова"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Интервал обратного вызова: μ = {PH1} мс, σ = {PH2} мс"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Текущее время"

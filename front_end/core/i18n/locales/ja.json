@@ -435,13 +435,13 @@
     "message": "デバッガ内で一時停止"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "利用できないクロスオリジン フレームのリソースを読み込めません"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "検査ページの再読み込みのために読み込みがキャンセルされました"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "ターゲットがないため、http(s) リソースを読み込めません"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "ログの読み込み中にエラーが発生しました"
@@ -1566,7 +1566,7 @@
     "message": "ラベル要素"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "ウェブの権限に関するベスト プラクティス"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "時間のかかった広告の問題を処理する"
@@ -3282,7 +3282,7 @@
     "message": "背景の色"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "バンドル ID"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "計算済みアプリ ID"
@@ -3417,7 +3417,7 @@
     "message": "ページが安全な提供元から配信されていません"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "親アプリ名"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "プラットフォーム"
@@ -6636,13 +6636,13 @@
     "message": "コメントを削除"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "キューにコメントはありません。AI コーディング エージェントに送信するコメントを DevTools の要素に追加してください。"
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "送信済みのコメントはありません。AI コーディング エージェントにコメントを送信すると、ここに表示されます。"
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "キューに追加済み"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "回答を見る"
@@ -6651,7 +6651,7 @@
     "message": "エージェントに送信"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "送信済み"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "処理中"
@@ -6717,13 +6717,13 @@
     "message": "レスポンス:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "保存"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "エージェントに送信"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "送信済み"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "送信済みのチェックマーク"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "3 次ベジェエディタを開きます"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "シャドウ エディタを開きます"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "適用したフィルタ: {PH1}合計結果数: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "インスペクタ経由"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "基本"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "すべての宣言を JS としてコピー"
@@ -8283,7 +8280,7 @@
     "message": "値をコピー"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "デフォルト"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox エディタを開く"
@@ -8322,7 +8319,7 @@
     "message": "position-area エディタを開く"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "position-try オプションを強制適用"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "{PH1} が定義されていません"
@@ -8703,13 +8700,13 @@
     "message": "モバイル（S）"
   },
   "panels/emulation/DeviceModeView.ts | presetSize": {
-    "message": "{PH1} – {PH2}px"
+    "message": "{PH1} – {PH2} ピクセル"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "スクリーンショットをクリップボードにコピーしました"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "スクリーンショットをクリップボードにコピーできませんでした"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "タブレット"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# 件の要素}other{# 件の要素}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "詳細"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 件のウェブサイトに Cookie へのアクセスを許可しています}other{# 件のウェブサイトに Cookie へのアクセスを許可しています}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "（オプトアウト: {PH1}% - {PH2}）"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "blob URL の問題の件数: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "ワークスペースが設定されていません"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "削除"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "名前を変更…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "実行"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "形式を選択して保存…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "ファイルをディスクに保存できませんでした"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "オーバーライド用のフォルダを選択"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ブレークポイントを有効化"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "フォルダを手動で追加"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ワークスペースにフォルダを追加"
@@ -17547,7 +17526,7 @@
     "message": "コールバック バッファサイズ"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "コールバック間隔: μ = {PH1} ミリ秒、σ = {PH2} ミリ秒"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "現在の時刻"

@@ -435,13 +435,13 @@
     "message": "Wedi seibio yn y dadfygiwr"
   },
   "core/sdk/PageResourceLoader.ts | crossOriginFrameLoadBlocked": {
-    "message": "Can’t load resource for an unavailable cross-origin frame"
+    "message": "Methu â llwytho adnodd ar gyfer ffrâm traws-darddiad sydd ddim ar gael"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Canslwyd y llwyth oherwydd ail-lwythwyd tudalen a archwiliwyd"
   },
   "core/sdk/PageResourceLoader.ts | noTargetForHttpLoad": {
-    "message": "Can’t load http(s) resource without a target"
+    "message": "Methu â llwytho adnodd http(s) heb darged"
   },
   "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
     "message": "Bu gwall wrth lwytho'r log"
@@ -1566,7 +1566,7 @@
     "message": "Yr elfennau label"
   },
   "models/issues_manager/GenericIssue.ts | permissionsBestPracticesPageTitle": {
-    "message": "Web permissions best practices"
+    "message": "Arferion gorau caniatadau gwe"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Trin ymyriadau hysbysebion trwm"
@@ -3282,7 +3282,7 @@
     "message": "Lliw'r cefndir"
   },
   "panels/application/AppManifestView.ts | bundleId": {
-    "message": "Bundle ID"
+    "message": "Rhif adnabod bwndel"
   },
   "panels/application/AppManifestView.ts | computedAppId": {
     "message": "Dull adnabod ap wedi'i gyfrifo"
@@ -3417,7 +3417,7 @@
     "message": "Ni chyflwynir y dudalen o darddiad diogel"
   },
   "panels/application/AppManifestView.ts | parentAppName": {
-    "message": "Parent app name"
+    "message": "Enw'r rhiant ap"
   },
   "panels/application/AppManifestView.ts | platform": {
     "message": "Platfform"
@@ -6636,13 +6636,13 @@
     "message": "Dileu sylw"
   },
   "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+    "message": "Dim sylwadau wedi'u ciwio. Ychwanegwch sylwadau ar elfennau yn DevTools i'w hanfon at eich asiant codio AI."
   },
   "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+    "message": "Dim sylwadau wedi'u hanfon. Anfonwch sylwadau i'ch asiant codio AI i'w gweld yma."
   },
   "panels/comments/CommentsPane.ts | queued": {
-    "message": "Queued"
+    "message": "Mewn ciw"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "Gweld yr ymateb"
@@ -6651,7 +6651,7 @@
     "message": "Anfon at Asiant"
   },
   "panels/comments/CommentsPane.ts | sent": {
-    "message": "Sent"
+    "message": "Anfonwyd"
   },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Wrthi'n gweithio"
@@ -6717,13 +6717,13 @@
     "message": "Ymateb:"
   },
   "panels/common/CommentThreadWidget.ts | save": {
-    "message": "Save"
+    "message": "Cadw"
   },
   "panels/common/CommentThreadWidget.ts | sendToAgent": {
     "message": "Anfon at asiant"
   },
   "panels/common/CommentThreadWidget.ts | sent": {
-    "message": "Sent"
+    "message": "Anfonwyd"
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Tic wedi'i anfon"
@@ -7715,9 +7715,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Agor golygydd Bezier ciwb"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Dangos golygydd cysgod"
-  },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
     "message": "Wedi defnyddio'r hidlydd: {PH1} Cyfanswm y canlyniadau: {PH2}"
   },
@@ -8259,7 +8256,7 @@
     "message": "drwy gyfrwng yr archwilydd"
   },
   "panels/elements/StylePropertyTreeElement.ts | basePositionTryOption": {
-    "message": "Base"
+    "message": "Sylfaen"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copïo pob datganiad fel JS"
@@ -8283,7 +8280,7 @@
     "message": "Copïo gwerth"
   },
   "panels/elements/StylePropertyTreeElement.ts | defaultPositionTryOption": {
-    "message": "Default"
+    "message": "Diofyn"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "Agor y golygydd flexbox"
@@ -8322,7 +8319,7 @@
     "message": "Agor y golygydd position-area"
   },
   "panels/elements/StylePropertyTreeElement.ts | positionTrySwatchButton": {
-    "message": "Force position-try option"
+    "message": "Gorfodi opsiwn position-try"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
     "message": "Nid yw {PH1} wedi'i ddiffinio"
@@ -8706,10 +8703,10 @@
     "message": "{PH1} – {PH2}px"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopied": {
-    "message": "Screenshot copied to clipboard"
+    "message": "Wedi copïo'r sgrinlun i'r clipfwrdd"
   },
   "panels/emulation/DeviceModeView.ts | screenshotCopyFailed": {
-    "message": "Couldn’t copy screenshot to clipboard"
+    "message": "Methu â chopïo sgrinlun i'r clipfwrdd"
   },
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Llechen"
@@ -8970,13 +8967,13 @@
     "message": "{n,plural, =1{# elfen}zero{# elfen}two{# elfen}few{# elfen}many{# elfen}other{# elfen}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | learnMore": {
-    "message": "learn more"
+    "message": "dysgu rhagor"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{Caniateir 1 wefan i gael mynediad at gwcis}zero{Caniateir # gwefannau i gael mynediad at gwcis}two{Caniateir # wefan i gael mynediad at gwcis}few{Caniateir # gwefan i gael mynediad at gwcis}many{Caniateir # gwefan i gael mynediad at gwcis}other{Caniateir # gwefan i gael mynediad at gwcis}}"
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | optOutDetails": {
-    "message": "(opt-out: {PH1}% - {PH2})"
+    "message": "(optio allan: {PH1}% - {PH2})"
   },
   "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
     "message": "Cyfrif y materion URL Blob: {count}"
@@ -15170,21 +15167,6 @@
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "Dim mannau gwaith wedi'u sefydlu"
   },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Tynnu"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Ailenwi…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Rhedeg"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Cadw fel…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Wedi methu â chadw'r ffeil i ddisg"
-  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Dewiswch ffolder ar gyfer diystyriadau"
   },
@@ -15352,9 +15334,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Gweithredu torbwyntiau"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Ychwanegu ffolder yn bwrpasol"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Ychwanegu ffolder i fan gwaith"
@@ -17547,7 +17526,7 @@
     "message": "Maint byffer galw yn ôl"
   },
   "panels/web_audio/WebAudioView.ts | callbackIntervalS": {
-    "message": "Callback interval: μ = {PH1} ms, σ = {PH2} ms"
+    "message": "Ysbaid galw yn ôl: μ = {PH1} ms, σ = {PH2} ms"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
     "message": "Amser presennol"

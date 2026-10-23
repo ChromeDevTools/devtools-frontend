@@ -573,9 +573,9 @@ UI.ViewManager.registerViewExtension({
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: () => !Root.Runtime.Runtime.isTraceApp(),
-  async loadView(universe) {
+  async loadView() {
     const Sources = await loadSourcesModule();
-    return new Sources.SourcesNavigator.SnippetsNavigatorView(universe.networkProjectManager);
+    return new Sources.SourcesNavigator.SnippetsNavigatorView();
   },
 });
 

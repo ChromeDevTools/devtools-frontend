@@ -55,7 +55,6 @@ import * as Snippets from '../snippets/snippets.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
-import {NavigatorView} from './NavigatorView.js';
 import {SourcesNavigatorView} from './SourcesNavigator.js';
 import sourcesPanelStyles from './sourcesPanel.css.js';
 import {type EditorClosedEvent, Events, SourcesView} from './SourcesView.js';
@@ -782,8 +781,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const viewManager = UI.ViewManager.ViewManager.instance();
     for (const view of viewManager.viewsForLocation(UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW)) {
       const navigatorView = await view.widget();
-      if ((navigatorView instanceof SourcesNavigatorView || navigatorView instanceof NavigatorView) &&
-          navigatorView.acceptProject(uiSourceCode.project())) {
+      if (navigatorView instanceof SourcesNavigatorView && navigatorView.acceptProject(uiSourceCode.project())) {
         this.navigatorTabbedLocation.tabbedPane().selectTab(view.viewId(), true);
         if (!skipReveal) {
           this.#setNavigatorSidebarOpen(true);

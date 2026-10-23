@@ -140,6 +140,20 @@ const UIStrings = {
    *              shows up for disconnected automatic workspace folders.
    */
   connectFolderToWorkspace: 'Connect to workspace',
+  /**
+   * @description A context menu item in the Sources navigator of the Sources panel.
+   */
+  run: 'Run',
+  /**
+   * @description Text to save content as a specific file type.
+   */
+  saveAs: 'Save as…',
+  /**
+   * @description An error message logged to the Console panel when the user uses
+   *              the "Save as…" context menu in the Sources panel and the operation
+   *              fails.
+   */
+  saveAsFailed: 'Failed to save file to disk',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);
@@ -174,7 +188,6 @@ const TYPE_ORDERS = new Map([
 
 export interface ViewInput {
   treeElement: HTMLElement;
-  placeholder: UI.Widget.Widget|null;
   showTree: boolean;
   onContextMenu: (event: Event) => void;
 }
@@ -189,13 +202,7 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
         <style>${navigatorViewStyles}</style>
         <slot name="header"></slot>
         <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
-          <slot name="placeholder">
-            ${input.placeholder ? html`
-              <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
-                ${input.placeholder.element}
-              </devtools-widget>
-            ` : Lit.nothing}
-          </slot>
+          <slot name="placeholder"></slot>
         </div>
         <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
           ${input.treeElement}
@@ -227,7 +234,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   static override readonly INJECT: readonly[typeof Bindings.NetworkProject.NetworkProjectManager] =
       [Bindings.NetworkProject.NetworkProjectManager] as const;
 
-  private placeholder: UI.Widget.Widget|null;
   scriptsTree: UI.TreeOutline.TreeOutlineInShadow;
   private readonly uiSourceCodeNodes:
       Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, NavigatorUISourceCodeTreeNode>;
@@ -255,15 +261,10 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       [networkProjectManager]: UI.Widget.WidgetDependencies<typeof NavigatorView> =
           [Bindings.NetworkProject.NetworkProjectManager.instance()],
       view: View = DEFAULT_VIEW,
-      options?: UI.Widget.WidgetOptions,
   ) {
-    super(element, {
-      ...options,
-      useShadowDom: true,
-    });
+    super(element, {useShadowDom: true});
     this.#view = view;
 
-    this.placeholder = null;
     this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.scriptsTree.registerRequiredCSS(navigatorTreeStyles);
 
@@ -405,12 +406,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     return Platform.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
   }
 
-  setPlaceholder(placeholder: UI.Widget.Widget): void {
-    console.assert(!this.placeholder, 'A placeholder widget was already set');
-    this.placeholder = placeholder;
-    this.requestUpdate();
-  }
-
   override performUpdate(): void {
     if (!this.#initialized) {
       this.#initialized = true;
@@ -420,7 +415,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     }
     this.#view({
       treeElement: this.scriptsTree.element,
-      placeholder: this.placeholder,
       showTree: Boolean(this.scriptsTree.firstChild()),
       onContextMenu: this.handleContextMenu.bind(this),
     },
@@ -1115,6 +1109,22 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
   handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
     const uiSourceCode = node.uiSourceCode();
+    if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      contextMenu.headerSection().appendItem(i18nString(UIStrings.run),
+                                             () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode),
+                                             {jslogContext: 'run'});
+      contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false),
+                                           {jslogContext: 'rename'});
+      contextMenu.editSection().appendItem(i18nString(UIStrings.remove),
+                                           () => uiSourceCode.project().deleteFile(uiSourceCode),
+                                           {jslogContext: 'remove'});
+      contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this.handleSaveAs.bind(this, uiSourceCode),
+                                           {jslogContext: 'save-as'});
+      void contextMenu.show();
+      return;
+    }
+
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(uiSourceCode);
 
@@ -1132,6 +1142,23 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     }
 
     void contextMenu.show();
+  }
+
+  private async handleSaveAs(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    uiSourceCode.commitWorkingCopy();
+    const contentData = await uiSourceCode.requestContentData();
+    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+      console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
+      Common.Console.Console.instance().error(i18nString(UIStrings.saveAsFailed), /* show=*/ false);
+      return;
+    }
+    await Workspace.FileManager.FileManager.instance().save(this.addJSExtension(uiSourceCode.url()), contentData,
+                                                            /* forceSaveAs=*/ true);
+    Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
+  }
+
+  private addJSExtension(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+    return Common.ParsedURL.ParsedURL.concatenate(url, '.js');
   }
 
   private async handleDeleteFolder(node: NavigatorTreeNode): Promise<void> {

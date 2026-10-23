@@ -293,11 +293,13 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       renderElementIntoDOM(navigatorView);
       const placeholder = new UI.EmptyWidget.EmptyWidget('No content scripts', 'Explanation');
-      navigatorView.setPlaceholder(placeholder);
+      placeholder.element.slot = 'placeholder';
+      placeholder.show(navigatorView.element);
       await navigatorView.updateComplete;
 
-      assert.isTrue(placeholder.isShowing());
-      assert.isFalse(placeholder.element.parentElement?.hasAttribute('hidden'));
+      const placeholderSlot = navigatorView.contentElement.querySelector('slot[name="placeholder"]');
+      assert.exists(placeholderSlot);
+      assert.isFalse(placeholderSlot.parentElement?.hasAttribute('hidden'));
       assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
 
       const mainFrame = await getMainFrame(target);
@@ -305,20 +307,22 @@ describeWithEnvironment('NavigatorView', () => {
       const {project} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
       await navigatorView.updateComplete;
 
-      assert.isTrue(placeholder.element.parentElement?.hasAttribute('hidden'));
+      assert.isTrue(placeholderSlot.parentElement?.hasAttribute('hidden'));
       assert.isFalse(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
 
       project.removeUISourceCode(url);
       await navigatorView.updateComplete;
-      assert.isFalse(placeholder.element.parentElement?.hasAttribute('hidden'));
+      assert.isFalse(placeholderSlot.parentElement?.hasAttribute('hidden'));
       assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
     });
 
     it('forwards contextmenu events on the placeholder to handleContextMenu', async () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      renderElementIntoDOM(navigatorView);
       const contextMenuSpy = sinon.spy(navigatorView, 'handleContextMenu');
       const placeholder = new UI.EmptyWidget.EmptyWidget('No content scripts', 'Explanation');
-      navigatorView.setPlaceholder(placeholder);
+      placeholder.element.slot = 'placeholder';
+      placeholder.show(navigatorView.element);
       await navigatorView.updateComplete;
 
       const event = new MouseEvent('contextmenu', {bubbles: true});
@@ -408,14 +412,7 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       sinon.assert.calledOnce(viewSpy);
       assert.strictEqual(viewSpy.firstCall.args[0].treeElement, navigatorView.scriptsTree.element);
-      assert.isNull(viewSpy.firstCall.args[0].placeholder);
-
-      const placeholder = new UI.EmptyWidget.EmptyWidget('Empty', 'Description');
-      navigatorView.setPlaceholder(placeholder);
-      await navigatorView.updateComplete;
-      sinon.assert.calledTwice(viewSpy);
-      assert.strictEqual(viewSpy.secondCall.args[0].placeholder, placeholder);
-      assert.isFalse(viewSpy.secondCall.args[0].showTree);
+      assert.isFalse(viewSpy.firstCall.args[0].showTree);
     });
   });
 });

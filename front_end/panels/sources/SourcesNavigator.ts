@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import '../../ui/kit/kit.js';
 import '../../ui/legacy/legacy.js';
 
@@ -12,7 +10,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -23,7 +20,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
-import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
+import {NavigatorView} from './NavigatorView.js';
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const {html, render, Directives: {ref}} = Lit;
@@ -89,28 +86,6 @@ const UIStrings = {
    * @description Title of an action in the sources tool to create a snippet.
    */
   createNewSnippet: 'Create new snippet',
-  /**
-   * @description A context menu item in the Sources navigator of the Sources panel.
-   */
-  run: 'Run',
-  /**
-   * @description A context menu item in the Navigator view of the Sources panel.
-   */
-  rename: 'Rename…',
-  /**
-   * @description Label for an item to remove something.
-   */
-  remove: 'Remove',
-  /**
-   * @description Text to save content as a specific file type.
-   */
-  saveAs: 'Save as…',
-  /**
-   * @description An error message logged to the Console panel when the user uses
-   *              the "Save as…" context menu in the Sources panel and the operation
-   *              fails.
-   */
-  saveAsFailed: 'Failed to save file to disk',
   /**
    * @description Message shown in the Workspace tab of the Sources panel to nudge
    *              developers into utilizing the Automatic Workspace Folders feature
@@ -605,73 +580,90 @@ export class ContentScriptsNavigatorView extends SourcesNavigatorView {
   }
 }
 
-export class SnippetsNavigatorView extends NavigatorView {
-  constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager) {
-    super(undefined, [networkProjectManager], undefined, {
-      jslog: `${VisualLogging.pane('navigator-snippets').track({resize: true})}`,
-    });
-    const placeholder =
-        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noSnippets), i18nString(UIStrings.explainSnippets));
-    this.setPlaceholder(placeholder);
-    placeholder.link =
-        'https://developer.chrome.com/docs/devtools/javascript/snippets/' as Platform.DevToolsPath.UrlString;
+export interface SnippetsNavigatorViewInput {
+  projectFilter: (project: Workspace.Workspace.Project) => boolean;
+  onNewSnippet: () => void;
+  onContextMenu: (event: Event) => void;
+}
 
-    const toolbar = document.createElement('devtools-toolbar');
-    toolbar.classList.add('navigator-toolbar');
-    const newButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.newSnippet), 'plus', i18nString(UIStrings.newSnippet), 'sources.new-snippet');
-    newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
-      void this.create(
-          Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString);
-    });
-    toolbar.appendToolbarItem(newButton);
-    this.contentElement.insertBefore(toolbar, this.contentElement.firstChild);
+export type SnippetsNavigatorViewFunc =
+    (input: SnippetsNavigatorViewInput, output: SourcesNavigatorViewOutput, target: HTMLElement) => void;
+
+export const SNIPPETS_NAVIGATOR_DEFAULT_VIEW: SnippetsNavigatorViewFunc = (input, output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${sourcesNavigatorStyles}</style>
+        <devtools-widget
+          jslog=${VisualLogging.pane('navigator-snippets').track({resize: true})}
+          @contextmenu=${input.onContextMenu}
+          ${widget(NavigatorView, {
+            projectFilter: input.projectFilter,
+          })}
+          ${ref(e => {
+            if (e instanceof UI.Widget.WidgetElement) {
+              output.navigatorView = e;
+            }
+          })}
+        >
+          <devtools-toolbar class="navigator-toolbar" slot="header">
+            <devtools-button
+              class="toolbar-button"
+              title=${i18nString(UIStrings.newSnippet)}
+              aria-label=${i18nString(UIStrings.newSnippet)}
+              .iconName=${'plus'}
+              .variant=${Buttons.Button.Variant.TEXT}
+              .reducedFocusRing=${true}
+              .jslogContext=${'sources.new-snippet'}
+              @click=${input.onNewSnippet}
+            >${i18nString(UIStrings.newSnippet)}</devtools-button>
+          </devtools-toolbar>
+          <devtools-widget
+            slot="placeholder"
+            ${widget(UI.EmptyWidget.EmptyWidget, {
+              header: i18nString(UIStrings.noSnippets),
+              text: i18nString(UIStrings.explainSnippets),
+              link: 'https://developer.chrome.com/docs/devtools/javascript/snippets/' as Platform.DevToolsPath.UrlString,
+            })}
+          ></devtools-widget>
+        </devtools-widget>
+      `,
+      target);
+  // clang-format on
+};
+
+export class SnippetsNavigatorView extends SourcesNavigatorView {
+  #view: SnippetsNavigatorViewFunc;
+
+  constructor(element?: HTMLElement, view: SnippetsNavigatorViewFunc = SNIPPETS_NAVIGATOR_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      projectFilter: this.projectFilter,
+      onNewSnippet: () => {
+        void this.navigatorView?.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(),
+                                        '' as Platform.DevToolsPath.EncodedPathString);
+      },
+      onContextMenu: this.handleContextMenu.bind(this),
+    },
+               this.viewOutput, this.contentElement);
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {
     return Snippets.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
 
-  override handleContextMenu(event: Event): void {
+  handleContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.createNewSnippet),
-        () => this.create(
-            Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString),
+        () => this.navigatorView?.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(),
+                                         '' as Platform.DevToolsPath.EncodedPathString),
         {jslogContext: 'create-new-snippet'});
     void contextMenu.show();
-  }
-
-  override handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
-    const uiSourceCode = node.uiSourceCode();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode),
-        {jslogContext: 'run'});
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.rename), () => this.rename(node, false), {jslogContext: 'rename'});
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), {jslogContext: 'remove'});
-    contextMenu.saveSection().appendItem(
-        i18nString(UIStrings.saveAs), this.handleSaveAs.bind(this, uiSourceCode), {jslogContext: 'save-as'});
-    void contextMenu.show();
-  }
-
-  private async handleSaveAs(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    uiSourceCode.commitWorkingCopy();
-    const contentData = await uiSourceCode.requestContentData();
-    if (TextUtils.ContentData.ContentData.isError(contentData)) {
-      console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
-      Common.Console.Console.instance().error(i18nString(UIStrings.saveAsFailed), /* show=*/ false);
-      return;
-    }
-    await Workspace.FileManager.FileManager.instance().save(
-        this.addJSExtension(uiSourceCode.url()), contentData, /* forceSaveAs=*/ true);
-    Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
-  }
-
-  private addJSExtension(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
-    return Common.ParsedURL.ParsedURL.concatenate(url, '.js');
   }
 }
 

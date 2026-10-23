@@ -317,20 +317,20 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
+                  context: RenderingContext): Lit.LitTemplate {
     const resolvedProperty = match.resolveProperty();
     if (!resolvedProperty) {
-      return [document.createTextNode(match.text)];
+      return html`${match.text}`;
     }
 
-    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-    swatch.data = {
+    const swatch = html`<devtools-link-swatch .data=${{
       text: match.text,
       tooltip: resolvedProperty ? undefined : {title: i18nString(UIStrings.sIsNotDefined, {PH1: match.text})},
       isDefined: Boolean(resolvedProperty),
       onLinkActivate: () => resolvedProperty && this.#stylesContainer.jumpToDeclaration(resolvedProperty),
       jslogContext: 'css-wide-keyword-link',
-    };
+    }
+    }></devtools-link-swatch>`;
 
     if (SDK.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) ||
         SDK.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
@@ -340,11 +340,11 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
             new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
         return this.#treeElement?.editable() ?
             html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${swatch}</devtools-widget>` :
-            [colorSwatch, swatch];
+            html`${colorSwatch}${swatch}`;
       }
     }
 
-    return [swatch];
+    return swatch;
   }
 }
 

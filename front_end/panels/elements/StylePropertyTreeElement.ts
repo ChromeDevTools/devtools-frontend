@@ -385,8 +385,7 @@ export class VariableRenderer extends VariableRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Lit.LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
@@ -396,7 +395,6 @@ export class VariableRenderer extends VariableRendererBase {
     const computedValue = variableValue ?? match.fallbackValue();
     const onLinkActivate = (name: string): void =>
         handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-    const varSwatch = document.createElement('span');
 
     const substitution = context.tracing?.substitution({match, context});
     if (substitution) {
@@ -425,34 +423,25 @@ export class VariableRenderer extends VariableRendererBase {
     const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
-    render(html`
-        <span data-title=${computedValue || ''}
-              jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}>
-          ${varCall ?? 'var'}(
-          <devtools-link-swatch class=css-var-link .data=${{
-              tooltip,
-              text: match.name,
-              isDefined: computedValue !== null && !fromFallback,
-              onLinkActivate,
-            }}>
-           </devtools-link-swatch>
-           ${renderedFallback ? html`, ${renderedFallback.nodes}` : nothing})
-        </span>
-        ${tooltipId ? html`
-          <devtools-tooltip
+    const varSwatch = html`<span
+        data-title=${computedValue || ''}
+        jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}>${
+          varCall ?? 'var'}(<devtools-link-swatch class=css-var-link .data=${{
+            tooltip,
+            text: match.name,
+            isDefined: computedValue !== null && !fromFallback,
+            onLinkActivate,
+          }}></devtools-link-swatch>${
+          renderedFallback ? html`, ${renderedFallback.nodes}` : nothing})</span>${
+        tooltipId ? html`<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var
-          >
-            ${tooltipContents}
-          </devtools-tooltip>
-        ` : ''}
-    `, varSwatch);
+            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
     // clang-format on
 
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
-      return [varSwatch];
+      return varSwatch;
     }
 
     const colorSwatch =
@@ -468,7 +457,7 @@ export class VariableRenderer extends VariableRendererBase {
 
     return this.#treeElement?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
-        [colorSwatch, varSwatch];
+        html`${colorSwatch}${varSwatch}`;
   }
 }
 

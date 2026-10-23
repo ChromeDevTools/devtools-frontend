@@ -1797,16 +1797,13 @@ const GridTemplateRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.GridT
 // clang-format off
 export class GridTemplateRenderer extends GridTemplateRendererBase {
   // clang-format on
-  override render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Lit.LitTemplate {
     if (match.lines.length <= 1) {
       return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     }
 
     const indent = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.textEditorIndentSettingDescriptor).get();
-    const container = document.createDocumentFragment();
-
-    const template = html`
+    return html`
       ${match.lines.map(line => {
       const lines = Renderer.render(line, context).nodes;
       return html`
@@ -1814,9 +1811,6 @@ export class GridTemplateRenderer extends GridTemplateRendererBase {
         ${lines}`;
     })}
     `;
-
-    render(template, container);
-    return [container];
   }
 }
 

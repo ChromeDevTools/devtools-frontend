@@ -48,7 +48,7 @@ async function getComputationDataFromFixture(context: Mocha.Suite|Mocha.Context,
   }
 
   const frameId = data.Meta.mainFrameId;
-  const navigation = data.Meta.mainFrameNavigations[0];
+  const navigation = data.Meta.mainFrameNavigations.at(-1);
   if (!navigation) {
     throw new Error('no navigation found');
   }

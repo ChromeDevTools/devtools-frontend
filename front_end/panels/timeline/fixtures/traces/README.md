@@ -208,6 +208,14 @@ This is a trace that includes multiple navigations:
 - Navigates to Google Images search (google.com/imghp)
 - Search for "dogs" (https://www.google.com/search?q=dogs&...)
 
+### multiple-navigations-client-side-redirect.json.gz
+
+A trace of http://www.zol.com.cn/ from the Lantern golden dataset with three main-frame navigations:
+
+- Initial navigation to `http://www.zol.com.cn/` (302 redirect to `https://www.zol.com.cn/`, aborted before FCP)
+- Client-side redirect to `https://m.zol.com.cn/`
+- Subsequent client-side navigation to `https://m.so.com/s?...` where an unload beacon image (`pvevents.gif`) from `m.zol.com.cn` is sent after `navigationStart` and before the new navigation's `Document` request.
+
 ### multiple-navigations-render-blocking.json.gz
 
 Contains a navigation to a page with a render-blocking request `script.js` followed by a page refresh.

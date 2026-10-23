@@ -1127,16 +1127,11 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
-    const content = document.createElement('span');
-    content.appendChild(document.createTextNode('contrast-color('));
-    const param = content.appendChild(document.createElement('span'));
-    content.appendChild(document.createTextNode(')'));
-    Renderer.renderInto(match.color, context, param);
+  override render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Lit.LitTemplate {
+    const content = html`<span>contrast-color(${Renderer.render(match.color, context).nodes})</span>`;
 
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
-      return [content];
+      return content;
     }
 
     const colorText = context.matchedResult.getComputedText(match.node);
@@ -1147,7 +1142,7 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
 
     const color = Common.Color.parse(resolvedColorText);
     if (!color) {
-      return [content];
+      return content;
     }
 
     const colorSwatch =
@@ -1156,7 +1151,7 @@ export class ContrastColorRenderer extends ContrastColorRendererBase {
 
     return this.#treeElement?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :
-        [colorSwatch, content];
+        html`${colorSwatch}${content}`;
   }
 }
 

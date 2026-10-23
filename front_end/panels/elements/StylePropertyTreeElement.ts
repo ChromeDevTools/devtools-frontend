@@ -527,8 +527,7 @@ export class AttributeRenderer extends AttributeRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch,
-                  context: RenderingContext): Node[]|Lit.LitTemplate {
+  override render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Lit.LitTemplate {
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
@@ -542,7 +541,6 @@ export class AttributeRenderer extends AttributeRendererBase {
     const typeClass = typeError ? 'inactive' : '';
     const fallbackClass = fromFallback ? '' : 'inactive';
     const computedValue = attributeValue ?? match.fallbackValue();
-    const varSwatch = document.createElement('span');
 
     const substitution = context.tracing?.substitution({match, context});
     if (substitution) {
@@ -578,28 +576,27 @@ export class AttributeRenderer extends AttributeRendererBase {
     const tooltipId = attributeMissing ? undefined : this.#treeElement?.getTooltipId('custom-attribute');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
-    render(html`
-        <span data-title=${computedValue || ''}
-              jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
+    const varSwatch = html`<span
+        data-title=${computedValue || ''}
+        jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
         >${attrCall ?? 'attr'}(<devtools-link-swatch class=${attributeClass} .data=${{
-              tooltip,
-              text: match.name,
-              isDefined: true,
-              onLinkActivate: () => this.#handleAttributeActivate(this.#matchedStyles.originatingNodeForStyle(match.style), match.name),
-            }}></devtools-link-swatch>${tooltipId ? html`
-          <devtools-tooltip
-            id=${tooltipId}
-            variant=rich
-            jslogContext=elements.css-var
-          >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${
-            match.type ? html` <span class=${typeClass}>${match.type}</span>` : nothing
+          tooltip,
+          text: match.name,
+          isDefined: true,
+          onLinkActivate: () => this.#handleAttributeActivate(this.#matchedStyles.originatingNodeForStyle(match.style), match.name),
+        }}></devtools-link-swatch>${tooltipId ? html`<devtools-tooltip
+          id=${tooltipId}
+          variant=rich
+          jslogContext=elements.css-var
+        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${
+          match.type ? html` <span class=${typeClass}>${match.type}</span>` : nothing
         }${renderedFallback ? html`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing
-        })</span>`, varSwatch);
+        })</span>`;
     // clang-format on
 
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
-      return [varSwatch];
+      return varSwatch;
     }
 
     const colorSwatch =
@@ -615,7 +612,7 @@ export class AttributeRenderer extends AttributeRendererBase {
 
     return this.#treeElement?.editable() ?
         html`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
-        [colorSwatch, varSwatch];
+        html`${colorSwatch}${varSwatch}`;
   }
 
   #handleAttributeActivate(node: SDK.DOMModel.DOMNode|null, attribute: string): void {

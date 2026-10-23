@@ -3672,7 +3672,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
               state: {type: 'completed'},
               title: 'Step Title',
               thought: 'Step Thought',
-              code: 'console.log("hello");',
+              action: 'console.log("hello");',
               output: 'hello',
             },
           },
@@ -3932,7 +3932,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
       return parts.map(part => {
         switch (part.type) {
           case 'step':
-            return {type: 'step', title: part.step.title, code: part.step.code, output: part.step.output};
+            return {type: 'step', title: part.step.title, code: part.step.action, output: part.step.output};
           case 'answer':
             return {type: 'answer', text: part.text};
           case 'widget':

@@ -145,7 +145,7 @@ describeWithEnvironment('WalkthroughView', () => {
           step: {
             state: {type: 'canceled'},
             title: 'Canceled step',
-            code: 'doSomethingDangerous()',
+            action: 'doSomethingDangerous()',
           },
         },
       ],

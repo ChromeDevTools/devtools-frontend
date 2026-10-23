@@ -474,9 +474,10 @@ export interface Step {
    */
   title?: string;
   /**
-   * Executable JavaScript code generated or executed in this step.
+   * Display string of the tool call, e.g. `getCookieValues(["session"])`.
+   * Shown in the walkthrough step.
    */
-  code?: string;
+  action?: string;
   /**
    * Raw string output or data returned by code execution.
    */
@@ -681,7 +682,7 @@ function renderTitle(step: Step): Lit.LitTemplate {
 }
 
 function renderStepCode(step: Step): Lit.LitTemplate {
-  if (!step.code && !step.output) {
+  if (!step.action && !step.output) {
     return Lit.nothing;
   }
 
@@ -694,9 +695,9 @@ function renderStepCode(step: Step): Lit.LitTemplate {
   // If there is output, we don't show notice on this code block and instead show
   // it in the data returned code block.
   // clang-format off
-  const code = step.code ? html`<div class="action-result">
+  const code = step.action ? html`<div class="action-result">
       <devtools-code-block
-        .code=${step.code.trim()}
+        .code=${step.action.trim()}
         .codeLang=${'js'}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
@@ -938,7 +939,7 @@ export function renderStep({step, markdownRenderer, isLast}: {
 }): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && step.state.type !== 'needs_approval',
+    empty: !step.thought && !step.action && !step.contextDetails && step.state.type !== 'needs_approval',
     paused: step.state.type === 'needs_approval',
     canceled: step.state.type === 'canceled',
   });

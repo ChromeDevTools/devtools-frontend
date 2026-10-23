@@ -36,7 +36,7 @@ describeWithEnvironment('PermissionPrompt', () => {
         },
       },
       title: 'Reading cookie values and metadata',
-      code: 'getCookieValues({cookieNames: ["session"]})',
+      action: 'getCookieValues({cookieNames: ["session"]})',
     };
   }
 
@@ -52,7 +52,7 @@ describeWithEnvironment('PermissionPrompt', () => {
   }
 
   it('renders nothing for a step that does not need approval', () => {
-    const target = renderPrompt({state: {type: 'completed'}, code: 'getCookieValues()'});
+    const target = renderPrompt({state: {type: 'completed'}, action: 'getCookieValues()'});
     assert.isNull(target.querySelector('.permission-prompt'));
   });
 

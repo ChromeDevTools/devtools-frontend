@@ -1922,7 +1922,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT: {
             step = stepForCall(data.callId);
             const approvalStep = step;
-            approvalStep.code ??= data.code;
+            approvalStep.action ??= data.code;
             const promptShownAt = performance.now();
             approvalStep.state = {
               type: 'needs_approval',
@@ -1947,7 +1947,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.ACTION: {
             step = stepForCall(data.callId);
             step.state = data.canceled ? {type: 'canceled'} : {type: 'completed'};
-            step.code ??= data.code;
+            step.action ??= data.code;
             step.output ??= data.output;
             step.widgets ??= data.widgets;
             commitStep();
@@ -1995,7 +1995,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             if (systemMessage.parts.length > 1) {
               const firstPart = systemMessage.parts[0];
               if (firstPart.type === 'step' && firstPart.step.state.type === 'in_progress' && !firstPart.step.thought &&
-                  !firstPart.step.code && !firstPart.step.contextDetails) {
+                  !firstPart.step.action && !firstPart.step.contextDetails) {
                 systemMessage.parts.shift();
               }
             }
@@ -2102,8 +2102,8 @@ export function getResponseMarkdown(message: ModelChatMessage): string {
       if (step.thought) {
         contentParts.push(step.thought);
       }
-      if (step.code) {
-        contentParts.push(`**Code executed:**\n\`\`\`\n${step.code.trim()}\n\`\`\``);
+      if (step.action) {
+        contentParts.push(`**Code executed:**\n\`\`\`\n${step.action.trim()}\n\`\`\``);
       }
       if (step.output) {
         contentParts.push(`**Data returned:**\n\`\`\`\n${step.output}\n\`\`\``);

@@ -646,7 +646,7 @@ describeWithEnvironment('ChatMessage', () => {
           step: {
             state: {type: 'completed'},
             title: 'Step 1',
-            code: 'console.log("test")',
+            action: 'console.log("test")',
           },
         },
       ],
@@ -749,7 +749,7 @@ describeWithEnvironment('ChatMessage', () => {
             step: {
               state: {type: 'in_progress'},
               title: 'Investigating XYZ',
-              code: 'console.log("test")',
+              action: 'console.log("test")',
             },
           },
         ],
@@ -780,7 +780,7 @@ describeWithEnvironment('ChatMessage', () => {
             step: {
               state: {type: 'in_progress'},
               title: 'Investigating XYZ',
-              code: 'console.log("test")',
+              action: 'console.log("test")',
             },
           },
         ],
@@ -854,7 +854,7 @@ describeWithEnvironment('ChatMessage', () => {
             step: {
               state: {type: 'in_progress'},
               title: 'Investigating XYZ',
-              code: 'console.log("test")',
+              action: 'console.log("test")',
             },
           },
         ],
@@ -901,7 +901,7 @@ describeWithEnvironment('ChatMessage', () => {
             step: {
               state: {type: 'completed'},
               title: 'Investigating XYZ',
-              code: 'console.log("test")',
+              action: 'console.log("test")',
             },
           },
         ],
@@ -932,7 +932,7 @@ describeWithEnvironment('ChatMessage', () => {
             step: {
               state: {type: 'completed'},
               title: 'Investigating XYZ',
-              code: 'console.log("test")',
+              action: 'console.log("test")',
               // Don't need a proper widget for this test
               widgets: [{} as AIAssistanceModel.AiAgent.ComputedStyleAiWidget],
             },
@@ -999,7 +999,7 @@ describeWithEnvironment('ChatMessage', () => {
                 },
               },
               title: 'Side Effect Step',
-              code: 'doSomethingDangerous()',
+              action: 'doSomethingDangerous()',
             },
           },
         ],
@@ -1056,7 +1056,7 @@ describeWithEnvironment('ChatMessage', () => {
                 },
               },
               title: 'Side Effect Step',
-              code: 'doSomethingDangerous()',
+              action: 'doSomethingDangerous()',
             },
           },
         ],
@@ -1118,7 +1118,7 @@ describeWithEnvironment('ChatMessage', () => {
                 },
               },
               title: 'Side Effect Step',
-              code: 'doSomethingDangerous()',
+              action: 'doSomethingDangerous()',
             },
           },
         ],
@@ -1153,12 +1153,12 @@ describeWithEnvironment('ChatMessage', () => {
       const stepA: AiAssistance.ChatMessage.Step = {
         state: {type: 'needs_approval', sideEffectDialog: {description: null, onAnswer: () => {}}},
         title: 'Setting the color',
-        code: 'a()',
+        action: 'a()',
       };
       const stepB: AiAssistance.ChatMessage.Step = {
         state: {type: 'needs_approval', sideEffectDialog: {description: null, onAnswer: () => {}}},
         title: 'Setting the background color',
-        code: 'b()',
+        action: 'b()',
       };
       const walkthrough = {...DEFAULT_WALKTHROUGH, isInlined: true, isExpanded: false};
       const target = renderView({
@@ -1207,7 +1207,7 @@ describeWithEnvironment('ChatMessage', () => {
                 },
               },
               title: 'Side Effect Step',
-              code: 'doSomethingDangerous()',
+              action: 'doSomethingDangerous()',
             },
           },
         ],
@@ -1239,7 +1239,7 @@ describeWithEnvironment('ChatMessage', () => {
             step: {
               state: {type: 'canceled'},
               title: 'Side Effect Step',
-              code: 'doSomethingDangerous()',
+              action: 'doSomethingDangerous()',
             },
           },
         ],
@@ -1278,7 +1278,7 @@ describeWithEnvironment('ChatMessage', () => {
                   },
                 },
                 title: 'Reading cookie values and metadata',
-                code: 'getCookieValues({cookieNames: ["session"]})',
+                action: 'getCookieValues({cookieNames: ["session"]})',
               },
             },
           ],

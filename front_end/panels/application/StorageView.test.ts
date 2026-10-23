@@ -77,8 +77,7 @@ describeWithEnvironment('StorageView', () => {
     storageKeyManager.dispatchEventToListeners(
         SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, {mainStorageKey: testKey});
     await view.updateComplete;
-    const subtitle =
-        view.element.shadowRoot?.querySelector('div.flex-auto')?.shadowRoot?.querySelector('div.report-subtitle');
+    const subtitle = view.element.shadowRoot?.querySelector('.report-subtitle');
     assert.strictEqual(subtitle?.textContent, testKey);
   });
 
@@ -87,21 +86,21 @@ describeWithEnvironment('StorageView', () => {
     renderElementIntoDOM(view);
     await view.updateComplete;
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-    assert.instanceOf(container, HTMLDivElement);
+    assert.instanceOf(container, HTMLElement);
 
-    const checkboxesRow = container.shadowRoot!.querySelector('.clear-site-data-checkboxes-row');
+    const checkboxesRow = container.querySelector('.clear-site-data-checkboxes-row');
     assert.instanceOf(checkboxesRow, HTMLDivElement);
     const columns = checkboxesRow.querySelectorAll('.clear-site-data-checkbox-column');
     assert.lengthOf(columns, 2);
 
-    const cookiesCheckbox = container.shadowRoot!.querySelector('.cookies-checkbox');
+    const cookiesCheckbox = container.querySelector('.cookies-checkbox');
     assert.instanceOf(cookiesCheckbox, HTMLElement);
 
-    const includeThirdPartyCookiesRow = container.shadowRoot!.querySelector('.include-third-party-cookies-row');
+    const includeThirdPartyCookiesRow = container.querySelector('.include-third-party-cookies-row');
     assert.instanceOf(includeThirdPartyCookiesRow, HTMLDivElement);
     assert.strictEqual(cookiesCheckbox.nextElementSibling, includeThirdPartyCookiesRow);
 
-    const clearButton = container.shadowRoot!.querySelector('#storage-view-clear-button');
+    const clearButton = container.querySelector('#storage-view-clear-button');
     assert.instanceOf(clearButton, HTMLElement);
     assert.strictEqual(clearButton.textContent, 'Clear selected');
   });
@@ -117,10 +116,9 @@ describeWithEnvironment('StorageView', () => {
     renderElementIntoDOM(view);
     await view.updateComplete;
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-    assert.instanceOf(container, HTMLDivElement);
+    assert.instanceOf(container, HTMLElement);
 
-    const includeThirdPartyCookiesCheckbox =
-        container.shadowRoot!.querySelector('.third-party-cookies-checkbox') as HTMLElement;
+    const includeThirdPartyCookiesCheckbox = container.querySelector('.third-party-cookies-checkbox') as HTMLElement;
     assert.instanceOf(includeThirdPartyCookiesCheckbox, HTMLElement);
     const includeThirdPartyCookiesCheckboxInput =
         includeThirdPartyCookiesCheckbox.shadowRoot!.querySelector('input') as HTMLInputElement;
@@ -170,9 +168,9 @@ describeWithEnvironment('StorageView', () => {
             await view.updateComplete;
 
             const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-            assert.instanceOf(container, HTMLDivElement);
+            assert.instanceOf(container, HTMLElement);
 
-            const checkbox = container.shadowRoot!.querySelector('.file-systems-checkbox');
+            const checkbox = container.querySelector('.file-systems-checkbox');
             assert.instanceOf(checkbox, HTMLElement);
 
             const input = checkbox.shadowRoot!.querySelector('input');
@@ -185,7 +183,7 @@ describeWithEnvironment('StorageView', () => {
             }
             assert.strictEqual(input.checked, checked);
 
-            const clearButton = container.shadowRoot!.querySelector('#storage-view-clear-button');
+            const clearButton = container.querySelector('#storage-view-clear-button');
             assert.instanceOf(clearButton, HTMLElement);
             clearButton.click();
 
@@ -217,17 +215,17 @@ describeWithEnvironment('StorageView', () => {
     renderElementIntoDOM(view);
     await view.updateComplete;
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-    assert.instanceOf(container, HTMLDivElement);
+    assert.instanceOf(container, HTMLElement);
     const customQuotaCheckbox =
-        container.shadowRoot!.querySelector('.quota-override-row devtools-checkbox')!.shadowRoot!.querySelector(
+        container.querySelector('.quota-override-row devtools-checkbox')!.shadowRoot!.querySelector(
             '[title="Simulate custom storage quota"]');
     assert.instanceOf(customQuotaCheckbox, HTMLInputElement);
     customQuotaCheckbox.checked = true;
-    const errorDiv = container.shadowRoot!.querySelector('.quota-override-error');
+    const errorDiv = container.querySelector('.quota-override-error');
     assert.instanceOf(errorDiv, HTMLDivElement);
     assert.strictEqual(errorDiv.textContent, '');
 
-    const editor = container.shadowRoot!.querySelector('.quota-override-notification-editor');
+    const editor = container.querySelector('.quota-override-notification-editor');
     assert.instanceOf(editor, HTMLInputElement);
     editor.value = '9999999999999';
     dispatchFocusOutEvent(editor);
@@ -251,15 +249,14 @@ describeWithEnvironment('StorageView', () => {
       } as Protocol.Storage.GetUsageAndQuotaResponse);
     }
 
-    async function renderAndAwaitUsage(getUsageStub: sinon.SinonStub): Promise<ShadowRoot> {
+    async function renderAndAwaitUsage(getUsageStub: sinon.SinonStub): Promise<HTMLElement> {
       view = new Resources.StorageView.StorageView();
       renderElementIntoDOM(view);
       await Promise.all(getUsageStub.returnValues);
       await view.updateComplete;
       const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-      assert.instanceOf(container, HTMLDivElement);
-      assert.exists(container.shadowRoot);
-      return container.shadowRoot;
+      assert.instanceOf(container, HTMLElement);
+      return container;
     }
 
     it('renders the usage row and pie chart breakdown', async () => {
@@ -272,16 +269,16 @@ describeWithEnvironment('StorageView', () => {
           {storageType: Protocol.Storage.StorageType.Service_workers, usage: 0},
         ],
       });
-      const shadowRoot = await renderAndAwaitUsage(getUsageStub);
+      const container = await renderAndAwaitUsage(getUsageStub);
 
-      const quotaRow = shadowRoot.querySelector('.quota-usage-row');
+      const quotaRow = container.querySelector('.quota-usage-row');
       assert.instanceOf(quotaRow, HTMLElement);
       assert.strictEqual(quotaRow.textContent?.trim(), '1.0\u00A0kB used out of 200\u00A0MB storage quota');
       assert.strictEqual(quotaRow.title, '1,000 bytes used out of 200,000,000 bytes storage quota');
       assert.isNull(quotaRow.querySelector('b'), 'Expected no custom quota marker');
       assert.isNull(quotaRow.querySelector('devtools-icon'), 'Expected no limited quota icon');
 
-      const pieChart = shadowRoot.querySelector('.usage-breakdown-row devtools-perf-piechart');
+      const pieChart = container.querySelector('.usage-breakdown-row devtools-perf-piechart');
       assert.instanceOf(pieChart, PerfUI.PieChart.PieChart);
       assert.strictEqual(pieChart.data.total, 1000);
       assert.deepEqual(pieChart.data.slices.map(({title, value}) => ({title, value})), [
@@ -292,9 +289,9 @@ describeWithEnvironment('StorageView', () => {
 
     it('marks the quota as custom when an override is active', async () => {
       const getUsageStub = stubUsageAndQuota({usage: 500, quota: 1000, overrideActive: true});
-      const shadowRoot = await renderAndAwaitUsage(getUsageStub);
+      const container = await renderAndAwaitUsage(getUsageStub);
 
-      const quotaRow = shadowRoot.querySelector('.quota-usage-row');
+      const quotaRow = container.querySelector('.quota-usage-row');
       assert.instanceOf(quotaRow, HTMLElement);
       const customMarker = quotaRow.querySelector('b');
       assert.instanceOf(customMarker, HTMLElement);
@@ -304,21 +301,21 @@ describeWithEnvironment('StorageView', () => {
 
     it('shows a limited quota icon for small quotas without an override', async () => {
       const getUsageStub = stubUsageAndQuota({usage: 500, quota: 1000, overrideActive: false});
-      const shadowRoot = await renderAndAwaitUsage(getUsageStub);
+      const container = await renderAndAwaitUsage(getUsageStub);
 
-      const icon = shadowRoot.querySelector('.quota-usage-row devtools-icon');
+      const icon = container.querySelector('.quota-usage-row devtools-icon');
       assert.instanceOf(icon, HTMLElement);
       assert.strictEqual(icon.title, 'Storage quota is limited in Incognito mode');
     });
 
     it('clears the usage row when the request fails', async () => {
       const getUsageStub = stubUsageAndQuota({getError: () => 'boom'});
-      const shadowRoot = await renderAndAwaitUsage(getUsageStub);
+      const container = await renderAndAwaitUsage(getUsageStub);
 
-      const quotaRow = shadowRoot.querySelector('.quota-usage-row');
+      const quotaRow = container.querySelector('.quota-usage-row');
       assert.instanceOf(quotaRow, HTMLElement);
       assert.strictEqual(quotaRow.textContent, '');
-      const pieChart = shadowRoot.querySelector('.usage-breakdown-row devtools-perf-piechart');
+      const pieChart = container.querySelector('.usage-breakdown-row devtools-perf-piechart');
       assert.instanceOf(pieChart, PerfUI.PieChart.PieChart);
       assert.strictEqual(pieChart.data.total, 0);
       assert.isEmpty(pieChart.data.slices);
@@ -326,7 +323,7 @@ describeWithEnvironment('StorageView', () => {
   });
 
   describe('quota override', () => {
-    async function setUpOverrideView(): Promise<{shadowRoot: ShadowRoot, overrideStub: sinon.SinonStub}> {
+    async function setUpOverrideView(): Promise<{container: HTMLElement, overrideStub: sinon.SinonStub}> {
       const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
       assert.exists(securityOriginManager);
       sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(SECURITY_ORIGIN);
@@ -338,24 +335,23 @@ describeWithEnvironment('StorageView', () => {
       renderElementIntoDOM(view);
       await view.updateComplete;
       const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-      assert.instanceOf(container, HTMLDivElement);
-      assert.exists(container.shadowRoot);
-      return {shadowRoot: container.shadowRoot, overrideStub};
+      assert.instanceOf(container, HTMLElement);
+      return {container, overrideStub};
     }
 
     it('toggles the override editor and applies the quota in megabytes', async () => {
-      const {shadowRoot, overrideStub} = await setUpOverrideView();
-      const controlRow = shadowRoot.querySelector('.quota-override-notification-editor')?.parentElement;
+      const {container, overrideStub} = await setUpOverrideView();
+      const controlRow = container.querySelector('.quota-override-notification-editor')?.parentElement;
       assert.instanceOf(controlRow, HTMLElement);
       assert.isTrue(controlRow.classList.contains('hidden'));
 
-      const checkbox = shadowRoot.querySelector<HTMLElement>('.quota-override-row devtools-checkbox');
+      const checkbox = container.querySelector<HTMLElement>('.quota-override-row devtools-checkbox');
       assert.instanceOf(checkbox, HTMLElement);
       checkbox.click();
       await view!.updateComplete;
       assert.isFalse(controlRow.classList.contains('hidden'));
 
-      const editor = shadowRoot.querySelector('.quota-override-notification-editor');
+      const editor = container.querySelector('.quota-override-notification-editor');
       assert.instanceOf(editor, HTMLInputElement);
       editor.value = '1.5';
       dispatchFocusOutEvent(editor);
@@ -363,19 +359,19 @@ describeWithEnvironment('StorageView', () => {
 
       sinon.assert.calledOnceWithExactly(overrideStub, {origin: SECURITY_ORIGIN, quotaSize: 1_500_000});
       assert.strictEqual(editor.value, '1.5');
-      const errorDiv = shadowRoot.querySelector('.quota-override-error');
+      const errorDiv = container.querySelector('.quota-override-error');
       assert.instanceOf(errorDiv, HTMLDivElement);
       assert.strictEqual(errorDiv.textContent, '');
     });
 
     it('clears the override when the editor is emptied', async () => {
-      const {shadowRoot, overrideStub} = await setUpOverrideView();
-      const checkbox = shadowRoot.querySelector<HTMLElement>('.quota-override-row devtools-checkbox');
+      const {container, overrideStub} = await setUpOverrideView();
+      const checkbox = container.querySelector<HTMLElement>('.quota-override-row devtools-checkbox');
       assert.instanceOf(checkbox, HTMLElement);
       checkbox.click();
       await view!.updateComplete;
 
-      const editor = shadowRoot.querySelector('.quota-override-notification-editor');
+      const editor = container.querySelector('.quota-override-notification-editor');
       assert.instanceOf(editor, HTMLInputElement);
       editor.value = '';
       dispatchFocusOutEvent(editor);
@@ -384,13 +380,13 @@ describeWithEnvironment('StorageView', () => {
     });
 
     it('clears the override and hides controls when the checkbox is unchecked', async () => {
-      const {shadowRoot, overrideStub} = await setUpOverrideView();
-      const checkbox = shadowRoot.querySelector<HTMLElement>('.quota-override-row devtools-checkbox');
+      const {container, overrideStub} = await setUpOverrideView();
+      const checkbox = container.querySelector<HTMLElement>('.quota-override-row devtools-checkbox');
       assert.instanceOf(checkbox, HTMLElement);
       checkbox.click();
       await view!.updateComplete;
 
-      const editor = shadowRoot.querySelector('.quota-override-notification-editor');
+      const editor = container.querySelector('.quota-override-notification-editor');
       assert.instanceOf(editor, HTMLInputElement);
       const controlRow = editor.parentElement;
       assert.instanceOf(controlRow, HTMLElement);
@@ -403,10 +399,10 @@ describeWithEnvironment('StorageView', () => {
     });
 
     it('rejects negative quotas', async () => {
-      const {shadowRoot, overrideStub} = await setUpOverrideView();
-      const editor = shadowRoot.querySelector('.quota-override-notification-editor');
+      const {container, overrideStub} = await setUpOverrideView();
+      const editor = container.querySelector('.quota-override-notification-editor');
       assert.instanceOf(editor, HTMLInputElement);
-      const errorDiv = shadowRoot.querySelector('.quota-override-error');
+      const errorDiv = container.querySelector('.quota-override-error');
       assert.instanceOf(errorDiv, HTMLDivElement);
 
       editor.value = '-1';
@@ -417,10 +413,10 @@ describeWithEnvironment('StorageView', () => {
     });
 
     it('rejects non-numeric quotas', async () => {
-      const {shadowRoot, overrideStub} = await setUpOverrideView();
-      const editor = shadowRoot.querySelector('.quota-override-notification-editor');
+      const {container, overrideStub} = await setUpOverrideView();
+      const editor = container.querySelector('.quota-override-notification-editor');
       assert.instanceOf(editor, HTMLInputElement);
-      const errorDiv = shadowRoot.querySelector('.quota-override-error');
+      const errorDiv = container.querySelector('.quota-override-error');
       assert.instanceOf(errorDiv, HTMLDivElement);
 
       editor.value = 'abc';
@@ -444,9 +440,8 @@ describeWithEnvironment('StorageView', () => {
     renderElementIntoDOM(view);
     await view.updateComplete;
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
-    assert.instanceOf(container, HTMLDivElement);
-    assert.exists(container.shadowRoot);
-    const clearButton = container.shadowRoot.querySelector('#storage-view-clear-button');
+    assert.instanceOf(container, HTMLElement);
+    const clearButton = container.querySelector('#storage-view-clear-button');
     assert.instanceOf(clearButton, Buttons.Button.Button);
 
     const clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});

@@ -1,8 +1,8 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/components/report_view/report_view.js';
 import '../../ui/kit/kit.js';
 import '../../ui/legacy/components/perf_ui/perf_ui.js';
 
@@ -167,22 +167,33 @@ export const storagePieColors: Map<Protocol.Storage.StorageType, string> =
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface ClearSiteDataViewInput {
+export interface ViewInput {
+  subtitle: string;
   settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
   includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
   includeThirdPartyCookiesDisabled: boolean;
   clearing: boolean;
+  quotaUsage: number|null;
+  quotaQuota: number|null;
+  quotaOverrideActive: boolean|null;
+  pieChartSlices: PerfUI.PieChart.Slice[];
+  quotaOverrideEnabled: boolean;
+  quotaOverrideValue: string;
+  quotaOverrideError: string;
   onClear: () => void;
+  onToggleQuotaOverride: () => void;
+  onQuotaOverrideInput: (value: string) => void;
+  onApplyQuotaOverride: (value: string) => void;
 }
 
-export interface ClearSiteDataViewOutput {
+export interface ViewOutput {
   focusClearButton?: () => void;
+  focusQuotaOverrideEditor?: () => void;
 }
 
-export type ClearSiteDataView = (input: ClearSiteDataViewInput, output: ClearSiteDataViewOutput, target: HTMLElement) =>
-    void;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-export const CLEAR_SITE_DATA_DEFAULT_VIEW: ClearSiteDataView = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, output, target) => {
   function renderSettingCheckbox(title: Platform.UIString.LocalizedString, settingName: Protocol.Storage.StorageType,
                                  className: string): LitTemplate {
     const setting = input.settings.get(settingName);
@@ -193,62 +204,50 @@ export const CLEAR_SITE_DATA_DEFAULT_VIEW: ClearSiteDataView = (input, output, t
         title}</devtools-checkbox>`;
   }
 
-  // clang-format off
-  render(html`
-    <div class="report-row clear-site-data-checkboxes-row">
-      <div class="clear-site-data-checkbox-column">
-        ${renderSettingCheckbox(i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage, 'cache-storage-checkbox')}
-        ${renderSettingCheckbox(i18nString(UIStrings.fileSystem), Protocol.Storage.StorageType.File_systems, 'file-systems-checkbox')}
-        ${renderSettingCheckbox(i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb, 'indexeddb-checkbox')}
-        ${renderSettingCheckbox(i18nString(UIStrings.localAndSessionStorage), Protocol.Storage.StorageType.Local_storage, 'local-and-session-storage-checkbox')}
-      </div>
-      <div class="clear-site-data-checkbox-column">
-        ${renderSettingCheckbox(i18nString(UIStrings.unregisterServiceWorker), Protocol.Storage.StorageType.Service_workers, 'unregister-service-worker-checkbox')}
-        ${renderSettingCheckbox(i18nString(UIStrings.cookies), Protocol.Storage.StorageType.Cookies, 'cookies-checkbox cookies-row')}
-        <div class="include-third-party-cookies-row">
-          <devtools-checkbox class="third-party-cookies-checkbox"
-              title=${i18nString(UIStrings.thirdPartyCookies)}
-              ?disabled=${input.includeThirdPartyCookiesDisabled}
-              ${bindToSetting(input.includeThirdPartyCookiesSetting)}>
-            ${i18nString(UIStrings.thirdPartyCookies)}
-          </devtools-checkbox>
-        </div>
-      </div>
-    </div>
-    <div class="report-row clear-selected-button-row">
-      <devtools-button id="storage-view-clear-button"
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          .disabled=${input.clearing}
-          .jslogContext=${'storage.clear-site-data'}
-          @click=${input.onClear}
-          ${ref(e => {
-            output.focusClearButton = e instanceof HTMLElement ? () => e.focus() : undefined;
-          })}
-          >${input.clearing ? i18nString(UIStrings.clearing) : i18nString(UIStrings.clearSelected)}</devtools-button>
-    </div>`, target);
-  // clang-format on
-};
+  function renderClearSiteData(): LitTemplate {
+    // clang-format off
+    return html`
+      <div class="report-section" jslog=${VisualLogging.section('clear-storage')}>
+        <devtools-report-section-header role="heading" aria-level="2">
+          ${i18nString(UIStrings.clearSiteData)}
+        </devtools-report-section-header>
+        <devtools-report-section>
+          <div class="clear-site-data-checkboxes-row" role="group" aria-label=${i18nString(UIStrings.clearSiteData)}>
+            <div class="clear-site-data-checkbox-column">
+              ${renderSettingCheckbox(i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage, 'cache-storage-checkbox')}
+              ${renderSettingCheckbox(i18nString(UIStrings.fileSystem), Protocol.Storage.StorageType.File_systems, 'file-systems-checkbox')}
+              ${renderSettingCheckbox(i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb, 'indexeddb-checkbox')}
+              ${renderSettingCheckbox(i18nString(UIStrings.localAndSessionStorage), Protocol.Storage.StorageType.Local_storage, 'local-and-session-storage-checkbox')}
+            </div>
+            <div class="clear-site-data-checkbox-column">
+              ${renderSettingCheckbox(i18nString(UIStrings.unregisterServiceWorker), Protocol.Storage.StorageType.Service_workers, 'unregister-service-worker-checkbox')}
+              ${renderSettingCheckbox(i18nString(UIStrings.cookies), Protocol.Storage.StorageType.Cookies, 'cookies-checkbox cookies-row')}
+              <div class="include-third-party-cookies-row">
+                <devtools-checkbox class="third-party-cookies-checkbox"
+                    title=${i18nString(UIStrings.thirdPartyCookies)}
+                    ?disabled=${input.includeThirdPartyCookiesDisabled}
+                    ${bindToSetting(input.includeThirdPartyCookiesSetting)}>
+                  ${i18nString(UIStrings.thirdPartyCookies)}
+                </devtools-checkbox>
+              </div>
+            </div>
+          </div>
+        </devtools-report-section>
+        <devtools-report-section class="clear-selected-button-row">
+          <devtools-button id="storage-view-clear-button"
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              .disabled=${input.clearing}
+              .jslogContext=${'storage.clear-site-data'}
+              @click=${input.onClear}
+              ${ref(e => {
+                output.focusClearButton = e instanceof HTMLElement ? () => e.focus() : undefined;
+              })}
+              >${input.clearing ? i18nString(UIStrings.clearing) : i18nString(UIStrings.clearSelected)}</devtools-button>
+        </devtools-report-section>
+      </div>`;
+    // clang-format on
+  }
 
-export interface UsageViewInput {
-  quotaUsage: number|null;
-  quotaQuota: number|null;
-  quotaOverrideActive: boolean|null;
-  pieChartSlices: PerfUI.PieChart.Slice[];
-  quotaOverrideEnabled: boolean;
-  quotaOverrideValue: string;
-  quotaOverrideError: string;
-  onToggleQuotaOverride: () => void;
-  onQuotaOverrideInput: (value: string) => void;
-  onApplyQuotaOverride: (value: string) => void;
-}
-
-export interface UsageViewOutput {
-  focusQuotaOverrideEditor?: () => void;
-}
-
-export type UsageView = (input: UsageViewInput, output: UsageViewOutput, target: HTMLElement) => void;
-
-export const USAGE_DEFAULT_VIEW: UsageView = (input, output, target) => {
   function quotaTooltip(): string|undefined {
     if (input.quotaUsage === null || input.quotaQuota === null) {
       return undefined;
@@ -274,61 +273,78 @@ export const USAGE_DEFAULT_VIEW: UsageView = (input, output, target) => {
     // clang-format on
   }
 
-  const pieChartData: PerfUI.PieChart.PieChartData = {
-    chartName: i18nString(UIStrings.storageUsage),
-    size: 110,
-    formatter: i18n.ByteUtilities.bytesToString,
-    showLegend: true,
-    total: input.quotaUsage ?? 0,
-    slices: input.pieChartSlices,
-  };
-  const onEditorInput = (event: Event): void => {
-    input.onQuotaOverrideInput((event.target as HTMLInputElement).value);
-  };
-  const onEditorKeyUp = (event: KeyboardEvent): void => {
-    if (event.key === 'Enter' && !event.isComposing) {
+  function renderUsage(): LitTemplate {
+    const pieChartData: PerfUI.PieChart.PieChartData = {
+      chartName: i18nString(UIStrings.storageUsage),
+      size: 110,
+      formatter: i18n.ByteUtilities.bytesToString,
+      showLegend: true,
+      total: input.quotaUsage ?? 0,
+      slices: input.pieChartSlices,
+    };
+    const onEditorInput = (event: Event): void => {
+      input.onQuotaOverrideInput((event.target as HTMLInputElement).value);
+    };
+    const onEditorKeyUp = (event: KeyboardEvent): void => {
+      if (event.key === 'Enter' && !event.isComposing) {
+        input.onApplyQuotaOverride((event.target as HTMLInputElement).value);
+        event.consume(true);
+      }
+    };
+    const onEditorFocusOut = (event: FocusEvent): void => {
       input.onApplyQuotaOverride((event.target as HTMLInputElement).value);
       event.consume(true);
-    }
-  };
-  const onEditorFocusOut = (event: FocusEvent): void => {
-    input.onApplyQuotaOverride((event.target as HTMLInputElement).value);
-    event.consume(true);
-  };
+    };
+    // clang-format off
+    return html`
+      <div class="report-section" jslog=${VisualLogging.section('usage')}>
+        <devtools-report-section-header role="heading" aria-level="2">
+          ${i18nString(UIStrings.usage)}
+        </devtools-report-section-header>
+        <devtools-report-section class="quota-usage-row" jslog=${VisualLogging.item('storage-usage')}
+            title=${ifDefined(quotaTooltip())}>${renderQuotaRow()}</devtools-report-section>
+        <devtools-report-section>
+          <devtools-link href="https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses"
+              jslogcontext="learn-more">${i18nString(UIStrings.learnMore)}</devtools-link>
+        </devtools-report-section>
+        <devtools-report-section class="usage-breakdown-row" jslog=${VisualLogging.item('usage-breakdown')}>
+          <devtools-perf-piechart .data=${pieChartData}></devtools-perf-piechart>
+        </devtools-report-section>
+        <devtools-report-section class="quota-override-row">
+          <devtools-checkbox .checked=${live(input.quotaOverrideEnabled)}
+              title=${i18nString(UIStrings.simulateCustomStorage)}
+              @change=${input.onToggleQuotaOverride}
+              jslog=${VisualLogging.toggle('simulate-custom-quota').track({change: true})}>
+            ${i18nString(UIStrings.simulateCustomStorage)}
+          </devtools-checkbox>
+        </devtools-report-section>
+        <devtools-report-section class=${classMap({hidden: !input.quotaOverrideEnabled})}>
+          <input class="quota-override-notification-editor"
+              aria-label=${i18nString(UIStrings.simulateCustomStorage)}
+              placeholder=${i18nString(UIStrings.pleaseEnterANumber)}
+              .value=${live(input.quotaOverrideValue)}
+              @input=${onEditorInput}
+              @keyup=${onEditorKeyUp}
+              @focusout=${onEditorFocusOut}
+              ${ref(e => {
+                output.focusQuotaOverrideEditor = e instanceof HTMLElement ? () => e.focus() : undefined;
+              })}
+              jslog=${VisualLogging.textField('quota-override').track({change: true})}>
+          <label>${i18nString(UIStrings.mb)}</label>
+        </devtools-report-section>
+        <devtools-report-section><div class="quota-override-error">${input.quotaOverrideError}</div></devtools-report-section>
+      </div>`;
+    // clang-format on
+  }
+
   // clang-format off
   render(html`
-    <div class="report-row report-row-selectable quota-usage-row" jslog=${VisualLogging.item('storage-usage')}
-        title=${ifDefined(quotaTooltip())}>${renderQuotaRow()}</div>
-    <div class="report-row">
-      <devtools-link href="https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses"
-          jslogcontext="learn-more">${i18nString(UIStrings.learnMore)}</devtools-link>
-    </div>
-    <div class="report-row usage-breakdown-row" jslog=${VisualLogging.item('usage-breakdown')}>
-      <devtools-perf-piechart .data=${pieChartData}></devtools-perf-piechart>
-    </div>
-    <div class="report-row quota-override-row">
-      <devtools-checkbox .checked=${live(input.quotaOverrideEnabled)}
-          title=${i18nString(UIStrings.simulateCustomStorage)}
-          @change=${input.onToggleQuotaOverride}
-          jslog=${VisualLogging.toggle('simulate-custom-quota').track({change: true})}>
-        ${i18nString(UIStrings.simulateCustomStorage)}
-      </devtools-checkbox>
-    </div>
-    <div class=${classMap({'report-row': true, hidden: !input.quotaOverrideEnabled})}>
-      <input class="quota-override-notification-editor"
-          aria-label=${i18nString(UIStrings.simulateCustomStorage)}
-          placeholder=${i18nString(UIStrings.pleaseEnterANumber)}
-          .value=${live(input.quotaOverrideValue)}
-          @input=${onEditorInput}
-          @keyup=${onEditorKeyUp}
-          @focusout=${onEditorFocusOut}
-          ${ref(e => {
-            output.focusQuotaOverrideEditor = e instanceof HTMLElement ? () => e.focus() : undefined;
-          })}
-          jslog=${VisualLogging.textField('quota-override').track({change: true})}>
-      <label>${i18nString(UIStrings.mb)}</label>
-    </div>
-    <div class="report-row"><div class="quota-override-error">${input.quotaOverrideError}</div></div>`, target);
+    <devtools-report class="clear-storage-header" .data=${{reportTitle: i18nString(UIStrings.storageTitle)}}>
+      ${input.subtitle ? html`<div class="report-subtitle" slot="toolbar">${input.subtitle}</div>` : nothing}
+      ${renderClearSiteData()}
+      <devtools-report-divider></devtools-report-divider>
+      ${renderUsage()}
+    </devtools-report>`, target);
   // clang-format on
 };
 
@@ -336,20 +352,15 @@ export const USAGE_DEFAULT_VIEW: UsageView = (input, output, target) => {
  * @implements {SDK.TargetManager.Observer}
  */
 export class StorageView extends UI.Widget.VBox {
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
   private pieColors: Map<Protocol.Storage.StorageType, string>;
-  private reportView: UI.ReportView.ReportView;
   private target: SDK.Target.Target|null = null;
   private securityOrigin: string|null = null;
   private storageKey: string|null = null;
-  private subtitle: string|null = null;
+  private subtitle = '';
   private settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
   private includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
-  private readonly clearSiteDataView: ClearSiteDataView;
-  private readonly clearSiteDataViewOutput: ClearSiteDataViewOutput = {};
-  private readonly clearSiteDataFieldList: HTMLElement;
-  private readonly usageView: UsageView;
-  private readonly usageViewOutput: UsageViewOutput = {};
-  private readonly usageFieldList: HTMLElement;
   private quotaUsage: number|null = null;
   private quotaQuota: number|null = null;
   private quotaOverrideActive: boolean|null = null;
@@ -369,23 +380,11 @@ export class StorageView extends UI.Widget.VBox {
         this.onIncludeThirdPartyCookiesSettingChanged(event.data);
       };
 
-  constructor(clearSiteDataView: ClearSiteDataView = CLEAR_SITE_DATA_DEFAULT_VIEW,
-              usageView: UsageView = USAGE_DEFAULT_VIEW) {
-    super({useShadowDom: true});
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, jslog: `${VisualLogging.pane('clear-storage')}`});
+    this.#view = view;
     this.registerRequiredCSS(storageViewStyles);
-    this.clearSiteDataView = clearSiteDataView;
-    this.usageView = usageView;
-
-    this.contentElement.classList.add('clear-storage-container');
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('clear-storage')}`);
     this.pieColors = storagePieColors;
-
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
-    this.reportView.registerRequiredCSS(storageViewStyles);
-
-    this.reportView.element.classList.add('clear-storage-header');
-    this.reportView.show(this.contentElement);
 
     this.settings = new Map();
     for (const type of AllStorageTypes) {
@@ -397,15 +396,6 @@ export class StorageView extends UI.Widget.VBox {
 
     this.includeThirdPartyCookiesSetting =
         Common.Settings.Settings.instance().createSetting('clear-storage-include-third-party-cookies', false);
-
-    const clearSiteData = this.reportView.appendSection(i18nString(UIStrings.clearSiteData));
-    clearSiteData.element.setAttribute('jslog', `${VisualLogging.section('clear-storage')}`);
-    this.clearSiteDataFieldList = clearSiteData.getFieldElement();
-    clearSiteData.markFieldListAsGroup();
-
-    const quota = this.reportView.appendSection(i18nString(UIStrings.usage));
-    quota.element.setAttribute('jslog', `${VisualLogging.section('usage')}`);
-    this.usageFieldList = quota.getFieldElement();
 
     const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
     this.onCookiesSettingChanged(Boolean(cookiesSetting?.get()));
@@ -580,7 +570,7 @@ export class StorageView extends UI.Widget.VBox {
       this.quotaOverrideFieldValue = this.previousOverrideFieldValue;
       this.requestUpdate();
       await this.updateComplete;
-      this.usageViewOutput.focusQuotaOverrideEditor?.();
+      this.#viewOutput.focusQuotaOverrideEditor?.();
     } else {
       this.quotaOverrideEnabled = false;
       this.quotaOverrideError = '';
@@ -618,7 +608,7 @@ export class StorageView extends UI.Widget.VBox {
       this.requestUpdate();
       await this.updateComplete;
       if (this.isShowing()) {
-        this.clearSiteDataViewOutput.focusClearButton?.();
+        this.#viewOutput.focusClearButton?.();
       }
     }, 500);
 
@@ -742,19 +732,13 @@ export class StorageView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    if (this.subtitle !== null) {
-      this.reportView.setSubtitle(this.subtitle);
-    }
     const cookiesSetting = this.settings.get(Protocol.Storage.StorageType.Cookies);
-    this.clearSiteDataView({
+    this.#view({
+      subtitle: this.subtitle,
       settings: this.settings,
       includeThirdPartyCookiesSetting: this.includeThirdPartyCookiesSetting,
       includeThirdPartyCookiesDisabled: !cookiesSetting?.get(),
       clearing: this.clearing,
-      onClear: () => this.clear(),
-    },
-                           this.clearSiteDataViewOutput, this.clearSiteDataFieldList);
-    this.usageView({
       quotaUsage: this.quotaUsage,
       quotaQuota: this.quotaQuota,
       quotaOverrideActive: this.quotaOverrideActive,
@@ -762,6 +746,7 @@ export class StorageView extends UI.Widget.VBox {
       quotaOverrideEnabled: this.quotaOverrideEnabled,
       quotaOverrideValue: this.quotaOverrideFieldValue,
       quotaOverrideError: this.quotaOverrideError,
+      onClear: () => this.clear(),
       onToggleQuotaOverride: () => {
         void this.onClickCheckbox();
       },
@@ -772,7 +757,7 @@ export class StorageView extends UI.Widget.VBox {
         void this.applyQuotaOverrideFromInputField(value);
       },
     },
-                   this.usageViewOutput, this.usageFieldList);
+               this.#viewOutput, this.contentElement);
   }
 
   static getStorageTypeName(type: Protocol.Storage.StorageType): string {

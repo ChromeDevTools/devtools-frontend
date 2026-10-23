@@ -234,7 +234,7 @@ describe('AiAgent2', () => {
 
     const actionResponse = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
     assert.isDefined(actionResponse);
-    assert.propertyVal(actionResponse, 'code', 'learnSkills(\'styling\')');
+    assert.propertyVal(actionResponse, 'action', 'learnSkills(\'styling\')');
     assert.propertyVal(actionResponse, 'toolName', 'learnSkills');
     assert.deepEqual(actionResponse.loadedSkills, ['styling']);
 
@@ -553,10 +553,10 @@ describe('AiAgent2', () => {
 
     const actionResponses = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
     assert.lengthOf(actionResponses, 3);
-    assert.propertyVal(actionResponses[0], 'code', 'learnSkills(\'styling\')');
-    assert.propertyVal(actionResponses[1], 'code', '$0.style.color = "red"');
+    assert.propertyVal(actionResponses[0], 'action', 'learnSkills(\'styling\')');
+    assert.propertyVal(actionResponses[1], 'action', '$0.style.color = "red"');
     assert.isUndefined(actionResponses[1].output);
-    assert.propertyVal(actionResponses[2], 'code', '$0.style.color = "red"');
+    assert.propertyVal(actionResponses[2], 'action', '$0.style.color = "red"');
     assert.propertyVal(actionResponses[2], 'output', 'success');
   });
 
@@ -867,10 +867,10 @@ describe('AiAgent2', () => {
     sinon.assert.calledTwice(handlerStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 3);
-    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'storage\')');
-    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session"], ["https://example.com"])');
+    assert.strictEqual(actionResponses[0].action, 'learnSkills(\'storage\')');
+    assert.strictEqual(actionResponses[1].action, 'getCookieValues(["session"], ["https://example.com"])');
     assert.isUndefined(actionResponses[1].output);
-    assert.strictEqual(actionResponses[2].code, 'getCookieValues(["session"], ["https://example.com"])');
+    assert.strictEqual(actionResponses[2].action, 'getCookieValues(["session"], ["https://example.com"])');
     assert.exists(actionResponses[2].output);
   });
 
@@ -1192,7 +1192,7 @@ describe('AiAgent2', () => {
     sinon.assert.calledOnce(runLighthouseStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 1);
-    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'lighthouse\')');
+    assert.strictEqual(actionResponses[0].action, 'learnSkills(\'lighthouse\')');
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');
     assert.strictEqual(contextChange.toolName, 'runLighthouse');
@@ -1236,7 +1236,7 @@ describe('AiAgent2', () => {
     sinon.assert.calledOnce(runLighthouseStub);
     const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
     assert.lengthOf(actionResponses, 1);
-    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'lighthouse\')');
+    assert.strictEqual(actionResponses[0].action, 'learnSkills(\'lighthouse\')');
     assert.isTrue(agent.activeSkills.has('lighthouse'));
     const contextChange = getContextChangeResponse(responses);
     assert.strictEqual(contextChange.description, 'Lighthouse audit completed');

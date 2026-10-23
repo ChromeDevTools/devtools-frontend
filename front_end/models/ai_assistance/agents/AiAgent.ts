@@ -274,7 +274,7 @@ export interface ActionResponse extends ToolCallEvent {
    * code, such as `executeJavaScript`. For other tools it is a readable form of
    * the call.
    */
-  code?: string;
+  action?: string;
   /**
    * The tool's result, error message, or the denial message. Missing on the
    * code-only `ACTION` that precedes an approval prompt.
@@ -669,7 +669,7 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
    * - `title`: the step heading, sent as `TITLE`.
    * - `thought`: optional explanation shown in the step, sent as `THOUGHT`.
    * - `action`: the text shown in the step's code box, sent as
-   *   `ACTION.code`. It is a readable form of the call, for example
+   *   `ACTION.action`. It is a readable form of the call, for example
    *   `getInsightDetails('NAVIGATION_0', 'LCPBreakdown')`, and is never
    *   executed.
    * - `javascriptCode`: the exact JavaScript the tool runs in the page, sent
@@ -1317,11 +1317,11 @@ export abstract class AiAgent<T> {
     }
     debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
 
-    let code;
+    let action;
     let javascriptCode;
     if (call.displayInfoFromArgs) {
-      const {title, thought, action: callCode, javascriptCode: callJavascriptCode} = call.displayInfoFromArgs(args);
-      code = callCode;
+      const {title, thought, action: callAction, javascriptCode: callJavascriptCode} = call.displayInfoFromArgs(args);
+      action = callAction;
       javascriptCode = callJavascriptCode;
       if (title) {
         yield {
@@ -1368,11 +1368,11 @@ export abstract class AiAgent<T> {
     }
 
     if ('requiresApproval' in result) {
-      if (code) {
+      if (action) {
         yield {
           type: ResponseType.ACTION,
           callId,
-          code,
+          action,
           canceled: false,
         };
       }
@@ -1419,7 +1419,7 @@ export abstract class AiAgent<T> {
         yield {
           type: ResponseType.ACTION,
           callId,
-          code,
+          action,
           output: 'Error: User denied code execution with side effects.',
           canceled: true,
         };
@@ -1453,7 +1453,7 @@ export abstract class AiAgent<T> {
       yield {
         type: ResponseType.ACTION,
         callId,
-        code,
+        action,
         output: typeof result.result === 'string' ? result.result : JSON.stringify(result.result),
         widgets: result.widgets,
         canceled: false,
@@ -1466,7 +1466,7 @@ export abstract class AiAgent<T> {
       yield {
         type: ResponseType.ACTION,
         callId,
-        code,
+        action,
         output: result.error,
         canceled: false,
         toolName: name,

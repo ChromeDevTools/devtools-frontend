@@ -13,6 +13,7 @@ import type * as NetworkTimeCalculator from '../network_time_calculator/network_
 
 import {AccessibilityAgent} from './agents/AccessibilityAgent.js';
 import {
+  type ActionResponse,
   type AgentOptions,
   type AiAgent,
   type AllowedOriginResult,
@@ -90,6 +91,11 @@ export class AiConversation {
     const history = (serializedConversation.history as SerializedResponseData[]).map(entry => {
       if (entry.type === ResponseType.SIDE_EFFECT) {
         return {...entry, confirm: () => {}};
+      }
+      if (entry.type === ResponseType.ACTION && 'code' in entry) {
+        // Entries saved before `ActionResponse.code` was renamed to `action`.
+        const {code, ...rest} = entry as ActionResponse & {code?: string};
+        return {...rest, action: rest.action ?? code};
       }
       return entry;
     });
@@ -285,8 +291,8 @@ export class AiConversation {
           if (!item.output) {
             break;
           }
-          if (item.code) {
-            contentParts.push(`**Code executed:**\n\`\`\`\n${item.code.trim()}\n\`\`\``);
+          if (item.action) {
+            contentParts.push(`**Code executed:**\n\`\`\`\n${item.action.trim()}\n\`\`\``);
           }
           contentParts.push(`**Data returned:**\n\`\`\`\n${item.output}\n\`\`\``);
           break;

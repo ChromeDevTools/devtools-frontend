@@ -690,19 +690,19 @@ describe('AiHistoryStorage', () => {
         },
         {
           type: AiAssistance.AiAgent.ResponseType.ACTION,
-          code: 'console.log("blue")',
+          action: 'console.log("blue")',
           output: 'blue',
           canceled: false,
         },
         {
           type: AiAssistance.AiAgent.ResponseType.ACTION,
-          code: 'console.log("red")',
+          action: 'console.log("red")',
           output: 'Error: User denied code execution with side effects',
           canceled: true,
         },
         {
           type: AiAssistance.AiAgent.ResponseType.ACTION,
-          code: 'console.log("no output")',
+          action: 'console.log("no output")',
           canceled: false,
         },
         {

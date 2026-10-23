@@ -1947,7 +1947,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.ACTION: {
             step = stepForCall(data.callId);
             step.state = data.canceled ? {type: 'canceled'} : {type: 'completed'};
-            step.action ??= data.code;
+            step.action ??= data.action;
             step.output ??= data.output;
             step.widgets ??= data.widgets;
             commitStep();

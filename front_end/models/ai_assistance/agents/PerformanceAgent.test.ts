@@ -583,7 +583,7 @@ code
 
       assert.exists(action);
       assert.strictEqual(action.type, 'action');
-      assert.strictEqual(action.code, 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})');
+      assert.strictEqual(action.action, 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})');
       assert.strictEqual(action.output, expectedOutput);
       assert.isFalse(action.canceled);
 
@@ -840,7 +840,7 @@ code
       assert.lengthOf(action.widgets, 2);
       assert.strictEqual(action.widgets[0].name, 'TIMELINE_RANGE_SUMMARY');
       assert.strictEqual(action.widgets[1].name, 'BOTTOM_UP_TREE');
-      assert.strictEqual(action.code, 'getMainThreadTrackSummaryByLabel(\'LCPBreakdown\')');
+      assert.strictEqual(action.action, 'getMainThreadTrackSummaryByLabel(\'LCPBreakdown\')');
       assert.strictEqual(action.output, expectedOutput);
       assert.isFalse(action.canceled);
       assert.strictEqual(action.type, 'action');

@@ -347,7 +347,7 @@ export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
    * - `title`: the step heading, sent as `TITLE`.
    * - `thought`: optional explanation shown in the step, sent as `THOUGHT`.
    * - `action`: the text shown in the step's code box, sent as
-   *   `ACTION.code`. It is a readable form of the call, for example
+   *   `ACTION.action`. It is a readable form of the call, for example
    *   `getInsightDetails('NAVIGATION_0', 'LCPBreakdown')`, and is never
    *   executed.
    * - `javascriptCode`: the exact JavaScript the tool runs in the page, sent

@@ -748,7 +748,7 @@ describe('AiConversation', () => {
 
     const actionResponse: AiAssistance.AiAgent.ActionResponse = {
       type: AiAssistance.AiAgent.ResponseType.ACTION,
-      code: 'code',
+      action: 'code',
       output: 'output',
       canceled: false,
       loadedSkills: ['styling'],
@@ -803,7 +803,7 @@ describe('AiConversation', () => {
 
     const actionResponseWithRedaction: AiAssistance.AiAgent.ActionResponse = {
       type: AiAssistance.AiAgent.ResponseType.ACTION,
-      code: 'code',
+      action: 'code',
       output: 'secret storage value',
       canceled: false,
       toolName: 'dummyTool',
@@ -811,7 +811,7 @@ describe('AiConversation', () => {
 
     const actionResponseWithoutRedaction: AiAssistance.AiAgent.ActionResponse = {
       type: AiAssistance.AiAgent.ResponseType.ACTION,
-      code: 'code',
+      action: 'code',
       output: 'normal output',
       canceled: false,
       toolName: 'otherTool',
@@ -828,6 +828,28 @@ describe('AiConversation', () => {
 
     assert.strictEqual(serialized.history[1].type, AiAssistance.AiAgent.ResponseType.ACTION);
     assert.strictEqual((serialized.history[1] as AiAssistance.AiAgent.ActionResponse).output, 'normal output');
+  });
+
+  it('maps the `code` field of stored actions to `action`', () => {
+    const action = {
+      type: AiAssistance.AiAgent.ResponseType.ACTION,
+      code: 'getCookieValues(["session"])',
+      output: 'value',
+      canceled: false,
+    } as unknown as AiAssistance.AiAgent.ActionResponse;
+
+    const conversation = AiAssistance.AiConversation.AiConversation.fromSerializedConversation({
+      id: 'id',
+      type: AiAssistance.AiHistoryStorage.ConversationType.STYLING,
+      history: [action],
+    });
+
+    assert.deepEqual(conversation.history, [{
+                       type: AiAssistance.AiAgent.ResponseType.ACTION,
+                       action: 'getCookieValues(["session"])',
+                       output: 'value',
+                       canceled: false,
+                     }]);
   });
 
   async function testNavigationDuringRun({

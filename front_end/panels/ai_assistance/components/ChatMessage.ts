@@ -686,7 +686,7 @@ function renderTitle(step: Step): Lit.LitTemplate {
   return html`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
 
-function renderStepCode(step: Step): Lit.LitTemplate {
+function renderStepAction(step: Step): Lit.LitTemplate {
   if (!step.action && !step.output) {
     return Lit.nothing;
   }
@@ -759,7 +759,7 @@ function renderStepDetails({
 
   return html`<div class="step-details">
     ${thought}
-    ${renderStepCode(step)}
+    ${renderStepAction(step)}
     ${sideEffects}
     ${contextDetails}
   </div>`;

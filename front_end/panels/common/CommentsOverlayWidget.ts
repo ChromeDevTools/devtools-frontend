@@ -82,11 +82,12 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
         p => html`
           <div
             class="comment-pin"
+            aria-hidden="true"
             style=${styleMap({
               transform: `translate3d(${p.left}px, ${p.top}px, 0)`,
             })}
             @click=${() => input.onPinClick(p.id)}>
-            <div class="comment-cursor">${p.index}</div>
+            <div class="comment-cursor"></div>
           </div>
         `,
       )}

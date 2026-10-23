@@ -102,23 +102,6 @@ describe('CommentManager', () => {
     assert.lengthOf(threadChangedEvents, 2);
   });
 
-  it('assigns incrementing index to saved threads', () => {
-    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
-      vePath: 'Panel: elements > TreeItem: rule',
-      textSignature: 'color: red;',
-    };
-
-    const thread1 = manager.createCommentThread(anchor, 'First comment');
-    assert.strictEqual(thread1.index, 1);
-    thread1.save();
-    assert.strictEqual(thread1.index, 1);
-
-    const thread2 = manager.createCommentThread(anchor, 'Second comment');
-    assert.strictEqual(thread2.index, 2);
-    thread2.save();
-    assert.strictEqual(thread2.index, 2);
-  });
-
   it('creates and retrieves comment threads with TimelineAnchorSignature', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: timeline > FlameChart: main',

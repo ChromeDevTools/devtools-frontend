@@ -37,7 +37,6 @@ export interface PinPositionData {
   top: number;
   left: number;
   visible: boolean;
-  index: number;
 }
 
 export interface HighlightRectData {
@@ -490,7 +489,6 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         top: scrollY + visibleRect.top - 12 + offsetY,
         left: scrollX + visibleRect.right - 12,
         visible: true,
-        index: thread.index,
       });
 
       newHighlights.push({

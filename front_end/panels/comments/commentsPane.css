@@ -123,17 +123,11 @@
   }
 
   .comment-pin-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: var(--sys-size-9);
     height: var(--sys-size-9);
     margin-right: var(--sys-size-2);
     border-radius: var(--sys-shape-corner-full) var(--sys-shape-corner-full) var(--sys-shape-corner-full) var(--sys-shape-corner-extra-small);
     background-color: var(--sys-color-primary);
-    color: var(--sys-color-on-primary);
-    font-size: var(--sys-typescale-body5-size);
-    font-weight: var(--ref-typeface-weight-bold);
     flex-shrink: 0;
   }
 

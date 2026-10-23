@@ -16,27 +16,16 @@ describe('CommentThread', () => {
     textSignature: 'color: red;',
   };
 
-  beforeEach(() => {
-    CommentManager.CommentThread.CommentThread.resetIndex();
-  });
-
-  it('generates non-empty id and only increments index when saved', () => {
-    const draft1 = new CommentManager.CommentThread.CommentThread({
+  it('generates a non-empty unique id', () => {
+    const thread1 = new CommentManager.CommentThread.CommentThread({
       anchor: defaultAnchor,
     });
-    assert.isNotEmpty(draft1.id);
-    assert.strictEqual(draft1.index, 1);
-
-    // Another draft before saving draft1 still sees index 1
-    const draft2 = new CommentManager.CommentThread.CommentThread({
+    const thread2 = new CommentManager.CommentThread.CommentThread({
       anchor: defaultAnchor,
     });
-    assert.strictEqual(draft2.index, 1);
-
-    // Saving draft2 claims index 1 and increments next index to 2
-    draft2.save('Saved comment');
-    assert.strictEqual(draft2.index, 1);
-    assert.strictEqual(draft1.index, 2);
+    assert.isNotEmpty(thread1.id);
+    assert.isNotEmpty(thread2.id);
+    assert.notStrictEqual(thread1.id, thread2.id);
   });
 
   it('defaults status to DRAFT and transmitted to false', () => {
@@ -138,7 +127,6 @@ describe('CommentThread', () => {
        assert.strictEqual(thread1.status, 'DRAFT');
        thread1.sendToAgent('Send from draft');
        assert.strictEqual(thread1.status, 'SENT_TO_AGENT');
-       assert.strictEqual(thread1.index, 1);
        assert.strictEqual(changeCount, 1);
        assert.lengthOf(thread1.comments, 1);
        assert.strictEqual(thread1.comments[0].text, 'Send from draft');
@@ -148,17 +136,15 @@ describe('CommentThread', () => {
        assert.strictEqual(thread1.status, 'SENT_TO_AGENT');
        assert.strictEqual(changeCount, 1);
 
-       // Transition from ACTIVE (saved) to SENT_TO_AGENT preserves saved index
+       // Transition from ACTIVE (saved) to SENT_TO_AGENT
        const thread2 = new CommentManager.CommentThread.CommentThread({
          anchor: defaultAnchor,
        });
        thread2.save();
        assert.strictEqual(thread2.status, 'ACTIVE');
-       assert.strictEqual(thread2.index, 2);
 
        thread2.sendToAgent();
        assert.strictEqual(thread2.status, 'SENT_TO_AGENT');
-       assert.strictEqual(thread2.index, 2);
      });
 
   it('editComment() replaces the developer comment text of an ACTIVE thread and dispatches CHANGED', () => {

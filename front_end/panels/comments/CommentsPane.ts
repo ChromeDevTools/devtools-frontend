@@ -203,7 +203,7 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
                   }
                 }}
                 jslog=${VisualLogging.item('comment-thread').track({ click: true })}>
-                <div class="comment-pin-badge">${item.thread.index}</div>
+                <div class="comment-pin-badge" aria-hidden="true"></div>
                 <span class="anchor-chip">
                   ${'node' in item.title ?
                     widget(CommonPanels.DOMLinkifier.DOMNodeLink, { node: item.title.node, options: { preventKeyboardFocus: true } }) :

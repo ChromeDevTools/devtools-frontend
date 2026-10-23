@@ -93,17 +93,10 @@ export interface CommentThreadOptions {
 }
 
 export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  static #nextIndex = 1;
-
-  static resetIndex(): void {
-    CommentThread.#nextIndex = 1;
-  }
-
   readonly id: string = crypto.randomUUID();
   readonly anchor: CommentAnchorSignature;
   /** True for comments generated from the change tracker. */
   readonly isGeneratedComment: boolean;
-  #savedIndex?: number;
   comments: Comment[];
   status: CommentThreadStatus = 'DRAFT';
   transmitted: boolean = false;
@@ -113,10 +106,6 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.anchor = options.anchor;
     this.comments = options.comments ?? [];
     this.isGeneratedComment = Boolean(options.isGeneratedComment);
-  }
-
-  get index(): number {
-    return this.#savedIndex ?? CommentThread.#nextIndex;
   }
 
   /**
@@ -153,9 +142,6 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     let changed = this.#saveText(text, author);
     if (this.status === 'DRAFT') {
       this.#recordCommentCreated();
-      if (this.#savedIndex === undefined) {
-        this.#savedIndex = CommentThread.#nextIndex++;
-      }
       this.status = 'ACTIVE';
       changed = true;
     }
@@ -183,9 +169,6 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       this.#recordCommentCreated();
     }
     if (this.status === 'DRAFT' || this.status === 'ACTIVE') {
-      if (this.#savedIndex === undefined) {
-        this.#savedIndex = CommentThread.#nextIndex++;
-      }
       this.status = 'SENT_TO_AGENT';
       changed = true;
     }
@@ -201,9 +184,6 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         text: replyText.trim(),
         timestamp: Date.now(),
       });
-    }
-    if (this.#savedIndex === undefined) {
-      this.#savedIndex = CommentThread.#nextIndex++;
     }
     this.status = 'RESOLVED';
     this.dispatchEventToListeners(Events.CHANGED);

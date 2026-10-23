@@ -33,23 +33,14 @@
   }
 
   .comment-cursor {
-    display: flex;
     width: var(--sys-size-9);
     height: var(--sys-size-9);
     box-sizing: border-box;
     padding: 0;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     flex-shrink: 0;
     box-shadow: var(--sys-elevation-level2);
     border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
     background: var(--sys-color-primary);
-    color: var(--sys-color-on-primary);
-    font-family: var(--default-font-family);
-    font-size: var(--sys-typescale-body5-size);
-    font-weight: var(--ref-typeface-weight-bold, 600);
-    line-height: 1;
     transition: transform 0.1s ease;
     transform-origin: center center;
   }

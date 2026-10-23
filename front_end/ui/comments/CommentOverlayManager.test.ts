@@ -968,7 +968,6 @@ describeWithEnvironment('CommentOverlayManager', () => {
                          top: 48,
                          left: 128,
                          visible: true,
-                         index: thread.index,
                        }]);
     });
 

@@ -127,10 +127,10 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     const pin = widget.contentElement.querySelector('.comment-pin') as HTMLElement;
     assert.isNotNull(pin);
-    assert.include(pin.textContent || '', '1');
+    assert.strictEqual(pin.getAttribute('aria-hidden'), 'true');
     const cursor = pin.querySelector('.comment-cursor');
     assert.isNotNull(cursor);
-    assert.strictEqual(cursor.textContent?.trim(), '1');
+    assert.strictEqual(cursor.textContent?.trim(), '');
 
     const highlight = widget.contentElement.querySelector('.comment-anchor-highlight') as HTMLElement;
     assert.isNotNull(highlight);
@@ -139,7 +139,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     widget.detach();
   });
 
-  it('renders sequential numbers for multiple comment pins in order of creation', async () => {
+  it('renders a pin for each saved comment', async () => {
     const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);
     widget.markAsRoot();
@@ -174,50 +174,9 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const pins = Array.from(widget.contentElement.querySelectorAll('.comment-pin'));
     assert.lengthOf(pins, 3);
 
-    const texts = pins.map(p => p.querySelector('.comment-cursor')?.textContent?.trim());
-    assert.deepEqual(texts, ['1', '2', '3']);
-
     el1.remove();
     el2.remove();
     el3.remove();
-    widget.detach();
-  });
-
-  it('does not increment pin index when clicking another element without saving draft', async () => {
-    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
-    widget.setOverlayManagerForTest(overlayManager);
-    widget.markAsRoot();
-    renderElementIntoDOM(widget, {allowMultipleChildren: true});
-
-    const el1 = document.createElement('div');
-    el1.setAttribute('jslog', 'TreeItem; context: draft-idx-1');
-    el1.textContent = 'item 1';
-    el1.getBoundingClientRect = () => new DOMRect(10, 10, 100, 30);
-    renderElementIntoDOM(el1, {allowMultipleChildren: true});
-
-    const el2 = document.createElement('div');
-    el2.setAttribute('jslog', 'TreeItem; context: draft-idx-2');
-    el2.textContent = 'item 2';
-    el2.getBoundingClientRect = () => new DOMRect(10, 50, 100, 30);
-    renderElementIntoDOM(el2, {allowMultipleChildren: true});
-
-    commentManager.setCommentMode(true);
-    overlayManager.handleElementClick(el1);
-    widget.requestUpdate();
-    await widget.updateComplete;
-
-    let pin = widget.contentElement.querySelector('.comment-pin .comment-cursor');
-    assert.strictEqual(pin?.textContent?.trim(), '1');
-
-    overlayManager.handleElementClick(el2);
-    widget.requestUpdate();
-    await widget.updateComplete;
-
-    pin = widget.contentElement.querySelector('.comment-pin .comment-cursor');
-    assert.strictEqual(pin?.textContent?.trim(), '1');
-
-    el1.remove();
-    el2.remove();
     widget.detach();
   });
 
@@ -615,7 +574,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     // while preserving the exact same DOM elements via keyed repeat().
     currentTop = 160;
     overlayManager.dispatchEventToListeners(Comments.CommentOverlayManager.Events.POSITIONS_UPDATED, {
-      pins: [{id: thread.id, top: 148, left: 158, visible: true, index: 1}],
+      pins: [{id: thread.id, top: 148, left: 158, visible: true}],
       highlights: [{id: thread.id, top: 160, left: 50, width: 120, height: 30, visible: true}],
       isRealtimeSync: true,
     });

@@ -48,11 +48,6 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   #commentMode = false;
   #agentAttached = false;
 
-  constructor() {
-    super();
-    CommentThread.resetIndex();
-  }
-
   #onThreadChanged(): void {
     this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, this.getCommentThreads());
   }
@@ -174,7 +169,6 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       thread.removeEventListener(CommentThreadEvents.CHANGED, this.#onThreadChanged, this);
     }
     this.#commentThreads.clear();
-    CommentThread.resetIndex();
     this.dispatchEventToListeners(Events.COMMENT_THREADS_CHANGED, []);
   }
 }

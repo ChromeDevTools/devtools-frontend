@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, it} from 'mocha';
+import {it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -170,10 +170,6 @@ describeWithEnvironment('CommentsPane', () => {
 });
 
 describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
-  beforeEach(() => {
-    CommentManager.CommentThread.CommentThread.resetIndex();
-  });
-
   function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> = {}): HTMLElement {
     const target = document.createElement('div');
     target.style.width = '360px';
@@ -198,7 +194,6 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
   }
 
   function createMockThread(
-      index: number,
       selectorText: string,
       commentText: string,
       options: Partial<Comments.CommentsPane.ThreadViewData> = {},
@@ -228,17 +223,14 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
   it('renders comments list with various thread states', async () => {
     const threads: Comments.CommentsPane.ThreadViewData[] = [
       createMockThread(
-          1,
           'a.o-text-cta--small',
           'Left align this button with H2 and use the primary pink colour for the button.',
           ),
       createMockThread(
-          2,
           'div.c-scrolling-list',
           'Remove the animation from H1.',
           ),
       createMockThread(
-          3,
           'span.sub-header',
           'Updated font weight.',
           ),
@@ -251,13 +243,11 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
 
   it('renders comments list in the sent tab', async () => {
     const pendingThread = createMockThread(
-        1,
         'a.cta',
         'Left align this button with H2 and use the primary pink colour for the button.',
     );
     pendingThread.thread.sendToAgent();
     const resolvedThread = createMockThread(
-        2,
         'div.list',
         'Remove the animation from H1.',
     );
@@ -277,7 +267,7 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
   it('does not trigger thread selection when pressing Enter or Space on the delete button', () => {
     const onThreadClick = sinon.spy();
 
-    const mockThreadData = createMockThread(1, 'a.button', 'Test comment');
+    const mockThreadData = createMockThread('a.button', 'Test comment');
     const target = renderView({
       threads: [mockThreadData],
       onThreadClick,

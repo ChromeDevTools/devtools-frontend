@@ -766,7 +766,7 @@ describe('AiConversation', () => {
     const sideEffectResponse: AiAssistance.AiAgent.SideEffectResponse = {
       type: AiAssistance.AiAgent.ResponseType.SIDE_EFFECT,
       description: 'Side effect',
-      code: 'code',
+      javascriptCode: 'code',
       confirm: () => {},
     };
 

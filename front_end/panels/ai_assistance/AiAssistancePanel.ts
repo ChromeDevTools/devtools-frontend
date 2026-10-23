@@ -1922,7 +1922,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           case AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT: {
             step = stepForCall(data.callId);
             const approvalStep = step;
-            approvalStep.action ??= data.code;
+            approvalStep.javascriptCode = data.javascriptCode;
             const promptShownAt = performance.now();
             approvalStep.state = {
               type: 'needs_approval',

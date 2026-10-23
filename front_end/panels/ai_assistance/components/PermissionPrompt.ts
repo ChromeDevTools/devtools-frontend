@@ -96,14 +96,14 @@ export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.
   const description =
       dialog.description ? html`<p class="permission-prompt-description">${dialog.description}</p>` : Lit.nothing;
 
-  const code = step.action ? html`<devtools-code-block
+  const code = step.javascriptCode ? html`<devtools-code-block
       class="permission-prompt-code"
-      .code=${step.action.trim()}
+      .code=${step.javascriptCode.trim()}
       .codeLang=${'js'}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.codeToExecute)}
     ></devtools-code-block>` :
-                             Lit.nothing;
+                                     Lit.nothing;
 
   const allowAlwaysButton = dialog.permissionPrompt === AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE_OR_ALWAYS ?
       html`<devtools-button

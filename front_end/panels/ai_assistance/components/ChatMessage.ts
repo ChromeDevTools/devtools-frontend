@@ -479,6 +479,11 @@ export interface Step {
    */
   action?: string;
   /**
+   * Exact JavaScript the tool runs in the page. Shown in the permission prompt.
+   * Only set for tools that execute JavaScript.
+   */
+  javascriptCode?: string;
+  /**
    * Raw string output or data returned by code execution.
    */
   output?: string;

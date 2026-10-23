@@ -4040,6 +4040,49 @@ describeWithEnvironment('AI Assistance Panel', () => {
         {title: 'Call B', output: 'b-output', state: 'completed'},
       ]);
     });
+
+    it('stores the JavaScript code from a side effect on the step awaiting approval', async () => {
+      stubPerformanceNow();
+      const {promise: decision, resolve: confirm} = Promise.withResolvers<AiAssistanceModel.Tool.PermissionDecision>();
+      sinon.stub(AiAssistanceModel.StylingAgent.StylingAgent.prototype, 'run').returns((async function*() {
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY, query: 'test'};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.TITLE, title: 'Call A', callId: 'a'};
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.ACTION,
+          code: 'executeJavaScript()',
+          canceled: false,
+          callId: 'a',
+        };
+        yield {
+          type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+          description: null,
+          javascriptCode: 'document.title = "Hello";',
+          confirm,
+          callId: 'a',
+        };
+        await decision;
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.QUERYING};
+        yield {type: AiAssistanceModel.AiAgent.ResponseType.ANSWER, text: 'Done', complete: true};
+      })());
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      const input = await view.nextInput;
+      assert(input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      input.props.onTextSubmit('test');
+
+      await waitForSideEffectDialog(view);
+
+      assert(view.input.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      const lastMessage = view.input.props.messages.at(-1);
+      assert.exists(lastMessage);
+      assert(lastMessage.entity === AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL);
+      const stepPart = lastMessage.parts.find(part => part.type === 'step');
+      assert.strictEqual(stepPart?.type, 'step');
+      assert.strictEqual(stepPart?.step.state.type, 'needs_approval');
+      assert.strictEqual(stepPart?.step.action, 'executeJavaScript()');
+      assert.strictEqual(stepPart?.step.javascriptCode, 'document.title = "Hello";');
+    });
   });
 
   describe('permission prompt input protection', () => {

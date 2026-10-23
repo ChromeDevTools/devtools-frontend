@@ -174,11 +174,13 @@ const data = {
     title: string,
     thought: string,
     action: string,
+    javascriptCode: string,
   } {
     return {
       title: params.title,
       thought: params.explanation,
       action: params.code,
+      javascriptCode: params.code,
     };
   }
 

@@ -56,16 +56,25 @@ describeWithEnvironment('PermissionPrompt', () => {
     assert.isNull(target.querySelector('.permission-prompt'));
   });
 
-  it('renders the title, description and code', () => {
+  it('renders the title and description', () => {
     const target = renderPrompt(createStep());
 
     const prompt = querySelectorErrorOnMissing(target, '.permission-prompt');
     assert.strictEqual(prompt.querySelector('.permission-prompt-title')?.textContent, 'Allow reading cookie values?');
     assert.include(prompt.querySelector('.permission-prompt-description')?.textContent,
                    'The AI wants to read the cookie "session"');
+  });
 
-    const codeBlock = querySelectorErrorOnMissing<HTMLElement&{code: string}>(prompt, 'devtools-code-block');
-    assert.strictEqual(codeBlock.code, 'getCookieValues({cookieNames: ["session"]})');
+  it('does not render a code block for tools that do not execute JavaScript', () => {
+    const target = renderPrompt(createStep());
+    assert.isNull(target.querySelector('devtools-code-block'));
+  });
+
+  it('renders the code block for tools that execute JavaScript', () => {
+    const target = renderPrompt({...createStep(), javascriptCode: 'document.title = "Hello";'});
+
+    const codeBlock = querySelectorErrorOnMissing<HTMLElement&{code: string}>(target, 'devtools-code-block');
+    assert.strictEqual(codeBlock.code, 'document.title = "Hello";');
     assert.strictEqual(codeBlock.shadowRoot?.querySelector('.heading-text')?.textContent, 'Code to execute');
     assert.include(codeBlock.shadowRoot?.querySelector('.notice')?.textContent, 'Use code snippets with caution');
   });
@@ -141,5 +150,19 @@ describeWithEnvironment('PermissionPrompt', () => {
                  }),
                  target);
     await assertScreenshot('ai_assistance/permission_prompt_allow_once_or_always.png');
+  });
+
+  it('renders the prompt with the JavaScript code to execute', async () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    renderPrompt({
+      ...createStep({
+        description: 'AI assistance wants to change the document title.',
+        permissionTitle: 'Allow executing JavaScript?',
+      }),
+      javascriptCode: 'document.title = "Hello";',
+    },
+                 target);
+    await assertScreenshot('ai_assistance/permission_prompt_javascript_code.png');
   });
 });

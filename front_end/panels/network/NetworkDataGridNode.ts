@@ -1367,7 +1367,9 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   private openInNewTab(): void {
-    if (Common.ParsedURL.isPrivilegedScheme(this.requestInternal.url())) {
+    // Only open URLs with web-safe schemes. Do not open privileged or other non-web-safe
+    // schemes (such as `chrome:`, `devtools:`, `file:`, or `blob:devtools:`).
+    if (!Common.ParsedURL.hasWebSafeScheme(this.requestInternal.url())) {
       return;
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());

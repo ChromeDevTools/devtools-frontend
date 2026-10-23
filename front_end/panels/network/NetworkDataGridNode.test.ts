@@ -1069,10 +1069,33 @@ describeWithEnvironment('NetworkLogView', () => {
       assert.isNull(icon);
     });
 
-    it('does not open privileged URLs in a new tab on double-click', () => {
+    for (const url of ['chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/secret.html',
+                       'chrome://settings/reset',
+                       'devtools://devtools/bundled/devtools_app.html',
+                       'file:///etc/passwd',
+                       'blob:devtools://devtools/0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0',
+    ]) {
+      it(`does not open non-web-safe URL ${url} in a new tab on double-click`, () => {
+        const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+        const request = createNetworkRequest({
+          url,
+          resourceType: Common.ResourceType.resourceTypes.Document,
+        });
+
+        const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+            {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+        const el = document.createElement('div');
+        networkRequestNode.renderCell(el, 'name');
+        el.dispatchEvent(new MouseEvent('dblclick'));
+
+        sinon.assert.notCalled(openInNewTabStub);
+      });
+    }
+
+    it('opens web-safe URLs in a new tab on double-click', () => {
       const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
       const request = createNetworkRequest({
-        url: 'chrome-extension://nnkmpipfcdgmkgepigmhifcgbddoohgk/secret.html',
+        url: 'https://www.example.com/',
         resourceType: Common.ResourceType.resourceTypes.Document,
       });
 
@@ -1082,7 +1105,7 @@ describeWithEnvironment('NetworkLogView', () => {
       networkRequestNode.renderCell(el, 'name');
       el.dispatchEvent(new MouseEvent('dblclick'));
 
-      sinon.assert.notCalled(openInNewTabStub);
+      sinon.assert.calledOnceWithExactly(openInNewTabStub, urlString`https://www.example.com/`);
     });
   });
 

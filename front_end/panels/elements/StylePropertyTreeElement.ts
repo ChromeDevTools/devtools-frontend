@@ -258,7 +258,7 @@ export class FlexGridRenderer extends FlexGridRendererBase {
       return children;
     }
     const key =
-        `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
+        `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx++}`;
 
     function getEditorClass(layoutType: SDK.CSSPropertyParserMatchers.LayoutType): typeof FlexboxEditor|
         typeof GridEditor|typeof GridLanesEditor {
@@ -296,17 +296,9 @@ export class FlexGridRenderer extends FlexGridRendererBase {
 
     const button = StyleEditorWidget.createTriggerButton(
         this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType),
-        getButtonTitle(match.layoutType), key);
-    button.tabIndex = -1;
-    button.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(match.layoutType)}`);
-    this.#treeElement.section().nextEditorTriggerButtonIdx++;
-    button.addEventListener('click', () => {
-      Host.userMetrics.swatchActivated(getSwatchType(match.layoutType));
-    });
-    const helper = this.#stylesContainer.swatchPopoverHelper();
-    if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
-      helper.setAnchorElement(button);
-    }
+        getButtonTitle(match.layoutType), key, match.layoutType, () => {
+          Host.userMetrics.swatchActivated(getSwatchType(match.layoutType));
+        });
     return html`${children}${button}`;
   }
 }

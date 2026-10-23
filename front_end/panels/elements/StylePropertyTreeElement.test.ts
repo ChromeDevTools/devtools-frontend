@@ -4786,9 +4786,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
       it('tracks only net property changes from StyleEditorWidget when the popover closes', async () => {
         const section = await createLiveSection('display: flex; flex-direction: row;', {inline: true});
-        const triggerButton = Elements.StyleEditorWidget.StyleEditorWidget.createTriggerButton(
-            stylesSidebarPane, section, ElementsComponents.StylePropertyEditor.FlexboxEditor, 'Open flexbox editor',
-            'test-flex');
+        const triggerButton =
+            treeElementAt(section, 0).listItemElement.querySelector<HTMLElement>('.styles-pane-button');
+        assert.exists(triggerButton);
         triggerButton.click();
         await waitFor(() => stylesSidebarPane.swatchPopoverHelper().isShowing());
 

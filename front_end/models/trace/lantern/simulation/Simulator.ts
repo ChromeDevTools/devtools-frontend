@@ -433,6 +433,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
             {
               startTime: timing.startTime,
               endTime: timing.endTime,
+              queuedTime: timing.queuedTime,
               duration: timing.endTime - timing.startTime,
             },
           ];

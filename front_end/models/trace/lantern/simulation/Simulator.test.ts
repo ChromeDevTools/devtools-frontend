@@ -198,10 +198,10 @@ describe('DependencyGraph/Simulator', () => {
       const result = simulator.simulate(nodeA);
       // should be 800ms A, then 1000 ms total for B, C, D in serial
       assert.strictEqual(result.timeInMs, 1950);
-      assertNodeTiming(result, nodeA, {startTime: 0, endTime: 950});
-      assertNodeTiming(result, nodeB, {startTime: 950, endTime: 1050});
-      assertNodeTiming(result, nodeC, {startTime: 1050, endTime: 1650});
-      assertNodeTiming(result, nodeD, {startTime: 1650, endTime: 1950});
+      assertNodeTiming(result, nodeA, {startTime: 0, endTime: 950, queuedTime: 0});
+      assertNodeTiming(result, nodeB, {startTime: 950, endTime: 1050, queuedTime: 950});
+      assertNodeTiming(result, nodeC, {startTime: 1050, endTime: 1650, queuedTime: 950});
+      assertNodeTiming(result, nodeD, {startTime: 1650, endTime: 1950, queuedTime: 950});
     });
 
     it('should simulate basic network waterfall graphs with CPU', () => {
@@ -309,12 +309,12 @@ describe('DependencyGraph/Simulator', () => {
 
       // should be 3 RTs + SRT for rootNode (950ms)
       // should be 1 RT  + SRT for image nodes in observed order (650ms)
-      assertNodeTiming(result, rootNode, {startTime: 0, endTime: 950});
-      assertNodeTiming(result, imageNodes[4], {startTime: 950, endTime: 1600});
-      assertNodeTiming(result, imageNodes[3], {startTime: 1600, endTime: 2250});
-      assertNodeTiming(result, imageNodes[2], {startTime: 2250, endTime: 2900});
-      assertNodeTiming(result, imageNodes[1], {startTime: 2900, endTime: 3550});
-      assertNodeTiming(result, imageNodes[0], {startTime: 3550, endTime: 4200});
+      assertNodeTiming(result, rootNode, {startTime: 0, endTime: 950, queuedTime: 0});
+      assertNodeTiming(result, imageNodes[4], {startTime: 950, endTime: 1600, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[3], {startTime: 1600, endTime: 2250, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[2], {startTime: 2250, endTime: 2900, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[1], {startTime: 2900, endTime: 3550, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[0], {startTime: 3550, endTime: 4200, queuedTime: 950});
     });
 
     it('should start network requests in priority order to break startTime ties', () => {
@@ -338,12 +338,12 @@ describe('DependencyGraph/Simulator', () => {
 
       // should be 3 RTs + SRT for rootNode (950ms)
       // should be 1 RT  + SRT for image nodes in priority order (650ms)
-      assertNodeTiming(result, rootNode, {startTime: 0, endTime: 950});
-      assertNodeTiming(result, imageNodes[4], {startTime: 950, endTime: 1600});
-      assertNodeTiming(result, imageNodes[3], {startTime: 1600, endTime: 2250});
-      assertNodeTiming(result, imageNodes[2], {startTime: 2250, endTime: 2900});
-      assertNodeTiming(result, imageNodes[1], {startTime: 2900, endTime: 3550});
-      assertNodeTiming(result, imageNodes[0], {startTime: 3550, endTime: 4200});
+      assertNodeTiming(result, rootNode, {startTime: 0, endTime: 950, queuedTime: 0});
+      assertNodeTiming(result, imageNodes[4], {startTime: 950, endTime: 1600, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[3], {startTime: 1600, endTime: 2250, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[2], {startTime: 2250, endTime: 2900, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[1], {startTime: 2900, endTime: 3550, queuedTime: 950});
+      assertNodeTiming(result, imageNodes[0], {startTime: 3550, endTime: 4200, queuedTime: 950});
     });
 
     it('should simulate two graphs in a row', () => {

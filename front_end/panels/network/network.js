@@ -6300,7 +6300,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     this.parentView().dispatchEventToListeners("RequestSelected" /* RequestSelected */, this.requestInternal);
   }
   openInNewTab() {
-    if (Common5.ParsedURL.isPrivilegedScheme(this.requestInternal.url())) {
+    if (!Common5.ParsedURL.hasWebSafeScheme(this.requestInternal.url())) {
       return;
     }
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
@@ -16433,7 +16433,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
           toggle-on-click
           ?open=${objectTree.expanded}
-          @expand=${(e) => input.onPayloadToggle(e.detail.expanded)}
+          @expand=${(e) => input.onPayloadToggle(e.detail.expanded, e.detail.recursively)}
           @contextmenu=${onPayloadContextMenu}>
         ${objectTree.object.description}
         ${objectTree.object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing9}
@@ -16708,10 +16708,15 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
           }
         );
       },
-      onPayloadToggle: (expanded) => {
-        if (this.#objectTree) {
-          this.#objectTree.expanded = expanded;
+      onPayloadToggle: (expanded, recursively = false) => {
+        if (!this.#objectTree) {
+          return;
         }
+        if (expanded && recursively) {
+          void this.#objectTree.expandRecursively();
+          return;
+        }
+        this.#objectTree.expanded = expanded;
       },
       binaryPayloadContentData: this.#binaryPayloadContentData,
       requestUrl: this.request?.url() ?? Platform10.DevToolsPath.EmptyUrlString

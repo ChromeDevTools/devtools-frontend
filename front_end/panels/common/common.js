@@ -4470,23 +4470,14 @@ var commentsOverlay_css_default = `/*
   }
 
   .comment-cursor {
-    display: flex;
     width: var(--sys-size-9);
     height: var(--sys-size-9);
     box-sizing: border-box;
     padding: 0;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     flex-shrink: 0;
     box-shadow: var(--sys-elevation-level2);
     border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
     background: var(--sys-color-primary);
-    color: var(--sys-color-on-primary);
-    font-family: var(--default-font-family);
-    font-size: var(--sys-typescale-body5-size);
-    font-weight: var(--ref-typeface-weight-bold, 600);
-    line-height: 1;
     transition: transform 0.1s ease;
     transform-origin: center center;
   }
@@ -4538,6 +4529,7 @@ var POPUP_WIDTH = 288;
 var POPUP_HEIGHT = 220;
 var AUTO_CLOSE_DELAY_MS = 2e3;
 var DEFAULT_VIEW7 = (input, _output, target) => {
+  const popupPosition = input.activePin ?? input.fallbackPosition;
   render8(html9`
     <style>${commentsOverlay_css_default}</style>
     <div class="comments-overlay-container">
@@ -4571,31 +4563,31 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     (p) => html9`
           <div
             class="comment-pin"
+            aria-hidden="true"
             style=${styleMap({
       transform: `translate3d(${p.left}px, ${p.top}px, 0)`
     })}
             @click=${() => input.onPinClick(p.id)}>
-            <div class="comment-cursor">${p.index}</div>
+            <div class="comment-cursor"></div>
           </div>
         `
   )}
-      ${input.activePin && input.activeThread ? repeat(
-    [{ pin: input.activePin, thread: input.activeThread }],
+      ${popupPosition && input.activeThread ? repeat(
+    [{ position: popupPosition, thread: input.activeThread }],
     (item2) => item2.thread.id,
     (item2) => {
-      const popupTop = Math.min(
-        Math.max(POPUP_MARGIN, item2.pin.top + PIN_HEIGHT),
-        Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT)
-      );
       const popupLeft = Math.min(
-        Math.max(POPUP_MARGIN, item2.pin.left),
+        Math.max(POPUP_MARGIN, item2.position.left),
         Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN)
       );
+      const topOffset = input.activePin ? item2.position.top + PIN_HEIGHT : item2.position.top - POPUP_MARGIN;
+      const maxTop = target.clientHeight - (input.activePin ? POPUP_HEIGHT : POPUP_MARGIN);
+      const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
       return html9`
             <div
               class="comment-popup-widget"
               style=${styleMap({
-        transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)`
+        transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${input.activePin ? "" : " translateY(-100%)"}`
       })}>
               ${UI10.Widget.widget(CommentThreadWidget, {
         title: input.title,
@@ -4620,10 +4612,12 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   #commentManager;
   #commentOverlayManager;
   #activeThreadId = null;
+  #fallbackPosition = null;
   #closeTimeoutId = null;
   #cachedTitle = { text: "" };
   #cachedTitleAnchor = null;
   #setActiveThreadId(threadId) {
+    this.#fallbackPosition = null;
     if (this.#activeThreadId !== threadId) {
       this.#clearCloseTimeout();
       this.#activeThreadId = threadId;
@@ -4850,6 +4844,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       onPinClick: this.#handlePinClick,
       activeThread,
       activePin,
+      fallbackPosition: this.#fallbackPosition,
       title,
       onAddComment: (text) => {
         if (!activeThread) {
@@ -4911,10 +4906,11 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     }
     this.#renderWithTitle(activeThread, title);
   }
-  openThread(threadId) {
+  openThread(threadId, fallbackPosition) {
     this.#clearCloseTimeout();
     this.#commentOverlayManager.clearDraftThreads();
     this.#setActiveThreadId(threadId);
+    this.#fallbackPosition = fallbackPosition ?? null;
     this.requestUpdate();
   }
 };
@@ -4931,17 +4927,18 @@ function getOrCreateOverlayWidget(commentManager) {
   return widgetInstance;
 }
 var ThreadRevealer = class {
-  async reveal(thread) {
+  async reveal({ thread, position }) {
     const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
     if (panelId && UI10.InspectorView.InspectorView.instance().hasPanel(panelId)) {
       await UI10.InspectorView.InspectorView.instance().showPanel(panelId);
     }
     const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
+    thread.setOrphaned(!element);
     if (element) {
       element.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
     }
     const overlay = getOrCreateOverlayWidget();
-    overlay.openThread(thread.id);
+    overlay.openThread(thread.id, position);
   }
 };
 var ActionDelegate = class {

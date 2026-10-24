@@ -15,6 +15,7 @@ const POPUP_WIDTH = 288;
 const POPUP_HEIGHT = 220;
 const AUTO_CLOSE_DELAY_MS = 2000;
 const DEFAULT_VIEW = (input, _output, target) => {
+    const popupPosition = input.activePin ?? input.fallbackPosition;
     // clang-format off
     render(html `
     <style>${commentsOverlayStyles}</style>
@@ -42,21 +43,28 @@ const DEFAULT_VIEW = (input, _output, target) => {
       ${repeat(input.pins.filter(p => p.visible), p => p.id, p => html `
           <div
             class="comment-pin"
+            aria-hidden="true"
             style=${styleMap({
         transform: `translate3d(${p.left}px, ${p.top}px, 0)`,
     })}
             @click=${() => input.onPinClick(p.id)}>
-            <div class="comment-cursor">${p.index}</div>
+            <div class="comment-cursor"></div>
           </div>
         `)}
-      ${input.activePin && input.activeThread ? repeat([{ pin: input.activePin, thread: input.activeThread }], item => item.thread.id, item => {
-        const popupTop = Math.min(Math.max(POPUP_MARGIN, item.pin.top + PIN_HEIGHT), Math.max(POPUP_MARGIN, target.clientHeight - POPUP_HEIGHT));
-        const popupLeft = Math.min(Math.max(POPUP_MARGIN, item.pin.left), Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN));
+      ${popupPosition && input.activeThread ? repeat([{ position: popupPosition, thread: input.activeThread }], item => item.thread.id, item => {
+        // Clamp horizontal position so the popup stays within the viewport with POPUP_MARGIN padding.
+        const popupLeft = Math.min(Math.max(POPUP_MARGIN, item.position.left), Math.max(POPUP_MARGIN, target.clientWidth - POPUP_WIDTH - POPUP_MARGIN));
+        // When anchored to a pin (`activePin`), place the popup below the pin (`top + PIN_HEIGHT`).
+        // When unanchored (`fallbackPosition` from a drawer row), place the anchor point just above
+        // the row (`top - POPUP_MARGIN`) and shift the popup up by its own height via `translateY(-100%)`.
+        const topOffset = input.activePin ? item.position.top + PIN_HEIGHT : item.position.top - POPUP_MARGIN;
+        const maxTop = target.clientHeight - (input.activePin ? POPUP_HEIGHT : POPUP_MARGIN);
+        const popupTop = Math.min(Math.max(POPUP_MARGIN, topOffset), Math.max(POPUP_MARGIN, maxTop));
         return html `
             <div
               class="comment-popup-widget"
               style=${styleMap({
-            transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)`,
+            transform: `translate3d(${popupLeft}px, ${popupTop}px, 0)${input.activePin ? '' : ' translateY(-100%)'}`,
         })}>
               ${UI.Widget.widget(CommentThreadWidget, {
             title: input.title,
@@ -81,10 +89,12 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     #commentManager;
     #commentOverlayManager;
     #activeThreadId = null;
+    #fallbackPosition = null;
     #closeTimeoutId = null;
     #cachedTitle = { text: '' };
     #cachedTitleAnchor = null;
     #setActiveThreadId(threadId) {
+        this.#fallbackPosition = null;
         if (this.#activeThreadId !== threadId) {
             this.#clearCloseTimeout();
             this.#activeThreadId = threadId;
@@ -260,6 +270,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             onPinClick: this.#handlePinClick,
             activeThread,
             activePin,
+            fallbackPosition: this.#fallbackPosition,
             title,
             onAddComment: (text) => {
                 if (!activeThread) {
@@ -323,10 +334,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         }
         this.#renderWithTitle(activeThread, title);
     }
-    openThread(threadId) {
+    openThread(threadId, fallbackPosition) {
         this.#clearCloseTimeout();
         this.#commentOverlayManager.clearDraftThreads();
         this.#setActiveThreadId(threadId);
+        this.#fallbackPosition = fallbackPosition ?? null;
         this.requestUpdate();
     }
 }
@@ -342,17 +354,18 @@ function getOrCreateOverlayWidget(commentManager) {
     return widgetInstance;
 }
 export class ThreadRevealer {
-    async reveal(thread) {
+    async reveal({ thread, position }) {
         const panelId = Comments.CommentAnchorResolver.extractPanelId(thread.anchor.vePath);
         if (panelId && UI.InspectorView.InspectorView.instance().hasPanel(panelId)) {
             await UI.InspectorView.InspectorView.instance().showPanel(panelId);
         }
         const element = Comments.CommentAnchorResolver.rematchCommentAnchor(thread);
+        thread.setOrphaned(!element);
         if (element) {
             element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
         }
         const overlay = getOrCreateOverlayWidget();
-        overlay.openThread(thread.id);
+        overlay.openThread(thread.id, position);
     }
 }
 export class ActionDelegate {

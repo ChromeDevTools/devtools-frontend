@@ -135,7 +135,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                    @keydown=${(e) => onKeyDown(e, listener, object)}
                    ?hidden=${shouldHide(listener)}>
                  <span class=event-listener-details>
-                   ${ObjectUI.ObjectPropertiesSection.renderPropertyValue(object, /* wasThrown */ false, /* showPreview */ false, input.linkifier)}
+                   ${ObjectUI.ObjectPropertiesSection.renderPropertyValue(object, /* wasThrown */ false, /* showPreview */ false)}
                    <devtools-button
                      .iconName=${'bin'}
                      .variant=${"icon" /* Buttons.Button.Variant.ICON */}
@@ -152,7 +152,16 @@ export const DEFAULT_VIEW = (input, output, target) => {
                          ${i18nString(UIStrings.togglePassive)}
                      </button>` : Lit.nothing}
                    <span class=event-listener-tree-subtitle>
-                     ${input.linkifier.linkifyRawLocation(listener.location(), listener.sourceURL(), /* FIXME template version */ undefined, { tabStop: true })}
+                     ${widget(Components.Linkifier.ScriptLocationLink, {
+        target: listener.location().debuggerModel.target(),
+        scriptId: listener.location().scriptId,
+        sourceURL: listener.sourceURL(),
+        lineNumber: listener.location().lineNumber,
+        options: {
+            columnNumber: listener.location().columnNumber,
+            tabStop: true,
+        },
+    })}
                    </span>
                  </span>
                  <ul role=group ${widget(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, { objectTree })} ${widgetRef(ObjectUI.ObjectPropertiesSection.ObjectTreeWidget, () => { })}></ul>
@@ -169,7 +178,6 @@ export class EventListenersView extends UI.Widget.VBox {
     #filter;
     #view;
     #listeners;
-    #linkifier = new Components.Linkifier.Linkifier();
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -238,9 +246,7 @@ export class EventListenersView extends UI.Widget.VBox {
                     void Common.Revealer.reveal(object);
                 }
             },
-            linkifier: this.#linkifier,
         };
-        this.#linkifier.reset();
         this.#view(input, {}, this.contentElement);
         this.eventListenersArrivedForTest();
     }

@@ -79,7 +79,6 @@ export interface CommentThreadOptions {
 }
 export declare class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    static resetIndex(): void;
     readonly id: string;
     readonly anchor: CommentAnchorSignature;
     /** True for comments generated from the change tracker. */
@@ -88,9 +87,21 @@ export declare class CommentThread extends Common.ObjectWrapper.ObjectWrapper<Ev
     status: CommentThreadStatus;
     transmitted: boolean;
     constructor(options: CommentThreadOptions);
-    get index(): number;
+    get isOrphaned(): boolean;
+    setOrphaned(isOrphaned: boolean): void;
     save(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;
     editComment(text: string): void;
     sendToAgent(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;
     resolve(replyText?: string): void;
+}
+export declare class RevealableThread {
+    readonly thread: CommentThread;
+    readonly position?: {
+        left: number;
+        top: number;
+    } | undefined;
+    constructor(thread: CommentThread, position?: {
+        left: number;
+        top: number;
+    } | undefined);
 }

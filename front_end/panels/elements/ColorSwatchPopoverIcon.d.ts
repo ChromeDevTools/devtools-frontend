@@ -65,17 +65,13 @@ export interface ShadowEventTypes {
 export declare class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<ShadowEventTypes> {
     private treeElement;
     private readonly swatchPopoverHelper;
-    private readonly shadowSwatch;
-    private iconElement;
     private readonly boundShadowChanged;
     private readonly boundOnScroll;
     private cssShadowEditor?;
     private scrollerElement?;
     private originalPropertyText?;
-    constructor(treeElement: StylePropertyTreeElement, swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper, shadowSwatch: InlineEditor.Swatches.CSSShadowSwatch);
-    private keyDown;
-    private iconClick;
-    showPopover(): void;
+    constructor(treeElement: StylePropertyTreeElement, swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper);
+    showPopover(shadowSwatch: InlineEditor.Swatches.CSSShadowSwatch): void;
     private shadowChanged;
     private onScroll;
     private onPopoverHidden;

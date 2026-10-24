@@ -3967,7 +3967,7 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper
       }
     }
   }
-  async expandRecursively(maxDepth) {
+  async expandRecursively(maxDepth = 3) {
     for (const node of this.#walk(maxDepth, (n) => n.canExpandRecursively)) {
       await node.populateChildrenIfNeeded();
       node.expanded = true;
@@ -4564,10 +4564,15 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
     this.#showOverflow = val;
     this.requestUpdate();
   }
-  onExpand = (expanded) => {
-    if (this.#root) {
-      this.#root.expanded = expanded;
+  onExpand = (expanded, recursively = false) => {
+    if (!this.#root) {
+      return;
     }
+    if (expanded && recursively) {
+      void this.#root.expandRecursively();
+      return;
+    }
+    this.#root.expanded = expanded;
   };
   performUpdate() {
     if (!this.#root) {
@@ -4703,7 +4708,7 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
       void contextMenu.show();
     };
     const onExpand = (e) => {
-      input.onExpand(property, e.detail.expanded);
+      input.onExpand(property, e.detail.expanded, e.detail.recursively);
       e.consume(true);
     };
     const childCount = (property.children?.properties?.length ?? 0) + (property.children?.internalProperties?.length ?? 0) + (property.children?.accessors?.length ?? 0) + (property.children?.arrayRanges?.length ?? 0);
@@ -4738,7 +4743,7 @@ var OBJECT_TREE_DEFAULT_VIEW = (input, output, target) => {
   }
   function renderArrayGroup(child) {
     const onExpand = (e) => {
-      input.onExpand(child, e.detail.expanded);
+      input.onExpand(child, e.detail.expanded, e.detail.recursively);
       e.consume(true);
     };
     return html2`<li
@@ -4881,7 +4886,11 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
       );
     }
   }
-  onExpand = (node, expanded) => {
+  onExpand = (node, expanded, recursively = false) => {
+    if (expanded && recursively) {
+      void node.expandRecursively().then(() => this.requestUpdate());
+      return;
+    }
     if (node.expanded !== expanded) {
       node.expanded = expanded;
       this.requestUpdate();
@@ -5007,7 +5016,10 @@ var OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW = (input, _output, target) => {
       <ul role="tree" class="source-code object-properties-section">
         <style>${objectValue_css_default}</style>
         <style>${objectPropertiesSection_css_default}</style>
-        <li role="treeitem" class="object-properties-section-root-element" toggle-on-click ?open=${input.objectTree.expanded} @expand=${(e) => input.onExpand(e.detail.expanded)} @contextmenu=${onRootItemContextMenuHandler}>
+        <li role="treeitem" class="object-properties-section-root-element" toggle-on-click ?open=${input.objectTree.expanded} @expand=${(e) => input.onExpand(
+      e.detail.expanded,
+      e.detail.recursively
+    )} @contextmenu=${onRootItemContextMenuHandler}>
           ${input.title}
           <ul role="group" ${widget(ObjectTreeWidget, {
       objectTree: input.objectTree,

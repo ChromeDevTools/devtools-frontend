@@ -3404,11 +3404,17 @@
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "On this page you can view, add, edit, and delete session storage key-value pairs"
   },
+  "panels/application/ApplicationPanelSidebar.ts | siblingSubApps": {
+    "message": "Sibling sub apps"
+  },
   "panels/application/ApplicationPanelSidebar.ts | startAChat": {
     "message": "Start a chat"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Storage"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | subApps": {
+    "message": "Sub apps"
   },
   "panels/application/ApplicationPanelSidebar.ts | theContentOfThisDocumentHasBeen": {
     "message": "The content of this document has been generated dynamically via document.write()"
@@ -6234,13 +6240,13 @@
     "message": "Scope"
   },
   "panels/application/SubAppsView.ts | siblingSubApps": {
-    "message": "Sibling Sub Apps"
+    "message": "Sibling sub apps"
   },
   "panels/application/SubAppsView.ts | startUrl": {
     "message": "Start URL"
   },
   "panels/application/SubAppsView.ts | subApps": {
-    "message": "Sub Apps"
+    "message": "Sub apps"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Private state tokens"
@@ -6679,6 +6685,9 @@
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "Queued"
+  },
+  "panels/comments/CommentsPane.ts | removed": {
+    "message": "removed"
   },
   "panels/comments/CommentsPane.ts | seeResponse": {
     "message": "See response"
@@ -7697,9 +7706,6 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "Open cubic bezier editor"
   },
-  "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
-    "message": "Open shadow editor"
-  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignored"
   },
@@ -8560,6 +8566,9 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Open in Sources panel"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | openShadowEditor": {
+    "message": "Open shadow editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | overriddenByAnimation": {
     "message": "Overridden by animation styles"
@@ -15104,6 +15113,15 @@
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Rename…"
   },
+  "panels/sources/NavigatorView.ts | run": {
+    "message": "Run"
+  },
+  "panels/sources/NavigatorView.ts | saveAs": {
+    "message": "Save as…"
+  },
+  "panels/sources/NavigatorView.ts | saveAsFailed": {
+    "message": "Failed to save file to disk"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Search in all files"
   },
@@ -15187,9 +15205,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activate breakpoints"
-  },
-  "panels/sources/sources-meta.ts | addFolderManually": {
-    "message": "Add folder manually"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Add folder to workspace"
@@ -15542,6 +15557,9 @@
   "panels/sources/sources-meta.ts | workspace": {
     "message": "Workspace"
   },
+  "panels/sources/SourcesNavigator.ts | addFolderManually": {
+    "message": "Add folder manually"
+  },
   "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
     "message": "Use {PH1} to automatically connect your project folder"
   },
@@ -15563,6 +15581,9 @@
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
     "message": "Set up workspaces to sync edits directly to the sources you develop"
   },
+  "panels/sources/SourcesNavigator.ts | localOverrides": {
+    "message": "Local overrides"
+  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "New snippet"
   },
@@ -15577,21 +15598,6 @@
   },
   "panels/sources/SourcesNavigator.ts | noWorkspace": {
     "message": "No workspaces set up"
-  },
-  "panels/sources/SourcesNavigator.ts | remove": {
-    "message": "Remove"
-  },
-  "panels/sources/SourcesNavigator.ts | rename": {
-    "message": "Rename…"
-  },
-  "panels/sources/SourcesNavigator.ts | run": {
-    "message": "Run"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "Save as…"
-  },
-  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
-    "message": "Failed to save file to disk"
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Select folder for overrides"

@@ -26,7 +26,7 @@ export declare class EnvFunctionRenderer extends EnvFunctionRendererBase {
     readonly computedStyles: Map<string, string>;
     readonly computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null;
     constructor(treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const FlexGridRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch>;
 export declare class FlexGridRenderer extends FlexGridRendererBase {
@@ -38,20 +38,20 @@ declare const CSSWideKeywordRendererBase: RendererBase<SDK.CSSPropertyParserMatc
 export declare class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Lit.LitTemplate;
 }
 export declare function handleVarDefinitionActivate(variable: string | SDK.CSSMatchedStyles.CSSValueSource, stylesContainer: StylesContainer): void;
 declare const VariableRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableMatch>;
 export declare class VariableRenderer extends VariableRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const VariableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.VariableNameMatch>;
 export declare class VariableNameRenderer extends VariableNameRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
-    render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Lit.LitTemplate;
 }
 declare const AttributeRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AttributeMatch>;
 export declare class AttributeRenderer extends AttributeRendererBase {
@@ -153,7 +153,7 @@ export declare class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShad
     setOffsetY(value: InlineEditor.CSSShadowEditor.CSSLength): void;
     setBlurRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void;
     setSpreadRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void;
-    renderContents(span: HTMLSpanElement): void;
+    renderContents(): Lit.LitTemplate;
     text(): string;
 }
 declare const ShadowRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ShadowMatch>;

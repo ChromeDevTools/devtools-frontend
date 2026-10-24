@@ -8,15 +8,11 @@ export var Events;
     Events["CHANGED"] = "Changed";
 })(Events || (Events = {}));
 export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
-    static #nextIndex = 1;
-    static resetIndex() {
-        CommentThread.#nextIndex = 1;
-    }
     id = crypto.randomUUID();
     anchor;
     /** True for comments generated from the change tracker. */
     isGeneratedComment;
-    #savedIndex;
+    #isOrphaned = false;
     comments;
     status = 'DRAFT';
     transmitted = false;
@@ -26,8 +22,15 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
         this.comments = options.comments ?? [];
         this.isGeneratedComment = Boolean(options.isGeneratedComment);
     }
-    get index() {
-        return this.#savedIndex ?? CommentThread.#nextIndex;
+    get isOrphaned() {
+        return this.#isOrphaned;
+    }
+    setOrphaned(isOrphaned) {
+        if (this.#isOrphaned === isOrphaned) {
+            return;
+        }
+        this.#isOrphaned = isOrphaned;
+        this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
     }
     /**
      * Returns whether it was changed.
@@ -61,9 +64,6 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
         let changed = this.#saveText(text, author);
         if (this.status === 'DRAFT') {
             this.#recordCommentCreated();
-            if (this.#savedIndex === undefined) {
-                this.#savedIndex = CommentThread.#nextIndex++;
-            }
             this.status = 'ACTIVE';
             changed = true;
         }
@@ -89,9 +89,6 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
             this.#recordCommentCreated();
         }
         if (this.status === 'DRAFT' || this.status === 'ACTIVE') {
-            if (this.#savedIndex === undefined) {
-                this.#savedIndex = CommentThread.#nextIndex++;
-            }
             this.status = 'SENT_TO_AGENT';
             changed = true;
         }
@@ -107,11 +104,16 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
                 timestamp: Date.now(),
             });
         }
-        if (this.#savedIndex === undefined) {
-            this.#savedIndex = CommentThread.#nextIndex++;
-        }
         this.status = 'RESOLVED';
         this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
+    }
+}
+export class RevealableThread {
+    thread;
+    position;
+    constructor(thread, position) {
+        this.thread = thread;
+        this.position = position;
     }
 }
 //# sourceMappingURL=CommentThread.js.map

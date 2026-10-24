@@ -11,6 +11,10 @@ export interface ViewInput {
     onPinClick: (threadId: string) => void;
     activeThread: CommentManager.CommentManager.CommentThread | null;
     activePin: Comments.CommentOverlayManager.PinPositionData | null;
+    fallbackPosition?: {
+        left: number;
+        top: number;
+    } | null;
     title: Title;
     onAddComment: (text: string) => void;
     onDeleteQueuedComment: () => void;
@@ -27,10 +31,13 @@ export declare class CommentsOverlayWidget extends UI.Widget.Widget {
     wasShown(): void;
     willHide(): void;
     performUpdate(signal?: AbortSignal): Promise<void>;
-    openThread(threadId: string): void;
+    openThread(threadId: string, fallbackPosition?: {
+        left: number;
+        top: number;
+    }): void;
 }
-export declare class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.CommentManager.CommentThread> {
-    reveal(thread: CommentManager.CommentManager.CommentThread): Promise<void>;
+export declare class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.CommentThread.RevealableThread> {
+    reveal({ thread, position }: CommentManager.CommentThread.RevealableThread): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     #private;

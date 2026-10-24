@@ -772,6 +772,7 @@ export const knownContextValues = new Set([
     'browserLanguage',
     'bs',
     'buffered-rendering',
+    'buffering',
     'button',
     'bypass-service-worker',
     'ca',

@@ -68,6 +68,8 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
     }>;
     getInstallabilityErrors(): Promise<Protocol.Page.InstallabilityError[]>;
     getAppId(): Promise<Protocol.Page.GetAppIdResponse>;
+    getSubApps(): Promise<Protocol.Page.SubApp[]>;
+    getSiblingSubApps(): Promise<Protocol.Page.SubApp[]>;
     private executionContextComparator;
     private getSecurityOriginData;
     private getStorageKeyData;

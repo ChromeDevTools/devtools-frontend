@@ -1477,6 +1477,10 @@ class TreeViewTreeElement extends TreeElement {
         this.listItemElement.dispatchEvent(new TreeViewElement.SelectEvent({ selectedByUser: Boolean(selectedByUser) }));
         return super.onselect(selectedByUser);
     }
+    async expandRecursively(maxDepth) {
+        await super.expandRecursively(maxDepth);
+        this.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({ expanded: true, recursively: true }));
+    }
     onenter() {
         const enterEvent = new TreeViewElement.EnterEvent();
         const shouldExpand = this.listItemElement.dispatchEvent(enterEvent);

@@ -1,7 +1,7 @@
 import '../../../components/highlighting/highlighting.js';
 import * as UI from '../../legacy.js';
 interface ViewInput {
-    onExpand(node: XMLTreeViewNode, expanded: boolean): void;
+    onExpand(node: XMLTreeViewNode, expanded: boolean, recursively?: boolean): void;
     xml: XMLTreeViewNode;
     search: UI.TreeOutline.TreeSearch<XMLTreeViewNode, SearchResult> | undefined;
     jumpToNextSearchResult: SearchResult | undefined;
@@ -15,6 +15,7 @@ export declare class XMLTreeViewNode {
     constructor(node: Node | ParentNode);
     children(): XMLTreeViewNode[];
     treeNodeChildren(): Iterable<XMLTreeViewNode>;
+    expandRecursively(maxDepth?: number): void;
     match(regex: RegExp, closeTag: boolean): RegExpStringIterator<RegExpExecArray>;
 }
 export declare class XMLTreeViewModel {

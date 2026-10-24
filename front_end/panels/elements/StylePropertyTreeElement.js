@@ -102,6 +102,11 @@ const UIStrings = {
      */
     positionAreaEditorButton: 'Open `position-area` editor',
     /**
+     * @description Tooltip text for an icon that opens the shadow editor. The shadow editor is a tool
+     * which allows the user to edit CSS shadow properties.
+     */
+    openShadowEditor: 'Open shadow editor',
+    /**
      * @description A context menu item in the Styles tab of the Elements panel to copy CSS declaration as JavaScript property.
      */
     copyCssDeclarationAsJs: 'Copy declaration as JS',
@@ -175,20 +180,20 @@ export class EnvFunctionRenderer extends EnvFunctionRendererBase {
             const substitution = context.tracing?.substitution();
             if (substitution) {
                 if (match.varNameIsValid) {
-                    return [document.createTextNode(match.value)];
+                    return html `${match.value}`;
                 }
                 return Renderer.render(fallbackNodes, substitution.renderingContext(context)).nodes;
             }
         }
-        const span = document.createElement('span');
         const func = this.treeElement?.getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields, context) ??
             'env';
         const valueClass = classMap({ 'inactive-value': !match.varNameIsValid });
         const fallbackClass = classMap({ 'inactive-value': match.varNameIsValid });
-        render(html `${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ?
-            html `, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` :
-            nothing})`, span, { host: span });
-        return [span];
+        // clang-format off
+        return html `<span>${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes
+            ? html `, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>`
+            : nothing})</span>`;
+        // clang-format on
     }
 }
 const FlexGridRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch);
@@ -207,7 +212,7 @@ export class FlexGridRenderer extends FlexGridRendererBase {
         if (!this.#treeElement?.editable()) {
             return children;
         }
-        const key = `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
+        const key = `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx++}`;
         function getEditorClass(layoutType) {
             switch (layoutType) {
                 case "flex" /* SDK.CSSPropertyParserMatchers.LayoutType.FLEX */:
@@ -238,17 +243,9 @@ export class FlexGridRenderer extends FlexGridRendererBase {
                     return Host.UserMetrics.SwatchType.GRID_LANES;
             }
         }
-        const button = StyleEditorWidget.createTriggerButton(this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType), getButtonTitle(match.layoutType), key);
-        button.tabIndex = -1;
-        button.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({ click: true }).context(match.layoutType)}`);
-        this.#treeElement.section().nextEditorTriggerButtonIdx++;
-        button.addEventListener('click', () => {
+        const button = StyleEditorWidget.createTriggerButton(this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType), getButtonTitle(match.layoutType), key, match.layoutType, () => {
             Host.userMetrics.swatchActivated(getSwatchType(match.layoutType));
         });
-        const helper = this.#stylesContainer.swatchPopoverHelper();
-        if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
-            helper.setAnchorElement(button);
-        }
         return html `${children}${button}`;
     }
 }
@@ -266,16 +263,15 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     render(match, context) {
         const resolvedProperty = match.resolveProperty();
         if (!resolvedProperty) {
-            return [document.createTextNode(match.text)];
+            return html `${match.text}`;
         }
-        const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-        swatch.data = {
+        const swatch = html `<devtools-link-swatch .data=${{
             text: match.text,
             tooltip: resolvedProperty ? undefined : { title: i18nString(UIStrings.sIsNotDefined, { PH1: match.text }) },
             isDefined: Boolean(resolvedProperty),
             onLinkActivate: () => resolvedProperty && this.#stylesContainer.jumpToDeclaration(resolvedProperty),
             jslogContext: 'css-wide-keyword-link',
-        };
+        }}></devtools-link-swatch>`;
         if (SDK.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) ||
             SDK.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
             const color = Common.Color.parse(context.matchedResult.getComputedText(match.node));
@@ -283,10 +279,10 @@ export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
                 const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
                 return this.#treeElement?.editable() ?
                     html `<devtools-widget ${widget(EditableContent)}>${colorSwatch}${swatch}</devtools-widget>` :
-                    [colorSwatch, swatch];
+                    html `${colorSwatch}${swatch}`;
             }
         }
-        return [swatch];
+        return swatch;
     }
 }
 export function handleVarDefinitionActivate(variable, stylesContainer) {
@@ -328,7 +324,6 @@ export class VariableRenderer extends VariableRendererBase {
         const fromFallback = variableValue === undefined;
         const computedValue = variableValue ?? match.fallbackValue();
         const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-        const varSwatch = document.createElement('span');
         const substitution = context.tracing?.substitution({ match, context });
         if (substitution) {
             if (declaration?.declaration) {
@@ -346,33 +341,21 @@ export class VariableRenderer extends VariableRendererBase {
         const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;
         // clang-format off
-        render(html `
-        <span data-title=${computedValue || ''}
-              jslog=${VisualLogging.link('css-variable').track({ click: true, hover: true })}>
-          ${varCall ?? 'var'}(
-          <devtools-link-swatch class=css-var-link .data=${{
+        const varSwatch = html `<span
+        data-title=${computedValue || ''}
+        jslog=${VisualLogging.link('css-variable').track({ click: true, hover: true })}>${varCall ?? 'var'}(<devtools-link-swatch class=css-var-link .data=${{
             tooltip,
             text: match.name,
             isDefined: computedValue !== null && !fromFallback,
             onLinkActivate,
-        }}>
-           </devtools-link-swatch>
-           ${renderedFallback ? html `, ${renderedFallback.nodes}` : nothing})
-        </span>
-        ${tooltipId ? html `
-          <devtools-tooltip
+        }}></devtools-link-swatch>${renderedFallback ? html `, ${renderedFallback.nodes}` : nothing})</span>${tooltipId ? html `<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var
-          >
-            ${tooltipContents}
-          </devtools-tooltip>
-        ` : ''}
-    `, varSwatch);
+            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
         // clang-format on
         const color = computedValue && Common.Color.parse(computedValue);
         if (!color) {
-            return [varSwatch];
+            return varSwatch;
         }
         const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
         context.addControl('color', colorSwatch);
@@ -383,7 +366,7 @@ export class VariableRenderer extends VariableRendererBase {
         }
         return this.#treeElement?.editable() ?
             html `<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
-            [colorSwatch, varSwatch];
+            html `${colorSwatch}${varSwatch}`;
     }
 }
 const VariableNameRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.VariableNameMatch);
@@ -400,10 +383,8 @@ export class VariableNameRenderer extends VariableNameRendererBase {
         this.#matchedStyles = matchedStyles;
     }
     render(match, _context) {
-        const varSwatch = document.createElement('span');
         if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
-            render(html `${match.text}`, varSwatch);
-            return [varSwatch];
+            return html `${match.text}`;
         }
         const { declaration, value: variableValue } = match.resolveVariable() ?? {};
         const isDefined = variableValue !== undefined;
@@ -412,26 +393,16 @@ export class VariableNameRenderer extends VariableNameRendererBase {
         const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;
         // clang-format off
-        render(html `
-        <devtools-link-swatch class=css-var-link .data=${{
+        return html `<devtools-link-swatch class=css-var-link .data=${{
             tooltip,
             text: match.text,
             isDefined,
             onLinkActivate,
-        }}>
-        </devtools-link-swatch>
-        ${tooltipId ? html `
-          <devtools-tooltip
-            id=${tooltipId}
-            variant=rich
-            jslogContext=elements.css-var
-          >
-            ${tooltipContents}
-          </devtools-tooltip>
-        ` : ''}
-    `, varSwatch);
+        }}></devtools-link-swatch>${tooltipId ? html `<devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
         // clang-format on
-        return [varSwatch];
     }
 }
 const AttributeRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.AttributeMatch);
@@ -1320,7 +1291,7 @@ export class ShadowModel {
         }
         return parts;
     }
-    renderContents(span) {
+    renderContents() {
         const parts = [];
         for (const part of this.#parts()) {
             if (parts.length > 0) {
@@ -1328,7 +1299,7 @@ export class ShadowModel {
             }
             parts.push(typeof part === 'string' ? part : Renderer.render(part.node, part.context).nodes);
         }
-        render(html `${parts}`, span);
+        return html `${parts}`;
     }
     // The text of the shadow as `renderContents` renders it, including the changes that renderers recorded for its parts.
     text() {
@@ -1340,6 +1311,71 @@ export class ShadowModel {
             return context.edits?.textRange(node, node) ?? context.ast.text(node);
         });
         return texts.join(' ');
+    }
+}
+const SHADOW_WIDGET_DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `<css-shadow-swatch
+    role="button"
+    .cssShadowModel=${input.model}
+    title=${i18nString(UIStrings.openShadowEditor)}
+    jslog=${VisualLogging.showStyleEditor('css-shadow').track({ click: true })}
+    @click=${function (event) {
+        event.consume(true);
+        input.showPopover(this);
+    }}
+    @keydown=${function (event) {
+        if (!event.isComposing && Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+            event.consume(true);
+            input.showPopover(this);
+        }
+    }}
+    @mousedown=${(event) => event.consume()}
+  ></css-shadow-swatch>${input.model.renderContents()}`, target);
+    // clang-format on
+};
+class ShadowWidget extends UI.Widget.Widget {
+    #view;
+    #model;
+    #treeElement;
+    #popoverHelper;
+    constructor(element, view = SHADOW_WIDGET_DEFAULT_VIEW) {
+        super(element);
+        this.element.classList.remove('vbox', 'flex-auto', 'widget');
+        this.#view = view;
+    }
+    set model(model) {
+        if (this.#model === model) {
+            return;
+        }
+        this.#model = model;
+        this.performUpdate();
+    }
+    set treeElement(treeElement) {
+        if (this.#treeElement === treeElement) {
+            return;
+        }
+        this.#treeElement = treeElement;
+        this.#popoverHelper =
+            new ShadowSwatchPopoverHelper(treeElement, treeElement.stylesContainer().swatchPopoverHelper());
+        this.#popoverHelper.addEventListener("shadowChanged" /* ShadowEvents.SHADOW_CHANGED */, () => {
+            this.performUpdate();
+            void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+        });
+        this.performUpdate();
+    }
+    performUpdate() {
+        if (!this.#model || !this.#popoverHelper) {
+            return;
+        }
+        const popoverHelper = this.#popoverHelper;
+        this.#view({
+            model: this.#model,
+            showPopover: swatch => {
+                Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
+                popoverHelper.showPopover(swatch);
+            },
+        }, undefined, this.contentElement);
     }
 }
 const ShadowRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ShadowMatch);
@@ -1450,20 +1486,7 @@ export class ShadowRenderer extends ShadowRendererBase {
                 texts.push(() => nestedEdits.textRange(...ASTUtils.range(shadow)));
                 continue;
             }
-            const swatch = new InlineEditor.Swatches.CSSShadowSwatch(model);
-            swatch.setAttribute('jslog', `${VisualLogging.showStyleEditor('css-shadow').track({ click: true })}`);
-            swatch.iconElement().addEventListener('click', () => {
-                Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
-            });
-            const contents = document.createElement('span');
-            model.renderContents(contents);
-            const popoverHelper = new ShadowSwatchPopoverHelper(this.#treeElement, this.#treeElement.stylesContainer().swatchPopoverHelper(), swatch);
-            const treeElement = this.#treeElement;
-            popoverHelper.addEventListener("shadowChanged" /* ShadowEvents.SHADOW_CHANGED */, () => {
-                model.renderContents(contents);
-                void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
-            });
-            result.push(swatch, contents);
+            result.push(html `<devtools-widget ${widget(ShadowWidget, { model, treeElement: this.#treeElement })}></devtools-widget>`);
             texts.push(() => isImportant ? `${model.text()} ${nestedEdits.textRange(isImportant, isImportant)}` : model.text());
             if (isImportant) {
                 result.push(document.createTextNode(' '), Renderer.render(isImportant, nestedContext).nodes);

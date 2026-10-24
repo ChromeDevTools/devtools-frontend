@@ -12,7 +12,7 @@ interface ViewInput {
     onCopyWatchExpression(watchExpression: WatchExpression): void;
     onDeleteAll(): unknown;
     onAddExpression(): unknown;
-    onExpand(e: WatchExpression, expanded: boolean): unknown;
+    onExpand(e: WatchExpression, expanded: boolean, recursively?: boolean): unknown;
     watchExpressions: WatchExpression[];
 }
 export interface WatchExpressionPromptViewInput {

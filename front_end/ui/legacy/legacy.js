@@ -14471,7 +14471,6 @@ function getRegisteredToolbarItems() {
   );
 }
 var ToolbarItemLocation = /* @__PURE__ */ ((ToolbarItemLocation2) => {
-  ToolbarItemLocation2["FILES_NAVIGATION_TOOLBAR"] = "files-navigator-toolbar";
   ToolbarItemLocation2["MAIN_TOOLBAR_RIGHT"] = "main-toolbar-right";
   ToolbarItemLocation2["MAIN_TOOLBAR_LEFT"] = "main-toolbar-left";
   ToolbarItemLocation2["STYLES_SIDEBARPANE_TOOLBAR"] = "styles-sidebarpane-toolbar";
@@ -24913,6 +24912,10 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
   onselect(selectedByUser) {
     this.listItemElement.dispatchEvent(new TreeViewElement.SelectEvent({ selectedByUser: Boolean(selectedByUser) }));
     return super.onselect(selectedByUser);
+  }
+  async expandRecursively(maxDepth) {
+    await super.expandRecursively(maxDepth);
+    this.listItemElement.dispatchEvent(new TreeViewElement.ExpandEvent({ expanded: true, recursively: true }));
   }
   onenter() {
     const enterEvent = new TreeViewElement.EnterEvent();

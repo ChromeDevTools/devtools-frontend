@@ -431,6 +431,20 @@ export class ResourceTreeModel extends SDKModel {
     async getAppId() {
         return await this.agent.invoke_getAppId();
     }
+    async getSubApps() {
+        const response = await this.agent.invoke_getSubApps();
+        if (response.getError()) {
+            return [];
+        }
+        return response.subApps ?? [];
+    }
+    async getSiblingSubApps() {
+        const response = await this.agent.invoke_getSiblingSubApps();
+        if (response.getError()) {
+            return [];
+        }
+        return response.subApps ?? [];
+    }
     executionContextComparator(a, b) {
         function framePath(frame) {
             let currentFrame = frame;

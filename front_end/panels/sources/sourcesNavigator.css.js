@@ -14,6 +14,11 @@ export default `/*
   flex-shrink: 0;
 }
 
+.navigator-toolbar {
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding-left: var(--sys-size-5);
+}
+
 .automatic-workspace-infobar {
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }

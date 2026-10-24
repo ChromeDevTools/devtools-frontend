@@ -1,4 +1,5 @@
 import '../../ui/components/spinners/spinners.js';
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -19,16 +20,27 @@ export declare const Types: {
 };
 export interface ViewInput {
     treeElement: HTMLElement;
-    placeholder: UI.Widget.Widget | null;
     showTree: boolean;
     onContextMenu: (event: Event) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
+export declare const enum Events {
+    UI_SOURCE_CODE_ADDED = "ui-source-code-added",
+    SOURCE_SELECTED = "source-selected"
+}
+export interface SourceSelectedEvent {
+    uiSourceCode: Workspace.UISourceCode.UISourceCode;
+    focusSource: boolean;
+}
+export interface EventTypes {
+    [Events.UI_SOURCE_CODE_ADDED]: Workspace.UISourceCode.UISourceCode;
+    [Events.SOURCE_SELECTED]: SourceSelectedEvent;
+}
+declare const NavigatorViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class NavigatorView extends NavigatorViewBase implements SDK.TargetManager.Observer {
     #private;
     static readonly INJECT: readonly [typeof Bindings.NetworkProject.NetworkProjectManager];
-    private placeholder;
     scriptsTree: UI.TreeOutline.TreeOutlineInShadow;
     private readonly uiSourceCodeNodes;
     private readonly subfolderNodes;
@@ -43,14 +55,15 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private groupByAuthored?;
     private groupByDomain?;
     private groupByFolder?;
-    constructor(element?: HTMLElement, [networkProjectManager]?: UI.Widget.WidgetDependencies<typeof NavigatorView>, view?: View, options?: UI.Widget.WidgetOptions);
+    constructor(element?: HTMLElement, [networkProjectManager]?: UI.Widget.WidgetDependencies<typeof NavigatorView>, view?: View);
     wasShown(): void;
     get enableAuthoredGrouping(): boolean;
     set enableAuthoredGrouping(enableAuthoredGrouping: boolean);
+    get projectFilter(): ((project: Workspace.Workspace.Project) => boolean) | undefined;
+    set projectFilter(projectFilter: ((project: Workspace.Workspace.Project) => boolean) | undefined);
     private static treeElementOrder;
     static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void;
     private static treeElementsCompare;
-    setPlaceholder(placeholder: UI.Widget.Widget): void;
     performUpdate(): void;
     private onBindingChanged;
     focus(): void;
@@ -74,7 +87,6 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private acceptsUISourceCode;
     private addUISourceCode;
     private addUISourceCodeNode;
-    uiSourceCodeAdded(_uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     private uiSourceCodeAddedCallback;
     private uiSourceCodeRemovedCallback;
     tryAddProject(project: Workspace.Workspace.Project): void;
@@ -101,6 +113,8 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private handleContextMenuExclude;
     private handleContextMenuDelete;
     handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void;
+    private handleSaveAs;
+    private addJSExtension;
     private handleDeleteFolder;
     private removeUISourceCodeFromProject;
     private deleteDirectoryRecursively;
@@ -244,3 +258,4 @@ export declare class NavigatorGroupTreeNode extends NavigatorTreeNode {
     updateTitle(): void;
     setTitle(title: string): void;
 }
+export {};

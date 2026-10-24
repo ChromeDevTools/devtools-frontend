@@ -76,8 +76,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
               aria-label=${title}
               ?open=${objectTree.expanded}
               @expand=${(e) => {
-            const customEvent = e;
-            input.onToggle(objectTree, customEvent.detail.expanded);
+            input.onToggle(objectTree, e.detail.expanded, e.detail.recursively);
         }}
               @contextmenu=${(e) => {
             const contextMenu = new UI.ContextMenu.ContextMenu(e);
@@ -193,7 +192,11 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
             linkifier: this.#linkifier,
             isPaused: Boolean(this.#scopeChainModel),
             scopeChain: this.#scopeChain,
-            onToggle: (objectTree, expanded) => {
+            onToggle: (objectTree, expanded, recursively = false) => {
+                if (expanded && recursively) {
+                    void objectTree.expandRecursively().then(() => this.requestUpdate());
+                    return;
+                }
                 objectTree.expanded = expanded;
                 this.requestUpdate();
             },

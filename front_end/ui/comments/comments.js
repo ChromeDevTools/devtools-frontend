@@ -866,8 +866,7 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
         id: thread.id,
         top: scrollY + visibleRect.top - 12 + offsetY,
         left: scrollX + visibleRect.right - 12,
-        visible: true,
-        index: thread.index
+        visible: true
       });
       newHighlights.push({
         id: thread.id,

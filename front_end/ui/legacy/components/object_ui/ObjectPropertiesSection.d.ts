@@ -55,7 +55,7 @@ export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.Ob
     get sortPropertiesAlphabetically(): boolean;
     set sortPropertiesAlphabetically(value: boolean);
     treeNodeChildren(): Generator<ObjectTreeNodeBase>;
-    expandRecursively(maxDepth: number): Promise<void>;
+    expandRecursively(maxDepth?: number): Promise<void>;
     collapseRecursively(): void;
     setFilter(filter: {
         includeNullOrUndefinedValues: boolean;
@@ -140,7 +140,7 @@ export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     set linkifier(val: Components.Linkifier.Linkifier);
     get showOverflow(): boolean;
     set showOverflow(val: boolean);
-    onExpand: (expanded: boolean) => void;
+    onExpand: (expanded: boolean, recursively?: boolean) => void;
     performUpdate(): void;
     onDetach(): void;
     wasShown(): void;
@@ -159,7 +159,7 @@ export interface ContextMenuHandlers {
 export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, objectOrProperty: ObjectTree | ObjectTreeNode, handlers: ContextMenuHandlers): void;
 interface ObjectTreeViewInput extends ContextMenuHandlers {
     onShowAllProperties: (node: ObjectTreeNode) => void;
-    onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
+    onExpand: (node: ObjectTreeNodeBase, expanded: boolean, recursively?: boolean) => void;
     renderAsSubtree: boolean;
     objectTree?: ObjectTree;
     linkifier?: Components.Linkifier.Linkifier;
@@ -171,7 +171,7 @@ type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLE
 export declare class ObjectTreeWidget extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: ObjectTreeView);
-    onExpand: (node: ObjectTreeNodeBase, expanded: boolean) => void;
+    onExpand: (node: ObjectTreeNodeBase, expanded: boolean, recursively?: boolean) => void;
     expandRecursively: (node: ObjectTreeNodeBase) => void;
     collapseChildren: (node: ObjectTreeNodeBase) => void;
     sortPropertiesAlphabetically: (node: ObjectTreeNodeBase) => void;
@@ -201,7 +201,7 @@ interface ObjectPropertiesSectionViewInput {
     skipProto: boolean;
     showOverflow: boolean;
     onRootItemContextMenu: (menu: UI.ContextMenu.ContextMenu) => void;
-    onExpand: (expanded: boolean) => void;
+    onExpand: (expanded: boolean, recursively?: boolean) => void;
 }
 type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) => void;
 export declare const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView;

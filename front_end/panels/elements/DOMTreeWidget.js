@@ -503,7 +503,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             if (!isCollapsible) {
                 return;
             }
-            input.onExpand(node, event.detail.expanded);
+            input.onExpand(node, event.detail.expanded, event.detail.recursively);
         };
         const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
         const isClosingTagDragOver = input.dragOverNode?.node === node && Boolean(input.dragOverNode.isClosingTag);
@@ -1503,7 +1503,11 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 node.highlight();
                 Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
             },
-            onExpand: (node, expanded) => {
+            onExpand: (node, expanded, recursively = false) => {
+                if (expanded && recursively) {
+                    void this.expandRecursively(node);
+                    return;
+                }
                 this.setNodeExpanded(node, expanded);
             },
             onContextMenu: (node, event) => {

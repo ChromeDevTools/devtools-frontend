@@ -16,6 +16,7 @@ import { ReportingApiTreeElement } from './ReportingApiTreeElement.js';
 import type { ResourcesPanel } from './ResourcesPanel.js';
 import { ServiceWorkerCacheTreeElement } from './ServiceWorkerCacheTreeElement.js';
 import { StorageBucketsTreeParentElement } from './StorageBucketsTreeElement.js';
+import { type SubAppEntry } from './SubAppsView.js';
 import { TrustTokensTreeElement } from './TrustTokensTreeElement.js';
 import { WebMCPTreeElement } from './WebMCPTreeElement.js';
 export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.TargetManager.Observer {
@@ -41,6 +42,7 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     pushMessagingTreeElement: BackgroundServiceTreeElement;
     reportingApiTreeElement: ReportingApiTreeElement;
     webMcpTreeElement?: WebMCPTreeElement;
+    subAppsTreeElement: SubAppsTreeElement;
     adsTreeElement?: ApplicationPanelTreeElement;
     storageTreeElement?: StorageTreeElement;
     deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement | undefined;
@@ -117,6 +119,20 @@ export declare class AppManifestTreeElement extends ApplicationPanelTreeElement 
     onselect(selectedByUser?: boolean): boolean;
     generateChildren(): void;
     onInvoke(): void;
+}
+export declare class SubAppsTreeElement extends ApplicationPanelTreeElement {
+    #private;
+    constructor(storagePanel: ResourcesPanel);
+    get itemURL(): Platform.DevToolsPath.UrlString;
+    onselect(selectedByUser?: boolean): boolean;
+    /**
+     * Fetches the Sub Apps of the inspected app, or its Sibling Sub Apps when
+     * the inspected app is itself a Sub App. Only the most recent update is
+     * applied; results of superseded updates are dropped.
+     */
+    update(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): Promise<void>;
+    get latestUpdateForTest(): Promise<void> | undefined;
+    getSubApps(): SubAppEntry[];
 }
 export declare class StorageTreeElement extends ApplicationPanelTreeElement {
     private view?;

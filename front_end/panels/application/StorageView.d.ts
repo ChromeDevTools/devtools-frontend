@@ -1,54 +1,62 @@
+import '../../ui/components/report_view/report_view.js';
+import '../../ui/kit/kit.js';
+import '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare const storagePieColors: Map<Protocol.Storage.StorageType, string>;
-export interface ClearSiteDataViewInput {
+export interface ViewInput {
+    subtitle: string;
     settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
     includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
     includeThirdPartyCookiesDisabled: boolean;
     clearing: boolean;
+    quotaUsage: number | null;
+    quotaQuota: number | null;
+    quotaOverrideActive: boolean | null;
+    pieChartSlices: PerfUI.PieChart.Slice[];
+    quotaOverrideEnabled: boolean;
+    quotaOverrideValue: string;
+    quotaOverrideError: string;
     onClear: () => void;
+    onToggleQuotaOverride: () => void;
+    onQuotaOverrideInput: (value: string) => void;
+    onApplyQuotaOverride: (value: string) => void;
 }
-export interface ClearSiteDataViewOutput {
+export interface ViewOutput {
     focusClearButton?: () => void;
+    focusQuotaOverrideEditor?: () => void;
 }
-export type ClearSiteDataView = (input: ClearSiteDataViewInput, output: ClearSiteDataViewOutput, target: HTMLElement) => void;
-export declare const CLEAR_SITE_DATA_DEFAULT_VIEW: ClearSiteDataView;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 /**
  * @implements {SDK.TargetManager.Observer}
  */
 export declare class StorageView extends UI.Widget.VBox {
+    #private;
     private pieColors;
-    private reportView;
     private target;
     private securityOrigin;
     private storageKey;
     private subtitle;
     private settings;
     private includeThirdPartyCookiesSetting;
-    private readonly clearSiteDataView;
-    private readonly clearSiteDataViewOutput;
-    private readonly clearSiteDataFieldList;
-    private quotaRow;
     private quotaUsage;
     private quotaQuota;
     private quotaOverrideActive;
     private pieChartSlices;
-    private pieChart;
     private previousOverrideFieldValue;
+    private quotaOverrideFieldValue;
     private quotaOverrideEnabled;
     private quotaOverrideError;
-    private quotaOverrideCheckbox;
-    private quotaOverrideControlRow;
-    private quotaOverrideEditor;
-    private quotaOverrideErrorMessage;
     private clearing;
     private clearTimerId?;
     private readonly throttler;
     private readonly boundOnCookiesSettingChanged;
     private readonly boundOnIncludeThirdPartyCookiesSettingChanged;
-    constructor(clearSiteDataView?: ClearSiteDataView);
+    constructor(element?: HTMLElement, view?: View);
     private onCookiesSettingChanged;
     private onIncludeThirdPartyCookiesSettingChanged;
     targetAdded(target: SDK.Target.Target): void;
@@ -67,8 +75,6 @@ export declare class StorageView extends UI.Widget.VBox {
     private refreshUsageAndQuota;
     wasShown(): void;
     performUpdate(): void;
-    private renderQuotaRow;
-    private populatePieChart;
     static getStorageTypeName(type: Protocol.Storage.StorageType): string;
     /**
      * Returns the user-facing title of a storage type for the storage breakdown widget in AI assistance.

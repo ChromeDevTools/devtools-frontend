@@ -15,11 +15,6 @@ const UIStrings = {
      * allows the user to edit cubic-bezier CSS properties directly.
      */
     openCubicBezierEditor: 'Open cubic bezier editor',
-    /**
-     * @description Tooltip text for an icon that opens the shadow editor. The shadow editor is a tool
-     * which allows the user to edit CSS shadow properties.
-     */
-    openShadowEditor: 'Open shadow editor',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ColorSwatchPopoverIcon.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -252,47 +247,30 @@ export var ShadowEvents;
 export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     treeElement;
     swatchPopoverHelper;
-    shadowSwatch;
-    iconElement;
     boundShadowChanged;
     boundOnScroll;
     cssShadowEditor;
     scrollerElement;
     originalPropertyText;
-    constructor(treeElement, swatchPopoverHelper, shadowSwatch) {
+    constructor(treeElement, swatchPopoverHelper) {
         super();
         this.treeElement = treeElement;
         this.swatchPopoverHelper = swatchPopoverHelper;
-        this.shadowSwatch = shadowSwatch;
-        this.iconElement = shadowSwatch.iconElement();
-        UI.Tooltip.Tooltip.install(this.iconElement, i18nString(UIStrings.openShadowEditor));
-        this.iconElement.addEventListener('click', this.iconClick.bind(this), false);
-        this.iconElement.addEventListener('keydown', this.keyDown.bind(this), false);
-        this.iconElement.addEventListener('mousedown', event => event.consume(), false);
         this.boundShadowChanged = this.shadowChanged.bind(this);
         this.boundOnScroll = this.onScroll.bind(this);
     }
-    keyDown(event) {
-        if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-            event.consume(true);
-            this.showPopover();
-        }
-    }
-    iconClick(event) {
-        event.consume(true);
-        this.showPopover();
-    }
-    showPopover() {
+    showPopover(shadowSwatch) {
         if (this.swatchPopoverHelper.isShowing()) {
             this.swatchPopoverHelper.hide(true);
             return;
         }
+        const iconElement = shadowSwatch.iconElement();
         this.cssShadowEditor = new InlineEditor.CSSShadowEditor.CSSShadowEditor();
         this.cssShadowEditor.element.classList.toggle('with-padding', true);
-        this.cssShadowEditor.setModel(this.shadowSwatch.model());
+        this.cssShadowEditor.setModel(shadowSwatch.model());
         this.cssShadowEditor.addEventListener("ShadowChanged" /* InlineEditor.CSSShadowEditor.Events.SHADOW_CHANGED */, this.boundShadowChanged);
-        this.swatchPopoverHelper.show(this.cssShadowEditor, this.iconElement, this.onPopoverHidden.bind(this));
-        this.scrollerElement = this.iconElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
+        this.swatchPopoverHelper.show(this.cssShadowEditor, iconElement, this.onPopoverHidden.bind(this));
+        this.scrollerElement = iconElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
         if (this.scrollerElement) {
             this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
         }

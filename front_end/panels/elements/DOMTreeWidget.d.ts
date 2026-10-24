@@ -29,7 +29,7 @@ interface ViewInput {
     selectedNode: SDK.DOMModel.DOMNode | null;
     selectedClosingTag: boolean;
     onSelect: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, selectedByUser: boolean) => void;
-    onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+    onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean, recursively?: boolean) => void;
     onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
     onClearMaxRows: () => void;
     onHoverNode: (node: SDK.DOMModel.DOMNode | null, showInfo: boolean, isClosingTag: boolean) => void;

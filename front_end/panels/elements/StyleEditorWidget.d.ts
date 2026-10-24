@@ -1,4 +1,6 @@
+import '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import type * as ElementsComponents from './components/components.js';
 import type { StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
@@ -39,6 +41,6 @@ export declare class StyleEditorWidget extends UI.Widget.VBox {
     }): void;
     static createTriggerButton(stylesContainer: StylesContainer, section: StylePropertiesSection, editorClass: {
         new (): Editor;
-    }, buttonTitle: string, triggerKey: string): HTMLElement;
+    }, buttonTitle: string, triggerKey: string, jslogContext: string, onClick?: () => void): LitTemplate;
 }
 export {};

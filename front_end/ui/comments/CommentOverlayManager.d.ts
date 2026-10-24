@@ -12,7 +12,6 @@ export interface PinPositionData {
     top: number;
     left: number;
     visible: boolean;
-    index: number;
 }
 export interface HighlightRectData {
     id: string;

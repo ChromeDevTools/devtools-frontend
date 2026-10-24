@@ -2506,7 +2506,6 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var { render: render6, html: html6 } = Lit;
-var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
     const attributeNode = element.attributes.item(i);
@@ -2591,7 +2590,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     return { highlights, selected };
   }
   function layOutNode(node) {
-    const onExpand = (event) => input.onExpand(node, event.detail.expanded);
+    const onExpand = (event) => input.onExpand(node, event.detail.expanded, event.detail.recursively);
     const { highlights, selected } = highlight(
       node,
       /* closeTag=*/
@@ -2608,17 +2607,18 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       }
       return false;
     };
+    const isExpanded = node.expanded || containsSearchResult(node);
     return html6`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
-          ?open=${containsSearchResult(node)}>
+          ?open=${isExpanded}>
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
         ${node.children().length ? html6`
           <ul role="group">
-            ${ifExpanded(subtree(node))}
+            ${isExpanded ? subtree(node) : Lit.nothing}
           </ul>` : Lit.nothing}
       </li>`;
   }
@@ -2693,6 +2693,17 @@ var XMLTreeViewNode = class _XMLTreeViewNode {
   treeNodeChildren() {
     return this.children();
   }
+  expandRecursively(maxDepth = 3) {
+    this.expanded = true;
+    if (maxDepth <= 1) {
+      return;
+    }
+    for (const child of this.children()) {
+      if (child.children().length > 0) {
+        child.expandRecursively(maxDepth - 1);
+      }
+    }
+  }
   match(regex, closeTag) {
     return textView(this, closeTag).matchAll(regex);
   }
@@ -2724,8 +2735,15 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   }
   performUpdate() {
     if (this.#treeViewModel) {
-      const onExpand = (node, expanded) => {
-        node.expanded = expanded;
+      const onExpand = (node, expanded, recursively = false) => {
+        if (node.expanded === expanded && !recursively) {
+          return;
+        }
+        if (expanded && recursively) {
+          node.expandRecursively();
+        } else {
+          node.expanded = expanded;
+        }
         this.requestUpdate();
       };
       this.#view(

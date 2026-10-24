@@ -18,7 +18,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/XMLView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html } = Lit;
-const { ifExpanded } = UI.TreeOutline;
 function* attributes(element) {
     for (let i = 0; i < element.attributes.length; ++i) {
         const attributeNode = element.attributes.item(i);
@@ -115,7 +114,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         return { highlights, selected };
     }
     function layOutNode(node) {
-        const onExpand = (event) => input.onExpand(node, event.detail.expanded);
+        const onExpand = (event) => input.onExpand(node, event.detail.expanded, event.detail.recursively);
         const { highlights, selected } = highlight(node, /* closeTag=*/ false);
         const containsSearchResult = (node) => {
             if (node === input.jumpToNextSearchResult?.node) {
@@ -128,18 +127,19 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
             return false;
         };
+        const isExpanded = node.expanded || containsSearchResult(node);
         // clang-format off
         return html `
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
-          ?open=${containsSearchResult(node)}>
+          ?open=${isExpanded}>
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
         ${node.children().length ? html `
           <ul role="group">
-            ${ifExpanded(subtree(node))}
+            ${isExpanded ? subtree(node) : Lit.nothing}
           </ul>` : Lit.nothing}
       </li>`;
         // clang-format on
@@ -218,6 +218,17 @@ export class XMLTreeViewNode {
     treeNodeChildren() {
         return this.children();
     }
+    expandRecursively(maxDepth = 3) {
+        this.expanded = true;
+        if (maxDepth <= 1) {
+            return;
+        }
+        for (const child of this.children()) {
+            if (child.children().length > 0) {
+                child.expandRecursively(maxDepth - 1);
+            }
+        }
+    }
     match(regex, closeTag) {
         return textView(this, closeTag).matchAll(regex);
     }
@@ -249,8 +260,16 @@ export class XMLView extends UI.Widget.Widget {
     }
     performUpdate() {
         if (this.#treeViewModel) {
-            const onExpand = (node, expanded) => {
-                node.expanded = expanded;
+            const onExpand = (node, expanded, recursively = false) => {
+                if (node.expanded === expanded && !recursively) {
+                    return;
+                }
+                if (expanded && recursively) {
+                    node.expandRecursively();
+                }
+                else {
+                    node.expanded = expanded;
+                }
                 this.requestUpdate();
             };
             this.#view({ xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump }, {}, this.contentElement);

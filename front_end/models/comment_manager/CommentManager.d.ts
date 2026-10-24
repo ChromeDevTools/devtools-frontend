@@ -16,7 +16,6 @@ export interface EventTypes {
  */
 export declare class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor();
     setAgentAttached(value: boolean): void;
     isAgentAttached(): boolean;
     setCommentMode(active: boolean): void;

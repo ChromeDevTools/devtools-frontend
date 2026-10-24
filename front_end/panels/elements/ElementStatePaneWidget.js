@@ -66,6 +66,8 @@ var SpecificPseudoStates;
     SpecificPseudoStates["AUTOFILL"] = "autofill";
     SpecificPseudoStates["OPEN"] = "open";
     SpecificPseudoStates["TARGET_CURRENT"] = "target-current";
+    SpecificPseudoStates["BUFFERING"] = "buffering";
+    SpecificPseudoStates["STALLED"] = "stalled";
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
 export const DEFAULT_VIEW = (input, _output, target) => {
     const createElementStateCheckbox = (state) => {
@@ -157,6 +159,8 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
         this.#states.set(SpecificPseudoStates.AUTOFILL, { state: SpecificPseudoStates.AUTOFILL, type: 'specific' });
         this.#states.set(SpecificPseudoStates.OPEN, { state: SpecificPseudoStates.OPEN, type: 'specific' });
         this.#states.set(SpecificPseudoStates.TARGET_CURRENT, { state: SpecificPseudoStates.TARGET_CURRENT, type: 'specific' });
+        this.#states.set(SpecificPseudoStates.BUFFERING, { state: SpecificPseudoStates.BUFFERING, type: 'specific' });
+        this.#states.set(SpecificPseudoStates.STALLED, { state: SpecificPseudoStates.STALLED, type: 'specific' });
         setDualStateCheckboxes(SpecificPseudoStates.VALID, SpecificPseudoStates.INVALID);
         setDualStateCheckboxes(SpecificPseudoStates.USER_VALID, SpecificPseudoStates.USER_INVALID);
         setDualStateCheckboxes(SpecificPseudoStates.READ_ONLY, SpecificPseudoStates.READ_WRITE);
@@ -367,6 +371,11 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
         else {
             hideSpecificCheckbox(SpecificPseudoStates.TARGET_CURRENT, true);
         }
+        // :buffering and :stalled are independent. Forcing :stalled does not force
+        // :buffering, even though a real stalled media element is also buffering.
+        const isMediaElement = isElementOfTypes(node, ['audio', 'video']);
+        hideSpecificCheckbox(SpecificPseudoStates.BUFFERING, !isMediaElement);
+        hideSpecificCheckbox(SpecificPseudoStates.STALLED, !isMediaElement);
     }
 }
 let buttonProviderInstance;

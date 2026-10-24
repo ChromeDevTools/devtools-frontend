@@ -22,7 +22,7 @@ export interface ViewInput {
     queryParameters: SDK.NetworkRequest.NameValue[] | null;
     objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree | null;
     onPayloadContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
-    onPayloadToggle(expanded: boolean): void;
+    onPayloadToggle(expanded: boolean, recursively?: boolean): void;
     /** Raw binary content data for the request body (when base64-encoded by backend). */
     binaryPayloadContentData: TextUtils.ContentData.ContentData | null;
     requestUrl: Platform.DevToolsPath.UrlString;

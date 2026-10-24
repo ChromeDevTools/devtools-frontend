@@ -3717,7 +3717,7 @@ __export(Swatches_exports, {
   CSSShadowSwatch: () => CSSShadowSwatch
 });
 import "../../../kit/kit.js";
-import { html as html8, render as render8 } from "../../../lit/lit.js";
+import { Directives as Directives6, html as html8, render as render8 } from "../../../lit/lit.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/cssShadowSwatch.css.js
 var cssShadowSwatch_css_default = `/*
@@ -3744,22 +3744,33 @@ devtools-icon.shadow-swatch-icon {
 
 // ../../front_end/ui/legacy/components/inline_editor/Swatches.ts
 var CSSShadowSwatch = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
   #icon;
   #model;
   constructor(model) {
     super();
     this.#model = model;
+    const icon = Directives6.createRef();
     render8(
       html8`
         <style>${cssShadowSwatch_css_default}</style>
-        <devtools-icon tabindex=-1 name="shadow" class="shadow-swatch-icon"></devtools-icon>`,
-      this,
+        <devtools-icon ${Directives6.ref(icon)} tabindex=-1 name="shadow" class="shadow-swatch-icon"></devtools-icon>`,
+      this.#shadow,
       { host: this }
     );
-    this.#icon = this.querySelector("devtools-icon");
+    this.#icon = icon.value;
   }
   model() {
+    return this.cssShadowModel;
+  }
+  get cssShadowModel() {
+    if (!this.#model) {
+      throw new Error("No model set on CSSShadowSwatch");
+    }
     return this.#model;
+  }
+  set cssShadowModel(model) {
+    this.#model = model;
   }
   iconElement() {
     return this.#icon;

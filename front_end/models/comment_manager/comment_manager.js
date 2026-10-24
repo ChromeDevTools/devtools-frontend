@@ -28,7 +28,8 @@ import * as Host2 from "../../core/host/host.js";
 var CommentThread_exports = {};
 __export(CommentThread_exports, {
   CommentThread: () => CommentThread,
-  Events: () => Events
+  Events: () => Events,
+  RevealableThread: () => RevealableThread
 });
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
@@ -36,16 +37,12 @@ var Events = /* @__PURE__ */ ((Events4) => {
   Events4["CHANGED"] = "Changed";
   return Events4;
 })(Events || {});
-var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrapper {
-  static #nextIndex = 1;
-  static resetIndex() {
-    _CommentThread.#nextIndex = 1;
-  }
+var CommentThread = class extends Common.ObjectWrapper.ObjectWrapper {
   id = crypto.randomUUID();
   anchor;
   /** True for comments generated from the change tracker. */
   isGeneratedComment;
-  #savedIndex;
+  #isOrphaned = false;
   comments;
   status = "DRAFT";
   transmitted = false;
@@ -55,8 +52,15 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
     this.comments = options.comments ?? [];
     this.isGeneratedComment = Boolean(options.isGeneratedComment);
   }
-  get index() {
-    return this.#savedIndex ?? _CommentThread.#nextIndex;
+  get isOrphaned() {
+    return this.#isOrphaned;
+  }
+  setOrphaned(isOrphaned) {
+    if (this.#isOrphaned === isOrphaned) {
+      return;
+    }
+    this.#isOrphaned = isOrphaned;
+    this.dispatchEventToListeners("Changed" /* CHANGED */);
   }
   /**
    * Returns whether it was changed.
@@ -90,9 +94,6 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
     let changed = this.#saveText(text, author);
     if (this.status === "DRAFT") {
       this.#recordCommentCreated();
-      if (this.#savedIndex === void 0) {
-        this.#savedIndex = _CommentThread.#nextIndex++;
-      }
       this.status = "ACTIVE";
       changed = true;
     }
@@ -118,9 +119,6 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
       this.#recordCommentCreated();
     }
     if (this.status === "DRAFT" || this.status === "ACTIVE") {
-      if (this.#savedIndex === void 0) {
-        this.#savedIndex = _CommentThread.#nextIndex++;
-      }
       this.status = "SENT_TO_AGENT";
       changed = true;
     }
@@ -136,12 +134,17 @@ var CommentThread = class _CommentThread extends Common.ObjectWrapper.ObjectWrap
         timestamp: Date.now()
       });
     }
-    if (this.#savedIndex === void 0) {
-      this.#savedIndex = _CommentThread.#nextIndex++;
-    }
     this.status = "RESOLVED";
     this.dispatchEventToListeners("Changed" /* CHANGED */);
   }
+};
+var RevealableThread = class {
+  constructor(thread, position) {
+    this.thread = thread;
+    this.position = position;
+  }
+  thread;
+  position;
 };
 
 // ../../front_end/models/comment_manager/CommentManager.ts
@@ -155,10 +158,6 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   #commentThreads = /* @__PURE__ */ new Map();
   #commentMode = false;
   #agentAttached = false;
-  constructor() {
-    super();
-    CommentThread.resetIndex();
-  }
   #onThreadChanged() {
     this.dispatchEventToListeners("CommentThreadsChanged" /* COMMENT_THREADS_CHANGED */, this.getCommentThreads());
   }
@@ -261,7 +260,6 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
       thread.removeEventListener("Changed" /* CHANGED */, this.#onThreadChanged, this);
     }
     this.#commentThreads.clear();
-    CommentThread.resetIndex();
     this.dispatchEventToListeners("CommentThreadsChanged" /* COMMENT_THREADS_CHANGED */, []);
   }
 };

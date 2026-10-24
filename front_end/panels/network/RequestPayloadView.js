@@ -156,7 +156,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
           toggle-on-click
           ?open=${objectTree.expanded}
-          @expand=${(e) => input.onPayloadToggle(e.detail.expanded)}
+          @expand=${(e) => input.onPayloadToggle(e.detail.expanded, e.detail.recursively)}
           @contextmenu=${onPayloadContextMenu}>
         ${objectTree.object.description}
         ${objectTree.object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
@@ -401,10 +401,15 @@ export class RequestPayloadView extends UI.Widget.VBox {
                     },
                 });
             },
-            onPayloadToggle: (expanded) => {
-                if (this.#objectTree) {
-                    this.#objectTree.expanded = expanded;
+            onPayloadToggle: (expanded, recursively = false) => {
+                if (!this.#objectTree) {
+                    return;
                 }
+                if (expanded && recursively) {
+                    void this.#objectTree.expandRecursively();
+                    return;
+                }
+                this.#objectTree.expanded = expanded;
             },
             binaryPayloadContentData: this.#binaryPayloadContentData,
             requestUrl: this.request?.url() ?? Platform.DevToolsPath.EmptyUrlString,

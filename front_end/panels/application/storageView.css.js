@@ -9,14 +9,22 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.report-row {
-  display: flex;
-  align-items: center;
-  white-space: normal;
+.report-subtitle {
+  font: var(--sys-typescale-body4-regular);
+  padding: 0 var(--sys-size-9) var(--sys-size-7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  &:has(.quota-override-error:empty) {
-    margin: 0;
-  }
+devtools-report .report-section {
+  display: grid;
+  grid-column: 1 / 3;
+  grid-template-columns: subgrid;
+}
+
+devtools-report-section:has(.quota-override-error:empty) {
+  display: none;
 }
 
 .clear-site-data-checkboxes-row {
@@ -37,15 +45,6 @@ export default `/*
 
 .clear-selected-button-row {
   margin-top: var(--sys-size-7);
-}
-
-.link {
-  margin-left: 10px;
-  display: none;
-}
-
-.report-row:hover .link {
-  display: inline;
 }
 
 .quota-override-editor-with-button {
@@ -82,7 +81,7 @@ export default `/*
   min-width: fit-content;
 }
 
-.clear-storage-container {
+:host {
   overflow: auto;
 }
 
@@ -90,10 +89,6 @@ export default `/*
   min-width: 400px;
   /* Keep in sync with ui/legacy/checkboxTextLabel.css (12px input, 6px margins). */
   --nested-checkbox-indent: var(--sys-size-11);
-}
-
-.report-content-box {
-  overflow: initial;
 }
 
 .include-third-party-cookies-row {

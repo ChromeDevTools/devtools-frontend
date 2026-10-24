@@ -315,9 +315,11 @@ export declare namespace TreeViewElement {
     }
     class ExpandEvent extends CustomEvent<{
         expanded: boolean;
+        recursively?: boolean;
     }> {
         constructor(detail: {
             expanded: boolean;
+            recursively?: boolean;
         });
     }
     class EnterEvent extends CustomEvent<void> {

@@ -596,6 +596,7 @@ panels/network/components/ResponseHeaderSection.test.js
 panels/performance_monitor/PerformanceMonitor.test.js
 panels/profiler/HeapDetachedElementsView.test.js
 panels/profiler/HeapProfileView.test.js
+panels/profiler/HeapSnapshotDataGrids.test.js
 panels/profiler/HeapSnapshotView.test.js
 panels/profiler/HeapTimelineOverview.test.js
 panels/protocol_monitor/JSONEditor.test.js
@@ -890,6 +891,7 @@ ui/legacy/components/source_frame/JSONView.test.js
 ui/legacy/components/source_frame/ResourceSourceFrame.test.js
 ui/legacy/components/source_frame/SourceFrame.test.js
 ui/legacy/components/source_frame/StreamingContentHexView.test.js
+ui/legacy/components/source_frame/XMLView.test.js
 ui/legacy/components/utils/JSPresentationUtils.test.js
 ui/legacy/components/utils/Linkifier.test.js
 ui/legacy/theme_support/ThemeSupport.test.js

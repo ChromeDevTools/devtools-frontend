@@ -767,6 +767,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "browserLanguage",
   "bs",
   "buffered-rendering",
+  "buffering",
   "button",
   "bypass-service-worker",
   "ca",

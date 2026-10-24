@@ -135,6 +135,20 @@ const UIStrings = {
      *              shows up for disconnected automatic workspace folders.
      */
     connectFolderToWorkspace: 'Connect to workspace',
+    /**
+     * @description A context menu item in the Sources navigator of the Sources panel.
+     */
+    run: 'Run',
+    /**
+     * @description Text to save content as a specific file type.
+     */
+    saveAs: 'Save as…',
+    /**
+     * @description An error message logged to the Console panel when the user uses
+     *              the "Save as…" context menu in the Sources panel and the operation
+     *              fails.
+     */
+    saveAsFailed: 'Failed to save file to disk',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -165,19 +179,13 @@ const TYPE_ORDERS = new Map([
     [Types.FileSystem, 100],
 ]);
 export const DEFAULT_VIEW = (input, _output, target) => {
-    const showPlaceholder = Boolean(input.placeholder && !input.showTree);
+    const showPlaceholder = !input.showTree;
     // clang-format off
     render(html `
         <style>${navigatorViewStyles}</style>
         <slot name="header"></slot>
         <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
-          <slot name="placeholder">
-            ${input.placeholder ? html `
-              <devtools-widget class="vbox flex-auto" ?hidden=${!showPlaceholder}>
-                ${input.placeholder.element}
-              </devtools-widget>
-            ` : Lit.nothing}
-          </slot>
+          <slot name="placeholder"></slot>
         </div>
         <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
           ${input.treeElement}
@@ -185,9 +193,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       `, target);
     // clang-format on
 };
-export class NavigatorView extends UI.Widget.VBox {
+export var Events;
+(function (Events) {
+    Events["UI_SOURCE_CODE_ADDED"] = "ui-source-code-added";
+    Events["SOURCE_SELECTED"] = "source-selected";
+})(Events || (Events = {}));
+const NavigatorViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class NavigatorView extends NavigatorViewBase {
     static INJECT = [Bindings.NetworkProject.NetworkProjectManager];
-    placeholder;
     scriptsTree;
     uiSourceCodeNodes;
     subfolderNodes;
@@ -200,19 +213,17 @@ export class NavigatorView extends UI.Widget.VBox {
     navigatorGroupByAuthoredSetting;
     #navigatorGroupByAuthoredChangeListener;
     #enableAuthoredGrouping = false;
-    #workspace;
+    #projectFilter;
+    #workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    #initialized = false;
     groupByFrame;
     groupByAuthored;
     groupByDomain;
     groupByFolder;
     #view;
-    constructor(element, [networkProjectManager] = [Bindings.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW, options) {
-        super(element, {
-            ...options,
-            useShadowDom: true,
-        });
+    constructor(element, [networkProjectManager] = [Bindings.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
         this.#view = view;
-        this.placeholder = null;
         this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow("NavigationTree" /* UI.TreeOutline.TreeVariant.NAVIGATION_TREE */);
         this.scriptsTree.registerRequiredCSS(navigatorTreeStyles);
         this.scriptsTree.setHideOverflow(true);
@@ -240,10 +251,9 @@ export class NavigatorView extends UI.Widget.VBox {
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("RequestsForHeaderOverridesFileChanged" /* Persistence.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED */, this.#onRequestsForHeaderOverridesFileChanged, this);
         SDK.TargetManager.TargetManager.instance().addEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.targetNameChanged, this);
         SDK.TargetManager.TargetManager.instance().observeTargets(this);
-        this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
-        this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
         networkProjectManager.addEventListener("FrameAttributionAdded" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED */, this.frameAttributionAdded, this);
         networkProjectManager.addEventListener("FrameAttributionRemoved" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED */, this.frameAttributionRemoved, this);
+        this.requestUpdate();
     }
     wasShown() {
         super.wasShown();
@@ -267,7 +277,20 @@ export class NavigatorView extends UI.Widget.VBox {
             this.#navigatorGroupByAuthoredChangeListener = this.groupingChanged.bind(this);
             this.navigatorGroupByAuthoredSetting.addChangeListener(this.#navigatorGroupByAuthoredChangeListener);
         }
-        if (this.#workspace && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+        if (this.#initialized && Boolean(this.groupByAuthored) !== Boolean(this.navigatorGroupByAuthoredSetting?.get())) {
+            this.groupingChanged();
+        }
+        this.requestUpdate();
+    }
+    get projectFilter() {
+        return this.#projectFilter;
+    }
+    set projectFilter(projectFilter) {
+        if (this.#projectFilter === projectFilter) {
+            return;
+        }
+        this.#projectFilter = projectFilter;
+        if (this.#initialized) {
             this.groupingChanged();
         }
         this.requestUpdate();
@@ -311,15 +334,15 @@ export class NavigatorView extends UI.Widget.VBox {
         }
         return Platform.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
     }
-    setPlaceholder(placeholder) {
-        console.assert(!this.placeholder, 'A placeholder widget was already set');
-        this.placeholder = placeholder;
-        this.requestUpdate();
-    }
     performUpdate() {
+        if (!this.#initialized) {
+            this.#initialized = true;
+            this.initGrouping();
+            this.resetWorkspace(this.#workspace);
+            this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+        }
         this.#view({
             treeElement: this.scriptsTree.element,
-            placeholder: this.placeholder,
             showTree: Boolean(this.scriptsTree.firstChild()),
             onContextMenu: this.handleContextMenu.bind(this),
         }, undefined, this.contentElement);
@@ -418,6 +441,9 @@ export class NavigatorView extends UI.Widget.VBox {
         return this.#workspace;
     }
     acceptProject(project) {
+        if (this.#projectFilter) {
+            return this.#projectFilter(project);
+        }
         return !project.isServiceProject();
     }
     frameAttributionAdded(event) {
@@ -463,7 +489,7 @@ export class NavigatorView extends UI.Widget.VBox {
         else {
             this.addUISourceCodeNode(uiSourceCode, null);
         }
-        this.uiSourceCodeAdded(uiSourceCode);
+        this.dispatchEventToListeners("ui-source-code-added" /* Events.UI_SOURCE_CODE_ADDED */, uiSourceCode);
     }
     addUISourceCodeNode(uiSourceCode, frame) {
         const isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
@@ -488,8 +514,6 @@ export class NavigatorView extends UI.Widget.VBox {
             uiSourceCodeNode.updateTitleBubbleUp();
         }
         this.selectDefaultTreeNode();
-    }
-    uiSourceCodeAdded(_uiSourceCode) {
     }
     uiSourceCodeAddedCallback(event) {
         const uiSourceCode = event.data;
@@ -748,6 +772,7 @@ export class NavigatorView extends UI.Widget.VBox {
         return node;
     }
     sourceSelected(uiSourceCode, focusSource) {
+        this.dispatchEventToListeners("source-selected" /* Events.SOURCE_SELECTED */, { uiSourceCode, focusSource });
         void Common.Revealer.reveal(uiSourceCode, !focusSource);
     }
     #isUISourceCodeOrAnyAncestorSelected(node) {
@@ -885,6 +910,15 @@ export class NavigatorView extends UI.Widget.VBox {
     }
     handleFileContextMenu(event, node) {
         const uiSourceCode = node.uiSourceCode();
+        if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
+            const contextMenu = new UI.ContextMenu.ContextMenu(event);
+            contextMenu.headerSection().appendItem(i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode), { jslogContext: 'run' });
+            contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false), { jslogContext: 'rename' });
+            contextMenu.editSection().appendItem(i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), { jslogContext: 'remove' });
+            contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this.handleSaveAs.bind(this, uiSourceCode), { jslogContext: 'save-as' });
+            void contextMenu.show();
+            return;
+        }
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         contextMenu.appendApplicableItems(uiSourceCode);
         const project = uiSourceCode.project();
@@ -894,6 +928,21 @@ export class NavigatorView extends UI.Widget.VBox {
             contextMenu.editSection().appendItem(i18nString(UIStrings.delete), this.handleContextMenuDelete.bind(this, uiSourceCode), { jslogContext: 'delete' });
         }
         void contextMenu.show();
+    }
+    async handleSaveAs(uiSourceCode) {
+        uiSourceCode.commitWorkingCopy();
+        const contentData = await uiSourceCode.requestContentData();
+        if (TextUtils.ContentData.ContentData.isError(contentData)) {
+            console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
+            Common.Console.Console.instance().error(i18nString(UIStrings.saveAsFailed), /* show=*/ false);
+            return;
+        }
+        await Workspace.FileManager.FileManager.instance().save(this.addJSExtension(uiSourceCode.url()), contentData, 
+        /* forceSaveAs=*/ true);
+        Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
+    }
+    addJSExtension(url) {
+        return Common.ParsedURL.ParsedURL.concatenate(url, '.js');
     }
     async handleDeleteFolder(node) {
         const shouldRemove = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.actionCannotBeUndone), i18nString(UIStrings.deleteFolder), undefined, { jslogContext: 'delete-folder-confirmation' });

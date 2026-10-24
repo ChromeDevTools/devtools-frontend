@@ -1157,7 +1157,6 @@ function getRegisteredToolbarItems() {
 }
 export var ToolbarItemLocation;
 (function (ToolbarItemLocation) {
-    ToolbarItemLocation["FILES_NAVIGATION_TOOLBAR"] = "files-navigator-toolbar";
     ToolbarItemLocation["MAIN_TOOLBAR_RIGHT"] = "main-toolbar-right";
     ToolbarItemLocation["MAIN_TOOLBAR_LEFT"] = "main-toolbar-left";
     ToolbarItemLocation["STYLES_SIDEBARPANE_TOOLBAR"] = "styles-sidebarpane-toolbar";

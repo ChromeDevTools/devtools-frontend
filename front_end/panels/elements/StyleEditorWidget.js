@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import '../../ui/kit/kit.js';
 import * as Elements from '../../models/elements/elements.js';
-import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html } from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+const { ref } = Directives;
 let instance = null;
 /**
  * Thin UI.Widget wrapper around style editors to allow using it as a popover.
@@ -117,13 +120,30 @@ export class StyleEditorWidget extends UI.Widget.VBox {
             this.contentElement.appendChild(this.editor);
         }
     }
-    static createTriggerButton(stylesContainer, section, editorClass, buttonTitle, triggerKey) {
-        const triggerButton = createIcon('flex-wrap', 'styles-pane-button');
-        triggerButton.title = buttonTitle;
-        triggerButton.role = 'button';
-        triggerButton.onclick = async (event) => {
+    static createTriggerButton(stylesContainer, section, editorClass, buttonTitle, triggerKey, jslogContext, onClick) {
+        const popoverHelper = stylesContainer.swatchPopoverHelper();
+        let triggerButton;
+        // clang-format off
+        return html `<devtools-icon
+      ${ref(e => {
+            triggerButton = e;
+            if (e && popoverHelper.isShowing(StyleEditorWidget.instance()) &&
+                StyleEditorWidget.instance().getTriggerKey() === triggerKey) {
+                popoverHelper.setAnchorElement(e);
+            }
+        })}
+      name="flex-wrap"
+      class="styles-pane-button"
+      title=${buttonTitle}
+      role="button"
+      tabindex="-1"
+      jslog=${VisualLogging.showStyleEditor(jslogContext).track({ click: true })}
+      @click=${async (event) => {
             event.stopPropagation();
-            const popoverHelper = stylesContainer.swatchPopoverHelper();
+            onClick?.();
+            if (!triggerButton) {
+                return;
+            }
             const widget = StyleEditorWidget.instance();
             widget.element.classList.toggle('with-padding', true);
             widget.setEditor(editorClass);
@@ -148,12 +168,13 @@ export class StyleEditorWidget extends UI.Widget.VBox {
             if (scrollerElement) {
                 scrollerElement.addEventListener('scroll', onScroll);
             }
-        };
-        triggerButton.onmouseup = event => {
+        }}
+      @mouseup=${(event) => {
             // Stop propagation to prevent the property editor from being activated.
             event.stopPropagation();
-        };
-        return triggerButton;
+        }}
+    ></devtools-icon>`;
+        // clang-format on
     }
 }
 function ensureTreeElementForProperty(section, propertyName) {

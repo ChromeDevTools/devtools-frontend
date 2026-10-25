@@ -1906,7 +1906,12 @@ describeWithEnvironment('PreloadingSummaryView', () => {
 `);
     await emulator.activateAndDispatchEvents('prerendered.html');
 
-    const usedPreloadingComponent = view.getUsedPreloadingForTest();
+    await view.updateComplete;
+    const usedPreloadingComponent =
+        Array.from(view.contentElement.querySelectorAll<UI.Widget.WidgetElement<UI.Widget.Widget>>('devtools-widget'))
+            .map(el => el.getWidget())
+            .find(widget => widget instanceof PreloadingComponents.UsedPreloadingView.UsedPreloadingView);
+    assert.exists(usedPreloadingComponent);
     await usedPreloadingComponent.updateComplete;
 
     assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered');

@@ -189,8 +189,8 @@ class PreloadingUIUtils {
 }
 
 function pageURL(): Platform.DevToolsPath.UrlString {
-  return SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ||
-      ('' as Platform.DevToolsPath.UrlString);
+  return SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ??
+      Platform.DevToolsPath.EmptyUrlString;
 }
 
 export class PreloadingRuleSetView extends UI.Widget.VBox {
@@ -684,64 +684,70 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   }
 }
 
+interface SummaryViewInput {
+  warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+  usedPreloading: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData;
+}
+
+type SummaryView = (input: SummaryViewInput, output: undefined, target: HTMLElement) => void;
+
+const SUMMARY_DEFAULT_VIEW: SummaryView = (input, _output, target) => {
+  // clang-format off
+  render(
+      html`
+        ${widget(PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar, input.warnings)}
+        ${widget(PreloadingComponents.UsedPreloadingView.UsedPreloadingView, {data: input.usedPreloading})}
+      `,
+      target);
+  // clang-format on
+};
+
 export class PreloadingSummaryView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
+  readonly #view: SummaryView;
+  #warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
 
-  private readonly warningsContainer: HTMLDivElement;
-  private readonly warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
-  private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
-
-  constructor(model: SDK.PreloadingModel.PreloadingModel) {
+  constructor(model: SDK.PreloadingModel.PreloadingModel, view: SummaryView = SUMMARY_DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.pane('speculative-loads')}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
+    this.#view = view;
 
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.render, this,
-        {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
-          Object.assign(this.warningsView, e.data);
-        }, this, {scoped: true});
-
-    this.warningsContainer = document.createElement('div');
-    this.warningsContainer.classList.add('flex-none');
-    this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
-    this.warningsView.show(this.warningsContainer);
-
-    this.usedPreloading.show(this.contentElement);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.MODEL_UPDATED,
+                                                                this.requestUpdate, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
+                                                                  this.#warnings = e.data;
+                                                                  this.requestUpdate();
+                                                                }, this, {scoped: true});
   }
 
   override wasShown(): void {
     super.wasShown();
-
-    this.warningsView.wasShown();
-
-    this.render();
+    this.requestUpdate();
   }
 
   onScopeChange(): void {
     const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
     assertNotNullOrUndefined(model);
     this.model = model;
-    this.render();
+    this.requestUpdate();
   }
 
-  render(): void {
-    this.usedPreloading.data = {
-      pageURL: SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ||
-          ('' as Platform.DevToolsPath.UrlString),
-      previousAttempts: this.model.getRepresentativePreloadingAttemptsOfPreviousPage().map(({value}) => value),
-      currentAttempts: this.model.getRepresentativePreloadingAttempts(null).map(({value}) => value),
+  override performUpdate(): void {
+    const input: SummaryViewInput = {
+      warnings: this.#warnings,
+      usedPreloading: {
+        pageURL: pageURL(),
+        previousAttempts: this.model.getRepresentativePreloadingAttemptsOfPreviousPage().map(({value}) => value),
+        currentAttempts: this.model.getRepresentativePreloadingAttempts(null).map(({value}) => value),
+      },
     };
-  }
-
-  getUsedPreloadingForTest(): PreloadingComponents.UsedPreloadingView.UsedPreloadingView {
-    return this.usedPreloading;
+    this.#view(input, /* output= */ undefined, this.contentElement);
   }
 }
 

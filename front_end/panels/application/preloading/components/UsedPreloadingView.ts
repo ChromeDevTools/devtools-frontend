@@ -425,8 +425,8 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
 export class UsedPreloadingView extends UI.Widget.VBox {
   readonly #view: View;
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super({useShadowDom: true});
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
     this.#view = view;
   }
 

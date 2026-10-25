@@ -26,22 +26,20 @@ let eventToInitiatorMap = new WeakMap<Types.Events.Event, Types.Events.Event>();
 // multiple events, hence why the value for this map is an array.
 let initiatorToEventsMap = new WeakMap<Types.Events.Event, Types.Events.Event[]>();
 
-let timerInstallEventsById = new Map<number, Types.Events.TimerInstall>();
-let requestIdleCallbackEventsById = new Map<number, Types.Events.RequestIdleCallback>();
+let initiatorEventsByKey = new Map<string, Types.Events.Event>();
 
-let webSocketCreateEventsById = new Map<number, Types.Events.WebSocketCreate>();
-let schedulePostTaskCallbackEventsById = new Map<number, Types.Events.SchedulePostTaskCallback>();
+function executionContextKey(kind: string, event: Types.Events.Event, data: {frame?: string, workerId?: string},
+                             id: number): string {
+  return `${kind}:${event.pid}:${data.frame ?? data.workerId ?? event.tid}:${id}`;
+}
 
 export function reset(): void {
   lastScheduleStyleRecalcByFrame = new Map();
   lastInvalidationEventForFrame = new Map();
   lastRecalcByFrame = new Map();
-  timerInstallEventsById = new Map();
+  initiatorEventsByKey = new Map();
   eventToInitiatorMap = new WeakMap();
   initiatorToEventsMap = new WeakMap();
-  requestIdleCallbackEventsById = new Map();
-  webSocketCreateEventsById = new Map();
-  schedulePostTaskCallbackEventsById = new Map();
 }
 
 function storeInitiator(data: {initiator: Types.Events.Event, event: Types.Events.Event}): void {
@@ -49,6 +47,19 @@ function storeInitiator(data: {initiator: Types.Events.Event, event: Types.Event
   const eventsForInitiator = initiatorToEventsMap.get(data.initiator) || [];
   eventsForInitiator.push(data.event);
   initiatorToEventsMap.set(data.initiator, eventsForInitiator);
+}
+
+function storeInitiatorById(kind: string, event: Types.Events.Event, data: {frame?: string, workerId?: string},
+                            id: number): void {
+  initiatorEventsByKey.set(executionContextKey(kind, event, data, id), event);
+}
+
+function pairInitiatorById(kind: string, event: Types.Events.Event, data: {frame?: string, workerId?: string},
+                           id: number): void {
+  const initiator = initiatorEventsByKey.get(executionContextKey(kind, event, data, id));
+  if (initiator) {
+    storeInitiator({event, initiator});
+  }
 }
 
 /**
@@ -116,39 +127,21 @@ export function handleEvent(event: Types.Events.Event): void {
     // Now clear the last invalidation for the frame: the last invalidation has been linked to a Layout event, so it cannot be the initiator for any future layouts.
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
   } else if (Types.Events.isTimerInstall(event)) {
-    timerInstallEventsById.set(event.args.data.timerId, event);
+    storeInitiatorById('timer', event, event.args.data, event.args.data.timerId);
   } else if (Types.Events.isTimerFire(event)) {
-    const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
-    if (matchingInstall) {
-      storeInitiator({event, initiator: matchingInstall});
-    }
+    pairInitiatorById('timer', event, event.args.data, event.args.data.timerId);
   } else if (Types.Events.isRequestIdleCallback(event)) {
-    requestIdleCallbackEventsById.set(event.args.data.id, event);
+    storeInitiatorById('idle', event, event.args.data, event.args.data.id);
   } else if (Types.Events.isFireIdleCallback(event)) {
-    const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
-    if (matchingRequestEvent) {
-      storeInitiator({
-        event,
-        initiator: matchingRequestEvent,
-      });
-    }
+    pairInitiatorById('idle', event, event.args.data, event.args.data.id);
   } else if (Types.Events.isWebSocketCreate(event)) {
-    webSocketCreateEventsById.set(event.args.data.identifier, event);
+    storeInitiatorById('ws', event, event.args.data, event.args.data.identifier);
   } else if (Types.Events.isWebSocketInfo(event) || Types.Events.isWebSocketTransfer(event)) {
-    const matchingCreateEvent = webSocketCreateEventsById.get(event.args.data.identifier);
-    if (matchingCreateEvent) {
-      storeInitiator({
-        event,
-        initiator: matchingCreateEvent,
-      });
-    }
+    pairInitiatorById('ws', event, event.args.data, event.args.data.identifier);
   } else if (Types.Events.isSchedulePostTaskCallback(event)) {
-    schedulePostTaskCallbackEventsById.set(event.args.data.taskId, event);
+    storeInitiatorById('postTask', event, event.args.data, event.args.data.taskId);
   } else if (Types.Events.isRunPostTaskCallback(event) || Types.Events.isAbortPostTaskCallback(event)) {
-    const matchingSchedule = schedulePostTaskCallbackEventsById.get(event.args.data.taskId);
-    if (matchingSchedule) {
-      storeInitiator({event, initiator: matchingSchedule});
-    }
+    pairInitiatorById('postTask', event, event.args.data, event.args.data.taskId);
   }
 }
 

@@ -444,4 +444,53 @@ describe('InitiatorsHandler', () => {
         'initiator with both run and cancel initiated events not found',
     );
   });
+
+  it('scopes numeric timer IDs by process and frame', async () => {
+    Trace.Handlers.ModelHandlers.Flows.reset();
+    Trace.Handlers.ModelHandlers.AsyncJSCalls.reset();
+    Trace.Handlers.ModelHandlers.Initiators.reset();
+
+    const pid1 = Trace.Types.Events.ProcessID(100);
+    const pid2 = Trace.Types.Events.ProcessID(200);
+    const tid = Trace.Types.Events.ThreadID(1);
+
+    const timerInstallFrameA: Trace.Types.Events.TimerInstall = {
+      name: Trace.Types.Events.Name.TIMER_INSTALL,
+      cat: 'devtools.timeline',
+      ph: Trace.Types.Events.Phase.INSTANT,
+      s: Trace.Types.Events.Scope.THREAD,
+      ts: Trace.Types.Timing.Micro(10),
+      pid: pid1,
+      tid,
+      args: {data: {timerId: 1, timeout: 0, singleShot: true, frame: 'frame-a'}},
+    };
+    const timerInstallFrameB: Trace.Types.Events.TimerInstall = {
+      ...timerInstallFrameA,
+      ts: Trace.Types.Timing.Micro(20),
+      args: {data: {timerId: 1, timeout: 0, singleShot: true, frame: 'frame-b'}},
+    };
+    const timerInstallOtherPid: Trace.Types.Events.TimerInstall = {
+      ...timerInstallFrameA,
+      ts: Trace.Types.Timing.Micro(30),
+      pid: pid2,
+    };
+    const timerFireFrameA: Trace.Types.Events.TimerFire = {
+      name: Trace.Types.Events.Name.TIMER_FIRE,
+      cat: 'devtools.timeline',
+      ph: Trace.Types.Events.Phase.COMPLETE,
+      ts: Trace.Types.Timing.Micro(40),
+      dur: Trace.Types.Timing.Micro(5),
+      pid: pid1,
+      tid,
+      args: {data: {timerId: 1, frame: 'frame-a'}},
+    };
+
+    for (const event of [timerInstallFrameA, timerInstallFrameB, timerInstallOtherPid, timerFireFrameA]) {
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const {eventToInitiator} = Trace.Handlers.ModelHandlers.Initiators.data();
+
+    assert.strictEqual(eventToInitiator.get(timerFireFrameA), timerInstallFrameA);
+  });
 });

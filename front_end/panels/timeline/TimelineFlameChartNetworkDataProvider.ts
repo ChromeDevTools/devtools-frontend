@@ -393,7 +393,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * event C and will include the socket event A.
    * */
   forceDrawableLevel(levelIndex: number): boolean {
-    return this.#networkTrackAppender?.webSocketIdToLevel.has(levelIndex) || false;
+    return this.#networkTrackAppender?.webSocketIdToLevel.values().some(l => l === levelIndex) ?? false;
   }
 
   preparePopoverElement(index: number): Lit.TemplateResult|null {

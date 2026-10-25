@@ -213,10 +213,15 @@ describe('LayoutShiftsHandler', function() {
       // length happens.
       assert.strictEqual(layoutShifts.clusters[0].clusterWindow.max - layoutShifts.clusters[0].clusterWindow.min,
                          Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+      assert.strictEqual(layoutShifts.clusters[0].dur, Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+      assert.isAtMost(layoutShifts.clusters[0].ts + layoutShifts.clusters[0].dur, layoutShifts.clusters[1].ts);
     });
 
     it('sets the end of the last session window to the trace end time correctly', () => {
-      assert.strictEqual(layoutShifts.clusters.at(-1)?.clusterWindow.max, metaData.traceBounds.max);
+      const lastCluster = layoutShifts.clusters.at(-1);
+      assert.isOk(lastCluster);
+      assert.strictEqual(lastCluster.clusterWindow.max, metaData.traceBounds.max);
+      assert.strictEqual(lastCluster.ts + lastCluster.dur, metaData.traceBounds.max);
     });
   });
 

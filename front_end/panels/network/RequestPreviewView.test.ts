@@ -12,6 +12,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -22,12 +23,11 @@ async function contentData(): Promise<TextUtils.ContentData.ContentData> {
   return new TextUtils.ContentData.ContentData(content, false, 'text/css');
 }
 
-function renderPreviewView(request: SDK.NetworkRequest.NetworkRequest): Network.RequestPreviewView.RequestPreviewView {
+async function renderPreviewView(request: SDK.NetworkRequest.NetworkRequest):
+    Promise<Network.RequestPreviewView.RequestPreviewView> {
   const component = new Network.RequestPreviewView.RequestPreviewView(request);
-  const div = document.createElement('div');
-  renderElementIntoDOM(div);
-  component.markAsRoot();
-  component.show(div);
+  renderElementIntoDOM(component);
+  await component.updateComplete;
   return component;
 }
 
@@ -40,12 +40,13 @@ describe('RequestPreviewView', () => {
       contentData,
       mimeType: Platform.MimeType.MimeType.HTML,
     });
-    const component = renderPreviewView(request);
-    const widget = await component.showPreview();
+    const component = await renderPreviewView(request);
+    const widget = await component.contentViewPromise;
+    assert.exists(widget);
+    await widget.updateComplete;
     const frame = widget.contentElement.querySelector('iframe');
     assert.isNotNull(frame);
     assert.strictEqual(frame?.getAttribute('csp'), 'default-src \'none\';img-src data:;style-src \'unsafe-inline\'');
-    component.detach();
   });
 
   it('does add utf-8 charset to the data URL for the HTML preview for already decoded content', async () => {
@@ -59,8 +60,10 @@ describe('RequestPreviewView', () => {
 
     assert.strictEqual(request.charset(), 'utf-16');
 
-    const component = renderPreviewView(request);
-    const widget = await component.showPreview();
+    const component = await renderPreviewView(request);
+    const widget = await component.contentViewPromise;
+    assert.exists(widget);
+    await widget.updateComplete;
     const frame = widget.contentElement.querySelector('iframe');
     assert.exists(frame);
 
@@ -81,8 +84,10 @@ describe('RequestPreviewView', () => {
 
     assert.strictEqual(request.charset(), 'utf-16');
 
-    const component = renderPreviewView(request);
-    const widget = await component.showPreview();
+    const component = await renderPreviewView(request);
+    const widget = await component.contentViewPromise;
+    assert.exists(widget);
+    await widget.updateComplete;
     const frame = widget.contentElement.querySelector('iframe');
     assert.exists(frame);
 
@@ -97,10 +102,71 @@ describe('RequestPreviewView', () => {
       mimeType: 'application/json',
     });
 
-    const component = renderPreviewView(request);
-    const widget = await component.showPreview();
+    const component = await renderPreviewView(request);
+    const widget = await component.contentViewPromise;
 
     assert.instanceOf(widget, UI.SearchableView.SearchableView);
     assert.instanceOf(widget.children()[0], SourceFrame.JSONView.JSONView);
+  });
+
+  it('passes htmlDataURL to view on wasShown', async () => {
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/content',
+      contentData,
+      mimeType: Platform.MimeType.MimeType.HTML,
+    });
+    const view = createViewFunctionStub(Network.RequestPreviewView.RequestPreviewView);
+    const component = new Network.RequestPreviewView.RequestPreviewView(request, view);
+
+    component.wasShown();
+    const input = await view.nextInput;
+
+    assert.strictEqual(input.request, request);
+    assert.isNotNull(input.htmlDataURL);
+    assert.include(input.htmlDataURL, 'data:text/css;charset=utf-8,');
+    assert.isNull(input.error);
+    assert.isNull(input.parsedJSON);
+    assert.isNull(input.parsedXML);
+  });
+
+  it('passes error to view when response data fails to load', async () => {
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/content',
+      contentData: () => Promise.resolve({error: 'Network error'}),
+      mimeType: Platform.MimeType.MimeType.HTML,
+    });
+    const view = createViewFunctionStub(Network.RequestPreviewView.RequestPreviewView);
+    const component = new Network.RequestPreviewView.RequestPreviewView(request, view);
+
+    component.wasShown();
+    const input = await view.nextInput;
+
+    assert.strictEqual(input.request, request);
+    assert.strictEqual(input.error, 'Network error');
+    assert.isNull(input.htmlDataURL);
+    assert.isNull(input.parsedJSON);
+    assert.isNull(input.parsedXML);
+  });
+
+  it('recreates the preview widget when request changes to another request of the same type', async () => {
+    const firstRequest = createNetworkRequest({
+      url: 'http://devtools-frontend.test/first.xml',
+      contentData: new TextUtils.ContentData.ContentData('<root>1</root>', false, 'application/xml'),
+      mimeType: 'application/xml',
+    });
+    const secondRequest = createNetworkRequest({
+      url: 'http://devtools-frontend.test/second.xml',
+      contentData: new TextUtils.ContentData.ContentData('<root>2</root>', false, 'application/xml'),
+      mimeType: 'application/xml',
+    });
+
+    const component = await renderPreviewView(firstRequest);
+    const firstWidget = await component.contentViewPromise;
+    assert.exists(firstWidget);
+
+    component.request = secondRequest;
+    const secondWidget = await component.contentViewPromise;
+    assert.exists(secondWidget);
+    assert.notStrictEqual(secondWidget, firstWidget);
   });
 });

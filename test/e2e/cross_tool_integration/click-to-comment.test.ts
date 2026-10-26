@@ -8,7 +8,9 @@ import {describe, it} from '../conductor/mocha-interface.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 import type {InspectedPage} from '../shared/InspectedPage.js';
 
-const COMMENT_TOGGLE_SELECTOR = '[aria-label="Add comments to send to your AI coding agent"]';
+// Matches the host <devtools-button>. Its inner <button> appends the keyboard
+// shortcut to its aria-label, so it can't be matched by the exact title.
+const COMMENT_TOGGLE_SELECTOR = 'devtools-button[aria-label="Add comments to send to your AI coding agent"]';
 const OVERLAY_CONTAINER_SELECTOR = '.comments-overlay-container';
 const COMMENT_PIN_SELECTOR = '.comment-pin';
 const COMMENT_ANCHOR_HIGHLIGHT_SELECTOR = '.comment-anchor-highlight';
@@ -30,13 +32,19 @@ describe('Click-to-Comment mode across DevTools panels', function() {
 
   async function isCommentModeActive(devToolsPage: DevToolsPage): Promise<boolean> {
     const toggleButton = await devToolsPage.waitFor(COMMENT_TOGGLE_SELECTOR);
-    return await toggleButton.evaluate(el => el.getAttribute('aria-pressed') === 'true');
+    // aria-pressed is set on the inner <button> inside the shadow root.
+    return await toggleButton.evaluate(el => el.shadowRoot?.querySelector('button')?.getAttribute('aria-pressed') ===
+                                           'true');
   }
 
-  async function toggleCommentMode(devToolsPage: DevToolsPage): Promise<void> {
+  async function toggleCommentMode(devToolsPage: DevToolsPage, {useShortcut = false} = {}): Promise<void> {
     const initialState = await isCommentModeActive(devToolsPage);
-    await devToolsPage.waitFor(COMMENT_TOGGLE_SELECTOR);
-    await devToolsPage.click(COMMENT_TOGGLE_SELECTOR);
+    if (useShortcut) {
+      // Ctrl+Shift+K, or Cmd+Shift+K on Mac.
+      await devToolsPage.pressKey('k', {control: true, shift: true});
+    } else {
+      await devToolsPage.click(COMMENT_TOGGLE_SELECTOR);
+    }
     await devToolsPage.waitForFunction(async () => {
       return (await isCommentModeActive(devToolsPage)) !== initialState;
     });
@@ -84,8 +92,8 @@ describe('Click-to-Comment mode across DevTools panels', function() {
        await devToolsPage.click('[aria-label="Send to agent"]');
        await devToolsPage.waitFor('.comment-thread-widget.submitted');
 
-       // 7. Toggle comment mode OFF.
-       await toggleCommentMode(devToolsPage);
+       // 7. Toggle comment mode OFF using the keyboard shortcut.
+       await toggleCommentMode(devToolsPage, {useShortcut: true});
        assert.isFalse(await isCommentModeActive(devToolsPage));
 
        // 8. Verify existing pin and highlight persist.

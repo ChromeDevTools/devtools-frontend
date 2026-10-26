@@ -96,9 +96,9 @@ describe('Click-to-Comment mode across DevTools panels', function() {
        await toggleCommentMode(devToolsPage, {useShortcut: true});
        assert.isFalse(await isCommentModeActive(devToolsPage));
 
-       // 8. Verify existing pin and highlight persist.
+       // 8. Verify the pin persists and the highlight is removed, since no thread is open anymore.
        assert.lengthOf(await getCommentPins(devToolsPage), 1);
-       assert.lengthOf(await getCommentHighlights(devToolsPage), 1);
+       await devToolsPage.waitForNone(COMMENT_ANCHOR_HIGHLIGHT_SELECTOR);
 
        // 9. Verify subsequent clicks do not create new comments when mode is deactivated.
        await devToolsPage.click('[role="treeitem"]');

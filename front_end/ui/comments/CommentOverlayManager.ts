@@ -237,8 +237,8 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     return this.#pinPositions;
   }
 
-  getHighlightRects(): HighlightRectData[] {
-    return this.#highlightRects;
+  getHighlight(threadId: string): HighlightRectData|undefined {
+    return this.#highlightRects.find(h => h.id === threadId);
   }
 
   getAnchorElement(thread: CommentThread): Element|undefined {

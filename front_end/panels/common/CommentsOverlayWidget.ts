@@ -16,12 +16,16 @@ const {
   html,
   render,
   nothing,
-  Directives: {repeat, styleMap},
+  Directives: {classMap, repeat, styleMap},
 } = Lit;
 
 export interface ViewInput {
   pins: Comments.CommentOverlayManager.PinPositionData[];
-  highlights: Comments.CommentOverlayManager.HighlightRectData[];
+  /**
+   * Highlight of the currently open thread. Null when no thread is open, so
+   * only pins are rendered.
+   */
+  activeHighlight: Comments.CommentOverlayManager.HighlightRectData|null;
   hoverHighlight: Comments.CommentOverlayManager.HoverHighlightData|null;
   commentMode: boolean;
   onPinClick: (threadId: string) => void;
@@ -65,20 +69,19 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
           })}>
         </div>
       ` : nothing}
-      ${repeat(
-        input.highlights.filter(h => h.visible),
-        h => h.id,
-        h => html`
-          <div
-            class="comment-anchor-highlight"
-            style=${styleMap({
-              transform: `translate3d(${h.left}px, ${h.top}px, 0)`,
-              width: `${h.width}px`,
-              height: `${h.height}px`,
-            })}>
-          </div>
-        `,
-      )}
+      ${input.activeHighlight?.visible && input.activeThread ? html`
+        <div
+          class=${classMap({
+            'comment-anchor-highlight': true,
+            resolved: input.activeThread.status === 'RESOLVED',
+          })}
+          style=${styleMap({
+            transform: `translate3d(${input.activeHighlight.left}px, ${input.activeHighlight.top}px, 0)`,
+            width: `${input.activeHighlight.width}px`,
+            height: `${input.activeHighlight.height}px`,
+          })}>
+        </div>
+      ` : nothing}
       ${repeat(
         input.pins.filter(p => p.visible),
         p => p.id,
@@ -395,7 +398,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.#view(
         {
           pins: [],
-          highlights: [],
+          activeHighlight: null,
           hoverHighlight: null,
           commentMode: false,
           onPinClick: this.#handlePinClick,
@@ -418,12 +421,13 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       title: Title,
       ): void {
     const pins = this.#commentOverlayManager.getPinPositions();
-    const highlights = this.#commentOverlayManager.getHighlightRects();
     const activePin = this.#activeThreadId ? pins.find(p => p.id === this.#activeThreadId) ?? null : null;
+    const activeHighlight =
+        this.#activeThreadId ? this.#commentOverlayManager.getHighlight(this.#activeThreadId) ?? null : null;
 
     const viewInput: ViewInput = {
       pins,
-      highlights,
+      activeHighlight,
       hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
       commentMode: this.#commentManager.isCommentMode(),
       onPinClick: this.#handlePinClick,

@@ -47,7 +47,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     assert.isFalse(view.input.commentMode);
     assert.deepEqual(view.input.pins, []);
-    assert.deepEqual(view.input.highlights, []);
+    assert.isNull(view.input.activeHighlight);
 
     // Create a comment
     const testEl = document.createElement('div');
@@ -61,7 +61,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const updatedInput = await view.nextInput;
     assert.isTrue(updatedInput.commentMode);
     assert.lengthOf(updatedInput.pins, 1);
-    assert.lengthOf(updatedInput.highlights, 1);
+    assert.isNotNull(updatedInput.activeHighlight);
 
     testEl.remove();
     widget.detach();
@@ -91,7 +91,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const updatedInput = await view.nextInput;
     assert.isTrue(updatedInput.commentMode);
     assert.lengthOf(updatedInput.pins, 1);
-    assert.lengthOf(updatedInput.highlights, 1);
+    assert.isNotNull(updatedInput.activeHighlight);
     assert.isNotNull(updatedInput.activePin);
     assert.isNotNull(updatedInput.activeThread);
     assert.strictEqual(updatedInput.activeThread.status, 'DRAFT');
@@ -137,6 +137,148 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     testEl.remove();
     widget.detach();
+  });
+
+  describe('anchor highlight', () => {
+    function createAnchor(context: string, top: number): HTMLElement {
+      const el = document.createElement('div');
+      el.setAttribute('jslog', `TreeItem; context: ${context}`);
+      el.textContent = context;
+      el.getBoundingClientRect = () => new DOMRect(10, top, 100, 30);
+      renderElementIntoDOM(el, {allowMultipleChildren: true});
+      return el;
+    }
+
+    async function setupWidget(): Promise<PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget> {
+      const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+      widget.setOverlayManagerForTest(overlayManager);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget, {allowMultipleChildren: true});
+      commentManager.setCommentMode(true);
+      return widget;
+    }
+
+    async function getHighlights(widget: PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget):
+        Promise<HTMLElement[]> {
+      widget.requestUpdate();
+      await widget.updateComplete;
+      return Array.from(widget.contentElement.querySelectorAll<HTMLElement>('.comment-anchor-highlight'));
+    }
+
+    it('renders only pins when no thread is open', async () => {
+      const widget = await setupWidget();
+      const el1 = createAnchor('hl-closed-1', 10);
+      const el2 = createAnchor('hl-closed-2', 50);
+      overlayManager.createComment(el1, 'First')?.save();
+      overlayManager.createComment(el2, 'Second')?.sendToAgent();
+      // The last created thread is still open; close it.
+      document.documentElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
+
+      assert.isEmpty(await getHighlights(widget));
+      assert.lengthOf(widget.contentElement.querySelectorAll('.comment-pin'), 2);
+
+      el1.remove();
+      el2.remove();
+      widget.detach();
+    });
+
+    it('renders a single highlight for the open thread and removes it on close', async () => {
+      const widget = await setupWidget();
+      const el1 = createAnchor('hl-single-1', 10);
+      const el2 = createAnchor('hl-single-2', 50);
+      const thread1 = overlayManager.createComment(el1, 'First');
+      assert.exists(thread1);
+      thread1.save();
+      const thread2 = overlayManager.createComment(el2, 'Second');
+      assert.exists(thread2);
+      thread2.save();
+
+      widget.openThread(thread2.id);
+      let highlights = await getHighlights(widget);
+      assert.lengthOf(highlights, 1);
+      assert.include(highlights[0].style.transform, 'translate3d(10px, 50px, 0');
+
+      widget.openThread(thread1.id);
+      highlights = await getHighlights(widget);
+      assert.lengthOf(highlights, 1);
+      assert.include(highlights[0].style.transform, 'translate3d(10px, 10px, 0');
+
+      // Clicking the pin of the open thread closes it.
+      const pins = widget.contentElement.querySelectorAll<HTMLElement>('.comment-pin');
+      pins[0].click();
+      assert.isEmpty(await getHighlights(widget));
+
+      el1.remove();
+      el2.remove();
+      widget.detach();
+    });
+
+    it('uses a solid border for DRAFT threads', async () => {
+      const widget = await setupWidget();
+      const el = createAnchor('hl-status-draft', 10);
+      const thread = overlayManager.createComment(el, 'Comment');
+      assert.exists(thread);
+      assert.strictEqual(thread.status, 'DRAFT');
+      // DRAFT threads open automatically; openThread() would discard them.
+
+      const highlights = await getHighlights(widget);
+      assert.lengthOf(highlights, 1);
+      assert.isFalse(highlights[0].classList.contains('resolved'));
+
+      el.remove();
+      widget.detach();
+    });
+
+    it('uses a solid border for ACTIVE threads', async () => {
+      const widget = await setupWidget();
+      const el = createAnchor('hl-status-active', 10);
+      const thread = overlayManager.createComment(el, 'Comment');
+      assert.exists(thread);
+      thread.save();
+      assert.strictEqual(thread.status, 'ACTIVE');
+      widget.openThread(thread.id);
+
+      const highlights = await getHighlights(widget);
+      assert.lengthOf(highlights, 1);
+      assert.isFalse(highlights[0].classList.contains('resolved'));
+
+      el.remove();
+      widget.detach();
+    });
+
+    it('uses a solid border for SENT_TO_AGENT threads', async () => {
+      const widget = await setupWidget();
+      const el = createAnchor('hl-status-sent-to-agent', 10);
+      const thread = overlayManager.createComment(el, 'Comment');
+      assert.exists(thread);
+      thread.sendToAgent();
+      assert.strictEqual(thread.status, 'SENT_TO_AGENT');
+      widget.openThread(thread.id);
+
+      const highlights = await getHighlights(widget);
+      assert.lengthOf(highlights, 1);
+      assert.isFalse(highlights[0].classList.contains('resolved'));
+
+      el.remove();
+      widget.detach();
+    });
+
+    it('uses a dashed border for RESOLVED threads', async () => {
+      const widget = await setupWidget();
+      const el = createAnchor('hl-status-resolved', 10);
+      const thread = overlayManager.createComment(el, 'Comment');
+      assert.exists(thread);
+      thread.resolve();
+      assert.strictEqual(thread.status, 'RESOLVED');
+      widget.openThread(thread.id);
+
+      const highlights = await getHighlights(widget);
+      assert.lengthOf(highlights, 1);
+      assert.isTrue(highlights[0].classList.contains('resolved'));
+
+      el.remove();
+      widget.detach();
+    });
   });
 
   it('renders a pin for each saved comment', async () => {
@@ -331,7 +473,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     assert.isNull(inputAfterDetach.activeThread);
     assert.isNull(inputAfterDetach.activePin);
     assert.isEmpty(inputAfterDetach.pins);
-    assert.isEmpty(inputAfterDetach.highlights);
+    assert.isNull(inputAfterDetach.activeHighlight);
     assert.isFalse(inputAfterDetach.commentMode);
   });
 
@@ -799,6 +941,7 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const thread = overlayManager.createComment(el, 'Pinned comment');
     assert.isNotNull(thread);
     thread.save();
+    widget.openThread(thread.id);
 
     widget.requestUpdate();
     await widget.updateComplete;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {afterEach, beforeEach, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Protocol from '../../generated/protocol.js';
@@ -216,6 +216,66 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     const handled = delegate.handleAction(context, 'comments.toggle-comment-mode');
     assert.isFalse(handled);
     assert.isFalse(commentManager.isCommentMode(), 'Comment mode should not be toggled when agent is not attached');
+  });
+
+  describe('Comments drawer reveal on toggle', () => {
+    type ViewLocation = Awaited<ReturnType<UI.ViewManager.ViewManager['resolveLocation']>>;
+    const fakeCommentsView = {} as UI.View.View;
+    let showViewStub: sinon.SinonStub;
+    let resolveLocationStub: sinon.SinonStub;
+    let locationShowViewStub: sinon.SinonStub;
+    let drawerVisible: boolean;
+
+    beforeEach(() => {
+      const viewManager = UI.ViewManager.ViewManager.instance();
+      sinon.stub(viewManager, 'hasView').withArgs('comments').returns(true);
+      sinon.stub(viewManager, 'view').withArgs('comments').returns(fakeCommentsView);
+      sinon.stub(viewManager, 'locationNameForViewId').withArgs('comments').returns('drawer-view');
+      showViewStub = sinon.stub(viewManager, 'showView').resolves();
+      locationShowViewStub = sinon.stub().resolves();
+      resolveLocationStub = sinon.stub(viewManager, 'resolveLocation').resolves({
+        showView: locationShowViewStub,
+      } as unknown as ViewLocation);
+      drawerVisible = false;
+      sinon.stub(UI.InspectorView.InspectorView, 'maybeGetInspectorViewInstance').returns({
+        drawerVisible: () => drawerVisible,
+      } as UI.InspectorView.InspectorView);
+    });
+
+    it('adds the Comments tab without selecting or focusing it when entering comment mode with the drawer visible',
+       async () => {
+         drawerVisible = true;
+         const delegate = new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
+         delegate.handleAction({} as UI.Context.Context, 'comments.toggle-comment-mode');
+         assert.isTrue(commentManager.isCommentMode());
+         sinon.assert.calledOnceWithExactly(resolveLocationStub, 'drawer-view');
+         await resolveLocationStub.firstCall.returnValue;
+         sinon.assert.calledOnceWithExactly(locationShowViewStub, fakeCommentsView, undefined, false, true, false);
+         sinon.assert.notCalled(showViewStub);
+       });
+
+    it('does nothing when entering comment mode with the drawer closed', () => {
+      const delegate = new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
+      delegate.handleAction({} as UI.Context.Context, 'comments.toggle-comment-mode');
+      assert.isTrue(commentManager.isCommentMode());
+      sinon.assert.notCalled(showViewStub);
+      sinon.assert.notCalled(resolveLocationStub);
+    });
+
+    it('opens the drawer on the Comments tab when leaving comment mode, even if the drawer was closed', () => {
+      commentManager.setCommentMode(true);
+      const delegate = new PanelCommon.CommentsOverlayWidget.ActionDelegate(commentManager);
+      delegate.handleAction({} as UI.Context.Context, 'comments.toggle-comment-mode');
+      assert.isFalse(commentManager.isCommentMode());
+      sinon.assert.calledOnceWithExactly(showViewStub, 'comments', true);
+    });
+
+    it('does not reveal the Comments tab when comment mode is turned off by agent detach', () => {
+      commentManager.setCommentMode(true);
+      commentManager.setAgentAttached(false);
+      assert.isFalse(commentManager.isCommentMode());
+      sinon.assert.notCalled(showViewStub);
+    });
   });
 
   it('updates ButtonProvider item visibility and action enabled state when agentAttached changes', () => {

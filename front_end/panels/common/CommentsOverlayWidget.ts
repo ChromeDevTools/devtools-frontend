@@ -47,6 +47,7 @@ const PIN_HEIGHT = 30;
 const POPUP_WIDTH = 288;
 const POPUP_HEIGHT = 220;
 const AUTO_CLOSE_DELAY_MS = 2000;
+const COMMENTS_VIEW_ID = 'comments';
 
 const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const popupPosition = input.activePin ?? input.fallbackPosition;
@@ -539,12 +540,37 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return false;
       }
       getOrCreateOverlayWidget(this.#commentManager);
-      this.#commentManager.setCommentMode(
-          !this.#commentManager.isCommentMode(),
-      );
+      const enteringCommentMode = !this.#commentManager.isCommentMode();
+      this.#commentManager.setCommentMode(enteringCommentMode);
+      this.#revealCommentsView(enteringCommentMode);
       return true;
     }
     return false;
+  }
+
+  /**
+   * When entering comment mode with the drawer open, add the Comments tab to
+   * the drawer without selecting it or moving focus away from the page being
+   * commented on. When leaving comment mode, always open the drawer on the
+   * Comments tab, as checking the responses is the likely next step.
+   */
+  #revealCommentsView(enteringCommentMode: boolean): void {
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
+      return;
+    }
+    if (enteringCommentMode) {
+      if (!UI.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
+        return;
+      }
+      void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then(location => {
+        return location?.showView(viewManager.view(COMMENTS_VIEW_ID), /* insertBefore */ undefined,
+                                  /* userGesture */ false,
+                                  /* omitFocus */ true, /* shouldSelectTab */ false);
+      });
+      return;
+    }
+    void viewManager.showView(COMMENTS_VIEW_ID, /* userGesture */ true);
   }
 
   static resetForTest(): void {

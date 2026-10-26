@@ -267,7 +267,9 @@ describeWithEnvironment('StylesPropertySection', () => {
   it('updates property rule property names', async () => {
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
-    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
+    sinon.stub(changeTracker, 'isTracking').get(() => true);
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
@@ -296,8 +298,11 @@ describeWithEnvironment('StylesPropertySection', () => {
       matchingSelectors: [0],
     }];
 
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.domModel.returns(cssModel.domModel());
     const matchedStyles = await getMatchedStylesWithStylesheet(
-        {cssModel, origin, styleSheetId, ...range, propertyRules, matchedPayload, connection});
+        {cssModel, node, origin, styleSheetId, ...range, propertyRules, matchedPayload, connection});
 
     function assertIsPropertyRule(rule: SDK.CSSRule.CSSRule|null): asserts rule is SDK.CSSRule.CSSPropertyRule {
       assert.instanceOf(rule, SDK.CSSRule.CSSPropertyRule);
@@ -321,6 +326,14 @@ describeWithEnvironment('StylesPropertySection', () => {
             (r: TextUtils.TextRange.TextRange) => r.startLine === range.startLine &&
                 r.startColumn === range.startColumn && r.endLine === range.endLine && r.endColumn === range.endColumn),
         propertyName.text);
+    sinon.assert.notCalled(changeTracker.trackChange);
+
+    await section.setHeaderText(rule, '--new-prop');
+    sinon.assert.calledOnceWithExactly(
+        changeTracker.trackChange,
+        'Changed @property rule name from "--prop" to "--new-prop"',
+        sinon.match.object,
+    );
   });
 
   it('renders braces correctly with a non-style-rule section', async () => {
@@ -1047,11 +1060,17 @@ describeWithEnvironment('StylesPropertySection', () => {
 
   it('supports editing selector text via setSelectorText and undoing via DOMModelUndoStack', async () => {
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
+    sinon.stub(changeTracker, 'isTracking').get(() => true);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 4};
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.domModel.returns(cssModel.domModel());
     const matchedStyles = await getMatchedStylesWithStylesheet({
       cssModel,
+      node,
       origin,
       styleSheetId,
       matchedPayload: [{
@@ -1080,7 +1099,7 @@ describeWithEnvironment('StylesPropertySection', () => {
       return {};
     });
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
-        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker), matchedStyles,
         matchedStyles.nodeStyles()[0], 0, null, null, null);
     cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, event => {
       if (event.data.edit) {
@@ -1090,6 +1109,11 @@ describeWithEnvironment('StylesPropertySection', () => {
     const rule = matchedStyles.nodeStyles()[0].parentRule as SDK.CSSRule.CSSStyleRule;
     await section.setHeaderText(rule, '.updated');
     assert.strictEqual(rule.selectorText(), '.updated');
+    sinon.assert.calledOnceWithExactly(
+        changeTracker.trackChange,
+        'Changed style rule selector from ".old" to ".updated"',
+        sinon.match.object,
+    );
     await SDK.DOMModel.DOMModelUndoStack.instance().undo();
     assert.isTrue(undoCalled);
     await SDK.DOMModel.DOMModelUndoStack.instance().redo();
@@ -1842,9 +1866,15 @@ describeWithEnvironment('StylesPropertySection', () => {
     async function createKeyframeSection() {
       const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
       assert.exists(cssModel);
+      const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
+      sinon.stub(changeTracker, 'isTracking').get(() => true);
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      node.domModel.returns(cssModel.domModel());
       const origin = Protocol.CSS.StyleSheetOrigin.Regular;
       const matchedStyles = await getMatchedStylesWithStylesheet({
         cssModel,
+        node,
         origin,
         styleSheetId,
         isMutable: true,
@@ -1895,7 +1925,7 @@ describeWithEnvironment('StylesPropertySection', () => {
 
       const keyframesRule = matchedStyles.keyframes()[0];
       assert.exists(keyframesRule);
-      const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+      const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
       const section = new Elements.StylePropertiesSection.KeyframePropertiesSection(
           stylesSidebarPane, matchedStyles, keyframesRule.keyframes()[0].style, 0);
       // The Styles pane forwards style sheet edits to its sections.
@@ -1939,12 +1969,20 @@ describeWithEnvironment('StylesPropertySection', () => {
         undoStub,
         redoStub,
         refreshUpdateSpy,
+        changeTracker,
       };
     }
 
     it('commits a new keyframe key through CSS.setKeyframeKey and renders it in the header', async () => {
-      const {section, selectorElement, editKey, setKeyframeKeyStub, markUndoableStateStub, refreshUpdateSpy} =
-          await createKeyframeSection();
+      const {
+        section,
+        selectorElement,
+        editKey,
+        setKeyframeKeyStub,
+        markUndoableStateStub,
+        refreshUpdateSpy,
+        changeTracker,
+      } = await createKeyframeSection();
       assert.strictEqual(selectorElement.textContent, '0%');
 
       await editKey('1%');
@@ -1955,6 +1993,11 @@ describeWithEnvironment('StylesPropertySection', () => {
       sinon.assert.calledOnceWithExactly(refreshUpdateSpy, section);
       assert.strictEqual(section.headerText(), '1%');
       assert.strictEqual(selectorElement.textContent, '1%');
+      sinon.assert.calledOnceWithExactly(
+          changeTracker.trackChange,
+          'Changed keyframe key from "0%" to "1%"',
+          sinon.match.object,
+      );
     });
 
     it('supports undo and redo of a keyframe key edit', async () => {
@@ -1971,12 +2014,20 @@ describeWithEnvironment('StylesPropertySection', () => {
     });
 
     it('restores the previous key in the header when the new key is invalid', async () => {
-      const {section, selectorElement, editKey, setKeyframeKeyStub, markUndoableStateStub, refreshUpdateSpy} =
-          await createKeyframeSection();
+      const {
+        section,
+        selectorElement,
+        editKey,
+        setKeyframeKeyStub,
+        markUndoableStateStub,
+        refreshUpdateSpy,
+        changeTracker,
+      } = await createKeyframeSection();
 
       await editKey('1%');
       refreshUpdateSpy.resetHistory();
       markUndoableStateStub.resetHistory();
+      changeTracker.trackChange.resetHistory();
 
       await editKey('1% /*');
 
@@ -1984,6 +2035,7 @@ describeWithEnvironment('StylesPropertySection', () => {
       assert.strictEqual(setKeyframeKeyStub.secondCall.args[0].keyText, '1% /*');
       sinon.assert.notCalled(markUndoableStateStub);
       sinon.assert.notCalled(refreshUpdateSpy);
+      sinon.assert.notCalled(changeTracker.trackChange);
       assert.strictEqual(section.headerText(), '1%');
       assert.strictEqual(selectorElement.textContent, '1%');
     });

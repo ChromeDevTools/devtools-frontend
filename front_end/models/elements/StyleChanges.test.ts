@@ -144,6 +144,28 @@ describe('StyleChanges', () => {
     assert.lengthOf(commentManager.getCommentThreads(), countBefore);
   });
 
+  it('records changing a style rule selector', () => {
+    Elements.StyleChanges.trackStyleSelectorChange(tracker, createNode(42), '  .card  ',
+                                                   '  .card:hover,\n  .card:focus  ');
+    assert.strictEqual(lastDescription(), 'Changed style rule selector from ".card" to ".card:hover, .card:focus"');
+
+    const countBefore = commentManager.getCommentThreads().length;
+    Elements.StyleChanges.trackStyleSelectorChange(tracker, createNode(42), '.card', '  .card  ');
+    Elements.StyleChanges.trackStyleSelectorChange(tracker, createNode(42), '   ', '.card');
+    Elements.StyleChanges.trackStyleSelectorChange(tracker, createNode(42), '.card', '   ');
+    assert.lengthOf(commentManager.getCommentThreads(), countBefore);
+  });
+
+  it('records changing an @property rule name', () => {
+    Elements.StyleChanges.trackPropertyRuleNameChange(tracker, createNode(42), '  --old-prop  ', '  --new-prop  ');
+    assert.strictEqual(lastDescription(), 'Changed @property rule name from "--old-prop" to "--new-prop"');
+  });
+
+  it('records changing a keyframe key', () => {
+    Elements.StyleChanges.trackKeyframeKeyChange(tracker, createNode(42), '  0%  ', '  50%,\n  100%  ');
+    assert.strictEqual(lastDescription(), 'Changed keyframe key from "0%" to "50%, 100%"');
+  });
+
   it('omits the rule clause when ruleHeader is omitted or empty', () => {
     trackStylePropertyEdit({
       oldName: 'color',

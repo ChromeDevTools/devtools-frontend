@@ -1994,12 +1994,18 @@ export class StylePropertiesSection {
   }
 
   setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void> {
-    function onSelectorsUpdated(
-        this: StylePropertiesSection, rule: SDK.CSSRule.CSSStyleRule, success: boolean): Promise<void> {
+    function onSelectorsUpdated(this: StylePropertiesSection, rule: SDK.CSSRule.CSSStyleRule, oldSelector: string,
+                                success: boolean): Promise<void> {
       if (!success) {
         return Promise.resolve();
       }
 
+      Elements.StyleChanges.trackStyleSelectorChange(
+          this.stylesContainer.changeTracker,
+          this.stylesContainer.node() ?? this.matchedStyles.node(),
+          oldSelector,
+          newContent,
+      );
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
       return this.matchedStyles.recomputeMatchingSelectors(rule).then(updateSourceRanges.bind(this, rule));
     }
@@ -2018,8 +2024,9 @@ export class StylePropertiesSection {
     if (!oldSelectorRange) {
       return Promise.resolve();
     }
+    const oldSelector = rule.selectorText();
     this.#customHeaderText = undefined;
-    return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, Boolean(oldSelectorRange)));
+    return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, oldSelector));
   }
 
   protected editingSelectorCommittedForTest(): void {
@@ -2192,7 +2199,14 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
     if (!oldRange) {
       return;
     }
+    const oldName = rule.propertyName().text;
     if (await rule.setPropertyName(newContent)) {
+      Elements.StyleChanges.trackPropertyRuleNameChange(
+          this.stylesContainer.changeTracker,
+          this.stylesContainer.node() ?? this.matchedStyles.node(),
+          oldName,
+          newContent,
+      );
       this.stylesContainer.forceUpdate();
     }
   }
@@ -2341,10 +2355,16 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
   }
 
   override setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void> {
-    function updateSourceRanges(this: KeyframePropertiesSection, success: boolean): void {
+    function updateSourceRanges(this: KeyframePropertiesSection, oldKey: string, success: boolean): void {
       if (!success) {
         return;
       }
+      Elements.StyleChanges.trackKeyframeKeyChange(
+          this.stylesContainer.changeTracker,
+          this.stylesContainer.node() ?? this.matchedStyles.node(),
+          oldKey,
+          newContent,
+      );
       this.stylesContainer.refreshUpdate(this);
     }
 
@@ -2355,7 +2375,8 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
     if (!oldRange) {
       return Promise.resolve();
     }
-    return rule.setKeyText(newContent).then(updateSourceRanges.bind(this));
+    const oldKey = rule.key().text;
+    return rule.setKeyText(newContent).then(updateSourceRanges.bind(this, oldKey));
   }
 
   override isPropertyInherited(_propertyName: string): boolean {

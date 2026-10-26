@@ -113,3 +113,51 @@ export function trackStyleRuleAdded(
       buildAnchor(STYLES_PANE_VE_PATH, node),
   );
 }
+
+function trackRuleHeaderChange(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    headerDescription: string,
+    oldText: string,
+    newText: string,
+    ): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  const trimmedOld = Platform.StringUtilities.collapseWhitespace(oldText.trim());
+  const trimmedNew = Platform.StringUtilities.collapseWhitespace(newText.trim());
+  if (!trimmedOld || !trimmedNew || trimmedOld === trimmedNew) {
+    return;
+  }
+  tracker.trackChange(
+      `Changed ${headerDescription} from "${trimValue(trimmedOld)}" to "${trimValue(trimmedNew)}"`,
+      buildAnchor(STYLES_PANE_VE_PATH, node),
+  );
+}
+
+export function trackStyleSelectorChange(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    oldSelector: string,
+    newSelector: string,
+    ): void {
+  trackRuleHeaderChange(tracker, node, 'style rule selector', oldSelector, newSelector);
+}
+
+export function trackPropertyRuleNameChange(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    oldName: string,
+    newName: string,
+    ): void {
+  trackRuleHeaderChange(tracker, node, '@property rule name', oldName, newName);
+}
+
+export function trackKeyframeKeyChange(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    oldKey: string,
+    newKey: string,
+    ): void {
+  trackRuleHeaderChange(tracker, node, 'keyframe key', oldKey, newKey);
+}

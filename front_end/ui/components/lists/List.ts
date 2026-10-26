@@ -107,7 +107,10 @@ export class List extends HTMLElement {
 
   createSlottedListItem(index: number): TemplateResult {
     return html`
-    <li role='listitem' tabindex=${this.#disableListItemFocus ? '-1' : '0'}>
+    <li
+      role='listitem'
+      tabindex=${this.#disableListItemFocus ? '-1' : '0'}
+      @keydown=${this.#deletable ? this.#dispatchRemoveOnDelete.bind(this, index) : nothing}>
     <slot name='slot-${index}'></slot>
     <div class='controls-container'>
               <div class='controls-gradient'></div>
@@ -164,6 +167,16 @@ export class List extends HTMLElement {
 
   #dispatchRemove(index: number): void {
     this.dispatchEvent(new ItemRemoveEvent({index}));
+  }
+
+  #dispatchRemoveOnDelete(index: number, event: KeyboardEvent): void {
+    if (!this.#deletable || event.target !== event.currentTarget ||
+        (event.key !== 'Delete' && event.key !== 'Backspace')) {
+      return;
+    }
+
+    event.preventDefault();
+    this.#dispatchRemove(index);
   }
 
   #dispatchEdit(index: number): void {

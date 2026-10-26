@@ -1,13 +1,13 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import classesPaneWidgetStyles from './classesPaneWidget.css.js';
@@ -37,35 +37,82 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ClassesPaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const {ref, repeat} = Directives;
+
+export interface ClassItem {
+  className: string;
+  enabled: boolean;
+}
+
+export interface ViewInput {
+  classes: ClassItem[];
+  onCommit: () => void;
+  /** Returns whether the prompt had text to discard, in which case the key event is fully consumed. */
+  onCancel: () => boolean;
+  onClick: (className: string, enabled: boolean) => void;
+}
+
+export interface ViewOutput {
+  attachPrompt?: (prompt: UI.TextPrompt.TextPrompt) => void;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const onKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === Platform.KeyboardUtilities.ENTER_KEY && !event.isComposing) {
+      event.consume();
+      input.onCommit();
+    } else if (Platform.KeyboardUtilities.isEscKey(event) && input.onCancel()) {
+      // Escape discarded non-empty prompt text, so stop it here instead of letting
+      // it reach global DevTools shortcuts (e.g. closing the drawer).
+      event.consume(true);
+    }
+  };
+  // clang-format off
+  render(html`
+    <style>${classesPaneWidgetStyles}</style>
+    <div class="styles-element-classes-pane">
+      <div class="title-container" @keydown=${onKeyDown}>
+        <div class="new-class-input monospace" autofocus ${ref(element => {
+          output.attachPrompt = element instanceof HTMLElement ? prompt => prompt.attach(element) : undefined;
+        })}></div>
+      </div>
+      <div class="source-code styles-element-classes-container">
+        ${repeat(input.classes, item => item.className, item => html`
+          <devtools-checkbox
+              class="monospace"
+              small
+              .checked=${item.enabled}
+              title=${item.className}
+              jslog=${VisualLogging.toggle('element-class').track({change: true})}
+              @click=${(event: Event) => input.onClick(item.className, (event.target as UI.UIUtils.CheckboxLabel).checked)}>${item.className}</devtools-checkbox>`)}
+      </div>
+    </div>`, target);
+  // clang-format on
+};
+
 export class ClassesPaneWidget extends UI.Widget.Widget {
-  #input: HTMLElement;
-  readonly #classesContainer: HTMLElement;
+  readonly #view: View;
   readonly #prompt: ClassNamePrompt;
+  #promptAttached = false;
   readonly #mutatingNodes: Set<SDK.DOMModel.DOMNode>;
   readonly #pendingNodeClasses: Map<SDK.DOMModel.DOMNode, string>;
   readonly #updateNodeThrottler: Common.Throttler.Throttler;
   #previousTarget: SDK.DOMModel.DOMNode|null;
 
-  constructor() {
-    super({
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {
       jslog: `${VisualLogging.pane('elements-classes')}`,
       useShadowDom: true,
     });
-    this.registerRequiredCSS(classesPaneWidgetStyles);
-    this.contentElement.className = 'styles-element-classes-pane';
-    const container = this.contentElement.createChild('div', 'title-container');
-    this.#input = container.createChild('div', 'new-class-input monospace');
-    this.setDefaultFocusedElement(this.#input);
-    this.#classesContainer = this.contentElement.createChild('div', 'source-code');
-    this.#classesContainer.classList.add('styles-element-classes-container');
+    this.#view = view;
     this.#prompt = new ClassNamePrompt(this.nodeClasses.bind(this));
     this.#prompt.setAutocompletionTimeout(0);
     this.#prompt.renderAsBlock();
 
-    const proxyElement = (this.#prompt.attach(this.#input) as HTMLElement);
-    this.#prompt.setPlaceholder(i18nString(UIStrings.addNewClass));
     this.#prompt.addEventListener(UI.TextPrompt.Events.TEXT_CHANGED, this.onTextChanged, this);
-    proxyElement.addEventListener('keydown', this.onKeyDown.bind(this), false);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.DOMMutated, this.onDOMMutated, this, {scoped: true});
@@ -82,26 +129,21 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
         .filter(className => className.length);
   }
 
-  private onKeyDown(event: KeyboardEvent): void {
-    if (!(event.key === 'Enter') && !Platform.KeyboardUtilities.isEscKey(event)) {
+  private onCommit(): void {
+    if (this.#prompt.acceptAutoComplete()) {
       return;
     }
+    this.applyPromptText(this.#prompt.text());
+  }
 
-    if (event.key === 'Enter') {
-      event.consume();
-      if (this.#prompt.acceptAutoComplete()) {
-        return;
-      }
-    }
+  /** Discards the prompt text and returns whether there was any non-whitespace text to discard. */
+  private onCancel(): boolean {
+    const hadText = !Platform.StringUtilities.isWhitespace(this.#prompt.text());
+    this.applyPromptText('');
+    return hadText;
+  }
 
-    let text = this.#prompt.text();
-    if (Platform.KeyboardUtilities.isEscKey(event)) {
-      if (!Platform.StringUtilities.isWhitespace(text)) {
-        event.consume(true);
-      }
-      text = '';
-    }
-
+  private applyPromptText(text: string): void {
     this.#prompt.setText('');
 
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
@@ -126,7 +168,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     UI.ARIAUtils.LiveAnnouncer.alert(announcementString);
 
     this.installNodeClasses(node);
-    this.update();
+    this.requestUpdate();
   }
 
   private onTextChanged(): void {
@@ -143,61 +185,59 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
       return;
     }
     cachedClassesMap.delete(node);
-    this.update();
+    this.requestUpdate();
   }
 
   private onSelectedNodeChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
-    if (this.#previousTarget && this.#prompt.text()) {
-      this.#input.textContent = '';
+    if (this.#previousTarget && this.#promptAttached && this.#prompt.text()) {
+      this.#prompt.setText('');
       this.installNodeClasses(this.#previousTarget);
     }
     this.#previousTarget = event.data;
-    this.update();
+    this.requestUpdate();
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.update();
+    // Render synchronously rather than via requestUpdate(): callers such as
+    // StylesSidebarPane.showToolbarPane() focus the widget right after show(),
+    // so the autofocus prompt must already exist. This also re-reads the
+    // selected node, which may have changed while the pane was hidden.
+    this.performUpdate();
   }
 
-  update(): void {
-    if (!this.isShowing()) {
-      return;
-    }
-
+  override performUpdate(): void {
     let node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
 
-    this.#classesContainer.removeChildren();
-    // @ts-expect-error this.#input is a div, not an input element. So this line makes no sense at all
-    this.#input.disabled = !node;
-
-    if (!node) {
-      return;
-    }
-
-    const classes = this.nodeClasses(node);
+    const classes = node ? this.nodeClasses(node) : new Map<string, boolean>();
     const keys = [...classes.keys()];
     keys.sort(Platform.StringUtilities.caseInsensetiveComparator);
-    for (const className of keys) {
-      const checkbox =
-          UI.UIUtils.CheckboxLabel.createWithStringLiteral(className, classes.get(className), 'element-class', true);
-      checkbox.classList.add('monospace');
-      checkbox.addEventListener('click', this.onClick.bind(this, className), false);
-      this.#classesContainer.appendChild(checkbox);
+    const input: ViewInput = {
+      classes: keys.map(className => ({className, enabled: Boolean(classes.get(className))})),
+      onCommit: this.onCommit.bind(this),
+      onCancel: this.onCancel.bind(this),
+      onClick: this.onClick.bind(this),
+    };
+    const output: ViewOutput = {};
+    this.#view(input, output, this.contentElement);
+    if (output.attachPrompt && !this.#promptAttached) {
+      output.attachPrompt(this.#prompt);
+      this.#prompt.setPlaceholder(i18nString(UIStrings.addNewClass));
+      this.#promptAttached = true;
     }
   }
 
-  private onClick(className: string, event: Event): void {
+  private onClick(className: string, enabled: boolean): void {
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (!node) {
       return;
     }
-    const enabled = (event.target as HTMLInputElement).checked;
     this.toggleClass(node, className, enabled);
     this.installNodeClasses(node);
+    this.requestUpdate();
   }
 
   private nodeClasses(node: SDK.DOMModel.DOMNode): Map<string, boolean> {

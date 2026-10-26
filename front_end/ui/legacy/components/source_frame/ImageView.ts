@@ -39,7 +39,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import {html, render, type TemplateResult} from '../../../lit/lit.js';
+import {html, nothing, render, type TemplateResult} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as Components from '../utils/utils.js';
@@ -98,6 +98,11 @@ export interface ViewInput {
   url: Platform.DevToolsPath.UrlString;
   imageSrc: string|null;
   isUnavailable: boolean;
+  showToolbar: boolean;
+  size: string;
+  dimensions: string;
+  aspectRatio: string;
+  mimeType: string;
   onImageLoad: (event: Event) => void;
   onImageError: (event: Event) => void;
   onContextMenu: (event: Event) => void;
@@ -134,6 +139,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         ${i18nString(UIStrings.thisImageIsTooBig)}
       </devtools-link>
     </div>
+    ${input.showToolbar ? html`
+      <devtools-toolbar>
+        <div class="toolbar-text">${input.size}</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-text">${input.dimensions}</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-text">${input.aspectRatio}</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-text">${input.mimeType}</div>
+      </devtools-toolbar>
+    ` : nothing}
   `, target, {
     container: {
       classes: ['image-view'],
@@ -172,11 +188,13 @@ export class ImageView extends ImageViewBase {
   readonly #view: View;
   #imageSrc: string|null = null;
   #isUnavailable = false;
+  #showToolbar = false;
   #loadPromise?: Promise<void>;
   #loadResolve?: () => void;
 
-  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view: View = DEFAULT_VIEW) {
-    super({
+  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, element?: HTMLElement,
+              view: View = DEFAULT_VIEW) {
+    super(element, {
       title: i18nString(UIStrings.image),
       viewId: 'image',
       jslog: `${VisualLogging.pane('image-view')}`,
@@ -196,12 +214,29 @@ export class ImageView extends ImageViewBase {
     this.performUpdate();
   }
 
+  get showToolbar(): boolean {
+    return this.#showToolbar;
+  }
+
+  set showToolbar(showToolbar: boolean) {
+    if (this.#showToolbar === showToolbar) {
+      return;
+    }
+    this.#showToolbar = showToolbar;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
     this.#view(
         {
           url: this.#url,
           imageSrc: this.#imageSrc,
           isUnavailable: this.#isUnavailable,
+          showToolbar: this.#showToolbar,
+          size: this.#size,
+          dimensions: this.#dimensions,
+          aspectRatio: this.#aspectRatio,
+          mimeType: this.#mimeType,
           onImageLoad: this.#onImageLoad,
           onImageError: this.#onImageError,
           onContextMenu: this.#contextMenu.bind(this),
@@ -215,6 +250,9 @@ export class ImageView extends ImageViewBase {
     const img = event.target as HTMLImageElement;
     this.#dimensions = i18nString(UIStrings.dD, {PH1: img.naturalWidth, PH2: img.naturalHeight});
     this.#aspectRatio = Platform.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight);
+    if (this.#showToolbar) {
+      this.requestUpdate();
+    }
     this.#loadResolve?.();
     this.#loadResolve = undefined;
     this.#loadPromise = undefined;
@@ -223,6 +261,9 @@ export class ImageView extends ImageViewBase {
   #onImageError = (): void => {
     this.#dimensions = '';
     this.#aspectRatio = '';
+    if (this.#showToolbar) {
+      this.requestUpdate();
+    }
     this.#loadResolve?.();
     this.#loadResolve = undefined;
     this.#loadPromise = undefined;

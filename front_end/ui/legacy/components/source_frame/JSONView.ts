@@ -93,7 +93,14 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     return searchableView;
   }
 
+  get parsedJSON(): ParsedJSON {
+    return this.#parsedJSON;
+  }
+
   set parsedJSON(parsedJSON: ParsedJSON) {
+    if (this.#parsedJSON === parsedJSON) {
+      return;
+    }
     if (this.objectTree) {
       this.objectTree.removeEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
                                           this.#onChildrenChanged, this);
@@ -110,7 +117,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     this.searchableView = searchableView;
   }
 
-  private static parseJSON(text: string|null): Promise<ParsedJSON|null> {
+  static parseJSON(text: string|null): Promise<ParsedJSON|null> {
     let returnObj: ParsedJSON<string>|null = null;
     if (text) {
       returnObj = JSONView.extractJSON(text);
@@ -303,7 +310,18 @@ export class SearchableJsonView extends UI.SearchableView.SearchableView {
   }
 
   set jsonObject(obj: Object|null|undefined) {
-    this.#jsonView.parsedJSON = new ParsedJSON(obj, '', '');
+    this.parsedJSON = new ParsedJSON(obj, '', '');
+  }
+
+  get parsedJSON(): ParsedJSON {
+    return this.#jsonView.parsedJSON;
+  }
+
+  set parsedJSON(parsedJSON: ParsedJSON) {
+    if (this.#jsonView.parsedJSON === parsedJSON) {
+      return;
+    }
+    this.#jsonView.parsedJSON = parsedJSON;
     this.searchProvider = this.#jsonView;
     this.#jsonView.show(this.element);
     this.requestUpdate();

@@ -324,10 +324,11 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     }
   }
 
-  static createSearchableView(parsedXML: Document): UI.SearchableView.SearchableView {
+  static createSearchableView(parsedXML: Document, element?: HTMLElement): UI.SearchableView.SearchableView {
     const xmlView = new XMLView();
     xmlView.parsedXML = parsedXML;
-    const searchableView = new UI.SearchableView.SearchableView(xmlView, null);
+    const searchableView =
+        new UI.SearchableView.SearchableView(xmlView, /* replaceable= */ null, /* settingName= */ undefined, element);
     searchableView.setPlaceholder(i18nString(UIStrings.find));
     xmlView.searchableView = searchableView;
     xmlView.show(searchableView.element);
@@ -368,12 +369,11 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     if (!this.#search) {
       this.#search = new UI.TreeOutline.TreeSearch();
     }
-    this.#search.search(
-        this.#treeViewModel.root, jumpBackwards ?? false,
-        (node, closeTag) =>
-            node.match(regex, closeTag)
-                .map((match, matchIndexInNode) => ({node, matchIndexInNode, isPostOrderMatch: closeTag, match}))
-                .toArray());
+    this.#search.search(this.#treeViewModel.root, jumpBackwards ?? false,
+                        (node, closeTag) => node.match(regex, closeTag)
+                                                .map((match, matchIndexInNode) =>
+                                                         ({node, matchIndexInNode, isPostOrderMatch: closeTag, match}))
+                                                .toArray());
     this.#nextJump = shouldJump ? this.#search.currentMatch() : undefined;
     this.#search.updateSearchableView(this.searchableView);
     this.requestUpdate();

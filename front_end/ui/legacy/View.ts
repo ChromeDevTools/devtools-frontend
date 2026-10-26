@@ -62,13 +62,14 @@ export class SimpleView<ContentTypeT extends HTMLElement|DocumentFragment = HTML
    * @throws TypeError - if `options.viewId` is not in extended kebab case.
    */
   constructor(options: SimpleViewOptions<ContentTypeT>);
-  constructor(element: HTMLElement, options: SimpleViewOptions<ContentTypeT>);
-  constructor(elementOrOptions: HTMLElement|SimpleViewOptions<ContentTypeT>,
+  constructor(element: HTMLElement|undefined, options: SimpleViewOptions<ContentTypeT>);
+  constructor(elementOrOptions: HTMLElement|SimpleViewOptions<ContentTypeT>|undefined,
               options?: SimpleViewOptions<ContentTypeT>) {
     // @ts-expect-error
     super(elementOrOptions, options);
     const optionsObj =
-        (elementOrOptions instanceof HTMLElement ? options : elementOrOptions) as SimpleViewOptions<ContentTypeT>;
+        (elementOrOptions instanceof HTMLElement || elementOrOptions === undefined ? options : elementOrOptions) as
+        SimpleViewOptions<ContentTypeT>;
     this.#title = optionsObj.title;
     this.#viewId = optionsObj.viewId;
     if (!Platform.StringUtilities.isExtendedKebabCase(this.#viewId)) {

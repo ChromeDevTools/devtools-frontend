@@ -30,10 +30,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../../kit/kit.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
-import {Directives, html, render, type TemplateResult} from '../../../lit/lit.js';
+import {Directives, html, nothing, render, type TemplateResult} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -62,6 +64,8 @@ export interface ViewInput {
   fontFamily: string;
   previewFontSize: string;
   previewVisible: boolean;
+  showToolbar: boolean;
+  mimeType: string;
 }
 
 export interface ViewOutput {
@@ -87,6 +91,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     <div ${Directives.ref(el => { dummyEl = el as HTMLElement; })}
       style="visibility: hidden; z-index: -1; display: inline; position: absolute; font-family: ${input.fontFamily}; font-size: ${MEASURE_FONT_SIZE}px"
     >${FONT_PREVIEW_LINES.map((line, i) => html`${i > 0 ? html`<br>` : ''}${line}`)}</div>
+    ${input.showToolbar ? html`
+      <devtools-toolbar class="font-view-toolbar">
+        <div class="toolbar-text">${input.mimeType}</div>
+      </devtools-toolbar>
+    ` : nothing}
   `, target);
   output.measureDimensions = () => {
     if (!dummyEl) {
@@ -106,10 +115,12 @@ export class FontView extends UI.View.SimpleView {
   #fontFamily = '';
   #previewFontSize = '';
   #previewVisible = false;
+  #showToolbar = false;
   #contentLoaded = false;
 
-  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view: View = DEFAULT_VIEW) {
-    super({
+  constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, element?: HTMLElement,
+              view: View = DEFAULT_VIEW) {
+    super(element, {
       title: i18nString(UIStrings.font),
       viewId: 'font',
       jslog: `${VisualLogging.pane('font-view')}`,
@@ -118,6 +129,18 @@ export class FontView extends UI.View.SimpleView {
     this.url = contentProvider.contentURL();
     this.contentProvider = contentProvider;
     this.#mimeType = mimeType;
+  }
+
+  get showToolbar(): boolean {
+    return this.#showToolbar;
+  }
+
+  set showToolbar(showToolbar: boolean) {
+    if (this.#showToolbar === showToolbar) {
+      return;
+    }
+    this.#showToolbar = showToolbar;
+    this.requestUpdate();
   }
 
   override async toolbarItems(): Promise<TemplateResult> {
@@ -193,6 +216,8 @@ export class FontView extends UI.View.SimpleView {
           fontFamily: this.#fontFamily,
           previewFontSize: this.#previewFontSize,
           previewVisible: this.#previewVisible,
+          showToolbar: this.#showToolbar,
+          mimeType: this.#mimeType,
         },
         output,
         this.contentElement,

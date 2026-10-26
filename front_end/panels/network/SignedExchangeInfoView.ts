@@ -105,8 +105,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {
   private readonly responseHeadersItem?: UI.TreeOutline.TreeElement;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super();
+  constructor(request: SDK.NetworkRequest.NetworkRequest, element?: HTMLElement) {
+    super(element);
     this.registerRequiredCSS(signedExchangeInfoViewStyles);
     console.assert(request.signedExchangeInfo() !== null);
     const signedExchangeInfo = (request.signedExchangeInfo() as Protocol.Network.SignedExchangeInfo);

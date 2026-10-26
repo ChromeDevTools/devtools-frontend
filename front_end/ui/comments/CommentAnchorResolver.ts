@@ -277,6 +277,9 @@ function getElementLoggingConfig(element: Element): VisualLogging.LoggingConfig|
 export function hasDisallowedCommentAncestor(element: Element): boolean {
   let current: Element|null = element;
   while (current) {
+    if (current.classList.contains('comments-overlay-container')) {
+      return true;
+    }
     const config = getElementLoggingConfig(current);
     if (config && (DISALLOWED_COMMENT_ANCESTORS.has(config.ve) || config.context === 'comments')) {
       return true;

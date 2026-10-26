@@ -134,6 +134,13 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
   // clang-format on
 };
 
+function isEventInsidePopupOrPin(event: Event): boolean {
+  const composedTarget = event.composedPath()[0];
+  const target = composedTarget instanceof Element ? composedTarget : event.target;
+  return target instanceof Element &&
+      Boolean(Comments.CommentAnchorResolver.closestAcrossShadow(target, '.comment-popup-widget, .comment-pin'));
+}
+
 export class CommentsOverlayWidget extends UI.Widget.Widget {
   static override readonly INJECT: readonly[typeof CommentManager.CommentManager.CommentManager] =
       [CommentManager.CommentManager.CommentManager] as const;
@@ -154,8 +161,10 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       this.#activeThreadId = threadId;
       if (threadId && this.isShowing()) {
         document.documentElement.addEventListener('keydown', this.#onKeyDown);
+        document.documentElement.addEventListener('click', this.#onClickOutside, {capture: true});
       } else {
         document.documentElement.removeEventListener('keydown', this.#onKeyDown);
+        document.documentElement.removeEventListener('click', this.#onClickOutside, {capture: true});
       }
     }
   }
@@ -208,6 +217,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     );
     if (this.#activeThreadId) {
       document.documentElement.addEventListener('keydown', this.#onKeyDown);
+      document.documentElement.addEventListener('click', this.#onClickOutside, {capture: true});
     }
 
     this.requestUpdate();
@@ -216,6 +226,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
   override willHide(): void {
     this.#clearCloseTimeout();
     document.documentElement.removeEventListener('keydown', this.#onKeyDown);
+    document.documentElement.removeEventListener('click', this.#onClickOutside, {capture: true});
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
@@ -371,6 +382,13 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
       event.consume(true);
       this.#handleCloseCommentThread();
     }
+  };
+
+  #onClickOutside = (event: MouseEvent): void => {
+    if (!this.#activeThreadId || isEventInsidePopupOrPin(event)) {
+      return;
+    }
+    this.#handleCloseCommentThread();
   };
 
   #renderDisconnectedView(): void {

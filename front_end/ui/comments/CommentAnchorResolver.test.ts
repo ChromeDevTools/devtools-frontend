@@ -422,6 +422,19 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(treeItem));
       assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(dialog));
     });
+
+    it('excludes elements inside .comments-overlay-container (e.g. comment pins and popups) from commenting', () => {
+      const overlayContainer = document.createElement('div');
+      overlayContainer.classList.add('comments-overlay-container');
+
+      const pin = document.createElement('div');
+      pin.classList.add('comment-pin');
+      overlayContainer.appendChild(pin);
+      container.appendChild(overlayContainer);
+
+      assert.isTrue(Comments.CommentAnchorResolver.hasDisallowedCommentAncestor(pin));
+      assert.isNull(Comments.CommentAnchorResolver.resolveCommentAnchorElement(pin));
+    });
   });
 
   describe('resolveCommentAnchor', () => {

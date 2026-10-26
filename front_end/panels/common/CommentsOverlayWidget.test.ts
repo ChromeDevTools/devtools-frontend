@@ -602,6 +602,186 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     widget.detach();
   });
 
+  it('closes draft comment thread UI, removes draft, and propagates click when clicking outside the popup',
+     async () => {
+       const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+       widget.setOverlayManagerForTest(overlayManager);
+       widget.markAsRoot();
+       renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+       const el = document.createElement('div');
+       el.setAttribute('jslog', 'TreeItem; context: click-outside-draft-test');
+       el.textContent = 'draft target content';
+       el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+       renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+       const toolbar = document.createElement('div');
+       toolbar.setAttribute('jslog', 'Toolbar; context: main-toolbar');
+       const toolbarButton = document.createElement('button');
+       toolbarButton.textContent = 'Toolbar Action';
+       const onToolbarClick = sinon.spy();
+       toolbarButton.addEventListener('click', onToolbarClick);
+       toolbar.appendChild(toolbarButton);
+       renderElementIntoDOM(toolbar, {allowMultipleChildren: true});
+
+       commentManager.setCommentMode(true);
+       overlayManager.handleElementClick(el);
+       await UI.Widget.Widget.allUpdatesComplete;
+
+       assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget'));
+       assert.lengthOf(commentManager.getCommentThreads(), 1);
+
+       const clickEvent = new MouseEvent('click', {bubbles: true, cancelable: true});
+       toolbarButton.dispatchEvent(clickEvent);
+       assert.isFalse(clickEvent.defaultPrevented);
+       sinon.assert.calledOnce(onToolbarClick);
+
+       await UI.Widget.Widget.allUpdatesComplete;
+
+       assert.isNull(widget.contentElement.querySelector('.comment-popup-widget'));
+       assert.lengthOf(commentManager.getCommentThreads(), 0);
+
+       el.remove();
+       toolbar.remove();
+       widget.detach();
+     });
+
+  it('closes active saved comment thread UI, keeps pin, and propagates click when clicking outside the popup',
+     async () => {
+       const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+       widget.setOverlayManagerForTest(overlayManager);
+       widget.markAsRoot();
+       renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+       const el = document.createElement('div');
+       el.setAttribute('jslog', 'TreeItem; context: click-outside-saved-test');
+       el.textContent = 'saved target content';
+       el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+       renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+       const outsideButton = document.createElement('button');
+       outsideButton.textContent = 'Outside Button';
+       const onOutsideClick = sinon.spy();
+       outsideButton.addEventListener('click', onOutsideClick);
+       renderElementIntoDOM(outsideButton, {allowMultipleChildren: true});
+
+       const thread = overlayManager.createComment(el, 'Saved comment');
+       assert.isNotNull(thread);
+       thread.save();
+       widget.openThread(thread.id);
+       await UI.Widget.Widget.allUpdatesComplete;
+
+       assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget'));
+
+       const clickEvent = new MouseEvent('click', {bubbles: true, cancelable: true});
+       outsideButton.dispatchEvent(clickEvent);
+       assert.isFalse(clickEvent.defaultPrevented);
+       sinon.assert.calledOnce(onOutsideClick);
+
+       await UI.Widget.Widget.allUpdatesComplete;
+
+       assert.isNull(widget.contentElement.querySelector('.comment-popup-widget'));
+       assert.lengthOf(commentManager.getCommentThreads(), 1);
+       assert.isNotNull(widget.contentElement.querySelector('.comment-pin'));
+
+       el.remove();
+       outsideButton.remove();
+       widget.detach();
+     });
+
+  it('does not close the comment thread UI when clicking inside the popup', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: click-inside-popup-test');
+    el.textContent = 'inside popup test content';
+    el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+    renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(el);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const textarea = widget.contentElement.querySelector('textarea') as HTMLTextAreaElement;
+    assert.isNotNull(textarea);
+    textarea.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget'));
+    assert.lengthOf(commentManager.getCommentThreads(), 1);
+
+    el.remove();
+    widget.detach();
+  });
+
+  it('toggles the comment thread UI closed when clicking the active thread pin', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: click-pin-toggle-test');
+    el.textContent = 'pin toggle test content';
+    el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+    renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    const thread = overlayManager.createComment(el, 'Saved comment');
+    assert.isNotNull(thread);
+    thread.save();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget'));
+
+    const pin = widget.contentElement.querySelector('.comment-pin') as HTMLElement;
+    assert.isNotNull(pin);
+    pin.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNull(widget.contentElement.querySelector('.comment-popup-widget'));
+    assert.lengthOf(commentManager.getCommentThreads(), 1);
+    assert.isNotNull(widget.contentElement.querySelector('.comment-pin'));
+
+    el.remove();
+    widget.detach();
+  });
+
+  it('closes and removes the draft thread when clicking its own pin in comment mode', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el = document.createElement('div');
+    el.setAttribute('jslog', 'TreeItem; context: click-draft-pin-toggle-test');
+    el.textContent = 'draft pin toggle test content';
+    el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+    renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(el);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget'));
+    assert.lengthOf(commentManager.getCommentThreads(), 1);
+
+    const pin = widget.contentElement.querySelector('.comment-pin') as HTMLElement;
+    assert.isNotNull(pin);
+    pin.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}));
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNull(widget.contentElement.querySelector('.comment-popup-widget'));
+    assert.lengthOf(commentManager.getCommentThreads(), 0);
+    assert.isNull(widget.contentElement.querySelector('.comment-pin'));
+
+    el.remove();
+    widget.detach();
+  });
+
   it('positions pins and highlights with translate3d and preserves DOM nodes across realtime updates', async () => {
     const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);

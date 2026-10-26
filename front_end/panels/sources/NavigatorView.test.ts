@@ -140,6 +140,62 @@ describeWithEnvironment('NavigatorView', () => {
     return null;
   }
 
+  function findDumpedNode(nodes: DumpedTreeNode[], title: string): DumpedTreeNode|null {
+    for (const node of nodes) {
+      if (node.title === title) {
+        return node;
+      }
+      if (node.children) {
+        const found = findDumpedNode(node.children, title);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }
+
+  function activateRow(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      title: string,
+      action: 'enter'|'space'|'dblclick',
+      options: {button?: number} = {},
+      ): void {
+    const treeElement = findTreeElement(navigatorView, el => {
+      const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
+      return elTitle === title;
+    });
+    if (!treeElement) {
+      throw new Error(`Tree element with title "${title}" not found`);
+    }
+    if (action === 'enter') {
+      treeElement.select(true);
+      navigatorView.scriptsTree.contentElement.dispatchEvent(
+          new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+    } else if (action === 'space') {
+      treeElement.select(true);
+      navigatorView.scriptsTree.contentElement.dispatchEvent(
+          new KeyboardEvent('keydown', {key: ' ', keyCode: 32, bubbles: true}));
+    } else if (action === 'dblclick') {
+      treeElement.listItemElement.dispatchEvent(
+          new MouseEvent('dblclick', {bubbles: true, cancelable: true, button: options.button ?? 0}));
+    }
+  }
+
+  function openContextMenuOnRow(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      title: string,
+      ): void {
+    const treeElement = findTreeElement(navigatorView, el => {
+      const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
+      return elTitle === title;
+    });
+    if (!treeElement) {
+      throw new Error(`Tree element with title "${title}" not found`);
+    }
+    treeElement.listItemElement.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+  }
+
   function addResourceAndUISourceCode(
       url: Platform.DevToolsPath.UrlString, frame: SDK.ResourceTreeModel.ResourceTreeFrame, content: string,
       mimeType: string, existingProject?: Bindings.ContentProviderBasedProject.ContentProviderBasedProject,
@@ -830,6 +886,189 @@ describeWithEnvironment('NavigatorView', () => {
       // The node without selection on its path (other.com/b.js) must be removed before the node with selected ancestor group (example.com/a.js).
       assert.strictEqual(removeUISourceCodeNodeSpy.firstCall.args[0].uiSourceCode(), uiSourceCode2);
       assert.strictEqual(removeUISourceCodeNodeSpy.secondCall.args[0].uiSourceCode(), uiSourceCode1);
+    });
+  });
+
+  describe('revealUISourceCode', () => {
+    it('expands ancestors and selects the target row', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/nested/path/to/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const node = navigatorView.revealUISourceCode(uiSourceCode, true);
+      assert.exists(node);
+      assert.exists(node.treeElement);
+      assert.isTrue(node.treeElement.selected);
+
+      // Verify ancestors are expanded and target is selected in dumpTree.
+      const dumped = dumpTree(navigatorView, {includeStatus: true});
+      assert.deepEqual(dumped, [
+        {
+          title: 'top',
+          expanded: true,
+          children: [
+            {
+              title: 'example.com',
+              expanded: true,
+              children: [
+                {
+                  title: 'nested/path/to',
+                  expanded: true,
+                  children: [
+                    {
+                      title: 'script.js',
+                      selected: true,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe('selection events', () => {
+    it('dispatches SOURCE_SELECTED event on enter, space, and double click', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode);
+
+      const eventSpy = sinon.spy();
+      navigatorView.addEventListener(Sources.NavigatorView.Events.SOURCE_SELECTED, eventSpy);
+
+      // Enter key
+      activateRow(navigatorView, 'script.js', 'enter');
+      sinon.assert.calledOnce(eventSpy);
+      assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: true});
+      eventSpy.resetHistory();
+
+      // Space key
+      activateRow(navigatorView, 'script.js', 'space');
+      sinon.assert.calledOnce(eventSpy);
+      assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: true});
+      eventSpy.resetHistory();
+
+      // Double click with primary button (button: 0) -> focusSource: true
+      activateRow(navigatorView, 'script.js', 'dblclick', {button: 0});
+      sinon.assert.calledOnce(eventSpy);
+      assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: true});
+      eventSpy.resetHistory();
+
+      // Double click with middle button (button: 1) -> focusSource: false
+      activateRow(navigatorView, 'script.js', 'dblclick', {button: 1});
+      sinon.assert.calledOnce(eventSpy);
+      assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: false});
+    });
+  });
+
+  describe('context menus', () => {
+    it('shows context menu on file row', async () => {
+      const showStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode);
+
+      openContextMenuOnRow(navigatorView, 'script.js');
+      sinon.assert.calledOnce(showStub);
+    });
+
+    it('shows context menu on folder row', async () => {
+      const showStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/script.js`;
+      addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      openContextMenuOnRow(navigatorView, 'src');
+      sinon.assert.calledOnce(showStub);
+    });
+  });
+
+  describe('dirty and ignore-list state', () => {
+    it('prepends asterisk to title when UISourceCode is dirty and restores on reset', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode);
+      let scriptNode = findDumpedNode(dumpTree(navigatorView), 'script.js');
+      assert.exists(scriptNode);
+
+      uiSourceCode.setWorkingCopy('console.log(2);');
+      scriptNode = findDumpedNode(dumpTree(navigatorView), '*script.js');
+      assert.exists(scriptNode);
+
+      uiSourceCode.resetWorkingCopy();
+      scriptNode = findDumpedNode(dumpTree(navigatorView), 'script.js');
+      assert.exists(scriptNode);
+    });
+
+    it('applies is-ignore-listed class when script is ignore-listed', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode);
+      let dumped = dumpTree(navigatorView, {includeClasses: true});
+      let scriptNode = findDumpedNode(dumped, 'script.js');
+      assert.exists(scriptNode);
+      assert.isFalse(scriptNode.classes?.includes('is-ignore-listed') ?? false);
+
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+      ignoreListManager.enableIgnoreListing = true;
+
+      let patternChangePromise = new Promise<void>(resolve => {
+        const listener = () => {
+          ignoreListManager.removeChangeListener(listener);
+          resolve();
+        };
+        ignoreListManager.addChangeListener(listener);
+      });
+      ignoreListManager.ignoreListURL(url);
+      await patternChangePromise;
+
+      dumped = dumpTree(navigatorView, {includeClasses: true});
+      scriptNode = findDumpedNode(dumped, 'script.js');
+      assert.exists(scriptNode);
+      assert.isTrue(scriptNode.classes?.includes('is-ignore-listed'));
+
+      patternChangePromise = new Promise<void>(resolve => {
+        const listener = () => {
+          ignoreListManager.removeChangeListener(listener);
+          resolve();
+        };
+        ignoreListManager.addChangeListener(listener);
+      });
+      ignoreListManager.unIgnoreListURL(url);
+      await patternChangePromise;
+
+      dumped = dumpTree(navigatorView, {includeClasses: true});
+      scriptNode = findDumpedNode(dumped, 'script.js');
+      assert.exists(scriptNode);
+      assert.isFalse(scriptNode.classes?.includes('is-ignore-listed') ?? false);
     });
   });
 });

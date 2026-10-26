@@ -945,7 +945,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   }
 
   #isUISourceCodeOrAnyAncestorSelected(node: NavigatorUISourceCodeTreeNode): boolean {
-    const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
+    const selectedTreeElement =
+        (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | NavigatorFolderTreeElement | null);
     const selectedNode = selectedTreeElement?.node;
     let currentNode: NavigatorTreeNode|null = node;
     while (currentNode) {
@@ -953,7 +954,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
         return true;
       }
       currentNode = currentNode.parent;
-      if (!(node instanceof NavigatorGroupTreeNode || node instanceof NavigatorFolderTreeElement)) {
+      if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
         break;
       }
     }

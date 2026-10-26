@@ -760,4 +760,76 @@ describeWithEnvironment('NavigatorView', () => {
       ]);
     });
   });
+
+  describe('node removal ordering', () => {
+    it('removes nodes without selection on path before nodes with selected ancestor folder', async () => {
+      const mainFrame = await getMainFrame(target);
+      const urlFolderFile = urlString`http://example.com/src/a.js`;
+      const urlRootFile = urlString`http://example.com/b.js`;
+
+      const {project, uiSourceCode: uiSourceCode1} =
+          addResourceAndUISourceCode(urlFolderFile, mainFrame, '', 'text/javascript');
+      const {uiSourceCode: uiSourceCode2} =
+          addResourceAndUISourceCode(urlRootFile, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode1);
+      const folderTreeElement = findTreeElement(navigatorView, el => el.title === 'src');
+      assert.exists(folderTreeElement);
+      folderTreeElement.select();
+      assert.isTrue(folderTreeElement.selected);
+
+      // The end state after removal is identical (all nodes removed); we spy on removeUISourceCodeNode
+      // to verify the removal ordering optimization that removes unselected paths first (crbug.com/1409025).
+      const removeUISourceCodeNodeSpy = sinon.spy(
+          navigatorView as unknown as
+              {removeUISourceCodeNode: (node: Sources.NavigatorView.NavigatorUISourceCodeTreeNode) => void},
+          'removeUISourceCodeNode',
+      );
+
+      project.removeProject();
+
+      sinon.assert.calledTwice(removeUISourceCodeNodeSpy);
+      // The node without selection on its path (b.js) must be removed before the node with selected ancestor folder (src/a.js).
+      assert.strictEqual(removeUISourceCodeNodeSpy.firstCall.args[0].uiSourceCode(), uiSourceCode2);
+      assert.strictEqual(removeUISourceCodeNodeSpy.secondCall.args[0].uiSourceCode(), uiSourceCode1);
+    });
+
+    it('removes nodes without selection on path before nodes with selected ancestor group', async () => {
+      const mainFrame = await getMainFrame(target);
+      const urlExampleFile = urlString`http://example.com/a.js`;
+      const urlOtherFile = urlString`http://other.com/b.js`;
+
+      const {project, uiSourceCode: uiSourceCode1} =
+          addResourceAndUISourceCode(urlExampleFile, mainFrame, '', 'text/javascript');
+      const {uiSourceCode: uiSourceCode2} =
+          addResourceAndUISourceCode(urlOtherFile, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(uiSourceCode1);
+      const domainTreeElement = findTreeElement(navigatorView, el => el.title === 'example.com');
+      assert.exists(domainTreeElement);
+      domainTreeElement.select();
+      assert.isTrue(domainTreeElement.selected);
+
+      // The end state after removal is identical (all nodes removed); we spy on removeUISourceCodeNode
+      // to verify the removal ordering optimization that removes unselected paths first (crbug.com/1409025).
+      const removeUISourceCodeNodeSpy = sinon.spy(
+          navigatorView as unknown as
+              {removeUISourceCodeNode: (node: Sources.NavigatorView.NavigatorUISourceCodeTreeNode) => void},
+          'removeUISourceCodeNode',
+      );
+
+      project.removeProject();
+
+      sinon.assert.calledTwice(removeUISourceCodeNodeSpy);
+      // The node without selection on its path (other.com/b.js) must be removed before the node with selected ancestor group (example.com/a.js).
+      assert.strictEqual(removeUISourceCodeNodeSpy.firstCall.args[0].uiSourceCode(), uiSourceCode2);
+      assert.strictEqual(removeUISourceCodeNodeSpy.secondCall.args[0].uiSourceCode(), uiSourceCode1);
+    });
+  });
 });

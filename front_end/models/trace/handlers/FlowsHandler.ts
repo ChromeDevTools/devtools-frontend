@@ -14,7 +14,7 @@ import * as Types from '../types/types.js';
 // included, while the amount of `step` phase events can be >= 0.
 
 // A flow phase event is assigned to a trace event when their cat, tid,
-// pid and ts are equal (see @flowPhaseBindingTokenForEvent ).
+// pid and ts are equal (see findBinding()).
 
 // It's possible for a single event to belong to multiple flows. In that
 // case, it will have multiple corresponding flow phase events (one
@@ -26,24 +26,27 @@ import * as Types from '../types/types.js';
 // there are any corresponding flow phase events at all).
 let flowDataByGroupToken = new Map<string, number>();
 
-interface EventFlowData {
+/**
+ * The flows bound to one flow binding tuple (timestamp, process id,
+ * thread id and category).
+ */
+interface FlowBinding {
+  ts: Types.Timing.Micro;
+  pid: Types.Events.ProcessID;
+  tid: Types.Events.ThreadID;
+  cat: string;
   flows: Set<number>;
   bindingParsed: boolean;
 }
-type FlowBindingTuple =
-    Map<Types.Timing.Micro, Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Map<string, EventFlowData>>>>;
 
-// Given a trace event's flow binding tuple (timestamp, process id,
-// thread id and category) we determine if there is any flow data bound
-// to it by using this map's content. It's built when processing flow
-// events in a trace.
-// An alternative to having a map of four levels is having single map
-// from a string token built from concatenating the binding data to the
-// corresponding flow data. However, this token would be calculated for
-// every event in a trace, resulting in a lot of memory overhead and
-// major GC triggering. So we are trading off readability for
-// performance.
-let boundFlowData: FlowBindingTuple = new Map();
+// Trace timestamps are microseconds and too large to be small integers
+// in V8, so a Map keyed by the timestamp hashes a heap number on every
+// lookup. Every non-flow event in a trace is looked up here, so this
+// map is keyed by the low 30 bits of the timestamp instead, which are
+// always a small integer. Bindings that share a key are told apart by
+// comparing the full flow binding tuple.
+const TS_KEY_MASK = 0x3fffffff;
+let boundFlowData = new Map<number, FlowBinding[]>();
 
 let flowsById = new Map<number, Map<Types.Timing.Micro, Types.Events.Event>>();
 let flowEvents: Types.Events.FlowEvent[] = [];
@@ -67,8 +70,17 @@ export function handleEvent(event: Types.Events.Event): void {
   nonFlowEvents.push(event);
 }
 
+function findBinding(bindings: FlowBinding[], event: Types.Events.Event): FlowBinding|undefined {
+  return bindings.find(binding => binding.ts === event.ts && binding.pid === event.pid && binding.tid === event.tid &&
+                           binding.cat === event.cat);
+}
+
 function processNonFlowEvent(event: Types.Events.Event): void {
-  const flowDataForEvent = boundFlowData.get(event.ts)?.get(event.pid)?.get(event.tid)?.get(event.cat);
+  const bindings = boundFlowData.get(event.ts & TS_KEY_MASK);
+  if (!bindings) {
+    return;
+  }
+  const flowDataForEvent = findBinding(bindings, event);
   if (!flowDataForEvent) {
     return;
   }
@@ -95,9 +107,8 @@ function processFlowEvent(flowPhaseEvent: Types.Events.FlowEvent): void {
   const flowGroup = flowGroupTokenForFlowPhaseEvent(flowPhaseEvent);
   switch (flowPhaseEvent.ph) {
     case (Types.Events.Phase.FLOW_START): {
-      const flowMetadata = {flowId: flowPhaseEvent.id, times: new Map([[flowPhaseEvent.ts, undefined]])};
       flowDataByGroupToken.set(flowGroup, flowPhaseEvent.id);
-      addFlowIdToEventBinding(flowPhaseEvent, flowMetadata.flowId);
+      addFlowIdToEventBinding(flowPhaseEvent, flowPhaseEvent.id);
       return;
     }
     case (Types.Events.Phase.FLOW_STEP): {
@@ -125,22 +136,19 @@ function processFlowEvent(flowPhaseEvent: Types.Events.FlowEvent): void {
   }
 }
 
-type MapValueType<T extends Map<unknown, unknown>> = NonNullable<ReturnType<T['get']>>;
 /**
  * A single trace event can belong to multiple flows. This method
  * tracks which flows (flowId) an event belongs to given its flow
  * binding tuple (made of its ts, pid, tid and cat).
  */
 function addFlowIdToEventBinding(event: Types.Events.Event, flowId: number): void {
-  const flowsByPid = Platform.MapUtilities.getWithDefault<Types.Timing.Micro, MapValueType<typeof boundFlowData>>(
-      boundFlowData, event.ts, () => new Map());
-  const flowsByTid = Platform.MapUtilities.getWithDefault<Types.Events.ProcessID, MapValueType<typeof flowsByPid>>(
-      flowsByPid, event.pid, () => new Map());
-  const flowsByCat = Platform.MapUtilities.getWithDefault<Types.Events.ThreadID, MapValueType<typeof flowsByTid>>(
-      flowsByTid, event.tid, () => new Map());
-  const flowData =
-      Platform.MapUtilities.getWithDefault(flowsByCat, event.cat, () => ({flows: new Set(), bindingParsed: false}));
-  flowData.flows.add(flowId);
+  const bindings = Platform.MapUtilities.getWithDefault(boundFlowData, event.ts & TS_KEY_MASK, () => []);
+  let binding = findBinding(bindings, event);
+  if (!binding) {
+    binding = {ts: event.ts, pid: event.pid, tid: event.tid, cat: event.cat, flows: new Set(), bindingParsed: false};
+    bindings.push(binding);
+  }
+  binding.flows.add(flowId);
 }
 
 /**

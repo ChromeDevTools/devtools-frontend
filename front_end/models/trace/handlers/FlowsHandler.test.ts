@@ -185,4 +185,28 @@ describe('FlowsHandler', function() {
     assert.lengthOf(flows, 1);
     assert.deepEqual(flows[0], events.slice(3, 6));
   });
+
+  it('keeps events whose timestamps share the low 30 bits in separate flows', async function() {
+    // FlowsHandler buckets flow bindings by the low 30 bits of the timestamp.
+    // These timestamps share a bucket, so each event must still match only
+    // its own flow phase events.
+    const tsA = 2 ** 31 + 10;
+    const tsB = 2 ** 32 + 10;
+    const events = [
+      makeFlowPhaseEvent('A', tsA, cat, Trace.Types.Events.Phase.FLOW_START, 1, pid, tid),
+      makeFlowPhaseEvent('A', tsA + 10, cat, Trace.Types.Events.Phase.FLOW_END, 1, pid, tid),
+      makeFlowPhaseEvent('B', tsB, cat, Trace.Types.Events.Phase.FLOW_START, 2, pid, tid),
+      makeFlowPhaseEvent('B', tsB + 10, cat, Trace.Types.Events.Phase.FLOW_END, 2, pid, tid),
+
+      makeCompleteEvent('A1', tsA, 10, cat, pid, tid),
+      makeCompleteEvent('A2', tsA + 10, 10, cat, pid, tid),
+      makeCompleteEvent('B1', tsB, 10, cat, pid, tid),
+      makeCompleteEvent('B2', tsB + 10, 10, cat, pid, tid),
+    ];
+
+    const {flows} = await getFlowsHandlerData(events);
+    assert.lengthOf(flows, 2);
+    assert.deepEqual(flows[0], events.slice(4, 6));
+    assert.deepEqual(flows[1], events.slice(6));
+  });
 });

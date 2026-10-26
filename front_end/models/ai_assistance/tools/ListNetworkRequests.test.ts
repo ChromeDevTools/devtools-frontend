@@ -100,7 +100,7 @@ describe('ListNetworkRequestsTool', () => {
     assert.strictEqual(response.result, expectedResult);
   });
 
-  it('returns empty array when no requests are recorded', async () => {
+  it('returns an error telling the model to ask the user to reload when no requests are recorded', async () => {
     networkLog.requests.returns([]);
 
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
@@ -113,14 +113,9 @@ describe('ListNetworkRequestsTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assertIsResult(response);
-    assert.strictEqual(response.result, JSON.stringify([]));
-    assert.deepEqual(response.widgets, [{
-                       name: 'NETWORK_REQUESTS_LIST',
-                       data: {
-                         requests: [],
-                       },
-                     }]);
+    assertIsError(
+        response,
+        'No network requests have been recorded. DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). Ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again.');
   });
 
   it('returns error for opaque origins', async () => {

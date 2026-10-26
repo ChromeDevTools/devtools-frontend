@@ -499,6 +499,20 @@ describe('TimelineCommentController', function() {
       sinon.assert.calledOnce(movedListener);
     });
 
+    it('notifies and clears comment pins when switching to a trace with no comments or overlays', async function() {
+      const setup = await setupFlameChartView(this);
+      const thread = setup.commentManager.createCommentThread(anchorForMainEntry(setup, 0), 'Comment');
+      assert.isNotNull(Comments.CommentAnchorResolver.getCustomAnchorElement(thread.anchor));
+      const nextTrace = await TraceLoader.traceEngine(this, 'basic.json.gz', {withModificationsManager: true});
+      movedListener.resetHistory();
+
+      setup.flameChartView.setModel(nextTrace, new Map());
+
+      sinon.assert.calledOnce(movedListener);
+      assert.isEmpty(commentPins(setup.flameChartView));
+      assert.isNull(Comments.CommentAnchorResolver.getCustomAnchorElement(thread.anchor));
+    });
+
     it('unregisters the resolver, stops syncing and notifies when hidden', async function() {
       const setup = await setupFlameChartView(this);
       const canvas = setup.flameChartView.getMainFlameChart().getCanvas();

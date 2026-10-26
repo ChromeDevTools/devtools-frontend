@@ -325,6 +325,11 @@ export class TimelineCommentController {
 
     if (mutationsMade) {
       void this.#delegate.overlays.update();
+    } else {
+      // Overlays#reset() clears previous overlays before setParsedTrace() runs.
+      // Run #onOverlaysUpdated() so notifyCustomAnchorsMoved() still fires when
+      // the new trace adds no comment pins of its own.
+      this.#onOverlaysUpdated();
     }
   }
 

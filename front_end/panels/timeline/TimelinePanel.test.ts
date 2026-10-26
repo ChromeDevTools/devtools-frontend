@@ -843,4 +843,17 @@ describe('TimelinePanel', function() {
     assert.isNull(dialog.parentWidget());
     assert.isFalse(dialog.isShowing());
   });
+
+  it('hides the flame chart while the status pane overlay is shown and restores it when loading completes',
+     async function() {
+       const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+       await timeline.loadingComplete(events, null, null);
+       assert.isTrue(timeline.getFlameChart().isShowing());
+
+       await timeline.loadingStarted();
+       assert.isFalse(timeline.getFlameChart().isShowing());
+
+       await timeline.loadingComplete(events, null, null);
+       assert.isTrue(timeline.getFlameChart().isShowing());
+     });
 });

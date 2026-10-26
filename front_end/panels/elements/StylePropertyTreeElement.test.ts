@@ -4272,7 +4272,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
     // Builds a CSS.CSSStyle payload for `text` the way the backend would report it for a style that
     // starts at the beginning of the style sheet.
-    function stylePayload(text: string): Protocol.CSS.CSSStyle {
+    function stylePayload(text: string, styleSheetId = liveStyleSheetId): Protocol.CSS.CSSStyle {
       const textObject = new TextUtils.Text.Text(text);
       const toRange = (start: number, end: number): Protocol.CSS.SourceRange => {
         const startPosition = textObject.positionFromOffset(start);
@@ -4296,7 +4296,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         });
       }
       return {
-        styleSheetId: liveStyleSheetId,
+        styleSheetId,
         cssText: text,
         cssProperties,
         shorthandEntries: [],
@@ -4319,7 +4319,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       connection.setSuccessHandler('CSS.getStyleSheetText', () => ({text: sheetText}));
       setStyleTextsStub = sinon.stub().callsFake((params: Protocol.CSS.SetStyleTextsRequest) => {
         sheetText = params.edits[0].text;
-        return {styles: [stylePayload(sheetText)]};
+        return {styles: [stylePayload(sheetText, params.edits[0].styleSheetId)]};
       });
       connection.setHandler('CSS.setStyleTexts', null);
       connection.setSuccessHandler('CSS.setStyleTexts', setStyleTextsStub);
@@ -4377,6 +4377,30 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       container.appendChild(section.element);
       renderElementIntoDOM(container);
       return section;
+    }
+
+    function addMatchedSection(section: Elements.StylePropertiesSection.StylePropertiesSection, cssText: string): void {
+      const matchedStyles = section.matchedStyles;
+      const styleSheetId = 'matched-sheet' as Protocol.DOM.StyleSheetId;
+      const rule = new SDK.CSSRule.CSSStyleRule(matchedStyles.cssModel(), {
+        selectorList: {selectors: [{text: 'div'}], text: 'div'},
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        styleSheetId,
+        style: stylePayload(cssText, styleSheetId),
+      });
+      const matchedSection = new Elements.StylePropertiesSection.StylePropertiesSection(
+          stylesSidebarPane, matchedStyles, rule.style, 1, null, null, null);
+      stylesSidebarPane.allSections().push(matchedSection);
+      matchedStyles.cssModel().addEventListener(SDK.CSSModel.Events.StyleSheetChanged, event => {
+        if (event.data.edit) {
+          rule.style.rebase(event.data.edit);
+        }
+      });
+      section.element.parentElement?.appendChild(matchedSection.element);
+      const resolveProperty = matchedStyles.resolveProperty.bind(matchedStyles);
+      sinon.stub(matchedStyles, 'resolveProperty')
+          .callsFake((name, ownerStyle) => resolveProperty(name, ownerStyle) ??
+                         rule.style.allProperties().findLast(prop => prop.name === name) ?? null);
     }
 
     function treeElementAt(section: Elements.StylePropertiesSection.StylePropertiesSection,
@@ -4817,6 +4841,62 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         sinon.assert.calledWithExactly(
             changeTracker.trackChange.secondCall,
             'Added style property "align-items: stretch" to rule "element.style"',
+            sinon.match.object,
+        );
+      });
+
+      it('tracks only net property changes from PositionAreaRenderer when the popover closes', async () => {
+        const section = await createLiveSection('position-area: top left; justify-self: end;', {inline: true});
+        addMatchedSection(section, 'justify-self: start;');
+        const button = treeElementAt(section, 0).valueElement?.querySelector<HTMLElement>('.position-area-swatch-icon');
+        assert.exists(button);
+
+        const showSpy = sinon.spy(stylesSidebarPane.swatchPopoverHelper(), 'show');
+        button.click();
+        sinon.assert.calledOnce(showSpy);
+        const editor = showSpy.firstCall.args[0];
+        assert.instanceOf(editor, InlineEditor.PositionAreaEditor.PositionAreaEditor);
+
+        const selectArea = async(area: string): Promise<void> => {
+          const parsed = InlineEditor.PositionAreaEditor.parsePositionArea(area);
+          assert.exists(parsed);
+          editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, parsed);
+          await waitFor(() => declarations().includes(`position-area: ${area}`));
+        };
+        const setAlignment = async(propertyName: string, value?: string): Promise<void> => {
+          editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED,
+                                          {propertyName, value});
+          await waitFor(() => value ? declarations().includes(`${propertyName}: ${value}`) :
+                                      !declarations().some(decl => decl.startsWith(`${propertyName}:`)));
+        };
+
+        await selectArea('center');
+        await selectArea('bottom right');
+        await setAlignment('align-self', 'start');
+        await setAlignment('align-self', 'center');
+        await setAlignment('justify-self', 'center');
+        await setAlignment('justify-self');
+
+        sinon.assert.notCalled(changeTracker.trackChange);
+
+        const trackChangePromise = expectCalled(changeTracker.trackChange, {callCount: 3});
+        stylesSidebarPane.swatchPopoverHelper().hide(true);
+        await trackChangePromise;
+
+        sinon.assert.calledThrice(changeTracker.trackChange);
+        sinon.assert.calledWithExactly(
+            changeTracker.trackChange,
+            'Changed style property "position-area" from "top left" to "bottom right" in rule "element.style"',
+            sinon.match.object,
+        );
+        sinon.assert.calledWithExactly(
+            changeTracker.trackChange,
+            'Added style property "align-self: center" to rule "element.style"',
+            sinon.match.object,
+        );
+        sinon.assert.calledWithExactly(
+            changeTracker.trackChange,
+            'Removed style property "justify-self: end" from rule "element.style"',
             sinon.match.object,
         );
       });

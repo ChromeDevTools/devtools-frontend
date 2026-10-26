@@ -2204,6 +2204,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
     edit: (value: string) => void,
     key?: string,
   };
+  static readonly #EDITABLE_PROPERTIES: readonly string[] = ['align-self', 'justify-self'];
   readonly #treeElement: StylePropertyTreeElement|null;
   readonly #stylesContainer: StylesContainer;
   constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null) {
@@ -2233,10 +2234,16 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       }
     }
 
-    return activeSection?.propertiesTreeOutline?.rootElement().children().find(
+    return this.#findPropertyInSection(activeSection, propertyName);
+  }
+
+  #findPropertyInSection(section: StylePropertiesSection|undefined, propertyName: string): StylePropertyTreeElement
+      |undefined {
+    return section?.propertiesTreeOutline?.rootElement().children().find(
         (child): child is StylePropertyTreeElement =>
             child instanceof StylePropertyTreeElement && child.property.name === propertyName);
   }
+
   override render(match: SDK.CSSPropertyParserMatchers.PositionAreaMatch, context: RenderingContext): Lit.LitTemplate {
     const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     // The text of the match is the value as authored, which may contain comments or var()s that resolve to the area.
@@ -2260,6 +2267,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         Boolean(PositionAreaRenderer.#active && popoverHelper.isShowing(PositionAreaRenderer.#active.editor) &&
                 key !== undefined && PositionAreaRenderer.#active.key === key);
     if (isActive && PositionAreaRenderer.#active) {
+      treeElement.carryOverCommittedProperty(PositionAreaRenderer.#active.treeElement);
       PositionAreaRenderer.#active.treeElement = treeElement;
       PositionAreaRenderer.#active.edit = edit;
     }
@@ -2274,6 +2282,17 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       PositionAreaRenderer.#active = active;
       const valueText = context.edits?.getEdit(match) ?? context.matchedResult.getComputedPropertyValueText();
       editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueText) ?? undefined;
+
+      const initialProperties = new Map<string, {value: string, section: StylePropertiesSection}>();
+      for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
+        const target = this.#findTreeElementForProperty(propertyName);
+        if (target) {
+          initialProperties.set(propertyName, {
+            value: target.property.value,
+            section: target.section(),
+          });
+        }
+      }
 
       const updateProperty = (propertyName: string, computedStyle: Map<string, string>|null): void => {
         const matchedStyles = active.treeElement.matchedStyles();
@@ -2345,6 +2364,22 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         editor.removeEventListener(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED, onPropertyChanged);
         const propertyText = commitEdit ? active.treeElement.renderedPropertyText() : originalPropertyText || '';
         void active.treeElement.applyStyleText(propertyText, true);
+        const node = this.#stylesContainer.node() ?? active.treeElement.matchedStyles().node();
+        for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
+          const originalTarget = initialProperties.get(propertyName);
+          const targetSection = originalTarget?.section ?? active.treeElement.section();
+          const target = this.#findPropertyInSection(targetSection, propertyName);
+          const oldValue = originalTarget?.value ?? '';
+          const newValue = target?.property.value ?? '';
+          const ruleHeader = targetSection.headerText();
+          Elements.StyleChanges.trackStylePropertyEdit(this.#stylesContainer.changeTracker, node, {
+            ruleHeader,
+            oldName: oldValue ? propertyName : '',
+            oldValue,
+            newName: newValue ? propertyName : '',
+            newValue,
+          });
+        }
         if (PositionAreaRenderer.#active === active) {
           PositionAreaRenderer.#active = undefined;
         }
@@ -2569,6 +2604,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#lazyRender = false;
     this.property.removeEventListener(SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
     super.onunbind();
+  }
+
+  carryOverCommittedProperty(previous: StylePropertyTreeElement): void {
+    this.#lastCommittedProperty = previous.#lastCommittedProperty;
   }
 
   async gridNames(): Promise<Set<string>> {

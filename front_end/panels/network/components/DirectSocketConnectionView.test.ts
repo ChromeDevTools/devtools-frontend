@@ -53,13 +53,14 @@ let view: ViewFunctionStub<typeof NetworkComponents.DirectSocketConnectionView.D
 let socketConnectionView: NetworkComponents.DirectSocketConnectionView.DirectSocketConnectionView;
 
 describeWithEnvironment('DirectSocketConnectionView', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     setUpEnvironment();
 
     view = createViewFunctionStub(NetworkComponents.DirectSocketConnectionView.DirectSocketConnectionView);
     socketConnectionView =
         new NetworkComponents.DirectSocketConnectionView.DirectSocketConnectionView(createNetworkRequest(), view);
     socketConnectionView.wasShown();
+    await view.nextInput;
   });
 
   const categoryName = NetworkComponents.DirectSocketConnectionView.CATEGORY_NAME_GENERAL;

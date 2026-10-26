@@ -215,13 +215,29 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class RequestInitiatorView extends UI.Widget.VBox {
-  readonly #request: SDK.NetworkRequest.NetworkRequest;
+  #request?: SDK.NetworkRequest.NetworkRequest;
   readonly #view: View;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super();
-    this.#request = request;
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement, view: View = DEFAULT_VIEW) {
+    super(request instanceof HTMLElement ? request : undefined);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.#view = view;
+  }
+
+  get request(): SDK.NetworkRequest.NetworkRequest|undefined {
+    return this.#request;
+  }
+
+  set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
 
   static async createStackTracePreview(
@@ -249,6 +265,9 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   }
 
   override async performUpdate(): Promise<void> {
+    if (!this.#request) {
+      return;
+    }
     const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.#request);

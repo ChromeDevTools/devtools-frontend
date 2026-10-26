@@ -65,6 +65,7 @@ describeWithEnvironment('RequestDeviceBoundSessionsView', () => {
     const component = new RequestDeviceBoundSessionsView.RequestDeviceBoundSessionsView(request, view);
     renderElementIntoDOM(component);
     component.wasShown();
+    await component.updateComplete;
 
     assert.deepEqual(view.input.deviceBoundSessionUsages, []);
 
@@ -82,6 +83,7 @@ describeWithEnvironment('RequestDeviceBoundSessionsView', () => {
     } as SDK.NetworkRequest.ExtraRequestInfo);
 
     request.dispatchEventToListeners(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED);
+    await component.updateComplete;
 
     assert.deepEqual(view.input.deviceBoundSessionUsages, [
       {

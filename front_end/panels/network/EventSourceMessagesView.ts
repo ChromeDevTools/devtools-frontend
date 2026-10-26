@@ -116,15 +116,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class EventSourceMessagesView extends UI.Widget.VBox {
-  private readonly request: SDK.NetworkRequest.NetworkRequest;
+  #request!: SDK.NetworkRequest.NetworkRequest;
   private messageFilterSetting: Common.Settings.Setting<string>;
   private filterRegex: RegExp|null = null;
   #view: View;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super();
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement, view: View = DEFAULT_VIEW) {
+    super(request instanceof HTMLElement ? request : undefined);
     this.#view = view;
-    this.request = request;
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
 
     this.messageFilterSetting =
         Common.Settings.Settings.instance().createSetting('network-event-source-message-filter', '');
@@ -132,15 +134,33 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.setFilter(filter);
   }
 
+  get request(): SDK.NetworkRequest.NetworkRequest {
+    return this.#request;
+  }
+
+  set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+      request.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
+  }
+
   override wasShown(): void {
     super.wasShown();
-    this.request.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+    this.#request?.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
     this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
-    this.request.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
   }
 
   private messageAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.EventSourceMessage>): void {
@@ -192,6 +212,9 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    if (!this.request) {
+      return;
+    }
     let messages = this.request.eventSourceMessages();
     const offset = clearMessageOffsets.get(this.request) || 0;
     messages = messages.slice(offset);

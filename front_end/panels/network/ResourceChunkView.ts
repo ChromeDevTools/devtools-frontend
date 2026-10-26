@@ -215,7 +215,7 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
   protected filterRegex: RegExp|null = null;
   private selectedChunk: Chunk|null = null;
   private currentSelectedNode?: DataGridItem|null;
-  readonly request: SDK.NetworkRequest.NetworkRequest;
+  #request!: SDK.NetworkRequest.NetworkRequest;
   private readonly messageFilterSetting: Common.Settings.Setting<string>;
   private sidebarWidget: UI.Widget.Widget|null = null;
   private readonly splitWidgetSettingKey: string;
@@ -229,21 +229,37 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
   abstract createGridItem(chunk: Chunk): DataGridItem;
   abstract chunkFilter(chunk: Chunk): boolean;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, messageFilterSettingKey: string,
+  constructor(request: SDK.NetworkRequest.NetworkRequest|HTMLElement|undefined, messageFilterSettingKey: string,
               splitWidgetSettingKey: string, dataGridDisplayName: Common.UIString.LocalizedString,
               filterUsingRegexHint: Common.UIString.LocalizedString, opts?: UI.Widget.WidgetOptions,
               view: View = DEFAULT_VIEW) {
-    super(opts);
+    super(request instanceof HTMLElement ? request : undefined, opts);
     this.#view = view;
     this.messageFilterSetting = Common.Settings.Settings.instance().createSetting(messageFilterSettingKey, '');
     this.splitWidgetSettingKey = splitWidgetSettingKey;
     this.dataGridDisplayName = dataGridDisplayName;
     this.filterUsingRegexHint = filterUsingRegexHint;
-    this.request = request;
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
 
     const initialFilter = this.messageFilterSetting.get();
     if (initialFilter) {
       this.applyFilter(initialFilter);
+    }
+  }
+
+  get request(): SDK.NetworkRequest.NetworkRequest {
+    return this.#request;
+  }
+
+  set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
     }
   }
 
@@ -367,6 +383,9 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    if (!this.isShowing() || !this.#request) {
+      return;
+    }
     let chunks = this.getRequestChunks();
     const offset = clearChunkOffsets.get(this.request) || 0;
     chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));

@@ -78,14 +78,30 @@ export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target:
 };
 
 export class RequestResponseView extends UI.Widget.VBox {
-  request: SDK.NetworkRequest.NetworkRequest;
+  #request!: SDK.NetworkRequest.NetworkRequest;
   #view: View;
   #revealPosition?: (position: SourceFrame.SourceFrame.RevealPosition) => Promise<void>;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super();
-    this.request = request;
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement, view: View = DEFAULT_VIEW) {
+    super(request instanceof HTMLElement ? request : undefined);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.#view = view;
+  }
+
+  get request(): SDK.NetworkRequest.NetworkRequest {
+    return this.#request;
+  }
+
+  set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (this.#request === request) {
+      return;
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
 
   override wasShown(): void {
@@ -94,6 +110,9 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   override async performUpdate(): Promise<void> {
+    if (!this.request) {
+      return;
+    }
     const contentData = await this.request.requestStreamingContent();
     let renderAsText = false;
 

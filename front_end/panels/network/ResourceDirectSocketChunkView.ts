@@ -73,10 +73,29 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.Network
     return defaultHeaderTemplate();
   }
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement) {
     super(request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state',
           i18nString(UIStrings.directSocketChunk), i18nString(UIStrings.filterUsingRegex),
           {jslog: `${VisualLogging.pane('direct-socket-messages').track({resize: true})}`});
+  }
+
+  override get request(): SDK.NetworkRequest.NetworkRequest {
+    return super.request;
+  }
+
+  override set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (super.request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      super.request?.removeEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+                                         this.#onDirectSocketChunkAdded, this);
+    }
+    super.request = request;
+    if (this.isShowing()) {
+      super.request?.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+                                      this.#onDirectSocketChunkAdded, this);
+    }
   }
 
   override getRequestChunks(): SDK.NetworkRequest.DirectSocketChunk[] {
@@ -90,21 +109,21 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.Network
   }
 
   override createGridItem(chunk: SDK.NetworkRequest.DirectSocketChunk): DataGridItem {
-    return new ResourceChunkNode(
-        chunk, this.request.directSocketInfo?.type === SDK.NetworkRequest.DirectSocketType.UDP_BOUND);
+    return new ResourceChunkNode(chunk,
+                                 this.request.directSocketInfo?.type === SDK.NetworkRequest.DirectSocketType.UDP_BOUND);
   }
 
   override wasShown(): void {
     super.wasShown();
     this.requestUpdate();
-    this.request.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded,
-                                  this);
+    this.request?.addEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded,
+                                   this);
   }
 
   override willHide(): void {
     super.willHide();
-    this.request.removeEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.#onDirectSocketChunkAdded,
-                                     this);
+    this.request?.removeEventListener(SDK.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+                                      this.#onDirectSocketChunkAdded, this);
   }
 
   #onDirectSocketChunkAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.DirectSocketChunk>): void {

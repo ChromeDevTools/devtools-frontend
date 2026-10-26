@@ -75,13 +75,12 @@ interface ViewInput {
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const {deviceBoundSessionUsages} = input;
 
-  render(
-      html`
+  render(html`
       <style>${UI.inspectorCommonStyles}</style>
       <style>${requestDeviceBoundSessionsViewStyles}</style>
       <div class="request-device-bound-sessions-view">
         ${
-          deviceBoundSessionUsages.length > 0 ? html`
+             deviceBoundSessionUsages.length > 0 ? html`
             <div class="device-bound-session-grid-wrapper">
               <devtools-data-grid striped inline>
                 <table>
@@ -103,35 +102,55 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
               </devtools-data-grid>
             </div>
           ` :
-                                                nothing}
+                                                   nothing}
       </div>
     `,
-      target, {container: {attributes: {jslog: `${VisualLogging.pane('device-bound-sessions-request')}`}}});
+         target, {container: {attributes: {jslog: `${VisualLogging.pane('device-bound-sessions-request')}`}}});
 };
 
 export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
-  #request: SDK.NetworkRequest.NetworkRequest;
+  #request!: SDK.NetworkRequest.NetworkRequest;
   #view: typeof DEFAULT_VIEW;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
-    super();
-    this.#request = request;
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
+    super(request instanceof HTMLElement ? request : undefined);
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
     this.#view = view;
+  }
+
+  get request(): SDK.NetworkRequest.NetworkRequest {
+    return this.#request;
+  }
+
+  set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.#request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+      this.requestUpdate();
+    }
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.#request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.performUpdate, this);
-    this.performUpdate();
+    this.#request?.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.performUpdate, this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.requestUpdate, this);
   }
 
   override performUpdate(): void {
-    if (!this.isShowing()) {
+    if (!this.isShowing() || !this.#request) {
       return;
     }
     this.#view({deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages()}, undefined, this.contentElement);

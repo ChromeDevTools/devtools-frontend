@@ -90,10 +90,29 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
-  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement) {
     super(request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state',
           i18nString(UIStrings.webSocketFrame), i18nString(UIStrings.filterUsingRegex),
           {jslog: `${VisualLogging.pane('web-socket-messages').track({resize: true})}`});
+  }
+
+  override get request(): SDK.NetworkRequest.NetworkRequest {
+    return super.request;
+  }
+
+  override set request(request: SDK.NetworkRequest.NetworkRequest) {
+    if (super.request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      super.request?.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded,
+                                         this);
+    }
+    super.request = request;
+    if (this.isShowing()) {
+      super.request?.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded,
+                                      this);
+    }
   }
 
   override getRequestChunks(): SDK.NetworkRequest.WebSocketFrame[] {
@@ -113,13 +132,13 @@ export class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkReq
   override wasShown(): void {
     super.wasShown();
     this.requestUpdate();
-    this.request.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
+    this.request?.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded, this);
   }
 
   override willHide(): void {
     super.willHide();
-    this.request.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded,
-                                     this);
+    this.request?.removeEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.#onWebSocketFrameAdded,
+                                      this);
   }
 
   #onWebSocketFrameAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.WebSocketFrame>): void {

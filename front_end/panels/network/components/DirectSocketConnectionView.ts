@@ -121,8 +121,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     return input.openCategories.includes(name);
   }
 
-  function renderCategory(
-      name: string, title: Common.UIString.LocalizedString, content: Lit.LitTemplate): Lit.TemplateResult {
+  function renderCategory(name: string, title: Common.UIString.LocalizedString,
+                          content: Lit.LitTemplate): Lit.TemplateResult {
     // clang-format off
       return html`
         <details
@@ -149,8 +149,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     // clang-format on
   }
 
-  function renderRow(
-      name: Common.UIString.LocalizedString, value: string|undefined, classNames?: string[]): Lit.LitTemplate {
+  function renderRow(name: Common.UIString.LocalizedString, value: string|undefined,
+                     classNames?: string[]): Lit.LitTemplate {
     if (!value) {
       return Lit.nothing;
     }
@@ -172,9 +172,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         ${renderRow(i18nString(UIStrings.status), getDirectSocketStatusString(socketInfo.status))}
         ${renderRow(i18nString(UIStrings.errorMessage), socketInfo.errorMessage)}
         ${
-      renderRow(
-          i18nString(UIStrings.joinedMulticastGroups),
-          socketInfo.joinedMulticastGroups ? Array.from(socketInfo.joinedMulticastGroups).join(', ') : '')}
+      renderRow(i18nString(UIStrings.joinedMulticastGroups),
+                socketInfo.joinedMulticastGroups ? Array.from(socketInfo.joinedMulticastGroups).join(', ') : '')}
       </div>`;
 
   const optionsContent = html`
@@ -190,14 +189,13 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       renderRow(i18n.i18n.lockedString('receiveBufferSize'), socketInfo.createOptions.receiveBufferSize?.toString(10))}
         ${renderRow(i18n.i18n.lockedString('dnsQueryType'), socketInfo.createOptions.dnsQueryType)}
         ${
-      renderRow(
-          i18n.i18n.lockedString('multicastTimeToLive'), socketInfo.createOptions.multicastTimeToLive?.toString(10))}
+      renderRow(i18n.i18n.lockedString('multicastTimeToLive'),
+                socketInfo.createOptions.multicastTimeToLive?.toString(10))}
         ${
       renderRow(i18n.i18n.lockedString('multicastLoopback'), socketInfo.createOptions.multicastLoopback?.toString())}
         ${
-      renderRow(
-          i18n.i18n.lockedString('multicastAllowAddressSharing'),
-          socketInfo.createOptions.multicastAllowAddressSharing?.toString())}
+      renderRow(i18n.i18n.lockedString('multicastAllowAddressSharing'),
+                socketInfo.createOptions.multicastAllowAddressSharing?.toString())}
       </div>`;
 
   let openInfoContent: Lit.LitTemplate = Lit.nothing;
@@ -223,27 +221,46 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class DirectSocketConnectionView extends UI.Widget.Widget<ShadowRoot> {
-  #request: Readonly<SDK.NetworkRequest.NetworkRequest>;
+  #request!: Readonly<SDK.NetworkRequest.NetworkRequest>;
   #view: View;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super({
+  constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement, view: View = DEFAULT_VIEW) {
+    super(request instanceof HTMLElement ? request : undefined, {
       useShadowDom: 'pure',
     });
-    this.#request = request;
     this.#view = view;
+    if (request && !(request instanceof HTMLElement)) {
+      this.#request = request;
+    }
+  }
 
-    this.performUpdate();
+  get request(): Readonly<SDK.NetworkRequest.NetworkRequest> {
+    return this.#request;
+  }
+
+  set request(request: Readonly<SDK.NetworkRequest.NetworkRequest>) {
+    if (this.#request === request) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+      request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    }
+    this.#request = request;
+    if (this.isShowing()) {
+      this.requestUpdate();
+    }
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.#request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    this.#request?.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
 
   override willHide(): void {
     super.willHide();
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
+    this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
   }
 
   override performUpdate(): void {
@@ -296,13 +313,16 @@ export class DirectSocketConnectionView extends UI.Widget.Widget<ShadowRoot> {
   }
 
   #setIsOpen(categoryName: string, open: boolean): void {
+    if (!Common.Settings.Settings.hasInstance()) {
+      return;
+    }
     const setting = this.#getCategorySetting(categoryName);
     setting.set(open);
     this.requestUpdate();
   }
 
   #getCategorySetting(name: string): Common.Settings.Setting<boolean> {
-    return Common.Settings.Settings.instance().createSetting(
-        `connection-info-${name}-category-expanded`, /* defaultValue= */ true);
+    return Common.Settings.Settings.instance().createSetting(`connection-info-${name}-category-expanded`,
+                                                             /* defaultValue= */ true);
   }
 }

@@ -10,10 +10,15 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
-   * @description Button text for the comments status bar pill showing the number of open comments.
+   * @description Button text for the comments status bar pill. Clicking it opens the Comments panel.
+   */
+  showComments: 'Show comments',
+  /**
+   * @description Button text for the comments status bar pill when the AI agent has responded to some
+   * comments. Clicking it opens the Comments panel.
    * @example {2} PH1
    */
-  commentsCount: 'Comments ({PH1})',
+  showCommentsWithCount: 'Show comments ({PH1})',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/common/CommentsStatusBarPill.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -22,6 +27,8 @@ const {html, render} = Lit;
 
 export interface ViewInput {
   threads: CommentManager.CommentManager.CommentThread[];
+  /** Number of threads that the agent has responded to. */
+  respondedCount: number;
   onPillClick: () => void;
   disabled?: boolean;
 }
@@ -39,7 +46,9 @@ export const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target:
         ?disabled=${input.disabled}
         @click=${input.onPillClick}
         jslog=${VisualLogging.action('comments-status-bar-pill').track({click: true})}>
-        ${i18nString(UIStrings.commentsCount, {PH1: input.threads.length})}
+        ${input.respondedCount > 0 ?
+            i18nString(UIStrings.showCommentsWithCount, {PH1: input.respondedCount}) :
+            i18nString(UIStrings.showComments)}
       </button>
     `}
   `, target);
@@ -97,10 +106,12 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
+    const threads = this.#commentManager.isAgentAttached() ?
+        this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT') :
+        [];
     const viewInput: ViewInput = {
-      threads: this.#commentManager.isAgentAttached() ?
-          this.#commentManager.getCommentThreads().filter(thread => thread.status !== 'DRAFT') :
-          [],
+      threads,
+      respondedCount: threads.filter(thread => thread.status === 'RESOLVED').length,
       onPillClick: this.#handlePillClick,
     };
     this.#view(viewInput, undefined, this.contentElement);

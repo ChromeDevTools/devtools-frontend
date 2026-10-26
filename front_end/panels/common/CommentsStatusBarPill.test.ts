@@ -36,6 +36,32 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
     const {view} = await createWidget();
     assert.isNotNull(view.input);
     assert.deepEqual(view.input.threads, []);
+    assert.strictEqual(view.input.respondedCount, 0);
+  });
+
+  it('counts only threads that the agent has responded to', async () => {
+    const {commentManager, view} = await createWidget();
+
+    const first = commentManager.createCommentThread(
+        {} as CommentManager.CommentManager.CommentAnchorSignature,
+        'first',
+    );
+    const second = commentManager.createCommentThread(
+        {} as CommentManager.CommentManager.CommentAnchorSignature,
+        'second',
+    );
+    await view.nextInput;
+
+    first.sendToAgent();
+    second.sendToAgent();
+    const inputAfterSend = await view.nextInput;
+    assert.lengthOf(inputAfterSend.threads, 2);
+    assert.strictEqual(inputAfterSend.respondedCount, 0);
+
+    commentManager.resolveCommentThread(first.id, 'Done');
+    const inputAfterResolve = await view.nextInput;
+    assert.lengthOf(inputAfterResolve.threads, 2);
+    assert.strictEqual(inputAfterResolve.respondedCount, 1);
   });
 
   it('updates threads on COMMENT_THREADS_CHANGED while shown', async () => {
@@ -94,6 +120,7 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
             createSentThread('First comment'),
             createSentThread('Second comment'),
           ],
+          respondedCount: 0,
           onPillClick: () => {},
           disabled: false,
           ...inputOverrides,
@@ -105,10 +132,10 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
     return target;
   }
 
-  it('renders the button text with thread count, tooltip, and visual logging attribute', () => {
+  it('renders the button text without a count, tooltip, and visual logging attribute', () => {
     const target = renderView();
     const button = target.querySelector<HTMLButtonElement>('button.devtools-pill');
-    assert.strictEqual(button?.textContent?.trim(), 'Comments (2)');
+    assert.strictEqual(button?.textContent?.trim(), 'Show comments');
     assert.strictEqual(button?.title, 'First comment\nSecond comment');
     assert.strictEqual(
         button?.getAttribute('jslog'),
@@ -116,8 +143,19 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
     );
   });
 
-  it('renders screenshot with thread count', async () => {
-    const target = renderView();
+  it('renders the number of responded threads in the button text', () => {
+    const target = renderView({respondedCount: 2});
+    const button = target.querySelector<HTMLButtonElement>('button.devtools-pill');
+    assert.strictEqual(button?.textContent?.trim(), 'Show comments (2)');
+  });
+
+  it('renders nothing when there are no threads', () => {
+    const target = renderView({threads: []});
+    assert.isNull(target.querySelector('button.devtools-pill'));
+  });
+
+  it('renders screenshot with responded count', async () => {
+    const target = renderView({respondedCount: 2});
     renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('status_bar/status_bar.png');
   });

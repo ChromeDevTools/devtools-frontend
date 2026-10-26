@@ -106,7 +106,6 @@ devtools_ui_module("timeline") {
     "../../ui/components/dialogs:bundle",
     "../../ui/components/helpers:bundle",
     "../../ui/components/linkifier:bundle",
-    "../../ui/components/menus:bundle",
     "../../ui/geometry:bundle",
     "../../ui/i18n:bundle",
     "../../ui/kit:bundle",

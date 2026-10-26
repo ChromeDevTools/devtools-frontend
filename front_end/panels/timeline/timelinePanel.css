@@ -238,6 +238,11 @@
 }
 
 devtools-toolbar {
+  select {
+    max-width: var(--sys-size-26);
+    text-overflow: ellipsis;
+  }
+
   .history-dropdown-button {
     width: var(--sys-size-23);
     height: var(--sys-size-9);

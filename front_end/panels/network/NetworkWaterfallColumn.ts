@@ -1,7 +1,6 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -10,6 +9,7 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 
 import type {NetworkNode} from './NetworkDataGridNode.js';
@@ -17,10 +17,47 @@ import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 import {RequestTimingView} from './RequestTimingView.js';
 
+const {ref} = Directives;
+
 const BAR_SPACING = 1;
 
+export interface ViewInput {
+  onMouseMove: (offsetY: number, shiftKey: boolean) => void;
+  onMouseLeave: () => void;
+  onClick: (offsetY: number) => boolean;
+}
+
+export interface ViewOutput {
+  canvas?: HTMLCanvasElement;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <style>${networkWaterfallColumnStyles}</style>
+    <canvas
+      tabindex="-1"
+      @mousemove=${(event: MouseEvent) => input.onMouseMove(event.offsetY, event.shiftKey)}
+      @mouseleave=${input.onMouseLeave}
+      @click=${(event: MouseEvent) => {
+        if (input.onClick(event.offsetY)) {
+          event.consume(true);
+        }
+      }}
+      ${ref(e => {
+        output.canvas = e instanceof HTMLCanvasElement ? e : undefined;
+      })}
+    ></canvas>
+  `, target);
+  // clang-format on
+};
+
 export class NetworkWaterfallColumn extends UI.Widget.VBox {
-  private canvas: HTMLCanvasElement;
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
+  private canvas!: HTMLCanvasElement;
   private canvasPosition: DOMRect;
   private readonly leftPadding: number;
   private readonly fontSize: number;
@@ -45,15 +82,11 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   private readonly pathForStyle: Map<LayerStyle, Path2D>;
   private textLayers: TextLayer[];
 
-  constructor(calculator: NetworkTimeCalculator.NetworkTimeCalculator) {
-    // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
+  constructor(calculator: NetworkTimeCalculator.NetworkTimeCalculator, view: View = DEFAULT_VIEW) {
+    // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets
+    // moved into NetworkLogViewColumns.
     super();
-    this.registerRequiredCSS(networkWaterfallColumnStyles);
-
-    this.canvas = this.contentElement.createChild('canvas');
-    this.canvas.tabIndex = -1;
-    this.setDefaultFocusedElement(this.canvas);
-    this.canvasPosition = this.canvas.getBoundingClientRect();
+    this.#view = view;
 
     this.leftPadding = 5;
     this.fontSize = 10;
@@ -81,10 +114,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     this.eventDividers = new Map();
 
-    this.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
-    this.element.addEventListener('mouseleave', _event => this.setHoveredNode(null, false), true);
-    this.element.addEventListener('click', this.onClick.bind(this), true);
-
     this.styleForTimeRangeName = NetworkWaterfallColumn.buildRequestTimeRangeStyle();
 
     const resourceStyleTuple = NetworkWaterfallColumn.buildResourceTypeStyle();
@@ -93,30 +122,50 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     const baseLineColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-disabled');
     this.wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
-    this.hoverDetailsStyle = {fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor};
+    this.hoverDetailsStyle = {
+      fillStyle: baseLineColor,
+      lineWidth: 1,
+      borderColor: baseLineColor,
+    };
 
     this.pathForStyle = new Map();
     this.textLayers = [];
+
+    this.performUpdate();
+    this.canvasPosition = this.canvas?.getBoundingClientRect() ?? new DOMRect();
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      onMouseMove: (offsetY, shiftKey) => this.setHoveredNode(this.getNodeFromPoint(offsetY), shiftKey),
+      onMouseLeave: () => this.setHoveredNode(null, false),
+      onClick: offsetY => this.setSelectedNode(this.getNodeFromPoint(offsetY)),
+    },
+               this.#viewOutput, this.contentElement);
+    if (this.#viewOutput.canvas) {
+      this.canvas = this.#viewOutput.canvas;
+      this.setDefaultFocusedElement(this.canvas);
+    }
   }
 
   static buildRequestTimeRangeStyle(): Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle> {
     const styleMap = new Map<NetworkTimeCalculator.RequestTimeRangeNames, LayerStyle>();
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING]});
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.SSL,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SSL]});
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.DNS,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.DNS]});
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.PROXY,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.PROXY]});
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.SSL, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SSL],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.DNS, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.DNS],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.PROXY, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.PROXY],
+    });
     styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING, {fillStyle: '--network-waterfall-blocking'});
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.PUSH,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.PUSH]});
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.PUSH, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.PUSH],
+    });
     styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING],
       lineWidth: 2,
@@ -128,15 +177,15 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       lineWidth: 2,
       borderColor: '#03A9F4',
     });
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.WAITING,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.WAITING]});
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH]});
-    styleMap.set(
-        NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER,
-        {fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER]});
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.WAITING, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.WAITING],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH],
+    });
+    styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER],
+    });
     styleMap.set(NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION, {
       fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION],
     });
@@ -226,17 +275,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
     this.update();
-  }
-
-  private onMouseMove(event: MouseEvent): void {
-    this.setHoveredNode(this.getNodeFromPoint(event.offsetY), event.shiftKey);
-  }
-
-  private onClick(event: MouseEvent): void {
-    const handled = this.setSelectedNode(this.getNodeFromPoint(event.offsetY));
-    if (handled) {
-      event.consume(true);
-    }
   }
 
   private getPopoverRequest(event: MouseEvent|KeyboardEvent): UI.PopoverHelper.PopoverRequest|null {
@@ -389,7 +427,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.offsetWidth = this.contentElement.offsetWidth - this.rightPadding;
     this.offsetHeight = this.contentElement.offsetHeight;
     this.calculator.setDisplayWidth(this.offsetWidth);
-    this.canvasPosition = this.canvas.getBoundingClientRect();
+    this.canvasPosition = this.canvas?.getBoundingClientRect() ?? new DOMRect();
   }
 
   private timeToPosition(time: number): number {
@@ -585,10 +623,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     }
 
     if (!this.calculator.startAtZero) {
-      const queueingRange =
-          (NetworkTimeCalculator.calculateRequestTimeRanges(request, 0)
-               .find(data => data.name === NetworkTimeCalculator.RequestTimeRangeNames.TOTAL) as
-           NetworkTimeCalculator.RequestTimeRange);
+      const queueingRange = (NetworkTimeCalculator.calculateRequestTimeRanges(request, 0)
+                                 .find(data => data.name === NetworkTimeCalculator.RequestTimeRangeNames.TOTAL) as
+                             NetworkTimeCalculator.RequestTimeRange);
       const leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       const leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
       const wiskerTextPadding = 13;

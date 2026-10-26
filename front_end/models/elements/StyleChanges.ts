@@ -95,3 +95,21 @@ export function trackStylePropertyToggle(
   }
   tracker.trackChange(describeStylePropertyToggle(toggle), buildAnchor(STYLES_PANE_VE_PATH, node));
 }
+
+export function trackStyleRuleAdded(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    selector: string,
+    ): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  const trimmedSelector = Platform.StringUtilities.collapseWhitespace(selector.trim());
+  if (!trimmedSelector) {
+    return;
+  }
+  tracker.trackChange(
+      `Added style rule "${trimValue(trimmedSelector)}"`,
+      buildAnchor(STYLES_PANE_VE_PATH, node),
+  );
+}

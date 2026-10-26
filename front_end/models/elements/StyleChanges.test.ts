@@ -135,6 +135,15 @@ describe('StyleChanges', () => {
     assert.strictEqual(lastDescription(), 'Enabled style property "font-weight: bold" in rule "element.style"');
   });
 
+  it('records adding a new style rule', () => {
+    Elements.StyleChanges.trackStyleRuleAdded(tracker, createNode(42), '  .card  >\n  .title  ');
+    assert.strictEqual(lastDescription(), 'Added style rule ".card > .title"');
+
+    const countBefore = commentManager.getCommentThreads().length;
+    Elements.StyleChanges.trackStyleRuleAdded(tracker, createNode(42), '   ');
+    assert.lengthOf(commentManager.getCommentThreads(), countBefore);
+  });
+
   it('omits the rule clause when ruleHeader is omitted or empty', () => {
     trackStylePropertyEdit({
       oldName: 'color',

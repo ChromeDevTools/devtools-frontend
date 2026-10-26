@@ -44,6 +44,7 @@ import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Elements from '../../models/elements/elements.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import {createIcon, type Icon} from '../../ui/kit/kit.js';
@@ -2117,6 +2118,11 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     function onAddedToCascade(this: BlankStylePropertiesSection, newRule: SDK.CSSRule.CSSStyleRule): void {
       const doesSelectorAffectSelectedNode = this.matchedStyles.getMatchingSelectors(newRule).length > 0;
       this.makeNormal(newRule);
+      Elements.StyleChanges.trackStyleRuleAdded(
+          this.stylesContainer.changeTracker,
+          this.stylesContainer.node() ?? this.matchedStyles.node(),
+          newRule.selectorText(),
+      );
 
       if (!doesSelectorAffectSelectedNode) {
         this.propertiesTreeOutline.element.classList.add('no-affect');

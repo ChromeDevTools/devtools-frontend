@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -1137,13 +1138,19 @@ describeWithEnvironment('StylesPropertySection', () => {
 
   it('adds a new rule creating a new editable StylePropertiesSection', async () => {
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
-    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
+    sinon.stub(changeTracker, 'isTracking').get(() => true);
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
     sinon.stub(stylesSidebarPane, 'cssModel').returns(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 12};
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.domModel.returns(cssModel.domModel());
     const matchedStyles = await getMatchedStylesWithStylesheet({
       cssModel,
+      node,
       origin,
       styleSheetId,
       isMutable: true,
@@ -1176,6 +1183,11 @@ describeWithEnvironment('StylesPropertySection', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isFalse(blankSection.isBlank);
     assert.strictEqual(blankSection.headerText(), '.added-rule');
+    sinon.assert.calledOnceWithExactly(
+        changeTracker.trackChange,
+        'Added style rule ".added-rule"',
+        sinon.match.object,
+    );
   });
 
   it('moves focus to property editing when committing new rule selector on colon', async () => {

@@ -204,8 +204,6 @@ export class ImageView extends ImageViewBase {
     this.#contentProvider = contentProvider;
     this.#uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
     if (this.#uiSourceCode) {
-      this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
-                                          this.#workingCopyCommitted, this);
       new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI],
                                    i18nString(UIStrings.dropImageFileHere), this.#handleDrop.bind(this));
     }
@@ -283,8 +281,16 @@ export class ImageView extends ImageViewBase {
 
   override wasShown(): void {
     super.wasShown();
+    this.#uiSourceCode?.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#workingCopyCommitted,
+                                         this);
     this.requestUpdate();
     void this.#updateContentIfNeeded();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#uiSourceCode?.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted,
+                                            this.#workingCopyCommitted, this);
   }
 
   override disposeView(): void {

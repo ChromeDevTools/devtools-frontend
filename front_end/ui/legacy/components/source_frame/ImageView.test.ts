@@ -8,6 +8,8 @@ import {it} from 'mocha';
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';
+import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode} from '../../../../testing/UISourceCodeHelpers.js';
 import {render} from '../../../lit/lit.js';
@@ -62,13 +64,18 @@ describeWithEnvironment('ImageView', () => {
     imageView.disposeView();
   });
 
-  it('dispatches TOOLBAR_ITEMS_CHANGED when working copy is committed', async () => {
+  it('dispatches TOOLBAR_ITEMS_CHANGED when working copy is committed while shown', async () => {
     const {uiSourceCode} = createContentProviderUISourceCode({
       url: urlString`http://example.com/image.png`,
       mimeType: 'image/png',
       content: IMAGE_BASE64,
     });
     const imageView = new SourceFrame.ImageView.ImageView('image/png', uiSourceCode);
+    assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
+
+    renderElementIntoDOM(imageView);
+    assert.isTrue(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
+
     const toolbarItemsPromise = new Promise<void>(resolve => {
       imageView.addEventListener(SourceFrame.ImageView.Events.TOOLBAR_ITEMS_CHANGED, () => resolve());
     });
@@ -77,7 +84,8 @@ describeWithEnvironment('ImageView', () => {
     uiSourceCode.commitWorkingCopy();
 
     await toolbarItemsPromise;
-    imageView.disposeView();
+    imageView.detach();
+    assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
   });
 
   it('waits for in-flight image load when toolbarItems is called concurrently with wasShown', async () => {

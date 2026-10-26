@@ -12,16 +12,11 @@ generate_css("css_files") {
     "menu.css",
     "menuGroup.css",
     "menuItem.css",
-    "selectMenu.css",
-    "selectMenuButton.css",
   ]
 }
 
 devtools_ui_module("menus") {
-  sources = [
-    "Menu.ts",
-    "SelectMenu.ts",
-  ]
+  sources = [ "Menu.ts" ]
   ts_deps = [
     "../../../core/platform:bundle",
     "../../lit:bundle",
@@ -44,13 +39,12 @@ devtools_entrypoint("bundle") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "SelectMenu.test.ts" ]
+  sources = [ "Menu.test.ts" ]
 
   ts_deps = [
     ":bundle",
     "../../../core/common:bundle",
     "../../../testing",
-    "../../lit:bundle",
     "../dialogs:bundle",
     "../render_coordinator:bundle",
   ]

@@ -10,13 +10,12 @@ import {renderElementIntoDOM, setColorScheme} from '../../../testing/DOMHelpers.
 import {
   setupLocaleHooks,
 } from '../../../testing/LocaleHelpers.js';
-import {html} from '../../lit/lit.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as Menus from './menus.js';
 
-async function createMenu(): Promise<Menus.SelectMenu.SelectMenu> {
+async function createMenu(): Promise<Menus.Menu.Menu> {
   const menuItems = [
     {
       name: 'Option 1',
@@ -40,20 +39,21 @@ async function createMenu(): Promise<Menus.SelectMenu.SelectMenu> {
     },
   ];
 
-  const menu = new Menus.SelectMenu.SelectMenu();
+  const menu = new Menus.Menu.Menu();
   menu.position = Dialogs.Dialog.DialogVerticalPosition.BOTTOM;
+  menu.origin = () => new DOMPoint(0, 0);
   menuItems.forEach(item => {
-    const selectMenuItem = new Menus.Menu.MenuItem();
-    selectMenuItem.value = item.value;
-    selectMenuItem.textContent = item.name;
-    menu.appendChild(selectMenuItem);
+    const menuItem = new Menus.Menu.MenuItem();
+    menuItem.value = item.value;
+    menuItem.textContent = item.name;
+    menu.appendChild(menuItem);
   });
 
   await RenderCoordinator.done();
   return menu;
 }
 
-describe('SelectMenu', () => {
+describe('Menu', () => {
   setupLocaleHooks();
 
   describe('focus indicator', () => {
@@ -62,18 +62,17 @@ describe('SelectMenu', () => {
     for (const theme of ['light', 'dark'] as const) {
       it(`has at least 3:1 contrast in the ${theme} theme`, async () => {
         setColorScheme(theme);
-        const selectMenu = await createMenu();
-        renderElementIntoDOM(selectMenu);
+        const menu = await createMenu();
+        renderElementIntoDOM(menu);
         await RenderCoordinator.done();
-        const menu = selectMenu.shadowRoot?.querySelector('devtools-menu');
-        const dialog = menu?.shadowRoot?.querySelector('devtools-dialog');
-        const menuContainer = menu?.shadowRoot?.querySelector('#container');
+        const dialog = menu.shadowRoot?.querySelector('devtools-dialog');
+        const menuContainer = menu.shadowRoot?.querySelector('#container');
         assert.exists(dialog);
         assert.exists(menuContainer);
         await dialog.setDialogVisible(true);
         const surfaceElement = dialog.shadowRoot?.querySelector('#content');
         assert.exists(surfaceElement);
-        const items = selectMenu.querySelectorAll('devtools-menu-item');
+        const items = menu.querySelectorAll('devtools-menu-item');
         menuContainer.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
         assert.isTrue(items[0].matches(':focus-visible'));
 
@@ -109,45 +108,15 @@ describe('SelectMenu', () => {
     }
   });
 
-  it('will use the buttonTitle property if that is provided', async () => {
-    const menu = await createMenu();
-    const firsItem = menu.querySelector('devtools-menu-item');
-    assert.exists(firsItem);
-    menu.buttonTitle = 'Override Title';
-    renderElementIntoDOM(menu);
-    await RenderCoordinator.done();
-    assert.isNotNull(menu.shadowRoot);
-    const button = menu.shadowRoot.querySelector('devtools-select-menu-button');
-    assert.exists(button);
-    assert.instanceOf(button, HTMLElement);
-    assert.strictEqual(button.innerText, 'Override Title');
-  });
-
-  it('allows the buttonTitle to be a function', async () => {
-    const menu = await createMenu();
-    const firsItem = menu.querySelector('devtools-menu-item');
-    assert.exists(firsItem);
-    firsItem.selected = true;
-    menu.buttonTitle = () => html`Override Title`;
-    renderElementIntoDOM(menu);
-    await RenderCoordinator.done();
-    assert.isNotNull(menu.shadowRoot);
-    const button = menu.shadowRoot.querySelector('devtools-select-menu-button');
-    assert.exists(button);
-    assert.instanceOf(button, HTMLElement);
-    assert.strictEqual(button.innerText, 'Override Title');
-  });
-
   it('can render multiple options as selected at once', async () => {
-    const selectMenu = await createMenu();
-    renderElementIntoDOM(selectMenu);
-    [...selectMenu.querySelectorAll('devtools-menu-item')][0].selected = true;
-    [...selectMenu.querySelectorAll('devtools-menu-item')][1].selected = true;
-    assert.isNotNull(selectMenu.shadowRoot);
-    const devtoolsMenu = selectMenu.shadowRoot.querySelector('devtools-menu');
-    const devtoolsDialog = devtoolsMenu?.shadowRoot?.querySelector('devtools-dialog');
+    const menu = await createMenu();
+    renderElementIntoDOM(menu);
+    [...menu.querySelectorAll('devtools-menu-item')][0].selected = true;
+    [...menu.querySelectorAll('devtools-menu-item')][1].selected = true;
+    assert.isNotNull(menu.shadowRoot);
+    const devtoolsDialog = menu.shadowRoot.querySelector('devtools-dialog');
     await devtoolsDialog?.setDialogVisible(true);
-    const selectedItems = [...selectMenu.querySelectorAll('devtools-menu-item')].filter(item => item.selected);
+    const selectedItems = [...menu.querySelectorAll('devtools-menu-item')].filter(item => item.selected);
     assert.deepEqual(selectedItems.map(item => item.innerText), ['Option 1', 'Option 2']);
   });
 });

@@ -11,6 +11,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
@@ -150,5 +151,34 @@ describeWithEnvironment('CallStackSidebarPane', () => {
     });
 
     callStackSidebarPane.detach();
+  });
+
+  it('ignores stale stack traces when flavorChanged calls overlap', async () => {
+    const {details: details1} = getPausedDetails();
+    const {details: details2} = getPausedDetails();
+    const binding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const stackTrace1 = await binding.createStackTraceFromDebuggerPaused(details1, details1.debuggerModel.target());
+    const stackTrace2 = await binding.createStackTraceFromDebuggerPaused(details2, details2.debuggerModel.target());
+
+    const deferred1 = Promise.withResolvers<StackTrace.StackTrace.DebuggableStackTrace>();
+    const deferred2 = Promise.withResolvers<StackTrace.StackTrace.DebuggableStackTrace>();
+    const createStub = sinon.stub(binding, 'createStackTraceFromDebuggerPaused');
+    createStub.onFirstCall().returns(deferred1.promise);
+    createStub.onSecondCall().returns(deferred2.promise);
+
+    const callStackSidebarPane = Sources.CallStackSidebarPane.CallStackSidebarPane.instance({forceNew: true});
+    const p1 = callStackSidebarPane.flavorChanged(details1);
+    const p2 = callStackSidebarPane.flavorChanged(details2);
+
+    deferred2.resolve(stackTrace2);
+    await p2;
+    deferred1.resolve(stackTrace1);
+    await p1;
+
+    assert.isFalse(stackTrace1.hasEventListeners(StackTrace.StackTrace.Events.UPDATED));
+    assert.isTrue(stackTrace2.hasEventListeners(StackTrace.StackTrace.Events.UPDATED));
+
+    await callStackSidebarPane.flavorChanged(null);
+    assert.isFalse(stackTrace2.hasEventListeners(StackTrace.StackTrace.Events.UPDATED));
   });
 });

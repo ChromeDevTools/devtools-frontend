@@ -120,6 +120,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private muteActivateItem?: boolean;
 
   #stackTrace: StackTrace.StackTrace.DebuggableStackTrace|null = null;
+  #flavorChangeId = 0;
 
   private constructor() {
     super({
@@ -204,6 +205,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   }
 
   async flavorChanged(details: SDK.DebuggerModel.DebuggerPausedDetails|null): Promise<void> {
+    const flavorChangeId = ++this.#flavorChangeId;
     this.showIgnoreListed = false;
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
@@ -215,8 +217,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
 
     if (details) {
-      this.#stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+      const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                              .createStackTraceFromDebuggerPaused(details, details.debuggerModel.target());
+      if (flavorChangeId !== this.#flavorChangeId) {
+        return;
+      }
+      this.#stackTrace = stackTrace;
       this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
 

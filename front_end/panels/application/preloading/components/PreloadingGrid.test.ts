@@ -20,7 +20,7 @@ async function setupWidget(): Promise<{
   view: ViewFunctionStub<typeof PreloadingComponents.PreloadingGrid.PreloadingGrid>,
 }> {
   const view = createViewFunctionStub(PreloadingComponents.PreloadingGrid.PreloadingGrid);
-  const widget = new PreloadingComponents.PreloadingGrid.PreloadingGrid(view);
+  const widget = new PreloadingComponents.PreloadingGrid.PreloadingGrid(/* element= */ undefined, view);
   await view.nextInput;
   return {widget, view};
 }

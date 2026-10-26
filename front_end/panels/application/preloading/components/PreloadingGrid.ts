@@ -127,9 +127,9 @@ export class PreloadingGrid extends UI.Widget.VBox {
   #pageURL?: Platform.DevToolsPath.UrlString;
   #onSelect?: ({rowId}: {rowId: string}) => void;
 
-  constructor(view?: View) {
-    super();
-    this.#view = view ?? PRELOADING_GRID_DEFAULT_VIEW;
+  constructor(element?: HTMLElement, view: View = PRELOADING_GRID_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     this.requestUpdate();
   }
 
@@ -144,6 +144,9 @@ export class PreloadingGrid extends UI.Widget.VBox {
   }
 
   set onSelect(onSelect: ({rowId}: {rowId: string}) => void) {
+    if (this.#onSelect === onSelect) {
+      return;
+    }
     this.#onSelect = onSelect;
     this.requestUpdate();
   }

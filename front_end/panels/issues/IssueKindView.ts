@@ -1,18 +1,20 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../ui/components/adorners/adorners.js';
+import '../../ui/kit/kit.js';
+import './components/components.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
-import * as Components from './components/components.js';
+import type * as Components from './components/components.js';
 
 const UIStrings = {
   /**
@@ -60,14 +62,39 @@ export function getClassNameFromKind(kind: IssuesManager.Issue.IssueKind): strin
   }
 }
 
+interface ViewInput {
+  iconName: string;
+  count: number;
+  title: Common.UIString.LocalizedString;
+  hideMenuData: Components.HideIssuesMenu.HiddenIssuesMenuData;
+}
+
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <div class="header">
+      <devtools-icon class="leading-issue-icon extra-large" .name=${input.iconName}></devtools-icon>
+      <devtools-adorner class="aggregated-issues-count" .name=${'countWrapper'}>
+        <span>${input.count}</span>
+      </devtools-adorner>
+      <div class="title">${input.title}</div>
+      <devtools-hide-issues-menu class="hide-available-issues" .data=${input.hideMenuData}></devtools-hide-issues-menu>
+    </div>
+  `, target);
+  // clang-format on
+};
+
 export class IssueKindView extends UI.TreeOutline.TreeElement {
   #kind: IssuesManager.Issue.IssueKind;
-  #issueCount: HTMLElement;
+  #issueCount = 0;
+  readonly #view: View;
 
-  constructor(kind: IssuesManager.Issue.IssueKind) {
+  constructor(kind: IssuesManager.Issue.IssueKind, view: View = DEFAULT_VIEW) {
     super(undefined, true, Platform.StringUtilities.toKebabCase(kind));
     this.#kind = kind;
-    this.#issueCount = document.createElement('span');
+    this.#view = view;
 
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue-kind');
@@ -90,54 +117,38 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  #appendHeader(): void {
-    const header = document.createElement('div');
-    header.classList.add('header');
-
-    const issueKindIcon = new Icon();
-    issueKindIcon.name = IssueCounter.IssueCounter.getIssueKindIconName(this.#kind);
-    issueKindIcon.classList.add('leading-issue-icon', 'extra-large');
-
-    const countAdorner = new Adorners.Adorner.Adorner();
-    countAdorner.name = 'countWrapper';
-    countAdorner.append(this.#issueCount);
-    countAdorner.classList.add('aggregated-issues-count');
-    this.#issueCount.textContent = '0';
-
-    const title = document.createElement('div');
-    title.classList.add('title');
-    title.textContent = IssuesManager.Issue.getIssueKindName(this.#kind);
-
-    const hideAvailableIssuesBtn = new Components.HideIssuesMenu.HideIssuesMenu();
-    hideAvailableIssuesBtn.classList.add('hide-available-issues');
-    hideAvailableIssuesBtn.data = {
-      menuItemLabel: this.getHideAllCurrentKindString(),
-      menuItemAction: () => {
-        const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
-        const values = setting.get();
-        for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {
-          if (issue.getKind() === this.#kind) {
-            values[issue.code()] = IssuesManager.IssuesManager.IssueStatus.HIDDEN;
-          }
-        }
-        setting.set(values);
-      },
-    };
-
-    header.appendChild(issueKindIcon);
-    header.appendChild(countAdorner);
-    header.appendChild(title);
-    header.appendChild(hideAvailableIssuesBtn);
-
-    this.listItemElement.appendChild(header);
+  #render(): void {
+    this.#view(
+        {
+          iconName: IssueCounter.IssueCounter.getIssueKindIconName(this.#kind),
+          count: this.#issueCount,
+          title: IssuesManager.Issue.getIssueKindName(this.#kind),
+          hideMenuData: {
+            menuItemLabel: this.getHideAllCurrentKindString(),
+            menuItemAction: () => {
+              const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
+              const values = setting.get();
+              for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {
+                if (issue.getKind() === this.#kind) {
+                  values[issue.code()] = IssuesManager.IssuesManager.IssueStatus.HIDDEN;
+                }
+              }
+              setting.set(values);
+            },
+          },
+        },
+        undefined,
+        this.listItemElement,
+    );
   }
 
   override onattach(): void {
-    this.#appendHeader();
+    this.#render();
     this.expand();
   }
 
   update(count: number): void {
-    this.#issueCount.textContent = `${count}`;
+    this.#issueCount = count;
+    this.#render();
   }
 }

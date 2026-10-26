@@ -2204,7 +2204,9 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
     this.#removePropertyListeners();
     this.#property = property;
     this.#search = property.search;
-    this.#addPropertyListeners();
+    if (this.isShowing()) {
+      this.#addPropertyListeners();
+    }
     this.requestUpdate();
   }
 
@@ -2222,6 +2224,11 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
     this.#search?.removeEventListener(UI.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
   }
 
+  override willHide(): void {
+    super.willHide();
+    this.#removePropertyListeners();
+  }
+
   override onDetach(): void {
     this.#removePropertyListeners();
   }
@@ -2230,6 +2237,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
     super.wasShown();
     this.#removePropertyListeners();
     this.#addPropertyListeners();
+    this.requestUpdate();
   }
 
   get expanded(): boolean {

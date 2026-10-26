@@ -971,6 +971,26 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
     firstInput.startEditing();
     const [secondInput] = await secondExpectedCall;
     assert.isTrue(secondInput.editing);
+    section.detach();
+  });
+
+  it('only listens to property node events while ObjectPropertyWidget is shown', () => {
+    const property = new SDK.RemoteObject.RemoteObjectProperty(
+        'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
+    const node = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyWidget();
+    section.property = node;
+    assert.isFalse(node.hasEventListeners(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.VALUE_CHANGED));
+
+    renderElementIntoDOM(section);
+    assert.isTrue(node.hasEventListeners(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.VALUE_CHANGED));
+
+    section.setHideOnDetach();
+    section.detach();
+    assert.isFalse(node.hasEventListeners(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.VALUE_CHANGED));
   });
 
   function createAndRenderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean,

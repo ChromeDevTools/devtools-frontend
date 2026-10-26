@@ -404,6 +404,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     for (const domTree of this.domTreeWidgets) {
       domTree.wasShown();
     }
+    if (this.elementInternal && this.#teaser) {
+      this.#teaser.show(this.elementInternal, this.consoleRowWrapper);
+    }
   }
 
   onResize(): void {
@@ -414,6 +417,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.cachedHeight = this.element().offsetHeight;
     for (const domTree of this.domTreeWidgets) {
       domTree.willHide();
+    }
+    if (this.#teaser) {
+      const {okToRemove} = this.#teaser.abortTeaserGeneration();
+      this.#teaser.detach();
+      if (okToRemove) {
+        this.#teaser = undefined;
+      }
     }
   }
 

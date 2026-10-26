@@ -695,6 +695,47 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       sinon.assert.calledOnce(generateTeaserStub);
     });
 
+    it('detaches teaser when message is hidden and re-shows it when message is shown again', () => {
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs('explain.console-message.hover')
+          .returns(true);
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel,
+          Common.Console.FrontendMessageSource.ConsoleAPI,
+          Protocol.Log.LogEntryLevel.Error,
+          'got here',
+      );
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const parentWidget = new UI.Widget.VBox();
+      renderElementIntoDOM(parentWidget);
+      const messageElement = message.toMessageElement();
+      parentWidget.contentElement.appendChild(messageElement);
+      message.wasShown();
+
+      const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+      sinon.stub(builtInAi, 'isEventuallyAvailable').returns(true);
+      sinon.stub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser.prototype, 'maybeGenerateTeaser');
+      sinon.stub(Console.ConsoleInsightTeaser.ConsoleInsightTeaser.prototype, 'abortTeaserGeneration').returns({
+        okToRemove: false,
+      });
+
+      messageElement.dispatchEvent(new MouseEvent('mouseenter'));
+      messageElement.dispatchEvent(new MouseEvent('mouseleave'));
+      assert.isTrue(
+          parentWidget.children().some(child => child instanceof Console.ConsoleInsightTeaser.ConsoleInsightTeaser));
+
+      message.willHide();
+      assert.isFalse(
+          parentWidget.children().some(child => child instanceof Console.ConsoleInsightTeaser.ConsoleInsightTeaser));
+
+      message.wasShown();
+      assert.isTrue(
+          parentWidget.children().some(child => child instanceof Console.ConsoleInsightTeaser.ConsoleInsightTeaser));
+      parentWidget.detach();
+    });
+
     it('does not show a hover button if the console message text is empty', () => {
       const messageElement = createMessage(
           Common.Console.FrontendMessageSource.ConsoleAPI,

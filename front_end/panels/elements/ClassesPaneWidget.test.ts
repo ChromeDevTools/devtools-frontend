@@ -8,7 +8,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchKeyDownEvent, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -162,6 +162,26 @@ describeWithEnvironment('ClassesPaneWidget', () => {
         [...view.contentElement.querySelectorAll('devtools-checkbox')].map(c => c.title),
         ['class-2'],
     );
+  });
+
+  it('disables the prompt while no node is selected', () => {
+    renderClassesPaneWidget();
+
+    const input = querySelectorErrorOnMissing(view.contentElement, '.new-class-input');
+    assert.isFalse(input.hasAttribute('contenteditable'));
+    assert.isTrue(input.classList.contains('disabled'));
+  });
+
+  it('enables the prompt when a node is selected', async () => {
+    const node = createNodeWithClasses('class-1');
+
+    renderClassesPaneWidget();
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    await view.updateComplete;
+
+    const input = querySelectorErrorOnMissing(view.contentElement, '.new-class-input');
+    assert.strictEqual(input.getAttribute('contenteditable'), 'plaintext-only');
+    assert.isFalse(input.classList.contains('disabled'));
   });
 
   it('attaches the prompt only once across re-renders', async () => {

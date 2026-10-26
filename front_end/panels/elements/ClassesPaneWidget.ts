@@ -228,6 +228,10 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
       this.#prompt.setPlaceholder(i18nString(UIStrings.addNewClass));
       this.#promptAttached = true;
     }
+    if (this.#promptAttached) {
+      // Classes can only be added to a selected node.
+      this.#prompt.setEnabled(Boolean(node));
+    }
   }
 
   private onClick(className: string, enabled: boolean): void {

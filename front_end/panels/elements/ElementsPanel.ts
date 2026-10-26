@@ -1109,6 +1109,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
         if (!this.stylesWidget.hasMatchedStyles) {
           this.metricsWidget.hideWidget();
         }
+        this.stylesWidget.removeEventListener(StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED, toggleMetricsWidget);
         this.stylesWidget.addEventListener(StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED, toggleMetricsWidget);
       }
     };

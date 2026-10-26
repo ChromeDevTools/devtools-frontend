@@ -24,6 +24,7 @@ import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as OriginTrialTreeView from './OriginTrialTreeView.js';
 import * as PreloadingView from './preloading/PreloadingView.js';
 import * as PreloadingTreeElement from './PreloadingTreeElement.js';
+import * as PrivateVerificationTokensView from './PrivateVerificationTokensView.js';
 import * as ReportingApiTreeElement from './ReportingApiTreeElement.js';
 import * as ReportingApiView from './ReportingApiView.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
@@ -63,6 +64,7 @@ export {
   OriginTrialTreeView,
   PreloadingTreeElement,
   PreloadingView,
+  PrivateVerificationTokensView,
   ReportingApiTreeElement,
   ReportingApiView,
   ResourcesPanel,

@@ -74,6 +74,7 @@ import type * as PreloadingHelper from './preloading/helper/helper.js';
 import {
   PreloadingSummaryTreeElement,
 } from './PreloadingTreeElement.js';
+import {PrivateVerificationTokensView} from './PrivateVerificationTokensView.js';
 import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
@@ -296,6 +297,10 @@ const UIStrings = {
    * @description Informational text describing a frame's resources in the Application panel.
    */
   resourceDescription: 'On this page you can view the frame’s resources',
+  /**
+   * @description Label for the Private Verification Tokens tree element in the Application panel sidebar.
+   */
+  privateVerificationTokens: 'Private verification tokens',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -332,6 +337,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   indexedDBListTreeElement: IndexedDBTreeElement;
   cookieListTreeElement: ExpandableApplicationPanelTreeElement;
   trustTokensTreeElement: TrustTokensTreeElement;
+  privateVerificationTokensTreeElement?: ApplicationPanelTreeElement;
   cacheStorageListTreeElement: ServiceWorkerCacheTreeElement;
   storageBucketsTreeElement: StorageBucketsTreeParentElement|undefined;
   private backForwardCacheListTreeElement?: BackForwardCacheTreeElement;
@@ -463,6 +469,26 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     this.trustTokensTreeElement = new TrustTokensTreeElement(panel);
     storageTreeElement.appendChild(this.trustTokensTreeElement);
+
+    if (Root.Runtime.hostConfig.devToolsPrivateVerificationTokens?.enabled) {
+      const privateVerificationTokensTreeElement =
+          new ApplicationPanelTreeElement(panel, i18nString(UIStrings.privateVerificationTokens),
+                                          /* expandable= */ false, 'private-verification-tokens');
+      privateVerificationTokensTreeElement.setLeadingIcons([createIcon('database')]);
+      privateVerificationTokensTreeElement.itemURL = Platform.DevToolsPath.urlString`privateVerificationTokens://`;
+      let pvtView: PrivateVerificationTokensView;
+      privateVerificationTokensTreeElement.onselect = (selectedByUser?: boolean): boolean => {
+        ApplicationPanelTreeElement.prototype.onselect.call(privateVerificationTokensTreeElement, selectedByUser);
+        if (!pvtView) {
+          pvtView = new PrivateVerificationTokensView();
+        }
+        privateVerificationTokensTreeElement.showView(pvtView);
+        UI.UIUserMetrics.UIUserMetrics.instance().panelShown('private-verification-tokens');
+        return false;
+      };
+      this.privateVerificationTokensTreeElement = privateVerificationTokensTreeElement;
+      storageTreeElement.appendChild(this.privateVerificationTokensTreeElement);
+    }
 
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     storageTreeElement.appendChild(this.cacheStorageListTreeElement);

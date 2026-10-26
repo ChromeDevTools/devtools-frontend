@@ -3370,6 +3370,7 @@ export const knownContextValues: Set<string> = new Set([
   'privacy-policy.console-insights',
   'privacy-sandbox-update',
   'private-state-tokens',
+  'private-verification-tokens',
   'processing-instruction-value',
   'production-origin',
   'profile-item',

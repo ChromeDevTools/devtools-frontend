@@ -298,8 +298,9 @@ export enum PanelCodes {
   'autofill-view' = 67,
   freestyler = 68,
   ads = 69,
+  'private-verification-tokens' = 70,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 70,
+  MAX_VALUE = 71,
 }
 
 export enum MediaTypes {

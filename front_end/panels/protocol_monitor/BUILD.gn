@@ -35,7 +35,6 @@ devtools_ui_module("protocol_monitor") {
     "../../models/workspace:bundle",
     "../../panels/elements/components:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/components/menus:bundle",
     "../../ui/components/suggestion_input:bundle",
     "../../ui/helpers:bundle",
     "../../ui/kit:bundle",

@@ -241,7 +241,7 @@ export interface ViewInput {
   onRemoveBreakpoint: (index: number) => void;
   onExtensionViewClosed: () => void;
   onExportMenuClosed: () => void;
-  onExportOptionSelected: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
+  onExportOptionSelected: (event: Menus.Menu.MenuItemSelectedEvent) => void;
   onRecordingFinished: () => void;
   handleAddAssertionEvent: () => void;
   onSetRecording: (event: Event) => void;
@@ -1594,7 +1594,7 @@ export class RecorderPanel extends UI.Widget.VBox<DocumentFragment> {
     }
   }
 
-  async #onExportOptionSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): Promise<void> {
+  async #onExportOptionSelected(event: Menus.Menu.MenuItemSelectedEvent): Promise<void> {
     if (typeof event.itemValue !== 'string') {
       throw new Error('Invalid export option value');
     }

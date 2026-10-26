@@ -15,7 +15,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
@@ -1069,6 +1069,128 @@ describeWithEnvironment('NavigatorView', () => {
       scriptNode = findDumpedNode(dumped, 'script.js');
       assert.exists(scriptNode);
       assert.isFalse(scriptNode.classes?.includes('is-ignore-listed') ?? false);
+    });
+  });
+
+  describe('screenshots', () => {
+    function addFile(url: Platform.DevToolsPath.UrlString, frame: SDK.ResourceTreeModel.ResourceTreeFrame,
+                     content: string, mimeType: string,
+                     project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject,
+                     overrideResourceType?: Common.ResourceType.ResourceType) {
+      if (mimeType === 'text/html') {
+        createResource(frame, url, mimeType, content);
+      }
+      const resourceType = overrideResourceType ?? Common.ResourceType.ResourceType.fromMimeType(mimeType);
+      let uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
+      if (!uiSourceCode) {
+        uiSourceCode = project.createUISourceCode(url, resourceType);
+      }
+      Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(uiSourceCode, frame.id);
+      const contentProvider =
+          TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, resourceType, content);
+      const metadata = new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
+      project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
+      return uiSourceCode;
+    }
+
+    afterEach(() => {
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor)
+          .set(false);
+      Workspace.IgnoreListManager.IgnoreListManager.instance().enableIgnoreListing = false;
+    });
+
+    it('renders network tree with merged folders and files', async () => {
+      const mainFrame = await getMainFrame(target);
+      const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+          workspace, 'PROJECT_ID', Workspace.Workspace.projectTypes.Network, 'Test project', false);
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+
+      const buttonUiSourceCode = addFile(urlString`http://example.com/src/components/widgets/button.js`, mainFrame, '',
+                                         'text/javascript', project);
+      addFile(urlString`http://example.com/index.html`, mainFrame, '', 'text/html', project);
+      addFile(urlString`http://example.com/styles.css`, mainFrame, '', 'text/css', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      renderElementIntoDOM(navigatorView, {includeCommonStyles: true, width: 300, height: 300});
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(buttonUiSourceCode, /* select= */ true);
+      await navigatorView.updateComplete;
+
+      await assertScreenshot('sources/navigator-view-network.png');
+    });
+
+    it('renders ignore-listed and dirty files', async () => {
+      const mainFrame = await getMainFrame(target);
+      const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+          workspace, 'PROJECT_ID', Workspace.Workspace.projectTypes.Network, 'Test project', false);
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+
+      const dirtyUrl = urlString`http://example.com/dirty.js`;
+      const dirtyUiSourceCode = addFile(dirtyUrl, mainFrame, 'console.log(1);', 'text/javascript', project);
+
+      const ignoredUrl = urlString`http://example.com/ignored.js`;
+      const ignoredUiSourceCode = addFile(ignoredUrl, mainFrame, 'console.log(2);', 'text/javascript', project);
+
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+      ignoreListManager.enableIgnoreListing = true;
+      const patternChangePromise = new Promise<void>(resolve => {
+        const listener = () => {
+          ignoreListManager.removeChangeListener(listener);
+          resolve();
+        };
+        ignoreListManager.addChangeListener(listener);
+      });
+      ignoreListManager.ignoreListURL(ignoredUrl);
+      await patternChangePromise;
+
+      dirtyUiSourceCode.setWorkingCopy('console.log(11);');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      renderElementIntoDOM(navigatorView, {includeCommonStyles: true, width: 300, height: 300});
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(dirtyUiSourceCode);
+      navigatorView.revealUISourceCode(ignoredUiSourceCode);
+      await navigatorView.updateComplete;
+
+      await assertScreenshot('sources/navigator-view-ignore-listed-and-dirty.png');
+    });
+
+    it('renders authored and deployed grouping', async () => {
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor)
+          .set(true);
+
+      const mainFrame = await getMainFrame(target);
+      const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+          workspace, 'PROJECT_ID', Workspace.Workspace.projectTypes.Network, 'Test project', false);
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+
+      const deployedUrl = urlString`http://example.com/bundle.js`;
+      const authoredUrl = urlString`http://example.com/src/app.ts`;
+
+      const deployedUiSourceCode = addFile(deployedUrl, mainFrame, '', 'text/javascript', project);
+
+      const authoredContentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+          authoredUrl, Common.ResourceType.resourceTypes.SourceMapScript, '');
+      const authoredUiSourceCode =
+          project.createUISourceCode(authoredUrl, Common.ResourceType.resourceTypes.SourceMapScript);
+      project.addUISourceCodeWithProvider(authoredUiSourceCode, authoredContentProvider,
+                                          new Workspace.UISourceCode.UISourceCodeMetadata(null, null),
+                                          'text/typescript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      navigatorView.enableAuthoredGrouping = true;
+      renderElementIntoDOM(navigatorView, {includeCommonStyles: true, width: 300, height: 300});
+      await navigatorView.updateComplete;
+
+      navigatorView.revealUISourceCode(authoredUiSourceCode);
+      navigatorView.revealUISourceCode(deployedUiSourceCode);
+      await navigatorView.updateComplete;
+
+      await assertScreenshot('sources/navigator-view-authored-deployed.png');
     });
   });
 });

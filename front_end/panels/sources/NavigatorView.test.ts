@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import * as sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -21,6 +21,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {addChildFrame, createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as Sources from './sources.js';
 
@@ -67,21 +68,106 @@ describeWithEnvironment('NavigatorView', () => {
     networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
   });
 
+  interface DumpedTreeNode {
+    title: string;
+    classes?: string[];
+    expanded?: boolean;
+    selected?: boolean;
+    children?: DumpedTreeNode[];
+  }
+
+  interface DumpTreeOptions {
+    includeClasses?: boolean;
+    includeStatus?: boolean;
+  }
+
+  function dumpTree(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      options: DumpTreeOptions = {},
+      ): DumpedTreeNode[] {
+    const {includeClasses = false, includeStatus = false} = options;
+    function dumpElement(element: UI.TreeOutline.TreeElement): DumpedTreeNode {
+      const title = typeof element.title === 'string' ? element.title : element.title.textContent ?? '';
+      const node: DumpedTreeNode = {title};
+      if (includeClasses) {
+        const relevantClasses =
+            Array.from(element.listItemElement.classList)
+                .filter(c => c.startsWith('navigator-') || c.startsWith('is-') || c.startsWith('has-'))
+                .sort();
+        if (relevantClasses.length > 0) {
+          node.classes = relevantClasses;
+        }
+      }
+      if (includeStatus) {
+        if (element.expanded) {
+          node.expanded = true;
+        }
+        if (element.selected) {
+          node.selected = true;
+        }
+      }
+      const children = element.children();
+      if (children.length > 0) {
+        node.children = children.map(dumpElement);
+      }
+      return node;
+    }
+    return navigatorView.scriptsTree.rootElement().children().map(dumpElement);
+  }
+
+  function findTreeElement(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      predicate: (element: UI.TreeOutline.TreeElement) => boolean,
+      ): UI.TreeOutline.TreeElement|null {
+    function search(element: UI.TreeOutline.TreeElement): UI.TreeOutline.TreeElement|null {
+      if (predicate(element)) {
+        return element;
+      }
+      for (const child of element.children()) {
+        const found = search(child);
+        if (found) {
+          return found;
+        }
+      }
+      return null;
+    }
+    for (const rootChild of navigatorView.scriptsTree.rootElement().children()) {
+      const found = search(rootChild);
+      if (found) {
+        return found;
+      }
+    }
+    return null;
+  }
+
   function addResourceAndUISourceCode(
       url: Platform.DevToolsPath.UrlString, frame: SDK.ResourceTreeModel.ResourceTreeFrame, content: string,
-      mimeType: string) {
-    createResource(frame, url, 'text/html', content);
-    const uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
-
-    const projectType = Workspace.Workspace.projectTypes.Network;
-    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
-        workspace, 'PROJECT_ID', projectType, 'Test project', false /* isServiceProject*/);
-    Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
-    const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-        url, Common.ResourceType.ResourceType.fromMimeType(mimeType), content);
+      mimeType: string, existingProject?: Bindings.ContentProviderBasedProject.ContentProviderBasedProject,
+      overrideResourceType?: Common.ResourceType.ResourceType) {
+    // createResource is only called for text/html (Document) resources because ResourceMapping
+    // only registers Document resources from ResourceTreeModel into the workspace. For other
+    // content types (scripts, stylesheets), UISourceCodes are created directly on the project.
+    if (mimeType === 'text/html') {
+      createResource(frame, url, mimeType, content);
+    }
+    const project = existingProject ??
+        new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+            workspace, 'PROJECT_ID', Workspace.Workspace.projectTypes.Network, 'Test project',
+            false /* isServiceProject*/);
+    if (!existingProject) {
+      Bindings.NetworkProject.NetworkProject.setTargetForProject(project, target);
+    }
+    const resourceType = overrideResourceType ?? Common.ResourceType.ResourceType.fromMimeType(mimeType);
+    let uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
+    if (!uiSourceCode) {
+      uiSourceCode = project.createUISourceCode(url, resourceType);
+    }
+    Bindings.NetworkProject.NetworkProject.setInitialFrameAttribution(uiSourceCode, frame.id);
+    const contentProvider =
+        TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, resourceType, content);
     const metadata = new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
     project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
-    return {project};
+    return {project, uiSourceCode};
   }
 
   it('can discard multiple childless frames', async () => {
@@ -98,9 +184,8 @@ describeWithEnvironment('NavigatorView', () => {
 
     // Remove leaf node and assert that node removal propagates up to the root node.
     project.removeUISourceCode(url);
-    assert.lengthOf(
-        navigatorView.scriptsTree.rootElement().children(), 0,
-        'The NavigarorView root node should not have any children after node removal');
+    assert.deepEqual(dumpTree(navigatorView), [],
+                     'The NavigatorView root node should not have any children after node removal');
   });
 
   describe('domain node display name', () => {
@@ -398,6 +483,281 @@ describeWithEnvironment('NavigatorView', () => {
       sinon.assert.calledOnce(viewSpy);
       assert.strictEqual(viewSpy.firstCall.args[0].treeElement, navigatorView.scriptsTree.element);
       assert.isFalse(viewSpy.firstCall.args[0].showTree);
+    });
+  });
+
+  describe('folder merging', () => {
+    it('merges single-child folder chains into one row and populates children on reveal', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/components/widgets/button.js`;
+      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      // The single-child folders "src", "components", "widgets" are merged into "src/components/widgets".
+      assert.deepEqual(dumpTree(navigatorView), [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'src/components/widgets',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+
+      // Revealing the source code expands the merged folder and populates the leaf file.
+      navigatorView.revealUISourceCode(uiSourceCode);
+      assert.deepEqual(dumpTree(navigatorView), [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'src/components/widgets',
+                  children: [
+                    {
+                      title: 'button.js',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('unmerges folder chain when a sibling folder is added', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/components/widgets/button.js`;
+      const {project, uiSourceCode: uiSourceCode1} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+      navigatorView.revealUISourceCode(uiSourceCode1);
+
+      // Now add a sibling file under "src/utils/math.js".
+      const url2 = urlString`http://example.com/src/utils/math.js`;
+      const {uiSourceCode: uiSourceCode2} = addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+      await navigatorView.updateComplete;
+      navigatorView.revealUISourceCode(uiSourceCode2);
+
+      // "src" should now be its own row with "components/widgets" and "utils" as children.
+      assert.deepEqual(dumpTree(navigatorView), [
+        {
+          title: 'top',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'src',
+                  children: [
+                    {
+                      title: 'components/widgets',
+                      children: [
+                        {
+                          title: 'button.js',
+                        },
+                      ],
+                    },
+                    {
+                      title: 'utils',
+                      children: [
+                        {
+                          title: 'math.js',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe('sort order', () => {
+    it('sorts folders before files, then by content type, then naturally by name', async () => {
+      const mainFrame = await getMainFrame(target);
+      const {project} =
+          addResourceAndUISourceCode(urlString`http://example.com/folder/child.js`, mainFrame, '', 'text/javascript');
+      addResourceAndUISourceCode(urlString`http://example.com/style.css`, mainFrame, '', 'text/css', project);
+      addResourceAndUISourceCode(urlString`http://example.com/index.html`, mainFrame, '', 'text/html', project);
+      addResourceAndUISourceCode(urlString`http://example.com/item10.js`, mainFrame, '', 'text/javascript', project);
+      addResourceAndUISourceCode(urlString`http://example.com/item2.js`, mainFrame, '', 'text/javascript', project);
+      addResourceAndUISourceCode(urlString`http://example.com/b.js`, mainFrame, '', 'text/javascript', project);
+      addResourceAndUISourceCode(urlString`http://example.com/a.js`, mainFrame, '', 'text/javascript', project);
+      addResourceAndUISourceCode(urlString`http://example.com/data.json`, mainFrame, '', 'application/json', project,
+                                 Common.ResourceType.resourceTypes.Other);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      // Children of example.com should be:
+      // 1. folder: 'folder'
+      // 2. document: 'index.html'
+      // 3. scripts: 'a.js', 'b.js', 'item2.js', 'item10.js'
+      // 4. stylesheet: 'style.css'
+      // 5. other: 'data.json'
+      const exampleComNode = findTreeElement(navigatorView, el => el.title === 'example.com');
+      assert.exists(exampleComNode);
+      const childTitles = exampleComNode.children().map(c => c.title);
+      assert.deepEqual(childTitles, [
+        'folder',
+        'index.html',
+        'a.js',
+        'b.js',
+        'item2.js',
+        'item10.js',
+        'style.css',
+        'data.json',
+      ]);
+    });
+  });
+
+  describe('node removal', () => {
+    it('keeps parent folder while siblings exist and removes empty parent folder when last child is removed',
+       async () => {
+         const mainFrame = await getMainFrame(target);
+         const url1 = urlString`http://example.com/src/app.js`;
+         const url2 = urlString`http://example.com/src/utils.js`;
+         const {project, uiSourceCode: uiSourceCode1} =
+             addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+         addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+
+         const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+         await navigatorView.updateComplete;
+         navigatorView.revealUISourceCode(uiSourceCode1);
+
+         // Initially both files are present under "src".
+         assert.deepEqual(dumpTree(navigatorView), [
+           {
+             title: 'top',
+             children: [
+               {
+                 title: 'example.com',
+                 children: [
+                   {
+                     title: 'src',
+                     children: [
+                       {title: 'app.js'},
+                       {title: 'utils.js'},
+                     ],
+                   },
+                 ],
+               },
+             ],
+           },
+         ]);
+
+         // Remove the first file; "src" folder must remain because "utils.js" is still there.
+         project.removeUISourceCode(url1);
+         await navigatorView.updateComplete;
+         assert.deepEqual(dumpTree(navigatorView), [
+           {
+             title: 'top',
+             children: [
+               {
+                 title: 'example.com',
+                 children: [
+                   {
+                     title: 'src',
+                     children: [
+                       {title: 'utils.js'},
+                     ],
+                   },
+                 ],
+               },
+             ],
+           },
+         ]);
+
+         // Remove the second file; the empty "src" folder and "example.com" should now be removed.
+         project.removeUISourceCode(url2);
+         await navigatorView.updateComplete;
+         assert.deepEqual(dumpTree(navigatorView), []);
+       });
+  });
+
+  describe('authored and deployed grouping', () => {
+    afterEach(() => {
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor)
+          .set(false);
+    });
+
+    it('groups source-mapped files under Authored and network files under Deployed', async () => {
+      Common.Settings.Settings.instance()
+          .resolve(SettingsUI.SourcesSettings.navigatorGroupByAuthoredSettingDescriptor)
+          .set(true);
+
+      const mainFrame = await getMainFrame(target);
+      const deployedUrl = urlString`http://example.com/bundle.js`;
+      const authoredUrl = urlString`http://example.com/src/app.ts`;
+
+      const {project} = addResourceAndUISourceCode(deployedUrl, mainFrame, '', 'text/javascript');
+
+      // Add authored source map source code
+      const authoredContentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+          authoredUrl, Common.ResourceType.resourceTypes.SourceMapScript, '');
+      const authoredUiSourceCode =
+          project.createUISourceCode(authoredUrl, Common.ResourceType.resourceTypes.SourceMapScript);
+      project.addUISourceCodeWithProvider(authoredUiSourceCode, authoredContentProvider,
+                                          new Workspace.UISourceCode.UISourceCodeMetadata(null, null),
+                                          'text/typescript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      navigatorView.enableAuthoredGrouping = true;
+      await navigatorView.updateComplete;
+      navigatorView.revealUISourceCode(authoredUiSourceCode);
+
+      const dumped = dumpTree(navigatorView);
+      assert.deepEqual(dumped, [
+        {
+          title: 'Authored',
+          children: [
+            {
+              title: 'example.com',
+              children: [
+                {
+                  title: 'src',
+                  children: [
+                    {title: 'app.ts'},
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Deployed',
+          children: [
+            {
+              title: 'top',
+              children: [
+                {
+                  title: 'example.com',
+                  children: [
+                    {title: 'bundle.js'},
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
   });
 });

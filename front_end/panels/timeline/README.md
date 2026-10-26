@@ -185,6 +185,8 @@ Comments on flame chart entries use the shared comments UI from `ui/comments` an
 
 The pin and the `COMMENT_PIN` element are separate elements in separate layers, and moving the element fires no DOM scroll or resize event, so step 2 is what keeps the pin on its entry. See the `CustomAnchorResolver` documentation in `ui/comments/CommentAnchorResolver.ts` for the contract.
 
+Entries without an `EventsSerializer` key, such as JS samples, use a synthetic key and are found again by start time, duration and title.
+
 ## Timeline tree views
 
 The `TimelineTreeView` base class provides the foundation for creating various tree-based views within the Performance panel (e.g., Summary, Bottom-Up, Call Tree, Event Log). It handles core functionality like:

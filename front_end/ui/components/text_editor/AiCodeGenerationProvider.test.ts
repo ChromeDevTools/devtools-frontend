@@ -215,6 +215,33 @@ describeWithEnvironment('AiCodeGenerationProvider', () => {
       provider.dispose();
     });
 
+    for (const key of ['Tab', 'Enter']) {
+      it(`ignores ${key} for completion suggestions`, async () => {
+        const registerUserAcceptanceSpy =
+            sinon.spy(AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.prototype, 'registerUserAcceptance');
+        const {editor, provider} = createEditorWithProvider('');
+        await clock.tickAsync(0);
+
+        editor.dispatch({
+          effects: Config.setAiAutoCompleteSuggestion.of({
+            text: 'completionSuggestion',
+            from: 0,
+            rpcGlobalId: 2,
+            sampleId: 1,
+            startTime: performance.now(),
+            onImpression: () => {},
+            source: Config.AiSuggestionSource.COMPLETION,
+          }),
+        });
+        editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key}));
+
+        assert.strictEqual(editor.state.doc.toString(), '');
+        assert.isNotNull(editor.editor.state.field(Config.aiAutoCompleteSuggestionState));
+        sinon.assert.notCalled(registerUserAcceptanceSpy);
+        provider.dispose();
+      });
+    }
+
     it('dismisses suggestion on Escape', async () => {
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call

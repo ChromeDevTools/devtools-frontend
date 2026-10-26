@@ -427,10 +427,9 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
   });
 
   describe('Editor keymap', () => {
-    beforeEach(() => {
-    });
-
-    it('accepts suggestion on Tab', async () => {
+    it('accepts suggestion on Tab and records acceptance', async () => {
+      const registerUserAcceptanceSpy =
+          sinon.spy(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'registerUserAcceptance');
       Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
       const {editor, provider} = createEditorWithProvider('');
       await clock.tickAsync(0);  // for the initial onAidaAvailabilityChange call
@@ -450,8 +449,63 @@ describeWithEnvironment('AiCodeCompletionProvider', () => {
       editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Tab'}));
 
       assert.strictEqual(editor.state.doc.toString(), 'suggestion');
+      sinon.assert.calledOnceWithExactly(registerUserAcceptanceSpy, 1, 1);
       provider.dispose();
     });
+
+    it('accepts suggestion on Enter and records acceptance', async () => {
+      const registerUserAcceptanceSpy =
+          sinon.spy(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'registerUserAcceptance');
+      Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+      const {editor, provider} = createEditorWithProvider('');
+      await clock.tickAsync(0);
+
+      editor.dispatch({
+        effects: Config.setAiAutoCompleteSuggestion.of({
+          text: 'suggestionOnEnter',
+          from: 0,
+          rpcGlobalId: 2,
+          sampleId: 1,
+          startTime: performance.now(),
+          clearCachedRequest: () => {},
+          onImpression: () => {},
+          source: Config.AiSuggestionSource.COMPLETION,
+        }),
+      });
+      editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
+
+      assert.strictEqual(editor.state.doc.toString(), 'suggestionOnEnter');
+      sinon.assert.calledOnceWithExactly(registerUserAcceptanceSpy, 2, 1);
+      provider.dispose();
+    });
+
+    for (const key of ['Tab', 'Enter']) {
+      it(`ignores ${key} for generation suggestions`, async () => {
+        const registerUserAcceptanceSpy =
+            sinon.spy(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'registerUserAcceptance');
+        Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);
+        const {editor, provider} = createEditorWithProvider('');
+        await clock.tickAsync(0);
+
+        editor.dispatch({
+          effects: Config.setAiAutoCompleteSuggestion.of({
+            text: 'generatedSuggestion',
+            from: 0,
+            rpcGlobalId: 3,
+            sampleId: 1,
+            startTime: performance.now(),
+            onImpression: () => {},
+            source: Config.AiSuggestionSource.GENERATION,
+          }),
+        });
+        editor.editor.contentDOM.dispatchEvent(new KeyboardEvent('keydown', {key}));
+
+        assert.strictEqual(editor.state.doc.toString(), '');
+        assert.isNotNull(editor.editor.state.field(Config.aiAutoCompleteSuggestionState));
+        sinon.assert.notCalled(registerUserAcceptanceSpy);
+        provider.dispose();
+      });
+    }
 
     it('dismisses suggestion on Escape', async () => {
       Common.Settings.Settings.instance().settingForTest('ai-code-completion-enabled').set(true);

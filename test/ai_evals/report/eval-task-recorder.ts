@@ -31,6 +31,7 @@ export interface FinalizeTaskOptions {
   hasError?: boolean;
   errorMessage?: string;
   customScore?: number|null;
+  gradingOutput?: string;
 }
 
 export interface HandleTaskFailureOptions {
@@ -199,6 +200,7 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
     hasError = false,
     errorMessage,
     customScore,
+    gradingOutput,
   } = options;
 
   logger.append(`[Task ${taskId}] Finished execution (${durationSeconds}s)`);
@@ -208,8 +210,19 @@ export function finalizeEvalTask(options: FinalizeTaskOptions): string {
       0,
   );
   taskToolCallCounts.set(taskId, toolCallCount);
-  const allUploadsSucceeded =
+  let allUploadsSucceeded =
       uploadTaskArtifacts(runId, taskId, label, logger, trajectory, evalOutputPath, hasError, errorMessage);
+  if (gradingOutput) {
+    const evalResultJson = JSON.stringify({
+      runId,
+      target: label,
+      gradingOutput,
+    },
+                                          null, 2);
+    const evalResultUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.EVAL_RESULT, evalResultJson);
+    const graderLogUploaded = uploadTaskContent(runId, taskId, TaskOutputFile.GRADER_LOG, gradingOutput);
+    allUploadsSucceeded = allUploadsSucceeded && evalResultUploaded && graderLogUploaded;
+  }
   recordTaskCompletion(taskId, runId, durationSeconds, taskStatuses, allUploadsSucceeded, hasError, customScore,
                        toolCallCount);
 

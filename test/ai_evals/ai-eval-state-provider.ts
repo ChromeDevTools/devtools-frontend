@@ -18,6 +18,13 @@ import {getDefaultOtaAccount} from './helpers/eval-environment.js';
 import {EvalLogger} from './report/eval-logger.js';
 import {finalizeEvalTask, handleTaskFailure} from './report/eval-task-recorder.js';
 import {
+  evaluateTrajectory,
+  formatStoreResults,
+  type ItEval,
+  printResults,
+  ResultStore,
+} from './report/evaluators.js';
+import {
   generateRunId,
   PROJECT_ID,
   type TaskStatus,
@@ -30,8 +37,10 @@ import {createTempEvalDir, type Step, TrajectoryBuilder} from './report/trajecto
 export type AiAssistanceContext = NonNullable<AiAssistance.ExternalHandler.ExternalAIRequestOptions['context']>;
 
 export interface AiEvalConfig {
+  type?: string;
   label: string;
   taskId: string;
+  evals?: ItEval[];
 }
 
 export interface ExecutePromptOptions {
@@ -40,8 +49,10 @@ export interface ExecutePromptOptions {
 }
 
 export class EvalTaskHandle {
+  readonly type: string;
   readonly taskId: string;
   readonly label: string;
+  readonly evals: ItEval[];
   readonly isConfigured: boolean;
   readonly startTime: number = performance.now();
   readonly trajectoryBuilder: TrajectoryBuilder;
@@ -51,12 +62,18 @@ export class EvalTaskHandle {
   failureError?: string;
 
   constructor(config: AiEvalConfig, devToolsPage: DevToolsPage, logger: EvalLogger, isConfigured = true) {
+    this.type = config.type ?? 'eval';
     this.taskId = config.taskId;
     this.label = config.label;
+    this.evals = [...(config.evals ?? [])];
     this.isConfigured = isConfigured;
     this.trajectoryBuilder = new TrajectoryBuilder({taskId: this.taskId});
     this.#devToolsPage = devToolsPage;
     this.#logger = logger;
+  }
+
+  itEval(config: ItEval): void {
+    this.evals.push(config);
   }
 
   async executePrompt(options: ExecutePromptOptions): Promise<Step[]> {
@@ -90,6 +107,7 @@ export class AiEvalStateProvider extends StateProvider {
   #logger = new EvalLogger();
   #taskStatuses: TaskStatus[] = [];
   #taskToolCallCounts = new Map<string, number>();
+  #resultStores: ResultStore[] = [];
 
   override registerSuiteSettings(suite: Mocha.Suite, suiteSettings: AiEvalSuiteSettings): void {
     super.registerSuiteSettings(suite, suiteSettings);
@@ -105,6 +123,7 @@ export class AiEvalStateProvider extends StateProvider {
     this.#logger = new EvalLogger();
     this.#taskStatuses = [];
     this.#taskToolCallCounts = new Map();
+    this.#resultStores = [];
     this.#logger.append(`Evaluation run started for ${this.#runId} at ${this.#runStartTimestamp}`);
     uploadRunStarted({
       project: PROJECT_ID,
@@ -255,11 +274,27 @@ export class AiEvalStateProvider extends StateProvider {
           });
         } else {
           try {
+            const trajectory = evalTask.trajectoryBuilder.build();
+            let customScore: number|null = null;
+            let gradingOutput: string|undefined;
+
+            if (!evalTask.hasFailed && evalTask.evals.length > 0) {
+              const store = new ResultStore(evalTask.type, evalTask.label);
+              const dateFolder = (this.#runStartTimestamp || new Date().toISOString()).slice(0, 10);
+              customScore = await evaluateTrajectory(trajectory, evalTask.evals, store, dateFolder);
+              if (store.results.size > 0) {
+                this.#resultStores.push(store);
+                printResults(store);
+                gradingOutput = formatStoreResults(store);
+                this.#logger.append(gradingOutput);
+              }
+            }
+
             finalizeEvalTask({
               runId: this.#runId,
               taskId: evalTask.taskId,
               label: evalTask.label,
-              trajectory: evalTask.trajectoryBuilder.build(),
+              trajectory,
               outputDir: this.#tempOutputDir,
               durationSeconds,
               logger: this.#logger,
@@ -267,6 +302,8 @@ export class AiEvalStateProvider extends StateProvider {
               taskToolCallCounts: this.#taskToolCallCounts,
               hasError: evalTask.hasFailed,
               errorMessage: evalTask.failureError,
+              customScore,
+              gradingOutput,
             });
           } catch (err) {
             const errorMessage = this.#logger.formatError(err as Error);

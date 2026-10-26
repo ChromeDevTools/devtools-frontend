@@ -361,6 +361,10 @@ export async function evaluateTrajectory(
       }];
       store.saveResult(config.test, dateFolder, {type: 'BINARY', details});
     } else if ('judge' in config) {
+      if (!process.env.GEMINI_API_KEY) {
+        console.warn('[AI Evals]: Skipping LLM judge evaluation because GEMINI_API_KEY is not set.');
+        continue;
+      }
       const scoredEvals = Array.from({length: repeatCount}, () => geminiLimiter.run(async () => {
         const res = await config.judge(trajectory);
         return {
@@ -476,6 +480,28 @@ export function printResults(store: ResultStore): void {
     }
     console.table(tableData);
   }
+}
+
+export function formatStoreResults(store: ResultStore): string {
+  const lines: string[] = [`Results for: ${store.type}/${store.label}`];
+
+  for (const [test, dateToResult] of store.results) {
+    if (dateToResult.size === 0) {
+      continue;
+    }
+    lines.push(`\nTest: ${test}`);
+    const sortedDates = Array.from(dateToResult.keys()).sort();
+    const tableData: Record<string, Record<string, string>> = {};
+    for (const date of sortedDates) {
+      const result = dateToResult.get(date);
+      if (result) {
+        populateTableData(tableData, date, result);
+      }
+    }
+    lines.push(JSON.stringify(tableData, null, 2));
+  }
+
+  return lines.join('\n') + '\n';
 }
 
 export interface RubricStats {

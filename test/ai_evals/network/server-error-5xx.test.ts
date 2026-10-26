@@ -5,6 +5,8 @@
 import {openNetworkTab} from '../../e2e/helpers/network-helpers.js';
 import {findAndSetContext} from '../helpers/ai_eval-helpers.js';
 import {describe, it, setup} from '../mocha-interface.js';
+import {LLMComparison} from '../report/evaluators.js';
+import {loadInstructions} from '../report/instructions.js';
 
 describe('Network AI Eval: server-error-5xx', function() {
   this.timeout(180_000);
@@ -16,6 +18,7 @@ describe('Network AI Eval: server-error-5xx', function() {
       'ai-assistance-v2-opt-in-change-dialog-seen': true,
     },
     evalConfig: {
+      type: 'network',
       label: 'server-error-5xx',
       taskId: 'coffee-alchemy',
     },
@@ -42,6 +45,11 @@ describe('Network AI Eval: server-error-5xx', function() {
         contextIdentifier: 'coffee-brew',
       },
       prompts: ['Why is this request failing?'],
+    });
+
+    evalTask.itEval({
+      test: 'is an accurate response to \'Why is this network request failing\' (5xx)',
+      judge: example => LLMComparison.judge(example, loadInstructions('network.eval')),
     });
   });
 });

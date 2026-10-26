@@ -36,3 +36,7 @@ devtools-split-view {
     height: 100%;
   }
 }
+
+.pretty-print-button {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+}

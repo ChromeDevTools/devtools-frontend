@@ -169,17 +169,13 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 /** Grid component to show SpeculationRules rule sets. **/
-const RuleSetGridBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
-    Common.ObjectWrapper.eventMixin(
-        UI.Widget.VBox,
-    );
-
-export class RuleSetGrid extends RuleSetGridBase {
+export class RuleSetGrid extends UI.Widget.VBox {
   readonly #view: View;
   #data: RuleSetGridData|null = null;
+  #onSelect: (ruleSetId: Protocol.Preload.RuleSetId) => void = () => {};
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super({useShadowDom: true});
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
     this.#view = view;
   }
 
@@ -192,10 +188,22 @@ export class RuleSetGrid extends RuleSetGridBase {
     this.requestUpdate();
   }
 
+  get onSelect(): (ruleSetId: Protocol.Preload.RuleSetId) => void {
+    return this.#onSelect;
+  }
+
+  set onSelect(onSelect: (ruleSetId: Protocol.Preload.RuleSetId) => void) {
+    if (this.#onSelect === onSelect) {
+      return;
+    }
+    this.#onSelect = onSelect;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
     const input: ViewInput = {
       data: this.#data,
-      onSelect: this.dispatchEventToListeners.bind(this, Events.SELECT),
+      onSelect: this.#onSelect,
       onRevealInElements: this.#revealSpeculationRulesInElements.bind(this),
       onRevealInNetwork: this.#revealSpeculationRulesInNetwork.bind(this),
       onRevealPreloadsAssociatedWithRuleSet: this.#revealAttemptViewWithFilter.bind(this),
@@ -234,12 +242,4 @@ export class RuleSetGrid extends RuleSetGridBase {
   #revealAttemptViewWithFilter(ruleSet: Protocol.Preload.RuleSet): void {
     void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
   }
-}
-
-export const enum Events {
-  SELECT = 'select',
-}
-
-export interface EventTypes {
-  [Events.SELECT]: Protocol.Preload.RuleSetId;
 }

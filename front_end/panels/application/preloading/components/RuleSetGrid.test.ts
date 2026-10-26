@@ -22,7 +22,7 @@ const {urlString} = Platform.DevToolsPath;
 describeWithEnvironment('RuleSetGrid', () => {
   it('updates view with correct data', async () => {
     const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
-    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(/* element= */ undefined, view);
     const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
       rows: [{
         ruleSet: {
@@ -40,27 +40,26 @@ describeWithEnvironment('RuleSetGrid', () => {
     assert.deepEqual(input.data, data);
   });
 
-  it('dispatches select event on onSelect', async () => {
+  it('calls onSelect callback on row selection', async () => {
     const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
-    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(/* element= */ undefined, view);
+    const onSelect = sinon.spy();
     const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
       rows: [],
       pageURL: urlString`https://example.com/`,
     };
     ruleSetGrid.data = data;
+    ruleSetGrid.onSelect = onSelect;
     const input = await view.nextInput;
-
-    const eventPromise = ruleSetGrid.once(PreloadingComponents.RuleSetGrid.Events.SELECT);
 
     input.onSelect('ruleSetId:1' as Protocol.Preload.RuleSetId);
 
-    const ruleSetId = await eventPromise;
-    assert.strictEqual(ruleSetId, 'ruleSetId:1');
+    sinon.assert.calledOnceWithExactly(onSelect, 'ruleSetId:1');
   });
 
   it('reveals in elements on onRevealInElements', async () => {
     const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
-    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(/* element= */ undefined, view);
     const target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
@@ -88,7 +87,7 @@ describeWithEnvironment('RuleSetGrid', () => {
 
   it('reveals in network on onRevealInNetwork', async () => {
     const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
-    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(/* element= */ undefined, view);
     const target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
@@ -126,7 +125,7 @@ describeWithEnvironment('RuleSetGrid', () => {
 
   it('reveals preloads on onRevealPreloadsAssociatedWithRuleSet', async () => {
     const view = createViewFunctionStub(PreloadingComponents.RuleSetGrid.RuleSetGrid);
-    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(view);
+    const ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid(/* element= */ undefined, view);
     const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
 
     const data: PreloadingComponents.RuleSetGrid.RuleSetGridData = {
@@ -146,7 +145,7 @@ describeWithEnvironment('RuleSetGrid', () => {
     sinon.assert.calledOnce(revealStub);
     const revealedObject = revealStub.firstCall.args[0];
     assert.instanceOf(revealedObject, PreloadingHelper.PreloadingForward.AttemptViewWithFilter);
-    assert.strictEqual(
-        (revealedObject as PreloadingHelper.PreloadingForward.AttemptViewWithFilter).ruleSetId, 'ruleSetId:1');
+    assert.strictEqual((revealedObject as PreloadingHelper.PreloadingForward.AttemptViewWithFilter).ruleSetId,
+                       'ruleSetId:1');
   });
 });

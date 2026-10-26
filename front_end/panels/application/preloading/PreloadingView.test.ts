@@ -322,6 +322,25 @@ function clickClearButton(view: Resources.PreloadingView.PreloadingAttemptView):
   dispatchClickEvent(button);
 }
 
+function getChildWidget<T extends UI.Widget.Widget>(view: UI.Widget.Widget, ctor: new (...args: never[]) => T): T {
+  const widget =
+      Array.from(view.contentElement.querySelectorAll<UI.Widget.WidgetElement<UI.Widget.Widget>>('devtools-widget'))
+          .map(el => el.getWidget())
+          .find((widget): widget is T => widget instanceof ctor);
+  assert.exists(widget);
+  return widget;
+}
+
+function getRuleSetGrid(view: Resources.PreloadingView.PreloadingRuleSetView):
+    PreloadingComponents.RuleSetGrid.RuleSetGrid {
+  return getChildWidget(view, PreloadingComponents.RuleSetGrid.RuleSetGrid);
+}
+
+function getRuleSetDetails(view: Resources.PreloadingView.PreloadingRuleSetView):
+    PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView {
+  return getChildWidget(view, PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView);
+}
+
 describeWithEnvironment('PreloadingRuleSetView', () => {
   beforeEach(() => {
     SDK.ChildTargetManager.ChildTargetManager.install();
@@ -331,7 +350,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createRuleSetView(emulator.primaryTarget);
-    await RenderCoordinator.done();
+    await view.updateComplete;
 
     const placeholder = view.contentElement.querySelector('.empty-state');
     assert.exists(placeholder);
@@ -383,7 +402,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     await RenderCoordinator.done();
     await doubleRaf();
 
-    const ruleSetGrid = view.getRuleSetGridForTest();
+    const ruleSetGrid = getRuleSetGrid(view);
     assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
@@ -415,7 +434,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     await RenderCoordinator.done();
     await doubleRaf();
 
-    const ruleSetGrid = view.getRuleSetGridForTest();
+    const ruleSetGrid = getRuleSetGrid(view);
     assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
@@ -427,22 +446,16 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
 
     );
 
-    ruleSetGrid.dispatchEventToListeners(
-        PreloadingComponents.RuleSetGrid.Events.SELECT, 'ruleSetId:0.2' as Protocol.Preload.RuleSetId);
+    ruleSetGrid.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
 
-    await RenderCoordinator.done();
-    const ruleSetDetailsElement =
-        view.contentElement
-            .querySelector<UI.Widget.WidgetElement<PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView>>(
-                'devtools-widget');
-    const ruleSetDetailsComponent = ruleSetDetailsElement?.getWidget();
-    assert.exists(ruleSetDetailsComponent);
+    await view.updateComplete;
+    const ruleSetDetailsComponent = getRuleSetDetails(view);
     await ruleSetDetailsComponent.updateComplete;
 
-    assert.deepEqual(
-        ruleSetDetailsComponent.contentElement.querySelector('#ruleset-url')?.textContent, 'https://example.com/');
-    assert.deepEqual(
-        ruleSetDetailsComponent.contentElement.querySelector('#error-message-text')?.textContent, 'fake error message');
+    assert.deepEqual(ruleSetDetailsComponent.contentElement.querySelector('#ruleset-url')?.textContent,
+                     'https://example.com/');
+    assert.deepEqual(ruleSetDetailsComponent.contentElement.querySelector('#error-message-text')?.textContent,
+                     'fake error message');
   });
 
   it('clears SpeculationRules for previous pages', async () => {
@@ -466,7 +479,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     await RenderCoordinator.done();
     await doubleRaf();
 
-    const ruleSetGrid = view.getRuleSetGridForTest();
+    const ruleSetGrid = getRuleSetGrid(view);
     assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
@@ -497,7 +510,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     await RenderCoordinator.done();
     await doubleRaf();
 
-    const ruleSetGrid = view.getRuleSetGridForTest();
+    const ruleSetGrid = getRuleSetGrid(view);
     assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(
@@ -547,7 +560,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
     await RenderCoordinator.done();
     await doubleRaf();
 
-    const ruleSetGrid = view.getRuleSetGridForTest();
+    const ruleSetGrid = getRuleSetGrid(view);
     assert.isNotNull(ruleSetGrid.element.shadowRoot);
 
     assertGridContents(

@@ -17,7 +17,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import {Directives, html, render} from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -26,7 +26,6 @@ import * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 
-const {createRef, ref} = Directives;
 const {widget} = UI.Widget;
 
 const UIStrings = {
@@ -193,65 +192,25 @@ function pageURL(): Platform.DevToolsPath.UrlString {
       Platform.DevToolsPath.EmptyUrlString;
 }
 
-export class PreloadingRuleSetView extends UI.Widget.VBox {
-  private model: SDK.PreloadingModel.PreloadingModel;
-  private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
+interface RuleSetViewInput {
+  warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+  rows: PreloadingComponents.RuleSetGrid.RuleSetGridRow[];
+  pageURL: Platform.DevToolsPath.UrlString;
+  ruleSet: Protocol.Preload.RuleSet|null;
+  shouldPrettyPrint: boolean;
+  onRuleSetSelected: (id: Protocol.Preload.RuleSetId) => void;
+  onPrettyPrintToggle: () => void;
+}
 
-  private readonly warningsContainer: HTMLDivElement;
-  private readonly warningsView = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
-  private readonly hsplit: HTMLElement;
-  private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-  private readonly ruleSetGridContainerRef = createRef<HTMLDivElement>();
-  private readonly ruleSetDetailsRef:
-      Directives.Ref<UI.Widget.WidgetElement<PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView>>;
+type RuleSetView = (input: RuleSetViewInput, output: undefined, target: HTMLElement) => void;
 
-  private shouldPrettyPrint = Common.Settings.Settings.instance()
-                                  .resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor)
-                                  .get();
-
-  constructor(model: SDK.PreloadingModel.PreloadingModel) {
-    super({useShadowDom: true});
-    this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
-
-    this.model = model;
-    SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.render, this,
-        {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
-          Object.assign(this.warningsView, e.data);
-        }, this, {scoped: true});
-
-    // this (VBox)
-    //   +- warningsContainer
-    //        +- PreloadingWarningsView
-    //   +- hsplit
-    //        +- leftContainer
-    //             +- RuleSetGrid
-    //        +- rightContainer
-    //             +- RuleSetDetailsView
-    //
-    // - If an row of RuleSetGrid selected, RuleSetDetailsView shows details of it.
-    // - If not, RuleSetDetailsView hides.
-
-    this.warningsContainer = document.createElement('div');
-    this.warningsContainer.classList.add('flex-none');
-    this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
-    this.warningsView.show(this.warningsContainer);
-
-    this.ruleSetGrid.addEventListener(
-        PreloadingComponents.RuleSetGrid.Events.SELECT, this.onRuleSetsGridCellFocused, this);
-    this.ruleSetDetailsRef =
-        createRef<UI.Widget.WidgetElement<PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView>>();
-    const onPrettyPrintToggle = (): void => {
-      this.shouldPrettyPrint = !this.shouldPrettyPrint;
-      this.updateRuleSetDetails();
-    };
-
-    // clang-format off
-    render(
-        html`
+const RULE_SET_DEFAULT_VIEW: RuleSetView = (input, _output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${emptyWidgetStyles}</style>
+        <style>${preloadingViewStyles}</style>
+        ${widget(PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar, input.warnings)}
         <div class="empty-state">
           <span class="empty-state-header">${i18nString(UIStrings.noRulesDetected)}</span>
           <div class="empty-state-description">
@@ -263,66 +222,89 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
             >${i18nString(UIStrings.learnMore)}</devtools-link>
           </div>
         </div>
-        <devtools-split-view sidebar-position="second">
-          <div slot="main" ${ref(this.ruleSetGridContainerRef)}>
+        <devtools-split-view sidebar-position="second" show=${input.ruleSet === null ? 'main' : 'both'}>
+          <div slot="main">
+            ${widget(PreloadingComponents.RuleSetGrid.RuleSetGrid, {
+              data: {rows: input.rows, pageURL: input.pageURL},
+              onSelect: input.onRuleSetSelected,
+            })}
           </div>
           <div slot="sidebar" jslog=${VisualLogging.section('rule-set-details')}>
-            <devtools-widget ${widget(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
-              ruleSet: this.getRuleSet(),
-              shouldPrettyPrint: this.shouldPrettyPrint,
-            })} ${ref(this.ruleSetDetailsRef)}></devtools-widget>
+            ${widget(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
+              ruleSet: input.ruleSet,
+              shouldPrettyPrint: input.shouldPrettyPrint,
+            })}
           </div>
         </devtools-split-view>
-        <div class="pretty-print-button" style="border-top: 1px solid var(--sys-color-divider)">
-        <devtools-button
-          .iconName=${'brackets'}
-          .toggledIconName=${'brackets'}
-          .toggled=${this.shouldPrettyPrint}
-          .toggleType=${Buttons.Button.ToggleType.PRIMARY}
-          .title=${i18nString(UIStrings.prettyPrint)}
-          .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-          .size=${Buttons.Button.Size.REGULAR}
-          @click=${onPrettyPrintToggle}
-          jslog=${VisualLogging.action().track({click: true}).context('preloading-status-panel-pretty-print')}></devtools-button>
-        </div>`,
-        this.contentElement, {host: this});
-    // clang-format on
-    this.hsplit = this.contentElement.querySelector('devtools-split-view') as HTMLElement;
+        <div class="pretty-print-button">
+          <devtools-button
+            .iconName=${'brackets'}
+            .toggledIconName=${'brackets'}
+            .toggled=${input.shouldPrettyPrint}
+            .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+            .title=${i18nString(UIStrings.prettyPrint)}
+            .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+            .size=${Buttons.Button.Size.REGULAR}
+            .jslogContext=${'preloading-status-panel-pretty-print'}
+            @click=${input.onPrettyPrintToggle}>
+          </devtools-button>
+        </div>
+      `,
+      target, {container: {classes: input.rows.length === 0 ? ['empty'] : []}});
+  // clang-format on
+};
+
+export class PreloadingRuleSetView extends UI.Widget.VBox {
+  private model: SDK.PreloadingModel.PreloadingModel;
+  private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
+  readonly #view: RuleSetView;
+  #warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+
+  private shouldPrettyPrint = Common.Settings.Settings.instance()
+                                  .resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor)
+                                  .get();
+
+  readonly #onRuleSetSelected = (id: Protocol.Preload.RuleSetId): void => {
+    this.focusedRuleSetId = id;
+    this.requestUpdate();
+  };
+
+  readonly #onPrettyPrintToggle = (): void => {
+    this.shouldPrettyPrint = !this.shouldPrettyPrint;
+    this.requestUpdate();
+  };
+
+  constructor(model: SDK.PreloadingModel.PreloadingModel, view: RuleSetView = RULE_SET_DEFAULT_VIEW) {
+    super({useShadowDom: true});
+    this.#view = view;
+
+    this.model = model;
+    SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.MODEL_UPDATED,
+                                                                this.requestUpdate, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
+                                                                  this.#warnings = e.data;
+                                                                  this.requestUpdate();
+                                                                }, this, {scoped: true});
   }
 
   override wasShown(): void {
     super.wasShown();
-
-    this.warningsView.wasShown();
-
-    this.render();
+    this.requestUpdate();
   }
 
   onScopeChange(): void {
     const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
     assertNotNullOrUndefined(model);
     this.model = model;
-    this.render();
+    this.requestUpdate();
   }
 
   revealRuleSet(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void {
     this.focusedRuleSetId = revealInfo.ruleSetId;
-    this.render();
-  }
-
-  private updateRuleSetDetails(): void {
-    const ruleSet = this.getRuleSet();
-    const widget = this.ruleSetDetailsRef.value?.getWidget();
-    if (widget) {
-      widget.shouldPrettyPrint = this.shouldPrettyPrint;
-      widget.ruleSet = ruleSet;
-    }
-
-    if (ruleSet === null) {
-      this.hsplit.setAttribute('show', 'main');
-    } else {
-      this.hsplit.setAttribute('show', 'both');
-    }
+    this.requestUpdate();
   }
 
   private getRuleSet(): Protocol.Preload.RuleSet|null {
@@ -330,37 +312,25 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     return id === null ? null : this.model.getRuleSetById(id);
   }
 
-  render(): void {
-    // Update rule sets grid
+  override performUpdate(): void {
     const countsByRuleSetId = this.model.getPreloadCountsByRuleSetId();
-    const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => {
+    const rows = this.model.getAllRuleSets().map(({id, value}) => {
       const countsByStatus = countsByRuleSetId.get(id) || new Map<SDK.PreloadingModel.PreloadingStatus, number>();
       return {
         ruleSet: value,
         preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(countsByStatus),
       };
     });
-    this.ruleSetGrid.data = {rows: ruleSetRows, pageURL: pageURL()};
-    this.contentElement.classList.toggle('empty', ruleSetRows.length === 0);
-    this.updateRuleSetDetails();
-
-    const container = this.ruleSetGridContainerRef.value;
-    if (container && this.ruleSetGrid.element.parentElement !== container) {
-      this.ruleSetGrid.show(container);
-    }
-  }
-
-  private onRuleSetsGridCellFocused(event: Common.EventTarget.EventTargetEvent<Protocol.Preload.RuleSetId>): void {
-    this.focusedRuleSetId = event.data;
-    this.render();
-  }
-
-  getInfobarContainerForTest(): HTMLElement {
-    return this.warningsView.contentElement;
-  }
-
-  getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
-    return this.ruleSetGrid;
+    const input: RuleSetViewInput = {
+      warnings: this.#warnings,
+      rows,
+      pageURL: pageURL(),
+      ruleSet: this.getRuleSet(),
+      shouldPrettyPrint: this.shouldPrettyPrint,
+      onRuleSetSelected: this.#onRuleSetSelected,
+      onPrettyPrintToggle: this.#onPrettyPrintToggle,
+    };
+    this.#view(input, /* output= */ undefined, this.contentElement);
   }
 }
 

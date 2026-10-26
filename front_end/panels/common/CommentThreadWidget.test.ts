@@ -114,6 +114,37 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     await assertScreenshot('comments/comment_thread_widget_agent_response.png');
   });
 
+  const LONG_AGENT_RESPONSE =
+      Array.from({length: 20}, (_, i) => `${i + 1}. Updated rule \`.grid-item-${i + 1}\` to use \`margin: 8px;\``)
+          .join('\n');
+
+  it('caps the thread body height and makes it scrollable for long agent responses', () => {
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+      {author: 'AGENT', text: LONG_AGENT_RESPONSE, timestamp: 1},
+    ];
+    const target = renderView({comments, status: 'RESOLVED'});
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    const threadBody = target.querySelector<HTMLElement>('.thread-body');
+    assert.exists(threadBody);
+    assert.strictEqual(getComputedStyle(threadBody).overflowY, 'auto');
+    assert.isAbove(threadBody.scrollHeight, threadBody.clientHeight);
+  });
+
+  it('does not make the thread body scrollable for short agent responses', () => {
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+      {author: 'AGENT', text: 'Updated the rule to use `margin: 8px;`', timestamp: 1},
+    ];
+    const target = renderView({comments, status: 'RESOLVED'});
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    const threadBody = target.querySelector<HTMLElement>('.thread-body');
+    assert.exists(threadBody);
+    assert.strictEqual(threadBody.scrollHeight, threadBody.clientHeight);
+  });
+
   it('keeps sent status within widget bounds when title is long', () => {
     const comments: CommentManager.CommentManager.Comment[] = [
       {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},

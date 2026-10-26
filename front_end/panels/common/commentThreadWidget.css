@@ -68,6 +68,23 @@
     min-width: 0;
   }
 
+  .thread-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-4);
+    width: 100%;
+    max-height: min(var(--sys-size-32), 50vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .thread-body:hover,
+  .thread-body:focus-within {
+    scrollbar-color: var(--sys-color-neutral-outline) transparent;
+  }
+
   .comment-text {
     width: 100%;
     font-family: var(--default-font-family);

@@ -231,7 +231,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html`${input.comments.map(comment => comment.author === 'DEVELOPER' ? html`
+      ` : html`<div class="thread-body">${input.comments.map(comment => comment.author === 'DEVELOPER' ? html`
           <div class="comment-text"
             @click=${() => {input.onSetEditMode(true);}}
           >
@@ -248,7 +248,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
               )}
             </div>
           </div>
-        `)}
+        `)}</div>
       `}
     </div>
   `, target);

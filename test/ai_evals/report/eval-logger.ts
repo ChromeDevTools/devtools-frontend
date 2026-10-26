@@ -2,13 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable no-console */
+
+const ANSI_YELLOW = '\x1b[33m';
+const ANSI_RED = '\x1b[31m';
+const ANSI_RESET = '\x1b[0m';
+
 /**
  * Logger for AI Evaluation runs and tasks.
  * Captures suite-level run logs (`eval_run.log`) and granular per-task
- * execution/stderr logs (`agent_logs/agent.log` and `agent_logs/agent_stderr.log`)
- * matching the exact format of scripts/ai_assistance/auto-run/auto-run.ts.
+ * execution/stderr logs (`agent_logs/agent.log` and `agent_logs/agent_stderr.log`).
+ *
+ * Run headers and task progress are also printed to the console while the run
+ * is in progress, one line per message, so that Mocha's reporter output stays
+ * visible.
  */
 export class EvalLogger {
+  readonly #startTime = performance.now();
   // Suite-level run log entries uploaded per run to GCS as eval_run.log.
   #runLogEntries: string[] = [];
   // Granular per-task agent execution traces keyed by taskId, uploaded per trajectory to GCS as agent_logs/agent.log.
@@ -67,17 +77,50 @@ export class EvalLogger {
     return `${err.stack}${err.cause ? `\n${stack}` : ''}`;
   }
 
+  /**
+   * Time elapsed since the logger (i.e. the run) was created (e.g. `12.34s`).
+   */
+  formatElapsedTime(): string {
+    return `${((performance.now() - this.#startTime) / 1000).toFixed(2)}s`;
+  }
+
+  /**
+   * Prints a line to the console without recording it in any log file.
+   */
+  info(text: string): void {
+    console.log(text);
+  }
+
+  /**
+   * Prints a run-level header to the console and records it in the run log
+   * (`eval_run.log`).
+   */
+  head(text: string): void {
+    this.#recordRunLog(text);
+    console.log(text);
+  }
+
   append(text: string): void {
     this.#recordRunLog(text);
   }
 
+  /**
+   * Records a line in the task log (`agent_logs/agent.log`) and prints it to the console
+   * prefixed with the task ID.
+   */
   taskLog(taskId: string, text: string): void {
     this.#recordTaskLog(taskId, text);
+    console.log(`${ANSI_YELLOW}${taskId}:${ANSI_RESET} ${text}`);
   }
 
+  /**
+   * Records an error in the task log and task stderr log (`agent_logs/agent_stderr.log`)
+   * and prints it to the console in red.
+   */
   taskError(taskId: string, text: string): void {
     this.#recordTaskLog(taskId, text, /* isError= */ true);
     this.#recordTaskStderr(taskId, text);
+    console.error(`${ANSI_YELLOW}${taskId}:${ANSI_RESET} ${ANSI_RED}${text}${ANSI_RESET}`);
   }
 
   /**

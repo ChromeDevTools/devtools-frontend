@@ -133,6 +133,7 @@ export class AiEvalStateProvider extends StateProvider {
       startTime: this.#runStartTimestamp,
       status: 'RUNNING',
     });
+    this.#logger.head('Running examples sequentially...');
   }
 
   finishEvalRun(): void {
@@ -163,6 +164,7 @@ export class AiEvalStateProvider extends StateProvider {
     if (this.#tempOutputDir && fs.existsSync(this.#tempOutputDir)) {
       fs.rmSync(this.#tempOutputDir, {recursive: true, force: true});
     }
+    this.#logger.info(`\nElapsed time: ${this.#logger.formatElapsedTime()}`);
   }
 
   override async launchBrowser(settings: BrowserSettings): Promise<BrowserWrapper> {

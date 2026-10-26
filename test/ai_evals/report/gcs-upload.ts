@@ -157,6 +157,7 @@ function getGcsAccessToken(forceRefresh = false): string|undefined {
  * Uploads a local file to GCS using system gcloud CLI.
  */
 function uploadFileToGCS(localFilePath: string, destination: string, contentType?: string): boolean {
+  const fileName = path.posix.basename(destination);
   console.log(`[GCS] Preparing upload of ${localFilePath} to ${destination}`);
   const type = contentType ?? getContentType(destination);
   const command = [
@@ -180,7 +181,7 @@ function uploadFileToGCS(localFilePath: string, destination: string, contentType
         stdio: ['ignore', 'inherit', 'inherit'],
         timeout: 30_000,
       });
-      console.log('[GCS] ✅ Upload successful!');
+      console.log(`[GCS] ✅ Upload successful: ${fileName}`);
       return true;
     } catch (error) {
       if (attempt < MAX_UPLOAD_ATTEMPTS) {

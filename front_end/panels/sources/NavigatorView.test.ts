@@ -315,21 +315,6 @@ describeWithEnvironment('NavigatorView', () => {
       assert.isFalse(placeholderSlot.parentElement?.hasAttribute('hidden'));
       assert.isTrue(navigatorView.scriptsTree.element.parentElement?.hasAttribute('hidden'));
     });
-
-    it('forwards contextmenu events on the placeholder to handleContextMenu', async () => {
-      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-      renderElementIntoDOM(navigatorView);
-      const contextMenuSpy = sinon.spy(navigatorView, 'handleContextMenu');
-      const placeholder = new UI.EmptyWidget.EmptyWidget('No content scripts', 'Explanation');
-      placeholder.element.slot = 'placeholder';
-      placeholder.show(navigatorView.element);
-      await navigatorView.updateComplete;
-
-      const event = new MouseEvent('contextmenu', {bubbles: true});
-      placeholder.element.dispatchEvent(event);
-
-      sinon.assert.calledOnceWithExactly(contextMenuSpy, event);
-    });
   });
 
   describe('NavigatorGroupTreeNode automatic file system controls', () => {

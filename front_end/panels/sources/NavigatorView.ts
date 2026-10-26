@@ -189,7 +189,6 @@ const TYPE_ORDERS = new Map([
 export interface ViewInput {
   treeElement: HTMLElement;
   showTree: boolean;
-  onContextMenu: (event: Event) => void;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -201,10 +200,10 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
       html`
         <style>${navigatorViewStyles}</style>
         <slot name="header"></slot>
-        <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+        <div class="vbox flex-auto" ?hidden=${!showPlaceholder}>
           <slot name="placeholder"></slot>
         </div>
-        <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
+        <div class="vbox flex-auto" ?hidden=${showPlaceholder}>
           ${input.treeElement}
         </div>
       `,
@@ -416,7 +415,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.#view({
       treeElement: this.scriptsTree.element,
       showTree: Boolean(this.scriptsTree.firstChild()),
-      onContextMenu: this.handleContextMenu.bind(this),
     },
                undefined, this.contentElement);
   }
@@ -529,10 +527,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       this.computeUniqueFileSystemProjectNames();
     }
-  }
-
-  workspace(): Workspace.Workspace.WorkspaceImpl {
-    return this.#workspace;
   }
 
   acceptProject(project: Workspace.Workspace.Project): boolean {
@@ -1055,9 +1049,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       // Reset the workspace to repopulate filesystem folders.
       this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     }
-  }
-
-  handleContextMenu(_event: Event): void {
   }
 
   private async renameShortcut(): Promise<boolean> {

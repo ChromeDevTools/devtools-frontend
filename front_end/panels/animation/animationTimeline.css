@@ -10,6 +10,16 @@
   --timeline-controls-width: 150px;
 }
 
+:host(.suspended) :is(
+  .animation-timeline-buffer,
+  .animation-timeline-header,
+  .grid-overflow-wrapper,
+  .timeline-controls-resizer,
+  .animation-timeline-rows
+) {
+  visibility: hidden;
+}
+
 .toolbar-view-container {
   min-height: fit-content;
 }
@@ -156,6 +166,10 @@ circle.animation-keyframe-point:active {
   padding: 0 var(--sys-size-2);
 }
 
+.animation-timeline-paused {
+  color: var(--sys-color-on-surface-subtle);
+}
+
 .animation-timeline-buffer-hint {
   display: none;
 }
@@ -286,6 +300,7 @@ text.animation-timeline-grid-label {
 
 .animation-timeline-rows,
 .animation-timeline-rows-hint,
+.animation-timeline-paused,
 .animation-timeline-buffer-hint {
   flex-grow: 1;
   overflow: hidden auto;
@@ -304,11 +319,12 @@ text.animation-timeline-grid-label {
   display: none;
 }
 
-.animation-timeline-buffer:not(:empty)
+:host(:not(.suspended)) .animation-timeline-buffer:not(:empty)
   ~ .animation-timeline-rows:empty
   ~ .animation-timeline-buffer-hint:not(:empty)
   ~ .animation-timeline-rows-hint,
-.animation-timeline-buffer:empty ~ .animation-timeline-buffer-hint {
+:host(:not(.suspended)) .animation-timeline-buffer:empty ~ .animation-timeline-buffer-hint,
+.animation-timeline-paused {
   font-size: var(--sys-typescale-body2-size);
   display: flex;
   align-items: center;

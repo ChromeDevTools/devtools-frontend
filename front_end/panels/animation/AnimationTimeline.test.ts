@@ -193,6 +193,114 @@ describeWithEnvironment('AnimationTimeline', () => {
   it('updates UI on in scope animation group start', updatesUiOnEvent(true));
   it('does not update UI on out of scope animation group start', updatesUiOnEvent(false));
 
+  describe('suspended animation inspection', () => {
+    let targetManager: SDK.TargetManager.TargetManager;
+    let allTargetsSuspended: sinon.SinonStub;
+
+    beforeEach(() => {
+      targetManager = SDK.TargetManager.TargetManager.instance();
+      allTargetsSuspended = sinon.stub(targetManager, 'allTargetsSuspended').returns(false);
+      view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
+      renderElementIntoDOM(view);
+    });
+
+    const assertControlsDisabled = (disabled: boolean): void => {
+      const toolbar = view.contentElement.querySelector('.animation-timeline-toolbar');
+      assert.exists(toolbar);
+      const buttons = toolbar.querySelectorAll('devtools-button');
+      assert.lengthOf(buttons, 2);
+      for (const button of buttons) {
+        assert.strictEqual(button.disabled, disabled);
+      }
+      const speedButtons = view.contentElement.querySelectorAll<HTMLButtonElement>('.animation-playback-rate-button');
+      assert.lengthOf(speedButtons, Animation.AnimationTimeline.GlobalPlaybackRates.length);
+      for (const button of speedButtons) {
+        assert.strictEqual(button.disabled, disabled);
+      }
+    };
+
+    it('disables clear, pause, and speed controls while suspended and restores them on resume', () => {
+      assertControlsDisabled(false);
+      allTargetsSuspended.returns(true);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      assertControlsDisabled(true);
+
+      const animationModel = target.model(SDK.AnimationModel.AnimationModel);
+      assert.exists(animationModel);
+      const setPlaybackRate = sinon.spy(animationModel, 'setPlaybackRate');
+      const toolbar = view.contentElement.querySelector('.animation-timeline-toolbar');
+      assert.exists(toolbar);
+      for (const button of toolbar.querySelectorAll('devtools-button')) {
+        button.click();
+      }
+      for (const button of view.contentElement.querySelectorAll<HTMLButtonElement>('.animation-playback-rate-button')) {
+        button.click();
+      }
+      sinon.assert.notCalled(setPlaybackRate);
+
+      animationModel.dispatchEventToListeners(SDK.AnimationModel.Events.ModelReset);
+      assertControlsDisabled(true);
+
+      allTargetsSuspended.returns(false);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      assertControlsDisabled(false);
+    });
+
+    it('shows a paused status during suspension and restores the preview bar on resume', () => {
+      const previewBar = view.contentElement.querySelector<HTMLElement>('.animation-timeline-buffer');
+      const pausedStatus = view.contentElement.querySelector<HTMLElement>('.animation-timeline-paused');
+      const playbackArea = view.contentElement.querySelector<HTMLElement>('.animation-timeline-header');
+      const waitingHint = view.contentElement.querySelector<HTMLElement>('.animation-timeline-buffer-hint');
+      assert.exists(previewBar);
+      assert.exists(pausedStatus);
+      assert.exists(playbackArea);
+      assert.exists(waitingHint);
+      assert.isTrue(previewBar.checkVisibility({visibilityProperty: true}));
+      assert.isTrue(pausedStatus.classList.contains('hidden'));
+      assert.isTrue(playbackArea.checkVisibility({visibilityProperty: true}));
+      assert.isTrue(waitingHint.checkVisibility({visibilityProperty: true}));
+
+      allTargetsSuspended.returns(true);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      assert.isFalse(previewBar.checkVisibility({visibilityProperty: true}));
+      assert.isFalse(pausedStatus.classList.contains('hidden'));
+      assert.isFalse(playbackArea.checkVisibility({visibilityProperty: true}));
+      assert.isFalse(waitingHint.checkVisibility({visibilityProperty: true}));
+      assert.strictEqual(pausedStatus.getAttribute('role'), 'status');
+
+      const animationModel = target.model(SDK.AnimationModel.AnimationModel);
+      assert.exists(animationModel);
+      animationModel.dispatchEventToListeners(SDK.AnimationModel.Events.ModelReset);
+      assert.isFalse(pausedStatus.classList.contains('hidden'));
+
+      allTargetsSuspended.returns(false);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      assert.isTrue(previewBar.checkVisibility({visibilityProperty: true}));
+      assert.isTrue(pausedStatus.classList.contains('hidden'));
+      assert.isTrue(playbackArea.checkVisibility({visibilityProperty: true}));
+      assert.isTrue(waitingHint.checkVisibility({visibilityProperty: true}));
+    });
+
+    it('refreshes the paused status when shown after the suspension state changes while hidden', () => {
+      view.detach();
+      allTargetsSuspended.returns(true);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      renderElementIntoDOM(view);
+
+      const pausedStatus = view.contentElement.querySelector<HTMLElement>('.animation-timeline-paused');
+      assert.exists(pausedStatus);
+      assert.isFalse(pausedStatus.classList.contains('hidden'));
+      assertControlsDisabled(true);
+
+      view.detach();
+      allTargetsSuspended.returns(false);
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      renderElementIntoDOM(view);
+      assert.isTrue(pausedStatus.classList.contains('hidden'));
+      assertControlsDisabled(false);
+    });
+  });
+
   describe('resizing time controls', () => {
     it('updates --timeline-controls-width and calls onResize', async () => {
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
@@ -580,13 +688,44 @@ describeWithEnvironment('AnimationTimeline', () => {
       await waitForPreviewsManualPromise.wait();
     });
 
-    it('should disable global controls after a scroll driven animation is selected', async () => {
+    it('disables playback controls but keeps clear enabled for a scroll driven animation', async () => {
       const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
       preview.click();
 
       const toolbarViewInput = await toolbarViewStub.nextInput;
 
-      assert.isTrue(toolbarViewInput.playbackRateButtonsDisabled);
+      assert.isTrue(toolbarViewInput.controlsEnabled);
+      assert.isFalse(toolbarViewInput.playbackControlsEnabled);
+    });
+
+    it('enables playback controls after suspension clears a scroll driven animation', async () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const allTargetsSuspended = sinon.stub(targetManager, 'allTargetsSuspended').returns(false);
+      const shadowRoot = view.element.shadowRoot;
+      assert.isNotNull(shadowRoot);
+      const preview = await waitFor('.animation-buffer-preview', shadowRoot) as HTMLElement;
+      preview.click();
+      await waitForAnimationGroupSelectedPromise.wait();
+
+      allTargetsSuspended.returns(true);
+      let nextInput = toolbarViewStub.nextInput;
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      let input = await nextInput;
+      assert.isFalse(input.controlsEnabled);
+      assert.isFalse(input.playbackControlsEnabled);
+
+      nextInput = toolbarViewStub.nextInput;
+      animationModel.dispatchEventToListeners(SDK.AnimationModel.Events.ModelReset);
+      input = await nextInput;
+      assert.isFalse(input.controlsEnabled);
+      assert.isFalse(input.playbackControlsEnabled);
+
+      allTargetsSuspended.returns(false);
+      nextInput = toolbarViewStub.nextInput;
+      targetManager.dispatchEventToListeners(SDK.TargetManager.Events.SUSPEND_STATE_CHANGED);
+      input = await nextInput;
+      assert.isTrue(input.controlsEnabled);
+      assert.isTrue(input.playbackControlsEnabled);
     });
 
     it('should show current time text in pixels', async () => {

@@ -11,7 +11,6 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
 import * as Insights from './insights/insights.js';
@@ -124,6 +123,7 @@ describeWithEnvironment('Sidebar', () => {
 
     const sidebar = await renderSidebar(parsedTrace);
     sidebar.setAnnotations([annotation1, annotation2], new Map());
+    await raf();
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
     const annotationsTab = tabbedPane.querySelector('#tab-annotations');
@@ -152,6 +152,7 @@ describeWithEnvironment('Sidebar', () => {
 
     const sidebar = await renderSidebar(parsedTrace);
     sidebar.setAnnotations([entryLabelAnnotation, entriesLink], new Map());
+    await raf();
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
     const annotationsTab = tabbedPane.querySelector('#tab-annotations');
@@ -170,7 +171,7 @@ describeWithEnvironment('Sidebar', () => {
 
     const sidebar = await renderSidebar(parsedTrace);
     sidebar.setAnnotations([entryLabelAnnotation], new Map());
-    await RenderCoordinator.done();
+    await raf();
     const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
     assert.isOk(tabbedPane);
     const annotationsTab = tabbedPane.querySelector('#tab-annotations');
@@ -179,6 +180,7 @@ describeWithEnvironment('Sidebar', () => {
     assert.strictEqual(countBadge?.innerText, '1');
 
     sidebar.setAnnotations([], new Map());  // delete the annotations
+    await raf();
     const updatedCountBadge = annotationsTab.querySelector<HTMLElement>('.badge');
     assert.isNull(updatedCountBadge);  // No badge is shown when the count is 0.
   });

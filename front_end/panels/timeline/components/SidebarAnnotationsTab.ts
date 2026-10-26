@@ -104,6 +104,7 @@ export interface SidebarAnnotationsTabViewInput {
 export type View = (input: SidebarAnnotationsTabViewInput, output: undefined, target: HTMLElement) => void;
 
 export class SidebarAnnotationsTab extends UI.Widget.Widget {
+  #rawAnnotations: Trace.Types.File.Annotation[] = [];
   #annotations: Trace.Types.File.Annotation[] = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
@@ -112,9 +113,9 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
   #view: View;
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super();
-    this.#view = view;
+  constructor(element?: HTMLElement|View, view: View = DEFAULT_VIEW) {
+    super(element instanceof HTMLElement ? element : undefined);
+    this.#view = typeof element === 'function' ? element : view;
     this.#annotationsHiddenSetting =
         Common.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
   }
@@ -123,16 +124,36 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
     return this.#annotations;
   }
 
+  set annotations(annotations: Trace.Types.File.Annotation[]) {
+    if (this.#rawAnnotations === annotations) {
+      return;
+    }
+    this.#rawAnnotations = annotations;
+    this.#annotations = SidebarAnnotationsTab.processAnnotationsList(annotations);
+    this.requestUpdate();
+  }
+
+  set annotationEntryToColorMap(
+      annotationEntryToColorMap: Map<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string>,
+  ) {
+    if (this.#annotationEntryToColorMap === annotationEntryToColorMap) {
+      return;
+    }
+    this.#annotationEntryToColorMap = annotationEntryToColorMap;
+    this.requestUpdate();
+  }
+
   setData(data: {
     annotations: Trace.Types.File.Annotation[],
     annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>,
   }): void {
-    this.#annotations = this.#processAnnotationsList(data.annotations);
+    this.#rawAnnotations = data.annotations;
+    this.#annotations = SidebarAnnotationsTab.processAnnotationsList(data.annotations);
     this.#annotationEntryToColorMap = data.annotationEntryToColorMap;
     this.requestUpdate();
   }
 
-  #processAnnotationsList(annotations: Trace.Types.File.Annotation[]): Trace.Types.File.Annotation[] {
+  static processAnnotationsList(annotations: Trace.Types.File.Annotation[]): Trace.Types.File.Annotation[] {
     // When an entry is double-clicked, we create two annotations (a label and an entries connection) for the user to choose from.
     // The one not selected is deleted when the user makes their selection.
     // To avoid excessive activity in the sidebar (adding and removing annotations), only show one 'not started' annotation associated with an entry.
@@ -142,7 +163,7 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
     const entriesWithNotStartedAnnotation = new Set();
 
     const processedAnnotations = annotations.filter(annotation => {
-      if (this.#isAnnotationCreationStarted(annotation)) {
+      if (SidebarAnnotationsTab.#isAnnotationCreationStarted(annotation)) {
         return true;
       }
 
@@ -161,14 +182,14 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
 
     // Sort annotations by timestamp.
     processedAnnotations.sort(
-        (firstAnnotation, secondAnnotation) =>
-            this.#getAnnotationTimestamp(firstAnnotation) - this.#getAnnotationTimestamp(secondAnnotation),
+        (firstAnnotation, secondAnnotation) => SidebarAnnotationsTab.#getAnnotationTimestamp(firstAnnotation) -
+            SidebarAnnotationsTab.#getAnnotationTimestamp(secondAnnotation),
     );
 
     return processedAnnotations;
   }
 
-  #getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.Micro {
+  static #getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.Micro {
     switch (annotation.type) {
       case 'ENTRY_LABEL': {
         return annotation.entry.ts;
@@ -185,7 +206,7 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
     }
   }
 
-  #isAnnotationCreationStarted(annotation: Trace.Types.File.Annotation): boolean {
+  static #isAnnotationCreationStarted(annotation: Trace.Types.File.Annotation): boolean {
     // Consider the annotation not started if:
     // ENTRY_LABEL - label is empty
     // ENTRIES_LINK - the connection annotation does not have the 'to' entry

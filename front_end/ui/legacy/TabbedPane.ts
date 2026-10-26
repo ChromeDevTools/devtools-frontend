@@ -71,6 +71,7 @@ export interface TabInfo {
   title: string;
   view: AnyWidget;
   tabTooltip?: string;
+  badge?: string|null;
   isCloseable?: boolean;
   previewFeature?: boolean;
   index?: number;
@@ -1815,6 +1816,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
   #placeholderElement?: Element|LitTemplate;
   #headerJslog?: string;
   #managedTabIds = new Set<string>();
+  #tabBadges = new Map<string, string|null>();
   set placeholder(element: Element|LitTemplate) {
     this.#placeholderElement = element;
     this.getWidget()?.setPlaceholderElement(element);
@@ -1896,6 +1898,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
           'label',
           'title',
           'tab-tooltip',
+          'badge',
           'jslogcontext',
           'selected',
           'disabled',
@@ -1922,6 +1925,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
       const id = child.id;
       const title = child.getAttribute('label') || child.getAttribute('title') || '';
       const tabTooltip = child.getAttribute('tab-tooltip') ?? undefined;
+      const badge = child.getAttribute('badge');
       const jslogContext = child.getAttribute('jslogcontext') || undefined;
       const selected = child.hasAttribute('selected');
       const enabled = !child.hasAttribute('disabled');
@@ -1937,6 +1941,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
         title,
         view,
         tabTooltip,
+        badge,
         jslogContext,
         selected,
         enabled,
@@ -1948,6 +1953,7 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
     for (const id of this.#managedTabIds) {
       if (!newIds.has(id)) {
         widget.closeTab(id);
+        this.#tabBadges.delete(id);
       }
     }
     this.#managedTabIds = newIds;
@@ -1973,6 +1979,11 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
       } else {
         widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable,
                          tab.previewFeature, index, tab.jslogContext);
+      }
+      const badge = tab.badge ?? null;
+      if (this.#tabBadges.get(tab.id) !== badge && (badge !== null || this.#tabBadges.has(tab.id))) {
+        this.#tabBadges.set(tab.id, badge);
+        widget.setBadge(tab.id, badge);
       }
       if (tab.enabled !== undefined) {
         widget.setTabEnabled(tab.id, tab.enabled);

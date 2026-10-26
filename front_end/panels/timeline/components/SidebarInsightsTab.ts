@@ -202,6 +202,9 @@ export class SidebarInsightsTab extends UI.Widget.Widget {
   }
 
   setActiveInsightSet(insightSetKey: string): void {
+    if (this.#selectedInsightSet?.id === insightSetKey) {
+      return;
+    }
     if (this.#parsedTrace?.insights) {
       const insightSet = this.#parsedTrace.insights.get(insightSetKey);
       if (insightSet) {

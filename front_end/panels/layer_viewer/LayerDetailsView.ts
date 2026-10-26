@@ -290,19 +290,37 @@ const LayerDetailsViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof U
     );
 
 export class LayerDetailsView extends LayerDetailsViewBase implements LayerView {
-  private readonly layerViewHost: LayerViewHost;
-  private layerSnapshotMap: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
+  #layerViewHost?: LayerViewHost;
+  private layerSnapshotMap: Map<SDK.LayerTreeBase.Layer, SnapshotSelection> = new Map();
   private selection: Selection|null;
   private compositingReasons: string[] = [];
   private readonly view: typeof DEFAULT_VIEW;
 
-  constructor(layerViewHost: LayerViewHost, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
-    super({useShadowDom: 'pure'});
+  constructor(layerViewHost?: LayerViewHost|HTMLElement, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
+    super(layerViewHost instanceof HTMLElement ? layerViewHost : undefined, {useShadowDom: 'pure'});
     this.view = view;
-    this.layerViewHost = layerViewHost;
-    this.layerViewHost.registerView(this);
-    this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
     this.selection = null;
+    if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+      this.layerViewHost = layerViewHost;
+    }
+  }
+
+  get layerViewHost(): LayerViewHost|undefined {
+    return this.#layerViewHost;
+  }
+
+  set layerViewHost(layerViewHost: LayerViewHost|undefined) {
+    if (this.#layerViewHost === layerViewHost) {
+      return;
+    }
+    this.#layerViewHost = layerViewHost;
+    if (this.#layerViewHost) {
+      this.#layerViewHost.registerView(this);
+      this.layerSnapshotMap = this.#layerViewHost.getLayerSnapshotMap();
+      if (this.isShowing()) {
+        this.update();
+      }
+    }
   }
 
   hoverObject(_selection: Selection|null): void {
@@ -330,7 +348,7 @@ export class LayerDetailsView extends LayerDetailsViewBase implements LayerView 
     if (!this.selection) {
       return;
     }
-    this.layerViewHost.selectObject(new ScrollRectSelection(this.selection.layer(), index));
+    this.#layerViewHost?.selectObject(new ScrollRectSelection(this.selection.layer(), index));
   }
 
   private invokeProfilerLink(): void {
@@ -366,15 +384,14 @@ export class LayerDetailsView extends LayerDetailsViewBase implements LayerView 
                                    (layer ? this.layerSnapshotMap.get(layer) : null)) ||
         null;
 
-    this.view(
-        {
-          layer,
-          snapshotSelection,
-          compositingReasons: this.compositingReasons,
-          onScrollRectClick: this.onScrollRectClicked.bind(this),
-          onPaintProfilerRequested: this.invokeProfilerLink.bind(this),
-        },
-        undefined, this.contentElement);
+    this.view({
+      layer,
+      snapshotSelection,
+      compositingReasons: this.compositingReasons,
+      onScrollRectClick: this.onScrollRectClicked.bind(this),
+      onPaintProfilerRequested: this.invokeProfilerLink.bind(this),
+    },
+              undefined, this.contentElement);
   }
 }
 

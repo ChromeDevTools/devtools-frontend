@@ -147,7 +147,7 @@ const LayerTreeOutlineBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof U
 
 export class LayerTreeOutline extends LayerTreeOutlineBase implements Common.EventTarget.EventTarget<EventTypes>,
                                                                       LayerView {
-  private layerViewHost: LayerViewHost;
+  #layerViewHost?: LayerViewHost;
   private layerTree?: SDK.LayerTreeBase.LayerTreeBase|null;
   private layerSnapshotMap?: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
   #layerCount = 0;
@@ -157,28 +157,50 @@ export class LayerTreeOutline extends LayerTreeOutlineBase implements Common.Eve
   #view: View;
   #hoveredLayer: SDK.LayerTreeBase.Layer|null = null;
 
-  constructor(layerViewHost: LayerViewHost, view: View = DEFAULT_VIEW) {
-    super();
+  constructor(layerViewHost?: LayerViewHost|HTMLElement, view: View = DEFAULT_VIEW) {
+    super(layerViewHost instanceof HTMLElement ? layerViewHost : undefined);
     this.#view = view;
-    this.layerViewHost = layerViewHost;
-    this.layerViewHost.registerView(this);
+    if (layerViewHost && !(layerViewHost instanceof HTMLElement)) {
+      this.layerViewHost = layerViewHost;
+    }
+  }
+
+  get layerViewHost(): LayerViewHost|undefined {
+    return this.#layerViewHost;
+  }
+
+  set layerViewHost(layerViewHost: LayerViewHost|undefined) {
+    if (this.#layerViewHost === layerViewHost) {
+      return;
+    }
+    if (this.isShowing()) {
+      this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.update, this);
+    }
+    this.#layerViewHost = layerViewHost;
+    if (this.#layerViewHost) {
+      this.#layerViewHost.registerView(this);
+      if (this.isShowing()) {
+        this.#layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+        this.update();
+      }
+    }
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+    this.#layerViewHost?.showInternalLayersSetting().addChangeListener(this.update, this);
     this.update();
   }
 
   override willHide(): void {
-    this.layerViewHost.showInternalLayersSetting().removeChangeListener(this.update, this);
+    this.#layerViewHost?.showInternalLayersSetting().removeChangeListener(this.update, this);
     super.willHide();
   }
 
   override performUpdate(): void {
     this.#view({
       treeData: this.#treeData,
-      selectedLayer: this.layerViewHost.selection()?.layer() || null,
+      selectedLayer: this.#layerViewHost?.selection()?.layer() || null,
       hoveredLayer: this.#hoveredLayer,
       layerCount: this.#layerCount,
       totalLayerMemory: this.#totalLayerMemory,
@@ -218,7 +240,7 @@ export class LayerTreeOutline extends LayerTreeOutlineBase implements Common.Eve
     let layerCount = 0;
     let totalLayerMemory = 0;
 
-    const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
+    const showInternalLayers = this.#layerViewHost?.showInternalLayersSetting().get() ?? false;
     let root: SDK.LayerTreeBase.Layer|null = null;
     if (this.layerTree) {
       if (!showInternalLayers) {
@@ -279,36 +301,36 @@ export class LayerTreeOutline extends LayerTreeOutlineBase implements Common.Eve
     this.#totalLayerMemory = totalLayerMemory;
     this.requestUpdate();
 
-    if (!this.layerViewHost.selection() && this.layerTree && this.#treeData.length > 0) {
+    if (!this.#layerViewHost?.selection() && this.layerTree && this.#treeData.length > 0) {
       const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
       if (elementToSelect) {
-        this.layerViewHost.selectObject(new LayerSelection(elementToSelect));
+        this.#layerViewHost?.selectObject(new LayerSelection(elementToSelect));
       }
     }
   }
 
   private onHover(layer: SDK.LayerTreeBase.Layer|null): void {
-    this.layerViewHost.hoverObject(layer ? new LayerSelection(layer) : null);
+    this.#layerViewHost?.hoverObject(layer ? new LayerSelection(layer) : null);
   }
 
   private onSelect(layer: SDK.LayerTreeBase.Layer): void {
-    if (this.layerViewHost.selection()?.layer() === layer) {
+    if (this.#layerViewHost?.selection()?.layer() === layer) {
       return;
     }
-    this.layerViewHost.selectObject(new LayerSelection(layer));
+    this.#layerViewHost?.selectObject(new LayerSelection(layer));
   }
 
   private onContextMenu(event: MouseEvent, layer: SDK.LayerTreeBase.Layer|null): void {
     const selection = layer ? new LayerSelection(layer) : null;
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
-    if (layer && this.layerSnapshotMap.has(layer) && selection) {
+    this.layerSnapshotMap = this.#layerViewHost?.getLayerSnapshotMap();
+    if (layer && this.layerSnapshotMap?.has(layer) && selection) {
       contextMenu.defaultSection().appendItem(
           i18nString(UIStrings.showPaintProfiler),
           () => this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, selection),
           {jslogContext: 'layers.paint-profiler'});
     }
-    this.layerViewHost.showContextMenu(contextMenu, selection);
+    this.#layerViewHost?.showContextMenu(contextMenu, selection);
   }
 }
 

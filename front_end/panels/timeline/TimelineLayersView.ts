@@ -1,79 +1,141 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
-import type * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
 import type {TracingFrameLayerTree} from './TracingLayerTree.js';
 
-export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
-  private readonly showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void;
-  private readonly rightSplitWidget: UI.SplitWidget.SplitWidget;
-  private readonly layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
-  private readonly layers3DView: LayerViewer.Layers3DView.Layers3DView;
-  private frameLayerTree?: TracingFrameLayerTree;
-  private updateWhenVisible?: boolean;
-  constructor(showPaintProfilerCallback: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void) {
-    super(true, false, 'timeline-layers-view');
-    this.showPaintProfilerCallback = showPaintProfilerCallback;
+const {widget, widgetRef} = UI.Widget;
 
-    this.element.classList.add('timeline-layers-view');
-    this.rightSplitWidget = new UI.SplitWidget.SplitWidget(true, true, 'timeline-layers-view-details');
-    this.rightSplitWidget.element.classList.add('timeline-layers-view-properties');
-    this.setMainWidget(this.rightSplitWidget);
+export interface ViewInput {
+  layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
+  onPaintProfilerRequested: (selection: LayerViewer.LayerViewHost.Selection) => void;
+}
 
-    const vbox = new UI.Widget.VBox();
-    this.setSidebarWidget(vbox);
+export interface ViewOutput {
+  snapshotForSelection?:
+      (selection: LayerViewer.LayerViewHost.Selection) => Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
+}
 
-    this.layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-    const layerTreeOutline = new LayerViewer.LayerTreeOutline.LayerTreeOutline(this.layerViewHost);
-    vbox.element.appendChild(layerTreeOutline.element);
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // Common.ObjectWrapper.eventMixin(UI.Widget.Widget) dispatches a DOM
+  // CustomEvent('PaintProfilerRequested') on the host element, and Lit
+  // preserves the case-sensitive event name for addEventListener.
+  // clang-format off
+  render(html`
+    <devtools-split-view
+        class="timeline-layers-view"
+        direction="column"
+        sidebar-position="first"
+        name="timeline-layers-view">
+      <devtools-split-view
+          slot="main"
+          class="timeline-layers-view-properties"
+          direction="column"
+          sidebar-position="second"
+          name="timeline-layers-view-details">
+        <devtools-widget
+            slot="main"
+            ${widget(LayerViewer.Layers3DView.Layers3DView, {layerViewHost: input.layerViewHost})}
+            ${widgetRef(LayerViewer.Layers3DView.Layers3DView, view => {
+              output.snapshotForSelection = selection => view.snapshotForSelection(selection);
+            })}
+            @PaintProfilerRequested=${(event: CustomEvent<LayerViewer.LayerViewHost.Selection>) => {
+              input.onPaintProfilerRequested(event.detail);
+            }}>
+        </devtools-widget>
+        <devtools-widget
+            slot="sidebar"
+            ${widget(LayerViewer.LayerDetailsView.LayerDetailsView, {layerViewHost: input.layerViewHost})}
+            @PaintProfilerRequested=${(event: CustomEvent<LayerViewer.LayerViewHost.Selection>) => {
+              input.onPaintProfilerRequested(event.detail);
+            }}>
+        </devtools-widget>
+      </devtools-split-view>
+      <devtools-widget
+          slot="sidebar"
+          ${widget(LayerViewer.LayerTreeOutline.LayerTreeOutline, {layerViewHost: input.layerViewHost})}>
+      </devtools-widget>
+    </devtools-split-view>
+  `, target);
+  // clang-format on
+};
 
-    this.layers3DView = new LayerViewer.Layers3DView.Layers3DView(this.layerViewHost);
-    this.layers3DView.addEventListener(
-        LayerViewer.Layers3DView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfilerRequested, this);
-    this.rightSplitWidget.setMainWidget(this.layers3DView);
+export class TimelineLayersView extends UI.Widget.VBox {
+  #showPaintProfilerCallback?: (arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void;
+  readonly #layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
+  readonly #onPaintProfilerRequestedBound = this.#onPaintProfilerRequested.bind(this);
+  #frameLayerTree?: TracingFrameLayerTree;
+  #updateWhenVisible?: boolean;
 
-    const layerDetailsView = new LayerViewer.LayerDetailsView.LayerDetailsView(this.layerViewHost);
-    this.rightSplitWidget.setSidebarWidget(layerDetailsView);
-    layerDetailsView.addEventListener(
-        LayerViewer.LayerDetailsView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfilerRequested, this);
+  constructor(
+      showPaintProfilerCallback?: HTMLElement|((arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void),
+      view: View = DEFAULT_VIEW,
+  ) {
+    super(showPaintProfilerCallback instanceof HTMLElement ? showPaintProfilerCallback : undefined);
+    this.#view = view;
+    if (typeof showPaintProfilerCallback === 'function') {
+      this.#showPaintProfilerCallback = showPaintProfilerCallback;
+    }
+    this.#layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
+  }
+
+  get showPaintProfilerCallback(): ((arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void)|undefined {
+    return this.#showPaintProfilerCallback;
+  }
+
+  set showPaintProfilerCallback(callback: ((arg0: SDK.PaintProfiler.PaintProfilerSnapshot) => void)|undefined) {
+    this.#showPaintProfilerCallback = callback;
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          layerViewHost: this.#layerViewHost,
+          onPaintProfilerRequested: this.#onPaintProfilerRequestedBound,
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
   }
 
   showLayerTree(frameLayerTree: TracingFrameLayerTree): void {
-    this.frameLayerTree = frameLayerTree;
+    this.#frameLayerTree = frameLayerTree;
     if (this.isShowing()) {
       this.update();
     } else {
-      this.updateWhenVisible = true;
+      this.#updateWhenVisible = true;
     }
   }
 
   override wasShown(): void {
     super.wasShown();
-    if (this.updateWhenVisible) {
-      this.updateWhenVisible = false;
+    this.requestUpdate();
+    if (this.#updateWhenVisible) {
+      this.#updateWhenVisible = false;
       this.update();
     }
   }
 
-  private async onPaintProfilerRequested(
-      event: Common.EventTarget.EventTargetEvent<LayerViewer.LayerViewHost.Selection>): Promise<void> {
-    const selection = event.data;
-    const snapshotWithRect = await this.layers3DView.snapshotForSelection(selection);
+  async #onPaintProfilerRequested(selection: LayerViewer.LayerViewHost.Selection): Promise<void> {
+    const snapshotWithRect = await this.#viewOutput.snapshotForSelection?.(selection);
     if (snapshotWithRect) {
-      this.showPaintProfilerCallback(snapshotWithRect.snapshot);
+      this.#showPaintProfilerCallback?.(snapshotWithRect.snapshot);
     }
   }
 
   update(): void {
-    if (this.frameLayerTree) {
-      void this.frameLayerTree.layerTreePromise().then(layerTree => this.layerViewHost.setLayerTree(layerTree));
+    if (this.#frameLayerTree) {
+      void Promise.all([this.#frameLayerTree.layerTreePromise(), this.updateComplete])
+          .then(([layerTree]) => this.#layerViewHost.setLayerTree(layerTree));
     }
   }
 }

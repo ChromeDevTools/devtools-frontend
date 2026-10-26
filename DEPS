@@ -24,7 +24,7 @@ vars = {
   'inspector_protocol_revision': '3f95e5ac93fab4a064e637b3567f63b9007d9937',
 
   # Keeping track of the last time we rolled the browser protocol files.
-  'chromium_browser_protocol_revision' : '4f991ca53d23a716fc5bb9f0b7626a258e4d7b40',
+  'chromium_browser_protocol_revision' : 'd4d613355ad137685e4f35deed6a3697cd9d5202',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '9f796802e5d633c96dbe97e0b6683d5e62594f9f',
@@ -52,7 +52,7 @@ vars = {
   # Note: This var is no longer referenced in the body of this DEPS file.
   # However it is used by the roll script (scripts/deps/roll_deps.py) to ease
   # version resolution. DO NOT REMOVE!
-  'chrome': '158.0.8117.0',
+  'chrome': '158.0.8125.0',
 
   # 'magic' text to tell depot_tools that git submodules should be accepted but
   # but parity with DEPS file is expected.
@@ -297,10 +297,10 @@ deps = {
     'bucket': 'chrome-for-testing-public',
     'objects': [
       {
-        'object_name': '158.0.8117.0/win64/chrome-win64.zip',
-        'sha256sum': 'ec520b5c60011f69f43a9137904ea1fd6249118f725ae1298586eb8f6acd0024',
-        'size_bytes': 215169377,
-        'generation': 1792644691009376,
+        'object_name': '158.0.8125.0/win64/chrome-win64.zip',
+        'sha256sum': 'c02459d5a257d1de9919837a4e7e8e55b870f6b4f9ebbfb728b8c901052aca34',
+        'size_bytes': 214918331,
+        'generation': 1792994606542734,
       },
     ],
   },
@@ -310,10 +310,10 @@ deps = {
     'bucket': 'chrome-for-testing-public',
     'objects': [
       {
-        'object_name': '158.0.8117.0/mac-x64/chrome-mac-x64.zip',
-        'sha256sum': '416b4f7dc38bd31514b2eda5c7f6e46ed74cfac9c26de10e9dad4b649bd33f5f',
-        'size_bytes': 211331998,
-        'generation': 1792650336481545,
+        'object_name': '158.0.8125.0/mac-x64/chrome-mac-x64.zip',
+        'sha256sum': '3056ca84d354a79b7ecc6e1977e184c6a1670e60b1c565a0029ba01bd1c20a35',
+        'size_bytes': 212109455,
+        'generation': 1792994380817127,
       },
     ],
   },
@@ -323,10 +323,10 @@ deps = {
     'bucket': 'chrome-for-testing-public',
     'objects': [
       {
-        'object_name': '158.0.8117.0/mac-arm64/chrome-mac-arm64.zip',
-        'sha256sum': '2138950d13876f9d34f2619756db6d1040c1dd81e12e0b74630512e4d0c9cd4e',
-        'size_bytes': 198767934,
-        'generation': 1792644454851462,
+        'object_name': '158.0.8125.0/mac-arm64/chrome-mac-arm64.zip',
+        'sha256sum': '429210376462c3938ec9b3647dc2a32de7caf9d3181b90393fa6f8111bd9cd3f',
+        'size_bytes': 198929412,
+        'generation': 1792990148595341,
       },
     ],
   },
@@ -336,10 +336,10 @@ deps = {
     'bucket': 'chrome-for-testing-public',
     'objects': [
       {
-        'object_name': '158.0.8117.0/linux64/chrome-linux64.zip',
-        'sha256sum': '1f65c1911e05336bf85ce40c97421d4b7ee8745f3af1fe897a5c19a941227dcd',
-        'size_bytes': 206066106,
-        'generation': 1792643130530950,
+        'object_name': '158.0.8125.0/linux64/chrome-linux64.zip',
+        'sha256sum': '250c6622b7597a8ced2baa753f1f9270d42245d46c72cafbc8ae7169fd6aeaf7',
+        'size_bytes': 206509555,
+        'generation': 1792988745354620,
       },
     ],
   },

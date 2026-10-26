@@ -12249,6 +12249,7 @@ export namespace Network {
     PreProvisionedKeyNotFound = 'PreProvisionedKeyNotFound',
     AttestationCertificationError = 'AttestationCertificationError',
     AttestationSigningError = 'AttestationSigningError',
+    FederatedRegistrationRedirected = 'FederatedRegistrationRedirected',
   }
 
   /**

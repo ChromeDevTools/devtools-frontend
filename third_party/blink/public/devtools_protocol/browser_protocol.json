@@ -18347,7 +18347,8 @@
                         "PreProvisionedKeyAccessNotGranted",
                         "PreProvisionedKeyNotFound",
                         "AttestationCertificationError",
-                        "AttestationSigningError"
+                        "AttestationSigningError",
+                        "FederatedRegistrationRedirected"
                     ]
                 },
                 {

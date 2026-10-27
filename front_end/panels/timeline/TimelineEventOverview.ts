@@ -2,15 +2,84 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
+const {ifDefined, ref} = Directives;
+
+interface OverviewStripViewInput {
+  id: string;
+  title: string|null;
+  jslog?: string;
+  hasBackgroundCanvas?: boolean;
+  heapSizeText?: string;
+}
+
+interface OverviewStripViewOutput {
+  backgroundCanvas?: HTMLCanvasElement;
+}
+
+type OverviewStripView = (input: OverviewStripViewInput, output: OverviewStripViewOutput, target: HTMLElement) => void;
+
+const OVERVIEW_STRIP_VIEW: OverviewStripView = (input, output, target) => {
+  // clang-format off
+  render(html`
+    ${input.title ? html`<div class="timeline-overview-strip-title">${input.title}</div>` : nothing}
+    ${input.hasBackgroundCanvas ? html`
+      <canvas
+        class="fill background"
+        ${ref(el => {
+          output.backgroundCanvas = el instanceof HTMLCanvasElement ? el : undefined;
+        })}
+      ></canvas>
+    ` : nothing}
+    ${input.heapSizeText !== undefined ? html`
+      <div class="memory-graph-label">${input.heapSizeText}</div>
+    ` : nothing}
+  `, target, {
+    container: {
+      classes: ['overview-strip'],
+      attributes: {
+        id: `timeline-overview-${input.id}`,
+        ...(input.jslog ? {jslog: input.jslog} : {}),
+      },
+    },
+  });
+  // clang-format on
+};
+
+interface FilmStripInfoViewInput {
+  hasThumbnail: boolean;
+  imageSrc?: string;
+  width?: number;
+  height?: number;
+}
+
+type FilmStripInfoView = (input: FilmStripInfoViewInput, _output: undefined, target: DocumentFragment) => void;
+
+const FILM_STRIP_INFO_VIEW: FilmStripInfoView = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <div class="frame">
+      ${input.hasThumbnail ? html`
+        <div class="thumbnail">
+          <img
+            src=${ifDefined(input.imageSrc)}
+            width=${ifDefined(input.width)}
+            height=${ifDefined(input.height)}
+          />
+        </div>
+      ` : nothing}
+    </div>
+  `, target);
+  // clang-format on
+};
 
 const UIStrings = {
   /**
@@ -22,11 +91,13 @@ const UIStrings = {
    */
   cpu: 'CPU',
   /**
-   * @description Label for the heap memory overview strip in the Performance panel.
+   * @description Label for the heap memory overview strip in the Performance
+   * panel.
    */
   heap: 'HEAP',
   /**
-   * @description Range label for minimum and maximum heap size in the heap memory overview strip of the Performance panel.
+   * @description Range label for minimum and maximum heap size in the heap
+   * memory overview strip of the Performance panel.
    * @example {10 MB} PH1
    * @example {30 MB} PH2
    */
@@ -34,14 +105,30 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineEventOverview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
-  constructor(id: string, title: string|null) {
+  readonly #id: string;
+  protected readonly title: string|null;
+
+  constructor(id: string, title: string|null,
+              options?: {jslog?: string, hasBackgroundCanvas?: boolean, heapSizeText?: string},
+              output?: OverviewStripViewOutput) {
     super();
-    this.element.id = 'timeline-overview-' + id;
-    this.element.classList.add('overview-strip');
-    if (title) {
-      this.element.createChild('div', 'timeline-overview-strip-title').textContent = title;
-    }
+    this.#id = id;
+    this.title = title;
+    this.renderStrip(options, output);
+  }
+
+  protected renderStrip(options?: {jslog?: string, hasBackgroundCanvas?: boolean, heapSizeText?: string},
+                        output: OverviewStripViewOutput = {}): void {
+    OVERVIEW_STRIP_VIEW({
+      id: this.#id,
+      title: this.title,
+      jslog: options?.jslog,
+      hasBackgroundCanvas: options?.hasBackgroundCanvas,
+      heapSizeText: options?.heapSizeText,
+    },
+                        output, this.element);
   }
 
   renderBar(begin: number, end: number, position: number, height: number, color: string): void {
@@ -124,13 +211,17 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   #end: Trace.Types.Timing.Milli;
 
   constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
+    const output: OverviewStripViewOutput = {};
     // During the sync tracks migration this component can use either legacy
     // Performance Model data or the new engine's data. Once the migration is
     // complete this will be updated to only use the new engine and mentions of
     // the PerformanceModel will be removed.
-    super('cpu-activity', i18nString(UIStrings.cpu));
+    super('cpu-activity', i18nString(UIStrings.cpu), {hasBackgroundCanvas: true}, output);
     this.#parsedTrace = parsedTrace;
-    this.backgroundCanvas = this.element.createChild('canvas', 'fill background');
+    if (!output.backgroundCanvas) {
+      throw new Error('Could not create background canvas');
+    }
+    this.backgroundCanvas = output.backgroundCanvas;
     this.#start = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).min;
     this.#end = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds).max;
   }
@@ -232,12 +323,13 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
           // Filter out tiny events - they don't make a visual impact to the
           // canvas as they are so small, but they do impact the time it takes
           // to walk the tree and render the events.
-          // However, if the entire range we are showing is 200ms or less, then show all events.
+          // However, if the entire range we are showing is 200ms or less, then show
+          // all events.
           const minDuration = Trace.Types.Timing.Micro(
               bounds.range > 200_000 ? 16_000 : 0,
           );
-          Trace.Helpers.TreeHelpers.walkEntireTree(
-              threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd, bounds, minDuration);
+          Trace.Helpers.TreeHelpers.walkEntireTree(threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd,
+                                                   bounds, minDuration);
           quantizer.appendInterval(this.#start + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
           for (let i = categoryOrder.length - 1; i > 0; --i) {
             paths[i].lineTo(width, height);
@@ -258,7 +350,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace.data);
     const mainThreadContext = this.context();
     for (const thread of threads) {
-      // We treat CPU_PROFILE as main thread because in a CPU Profile trace there is only ever one thread.
+      // We treat CPU_PROFILE as main thread because in a CPU Profile trace
+      // there is only ever one thread.
       const isMainThread = thread.type === Trace.Handlers.Threads.ThreadType.MAIN_THREAD ||
           thread.type === Trace.Handlers.Threads.ThreadType.CPU_PROFILE;
       if (isMainThread) {
@@ -312,7 +405,8 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
   #gatherEventsWithRelevantWarnings(): Set<Trace.Types.Events.Event> {
     const {topLevelRendererIds} = this.#parsedTrace.data.Meta;
 
-    // All the warnings that we care about regarding responsiveness and want to represent on the overview.
+    // All the warnings that we care about regarding responsiveness and want to
+    // represent on the overview.
     const warningsForResponsiveness = new Set<Trace.Handlers.ModelHandlers.Warnings.Warning>([
       'LONG_TASK',
       'FORCED_REFLOW',
@@ -384,8 +478,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
 
   constructor(filmStrip: Trace.Extras.FilmStrip.Data) {
-    super('filmstrip', null);
-    this.element.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
+    super('filmstrip', null, {jslog: `${VisualLogging.section('film-strip')}`});
     this.frameToImagePromise = new Map();
     this.#filmStrip = filmStrip;
     this.lastFrame = null;
@@ -436,9 +529,8 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     return await imagePromise;
   }
 
-  private drawFrames(
-      imageWidth: number, imageHeight: number, customStartTime?: Trace.Types.Timing.Milli,
-      customEndTime?: Trace.Types.Timing.Milli): void {
+  private drawFrames(imageWidth: number, imageHeight: number, customStartTime?: Trace.Types.Timing.Milli,
+                     customEndTime?: Trace.Types.Timing.Milli): void {
     if (!imageWidth) {
       return;
     }
@@ -495,11 +587,15 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     }
     const imagePromise = frame ? this.imageByFrame(frame) : Promise.resolve(this.emptyImage);
     const image = await imagePromise;
-    const element = document.createElement('div');
-    element.classList.add('frame');
-    if (image) {
-      element.createChild('div', 'thumbnail').appendChild(image);
-    }
+    const fragment = document.createDocumentFragment();
+    FILM_STRIP_INFO_VIEW({
+      hasThumbnail: Boolean(image),
+      imageSrc: image?.getAttribute('src') ?? undefined,
+      width: image?.hasAttribute('width') ? image.width : undefined,
+      height: image?.hasAttribute('height') ? image.height : undefined,
+    },
+                         undefined, fragment);
+    const element = fragment.firstElementChild as HTMLElement | null;
     this.lastFrame = frame;
     this.lastElement = element;
     return element;
@@ -515,17 +611,15 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 }
 
 export class TimelineEventOverviewMemory extends TimelineEventOverview {
-  private heapSizeLabel: HTMLElement;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
 
   constructor(parsedTrace: Trace.TraceModel.ParsedTrace) {
-    super('memory', i18nString(UIStrings.heap));
-    this.heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
+    super('memory', i18nString(UIStrings.heap), {heapSizeText: ''});
     this.#parsedTrace = parsedTrace;
   }
 
   resetHeapSizeLabels(): void {
-    this.heapSizeLabel.textContent = '';
+    this.renderStrip({heapSizeText: ''});
   }
 
   override update(start?: Trace.Types.Timing.Milli, end?: Trace.Types.Timing.Milli): void {
@@ -629,9 +723,11 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     ctx.strokeStyle = 'hsl(220, 90%, 70%)';
     ctx.stroke();
 
-    this.heapSizeLabel.textContent = i18nString(UIStrings.sSDash, {
-      PH1: i18n.ByteUtilities.bytesToString(minUsedHeapSize),
-      PH2: i18n.ByteUtilities.bytesToString(maxUsedHeapSize),
+    this.renderStrip({
+      heapSizeText: i18nString(UIStrings.sSDash, {
+        PH1: i18n.ByteUtilities.bytesToString(minUsedHeapSize),
+        PH2: i18n.ByteUtilities.bytesToString(maxUsedHeapSize),
+      }),
     });
   }
 }

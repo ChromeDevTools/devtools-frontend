@@ -6,7 +6,7 @@ severity: blocking
 
 **Rule.** Attach listeners to external models and managers in wasShown and detach them symmetrically in willHide
 - **Look for**: `addEventListener`, `addModelListener`, or `addChangeListener` on singletons, models, or settings inside `UI.Widget` constructors or `wasShown()` without a matching `remove*` call in `willHide()` using the same function reference, or scheduled or asynchronous `performUpdate()` methods on `SDKModelObserver` widgets that access or re-register a model without checking that `this.#model` is still active after `modelRemoved()` has run.
-- **Do not flag**: Listeners attached to the widget's own internal DOM elements (`this.contentElement`), which are garbage-collected together with the widget.
+- **Do not flag**: Listeners attached to the widget's own internal DOM elements (`this.contentElement`), which are garbage-collected together with the widget. Model or target listeners on background recording/overview widgets (such as `NetworkOverview`) that must continuously record events while the widget is hidden or collapsed (especially when rendering is already gated on `this.isShowing()`), or pre-existing constructor listeners untouched by a DOM-to-Lit view migration.
 
 **Why.** Subscribing to long-lived SDK `TargetManager`, `Settings`, or model events in a widget's constructor without unsubscribing in `willHide()` (or `onDetach()` / `onunbind()`) causes hidden panels to process background updates and leaks detached widget instances.
 

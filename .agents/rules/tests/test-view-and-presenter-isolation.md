@@ -6,7 +6,7 @@ severity: should_fix
 
 **Rule.** Test presenters via createViewFunctionStub and test pure view functions directly without piercing internal DOM structures
 - **Look for**: Presenter tests instantiating full DOM trees and querying shadow/child DOM selectors to simulate clicks when the widget accepts a `view` function, or view tests instantiating full presenters just to test template markup.
-- **Do not flag**: Legacy widgets that have not yet separated their template rendering into a standalone `DEFAULT_VIEW` function.
+- **Do not flag**: Legacy widgets that have not yet separated their template rendering into a standalone `DEFAULT_VIEW` function. Pre-existing mounted widget tests in `*.test.ts` when migrating a widget to `DEFAULT_VIEW` (keep existing end-to-end presenter + `DEFAULT_VIEW` + child-widget wiring tests intact; `createViewFunctionStub` tests may be added for new presenter logic, not used to delete existing DOM wiring coverage).
 
 **Why.** In DevTools' MVP (`UI.Widget` + `DEFAULT_VIEW`) architecture, presenter tests should follow the view stubbing conventions documented in [`docs/ui_engineering.md`](../../../docs/ui_engineering.md) by stubbing the view function with `createViewFunctionStub(Presenter)` and asserting on `await view.nextInput`, while view rendering tests should invoke `DEFAULT_VIEW(input, output, target)` directly or use screenshot assertions.
 

@@ -6,7 +6,7 @@ severity: should_fix
 
 **Rule.** Use native semantic HTML controls with accurate ARIA attributes, keyboard handlers, and !event.isComposing guards
 - **Look for**: `@click` on `<div>`/`<span>` without button semantics, `<button>` nested inside `<button>`/`<x-link>`, `Enter` keydown handlers missing `!event.isComposing`, or `aria-describedby` pointing to interactive `<devtools-tooltip>` elements.
-- **Do not flag**: Delegating click listeners on container elements that handle bubbled events from child buttons.
+- **Do not flag**: Delegating click listeners on container elements that handle bubbled events from child buttons. Rendering `<tr>` rows directly into `this.affectedResources` (`<table class="affected-resource-list">`) in `AffectedResourcesView` subclasses without a `<tbody>` wrapper (`AffectedResourcesView` creates the `<table>` container without a `<tbody>` and subclasses render `<tr>` rows directly into `this.affectedResources`).
 
 **Why.** Clickable `<div>`/`<span>` elements and nested interactive controls (`<button>` inside `<a>` or `<button>`) break keyboard navigation and screen readers. Interactive elements require semantic tags (`<button>`, `<details>`/`<summary>`, `<thead>`/`<tbody>`), synchronized ARIA state (`aria-expanded`, `aria-details` for rich tooltips vs `aria-describedby` for plain text), and `!event.isComposing` checks on `Enter` keydown handlers.
 

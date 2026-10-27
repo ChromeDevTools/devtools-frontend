@@ -40,13 +40,13 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: ERROR
 - **Why**: Subscribing to long-lived SDK `TargetManager`, `Settings`, or model events in a widget's constructor without unsubscribing in `willHide()` (or `onDetach()` / `onunbind()`) causes hidden panels to process background updates and leaks detached widget instances.
 - **Look for**: `addEventListener`, `addModelListener`, or `addChangeListener` on singletons, models, or settings inside `UI.Widget` constructors or `wasShown()` without a matching `remove*` call in `willHide()` using the same function reference, or scheduled or asynchronous `performUpdate()` methods on `SDKModelObserver` widgets that access or re-register a model without checking that `this.#model` is still active after `modelRemoved()` has run.
-- **Do not flag**: Listeners attached to the widget's own internal DOM elements (`this.contentElement`), which are garbage-collected together with the widget.
+- **Do not flag**: Listeners attached to the widget's own internal DOM elements (`this.contentElement`), which are garbage-collected together with the widget. Model or target listeners on background recording/overview widgets (such as `NetworkOverview`) that must continuously record events while the widget is hidden or collapsed (especially when rendering is already gated on `this.isShowing()`), or pre-existing constructor listeners untouched by a DOM-to-Lit view migration.
 
 ### `UI_ACCESSIBILITY_AND_SEMANTIC_HTML`: Use native semantic HTML controls with accurate ARIA attributes, keyboard handlers, and !event.isComposing guards
 - **Severity**: WARNING
 - **Why**: Clickable `<div>`/`<span>` elements and nested interactive controls (`<button>` inside `<a>` or `<button>`) break keyboard navigation and screen readers. Interactive elements require semantic tags (`<button>`, `<details>`/`<summary>`, `<thead>`/`<tbody>`), synchronized ARIA state (`aria-expanded`, `aria-details` for rich tooltips vs `aria-describedby` for plain text), and `!event.isComposing` checks on `Enter` keydown handlers.
 - **Look for**: `@click` on `<div>`/`<span>` without button semantics, `<button>` nested inside `<button>`/`<x-link>`, `Enter` keydown handlers missing `!event.isComposing`, or `aria-describedby` pointing to interactive `<devtools-tooltip>` elements.
-- **Do not flag**: Delegating click listeners on container elements that handle bubbled events from child buttons.
+- **Do not flag**: Delegating click listeners on container elements that handle bubbled events from child buttons. Rendering `<tr>` rows directly into `this.affectedResources` (`<table class="affected-resource-list">`) in `AffectedResourcesView` subclasses without a `<tbody>` wrapper (`AffectedResourcesView` creates the `<table>` container without a `<tbody>` and subclasses render `<tr>` rows directly into `this.affectedResources`).
 
 ### `UI_PERFORMANCE_AND_FLAMECHART_RENDERING`: Precompute expensive metrics outside render loops, use Set/Map for O(1) lookups, and debounce high-frequency UI updates
 - **Severity**: WARNING
@@ -58,13 +58,13 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: WARNING
 - **Why**: Concatenating translated fragments breaks word order in non-English locales, title-Cased strings violate Chromium UX standards, translating English-only experimental strings wastes localization quota, and unused `UIStrings` entries bloat locale bundles.
 - **Look for**: String concatenation around `i18nString(...)`, HTML/DOM elements interpolated without `i18nTemplate`, Title Case labels in `UIStrings`, unlocalized English literals in templates, or unused keys in `UIStrings`.
-- **Do not flag**: Technical protocol identifiers, MIME types, or strings in `UIStringsNotTranslate` / `i18n.i18n.lockedString(...)`.
+- **Do not flag**: Technical protocol identifiers, MIME types, or strings in `UIStringsNotTranslate` / `i18n.i18n.lockedString(...)`. Pre-existing `UIStrings` entries (such as legacy Title Case strings) or pre-existing unlocalized string literals that are moved verbatim from imperative DOM creation into a Lit template during a refactoring CL.
 
 ### `UI_REACTIVE_WIDGET_UPDATE_LIFECYCLE`: Schedule widget re-renders asynchronously via this.requestUpdate() and guard property setters with equality checks
 - **Severity**: WARNING
 - **Why**: Calling `this.performUpdate()` or invoking `this.#view(...)` synchronously inside property setters causes redundant synchronous DOM renders when multiple properties change in the same tick. Setters should short-circuit if the value is unchanged and call `this.requestUpdate()`.
 - **Look for**: Widget property setters calling `this.performUpdate()` or `this.#view(...)` directly, setters calling `this.requestUpdate()` without checking `if (this.#prop === value) return;`, or synchronous `this.performUpdate()` calls inside a `UI.Widget` `constructor()` (creates DOM and reads `UI.Context` before the widget is attached or visible; use `this.requestUpdate()` or `wasShown()` instead).
-- **Do not flag**: Internal test helpers or synchronous initialization paths explicitly documented as requiring immediate flush.
+- **Do not flag**: Internal test helpers or synchronous initialization paths explicitly documented as requiring immediate flush. Synchronous `this.performUpdate()` calls in a constructor when the constructor or methods callable before `wasShown()` depend on `ViewOutput`, `widgetRef`, or `ref` fields populated by the initial render.
 
 ### `UI_VISUAL_LOGGING_INSTRUMENTATION`: Instrument interactive UI elements and containers with kebab-case VisualLogging contexts registered in KnownContextValues
 - **Severity**: WARNING
@@ -82,7 +82,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: WARNING
 - **Why**: Exposing raw `HTMLElement` or `UI.Widget` references on `ViewOutput` (e.g. `output.childWidget = w`) or passing raw `MouseEvent`/`KeyboardEvent` objects to presenter callbacks leaks view implementation details into presenters. Supply all configuration through setters/inputs on the child widget, or if imperative calls are strictly necessary, populate narrow functional closures on `ViewOutput` (e.g. `output.focusInput = () => ...`, `output.scrollWidgetToSomething = () => widgetRef.scrollToSomething()`), and unpack event values before calling `input.onSelect(value)`.
 - **Look for**: `ViewOutput` interfaces containing `HTMLElement`, `Element`, or `UI.Widget` subclass properties (other than temporary intermediate CL bridges), `get*ForTest()` presenter methods backed by `ViewOutput` widget references, or `ViewInput` callbacks typed as `(event: Event) => void` instead of semantic domain values.
-- **Do not flag**: Third-party editor or canvas host containers that require a raw mount `HTMLElement`.
+- **Do not flag**: Third-party editor hosts, `<canvas>` (`HTMLCanvasElement`) and canvas sizing/resizer containers, or elements returned by existing public cross-widget APIs (such as `UI.ListDelegate.createElementForItem` or `ConsolePrompt.belowEditorElement`).
 
 ### `UI_PANEL_AND_META_REGISTRATION`: Follow DevTools panel directory conventions and register settings and views in the appropriate *-meta.ts scope
 - **Severity**: WARNING

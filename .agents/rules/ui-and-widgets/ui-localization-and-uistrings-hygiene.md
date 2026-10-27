@@ -6,7 +6,7 @@ severity: should_fix
 
 **Rule.** Define user-facing strings in sentence-case UIStrings using complete sentences and i18nTemplate for embedded elements, and prune unused entries
 - **Look for**: String concatenation around `i18nString(...)`, HTML/DOM elements interpolated without `i18nTemplate`, Title Case labels in `UIStrings`, unlocalized English literals in templates, or unused keys in `UIStrings`.
-- **Do not flag**: Technical protocol identifiers, MIME types, or strings in `UIStringsNotTranslate` / `i18n.i18n.lockedString(...)`.
+- **Do not flag**: Technical protocol identifiers, MIME types, or strings in `UIStringsNotTranslate` / `i18n.i18n.lockedString(...)`. Pre-existing `UIStrings` entries (such as legacy Title Case strings) or pre-existing unlocalized string literals that are moved verbatim from imperative DOM creation into a Lit template during a refactoring CL.
 
 **Why.** Concatenating translated fragments breaks word order in non-English locales, title-Cased strings violate Chromium UX standards, translating English-only experimental strings wastes localization quota, and unused `UIStrings` entries bloat locale bundles.
 

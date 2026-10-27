@@ -835,28 +835,6 @@ export function endBatchUpdate(): void {
   }
 }
 
-export function animateFunction(
-    window: Window, func: (...args: any[]) => void, params: Array<{
-      from: number,
-      to: number,
-    }>,
-    duration: number, animationComplete?: (() => void)): () => void {
-  const start = window.performance.now();
-  let raf = window.requestAnimationFrame(animationStep);
-
-  function animationStep(timestamp: number): void {
-    const progress = Platform.NumberUtilities.clamp((timestamp - start) / duration, 0, 1);
-    func(...params.map(p => p.from + (p.to - p.from) * progress));
-    if (progress < 1) {
-      raf = window.requestAnimationFrame(animationStep);
-    } else if (animationComplete) {
-      animationComplete();
-    }
-  }
-
-  return () => window.cancelAnimationFrame(raf);
-}
-
 export class LongClickController {
   private readonly element: Element;
   private readonly callback: (arg0: Event) => void;

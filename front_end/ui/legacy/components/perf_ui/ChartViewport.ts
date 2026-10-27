@@ -59,7 +59,19 @@ export class ChartViewport extends UI.Widget.VBox {
   private minimumBoundary!: number;
   private totalTime!: number;
   private isUpdateScheduled?: boolean;
-  private cancelWindowTimesAnimation?: (() => void)|null;
+  /**
+   * Tracks an in-flight `setWindowTimes` `requestAnimationFrame` loop so high-frequency
+   * events (such as trackpad `wheel` zooming and panning) can retarget the animation in
+   * place without canceling the pending frame.
+   */
+  #animState: {
+    rafId: number,
+    fromLeft: number,
+    fromRight: number,
+    startClockMs: DOMHighResTimeStamp,
+    lastRafClockMs: DOMHighResTimeStamp|null,
+    needsRetarget: boolean,
+  }|null = null;
 
   #config: Config;
 
@@ -486,7 +498,7 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   scheduleUpdate(): void {
-    if (this.cancelWindowTimesAnimation || this.isUpdateScheduled) {
+    if (this.#animState !== null || this.isUpdateScheduled) {
       return;
     }
     this.isUpdateScheduled = true;
@@ -500,38 +512,56 @@ export class ChartViewport extends UI.Widget.VBox {
     this.delegate.update();
   }
 
+  #cancelWindowTimesAnimation(): void {
+    if (this.#animState !== null) {
+      this.element.window().cancelAnimationFrame(this.#animState.rafId);
+      this.#animState = null;
+    }
+  }
+
   override willHide(): void {
     super.willHide();
     // Stop animations when the view is hidden (or destroyed).
     // In this case, we also jump the time immediately to the target time, so
     // that if the view is restored, the time shown is correct.
-    if (this.cancelWindowTimesAnimation) {
-      this.cancelWindowTimesAnimation();
-      this.cancelWindowTimesAnimation = null;
+    if (this.#animState !== null) {
+      this.#cancelWindowTimesAnimation();
       this.setWindowTimes(this.targetLeftTime, this.targetRightTime, false);
     }
   }
 
+  /**
+   * Updates the visible window to `[startTime, endTime]`.
+   *
+   * ### Why in-place retargeting is needed
+   * In Chromium's `BeginMainThreadFrame` pipeline, aligned `wheel` input events are
+   * dispatched at the start of the frame (`HandleInputEvent`), immediately before
+   * `requestAnimationFrame` callbacks (`FireAnimationFrame`) execute in that same frame.
+   *
+   * Canceling the active `requestAnimationFrame` and starting a new animation anchored
+   * at `performance.now()` on every `wheel` event starves itself:
+   * 1. `wheel` runs during `HandleInputEvent` and records `start = performance.now()`.
+   * 2. Moments later in the same `BeginMainThreadFrame`, `FireAnimationFrame` runs and
+   *    passes the frame's vsync clock (`rafClockMs <= start`), so
+   *    `(rafClockMs - start) / duration` clamps to `0` and the visible window does not move.
+   * 3. On the next vsync, the next `wheel` event cancels the second frame before it can
+   *    run and starts over from `completionRatio = 0`, freezing the viewport until scrolling stops.
+   *
+   * Instead, if an animation is already in flight (`this.#animState !== null`), we preserve
+   * the scheduled frame, update `fromLeft`/`fromRight` to the current visible bounds, and
+   * backdate `startClockMs` by one clamped frame delta (`[8ms, 32ms]`, or `16ms` on the
+   * initial frame) on the next tick so `completionRatio` advances smoothly on every vsync.
+   */
   setWindowTimes(startTime: number, endTime: number, animate?: boolean): void {
     // If already animating to the requested target, let the active animation continue.
-    if (animate && this.cancelWindowTimesAnimation && this.targetLeftTime === startTime &&
-        this.targetRightTime === endTime) {
+    if (animate && this.#animState !== null && this.targetLeftTime === startTime && this.targetRightTime === endTime) {
       return;
     }
 
     // If already at rest at the target window with no active animation, nothing to do.
-    if (!this.cancelWindowTimesAnimation && this.visibleLeftTime === startTime && this.visibleRightTime === endTime) {
+    if (this.#animState === null && this.visibleLeftTime === startTime && this.visibleRightTime === endTime) {
       return;
     }
-
-    // Cancel any in-flight animation before starting a new transition or snapping.
-    if (this.cancelWindowTimesAnimation) {
-      this.cancelWindowTimesAnimation();
-      this.cancelWindowTimesAnimation = null;
-    }
-
-    this.targetLeftTime = startTime;
-    this.targetRightTime = endTime;
 
     // Only animate if requested and both current and target bounds are finite, valid ranges.
     // Initial loads (where visibleLeftTime/RightTime are 0 or uninitialized) and sentinel
@@ -541,7 +571,11 @@ export class ChartViewport extends UI.Widget.VBox {
     const isFiniteTarget = Number.isFinite(startTime) && Number.isFinite(endTime) && endTime > startTime;
     const canAnimate = Boolean(animate) && hasInitialWindow && isFiniteTarget;
 
+    this.targetLeftTime = startTime;
+    this.targetRightTime = endTime;
+
     if (!canAnimate) {
+      this.#cancelWindowTimesAnimation();
       // Snap instantly.
       this.visibleLeftTime = startTime;
       this.visibleRightTime = endTime;
@@ -549,22 +583,61 @@ export class ChartViewport extends UI.Widget.VBox {
       return;
     }
 
-    this.cancelWindowTimesAnimation = UI.UIUtils.animateFunction(
-        this.element.window(), animateWindowTimes.bind(this),
-        [{from: this.visibleLeftTime, to: startTime}, {from: this.visibleRightTime, to: endTime}], 100, () => {
-          this.cancelWindowTimesAnimation = null;
-        });
+    // If a frame is already scheduled, retarget in place without canceling the pending rAF.
+    if (this.#animState !== null) {
+      this.#animState.fromLeft = this.visibleLeftTime;
+      this.#animState.fromRight = this.visibleRightTime;
+      this.#animState.needsRetarget = true;
+      return;
+    }
 
-    function animateWindowTimes(this: ChartViewport, startTime: number, endTime: number): void {
-      // We cancel the animation in the willHide method, but as an extra check
-      // bail here if we are hidden rather than queue an update.
-      if (!this.isShowing()) {
+    const durationMs = 100;
+    const defaultInitialStepMs = 16;
+    const state = {
+      rafId: 0,
+      fromLeft: this.visibleLeftTime,
+      fromRight: this.visibleRightTime,
+      startClockMs: 0 as DOMHighResTimeStamp,
+      lastRafClockMs: null as DOMHighResTimeStamp | null,
+      needsRetarget: true,
+    };
+    this.#animState = state;
+
+    const win = this.element.window();
+    const animationStep = (rafClockMs: DOMHighResTimeStamp): void => {
+      if (this.#animState !== state || !this.isShowing()) {
+        this.#animState = null;
         return;
       }
-      this.visibleLeftTime = startTime;
-      this.visibleRightTime = endTime;
+      if (state.needsRetarget) {
+        // Estimate the wall-clock duration of a single frame so that the first step
+        // after starting or retargeting advances immediately by one frame's worth of
+        // completion rather than evaluating `(rafClockMs - rafClockMs) / durationMs = 0`.
+        const frameDeltaMs = state.lastRafClockMs !== null ?
+            Platform.NumberUtilities.clamp(rafClockMs - state.lastRafClockMs, 8, 32) :
+            defaultInitialStepMs;
+        state.startClockMs = rafClockMs - frameDeltaMs;
+        state.needsRetarget = false;
+      }
+      state.lastRafClockMs = rafClockMs;
+
+      // Calculate how far through the 100ms wall-clock transition we are as a [0, 1] ratio
+      // (0 = 0% / at fromLeft/fromRight, 1 = 100% / reached targetLeftTime/targetRightTime).
+      const completionRatio = Platform.NumberUtilities.clamp((rafClockMs - state.startClockMs) / durationMs, 0, 1);
+      this.visibleLeftTime = state.fromLeft + (this.targetLeftTime - state.fromLeft) * completionRatio;
+      this.visibleRightTime = state.fromRight + (this.targetRightTime - state.fromRight) * completionRatio;
       this.update();
-    }
+
+      if (completionRatio < 1) {
+        // Transition has not reached 100% yet; schedule the next animation frame.
+        state.rafId = win.requestAnimationFrame(animationStep);
+      } else {
+        // Reached 100% (targetLeftTime, targetRightTime); clear state.
+        this.#animState = null;
+      }
+    };
+
+    state.rafId = win.requestAnimationFrame(animationStep);
   }
 
   windowLeftTime(): number {

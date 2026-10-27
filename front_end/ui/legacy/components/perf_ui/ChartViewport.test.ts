@@ -115,4 +115,32 @@ describeWithEnvironment('ChartViewport', () => {
        assert.strictEqual(viewport.windowLeftTime(), 200);
        assert.strictEqual(viewport.windowRightTime(), 800);
      });
+
+  it('advances visible window on each frame when setWindowTimes is called repeatedly with animation', async () => {
+    const delegate = new FakeChartViewportDelegate();
+    const viewport = new PerfUI.ChartViewport.ChartViewport(delegate, {enableCursorElement: false});
+    renderWidgetInVbox(viewport, {width: 600, height: 400, flexAuto: true});
+    viewport.setBoundaries(0, 1000);
+    viewport.setWindowTimes(0, 1000, false);
+
+    // Simulate a burst of wheel zoom updates before the first animation frame fires.
+    viewport.setWindowTimes(50, 950, true);
+    viewport.setWindowTimes(100, 900, true);
+
+    await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
+
+    const leftAfterFrame1 = viewport.windowLeftTime();
+    const rightAfterFrame1 = viewport.windowRightTime();
+    assert.isAbove(leftAfterFrame1, 0);
+    assert.isBelow(rightAfterFrame1, 1000);
+
+    // Simulate another wheel zoom update arriving on the next frame before rAF fires.
+    viewport.setWindowTimes(200, 800, true);
+    await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
+
+    assert.isAbove(viewport.windowLeftTime(), leftAfterFrame1);
+    assert.isBelow(viewport.windowRightTime(), rightAfterFrame1);
+
+    viewport.willHide();
+  });
 });

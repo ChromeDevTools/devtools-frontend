@@ -13,6 +13,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as TimelineComponents from './components/components.js';
@@ -136,5 +137,35 @@ describeWithEnvironment('TimelineMiniMap', function() {
     assert.deepEqual(
         serializableModifications?.initialBreadcrumb.child,
         {window: {min: 1020035455504, max: 1020036087961, range: 1264914}, child: null} as Trace.Types.File.Breadcrumb);
+  });
+
+  it('passes overview data and breadcrumbs to the view and clears them on setData(null)', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+    const view = createViewFunctionStub(Timeline.TimelineMiniMap.TimelineMiniMap);
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(view);
+
+    const initialInput = await view.nextInput;
+    assert.isNull(initialInput.data);
+    assert.isNull(initialInput.initialBreadcrumb);
+    assert.isNull(initialInput.activeBreadcrumb);
+
+    minimap.setData({
+      parsedTrace,
+      settings: {
+        showMemory: true,
+        showScreenshots: true,
+      },
+    });
+    const updatedInput = await view.nextInput;
+    assert.strictEqual(updatedInput.data?.parsedTrace, parsedTrace);
+    assert.isNotNull(updatedInput.initialBreadcrumb);
+    assert.isNotNull(updatedInput.activeBreadcrumb);
+
+    minimap.setData(null);
+    const clearedInput = await view.nextInput;
+    assert.isNull(clearedInput.data);
+    assert.isNull(clearedInput.initialBreadcrumb);
+    assert.isNull(clearedInput.activeBreadcrumb);
+    assert.isNull(minimap.breadcrumbs);
   });
 });

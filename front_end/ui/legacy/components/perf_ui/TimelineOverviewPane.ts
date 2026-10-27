@@ -38,8 +38,9 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
   #dimHighlightSVG: Element;
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
-  constructor(prefix: string) {
-    super();
+  constructor(prefixOrElement: string|HTMLElement = 'timeline') {
+    super(prefixOrElement instanceof HTMLElement ? prefixOrElement : undefined);
+    const prefix = typeof prefixOrElement === 'string' ? prefixOrElement : 'timeline';
     this.element.id = prefix + '-overview-pane';
 
     this.overviewCalculator = new TimelineOverviewCalculator();
@@ -149,13 +150,13 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     const start = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.min;
     const end = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.max;
     this.update(start, end);
-    ThemeSupport.ThemeSupport.instance().addEventListener(
-        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                          this.#boundOnThemeChanged);
   }
 
   override willHide(): void {
-    ThemeSupport.ThemeSupport.instance().removeEventListener(
-        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
+    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                             this.#boundOnThemeChanged);
     this.overviewInfo.hide();
     super.willHide();
   }
@@ -382,18 +383,17 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
       desaturateRect?.setAttribute('fill', ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'));
 
       const bracket = this.#dimHighlightSVG.querySelector('polygon');
-      bracket?.setAttribute(
-          'fill', ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-on-header-hover'));
+      bracket?.setAttribute('fill',
+                            ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-on-header-hover'));
     });
   }
 
   #addBracket(left: number, right: number): void {
     const TRIANGLE_SIZE = 5;  // px size of triangles
     const bracket = this.#dimHighlightSVG.querySelector('polygon');
-    bracket?.setAttribute(
-        'points',
-        `${left},0 ${left},${TRIANGLE_SIZE} ${left + TRIANGLE_SIZE - 1},1 ${right - TRIANGLE_SIZE - 1},1 ${right},${
-            TRIANGLE_SIZE} ${right},0`);
+    bracket?.setAttribute('points',
+                          `${left},0 ${left},${TRIANGLE_SIZE} ${left + TRIANGLE_SIZE - 1},1 ${
+                              right - TRIANGLE_SIZE - 1},1 ${right},${TRIANGLE_SIZE} ${right},0`);
     bracket?.classList.remove('hidden');
   }
 

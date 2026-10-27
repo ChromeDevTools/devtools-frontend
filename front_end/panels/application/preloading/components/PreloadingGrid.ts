@@ -133,14 +133,26 @@ export class PreloadingGrid extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
+  get rows(): PreloadingGridRow[]|undefined {
+    return this.#rows;
+  }
+
   set rows(rows: PreloadingGridRow[]) {
     this.#rows = rows;
     this.requestUpdate();
   }
 
+  get pageURL(): Platform.DevToolsPath.UrlString|undefined {
+    return this.#pageURL;
+  }
+
   set pageURL(pageURL: Platform.DevToolsPath.UrlString) {
     this.#pageURL = pageURL;
     this.requestUpdate();
+  }
+
+  get onSelect(): (({rowId}: {rowId: string}) => void)|undefined {
+    return this.#onSelect;
   }
 
   set onSelect(onSelect: ({rowId}: {rowId: string}) => void) {

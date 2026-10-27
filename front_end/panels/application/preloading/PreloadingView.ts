@@ -195,8 +195,26 @@ function pageURL(): Platform.DevToolsPath.UrlString {
       Platform.DevToolsPath.EmptyUrlString;
 }
 
+interface PreloadingWarnings {
+  disabledByPreference: boolean;
+  disabledByDataSaver: boolean;
+  disabledByBatterySaver: boolean;
+  disabledByHoldbackPrefetchSpeculationRules: boolean;
+  disabledByHoldbackPrerenderSpeculationRules: boolean;
+}
+
+function toPreloadingWarnings(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): PreloadingWarnings {
+  return {
+    disabledByPreference: event.disabledByPreference,
+    disabledByDataSaver: event.disabledByDataSaver,
+    disabledByBatterySaver: event.disabledByBatterySaver,
+    disabledByHoldbackPrefetchSpeculationRules: event.disabledByHoldbackPrefetchSpeculationRules,
+    disabledByHoldbackPrerenderSpeculationRules: event.disabledByHoldbackPrerenderSpeculationRules,
+  };
+}
+
 interface RuleSetViewInput {
-  warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+  warnings?: PreloadingWarnings;
   rows: PreloadingComponents.RuleSetGrid.RuleSetGridRow[];
   pageURL: Platform.DevToolsPath.UrlString;
   ruleSet: Protocol.Preload.RuleSet|null;
@@ -261,7 +279,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
   readonly #view: RuleSetView;
-  #warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+  #warnings?: PreloadingWarnings;
 
   private shouldPrettyPrint = Common.Settings.Settings.instance()
                                   .resolve(SettingsUI.SourcesSettings.autoPrettyPrintMinifiedSettingDescriptor)
@@ -277,25 +295,38 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.requestUpdate();
   };
 
+  readonly #onWarningsUpdated =
+      (event: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void => {
+        this.#warnings = toPreloadingWarnings(event.data);
+        this.requestUpdate();
+      };
+
   constructor(model: SDK.PreloadingModel.PreloadingModel, view: RuleSetView = RULE_SET_DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.#view = view;
 
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
-                                                                SDK.PreloadingModel.Events.MODEL_UPDATED,
-                                                                this.requestUpdate, this, {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
-                                                                SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
-                                                                  this.#warnings = e.data;
-                                                                  this.requestUpdate();
-                                                                }, this, {scoped: true});
   }
 
   override wasShown(): void {
     super.wasShown();
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.MODEL_UPDATED,
+                                                                this.requestUpdate, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.WARNINGS_UPDATED,
+                                                                this.#onWarningsUpdated, this, {scoped: true});
     this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.requestUpdate, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                   SDK.PreloadingModel.Events.WARNINGS_UPDATED,
+                                                                   this.#onWarningsUpdated, this);
   }
 
   onScopeChange(): void {
@@ -413,14 +444,6 @@ export function applyFilterText(filterText: string, rows: PreloadingComponents.P
   });
 }
 
-interface PreloadingWarnings {
-  disabledByPreference: boolean;
-  disabledByDataSaver: boolean;
-  disabledByBatterySaver: boolean;
-  disabledByHoldbackPrefetchSpeculationRules: boolean;
-  disabledByHoldbackPrerenderSpeculationRules: boolean;
-}
-
 interface AttemptViewInput {
   warnings?: PreloadingWarnings;
   rows: PreloadingComponents.PreloadingGrid.PreloadingGridRow[];
@@ -534,13 +557,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 
   readonly #onWarningsUpdated =
       (event: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void => {
-        this.#warnings = {
-          disabledByPreference: event.data.disabledByPreference,
-          disabledByDataSaver: event.data.disabledByDataSaver,
-          disabledByBatterySaver: event.data.disabledByBatterySaver,
-          disabledByHoldbackPrefetchSpeculationRules: event.data.disabledByHoldbackPrefetchSpeculationRules,
-          disabledByHoldbackPrerenderSpeculationRules: event.data.disabledByHoldbackPrerenderSpeculationRules,
-        };
+        this.#warnings = toPreloadingWarnings(event.data);
         this.requestUpdate();
       };
 
@@ -669,7 +686,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 }
 
 interface SummaryViewInput {
-  warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+  warnings?: PreloadingWarnings;
   usedPreloading: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData;
 }
 
@@ -689,7 +706,13 @@ const SUMMARY_DEFAULT_VIEW: SummaryView = (input, _output, target) => {
 export class PreloadingSummaryView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
   readonly #view: SummaryView;
-  #warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+  #warnings?: PreloadingWarnings;
+
+  readonly #onWarningsUpdated =
+      (event: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void => {
+        this.#warnings = toPreloadingWarnings(event.data);
+        this.requestUpdate();
+      };
 
   constructor(model: SDK.PreloadingModel.PreloadingModel, view: SummaryView = SUMMARY_DEFAULT_VIEW) {
     super({
@@ -700,19 +723,26 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
 
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
-                                                                SDK.PreloadingModel.Events.MODEL_UPDATED,
-                                                                this.requestUpdate, this, {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
-                                                                SDK.PreloadingModel.Events.WARNINGS_UPDATED, e => {
-                                                                  this.#warnings = e.data;
-                                                                  this.requestUpdate();
-                                                                }, this, {scoped: true});
   }
 
   override wasShown(): void {
     super.wasShown();
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.MODEL_UPDATED,
+                                                                this.requestUpdate, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                SDK.PreloadingModel.Events.WARNINGS_UPDATED,
+                                                                this.#onWarningsUpdated, this, {scoped: true});
     this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.MODEL_UPDATED, this.requestUpdate, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.PreloadingModel.PreloadingModel,
+                                                                   SDK.PreloadingModel.Events.WARNINGS_UPDATED,
+                                                                   this.#onWarningsUpdated, this);
   }
 
   onScopeChange(): void {

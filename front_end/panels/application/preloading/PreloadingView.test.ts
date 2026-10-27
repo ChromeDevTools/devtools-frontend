@@ -51,8 +51,8 @@ class NavigationEmulator {
     this.loaderId = 'fakeLoaderId' as Protocol.Network.LoaderId;
   }
 
-  private async createTarget(targetInfo: Protocol.Target.TargetInfo, sessionId: Protocol.Target.SessionID):
-      Promise<SDK.Target.Target> {
+  private async createTarget(targetInfo: Protocol.Target.TargetInfo,
+                             sessionId: Protocol.Target.SessionID): Promise<SDK.Target.Target> {
     const childTargetManager = this.tabTarget.model(SDK.ChildTargetManager.ChildTargetManager);
 
     dispatchEvent(this.tabTarget, 'Target.targetCreated', {targetInfo});
@@ -440,7 +440,7 @@ describeWithEnvironment('PreloadingRuleSetView', () => {
 
     );
 
-    ruleSetGrid.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
+    ruleSetGrid.onSelect('ruleSetId:0.2' as Protocol.Preload.RuleSetId);
 
     await view.updateComplete;
     const ruleSetDetailsComponent = getRuleSetDetails(view);
@@ -1090,7 +1090,9 @@ describeWithEnvironment('PreloadingAttemptView', () => {
         ],
     );
 
-    preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
+    const [row] = preloadingGridComponent.rows ?? [];
+    assert.exists(row);
+    preloadingGridComponent.onSelect?.({rowId: row.id});
 
     await view.updateComplete;
     await preloadingDetailsComponent.updateComplete;
@@ -1159,7 +1161,9 @@ describeWithEnvironment('PreloadingAttemptView', () => {
         ],
     );
 
-    preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
+    const [row] = preloadingGridComponent.rows ?? [];
+    assert.exists(row);
+    preloadingGridComponent.onSelect?.({rowId: row.id});
 
     await view.updateComplete;
     await preloadingDetailsComponent.updateComplete;
@@ -1236,7 +1240,9 @@ describeWithEnvironment('PreloadingAttemptView', () => {
         ],
     );
 
-    preloadingGridComponent.contentElement.querySelectorAll('tr')[1].dispatchEvent(new Event('select'));
+    const [row] = preloadingGridComponent.rows ?? [];
+    assert.exists(row);
+    preloadingGridComponent.onSelect?.({rowId: row.id});
 
     await view.updateComplete;
     await preloadingDetailsComponent.updateComplete;
@@ -1965,11 +1971,7 @@ describeWithEnvironment('PreloadingSummaryView', () => {
     await emulator.activateAndDispatchEvents('prerendered.html');
 
     await view.updateComplete;
-    const usedPreloadingComponent =
-        Array.from(view.contentElement.querySelectorAll<UI.Widget.WidgetElement<UI.Widget.Widget>>('devtools-widget'))
-            .map(el => el.getWidget())
-            .find(widget => widget instanceof PreloadingComponents.UsedPreloadingView.UsedPreloadingView);
-    assert.exists(usedPreloadingComponent);
+    const usedPreloadingComponent = getChildWidget(view, PreloadingComponents.UsedPreloadingView.UsedPreloadingView);
     await usedPreloadingComponent.updateComplete;
 
     assert.include(usedPreloadingComponent.contentElement.textContent, 'This page was successfully prerendered');

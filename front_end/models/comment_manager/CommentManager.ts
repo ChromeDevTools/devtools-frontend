@@ -88,12 +88,12 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
       isGeneratedComment?: boolean,
       ): CommentThread {
-    const comments: Comment[] = text ? [{
+    const comments: Comment[] = text !== undefined ? [{
       author,
       text,
       timestamp: Date.now(),
     }] :
-                                       [];
+                                                     [];
     const thread = new CommentThread({
       anchor,
       comments,

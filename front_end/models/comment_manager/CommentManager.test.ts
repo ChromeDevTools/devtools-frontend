@@ -171,6 +171,18 @@ describe('CommentManager', () => {
     assert.strictEqual(thread.status, 'DRAFT');
   });
 
+  it('creates comment thread with empty string text', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeOutline > TreeItem',
+      textSignature: 'div.header',
+    };
+    const thread = manager.createCommentThread(anchor, '');
+
+    assert.isNotNull(thread);
+    assert.lengthOf(thread.comments, 1);
+    assert.strictEqual(thread.comments[0].text, '');
+  });
+
   it('returns undefined for non-existent comment thread ID', () => {
     assert.isUndefined(manager.getCommentThread('non-existent-id'));
   });

@@ -41,7 +41,6 @@ Load the skill that matches what the diff touches, and apply its rules:
 | Tests that use `describeWithEnvironment` or `describeWithMockConnection`, or foundation modules | `foundation-test-migration` |
 | Ported Chromium web tests (`web_tests/http/tests/devtools`) | `migrate-chromium-test` |
 | Flaky or disabled tests, or `it.skip` / `it.skipOnPlatforms` | `fix-tests` |
-| `UIStrings` / user-facing text | `devtools-ux-writing-refactor` |
 | Rendering user-controlled strings (URLs, names, console text) | `devtools-unicode-escaping` |
 | `front_end/models/*`, `BUILD.gn`, `devtools_grd_files.gni`, entrypoints | `devtools-model-management` |
 | Reviewing foundation, models, and build configs (`front_end/(core|models|entrypoints|generated)/**`, `BUILD.gn`, `*.gni`) | `review-models-core` |
@@ -50,7 +49,19 @@ Load the skill that matches what the diff touches, and apply its rules:
 | Stack traces, source maps, `DebuggerWorkspaceBinding` | `devtools-source-maps` |
 | Building, running tests, or lint | `devtools-verification` |
 
-## 3. Test correctness (the most common review feedback)
+## 3. Boundaries vs. Interiors
+
+- **Enforce module boundaries strictly:** Prioritize boundary invariants—module
+  entrypoints (`foo.ts`, `foo-meta.ts`), GN `visibility` and dependency edges,
+  strict `core -> models -> ui -> panels` layering, `SettingDescriptor`
+  placement in the lowest layer where used, public widget/component APIs
+  (`DEFAULT_VIEW` input/output contracts), CDP protocol contracts, and test
+  validity.
+- **Avoid uncodified interior style nits:** Do not flag subjective stylistic
+  preferences inside module interiors unless backed by a lint rule or an
+  explicit rule under `.agents/rules/`.
+
+## 4. Test correctness (the most common review feedback)
 
 - **Tautological tests:** A test must exercise real production code. If a
   mock does the thing the test asserts (for example, a mocked `DOM.undo` that
@@ -79,7 +90,7 @@ Load the skill that matches what the diff touches, and apply its rules:
 - **Fail fast:** Throw or assert when a required value is missing. Don't let
   the test time out later.
 
-## 4. Test hygiene and cleanup
+## 5. Test hygiene and cleanup
 
 - Pair every `beforeEach` singleton creation with a cleanup in `afterEach`
   (for example, `CSSWorkspaceBinding.removeInstance()` or
@@ -93,7 +104,7 @@ Load the skill that matches what the diff touches, and apply its rules:
 - Remove guards that were copied from helpers for no reason (for example,
   `if (!stub.called) …` in a test that stubs the method only once).
 
-## 5. Code clarity
+## 6. Code clarity
 
 - Don't take detours to reach a value. If a module is imported, call
   `TextUtils.TextRange.TextRange.fromObject(...)` directly instead of going
@@ -106,7 +117,7 @@ Load the skill that matches what the diff touches, and apply its rules:
   without being removed, and async work that continues after a widget is
   detached.
 
-## 6. CL hygiene
+## 7. CL hygiene
 
 - The description explains *why*, including external dependencies (for
   example, "V8 will stop emitting X; this must land first").
@@ -117,7 +128,7 @@ Load the skill that matches what the diff touches, and apply its rules:
 - Disabled tests reference a bug.
 - Presubmit, lint, and format pass. See `devtools-verification`.
 
-## 7. Writing review comments
+## 8. Writing review comments
 
 - Be specific: cite file and line, explain the concrete failure mode (such as
   a leak, a hang, or "passes vacuously"), and suggest a fix. Include a code

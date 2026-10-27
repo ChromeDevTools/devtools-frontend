@@ -121,6 +121,31 @@ See the section about [Creating demos for crbugs](https://github.com/ChromeDevTo
 and check out the [README](https://github.com/ChromeDevTools/devtools-dbg-stories#readme) for more information about non-trivial test
 cases and the like.
 
+## Code review
+
+- **AI pre-review (`ChromiumCodeReviewAgent`)**: Run `Commit-Queue+1`
+  (`git cl upload --cq-dry-run`) before adding human reviewers to the attention
+  set, and address or reply to `ERROR`/`WARNING` findings in the Gerrit Checks
+  tab. (Googlers: link `@chromium.org` and `@google.com` at
+  <https://chromium-review.googlesource.com/settings/#Identities>.)
+- **Strict at module boundaries, relaxed inside module interiors**: Human and
+  automated reviews strictly enforce module boundaries: entrypoint exports,
+  cross-module imports and GN `visibility`, `core -> models -> ui -> panels`
+  layering, `SettingDescriptor` placement (lowest-layer rule), public
+  widget/component APIs, and CDP contracts. Implementation details behind a
+  module entrypoint are governed by tests and lint rules rather than subjective
+  style preferences.
+- **Block-and-codify**: If a reviewer blocks a CL on an uncodified pattern,
+  that pattern should be codified within a week as an ESLint/Stylelint rule, a
+  GN visibility check, a test, or an in-tree review rule under
+  `.agents/rules/`.
+- **Large-scale migrations**: Repo-wide migrations require an owner-approved
+  goal and mechanical verification (lint/typecheck/tests proving the target
+  state). Mechanical or test-only migration CLs that pass presubmit, tryjobs,
+  and `ChromiumCodeReviewAgent` with zero `ERROR`/`WARNING` findings may be
+  sent to any `COMMON_OWNERS` reviewer for a quick stamp rather than routing
+  exclusively to a single domain lead.
+
 ## Merges and cherry-picks
 
 _Merge request/approval is handled by Chromium Release Managers. DevTools follows [Chromium's merge criteria](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/docs/process/merge_request.md#merge-criteria-phases). In exceptional cases please get in touch with hablich@chromium.org._

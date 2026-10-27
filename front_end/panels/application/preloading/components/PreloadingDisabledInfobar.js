@@ -132,8 +132,8 @@ export class PreloadingDisabledInfobar extends UI.Widget.VBox {
     #disabledByBatterySaver = false;
     #disabledByHoldbackPrefetchSpeculationRules = false;
     #disabledByHoldbackPrerenderSpeculationRules = false;
-    constructor(view = DEFAULT_VIEW) {
-        super({ useShadowDom: true });
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true, classes: ['flex-none'] });
         this.#view = view;
     }
     get disabledByPreference() {

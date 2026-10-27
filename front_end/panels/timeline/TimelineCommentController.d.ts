@@ -2,7 +2,7 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 import * as Trace from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Overlays from './overlays/overlays.js';
-import type { TimelineFlameChartDataProvider } from './TimelineFlameChartDataProvider.js';
+import { type TimelineFlameChartDataProvider } from './TimelineFlameChartDataProvider.js';
 import type { TimelineFlameChartNetworkDataProvider } from './TimelineFlameChartNetworkDataProvider.js';
 /**
  * Supplies the flame charts, data providers, overlays and events serializer
@@ -25,10 +25,10 @@ export interface TimelineCommentControllerDelegate {
  * flame chart canvas:
  * - It registers a CustomAnchorResolver that maps a pointer position on a
  *   flame chart canvas to a timeline anchor.
- * - It keeps one COMMENT_PIN overlay per thread on the current trace. Overlays
- *   positions each COMMENT_PIN element over its entry, and the resolver
- *   returns that element from getAnchorElement() so the shared overlay can
- *   draw the pin on it.
+ * - It keeps one COMMENT_PIN overlay for each thread on the current trace
+ *   whose entry it finds. Overlays positions each COMMENT_PIN element over its
+ *   entry, and the resolver returns that element from getAnchorElement() so
+ *   the shared overlay can draw the pin on it.
  * - It requests repositioning after every Overlays update, because panning or
  *   zooming the flame chart moves the COMMENT_PIN elements without any DOM
  *   scroll or resize.
@@ -42,14 +42,14 @@ export declare class TimelineCommentController {
      */
     setParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): void;
     /**
-     * Starts listening for thread and overlay changes, registers the anchor
-     * resolver and shows pins for existing threads.
+     * Starts listening for thread, overlay and flame chart data changes,
+     * registers the anchor resolver and shows pins for existing threads.
      */
     wasShown(): void;
     /**
-     * Stops listening for thread and overlay changes and unregisters the anchor
-     * resolver. The final notification removes the shared pins, because the
-     * resolver no longer supplies their anchor elements.
+     * Stops listening for thread, overlay and flame chart data changes and
+     * unregisters the anchor resolver. The final notification removes the shared
+     * pins, because the resolver no longer supplies their anchor elements.
      */
     willHide(): void;
 }

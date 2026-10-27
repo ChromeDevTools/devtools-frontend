@@ -75,13 +75,7 @@ export class ListNetworkRequestsTool {
                 };
             }
             return {
-                result: JSON.stringify([]),
-                widgets: [{
-                        name: 'NETWORK_REQUESTS_LIST',
-                        data: {
-                            requests: [],
-                        },
-                    }],
+                error: 'No network requests have been recorded. DevTools only records requests made while DevTools is open and network recording is enabled (and the log has not been cleared). Ask the user to ensure network recording is enabled, reload the page or repeat the action that triggers the request, and try again.',
             };
         }
         return {

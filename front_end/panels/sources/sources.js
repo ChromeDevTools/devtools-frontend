@@ -3913,6 +3913,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -6403,10 +6404,10 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     html6`
         <style>${navigatorView_css_default}</style>
         <slot name="header"></slot>
-        <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+        <div class="vbox flex-auto" ?hidden=${!showPlaceholder}>
           <slot name="placeholder"></slot>
         </div>
-        <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
+        <div class="vbox flex-auto" ?hidden=${showPlaceholder}>
           ${input.treeElement}
         </div>
       `,
@@ -6592,8 +6593,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     this.#view(
       {
         treeElement: this.scriptsTree.element,
-        showTree: Boolean(this.scriptsTree.firstChild()),
-        onContextMenu: this.handleContextMenu.bind(this)
+        showTree: Boolean(this.scriptsTree.firstChild())
       },
       void 0,
       this.contentElement
@@ -6707,9 +6707,6 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
       this.computeUniqueFileSystemProjectNames();
     }
-  }
-  workspace() {
-    return this.#workspace;
   }
   acceptProject(project) {
     if (this.#projectFilter) {
@@ -7072,7 +7069,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
         return true;
       }
       currentNode = currentNode.parent;
-      if (!(node instanceof NavigatorGroupTreeNode || node instanceof NavigatorFolderTreeElement)) {
+      if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
         break;
       }
     }
@@ -7160,8 +7157,6 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (!tearDownOnly) {
       this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
     }
-  }
-  handleContextMenu(_event) {
   }
   async renameShortcut() {
     const selectedTreeElement = this.scriptsTree.selectedTreeElement;

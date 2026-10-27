@@ -1599,6 +1599,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -5011,7 +5012,7 @@ function escapeAsSingleQuotedJsString(text) {
 }
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
-var { html: html7, nothing, render: render4, Directives: { classMap: classMap2, ref: ref3 } } = Lit5;
+var { html: html7, nothing, render: render4, Directives: { classMap: classMap2, ref: ref3, until } } = Lit5;
 var ASTUtils = SDK4.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 var GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -5431,7 +5432,6 @@ var AttributeRenderer = class extends AttributeRendererBase {
     const typeClass = typeError ? "inactive" : "";
     const fallbackClass = fromFallback ? "" : "inactive";
     const computedValue = attributeValue ?? match.fallbackValue();
-    const varSwatch = document.createElement("span");
     const substitution = context.tracing?.substitution({ match, context });
     if (substitution) {
       if (fromFallback) {
@@ -5471,23 +5471,22 @@ var AttributeRenderer = class extends AttributeRendererBase {
     );
     const tooltipId = attributeMissing ? void 0 : this.#treeElement?.getTooltipId("custom-attribute");
     const tooltip = tooltipId ? { tooltipId } : void 0;
-    render4(html7`
-        <span data-title=${computedValue || ""}
-              jslog=${VisualLogging3.link("css-variable").track({ click: true, hover: true })}
+    const varSwatch = html7`<span
+        data-title=${computedValue || ""}
+        jslog=${VisualLogging3.link("css-variable").track({ click: true, hover: true })}
         >${attrCall ?? "attr"}(<devtools-link-swatch class=${attributeClass} .data=${{
       tooltip,
       text: match.name,
       isDefined: true,
       onLinkActivate: () => this.#handleAttributeActivate(this.#matchedStyles.originatingNodeForStyle(match.style), match.name)
-    }}></devtools-link-swatch>${tooltipId ? html7`
-          <devtools-tooltip
-            id=${tooltipId}
-            variant=rich
-            jslogContext=elements.css-var
-          >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${match.type ? html7` <span class=${typeClass}>${match.type}</span>` : nothing}${renderedFallback ? html7`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing})</span>`, varSwatch);
+    }}></devtools-link-swatch>${tooltipId ? html7`<devtools-tooltip
+          id=${tooltipId}
+          variant=rich
+          jslogContext=elements.css-var
+        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${match.type ? html7` <span class=${typeClass}>${match.type}</span>` : nothing}${renderedFallback ? html7`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing})</span>`;
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
-      return [varSwatch];
+      return varSwatch;
     }
     const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl("color", colorSwatch);
@@ -5498,7 +5497,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
         })
       );
     }
-    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` : [colorSwatch, varSwatch];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` : html7`${colorSwatch}${varSwatch}`;
   }
   #handleAttributeActivate(node, attribute) {
     if (!node) {
@@ -5546,31 +5545,24 @@ var RelativeColorChannelRenderer = class extends RelativeColorChannelRendererBas
   render(match, context) {
     const color = context.findParent(match.node, SDK4.CSSPropertyParserMatchers.ColorMatch);
     if (!color?.relativeColor) {
-      return [document.createTextNode(match.text)];
+      return html7`${match.text}`;
     }
     const value5 = match.getColorChannelValue(color.relativeColor);
     if (value5 === null) {
-      return [document.createTextNode(match.text)];
+      return html7`${match.text}`;
     }
-    const evaluation = context.tracing?.applyEvaluation([], () => ({ placeholder: [document.createTextNode(value5.toFixed(3))] }));
+    const evaluation = context.tracing?.applyEvaluation([], () => ({ placeholder: html7`${value5.toFixed(3)}` }));
     if (evaluation) {
       return evaluation;
     }
-    const span = document.createElement("span");
-    span.append(match.text);
     const tooltipId = this.#treeElement?.getTooltipId("relative-color-channel");
     if (!tooltipId) {
-      return [span];
+      return html7`<span>${match.text}</span>`;
     }
-    span.setAttribute("aria-details", tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip({
-      id: tooltipId,
-      variant: "rich",
-      anchor: span,
-      jslogContext: "elements.relative-color-channel"
-    });
-    tooltip.append(value5.toFixed(3));
-    return [span, tooltip];
+    return html7`<span aria-details=${tooltipId}>${match.text}</span><devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.relative-color-channel>${value5.toFixed(3)}</devtools-tooltip>`;
   }
 };
 var ColorRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.ColorMatch);
@@ -5724,36 +5716,33 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
   }
+  #renderContent(match, light, dark, activeColor) {
+    const lightClasses = classMap2({ "inactive-value": activeColor === match.dark });
+    const darkClasses = classMap2({ "inactive-value": activeColor === match.light });
+    return html7`<span>light-dark(<span class=${lightClasses}>${light}</span>, <span class=${darkClasses}>${dark}</span>)</span>`;
+  }
   render(match, context) {
-    const content = document.createElement("span");
-    content.appendChild(document.createTextNode("light-dark("));
-    const light = content.appendChild(document.createElement("span"));
-    content.appendChild(document.createTextNode(", "));
-    const dark = content.appendChild(document.createElement("span"));
-    content.appendChild(document.createTextNode(")"));
-    const { cssControls: lightControls } = Renderer.renderInto(match.light, context, light);
-    const { cssControls: darkControls } = Renderer.renderInto(match.dark, context, dark);
+    const { nodes: light, cssControls: lightControls } = Renderer.render(match.light, context);
+    const { nodes: dark, cssControls: darkControls } = Renderer.render(match.dark, context);
+    const content = this.#renderContent(match, light, dark);
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
-      return [content];
+      return content;
     }
     const color = Common.Color.parse(
       context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1])
     );
     if (!color) {
-      return [content];
+      return content;
     }
     const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(void 0, match, context);
     context.addControl("color", colorSwatch);
-    void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
-    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` : [colorSwatch, content];
+    const styledContent = until(this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls), content);
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${styledContent}</devtools-widget>` : html7`${colorSwatch}${styledContent}`;
   }
   async applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls) {
     const activeColor = await this.#activeColor(match);
-    if (context.signal?.aborted) {
-      return;
-    }
-    if (!activeColor) {
-      return;
+    if (context.signal?.aborted || !activeColor) {
+      return this.#renderContent(match, light, dark);
     }
     const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get("color");
     activeColorSwatches?.forEach(
@@ -5762,13 +5751,12 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
         (ev) => colorSwatch.setColor(ev.data.color)
       )
     );
-    const inactiveColor = activeColor === match.light ? dark : light;
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common.Color.parse(colorText);
-    inactiveColor.classList.add("inactive-value");
     if (color) {
       colorSwatch.renderColor(color);
     }
+    return this.#renderContent(match, light, dark, activeColor);
   }
   // Returns the syntax node group corresponding the active color scheme:
   // If the element has color-scheme set to light or dark, return the respective group.
@@ -6809,6 +6797,7 @@ var PositionAreaRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.Posit
 var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRendererBase {
   // clang-format on
   static #active;
+  static #EDITABLE_PROPERTIES = ["align-self", "justify-self"];
   #treeElement;
   #stylesContainer;
   constructor(stylesContainer, treeElement) {
@@ -6835,7 +6824,10 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
         }
       }
     }
-    return activeSection?.propertiesTreeOutline?.rootElement().children().find(
+    return this.#findPropertyInSection(activeSection, propertyName);
+  }
+  #findPropertyInSection(section5, propertyName) {
+    return section5?.propertiesTreeOutline?.rootElement().children().find(
       (child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName
     );
   }
@@ -6855,6 +6847,7 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
     const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
     const isActive = Boolean(_PositionAreaRenderer.#active && popoverHelper.isShowing(_PositionAreaRenderer.#active.editor) && key2 !== void 0 && _PositionAreaRenderer.#active.key === key2);
     if (isActive && _PositionAreaRenderer.#active) {
+      treeElement.carryOverCommittedProperty(_PositionAreaRenderer.#active.treeElement);
       _PositionAreaRenderer.#active.treeElement = treeElement;
       _PositionAreaRenderer.#active.edit = edit;
     }
@@ -6869,6 +6862,16 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
       _PositionAreaRenderer.#active = active;
       const valueText = context.edits?.getEdit(match) ?? context.matchedResult.getComputedPropertyValueText();
       editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueText) ?? void 0;
+      const initialProperties = /* @__PURE__ */ new Map();
+      for (const propertyName of _PositionAreaRenderer.#EDITABLE_PROPERTIES) {
+        const target = this.#findTreeElementForProperty(propertyName);
+        if (target) {
+          initialProperties.set(propertyName, {
+            value: target.property.value,
+            section: target.section()
+          });
+        }
+      }
       const updateProperty = (propertyName, computedStyle) => {
         const matchedStyles = active.treeElement.matchedStyles();
         const resolved = matchedStyles.resolveProperty(propertyName, active.treeElement.property.ownerStyle);
@@ -6932,6 +6935,22 @@ var PositionAreaRenderer = class _PositionAreaRenderer extends PositionAreaRende
         editor.removeEventListener(InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED, onPropertyChanged);
         const propertyText = commitEdit ? active.treeElement.renderedPropertyText() : originalPropertyText || "";
         void active.treeElement.applyStyleText(propertyText, true);
+        const node = this.#stylesContainer.node() ?? active.treeElement.matchedStyles().node();
+        for (const propertyName of _PositionAreaRenderer.#EDITABLE_PROPERTIES) {
+          const originalTarget = initialProperties.get(propertyName);
+          const targetSection = originalTarget?.section ?? active.treeElement.section();
+          const target = this.#findPropertyInSection(targetSection, propertyName);
+          const oldValue = originalTarget?.value ?? "";
+          const newValue = target?.property.value ?? "";
+          const ruleHeader = targetSection.headerText();
+          Elements.StyleChanges.trackStylePropertyEdit(this.#stylesContainer.changeTracker, node, {
+            ruleHeader,
+            oldName: oldValue ? propertyName : "",
+            oldValue,
+            newName: newValue ? propertyName : "",
+            newValue
+          });
+        }
         if (_PositionAreaRenderer.#active === active) {
           _PositionAreaRenderer.#active = void 0;
         }
@@ -7140,6 +7159,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI6.TreeO
     this.#lazyRender = false;
     this.property.removeEventListener(SDK4.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
     super.onunbind();
+  }
+  carryOverCommittedProperty(previous) {
+    this.#lastCommittedProperty = previous.#lastCommittedProperty;
   }
   async gridNames() {
     if (!SDK4.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {
@@ -8766,6 +8788,7 @@ import * as SDK5 from "../../core/sdk/sdk.js";
 import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 import * as Badges2 from "../../models/badges/badges.js";
 import * as Bindings2 from "../../models/bindings/bindings.js";
+import * as Elements3 from "../../models/elements/elements.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
@@ -10481,10 +10504,16 @@ ${allDeclarationText}
     void this.setHeaderText(rule, newContent).then(headerTextCommitted.bind(this));
   }
   setHeaderText(rule, newContent) {
-    function onSelectorsUpdated(rule2, success) {
+    function onSelectorsUpdated(rule2, oldSelector2, success) {
       if (!success) {
         return Promise.resolve();
       }
+      Elements3.StyleChanges.trackStyleSelectorChange(
+        this.stylesContainer.changeTracker,
+        this.stylesContainer.node() ?? this.matchedStyles.node(),
+        oldSelector2,
+        newContent
+      );
       Badges2.UserBadges.instance().recordAction(Badges2.BadgeAction.CSS_RULE_MODIFIED);
       return this.matchedStyles.recomputeMatchingSelectors(rule2).then(updateSourceRanges.bind(this, rule2));
     }
@@ -10501,8 +10530,9 @@ ${allDeclarationText}
     if (!oldSelectorRange) {
       return Promise.resolve();
     }
+    const oldSelector = rule.selectorText();
     this.#customHeaderText = void 0;
-    return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, Boolean(oldSelectorRange)));
+    return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, oldSelector));
   }
   editingSelectorCommittedForTest() {
   }
@@ -10581,6 +10611,11 @@ var BlankStylePropertiesSection = class extends StylePropertiesSection {
     function onAddedToCascade(newRule) {
       const doesSelectorAffectSelectedNode = this.matchedStyles.getMatchingSelectors(newRule).length > 0;
       this.makeNormal(newRule);
+      Elements3.StyleChanges.trackStyleRuleAdded(
+        this.stylesContainer.changeTracker,
+        this.stylesContainer.node() ?? this.matchedStyles.node(),
+        newRule.selectorText()
+      );
       if (!doesSelectorAffectSelectedNode) {
         this.propertiesTreeOutline.element.classList.add("no-affect");
       }
@@ -10634,7 +10669,14 @@ var RegisteredPropertiesSection = class extends StylePropertiesSection {
     if (!oldRange) {
       return;
     }
+    const oldName = rule.propertyName().text;
     if (await rule.setPropertyName(newContent)) {
+      Elements3.StyleChanges.trackPropertyRuleNameChange(
+        this.stylesContainer.changeTracker,
+        this.stylesContainer.node() ?? this.matchedStyles.node(),
+        oldName,
+        newContent
+      );
       this.stylesContainer.forceUpdate();
     }
   }
@@ -10751,10 +10793,16 @@ var KeyframePropertiesSection = class extends StylePropertiesSection {
     return "";
   }
   setHeaderText(rule, newContent) {
-    function updateSourceRanges(success) {
+    function updateSourceRanges(oldKey2, success) {
       if (!success) {
         return;
       }
+      Elements3.StyleChanges.trackKeyframeKeyChange(
+        this.stylesContainer.changeTracker,
+        this.stylesContainer.node() ?? this.matchedStyles.node(),
+        oldKey2,
+        newContent
+      );
       this.stylesContainer.refreshUpdate(this);
     }
     if (!(rule instanceof SDK5.CSSRule.CSSKeyframeRule)) {
@@ -10764,7 +10812,8 @@ var KeyframePropertiesSection = class extends StylePropertiesSection {
     if (!oldRange) {
       return Promise.resolve();
     }
-    return rule.setKeyText(newContent).then(updateSourceRanges.bind(this));
+    const oldKey = rule.key().text;
+    return rule.setKeyText(newContent).then(updateSourceRanges.bind(this, oldKey));
   }
   isPropertyInherited(_propertyName) {
     return false;
@@ -12926,18 +12975,18 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     const toolbarPaneContent = toolbarPaneContainer.createChild("div", "styles-sidebar-toolbar-pane");
     return toolbarPaneContent;
   }
-  showToolbarPane(widget5, toggle4) {
+  showToolbarPane(widget5, toggle5) {
     if (this.pendingWidgetToggle) {
       this.pendingWidgetToggle.setToggled(false);
     }
-    this.pendingWidgetToggle = toggle4;
+    this.pendingWidgetToggle = toggle5;
     if (this.animatedToolbarPane) {
       this.pendingWidget = widget5;
     } else {
       this.startToolbarPaneAnimation(widget5);
     }
-    if (widget5 && toggle4) {
-      toggle4.setToggled(true);
+    if (widget5 && toggle5) {
+      toggle5.setToggled(true);
     }
   }
   appendToolbarItem(item2) {
@@ -15893,7 +15942,7 @@ import * as i18n32 from "../../core/i18n/i18n.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
 import * as Badges4 from "../../models/badges/badges.js";
 import * as ChangeTracker5 from "../../models/change_tracker/change_tracker.js";
-import * as Elements4 from "../../models/elements/elements.js";
+import * as Elements5 from "../../models/elements/elements.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as CodeHighlighter5 from "../../ui/components/code_highlighter/code_highlighter.js";
 import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
@@ -16460,7 +16509,7 @@ import * as AIAssistance from "../../models/ai-utils/ai-utils.js";
 import * as Badges3 from "../../models/badges/badges.js";
 import * as Bindings5 from "../../models/bindings/bindings.js";
 import * as ChangeTracker3 from "../../models/change_tracker/change_tracker.js";
-import * as Elements3 from "../../models/elements/elements.js";
+import * as Elements4 from "../../models/elements/elements.js";
 import * as IssuesManager2 from "../../models/issues_manager/issues_manager.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
@@ -16739,7 +16788,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     return html13`
         <div id=${state.state}>
           <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
-              jslog=${VisualLogging9.toggle(state.state).track({ change: true })} ?checked=${state.checked} ?disabled=${state.disabled}
+              jslog=${VisualLogging9.toggle(state.state).track({ change: true })} .checked=${Boolean(state.checked)} ?disabled=${state.disabled}
               title=${":" + state.state}>
           <span class="source-code">${":" + state.state}</span>
         </devtools-checkbox>
@@ -17128,7 +17177,7 @@ function buildChangeSelector(tracker, node) {
   }
   return void 0;
 }
-var { html: html15, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ifDefined: ifDefined2, ref: ref6, repeat, styleMap, until } } = Lit8;
+var { html: html15, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ifDefined: ifDefined2, ref: ref6, repeat, styleMap, until: until2 } } = Lit8;
 var { animateOn } = UI15.UIUtils;
 var { RegisteredAdorners } = ElementsComponents5.AdornerManager;
 var UIStrings14 = {
@@ -17710,7 +17759,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   } else if (valueType === 2 /* SRCSET */) {
     valueContent = renderLinkifiedSrcset(Common9.Srcset.parseSrcset(value5), node);
   } else if (linkifyValue && relationPromise) {
-    valueContent = until(relationPromise, value5);
+    valueContent = until2(relationPromise, value5);
   } else if (valueType === 0 /* UNKNOWN */ && !isRelation) {
     valueContent = html15`<span ${ref6((el) => {
       if (el) {
@@ -17728,7 +17777,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     "violating-element": hasAttributeIssues
   };
   return html15`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap3(attributeNameClasses)}
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html15`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until2(relationPromise, name) : name}</span>${hasText ? html15`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
     Boolean(updateRecord?.isAttributeModified(name) && hasText),
     DOM_UPDATE_ANIMATION_CLASS_NAME
   )}>${valueContent}</span>"` : nothing5}</span>`;
@@ -19035,7 +19084,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
       const changeTracker = this.changeTracker;
       this.node.setAttribute(attributeName, newText, (error) => {
         if (!error) {
-          Elements3.DOMChanges.trackAttributeEdit(
+          Elements4.DOMChanges.trackAttributeEdit(
             changeTracker,
             this.node,
             buildChangeSelector(changeTracker, this.node),
@@ -19089,7 +19138,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
         return;
       }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      Elements3.DOMChanges.trackTagNameEdit(
+      Elements4.DOMChanges.trackTagNameEdit(
         changeTracker,
         newNode,
         buildChangeSelector(changeTracker, newNode),
@@ -19107,7 +19156,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     const changeTracker = this.changeTracker;
     textNode.setNodeValue(newText, (error) => {
       if (!error && oldValue !== newText) {
-        Elements3.DOMChanges.trackTextNodeEdit(
+        Elements4.DOMChanges.trackTextNodeEdit(
           changeTracker,
           textNode,
           buildChangeSelector(changeTracker, textNode),
@@ -19224,7 +19273,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
     const selector = buildChangeSelector(changeTracker, this.node);
     await this.node.removeNode((err) => {
       if (!err) {
-        Elements3.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
+        Elements4.DOMChanges.trackNodeRemoval(changeTracker, this.node, selector);
       }
     });
   }
@@ -19246,7 +19295,7 @@ var DOMTreeElementWidget = class _DOMTreeElementWidget extends UI15.Widget.Widge
         const selector = buildChangeSelector(changeTracker, node);
         node.setOuterHTML(value5, (error) => {
           if (!error) {
-            Elements3.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value5);
+            Elements4.DOMChanges.trackHTMLEdit(changeTracker, node, selector, initialValue, value5);
           }
           selectNode(error);
         });
@@ -21552,7 +21601,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   #addUpdateRecord(node) {
     let record = this.#updateRecords.get(node);
     if (!record) {
-      record = new Elements4.ElementUpdateRecord.ElementUpdateRecord();
+      record = new Elements5.ElementUpdateRecord.ElementUpdateRecord();
       this.#updateRecords.set(node, record);
     }
     return record;
@@ -22240,7 +22289,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     const isHidden = this.isToggledToHidden(node);
     if (isHidden !== wasHidden) {
       const changeTracker = this.changeTracker;
-      Elements4.DOMChanges.trackVisibilityToggle(
+      Elements5.DOMChanges.trackVisibilityToggle(
         changeTracker,
         node,
         buildChangeSelector(changeTracker, node),
@@ -22262,7 +22311,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     const selector = buildChangeSelector(changeTracker, node);
     await node.removeNode((err) => {
       if (!err) {
-        Elements4.DOMChanges.trackNodeRemoval(changeTracker, node, selector);
+        Elements5.DOMChanges.trackNodeRemoval(changeTracker, node, selector);
       }
     });
   }
@@ -22351,7 +22400,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     void node.duplicate().then(({ error, node: newNode }) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements4.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
+        Elements5.DOMChanges.trackNodeDuplication(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
     });
   }
@@ -22476,7 +22525,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements4.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
+        Elements5.DOMChanges.trackNodeDrop(changeTracker, newNode, buildChangeSelector(changeTracker, newNode));
       }
       this.selectNodeAfterEdit(wasExpanded, error, newNode);
     });
@@ -22701,7 +22750,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     node.moveTo(parentNode, anchor, (error, newNode) => {
       if (!error && newNode) {
         const changeTracker = this.changeTracker;
-        Elements4.DOMChanges.trackNodeMove(
+        Elements5.DOMChanges.trackNodeMove(
           changeTracker,
           newNode,
           buildChangeSelector(changeTracker, newNode),
@@ -22808,7 +22857,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       clipboardNode.moveTo(targetNode, null, (error, newNode) => {
         if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements4.DOMChanges.trackNodePaste(
+          Elements5.DOMChanges.trackNodePaste(
             changeTracker,
             newNode,
             buildChangeSelector(changeTracker, newNode),
@@ -22823,7 +22872,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       clipboardNode.copyTo(targetNode, null, (error, newNode) => {
         if (!error && newNode) {
           const changeTracker = this.changeTracker;
-          Elements4.DOMChanges.trackNodePaste(
+          Elements5.DOMChanges.trackNodePaste(
             changeTracker,
             newNode,
             buildChangeSelector(changeTracker, newNode),
@@ -24738,8 +24787,8 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   resolveLocation(_locationName) {
     return this.sidebarPaneView || null;
   }
-  showToolbarPane(widget5, toggle4) {
-    this.stylesWidget.showToolbarPane(widget5, toggle4);
+  showToolbarPane(widget5, toggle5) {
+    this.stylesWidget.showToolbarPane(widget5, toggle5);
   }
   modelAdded(domModel) {
     this.setupStyleTracking(domModel.cssModel());
@@ -26275,13 +26324,15 @@ var ClassesPaneWidget_exports = {};
 __export(ClassesPaneWidget_exports, {
   ButtonProvider: () => ButtonProvider4,
   ClassNamePrompt: () => ClassNamePrompt,
-  ClassesPaneWidget: () => ClassesPaneWidget
+  ClassesPaneWidget: () => ClassesPaneWidget,
+  DEFAULT_VIEW: () => DEFAULT_VIEW12
 });
 import * as Common18 from "../../core/common/common.js";
 import * as i18n44 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
 import * as UI25 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html22, render as render18 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/classesPaneWidget.css.js
@@ -26355,33 +26406,54 @@ var UIStrings22 = {
 };
 var str_22 = i18n44.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings22);
 var i18nString21 = i18n44.i18n.getLocalizedString.bind(void 0, str_22);
+var { ref: ref7, repeat: repeat3 } = Directives3;
+var DEFAULT_VIEW12 = (input, output, target) => {
+  const onKeyDown = (event) => {
+    if (event.key === Platform12.KeyboardUtilities.ENTER_KEY && !event.isComposing) {
+      event.consume();
+      input.onCommit();
+    } else if (Platform12.KeyboardUtilities.isEscKey(event) && input.onCancel()) {
+      event.consume(true);
+    }
+  };
+  render18(html22`
+    <style>${classesPaneWidget_css_default}</style>
+    <div class="styles-element-classes-pane">
+      <div class="title-container" @keydown=${onKeyDown}>
+        <div class="new-class-input monospace" autofocus ${ref7((element) => {
+    output.attachPrompt = element instanceof HTMLElement ? (prompt) => prompt.attach(element) : void 0;
+  })}></div>
+      </div>
+      <div class="source-code styles-element-classes-container">
+        ${repeat3(input.classes, (item2) => item2.className, (item2) => html22`
+          <devtools-checkbox
+              class="monospace"
+              small
+              .checked=${item2.enabled}
+              title=${item2.className}
+              jslog=${VisualLogging18.toggle("element-class").track({ change: true })}
+              @click=${(event) => input.onClick(item2.className, event.target.checked)}>${item2.className}</devtools-checkbox>`)}
+      </div>
+    </div>`, target);
+};
 var ClassesPaneWidget = class extends UI25.Widget.Widget {
-  input;
-  classesContainer;
-  prompt;
-  mutatingNodes;
-  pendingNodeClasses;
-  updateNodeThrottler;
-  previousTarget;
-  constructor() {
-    super({
+  #view;
+  #prompt;
+  #promptAttached = false;
+  #mutatingNodes;
+  #pendingNodeClasses;
+  #updateNodeThrottler;
+  #previousTarget;
+  constructor(element, view = DEFAULT_VIEW12) {
+    super(element, {
       jslog: `${VisualLogging18.pane("elements-classes")}`,
       useShadowDom: true
     });
-    this.registerRequiredCSS(classesPaneWidget_css_default);
-    this.contentElement.className = "styles-element-classes-pane";
-    const container = this.contentElement.createChild("div", "title-container");
-    this.input = container.createChild("div", "new-class-input monospace");
-    this.setDefaultFocusedElement(this.input);
-    this.classesContainer = this.contentElement.createChild("div", "source-code");
-    this.classesContainer.classList.add("styles-element-classes-container");
-    this.prompt = new ClassNamePrompt(this.nodeClasses.bind(this));
-    this.prompt.setAutocompletionTimeout(0);
-    this.prompt.renderAsBlock();
-    const proxyElement = this.prompt.attach(this.input);
-    this.prompt.setPlaceholder(i18nString21(UIStrings22.addNewClass));
-    this.prompt.addEventListener(UI25.TextPrompt.Events.TEXT_CHANGED, this.onTextChanged, this);
-    proxyElement.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    this.#view = view;
+    this.#prompt = new ClassNamePrompt(this.nodeClasses.bind(this));
+    this.#prompt.setAutocompletionTimeout(0);
+    this.#prompt.renderAsBlock();
+    this.#prompt.addEventListener(UI25.TextPrompt.Events.TEXT_CHANGED, this.onTextChanged, this);
     SDK22.TargetManager.TargetManager.instance().addModelListener(
       SDK22.DOMModel.DOMModel,
       SDK22.DOMModel.Events.DOMMutated,
@@ -26389,35 +26461,29 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
       this,
       { scoped: true }
     );
-    this.mutatingNodes = /* @__PURE__ */ new Set();
-    this.pendingNodeClasses = /* @__PURE__ */ new Map();
-    this.updateNodeThrottler = new Common18.Throttler.Throttler(0);
-    this.previousTarget = null;
+    this.#mutatingNodes = /* @__PURE__ */ new Set();
+    this.#pendingNodeClasses = /* @__PURE__ */ new Map();
+    this.#updateNodeThrottler = new Common18.Throttler.Throttler(0);
+    this.#previousTarget = null;
     UI25.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
   }
   splitTextIntoClasses(text) {
     return text.split(/[,\s]/).map((className) => className.trim().replace(/^\./, "")).filter((className) => className.length);
   }
-  onKeyDown(event) {
-    if (!(event.key === "Enter") && !Platform12.KeyboardUtilities.isEscKey(event)) {
+  onCommit() {
+    if (this.#prompt.acceptAutoComplete()) {
       return;
     }
-    if (event.key === "Enter") {
-      event.consume();
-      if (this.prompt.acceptAutoComplete()) {
-        return;
-      }
-    }
-    const eventTarget = event.target;
-    let text = eventTarget.textContent;
-    if (Platform12.KeyboardUtilities.isEscKey(event)) {
-      if (!Platform12.StringUtilities.isWhitespace(text)) {
-        event.consume(true);
-      }
-      text = "";
-    }
-    this.prompt.clearAutocomplete();
-    eventTarget.textContent = "";
+    this.applyPromptText(this.#prompt.text());
+  }
+  /** Discards the prompt text and returns whether there was any non-whitespace text to discard. */
+  onCancel() {
+    const hadText = !Platform12.StringUtilities.isWhitespace(this.#prompt.text());
+    this.applyPromptText("");
+    return hadText;
+  }
+  applyPromptText(text) {
+    this.#prompt.setText("");
     const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!node) {
       return;
@@ -26434,7 +26500,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     const announcementString = classNames.length > 1 ? i18nString21(UIStrings22.classesSAdded, { PH1: joinClassString }) : i18nString21(UIStrings22.classSAdded, { PH1: joinClassString });
     UI25.ARIAUtils.LiveAnnouncer.alert(announcementString);
     this.installNodeClasses(node);
-    this.update();
+    this.requestUpdate();
   }
   onTextChanged() {
     const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
@@ -26445,55 +26511,57 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
   }
   onDOMMutated(event) {
     const node = event.data;
-    if (this.mutatingNodes.has(node)) {
+    if (this.#mutatingNodes.has(node)) {
       return;
     }
     cachedClassesMap.delete(node);
-    this.update();
+    this.requestUpdate();
   }
   onSelectedNodeChanged(event) {
-    if (this.previousTarget && this.prompt.text()) {
-      this.input.textContent = "";
-      this.installNodeClasses(this.previousTarget);
+    if (this.#previousTarget && this.#promptAttached && this.#prompt.text()) {
+      this.#prompt.setText("");
+      this.installNodeClasses(this.#previousTarget);
     }
-    this.previousTarget = event.data;
-    this.update();
+    this.#previousTarget = event.data;
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
-    this.update();
+    this.performUpdate();
   }
-  update() {
-    if (!this.isShowing()) {
-      return;
-    }
+  performUpdate() {
     let node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
-    this.classesContainer.removeChildren();
-    this.input.disabled = !node;
-    if (!node) {
-      return;
-    }
-    const classes = this.nodeClasses(node);
+    const classes = node ? this.nodeClasses(node) : /* @__PURE__ */ new Map();
     const keys = [...classes.keys()];
     keys.sort(Platform12.StringUtilities.caseInsensetiveComparator);
-    for (const className of keys) {
-      const checkbox = UI25.UIUtils.CheckboxLabel.createWithStringLiteral(className, classes.get(className), "element-class", true);
-      checkbox.classList.add("monospace");
-      checkbox.addEventListener("click", this.onClick.bind(this, className), false);
-      this.classesContainer.appendChild(checkbox);
+    const input = {
+      classes: keys.map((className) => ({ className, enabled: Boolean(classes.get(className)) })),
+      onCommit: this.onCommit.bind(this),
+      onCancel: this.onCancel.bind(this),
+      onClick: this.onClick.bind(this)
+    };
+    const output = {};
+    this.#view(input, output, this.contentElement);
+    if (output.attachPrompt && !this.#promptAttached) {
+      output.attachPrompt(this.#prompt);
+      this.#prompt.setPlaceholder(i18nString21(UIStrings22.addNewClass));
+      this.#promptAttached = true;
+    }
+    if (this.#promptAttached) {
+      this.#prompt.setEnabled(Boolean(node));
     }
   }
-  onClick(className, event) {
+  onClick(className, enabled) {
     const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!node) {
       return;
     }
-    const enabled = event.target.checked;
     this.toggleClass(node, className, enabled);
     this.installNodeClasses(node);
+    this.requestUpdate();
   }
   nodeClasses(node) {
     let result = cachedClassesMap.get(node);
@@ -26525,25 +26593,25 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
         activeClasses.add(className);
       }
     }
-    const additionalClasses = this.splitTextIntoClasses(this.prompt.textWithCurrentSuggestion());
+    const additionalClasses = this.splitTextIntoClasses(this.#prompt.textWithCurrentSuggestion());
     for (const className of additionalClasses) {
       activeClasses.add(className);
     }
     const newClasses = [...activeClasses.values()].sort();
-    this.pendingNodeClasses.set(node, newClasses.join(" "));
-    void this.updateNodeThrottler.schedule(this.flushPendingClasses.bind(this));
+    this.#pendingNodeClasses.set(node, newClasses.join(" "));
+    void this.#updateNodeThrottler.schedule(this.flushPendingClasses.bind(this));
   }
   async flushPendingClasses() {
     const promises = [];
-    for (const node of this.pendingNodeClasses.keys()) {
-      this.mutatingNodes.add(node);
-      const promise = node.setAttributeValuePromise("class", this.pendingNodeClasses.get(node)).then(onClassValueUpdated.bind(this, node));
+    for (const node of this.#pendingNodeClasses.keys()) {
+      this.#mutatingNodes.add(node);
+      const promise = node.setAttributeValuePromise("class", this.#pendingNodeClasses.get(node)).then(onClassValueUpdated.bind(this, node));
       promises.push(promise);
     }
-    this.pendingNodeClasses.clear();
+    this.#pendingNodeClasses.clear();
     await Promise.all(promises);
     function onClassValueUpdated(node) {
-      this.mutatingNodes.delete(node);
+      this.#mutatingNodes.delete(node);
     }
   }
 };
@@ -26653,7 +26721,7 @@ var ClassNamePrompt = class extends UI25.TextPrompt.TextPrompt {
 // ../../front_end/panels/elements/StandaloneStylesContainer.ts
 var StandaloneStylesContainer_exports = {};
 __export(StandaloneStylesContainer_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW13,
   Events: () => Events2,
   StandaloneStylesContainer: () => StandaloneStylesContainer
 });
@@ -26662,13 +26730,13 @@ import * as ComputedStyle4 from "../../models/computed_style/computed_style.js";
 import * as InlineEditor5 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components7 from "../../ui/legacy/components/utils/utils.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
-import { html as html22, render as render18 } from "../../ui/lit/lit.js";
+import { html as html23, render as render19 } from "../../ui/lit/lit.js";
 import * as SettingsUI10 from "../../ui/settings/settings.js";
 import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents8 from "./components/components.js";
-var DEFAULT_VIEW12 = (input, _output, target) => {
-  render18(
-    html22`
+var DEFAULT_VIEW13 = (input, _output, target) => {
+  render19(
+    html23`
     <style>${stylesSidebarPane_css_default}</style>
     <div class="style-panes-wrapper" jslog=${VisualLogging19.section("standalone-styles").track({
       resize: true
@@ -26702,7 +26770,7 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   #view;
   #filter = null;
   #rebuildThrottler = new Common19.Throttler.Throttler(200);
-  constructor(element, view = DEFAULT_VIEW12) {
+  constructor(element, view = DEFAULT_VIEW13) {
     super(element, { useShadowDom: true });
     this.#view = view;
   }

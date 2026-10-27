@@ -40,6 +40,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Elements from '../../models/elements/elements.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import { createIcon } from '../../ui/kit/kit.js';
@@ -1696,10 +1697,11 @@ export class StylePropertiesSection {
         void this.setHeaderText(rule, newContent).then(headerTextCommitted.bind(this));
     }
     setHeaderText(rule, newContent) {
-        function onSelectorsUpdated(rule, success) {
+        function onSelectorsUpdated(rule, oldSelector, success) {
             if (!success) {
                 return Promise.resolve();
             }
+            Elements.StyleChanges.trackStyleSelectorChange(this.stylesContainer.changeTracker, this.stylesContainer.node() ?? this.matchedStyles.node(), oldSelector, newContent);
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CSS_RULE_MODIFIED);
             return this.matchedStyles.recomputeMatchingSelectors(rule).then(updateSourceRanges.bind(this, rule));
         }
@@ -1716,8 +1718,9 @@ export class StylePropertiesSection {
         if (!oldSelectorRange) {
             return Promise.resolve();
         }
+        const oldSelector = rule.selectorText();
         this.#customHeaderText = undefined;
-        return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, Boolean(oldSelectorRange)));
+        return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, oldSelector));
     }
     editingSelectorCommittedForTest() {
     }
@@ -1794,6 +1797,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
         function onAddedToCascade(newRule) {
             const doesSelectorAffectSelectedNode = this.matchedStyles.getMatchingSelectors(newRule).length > 0;
             this.makeNormal(newRule);
+            Elements.StyleChanges.trackStyleRuleAdded(this.stylesContainer.changeTracker, this.stylesContainer.node() ?? this.matchedStyles.node(), newRule.selectorText());
             if (!doesSelectorAffectSelectedNode) {
                 this.propertiesTreeOutline.element.classList.add('no-affect');
             }
@@ -1849,7 +1853,9 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
         if (!oldRange) {
             return;
         }
+        const oldName = rule.propertyName().text;
         if (await rule.setPropertyName(newContent)) {
+            Elements.StyleChanges.trackPropertyRuleNameChange(this.stylesContainer.changeTracker, this.stylesContainer.node() ?? this.matchedStyles.node(), oldName, newContent);
             this.stylesContainer.forceUpdate();
         }
     }
@@ -1974,10 +1980,11 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
         return '';
     }
     setHeaderText(rule, newContent) {
-        function updateSourceRanges(success) {
+        function updateSourceRanges(oldKey, success) {
             if (!success) {
                 return;
             }
+            Elements.StyleChanges.trackKeyframeKeyChange(this.stylesContainer.changeTracker, this.stylesContainer.node() ?? this.matchedStyles.node(), oldKey, newContent);
             this.stylesContainer.refreshUpdate(this);
         }
         if (!(rule instanceof SDK.CSSRule.CSSKeyframeRule)) {
@@ -1987,7 +1994,8 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
         if (!oldRange) {
             return Promise.resolve();
         }
-        return rule.setKeyText(newContent).then(updateSourceRanges.bind(this));
+        const oldKey = rule.key().text;
+        return rule.setKeyText(newContent).then(updateSourceRanges.bind(this, oldKey));
     }
     isPropertyInherited(_propertyName) {
         return false;

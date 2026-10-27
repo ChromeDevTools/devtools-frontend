@@ -56,7 +56,7 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement | ShadowRo
  **/
 export declare class UsedPreloadingView extends UI.Widget.VBox {
     #private;
-    constructor(view?: View);
+    constructor(element?: HTMLElement, view?: View);
     set data(data: UsedPreloadingViewData);
     performUpdate(): void;
 }

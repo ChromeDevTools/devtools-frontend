@@ -29,7 +29,7 @@ import { BinOpRenderer, EditableContent, Renderer, rendererBase, RenderingContex
 import { StyleEditorWidget } from './StyleEditorWidget.js';
 import { getCssDeclarationAsJavascriptProperty } from './StylePropertyUtils.js';
 import { CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME } from './StylesSidebarPane.js';
-const { html, nothing, render, Directives: { classMap, ref } } = Lit;
+const { html, nothing, render, Directives: { classMap, ref, until } } = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -435,7 +435,6 @@ export class AttributeRenderer extends AttributeRendererBase {
         const typeClass = typeError ? 'inactive' : '';
         const fallbackClass = fromFallback ? '' : 'inactive';
         const computedValue = attributeValue ?? match.fallbackValue();
-        const varSwatch = document.createElement('span');
         const substitution = context.tracing?.substitution({ match, context });
         if (substitution) {
             // TODO(b/441945435): If we combine these conditions, we can, when no fallback is
@@ -461,24 +460,23 @@ export class AttributeRenderer extends AttributeRendererBase {
         const tooltipId = attributeMissing ? undefined : this.#treeElement?.getTooltipId('custom-attribute');
         const tooltip = tooltipId ? { tooltipId } : undefined;
         // clang-format off
-        render(html `
-        <span data-title=${computedValue || ''}
-              jslog=${VisualLogging.link('css-variable').track({ click: true, hover: true })}
+        const varSwatch = html `<span
+        data-title=${computedValue || ''}
+        jslog=${VisualLogging.link('css-variable').track({ click: true, hover: true })}
         >${attrCall ?? 'attr'}(<devtools-link-swatch class=${attributeClass} .data=${{
             tooltip,
             text: match.name,
             isDefined: true,
             onLinkActivate: () => this.#handleAttributeActivate(this.#matchedStyles.originatingNodeForStyle(match.style), match.name),
-        }}></devtools-link-swatch>${tooltipId ? html `
-          <devtools-tooltip
-            id=${tooltipId}
-            variant=rich
-            jslogContext=elements.css-var
-          >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${match.type ? html ` <span class=${typeClass}>${match.type}</span>` : nothing}${renderedFallback ? html `, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing})</span>`, varSwatch);
+        }}></devtools-link-swatch>${tooltipId ? html `<devtools-tooltip
+          id=${tooltipId}
+          variant=rich
+          jslogContext=elements.css-var
+        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${match.type ? html ` <span class=${typeClass}>${match.type}</span>` : nothing}${renderedFallback ? html `, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing})</span>`;
         // clang-format on
         const color = computedValue && Common.Color.parse(computedValue);
         if (!color) {
-            return [varSwatch];
+            return varSwatch;
         }
         const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
         context.addControl('color', colorSwatch);
@@ -489,7 +487,7 @@ export class AttributeRenderer extends AttributeRendererBase {
         }
         return this.#treeElement?.editable() ?
             html `<devtools-widget ${widget(EditableContent)}>${colorSwatch}${varSwatch}</devtools-widget>` :
-            [colorSwatch, varSwatch];
+            html `${colorSwatch}${varSwatch}`;
     }
     #handleAttributeActivate(node, attribute) {
         if (!node) {
@@ -535,31 +533,24 @@ export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBa
     render(match, context) {
         const color = context.findParent(match.node, SDK.CSSPropertyParserMatchers.ColorMatch);
         if (!color?.relativeColor) {
-            return [document.createTextNode(match.text)];
+            return html `${match.text}`;
         }
         const value = match.getColorChannelValue(color.relativeColor);
         if (value === null) {
-            return [document.createTextNode(match.text)];
+            return html `${match.text}`;
         }
-        const evaluation = context.tracing?.applyEvaluation([], () => ({ placeholder: [document.createTextNode(value.toFixed(3))] }));
+        const evaluation = context.tracing?.applyEvaluation([], () => ({ placeholder: html `${value.toFixed(3)}` }));
         if (evaluation) {
             return evaluation;
         }
-        const span = document.createElement('span');
-        span.append(match.text);
         const tooltipId = this.#treeElement?.getTooltipId('relative-color-channel');
         if (!tooltipId) {
-            return [span];
+            return html `<span>${match.text}</span>`;
         }
-        span.setAttribute('aria-details', tooltipId);
-        const tooltip = new Tooltips.Tooltip.Tooltip({
-            id: tooltipId,
-            variant: 'rich',
-            anchor: span,
-            jslogContext: 'elements.relative-color-channel',
-        });
-        tooltip.append(value.toFixed(3));
-        return [span, tooltip];
+        return html `<span aria-details=${tooltipId}>${match.text}</span><devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.relative-color-channel>${value.toFixed(3)}</devtools-tooltip>`;
     }
 }
 const ColorRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch);
@@ -712,48 +703,44 @@ export class LightDarkColorRenderer extends LightDarkColorRendererBase {
         this.#stylesContainer = stylesContainer;
         this.#matchedStyles = matchedStyles;
     }
+    #renderContent(match, light, dark, activeColor) {
+        const lightClasses = classMap({ 'inactive-value': activeColor === match.dark });
+        const darkClasses = classMap({ 'inactive-value': activeColor === match.light });
+        return html `<span>light-dark(<span class=${lightClasses}>${light}</span>, <span class=${darkClasses}>${dark}</span>)</span>`;
+    }
     render(match, context) {
-        const content = document.createElement('span');
-        content.appendChild(document.createTextNode('light-dark('));
-        const light = content.appendChild(document.createElement('span'));
-        content.appendChild(document.createTextNode(', '));
-        const dark = content.appendChild(document.createElement('span'));
-        content.appendChild(document.createTextNode(')'));
-        const { cssControls: lightControls } = Renderer.renderInto(match.light, context, light);
-        const { cssControls: darkControls } = Renderer.renderInto(match.dark, context, dark);
+        const { nodes: light, cssControls: lightControls } = Renderer.render(match.light, context);
+        const { nodes: dark, cssControls: darkControls } = Renderer.render(match.dark, context);
+        const content = this.#renderContent(match, light, dark);
         if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
-            return [content];
+            return content;
         }
         const color = Common.Color.parse(context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1]));
         if (!color) {
-            return [content];
+            return content;
         }
         // Pass an undefined color here to insert a placeholder swatch that will be filled in from the async
         // applyColorScheme below.
         const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(undefined, match, context);
         context.addControl('color', colorSwatch);
-        void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
+        const styledContent = until(this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls), content);
         return this.#treeElement?.editable() ?
-            html `<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` :
-            [colorSwatch, content];
+            html `<devtools-widget ${widget(EditableContent)}>${colorSwatch}${styledContent}</devtools-widget>` :
+            html `${colorSwatch}${styledContent}`;
     }
     async applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls) {
         const activeColor = await this.#activeColor(match);
-        if (context.signal?.aborted) {
-            return;
-        }
-        if (!activeColor) {
-            return;
+        if (context.signal?.aborted || !activeColor) {
+            return this.#renderContent(match, light, dark);
         }
         const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get('color');
         activeColorSwatches?.forEach(swatch => swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => colorSwatch.setColor(ev.data.color)));
-        const inactiveColor = (activeColor === match.light) ? dark : light;
         const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
         const color = colorText && Common.Color.parse(colorText);
-        inactiveColor.classList.add('inactive-value');
         if (color) {
             colorSwatch.renderColor(color);
         }
+        return this.#renderContent(match, light, dark, activeColor);
     }
     // Returns the syntax node group corresponding the active color scheme:
     // If the element has color-scheme set to light or dark, return the respective group.
@@ -1807,6 +1794,7 @@ const PositionAreaRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.Posi
 export class PositionAreaRenderer extends PositionAreaRendererBase {
     // clang-format on
     static #active;
+    static #EDITABLE_PROPERTIES = ['align-self', 'justify-self'];
     #treeElement;
     #stylesContainer;
     constructor(stylesContainer, treeElement) {
@@ -1833,7 +1821,10 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
                 }
             }
         }
-        return activeSection?.propertiesTreeOutline?.rootElement().children().find((child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName);
+        return this.#findPropertyInSection(activeSection, propertyName);
+    }
+    #findPropertyInSection(section, propertyName) {
+        return section?.propertiesTreeOutline?.rootElement().children().find((child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName);
     }
     render(match, context) {
         const children = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
@@ -1854,6 +1845,7 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
         const isActive = Boolean(PositionAreaRenderer.#active && popoverHelper.isShowing(PositionAreaRenderer.#active.editor) &&
             key !== undefined && PositionAreaRenderer.#active.key === key);
         if (isActive && PositionAreaRenderer.#active) {
+            treeElement.carryOverCommittedProperty(PositionAreaRenderer.#active.treeElement);
             PositionAreaRenderer.#active.treeElement = treeElement;
             PositionAreaRenderer.#active.edit = edit;
         }
@@ -1868,6 +1860,16 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
             PositionAreaRenderer.#active = active;
             const valueText = context.edits?.getEdit(match) ?? context.matchedResult.getComputedPropertyValueText();
             editor.area = InlineEditor.PositionAreaEditor.parsePositionArea(valueText) ?? undefined;
+            const initialProperties = new Map();
+            for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
+                const target = this.#findTreeElementForProperty(propertyName);
+                if (target) {
+                    initialProperties.set(propertyName, {
+                        value: target.property.value,
+                        section: target.section(),
+                    });
+                }
+            }
             const updateProperty = (propertyName, computedStyle) => {
                 const matchedStyles = active.treeElement.matchedStyles();
                 const resolved = matchedStyles.resolveProperty(propertyName, active.treeElement.property.ownerStyle);
@@ -1932,6 +1934,22 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
                 editor.removeEventListener("propertyChanged" /* InlineEditor.PositionAreaEditor.Events.PROPERTY_CHANGED */, onPropertyChanged);
                 const propertyText = commitEdit ? active.treeElement.renderedPropertyText() : originalPropertyText || '';
                 void active.treeElement.applyStyleText(propertyText, true);
+                const node = this.#stylesContainer.node() ?? active.treeElement.matchedStyles().node();
+                for (const propertyName of PositionAreaRenderer.#EDITABLE_PROPERTIES) {
+                    const originalTarget = initialProperties.get(propertyName);
+                    const targetSection = originalTarget?.section ?? active.treeElement.section();
+                    const target = this.#findPropertyInSection(targetSection, propertyName);
+                    const oldValue = originalTarget?.value ?? '';
+                    const newValue = target?.property.value ?? '';
+                    const ruleHeader = targetSection.headerText();
+                    Elements.StyleChanges.trackStylePropertyEdit(this.#stylesContainer.changeTracker, node, {
+                        ruleHeader,
+                        oldName: oldValue ? propertyName : '',
+                        oldValue,
+                        newName: newValue ? propertyName : '',
+                        newValue,
+                    });
+                }
                 if (PositionAreaRenderer.#active === active) {
                     PositionAreaRenderer.#active = undefined;
                 }
@@ -2133,6 +2151,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.#lazyRender = false;
         this.property.removeEventListener("localValueUpdated" /* SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED */, this.updateTitle, this);
         super.onunbind();
+    }
+    carryOverCommittedProperty(previous) {
+        this.#lastCommittedProperty = previous.#lastCommittedProperty;
     }
     async gridNames() {
         if (!SDK.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {

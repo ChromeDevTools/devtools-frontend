@@ -5,7 +5,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { type Title } from './CommentThreadWidget.js';
 export interface ViewInput {
     pins: Comments.CommentOverlayManager.PinPositionData[];
-    highlights: Comments.CommentOverlayManager.HighlightRectData[];
+    /**
+     * Highlight of the currently open thread. Null when no thread is open, so
+     * only pins are rendered.
+     */
+    activeHighlight: Comments.CommentOverlayManager.HighlightRectData | null;
     hoverHighlight: Comments.CommentOverlayManager.HoverHighlightData | null;
     commentMode: boolean;
     onPinClick: (threadId: string) => void;

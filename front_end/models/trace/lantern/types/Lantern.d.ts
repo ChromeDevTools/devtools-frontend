@@ -205,6 +205,7 @@ export declare namespace Simulation {
     interface NodeTiming {
         startTime: number;
         endTime: number;
+        queuedTime: number;
         duration: number;
     }
 }

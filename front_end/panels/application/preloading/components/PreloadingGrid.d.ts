@@ -24,7 +24,7 @@ export declare const PRELOADING_GRID_DEFAULT_VIEW: View;
 /** Grid component to show prerendering attempts. **/
 export declare class PreloadingGrid extends UI.Widget.VBox {
     #private;
-    constructor(view?: View);
+    constructor(element?: HTMLElement, view?: View);
     set rows(rows: PreloadingGridRow[]);
     set pageURL(pageURL: Platform.DevToolsPath.UrlString);
     set onSelect(onSelect: ({ rowId }: {

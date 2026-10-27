@@ -423,9 +423,16 @@ function getNetworkRequestSizes(request) {
 function createTreemapData(scripts, duplication) {
   const nodes = [];
   const htmlNodesByFrameId = /* @__PURE__ */ new Map();
+  const seenRequests = /* @__PURE__ */ new Set();
   for (const script of scripts.scripts) {
     if (!script.url) {
       continue;
+    }
+    if (!script.inline && script.request) {
+      if (seenRequests.has(script.request)) {
+        continue;
+      }
+      seenRequests.add(script.request);
     }
     const name = script.url;
     const sizes = Trace4.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);

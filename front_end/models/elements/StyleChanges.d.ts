@@ -22,3 +22,7 @@ export interface StylePropertyToggle {
 }
 export declare function trackStylePropertyEdit(tracker: ChangeTracker.ChangeTracker.ChangeTracker | undefined, node: SDK.DOMModel.DOMNode, edit: StylePropertyEdit): void;
 export declare function trackStylePropertyToggle(tracker: ChangeTracker.ChangeTracker.ChangeTracker | undefined, node: SDK.DOMModel.DOMNode, toggle: StylePropertyToggle): void;
+export declare function trackStyleRuleAdded(tracker: ChangeTracker.ChangeTracker.ChangeTracker | undefined, node: SDK.DOMModel.DOMNode, selector: string): void;
+export declare function trackStyleSelectorChange(tracker: ChangeTracker.ChangeTracker.ChangeTracker | undefined, node: SDK.DOMModel.DOMNode, oldSelector: string, newSelector: string): void;
+export declare function trackPropertyRuleNameChange(tracker: ChangeTracker.ChangeTracker.ChangeTracker | undefined, node: SDK.DOMModel.DOMNode, oldName: string, newName: string): void;
+export declare function trackKeyframeKeyChange(tracker: ChangeTracker.ChangeTracker.ChangeTracker | undefined, node: SDK.DOMModel.DOMNode, oldKey: string, newKey: string): void;

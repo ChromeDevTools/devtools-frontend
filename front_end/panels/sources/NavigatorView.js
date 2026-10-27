@@ -184,10 +184,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     render(html `
         <style>${navigatorViewStyles}</style>
         <slot name="header"></slot>
-        <div class="vbox flex-auto" ?hidden=${!showPlaceholder} @contextmenu=${input.onContextMenu}>
+        <div class="vbox flex-auto" ?hidden=${!showPlaceholder}>
           <slot name="placeholder"></slot>
         </div>
-        <div class="vbox flex-auto" ?hidden=${showPlaceholder} @contextmenu=${input.onContextMenu}>
+        <div class="vbox flex-auto" ?hidden=${showPlaceholder}>
           ${input.treeElement}
         </div>
       `, target);
@@ -344,7 +344,6 @@ export class NavigatorView extends NavigatorViewBase {
         this.#view({
             treeElement: this.scriptsTree.element,
             showTree: Boolean(this.scriptsTree.firstChild()),
-            onContextMenu: this.handleContextMenu.bind(this),
         }, undefined, this.contentElement);
     }
     onBindingChanged(event) {
@@ -436,9 +435,6 @@ export class NavigatorView extends NavigatorViewBase {
         if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
             this.computeUniqueFileSystemProjectNames();
         }
-    }
-    workspace() {
-        return this.#workspace;
     }
     acceptProject(project) {
         if (this.#projectFilter) {
@@ -784,7 +780,7 @@ export class NavigatorView extends NavigatorViewBase {
                 return true;
             }
             currentNode = currentNode.parent;
-            if (!(node instanceof NavigatorGroupTreeNode || node instanceof NavigatorFolderTreeElement)) {
+            if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
                 break;
             }
         }
@@ -871,8 +867,6 @@ export class NavigatorView extends NavigatorViewBase {
             // Reset the workspace to repopulate filesystem folders.
             this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
         }
-    }
-    handleContextMenu(_event) {
     }
     async renameShortcut() {
         const selectedTreeElement = this.scriptsTree.selectedTreeElement;

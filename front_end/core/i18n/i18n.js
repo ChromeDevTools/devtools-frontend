@@ -297,7 +297,7 @@ function getAllSupportedDevToolsLocales() {
 function getLocaleFetchUrl(locale, location) {
   const remoteBase = Root.Runtime.getRemoteBase(location);
   if (remoteBase?.version && !BUNDLED_LOCALES2.has(locale)) {
-    return REMOTE_FETCH_PATTERN.replace("@HOST@", "devtools://devtools").replace("@VERSION@", remoteBase.version).replace("@LOCALE@", locale);
+    return REMOTE_FETCH_PATTERN.replace("@HOST@", "devtools://devtools-remote").replace("@VERSION@", remoteBase.version).replace("@LOCALE@", locale);
   }
   const path = LOCAL_FETCH_PATTERN.replace("@LOCALE@", locale);
   return new URL(path, import.meta.url).toString();

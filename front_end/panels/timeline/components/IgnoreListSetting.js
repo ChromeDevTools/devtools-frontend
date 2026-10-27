@@ -53,7 +53,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         // clang-format off
         return html `
       <div class='regex-row'>
-        <devtools-checkbox title=${helpText} aria-label=${helpText} ?checked=${!regex.disabled}
+        <devtools-checkbox title=${helpText} aria-label=${helpText} .checked=${!regex.disabled}
           @change=${(event) => onExistingRegexEnableToggle(regex, event.currentTarget.checked)}
           .jslogContext=${'timeline.ignore-list-pattern'}>${regex.pattern}</devtools-checkbox>
         <devtools-button

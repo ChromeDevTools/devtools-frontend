@@ -22,7 +22,7 @@ export function getRemoteBase(location = globalObject.self?.location?.toString()
     if (!version) {
         return null;
     }
-    return { base: `devtools://devtools/remote/serve_file/${version[1]}/`, version: version[1] };
+    return { base: `devtools://devtools-remote/remote/serve_file/${version[1]}/`, version: version[1] };
 }
 export function getPathName() {
     return globalObject.location?.pathname ?? '';

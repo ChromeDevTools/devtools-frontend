@@ -281,8 +281,12 @@ var ElementUpdateRecord = class {
 // ../../front_end/models/elements/StyleChanges.ts
 var StyleChanges_exports = {};
 __export(StyleChanges_exports, {
+  trackKeyframeKeyChange: () => trackKeyframeKeyChange,
+  trackPropertyRuleNameChange: () => trackPropertyRuleNameChange,
   trackStylePropertyEdit: () => trackStylePropertyEdit,
-  trackStylePropertyToggle: () => trackStylePropertyToggle
+  trackStylePropertyToggle: () => trackStylePropertyToggle,
+  trackStyleRuleAdded: () => trackStyleRuleAdded,
+  trackStyleSelectorChange: () => trackStyleSelectorChange
 });
 import * as Platform2 from "../../core/platform/platform.js";
 var STYLES_PANE_VE_PATH = "Panel: elements > Pane: styles";
@@ -327,6 +331,42 @@ function trackStylePropertyToggle(tracker, node, toggle) {
     return;
   }
   tracker.trackChange(describeStylePropertyToggle(toggle), buildAnchor(STYLES_PANE_VE_PATH, node));
+}
+function trackStyleRuleAdded(tracker, node, selector) {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  const trimmedSelector = Platform2.StringUtilities.collapseWhitespace(selector.trim());
+  if (!trimmedSelector) {
+    return;
+  }
+  tracker.trackChange(
+    `Added style rule "${trimValue(trimmedSelector)}"`,
+    buildAnchor(STYLES_PANE_VE_PATH, node)
+  );
+}
+function trackRuleHeaderChange(tracker, node, headerDescription, oldText, newText) {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  const trimmedOld = Platform2.StringUtilities.collapseWhitespace(oldText.trim());
+  const trimmedNew = Platform2.StringUtilities.collapseWhitespace(newText.trim());
+  if (!trimmedOld || !trimmedNew || trimmedOld === trimmedNew) {
+    return;
+  }
+  tracker.trackChange(
+    `Changed ${headerDescription} from "${trimValue(trimmedOld)}" to "${trimValue(trimmedNew)}"`,
+    buildAnchor(STYLES_PANE_VE_PATH, node)
+  );
+}
+function trackStyleSelectorChange(tracker, node, oldSelector, newSelector) {
+  trackRuleHeaderChange(tracker, node, "style rule selector", oldSelector, newSelector);
+}
+function trackPropertyRuleNameChange(tracker, node, oldName, newName) {
+  trackRuleHeaderChange(tracker, node, "@property rule name", oldName, newName);
+}
+function trackKeyframeKeyChange(tracker, node, oldKey, newKey) {
+  trackRuleHeaderChange(tracker, node, "keyframe key", oldKey, newKey);
 }
 export {
   ChangeTrackingUtils_exports as ChangeTrackingUtils,

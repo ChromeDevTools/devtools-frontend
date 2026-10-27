@@ -9,7 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 
-:host {
+.widget {
   padding: var(--sys-size-2) var(--sys-size-1) var(--sys-size-2) var(--sys-size-2);
 }
 

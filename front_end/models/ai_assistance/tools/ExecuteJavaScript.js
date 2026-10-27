@@ -15,6 +15,20 @@ const MAX_TOTAL_CHARACTERS = 2500;
 const MAX_LONG_LINES_REPORTED = 3;
 const LONG_LINE_PREVIEW_LENGTH = 60;
 /**
+ * Matches the error observations for network requests that the isolated
+ * world's CSP (`FREESTYLER_WORLD_CSP`) blocks. When code run by this tool calls
+ * `fetch()`, Chrome rejects with exactly "Failed to fetch". A synchronous
+ * `XMLHttpRequest.send()` throws "Failed to execute 'send' on 'XMLHttpRequest':
+ * Failed to load '<url>'.".
+ */
+const BLOCKED_NETWORK_ERROR_PATTERN = /^Error: (?:Failed to fetch$|Failed to execute 'send' on 'XMLHttpRequest': Failed to load )/;
+const BLOCKED_NETWORK_HINT = 'Network access (e.g., fetch, XMLHttpRequest) is blocked for JavaScript run by this tool, so this error does not mean the page\'s own network requests are failing. Do not retry network requests with this tool.';
+/**
+ * Only the V2 agent can load the network tools, so V1 agents do not get this
+ * part of the hint.
+ */
+const NETWORK_TOOLS_HINT = 'To inspect the page\'s network requests, load the `network` skill with `learnSkills` if it is not loaded yet, then use `listNetworkRequests` and `getNetworkRequestDetails`.';
+/**
  * Returns one message per size limit that the formatted code exceeds. Each
  * message states the actual value, the limit, and how to fix it, so the model
  * can correct every problem in a single retry.
@@ -126,7 +140,8 @@ const data = {
         if (!isOriginAllowedByLock(context.getOriginLock(), executionNode.securityOrigin())) {
             return { error: 'Error: Cannot execute JavaScript on cross-origin target.' };
         }
-        if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
+        const isV2Architecture = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled;
+        if (isV2Architecture) {
             const validationResult = await ExecuteJavaScriptTool.validateAndFormatCode(params.code);
             if (validationResult.error) {
                 return { error: validationResult.error };
@@ -143,7 +158,12 @@ const data = {
             createExtensionScope: context.createExtensionScope,
             changes: context.changeManager,
         }, context.execJs);
-        return await executor.executeAction(params.code, options);
+        const result = await executor.executeAction(params.code, options);
+        if ('result' in result && typeof result.result === 'string' && BLOCKED_NETWORK_ERROR_PATTERN.test(result.result)) {
+            const hint = isV2Architecture ? `${BLOCKED_NETWORK_HINT} ${NETWORK_TOOLS_HINT}` : BLOCKED_NETWORK_HINT;
+            return { ...result, result: `${result.result}\n${hint}` };
+        }
+        return result;
     }
 }
 //# sourceMappingURL=ExecuteJavaScript.js.map

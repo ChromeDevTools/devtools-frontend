@@ -1253,8 +1253,7 @@ var ModificationsManager = class _ModificationsManager extends EventTarget {
       parsedTrace,
       traceBounds,
       rawTraceEvents: parsedTrace.traceEvents,
-      modifications: parsedTrace.metadata.modifications,
-      syntheticEvents: parsedTrace.syntheticEventsManager.getSyntheticTraces()
+      modifications: parsedTrace.metadata.modifications
     });
     modificationsManagerByTraceIndex[traceIndex] = newModificationsManager;
     activeManager = newModificationsManager;
@@ -1958,7 +1957,7 @@ function categoryColorValue(category) {
 var TimelineFlameChartDataProvider_exports = {};
 __export(TimelineFlameChartDataProvider_exports, {
   EntryType: () => EntryType,
-  Events: () => Events3,
+  Events: () => Events,
   InstantEventVisibleDurationMs: () => InstantEventVisibleDurationMs,
   TimelineFlameChartDataProvider: () => TimelineFlameChartDataProvider
 });
@@ -2125,7 +2124,7 @@ var timelineFlamechartPopover_css_default = `/*
 var TimelineFlameChartView_exports = {};
 __export(TimelineFlameChartView_exports, {
   ColorBy: () => ColorBy,
-  Events: () => Events,
+  Events: () => Events2,
   FlameChartStyle: () => FlameChartStyle,
   SORT_ORDER_PAGE_LOAD_MARKERS: () => SORT_ORDER_PAGE_LOAD_MARKERS,
   Selection: () => Selection,
@@ -2862,6 +2861,14 @@ function agentContextForEntry(event, trackName, parsedTrace) {
 }
 
 // ../../front_end/panels/timeline/TimelineCommentController.ts
+var SYNTHETIC_KEY_PREFIX = "fc-";
+function entryStartTimeMicro(timelineData, entryIndex) {
+  return Trace13.Helpers.Timing.milliToMicro(Trace13.Types.Timing.Milli(timelineData.entryStartTimes[entryIndex]));
+}
+function entryDurationMicro(timelineData, entryIndex) {
+  const totalTime = timelineData.entryTotalTimes[entryIndex];
+  return !Number.isNaN(totalTime) && totalTime > 0 ? Trace13.Helpers.Timing.milliToMicro(Trace13.Types.Timing.Milli(totalTime)) : void 0;
+}
 var TimelineCommentController = class {
   #delegate;
   #commentManager;
@@ -2874,6 +2881,14 @@ var TimelineCommentController = class {
    */
   #notifiedWithCommentPins = false;
   #onCommentThreadsChanged = () => {
+    this.#syncCommentOverlays();
+  };
+  /**
+   * The main flame chart rebuilds its entries when entries are hidden or
+   * shown from the context menu, or the ignore list changes. Threads with a
+   * synthetic key whose entry was missing can then be pinned.
+   */
+  #onMainDataChanged = () => {
     this.#syncCommentOverlays();
   };
   // Overlays updates on every pan and zoom, so the notification is skipped
@@ -2909,8 +2924,8 @@ var TimelineCommentController = class {
     this.#syncCommentOverlays();
   }
   /**
-   * Starts listening for thread and overlay changes, registers the anchor
-   * resolver and shows pins for existing threads.
+   * Starts listening for thread, overlay and flame chart data changes,
+   * registers the anchor resolver and shows pins for existing threads.
    */
   wasShown() {
     this.#commentManager.addEventListener(
@@ -2918,15 +2933,19 @@ var TimelineCommentController = class {
       this.#onCommentThreadsChanged
     );
     this.#delegate.overlays.addEventListener(Overlays.Overlays.OverlaysUpdated.eventName, this.#onOverlaysUpdated);
+    this.#delegate.mainDataProvider.addEventListener(
+      "DataChanged" /* DATA_CHANGED */,
+      this.#onMainDataChanged
+    );
     Comments.CommentAnchorResolver.registerCustomAnchorResolver(this.#customAnchorResolver);
     this.#syncCommentOverlays();
     Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
     this.#notifiedWithCommentPins = this.#delegate.overlays.overlaysOfType("COMMENT_PIN").length > 0;
   }
   /**
-   * Stops listening for thread and overlay changes and unregisters the anchor
-   * resolver. The final notification removes the shared pins, because the
-   * resolver no longer supplies their anchor elements.
+   * Stops listening for thread, overlay and flame chart data changes and
+   * unregisters the anchor resolver. The final notification removes the shared
+   * pins, because the resolver no longer supplies their anchor elements.
    */
   willHide() {
     this.#commentManager.removeEventListener(
@@ -2934,6 +2953,10 @@ var TimelineCommentController = class {
       this.#onCommentThreadsChanged
     );
     this.#delegate.overlays.removeEventListener(Overlays.Overlays.OverlaysUpdated.eventName, this.#onOverlaysUpdated);
+    this.#delegate.mainDataProvider.removeEventListener(
+      "DataChanged" /* DATA_CHANGED */,
+      this.#onMainDataChanged
+    );
     Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(this.#customAnchorResolver);
     Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
     this.#notifiedWithCommentPins = false;
@@ -2970,6 +2993,55 @@ var TimelineCommentController = class {
     const { min, max } = this.#parsedTrace.data.Meta.traceBounds;
     return `trace-${min}-${max}`;
   }
+  #dataProviderFor(chartLocation) {
+    return chartLocation === "network" ? this.#delegate.networkDataProvider : this.#delegate.mainDataProvider;
+  }
+  /**
+   * Returns the event for a thread's timeline anchor, or null if the anchor
+   * has a synthetic key and no flame chart entry matches it.
+   */
+  #eventForTimelineAnchor(anchor, parsedTrace) {
+    if (!anchor.traceEventKey.startsWith(SYNTHETIC_KEY_PREFIX)) {
+      return this.#delegate.eventsSerializer.eventForKey(
+        anchor.traceEventKey,
+        parsedTrace
+      );
+    }
+    const entryIndex = this.#findEntryIndexForSyntheticKey(anchor);
+    if (entryIndex === -1) {
+      return null;
+    }
+    return this.#dataProviderFor(anchor.chartLocation).eventByIndex(entryIndex);
+  }
+  /**
+   * Returns the index of the flame chart entry with the anchor's start time,
+   * duration and title, or -1 if there is none. Duration separates nested
+   * entries that share a start time and title, such as recursive calls.
+   *
+   * Entry indexes change when the flame chart rebuilds its entries, for
+   * example after entries are hidden from the context menu. The index encoded
+   * in the synthetic key is therefore checked first and used only if that
+   * entry still matches. Otherwise every entry is scanned, because
+   * `entryStartTimes` concatenates all tracks and is not sorted.
+   */
+  #findEntryIndexForSyntheticKey(anchor) {
+    const dataProvider = this.#dataProviderFor(anchor.chartLocation);
+    const timelineData = dataProvider.timelineData();
+    const entryCount = timelineData.entryStartTimes.length;
+    const matchesAnchor = (index) => {
+      return entryStartTimeMicro(timelineData, index) === anchor.startTimeMicro && entryDurationMicro(timelineData, index) === anchor.durationMicro && (dataProvider.entryTitle(index) ?? "") === anchor.entryName;
+    };
+    const encodedIndex = Number(anchor.traceEventKey.slice(`${SYNTHETIC_KEY_PREFIX}${anchor.chartLocation}-`.length));
+    if (Number.isInteger(encodedIndex) && encodedIndex >= 0 && encodedIndex < entryCount && matchesAnchor(encodedIndex)) {
+      return encodedIndex;
+    }
+    for (let index = 0; index < entryCount; index++) {
+      if (matchesAnchor(index)) {
+        return index;
+      }
+    }
+    return -1;
+  }
   #syncCommentOverlays() {
     const existingOverlays = this.#delegate.overlays.overlaysOfType("COMMENT_PIN");
     const currentTraceId = this.#traceId();
@@ -2990,10 +3062,10 @@ var TimelineCommentController = class {
       if (existingOverlays.some((overlay) => overlay.commentThreadId === thread.id)) {
         continue;
       }
-      const event = this.#delegate.eventsSerializer.eventForKey(
-        thread.anchor.timeline.traceEventKey,
-        parsedTrace
-      );
+      const event = this.#eventForTimelineAnchor(thread.anchor.timeline, parsedTrace);
+      if (!event) {
+        continue;
+      }
       this.#delegate.overlays.add({
         type: "COMMENT_PIN",
         entry: event,
@@ -3009,6 +3081,8 @@ var TimelineCommentController = class {
     }
     if (mutationsMade) {
       void this.#delegate.overlays.update();
+    } else {
+      this.#onOverlaysUpdated();
     }
   }
   #resolveEntryAtCoordinates(element, clientX, clientY) {
@@ -3076,19 +3150,15 @@ var TimelineCommentController = class {
     if (!traceId) {
       return null;
     }
-    const traceEventKey = this.#delegate.eventsSerializer.keyForEvent(entry.event);
-    if (!traceEventKey) {
-      return null;
-    }
-    const { flameChart, dataProvider, chartLocation, canvas, entryIndex, highlightRect } = entry;
+    const { flameChart, dataProvider, chartLocation, canvas, entryIndex, event, highlightRect } = entry;
+    const traceEventKey = this.#delegate.eventsSerializer.keyForEvent(event) ?? `${SYNTHETIC_KEY_PREFIX}${chartLocation}-${entryIndex}`;
     const timelineData = flameChart.timelineData();
     if (!timelineData) {
       throw new Error("Flame chart resolved an entry index without timeline data.");
     }
     const entryName = dataProvider.entryTitle(entryIndex) ?? "";
-    const startTimeMicro = Trace13.Helpers.Timing.milliToMicro(Trace13.Types.Timing.Milli(timelineData.entryStartTimes[entryIndex]));
-    const totalTime = timelineData.entryTotalTimes[entryIndex];
-    const durationMicro = !Number.isNaN(totalTime) && totalTime > 0 ? Trace13.Helpers.Timing.milliToMicro(Trace13.Types.Timing.Milli(totalTime)) : void 0;
+    const startTimeMicro = entryStartTimeMicro(timelineData, entryIndex);
+    const durationMicro = entryDurationMicro(timelineData, entryIndex);
     return {
       anchor: {
         vePath: VisualLogging.getVePath(element),
@@ -3306,7 +3376,7 @@ __export(TimelinePanel_exports, {
   BottomUpProfileRevealer: () => BottomUpProfileRevealer,
   CoreVitalsRevealer: () => CoreVitalsRevealer,
   EventRevealer: () => EventRevealer,
-  Events: () => Events2,
+  Events: () => Events3,
   InsightRevealer: () => InsightRevealer,
   ParsedTraceRevealable: () => ParsedTraceRevealable,
   ParsedTraceRevealer: () => ParsedTraceRevealer,
@@ -4914,6 +4984,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -10237,6 +10308,7 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
         this.#hideLandingPage();
         this.dispatchEventToListeners("IsViewingTrace" /* IS_VIEWING_TRACE */, false);
         this.#hideSidebar();
+        this.#searchableView.hideWidget();
         return;
       }
       default:
@@ -12196,11 +12268,11 @@ var SelectedInsight = class {
   }
   insight;
 };
-var Events2 = /* @__PURE__ */ ((Events4) => {
+var Events3 = /* @__PURE__ */ ((Events4) => {
   Events4["IS_VIEWING_TRACE"] = "IsViewingTrace";
   Events4["RECORDING_COMPLETED"] = "RecordingCompleted";
   return Events4;
-})(Events2 || {});
+})(Events3 || {});
 function calculateAutoZoomWindow(traceBounds, topMostMainThreadAppenderEntries) {
   if (!topMostMainThreadAppenderEntries || topMostMainThreadAppenderEntries.length === 0) {
     return null;
@@ -20893,10 +20965,10 @@ function groupForLevel(groups, level) {
   });
   return groupForLevel2 ?? null;
 }
-var Events = /* @__PURE__ */ ((Events4) => {
+var Events2 = /* @__PURE__ */ ((Events4) => {
   Events4["ENTRY_LABEL_ANNOTATION_CLICKED"] = "EntryLabelAnnotationClicked";
   return Events4;
-})(Events || {});
+})(Events2 || {});
 
 // ../../front_end/panels/timeline/TimelineFlameChartDataProvider.ts
 import * as Utils7 from "./utils/utils.js";
@@ -22008,12 +22080,12 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
   }
 };
 var InstantEventVisibleDurationMs = Trace35.Types.Timing.Milli(1e-3);
-var Events3 = /* @__PURE__ */ ((Events4) => {
+var Events = /* @__PURE__ */ ((Events4) => {
   Events4["DATA_CHANGED"] = "DataChanged";
   Events4["FLAME_CHART_ITEM_HOVERED"] = "FlameChartItemHovered";
   Events4["ENTRY_LABEL_ANNOTATION_ADDED"] = "EntryLabelAnnotationAdded";
   return Events4;
-})(Events3 || {});
+})(Events || {});
 var EntryType = /* @__PURE__ */ ((EntryType2) => {
   EntryType2["FRAME"] = "Frame";
   EntryType2["TRACK_APPENDER"] = "TrackAppender";

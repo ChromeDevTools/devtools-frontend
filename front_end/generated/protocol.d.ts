@@ -11356,7 +11356,8 @@ export declare namespace Network {
         PreProvisionedKeyAccessNotGranted = "PreProvisionedKeyAccessNotGranted",
         PreProvisionedKeyNotFound = "PreProvisionedKeyNotFound",
         AttestationCertificationError = "AttestationCertificationError",
-        AttestationSigningError = "AttestationSigningError"
+        AttestationSigningError = "AttestationSigningError",
+        FederatedRegistrationRedirected = "FederatedRegistrationRedirected"
     }
     /**
      * Details about a failed device bound session network request.

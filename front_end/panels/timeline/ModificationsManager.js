@@ -71,7 +71,6 @@ export class ModificationsManager extends EventTarget {
             traceBounds,
             rawTraceEvents: parsedTrace.traceEvents,
             modifications: parsedTrace.metadata.modifications,
-            syntheticEvents: parsedTrace.syntheticEventsManager.getSyntheticTraces(),
         });
         modificationsManagerByTraceIndex[traceIndex] = newModificationsManager;
         activeManager = newModificationsManager;

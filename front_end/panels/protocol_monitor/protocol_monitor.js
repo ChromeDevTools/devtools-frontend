@@ -14,7 +14,6 @@ __export(JSONEditor_exports, {
   suggestionFilter: () => suggestionFilter
 });
 import "../../ui/kit/kit.js";
-import "../../ui/components/menus/menus.js";
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as i18n from "../../core/i18n/i18n.js";

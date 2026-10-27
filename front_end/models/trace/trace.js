@@ -196,12 +196,9 @@ var EventsSerializer = class _EventsSerializer {
       return cluster;
     }
     if (_EventsSerializer.isSyntheticEventKey(eventValues)) {
-      const syntheticEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getSyntheticTraces();
-      const syntheticEvent = syntheticEvents.at(eventValues.rawIndex);
-      if (!syntheticEvent) {
-        throw new Error(`Unknown trace event. Attempted to get a synthetic event from an unknown raw event index: ${eventValues.rawIndex}`);
-      }
-      return syntheticEvent;
+      return Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().syntheticEventForRawEventIndex(
+        eventValues.rawIndex
+      );
     }
     if (_EventsSerializer.isRawEventKey(eventValues)) {
       const rawEvents = Helpers3.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
@@ -1844,6 +1841,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -4017,7 +4015,6 @@ var Model = class _Model extends EventTarget {
         this.#processor.data,
         this.#processor.insights
       );
-      syntheticEventsManager.clearRegistrationIndex();
       this.#traces.push(file);
     } catch (e) {
       throw e;

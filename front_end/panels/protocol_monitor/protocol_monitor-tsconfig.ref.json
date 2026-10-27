@@ -55,9 +55,6 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/menus/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../ui/components/suggestion_input/bundle-tsconfig.ref.json"
     },
     {

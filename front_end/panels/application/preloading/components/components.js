@@ -1621,6 +1621,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -4351,8 +4352,8 @@ var PreloadingDisabledInfobar = class extends UI3.Widget.VBox {
   #disabledByBatterySaver = false;
   #disabledByHoldbackPrefetchSpeculationRules = false;
   #disabledByHoldbackPrerenderSpeculationRules = false;
-  constructor(view = DEFAULT_VIEW3) {
-    super({ useShadowDom: true });
+  constructor(element, view = DEFAULT_VIEW3) {
+    super(element, { useShadowDom: true, classes: ["flex-none"] });
     this.#view = view;
   }
   get disabledByPreference() {
@@ -4596,9 +4597,9 @@ var PreloadingGrid = class extends UI4.Widget.VBox {
   #rows;
   #pageURL;
   #onSelect;
-  constructor(view) {
-    super();
-    this.#view = view ?? PRELOADING_GRID_DEFAULT_VIEW;
+  constructor(element, view = PRELOADING_GRID_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     this.requestUpdate();
   }
   set rows(rows) {
@@ -4610,6 +4611,9 @@ var PreloadingGrid = class extends UI4.Widget.VBox {
     this.requestUpdate();
   }
   set onSelect(onSelect) {
+    if (this.#onSelect === onSelect) {
+      return;
+    }
     this.#onSelect = onSelect;
     this.requestUpdate();
   }
@@ -4777,7 +4781,6 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
 var RuleSetGrid_exports = {};
 __export(RuleSetGrid_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
-  Events: () => Events,
   RuleSetGrid: () => RuleSetGrid,
   i18nString: () => i18nString7
 });
@@ -4935,14 +4938,13 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   }
   render6(template, target);
 };
-var RuleSetGridBase = Common3.ObjectWrapper.eventMixin(
-  UI6.Widget.VBox
-);
-var RuleSetGrid = class extends RuleSetGridBase {
+var RuleSetGrid = class extends UI6.Widget.VBox {
   #view;
   #data = null;
-  constructor(view = DEFAULT_VIEW5) {
-    super({ useShadowDom: true });
+  #onSelect = () => {
+  };
+  constructor(element, view = DEFAULT_VIEW5) {
+    super(element, { useShadowDom: true });
     this.#view = view;
   }
   get data() {
@@ -4952,10 +4954,20 @@ var RuleSetGrid = class extends RuleSetGridBase {
     this.#data = data;
     this.requestUpdate();
   }
+  get onSelect() {
+    return this.#onSelect;
+  }
+  set onSelect(onSelect) {
+    if (this.#onSelect === onSelect) {
+      return;
+    }
+    this.#onSelect = onSelect;
+    this.requestUpdate();
+  }
   performUpdate() {
     const input = {
       data: this.#data,
-      onSelect: this.dispatchEventToListeners.bind(this, "select" /* SELECT */),
+      onSelect: this.#onSelect,
       onRevealInElements: this.#revealSpeculationRulesInElements.bind(this),
       onRevealInNetwork: this.#revealSpeculationRulesInNetwork.bind(this),
       onRevealPreloadsAssociatedWithRuleSet: this.#revealAttemptViewWithFilter.bind(this)
@@ -4988,10 +5000,6 @@ var RuleSetGrid = class extends RuleSetGridBase {
     void Common3.Revealer.reveal(new PreloadingHelper2.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
   }
 };
-var Events = /* @__PURE__ */ ((Events2) => {
-  Events2["SELECT"] = "select";
-  return Events2;
-})(Events || {});
 
 // ../../front_end/panels/application/preloading/components/UsedPreloadingView.ts
 var UsedPreloadingView_exports = {};
@@ -5409,8 +5417,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
 };
 var UsedPreloadingView = class extends UI7.Widget.VBox {
   #view;
-  constructor(view = DEFAULT_VIEW6) {
-    super({ useShadowDom: true });
+  constructor(element, view = DEFAULT_VIEW6) {
+    super(element, { useShadowDom: true });
     this.#view = view;
   }
   #data = {

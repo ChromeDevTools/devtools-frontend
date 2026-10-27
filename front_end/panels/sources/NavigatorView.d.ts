@@ -21,7 +21,6 @@ export declare const Types: {
 export interface ViewInput {
     treeElement: HTMLElement;
     showTree: boolean;
-    onContextMenu: (event: Event) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
@@ -80,7 +79,6 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private resetWorkspace;
     private projectAddedCallback;
     private projectRemovedCallback;
-    workspace(): Workspace.Workspace.WorkspaceImpl;
     acceptProject(project: Workspace.Workspace.Project): boolean;
     private frameAttributionAdded;
     private frameAttributionRemoved;
@@ -106,7 +104,6 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private removeUISourceCodes;
     private removeUISourceCodeNode;
     reset(tearDownOnly?: boolean): void;
-    handleContextMenu(_event: Event): void;
     private renameShortcut;
     private handleContextMenuCreate;
     private handleContextMenuRename;

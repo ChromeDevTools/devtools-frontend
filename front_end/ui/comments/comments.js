@@ -141,6 +141,9 @@ function getElementLoggingConfig(element) {
 function hasDisallowedCommentAncestor(element) {
   let current = element;
   while (current) {
+    if (current.classList.contains("comments-overlay-container")) {
+      return true;
+    }
     const config = getElementLoggingConfig(current);
     if (config && (DISALLOWED_COMMENT_ANCESTORS.has(config.ve) || config.context === "comments")) {
       return true;
@@ -666,8 +669,8 @@ var CommentOverlayManager = class extends Common.ObjectWrapper.ObjectWrapper {
   getPinPositions() {
     return this.#pinPositions;
   }
-  getHighlightRects() {
-    return this.#highlightRects;
+  getHighlight(threadId) {
+    return this.#highlightRects.find((h) => h.id === threadId);
   }
   getAnchorElement(thread) {
     return this.#liveNodeCache.get(thread);

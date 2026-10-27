@@ -49,7 +49,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             return html `
                 <devtools-checkbox
                   title=${valueTypeToLocalizedString(type)}
-                  ?checked=${input.valueTypes.has(type)}
+                  .checked=${input.valueTypes.has(type)}
                   @change=${(e) => {
                 const checkbox = e.target;
                 input.onToggle(type, checkbox.checked);

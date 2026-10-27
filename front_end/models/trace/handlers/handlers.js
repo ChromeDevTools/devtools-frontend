@@ -346,6 +346,7 @@ __export(FlowsHandler_exports, {
 import * as Platform from "../../../core/platform/platform.js";
 import * as Types4 from "../types/types.js";
 var flowDataByGroupToken = /* @__PURE__ */ new Map();
+var TS_KEY_MASK = 1073741823;
 var boundFlowData = /* @__PURE__ */ new Map();
 var flowsById = /* @__PURE__ */ new Map();
 var flowEvents = [];
@@ -367,8 +368,15 @@ function handleEvent3(event) {
   }
   nonFlowEvents.push(event);
 }
+function findBinding(bindings, event) {
+  return bindings.find((binding) => binding.ts === event.ts && binding.pid === event.pid && binding.tid === event.tid && binding.cat === event.cat);
+}
 function processNonFlowEvent(event) {
-  const flowDataForEvent = boundFlowData.get(event.ts)?.get(event.pid)?.get(event.tid)?.get(event.cat);
+  const bindings = boundFlowData.get(event.ts & TS_KEY_MASK);
+  if (!bindings) {
+    return;
+  }
+  const flowDataForEvent = findBinding(bindings, event);
   if (!flowDataForEvent) {
     return;
   }
@@ -390,9 +398,8 @@ function processFlowEvent(flowPhaseEvent) {
   const flowGroup = flowGroupTokenForFlowPhaseEvent(flowPhaseEvent);
   switch (flowPhaseEvent.ph) {
     case Types4.Events.Phase.FLOW_START: {
-      const flowMetadata = { flowId: flowPhaseEvent.id, times: /* @__PURE__ */ new Map([[flowPhaseEvent.ts, void 0]]) };
       flowDataByGroupToken.set(flowGroup, flowPhaseEvent.id);
-      addFlowIdToEventBinding(flowPhaseEvent, flowMetadata.flowId);
+      addFlowIdToEventBinding(flowPhaseEvent, flowPhaseEvent.id);
       return;
     }
     case Types4.Events.Phase.FLOW_STEP: {
@@ -414,23 +421,13 @@ function processFlowEvent(flowPhaseEvent) {
   }
 }
 function addFlowIdToEventBinding(event, flowId) {
-  const flowsByPid = Platform.MapUtilities.getWithDefault(
-    boundFlowData,
-    event.ts,
-    () => /* @__PURE__ */ new Map()
-  );
-  const flowsByTid = Platform.MapUtilities.getWithDefault(
-    flowsByPid,
-    event.pid,
-    () => /* @__PURE__ */ new Map()
-  );
-  const flowsByCat = Platform.MapUtilities.getWithDefault(
-    flowsByTid,
-    event.tid,
-    () => /* @__PURE__ */ new Map()
-  );
-  const flowData = Platform.MapUtilities.getWithDefault(flowsByCat, event.cat, () => ({ flows: /* @__PURE__ */ new Set(), bindingParsed: false }));
-  flowData.flows.add(flowId);
+  const bindings = Platform.MapUtilities.getWithDefault(boundFlowData, event.ts & TS_KEY_MASK, () => []);
+  let binding = findBinding(bindings, event);
+  if (!binding) {
+    binding = { ts: event.ts, pid: event.pid, tid: event.tid, cat: event.cat, flows: /* @__PURE__ */ new Set(), bindingParsed: false };
+    bindings.push(binding);
+  }
+  binding.flows.add(flowId);
 }
 function flowGroupTokenForFlowPhaseEvent(event) {
   return `${event.cat}${ID_COMPONENT_SEPARATOR}${event.name}${ID_COMPONENT_SEPARATOR}${event.id}`;
@@ -2384,6 +2381,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {

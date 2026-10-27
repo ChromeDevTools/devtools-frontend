@@ -60,7 +60,7 @@ export declare class CommentOverlayManager extends Common.ObjectWrapper.ObjectWr
     isCommentMode(): boolean;
     getHoverHighlight(): HoverHighlightData | null;
     getPinPositions(): PinPositionData[];
-    getHighlightRects(): HighlightRectData[];
+    getHighlight(threadId: string): HighlightRectData | undefined;
     getAnchorElement(thread: CommentThread): Element | undefined;
     clearDraftThreads(): void;
     handleElementClick(element: Element, options?: {

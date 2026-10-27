@@ -28,6 +28,9 @@
     },
     {
       "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../report/report-tsconfig.ref.json"
     }
   ]
 }

@@ -5861,6 +5861,9 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | viewAllSpeculations": {
     "message": "View all speculations"
   },
+  "panels/application/preloading/PreloadingView.ts | clearSpeculativeLoads": {
+    "message": "Clear speculative loads"
+  },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "All speculative loads"
   },

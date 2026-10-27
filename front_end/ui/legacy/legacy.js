@@ -16979,7 +16979,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     return this.#checkboxElement.checked;
   }
   set checked(checked) {
-    this.toggleAttribute("checked", checked);
+    this.toggleAttribute("checked", Boolean(checked));
   }
   get small() {
     return this.hasAttribute("small");

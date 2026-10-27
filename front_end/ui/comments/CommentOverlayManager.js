@@ -142,8 +142,8 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper {
     getPinPositions() {
         return this.#pinPositions;
     }
-    getHighlightRects() {
-        return this.#highlightRects;
+    getHighlight(threadId) {
+        return this.#highlightRects.find(h => h.id === threadId);
     }
     getAnchorElement(thread) {
         return this.#liveNodeCache.get(thread);

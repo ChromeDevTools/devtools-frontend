@@ -14,7 +14,10 @@ export interface DOMNodeAnchorSignature {
 export interface TimelineAnchorSignature {
     /** Identifier of the trace to scope comments to a specific recording */
     traceId: string;
-    /** Serializable key from Trace.EventsSerializer (e.g. 'r-123', 'p-1-2-3-4', 's-5') */
+    /**
+     * Serializable key from Trace.EventsSerializer (e.g. 'r-123', 'p-1-2-3-4', 's-5'), or
+     * 'fc-<chartLocation>-<entryIndex>' for flame chart entries that EventsSerializer cannot key.
+     */
     traceEventKey: string;
     /** Primary event title or category name */
     entryName: string;

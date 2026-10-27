@@ -2508,6 +2508,9 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
     if (!this.#aiCodeGeneration || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
       return false;
     }
+    if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source !== "generation" /* GENERATION */) {
+      return false;
+    }
     const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
     if (!accepted) {
       return false;
@@ -2903,22 +2906,30 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
       },
       {
         key: "Tab",
-        run: () => {
-          if (!this.#aiCodeCompletion || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
-            return false;
-          }
-          const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
-          if (!accepted) {
-            return false;
-          }
-          if (suggestion?.rpcGlobalId) {
-            this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
-          }
-          this.#aiCodeCompletionConfig?.onSuggestionAccepted(this.#aiCodeCompletionCitations);
-          return true;
-        }
+        run: this.#acceptAiSuggestion.bind(this)
+      },
+      {
+        key: "Enter",
+        run: this.#acceptAiSuggestion.bind(this)
       }
     ];
+  }
+  #acceptAiSuggestion() {
+    if (!this.#aiCodeCompletion || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
+      return false;
+    }
+    if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source !== "completion" /* COMPLETION */) {
+      return false;
+    }
+    const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
+    if (!accepted) {
+      return false;
+    }
+    if (suggestion?.rpcGlobalId) {
+      this.#aiCodeCompletion?.registerUserAcceptance(suggestion.rpcGlobalId, suggestion.sampleId);
+    }
+    this.#aiCodeCompletionConfig?.onSuggestionAccepted(this.#aiCodeCompletionCitations);
+    return true;
   }
   #detachTeaser() {
     if (!this.#teaser) {

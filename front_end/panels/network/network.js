@@ -513,7 +513,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     <style>${requestConditionsDrawer_css_default}</style>
     <devtools-toolbar jslog=${VisualLogging2.toolbar()}>
       <devtools-checkbox
-        ?checked=${input.enabled}
+        .checked=${input.enabled}
         @click=${input.toggleEnabled}
         .jslogContext=${"network.enable-request-blocking"}>
         ${i18nString2(UIStrings2.enableBlockingAndThrottling)}
@@ -2608,6 +2608,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {

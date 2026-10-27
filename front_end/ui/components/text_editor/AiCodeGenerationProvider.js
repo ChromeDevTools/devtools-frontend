@@ -219,6 +219,9 @@ export class AiCodeGenerationProvider {
         if (!this.#aiCodeGeneration || !this.#editor || !hasActiveAiSuggestion(this.#editor.state)) {
             return false;
         }
+        if (this.#editor.state.field(aiAutoCompleteSuggestionState)?.source !== "generation" /* AiSuggestionSource.GENERATION */) {
+            return false;
+        }
         const { accepted, suggestion } = acceptAiAutoCompleteSuggestion(this.#editor.editor);
         if (!accepted) {
             return false;

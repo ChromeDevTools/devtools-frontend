@@ -358,8 +358,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
  **/
 export class UsedPreloadingView extends UI.Widget.VBox {
     #view;
-    constructor(view = DEFAULT_VIEW) {
-        super({ useShadowDom: true });
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
         this.#view = view;
     }
     #data = {

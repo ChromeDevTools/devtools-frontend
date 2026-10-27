@@ -2066,6 +2066,7 @@ var Network;
     DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
     DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
     DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+    DeviceBoundSessionFetchResult2["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
   })(DeviceBoundSessionFetchResult = Network3.DeviceBoundSessionFetchResult || (Network3.DeviceBoundSessionFetchResult = {}));
   let RefreshEventDetailsRefreshResult;
   ((RefreshEventDetailsRefreshResult2) => {
@@ -5255,7 +5256,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     const helpText = i18nString8(UIStrings8.ignoreScriptsWhoseNamesMatchS, { regex: regex.pattern });
     return html6`
       <div class='regex-row'>
-        <devtools-checkbox title=${helpText} aria-label=${helpText} ?checked=${!regex.disabled}
+        <devtools-checkbox title=${helpText} aria-label=${helpText} .checked=${!regex.disabled}
           @change=${(event) => onExistingRegexEnableToggle(regex, event.currentTarget.checked)}
           .jslogContext=${"timeline.ignore-list-pattern"}>${regex.pattern}</devtools-checkbox>
         <devtools-button

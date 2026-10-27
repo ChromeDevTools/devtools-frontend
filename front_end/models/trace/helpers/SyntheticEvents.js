@@ -4,12 +4,14 @@
 let activeManager = null;
 export class SyntheticEventsManager {
     /**
-     * All synthetic entries created in a trace from
-     * corresponding trace events.
-     * (ProfileCalls and layout shift clusters are excluded
-     * because they are not based on a real trace event.)
+     * All synthetic entries created in a trace, keyed by the raw trace event
+     * they are based on. (ProfileCalls and layout shift clusters are excluded
+     * because they are not based on a real trace event.) Keying by the raw
+     * event rather than by its index in the raw events array means
+     * registration does not need to look up the index, which would require a
+     * map of every raw event in the trace.
      */
-    #syntheticTraces = [];
+    #syntheticEventByRawEvent = new WeakMap();
     /**
      * All raw entries from a trace.
      */
@@ -46,48 +48,23 @@ export class SyntheticEventsManager {
     constructor(rawEvents) {
         this.#rawTraceEvents = rawEvents;
     }
-    #rawEventIndexes = null;
-    #getRawEventIndex(event) {
-        if (!this.#rawEventIndexes) {
-            this.#rawEventIndexes = new Map();
-            for (let i = 0; i < this.#rawTraceEvents.length; i++) {
-                this.#rawEventIndexes.set(this.#rawTraceEvents[i], i);
-            }
-        }
-        return this.#rawEventIndexes.get(event) ?? -1;
-    }
-    /**
-     * Clears the transient raw event index map.
-     * During trace parsing, this map provides O(1) lookups for registering synthetic events.
-     * Once parsing is complete, queries look up synthetic events exclusively by index in
-     * `#syntheticTraces`, so this map is discarded to reclaim memory.
-     */
-    clearRegistrationIndex() {
-        this.#rawEventIndexes = null;
-    }
     /**
      * Registers and returns a branded synthetic event. Synthetic events need to
      * be created with this method to ensure they are registered and made
      * available to load events using serialized keys.
      */
     #registerSyntheticEvent(syntheticEvent) {
-        const rawIndex = this.#getRawEventIndex(syntheticEvent.rawSourceEvent);
-        if (rawIndex < 0) {
-            throw new Error('Attempted to register a synthetic event paired to an unknown raw event.');
-        }
         const eventAsSynthetic = syntheticEvent;
-        this.#syntheticTraces[rawIndex] = eventAsSynthetic;
+        this.#syntheticEventByRawEvent.set(syntheticEvent.rawSourceEvent, eventAsSynthetic);
         return eventAsSynthetic;
     }
     syntheticEventForRawEventIndex(rawEventIndex) {
-        const syntheticEvent = this.#syntheticTraces.at(rawEventIndex);
+        const rawEvent = this.#rawTraceEvents.at(rawEventIndex);
+        const syntheticEvent = rawEvent && this.#syntheticEventByRawEvent.get(rawEvent);
         if (!syntheticEvent) {
             throw new Error(`Attempted to get a synthetic event from an unknown raw event index: ${rawEventIndex}`);
         }
         return syntheticEvent;
-    }
-    getSyntheticTraces() {
-        return this.#syntheticTraces;
     }
     getRawTraceEvents() {
         return this.#rawTraceEvents;

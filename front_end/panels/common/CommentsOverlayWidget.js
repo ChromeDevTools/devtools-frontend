@@ -8,12 +8,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import commentsOverlayStyles from './commentsOverlay.css.js';
 import { CommentThreadWidget, computeCommentTitle } from './CommentThreadWidget.js';
-const { html, render, nothing, Directives: { repeat, styleMap }, } = Lit;
+const { html, render, nothing, Directives: { classMap, repeat, styleMap }, } = Lit;
 const POPUP_MARGIN = 8;
 const PIN_HEIGHT = 30;
 const POPUP_WIDTH = 288;
 const POPUP_HEIGHT = 220;
 const AUTO_CLOSE_DELAY_MS = 2000;
+const COMMENTS_VIEW_ID = 'comments';
 const DEFAULT_VIEW = (input, _output, target) => {
     const popupPosition = input.activePin ?? input.fallbackPosition;
     // clang-format off
@@ -30,16 +31,19 @@ const DEFAULT_VIEW = (input, _output, target) => {
     })}>
         </div>
       ` : nothing}
-      ${repeat(input.highlights.filter(h => h.visible), h => h.id, h => html `
-          <div
-            class="comment-anchor-highlight"
-            style=${styleMap({
-        transform: `translate3d(${h.left}px, ${h.top}px, 0)`,
-        width: `${h.width}px`,
-        height: `${h.height}px`,
+      ${input.activeHighlight?.visible && input.activeThread ? html `
+        <div
+          class=${classMap({
+        'comment-anchor-highlight': true,
+        resolved: input.activeThread.status === 'RESOLVED',
+    })}
+          style=${styleMap({
+        transform: `translate3d(${input.activeHighlight.left}px, ${input.activeHighlight.top}px, 0)`,
+        width: `${input.activeHighlight.width}px`,
+        height: `${input.activeHighlight.height}px`,
     })}>
-          </div>
-        `)}
+        </div>
+      ` : nothing}
       ${repeat(input.pins.filter(p => p.visible), p => p.id, p => html `
           <div
             class="comment-pin"
@@ -83,6 +87,12 @@ const DEFAULT_VIEW = (input, _output, target) => {
   `, target);
     // clang-format on
 };
+function isEventInsidePopupOrPin(event) {
+    const composedTarget = event.composedPath()[0];
+    const target = composedTarget instanceof Element ? composedTarget : event.target;
+    return target instanceof Element &&
+        Boolean(Comments.CommentAnchorResolver.closestAcrossShadow(target, '.comment-popup-widget, .comment-pin'));
+}
 export class CommentsOverlayWidget extends UI.Widget.Widget {
     static INJECT = [CommentManager.CommentManager.CommentManager];
     #view;
@@ -100,9 +110,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             this.#activeThreadId = threadId;
             if (threadId && this.isShowing()) {
                 document.documentElement.addEventListener('keydown', this.#onKeyDown);
+                document.documentElement.addEventListener('click', this.#onClickOutside, { capture: true });
             }
             else {
                 document.documentElement.removeEventListener('keydown', this.#onKeyDown);
+                document.documentElement.removeEventListener('click', this.#onClickOutside, { capture: true });
             }
         }
     }
@@ -125,12 +137,14 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#commentManager.addEventListener("AgentAttachedChanged" /* CommentManager.CommentManager.Events.AGENT_ATTACHED_CHANGED */, this.#onAgentAttachedChanged, this);
         if (this.#activeThreadId) {
             document.documentElement.addEventListener('keydown', this.#onKeyDown);
+            document.documentElement.addEventListener('click', this.#onClickOutside, { capture: true });
         }
         this.requestUpdate();
     }
     willHide() {
         this.#clearCloseTimeout();
         document.documentElement.removeEventListener('keydown', this.#onKeyDown);
+        document.documentElement.removeEventListener('click', this.#onClickOutside, { capture: true });
         this.#commentOverlayManager.stop();
         this.#commentOverlayManager.removeEventListener("PositionsUpdated" /* Comments.CommentOverlayManager.Events.POSITIONS_UPDATED */, this.#onPositionsUpdated, this);
         this.#commentOverlayManager.removeEventListener("HoverHighlightChanged" /* Comments.CommentOverlayManager.Events.HOVER_HIGHLIGHT_CHANGED */, this.#onHoverHighlightChanged, this);
@@ -241,10 +255,16 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
             this.#handleCloseCommentThread();
         }
     };
+    #onClickOutside = (event) => {
+        if (!this.#activeThreadId || isEventInsidePopupOrPin(event)) {
+            return;
+        }
+        this.#handleCloseCommentThread();
+    };
     #renderDisconnectedView() {
         this.#view({
             pins: [],
-            highlights: [],
+            activeHighlight: null,
             hoverHighlight: null,
             commentMode: false,
             onPinClick: this.#handlePinClick,
@@ -260,11 +280,11 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     }
     #renderWithTitle(activeThread, title) {
         const pins = this.#commentOverlayManager.getPinPositions();
-        const highlights = this.#commentOverlayManager.getHighlightRects();
         const activePin = this.#activeThreadId ? pins.find(p => p.id === this.#activeThreadId) ?? null : null;
+        const activeHighlight = this.#activeThreadId ? this.#commentOverlayManager.getHighlight(this.#activeThreadId) ?? null : null;
         const viewInput = {
             pins,
-            highlights,
+            activeHighlight,
             hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
             commentMode: this.#commentManager.isCommentMode(),
             onPinClick: this.#handlePinClick,
@@ -380,10 +400,36 @@ export class ActionDelegate {
                 return false;
             }
             getOrCreateOverlayWidget(this.#commentManager);
-            this.#commentManager.setCommentMode(!this.#commentManager.isCommentMode());
+            const enteringCommentMode = !this.#commentManager.isCommentMode();
+            this.#commentManager.setCommentMode(enteringCommentMode);
+            this.#revealCommentsView(enteringCommentMode);
             return true;
         }
         return false;
+    }
+    /**
+     * When entering comment mode with the drawer open, add the Comments tab to
+     * the drawer without selecting it or moving focus away from the page being
+     * commented on. When leaving comment mode, always open the drawer on the
+     * Comments tab, as checking the responses is the likely next step.
+     */
+    #revealCommentsView(enteringCommentMode) {
+        const viewManager = UI.ViewManager.ViewManager.instance();
+        if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
+            return;
+        }
+        if (enteringCommentMode) {
+            if (!UI.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
+                return;
+            }
+            void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then(location => {
+                return location?.showView(viewManager.view(COMMENTS_VIEW_ID), /* insertBefore */ undefined, 
+                /* userGesture */ false, 
+                /* omitFocus */ true, /* shouldSelectTab */ false);
+            });
+            return;
+        }
+        void viewManager.showView(COMMENTS_VIEW_ID, /* userGesture */ true);
     }
     static resetForTest() {
         if (widgetInstance) {

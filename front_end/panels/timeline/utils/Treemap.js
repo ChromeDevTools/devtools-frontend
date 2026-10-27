@@ -159,9 +159,16 @@ function getNetworkRequestSizes(request) {
 export function createTreemapData(scripts, duplication) {
     const nodes = [];
     const htmlNodesByFrameId = new Map();
+    const seenRequests = new Set();
     for (const script of scripts.scripts) {
         if (!script.url) {
             continue;
+        }
+        if (!script.inline && script.request) {
+            if (seenRequests.has(script.request)) {
+                continue;
+            }
+            seenRequests.add(script.request);
         }
         const name = script.url;
         const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);

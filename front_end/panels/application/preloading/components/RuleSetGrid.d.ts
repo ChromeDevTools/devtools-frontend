@@ -1,6 +1,5 @@
 import '../../../../ui/legacy/components/data_grid/data_grid.js';
 import '../../../../ui/kit/kit.js';
-import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as Protocol from '../../../../generated/protocol.js';
@@ -25,18 +24,12 @@ export interface ViewInput {
 export type ViewOutput = unknown;
 export declare const DEFAULT_VIEW: View;
 /** Grid component to show SpeculationRules rule sets. **/
-declare const RuleSetGridBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
-export declare class RuleSetGrid extends RuleSetGridBase {
+export declare class RuleSetGrid extends UI.Widget.VBox {
     #private;
-    constructor(view?: View);
+    constructor(element?: HTMLElement, view?: View);
     get data(): RuleSetGridData | null;
     set data(data: RuleSetGridData | null);
+    get onSelect(): (ruleSetId: Protocol.Preload.RuleSetId) => void;
+    set onSelect(onSelect: (ruleSetId: Protocol.Preload.RuleSetId) => void);
     performUpdate(): void;
 }
-export declare const enum Events {
-    SELECT = "select"
-}
-export interface EventTypes {
-    [Events.SELECT]: Protocol.Preload.RuleSetId;
-}
-export {};

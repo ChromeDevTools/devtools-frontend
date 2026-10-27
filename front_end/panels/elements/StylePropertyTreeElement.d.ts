@@ -57,7 +57,7 @@ declare const AttributeRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.
 export declare class AttributeRenderer extends AttributeRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.AttributeMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const LinearGradientRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LinearGradientMatch>;
 export declare class LinearGradientRenderer extends LinearGradientRendererBase {
@@ -67,7 +67,7 @@ declare const RelativeColorChannelRendererBase: RendererBase<SDK.CSSPropertyPars
 export declare class RelativeColorChannelRenderer extends RelativeColorChannelRendererBase {
     #private;
     constructor(treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const ColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMatch>;
 export declare class ColorRenderer extends ColorRendererBase {
@@ -80,8 +80,8 @@ declare const LightDarkColorRendererBase: RendererBase<SDK.CSSPropertyParserMatc
 export declare class LightDarkColorRenderer extends LightDarkColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
-    applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: HTMLSpanElement, dark: HTMLSpanElement, lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<void>;
+    render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Lit.LitTemplate;
+    applyColorScheme(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext, colorSwatch: InlineEditor.ColorSwatch.ColorSwatch, light: Lit.LitTemplate, dark: Lit.LitTemplate, lightControls: CSSControlMap, darkControls: CSSControlMap): Promise<Lit.LitTemplate>;
 }
 declare const ColorMixRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ColorMixMatch>;
 export declare class ColorMixRenderer extends ColorMixRendererBase {
@@ -239,6 +239,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private contextForTest;
     constructor({ stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }: StylePropertyTreeElementParams);
     onunbind(): void;
+    carryOverCommittedProperty(previous: StylePropertyTreeElement): void;
     gridNames(): Promise<Set<string>>;
     matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles;
     getLonghand(): StylePropertyTreeElement | null;

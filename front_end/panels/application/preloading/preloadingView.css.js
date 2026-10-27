@@ -9,12 +9,12 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.empty-state {
+:host > .widget > .empty-state {
   display: none;
 }
 
 .empty {
-  .empty-state {
+  &.widget > .empty-state {
     display: flex;
   }
 
@@ -31,15 +31,23 @@ export default `/*
     margin: var(--sys-size-2) 0;
   }
 
-  .toolbar-filter {
+  devtools-toolbar-input {
     max-width: var(--sys-size-29);
+    flex-grow: 1;
+    flex-shrink: 1;
   }
 }
 
 devtools-split-view {
-  .preloading-grid-widget-container > .vbox {
+  [slot="main"],
+  [slot="sidebar"],
+  [slot="main"] > .vbox {
     height: 100%;
   }
+}
+
+.pretty-print-button {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./preloading/preloadingView.css')} */`;

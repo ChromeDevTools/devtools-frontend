@@ -55,10 +55,14 @@ export default `/*
     top: 0;
     left: 0;
     pointer-events: none;
-    border: var(--sys-size-2) dashed var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
     box-sizing: border-box;
     will-change: transform;
+  }
+
+  .comment-anchor-highlight.resolved {
+    border-style: dashed;
   }
 
   .comment-hover-highlight {

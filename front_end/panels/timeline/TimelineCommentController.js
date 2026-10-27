@@ -8,6 +8,23 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Overlays from './overlays/overlays.js';
 import { agentContextForEntry } from './TimelineCommentContext.js';
 /**
+ * Prefix for keys of entries that EventsSerializer cannot key. The full key is
+ * `fc-<chartLocation>-<entryIndex>`.
+ */
+const SYNTHETIC_KEY_PREFIX = 'fc-';
+function entryStartTimeMicro(timelineData, entryIndex) {
+    return Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(timelineData.entryStartTimes[entryIndex]));
+}
+/**
+ * Returns the entry's duration, or undefined for instant entries.
+ */
+function entryDurationMicro(timelineData, entryIndex) {
+    const totalTime = timelineData.entryTotalTimes[entryIndex];
+    return !Number.isNaN(totalTime) && totalTime > 0 ?
+        Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(totalTime)) :
+        undefined;
+}
+/**
  * Connects the Performance panel flame charts to the shared comments system.
  *
  * The shared comments overlay draws the pin, highlight and popup for every
@@ -16,10 +33,10 @@ import { agentContextForEntry } from './TimelineCommentContext.js';
  * flame chart canvas:
  * - It registers a CustomAnchorResolver that maps a pointer position on a
  *   flame chart canvas to a timeline anchor.
- * - It keeps one COMMENT_PIN overlay per thread on the current trace. Overlays
- *   positions each COMMENT_PIN element over its entry, and the resolver
- *   returns that element from getAnchorElement() so the shared overlay can
- *   draw the pin on it.
+ * - It keeps one COMMENT_PIN overlay for each thread on the current trace
+ *   whose entry it finds. Overlays positions each COMMENT_PIN element over its
+ *   entry, and the resolver returns that element from getAnchorElement() so
+ *   the shared overlay can draw the pin on it.
  * - It requests repositioning after every Overlays update, because panning or
  *   zooming the flame chart moves the COMMENT_PIN elements without any DOM
  *   scroll or resize.
@@ -36,6 +53,14 @@ export class TimelineCommentController {
      */
     #notifiedWithCommentPins = false;
     #onCommentThreadsChanged = () => {
+        this.#syncCommentOverlays();
+    };
+    /**
+     * The main flame chart rebuilds its entries when entries are hidden or
+     * shown from the context menu, or the ignore list changes. Threads with a
+     * synthetic key whose entry was missing can then be pinned.
+     */
+    #onMainDataChanged = () => {
         this.#syncCommentOverlays();
     };
     // Overlays updates on every pan and zoom, so the notification is skipped
@@ -72,12 +97,13 @@ export class TimelineCommentController {
         this.#syncCommentOverlays();
     }
     /**
-     * Starts listening for thread and overlay changes, registers the anchor
-     * resolver and shows pins for existing threads.
+     * Starts listening for thread, overlay and flame chart data changes,
+     * registers the anchor resolver and shows pins for existing threads.
      */
     wasShown() {
         this.#commentManager.addEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onCommentThreadsChanged);
         this.#delegate.overlays.addEventListener(Overlays.Overlays.OverlaysUpdated.eventName, this.#onOverlaysUpdated);
+        this.#delegate.mainDataProvider.addEventListener("DataChanged" /* TimelineFlameChartDataProviderEvents.DATA_CHANGED */, this.#onMainDataChanged);
         Comments.CommentAnchorResolver.registerCustomAnchorResolver(this.#customAnchorResolver);
         this.#syncCommentOverlays();
         // COMMENT_PIN overlays that survived while the view was hidden need their
@@ -87,13 +113,14 @@ export class TimelineCommentController {
             this.#delegate.overlays.overlaysOfType('COMMENT_PIN').length > 0;
     }
     /**
-     * Stops listening for thread and overlay changes and unregisters the anchor
-     * resolver. The final notification removes the shared pins, because the
-     * resolver no longer supplies their anchor elements.
+     * Stops listening for thread, overlay and flame chart data changes and
+     * unregisters the anchor resolver. The final notification removes the shared
+     * pins, because the resolver no longer supplies their anchor elements.
      */
     willHide() {
         this.#commentManager.removeEventListener("CommentThreadsChanged" /* CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED */, this.#onCommentThreadsChanged);
         this.#delegate.overlays.removeEventListener(Overlays.Overlays.OverlaysUpdated.eventName, this.#onOverlaysUpdated);
+        this.#delegate.mainDataProvider.removeEventListener("DataChanged" /* TimelineFlameChartDataProviderEvents.DATA_CHANGED */, this.#onMainDataChanged);
         Comments.CommentAnchorResolver.unregisterCustomAnchorResolver(this.#customAnchorResolver);
         Comments.CommentAnchorResolver.notifyCustomAnchorsMoved();
         this.#notifiedWithCommentPins = false;
@@ -130,6 +157,60 @@ export class TimelineCommentController {
         const { min, max } = this.#parsedTrace.data.Meta.traceBounds;
         return `trace-${min}-${max}`;
     }
+    #dataProviderFor(chartLocation) {
+        return chartLocation === 'network' ? this.#delegate.networkDataProvider : this.#delegate.mainDataProvider;
+    }
+    /**
+     * Returns the event for a thread's timeline anchor, or null if the anchor
+     * has a synthetic key and no flame chart entry matches it.
+     */
+    #eventForTimelineAnchor(anchor, parsedTrace) {
+        if (!anchor.traceEventKey.startsWith(SYNTHETIC_KEY_PREFIX)) {
+            // The key was created by EventsSerializer for this trace, because the
+            // thread's traceId matches.
+            return this.#delegate.eventsSerializer.eventForKey(anchor.traceEventKey, parsedTrace);
+        }
+        const entryIndex = this.#findEntryIndexForSyntheticKey(anchor);
+        if (entryIndex === -1) {
+            return null;
+        }
+        return this.#dataProviderFor(anchor.chartLocation).eventByIndex(entryIndex);
+    }
+    /**
+     * Returns the index of the flame chart entry with the anchor's start time,
+     * duration and title, or -1 if there is none. Duration separates nested
+     * entries that share a start time and title, such as recursive calls.
+     *
+     * Entry indexes change when the flame chart rebuilds its entries, for
+     * example after entries are hidden from the context menu. The index encoded
+     * in the synthetic key is therefore checked first and used only if that
+     * entry still matches. Otherwise every entry is scanned, because
+     * `entryStartTimes` concatenates all tracks and is not sorted.
+     */
+    #findEntryIndexForSyntheticKey(anchor) {
+        const dataProvider = this.#dataProviderFor(anchor.chartLocation);
+        const timelineData = dataProvider.timelineData();
+        const entryCount = timelineData.entryStartTimes.length;
+        const matchesAnchor = (index) => {
+            // The anchor's times were computed by entryStartTimeMicro() and
+            // entryDurationMicro() from the same trace, so exact comparisons are
+            // safe.
+            return entryStartTimeMicro(timelineData, index) === anchor.startTimeMicro &&
+                entryDurationMicro(timelineData, index) === anchor.durationMicro &&
+                (dataProvider.entryTitle(index) ?? '') === anchor.entryName;
+        };
+        const encodedIndex = Number(anchor.traceEventKey.slice(`${SYNTHETIC_KEY_PREFIX}${anchor.chartLocation}-`.length));
+        if (Number.isInteger(encodedIndex) && encodedIndex >= 0 && encodedIndex < entryCount &&
+            matchesAnchor(encodedIndex)) {
+            return encodedIndex;
+        }
+        for (let index = 0; index < entryCount; index++) {
+            if (matchesAnchor(index)) {
+                return index;
+            }
+        }
+        return -1;
+    }
     #syncCommentOverlays() {
         const existingOverlays = this.#delegate.overlays.overlaysOfType('COMMENT_PIN');
         const currentTraceId = this.#traceId();
@@ -153,9 +234,13 @@ export class TimelineCommentController {
             if (existingOverlays.some(overlay => overlay.commentThreadId === thread.id)) {
                 continue;
             }
-            // The key was created by EventsSerializer for this trace, because the
-            // thread's traceId matches.
-            const event = this.#delegate.eventsSerializer.eventForKey(thread.anchor.timeline.traceEventKey, parsedTrace);
+            const event = this.#eventForTimelineAnchor(thread.anchor.timeline, parsedTrace);
+            // The entry of a synthetic key can be missing from the flame chart, for
+            // example after it is hidden from the context menu. The thread then has
+            // no pin until #onMainDataChanged() syncs again and finds the entry.
+            if (!event) {
+                continue;
+            }
             this.#delegate.overlays.add({
                 type: 'COMMENT_PIN',
                 entry: event,
@@ -171,6 +256,12 @@ export class TimelineCommentController {
         }
         if (mutationsMade) {
             void this.#delegate.overlays.update();
+        }
+        else {
+            // Overlays#reset() clears previous overlays before setParsedTrace() runs.
+            // Run #onOverlaysUpdated() so notifyCustomAnchorsMoved() still fires when
+            // the new trace adds no comment pins of its own.
+            this.#onOverlaysUpdated();
         }
     }
     #resolveEntryAtCoordinates(element, clientX, clientY) {
@@ -244,25 +335,22 @@ export class TimelineCommentController {
         if (!traceId) {
             return null;
         }
-        // Events that EventsSerializer cannot key, such as JS samples, cannot be
-        // found again when the thread is pinned, so they are not commentable.
-        const traceEventKey = this.#delegate.eventsSerializer.keyForEvent(entry.event);
-        if (!traceEventKey) {
-            return null;
-        }
-        const { flameChart, dataProvider, chartLocation, canvas, entryIndex, highlightRect } = entry;
+        const { flameChart, dataProvider, chartLocation, canvas, entryIndex, event, highlightRect } = entry;
+        // Events that EventsSerializer cannot key, such as JS samples, get a
+        // synthetic key that encodes the chart and the entry index.
+        // #findEntryIndexForSyntheticKey() uses the stored start time, duration
+        // and title to find the entry again if the index has changed.
+        const traceEventKey = this.#delegate.eventsSerializer.keyForEvent(event) ?? `${SYNTHETIC_KEY_PREFIX}${chartLocation}-${entryIndex}`;
         const timelineData = flameChart.timelineData();
         if (!timelineData) {
             throw new Error('Flame chart resolved an entry index without timeline data.');
         }
-        // Store the raw title, even when it is empty. The UI applies its own
-        // display fallback for untitled entries.
+        // Store the raw title, even when it is empty. #findEntryIndexForSyntheticKey()
+        // compares against it, and the UI applies its own display fallback for
+        // untitled entries.
         const entryName = dataProvider.entryTitle(entryIndex) ?? '';
-        const startTimeMicro = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(timelineData.entryStartTimes[entryIndex]));
-        const totalTime = timelineData.entryTotalTimes[entryIndex];
-        const durationMicro = !Number.isNaN(totalTime) && totalTime > 0 ?
-            Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(totalTime)) :
-            undefined;
+        const startTimeMicro = entryStartTimeMicro(timelineData, entryIndex);
+        const durationMicro = entryDurationMicro(timelineData, entryIndex);
         return {
             anchor: {
                 vePath: VisualLogging.getVePath(element),

@@ -1866,6 +1866,7 @@ export var Network;
         DeviceBoundSessionFetchResult["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
         DeviceBoundSessionFetchResult["AttestationCertificationError"] = "AttestationCertificationError";
         DeviceBoundSessionFetchResult["AttestationSigningError"] = "AttestationSigningError";
+        DeviceBoundSessionFetchResult["FederatedRegistrationRedirected"] = "FederatedRegistrationRedirected";
     })(DeviceBoundSessionFetchResult = Network.DeviceBoundSessionFetchResult || (Network.DeviceBoundSessionFetchResult = {}));
     let RefreshEventDetailsRefreshResult;
     (function (RefreshEventDetailsRefreshResult) {

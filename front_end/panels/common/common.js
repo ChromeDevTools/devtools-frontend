@@ -3986,6 +3986,23 @@ var commentThreadWidget_css_default = `/*
     min-width: 0;
   }
 
+  .thread-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-4);
+    width: 100%;
+    max-height: min(var(--sys-size-32), 50vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .thread-body:hover,
+  .thread-body:focus-within {
+    scrollbar-color: var(--sys-color-neutral-outline) transparent;
+  }
+
   .comment-text {
     width: 100%;
     font-family: var(--default-font-family);
@@ -4272,7 +4289,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
             ${buttonText}
           </devtools-button>
         </div>
-      ` : html8`${input.comments.map((comment) => comment.author === "DEVELOPER" ? html8`
+      ` : html8`<div class="thread-body">${input.comments.map((comment) => comment.author === "DEVELOPER" ? html8`
           <div class="comment-text"
             @click=${() => {
     input.onSetEditMode(true);
@@ -4291,7 +4308,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   )}
             </div>
           </div>
-        `)}
+        `)}</div>
       `}
     </div>
   `, target);
@@ -4487,10 +4504,14 @@ var commentsOverlay_css_default = `/*
     top: 0;
     left: 0;
     pointer-events: none;
-    border: var(--sys-size-2) dashed var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
     box-sizing: border-box;
     will-change: transform;
+  }
+
+  .comment-anchor-highlight.resolved {
+    border-style: dashed;
   }
 
   .comment-hover-highlight {
@@ -4521,13 +4542,14 @@ var {
   html: html9,
   render: render8,
   nothing: nothing5,
-  Directives: { repeat, styleMap }
+  Directives: { classMap: classMap3, repeat, styleMap }
 } = Lit4;
 var POPUP_MARGIN = 8;
 var PIN_HEIGHT = 30;
 var POPUP_WIDTH = 288;
 var POPUP_HEIGHT = 220;
 var AUTO_CLOSE_DELAY_MS = 2e3;
+var COMMENTS_VIEW_ID = "comments";
 var DEFAULT_VIEW7 = (input, _output, target) => {
   const popupPosition = input.activePin ?? input.fallbackPosition;
   render8(html9`
@@ -4543,20 +4565,19 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
   })}>
         </div>
       ` : nothing5}
-      ${repeat(
-    input.highlights.filter((h) => h.visible),
-    (h) => h.id,
-    (h) => html9`
-          <div
-            class="comment-anchor-highlight"
-            style=${styleMap({
-      transform: `translate3d(${h.left}px, ${h.top}px, 0)`,
-      width: `${h.width}px`,
-      height: `${h.height}px`
-    })}>
-          </div>
-        `
-  )}
+      ${input.activeHighlight?.visible && input.activeThread ? html9`
+        <div
+          class=${classMap3({
+    "comment-anchor-highlight": true,
+    resolved: input.activeThread.status === "RESOLVED"
+  })}
+          style=${styleMap({
+    transform: `translate3d(${input.activeHighlight.left}px, ${input.activeHighlight.top}px, 0)`,
+    width: `${input.activeHighlight.width}px`,
+    height: `${input.activeHighlight.height}px`
+  })}>
+        </div>
+      ` : nothing5}
       ${repeat(
     input.pins.filter((p) => p.visible),
     (p) => p.id,
@@ -4606,6 +4627,11 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     </div>
   `, target);
 };
+function isEventInsidePopupOrPin(event) {
+  const composedTarget = event.composedPath()[0];
+  const target = composedTarget instanceof Element ? composedTarget : event.target;
+  return target instanceof Element && Boolean(Comments.CommentAnchorResolver.closestAcrossShadow(target, ".comment-popup-widget, .comment-pin"));
+}
 var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   static INJECT = [CommentManager.CommentManager.CommentManager];
   #view;
@@ -4623,8 +4649,10 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#activeThreadId = threadId;
       if (threadId && this.isShowing()) {
         document.documentElement.addEventListener("keydown", this.#onKeyDown);
+        document.documentElement.addEventListener("click", this.#onClickOutside, { capture: true });
       } else {
         document.documentElement.removeEventListener("keydown", this.#onKeyDown);
+        document.documentElement.removeEventListener("click", this.#onClickOutside, { capture: true });
       }
     }
   }
@@ -4669,12 +4697,14 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     );
     if (this.#activeThreadId) {
       document.documentElement.addEventListener("keydown", this.#onKeyDown);
+      document.documentElement.addEventListener("click", this.#onClickOutside, { capture: true });
     }
     this.requestUpdate();
   }
   willHide() {
     this.#clearCloseTimeout();
     document.documentElement.removeEventListener("keydown", this.#onKeyDown);
+    document.documentElement.removeEventListener("click", this.#onClickOutside, { capture: true });
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
       Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
@@ -4806,11 +4836,17 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
       this.#handleCloseCommentThread();
     }
   };
+  #onClickOutside = (event) => {
+    if (!this.#activeThreadId || isEventInsidePopupOrPin(event)) {
+      return;
+    }
+    this.#handleCloseCommentThread();
+  };
   #renderDisconnectedView() {
     this.#view(
       {
         pins: [],
-        highlights: [],
+        activeHighlight: null,
         hoverHighlight: null,
         commentMode: false,
         onPinClick: this.#handlePinClick,
@@ -4834,11 +4870,11 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   }
   #renderWithTitle(activeThread, title) {
     const pins = this.#commentOverlayManager.getPinPositions();
-    const highlights = this.#commentOverlayManager.getHighlightRects();
     const activePin = this.#activeThreadId ? pins.find((p) => p.id === this.#activeThreadId) ?? null : null;
+    const activeHighlight = this.#activeThreadId ? this.#commentOverlayManager.getHighlight(this.#activeThreadId) ?? null : null;
     const viewInput = {
       pins,
-      highlights,
+      activeHighlight,
       hoverHighlight: this.#commentOverlayManager.getHoverHighlight(),
       commentMode: this.#commentManager.isCommentMode(),
       onPinClick: this.#handlePinClick,
@@ -4954,12 +4990,48 @@ var ActionDelegate = class {
         return false;
       }
       getOrCreateOverlayWidget(this.#commentManager);
-      this.#commentManager.setCommentMode(
-        !this.#commentManager.isCommentMode()
-      );
+      const enteringCommentMode = !this.#commentManager.isCommentMode();
+      this.#commentManager.setCommentMode(enteringCommentMode);
+      this.#revealCommentsView(enteringCommentMode);
       return true;
     }
     return false;
+  }
+  /**
+   * When entering comment mode with the drawer open, add the Comments tab to
+   * the drawer without selecting it or moving focus away from the page being
+   * commented on. When leaving comment mode, always open the drawer on the
+   * Comments tab, as checking the responses is the likely next step.
+   */
+  #revealCommentsView(enteringCommentMode) {
+    const viewManager = UI10.ViewManager.ViewManager.instance();
+    if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
+      return;
+    }
+    if (enteringCommentMode) {
+      if (!UI10.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
+        return;
+      }
+      void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then((location) => {
+        return location?.showView(
+          viewManager.view(COMMENTS_VIEW_ID),
+          /* insertBefore */
+          void 0,
+          /* userGesture */
+          false,
+          /* omitFocus */
+          true,
+          /* shouldSelectTab */
+          false
+        );
+      });
+      return;
+    }
+    void viewManager.showView(
+      COMMENTS_VIEW_ID,
+      /* userGesture */
+      true
+    );
   }
   static resetForTest() {
     if (widgetInstance) {

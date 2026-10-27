@@ -139,12 +139,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     render(template, target);
 };
 /** Grid component to show SpeculationRules rule sets. **/
-const RuleSetGridBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
-export class RuleSetGrid extends RuleSetGridBase {
+export class RuleSetGrid extends UI.Widget.VBox {
     #view;
     #data = null;
-    constructor(view = DEFAULT_VIEW) {
-        super({ useShadowDom: true });
+    #onSelect = () => { };
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
         this.#view = view;
     }
     get data() {
@@ -154,10 +154,20 @@ export class RuleSetGrid extends RuleSetGridBase {
         this.#data = data;
         this.requestUpdate();
     }
+    get onSelect() {
+        return this.#onSelect;
+    }
+    set onSelect(onSelect) {
+        if (this.#onSelect === onSelect) {
+            return;
+        }
+        this.#onSelect = onSelect;
+        this.requestUpdate();
+    }
     performUpdate() {
         const input = {
             data: this.#data,
-            onSelect: this.dispatchEventToListeners.bind(this, "select" /* Events.SELECT */),
+            onSelect: this.#onSelect,
             onRevealInElements: this.#revealSpeculationRulesInElements.bind(this),
             onRevealInNetwork: this.#revealSpeculationRulesInNetwork.bind(this),
             onRevealPreloadsAssociatedWithRuleSet: this.#revealAttemptViewWithFilter.bind(this),
@@ -190,8 +200,4 @@ export class RuleSetGrid extends RuleSetGridBase {
         void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
     }
 }
-export var Events;
-(function (Events) {
-    Events["SELECT"] = "select";
-})(Events || (Events = {}));
 //# sourceMappingURL=RuleSetGrid.js.map

@@ -1,5 +1,4 @@
 import '../../ui/kit/kit.js';
-import '../../ui/components/menus/menus.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';

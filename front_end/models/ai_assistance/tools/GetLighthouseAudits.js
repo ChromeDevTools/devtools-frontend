@@ -14,7 +14,7 @@ export class GetLighthouseAuditsTool {
         properties: {
             categoryId: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'The category of audits to retrieve. Use "all" to retrieve the full report and all categories, or specify a category: "accessibility", "performance", "best-practices", "seo".',
+                description: 'The category of audits to retrieve. Use "all" to retrieve the full report and all categories, or specify a category: "accessibility", "performance", "best-practices", "seo", or "agentic-browsing" (only present when the active report includes an agentic browsing audit).',
                 nullable: false,
             },
         },

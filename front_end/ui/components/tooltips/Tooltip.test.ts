@@ -552,4 +552,64 @@ describe('Tooltip', () => {
       assert.strictEqual(proposedRect.left, 90);
     });
   });
+
+  describe('ifExpanded', () => {
+    it('renders content lazily on open and clears it on close', async () => {
+      const container = document.createElement('div');
+      const contentFactory = sinon.spy(() => html`<p>Lazy content</p>`);
+      // clang-format off
+      Lit.render(html`
+        <button aria-details="lazy-tooltip-id">Button</button>
+        <devtools-tooltip id="lazy-tooltip-id" variant="rich" .hover-delay=${0}>
+          ${Tooltips.Tooltip.ifExpanded(contentFactory)}
+        </devtools-tooltip>
+      `, container);
+      // clang-format on
+      renderElementIntoDOM(container, {allowMultipleChildren: true});
+
+      const tooltip = container.querySelector('devtools-tooltip');
+      assert.exists(tooltip);
+      sinon.assert.notCalled(contentFactory);
+      assert.isNull(tooltip.querySelector('p'));
+
+      const opened = waitForToggle(tooltip, 'open');
+      tooltip.showPopover();
+      await opened;
+
+      sinon.assert.calledOnce(contentFactory);
+      assert.strictEqual(tooltip.querySelector('p')?.textContent, 'Lazy content');
+
+      const closed = waitForToggle(tooltip, 'closed');
+      tooltip.hidePopover();
+      await closed;
+
+      assert.isNull(tooltip.querySelector('p'));
+    });
+
+    it('restores the beforetoggle listener when reconnected', async () => {
+      const container = document.createElement('div');
+      // clang-format off
+      Lit.render(html`
+        <button aria-details="reconnect-tooltip-id">Button</button>
+        <devtools-tooltip id="reconnect-tooltip-id" variant="rich" .hover-delay=${0}>
+          ${Tooltips.Tooltip.ifExpanded(html`<p>Reconnected content</p>`)}
+        </devtools-tooltip>
+      `, container);
+      // clang-format on
+      renderElementIntoDOM(container, {allowMultipleChildren: true});
+
+      container.remove();
+      renderElementIntoDOM(container, {allowMultipleChildren: true});
+
+      const tooltip = container.querySelector('devtools-tooltip');
+      assert.exists(tooltip);
+      assert.isNull(tooltip.querySelector('p'));
+
+      const opened = waitForToggle(tooltip, 'open');
+      tooltip.showPopover();
+      await opened;
+
+      assert.strictEqual(tooltip.querySelector('p')?.textContent, 'Reconnected content');
+    });
+  });
 });

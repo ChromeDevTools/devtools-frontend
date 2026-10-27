@@ -4,12 +4,10 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
 import * as UI from '../../legacy/legacy.js';
-import * as Lit from '../../lit/lit.js';
+import {AsyncDirective, Directives, html, type LitTemplate, nothing, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import tooltipStyles from './tooltip.css.js';
-
-const {html} = Lit;
 
 interface ProposedRect {
   left: number;
@@ -376,7 +374,7 @@ export class Tooltip extends HTMLElement {
     this.#setAttributes();
 
     // clang-format off
-    Lit.render(html`
+    render(html`
       <style>${tooltipStyles}</style>
       <!-- Wrapping it into a container, so that the tooltip doesn't disappear when the mouse moves from the anchor to the tooltip. -->
       <div class="container ${this.padding === 'large' ? 'large-padding' : ''}">
@@ -658,6 +656,57 @@ export class Tooltip extends HTMLElement {
     this.#anchorObserver.observe(anchor.parentElement, {childList: true});
   }
 }
+
+type IfExpandedContent = LitTemplate|Iterable<LitTemplate>|Promise<LitTemplate|Iterable<LitTemplate>>;
+
+class IfExpandedDirective extends AsyncDirective.AsyncDirective {
+  readonly #partInfo: {type: AsyncDirective.PartType, startNode: Node};
+  #tooltip: Tooltip|null = null;
+  #content: IfExpandedContent|(() => IfExpandedContent) = nothing;
+
+  constructor(partInfo: AsyncDirective.PartInfo) {
+    if (partInfo.type !== AsyncDirective.PartType.CHILD) {
+      throw new Error('ifExpanded directive must be used in a child node');
+    }
+    super(partInfo);
+    this.#partInfo = partInfo as {type: AsyncDirective.PartType, startNode: Node};
+  }
+
+  #resolveContent(): unknown {
+    return Directives.until(typeof this.#content === 'function' ? this.#content() : this.#content);
+  }
+
+  #onBeforeToggle = (event: ToggleEvent): void => {
+    this.setValue(event.newState === 'open' ? this.#resolveContent() : nothing);
+  };
+
+  render(content: IfExpandedContent|(() => IfExpandedContent)): unknown {
+    this.#content = content;
+    const startNode = this.#partInfo.startNode;
+    const parentElement = startNode instanceof HTMLElement ? startNode : startNode?.parentElement;
+    const tooltip = parentElement?.closest('devtools-tooltip') ?? null;
+    if (tooltip !== this.#tooltip) {
+      this.#tooltip?.removeEventListener('beforetoggle', this.#onBeforeToggle);
+      this.#tooltip = tooltip;
+      this.#tooltip?.addEventListener('beforetoggle', this.#onBeforeToggle);
+    }
+    if (!this.#tooltip?.open) {
+      return nothing;
+    }
+    return this.#resolveContent();
+  }
+
+  protected override disconnected(): void {
+    this.#tooltip?.removeEventListener('beforetoggle', this.#onBeforeToggle);
+  }
+
+  protected override reconnected(): void {
+    this.#tooltip?.addEventListener('beforetoggle', this.#onBeforeToggle);
+  }
+}
+
+export const ifExpanded: (content: IfExpandedContent|(() => IfExpandedContent)) =>
+    AsyncDirective.DirectiveResult<typeof IfExpandedDirective> = AsyncDirective.directive(IfExpandedDirective);
 
 customElements.define('devtools-tooltip', Tooltip);
 

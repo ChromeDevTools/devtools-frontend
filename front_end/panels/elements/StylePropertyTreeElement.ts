@@ -57,6 +57,7 @@ import type {StylesContainer} from './StylesContainer.js';
 import {CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME} from './StylesSidebarPane.js';
 
 const {html, nothing, render, Directives: {classMap, ref, until}} = Lit;
+const {ifExpanded} = Tooltips.Tooltip;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -1099,17 +1100,14 @@ export class ColorMixRenderer extends ColorMixRendererBase {
         id=${tooltipId}
         variant=rich
         jslogContext=elements.css-color-mix
-        @beforetoggle=${(e: ToggleEvent) => {
-          if (e.newState !== 'open') {
-            return;
-          }
-          const color = swatch.mixedColor();
-          if (!color || !(e.target instanceof HTMLElement)) {
-            return;
-          }
-          const rgb = color.as(Common.Color.Format.HEX);
-          e.target.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
-        }}></devtools-tooltip>`;
+      >${ifExpanded(() => {
+        const color = swatch.mixedColor();
+        if (!color) {
+          return Lit.nothing;
+        }
+        const rgb = color.as(Common.Color.Format.HEX);
+        return html`${rgb.isGamutClipped() ? color.asString() : rgb.asString()}`;
+      })}</devtools-tooltip>`;
     // clang-format on
   }
 }

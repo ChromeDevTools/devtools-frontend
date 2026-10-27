@@ -1102,6 +1102,58 @@ describe('CheckboxLabel', () => {
     renderCheckbox(undefined);
     assert.isFalse(checkbox.checked);
   });
+
+  it('replaces the internal input with a new one when jslogContext changes', () => {
+    const checkbox = document.createElement('devtools-checkbox');
+    renderElementIntoDOM(checkbox);
+    checkbox.checked = true;
+    checkbox.disabled = false;
+    checkbox.indeterminate = true;
+    checkbox.name = 'test-name';
+    checkbox.title = 'test-title';
+    checkbox.ariaLabel = 'test-aria-label';
+    checkbox.small = true;
+
+    const firstInput = checkbox.shadowRoot?.querySelector('input');
+    assert.exists(firstInput);
+    assert.isNull(firstInput.getAttribute('jslog'));
+
+    checkbox.focus();
+    assert.strictEqual(checkbox.shadowRoot?.activeElement, firstInput);
+
+    checkbox.jslogContext = 'test-context';
+    const secondInput = checkbox.shadowRoot?.querySelector('input');
+    assert.exists(secondInput);
+    assert.notStrictEqual(secondInput, firstInput);
+    assert.isFalse(firstInput.isConnected);
+    assert.strictEqual(checkbox.jslogContext, 'test-context');
+    assert.strictEqual(secondInput.getAttribute('jslog'), 'Toggle; track: change; context: test-context');
+    assert.isTrue(secondInput.checked);
+    assert.isFalse(secondInput.disabled);
+    assert.isTrue(secondInput.indeterminate);
+    assert.strictEqual(secondInput.name, 'test-name');
+    assert.strictEqual(secondInput.title, 'test-title');
+    assert.strictEqual(secondInput.ariaLabel, 'test-aria-label');
+    assert.isTrue(secondInput.classList.contains('small'));
+    assert.strictEqual(checkbox.shadowRoot?.activeElement, secondInput);
+
+    // Setting the same jslogContext keeps the existing internal input.
+    checkbox.jslogContext = 'test-context';
+    assert.strictEqual(checkbox.shadowRoot?.querySelector('input'), secondInput);
+
+    // Change events on the replaced input still propagate from the host element.
+    const changeSpy = sinon.spy();
+    checkbox.addEventListener('change', changeSpy);
+    secondInput.dispatchEvent(new Event('change'));
+    sinon.assert.calledOnce(changeSpy);
+
+    checkbox.jslogContext = undefined;
+    const thirdInput = checkbox.shadowRoot?.querySelector('input');
+    assert.exists(thirdInput);
+    assert.notStrictEqual(thirdInput, secondInput);
+    assert.isNull(checkbox.jslogContext);
+    assert.isNull(thirdInput.getAttribute('jslog'));
+  });
 });
 
 describe('bindCheckbox', () => {

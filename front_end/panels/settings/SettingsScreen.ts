@@ -25,7 +25,7 @@ import * as PanelComponents from './components/components.js';
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 import settingsScreenStyles from './settingsScreen.css.js';
 
-const {html, render, Directives: {ref}} = Lit;
+const {html, render, Directives: {ref, repeat}} = Lit;
 
 const UIStrings = {
   /**
@@ -432,7 +432,7 @@ export const EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW: ExperimentsSettingsTabView =
                   <span>${i18nString(UIStrings.theseExperimentsCouldBeUnstable)}</span>
                 </div>
                 <div class="settings-experiments-block">
-                  ${input.experiments.map(experiment => html`
+                  ${repeat(input.experiments, experiment => experiment.name, experiment => html`
                     <p class="settings-experiment" ${ref(el => {
                       if (el) {
                         output.setExperimentElement(experiment, el as HTMLElement);

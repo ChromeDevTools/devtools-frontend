@@ -1131,7 +1131,7 @@ export function setTitle(element: HTMLElement, title: string): void {
 
 export class CheckboxLabel extends HTMLElement {
   static readonly observedAttributes: string[] =
-      ['checked', 'disabled', 'indeterminate', 'name', 'title', 'aria-label', 'small'];
+      ['checked', 'disabled', 'indeterminate', 'name', 'title', 'aria-label', 'small', 'jslogcontext'];
 
   readonly #shadowRoot!: DocumentFragment;
   #checkboxElement!: HTMLInputElement;
@@ -1162,8 +1162,7 @@ export class CheckboxLabel extends HTMLElement {
     const element = document.createElement('devtools-checkbox');
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
-      element.#checkboxElement.setAttribute(
-          'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
+      element.jslogContext = jslogContext;
     }
     if (title !== undefined) {
       element.#textElement.textContent = title;
@@ -1182,7 +1181,7 @@ export class CheckboxLabel extends HTMLElement {
     return element;
   }
 
-  attributeChangedCallback(name: string, _oldValue: string|null, newValue: string|null): void {
+  attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
     if (name === 'checked') {
       this.#checkboxElement.checked = newValue !== null;
     } else if (name === 'disabled') {
@@ -1198,6 +1197,24 @@ export class CheckboxLabel extends HTMLElement {
       this.#checkboxElement.ariaLabel = newValue;
     } else if (name === 'small') {
       this.#checkboxElement.classList.toggle('small', newValue !== null);
+    } else if (name === 'jslogcontext' && oldValue !== newValue) {
+      const oldCheckbox = this.#checkboxElement;
+      const hadFocus = this.shadowRoot?.activeElement === oldCheckbox;
+      const newCheckbox = oldCheckbox.cloneNode(false) as HTMLInputElement;
+      newCheckbox.checked = oldCheckbox.checked;
+      newCheckbox.disabled = oldCheckbox.disabled;
+      newCheckbox.indeterminate = oldCheckbox.indeterminate;
+      if (newValue) {
+        newCheckbox.setAttribute('jslog', `${VisualLogging.toggle().track({change: true}).context(newValue)}`);
+      } else {
+        newCheckbox.removeAttribute('jslog');
+      }
+      newCheckbox.addEventListener('change', () => this.dispatchEvent(new Event('change')));
+      oldCheckbox.replaceWith(newCheckbox);
+      this.#checkboxElement = newCheckbox;
+      if (hadFocus) {
+        newCheckbox.focus();
+      }
     }
   }
 
@@ -1266,6 +1283,18 @@ export class CheckboxLabel extends HTMLElement {
 
   get name(): string {
     return this.#checkboxElement.name;
+  }
+
+  set jslogContext(jslogContext: string|null|undefined) {
+    if (jslogContext) {
+      this.setAttribute('jslogcontext', jslogContext);
+    } else {
+      this.removeAttribute('jslogcontext');
+    }
+  }
+
+  get jslogContext(): string|null {
+    return this.getAttribute('jslogcontext');
   }
 
   override click(): void {

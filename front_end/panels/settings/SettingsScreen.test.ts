@@ -374,8 +374,14 @@ describeWithEnvironment('ExperimentsSettingsTab default view', () => {
     assert.lengthOf(checkboxes, 2);
     assert.strictEqual(checkboxes[0].title, 'Alpha Experiment');
     assert.isFalse(checkboxes[0].checked);
+    assert.strictEqual(checkboxes[0].jslogContext, 'alpha');
+    assert.strictEqual(checkboxes[0].shadowRoot?.querySelector('input')?.getAttribute('jslog'),
+                       'Toggle; track: change; context: alpha');
     assert.strictEqual(checkboxes[1].title, 'Beta Experiment (Restart)');
     assert.isTrue(checkboxes[1].checked);
+    assert.strictEqual(checkboxes[1].jslogContext, 'beta');
+    assert.strictEqual(checkboxes[1].shadowRoot?.querySelector('input')?.getAttribute('jslog'),
+                       'Toggle; track: change; context: beta');
 
     // Clicking checkbox triggers onExperimentToggled
     const input0 = checkboxes[0].shadowRoot?.querySelector('input');
@@ -399,5 +405,24 @@ describeWithEnvironment('ExperimentsSettingsTab default view', () => {
     sinon.assert.callCount(setExperimentElement, 2);
     sinon.assert.calledWith(setExperimentElement, expAlpha, sinon.match.any);
     sinon.assert.calledWith(setExperimentElement, expBeta, sinon.match.any);
+
+    // Re-rendering a filtered list keeps the DOM node keyed to the matching experiment.
+    const betaCheckbox = checkboxes[1];
+    EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW(
+        {
+          filterText: 'beta',
+          experiments: [expBeta],
+          onFilterChanged,
+          onExperimentToggled,
+          onOpenDocumentation,
+        },
+        {
+          setExperimentElement,
+        },
+        target,
+    );
+    const filteredCheckboxes = target.querySelectorAll<UI.UIUtils.CheckboxLabel>('devtools-checkbox');
+    assert.lengthOf(filteredCheckboxes, 1);
+    assert.strictEqual(filteredCheckboxes[0], betaCheckbox);
   });
 });

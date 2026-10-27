@@ -4046,6 +4046,7 @@ export const knownContextValues: Set<string> = new Set([
   'source-map-failed',
   'source-map-infobar-disabled',
   'source-map-loaded',
+  'source-map-scopes-in-sources-panel',
   'source-map-skipped',
   'source-map-skipped-infobar-disabled',
   'source-message',

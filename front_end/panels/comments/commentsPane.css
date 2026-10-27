@@ -194,7 +194,8 @@
     text-overflow: ellipsis;
   }
 
-  .thread-status-working {
+  .thread-status-working,
+  .thread-status-sent {
     display: flex;
     align-items: center;
     gap: var(--sys-size-4);
@@ -203,6 +204,16 @@
     line-height: var(--sys-typescale-body4-line-height);
     font-weight: var(--ref-typeface-weight-medium);
     white-space: nowrap;
+  }
+
+  .thread-status-sent {
+    gap: var(--sys-size-2);
+  }
+
+  .check-icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    color: var(--sys-color-on-surface-subtle);
   }
 
   .comments-empty-state {

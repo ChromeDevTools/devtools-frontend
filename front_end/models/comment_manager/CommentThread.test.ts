@@ -37,6 +37,22 @@ describe('CommentThread', () => {
     assert.isEmpty(thread.comments);
   });
 
+  it('markTransmitted() sets transmitted and dispatches CHANGED only once', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    const changedSpy = sinon.spy();
+    thread.addEventListener(CommentManager.CommentThread.Events.CHANGED, changedSpy);
+
+    thread.markTransmitted();
+    assert.isTrue(thread.transmitted);
+    sinon.assert.calledOnce(changedSpy);
+
+    thread.markTransmitted();
+    assert.isTrue(thread.transmitted);
+    sinon.assert.calledOnce(changedSpy);
+  });
+
   it('save() transitions status from DRAFT to ACTIVE and dispatches CHANGED event', () => {
     let changeCount = 0;
     const thread = new CommentManager.CommentThread.CommentThread({

@@ -285,6 +285,25 @@ describe('CommentManager', () => {
     assert.lengthOf(manager.takeComments(), 0);
   });
 
+  it('dispatches COMMENT_THREADS_CHANGED when takeComments() marks threads as transmitted', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeItem: rule',
+      textSignature: 'color: red;',
+    };
+    const thread = manager.createCommentThread(anchor, 'Comment', 'DEVELOPER');
+    thread.sendToAgent();
+
+    const changedSpy = sinon.spy();
+    manager.addEventListener(CommentManager.CommentManager.Events.COMMENT_THREADS_CHANGED, changedSpy);
+
+    manager.takeComments();
+    sinon.assert.calledOnce(changedSpy);
+
+    // Nothing new to take, so no further change is dispatched.
+    manager.takeComments();
+    sinon.assert.calledOnce(changedSpy);
+  });
+
   it('supports timeline anchor signatures with traceId', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: timeline > FlameChart: main',

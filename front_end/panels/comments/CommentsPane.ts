@@ -47,6 +47,16 @@ const UIStrings = {
    */
   working: 'Working',
   /**
+   * @description Status text shown next to a checkmark when a comment thread has been sent but not yet picked up by
+   * the agent.
+   */
+  sentStatus: 'Sent',
+  /**
+   * @description Alt text for the checkmark icon shown on a comment thread that has been sent but not yet picked up
+   * by the agent.
+   */
+  sentCheckmark: 'Sent checkmark',
+  /**
    * @description Button text shown on resolved comment threads to view the agent response.
    */
   seeResponse: 'See response',
@@ -106,6 +116,18 @@ function renderThreadStatus(
   // clang-format off
   switch (thread.status) {
     case 'SENT_TO_AGENT':
+      if (!thread.transmitted) {
+        return html`
+          <div class="thread-status-sent">
+            <devtools-icon
+              class="check-icon"
+              name="checkmark"
+              aria-label=${i18nString(UIStrings.sentCheckmark)}>
+            </devtools-icon>
+            <span>${i18nString(UIStrings.sentStatus)}</span>
+          </div>
+        `;
+      }
       return html`
         <div class="thread-status-working">
           <devtools-spinner></devtools-spinner>

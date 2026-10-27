@@ -112,12 +112,9 @@ describeWithEnvironment('RecordingView', () => {
     renderElementIntoDOM(target);
 
     RecordingView.DEFAULT_VIEW(closedInput, {}, target);
-    const codeToggle = target.querySelector('devtools-button.show-code');
-    if (!(codeToggle instanceof HTMLElement)) {
-      assert.fail('Code toggle button was not rendered');
-    }
-    assert.strictEqual(codeToggle.getAttribute('aria-controls'), 'recording-code-pane');
-    assert.strictEqual(codeToggle.getAttribute('aria-expanded'), 'false');
+    const codeToggle = target.querySelector<HTMLElementTagNameMap['devtools-button']>('devtools-button.show-code');
+    assert.instanceOf(codeToggle, HTMLElement);
+    assert.isFalse(codeToggle.accessibleExpanded);
     assert.strictEqual(target.querySelector('[slot="main"]')?.getAttribute('role'), 'region');
     assert.strictEqual(target.querySelector('[slot="main"]')?.getAttribute('aria-labelledby'),
                        'recording-steps-heading');
@@ -128,7 +125,7 @@ describeWithEnvironment('RecordingView', () => {
 
     assert.strictEqual(target.querySelector('devtools-button.show-code'), codeToggle);
     assert.strictEqual(document.activeElement, codeToggle);
-    assert.strictEqual(codeToggle.getAttribute('aria-expanded'), 'true');
+    assert.isTrue(codeToggle.accessibleExpanded);
     assert.strictEqual(target.querySelector('#recording-code-pane')?.getAttribute('role'), 'region');
     assert.strictEqual(target.querySelector('#recording-code-pane')?.getAttribute('aria-labelledby'),
                        'recording-code-heading');

@@ -532,8 +532,6 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
           <devtools-button
             @click=${input.showCodeToggle}
             class="show-code"
-            aria-controls="recording-code-pane"
-            aria-expanded=${input.showCodeView}
             .data=${
               {
                 variant: Buttons.Button.Variant.OUTLINED,
@@ -541,6 +539,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                   codeToggleTitle,
                   Actions.RecorderActions.TOGGLE_CODE_VIEW,
                 ),
+                accessibleExpanded: Boolean(input.showCodeView),
               } as Buttons.Button.ButtonData
             }
             jslog=${VisualLogging.toggleSubpane(Actions.RecorderActions.TOGGLE_CODE_VIEW).track({click: true})}

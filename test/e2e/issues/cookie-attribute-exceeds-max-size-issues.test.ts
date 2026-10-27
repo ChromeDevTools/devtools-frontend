@@ -38,7 +38,7 @@ describe('Cookie attribute exceeds max size issues test', () => {
          const section = await getResourcesElement(devToolsPage, '1 cookie', issueElement, '.affected-resource-label');
          await ensureResourceSectionIsExpanded(devToolsPage, section);
          const expectedTableRows = [
-           ['Name', 'Domain & Path'],
+           ['Name', 'Domain & path'],
            ['exceeds_max_size', 'localhost/test/e2e/resources'],
          ];
          await waitForTableFromResourceSectionContents(devToolsPage, section.content, expectedTableRows);

@@ -146,6 +146,7 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         desc: 'Stops the test run after the first test failure',
       })
       .option('retries', {
+        alias: ['isolated-script-test-launcher-retry-limit'],
         type: 'number',
         desc: 'Reruns the tests if upon failure at max X number of times',
         default: 0,

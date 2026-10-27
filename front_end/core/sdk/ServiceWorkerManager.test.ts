@@ -110,6 +110,43 @@ describe('ServiceWorkerVersion', () => {
     assert.deepEqual(version.routerRules, expectedRouterRules);
   });
 
+  it('parses nested urlPattern in typedRouterRules correctly', () => {
+    const TYPED_ROUTER_RULES_PAYLOAD = {
+      ...VERSION_PAYLOAD,
+      routerRules: undefined,
+      typedRouterRules: [
+        {
+          condition: {
+            or: [
+              {
+                urlPattern: '{"pathname": "/foo"}',
+              },
+              {
+                not: {
+                  urlPattern: '{"pathname": "/bar"}',
+                },
+              },
+            ],
+          },
+          source: {
+            type: 'network' as Protocol.ServiceWorker.ServiceWorkerRouterSourceType,
+          },
+          id: 1,
+        },
+      ],
+    } as Protocol.ServiceWorker.ServiceWorkerVersion;
+
+    const version = makeVersion(REGISTRATION_PAYLOAD, TYPED_ROUTER_RULES_PAYLOAD);
+
+    const expectedRouterRules = [{
+      condition: '{"or":[{"urlPattern":{"pathname":"/foo"}},{"not":{"urlPattern":{"pathname":"/bar"}}}]}',
+      source: '"network"',
+      id: 1,
+    } as SDK.ServiceWorkerManager.ServiceWorkerRouterRule];
+
+    assert.deepEqual(version.routerRules, expectedRouterRules);
+  });
+
   it('initializes with typedRouterRules with sourceDict source', () => {
     const TYPED_ROUTER_RULES_PAYLOAD = {
       ...VERSION_PAYLOAD,

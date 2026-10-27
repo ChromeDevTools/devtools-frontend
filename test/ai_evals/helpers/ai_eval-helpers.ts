@@ -159,7 +159,8 @@ export async function stopEvalApp(app: RunningEvalApp): Promise<void> {
 /**
  * Locates the eval folder under `test/ai_evals/eval_data/evals/` (either directly at
  * `<evalId>` or nested under `<evalFolder>/<evalId>`), parses its `task.textproto`
- * for `base_app`, and starts the pre-built app with `node server.js`.
+ * for `base_app`, starts the pre-built app with `node server.js`, and waits until
+ * the server confirms it is listening on `localhost`.
  */
 export async function setupAndRunEvalApp(
     evalFolder: string,
@@ -209,6 +210,13 @@ export async function setupAndRunEvalApp(
   });
 
   const getOutput = (): string => output;
+
+  try {
+    await waitForProcessOutput(serverProcess, getOutput, /localhost:\d+/i);
+  } catch (error) {
+    await stopProcess(serverProcess);
+    throw error;
+  }
 
   return {
     process: serverProcess,

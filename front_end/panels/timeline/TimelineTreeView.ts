@@ -15,19 +15,24 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ActiveFilters} from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineRegExp} from './TimelineFilters.js';
-import {rangeForSelection, type TimelineSelection} from './TimelineSelection.js';
+import {
+  rangeForSelection,
+  type TimelineSelection,
+} from './TimelineSelection.js';
 import timelineTreeViewStyles from './timelineTreeView.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
-   * @description Data grid name for timeline tree view tables in the Performance panel.
+   * @description Data grid name for timeline tree view tables in the
+   * Performance panel.
    */
   performance: 'Performance',
   /**
@@ -43,7 +48,8 @@ const UIStrings = {
    */
   activity: 'Activity',
   /**
-   * @description Banner message shown when no tree item is selected for details in the Performance panel.
+   * @description Banner message shown when no tree item is selected for details
+   * in the Performance panel.
    */
   selectItemForDetails: 'Select item for details',
   /**
@@ -52,7 +58,8 @@ const UIStrings = {
    */
   percentPlaceholder: '{PH1} %',
   /**
-   * @description Row label for Chrome extensions overhead in timeline tree views.
+   * @description Row label for Chrome extensions overhead in timeline tree
+   * views.
    */
   chromeExtensionsOverhead: '[`Chrome` extensions overhead]',
   /**
@@ -68,39 +75,48 @@ const UIStrings = {
    */
   page: 'Page',
   /**
-   * @description Option in the grouping dropdown for no grouping in timeline tree views.
+   * @description Option in the grouping dropdown for no grouping in timeline
+   * tree views.
    */
   noGrouping: 'No grouping',
   /**
-   * @description Option in the grouping dropdown to group by activity in timeline tree views.
+   * @description Option in the grouping dropdown to group by activity in
+   * timeline tree views.
    */
   groupByActivity: 'Group by activity',
   /**
-   * @description Option in the grouping dropdown to group by category in timeline tree views.
+   * @description Option in the grouping dropdown to group by category in
+   * timeline tree views.
    */
   groupByCategory: 'Group by category',
   /**
-   * @description Option in the grouping dropdown to group by domain in timeline tree views.
+   * @description Option in the grouping dropdown to group by domain in timeline
+   * tree views.
    */
   groupByDomain: 'Group by domain',
   /**
-   * @description Option in the grouping dropdown to group by frame in timeline tree views.
+   * @description Option in the grouping dropdown to group by frame in timeline
+   * tree views.
    */
   groupByFrame: 'Group by frame',
   /**
-   * @description Option in the grouping dropdown to group by subdomain in timeline tree views.
+   * @description Option in the grouping dropdown to group by subdomain in
+   * timeline tree views.
    */
   groupBySubdomain: 'Group by subdomain',
   /**
-   * @description Option in the grouping dropdown to group by URL in timeline tree views.
+   * @description Option in the grouping dropdown to group by URL in timeline
+   * tree views.
    */
   groupByUrl: 'Group by URL',
   /**
-   * @description Option in the grouping dropdown to group by third parties in timeline tree views.
+   * @description Option in the grouping dropdown to group by third parties in
+   * timeline tree views.
    */
   groupByThirdParties: 'Group by 3rd parties',
   /**
-   * @description Accessible label for the grouping dropdown in timeline tree views.
+   * @description Accessible label for the grouping dropdown in timeline tree
+   * views.
    */
   groupBy: 'Group by',
   /**
@@ -108,43 +124,53 @@ const UIStrings = {
    */
   heaviestStack: 'Heaviest stack',
   /**
-   * @description Tooltip for the button to show the heaviest stack sidebar in timeline tree views.
+   * @description Tooltip for the button to show the heaviest stack sidebar in
+   * timeline tree views.
    */
   showHeaviestStack: 'Show heaviest stack',
   /**
-   * @description Tooltip for the button to hide the heaviest stack sidebar in timeline tree views.
+   * @description Tooltip for the button to hide the heaviest stack sidebar in
+   * timeline tree views.
    */
   hideHeaviestStack: 'Hide heaviest stack',
   /**
-   * @description Screen reader announcement when the heaviest stack sidebar is shown in the Performance panel.
+   * @description Screen reader announcement when the heaviest stack sidebar is
+   * shown in the Performance panel.
    */
   heaviestStackShown: 'Heaviest stack sidebar shown',
   /**
-   * @description Screen reader announcement when the heaviest stack sidebar is hidden in the Performance panel.
+   * @description Screen reader announcement when the heaviest stack sidebar is
+   * hidden in the Performance panel.
    */
   heaviestStackHidden: 'Heaviest stack sidebar hidden',
   /**
-   * @description Data grid name for heaviest stack tables in the Performance panel.
+   * @description Data grid name for heaviest stack tables in the Performance
+   * panel.
    */
   timelineStack: 'Timeline stack',
   /**
-   * @description Tooltip for the match case search button in timeline tree views.
+   * @description Tooltip for the match case search button in timeline tree
+   * views.
    */
   matchCase: 'Match case',
   /**
-   * @description Tooltip for the regular expression search button in timeline tree views.
+   * @description Tooltip for the regular expression search button in timeline
+   * tree views.
    */
   useRegularExpression: 'Use regular expression',
   /**
-   * @description Tooltip for the match whole word search button in timeline tree views.
+   * @description Tooltip for the match whole word search button in timeline
+   * tree views.
    */
   matchWholeWord: 'Match whole word',
   /**
-   * @description Tooltip for the button to switch to the bottom-up view in timeline tree views.
+   * @description Tooltip for the button to switch to the bottom-up view in
+   * timeline tree views.
    */
   bottomUp: 'Bottom-up',
   /**
-   * @description Accessible label for the button to switch to the bottom-up view in timeline tree views.
+   * @description Accessible label for the button to switch to the bottom-up
+   * view in timeline tree views.
    */
   viewBottomUp: 'View bottom-up',
   /**
@@ -160,12 +186,19 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
- * For an overview, read: https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
+ * For an overview, read:
+ * https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
  */
 const TimelineTreeViewBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
         UI.Widget.VBox,
     );
+
+function renderDetailsPlaceholder(input: {showPlaceholder: boolean}, _output: undefined, target: HTMLElement): void {
+  render(input.showPlaceholder ? html`<div class="empty-state">${i18nString(UIStrings.selectItemForDetails)}</div>` :
+                                 nothing,
+         target);
+}
 
 export class TimelineTreeView extends TimelineTreeViewBase implements UI.SearchableView.Searchable {
   /** This is sorted by ts. */
@@ -390,7 +423,8 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   override wasShown(): void {
     super.wasShown();
     // Only refresh if data or configuration changed while detached,
-    // avoiding rebuilding the DataGrid which resets expanded nodes and selection.
+    // avoiding rebuilding the DataGrid which resets expanded nodes and
+    // selection.
     if (this.#dirty) {
       this.refreshTree();
     }
@@ -431,7 +465,11 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   filters(): Trace.Extras.TraceFilter.TraceFilter[] {
-    return [this.taskFilter, this.textFilterInternal, ...(ActiveFilters.instance().activeFilters())];
+    return [
+      this.taskFilter,
+      this.textFilterInternal,
+      ...(ActiveFilters.instance().activeFilters()),
+    ];
   }
 
   filtersWithoutTextFilter(): Trace.Extras.TraceFilter.TraceFilter[] {
@@ -454,15 +492,15 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     }, this);
     toolbar.appendToolbarItem(this.caseSensitiveButton);
 
-    this.regexButton = new UI.Toolbar.ToolbarToggle(
-        i18nString(UIStrings.useRegularExpression), 'regular-expression', undefined, 'regular-expression');
+    this.regexButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.useRegularExpression), 'regular-expression',
+                                                    undefined, 'regular-expression');
     this.regexButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.#filterChanged();
     }, this);
     toolbar.appendToolbarItem(this.regexButton);
 
-    this.matchWholeWord = new UI.Toolbar.ToolbarToggle(
-        i18nString(UIStrings.matchWholeWord), 'match-whole-word', undefined, 'match-whole-word');
+    this.matchWholeWord = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.matchWholeWord), 'match-whole-word',
+                                                       undefined, 'match-whole-word');
     this.matchWholeWord.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.#filterChanged();
     }, this);
@@ -584,23 +622,40 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
 
   populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void {
     if (this.compactMode) {
-      columns.push(
-          ({id: 'self', title: i18nString(UIStrings.selfTime), width: '15%', sortable: true} as
-           DataGrid.DataGrid.ColumnDescriptor));
-      columns.push(
-          ({id: 'total', title: i18nString(UIStrings.totalTime), width: '15%', sortable: true} as
-           DataGrid.DataGrid.ColumnDescriptor));
+      columns.push(({
+        id: 'self',
+        title: i18nString(UIStrings.selfTime),
+        width: '15%',
+        sortable: true,
+      } as DataGrid.DataGrid.ColumnDescriptor));
+      columns.push(({
+        id: 'total',
+        title: i18nString(UIStrings.totalTime),
+        width: '15%',
+        sortable: true,
+      } as DataGrid.DataGrid.ColumnDescriptor));
     } else {
-      columns.push(
-          ({id: 'self', title: i18nString(UIStrings.selfTime), width: '120px', fixedWidth: true, sortable: true} as
-           DataGrid.DataGrid.ColumnDescriptor));
-      columns.push(
-          ({id: 'total', title: i18nString(UIStrings.totalTime), width: '120px', fixedWidth: true, sortable: true} as
-           DataGrid.DataGrid.ColumnDescriptor));
+      columns.push(({
+        id: 'self',
+        title: i18nString(UIStrings.selfTime),
+        width: '120px',
+        fixedWidth: true,
+        sortable: true,
+      } as DataGrid.DataGrid.ColumnDescriptor));
+      columns.push(({
+        id: 'total',
+        title: i18nString(UIStrings.totalTime),
+        width: '120px',
+        fixedWidth: true,
+        sortable: true,
+      } as DataGrid.DataGrid.ColumnDescriptor));
     }
-    columns.push(
-        ({id: 'activity', title: i18nString(UIStrings.activity), disclosure: true, sortable: true} as
-         DataGrid.DataGrid.ColumnDescriptor));
+    columns.push(({
+      id: 'activity',
+      title: i18nString(UIStrings.activity),
+      disclosure: true,
+      sortable: true,
+    } as DataGrid.DataGrid.ColumnDescriptor));
   }
 
   sortingChanged(): void {
@@ -615,23 +670,21 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   // Gets the sorting function for the tree view nodes.
-  getSortingFunction(columnId: string):
-      ((a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
-        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>) => number)|null {
-    const compareNameSortFn =
-        (a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
-         b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number => {
-          const nodeA = (a as TreeGridNode);
-          const nodeB = (b as TreeGridNode);
-          const eventA = nodeA.profileNode.event;
-          const eventB = nodeB.profileNode.event;
-          if (!eventA || !eventB) {
-            return 0;
-          }
-          const nameA = this.#eventNameForSorting(eventA);
-          const nameB = this.#eventNameForSorting(eventB);
-          return nameA.localeCompare(nameB);
-        };
+  getSortingFunction(columnId: string): ((a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                                          b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>) => number)|null {
+    const compareNameSortFn = (a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                               b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number => {
+      const nodeA = (a as TreeGridNode);
+      const nodeB = (b as TreeGridNode);
+      const eventA = nodeA.profileNode.event;
+      const eventB = nodeB.profileNode.event;
+      if (!eventA || !eventB) {
+        return 0;
+      }
+      const nameA = this.#eventNameForSorting(eventA);
+      const nameB = this.#eventNameForSorting(eventB);
+      return nameA.localeCompare(nameB);
+    };
 
     switch (columnId) {
       case 'start-time':
@@ -648,17 +701,15 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
         return null;
     }
 
-    function compareSelfTime(
-        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
-        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
+    function compareSelfTime(a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                             b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
       const nodeA = a as TreeGridNode;
       const nodeB = b as TreeGridNode;
       return nodeA.profileNode.selfTime - nodeB.profileNode.selfTime;
     }
 
-    function compareStartTime(
-        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
-        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
+    function compareStartTime(a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                              b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
       const nodeA = (a as TreeGridNode);
       const nodeB = (b as TreeGridNode);
       const eventA = nodeA.profileNode.event;
@@ -670,9 +721,8 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
       return eventA.ts - eventB.ts;
     }
 
-    function compareTotalTime(
-        a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
-        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
+    function compareTotalTime(a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                              b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number {
       const nodeA = a as TreeGridNode;
       const nodeB = b as TreeGridNode;
       return nodeA.profileNode.totalTime - nodeB.profileNode.totalTime;
@@ -714,13 +764,14 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
       return;
     }
     this.detailsView.detachChildWidgets();
-    this.detailsView.element.removeChildren();
     this.lastSelectedNodeInternal = selectedNode;
     if (selectedNode && this.showDetailsForNode(selectedNode)) {
+      // Clear placeholder via Lit so that subclasses can render details
+      // declaratively into the same container without corrupting Lit's part tree.
+      renderDetailsPlaceholder({showPlaceholder: false}, undefined, this.detailsView.element);
       return;
     }
-    const banner = this.detailsView.element.createChild('div', 'empty-state');
-    UI.UIUtils.createTextChild(banner, i18nString(UIStrings.selectItemForDetails));
+    renderDetailsPlaceholder({showPlaceholder: true}, undefined, this.detailsView.element);
   }
 
   showDetailsForNode(_node: Trace.Extras.TraceTree.Node): boolean {
@@ -776,13 +827,14 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
 
   onGridNodeOpened(): void {
     const gridNode = this.dataGrid.selectedNode as TreeGridNode;
-    // Use tree's hover method in case of unique hover experiences (like ThirdPartyTree).
+    // Use tree's hover method in case of unique hover experiences (like
+    // ThirdPartyTree).
     this.onHover(gridNode.profileNode);
     this.updateDetailsForSelection();
   }
 
-  private onContextMenu(
-      contextMenu: UI.ContextMenu.ContextMenu, eventGridNode: DataGrid.DataGrid.DataGridNode<GridNode>): void {
+  private onContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
+                        eventGridNode: DataGrid.DataGrid.DataGridNode<GridNode>): void {
     const gridNode = (eventGridNode as GridNode);
     if (gridNode.linkElement) {
       contextMenu.appendApplicableItems(gridNode.linkElement);
@@ -861,17 +913,26 @@ export namespace TimelineTreeView {
   }
 
   export interface EventTypes {
-    [Events.TREE_ROW_HOVERED]: {node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]};
+    [Events.TREE_ROW_HOVERED]: {
+      node: Trace.Extras.TraceTree.Node|null,
+      events?: Trace.Types.Events.Event[],
+    };
     [Events.BOTTOM_UP_BUTTON_CLICKED]: Trace.Extras.TraceTree.Node|null;
-    [Events.TREE_ROW_CLICKED]: {node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]};
+    [Events.TREE_ROW_CLICKED]: {
+      node: Trace.Extras.TraceTree.Node|null,
+      events?: Trace.Types.Events.Event[],
+    };
   }
 }
 
 /**
- * GridNodes are 1:1 with `TraceTree.Node`s but represent them within the DataGrid. It handles the representation as a row.
- * `TreeGridNode` extends this to maintain relationship to the tree, and handles populate().
+ * GridNodes are 1:1 with `TraceTree.Node`s but represent them within the
+ * DataGrid. It handles the representation as a row. `TreeGridNode` extends this
+ * to maintain relationship to the tree, and handles populate().
  *
- * `TimelineStackView` (aka heaviest stack) uses GridNode directly (as there's no hierarchy there), otherwise these TreeGridNode could probably be consolidated.
+ * `TimelineStackView` (aka heaviest stack) uses GridNode directly (as there's
+ * no hierarchy there), otherwise these TreeGridNode could probably be
+ * consolidated.
  */
 export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
   protected populated: boolean;
@@ -882,9 +943,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   protected maxTotalTime: number;
   linkElement: Element|null;
 
-  constructor(
-      profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number,
-      treeView: TimelineTreeView) {
+  constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number,
+              maxTotalTime: number, treeView: TimelineTreeView) {
     super(null, false);
     this.populated = false;
     this.profileNode = profileNode;
@@ -1026,7 +1086,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     return cell;
   }
 
-  // Generates bottom up tree hover button and appends it to the provided cell element.
+  // Generates bottom up tree hover button and appends it to the provided cell
+  // element.
   private generateBottomUpButton(textDiv: HTMLElement): void {
     const button = new Buttons.Button.Button();
     button.data = {
@@ -1044,8 +1105,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   }
 
   #bottomUpButtonClicked(): void {
-    // We should also trigger an event to "unhover" the 3P tree row. Since this isn't
-    // triggered when clicking the bottom up button.
+    // We should also trigger an event to "unhover" the 3P tree row. Since this
+    // isn't triggered when clicking the bottom up button.
     this.treeView.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node: null});
     this.treeView.dispatchEventToListeners(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, this.profileNode);
   }
@@ -1055,9 +1116,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
  * `TreeGridNode` lets a `GridNode` (row) populate based on its tree children.
  */
 export class TreeGridNode extends GridNode {
-  constructor(
-      profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number, maxTotalTime: number,
-      treeView: TimelineTreeView) {
+  constructor(profileNode: Trace.Extras.TraceTree.Node, grandTotalTime: number, maxSelfTime: number,
+              maxTotalTime: number, treeView: TimelineTreeView) {
     super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
     this.setHasChildren(this.profileNode.hasChildren());
     treeNodeToGridNode.set(profileNode, this);
@@ -1091,8 +1151,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 
   constructor(element?: HTMLElement) {
     super(element);
-    this.groupBySetting = Common.Settings.Settings.instance().createSetting(
-        'timeline-tree-group-by', AggregatedTimelineTreeView.GroupBy.None);
+    this.groupBySetting = Common.Settings.Settings.instance().createSetting('timeline-tree-group-by',
+                                                                            AggregatedTimelineTreeView.GroupBy.None);
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
@@ -1131,8 +1191,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.updateDetailsForSelection();
   }
 
-  private beautifyDomainName(this: AggregatedTimelineTreeView, name: string, node: Trace.Extras.TraceTree.Node):
-      string {
+  private beautifyDomainName(this: AggregatedTimelineTreeView, name: string,
+                             node: Trace.Extras.TraceTree.Node): string {
     if (AggregatedTimelineTreeView.isExtensionInternalURL(name as Platform.DevToolsPath.UrlString)) {
       name = i18nString(UIStrings.chromeExtensionsOverhead);
     } else if (AggregatedTimelineTreeView.isV8NativeURL(name as Platform.DevToolsPath.UrlString)) {
@@ -1169,7 +1229,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Subdomain:
       case AggregatedTimelineTreeView.GroupBy.ThirdParties: {
         // This `undefined` is [unattributed]
-        // TODO(paulirish): Improve attribution to reduce amount of items in [unattributed].
+        // TODO(paulirish): Improve attribution to reduce amount of items in
+        // [unattributed].
         const domainName = id ? this.beautifyDomainName(id, node) : undefined;
         return {name: domainName || unattributed, color};
       }
@@ -1208,13 +1269,22 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     const groupBy = AggregatedTimelineTreeView.GroupBy;
     const options = [
       {label: i18nString(UIStrings.noGrouping), value: groupBy.None},
-      {label: i18nString(UIStrings.groupByActivity), value: groupBy.EventName},
+      {
+        label: i18nString(UIStrings.groupByActivity),
+        value: groupBy.EventName,
+      },
       {label: i18nString(UIStrings.groupByCategory), value: groupBy.Category},
       {label: i18nString(UIStrings.groupByDomain), value: groupBy.Domain},
       {label: i18nString(UIStrings.groupByFrame), value: groupBy.Frame},
-      {label: i18nString(UIStrings.groupBySubdomain), value: groupBy.Subdomain},
+      {
+        label: i18nString(UIStrings.groupBySubdomain),
+        value: groupBy.Subdomain,
+      },
       {label: i18nString(UIStrings.groupByUrl), value: groupBy.URL},
-      {label: i18nString(UIStrings.groupByThirdParties), value: groupBy.ThirdParties},
+      {
+        label: i18nString(UIStrings.groupByThirdParties),
+        value: groupBy.ThirdParties,
+      },
     ];
     toolbar.appendToolbarItem(
         new UI.Toolbar.ToolbarSettingComboBox(options, this.groupBySetting, i18nString(UIStrings.groupBy)));
@@ -1290,9 +1360,11 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  // This is our groupingFunction that returns the eventId in Domain, Subdomain, and ThirdParty groupBy scenarios.
-  // The eventid == the identity of a node that we expect in a bottomUp tree (either without grouping or with the groupBy grouping)
-  // A "top node" (in `ungroupedTopNodes`) is aggregated by this. (But so are all the other nodes, except the `GroupNode`s)
+  // This is our groupingFunction that returns the eventId in Domain, Subdomain,
+  // and ThirdParty groupBy scenarios. The eventid == the identity of a node
+  // that we expect in a bottomUp tree (either without grouping or with the
+  // groupBy grouping) A "top node" (in `ungroupedTopNodes`) is aggregated by
+  // this. (But so are all the other nodes, except the `GroupNode`s)
   private domainByEvent(groupBy: AggregatedTimelineTreeView.GroupBy, event: Trace.Types.Events.Event): string {
     const parsedTrace = this.parsedTrace;
     if (!parsedTrace) {
@@ -1300,8 +1372,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
     const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace.data);
     if (!url) {
-      // We could have receiveDataEvents (that don't have a url), but that have been
-      // attributed to an entity, let's check for these. This is used for ThirdParty grouping.
+      // We could have receiveDataEvents (that don't have a url), but that have
+      // been attributed to an entity, let's check for these. This is used for
+      // ThirdParty grouping.
       const entity = this.entityMapper()?.entityForEvent(event);
       if (groupBy === AggregatedTimelineTreeView.GroupBy.ThirdParties && entity) {
         if (!entity) {
@@ -1393,7 +1466,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 }
 export namespace AggregatedTimelineTreeView {
   export enum GroupBy {
-    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
+    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests.
+   */
     None = 'None',
     EventName = 'EventName',
     Category = 'Category',
@@ -1434,9 +1508,11 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
       endTime: this.endTime,
       eventGroupIdCallback: this.groupingFunction(this.groupBySetting.get()),
       // To include instant events. When this is set to true, instant events are
-      // considered (to calculate transfer size). This then includes these events in tree nodes.
+      // considered (to calculate transfer size). This then includes these
+      // events in tree nodes.
       calculateTransferSize: true,
-      // We should forceGroupIdCallback if filtering by 3P for correct 3P grouping.
+      // We should forceGroupIdCallback if filtering by 3P for correct 3P
+      // grouping.
       forceGroupIdCallback: this.groupBySetting.get() === AggregatedTimelineTreeView.GroupBy.ThirdParties,
     });
   }
@@ -1457,8 +1533,18 @@ export class TimelineStackView extends TimelineStackViewBase {
     header.textContent = i18nString(UIStrings.heaviestStack);
     this.treeView = treeView;
     const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
-      {id: 'total', title: i18nString(UIStrings.totalTime), fixedWidth: true, width: '110px', sortable: false},
-      {id: 'activity', title: i18nString(UIStrings.activity), sortable: false},
+      {
+        id: 'total',
+        title: i18nString(UIStrings.totalTime),
+        fixedWidth: true,
+        width: '110px',
+        sortable: false,
+      },
+      {
+        id: 'activity',
+        title: i18nString(UIStrings.activity),
+        sortable: false,
+      },
     ];
     this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
       displayName: i18nString(UIStrings.timelineStack),

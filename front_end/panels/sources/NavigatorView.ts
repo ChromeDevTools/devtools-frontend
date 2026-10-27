@@ -818,9 +818,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
       return frameNode;
     }
 
-    frameNode =
-        new NavigatorGroupTreeNode(this, project, target.id() + ':' + frame.id, Types.Frame, frame.displayName());
-    frameNode.setHoverCallback(hoverCallback);
+    frameNode = new NavigatorGroupTreeNode(this, project, target.id() + ':' + frame.id, Types.Frame,
+                                           frame.displayName(), undefined, frame);
     this.frameNodes.set(frame, frameNode);
 
     const parentFrame = frame.parentFrame();
@@ -831,17 +830,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
         .appendChild(frameNode);
     if (!parentFrame) {
       frameNode.treeNode().expand();
-    }
-
-    function hoverCallback(hovered: boolean): void {
-      if (hovered) {
-        const overlayModel = target.model(SDK.OverlayModel.OverlayModel);
-        if (overlayModel && frame) {
-          overlayModel.highlightFrame(frame.id);
-        }
-      } else {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
-      }
     }
     return frameNode;
   }
@@ -1213,8 +1201,22 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     return this.findTopNonMergedNode(node.parent);
   }
 
-  handleFolderContextMenu(event: Event, node: NavigatorFolderTreeNode): void {
-    const path = node.folderPath || Platform.DevToolsPath.EmptyEncodedPathString;
+  folderHovered(node: NavigatorTreeNode, hovered: boolean): void {
+    if (node instanceof NavigatorGroupTreeNode && node.frame) {
+      if (hovered) {
+        const overlayModel = node.frame.resourceTreeModel().target().model(SDK.OverlayModel.OverlayModel);
+        if (overlayModel) {
+          overlayModel.highlightFrame(node.frame.id);
+        }
+      } else {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+      }
+    }
+  }
+
+  handleFolderContextMenu(event: Event, node: NavigatorFolderTreeNode|NavigatorGroupTreeNode): void {
+    const path =
+        node instanceof NavigatorFolderTreeNode ? node.folderPath : Platform.DevToolsPath.EmptyEncodedPathString;
     const project = node.project || null;
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1239,7 +1241,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
           this.handleContextMenuCreate(project, path, undefined);
         }, {jslogContext: 'new-file'});
       }
-    } else if (node.origin && node.folderPath) {
+    } else if (node instanceof NavigatorFolderTreeNode && node.origin && node.folderPath) {
       const url = Common.ParsedURL.ParsedURL.concatenate(node.origin, '/', node.folderPath);
       const options = {
         isContentScript: node.recursiveProperties.exclusivelyContentScripts || false,
@@ -1404,14 +1406,11 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   private readonly nodeType: string;
   private readonly navigatorView: NavigatorView;
-  private hoverCallback: ((arg0: boolean) => void)|undefined;
   node!: NavigatorTreeNode;
   private hovered?: boolean;
   private isIgnoreListed?: boolean;
 
-  constructor(
-      navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void),
-      expandable = true) {
+  constructor(navigatorView: NavigatorView, type: string, title: string, expandable = true) {
     super('', expandable, NavigatorFolderTreeElement.#contextForType(type));
     this.listItemElement.classList.add('navigator-' + type + '-tree-item', 'navigator-folder-tree-item');
     UI.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
@@ -1419,7 +1418,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.title = title;
     this.tooltip = title;
     this.navigatorView = navigatorView;
-    this.hoverCallback = hoverCallback;
 
     let iconType = 'folder';
 
@@ -1491,27 +1489,27 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private handleContextMenuEvent(event: Event): void {
-    if (!this.node) {
+    if (!this.node || !(this.node instanceof NavigatorFolderTreeNode || this.node instanceof NavigatorGroupTreeNode)) {
       return;
     }
     this.select();
-    this.navigatorView.handleFolderContextMenu(event, this.node as NavigatorFolderTreeNode);
+    this.navigatorView.handleFolderContextMenu(event, this.node);
   }
 
   private mouseMove(_event: Event): void {
-    if (this.hovered || !this.hoverCallback) {
+    if (this.hovered || !this.node) {
       return;
     }
     this.hovered = true;
-    this.hoverCallback(true);
+    this.navigatorView.folderHovered(this.node, true);
   }
 
   private mouseLeave(_event: Event): void {
-    if (!this.hoverCallback) {
+    if (!this.node) {
       return;
     }
     this.hovered = false;
-    this.hoverCallback(false);
+    this.navigatorView.folderHovered(this.node, false);
   }
 
   static #contextForType(type: string): string {
@@ -2190,21 +2188,17 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
 }
 
 export class NavigatorGroupTreeNode extends NavigatorTreeNode {
-  private readonly project: Workspace.Workspace.Project|null;
+  readonly project: Workspace.Workspace.Project|null;
   override title: string;
-  private hoverCallback?: ((arg0: boolean) => void);
+  readonly frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
   private treeElement?: NavigatorFolderTreeElement;
-  constructor(
-      navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string, title: string,
-      tooltip?: string) {
+  constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
+              title: string, tooltip?: string, frame?: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(navigatorView, id, type, tooltip);
     this.project = project;
     this.title = title;
+    this.frame = frame;
     this.populate();
-  }
-
-  setHoverCallback(hoverCallback: (arg0: boolean) => void): void {
-    this.hoverCallback = hoverCallback;
   }
 
   override treeNode(): UI.TreeOutline.TreeElement {
@@ -2212,8 +2206,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
       return this.treeElement;
     }
     const expandable = !(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem);
-    this.treeElement =
-        new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, this.hoverCallback, expandable);
+    this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, expandable);
     this.treeElement.setNode(this);
     if (this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem) {
       const {automaticFileSystem, automaticFileSystemManager} = this.project;

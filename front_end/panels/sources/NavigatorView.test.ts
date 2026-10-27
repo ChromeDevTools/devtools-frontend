@@ -8,7 +8,7 @@ import * as sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -194,6 +194,22 @@ describeWithEnvironment('NavigatorView', () => {
       throw new Error(`Tree element with title "${title}" not found`);
     }
     treeElement.listItemElement.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+  }
+
+  function hoverRow(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      title: string,
+      hovered: boolean,
+      ): void {
+    const treeElement = findTreeElement(navigatorView, el => {
+      const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
+      return elTitle === title;
+    });
+    if (!treeElement) {
+      throw new Error(`Tree element with title "${title}" not found`);
+    }
+    const eventType = hovered ? 'mousemove' : 'mouseleave';
+    treeElement.listItemElement.dispatchEvent(new MouseEvent(eventType, {bubbles: true, cancelable: true}));
   }
 
   function addResourceAndUISourceCode(
@@ -998,6 +1014,26 @@ describeWithEnvironment('NavigatorView', () => {
 
       openContextMenuOnRow(navigatorView, 'src');
       sinon.assert.calledOnce(showStub);
+    });
+
+    it('highlights frame on hover and hides highlight on mouseleave', async () => {
+      const overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+      assert.exists(overlayModel);
+      const highlightFrameSpy = sinon.spy(overlayModel, 'highlightFrame');
+      const hideHighlightSpy = sinon.spy(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
+
+      const childFrame = await addChildFrame(target);
+      const url = urlString`http://example.com/subframe/index.html`;
+      addResourceAndUISourceCode(url, childFrame, '', 'text/html');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      hoverRow(navigatorView, childFrame.displayName(), true);
+      sinon.assert.calledOnceWithExactly(highlightFrameSpy, childFrame.id);
+
+      hoverRow(navigatorView, childFrame.displayName(), false);
+      sinon.assert.calledOnce(hideHighlightSpy);
     });
   });
 

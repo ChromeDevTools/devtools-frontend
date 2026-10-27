@@ -220,6 +220,50 @@ describeWithEnvironment('ThrottlingManager', () => {
       assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
     });
 
+    it('synchronizes effective CPU performance tier with backend when calibration finishes with a constant slowdown factor',
+       async () => {
+         // Set the host default tier to "Ultra".
+         const connection = new MockCDPConnection();
+         const tierValue = SDK.CPUThrottlingManager.tierToNumber(CPUPerformanceTier.Ultra);
+         connection.setSuccessHandler('Runtime.evaluate', ({expression}) => {
+           assert.strictEqual(expression, 'navigator.cpuPerformance');
+           return {result: {value: tierValue, type: Protocol.Runtime.RemoteObjectType.Number}};
+         });
+         const emulationModelSpy = sinon.spy((_params?: Protocol.Emulation.SetCPUPerformanceOverrideRequest) => ({}));
+         connection.setSuccessHandler('Emulation.setCPUPerformanceOverride', emulationModelSpy);
+         createTarget({connection});
+         SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+         const throttlingManager = ThrottlingManager.instance({forceNew: true});
+         await SDK.CPUThrottlingManager.CPUThrottlingManager.instance().updateHostDefaultCPUPerformanceTier();
+         assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Ultra);
+
+         const selectorWrapper = throttlingManager.createCPUThrottlingSelector();
+         const selector = selectorWrapper.control;
+         const options = ThrottlingPresets.cpuThrottlingPresets;
+
+         // Select MidTierThrottlingOption (4x slowdown).
+         const midIndex = options.indexOf(PanelsCommon.CPUThrottlingOption.MidTierThrottlingOption);
+         selector.setSelectedIndex(midIndex);
+         selector.element.dispatchEvent(new Event('change'));
+         assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
+
+         emulationModelSpy.resetHistory();
+
+         // Simulate calibration that yields a lower host score (actualScore: 1200).
+         // With 4x slowdown active, the effective tier changes from Mid to Low
+         // without the user changing the CPU throttling option in the UI.
+         const calibratedSetting = Common.Settings.Settings.instance().createSetting(
+             'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
+         calibratedSetting.set({
+           low: 4.5,
+           mid: 1.2,
+           actualScore: 1200,
+         });
+
+         assert.strictEqual(throttlingManager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
+         sinon.assert.calledOnceWithMatch(emulationModelSpy, {performanceTier: CPUPerformanceTier.Low});
+       });
+
     it('updates the effective CPU performance tier when selecting mobile presets', async () => {
       // Set the host default tier to "Ultra".
       const connection = new MockCDPConnection();

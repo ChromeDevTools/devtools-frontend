@@ -75,6 +75,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   initialize(): void {
     this.#targetManager.observeModels(EmulationModel, this);
+    this.#calibratedCpuThrottlingSetting.addChangeListener(this.#onCalibratedCPUThrottlingSettingChanged, this);
     this.#cpuPerformanceSetting.addChangeListener(this.#onCPUPerformanceSettingChanged, this);
     this.#onCPUPerformanceSettingChanged();
   }
@@ -180,6 +181,12 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
       return this.#manualCPUPerformanceOverride;
     }
     return this.calculatedCPUPerformanceTier();
+  }
+
+  #onCalibratedCPUThrottlingSettingChanged(): void {
+    if (this.#manualCPUPerformanceOverride === undefined) {
+      this.#syncCPUPerformanceTier();
+    }
   }
 
   #onCPUPerformanceSettingChanged(): void {

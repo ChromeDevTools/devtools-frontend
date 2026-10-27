@@ -187,6 +187,35 @@ describe('CPUThrottlingManager', () => {
     assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
   });
 
+  it('synchronizes CPU performance tier when calibration setting changes while throttling is active', async () => {
+    const universe = new TestUniverse();
+    const manager = await createManagerWithHostTier(universe, CPUPerformanceTier.Ultra);
+    const target = universe.targetManager.primaryPageTarget();
+    assert.exists(target);
+    const cdpSpy = sinon.spy(target.emulationAgent(), 'invoke_setCPUPerformanceOverride');
+    const eventSpy = sinon.spy();
+    manager.addEventListener(SDK.CPUThrottlingManager.Events.CPU_PERFORMANCE_TIER_CHANGED, eventSpy);
+
+    // At 4x throttling on an uncalibrated Ultra host, the tier is Mid.
+    manager.setCPUThrottlingRate(4);
+    assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Mid);
+    sinon.assert.calledWithExactly(cdpSpy, {performanceTier: CPUPerformanceTier.Mid});
+    cdpSpy.resetHistory();
+    eventSpy.resetHistory();
+
+    // Updating the calibration setting while 4x throttling remains active updates the tier to Low.
+    const setting = universe.settings.createSetting('calibrated-cpu-throttling', {});
+    setting.set({
+      low: 4.5,
+      mid: 1.2,
+      actualScore: 1200,
+    });
+
+    assert.strictEqual(manager.effectiveCPUPerformanceTier(), CPUPerformanceTier.Low);
+    sinon.assert.calledOnceWithExactly(cdpSpy, {performanceTier: CPUPerformanceTier.Low});
+    sinon.assert.calledOnceWithMatch(eventSpy, {data: CPUPerformanceTier.Low});
+  });
+
   it('calculates effective CPU performance tier when only low calibration option is valid (mid is DEVICE_TOO_WEAK)',
      async () => {
        const universe = new TestUniverse();

@@ -131,13 +131,19 @@ describeWithEnvironment('Linkifier', () => {
 
     it('omits open-in-new-tab and does not trigger clipboard copy on invokeFirstAction for privileged URLs without allowPrivileged',
        () => {
-         const info = {
-           url: urlString`chrome://settings`,
-         };
-         const actions = Components.Linkifier.Linkifier.linkActions(info);
-         assert.isFalse(actions.some(a => a.jslogContext === 'open-in-new-tab'));
-         assert.isTrue(actions.some(a => a.jslogContext === 'copy-link-address'));
-         assert.isFalse(Components.Linkifier.Linkifier.invokeFirstAction(info));
+         const privilegedUrls = [
+           urlString`chrome://settings`,
+           urlString`chrome-error://chromewebdata/`,
+           urlString`chrome-search://local-ntp/local-ntp.html`,
+           urlString`chrome-untrusted://new-tab-page/foo`,
+         ];
+         for (const url of privilegedUrls) {
+           const info = {url};
+           const actions = Components.Linkifier.Linkifier.linkActions(info);
+           assert.isFalse(actions.some(a => a.jslogContext === 'open-in-new-tab'), url);
+           assert.isTrue(actions.some(a => a.jslogContext === 'copy-link-address'), url);
+           assert.isFalse(Components.Linkifier.Linkifier.invokeFirstAction(info), url);
+         }
        });
 
     it('renders file URLs as plain span by default', async () => {
@@ -149,6 +155,7 @@ describeWithEnvironment('Linkifier', () => {
 
     it('renders non-web-safe URLs as plain span by default', () => {
       const privilegedUrls = [
+        urlString`chrome-error://chromewebdata/`,
         urlString`chrome-extension://abcdefghijklmnop/options.html`,
         urlString`chrome-search://local-ntp/local-ntp.html`,
         urlString`chrome-untrusted://terminal/html/terminal.html`,

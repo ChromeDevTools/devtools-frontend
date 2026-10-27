@@ -1742,6 +1742,28 @@ describeWithEnvironment('ConsoleViewMessage', () => {
 
       sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(rawMessage), url, undefined);
     });
+
+    it('renders URLs with privileged schemes logged by the page as inert text', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      const privilegedUrls = [
+        Platform.DevToolsPath.urlString`chrome://settings`,
+        Platform.DevToolsPath.urlString`chrome-error://chromewebdata/`,
+        Platform.DevToolsPath.urlString`chrome-search://local-ntp/local-ntp.html`,
+        Platform.DevToolsPath.urlString`chrome-untrusted://new-tab-page/foo`,
+      ];
+      for (const privilegedUrl of privilegedUrls) {
+        const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+            runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, `see ${privilegedUrl}`,
+            {type: Protocol.Runtime.ConsoleAPICalledEventType.Log, executionContextId});
+        const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+        const messageElement = message.toMessageElement();
+
+        assert.isNull(messageElement.querySelector('.devtools-link'), privilegedUrl);
+        assert.include(messageElement.deepTextContent(), privilegedUrl);
+      }
+    });
   });
 
   describe('linkifyWithCustomLinkifier', () => {

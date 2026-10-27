@@ -192,6 +192,8 @@ describe('openInNewTab', () => {
   });
 
   for (const url of ['devtools://devtools/bundled/devtools_app.html?ws=evil.example:9222',
+                     'chrome-error://chromewebdata/',
+                     'chrome-search://local-ntp/local-ntp.html',
                      'chrome-untrusted://terminal/',
                      'chrome-extension://abcdefghijklmnopabcdefghijklmnop/options.html',
                      'file:///etc/passwd',

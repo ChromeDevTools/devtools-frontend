@@ -2029,4 +2029,59 @@ describe('CSSMatchedStyles', () => {
       assert.deepEqual(propertyTexts(styles[0]), ['display: block', 'unicode-bidi: isolate']);
     });
   });
+
+  it('resolves !important precedence across UserAgent, Injected, and Regular origins', async () => {
+    const uaRule = ruleMatch('div',
+                             [
+                               {name: 'color', value: 'black', important: true},
+                               {name: 'margin', value: '0px'},
+                             ],
+                             {origin: Protocol.CSS.StyleSheetOrigin.UserAgent});
+    const injectedLowSpecRule = ruleMatch('div',
+                                          [
+                                            {name: 'color', value: 'green', important: true},
+                                            {name: 'margin', value: '10px', important: true},
+                                          ],
+                                          {origin: Protocol.CSS.StyleSheetOrigin.Injected});
+    const regularRule = ruleMatch('.cls',
+                                  [
+                                    {name: 'color', value: 'red', important: true},
+                                    {name: 'margin', value: '20px', important: true},
+                                    {name: 'padding', value: '10px', important: true},
+                                  ],
+                                  {origin: Protocol.CSS.StyleSheetOrigin.Regular});
+    const injectedHighSpecRule = ruleMatch('#inspected',
+                                           [
+                                             {name: 'padding', value: '20px', important: true},
+                                           ],
+                                           {origin: Protocol.CSS.StyleSheetOrigin.Injected});
+
+    const matchedStyles = await getMatchedStyles({
+      connection,
+      matchedPayload: [uaRule, injectedLowSpecRule, regularRule, injectedHighSpecRule],
+    });
+
+    const [injectedHighSpecStyle, regularStyle, injectedLowSpecStyle, uaStyle] = matchedStyles.nodeStyles();
+
+    // UserAgent !important overrides both Injected and Regular !important rules.
+    assert.strictEqual(matchedStyles.propertyState(uaStyle.allProperties()[0]),
+                       SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+    assert.strictEqual(matchedStyles.propertyState(injectedLowSpecStyle.allProperties()[0]),
+                       SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+    assert.strictEqual(matchedStyles.propertyState(regularStyle.allProperties()[0]),
+                       SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+
+    // Injected and Regular share the author origin: higher specificity wins for !important.
+    assert.strictEqual(matchedStyles.propertyState(regularStyle.allProperties()[1]),
+                       SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+    assert.strictEqual(matchedStyles.propertyState(injectedLowSpecStyle.allProperties()[1]),
+                       SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+    assert.strictEqual(matchedStyles.propertyState(uaStyle.allProperties()[1]),
+                       SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+
+    assert.strictEqual(matchedStyles.propertyState(injectedHighSpecStyle.allProperties()[0]),
+                       SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+    assert.strictEqual(matchedStyles.propertyState(regularStyle.allProperties()[2]),
+                       SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+  });
 });

@@ -816,4 +816,112 @@ describe('CSSModel Keyframes, Style Formatting, and Iframe Styles', () => {
     assert.notStrictEqual(rule.header?.frameId, documentNode.frameId());
     assert.strictEqual(rule.header?.frameId, contentDoc.frameId());
   });
+
+  it('resolves !important precedence across cascade layers and the :host context step',
+     async ({inspectedPage, universe}) => {
+       const {cssModel, nodeId} = await setupPage(inspectedPage, universe, `
+         <style>
+           @layer first, second;
+           @layer second {
+             de-mo {
+               color: red !important;
+               padding: 20px !important;
+             }
+             #inspected {
+               margin: 20px !important;
+             }
+           }
+           @layer first {
+             de-mo {
+               color: green !important;
+               margin: 10px !important;
+             }
+             #inspected {
+               margin: 30px !important;
+             }
+           }
+           @layer {
+             de-mo {
+               font-size: 12px !important;
+             }
+           }
+           @layer {
+             de-mo {
+               font-size: 16px !important;
+             }
+           }
+           de-mo {
+             color: blue !important;
+             display: block !important;
+             opacity: 1;
+             padding: 10px !important;
+           }
+         </style>
+         <de-mo id="inspected" style="padding: 30px !important">
+           <template shadowrootmode="open">
+             <style>
+               :host {
+                 display: contents !important;
+                 opacity: 0.5;
+               }
+             </style>
+           </template>
+         </de-mo>
+       `);
+
+       const matchedResult = await cssModel.getMatchedStyles(nodeId);
+       assert.isNotNull(matchedResult);
+
+       const findProperty = (name: string, value: string): SDK.CSSProperty.CSSProperty => {
+         for (const style of matchedResult.nodeStyles()) {
+           for (const prop of style.leadingProperties()) {
+             if (prop.name === name && prop.value === value) {
+               return prop;
+             }
+           }
+         }
+         assert.fail(`Property ${name}: ${value} not found`);
+       };
+
+       // Earlier @layer (first) !important beats later @layer (second) !important and unlayered !important.
+       assert.strictEqual(matchedResult.propertyState(findProperty('color', 'green !important')),
+                          SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedResult.propertyState(findProperty('color', 'red !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+       assert.strictEqual(matchedResult.propertyState(findProperty('color', 'blue !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+
+       // Higher specificity (#inspected) !important within the same earlier @layer (first) wins.
+       assert.strictEqual(matchedResult.propertyState(findProperty('margin', '30px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedResult.propertyState(findProperty('margin', '10px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+       assert.strictEqual(matchedResult.propertyState(findProperty('margin', '20px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+
+       // Earlier anonymous @layer !important beats later anonymous @layer !important.
+       assert.strictEqual(matchedResult.propertyState(findProperty('font-size', '12px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedResult.propertyState(findProperty('font-size', '16px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+
+       // Inline style !important beats layered and unlayered !important in the same tree scope.
+       assert.strictEqual(matchedResult.propertyState(findProperty('padding', '30px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedResult.propertyState(findProperty('padding', '20px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+       assert.strictEqual(matchedResult.propertyState(findProperty('padding', '10px !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+
+       // :host !important in inner shadow tree beats outer document rule !important,
+       // while normal outer document rule beats normal :host rule.
+       assert.strictEqual(matchedResult.propertyState(findProperty('display', 'contents !important')),
+                          SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedResult.propertyState(findProperty('display', 'block !important')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+       assert.strictEqual(matchedResult.propertyState(findProperty('opacity', '1')),
+                          SDK.CSSMatchedStyles.PropertyState.ACTIVE);
+       assert.strictEqual(matchedResult.propertyState(findProperty('opacity', '0.5')),
+                          SDK.CSSMatchedStyles.PropertyState.OVERLOADED);
+     });
 });

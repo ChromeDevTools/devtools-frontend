@@ -251,7 +251,7 @@ function treeScopeDistance(node: DOMNode, property: CSSProperty): number {
  */
 export function distanceToTreeScope(node: DOMNode, treeScope: Protocol.DOM.BackendNodeId): number {
   let distance = 0;
-  for (let ancestor: DOMNode|null = node; ancestor; ancestor = ancestor.parentNode) {
+  for (let ancestor: DOMNode|null = node.shadowRoots()?.[0] ?? node; ancestor; ancestor = ancestor.parentNode) {
     if (ancestor.backendNodeId() === treeScope) {
       return distance;
     }
@@ -1209,7 +1209,7 @@ class NodeCascade {
   }
 
   #needsCascadeContextStep(): boolean {
-    if (!this.#node.isInShadowTree()) {
+    if (!this.#node.isInShadowTree() && !this.#node.shadowRoots()?.length) {
       return false;
     }
 
@@ -1223,12 +1223,43 @@ class NodeCascade {
     return true;
   }
 
+  #shouldOverload(activeProperty: CSSProperty, propertyWithHigherSpecificity: CSSProperty): boolean {
+    if (activeProperty.important !== propertyWithHigherSpecificity.important) {
+      return activeProperty.important;
+    }
+
+    if (!activeProperty.important) {
+      return this.#needsCascadeContextStep() &&
+          treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity);
+    }
+
+    // TODO(crbug.com/40225557): Distinguish user-origin from author-origin injected stylesheets in CDP.
+    const activeIsUA = Boolean(activeProperty.ownerStyle.parentRule?.isUserAgent());
+    const higherSpecIsUA = Boolean(propertyWithHigherSpecificity.ownerStyle.parentRule?.isUserAgent());
+    if (activeIsUA !== higherSpecIsUA) {
+      return activeIsUA;
+    }
+
+    if (this.#needsCascadeContextStep()) {
+      const activeDistance = treeScopeDistance(this.#node, activeProperty);
+      const higherSpecDistance = treeScopeDistance(this.#node, propertyWithHigherSpecificity);
+      if (activeDistance !== higherSpecDistance) {
+        return activeDistance < higherSpecDistance;
+      }
+    }
+
+    const activeRule = activeProperty.ownerStyle.parentRule;
+    const higherSpecRule = propertyWithHigherSpecificity.ownerStyle.parentRule;
+    if (activeRule instanceof CSSStyleRule && higherSpecRule instanceof CSSStyleRule) {
+      return layerIdentifier(activeRule) !== layerIdentifier(higherSpecRule);
+    }
+
+    return false;
+  }
+
   private updatePropertyState(propertyWithHigherSpecificity: CSSProperty, canonicalName: string): void {
     const activeProperty = this.activeProperties.get(canonicalName);
-    if (activeProperty?.important && !propertyWithHigherSpecificity.important ||
-        activeProperty && this.#needsCascadeContextStep() &&
-            treeScopeDistance(this.#node, activeProperty) >
-                treeScopeDistance(this.#node, propertyWithHigherSpecificity)) {
+    if (activeProperty && this.#shouldOverload(activeProperty, propertyWithHigherSpecificity)) {
       this.propertiesState.set(propertyWithHigherSpecificity, PropertyState.OVERLOADED);
       return;
     }
@@ -1243,6 +1274,17 @@ class NodeCascade {
     this.propertiesState.set(propertyWithHigherSpecificity, PropertyState.ACTIVE);
     this.activeProperties.set(canonicalName, propertyWithHigherSpecificity);
   }
+}
+
+// TODO(crbug.com/40225557): Report unique layer IDs in CDP to distinguish anonymous layers without source ranges.
+function layerIdentifier(rule: CSSStyleRule): string {
+  return rule.layers
+      .map(layer => layer.text ||
+               `anonymous:${layer.styleSheetId ?? ''}:${
+                        layer.range ? `${layer.range.startLine}:${layer.range.startColumn}:${layer.range.endLine}:${
+                                          layer.range.endColumn}` :
+                                      ''}`)
+      .join('.');
 }
 
 function isRegular(declaration: CSSProperty|CSSRegisteredProperty): declaration is CSSProperty {

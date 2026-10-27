@@ -20,6 +20,7 @@ import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers
 import {createTarget, describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled, spyCall} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {someMutations} from '../../testing/MutationHelpers.js';
 import {
   getMatchedStyles,
   getMatchedStylesWithBlankRule,
@@ -2645,6 +2646,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const popoverOpenSpy = spyCall(Elements.StylePropertyTreeElement.LengthRenderer.prototype, 'getTooltipValue');
       popover.showPopover();
       await (await popoverOpenSpy).result;
+      await someMutations(popover);
       assert.strictEqual(popover.deepInnerText(), '15px');
     });
 

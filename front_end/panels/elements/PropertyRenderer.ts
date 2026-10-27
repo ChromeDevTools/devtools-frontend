@@ -11,7 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directive, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {AsyncDirective, Directive, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -194,6 +194,50 @@ function highlight(highlighting: Highlighting|undefined, match: SDK.CSSPropertyP
   return html`${template}${highlightDirective(highlighting, match)}`;
 }
 
+class LazyEvaluationBlackboard {
+  #result?: LitTemplate;
+  callback?: (result: LitTemplate) => void;
+  readonly #asyncEvalCallback: () => Promise<LitTemplate|null>;
+
+  constructor(asyncEvalCallback: () => Promise<LitTemplate|null>) {
+    this.#asyncEvalCallback = asyncEvalCallback;
+  }
+
+  get result(): LitTemplate|undefined {
+    return this.#result;
+  }
+
+  set result(val: LitTemplate) {
+    if (this.#result === val) {
+      return;
+    }
+    this.#result = val;
+    this.callback?.(val);
+  }
+
+  readonly asyncEvalCallback = async(): Promise<boolean> => {
+    const result = await this.#asyncEvalCallback();
+    if (result) {
+      this.result = result;
+    }
+    return Boolean(result);
+  };
+}
+
+class LazyEvaluationDirective extends AsyncDirective.AsyncDirective {
+  render(
+      placeholder: LitTemplate,
+      blackboard: LazyEvaluationBlackboard,
+      ): LitTemplate {
+    blackboard.callback = result => {
+      if (this.isConnected) {
+        this.setValue(result);
+      }
+    };
+    return blackboard.result ?? placeholder;
+  }
+}
+const lazyEvaluation = AsyncDirective.directive(LazyEvaluationDirective);
 /**
  * This class is used to guide value tracing when passed to the Renderer. Tracing has two phases. First, substitutions
  * such as var() are applied step by step. In each step, all vars in the value are replaced by their definition until no
@@ -321,12 +365,19 @@ export class TracingContext {
 
   // After rendering the arguments of a function call, the TracingContext produced by TracingContext#evaluation need to
   // be passed here to determine whether the "current" function call should be evaluated or not. If so, the
-  // evaluation callback is run. The callback should return synchronously an array of Nodes as placeholder to be
-  // rendered immediately and optionally a callback for asynchronous updates of the placeholder nodes. The callback
-  // returns a boolean indicating whether the update was successful or not.
-  applyEvaluation<T extends Node[]|LitTemplate = Node[]>(
-      children: TracingContext[], evaluation: () => ({placeholder: T, asyncEvalCallback?: () => Promise<boolean>})): T
-      |null {
+  // evaluation callback is run. The callback returns a template or placeholder nodes to render immediately, and
+  // optionally an async callback that resolves to the evaluated template (or a boolean indicating whether the
+  // in-place placeholder update succeeded).
+  applyEvaluation(children: TracingContext[],
+                  evaluation: () => {placeholder: Node[], asyncEvalCallback?: () => Promise<boolean>}): Node[]|null;
+  applyEvaluation(children: TracingContext[],
+                  evaluation: () => ({placeholder: LitTemplate, asyncEvalCallback?: () => Promise<boolean>} |
+                                     {template: LitTemplate, asyncEvalCallback?: () => Promise<LitTemplate|null>})):
+      LitTemplate|null;
+  applyEvaluation(children: TracingContext[],
+                  evaluation: () => ({placeholder: Node[] | LitTemplate, asyncEvalCallback?: () => Promise<boolean>} |
+                                     {template: LitTemplate, asyncEvalCallback?: () => Promise<LitTemplate|null>})):
+      Node[]|LitTemplate|null {
     if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
       this.#setHasMoreEvaluations(true);
       children.forEach(child => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));
@@ -334,9 +385,19 @@ export class TracingContext {
     }
     this.#setAppliedEvaluations(children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) +
                                 1);
-    const {placeholder, asyncEvalCallback} = evaluation();
-    this.#asyncEvalCallbacks.push(asyncEvalCallback);
-    return placeholder;
+    const result = evaluation();
+    if ('placeholder' in result) {
+      this.#asyncEvalCallbacks.push(result.asyncEvalCallback);
+      return result.placeholder;
+    }
+    if (!result.asyncEvalCallback) {
+      this.#asyncEvalCallbacks.push(result.asyncEvalCallback);
+      return result.template;
+    }
+
+    const blackboard = new LazyEvaluationBlackboard(result.asyncEvalCallback);
+    this.#asyncEvalCallbacks.push(blackboard.asyncEvalCallback);
+    return html`${lazyEvaluation(result.template, blackboard)}`;
   }
 
   #setHasMoreSubstitutions(): void {

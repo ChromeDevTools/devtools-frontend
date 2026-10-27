@@ -1859,66 +1859,33 @@ export class LengthRenderer extends LengthRendererBase {
     this.#propertyName = propertyName;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[] {
-    const valueElement = document.createElement('span');
-    valueElement.tabIndex = -1;
-    valueElement.textContent = match.text;
-
-    const tooltip = this.#getTooltip(valueElement, match, context);
-
-    const evaluation = context.tracing?.applyEvaluation([], () => {
-      return {
-        placeholder: [valueElement],
-        asyncEvalCallback: () => this.#applyEvaluation(valueElement, match, context),
-      };
-    });
-
-    if (evaluation) {
-      return evaluation;
-    }
-
-    return tooltip ? [valueElement, tooltip] : [valueElement];
-  }
-
-  async #applyEvaluation(
-      valueElement: HTMLElement, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<boolean> {
-    const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
-
-    if (context.signal?.aborted) {
-      return false;
-    }
-
-    if (pixelValue?.[0] && pixelValue?.[0] !== match.text) {
-      valueElement.textContent = pixelValue[0];
-      return true;
-    }
-
-    return false;
-  }
-
-  #getTooltip(valueElement: HTMLElement, match: SDK.CSSPropertyParser.Match, context: RenderingContext):
-      Tooltips.Tooltip.Tooltip|undefined {
+  override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Lit.LitTemplate {
+    const template = html`${match.text}`;
+    const evaluation =
+        context.tracing?.applyEvaluation([], () => ({
+                                               template,
+                                               asyncEvalCallback: () => this.getTooltipValue(match, context),
+                                             }));
     const tooltipId = this.#treeElement?.getTooltipId('length');
-    if (!tooltipId) {
-      return undefined;
+    if (evaluation || !tooltipId) {
+      return html`<span tabindex=-1>${evaluation ?? template}</span>`;
     }
-    valueElement.setAttribute('aria-details', tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip(
-        {anchor: valueElement, variant: 'rich', id: tooltipId, jslogContext: 'length-popover'});
-    tooltip.addEventListener('beforetoggle', () => this.getTooltipValue(tooltip, match, context), {once: true});
-    return tooltip;
+    // clang-format off
+    return html`<span tabindex=-1 aria-details=${tooltipId}>${template}</span><devtools-tooltip
+      variant=rich
+      id=${tooltipId}
+      jslogContext=length-popover
+    >${ifExpanded(async () => (await this.getTooltipValue(match, context)) ?? template)}</devtools-tooltip>`;
+    // clang-format on
   }
 
-  async getTooltipValue(
-      tooltip: Tooltips.Tooltip.Tooltip, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<void> {
-    const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
-    if (context.signal?.aborted) {
-      return;
+  async getTooltipValue(match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<Lit.LitTemplate|null> {
+    const pixelValue =
+        (await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text))?.[0];
+    if (context.signal?.aborted || !pixelValue || pixelValue === match.text) {
+      return null;
     }
-    if (!pixelValue) {
-      return;
-    }
-    tooltip.appendChild(document.createTextNode(pixelValue[0]));
+    return html`${pixelValue}`;
   }
 }
 

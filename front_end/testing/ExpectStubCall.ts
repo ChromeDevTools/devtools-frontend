@@ -75,6 +75,7 @@ export function spyCall<T, Fn extends keyof T>(obj: T, method: Fn): Promise<{arg
     const result = original.apply(this, args);
     resolve({args, result});
     stub.restore();
+    return result;
   });
 
   return promise;

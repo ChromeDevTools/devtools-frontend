@@ -125,15 +125,15 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
 
     it('throws when constructed or updated with an out-of-bounds address', () => {
       const arrayWrapper = new Uint8Wrapper(createArray());
-      assert.throws(() => new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorView(arrayWrapper,
+      assert.throws(() => new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper,
                                                                                                         -1, 'tab-id'),
                     'Requested address is out of bounds.');
-      assert.throws(() => new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorView(arrayWrapper,
+      assert.throws(() => new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper,
                                                                                                         100, 'tab-id'),
                     'Requested address is out of bounds.');
 
       const view =
-          new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorView(arrayWrapper, 0, 'tab-id');
+          new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper, 0, 'tab-id');
       assert.throws(() => view.updateAddress(-1), 'Requested address is out of bounds.');
       assert.throws(() => view.updateAddress(100), 'Requested address is out of bounds.');
     });
@@ -141,7 +141,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     it('loads memory on show and renders the inspector', async () => {
       const arrayWrapper = new Uint8Wrapper(createArray());
       const view =
-          new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorView(arrayWrapper, 10, 'tab-id');
+          new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper, 10, 'tab-id');
       renderElementIntoDOM(view);
       // doubleRaf is required because LinearMemoryInspectorView asynchronously fetches memory
       // in wasShown before scheduling a widget update.
@@ -154,7 +154,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     it('saves settings via controller', () => {
       const arrayWrapper = new Uint8Wrapper(createArray());
       const view =
-          new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorView(arrayWrapper, 0, 'tab-id');
+          new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper, 0, 'tab-id');
       const settings = {
         valueTypes: new Set([LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8]),
         modes: new Map([

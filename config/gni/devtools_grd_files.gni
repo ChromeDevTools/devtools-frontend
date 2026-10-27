@@ -1793,6 +1793,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/lighthouse/lighthouseStartView.css.js",
   "front_end/panels/linear_memory_inspector/LinearMemoryInspectorController.js",
   "front_end/panels/linear_memory_inspector/LinearMemoryInspectorPane.js",
+  "front_end/panels/linear_memory_inspector/LinearMemoryInspectorView.js",
   "front_end/panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.js",
   "front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js",
   "front_end/panels/linear_memory_inspector/components/LinearMemoryInspectorUtils.js",

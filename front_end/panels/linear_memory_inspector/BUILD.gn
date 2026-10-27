@@ -12,6 +12,7 @@ devtools_ui_module("linear_memory_inspector") {
   sources = [
     "LinearMemoryInspectorController.ts",
     "LinearMemoryInspectorPane.ts",
+    "LinearMemoryInspectorView.ts",
   ]
 
   ts_deps = [

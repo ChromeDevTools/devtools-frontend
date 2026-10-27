@@ -1362,26 +1362,17 @@ export class AutoBaseRenderer extends AutoBaseRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Node[] {
-    const content = document.createElement('span');
-    content.appendChild(document.createTextNode('-internal-auto-base('));
-    const auto = content.appendChild(document.createElement('span'));
-    content.appendChild(document.createTextNode(', '));
-    const base = content.appendChild(document.createElement('span'));
-    content.appendChild(document.createTextNode(')'));
-
-    Renderer.renderInto(match.auto, context, auto);
-    Renderer.renderInto(match.base, context, base);
+  override render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Lit.LitTemplate {
+    const auto = Renderer.render(match.auto, context).nodes;
+    const base = Renderer.render(match.base, context).nodes;
 
     // TODO(crbug.com/475522248): Consider cases with nested elements which
     // support base appearance and ensure the logic matches StyleAdjuster in blink.
-    if (this.#computedStyleExtraFields?.isAppearanceBase) {
-      auto.classList.add('inactive-value');
-    } else {
-      base.classList.add('inactive-value');
-    }
-
-    return [content];
+    const isAppearanceBase = Boolean(this.#computedStyleExtraFields?.isAppearanceBase);
+    // clang-format off
+    return html`<span>-internal-auto-base(<span class=${classMap({'inactive-value': isAppearanceBase})}>${auto}</span>,
+        <span class=${classMap({'inactive-value': !isAppearanceBase})}>${base}</span>)</span>`;
+    // clang-format on
   }
 }
 

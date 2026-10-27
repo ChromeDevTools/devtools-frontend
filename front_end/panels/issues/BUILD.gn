@@ -105,6 +105,7 @@ devtools_ui_module("unittests") {
     "AffectedLazyLoadImagesView.test.ts",
     "AffectedMetadataAllowedSitesView.test.ts",
     "AffectedSelectivePermissionsInterventionView.test.ts",
+    "GenericIssueDetailsView.test.ts",
     "IssueView.test.ts",
     "IssuesPane.test.ts",
   ]

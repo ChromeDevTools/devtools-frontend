@@ -440,6 +440,13 @@ devtools-icon.network-panel {
   height: var(--sys-size-7);
 }
 
+devtools-button.elements-panel {
+  margin-right: var(--sys-size-3);
+  vertical-align: sub;
+
+  --override-button-icon-color: var(--icon-link);
+}
+
 @media (forced-colors: active) {
   .title {
     color: ButtonText;

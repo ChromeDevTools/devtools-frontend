@@ -13,11 +13,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import type * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import {Icon} from '../../ui/kit/kit.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {render} from '../../ui/lit/lit.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -59,6 +60,46 @@ export interface CreateRequestCellOptions {
   highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
   networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   additionalOnClickAction?: () => void;
+}
+
+export interface FrameCellData {
+  url: string;
+  hasFrame: boolean;
+  onReveal: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}
+
+export function renderFrameCell(frame: FrameCellData|undefined): LitTemplate {
+  if (!frame) {
+    return html`<td></td>`;
+  }
+  // clang-format off
+  return html`
+    <td class="affected-resource-cell"
+        @mouseenter=${frame.onMouseEnter}
+        @mouseleave=${frame.onMouseLeave}>
+      ${frame.hasFrame ? html`
+        <devtools-button
+          class="elements-panel"
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            iconName: 'code-circle',
+            // On devtools-button (ui/components/buttons/button.css), Size.MICRO sets both
+            // --button-width/--button-height and --icon-size to --sys-size-8 (16x16),
+            // matching the previous 16x16 medium icon size.
+            size: Buttons.Button.Size.MICRO,
+            title: i18nString(UIStrings.clickToRevealTheFramesDomNodeIn),
+            accessibleLabel: i18nString(UIStrings.clickToRevealTheFramesDomNodeIn),
+            jslogContext: 'elements-panel',
+          } as Buttons.Button.ButtonData}
+          @click=${frame.onReveal}>
+        </devtools-button>
+      ` : nothing}
+      ${frame.url}
+    </td>
+  `;
+  // clang-format on
 }
 
 /**
@@ -174,8 +215,37 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  protected createFrameCell(frameId: Protocol.Page.FrameId, issueCategory: IssuesManager.Issue.IssueCategory):
-      HTMLElement {
+  protected createFrameCellData(frameId: Protocol.Page.FrameId,
+                                issueCategory: IssuesManager.Issue.IssueCategory): FrameCellData {
+    const frame = this.#resolveFrameId(frameId);
+    const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
+    return {
+      url,
+      hasFrame: Boolean(frame),
+      onReveal: async () => {
+        Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.ELEMENT);
+        const currentFrame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+        if (currentFrame) {
+          const ownerNode = await currentFrame.getOwnerDOMNodeOrDocument();
+          if (ownerNode) {
+            void Common.Revealer.reveal(ownerNode);
+          }
+        }
+      },
+      onMouseEnter: () => {
+        const currentFrame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+        if (currentFrame) {
+          void currentFrame.highlight();
+        }
+      },
+      onMouseLeave: () => {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+      },
+    };
+  }
+
+  protected createFrameCell(frameId: Protocol.Page.FrameId,
+                            issueCategory: IssuesManager.Issue.IssueCategory): HTMLElement {
     const frame = this.#resolveFrameId(frameId);
     const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
 
@@ -210,8 +280,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return frameCell;
   }
 
-  protected createRequestCell(affectedRequest: Protocol.Audits.AffectedRequest, options: CreateRequestCellOptions = {}):
-      HTMLElement {
+  protected createRequestCell(affectedRequest: Protocol.Audits.AffectedRequest,
+                              options: CreateRequestCellOptions = {}): HTMLElement {
     const requestCell = document.createElement('td');
     requestCell.classList.add('affected-resource-cell');
     const requestLinkIcon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
@@ -220,9 +290,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return requestCell;
   }
 
-  protected async createElementCell(
-      {backendNodeId, nodeName, target}: IssuesManager.Issue.AffectedElement,
-      issueCategory: IssuesManager.Issue.IssueCategory): Promise<Element> {
+  protected async createElementCell({backendNodeId, nodeName, target}: IssuesManager.Issue.AffectedElement,
+                                    issueCategory: IssuesManager.Issue.IssueCategory): Promise<Element> {
     if (!target) {
       const cellElement = document.createElement('td');
       cellElement.textContent = nodeName || i18nString(UIStrings.unavailable);
@@ -270,8 +339,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     header.appendChild(info);
   }
 
-  protected createIssueDetailCell(textContent: string|HTMLElement, additionalClass: string|null = null):
-      HTMLTableDataCellElement {
+  protected createIssueDetailCell(textContent: string|HTMLElement,
+                                  additionalClass: string|null = null): HTMLTableDataCellElement {
     const cell = document.createElement('td');
 
     if (typeof textContent === 'string') {
@@ -286,9 +355,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return cell;
   }
 
-  protected appendIssueDetailCell(
-      element: HTMLElement, textContent: string|HTMLElement,
-      additionalClass: string|null = null): HTMLTableDataCellElement {
+  protected appendIssueDetailCell(element: HTMLElement, textContent: string|HTMLElement,
+                                  additionalClass: string|null = null): HTMLTableDataCellElement {
     const cell = this.createIssueDetailCell(textContent, additionalClass);
     element.appendChild(cell);
     return cell;

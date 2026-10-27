@@ -166,6 +166,46 @@ describe('StyleChanges', () => {
     assert.strictEqual(lastDescription(), 'Changed keyframe key from "0%" to "50%, 100%"');
   });
 
+  it('records changing an @media query', () => {
+    Elements.StyleChanges.trackStyleQueryChange(tracker, createNode(42), '@media', '  (max-width: 600px)  ',
+                                                '  (min-width: 800px)  ');
+    assert.strictEqual(lastDescription(), 'Changed @media query from "(max-width: 600px)" to "(min-width: 800px)"');
+    assert.deepEqual(lastAnchor(), {
+      vePath: 'Panel: elements > Pane: styles',
+      node: {backendNodeId: 42, targetId: 'mock-target-id'},
+    });
+  });
+
+  it('records changing an @container query', () => {
+    Elements.StyleChanges.trackStyleQueryChange(tracker, createNode(42), '@container', 'sidebar (min-width: 400px)',
+                                                'sidebar (min-width: 500px)');
+    assert.strictEqual(lastDescription(),
+                       'Changed @container query from "sidebar (min-width: 400px)" to "sidebar (min-width: 500px)"');
+  });
+
+  it('records changing an @supports query', () => {
+    Elements.StyleChanges.trackStyleQueryChange(tracker, createNode(42), '@supports', '(display: grid)',
+                                                '(display: flex)');
+    assert.strictEqual(lastDescription(), 'Changed @supports query from "(display: grid)" to "(display: flex)"');
+  });
+
+  it('records changing an @scope query', () => {
+    Elements.StyleChanges.trackStyleQueryChange(tracker, createNode(42), '@scope', '(.card)', '(.content)');
+    assert.strictEqual(lastDescription(), 'Changed @scope query from "(.card)" to "(.content)"');
+  });
+
+  it('records changing an @navigation query', () => {
+    Elements.StyleChanges.trackStyleQueryChange(tracker, createNode(42), '@navigation', '(navigation-type: push)',
+                                                '(navigation-type: traverse)');
+    assert.strictEqual(lastDescription(),
+                       'Changed @navigation query from "(navigation-type: push)" to "(navigation-type: traverse)"');
+  });
+
+  it('records clearing a style query', () => {
+    Elements.StyleChanges.trackStyleQueryChange(tracker, createNode(42), '@scope', '(.card)', '   ');
+    assert.strictEqual(lastDescription(), 'Cleared @scope query "(.card)"');
+  });
+
   it('omits the rule clause when ruleHeader is omitted or empty', () => {
     trackStylePropertyEdit({
       oldName: 'color',

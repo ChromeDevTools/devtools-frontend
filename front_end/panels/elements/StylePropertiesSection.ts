@@ -310,8 +310,8 @@ export class StylePropertiesSection {
     }
 
     if (rule instanceof SDK.CSSRule.CSSStyleRule) {
-      const newRuleButton = new UI.Toolbar.ToolbarButton(
-          i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
+      const newRuleButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined,
+                                                         'elements.new-style-rule');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.onNewRuleClick, this);
       newRuleButton.setSize(Buttons.Button.Size.MICRO);
       newRuleButton.element.tabIndex = -1;
@@ -324,8 +324,8 @@ export class StylePropertiesSection {
     }
 
     this.selectorElement.addEventListener('click', this.handleSelectorClick.bind(this), false);
-    this.selectorElement.setAttribute(
-        'jslog', `${VisualLogging.cssRuleHeader('selector').track({click: true, change: true})}`);
+    this.selectorElement.setAttribute('jslog',
+                                      `${VisualLogging.cssRuleHeader('selector').track({click: true, change: true})}`);
     this.element.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.element.addEventListener('mousedown', this.handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this.handleEmptySpaceClick.bind(this), false);
@@ -539,8 +539,8 @@ export class StylePropertiesSection {
     return ruleLocation;
   }
 
-  static tryNavigateToRuleLocation(
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, rule: SDK.CSSRule.CSSRule|null): void {
+  static tryNavigateToRuleLocation(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+                                   rule: SDK.CSSRule.CSSRule|null): void {
     if (!rule) {
       return;
     }
@@ -1608,8 +1608,8 @@ export class StylePropertiesSection {
     }
   }
 
-  addNewBlankProperty(index: number|undefined = this.propertiesTreeOutline.rootElement().childCount()):
-      StylePropertyTreeElement {
+  addNewBlankProperty(index: number|
+                      undefined = this.propertiesTreeOutline.rootElement().childCount()): StylePropertyTreeElement {
     if (this.#isCollapsed) {
       this.expand();
     }
@@ -1754,35 +1754,62 @@ export class StylePropertiesSection {
       newContent = newContent.trim();
     }
 
-    // This gets deleted in finishOperation(), which is called both on success and failure.
-    this.stylesContainer.setUserOperation(true);
-    const cssModel = this.stylesContainer.cssModel();
-    if (cssModel && query.styleSheetId) {
-      const range = query.range as TextUtils.TextRange.TextRange;
-      let success = false;
-      if (query instanceof SDK.CSSContainerQuery.CSSContainerQuery) {
-        if (query.textIsConditionText) {
-          success = await cssModel.setContainerQueryConditionText(query.styleSheetId, range, newContent);
-        } else {
-          success = await cssModel.setContainerQueryText(query.styleSheetId, range, newContent);
-        }
-      } else if (query instanceof SDK.CSSSupports.CSSSupports) {
-        success = await cssModel.setSupportsText(query.styleSheetId, range, newContent);
-      } else if (query instanceof SDK.CSSScope.CSSScope) {
-        success = await cssModel.setScopeText(query.styleSheetId, range, newContent);
-      } else if (query instanceof SDK.CSSNavigation.CSSNavigation) {
-        success = await cssModel.setNavigationText(query.styleSheetId, range, newContent);
-      } else {
-        success = await cssModel.setMediaText(query.styleSheetId, range, newContent);
-      }
+    await this.setQueryText(query, newContent);
+  }
 
-      if (success) {
-        this.matchedStyles.resetActiveProperties();
-        this.stylesContainer.refreshUpdate(this);
-      }
-      this.stylesContainer.setUserOperation(false);
-      this.editingMediaTextCommittedForTest();
+  /**
+   * Replaces the text of the given at-rule query (`@media`, `@container`,
+   * `@supports`, `@scope`, `@navigation`) in the stylesheet, records the
+   * change with the change tracker and refreshes the section.
+   *
+   * @returns whether the stylesheet was updated.
+   */
+  async setQueryText(query: SDK.CSSQuery.CSSQuery, newContent: string): Promise<boolean> {
+    const cssModel = this.stylesContainer.cssModel();
+    if (!cssModel || !query.styleSheetId) {
+      return false;
     }
+
+    this.stylesContainer.setUserOperation(true);
+
+    const oldQueryText = query.text;
+    const range = query.range as TextUtils.TextRange.TextRange;
+    let queryType: Elements.StyleChanges.StyleQueryType = '@media';
+    let success = false;
+    if (query instanceof SDK.CSSContainerQuery.CSSContainerQuery) {
+      queryType = '@container';
+      if (query.textIsConditionText) {
+        success = await cssModel.setContainerQueryConditionText(query.styleSheetId, range, newContent);
+      } else {
+        success = await cssModel.setContainerQueryText(query.styleSheetId, range, newContent);
+      }
+    } else if (query instanceof SDK.CSSSupports.CSSSupports) {
+      queryType = '@supports';
+      success = await cssModel.setSupportsText(query.styleSheetId, range, newContent);
+    } else if (query instanceof SDK.CSSScope.CSSScope) {
+      queryType = '@scope';
+      success = await cssModel.setScopeText(query.styleSheetId, range, newContent);
+    } else if (query instanceof SDK.CSSNavigation.CSSNavigation) {
+      queryType = '@navigation';
+      success = await cssModel.setNavigationText(query.styleSheetId, range, newContent);
+    } else {
+      success = await cssModel.setMediaText(query.styleSheetId, range, newContent);
+    }
+
+    if (success) {
+      Elements.StyleChanges.trackStyleQueryChange(
+          this.stylesContainer.changeTracker,
+          this.stylesContainer.node() ?? this.matchedStyles.node(),
+          queryType,
+          oldQueryText,
+          newContent,
+      );
+      this.matchedStyles.resetActiveProperties();
+      this.stylesContainer.refreshUpdate(this);
+    }
+    this.stylesContainer.setUserOperation(false);
+    this.editingMediaTextCommittedForTest();
+    return success;
   }
 
   private editingMediaTextCommittedForTest(): void {

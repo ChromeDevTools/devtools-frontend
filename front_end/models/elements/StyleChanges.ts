@@ -161,3 +161,41 @@ export function trackKeyframeKeyChange(
     ): void {
   trackRuleHeaderChange(tracker, node, 'keyframe key', oldKey, newKey);
 }
+
+export type StyleQueryType = '@media'|'@container'|'@supports'|'@scope'|'@navigation';
+
+function describeStyleQueryChange(queryType: StyleQueryType, oldQuery: string, newQuery: string): string {
+  if (!newQuery) {
+    return `Cleared ${queryType} query "${trimValue(oldQuery)}"`;
+  }
+  return `Changed ${queryType} query from "${trimValue(oldQuery)}" to "${trimValue(newQuery)}"`;
+}
+
+export function trackStyleQueryChange(
+    tracker: ChangeTracker.ChangeTracker.ChangeTracker|undefined,
+    node: SDK.DOMModel.DOMNode,
+    queryType: StyleQueryType,
+    oldQuery: string,
+    newQuery: string,
+    ): void {
+  if (!tracker?.isTracking) {
+    return;
+  }
+  const trimmedOld = Platform.StringUtilities.collapseWhitespace(oldQuery.trim());
+  const trimmedNew = Platform.StringUtilities.collapseWhitespace(newQuery.trim());
+  if (trimmedOld === trimmedNew) {
+    return;
+  }
+  // Empty `trimmedOld` is unreachable as empty queries are not editable in the Styles pane.
+  if (!trimmedOld) {
+    return;
+  }
+  // Only `@media` and `@scope` allow empty query text in CSS.
+  if (!trimmedNew && queryType !== '@media' && queryType !== '@scope') {
+    return;
+  }
+  tracker.trackChange(
+      describeStyleQueryChange(queryType, trimmedOld, trimmedNew),
+      buildAnchor(STYLES_PANE_VE_PATH, node),
+  );
+}

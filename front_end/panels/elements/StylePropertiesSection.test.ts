@@ -46,6 +46,15 @@ describeWithEnvironment('StylesPropertySection', () => {
     SDK.PageResourceLoader.PageResourceLoader.removeInstance();
   });
 
+  function createChangeTrackingSetup(cssModel: SDK.CSSModel.CSSModel) {
+    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
+    sinon.stub(changeTracker, 'isTracking').get(() => true);
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.domModel.returns(cssModel.domModel());
+    return {changeTracker, node};
+  }
+
   it('contains specificity information', async () => {
     const specificity = {
       a: 0,
@@ -267,8 +276,7 @@ describeWithEnvironment('StylesPropertySection', () => {
   it('updates property rule property names', async () => {
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
-    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
-    sinon.stub(changeTracker, 'isTracking').get(() => true);
+    const {changeTracker, node} = createChangeTrackingSetup(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
@@ -298,9 +306,6 @@ describeWithEnvironment('StylesPropertySection', () => {
       matchingSelectors: [0],
     }];
 
-    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.id = 1 as Protocol.DOM.NodeId;
-    node.domModel.returns(cssModel.domModel());
     const matchedStyles = await getMatchedStylesWithStylesheet(
         {cssModel, node, origin, styleSheetId, ...range, propertyRules, matchedPayload, connection});
 
@@ -1060,14 +1065,10 @@ describeWithEnvironment('StylesPropertySection', () => {
 
   it('supports editing selector text via setSelectorText and undoing via DOMModelUndoStack', async () => {
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
-    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
-    sinon.stub(changeTracker, 'isTracking').get(() => true);
+    const {changeTracker, node} = createChangeTrackingSetup(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 4};
-    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.id = 1 as Protocol.DOM.NodeId;
-    node.domModel.returns(cssModel.domModel());
     const matchedStyles = await getMatchedStylesWithStylesheet({
       cssModel,
       node,
@@ -1160,18 +1161,116 @@ describeWithEnvironment('StylesPropertySection', () => {
     sinon.assert.calledOnce(refreshSpy);
   });
 
+  describe('query change tracking', () => {
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    // The query prelude and the selector must have distinct ranges, otherwise
+    // CSSStyleRule.rebase treats the query edit as a selector edit.
+    const selectorRange = {startLine: 1, startColumn: 2, endLine: 1, endColumn: 5};
+    const range = {startLine: 0, startColumn: 7, endLine: 0, endColumn: 25};
+
+    async function setupSection(rulePayload: Partial<Protocol.CSS.CSSRule>) {
+      const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
+      const {changeTracker, node} = createChangeTrackingSetup(cssModel);
+      const matchedStyles = await getMatchedStylesWithStylesheet({
+        cssModel,
+        node,
+        origin,
+        styleSheetId,
+        isMutable: true,
+        matchedPayload: [{
+          rule: {
+            selectorList: {selectors: [{text: 'div', range: selectorRange}], text: 'div'},
+            origin,
+            styleSheetId,
+            style: {
+              cssProperties: [{name: 'color', value: 'red'}],
+              shorthandEntries: [],
+              styleSheetId,
+              range: selectorRange,
+            },
+            ...rulePayload,
+          },
+          matchingSelectors: [0],
+        }],
+        connection,
+      });
+      const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
+      sinon.stub(stylesSidebarPane, 'cssModel').returns(cssModel);
+      const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+          stylesSidebarPane, matchedStyles, matchedStyles.nodeStyles()[0], 0, null, null, null);
+      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, event => {
+        if (event.data.edit) {
+          section.styleSheetEdited(event.data.edit);
+        }
+      });
+      const rule = matchedStyles.nodeStyles()[0].parentRule as SDK.CSSRule.CSSStyleRule;
+      return {changeTracker, rule, section};
+    }
+
+    it('tracks @media query changes using the query text from before the edit', async () => {
+      const {changeTracker, rule, section} = await setupSection({
+        media: [{text: '(max-width: 600px)', source: Protocol.CSS.CSSMediaSource.MediaRule, styleSheetId, range}],
+        ruleTypes: [Protocol.CSS.CSSRuleType.MediaRule],
+      });
+      connection.setSuccessHandler(
+          'CSS.setMediaText',
+          () => ({
+            media: {text: '(min-width: 800px)', source: Protocol.CSS.CSSMediaSource.MediaRule, styleSheetId, range},
+          }));
+
+      assert.isTrue(await section.setQueryText(rule.media[0], '(min-width: 800px)'));
+
+      // The SDK model is rebased synchronously, so a naive implementation would see the new text as the old one.
+      assert.strictEqual(rule.media[0].text, '(min-width: 800px)');
+      sinon.assert.calledOnceWithExactly(
+          changeTracker.trackChange,
+          'Changed @media query from "(max-width: 600px)" to "(min-width: 800px)"',
+          sinon.match.object,
+      );
+    });
+
+    it('tracks clearing an @scope query', async () => {
+      const {changeTracker, rule, section} = await setupSection({
+        scopes: [{text: '(.card)', styleSheetId, range}],
+        ruleTypes: [Protocol.CSS.CSSRuleType.ScopeRule],
+      });
+      connection.setSuccessHandler('CSS.setScopeText', () => ({scope: {text: '', styleSheetId, range}}));
+
+      assert.isTrue(await section.setQueryText(rule.scopes[0], ''));
+
+      sinon.assert.calledOnceWithExactly(changeTracker.trackChange, 'Cleared @scope query "(.card)"',
+                                         sinon.match.object);
+    });
+
+    it('does not track when the query edit fails', async () => {
+      const {changeTracker, rule, section} = await setupSection({
+        containerQueries: [{
+          text: '(min-width: 400px)',
+          conditionText: 'sidebar (min-width: 400px)',
+          name: 'sidebar',
+          styleSheetId,
+          range,
+        }],
+        ruleTypes: [Protocol.CSS.CSSRuleType.ContainerRule],
+      });
+      connection.setFailureHandler('CSS.setContainerQueryConditionText',
+                                   () => ({code: -32000, message: 'invalid container query'}));
+
+      assert.isFalse(await section.setQueryText(rule.containerQueries[0], 'sidebar (min-width'));
+
+      sinon.assert.notCalled(changeTracker.trackChange);
+    });
+  });
+
   it('adds a new rule creating a new editable StylePropertiesSection', async () => {
     const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel)!;
-    const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
-    sinon.stub(changeTracker, 'isTracking').get(() => true);
+    const {changeTracker, node} = createChangeTrackingSetup(cssModel);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel, changeTracker);
     sinon.stub(stylesSidebarPane, 'cssModel').returns(cssModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 12};
-    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.id = 1 as Protocol.DOM.NodeId;
-    node.domModel.returns(cssModel.domModel());
     const matchedStyles = await getMatchedStylesWithStylesheet({
       cssModel,
       node,
@@ -1866,11 +1965,7 @@ describeWithEnvironment('StylesPropertySection', () => {
     async function createKeyframeSection() {
       const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
       assert.exists(cssModel);
-      const changeTracker = sinon.createStubInstance(ChangeTracker.ChangeTracker.ChangeTracker);
-      sinon.stub(changeTracker, 'isTracking').get(() => true);
-      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      node.id = 1 as Protocol.DOM.NodeId;
-      node.domModel.returns(cssModel.domModel());
+      const {changeTracker, node} = createChangeTrackingSetup(cssModel);
       const origin = Protocol.CSS.StyleSheetOrigin.Regular;
       const matchedStyles = await getMatchedStylesWithStylesheet({
         cssModel,

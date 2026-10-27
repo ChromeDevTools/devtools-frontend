@@ -113,6 +113,33 @@ describeWithEnvironment('PermissionPrompt', () => {
     sinon.assert.calledOnceWithExactly(onAnswer, AIAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS);
   });
 
+  it('focuses the "No" button when the prompt appears', async () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    renderPrompt(createStep(), target);
+    // Focus is moved in a microtask, after the prompt is attached to the document.
+    await Promise.resolve();
+
+    const [noButton] = getButtons(target);
+    assert.strictEqual(noButton.textContent?.trim(), 'No');
+    assert.strictEqual(document.activeElement, noButton);
+  });
+
+  it('keeps the focus where it was on the next render', async () => {
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    renderPrompt(createStep(), target);
+    await Promise.resolve();
+
+    const [, yesButton] = getButtons(target);
+    yesButton.focus();
+    assert.strictEqual(document.activeElement, yesButton);
+
+    renderPrompt(createStep({description: 'Updated description'}), target);
+    await Promise.resolve();
+    assert.strictEqual(document.activeElement, yesButton);
+  });
+
   it('renders the data disclaimer', () => {
     const target = renderPrompt(createStep());
 

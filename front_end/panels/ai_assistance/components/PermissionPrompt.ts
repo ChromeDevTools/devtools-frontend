@@ -15,7 +15,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type {Step} from './ChatMessage.js';
 import {renderRelevantDataDisclaimer} from './RelevantDataDisclaimer.js';
 
-const {html} = Lit;
+const {html, Directives: {ref}} = Lit;
 const lockedString = i18n.i18n.lockedString;
 
 const RELEVANT_DATA_TOOLTIP_ID = 'relevant-data-link-permission-prompt';
@@ -69,6 +69,16 @@ function renderChangePermissionsInSettings(): Lit.LitTemplate {
       @click=${openAllowedToolsSettings}
     >${lockedString(UIStringsNotTranslate.settings)}</button>${lockedString(UIStringsNotTranslate.atAnyTime)}`;
   // clang-format on
+}
+
+/**
+ * Moves focus to the "No" button when the prompt first appears. Must stay at
+ * module level: Lit only invokes a ref callback when its identity changes, so
+ * a stable function runs once per element instead of on every re-render.
+ */
+function focusOnFirstRender(element: Element|undefined): void {
+  // Lit calls this before the element is in the DOM, so delay focus().
+  queueMicrotask(() => (element as HTMLElement | undefined)?.focus());
 }
 
 /**
@@ -132,6 +142,7 @@ export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.
           jslogContext: 'decline-execute-code',
         } as Buttons.Button.ButtonData}
         @click=${() => dialog.onAnswer(AiAssistanceModel.Tool.PermissionDecision.REJECT)}
+        ${ref(focusOnFirstRender)}
       >${lockedString(UIStringsNotTranslate.skipToolCall)}</devtools-button>
       ${allowAlwaysButton}
       <devtools-button

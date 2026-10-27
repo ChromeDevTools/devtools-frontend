@@ -7,12 +7,15 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
@@ -46,7 +49,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: false,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     await assertScreenshot('network/request-initiator-view-empty.png');
   });
@@ -71,7 +74,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: false,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     await Promise.resolve();  // Trigger MutationObserver (which requests widget updates).
     await UI.Widget.Widget.allUpdatesComplete;
@@ -102,7 +105,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: false,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     await assertScreenshot('network/request-initiator-view-chain.png');
   });
@@ -133,7 +136,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: false,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     await Promise.resolve();  // Trigger MutationObserver (which requests widget updates).
     await UI.Widget.Widget.allUpdatesComplete;
@@ -161,7 +164,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: true,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     await Promise.resolve();
     await UI.Widget.Widget.allUpdatesComplete;
@@ -193,7 +196,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: false,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     await Promise.resolve();
     await UI.Widget.Widget.allUpdatesComplete;
@@ -230,7 +233,7 @@ describe('RequestInitiatorView', () => {
       request,
       isConsoleOriginated: false,
     },
-                                              undefined, component);
+                                              /* output= */ undefined, component);
 
     // devtools-tree uses a MutationObserver to asynchronously copy elements from the light DOM template to the shadow DOM.
     // We yield back to the event loop so the mutation observer can run and populate the shadow root.
@@ -248,5 +251,25 @@ describe('RequestInitiatorView', () => {
     assert.isOk(textContent);
     assert.isTrue(textContent.includes('…'));
     assert.isTrue(textContent.length < longUrl.length);
+  });
+
+  describeWithEnvironment('presenter', () => {
+    it('passes initiator graph and request to view on wasShown', async () => {
+      Logs.NetworkLog.NetworkLog.instance();
+      const request = createNetworkRequest({
+        url: 'https://example.com/foo.js',
+        documentURL: 'https://example.com',
+      });
+      const view = createViewFunctionStub(Network.RequestInitiatorView.RequestInitiatorView);
+      const widget = new Network.RequestInitiatorView.RequestInitiatorView(request, view);
+
+      widget.wasShown();
+      const input = await view.nextInput;
+
+      assert.strictEqual(input.request, request);
+      assert.isFalse(input.isConsoleOriginated);
+      assert.isNull(input.stackTrace);
+      assert.deepEqual(Array.from(input.initiatorGraph.initiators), [request]);
+    });
   });
 });

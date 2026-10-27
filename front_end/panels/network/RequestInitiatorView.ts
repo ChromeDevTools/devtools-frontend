@@ -1,7 +1,6 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -59,18 +58,21 @@ export interface ViewInput {
   isConsoleOriginated: boolean;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   const hasInitiatorData =
       input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
 
   if (!hasInitiatorData) {
-    render(
-        html`
+    // clang-format off
+    render(html`
+      <style>${requestInitiatorViewStyles}</style>
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString(UIStrings.noInitiator)}
       </div>
-    `,
-        target);
+    `, target);
+    // clang-format on
     return;
   }
 
@@ -196,6 +198,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
 
   // clang-format off
   render(html`
+    <style>${requestInitiatorViewStyles}</style>
     <div class="request-initiator-view-tree" jslog=${VisualLogging.tree('initiator-tree')}>
       <devtools-tree .template=${html`
         <style>${requestInitiatorViewTreeStyles}</style>
@@ -210,17 +213,13 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   // clang-format on
 };
 
-type View = typeof DEFAULT_VIEW;
-
 export class RequestInitiatorView extends UI.Widget.VBox {
-  private readonly request: SDK.NetworkRequest.NetworkRequest;
-  #view: View;
+  readonly #request: SDK.NetworkRequest.NetworkRequest;
+  readonly #view: View;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
     super({jslog: `${VisualLogging.pane('initiator').track({resize: true})}`});
-
-    this.element.classList.add('request-initiator-view');
-    this.request = request;
+    this.#request = request;
     this.#view = view;
   }
 
@@ -249,33 +248,32 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   }
 
   override async performUpdate(): Promise<void> {
-    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
+    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.request);
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.#request);
     const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
 
-    const rawStack = this.request.initiator()?.stack;
+    const rawStack = this.#request.initiator()?.stack;
     let stackTrace: StackTrace.StackTrace.StackTrace|null = null;
     if (rawStack && target) {
       stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                        .createStackTraceFromProtocolRuntime(rawStack, target);
     }
 
-    const isConsoleOriginated = NetworkRequestNode.isConsoleOriginated(this.request);
+    const isConsoleOriginated = NetworkRequestNode.isConsoleOriginated(this.#request);
 
     const viewInput: ViewInput = {
       initiatorGraph,
       stackTrace,
-      request: this.request,
+      request: this.#request,
       isConsoleOriginated,
     };
 
-    this.#view(viewInput, undefined, this.contentElement);
+    this.#view(viewInput, /* output= */ undefined, this.contentElement);
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.registerRequiredCSS(requestInitiatorViewStyles);
     this.requestUpdate();
   }
 }

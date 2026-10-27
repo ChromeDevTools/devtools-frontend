@@ -132,6 +132,39 @@ describe('List', () => {
     assert.isNotNull(component.shadowRoot.querySelector('devtools-button[title="Remove"]'));
   });
 
+  it('supports per-item editable and deletable attributes on child elements', async () => {
+    const component = await renderListComponent(html`
+      <p>Read-only item</p>
+      <p editable deletable>Custom item</p>
+    `);
+    assert.isNotNull(component.shadowRoot);
+
+    const listItems = component.shadowRoot.querySelectorAll('li[role="listitem"]');
+    assert.lengthOf(listItems, 2);
+    assert.isNull(listItems[0].querySelector('.controls-container'));
+    assert.isNotNull(listItems[1].querySelector('devtools-button[title="Edit"]'));
+    assert.isNotNull(listItems[1].querySelector('devtools-button[title="Remove"]'));
+
+    let deletedIndex = -1;
+    component.addEventListener('delete', event => {
+      deletedIndex = event.detail.index;
+    });
+    listItems[0].dispatchEvent(
+        new KeyboardEvent('keydown', {bubbles: true, cancelable: true, composed: true, key: 'Delete'}));
+    assert.strictEqual(deletedIndex, -1);
+
+    listItems[1].dispatchEvent(
+        new KeyboardEvent('keydown', {bubbles: true, cancelable: true, composed: true, key: 'Delete'}));
+    assert.strictEqual(deletedIndex, 1);
+
+    const customChild = component.querySelectorAll('p')[1];
+    customChild.removeAttribute('editable');
+    customChild.removeAttribute('deletable');
+    await RenderCoordinator.done();
+
+    assert.isNull(component.shadowRoot.querySelectorAll('li[role="listitem"]')[1].querySelector('.controls-container'));
+  });
+
   it('dispatches an "edit" event when the edit button is clicked', async () => {
     const component = await renderListComponent(html`
       <p>Item 1</p>

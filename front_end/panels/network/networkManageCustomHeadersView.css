@@ -5,9 +5,17 @@
  */
 
 .custom-headers-list {
+  display: flex;
   height: 272px;
   width: var(--sys-size-29);
   margin: 0 var(--sys-size-8);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.custom-headers-list-list-empty {
+  align-items: center;
+  justify-content: center;
+  color: var(--sys-color-token-subtle);
 }
 
 .header {
@@ -17,16 +25,29 @@
   flex: none;
 }
 
-.custom-headers-header {
-  padding: var(--sys-size-2);
-}
-
 .custom-headers-list-item {
-  padding-left: 5px;
+  display: flex;
+  align-items: center;
+  flex: auto;
+  padding: 0 var(--sys-size-4);
+  overflow: hidden;
 }
 
-.editor-container {
-  padding: 5px 0 0 5px;
+.custom-header-name {
+  flex: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  --devtools-text-prompt-min-width: 6em;
+}
+
+devtools-prompt.custom-header-name {
+  cursor: text;
+}
+
+devtools-prompt.custom-header-name[editing] {
+  overflow: visible;
 }
 
 .add-button {

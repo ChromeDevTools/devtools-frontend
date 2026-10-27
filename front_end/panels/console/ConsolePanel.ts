@@ -1,7 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2009 Joseph Pecoraro
@@ -33,33 +32,73 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleView} from './ConsoleView.js';
 
-let consolePanelInstance: ConsolePanel;
+const {widget} = UI.Widget;
+
+export interface ViewInput {
+  showConsoleView: boolean;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    ${widget(UI.Widget.WrapperWidget, {
+      widget: input.showConsoleView ? ConsoleView.instance() : null,
+    })}
+  `, target, {
+    container: {
+      attributes: {
+        jslog: `${VisualLogging.panel('console').track({resize: true})}`,
+      },
+    },
+  });
+  // clang-format on
+};
+
+let consolePanelInstance: ConsolePanel|null = null;
 
 export class ConsolePanel extends UI.Panel.Panel {
-  private readonly view: ConsoleView;
+  readonly #view: View;
   #drawerWasMinimized = false;
-  constructor() {
+  #ownsConsoleView = false;
+
+  constructor(view: View = DEFAULT_VIEW) {
     super('console');
-    this.view = ConsoleView.instance();
+    this.#view = view;
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {showConsoleView: this.#ownsConsoleView},
+        undefined,
+        this.contentElement,
+    );
   }
 
   static instance(opts: {
     forceNew: boolean|null,
+    view?: View,
   } = {forceNew: null}): ConsolePanel {
-    const {forceNew} = opts;
+    const {forceNew, view} = opts;
     if (!consolePanelInstance || forceNew) {
-      consolePanelInstance = new ConsolePanel();
+      consolePanelInstance = new ConsolePanel(view);
     }
 
     return consolePanelInstance;
   }
 
+  static removeInstance(): void {
+    consolePanelInstance = null;
+  }
+
   static updateContextFlavor(): void {
-    const consoleView = ConsolePanel.instance().view;
+    const consoleView = ConsoleView.instance();
     UI.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
 
@@ -68,15 +107,21 @@ export class ConsolePanel extends UI.Panel.Panel {
     const inspectorView = UI.InspectorView.InspectorView.instance();
     this.#drawerWasMinimized = inspectorView.isDrawerMinimized();
     const wrapper = wrapperViewInstance;
+    // Always take the view away from the wrapper, even when the drawer is
+    // minimized or hidden, so that only one of them owns the ConsoleView.
+    wrapper?.hideViewInWrapper();
     if (wrapper?.isShowing()) {
       inspectorView.setDrawerMinimized(true);
     }
-    this.view.show(this.element);
+    this.#ownsConsoleView = true;
+    this.performUpdate();
     ConsolePanel.updateContextFlavor();
   }
 
   override willHide(): void {
     super.willHide();
+    this.#ownsConsoleView = false;
+    this.performUpdate();
     const inspectorView = UI.InspectorView.InspectorView.instance();
     // The minimized drawer has 0 height, and showing Console inside may set
     // Console's scrollTop to 0. Unminimize before calling show to avoid this.
@@ -99,18 +144,35 @@ export class ConsolePanel extends UI.Panel.Panel {
 let wrapperViewInstance: WrapperView|null = null;
 
 export class WrapperView extends UI.Widget.VBox {
-  private readonly view: ConsoleView;
+  readonly #view: View;
+  #ownsConsoleView = false;
 
-  private constructor() {
-    super({jslog: `${VisualLogging.panel('console').track({resize: true})}`});
-    this.view = ConsoleView.instance();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
 
-  static instance(): WrapperView {
-    if (!wrapperViewInstance) {
-      wrapperViewInstance = new WrapperView();
+  override performUpdate(): void {
+    this.#view(
+        {showConsoleView: this.#ownsConsoleView},
+        undefined,
+        this.contentElement,
+    );
+  }
+
+  static instance(opts: {
+    forceNew: boolean|null,
+    view?: View,
+  } = {forceNew: null}): WrapperView {
+    const {forceNew, view} = opts;
+    if (!wrapperViewInstance || forceNew) {
+      wrapperViewInstance = new WrapperView(undefined, view);
     }
     return wrapperViewInstance;
+  }
+
+  static removeInstance(): void {
+    wrapperViewInstance = null;
   }
 
   override wasShown(): void {
@@ -118,6 +180,9 @@ export class WrapperView extends UI.Widget.VBox {
     if (!ConsolePanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
+      // Render with showConsoleView: false so the container jslog attribute is
+      // still set on contentElement when ConsolePanel owns ConsoleView.
+      this.performUpdate();
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     ConsolePanel.updateContextFlavor();
@@ -129,11 +194,20 @@ export class WrapperView extends UI.Widget.VBox {
   }
 
   showViewInWrapper(): void {
-    this.view.show(this.element);
+    this.#ownsConsoleView = true;
+    // Update synchronously so ConsoleView is mounted before drawer minimize
+    // state and ConsoleView context flavor are updated by callers.
+    this.performUpdate();
+  }
+
+  hideViewInWrapper(): void {
+    this.#ownsConsoleView = false;
+    // Update synchronously so ConsoleView detaches before ConsolePanel claims it.
+    this.performUpdate();
   }
 
   insertIntoPrompt(text: string): void {
-    this.view.insertIntoPrompt(text);
+    ConsoleView.instance().insertIntoPrompt(text);
   }
 }
 

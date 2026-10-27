@@ -24,6 +24,7 @@ devtools_ui_module("linear_memory_inspector") {
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "./components:bundle",
   ]

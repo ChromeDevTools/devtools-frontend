@@ -7,6 +7,7 @@ import {afterEach, beforeEach, describe, it} from 'mocha';
 
 import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as LinearMemoryInspectorComponents from './components/components.js';
@@ -123,25 +124,28 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
       controller.saveSettings(originalSettings);
     });
 
-    it('throws when constructed or updated with an out-of-bounds address', () => {
+    it('throws when set or updated with an out-of-bounds address', () => {
       const arrayWrapper = new Uint8Wrapper(createArray());
-      assert.throws(() => new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper,
-                                                                                                        -1, 'tab-id'),
-                    'Requested address is out of bounds.');
-      assert.throws(() => new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper,
-                                                                                                        100, 'tab-id'),
-                    'Requested address is out of bounds.');
+      const view = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView();
+      view.tabId = 'tab-id';
+      view.memoryWrapper = arrayWrapper;
+      assert.throws(() => {
+        view.address = -1;
+      }, 'Requested address is out of bounds.');
+      assert.throws(() => {
+        view.address = 100;
+      }, 'Requested address is out of bounds.');
 
-      const view =
-          new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper, 0, 'tab-id');
       assert.throws(() => view.updateAddress(-1), 'Requested address is out of bounds.');
       assert.throws(() => view.updateAddress(100), 'Requested address is out of bounds.');
     });
 
     it('loads memory on show and renders the inspector', async () => {
       const arrayWrapper = new Uint8Wrapper(createArray());
-      const view =
-          new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper, 10, 'tab-id');
+      const view = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView();
+      view.tabId = 'tab-id';
+      view.address = 10;
+      view.memoryWrapper = arrayWrapper;
       renderElementIntoDOM(view);
       // doubleRaf is required because LinearMemoryInspectorView asynchronously fetches memory
       // in wasShown before scheduling a widget update.
@@ -151,12 +155,72 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
       assert.instanceOf(viewer, HTMLElement);
     });
 
-    it('saves settings via controller', () => {
+    it('passes loaded memory and handles memory requests via view input', async () => {
+      const view = createViewFunctionStub(
+          LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView,
+      );
       const arrayWrapper = new Uint8Wrapper(createArray());
-      const view =
-          new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(arrayWrapper, 0, 'tab-id');
+      const inspectorView = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(
+          undefined,
+          view,
+      );
+      inspectorView.tabId = 'tab-id';
+      inspectorView.address = 10;
+      inspectorView.memoryWrapper = arrayWrapper;
+      renderElementIntoDOM(inspectorView);
+      const input = await view.nextInput;
+      assert.strictEqual(input.address, 10);
+      assert.strictEqual(input.outerMemoryLength, 100);
+      assert.exists(input.memory);
+
+      input.onMemoryRequest({start: 20, end: 40, address: 25});
+      const updatedInput = await view.nextInput;
+      assert.strictEqual(updatedInput.offset, 20);
+      assert.strictEqual(updatedInput.memory?.length, 80);
+    });
+
+    it('notifies onAddressChanged callback and updates view input when address changes', async () => {
+      const view = createViewFunctionStub(
+          LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView,
+      );
+      const arrayWrapper = new Uint8Wrapper(createArray());
+      const inspectorView = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(
+          undefined,
+          view,
+      );
+      inspectorView.tabId = 'tab-id';
+      inspectorView.address = 10;
+      inspectorView.memoryWrapper = arrayWrapper;
+      const changedAddresses: Array<{tabId: string, address: number}> = [];
+      inspectorView.onAddressChanged = (tabId, address) => changedAddresses.push({tabId, address});
+      renderElementIntoDOM(inspectorView);
+      const input = await view.nextInput;
+
+      input.onAddressChanged(42);
+      const updatedInput = await view.nextInput;
+      assert.strictEqual(updatedInput.address, 42);
+      assert.deepEqual(changedAddresses, [{tabId: 'tab-id', address: 42}]);
+    });
+
+    it('updates and saves settings via onSettingsChanged callback', async () => {
+      const view = createViewFunctionStub(
+          LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView,
+      );
+      const arrayWrapper = new Uint8Wrapper(createArray());
+      const inspectorView = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(
+          undefined,
+          view,
+      );
+      inspectorView.tabId = 'tab-id';
+      inspectorView.address = 0;
+      inspectorView.memoryWrapper = arrayWrapper;
+      renderElementIntoDOM(inspectorView);
+      const input = await view.nextInput;
+
       const settings = {
-        valueTypes: new Set([LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8]),
+        valueTypes: new Set([
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
+        ]),
         modes: new Map([
           [
             LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
@@ -165,8 +229,108 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
         ]),
         endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.BIG,
       };
-      view.saveSettings(settings);
+      input.onSettingsChanged(settings);
+      const updatedInput = await view.nextInput;
+      assert.deepEqual(updatedInput.valueTypes, settings.valueTypes);
+      assert.deepEqual(updatedInput.valueTypeModes, settings.modes);
+      assert.strictEqual(updatedInput.endianness, settings.endianness);
       assert.deepEqual(controller.loadSettings(), settings);
+    });
+
+    it('passes highlight info to view input and removes it via onDeleteMemoryHighlight', async () => {
+      const controller =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+      const highlightInfo: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo = {
+        startAddress: 8,
+        size: 4,
+        type: 'int32',
+      };
+      controller.setHighlightInfo('tab-id', highlightInfo);
+      try {
+        const view = createViewFunctionStub(
+            LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView,
+        );
+        const arrayWrapper = new Uint8Wrapper(createArray());
+        const inspectorView = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(
+            undefined,
+            view,
+        );
+        inspectorView.tabId = 'tab-id';
+        inspectorView.address = 8;
+        inspectorView.memoryWrapper = arrayWrapper;
+        renderElementIntoDOM(inspectorView);
+        const input = await view.nextInput;
+        assert.deepEqual(input.highlightInfo, highlightInfo);
+
+        input.onDeleteMemoryHighlight(highlightInfo);
+        const updatedInput = await view.nextInput;
+        assert.isUndefined(updatedInput.highlightInfo);
+        assert.isUndefined(controller.getHighlightInfo('tab-id'));
+      } finally {
+        controller.removeHighlight('tab-id', highlightInfo);
+      }
+    });
+
+    it('throws when highlight info has out-of-bounds startAddress', () => {
+      const controller =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+      const arrayWrapper = new Uint8Wrapper(createArray());
+      const view = createViewFunctionStub(
+          LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView,
+      );
+      const inspectorView = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(
+          undefined,
+          view,
+      );
+      inspectorView.tabId = 'tab-id';
+      inspectorView.address = 0;
+      inspectorView.memoryWrapper = arrayWrapper;
+
+      const outOfBoundsHighlight: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo = {
+        startAddress: 200,
+        size: 4,
+        type: 'int32',
+      };
+      controller.setHighlightInfo('tab-id', outOfBoundsHighlight);
+      try {
+        assert.throws(
+            () => inspectorView.performUpdate(),
+            'HighlightInfo start address is out of bounds.',
+        );
+      } finally {
+        controller.removeHighlight('tab-id', outOfBoundsHighlight);
+      }
+    });
+
+    it('throws when highlight info has non-positive size', () => {
+      const controller =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+      const arrayWrapper = new Uint8Wrapper(createArray());
+      const view = createViewFunctionStub(
+          LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView,
+      );
+      const inspectorView = new LinearMemoryInspector.LinearMemoryInspectorView.LinearMemoryInspectorView(
+          undefined,
+          view,
+      );
+      inspectorView.tabId = 'tab-id';
+      inspectorView.address = 0;
+      inspectorView.memoryWrapper = arrayWrapper;
+
+      const invalidSizeHighlight: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo = {
+        startAddress: 0,
+        size: 0,
+        type: 'int32',
+      };
+      controller.setHighlightInfo('tab-id', invalidSizeHighlight);
+      try {
+        assert.throws(
+            () => inspectorView.performUpdate(),
+            'Highlight size must be a positive number.',
+        );
+      } finally {
+        controller.removeHighlight('tab-id', invalidSizeHighlight);
+      }
     });
   });
 });

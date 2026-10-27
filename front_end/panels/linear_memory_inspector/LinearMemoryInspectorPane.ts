@@ -87,7 +87,12 @@ export class LinearMemoryInspectorPane extends LinearMemoryInspectorPaneBase {
   }
 
   create(tabId: string, title: string, arrayWrapper: LazyUint8Array, address?: number): void {
-    const inspectorView = new LinearMemoryInspectorView(arrayWrapper, address, tabId);
+    const inspectorView = new LinearMemoryInspectorView();
+    inspectorView.tabId = tabId;
+    if (address !== undefined) {
+      inspectorView.address = address;
+    }
+    inspectorView.memoryWrapper = arrayWrapper;
     this.#tabbedPane.appendTab(tabId, title, inspectorView, undefined, false, true);
     this.#tabbedPane.selectTab(tabId);
   }

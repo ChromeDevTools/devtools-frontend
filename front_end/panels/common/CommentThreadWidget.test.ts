@@ -35,6 +35,7 @@ function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> 
         title: {text: 'div#container.grid'},
         comments: [],
         status: 'SENT_TO_AGENT',
+        transmitted: false,
         commentText: '',
         isEditing: false,
         isQueueModifierPressed: false,
@@ -75,6 +76,18 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     const target = renderView({comments});
     renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('comments/comment_thread_widget_submitted.png');
+  });
+
+  it('renders a developer comment taken by the agent', async () => {
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+    ];
+    const target = renderView({comments, transmitted: true});
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    const spinner = target.querySelector('devtools-spinner');
+    assert.isNotNull(spinner);
+    spinner.active = false;
+    await assertScreenshot('comments/comment_thread_widget_working.png');
   });
 
   it('renders a queued developer comment', async () => {
@@ -188,6 +201,15 @@ describeWithEnvironment('CommentThreadWidget header status in DEFAULT_VIEW', () 
     const target = renderView({comments, status: 'SENT_TO_AGENT'});
 
     assert.isNotNull(target.querySelector('.sent-status'));
+    assert.isNull(target.querySelector('.working-status'));
+    assert.isNull(target.querySelector('.delete-button'));
+  });
+
+  it('shows the working status instead of the sent status once the agent takes the thread', () => {
+    const target = renderView({comments, status: 'SENT_TO_AGENT', transmitted: true});
+
+    assert.isNull(target.querySelector('.sent-status'));
+    assert.isNotNull(target.querySelector('.working-status devtools-spinner'));
     assert.isNull(target.querySelector('.delete-button'));
   });
 
@@ -401,6 +423,18 @@ describeWithEnvironment('CommentThreadWidget presenter', () => {
     await widget.updateComplete;
     sinon.assert.calledOnceWithExactly(onAddComment, 'hello');
     assert.strictEqual(view.input.commentText, '');
+  });
+
+  it('passes the transmitted state to the view input', async () => {
+    const view = createViewFunctionStub(CommentThreadWidget);
+    const widget = new CommentThreadWidget(undefined, view);
+    widget.status = 'SENT_TO_AGENT';
+    widget.performUpdate();
+    assert.isFalse(view.input.transmitted);
+
+    widget.transmitted = true;
+    widget.performUpdate();
+    assert.isTrue(view.input.transmitted);
   });
 
   it('focuses the textarea when shown', async () => {

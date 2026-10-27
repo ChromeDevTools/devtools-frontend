@@ -477,6 +477,39 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     assert.isFalse(inputAfterDetach.commentMode);
   });
 
+  it('shows "Sent" in the popover until the agent takes the comment, then "Working"', async () => {
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: sent-status');
+    testEl.textContent = 'sent status';
+    testEl.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+    renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    overlayManager.handleElementClick(testEl);
+    const [thread] = commentManager.getCommentThreads();
+    assert.exists(thread);
+    thread.sendToAgent('Sent comment');
+    widget.requestUpdate();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget .sent-status'));
+    assert.isNull(widget.contentElement.querySelector('.comment-popup-widget .working-status'));
+
+    commentManager.takeComments();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    assert.isNull(widget.contentElement.querySelector('.comment-popup-widget .sent-status'));
+    assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget .working-status devtools-spinner'));
+
+    testEl.remove();
+    widget.detach();
+  });
+
   it('resets draft text when clicking a different element while a draft is open', async () => {
     const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
     widget.setOverlayManagerForTest(overlayManager);

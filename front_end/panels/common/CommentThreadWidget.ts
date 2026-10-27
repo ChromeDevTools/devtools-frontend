@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
@@ -37,6 +38,11 @@ const UIStrings = {
    * to the agent.
    */
   sentCheckmark: 'Sent checkmark',
+  /**
+   * @description Text next to a spinner in the comment thread header indicating that the agent has picked up the
+   * comments and is working on them.
+   */
+  working: 'Working',
   /**
    * @description Label for the agent response section in the comment thread.
    */
@@ -88,6 +94,8 @@ export interface ViewInput {
   isQueueModifierPressed: boolean;
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
   status: CommentManager.CommentManager.CommentThreadStatus;
+  /** Whether the thread has been taken by the agent. */
+  transmitted: boolean;
   isEditing: boolean;
   onAddComment: (text: string) => void;
   onQueueComment: (text: string) => void;
@@ -133,6 +141,16 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
 
     switch (input.status) {
       case 'SENT_TO_AGENT':
+        if (input.transmitted) {
+          // clang-format off
+          return html`
+            <div class="working-status">
+              <devtools-spinner></devtools-spinner>
+              <span>${i18nString(UIStrings.working)}</span>
+            </div>
+          `;
+          // clang-format on
+        }
         // clang-format off
         return html`
           <div class="sent-status">
@@ -262,6 +280,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
   #comments: CommentManager.CommentManager.Comment[] = [];
   #commentText = '';
   #status: CommentManager.CommentManager.CommentThreadStatus = 'DRAFT';
+  #transmitted = false;
   #isQueueModifierPressed = false;
   #textAreaRef = createRef<HTMLTextAreaElement>();
   #view: View;
@@ -297,6 +316,14 @@ export class CommentThreadWidget extends UI.Widget.Widget {
 
   set status(commentStatus: CommentManager.CommentManager.CommentThreadStatus) {
     this.#status = commentStatus;
+    this.requestUpdate();
+  }
+
+  set transmitted(transmitted: boolean) {
+    if (this.#transmitted === transmitted) {
+      return;
+    }
+    this.#transmitted = transmitted;
     this.requestUpdate();
   }
 
@@ -361,6 +388,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       isQueueModifierPressed: this.#isQueueModifierPressed,
       textAreaRef: this.#textAreaRef,
       status: this.#status,
+      transmitted: this.#transmitted,
       onAddComment: this.#handleAddComment,
       onQueueComment: this.#handleQueueComment,
       onCommentTextChange: this.#handleCommentTextChange,

@@ -710,7 +710,7 @@ function renderStepCode(step: Step): Lit.LitTemplate {
       .codeLang=${'js'}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.dataReturned)}
-      .showCopyButton=${false}
+      .showCopyButton=${true}
     ></devtools-code-block>
   </div>` :
                                Lit.nothing;

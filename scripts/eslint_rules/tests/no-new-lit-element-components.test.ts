@@ -14,21 +14,28 @@ new RuleTester().run('no-new-lit-element-components', rule, {
       filename: 'front_end/components/test.ts',
     },
     {
-      name: 'allows LitElement in recorder (relative path)',
-      code: 'class A extends LitElement {}',
-      filename: 'front_end/panels/recorder/test.ts',
+      name: 'allows LitElement in suggestion_input (relative path)',
+      code: 'class A extends Lit.LitElement {}',
+      filename: 'front_end/ui/components/suggestion_input/SuggestionInput.ts',
     },
     {
-      name: 'allows LitElement in recorder (absolute path)',
+      name: 'allows LitElement in suggestion_input (absolute path)',
       code: 'class A extends LitElement {}',
-      filename: '/usr/local/domain/home/user/devtools/devtools-frontend/front_end/panels/recorder/test.ts',
+      filename:
+          '/usr/local/domain/home/user/devtools/devtools-frontend/front_end/ui/components/suggestion_input/SuggestionInput.ts',
     },
   ],
   invalid: [
     {
-      name: 'disallows extending LitElement outside recorder panel',
+      name: 'disallows extending LitElement outside suggestion_input',
       code: 'class A extends LitElement {}',
       filename: 'front_end/components/test.ts',
+      errors: [{messageId: 'noNewLitElementComponents'}],
+    },
+    {
+      name: 'disallows extending Lit.LitElement outside suggestion_input',
+      code: 'class A extends Lit.LitElement {}',
+      filename: 'front_end/panels/recorder/test.ts',
       errors: [{messageId: 'noNewLitElementComponents'}],
     },
   ],

@@ -7,7 +7,6 @@ import path from 'node:path';
 import {createRule} from './utils/ruleCreator.ts';
 
 const allowedPaths = [
-  'front_end/panels/recorder/',
   'front_end/ui/components/suggestion_input/',
 ];
 
@@ -34,8 +33,11 @@ export default createRule({
 
     return {
       ClassDeclaration(node) {
-        // Use `extends LitElement` as a signal.
-        if (node.superClass?.type !== 'Identifier' || node.superClass?.name !== 'LitElement') {
+        // Use `extends LitElement` or `extends Lit.LitElement` as a signal.
+        const isLitElementIdentifier = node.superClass?.type === 'Identifier' && node.superClass.name === 'LitElement';
+        const isLitElementMember = node.superClass?.type === 'MemberExpression' &&
+            node.superClass.property.type === 'Identifier' && node.superClass.property.name === 'LitElement';
+        if (!isLitElementIdentifier && !isLitElementMember) {
           return;
         }
         context.report({

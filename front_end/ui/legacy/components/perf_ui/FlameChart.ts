@@ -340,10 +340,16 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     lastWidth: 0,
   };
   /**
-   * Caches middle-truncated entry titles keyed by entry index.
-   * Stores the `width` (maximum available text width in pixels) and `text` (trimmed string or null).
+   * Caches entry titles keyed by entry index.
+   * Stores `rawText` (untruncated title capped at 200 graphemes, or null), `fullWidth` (measured pixel
+   * width of `rawText`), `width` (last truncated bar width in pixels), and `text` (trimmed string or null).
    */
-  #entryTitleCache = new Map<number, {width: number, text: string|null}>();
+  #entryTitleCache = new Map<number, {
+    rawText: string | null,
+    fullWidth: number,
+    width: number,
+    text: string|null,
+  }>();
   /**
    * Tracks the previous canvas backing store and style layout properties.
    * Backing store dimensions and CSS layout properties are updated independently to avoid reallocating
@@ -3080,30 +3086,35 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * entry title cache to avoid repeated text measurements and trimming during animation frames.
    */
   #getEntryTitle(entryIndex: number, maxBarWidth: number, context: CanvasRenderingContext2D): string|null {
-    if (maxBarWidth <= 0) {
+    // UI.UIUtils.trimText returns an empty string for maxWidth <= 10.
+    if (maxBarWidth <= 10) {
       return null;
     }
-    const cached = this.#entryTitleCache.get(entryIndex);
-    if (cached && cached.width === maxBarWidth) {
+    let cached = this.#entryTitleCache.get(entryIndex);
+    if (!cached) {
+      const rawTitle = this.dataProvider.entryTitle(entryIndex);
+      if (!rawTitle?.length) {
+        this.#entryTitleCache.set(entryIndex, {rawText: null, fullWidth: 0, width: 0, text: null});
+        return null;
+      }
+      // Cap at 200 graphemes to match UI.UIUtils.trimText and bound text measurement on long strings.
+      const rawText = rawTitle.length > 200 ? Platform.StringUtilities.trimMiddle(rawTitle, 200) : rawTitle;
+      const fullWidth = UI.UIUtils.measureTextWidth(context, rawText);
+      cached = {rawText, fullWidth, width: 0, text: null};
+      this.#entryTitleCache.set(entryIndex, cached);
+    }
+    if (!cached.rawText) {
+      return null;
+    }
+    if (maxBarWidth >= cached.fullWidth) {
+      return cached.rawText;
+    }
+    if (cached.width === maxBarWidth) {
       return cached.text;
     }
-    let text: string|null = null;
-    const rawText = this.dataProvider.entryTitle(entryIndex);
-    if (rawText?.length) {
-      text = UI.UIUtils.trimTextMiddle(
-          context,
-          rawText,
-          maxBarWidth,
-      );
-    }
-    // Mutate existing cache record in place if present to avoid object allocation churn
-    // on every animation frame during continuous zooming.
-    if (cached) {
-      cached.width = maxBarWidth;
-      cached.text = text;
-    } else {
-      this.#entryTitleCache.set(entryIndex, {width: maxBarWidth, text});
-    }
+    const text = UI.UIUtils.trimTextMiddle(context, cached.rawText, maxBarWidth);
+    cached.width = maxBarWidth;
+    cached.text = text;
     return text;
   }
 

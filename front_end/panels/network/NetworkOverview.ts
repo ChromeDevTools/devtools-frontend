@@ -1,7 +1,6 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -26,20 +25,19 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   private span!: number;
   private lastBoundary?: NetworkTimeCalculator.NetworkTimeBoundary|null;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element, {classes: ['network-overview']});
     this.selectedFilmStripTime = -1;
-    this.element.classList.add('network-overview');
 
     this.numBands = 1;
     this.highlightedRequest = null;
 
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this,
-        {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded,
-        this.domContentLoadedEventFired, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                SDK.ResourceTreeModel.Events.Load, this.loadEventFired,
+                                                                this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel,
+                                                                SDK.ResourceTreeModel.Events.DOMContentLoaded,
+                                                                this.domContentLoadedEventFired, this, {scoped: true});
 
     this.reset();
   }

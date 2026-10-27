@@ -135,9 +135,10 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         default: false,
       })
       .option('repeat', {
+        alias: ['isolated-script-test-repeat'],
         type: 'number',
         default: 1,
-        desc: 'Reruns the test X number of times regardless of result (e2e tests only)',
+        desc: 'Reruns the test X number of times regardless of result',
       })
       .option('bail', {
         alias: ['fail-fast'],

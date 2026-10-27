@@ -15,7 +15,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 ### `UI_MODERN_COMPONENT_AND_ENCAPSULATION_STANDARDS`: Use modern DevTools UI primitives (`devtools-button`, `devtools-data-grid`, `devtools-icon`), #private fields, and module entrypoint imports
 - **Severity**: WARNING
 - **Why**: Legacy `UI.Fragment`, `DataGridImpl`, `LitElement`, `new Icon()`, and TypeScript `private` fields are superseded by standard `<devtools-*>` custom elements (imported via module entrypoints such as `import * as Buttons from '../../ui/components/buttons/buttons.js'` so custom tags register at runtime) and ECMAScript `#private` fields.
-- **Look for**: `UI.Fragment.build`, legacy `DataGridImpl`, `extends LitElement`, `private ` keyword instead of `#` in new UI classes, or `<devtools-*>` tags in Lit templates without importing the corresponding component module entrypoint (e.g. `import * as Buttons from '../../ui/components/buttons/buttons.js'`).
+- **Look for**: `UI.Fragment.build`, legacy `DataGridImpl`, `extends LitElement`, `private ` keyword instead of `#` in new UI classes, `<devtools-*>` tags in Lit templates without importing the corresponding component module entrypoint (e.g. `import * as Buttons from '../../ui/components/buttons/buttons.js'`), or formatting dates or timestamps with `toLocaleString()` inside sortable `<devtools-data-grid>` cells without a numeric/ISO sort value (sorts alphabetically instead of chronologically; use `toISOString()` or a numeric sort value).
 - **Do not flag**: Overriding inherited `protected` lifecycle methods on framework base classes (e.g. extending `UI.Widget.Widget`).
 
 ### `UI_TYPE_SAFETY_AND_EXHAUSTIVENESS`: Model multi-state UI workflows with discriminated unions, Platform.assertNever exhaustiveness checks, and strict domain types
@@ -34,12 +34,12 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: WARNING
 - **Why**: Mutating DOM elements via `appendChild`, `classList.toggle`, or `innerHTML` alongside Lit templates, or returning `''`/`null` instead of `Lit.nothing` in conditional branches, corrupts Lit's part tracking and creates unnecessary text nodes or wrapper `<div>`s. Conversely, collapsing existing standalone DOM helper functions (e.g., `linkifyIcon`, `maybeCreateLinkToElementsPanel`) or class rendering helpers into a single monolithic `DEFAULT_VIEW` template harms readability and reviewability compared to converting those helpers in place to return `LitTemplate`.
 - **Look for**: Ternary branches returning `''` or `undefined` in `html` templates instead of `Lit.nothing`, unkeyed `.map()` on dynamic stateful lists instead of `repeat()`, `ifDefined` omissions on optional attributes, multiple `Lit.render()` calls mutating the same container, or Lit migrations that flatten/inline existing DOM helper functions and class helper methods instead of preserving them in their original locations returning `LitTemplate`.
-- **Do not flag**: Static arrays of primitive labels where item identity never reorders.
+- **Do not flag**: Static arrays of primitive labels where item identity never reorders. Omitting Lit's `live()` directive on `<devtools-checkbox>` (`UI.UIUtils.CheckboxLabel`) `.checked` bindings (`live()` breaks `CheckboxLabel`'s host `checked` attribute synchronization when toggled externally), listening to `ObjectWrapper` events via Lit `@event=${...}` bindings on `UI.Widget` elements (`ObjectWrapper` instances set up via `eventMixin` on `Widget` dispatch on the DOM), or interpolating boolean values directly inside Lit text/`<td>` positions (Lit renders booleans as `'true'`/`'false'`).
 
 ### `UI_WIDGET_DOM_AND_LISTENER_LIFECYCLE`: Attach listeners to external models and managers in wasShown and detach them symmetrically in willHide
 - **Severity**: ERROR
 - **Why**: Subscribing to long-lived SDK `TargetManager`, `Settings`, or model events in a widget's constructor without unsubscribing in `willHide()` (or `onDetach()` / `onunbind()`) causes hidden panels to process background updates and leaks detached widget instances.
-- **Look for**: `addEventListener`, `addModelListener`, or `addChangeListener` on singletons, models, or settings inside `UI.Widget` constructors or `wasShown()` without a matching `remove*` call in `willHide()` using the same function reference.
+- **Look for**: `addEventListener`, `addModelListener`, or `addChangeListener` on singletons, models, or settings inside `UI.Widget` constructors or `wasShown()` without a matching `remove*` call in `willHide()` using the same function reference, or scheduled or asynchronous `performUpdate()` methods on `SDKModelObserver` widgets that access or re-register a model without checking that `this.#model` is still active after `modelRemoved()` has run.
 - **Do not flag**: Listeners attached to the widget's own internal DOM elements (`this.contentElement`), which are garbage-collected together with the widget.
 
 ### `UI_ACCESSIBILITY_AND_SEMANTIC_HTML`: Use native semantic HTML controls with accurate ARIA attributes, keyboard handlers, and !event.isComposing guards
@@ -63,7 +63,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 ### `UI_REACTIVE_WIDGET_UPDATE_LIFECYCLE`: Schedule widget re-renders asynchronously via this.requestUpdate() and guard property setters with equality checks
 - **Severity**: WARNING
 - **Why**: Calling `this.performUpdate()` or invoking `this.#view(...)` synchronously inside property setters causes redundant synchronous DOM renders when multiple properties change in the same tick. Setters should short-circuit if the value is unchanged and call `this.requestUpdate()`.
-- **Look for**: Widget property setters calling `this.performUpdate()` or `this.#view(...)` directly, or setters calling `this.requestUpdate()` without checking `if (this.#prop === value) return;`.
+- **Look for**: Widget property setters calling `this.performUpdate()` or `this.#view(...)` directly, setters calling `this.requestUpdate()` without checking `if (this.#prop === value) return;`, or synchronous `this.performUpdate()` calls inside a `UI.Widget` `constructor()` (creates DOM and reads `UI.Context` before the widget is attached or visible; use `this.requestUpdate()` or `wasShown()` instead).
 - **Do not flag**: Internal test helpers or synchronous initialization paths explicitly documented as requiring immediate flush.
 
 ### `UI_VISUAL_LOGGING_INSTRUMENTATION`: Instrument interactive UI elements and containers with kebab-case VisualLogging contexts registered in KnownContextValues
@@ -76,7 +76,7 @@ This skill provides review guidance for Chrome DevTools frontend changes matchin
 - **Severity**: INFO
 - **Why**: Unscoped class or tag selectors in light-DOM widget stylesheets leak across the DevTools document, while combining `vertical-align`, negative margins, and `position: relative` offsets creates brittle layouts that break under font scaling or zoom.
 - **Look for**: Unscoped generic selectors in light-DOM `.css` files (or `:host` inside `@scope` blocks instead of `:scope`), or CSS rules combining `vertical-align`, negative `margin-top`, and pixel offsets to center icons and buttons.
-- **Do not flag**: Shadow DOM component stylesheets where `:host` scoping is native.
+- **Do not flag**: Shadow DOM component stylesheets where `:host` scoping is native. `<style>${styles}</style>` interpolations of `*.css.js` default imports in Lit templates (generated `.css.js` files export plain CSS strings, not `CSSStyleSheet` objects, and `<style>${...}</style>` is the standard replacement for deprecated `registerRequiredCSS`).
 
 ### `UI_VIEW_OUTPUT_AND_CALLBACK_CONTRACTS`: Encapsulate imperative DOM and child widget actions in ViewOutput callbacks and pass user actions via semantic ViewInput callbacks instead of raw DOM or Widget references
 - **Severity**: WARNING

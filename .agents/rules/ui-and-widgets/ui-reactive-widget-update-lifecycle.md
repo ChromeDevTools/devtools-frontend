@@ -5,7 +5,7 @@ severity: should_fix
 ---
 
 **Rule.** Schedule widget re-renders asynchronously via this.requestUpdate() and guard property setters with equality checks
-- **Look for**: Widget property setters calling `this.performUpdate()` or `this.#view(...)` directly, or setters calling `this.requestUpdate()` without checking `if (this.#prop === value) return;`.
+- **Look for**: Widget property setters calling `this.performUpdate()` or `this.#view(...)` directly, setters calling `this.requestUpdate()` without checking `if (this.#prop === value) return;`, or synchronous `this.performUpdate()` calls inside a `UI.Widget` `constructor()` (creates DOM and reads `UI.Context` before the widget is attached or visible; use `this.requestUpdate()` or `wasShown()` instead).
 - **Do not flag**: Internal test helpers or synchronous initialization paths explicitly documented as requiring immediate flush.
 
 **Why.** Calling `this.performUpdate()` or invoking `this.#view(...)` synchronously inside property setters causes redundant synchronous DOM renders when multiple properties change in the same tick. Setters should short-circuit if the value is unchanged and call `this.requestUpdate()`.

@@ -340,6 +340,15 @@ describe('StringUtilities', () => {
       // NFD.
       assert.strictEqual(trimMiddle('caf\u0065\u0301', 4), 'café');
       assert.strictEqual(trimMiddle('caf\u0065\u0301', 3), 'c…é');
+
+      // Printable ASCII even and odd maxLengths.
+      assert.strictEqual(trimMiddle('abcdefghij', 5), 'ab…ij');
+      assert.strictEqual(trimMiddle('abcdefghij', 4), 'ab…j');
+      assert.strictEqual(trimMiddle('abcdefghij', 2), 'a…');
+
+      // ASCII control characters (\r\n is a single grapheme cluster).
+      assert.strictEqual(trimMiddle('a\r\nb\r\nc', 5), 'a\r\nb\r\nc');
+      assert.strictEqual(trimMiddle('a\r\nb\r\nc', 4), 'a\r\n…c');
     });
   });
 
@@ -397,6 +406,11 @@ describe('StringUtilities', () => {
     it('handles devanagari characters', () => {
       assert.strictEqual(trimEndWithMaxLength('देवनागरी', 5), 'देवनागरी');
       assert.strictEqual(trimEndWithMaxLength('देवनागरी', 4), 'देवना…');
+    });
+
+    it('preserves CRLF grapheme clusters in non-printable ASCII strings', () => {
+      assert.strictEqual(trimEndWithMaxLength('a\r\nb\r\nc', 5), 'a\r\nb\r\nc');
+      assert.strictEqual(trimEndWithMaxLength('a\r\nb\r\nc', 3), 'a\r\n…');
     });
   });
 

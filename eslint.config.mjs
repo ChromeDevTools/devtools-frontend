@@ -729,19 +729,14 @@ export default defineConfig([
     },
   },
   {
-    name: 'API test files',
-    files: ['**/*.test.api.ts'],
-    rules: {
-      '@devtools/no-api-test-unit-helpers': 'error',
-    },
-  },
-  {
     name: 'TypeScript test files',
     files: [
       '*.test.ts',
+      '*.test.api.ts',
       '*.docs.ts',
       // This makes the specificity greater than the front-end ts files
       'front_end/**/*.test.ts',
+      'front_end/**/*.test.api.ts',
       'front_end/**/*.docs.ts',
       'test/**/*.ts',
       '**/testing/*.ts',
@@ -818,6 +813,14 @@ export default defineConfig([
           interfaces: ['BDD', 'TDD'],
         },
       ],
+    },
+  },
+  {
+    name: 'API test files',
+    files: ['**/*.test.api.ts'],
+    rules: {
+      '@devtools/no-api-test-unit-helpers': 'error',
+      '@devtools/no-document-body-mutation': 'off',
     },
   },
   {

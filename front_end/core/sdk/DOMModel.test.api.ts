@@ -354,7 +354,7 @@ describe('DOMModel queries, search, frames, markers, and attributes', () => {
        assert.isNotNull(aNode);
 
        aNode.setMarker('attr1', true);
-       assert.strictEqual(aNode.marker('attr1'), true);
+       assert.isTrue(aNode.marker('attr1'));
        assert.deepEqual(
            [
              container.subtreeMarkerCount,
@@ -366,33 +366,33 @@ describe('DOMModel queries, search, frames, markers, and attributes', () => {
 
        child2.setMarker('attr2', 'value');
        assert.strictEqual(child2.marker('attr2'), 'value');
-       assert.strictEqual(aNode.marker('attr1'), true);
+       assert.isTrue(aNode.marker('attr1'));
        assert.deepEqual([container.subtreeMarkerCount, child2.subtreeMarkerCount, aNode.subtreeMarkerCount], [2, 2, 1]);
 
        child2.setMarker('attr1', true);
        assert.strictEqual(child2.marker('attr2'), 'value');
-       assert.strictEqual(child2.marker('attr1'), true);
-       assert.strictEqual(aNode.marker('attr1'), true);
+       assert.isTrue(child2.marker('attr1'));
+       assert.isTrue(aNode.marker('attr1'));
        assert.deepEqual([container.subtreeMarkerCount, child2.subtreeMarkerCount, aNode.subtreeMarkerCount], [3, 3, 1]);
 
        aNode.setMarker('attr1', 'anotherValue');
        child2.setMarker('attr2', 'anotherValue');
        assert.strictEqual(aNode.marker('attr1'), 'anotherValue');
        assert.strictEqual(child2.marker('attr2'), 'anotherValue');
-       assert.strictEqual(child2.marker('attr1'), true);
+       assert.isTrue(child2.marker('attr1'));
        assert.deepEqual([container.subtreeMarkerCount, child2.subtreeMarkerCount, aNode.subtreeMarkerCount], [3, 3, 1]);
 
        aNode.setMarker('attr1', null);
        assert.isNull(aNode.marker('attr1'));
        assert.strictEqual(child2.marker('attr2'), 'anotherValue');
-       assert.strictEqual(child2.marker('attr1'), true);
+       assert.isTrue(child2.marker('attr1'));
        assert.deepEqual([container.subtreeMarkerCount, child2.subtreeMarkerCount, aNode.subtreeMarkerCount], [2, 2, 0]);
 
        const aRemoved = domModel.once(SDK.DOMModel.Events.NodeRemoved);
        await aNode.removeNode();
        await aRemoved;
        assert.strictEqual(child2.marker('attr2'), 'anotherValue');
-       assert.strictEqual(child2.marker('attr1'), true);
+       assert.isTrue(child2.marker('attr1'));
        assert.deepEqual([container.subtreeMarkerCount, child2.subtreeMarkerCount], [2, 2]);
 
        const child2Removed = domModel.once(SDK.DOMModel.Events.NodeRemoved);

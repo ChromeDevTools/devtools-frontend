@@ -36,7 +36,6 @@ async function setupScriptAndPause(
   const pausedPromise = debuggerModel.once(SDK.DebuggerModel.Events.DebuggerPaused);
 
   await inspectedPage.evaluate((src: string) => {
-    // eslint-disable-next-line @devtools/no-imperative-dom-api
     const script = document.createElement('script');
     script.textContent = src;
     document.body.appendChild(script);

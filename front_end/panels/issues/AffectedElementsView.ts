@@ -1,14 +1,43 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
+import type {IssueView} from './IssueView.js';
+
+const {ifDefined} = Directives;
+
+export interface ElementRow {
+  cellElement: Element;
+  backendNodeId?: string;
+  targetId?: string;
+}
+
+export interface ViewInput {
+  rows: ElementRow[];
+}
+
+export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    ${input.rows.map(row => html`
+      <tr jslog=${VisualLogging.tableRow('affected-element')}
+          data-backend-node-id=${ifDefined(row.backendNodeId)}
+          data-target-id=${ifDefined(row.targetId)}>
+        ${row.cellElement}
+      </tr>
+    `)}
+  `, target);
+  // clang-format on
+};
 
 const UIStrings = {
   /**
@@ -19,35 +48,38 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedElementsView extends AffectedResourcesView {
+  readonly #view: View;
+
+  constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
+              view: View = DEFAULT_VIEW) {
+    super(parent, issue, jslogContext);
+    this.#view = view;
+  }
+
   async #appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): Promise<void> {
-    let count = 0;
+    const rows: ElementRow[] = [];
     for (const element of affectedElements) {
-      await this.#appendAffectedElement(element);
-      count++;
+      rows.push(await this.#createAffectedElementRow(element));
     }
-    this.updateAffectedResourceCount(count);
+    this.#view({rows}, undefined, this.affectedResources);
+    this.updateAffectedResourceCount(rows.length);
   }
 
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nElements, {n: count});
   }
 
-  async #appendAffectedElement(element: IssuesManager.Issue.AffectedElement): Promise<void> {
+  async #createAffectedElementRow(element: IssuesManager.Issue.AffectedElement): Promise<ElementRow> {
     const cellElement = await this.createElementCell(element, this.issue.getCategory());
-    const rowElement = document.createElement('tr');
-    rowElement.setAttribute('jslog', `${VisualLogging.tableRow('affected-element')}`);
-    if (element.backendNodeId) {
-      rowElement.setAttribute('data-backend-node-id', String(element.backendNodeId));
-      if (element.target) {
-        rowElement.setAttribute('data-target-id', element.target.id());
-      }
-    }
-    rowElement.appendChild(cellElement);
-    this.affectedResources.appendChild(rowElement);
+    return {
+      cellElement,
+      backendNodeId: element.backendNodeId ? String(element.backendNodeId) : undefined,
+      targetId: element.backendNodeId && element.target ? element.target.id() : undefined,
+    };
   }
 
   update(): void {
-    this.clear();
+    this.requestResolver.clear();
     void this.#appendAffectedElements(this.issue.elements());
   }
 }

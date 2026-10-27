@@ -6,11 +6,21 @@ import("//build/config/devtools.gni")
 import("//build/toolchain/kythe.gni")
 
 declare_args() {
-  # Whether we bundle module entrypoints into a single file or not.
-  # The arg is declared here and not in "devtools_entrypoint.gni" because various
-  # templates need to read it, as it affects the "grd_files" metadata field.
+  # Whether we bundle module entrypoints into a single file or not. The arg is
+  # declared here and not in "devtools_entrypoint.gni" because various templates
+  # need to read it, as it affects the "grd_files" metadata field.
   devtools_bundle = !enable_kythe_annotations
+
+  # TODO(crbug.com/563174810): Whether to use DevTools' bundled Chromium build
+  # templates/deps and copied PDL/JSON files instead of the ToT files from the
+  # downstream Chromium tree (e.g. //testing/test.gni, //chrome, and Chromium's
+  # source PDL/JSON files when generating CDP TypeScript types at build time).
+  devtools_build_with_bundled_chromium_deps = true
 }
+
+assert(
+    devtools_build_with_bundled_chromium_deps || build_with_chromium,
+    "devtools_build_with_bundled_chromium_deps can only be false when build_with_chromium is true")
 
 # Introduce a new variable to make sure that string
 # interpolation keeps on working. If we don't, GN

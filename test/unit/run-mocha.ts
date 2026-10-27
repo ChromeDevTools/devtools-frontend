@@ -12,7 +12,6 @@ if (TestConfig.tests.length === 0) {
   TestConfig.tests.push(
       path.join(GEN_DIR, 'front_end'),
       path.join(GEN_DIR, 'mcp'),
-      path.join(GEN_DIR, 'test', 'harness', 'unit'),
   );
 }
 

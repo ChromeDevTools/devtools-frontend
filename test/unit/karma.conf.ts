@@ -28,7 +28,6 @@ if (TestConfig.tests.length === 0) {
   TestConfig.tests.push(
       path.join(GEN_DIR, 'front_end'),
       path.join(GEN_DIR, 'inspector_overlay'),
-      path.join(GEN_DIR, 'test', 'harness', 'unit'),
   );
 }
 

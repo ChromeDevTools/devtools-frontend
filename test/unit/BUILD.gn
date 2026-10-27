@@ -7,6 +7,11 @@ import("../../scripts/build/ninja/script_test.gni")
 import("../../scripts/build/ninja/vars.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
+if (!devtools_build_with_bundled_chromium_deps) {
+  import("//build/config/cast.gni")
+  import("//build/config/chromeos/args.gni")
+}
+
 ts_library("browser-globals") {
   testonly = true
   sources = [ "browser-globals.ts" ]
@@ -61,7 +66,7 @@ copy_to_gen("context") {
   ]
 }
 
-node_script_test("run_devtools_unit_tests") {
+node_script_test("devtools_unit_tests") {
   script = devtools_location_prepend + "node_modules/karma/bin/karma"
 
   _rebased_karma_conf =
@@ -71,20 +76,31 @@ node_script_test("run_devtools_unit_tests") {
     "@WrappedPath(${_rebased_karma_conf})",
   ]
 
-  if (!build_with_chromium) {
-    data = [ devtools_location_prepend + "third_party/chrome/" ]
-  }
+  data = [
+    devtools_location_prepend + "test/goldens/linux/",
+    devtools_location_prepend + "third_party/image_diff/",
+  ]
 
   data_deps = [
     ":karma",
     "../../front_end:test_inputs",
     "../../front_end:unittests",
+    "../../inspector_overlay:test_inputs",
     "../../inspector_overlay:unittests",
     "../harness",
   ]
+
+  if (!devtools_build_with_bundled_chromium_deps) {
+    if (!is_ios && !is_android && !is_castos && !is_fuchsia &&
+        !is_chromeos_device) {
+      data_deps += [ "//chrome" ]
+    }
+  } else if (!build_with_chromium) {
+    data += [ devtools_location_prepend + "third_party/chrome/" ]
+  }
 }
 
-node_script_test("run_devtools_node_unit_tests") {
+node_script_test("devtools_node_unit_tests") {
   script = "$target_gen_dir/run-mocha.js"
 
   data_deps = [

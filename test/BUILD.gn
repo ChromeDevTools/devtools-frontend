@@ -25,7 +25,7 @@ group("api_tests") {
     "../front_end:api_test_inputs",
     "../front_end:api_tests",
     "api",
-    "api:run_devtools_api_tests",
+    "api:devtools_api_tests",
   ]
 }
 
@@ -34,13 +34,14 @@ group("unittests") {
   deps = [
     "../front_end:test_inputs",
     "../front_end:unittests",
+    "../inspector_overlay:test_inputs",
     "../inspector_overlay:unittests",
     "../mcp:foundation_unittests",
     "shared",
+    "unit:devtools_node_unit_tests",
+    "unit:devtools_unit_tests",
     "unit:karma",
     "unit:mocha",
-    "unit:run_devtools_node_unit_tests",
-    "unit:run_devtools_unit_tests",
   ]
 }
 

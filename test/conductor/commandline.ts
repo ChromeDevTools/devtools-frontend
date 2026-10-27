@@ -172,13 +172,13 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         type: 'number',
         desc: 'Total number of shards to split the tests into.',
         implies: 'shard-number',
-        default: 1,
+        default: Number(process.env['GTEST_TOTAL_SHARDS'] ?? 1),
       })
       .option('shard-number', {
         type: 'number',
         desc: 'The shard number to run (1-based).',
         implies: 'shard-count',
-        default: 1,
+        default: Number(process.env['GTEST_SHARD_INDEX'] ?? 0) + 1,
       })
       .option('shard-bias', {
         type: 'number',

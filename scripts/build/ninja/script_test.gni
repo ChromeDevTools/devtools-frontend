@@ -2,56 +2,61 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/util/generate_wrapper.gni")
 import("./vars.gni")
 
-template("script_test") {
-  assert(defined(invoker.script), "You must define 'script' for script_test")
+if (!devtools_build_with_bundled_chromium_deps) {
+  import("//testing/test.gni")
+} else {
+  import("//build/util/generate_wrapper.gni")
 
-  _shared_data = [ invoker.script ]
-  if (defined(invoker.data)) {
-    _shared_data += invoker.data
-  }
+  template("script_test") {
+    assert(defined(invoker.script), "You must define 'script' for script_test")
 
-  _shared_data_deps = []
-  if (defined(invoker.data_deps)) {
-    _shared_data_deps += invoker.data_deps
-  }
+    _shared_data = [ invoker.script ]
+    if (defined(invoker.data)) {
+      _shared_data += invoker.data
+    }
 
-  if (defined(invoker.wrapper_output_name)) {
-    _wrapper_name = invoker.wrapper_output_name
-  } else {
-    _wrapper_name = target_name
-  }
+    _shared_data_deps = []
+    if (defined(invoker.data_deps)) {
+      _shared_data_deps += invoker.data_deps
+    }
 
-  _executable_args = []
-  if (defined(invoker.args)) {
-    _executable_args += invoker.args
-  }
+    if (defined(invoker.wrapper_output_name)) {
+      _wrapper_name = invoker.wrapper_output_name
+    } else {
+      _wrapper_name = "run_${target_name}"
+    }
 
-  generate_wrapper(target_name) {
-    testonly = true
-    wrapper_script = "${root_build_dir}/bin/${_wrapper_name}"
-    executable = invoker.script
-    executable_args = _executable_args
+    _executable_args = []
+    if (defined(invoker.args)) {
+      _executable_args += invoker.args
+    }
 
-    data = _shared_data
-    data_deps = _shared_data_deps
+    generate_wrapper(target_name) {
+      testonly = true
+      wrapper_script = "${root_build_dir}/bin/${_wrapper_name}"
+      executable = invoker.script
+      executable_args = _executable_args
 
-    forward_variables_from(invoker,
-                           "*",
-                           [
-                             "args",
-                             "data",
-                             "data_deps",
-                             "executable",
-                             "executable_args",
-                             "script",
-                             "testonly",
-                             "wrapper_script",
-                           ])
+      data = _shared_data
+      data_deps = _shared_data_deps
 
-    write_runtime_deps = "${root_build_dir}/${target_name}.runtime_deps"
+      forward_variables_from(invoker,
+                             "*",
+                             [
+                               "args",
+                               "data",
+                               "data_deps",
+                               "executable",
+                               "executable_args",
+                               "script",
+                               "testonly",
+                               "wrapper_script",
+                             ])
+
+      write_runtime_deps = "${root_build_dir}/${target_name}.runtime_deps"
+    }
   }
 }
 
@@ -72,8 +77,10 @@ template("node_script_test") {
     }
 
     data = [
-      devtools_location_prepend + "package.json",
       devtools_location_prepend + "node_modules/",
+      devtools_location_prepend + "package.json",
+      devtools_location_prepend + "scripts/deps/set_lpac_acls.py",
+      devtools_location_prepend + "test/TestExpectations",
       devtools_location_prepend + "third_party/node/",
       invoker.script,
     ]

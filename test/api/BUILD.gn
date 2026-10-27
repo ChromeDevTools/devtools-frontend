@@ -6,6 +6,11 @@ import("../../scripts/build/ninja/script_test.gni")
 import("../../scripts/build/ninja/vars.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
+if (!devtools_build_with_bundled_chromium_deps) {
+  import("//build/config/cast.gni")
+  import("//build/config/chromeos/args.gni")
+}
+
 # API tests import `describe`, `it` and `setup` from mocha-interface.ts and
 # therefore depend on this target. It also acts as an architectural bridge:
 # core/ and models/ cannot depend directly on Foundation due to GN visibility
@@ -34,16 +39,21 @@ node_ts_library("api") {
   ]
 }
 
-node_script_test("run_devtools_api_tests") {
+node_script_test("devtools_api_tests") {
   script = "$target_gen_dir/run-mocha.js"
-
-  if (!build_with_chromium) {
-    data = [ devtools_location_prepend + "third_party/chrome/" ]
-  }
 
   data_deps = [
     ":api",
     "../../front_end:api_test_inputs",
     "../../front_end:api_tests",
   ]
+
+  if (!devtools_build_with_bundled_chromium_deps) {
+    if (!is_ios && !is_android && !is_castos && !is_fuchsia &&
+        !is_chromeos_device) {
+      data_deps += [ "//chrome" ]
+    }
+  } else if (!build_with_chromium) {
+    data = [ devtools_location_prepend + "third_party/chrome/" ]
+  }
 }

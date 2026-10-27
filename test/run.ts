@@ -408,9 +408,9 @@ function main() {
           'chrome',
           'third_party/devtools-frontend/src/test:test',
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
-          'third_party/devtools-frontend/src/test/api:run_devtools_api_tests',
-          'third_party/devtools-frontend/src/test/unit:run_devtools_node_unit_tests',
-          'third_party/devtools-frontend/src/test/unit:run_devtools_unit_tests',
+          'third_party/devtools-frontend/src/test/api:devtools_api_tests',
+          'third_party/devtools-frontend/src/test/unit:devtools_node_unit_tests',
+          'third_party/devtools-frontend/src/test/unit:devtools_unit_tests',
         ] :
         [];
     const {status} = ninja(isAIAgent() ? 'pipe' : 'inherit', ...targets);

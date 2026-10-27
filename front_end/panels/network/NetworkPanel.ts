@@ -362,7 +362,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
   readonly #settingsPaneOutput: SettingsPaneViewOutput = {};
   readonly #groupByFrameSetting: Common.Settings.Setting<boolean>;
   private readonly detailsWidget: UI.Widget.VBox;
-  private readonly closeButtonElement: UI.UIUtils.DevToolsCloseButton;
   private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
   private readonly throttlingSelect: UI.Toolbar.ToolbarItem;
@@ -469,13 +468,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.detailsWidget = new UI.Widget.VBox();
     this.detailsWidget.element.classList.add('network-details-view');
     this.splitWidget.setMainWidget(this.detailsWidget);
-
-    this.closeButtonElement = document.createElement('dt-close-button');
-    this.closeButtonElement.addEventListener('click', async () => {
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction('network.hide-request-details');
-      await action.execute();
-    }, false);
-    this.closeButtonElement.style.margin = '0 5px';
 
     this.#networkLogShowOverviewSetting.addChangeListener(this.#toggleShowOverview, this);
     this.#networkLogLargeRowsSetting.addChangeListener(this.#toggleLargerRequests, this);
@@ -900,7 +892,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
       return;
     }
     this.networkItemView = new NetworkItemView(this.currentRequest, this.networkLogView.timeCalculator(), initialTab);
-    this.networkItemView.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(this.closeButtonElement));
     this.networkItemView.show(this.detailsWidget.element);
     this.splitWidget.showBoth();
     return this.networkItemView;

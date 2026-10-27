@@ -1,14 +1,19 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
-import * as uiI18n from '../../../ui/i18n/i18n.js';
-import {Link} from '../../../ui/kit/kit.js';
+import {
+  html,
+  i18nTemplate as unboundI18nTemplate,
+  nothing,
+  render,
+} from '../../../ui/lit/lit.js';
 
 // *********************************************************************
 // At the moment this file consists of helpers to aid in the rendering
@@ -18,107 +23,125 @@ import {Link} from '../../../ui/kit/kit.js';
 
 const UIStrings = {
   /**
-   * @description Text in the Performance panel for a forced style and layout calculation of elements in a page.
+   * @description Text in the Performance panel for a forced style and layout
+   * calculation of elements in a page.
    */
   forcedReflow: 'Forced reflow',
   /**
-   * @description Warning message indicating that an event is likely a performance bottleneck in the Performance panel.
+   * @description Warning message indicating that an event is likely a
+   * performance bottleneck in the Performance panel.
    * @example {Forced reflow} PH1
    */
   sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck',
   /**
-   * @description Warning message in the Performance panel for an idle callback function that took longer to execute than its predefined deadline.
+   * @description Warning message in the Performance panel for an idle callback
+   * function that took longer to execute than its predefined deadline.
    * @example {10ms} PH1
    */
   idleCallbackExecutionExtended: 'Idle callback execution extended beyond deadline by {PH1}',
   /**
-   * @description Warning message in the Performance panel describing how long a task took.
+   * @description Warning message in the Performance panel describing how long a
+   * task took.
    * @example {Task} PH1
    * @example {10ms} PH2
    */
   sTookS: '{PH1} took {PH2}',
   /**
-   * @description Label in the Performance panel for a task that took a long time.
+   * @description Label in the Performance panel for a task that took a long
+   * time.
    */
   longTask: 'Long task',
   /**
-   * @description Label in the Performance panel for an interaction that took a long time.
+   * @description Label in the Performance panel for an interaction that took a
+   * long time.
    */
   longInteractionINP: 'Long interaction',
   /**
-   * @description Warning message in the Performance panel indicating that an interaction caused poor responsiveness.
+   * @description Warning message in the Performance panel indicating that an
+   * interaction caused poor responsiveness.
    * @example {Long interaction} PH1
    */
   sIsLikelyPoorPageResponsiveness: '{PH1} indicates poor page responsiveness',
   /**
-   * @description Label for the WebSocket sub-protocol in the event details view of the Performance panel.
+   * @description Label for the WebSocket sub-protocol in the event details view
+   * of the Performance panel.
    */
   websocketProtocol: 'WebSocket protocol',
   /**
-   * @description Details text indicating how many bytes were transferred in a WebSocket message in the Performance panel.
+   * @description Details text indicating how many bytes were transferred in a
+   * WebSocket message in the Performance panel.
    * @example {1024} PH1
    */
   webSocketBytes: '{PH1} byte(s)',
   /**
-   * @description Details label indicating the data length of a WebSocket message in the Performance panel.
+   * @description Details label indicating the data length of a WebSocket
+   * message in the Performance panel.
    */
   webSocketDataLength: 'Data length',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nTemplate = unboundI18nTemplate.bind(undefined, str_);
 
-export function buildWarningElementsForEvent(
-    event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): HTMLSpanElement[] {
+interface WarningViewInput {
+  event: Trace.Types.Events.Event;
+  warnings: Trace.Handlers.ModelHandlers.Warnings.Warning[];
+}
+
+function renderWarningElements(input: WarningViewInput, _output: undefined, target: DocumentFragment): void {
+  const duration = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(input.event.dur || 0));
+  render(html`${input.warnings.map(warning => {
+           switch (warning) {
+             case 'FORCED_REFLOW': {
+               const forcedReflowLink = html`<devtools-link
+                href="https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts"
+                jslogcontext="forced-reflow">${i18nString(UIStrings.forcedReflow)}</devtools-link>`;
+               return html`<span>${
+                   i18nTemplate(UIStrings.sIsALikelyPerformanceBottleneck, {PH1: forcedReflowLink})}</span>`;
+             }
+             case 'IDLE_CALLBACK_OVER_TIME': {
+               if (!Trace.Types.Events.isFireIdleCallback(input.event)) {
+                 return nothing;
+               }
+               const exceededMs = i18n.TimeUtilities.millisToString(
+                   (duration || 0) - input.event.args.data['allottedMilliseconds'], true);
+               return html`<span>${i18nString(UIStrings.idleCallbackExecutionExtended, {PH1: exceededMs})}</span>`;
+             }
+             case 'LONG_TASK': {
+               const longTaskLink = html`<devtools-link
+                href="https://web.dev/optimize-long-tasks/"
+                jslogcontext="long-tasks">${i18nString(UIStrings.longTask)}</devtools-link>`;
+               return html`<span>${i18nTemplate(UIStrings.sTookS, {
+                 PH1: longTaskLink,
+                 PH2: i18n.TimeUtilities.millisToString((duration || 0), true),
+               })}</span>`;
+             }
+             case 'LONG_INTERACTION': {
+               const longInteractionINPLink = html`<devtools-link
+                href="https://web.dev/inp"
+                jslogcontext="long-interaction">${i18nString(UIStrings.longInteractionINP)}</devtools-link>`;
+               return html`<span>${i18nTemplate(UIStrings.sIsLikelyPoorPageResponsiveness, {
+                 PH1: longInteractionINPLink,
+               })}</span>`;
+             }
+             default: {
+               Platform.assertNever(warning, `Unhandled warning type ${warning}`);
+             }
+           }
+         })}`,
+         target);
+}
+
+export function buildWarningElementsForEvent(event: Trace.Types.Events.Event,
+                                             parsedTrace: Trace.TraceModel.ParsedTrace): HTMLSpanElement[] {
   const warnings = parsedTrace.data.Warnings.perEvent.get(event);
-  const warningElements: HTMLSpanElement[] = [];
   if (!warnings) {
-    return warningElements;
+    return [];
   }
-  for (const warning of warnings) {
-    const duration = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(event.dur || 0));
-    const span = document.createElement('span');
-    switch (warning) {
-      case 'FORCED_REFLOW': {
-        const forcedReflowLink = Link.create(
-            'https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
-            i18nString(UIStrings.forcedReflow), undefined, 'forced-reflow');
-        span.appendChild(
-            uiI18n.getFormatLocalizedString(str_, UIStrings.sIsALikelyPerformanceBottleneck, {PH1: forcedReflowLink}));
-        break;
-      }
-      case 'IDLE_CALLBACK_OVER_TIME': {
-        if (!Trace.Types.Events.isFireIdleCallback(event)) {
-          break;
-        }
-        const exceededMs =
-            i18n.TimeUtilities.millisToString((duration || 0) - event.args.data['allottedMilliseconds'], true);
-        span.textContent = i18nString(UIStrings.idleCallbackExecutionExtended, {PH1: exceededMs});
-        break;
-      }
-
-      case 'LONG_TASK': {
-        const longTaskLink = Link.create(
-            'https://web.dev/optimize-long-tasks/', i18nString(UIStrings.longTask), undefined, 'long-tasks');
-        span.appendChild(uiI18n.getFormatLocalizedString(
-            str_, UIStrings.sTookS,
-            {PH1: longTaskLink, PH2: i18n.TimeUtilities.millisToString((duration || 0), true)}));
-        break;
-      }
-      case 'LONG_INTERACTION': {
-        const longInteractionINPLink =
-            Link.create('https://web.dev/inp', i18nString(UIStrings.longInteractionINP), undefined, 'long-interaction');
-        span.appendChild(uiI18n.getFormatLocalizedString(
-            str_, UIStrings.sIsLikelyPoorPageResponsiveness, {PH1: longInteractionINPLink}));
-        break;
-      }
-      default: {
-        Platform.assertNever(warning, `Unhandled warning type ${warning}`);
-      }
-    }
-    warningElements.push(span);
-  }
-  return warningElements;
+  const fragment = document.createDocumentFragment();
+  renderWarningElements({event, warnings}, undefined, fragment);
+  return Array.from(fragment.children).filter((child): child is HTMLSpanElement => child instanceof HTMLSpanElement);
 }
 
 export interface DetailRow {
@@ -132,22 +155,31 @@ export function buildRowsForWebSocketEvent(
 
   const initiator = parsedTrace.data.Initiators.eventToInitiator.get(event);
   if (initiator && Trace.Types.Events.isWebSocketCreate(initiator)) {
-    // The initiator will be a WebSocketCreate, but this check helps TypeScript to understand.
+    // The initiator will be a WebSocketCreate, but this check helps TypeScript
+    // to understand.
     rows.push({key: i18n.i18n.lockedString('URL'), value: initiator.args.data.url});
     if (initiator.args.data.webSocketProtocol) {
-      rows.push({key: i18nString(UIStrings.websocketProtocol), value: initiator.args.data.webSocketProtocol});
+      rows.push({
+        key: i18nString(UIStrings.websocketProtocol),
+        value: initiator.args.data.webSocketProtocol,
+      });
     }
   } else if (Trace.Types.Events.isWebSocketCreate(event)) {
     rows.push({key: i18n.i18n.lockedString('URL'), value: event.args.data.url});
     if (event.args.data.webSocketProtocol) {
-      rows.push({key: i18nString(UIStrings.websocketProtocol), value: event.args.data.webSocketProtocol});
+      rows.push({
+        key: i18nString(UIStrings.websocketProtocol),
+        value: event.args.data.webSocketProtocol,
+      });
     }
   }
   if (Trace.Types.Events.isWebSocketTransfer(event)) {
     if (event.args.data.dataLength) {
       rows.push({
         key: i18nString(UIStrings.webSocketDataLength),
-        value: `${i18nString(UIStrings.webSocketBytes, {PH1: event.args.data.dataLength})}`,
+        value: `${i18nString(UIStrings.webSocketBytes, {
+          PH1: event.args.data.dataLength,
+        })}`,
       });
     }
   }

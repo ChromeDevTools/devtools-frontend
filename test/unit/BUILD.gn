@@ -74,6 +74,7 @@ node_script_test("devtools_unit_tests") {
   args = [
     "start",
     "@WrappedPath(${_rebased_karma_conf})",
+    "--",
   ]
 
   data = [

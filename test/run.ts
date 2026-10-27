@@ -352,6 +352,9 @@ class ScriptTests extends Tests {
 
 class KarmaTests extends Tests {
   #getWrapper(): string|undefined {
+    if (options['auto-watch']) {
+      return undefined;
+    }
     const wrapper = path.join(BUILD_ROOT, 'bin', 'run_devtools_unit_tests');
     return fs.existsSync(wrapper) ? wrapper : undefined;
   }
@@ -366,10 +369,7 @@ class KarmaTests extends Tests {
 
   override run(tests: TestId[]) {
     if (this.#getWrapper()) {
-      return super.run(tests, [
-        '--log-level',
-        logLevel,
-      ]);
+      return super.run(tests, []);
     }
     return super.run(tests, [
       path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'),

@@ -513,8 +513,15 @@ testsEntrypointMiddleware.$inject = ['config'];
 export default function(config: any): void {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
   const devToolsRoot = path.relative(CHECKOUT_ROOT, SOURCE_ROOT);
+  let logLevel = config.LOG_ERROR;
+  if (TestConfig.verbose === 1) {
+    logLevel = config.LOG_INFO;
+  } else if (TestConfig.verbose >= 2) {
+    logLevel = config.LOG_DEBUG;
+  }
   const options = {
     basePath: CHECKOUT_ROOT,
+    logLevel,
     autoWatchBatchDelay: 1000,
     failOnEmptyTestSuite: false,
 

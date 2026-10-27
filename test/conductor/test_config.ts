@@ -23,7 +23,12 @@ import {
 } from './paths.js';
 import {shardFilter} from './sharding.js';
 
-const argv = yargs(expandResponseFiles(hideBin(process.argv))).help(false).parseSync()['_'] as string[];
+function sliceArrayFromElement(array: string[], element: string) {
+  const index = array.lastIndexOf(element);
+  return index < 0 ? array : array.slice(index + 1);
+}
+
+const argv = sliceArrayFromElement(expandResponseFiles(hideBin(process.argv)), '--');
 
 const options = commandLineArgs(yargs(argv)).help(false).parseSync();
 interface Config {
@@ -53,11 +58,6 @@ interface Config {
   forceScreenshots: boolean;
   otaUsername?: string;
   otaPassword?: string;
-}
-
-function sliceArrayFromElement(array: string[], element: string) {
-  const index = array.lastIndexOf(element);
-  return index < 0 ? array : array.slice(index + 1);
 }
 
 const diffBehaviors = asArray(options['on-diff']);

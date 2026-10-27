@@ -505,7 +505,7 @@ export function getSecurityStateIconForOverview(
   return createIcon(iconName, className);
 }
 
-function renderHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): TemplateResult {
+export function renderHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): TemplateResult {
   const schemeSeparator = '://';
   const index = url.indexOf(schemeSeparator);
 
@@ -523,13 +523,6 @@ function renderHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityStat
       <span class="url-scheme-separator">${schemeSeparator}</span>
       <span>${content}</span>
     </span>`;
-}
-
-export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): Element {
-  const fragment = document.createDocumentFragment();
-  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-  render(renderHighlightedUrl(url, securityState), fragment);
-  return fragment.firstElementChild as Element;
 }
 
 export interface ViewInput {

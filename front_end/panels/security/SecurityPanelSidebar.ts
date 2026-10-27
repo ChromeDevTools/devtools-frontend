@@ -11,10 +11,10 @@ import {Directives, html, nothing, render, type TemplateResult} from '../../ui/l
 
 import lockIconStyles from './lockIcon.css.js';
 import {
-  createHighlightedUrl,
   getSecurityStateIconForDetailedView,
   getSecurityStateIconForOverview,
   OriginGroup,
+  renderHighlightedUrl,
 } from './SecurityPanel.js';
 import sidebarStyles from './sidebar.css.js';
 
@@ -86,7 +86,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                 output.onShowOrigin(origin);
               }}>
             ${renderIcon(icon)}
-            ${createHighlightedUrl(origin, state)}
+            ${renderHighlightedUrl(origin, state)}
           </li>
         `;
         // clang-format on

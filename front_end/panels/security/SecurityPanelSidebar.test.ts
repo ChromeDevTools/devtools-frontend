@@ -64,6 +64,30 @@ describeWithEnvironment('SecurityPanelSidebar', () => {
                     3);
   });
 
+  it('updates highlighted URL DOM elements in place when security state changes within a group', async () => {
+    const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
+    renderElementIntoDOM(sidebar);
+
+    const origin = urlString`https://example.com`;
+    sidebar.setMainOrigin(origin);
+    sidebar.addOrigin(origin, Protocol.Security.SecurityState.Secure);
+    await sidebar.updateComplete;
+
+    const template = sidebar.contentElement.querySelector('devtools-tree')?.querySelector('template');
+    assert.exists(template);
+
+    const highlightedUrl = template.content.querySelector('.highlighted-url');
+    assert.exists(highlightedUrl);
+    assert.exists(highlightedUrl.querySelector('.url-scheme-secure'));
+
+    sidebar.updateOrigin(origin, Protocol.Security.SecurityState.Insecure);
+    await sidebar.updateComplete;
+
+    const newHighlightedUrl = template.content.querySelector('.highlighted-url');
+    assert.strictEqual(newHighlightedUrl, highlightedUrl);
+    assert.exists(highlightedUrl.querySelector('.url-scheme-insecure'));
+  });
+
   it('handles main origin assignment and updates', async () => {
     const sidebar = new Security.SecurityPanelSidebar.SecurityPanelSidebar();
     renderElementIntoDOM(sidebar);

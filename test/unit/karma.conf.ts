@@ -371,6 +371,13 @@ const TestExpectationsReporter = function(this: any, baseReporterDecorator: any)
       this.write(`\n[TestExpectations] ${unexpectedPassesCount} unexpected passes! Overriding exit code to 1.\n`);
       _results.exitCode = 1;
     }
+
+    if (TestConfig.isolatedScriptTestOutput) {
+      ResultsDb.writeIsolatedScriptTestOutput(TestConfig.isolatedScriptTestOutput, {
+        numFailures: Math.max(0, unexpectedFailures) + unexpectedPassesCount,
+        interrupted: Boolean(_results.disconnected || _results.error),
+      });
+    }
   };
 };
 TestExpectationsReporter.$inject = ['baseReporterDecorator'];

@@ -58,6 +58,7 @@ interface Config {
   forceScreenshots: boolean;
   otaUsername?: string;
   otaPassword?: string;
+  isolatedScriptTestOutput?: string;
 }
 
 const diffBehaviors = asArray(options['on-diff']);
@@ -150,6 +151,11 @@ export function isAIAgent(): boolean {
 }
 
 const getDefaultArtifactDir = () => {
+  if (options['isolated-script-test-output']) {
+    const outDir = path.dirname(path.resolve(options['isolated-script-test-output']));
+    fs.mkdirSync(outDir, {recursive: true});
+    return outDir;
+  }
   const artifactsPath = path.join(BUILD_ROOT, 'artifacts');
   if (fs.existsSync(BUILD_ROOT) && !fs.existsSync(artifactsPath)) {
     fs.mkdirSync(artifactsPath, {recursive: true});
@@ -187,6 +193,7 @@ export const TestConfig: Config = {
   forceScreenshots: Boolean(options['force-screenshots']),
   otaUsername: options['ota-username'],
   otaPassword: options['ota-password'],
+  isolatedScriptTestOutput: options['isolated-script-test-output'],
 };
 
 export function shuffleTests(tests: string[]): string[] {

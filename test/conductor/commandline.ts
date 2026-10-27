@@ -85,6 +85,8 @@ export interface CommandLineOptions {
   'force-screenshots': boolean;
   'ota-username'?: string;
   'ota-password'?: string;
+  'isolated-script-test-output'?: string;
+  'isolated-script-test-perf-output'?: string;
 }
 
 export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>): Yargs.Argv<T&CommandLineOptions> {
@@ -205,5 +207,13 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       .option('ota-password', {
         type: 'string',
         desc: 'Test account password used for Ai authentication logic in testing.',
+      })
+      .option('isolated-script-test-output', {
+        type: 'string',
+        desc: 'Path to write JSON Test Results Format v3 output to (used by Chromium Swarming).',
+      })
+      .option('isolated-script-test-perf-output', {
+        type: 'string',
+        desc: 'Path to write perf output to (passed by Chromium Swarming, unused by functional tests).',
       });
 }

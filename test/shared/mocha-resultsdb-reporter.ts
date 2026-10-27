@@ -219,6 +219,12 @@ export class ResultsDbReporter extends Mocha.reporters.Base {
       process.exitCode = 1;
     }
 
+    if (TestConfig.isolatedScriptTestOutput) {
+      ResultsDb.writeIsolatedScriptTestOutput(TestConfig.isolatedScriptTestOutput, {
+        numFailures: Math.max(0, unexpectedFailures) + this.unexpectedPassesCount,
+      });
+    }
+
     const localResults = this.localResultsPath();
     if (this.failures.length > 0 && localResults) {
       console.error(`Results have been written to file://${localResults}`);

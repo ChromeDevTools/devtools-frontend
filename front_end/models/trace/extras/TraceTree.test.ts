@@ -457,6 +457,255 @@ describe('TraceTree', () => {
       assert.deepEqual(
           functionNames, ['fetch', 'getTime', 'wasm-to-js::l-imports.getTime', 'mainWasm', 'js-to-wasm::i']);
     });
+
+    function createMockNetworkEvents(): Trace.Types.Events.Event[] {
+      const rrrCached: Trace.Types.Events.ResourceReceiveResponse = {
+        name: 'ResourceReceiveResponse',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(0),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-cached',
+            fromCache: true,
+            encodedDataLength: 0,
+            fromServiceWorker: false,
+            mimeType: 'text/html',
+            statusCode: 200,
+          },
+        },
+      };
+
+      const rrrUncached: Trace.Types.Events.ResourceReceiveResponse = {
+        name: 'ResourceReceiveResponse',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(0),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-uncached',
+            fromCache: false,
+            encodedDataLength: 0,
+            fromServiceWorker: false,
+            mimeType: 'text/html',
+            statusCode: 200,
+          },
+        },
+      };
+
+      const synthCached1: Trace.Types.Events.Event = {
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        ph: Trace.Types.Events.Phase.COMPLETE,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(55_000),
+        dur: Trace.Types.Timing.Micro(5_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        args: {
+          data: {
+            requestId: 'req-cached',
+          },
+        },
+      };
+
+      const synthUncached1: Trace.Types.Events.Event = {
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        ph: Trace.Types.Events.Phase.COMPLETE,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(60_000),
+        dur: Trace.Types.Timing.Micro(5_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        args: {
+          data: {
+            requestId: 'req-uncached',
+          },
+        },
+      };
+
+      const rrdCached: Trace.Types.Events.ResourceReceivedData = {
+        name: 'ResourceReceivedData',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(70_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-cached',
+            encodedDataLength: 300,
+            frame: 'frame-1',
+          },
+        },
+      };
+
+      const rrdUncached1: Trace.Types.Events.ResourceReceivedData = {
+        name: 'ResourceReceivedData',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(70_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-uncached',
+            encodedDataLength: 200,
+            frame: 'frame-1',
+          },
+        },
+      };
+
+      const synthCached2: Trace.Types.Events.Event = {
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        ph: Trace.Types.Events.Phase.COMPLETE,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(73_000),
+        dur: Trace.Types.Timing.Micro(1_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        args: {
+          data: {
+            requestId: 'req-cached',
+          },
+        },
+      };
+
+      const rrdUncached2: Trace.Types.Events.ResourceReceivedData = {
+        name: 'ResourceReceivedData',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(75_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-uncached',
+            encodedDataLength: 300,
+            frame: 'frame-1',
+          },
+        },
+      };
+
+      const finishCached: Trace.Types.Events.ResourceFinish = {
+        name: 'ResourceFinish',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(80_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-cached',
+            encodedDataLength: 0,
+            decodedBodyLength: 300,
+            didFail: false,
+          },
+        },
+      };
+
+      const finishUncached: Trace.Types.Events.ResourceFinish = {
+        name: 'ResourceFinish',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        cat: 'devtools.timeline',
+        ts: Trace.Types.Timing.Micro(80_000),
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        s: Trace.Types.Events.Scope.THREAD,
+        args: {
+          data: {
+            requestId: 'req-uncached',
+            encodedDataLength: 0,
+            decodedBodyLength: 500,
+            didFail: false,
+          },
+        },
+      };
+
+      return [
+        rrrCached,
+        rrrUncached,
+        synthCached1,
+        synthUncached1,
+        rrdCached,
+        rrdUncached1,
+        synthCached2,
+        rrdUncached2,
+        finishCached,
+        finishUncached,
+      ];
+    }
+
+    it('sets transferSize to 0 for cache hits and accumulates encodedDataLength for uncached requests', () => {
+      const events = createMockNetworkEvents();
+
+      // Window starts after ResourceReceiveResponse (ts 0) to ensure that events before startTime are still indexed for cache hits.
+      const root = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(50),
+        endTime: Trace.Types.Timing.Milli(100),
+        calculateTransferSize: true,
+      });
+
+      const rootChildren = root.children();
+      const cachedNode = rootChildren.get('req:req-cached');
+      const uncachedNode = rootChildren.get('req:req-uncached');
+
+      assert.isDefined(cachedNode);
+      assert.isDefined(uncachedNode);
+      assert.strictEqual(cachedNode?.transferSize, 0);
+      assert.strictEqual(uncachedNode?.transferSize, 500);
+    });
+
+    it('correctly calculates transfer sizes across multiple sub-windows with memoized cache hits', () => {
+      const events = createMockNetworkEvents();
+
+      // Window 1: Covers all data events (70ms - 80ms).
+      const root1 = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(50),
+        endTime: Trace.Types.Timing.Milli(100),
+        calculateTransferSize: true,
+      });
+      const root1Children = root1.children();
+      assert.strictEqual(root1Children.get('req:req-cached')?.transferSize, 0);
+      assert.strictEqual(root1Children.get('req:req-uncached')?.transferSize, 500);
+
+      // Window 2: Sub-window covering only the second chunk and finish (72ms - 85ms).
+      const root2 = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(72),
+        endTime: Trace.Types.Timing.Milli(85),
+        calculateTransferSize: true,
+      });
+      const root2Children = root2.children();
+      assert.strictEqual(root2Children.get('req:req-cached')?.transferSize, 0);
+      assert.strictEqual(root2Children.get('req:req-uncached')?.transferSize, 300);
+
+      // Window 3: Full window rebuild reusing the same events array.
+      const root3 = new Trace.Extras.TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200),
+        calculateTransferSize: true,
+      });
+      const root3Children = root3.children();
+      assert.strictEqual(root3Children.get('req:req-cached')?.transferSize, 0);
+      assert.strictEqual(root3Children.get('req:req-uncached')?.transferSize, 500);
+    });
   });
 
   describe('generateEventID', () => {

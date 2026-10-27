@@ -39,27 +39,28 @@ describeWithEnvironment('BackendLinkingSettingsTab presenter', () => {
 
     assert.deepEqual(view.input.rules, []);
 
-    // 1. onAddRule validity checks: invalid rules must not be added.
-    view.input.onAddRule({urlPattern: '', targetUrlTemplate: 'https://apm.example.com/${traceId}', label: 'Rule'});
-    assert.lengthOf(setting.get(), 0);
+    // 1. onAddRule validity checks: invalid rules are shown in the view for validation UI, but not saved to the setting.
+    const invalidRules: NetworkForward.BackendLinking.BackendLinkingRule[] = [
+      {urlPattern: '', targetUrlTemplate: 'https://apm.example.com/${traceId}', label: 'Rule'},
+      {urlPattern: 'ht tp://invalid', targetUrlTemplate: 'https://apm.example.com/${traceId}', label: 'Rule'},
+      {urlPattern: 'https://example.com/*', targetUrlTemplate: '', label: 'Rule'},
+      {
+        urlPattern: 'https://example.com/*',
+        targetUrlTemplate: 'https://apm.example.com/no-placeholder',
+        label: 'Rule',
+      },
+      {urlPattern: 'https://example.com/*', targetUrlTemplate: 'https://apm.example.com/${traceId}', label: ''},
+    ];
+    for (const invalidRule of invalidRules) {
+      view.input.onAddRule(invalidRule);
+      assert.lengthOf(setting.get(), 0);
+      await view.nextInput;
+      assert.deepEqual(view.input.rules, [invalidRule]);
 
-    view.input.onAddRule(
-        {urlPattern: 'ht tp://invalid', targetUrlTemplate: 'https://apm.example.com/${traceId}', label: 'Rule'});
-    assert.lengthOf(setting.get(), 0);
-
-    view.input.onAddRule({urlPattern: 'https://example.com/*', targetUrlTemplate: '', label: 'Rule'});
-    assert.lengthOf(setting.get(), 0);
-
-    view.input.onAddRule({
-      urlPattern: 'https://example.com/*',
-      targetUrlTemplate: 'https://apm.example.com/no-placeholder',
-      label: 'Rule',
-    });
-    assert.lengthOf(setting.get(), 0);
-
-    view.input.onAddRule(
-        {urlPattern: 'https://example.com/*', targetUrlTemplate: 'https://apm.example.com/${traceId}', label: ''});
-    assert.lengthOf(setting.get(), 0);
+      view.input.onDeleteRule(invalidRule);
+      await view.nextInput;
+      assert.deepEqual(view.input.rules, []);
+    }
 
     // 2. onAddRule with a valid rule adds the rule.
     const validRule: NetworkForward.BackendLinking.BackendLinkingRule = {
@@ -72,29 +73,23 @@ describeWithEnvironment('BackendLinkingSettingsTab presenter', () => {
     await view.nextInput;
     assert.deepEqual(view.input.rules, [validRule]);
 
-    // 3. onUpdateRule validity checks: invalid updates must be rejected.
-    view.input.onUpdateRule(validRule, {...validRule, urlPattern: ''});
-    assert.deepEqual(setting.get(), [validRule]);
+    // 3. onUpdateRule validity checks: invalid updates are shown in the view, but not saved to the setting.
+    let currentRule = validRule;
+    for (const invalidUpdate of invalidRules) {
+      view.input.onUpdateRule(currentRule, invalidUpdate);
+      assert.lengthOf(setting.get(), 0);
+      await view.nextInput;
+      assert.deepEqual(view.input.rules, [invalidUpdate]);
+      currentRule = invalidUpdate;
+    }
 
-    view.input.onUpdateRule(validRule, {...validRule, urlPattern: 'ht tp://invalid'});
-    assert.deepEqual(setting.get(), [validRule]);
-
-    view.input.onUpdateRule(validRule, {...validRule, targetUrlTemplate: ''});
-    assert.deepEqual(setting.get(), [validRule]);
-
-    view.input.onUpdateRule(validRule, {...validRule, targetUrlTemplate: 'https://apm.example.com/no-placeholder'});
-    assert.deepEqual(setting.get(), [validRule]);
-
-    view.input.onUpdateRule(validRule, {...validRule, label: ''});
-    assert.deepEqual(setting.get(), [validRule]);
-
-    // 4. onUpdateRule with a valid rule updates the rule.
+    // 4. onUpdateRule with a valid rule updates the rule and saves it to the setting.
     const updatedRule: NetworkForward.BackendLinking.BackendLinkingRule = {
       urlPattern: 'https://example.org/api/*',
       targetUrlTemplate: 'https://apm.example.org/trace/${spanId}',
       label: 'Updated Label',
     };
-    view.input.onUpdateRule(validRule, updatedRule);
+    view.input.onUpdateRule(currentRule, updatedRule);
     assert.deepEqual(setting.get(), [updatedRule]);
     await view.nextInput;
     assert.deepEqual(view.input.rules, [updatedRule]);

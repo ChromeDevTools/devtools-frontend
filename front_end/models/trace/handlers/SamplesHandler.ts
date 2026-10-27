@@ -109,7 +109,8 @@ function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): vo
           if (threadId === undefined) {
             return;
           }
-          const ts = Helpers.Timing.milliToMicro(Types.Timing.Milli(timeStampMilliseconds));
+          const ts =
+              Types.Timing.Micro(Math.round(Helpers.Timing.milliToMicro(Types.Timing.Milli(timeStampMilliseconds))));
           const nodeId = node.id as Helpers.TreeHelpers.TraceEntryNodeId;
 
           const profileCall =
@@ -124,9 +125,8 @@ function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): vo
             finalizedData.profileTree?.roots.add(traceEntryNode);
           }
         }
-        function closeFrameCallback(
-            _depth: number, _node: CPUProfile.ProfileTreeModel.ProfileNode, _sampleIndex: number,
-            _timeStampMillis: number, durMs: number, selfTimeMs: number): void {
+        function closeFrameCallback(_depth: number, _node: CPUProfile.ProfileTreeModel.ProfileNode, sampleIndex: number,
+                                    _timeStampMillis: number, _durMs: number, _selfTimeMs: number): void {
           const profileCallIndex = indexStack.pop();
           const profileCall = profileCallIndex !== undefined && finalizedData.profileCalls[profileCallIndex];
           if (!profileCall) {
@@ -138,8 +138,11 @@ function parseCPUProfileData(parseOptions: Types.Configuration.ParseOptions): vo
               tid === undefined || traceEntryNode === undefined) {
             return;
           }
-          const dur = Helpers.Timing.milliToMicro(Types.Timing.Milli(durMs));
-          const selfTime = Helpers.Timing.milliToMicro(Types.Timing.Milli(selfTimeMs));
+          const endTimeMs = profileModel.timestamps[sampleIndex] ?? profileModel.profileEndTime;
+          const endTime = Types.Timing.Micro(Math.round(Helpers.Timing.milliToMicro(Types.Timing.Milli(endTimeMs))));
+          const dur = Types.Timing.Micro(endTime - ts);
+          const childrenDur = traceEntryNode.children.reduce((sum, child) => sum + (child.entry.dur ?? 0), 0);
+          const selfTime = Types.Timing.Micro(dur - childrenDur);
           profileCall.dur = dur;
           traceEntryNode.selfTime = selfTime;
 

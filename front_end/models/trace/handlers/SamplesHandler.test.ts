@@ -248,6 +248,31 @@ describe('SamplesHandler', function() {
       });
       assert.deepEqual(callsTestData, expectedResult);
     });
+
+    it('computes exact microsecond durations so adjacent CPU profile frames do not overlap', async function() {
+      const {profilesInProcess, entryToNode} =
+          await handleEventsFromCpuProfile(this, 'node-fibonacci-website.cpuprofile.gz');
+      const profileData = profilesInProcess.get(Trace.Types.Events.ProcessID(1))?.get(Trace.Types.Events.ThreadID(1));
+      assert.isOk(profileData);
+      assert.isNotEmpty(profileData.profileCalls);
+      for (const call of profileData.profileCalls) {
+        const dur = call.dur ?? 0;
+        assert.strictEqual(dur, Math.round(dur));
+        const node = entryToNode.get(call);
+        assert.isOk(node);
+        assert.isDefined(node.selfTime);
+        assert.isAtLeast(node.selfTime, 0);
+        assert.isAtMost(node.selfTime, dur);
+        for (let i = 0; i < node.children.length; i++) {
+          const child = node.children[i].entry;
+          assert.isAtLeast(child.ts, call.ts);
+          assert.isAtMost(child.ts + (child.dur ?? 0), call.ts + dur);
+          if (i + 1 < node.children.length) {
+            assert.isAtMost(child.ts + (child.dur ?? 0), node.children[i + 1].entry.ts);
+          }
+        }
+      }
+    });
   });
   describe('CPU Profile building', () => {
     it('generates a CPU profile from a trace file', async () => {

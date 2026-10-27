@@ -950,8 +950,17 @@ describe('StringUtilities', () => {
       assert.strictEqual(escapeCsvCell('+1+1'), '\'+1+1');
       assert.strictEqual(escapeCsvCell('@SUM(1)'), '\'@SUM(1)');
       assert.strictEqual(escapeCsvCell('-2+3+cmd|\' /C calc\'!A0'), '\'-2+3+cmd|\' /C calc\'!A0');
-      assert.strictEqual(escapeCsvCell('\tvalue'), '\'\tvalue');
+      assert.strictEqual(escapeCsvCell('\tvalue'), '"\'\tvalue"');
       assert.strictEqual(escapeCsvCell('\rvalue'), '"\'\rvalue"');
+    });
+
+    it('quotes cells containing alternate column separators', () => {
+      assert.strictEqual(escapeCsvCell('a;b'), '"a;b"');
+      assert.strictEqual(escapeCsvCell('a\tb'), '"a\tb"');
+      // Without quotes, a `;` or tab separator would start a new cell with `=`.
+      assert.strictEqual(escapeCsvCell('x;=1+1'), '"x;=1+1"');
+      assert.strictEqual(escapeCsvCell('x\t=1+1'), '"x\t=1+1"');
+      assert.strictEqual(escapeCsvCell('=1;2'), '"\'=1;2"');
     });
 
     it('neutralizes formulas hidden behind leading whitespace', () => {

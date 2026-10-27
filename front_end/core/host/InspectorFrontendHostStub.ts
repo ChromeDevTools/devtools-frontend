@@ -161,7 +161,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     void navigator.clipboard.writeText(text);
   }
 
-  openInNewTab(url: Platform.DevToolsPath.UrlString): void {
+  openInNewTab(url: Platform.DevToolsPath.UrlString, _initiatorId?: string): void {
     if (Common.ParsedURL.schemeIs(url, 'javascript:')) {
       return;
     }

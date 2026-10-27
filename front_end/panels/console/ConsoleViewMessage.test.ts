@@ -1695,6 +1695,55 @@ describeWithEnvironment('ConsoleViewMessage', () => {
     });
   });
 
+  describe('opening links in a new tab', () => {
+    const url = Platform.DevToolsPath.urlString`https://www.example.com/path`;
+    const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
+    const executionContextId = 1 as Protocol.Runtime.ExecutionContextId;
+
+    function openInNewTabFromMessage(rawMessage: SDK.ConsoleModel.ConsoleMessage): sinon.SinonStub {
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const link = message.toMessageElement().querySelector('.devtools-link');
+      assert.exists(link);
+      const info = Components.Linkifier.Linkifier.linkInfo(link);
+      assert.exists(info);
+      const action =
+          Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
+      assert.exists(action);
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      void action.handler();
+      return stub;
+    }
+
+    it('attributes the navigation to the frame of the message', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel.executionContextCreated({
+        id: executionContextId,
+        origin: 'https://www.example.com',
+        name: '',
+        uniqueId: 'UNIQUE_ID',
+        auxData: {frameId, isDefault: true, type: 'default'},
+      });
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, `see ${url}`,
+          {type: Protocol.Runtime.ConsoleAPICalledEventType.Log, executionContextId});
+
+      sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(rawMessage), url, frameId);
+    });
+
+    it('does not attribute the navigation to anything if the execution context of the message is gone', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, `see ${url}`,
+          {type: Protocol.Runtime.ConsoleAPICalledEventType.Log, executionContextId});
+
+      sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(rawMessage), url, undefined);
+    });
+  });
+
   describe('linkifyWithCustomLinkifier', () => {
     it('linkifies links correctly', () => {
       const cases = [

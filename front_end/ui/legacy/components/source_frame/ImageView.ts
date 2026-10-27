@@ -36,11 +36,13 @@ import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import {html, render, type TemplateResult} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
+import * as Components from '../utils/utils.js';
 
 import imageViewStyles from './imageView.css.js';
 
@@ -364,7 +366,21 @@ export class ImageView extends ImageViewBase {
     if (Common.ParsedURL.isPrivilegedScheme(this.#url)) {
       return;
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#url);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#url, this.#initiatorId());
+  }
+
+  /**
+   * The frame or worker that the image belongs to, which the browser attributes opening it in a new tab to; see
+   * {@link Components.Linkifier.openInNewTabInitiatorId}.
+   */
+  #initiatorId(): Components.Linkifier.OpenInNewTabInitiatorId|undefined {
+    const contentProvider = this.#contentProvider;
+    if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest ||
+        contentProvider instanceof SDK.Resource.Resource ||
+        contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      return Components.Linkifier.openInNewTabInitiatorId(contentProvider);
+    }
+    return undefined;
   }
 
   async #handleDrop(dataTransfer: DataTransfer): Promise<void> {

@@ -572,7 +572,7 @@ describeWithEnvironment('ChatMessage', () => {
 
     sinon.assert.calledOnceWithExactly(
         openInNewTabStub,
-        urlString`https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504`);
+        urlString`https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504`, undefined);
   });
 
   it('should show actions when it is not the last message and it is loading', async () => {

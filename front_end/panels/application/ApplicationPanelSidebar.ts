@@ -2474,7 +2474,8 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
   }
 
   override ondblclick(_event: Event): boolean {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.resource.url);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.resource.url,
+                                                                          this.resource.frameId ?? undefined);
     return false;
   }
 

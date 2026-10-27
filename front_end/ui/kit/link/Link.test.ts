@@ -88,7 +88,7 @@ describe('devtools-link', () => {
 
       link.click();
 
-      sinon.assert.calledOnceWithExactly(stub, urlString`devtools://devtools/bundled/devtools_app.html`);
+      sinon.assert.calledOnceWithExactly(stub, urlString`devtools://devtools/bundled/devtools_app.html`, undefined);
     });
   });
 
@@ -131,7 +131,7 @@ describe('devtools-link', () => {
 
       dispatchKeyDown(link, 'Enter');
 
-      sinon.assert.calledOnceWithExactly(stub, urlString`https://example.com/`);
+      sinon.assert.calledOnceWithExactly(stub, urlString`https://example.com/`, undefined);
       sinon.assert.notCalled(onClick);
     });
   });

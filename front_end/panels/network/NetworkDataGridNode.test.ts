@@ -1105,7 +1105,25 @@ describeWithEnvironment('NetworkLogView', () => {
       networkRequestNode.renderCell(el, 'name');
       el.dispatchEvent(new MouseEvent('dblclick'));
 
-      sinon.assert.calledOnceWithExactly(openInNewTabStub, urlString`https://www.example.com/`);
+      sinon.assert.calledOnceWithExactly(openInNewTabStub, urlString`https://www.example.com/`, undefined);
+    });
+
+    it('attributes the new tab to the frame of the request on double-click', () => {
+      const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
+      const request = createNetworkRequest({
+        url: 'https://www.example.com/',
+        resourceType: Common.ResourceType.resourceTypes.Document,
+        frameId,
+      });
+
+      const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+          {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+      const el = document.createElement('div');
+      networkRequestNode.renderCell(el, 'name');
+      el.dispatchEvent(new MouseEvent('dblclick'));
+
+      sinon.assert.calledOnceWithExactly(openInNewTabStub, urlString`https://www.example.com/`, frameId);
     });
   });
 

@@ -339,7 +339,15 @@ export interface InspectorFrontendHostAPI {
 
   inspectElementCompleted(): void;
 
-  openInNewTab(url: Platform.DevToolsPath.UrlString): void;
+  /**
+   * Opens `url` in a new tab.
+   *
+   * @param initiatorId the DevTools frame id or target id of the frame or worker that `url` came from (e.g. the
+   *     frame whose script logged it to the Console), if any. The browser attributes the navigation to it, like a
+   *     link clicked in that frame, which determines the `Sec-Fetch-Site` header and the `SameSite` cookies of the
+   *     request. Without it, the navigation is attributed to an opaque origin, i.e. treated as cross-site.
+   */
+  openInNewTab(url: Platform.DevToolsPath.UrlString, initiatorId?: string): void;
 
   openSearchResultsInNewTab(query: string): void;
 

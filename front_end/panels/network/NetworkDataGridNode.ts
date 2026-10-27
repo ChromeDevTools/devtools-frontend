@@ -1372,7 +1372,8 @@ export class NetworkRequestNode extends NetworkNode {
     if (!Common.ParsedURL.hasWebSafeScheme(this.requestInternal.url())) {
       return;
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+        this.requestInternal.url(), Components.Linkifier.openInNewTabInitiatorId(this.requestInternal));
   }
 
   private isFailed(): boolean {

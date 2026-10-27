@@ -558,13 +558,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       }
     } else {
       const messageText = this.message.messageText;
+      const initiatorId = this.initiatorId();
       const fragment =
           ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
             const linkElement = url === request.url() ?
-                Components.Linkifier.Linkifier.linkifyRevealable(
-                    (request), url, request.url(), undefined, undefined, 'network-request') :
+                Components.Linkifier.Linkifier.linkifyRevealable((request), url, request.url(), undefined, undefined,
+                                                                 'network-request') :
                 Components.Linkifier.Linkifier.linkifyURL(
-                    url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
+                    url, ({text, lineNumber, columnNumber, initiatorId} as Components.Linkifier.LinkifyURLOptions));
             linkElement.tabIndex = -1;
             this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
             return linkElement;
@@ -1948,9 +1949,29 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return container;
   }
 
+  /**
+   * The frame or worker that this message came from, which the browser attributes opening one of the message's
+   * URLs in a new tab to; see {@link Components.Linkifier.openInNewTabInitiatorId}. That is the frame of the
+   * request for messages about a request, and the frame of the execution context otherwise, as long as that
+   * context still exists. Messages whose context is gone (e.g. from a document that has since been navigated
+   * away from, kept with "Preserve log") are not attributed to anything.
+   */
+  private initiatorId(): Components.Linkifier.OpenInNewTabInitiatorId|undefined {
+    const requestId = this.message.getAffectedResources()?.requestId;
+    if (requestId) {
+      const [request] = Logs.NetworkLog.NetworkLog.instance().requestsForId(requestId);
+      if (request) {
+        return Components.Linkifier.openInNewTabInitiatorId(request);
+      }
+    }
+    const executionContext = this.message.runtimeModel()?.executionContext(this.message.getExecutionContextId());
+    return executionContext ? Components.Linkifier.openInNewTabInitiatorId(executionContext) : undefined;
+  }
+
   private linkifyStringAsFragment(string: string): DocumentFragment|UI.Widget.Widget {
+    const initiatorId = this.initiatorId();
     return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
-      const options = {text, lineNumber, columnNumber};
+      const options = {text, lineNumber, columnNumber, initiatorId};
       const linkElement =
           Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));
       linkElement.tabIndex = -1;

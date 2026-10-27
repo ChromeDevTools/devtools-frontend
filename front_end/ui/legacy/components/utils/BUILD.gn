@@ -64,6 +64,7 @@ devtools_entrypoint("bundle") {
     "../../../components/report_view/*",
     "../inline_editor/*",
     "../object_ui/*",
+    "../source_frame/*",
   ]
 
   visibility += devtools_ui_legacy_visibility
@@ -80,6 +81,7 @@ devtools_ui_module("unittests") {
   ts_deps = [
     ":bundle",
     "../..:bundle",
+    "../../../../core/host:bundle",
     "../../../../core/platform:bundle",
     "../../../../core/sdk:bundle",
     "../../../../generated",

@@ -29,7 +29,7 @@ describe('openInNewTab', () => {
     openInNewTab('https://www.google.com/');
 
     sinon.assert.callCount(stub, 1);
-    assert.deepEqual(stub.args[0], ['https://www.google.com/']);
+    assert.deepEqual(stub.args[0], [urlString`https://www.google.com/`, undefined]);
   });
 
   it('opens URLs and appends slash if needed', () => {
@@ -38,7 +38,16 @@ describe('openInNewTab', () => {
     openInNewTab('https://www.google.com');
 
     sinon.assert.callCount(stub, 1);
-    assert.deepEqual(stub.args[0], ['https://www.google.com/']);
+    assert.deepEqual(stub.args[0], [urlString`https://www.google.com/`, undefined]);
+  });
+
+  it('passes the initiator along to the host bindings', () => {
+    const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+    openInNewTab('https://www.example.com/', /* allowPrivileged= */ false, 'FRAME_ID');
+
+    sinon.assert.callCount(stub, 1);
+    assert.deepEqual(stub.args[0], [urlString`https://www.example.com/`, 'FRAME_ID']);
   });
 
   it('doesn\'t override existing `utm_source` search parameters', () => {
@@ -57,7 +66,7 @@ describe('openInNewTab', () => {
 
       openInNewTab(url);
 
-      sinon.assert.calledOnceWithExactly(stub, urlString`${url}`);
+      sinon.assert.calledOnceWithExactly(stub, urlString`${url}`, undefined);
       stub.restore();
     }
   });
@@ -112,7 +121,7 @@ describe('openInNewTab', () => {
 
          openInNewTab(url);
 
-         sinon.assert.calledOnceWithExactly(stub, urlString`${url}`);
+         sinon.assert.calledOnceWithExactly(stub, urlString`${url}`, undefined);
          stub.restore();
        }
      });
@@ -201,7 +210,7 @@ describe('openInNewTab', () => {
 
       openInNewTab(url, /* allowPrivileged=*/ true);
 
-      sinon.assert.calledOnceWithExactly(stub, urlString`${new URL(url)}`);
+      sinon.assert.calledOnceWithExactly(stub, urlString`${new URL(url)}`, undefined);
     });
   }
 

@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Host from '../../../../core/host/host.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -18,6 +19,7 @@ import {
 } from '../../../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../../../testing/MockConnection.js';
 import {MockDebuggerBackend} from '../../../../testing/MockScopeChain.js';
+import {createResource, getMainFrame, MAIN_FRAME_ID} from '../../../../testing/ResourceHelpers.js';
 import {stubFrame} from '../../../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../../../testing/TestUniverse.js';
 import * as UI from '../../legacy.js';
@@ -602,6 +604,102 @@ describeWithEnvironment('Linkifier', () => {
         const openUsingAction = actions.find(action => action.title === 'Open using Global Handler');
         assert.exists(openUsingAction);
       }
+    });
+  });
+
+  describe('openInNewTabInitiatorId', () => {
+    const {openInNewTabInitiatorId} = Components.Linkifier;
+    const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
+    const workerId = 'WORKER_ID' as Protocol.Target.TargetID;
+    const url = urlString`https://www.example.com/`;
+
+    function createRequest(frameId: Protocol.Page.FrameId|null): SDK.NetworkRequest.NetworkRequest {
+      return SDK.NetworkRequest.NetworkRequest.create('REQUEST_ID' as Protocol.Network.RequestId, url, url, frameId,
+                                                      null, null);
+    }
+
+    function createExecutionContext(target: SDK.Target.Target,
+                                    frameId?: Protocol.Page.FrameId): SDK.RuntimeModel.ExecutionContext {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      return new SDK.RuntimeModel.ExecutionContext(runtimeModel, executionContextId, 'UNIQUE_ID', 'name', url,
+                                                   /* isDefault= */ true, frameId);
+    }
+
+    it('is the frame of a request made by a frame', () => {
+      assert.strictEqual(openInNewTabInitiatorId(createRequest(frameId)), frameId);
+    });
+
+    it('is undefined for a request without a frame that was not made by a worker', () => {
+      assert.isUndefined(openInNewTabInitiatorId(createRequest(null)));
+    });
+
+    it('is the frame of an execution context of a frame', () => {
+      const {target} = setUpEnvironment();
+      assert.strictEqual(openInNewTabInitiatorId(createExecutionContext(target, frameId)), frameId);
+    });
+
+    it('is the worker for an execution context of a worker', () => {
+      const {backend} = setUpEnvironment();
+      const worker = backend.createTarget({type: SDK.Target.Type.Worker, id: workerId});
+      assert.strictEqual(openInNewTabInitiatorId(createExecutionContext(worker)), workerId);
+    });
+
+    it('is undefined for an execution context without a frame in a frame target', () => {
+      // A frame target's id stands for its main frame, which is not necessarily where the context lives.
+      const {target} = setUpEnvironment();
+      assert.isUndefined(openInNewTabInitiatorId(createExecutionContext(target)));
+    });
+
+    it('is the frame that loaded a source', () => {
+      const {target, backend} = setUpEnvironment();
+      const documentUrl = urlString`https://www.example.com/page.html`;
+      createResource(getMainFrame(target), documentUrl, 'text/html', '<p>');
+      const uiSourceCode = backend.universe.workspace.uiSourceCodeForURL(documentUrl);
+      assert.exists(uiSourceCode);
+      assert.strictEqual(openInNewTabInitiatorId(uiSourceCode), MAIN_FRAME_ID);
+    });
+
+    it('is used when opening a link in a new tab', async () => {
+      setUpEnvironment();
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const link = Components.Linkifier.Linkifier.linkifyURL(url, {initiatorId: frameId});
+      const info = Components.Linkifier.Linkifier.linkInfo(link);
+      assert.exists(info);
+      const action =
+          Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
+      assert.exists(action);
+      await action.handler();
+      sinon.assert.calledOnceWithExactly(stub, url, frameId);
+    });
+
+    it('is derived from the request that a link reveals', async () => {
+      setUpEnvironment();
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const link = Components.Linkifier.Linkifier.linkifyRevealable(createRequest(frameId), url, url);
+      const info = Components.Linkifier.Linkifier.linkInfo(link);
+      assert.exists(info);
+      const action =
+          Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
+      assert.exists(action);
+      await action.handler();
+      sinon.assert.calledOnceWithExactly(stub, url, frameId);
+    });
+
+    it('is not derived from a resource that merely has the same URL as a link', async () => {
+      const {target, backend} = setUpEnvironment();
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const documentUrl = urlString`https://www.example.com/page.html`;
+      createResource(getMainFrame(target), documentUrl, 'text/html', '<p>');
+      assert.exists(backend.universe.workspace.uiSourceCodeForURL(documentUrl));
+      const link = Components.Linkifier.Linkifier.linkifyURL(documentUrl);
+      const info = Components.Linkifier.Linkifier.linkInfo(link);
+      assert.exists(info);
+      const action =
+          Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
+      assert.exists(action);
+      await action.handler();
+      sinon.assert.calledOnceWithExactly(stub, documentUrl, undefined);
     });
   });
 });

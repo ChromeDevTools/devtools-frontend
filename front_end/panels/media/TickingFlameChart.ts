@@ -1,15 +1,45 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
 
 import {Bounds, formatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
+
+const UIStrings = {
+  /**
+   * @description Name of an event shown in the hover popover of the media
+   * panel timeline.
+   * @example {Play} PH1
+   */
+  name: 'Name: {PH1}',
+  /**
+   * @description Duration of an event shown in the hover popover of the media
+   * panel timeline, given as a start time and an end time in seconds.
+   * @example {1.00s} PH1
+   * @example {2.50s} PH2
+   */
+  duration: 'Duration: {PH1} - {PH2}',
+  /**
+   * @description Duration of an event that is still ongoing, shown in the
+   * hover popover of the media panel timeline.
+   * @example {1.00s} PH1
+   */
+  durationLive: 'Duration: {PH1} - LIVE!',
+  /**
+   * @description Time of an instantaneous event shown in the hover popover of
+   * the media panel timeline.
+   * @example {1.00s} PH1
+   */
+  time: 'Time: {PH1}',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('panels/media/TickingFlameChart.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
 function getGroupDefaultTextColor(): string {
@@ -55,6 +85,30 @@ export interface EventProperties {
   duration?: number;
   name: string;
   color?: string;
+}
+
+export interface EventPopoverInput {
+  title: string;
+  startTimeReadable: string;
+  live: boolean;
+  durationReadable?: string;
+}
+
+/**
+ * Renders the hover popover contents for an event on the timeline.
+ */
+export function renderEventPopover(input: EventPopoverInput): TemplateResult {
+  // clang-format off
+  return html`
+    <span>${i18nString(UIStrings.name, {PH1: input.title})}</span>
+    <br>
+    ${input.live ?
+      html`<span>${i18nString(UIStrings.durationLive, {PH1: input.startTimeReadable})}</span>` :
+      input.durationReadable !== undefined ?
+        html`<span>${i18nString(UIStrings.duration, {PH1: input.startTimeReadable, PH2: input.durationReadable})}</span>` :
+        html`<span>${i18nString(UIStrings.time, {PH1: input.startTimeReadable})}</span>`}
+  `;
+  // clang-format on
 }
 
 /**
@@ -103,21 +157,19 @@ export class Event {
   }
 
   /**
-   * Render hovertext into the |htmlElement|
+   * The data shown in the hover popover for this event.
    */
-  decorate(htmlElement: HTMLElement): void {
-    htmlElement.createChild('span').textContent = `Name: ${this.title}`;
-    htmlElement.createChild('br');
-
+  popoverInput(): EventPopoverInput {
     const startTimeReadable = formatMillisecondsToSeconds(this.startTime, 2);
-    if (this.#live) {
-      htmlElement.createChild('span').textContent = `Duration: ${startTimeReadable} - LIVE!`;
-    } else if (!isNaN(this.duration)) {
-      const durationReadable = formatMillisecondsToSeconds(this.duration + this.startTime, 2);
-      htmlElement.createChild('span').textContent = `Duration: ${startTimeReadable} - ${durationReadable}`;
-    } else {
-      htmlElement.createChild('span').textContent = `Time: ${startTimeReadable}`;
-    }
+    const durationReadable = !this.#live && !isNaN(this.duration) ?
+        formatMillisecondsToSeconds(this.duration + this.startTime, 2) :
+        undefined;
+    return {
+      title: this.title,
+      startTimeReadable,
+      live: this.#live,
+      durationReadable,
+    };
   }
 
   /**
@@ -174,6 +226,20 @@ export class Event {
   }
 }
 
+export interface TickingFlameChartViewInput {
+  chart: PerfUI.FlameChart.FlameChart;
+}
+
+export type TickingFlameChartView = (input: TickingFlameChartViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: TickingFlameChartView = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <devtools-widget class="flex-auto vbox" ${UI.Widget.widget(() => input.chart)}></devtools-widget>
+  `, target);
+  // clang-format on
+};
+
 export class TickingFlameChart extends UI.Widget.VBox {
   private intervalTimer: number;
   private lastTimestamp: number;
@@ -186,9 +252,11 @@ export class TickingFlameChart extends UI.Widget.VBox {
   private readonly chartGroupExpansionSetting: Common.Settings.Setting<Object>;
   private readonly chart: PerfUI.FlameChart.FlameChart;
   private stoppedPermanently?: boolean;
+  readonly #view: TickingFlameChartView;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement, view: TickingFlameChartView = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
 
     // set to update once per second _while the tab is active_
     this.intervalTimer = 0;
@@ -225,8 +293,11 @@ export class TickingFlameChart extends UI.Widget.VBox {
       this.onScroll(e as WheelEvent);
     });
 
-    // Add the chart.
-    this.chart.show(this.contentElement);
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view({chart: this.chart}, undefined, this.contentElement);
   }
 
   /**
@@ -492,10 +563,9 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     return false;
   }
 
-  preparePopoverElement(index: number): Element|null {
-    const element = document.createElement('div');
-    (this.eventMap.get(index) as Event).decorate(element);
-    return element;
+  preparePopoverElement(index: number): TemplateResult|null {
+    const event = this.eventMap.get(index);
+    return event ? renderEventPopover(event.popoverInput()) : null;
   }
 
   formatValue(value: number, _precision?: number): string {

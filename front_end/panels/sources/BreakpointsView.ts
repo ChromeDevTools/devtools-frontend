@@ -105,6 +105,10 @@ const UIStrings = {
    * @example {'hello'} PH1
    */
   logpointCode: 'Logpoint: {PH1}',
+  /**
+   * @description Context menu item in the breakpoint sidebar of the Sources panel that collapses all file groups.
+   */
+  collapseAll: 'Collapse all',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -154,6 +158,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   readonly #collapsedFilesSettings: Common.Settings.Setting<Platform.DevToolsPath.UrlString[]>;
   readonly #collapsedFiles: Set<Platform.DevToolsPath.UrlString>;
+  // Breakpoints whose locations were already reported. Their locations are
+  // re-added e.g. on page reload, which must not expand collapsed groups.
+  readonly #knownBreakpoints = new WeakSet<Breakpoints.BreakpointManager.Breakpoint>();
 
   // This is used to keep track of outstanding edits to breakpoints that were initiated
   // by the breakpoint edit button (for UMA).
@@ -374,7 +381,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   #onBreakpointAdded(event: Common.EventTarget.EventTargetEvent<Breakpoints.BreakpointManager.BreakpointLocation>):
       Promise<void> {
     const breakpoint = event.data.breakpoint;
-    if (breakpoint.origin === Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION &&
+    const isNewBreakpoint = !this.#knownBreakpoints.has(breakpoint);
+    this.#knownBreakpoints.add(breakpoint);
+    if (isNewBreakpoint && breakpoint.origin === Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION &&
         this.#collapsedFiles.has(breakpoint.url())) {
       // Auto-expand if a new breakpoint was added to a collapsed group.
       this.#collapsedFiles.delete(breakpoint.url());
@@ -386,7 +395,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   #onBreakpointRemoved(event: Common.EventTarget.EventTargetEvent<Breakpoints.BreakpointManager.BreakpointLocation>):
       Promise<void> {
     const breakpoint = event.data.breakpoint;
-    if (this.#collapsedFiles.has(breakpoint.url())) {
+    // Locations are also removed temporarily, e.g. on page reload. Only forget
+    // the collapsed state if the breakpoint itself was removed.
+    if (breakpoint.getIsRemoved() && this.#collapsedFiles.has(breakpoint.url())) {
       const locations = Breakpoints.BreakpointManager.BreakpointManager.instance().allBreakpointLocations();
       const otherBreakpointsOnSameFileExist =
           locations.some(location => location.breakpoint.url() === breakpoint.url());
@@ -920,6 +931,16 @@ export class BreakpointsView extends UI.Widget.VBox {
         this.#controller.breakpointStateChanged(breakpointItem, false);
       }
     }, {disabled: notDisabledItems.length === 0, jslogContext: 'disable-file-breakpoints'});
+
+    menu.viewSection().appendItem(i18nString(UIStrings.collapseAll), () => {
+      for (const group of this.#breakpointGroups) {
+        if (group.expanded) {
+          group.expanded = false;
+          this.#controller.expandedStateChanged(group.url, false);
+        }
+      }
+      this.requestUpdate();
+    }, {disabled: this.#breakpointGroups.every(group => !group.expanded), jslogContext: 'collapse-all'});
 
     void menu.show();
   }

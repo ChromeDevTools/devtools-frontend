@@ -902,6 +902,7 @@ export const knownContextValues: Set<string> = new Set([
   'code-snippets-explainer.patch-widget',
   'code-whisperer',
   'collapse',
+  'collapse-all',
   'collapse-children',
   'collapse-non-contributing-css-rules',
   'collapsed-files',

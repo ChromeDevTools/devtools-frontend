@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 
-import type * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as LinearMemoryInspectorComponents from '../../../../panels/linear_memory_inspector/components/components.js';
 import * as UI from '../../legacy.js';
@@ -24,13 +23,10 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
 
   constructor(element?: HTMLElement) {
     super(element);
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST, this.#memoryRequested, this);
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED,
-        (event: Common.EventTarget.EventTargetEvent<number>) => {
-          this.#address = event.data;
-        });
+    this.#inspector.onMemoryRequest = this.#memoryRequested.bind(this);
+    this.#inspector.onAddressChanged = (address: number) => {
+      this.#address = address;
+    };
     this.#inspector.show(this.contentElement);
   }
 
@@ -78,11 +74,11 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.#inspector.hideValueInspector = true;
   }
 
-  #memoryRequested(event: Common.EventTarget.EventTargetEvent<{start: number, end: number, address: number}>): void {
+  #memoryRequested(request: {start: number, end: number, address: number}): void {
     // TODO(szuend): The following lines are copied from `LinearMemoryInspectorController`. We can't reuse them
     // as depending on a module in `panels/` from a component is a layering violation.
 
-    const {start, end, address} = event.data;
+    const {start, end, address} = request;
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');
     }

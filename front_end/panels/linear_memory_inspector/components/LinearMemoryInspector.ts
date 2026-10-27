@@ -63,20 +63,6 @@ export interface Settings {
   endianness: Endianness;
 }
 
-export const enum Events {
-  MEMORY_REQUEST = 'MemoryRequest',
-  ADDRESS_CHANGED = 'AddressChanged',
-  SETTINGS_CHANGED = 'SettingsChanged',
-  DELETE_MEMORY_HIGHLIGHT = 'DeleteMemoryHighlight',
-}
-
-export interface EventTypes {
-  [Events.MEMORY_REQUEST]: {start: number, end: number, address: number};
-  [Events.ADDRESS_CHANGED]: number;
-  [Events.SETTINGS_CHANGED]: Settings;
-  [Events.DELETE_MEMORY_HIGHLIGHT]: HighlightInfo;
-}
-
 class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
   #address = 0;
   #callback;
@@ -160,7 +146,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>,
       ${widget(LinearMemoryHighlightChipList, {
         highlightInfos: highlightedMemoryAreas,
         focusedMemoryHighlight,
-        jumpToAddress: (address: number) => input.onJumpToAddress(address),
+        jumpToAddress: input.onJumpToAddress,
         deleteHighlight: input.onDeleteMemoryHighlight,
       })}
       <devtools-widget class="viewer-widget"
@@ -238,12 +224,7 @@ function getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas: HighlightIn
 
 export type View = typeof DEFAULT_VIEW;
 
-const LinearMemoryInspectorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
-    Common.ObjectWrapper.eventMixin(
-        UI.Widget.Widget,
-    );
-
-export class LinearMemoryInspector extends LinearMemoryInspectorBase {
+export class LinearMemoryInspector extends UI.Widget.Widget {
   readonly #history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
 
   #memory = new Uint8Array();
@@ -263,6 +244,10 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
   #endianness = Endianness.LITTLE;
 
   #hideValueInspector = false;
+  #onMemoryRequest?: (request: {start: number, end: number, address: number}) => void;
+  #onAddressChanged?: (address: number) => void;
+  #onSettingsChanged?: (settings: Settings) => void;
+  #onDeleteMemoryHighlight?: (highlightInfo: HighlightInfo) => void;
   #view: View;
 
   constructor(element?: HTMLElement, view?: View) {
@@ -314,11 +299,27 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
     return this.#hideValueInspector;
   }
 
+  set onMemoryRequest(value: ((request: {start: number, end: number, address: number}) => void)|undefined) {
+    this.#onMemoryRequest = value;
+  }
+
+  set onAddressChanged(value: ((address: number) => void)|undefined) {
+    this.#onAddressChanged = value;
+  }
+
+  set onSettingsChanged(value: ((settings: Settings) => void)|undefined) {
+    this.#onSettingsChanged = value;
+  }
+
+  set onDeleteMemoryHighlight(value: ((highlightInfo: HighlightInfo) => void)|undefined) {
+    this.#onDeleteMemoryHighlight = value;
+  }
+
   override performUpdate(): void {
     const {start, end} = getPageRangeForAddress(this.#address, this.#numBytesPerPage, this.#outerMemoryLength);
 
     if (start < this.#memoryOffset || end > this.#memoryOffset + this.#memory.length) {
-      this.dispatchEventToListeners(Events.MEMORY_REQUEST, {start, end, address: this.#address});
+      this.#onMemoryRequest?.({start, end, address: this.#address});
       return;
     }
 
@@ -357,8 +358,8 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
       onNavigatePage: this.#navigatePage.bind(this),
       onNavigateHistory: this.#navigateHistory.bind(this),
       onJumpToAddress: this.#onJumpToAddress.bind(this),
-      onDeleteMemoryHighlight: this.#onDeleteMemoryHighlight.bind(this),
-      onByteSelected: this.#onByteSelected.bind(this),
+      onDeleteMemoryHighlight: highlight => this.#onDeleteMemoryHighlight?.(highlight),
+      onByteSelected: this.#onJumpToAddress.bind(this),
       onResize: this.#resize.bind(this),
       onValueTypeToggled: this.#onValueTypeToggled.bind(this),
       onValueTypeModeChanged: this.#onValueTypeModeChanged.bind(this),
@@ -375,19 +376,9 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
     this.#jumpToAddress(addressInRange);
   }
 
-  #onDeleteMemoryHighlight(highlight: HighlightInfo): void {
-    this.dispatchEventToListeners(Events.DELETE_MEMORY_HIGHLIGHT, highlight);
-  }
-
   #onRefreshRequest(): void {
     const {start, end} = getPageRangeForAddress(this.#address, this.#numBytesPerPage, this.#outerMemoryLength);
-    this.dispatchEventToListeners(Events.MEMORY_REQUEST, {start, end, address: this.#address});
-  }
-
-  #onByteSelected(address: number): void {
-    this.#currentNavigatorMode = Mode.SUBMITTED;
-    const addressInRange = Math.max(0, Math.min(address, this.#outerMemoryLength - 1));
-    this.#jumpToAddress(addressInRange);
+    this.#onMemoryRequest?.({start, end, address: this.#address});
   }
 
   #createSettings(): Settings {
@@ -396,7 +387,7 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
 
   #onEndiannessChanged(endianness: Endianness): void {
     this.#endianness = endianness;
-    this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
+    this.#onSettingsChanged?.(this.#createSettings());
     void this.requestUpdate();
   }
 
@@ -428,7 +419,7 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
       valueTypes.delete(type);
     }
     this.#valueTypes = valueTypes;
-    this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
+    this.#onSettingsChanged?.(this.#createSettings());
     void this.requestUpdate();
   }
 
@@ -436,7 +427,7 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
     const valueTypeModes = new Map(this.#valueTypeModes);
     valueTypeModes.set(type, mode);
     this.#valueTypeModes = valueTypeModes;
-    this.dispatchEventToListeners(Events.SETTINGS_CHANGED, this.#createSettings());
+    this.#onSettingsChanged?.(this.#createSettings());
     void this.requestUpdate();
   }
 
@@ -473,7 +464,7 @@ export class LinearMemoryInspector extends LinearMemoryInspectorBase {
     const historyEntry = new AddressHistoryEntry(address, () => this.#jumpToAddress(address));
     this.#history.push(historyEntry);
     this.#address = address;
-    this.dispatchEventToListeners(Events.ADDRESS_CHANGED, this.#address);
+    this.#onAddressChanged?.(this.#address);
     void this.requestUpdate();
   }
 }

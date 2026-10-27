@@ -150,19 +150,15 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.firstTimeOpen = true;
 
     this.#inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST, this.#memoryRequested, this);
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED,
-        event => this.updateAddress(event.data));
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.SETTINGS_CHANGED,
-        event => this.saveSettings(event.data));
-    this.#inspector.addEventListener(
-        LinearMemoryInspectorComponents.LinearMemoryInspector.Events.DELETE_MEMORY_HIGHLIGHT, event => {
-          LinearMemoryInspectorController.instance().removeHighlight(this.#tabId, event.data);
+    this.#inspector.onMemoryRequest = this.#memoryRequested.bind(this);
+    this.#inspector.onAddressChanged = (address: number) => this.updateAddress(address);
+    this.#inspector.onSettingsChanged = (settings: LinearMemoryInspectorComponents.LinearMemoryInspector.Settings) =>
+        this.saveSettings(settings);
+    this.#inspector.onDeleteMemoryHighlight =
+        (highlight: LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo) => {
+          LinearMemoryInspectorController.instance().removeHighlight(this.#tabId, highlight);
           this.refreshData();
-        });
+        };
     this.#inspector.show(this.contentElement);
   }
 
@@ -212,8 +208,8 @@ export class LinearMemoryInspectorView extends UI.Widget.VBox {
         });
   }
 
-  #memoryRequested(event: Common.EventTarget.EventTargetEvent<{start: number, end: number, address: number}>): void {
-    const {start, end, address} = event.data;
+  #memoryRequested(request: {start: number, end: number, address: number}): void {
+    const {start, end, address} = request;
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');
     }

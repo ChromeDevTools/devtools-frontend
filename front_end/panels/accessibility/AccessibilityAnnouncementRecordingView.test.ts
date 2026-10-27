@@ -257,6 +257,21 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
         stack: {},
       })));
     });
+
+    it('rejects finite times outside the valid Date range', () => {
+      const withTime = (time: number) => JSON.stringify({
+        api: 'aria-live',
+        message: 'msg',
+        politeness: 'polite',
+        element: '<div></div>',
+        time,
+      });
+      assert.isNull(validateAndSanitizeAnnouncement(withTime(1e20)));
+      assert.isNull(validateAndSanitizeAnnouncement(withTime(8.64e15 + 1)));
+      assert.isNull(validateAndSanitizeAnnouncement(withTime(-8.64e15 - 1)));
+      assert.strictEqual(validateAndSanitizeAnnouncement(withTime(8.64e15))?.time, 8.64e15);
+      assert.strictEqual(validateAndSanitizeAnnouncement(withTime(-8.64e15))?.time, -8.64e15);
+    });
   });
 
   describe('checkForBlockedPayload', () => {
@@ -1003,6 +1018,23 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
         const csvContent = view.exportCsvForTest();
         assert.strictEqual(csvContent, 'Time,API,Politeness,Message');
         assert.strictEqual(buildCsvContent([]), 'Time,API,Politeness,Message');
+      });
+
+      it('ignores payloads with an out-of-range time so the export does not throw', async () => {
+        view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+        renderElementIntoDOM(view);
+        await view.updateComplete;
+        await view.startRecording();
+
+        emitBindingPayload({
+          api: 'aria-live',
+          message: 'msg',
+          politeness: 'polite',
+          element: '<div></div>',
+          time: 1e20,
+        });
+
+        assert.strictEqual(view.exportCsvForTest(), 'Time,API,Politeness,Message');
       });
 
       it('disables the Export to CSV button when there are no announcements and enables when announcements exist',

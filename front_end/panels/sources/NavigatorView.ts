@@ -359,16 +359,14 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.requestUpdate();
   }
 
-  private static treeElementOrder(treeElement: UI.TreeOutline.TreeElement): number {
-    if (boostOrderForNode.has(treeElement)) {
+  private static nodeOrder(node: NavigatorTreeNode): number {
+    if (node.boostOrder) {
       return 0;
     }
 
-    const actualElement = (treeElement as NavigatorSourceTreeElement);
-
-    let order = TYPE_ORDERS.get(actualElement.nodeType) || 0;
-    if (actualElement.uiSourceCode) {
-      const contentType = actualElement.uiSourceCode.contentType();
+    let order = TYPE_ORDERS.get(node.type) || 0;
+    if (node instanceof NavigatorUISourceCodeTreeNode) {
+      const contentType = node.uiSourceCode().contentType();
       if (contentType.isDocument()) {
         order += 3;
       } else if (contentType.isScript()) {
@@ -383,6 +381,19 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     return order;
   }
 
+  static compareNodes(node1: NavigatorTreeNode, node2: NavigatorTreeNode): number {
+    const order1 = NavigatorView.nodeOrder(node1);
+    const order2 = NavigatorView.nodeOrder(node2);
+
+    if (order1 > order2) {
+      return 1;
+    }
+    if (order1 < order2) {
+      return -1;
+    }
+    return 0;
+  }
+
   static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void {
     const searchLabel = path ? i18nString(UIStrings.searchInFolder) : i18nString(UIStrings.searchInAllFiles);
     const searchSources = new SearchSources(path && `file:${path}`);
@@ -393,14 +404,13 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
   private static treeElementsCompare(
       treeElement1: UI.TreeOutline.TreeElement, treeElement2: UI.TreeOutline.TreeElement): number {
-    const typeWeight1 = NavigatorView.treeElementOrder(treeElement1);
-    const typeWeight2 = NavigatorView.treeElementOrder(treeElement2);
-
-    if (typeWeight1 > typeWeight2) {
-      return 1;
-    }
-    if (typeWeight1 < typeWeight2) {
-      return -1;
+    const node1 = (treeElement1 as NavigatorFolderTreeElement | NavigatorSourceTreeElement).node;
+    const node2 = (treeElement2 as NavigatorFolderTreeElement | NavigatorSourceTreeElement).node;
+    if (node1 && node2) {
+      const order = NavigatorView.compareNodes(node1, node2);
+      if (order !== 0) {
+        return order;
+      }
     }
     return Platform.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
   }
@@ -787,7 +797,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     domainNode = new NavigatorGroupTreeNode(
         this, project, projectOrigin, Types.Domain, this.computeProjectDisplayName(target, projectOrigin));
     if (frame && projectOrigin === Common.ParsedURL.ParsedURL.extractOrigin(frame.url)) {
-      boostOrderForNode.add(domainNode.treeNode());
+      domainNode.boostOrder = true;
     }
     frameNode.appendChild(domainNode);
     if (isAuthored && this.groupByAuthored) {
@@ -814,10 +824,12 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.frameNodes.set(frame, frameNode);
 
     const parentFrame = frame.parentFrame();
+    if (!parentFrame) {
+      frameNode.boostOrder = true;
+    }
     this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored)
         .appendChild(frameNode);
     if (!parentFrame) {
-      boostOrderForNode.add(frameNode.treeNode());
       frameNode.treeNode().expand();
     }
 
@@ -1389,8 +1401,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   }
 }
 
-const boostOrderForNode = new WeakSet<UI.TreeOutline.TreeElement>();
-
 export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   private readonly nodeType: string;
   private readonly navigatorView: NavigatorView;
@@ -1678,6 +1688,7 @@ export class NavigatorTreeNode {
   id: string;
   protected navigatorView: NavigatorView;
   type: string;
+  boostOrder = false;
   private populated: boolean;
   isMerged: boolean;
   parent!: NavigatorTreeNode|null;

@@ -15,6 +15,7 @@ declare var Q: {
         convertMarkdownLinkSnippets(e: any, t?: {}): any;
         safelySetHref(e: any, t: any): void;
         safelySetBlobHref(e: any, t: any): void;
+        safelySetImageSrc(e: any, t: any): void;
         convertMarkdownCodeSnippets(e: any): any;
         setLighthouseChannel(e: any): void;
         document(): any;
@@ -100,15 +101,15 @@ declare var ne: {
         _saveFile(e: any): void;
     };
 };
-declare namespace St {
-    export { Lt as registerLocaleData };
-    export { Ct as hasLocale };
+declare namespace Ct {
+    export { St as registerLocaleData };
+    export { Lt as hasLocale };
 }
-declare function kt(r: any, e?: {}): HTMLElement;
-declare function Et(r: any, e: any): {
+declare function kt(o: any, e?: {}): HTMLElement;
+declare function Et(o: any, e: any): {
     lhr: any;
     missingIcuMessageIds: never[];
 };
-declare function Lt(r: any, e: any): void;
-declare function Ct(r: any): boolean;
-export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, St as format, kt as renderReport, Et as swapLocale };
+declare function St(o: any, e: any): void;
+declare function Lt(o: any): boolean;
+export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, Ct as format, kt as renderReport, Et as swapLocale };

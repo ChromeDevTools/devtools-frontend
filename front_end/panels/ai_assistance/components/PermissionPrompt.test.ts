@@ -84,12 +84,12 @@ describeWithEnvironment('PermissionPrompt', () => {
     assert.strictEqual(target.querySelector('.permission-prompt-title')?.textContent, 'Allow this action?');
   });
 
-  it('offers Skip and Allow once for ALLOW_ONCE', () => {
+  it('offers "No" and "Yes, allow this time" for ALLOW_ONCE', () => {
     const onAnswer = sinon.stub();
     const target = renderPrompt(createStep({onAnswer}));
 
     const buttons = getButtons(target);
-    assert.deepEqual(buttons.map(b => b.textContent?.trim()), ['Skip', 'Yes, allow this time']);
+    assert.deepEqual(buttons.map(b => b.textContent?.trim()), ['No', 'Yes, allow this time']);
 
     buttons[0].click();
     buttons[1].click();
@@ -99,7 +99,7 @@ describeWithEnvironment('PermissionPrompt', () => {
     ]);
   });
 
-  it('offers Skip, Always allow and Allow once for ALLOW_ONCE_OR_ALWAYS', () => {
+  it('offers "No", "Yes, and always allow" and "Yes, allow this time" for ALLOW_ONCE_OR_ALWAYS', () => {
     const onAnswer = sinon.stub();
     const target = renderPrompt(createStep({
       onAnswer,
@@ -107,7 +107,7 @@ describeWithEnvironment('PermissionPrompt', () => {
     }));
 
     const buttons = getButtons(target);
-    assert.deepEqual(buttons.map(b => b.textContent?.trim()), ['Skip', 'Yes, always allow', 'Yes, allow this time']);
+    assert.deepEqual(buttons.map(b => b.textContent?.trim()), ['No', 'Yes, and always allow', 'Yes, allow this time']);
 
     buttons[1].click();
     sinon.assert.calledOnceWithExactly(onAnswer, AIAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS);

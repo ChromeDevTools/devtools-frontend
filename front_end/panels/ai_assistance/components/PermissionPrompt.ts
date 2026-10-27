@@ -24,7 +24,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Button text in the permission prompt that skips the tool call.
    */
-  skipToolCall: 'Skip',
+  skipToolCall: 'No',
   /**
    * @description Button text in the permission prompt that allows the tool call once.
    */
@@ -32,7 +32,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Button text in the permission prompt that allows the tool call now and in the future.
    */
-  allowAlways: 'Yes, always allow',
+  allowAlways: 'Yes, and always allow',
   /**
    * @description Fallback title of the permission prompt when the tool has no title.
    */
@@ -121,7 +121,7 @@ export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.
     jslog=${VisualLogging.section('side-effect-confirmation')}>
     <div class="permission-prompt-header">
       <devtools-icon name="lock"></devtools-icon>
-      <h3 class="permission-prompt-title">${title}</h3>
+      <h2 class="permission-prompt-title">${title}</h2>
     </div>
     ${description}
     ${code}

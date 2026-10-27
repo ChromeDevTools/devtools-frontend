@@ -101,6 +101,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "AffectedDescendantsWithinSelectElementView.test.ts",
     "AffectedLazyLoadImagesView.test.ts",
     "AffectedMetadataAllowedSitesView.test.ts",
     "AffectedSelectivePermissionsInterventionView.test.ts",

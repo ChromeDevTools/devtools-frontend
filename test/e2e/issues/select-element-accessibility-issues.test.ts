@@ -22,7 +22,7 @@ describe('Select element accessibility issues test', () => {
            await getAndExpandSpecificIssueByTitle(devToolsPage, 'Invalid element or text node within <select>');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
@@ -38,7 +38,7 @@ describe('Select element accessibility issues test', () => {
            await getAndExpandSpecificIssueByTitle(devToolsPage, 'Invalid element or text node within <optgroup>');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
@@ -54,7 +54,7 @@ describe('Select element accessibility issues test', () => {
            await getAndExpandSpecificIssueByTitle(devToolsPage, 'Non-phrasing content used within an <option> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
@@ -70,7 +70,7 @@ describe('Select element accessibility issues test', () => {
            await getAndExpandSpecificIssueByTitle(devToolsPage, 'Interactive element inside of an <option> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
@@ -86,7 +86,7 @@ describe('Select element accessibility issues test', () => {
            await getAndExpandSpecificIssueByTitle(devToolsPage, 'Interactive element inside of a <legend> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
@@ -103,7 +103,7 @@ describe('Select element accessibility issues test', () => {
            devToolsPage, 'Element with invalid attributes within a <select> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],
@@ -120,7 +120,7 @@ describe('Select element accessibility issues test', () => {
            await getAndExpandSpecificIssueByTitle(devToolsPage, 'Interactive element inside of a <summary> element');
        assert.isOk(issueElement);
 
-       const section = await getResourcesElement(devToolsPage, '1 element', issueElement, undefined);
+       const section = await getResourcesElement(devToolsPage, '1 descendant', issueElement, undefined);
        await ensureResourceSectionIsExpanded(devToolsPage, section);
        const expectedTableRows = [
          ['Disallowed descendant'],

@@ -82,6 +82,7 @@ copy_to_gen("elements") {
     "styles-disable-inherited.html",
     "stylesheets-with-various-sources.html",
     "switch-panels-while-editing-as-html.html",
+    "switch-panels-with-long-content.html",
     "target.html",
     "view-transition.html",
   ]

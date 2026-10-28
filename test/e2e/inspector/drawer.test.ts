@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {describe, it, setup} from '../conductor/mocha-interface.js';
+import {expandSelectedNodeRecursively} from '../helpers/elements-helpers.js';
 import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
@@ -518,6 +519,8 @@ describe('Drawer', () => {
        // 1) open elements pane in the main panel
        await devToolsPage.click('#tab-elements');
        await devToolsPage.waitFor('#elements-content');
+       await expandSelectedNodeRecursively(devToolsPage);
+       await devToolsPage.waitForElementWithTextContent('row-0');
 
        // 2) scroll down a few lines in Elements.
        await devToolsPage.click('#elements-content');
@@ -538,6 +541,7 @@ describe('Drawer', () => {
        await devToolsPage.waitFor('#elements-content');
 
        const before = await getElementsContentMetrics(devToolsPage);
+       assert.isAbove(before.scrollTop, 0, 'Elements content should be scrolled before minimizing');
 
        // 6) minimize drawer
        await devToolsPage.click(MINIMIZE_BUTTON_SELECTOR);

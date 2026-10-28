@@ -1147,9 +1147,9 @@ describe('AI Assistance', function() {
       // 2. Verify two round-trips occurred: tool invocation, followed by tool output response.
       assert.lengthOf(aidaRoundTrips, 2, 'Expected two round-trips to AIDA: tool invocation and tool response.');
 
-      // Round-trip 1: Only learnSkills is declared initially.
+      // Round-trip 1: Only baseline tools (learnSkills and suggestFollowUps) are declared initially.
       const initialTools = aidaRoundTrips[0].request.function_declarations?.map(decl => decl.name) ?? [];
-      assert.deepEqual(initialTools, ['learnSkills']);
+      assert.deepEqual(initialTools, ['learnSkills', 'suggestFollowUps']);
 
       // Round-trip 2: Contains functionResponse for learnSkills and registers styling tools (executeJavaScript, getStyles).
       const secondRequest = aidaRoundTrips[1].request;

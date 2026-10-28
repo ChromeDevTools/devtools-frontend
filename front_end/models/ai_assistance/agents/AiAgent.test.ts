@@ -1435,4 +1435,40 @@ describe('AiAgent', () => {
       assert.isUndefined(parsed.suggestions);
     });
   });
+
+  describe('sanitizeSuggestionsList', () => {
+    it('returns non-empty string items from a valid array', () => {
+      const result = AiAssistance.AiAgent.sanitizeSuggestionsList(['first suggestion', 'second suggestion']);
+      assert.deepEqual(result, ['first suggestion', 'second suggestion']);
+    });
+
+    it('returns undefined for non-array inputs', () => {
+      assert.isUndefined(AiAssistance.AiAgent.sanitizeSuggestionsList(null));
+      assert.isUndefined(AiAssistance.AiAgent.sanitizeSuggestionsList(undefined));
+      assert.isUndefined(AiAssistance.AiAgent.sanitizeSuggestionsList('not an array'));
+      assert.isUndefined(AiAssistance.AiAgent.sanitizeSuggestionsList(123));
+      assert.isUndefined(AiAssistance.AiAgent.sanitizeSuggestionsList({suggestions: ['test']}));
+    });
+
+    it('filters out non-string items and empty strings', () => {
+      const result = AiAssistance.AiAgent.sanitizeSuggestionsList([123, '', 'valid', null, '   ', {}]);
+      assert.deepEqual(result, ['valid']);
+    });
+
+    it('collapses whitespace and newlines into single spaces and trims edges', () => {
+      const result = AiAssistance.AiAgent.sanitizeSuggestionsList(['  line 1\n\nline 2   extra   spaces  ']);
+      assert.deepEqual(result, ['line 1 line 2 extra spaces']);
+    });
+
+    it('truncates items longer than 200 characters to 200 characters', () => {
+      const longItem = 'a'.repeat(250);
+      const result = AiAssistance.AiAgent.sanitizeSuggestionsList([longItem]);
+      assert.deepEqual(result, ['a'.repeat(200)]);
+    });
+
+    it('returns undefined when all items are filtered out', () => {
+      const result = AiAssistance.AiAgent.sanitizeSuggestionsList(['', '   ', '\n\t']);
+      assert.isUndefined(result);
+    });
+  });
 });

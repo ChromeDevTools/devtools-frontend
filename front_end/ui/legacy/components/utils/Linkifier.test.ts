@@ -6,10 +6,11 @@ import {assert} from 'chai';
 import {afterEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
+import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../../generated/protocol.js';
+import * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
@@ -19,7 +20,14 @@ import {
 } from '../../../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../../../testing/MockConnection.js';
 import {MockDebuggerBackend} from '../../../../testing/MockScopeChain.js';
-import {createResource, getMainFrame, MAIN_FRAME_ID} from '../../../../testing/ResourceHelpers.js';
+import {
+  createResource,
+  FRAME_URL,
+  getMainFrame,
+  LOADER_ID,
+  MAIN_FRAME_ID,
+} from '../../../../testing/ResourceHelpers.js';
+import {navigate} from '../../../../testing/ResourceTreeHelpers.js';
 import {stubFrame} from '../../../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../../../testing/TestUniverse.js';
 import * as UI from '../../legacy.js';
@@ -637,6 +645,50 @@ describeWithEnvironment('Linkifier', () => {
       assert.strictEqual(openInNewTabInitiatorId(createRequest(frameId)), frameId);
     });
 
+    it('is not the frame of a request once the frame has navigated away from the document that made it', () => {
+      const {target} = setUpEnvironment();
+      const frame = getMainFrame(target);
+      const requestId = 'REQUEST_ID' as Protocol.Network.RequestId;
+      dispatchEvent(target, 'Network.requestWillBeSent', {
+        requestId,
+        loaderId: LOADER_ID,
+        documentURL: FRAME_URL,
+        request: {
+          url,
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        redirectHasExtraInfo: false,
+        frameId: MAIN_FRAME_ID,
+      });
+      const request = target.model(SDK.NetworkManager.NetworkManager)?.requestForId(requestId);
+      assert.exists(request);
+      assert.strictEqual(openInNewTabInitiatorId(request), MAIN_FRAME_ID);
+
+      navigate(frame,
+               {url: urlString`https://www.other.test/`, loaderId: 'OTHER_LOADER_ID' as Protocol.Network.LoaderId});
+      assert.isUndefined(openInNewTabInitiatorId(request));
+    });
+
+    it('is not the frame of a resource once the frame has navigated away from the document it belongs to', () => {
+      const {target} = setUpEnvironment();
+      const frame = getMainFrame(target);
+      const resource =
+          new SDK.Resource.Resource(frame.resourceTreeModel(), null, url, FRAME_URL, MAIN_FRAME_ID, LOADER_ID,
+                                    Common.ResourceType.resourceTypes.Image, 'image/png', null, null);
+      frame.addResource(resource);
+      assert.strictEqual(openInNewTabInitiatorId(resource), MAIN_FRAME_ID);
+
+      navigate(frame,
+               {url: urlString`https://www.other.test/`, loaderId: 'OTHER_LOADER_ID' as Protocol.Network.LoaderId});
+      assert.isUndefined(openInNewTabInitiatorId(resource));
+    });
+
     it('is undefined for a request without a frame that was not made by a worker', () => {
       assert.isUndefined(openInNewTabInitiatorId(createRequest(null)));
     });
@@ -734,6 +786,23 @@ describeWithEnvironment('ContentProviderContextMenuProvider', () => {
       provider.appendApplicableItems({} as Event, menu, sourceCode);
       assert.isUndefined(findMenuItemWithLabel(menu.revealSection(), 'Open in new tab'));
     }
+  });
+
+  it('attributes \'Open in new tab\' to the frame of the content provider', () => {
+    const provider = new Components.Linkifier.ContentProviderContextMenuProvider();
+    const event = new MouseEvent('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const url = urlString`https://www.example.com/data.json`;
+    const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
+    const request = SDK.NetworkRequest.NetworkRequest.create('REQUEST_ID' as Protocol.Network.RequestId, url, url,
+                                                             frameId, null, null);
+    provider.appendApplicableItems(event, contextMenu, request);
+    const openInNewTabItem = findMenuItemWithLabel(contextMenu.revealSection(), 'Open in new tab');
+    assert.exists(openInNewTabItem);
+
+    const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+    contextMenu.invokeHandler(openInNewTabItem.id());
+    sinon.assert.calledOnceWithExactly(stub, url, frameId);
   });
 });
 

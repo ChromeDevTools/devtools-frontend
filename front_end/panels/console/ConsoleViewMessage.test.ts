@@ -1700,8 +1700,7 @@ describeWithEnvironment('ConsoleViewMessage', () => {
     const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
     const executionContextId = 1 as Protocol.Runtime.ExecutionContextId;
 
-    function openInNewTabFromMessage(rawMessage: SDK.ConsoleModel.ConsoleMessage): sinon.SinonStub {
-      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+    function openInNewTabFromMessage(message: Console.ConsoleViewMessage.ConsoleViewMessage): sinon.SinonStub {
       const link = message.toMessageElement().querySelector('.devtools-link');
       assert.exists(link);
       const info = Components.Linkifier.Linkifier.linkInfo(link);
@@ -1714,10 +1713,7 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       return stub;
     }
 
-    it('attributes the navigation to the frame of the message', () => {
-      const target = createTarget();
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
+    function createExecutionContext(runtimeModel: SDK.RuntimeModel.RuntimeModel): void {
       runtimeModel.executionContextCreated({
         id: executionContextId,
         origin: 'https://www.example.com',
@@ -1725,23 +1721,46 @@ describeWithEnvironment('ConsoleViewMessage', () => {
         uniqueId: 'UNIQUE_ID',
         auxData: {frameId, isDefault: true, type: 'default'},
       });
-      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+    }
+
+    function createRawMessage(runtimeModel: SDK.RuntimeModel.RuntimeModel): SDK.ConsoleModel.ConsoleMessage {
+      return new SDK.ConsoleModel.ConsoleMessage(
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, `see ${url}`,
           {type: Protocol.Runtime.ConsoleAPICalledEventType.Log, executionContextId});
+    }
 
-      sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(rawMessage), url, frameId);
+    it('attributes the navigation to the frame of the message', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      createExecutionContext(runtimeModel);
+      const {message} = createConsoleViewMessageWithStubDeps(createRawMessage(runtimeModel));
+
+      sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(message), url, frameId);
     });
 
     it('does not attribute the navigation to anything if the execution context of the message is gone', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       assert.exists(runtimeModel);
-      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
-          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, `see ${url}`,
-          {type: Protocol.Runtime.ConsoleAPICalledEventType.Log, executionContextId});
+      const {message} = createConsoleViewMessageWithStubDeps(createRawMessage(runtimeModel));
 
-      sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(rawMessage), url, undefined);
+      sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(message), url, undefined);
     });
+
+    it('does not attribute the navigation to anything if the execution context is destroyed after the message was rendered',
+       () => {
+         const target = createTarget();
+         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+         assert.exists(runtimeModel);
+         createExecutionContext(runtimeModel);
+         const {message} = createConsoleViewMessageWithStubDeps(createRawMessage(runtimeModel));
+         message.toMessageElement();
+         // E.g. the frame navigates to another document; the message is kept with "Preserve log".
+         runtimeModel.executionContextDestroyed(executionContextId);
+
+         sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(message), url, undefined);
+       });
 
     it('renders URLs with privileged schemes logged by the page as inert text', () => {
       const target = createTarget();

@@ -903,7 +903,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
    */
   private static initiatorIdForLink(info: LinkInfo): OpenInNewTabInitiatorId|undefined {
     if (info.initiatorId) {
-      return info.initiatorId;
+      return typeof info.initiatorId === 'function' ? info.initiatorId() : info.initiatorId;
     }
     if (info.revealable instanceof SDK.NetworkRequest.NetworkRequest) {
       return openInNewTabInitiatorId(info.revealable);
@@ -1148,7 +1148,8 @@ export class ContentProviderContextMenuProvider implements
           () =>
               UIHelpers.openInNewTab(contentUrl.endsWith(':formatted') ?
                                          Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
-                                         contentUrl),
+                                         contentUrl,
+                                     /* allowPrivileged= */ false, openInNewTabInitiatorId(contentProvider)),
           {jslogContext: 'open-in-new-tab'});
     }
     for (const origin of linkHandlers.keys()) {
@@ -1188,16 +1189,21 @@ export class ContentProviderContextMenuProvider implements
 /**
  * Returns the {@link OpenInNewTabInitiatorId} for a URL that came from `source`: the frame that `source` belongs
  * to, or the worker that it belongs to when there is no frame, if DevTools knows that unambiguously. Returns
- * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin.
+ * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin. A request or
+ * resource is not attributed to its frame once the frame has navigated away from the document it belongs to.
  */
 export function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|
                                         SDK.RuntimeModel.ExecutionContext|
                                         Workspace.UISourceCode.UISourceCode): OpenInNewTabInitiatorId|undefined {
   if (source instanceof SDK.NetworkRequest.NetworkRequest) {
-    return source.frameId ?? workerTargetId(SDK.NetworkManager.NetworkManager.forRequest(source)?.target());
+    if (source.frameId) {
+      return frameIdUnlessNavigatedSince(source.frameId, source.loaderId,
+                                         SDK.ResourceTreeModel.ResourceTreeModel.frameForRequest(source));
+    }
+    return workerTargetId(SDK.NetworkManager.NetworkManager.forRequest(source)?.target());
   }
   if (source instanceof SDK.Resource.Resource) {
-    return source.frameId ?? undefined;
+    return source.frameId ? frameIdUnlessNavigatedSince(source.frameId, source.loaderId, source.frame()) : undefined;
   }
   if (source instanceof SDK.RuntimeModel.ExecutionContext) {
     return source.frameId ?? workerTargetId(source.target());
@@ -1215,6 +1221,20 @@ export function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkReques
     return workerTargetId(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(source));
   }
   return undefined;
+}
+
+/**
+ * Returns `frameId` unless `frame` (the frame with that id, if DevTools still knows it) has navigated since the
+ * document identified by `loaderId` was in it. A frame keeps its id across navigations, so a request or resource of
+ * a previous document must not be attributed to the document that the frame shows now.
+ */
+function frameIdUnlessNavigatedSince(frameId: Protocol.Page.FrameId, loaderId: Protocol.Network.LoaderId|null,
+                                     frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Protocol.Page.FrameId|
+    undefined {
+  if (frame && loaderId && frame.loaderId !== loaderId) {
+    return undefined;
+  }
+  return frameId;
 }
 
 /**
@@ -1248,7 +1268,7 @@ interface LinkInfo {
   fallback?: Element;
   userMetric?: Host.UserMetrics.Action;
   allowPrivileged?: boolean;
-  initiatorId?: OpenInNewTabInitiatorId;
+  initiatorId?: OpenInNewTabInitiatorIdOrProvider;
 }
 
 /**
@@ -1258,12 +1278,19 @@ interface LinkInfo {
  */
 export type OpenInNewTabInitiatorId = Protocol.Page.FrameId|Protocol.Target.TargetID;
 
+/**
+ * An {@link OpenInNewTabInitiatorId}, or a function that determines it at the time the link is opened. Use the
+ * function when where the link came from may be gone by then: a frame keeps its id across navigations, so the id
+ * of a frame that has since navigated would attribute the navigation to whatever document the frame shows now.
+ */
+export type OpenInNewTabInitiatorIdOrProvider = OpenInNewTabInitiatorId|(() => OpenInNewTabInitiatorId|undefined);
+
 export interface LinkifyURLOptions {
   allowPrivileged?: boolean;
   /**
-   * {@link OpenInNewTabInitiatorId}
+   * {@link OpenInNewTabInitiatorIdOrProvider}
    */
-  initiatorId?: OpenInNewTabInitiatorId;
+  initiatorId?: OpenInNewTabInitiatorIdOrProvider;
   text?: string;
   className?: string;
   lineNumber?: number;
@@ -1311,7 +1338,7 @@ interface CreateLinkOptions {
   userMetric?: Host.UserMetrics.Action;
   onRef?: (el: HTMLElement) => void;
   allowPrivileged?: boolean;
-  initiatorId?: OpenInNewTabInitiatorId;
+  initiatorId?: OpenInNewTabInitiatorIdOrProvider;
 }
 
 interface LinkDisplayOptions {

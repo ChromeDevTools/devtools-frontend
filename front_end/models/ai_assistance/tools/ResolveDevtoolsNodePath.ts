@@ -28,6 +28,10 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
    * representing the path from the root to the target element (e.g., "1,HTML,1,BODY").
    */
   path: string;
+  /**
+   * CSS selector or node label identifying the target element in the report.
+   */
+  selector?: string;
   explanation: string;
 }
 
@@ -60,8 +64,14 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
         description: 'DevTools node path string (e.g. "1,HTML,1,BODY,2,DIV").',
         nullable: false,
       },
+      selector: {
+        type: Host.AidaClient.ParametersTypes.STRING,
+        description:
+            'CSS selector or node label of the target element from the audit item (e.g. "button.submit", "body > p").',
+        nullable: false,
+      },
     },
-    required: ['explanation', 'path'],
+    required: ['explanation', 'path', 'selector'],
   };
 
   displayInfoFromArgs(params: ResolveDevtoolsNodePathArgs): {
@@ -69,8 +79,9 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
     thought: string,
     action: string,
   } {
+    const selector = params.selector?.trim().replace(/^body\s*>\s*/i, '');
     return {
-      title: 'Resolving element path',
+      title: selector ? `Resolving element (${selector})` : 'Resolving element path',
       thought: params.explanation,
       action: `resolveDevtoolsNodePath('${params.path}')`,
     };

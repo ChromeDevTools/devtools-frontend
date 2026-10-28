@@ -150,4 +150,54 @@ describe('ResolveDevtoolsNodePathTool', () => {
     const result = await tool.handler({path: '1,HTML,1,BODY', explanation: 'resolve'}, context);
     assertIsError(result, 'Error: Node does not belong to the current origin.');
   });
+
+  describe('displayInfoFromArgs', () => {
+    it('includes the element selector in the step title when provided', () => {
+      const tool = new AiAssistance.ResolveDevtoolsNodePath.ResolveDevtoolsNodePathTool();
+      const displayInfo = tool.displayInfoFromArgs({
+        path: '1,HTML,1,BODY,2,BUTTON',
+        selector: 'button.submit',
+        explanation: 'Resolve failing button',
+      });
+      assert.deepEqual(displayInfo, {
+        title: 'Resolving element (button.submit)',
+        thought: 'Resolve failing button',
+        action: 'resolveDevtoolsNodePath(\'1,HTML,1,BODY,2,BUTTON\')',
+      });
+    });
+
+    it('strips a leading "body >" prefix from the selector', () => {
+      const tool = new AiAssistance.ResolveDevtoolsNodePath.ResolveDevtoolsNodePathTool();
+      assert.strictEqual(
+          tool.displayInfoFromArgs({
+                path: '1,HTML,1,BODY,0,MAIN,2,DIV,0,BUTTON',
+                selector: 'body > main > div.modal-header > button#close-modal',
+                explanation: 'Resolve failing button',
+              })
+              .title,
+          'Resolving element (main > div.modal-header > button#close-modal)',
+      );
+      assert.strictEqual(
+          tool.displayInfoFromArgs({
+                path: '1,HTML,1,BODY',
+                selector: 'body',
+                explanation: 'Resolve body',
+              })
+              .title,
+          'Resolving element (body)',
+      );
+    });
+
+    it('falls back to default title when selector is omitted or empty', () => {
+      const tool = new AiAssistance.ResolveDevtoolsNodePath.ResolveDevtoolsNodePathTool();
+      assert.strictEqual(
+          tool.displayInfoFromArgs({path: '1,HTML,1,BODY', explanation: 'resolve'}).title,
+          'Resolving element path',
+      );
+      assert.strictEqual(
+          tool.displayInfoFromArgs({path: '1,HTML,1,BODY', selector: '   ', explanation: 'resolve'}).title,
+          'Resolving element path',
+      );
+    });
+  });
 });

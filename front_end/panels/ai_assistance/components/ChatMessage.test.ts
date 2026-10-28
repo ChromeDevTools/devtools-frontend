@@ -1974,7 +1974,7 @@ describeWithEnvironment('ChatMessage', () => {
       );
 
       const devtoolsWidget = await waitFor(
-          'devtools-performance-agent-network-track',
+          'devtools-widget.network-track-widget',
           targetElement,
       );
       assert.isNotNull(devtoolsWidget);

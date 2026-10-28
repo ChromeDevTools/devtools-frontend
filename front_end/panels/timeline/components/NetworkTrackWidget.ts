@@ -4,11 +4,13 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import networkTrackWidgetStyles from './networkTrackWidget.css.js';
 
-const {html} = Lit;
+const {html, render} = Lit;
+const {widget} = UI.Widget;
 
 // TODO: Do not redeclare the DataProvider here.
 // To prevent circular dependencies with the parent timeline module (since timeline.ts
@@ -29,17 +31,33 @@ export interface NetworkTrackWidgetData {
   dataProvider: NetworkDataProvider;
 }
 
-export class NetworkTrackWidget extends HTMLElement implements PerfUI.FlameChart.FlameChartDelegate {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export interface ViewInput {
+  flameChart: PerfUI.FlameChart.FlameChart;
+}
 
-  #flameChartContainer = document.createElement('div');
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(
+    html`
+      <style>${networkTrackWidgetStyles}</style>
+      <devtools-widget class="container" ${widget(UI.Widget.WrapperWidget, {widget: input.flameChart})}></devtools-widget>
+    `,
+    target);
+  // clang-format on
+};
+
+export class NetworkTrackWidget extends UI.Widget.Widget implements PerfUI.FlameChart.FlameChartDelegate {
   #flameChart: PerfUI.FlameChart.FlameChart|null = null;
   #dataProvider: NetworkDataProvider|null = null;
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
+  #bounds: Trace.Types.Timing.TraceWindowMicro|null = null;
+  readonly #view: View;
 
-  constructor() {
-    super();
-    this.#flameChartContainer.classList.add('container');
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
 
   set data(data: NetworkTrackWidgetData) {
@@ -48,26 +66,33 @@ export class NetworkTrackWidget extends HTMLElement implements PerfUI.FlameChart
     if (!parsedTrace || !dataProvider) {
       return;
     }
-
-    const isDataProviderChanged = dataProvider !== this.#dataProvider;
-    this.#dataProvider = dataProvider;
-    this.#parsedTrace = parsedTrace;
-
-    // 1. Render first to mount the container in the DOM so show() succeeds
-    this.#render();
-
-    // 2. Instantiate and show the flame chart in the mounted container
-    if (isDataProviderChanged || !this.#flameChart) {
-      this.#flameChartContainer.innerHTML = '';
-      this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
-      this.#flameChart.show(this.#flameChartContainer, undefined, true);
+    if (this.#dataProvider === dataProvider && this.#parsedTrace === parsedTrace && this.#bounds === data.bounds) {
+      return;
     }
 
-    const entityMapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
+    if (dataProvider !== this.#dataProvider) {
+      this.#flameChart = null;
+    }
+    this.#dataProvider = dataProvider;
+    this.#parsedTrace = parsedTrace;
+    this.#bounds = data.bounds;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#parsedTrace || !this.#dataProvider || !this.#bounds) {
+      return;
+    }
+
+    if (!this.#flameChart) {
+      this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
+    }
+
+    const entityMapper = Trace.EntityMapper.EntityMapper.getOrCreate(this.#parsedTrace);
     // Override preparePopoverElement to always return null, preventing any hover tooltips
     // from being generated or rendered when the user hovers over the network request blocks.
     this.#dataProvider.preparePopoverElement = () => null;
-    this.#dataProvider.setModel(parsedTrace, entityMapper);
+    this.#dataProvider.setModel(this.#parsedTrace, entityMapper);
     const timelineData = this.#dataProvider.timelineData();
     // Clearing the groups array hides the collapsible "Network" track header on the left.
     // When the groups array is empty, the FlameChart component directly renders the track
@@ -75,30 +100,15 @@ export class NetworkTrackWidget extends HTMLElement implements PerfUI.FlameChart
     timelineData.groups = [];
 
     const bounds = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
-      min: Trace.Types.Timing.Micro(data.bounds.min),
-      max: Trace.Types.Timing.Micro(data.bounds.max),
-      range: Trace.Types.Timing.Micro(data.bounds.range),
+      min: Trace.Types.Timing.Micro(this.#bounds.min),
+      max: Trace.Types.Timing.Micro(this.#bounds.max),
+      range: Trace.Types.Timing.Micro(this.#bounds.range),
     });
 
     this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
     this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-    this.#render();
-  }
-
-  #render(): void {
-    if (!this.#parsedTrace) {
-      return;
-    }
-    const output = html`
-        <style>${networkTrackWidgetStyles}</style>
-        ${this.#flameChartContainer}
-      `;
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    Lit.render(output, this.#shadow, {host: this});
-
-    if (this.#flameChart) {
-      this.#flameChart.update();
-    }
+    this.#view({flameChart: this.#flameChart}, undefined, this.contentElement);
+    this.#flameChart.update();
   }
 
   windowChanged(_windowStartTime: number, _windowEndTime: number, _animate: boolean): void {
@@ -108,15 +118,5 @@ export class NetworkTrackWidget extends HTMLElement implements PerfUI.FlameChart
   }
 
   updateSelectedGroup(_flameChart: PerfUI.FlameChart.FlameChart, _group: PerfUI.FlameChart.Group|null): void {
-  }
-}
-
-if (!customElements.get('devtools-performance-agent-network-track')) {
-  customElements.define('devtools-performance-agent-network-track', NetworkTrackWidget);
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-performance-agent-network-track': NetworkTrackWidget;
   }
 }

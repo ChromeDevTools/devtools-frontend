@@ -2387,13 +2387,16 @@ async function makeNetworkTrackWidget(widgetData: AiAssistanceModel.AiAgent.Netw
 
   // clang-format off
   const template = html`
-    <devtools-performance-agent-network-track
-      .data=${{
-        parsedTrace,
-        bounds,
-        dataProvider,
-      } as TimelineComponents.NetworkTrackWidget.NetworkTrackWidgetData}
-    ></devtools-performance-agent-network-track>`;
+    <devtools-widget
+      class="network-track-widget"
+      ${widget(TimelineComponents.NetworkTrackWidget.NetworkTrackWidget, {
+        data: {
+          parsedTrace,
+          bounds,
+          dataProvider,
+        } as TimelineComponents.NetworkTrackWidget.NetworkTrackWidgetData,
+      })}
+    ></devtools-widget>`;
   // clang-format on
 
   return {

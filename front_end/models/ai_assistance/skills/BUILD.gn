@@ -65,4 +65,5 @@ group("generate_skills") {
                               "$target_gen_dir/{{source_name_part}}.skill.js",
                               "$target_gen_dir/{{source_name_part}}.skill.d.ts",
                             ])
+  data = public_inputs
 }

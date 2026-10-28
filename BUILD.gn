@@ -266,6 +266,11 @@ group("api_tests") {
   public_deps = [ "test:api_tests" ]
 }
 
+group("e2e_tests") {
+  testonly = true
+  public_deps = [ "test:e2e_tests" ]
+}
+
 group("unittests") {
   testonly = true
   public_deps = [ "test:unittests" ]

@@ -289,7 +289,30 @@ class MochaApiTests extends Tests {
 }
 
 class MochaTests extends Tests {
+  readonly #wrapperName?: string;
+
+  constructor(suite: string, wrapperName?: string, ...extraSuites: string[]) {
+    super(suite, ...extraSuites);
+    this.#wrapperName = wrapperName;
+  }
+
+  #getWrapper(): string|undefined {
+    if (!this.#wrapperName || options['debug'] || options['debug-driver']) {
+      return undefined;
+    }
+    const wrapper = path.join(BUILD_ROOT, 'bin', this.#wrapperName);
+    return fs.existsSync(wrapper) ? wrapper : undefined;
+  }
+
+  override get executable() {
+    return this.#getWrapper() ?? super.executable;
+  }
+
   override run(tests: TestId[]) {
+    if (this.#getWrapper()) {
+      return super.run(tests, []);
+    }
+
     const args = [
       path.join(this.suite.buildPath, 'run-mocha.js'),
     ];
@@ -391,7 +414,7 @@ function main() {
     new MochaApiTests(path.join(GEN_DIR, 'front_end')),
     new (options['node-unit-tests'] ? MochaFrontendTests : KarmaTests)(
         path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay'), path.join(GEN_DIR, 'mcp')),
-    new MochaTests(path.join(GEN_DIR, 'test/e2e')),
+    new MochaTests(path.join(GEN_DIR, 'test/e2e'), 'run_devtools_e2e_tests'),
     new MochaTests(path.join(GEN_DIR, 'test/ai_evals')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
     new ScriptTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
@@ -409,6 +432,7 @@ function main() {
           'third_party/devtools-frontend/src/test:test',
           'third_party/devtools-frontend/src/scripts/hosted_mode:hosted_mode',
           'third_party/devtools-frontend/src/test/api:devtools_api_tests',
+          'third_party/devtools-frontend/src/test/e2e:devtools_e2e_tests',
           'third_party/devtools-frontend/src/test/unit:devtools_node_unit_tests',
           'third_party/devtools-frontend/src/test/unit:devtools_unit_tests',
         ] :
@@ -419,7 +443,7 @@ function main() {
     }
   }
 
-  const suites = new Map<MochaTests, TestId[]>();
+  const suites = new Map<(typeof testKinds)[number], TestId[]>();
   const testIds = tests
                       .flatMap(t => {
                         if (TEST_ID_REGEX.test(t)) {

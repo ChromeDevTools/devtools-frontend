@@ -647,6 +647,7 @@ export default defineConfig([
       ],
       '@devtools/no-imperative-dom-api': 'error',
       '@devtools/no-lit-render-outside-of-view': 'error',
+      '@devtools/no-empty-view-output': 'error',
       '@devtools/no-importing-images-from-src': 'error',
       '@devtools/enforce-custom-event-names': 'error',
       '@devtools/set-data-type-reference': 'error',

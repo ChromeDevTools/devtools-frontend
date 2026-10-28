@@ -5,7 +5,7 @@ severity: should_fix
 ---
 
 **Rule.** Encapsulate imperative DOM actions in ViewOutput callbacks and pass user actions via semantic ViewInput callbacks instead of raw DOM references
-- **Look for**: `ViewOutput` interfaces containing `HTMLElement` or `Element` properties, or `ViewInput` callbacks typed as `(event: Event) => void` instead of semantic domain values.
+- **Look for**: `ViewOutput` interfaces containing `HTMLElement` or `Element` properties, `ViewInput` callbacks typed as `(event: Event) => void` instead of semantic domain values, or view functions with no outputs that type `output` as `object` or `{}` instead of `undefined`, or view calls (such as `this.#view(...)` in `performUpdate()`) passing `{}` instead of `undefined`.
 - **Do not flag**: Third-party editor hosts, `<canvas>` (`HTMLCanvasElement`) and canvas sizing/resizer containers, or elements returned by existing public cross-widget APIs (such as `UI.ListDelegate.createElementForItem` or `ConsolePrompt.belowEditorElement`).
 
 **Why.** Exposing raw `HTMLElement` references on `ViewOutput` or passing raw `MouseEvent`/`KeyboardEvent` objects to presenter callbacks leaks DOM details into presenters. Views should populate narrow functional closures on `ViewOutput` (e.g. `output.focusInput = () => ...`) and unpack event values before calling `input.onSelect(value)`.

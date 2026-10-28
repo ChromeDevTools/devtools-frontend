@@ -221,14 +221,16 @@ export interface TimelinePaintImageViewInput {
   };
 }
 
-export type View = (input: TimelinePaintImageViewInput, output: undefined, target: HTMLElement) => {
-  imageElementNaturalHeight: number, imageElementNaturalWidth: number,
-};
+export interface TimelinePaintImageViewOutput {
+  imageElementNaturalHeight?: number;
+  imageElementNaturalWidth?: number;
+}
 
-export const DEFAULT_VIEW: View = (input: TimelinePaintImageViewInput, _output: undefined, target: HTMLElement): {
-  imageElementNaturalHeight: number,
-  imageElementNaturalWidth: number,
-} => {
+export type View = (input: TimelinePaintImageViewInput, output: TimelinePaintImageViewOutput, target: HTMLElement) =>
+    void;
+
+export const DEFAULT_VIEW: View = (input: TimelinePaintImageViewInput, output: TimelinePaintImageViewOutput,
+                                   target: HTMLElement): void => {
   const imageElementRef = createRef<HTMLImageElement>();
   // clang-format off
   render(html`
@@ -252,7 +254,8 @@ export const DEFAULT_VIEW: View = (input: TimelinePaintImageViewInput, _output: 
     throw new Error('ImageElement were not found in the TimelinePaintImageView.');
   }
 
-  return {imageElementNaturalHeight: imageElement.naturalHeight, imageElementNaturalWidth: imageElement.naturalWidth};
+  output.imageElementNaturalHeight = imageElement.naturalHeight;
+  output.imageElementNaturalWidth = imageElement.naturalWidth;
 };
 export class TimelinePaintImageView extends UI.Widget.Widget {
   private transformController: LayerViewer.TransformController.TransformController;
@@ -354,9 +357,14 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    const {imageElementNaturalHeight, imageElementNaturalWidth} =
-        this.#view(this.#inputData, undefined, this.contentElement);
-    this.#imageElementDimensions = {naturalHeight: imageElementNaturalHeight, naturalWidth: imageElementNaturalWidth};
+    const output: TimelinePaintImageViewOutput = {};
+    this.#view(this.#inputData, output, this.contentElement);
+    if (output.imageElementNaturalHeight !== undefined && output.imageElementNaturalWidth !== undefined) {
+      this.#imageElementDimensions = {
+        naturalHeight: output.imageElementNaturalHeight,
+        naturalWidth: output.imageElementNaturalWidth,
+      };
+    }
     // Image can only be updated to correctly fit the component when the component has loaded.
     this.updateImagePosition();
   }

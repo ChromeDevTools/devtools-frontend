@@ -33,8 +33,39 @@ new RuleTester().run('no-lit-render-outside-of-view', rule, {
       }`,
       filename: 'front_end/panels/recorder/test.ts',
     },
+    {
+      name: 'allows render inside view function whose third parameter ends with element or container',
+      code: `const ELEMENT_VIEW = (input, output, contentElement) => {
+        render(html\`<div>Hello world</div>\`, contentElement);
+      };
+      const CONTAINER_VIEW = (input, output, container) => {
+        render(html\`<div>Hello world</div>\`, container);
+      };`,
+      filename: 'front_end/components/test.ts',
+    },
   ],
   invalid: [
+    {
+      name: 'disallows render inside function with more than 3 parameters',
+      code: `const NOT_A_VIEW = (input, output, target, extra) => {
+        render(html\`<div>Hello world</div>\`, target);
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [
+        {messageId: 'litRenderShouldBeInsideOfView'},
+      ],
+    },
+    {
+      name: 'disallows render inside function with non-void return type annotation',
+      code: `const NOT_A_VIEW = (input, output, target): string => {
+        render(html\`<div>Hello world</div>\`, target);
+        return '';
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [
+        {messageId: 'litRenderShouldBeInsideOfView'},
+      ],
+    },
     {
       name: 'disallows render directly inside widget constructor',
       code: `class SomeWidget extends UI.Widget.Widget {

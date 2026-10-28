@@ -8,7 +8,6 @@
 import type {TSESTree} from '@typescript-eslint/utils';
 import {isCommaToken} from '@typescript-eslint/utils/ast-utils';
 import {nullThrows, NullThrowsReasons} from '@typescript-eslint/utils/eslint-utils';
-import type {ArrowFunctionExpression, FunctionDeclaration, FunctionExpression, Identifier} from 'estree';
 
 import {isLitHtmlRenderCall, isViewFunction} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';
@@ -50,8 +49,7 @@ export default createRule({
           return;
         }
 
-        type FunctionLike = FunctionDeclaration|FunctionExpression|ArrowFunctionExpression;
-        const targetParameterName = ((functionNode as FunctionLike).params[2] as Identifier).name;
+        const targetParameterName = (functionNode.params[2] as TSESTree.Identifier).name;
         const targetArgument = node.arguments[1];
         if (targetArgument.type !== 'Identifier' || targetArgument.name !== targetParameterName) {
           context.report({

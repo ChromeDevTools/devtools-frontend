@@ -231,7 +231,6 @@ function isBeingEditedAsHTML(state: Pick<ViewInput, 'multilineEditingNode'|'node
 
 function getVisibleChildren(node: SDK.DOMModel.DOMNode, {showComments}: TreeOptions): SDK.DOMModel.DOMNode[] {
   const children: SDK.DOMModel.DOMNode[] = [];
-  children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
 
   const contentDocument = node.contentDocument();
   if (contentDocument) {
@@ -259,6 +258,8 @@ function getVisibleChildren(node: SDK.DOMModel.DOMNode, {showComments}: TreeOpti
   if (beforePseudo) {
     children.push(beforePseudo);
   }
+
+  children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
 
   children.push(...node.carouselPseudoElements());
 

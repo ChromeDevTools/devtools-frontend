@@ -518,7 +518,7 @@ function testsEntrypointMiddleware(config: any) {
 testsEntrypointMiddleware.$inject = ['config'];
 
 export default function(config: any): void {
-  const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
+  const targetDir = path.relative(CHECKOUT_ROOT, GEN_DIR);
   const devToolsRoot = path.relative(CHECKOUT_ROOT, SOURCE_ROOT);
   let logLevel = config.LOG_ERROR;
   if (TestConfig.verbose === 1) {

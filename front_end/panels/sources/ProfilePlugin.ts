@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -9,6 +8,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import {Plugin} from './Plugin.js';
 
@@ -24,6 +24,23 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ProfilePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+interface PerformanceMarkerViewInput {
+  value: number;
+  intensity: number;
+}
+
+function renderPerformanceMarker(input: PerformanceMarkerViewInput, _output: undefined,
+                                 target: DocumentFragment): void {
+  // clang-format off
+  render(html`
+    <div class="cm-profileMarker"
+         style="background-color: hsla(44, 100%, 50%, ${input.intensity.toFixed(3)})">
+      ${input.value.toFixed(1)}
+      <span class="cm-units">${i18nString(UIStrings.ms)}</span>
+    </div>`, target);
+  // clang-format on
+}
+
 class PerformanceMarker extends CodeMirror.GutterMarker {
   constructor(readonly value: number) {
     super();
@@ -34,21 +51,15 @@ class PerformanceMarker extends CodeMirror.GutterMarker {
   }
 
   override toDOM(): HTMLElement {
-    const element = document.createElement('div');
-    element.className = 'cm-profileMarker';
+    const fragment = document.createDocumentFragment();
     const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 10 * this.value) / 5, 0.02, 1);
-    element.textContent = this.value.toFixed(1);
-    element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
-    const span = document.createElement('span');
-    span.className = 'cm-units';
-    span.textContent = i18nString(UIStrings.ms);
-    element.appendChild(span);
-    return element;
+    renderPerformanceMarker({value: this.value, intensity}, undefined, fragment);
+    return fragment.firstElementChild as HTMLElement;
   }
 }
 
-function markersFromProfileData(map: Workspace.UISourceCode.LineColumnProfileMap, state: CodeMirror.EditorState):
-    CodeMirror.RangeSet<CodeMirror.GutterMarker> {
+function markersFromProfileData(map: Workspace.UISourceCode.LineColumnProfileMap,
+                                state: CodeMirror.EditorState): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
   const markers: Array<CodeMirror.Range<CodeMirror.GutterMarker>> = [];
   const aggregatedByLine = new Map<number, number>();
   for (const [line, value] of map) {
@@ -118,8 +129,8 @@ export class PerformanceProfilePlugin extends Plugin {
         !map ? [] : [this.field.init(state => markersFromProfileData(map, state)), this.gutter, theme]);
   }
 
-  override decorationChanged(type: Workspace.UISourceCode.DecoratorType, editor: TextEditor.TextEditor.TextEditor):
-      void {
+  override decorationChanged(type: Workspace.UISourceCode.DecoratorType,
+                             editor: TextEditor.TextEditor.TextEditor): void {
     const installed = Boolean(editor.state.field(this.field, false));
     const map = this.getLineMap();
     if (!map) {

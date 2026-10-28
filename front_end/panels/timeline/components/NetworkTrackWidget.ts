@@ -32,7 +32,9 @@ export interface NetworkTrackWidgetData {
 }
 
 export interface ViewInput {
-  flameChart: PerfUI.FlameChart.FlameChart;
+  dataProvider: NetworkDataProvider;
+  delegate: PerfUI.FlameChart.FlameChartDelegate;
+  windowTimes: Trace.Types.Timing.TraceWindowMilli;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -42,14 +44,20 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
     html`
       <style>${networkTrackWidgetStyles}</style>
-      <devtools-widget class="container" ${widget(UI.Widget.WrapperWidget, {widget: input.flameChart})}></devtools-widget>
+      <devtools-widget
+        class="container"
+        ${widget(
+          (element: HTMLElement): PerfUI.FlameChart.FlameChart =>
+              new PerfUI.FlameChart.FlameChart(input.dataProvider, input.delegate, undefined, element),
+          {windowTimes: input.windowTimes},
+        )}
+      ></devtools-widget>
     `,
     target);
   // clang-format on
 };
 
 export class NetworkTrackWidget extends UI.Widget.Widget implements PerfUI.FlameChart.FlameChartDelegate {
-  #flameChart: PerfUI.FlameChart.FlameChart|null = null;
   #dataProvider: NetworkDataProvider|null = null;
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #bounds: Trace.Types.Timing.TraceWindowMicro|null = null;
@@ -70,9 +78,6 @@ export class NetworkTrackWidget extends UI.Widget.Widget implements PerfUI.Flame
       return;
     }
 
-    if (dataProvider !== this.#dataProvider) {
-      this.#flameChart = null;
-    }
     this.#dataProvider = dataProvider;
     this.#parsedTrace = parsedTrace;
     this.#bounds = data.bounds;
@@ -82,10 +87,6 @@ export class NetworkTrackWidget extends UI.Widget.Widget implements PerfUI.Flame
   override performUpdate(): void {
     if (!this.#parsedTrace || !this.#dataProvider || !this.#bounds) {
       return;
-    }
-
-    if (!this.#flameChart) {
-      this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
     }
 
     const entityMapper = Trace.EntityMapper.EntityMapper.getOrCreate(this.#parsedTrace);
@@ -106,9 +107,15 @@ export class NetworkTrackWidget extends UI.Widget.Widget implements PerfUI.Flame
     });
 
     this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
-    this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-    this.#view({flameChart: this.#flameChart}, undefined, this.contentElement);
-    this.#flameChart.update();
+    this.#view(
+        {
+          dataProvider: this.#dataProvider,
+          delegate: this,
+          windowTimes: bounds,
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 
   windowChanged(_windowStartTime: number, _windowEndTime: number, _animate: boolean): void {

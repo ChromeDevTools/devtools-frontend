@@ -16,6 +16,7 @@ import * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.
 import type * as Workspace from '../../../models/workspace/workspace.js';
 import {
   assertScreenshot,
+  doubleRaf,
   querySelectorErrorOnMissing,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -34,6 +35,7 @@ import {
   type ViewFunctionStub,
 } from '../../../testing/ViewFunctionHelpers.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
@@ -1965,7 +1967,8 @@ describeWithEnvironment('ChatMessage', () => {
         id: '1',
       };
 
-      const targetElement = renderView({message});
+      const targetElement =
+          renderView({message}, renderElementIntoDOM(new UI.Widget.Widget()).contentElement as HTMLDivElement);
       const widgetHeader = await waitFor('.widget-header', targetElement);
       assert.isNotNull(widgetHeader);
       assert.strictEqual(
@@ -1974,10 +1977,17 @@ describeWithEnvironment('ChatMessage', () => {
       );
 
       const devtoolsWidget = await waitFor(
-          'devtools-widget.network-track-widget',
-          targetElement,
-      );
+                                 'devtools-widget.network-track-widget',
+                                 targetElement,
+                                 ) as HTMLElement;
       assert.isNotNull(devtoolsWidget);
+      await doubleRaf();
+      const container = querySelectorErrorOnMissing(devtoolsWidget, 'devtools-widget.container');
+      const canvas = container.shadowRoot?.querySelector('canvas');
+      assert.exists(canvas);
+      assert.isAtLeast(container.getBoundingClientRect().height, 150);
+      assert.isAtLeast(canvas.clientHeight, 148);
+      assert.isAbove(canvas.clientWidth, 0);
     });
 
     it('renders quota error message', async () => {

@@ -362,10 +362,9 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   };
   readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
-  constructor(
-      dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
-      optionalConfig: OptionalFlameChartConfig = {}) {
-    super({useShadowDom: true});
+  constructor(dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
+              optionalConfig: OptionalFlameChartConfig = {}, element?: HTMLElement) {
+    super(element, {useShadowDom: true});
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     this.#subtitleFont = `${SUBTITLE_FONT_SIZE_AND_STYLE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChartStyles);
@@ -806,6 +805,21 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   setWindowTimes(startTime: number, endTime: number, animate?: boolean): void {
     this.chartViewport.setWindowTimes(startTime, endTime, animate);
     this.updateHighlight();
+  }
+
+  get windowTimes(): {min: number, max: number, animate?: boolean} {
+    return {
+      min: this.minimumBoundary(),
+      max: this.maximumBoundary(),
+    };
+  }
+
+  set windowTimes(windowTimes: {min: number, max: number, animate?: boolean}) {
+    this.setWindowTimes(windowTimes.min, windowTimes.max, windowTimes.animate);
+  }
+
+  override performUpdate(): void {
+    this.update();
   }
 
   /**

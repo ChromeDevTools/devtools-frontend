@@ -793,10 +793,12 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     }
     this.detailsView.detachChildWidgets();
     this.lastSelectedNodeInternal = selectedNode;
+    // Clear placeholder via Lit before calling showDetailsForNode so that
+    // subclasses can either render details declaratively into the same
+    // container without corrupting Lit's part tree, or synchronously attach
+    // child widgets without having them removed.
+    renderDetailsPlaceholder({showPlaceholder: false}, undefined, this.detailsView.element);
     if (selectedNode && this.showDetailsForNode(selectedNode)) {
-      // Clear placeholder via Lit so that subclasses can render details
-      // declaratively into the same container without corrupting Lit's part tree.
-      renderDetailsPlaceholder({showPlaceholder: false}, undefined, this.detailsView.element);
       return;
     }
     renderDetailsPlaceholder({showPlaceholder: true}, undefined, this.detailsView.element);
@@ -1191,6 +1193,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       this.#builtGroupBy = this.groupBySetting.get();
     }
     super.refreshTree(forceRefresh);
+    if (this.element.parentElement || forceRefresh) {
+      this.updateDetailsForSelection();
+    }
   }
 
   override wasShown(): void {

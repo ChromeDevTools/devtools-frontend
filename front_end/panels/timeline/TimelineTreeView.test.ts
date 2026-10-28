@@ -306,6 +306,41 @@ describe('TimelineTreeView', function() {
       callTreeView.dataGrid.rootNode().children[0].select();
       sinon.assert.notCalled(rowClicked);
     });
+
+    it('renders the heaviest stack sidebar when a node is selected after showing the placeholder', async function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+
+      renderWidgetInVbox(callTreeView, {flexAuto: true});
+      callTreeView.splitWidget.showBoth();
+      assert.isNotNull(callTreeView.detailsView.element.querySelector('.empty-state'));
+
+      callTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+      callTreeView.activeSelection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(startTime, endTime);
+      await RenderCoordinator.done();
+
+      assert.isNull(callTreeView.detailsView.element.querySelector('.empty-state'));
+      assert.isTrue(callTreeView.detailsView.element.contains(callTreeView.stackView.element));
+      assert.isNotNull(callTreeView.detailsView.element.querySelector('.timeline-stack-view-header'));
+
+      // Filtering out all rows shows the placeholder; clearing the filter restores details.
+      callTreeView.textFilter().setRegExp(/non-existent-event-name/);
+      callTreeView.refreshTree();
+      assert.isNotNull(callTreeView.detailsView.element.querySelector('.empty-state'));
+      assert.isFalse(callTreeView.detailsView.element.contains(callTreeView.stackView.element));
+
+      callTreeView.textFilter().setRegExp(null);
+      callTreeView.refreshTree();
+      await RenderCoordinator.done();
+
+      assert.isNull(callTreeView.detailsView.element.querySelector('.empty-state'));
+      assert.isTrue(callTreeView.detailsView.element.contains(callTreeView.stackView.element));
+      assert.isNotNull(callTreeView.detailsView.element.querySelector('.timeline-stack-view-header'));
+      callTreeView.detach();
+    });
   });
 
   describe('event grouping', function() {

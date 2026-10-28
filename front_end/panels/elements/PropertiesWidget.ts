@@ -80,7 +80,7 @@ interface PropertiesWidgetInput {
   allChildrenFiltered: boolean;
 }
 
-type View = (input: PropertiesWidgetInput, output: object, target: HTMLElement) => void;
+type View = (input: PropertiesWidgetInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -235,15 +235,14 @@ export class PropertiesWidget extends UI.Widget.VBox {
           this.#objectTree?.children?.arrayRanges?.some(() => true) ||
           this.#objectTree?.children?.internalProperties?.some(c => !c.isFiltered) ||
           this.#objectTree?.children?.properties?.some(c => !c.isFiltered));
-    this.#view(
-        {
-          onFilterChanged: this.onFilterChanged.bind(this),
-          onRegexToggled: this.onRegexToggled.bind(this),
-          isRegex: this.#isRegex,
-          allChildrenFiltered,
-          objectTree: this.#objectTree,
-        },
-        {}, this.contentElement);
+    this.#view({
+      onFilterChanged: this.onFilterChanged.bind(this),
+      onRegexToggled: this.onRegexToggled.bind(this),
+      isRegex: this.#isRegex,
+      allChildrenFiltered,
+      objectTree: this.#objectTree,
+    },
+               undefined, this.contentElement);
   }
 
   private onNodeChange(

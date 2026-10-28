@@ -87,7 +87,7 @@ export interface PaneViewInput {
   onContextMenu: (event: Event) => void;
 }
 
-export const DEFAULT_PANE_VIEW = (input: PaneViewInput, _output: object, target: HTMLElement): void => {
+export const DEFAULT_PANE_VIEW = (input: PaneViewInput, _output: undefined, target: HTMLElement): void => {
   // clang-format off
   render(html`
     <style>${consolePinPaneStyles}</style>
@@ -109,7 +109,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
   readonly #focusOut: () => void;
 
   constructor(focusOut: () => void,
-              view: (input: PaneViewInput, _output: object, target: HTMLElement) => void = DEFAULT_PANE_VIEW) {
+              view: (input: PaneViewInput, _output: undefined, target: HTMLElement) => void = DEFAULT_PANE_VIEW) {
     super({useShadowDom: true});
     this.#focusOut = focusOut;
     this.#view = view;
@@ -167,14 +167,13 @@ export class ConsolePinPane extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    this.#view(
-        {
-          pins: [...this.#pinModel.pins],
-          focusOut: this.#focusOut,
-          onRemove: (pin: ConsolePin) => this.removePin(pin),
-          onContextMenu: this.contextMenuEventFired.bind(this),
-        },
-        {}, this.contentElement);
+    this.#view({
+      pins: [...this.#pinModel.pins],
+      focusOut: this.#focusOut,
+      onRemove: (pin: ConsolePin) => this.removePin(pin),
+      onContextMenu: this.contextMenuEventFired.bind(this),
+    },
+               undefined, this.contentElement);
 
     // Focus the freshly created pin if the user clicked the button.
     // We need to give it a tick though, so the child can also finish rendering.

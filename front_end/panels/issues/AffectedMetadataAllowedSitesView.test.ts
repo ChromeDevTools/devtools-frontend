@@ -34,7 +34,7 @@ describe('AffectedMetadataAllowedSitesView', () => {
     function renderView(issueDetails: Protocol.Audits.CookieDeprecationMetadataIssueDetails[]): HTMLTableElement {
       const target = document.createElement('table');
       renderElementIntoDOM(target);
-      DEFAULT_VIEW({issueDetails}, {}, target);
+      DEFAULT_VIEW({issueDetails}, undefined, target);
       return target;
     }
 
@@ -90,7 +90,7 @@ describe('AffectedMetadataAllowedSitesView', () => {
       const target = renderView(issueDetails);
       assert.lengthOf(target.querySelectorAll('tr'), 1);
 
-      DEFAULT_VIEW({issueDetails}, {}, target);
+      DEFAULT_VIEW({issueDetails}, undefined, target);
 
       const rows = target.querySelectorAll('tr');
       assert.lengthOf(rows, 1);

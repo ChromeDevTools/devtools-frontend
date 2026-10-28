@@ -39,7 +39,7 @@ interface ViewInput {
   targetId?: string;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const MAX_CONTENT_LENGTH = 10000;
 
@@ -163,7 +163,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
       backendNodeId: this.node?.backendNodeId(),
       targetId: this.node?.domModel().target().id(),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   private isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {

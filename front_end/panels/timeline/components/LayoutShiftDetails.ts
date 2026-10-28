@@ -88,7 +88,7 @@ export interface ViewInput {
   togglePopover: (e: MouseEvent) => void;
   onEventClick: (event: Trace.Types.Events.Event) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export class LayoutShiftDetails extends UI.Widget.Widget {
   #view: View;
@@ -152,7 +152,7 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
       togglePopover: e => this.#togglePopover(e),
       onEventClick: e => this.#handleTraceEventClick(e),
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 }
 

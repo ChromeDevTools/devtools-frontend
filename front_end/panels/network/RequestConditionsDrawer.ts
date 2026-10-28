@@ -368,7 +368,7 @@ function renderItem({
 interface AffectedCountViewInput {
   count: number;
 }
-type AffectedCountView = (input: AffectedCountViewInput, output: object, target: HTMLElement) => void;
+type AffectedCountView = (input: AffectedCountViewInput, output: undefined, target: HTMLElement) => void;
 export const AFFECTED_COUNT_DEFAULT_VIEW: AffectedCountView = (input, output, target) => {
   render(html`${i18nString(UIStrings.dAffected, {PH1: input.count})}`, target,
          {container: {classes: ['blocked-url-count']}});
@@ -410,7 +410,7 @@ export class AffectedCountWidget extends UI.Widget.Widget {
       return;
     }
 
-    this.#view({count: this.#lookUpRequestCount(this.#condition)}, {}, this.element);
+    this.#view({count: this.#lookUpRequestCount(this.#condition)}, undefined, this.element);
   }
 
   override wasShown(): void {

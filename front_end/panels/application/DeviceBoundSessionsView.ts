@@ -562,9 +562,7 @@ interface ViewInput {
   onEventRowSelected?(selectedEvent?: Protocol.Network.DeviceBoundSessionEventOccurredEvent|undefined): void;
 }
 
-type ViewOutput = object;
-
-export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const {sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription, selectedEvent, onEventRowSelected} =
       input;
 
@@ -898,16 +896,15 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
       }
     }
 
-    this.#view(
-        {
-          sessionAndEvents,
-          preserveLogSetting,
-          defaultTitle: this.#defaultTitle,
-          defaultDescription: this.#defaultDescription,
-          selectedEvent: this.#selectedEvent,
-          onEventRowSelected: this.#onEventRowSelected.bind(this),
-        },
-        {}, this.contentElement);
+    this.#view({
+      sessionAndEvents,
+      preserveLogSetting,
+      defaultTitle: this.#defaultTitle,
+      defaultDescription: this.#defaultDescription,
+      selectedEvent: this.#selectedEvent,
+      onEventRowSelected: this.#onEventRowSelected.bind(this),
+    },
+               undefined, this.contentElement);
   }
 
   #onEventRowSelected(selectedEvent?: Protocol.Network.DeviceBoundSessionEventOccurredEvent): void {

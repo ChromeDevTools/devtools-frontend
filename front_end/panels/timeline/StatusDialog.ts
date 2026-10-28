@@ -59,9 +59,7 @@ export interface ViewInput {
   onDownloadClick: () => void;
 }
 
-export type ViewOutput = Record<string, never>;
-
-export type View = (input: ViewInput, output: ViewOutput, target: DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: DocumentFragment) => void;
 
 // clang-format off
 export const DEFAULT_VIEW: View = (input, output, target) => {
@@ -266,7 +264,7 @@ export class StatusDialog extends UI.Widget.VBox<ShadowRoot> {
             void this.#downloadRawTraceAfterError();
           },
         },
-        {},
+        undefined,
         this.contentElement,
     );
     this.#focusStopButton = false;

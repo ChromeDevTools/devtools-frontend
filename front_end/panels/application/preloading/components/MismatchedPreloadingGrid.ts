@@ -91,7 +91,7 @@ export interface ViewInput {
   pageURL: string;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, never>, target: DocumentFragment): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: DocumentFragment): void => {
   // clang-format off
   render(html`
     <devtools-data-grid striped inline>
@@ -188,6 +188,6 @@ export class MismatchedPreloadingGrid extends UI.Widget.Widget<ShadowRoot> {
       return;
     }
 
-    this.#view(this.#data, {}, this.contentElement);
+    this.#view(this.#data, undefined, this.contentElement);
   }
 }

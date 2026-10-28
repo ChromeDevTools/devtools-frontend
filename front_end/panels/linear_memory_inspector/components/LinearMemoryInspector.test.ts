@@ -75,7 +75,7 @@ describe('LinearMemoryInspector', () => {
           memorySlice: new Uint8Array(memory),
           viewerStart: 0,
         },
-        {},
+        undefined,
         target,
     );
     const viewer = target.querySelector('.viewer-widget');

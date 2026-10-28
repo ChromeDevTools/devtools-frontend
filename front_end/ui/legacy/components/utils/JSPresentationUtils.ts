@@ -106,7 +106,7 @@ export interface ViewInput {
   onShowLess: () => void;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   let renderExpandButton = Boolean(input.expandable);
@@ -244,7 +244,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
       onShowMore: this.#onShowMoreLess.bind(this, true),
       onShowLess: this.#onShowMoreLess.bind(this, false),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
     this.#updateHasNonIgnoredLinks();
   }
 

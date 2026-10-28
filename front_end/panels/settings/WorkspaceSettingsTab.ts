@@ -49,7 +49,7 @@ export interface WorkspaceSettingsTabInput {
   onAddClicked: () => void;
   onRemoveClicked: (fileSystem: Persistence.IsolatedFileSystem.IsolatedFileSystem) => void;
 }
-export type View = (input: WorkspaceSettingsTabInput, output: object, target: HTMLElement) => void;
+export type View = (input: WorkspaceSettingsTabInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
@@ -148,7 +148,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
                        })
                        .sort((fs1, fs2) => fs1.displayName.localeCompare(fs2.displayName)),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   static #getFilename(fileSystem: Persistence.PlatformFileSystem.PlatformFileSystem): string {

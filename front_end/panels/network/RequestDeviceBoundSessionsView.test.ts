@@ -26,36 +26,35 @@ describeWithEnvironment('RequestDeviceBoundSessionsView', () => {
   it('renders device bound sessions', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    RequestDeviceBoundSessionsView.DEFAULT_VIEW(
+    RequestDeviceBoundSessionsView.DEFAULT_VIEW({
+      deviceBoundSessionUsages: [
         {
-          deviceBoundSessionUsages: [
-            {
-              sessionKey: {site: 'https://example.com', id: 'session-1'},
-              usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.Deferred,
-            },
-            {
-              sessionKey: {site: 'https://example.com', id: 'session-2'},
-              usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.NotInScope,
-            },
-            {
-              sessionKey: {site: 'https://example.com', id: 'session-3'},
-              usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.InScopeRefreshNotYetNeeded,
-            },
-            {
-              sessionKey: {site: 'https://example.com', id: 'session-4'},
-              usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.InScopeRefreshNotAllowed,
-            },
-            {
-              sessionKey: {site: 'https://example.com', id: 'session-5'},
-              usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.ProactiveRefreshNotPossible,
-            },
-            {
-              sessionKey: {site: 'https://example.com', id: 'session-6'},
-              usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.ProactiveRefreshAttempted,
-            },
-          ],
+          sessionKey: {site: 'https://example.com', id: 'session-1'},
+          usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.Deferred,
         },
-        {}, container);
+        {
+          sessionKey: {site: 'https://example.com', id: 'session-2'},
+          usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.NotInScope,
+        },
+        {
+          sessionKey: {site: 'https://example.com', id: 'session-3'},
+          usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.InScopeRefreshNotYetNeeded,
+        },
+        {
+          sessionKey: {site: 'https://example.com', id: 'session-4'},
+          usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.InScopeRefreshNotAllowed,
+        },
+        {
+          sessionKey: {site: 'https://example.com', id: 'session-5'},
+          usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.ProactiveRefreshNotPossible,
+        },
+        {
+          sessionKey: {site: 'https://example.com', id: 'session-6'},
+          usage: Protocol.Network.DeviceBoundSessionWithUsageUsage.ProactiveRefreshAttempted,
+        },
+      ],
+    },
+                                                undefined, container);
     await assertScreenshot('network/request_device_bound_sessions_view.png');
   });
 

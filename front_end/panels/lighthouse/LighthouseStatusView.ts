@@ -177,7 +177,7 @@ export interface ViewInput {
   };
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement|DocumentFragment): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement|DocumentFragment): void => {
   const {
     statusHeader,
     statusText,
@@ -296,18 +296,17 @@ export class StatusView {
       this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
       this.dialog.setMaxContentSize(new Geometry.Size(500, 400));
     }
-    DEFAULT_VIEW(
-        {
-          statusHeader: this.statusHeader,
-          statusText: this.statusText,
-          progressBarClass: this.progressBarClass,
-          progressBarValue: this.progressBarValue,
-          progressBarTotal: StatusPhases.length - 1,
-          cancelButtonVisible: this.cancelButtonVisible,
-          onCancel: this.cancel.bind(this),
-          bugReport: this.bugReport || undefined,
-        },
-        {}, this.dialogRoot);
+    DEFAULT_VIEW({
+      statusHeader: this.statusHeader,
+      statusText: this.statusText,
+      progressBarClass: this.progressBarClass,
+      progressBarValue: this.progressBarValue,
+      progressBarTotal: StatusPhases.length - 1,
+      cancelButtonVisible: this.cancelButtonVisible,
+      onCancel: this.cancel.bind(this),
+      bugReport: this.bugReport || undefined,
+    },
+                 undefined, this.dialogRoot);
   }
 
   private reset(): void {

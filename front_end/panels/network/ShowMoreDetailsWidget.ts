@@ -26,7 +26,7 @@ interface ViewInput {
   onToggle: () => void;
   copy: (() => void)|null;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 const MAX_LENGTH = 3000;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
@@ -84,16 +84,15 @@ export class ShowMoreDetailsWidget extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    this.#view(
-        {
-          copy: this.#copy,
-          text: this.#text,
-          showMore: this.#showMore,
-          onToggle: () => {
-            this.#showMore = true;
-            this.requestUpdate();
-          },
-        },
-        {}, this.contentElement);
+    this.#view({
+      copy: this.#copy,
+      text: this.#text,
+      showMore: this.#showMore,
+      onToggle: () => {
+        this.#showMore = true;
+        this.requestUpdate();
+      },
+    },
+               undefined, this.contentElement);
   }
 }

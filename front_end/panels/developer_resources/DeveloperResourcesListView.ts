@@ -92,7 +92,7 @@ export interface ViewInput {
   onInitiatorMouseLeave: () => void;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target) => {
   function highlightRange(textContent: string|undefined, columnId: string): string {
@@ -263,7 +263,6 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
       },
     };
-    const output = {};
-    this.#view(input, output, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }

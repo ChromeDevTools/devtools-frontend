@@ -96,7 +96,7 @@ export class TimelineSection extends UI.Widget.Widget {
           isLastSection: this.#isLastSection,
           isSelected: this.#isSelected,
         },
-        {},
+        undefined,
         this.contentElement,
     );
   }

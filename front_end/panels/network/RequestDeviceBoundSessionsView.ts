@@ -72,9 +72,7 @@ interface ViewInput {
   deviceBoundSessionUsages: Protocol.Network.DeviceBoundSessionWithUsage[];
 }
 
-type ViewOutput = object;
-
-export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const {deviceBoundSessionUsages} = input;
 
   render(
@@ -136,7 +134,7 @@ export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
     if (!this.isShowing()) {
       return;
     }
-    this.#view({deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages()}, {}, this.contentElement);
+    this.#view({deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages()}, undefined, this.contentElement);
   }
 }
 

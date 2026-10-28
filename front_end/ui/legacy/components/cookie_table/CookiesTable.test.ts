@@ -14,7 +14,7 @@ import * as UI from '../../legacy.js';
 
 import * as CookieTable from './cookie_table.js';
 
-type CookiesTableViewFunctionStub = sinon.SinonSpy<[CookieTable.CookiesTable.ViewInput, object, HTMLElement], void>&{
+type CookiesTableViewFunctionStub = sinon.SinonSpy<[CookieTable.CookiesTable.ViewInput, undefined, HTMLElement], void>&{
   input: CookieTable.CookiesTable.ViewInput,
 };
 

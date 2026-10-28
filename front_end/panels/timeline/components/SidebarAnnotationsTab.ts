@@ -101,7 +101,7 @@ export interface SidebarAnnotationsTabViewInput {
   onAnnotationHoverOut: () => void;
   onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => void;
 }
-export type View = (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: SidebarAnnotationsTabViewInput, output: undefined, target: HTMLElement) => void;
 
 export class SidebarAnnotationsTab extends UI.Widget.Widget {
   #annotations: Trace.Types.File.Annotation[] = [];
@@ -221,7 +221,7 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
         this.contentElement.dispatchEvent(new RemoveAnnotation(annotation));
       },
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

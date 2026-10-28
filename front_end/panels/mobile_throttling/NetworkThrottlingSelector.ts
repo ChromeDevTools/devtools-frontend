@@ -69,7 +69,7 @@ interface ViewInput {
   onSelect: (conditions: SDK.NetworkManager.ThrottlingConditions) => void;
   onAddCustomConditions: () => void;
 }
-export type ViewFunction = (input: ViewInput, output: object, target: HTMLSelectElement) => void;
+export type ViewFunction = (input: ViewInput, output: undefined, target: HTMLSelectElement) => void;
 
 const optionsMap = new WeakMap<HTMLOptionElement, SDK.NetworkManager.ThrottlingConditions>();
 
@@ -399,7 +399,7 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
       throttlingGroups,
       customConditionsGroup,
     };
-    this.#view(viewInput, {}, this.contentElement as HTMLSelectElement);
+    this.#view(viewInput, undefined, this.contentElement as HTMLSelectElement);
   }
 }
 export namespace NetworkThrottlingSelect {

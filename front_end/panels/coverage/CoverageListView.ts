@@ -151,7 +151,7 @@ interface ViewInput {
   expandedUrls: Set<Platform.DevToolsPath.UrlString>;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const formatBytes = (value: number|undefined): string => {
   return getBytesFormatter().format(value ?? 0);
@@ -231,7 +231,7 @@ export class CoverageListView extends UI.Widget.VBox {
       },
       highlightRegExp: this.#highlightRegExp,
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   reset(): void {

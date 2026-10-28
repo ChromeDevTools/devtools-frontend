@@ -12,7 +12,7 @@ interface ViewInput {
   dataURL: string|null;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // Forbid to run JavaScript and set unique origin.
@@ -75,6 +75,6 @@ export class RequestHTMLView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    this.#view({dataURL: this.#dataURL}, {}, this.contentElement);
+    this.#view({dataURL: this.#dataURL}, undefined, this.contentElement);
   }
 }

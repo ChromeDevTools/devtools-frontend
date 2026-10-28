@@ -37,7 +37,7 @@ export interface ViewInput {
   eventToInsightsMap: EventToRelatedInsightsMap;
   onInsightClick: (insight: RelatedInsight) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export interface Data {
   eventToRelatedInsightsMap: EventToRelatedInsightsMap|null;
@@ -78,7 +78,7 @@ export class RelatedInsightChips extends UI.Widget.Widget {
         insight.activateInsight();
       },
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

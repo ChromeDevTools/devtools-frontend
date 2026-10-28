@@ -120,7 +120,7 @@ interface ViewInput {
   toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string};
   backendLink: {label: string, url: URL}|null;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export function renderGeneralRows(input: ViewInput): Lit.LitTemplate {
   const statusClasses = ['status'];
@@ -399,7 +399,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
           null,
     };
 
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   #getHeaderOverridesFileUrl(): Platform.DevToolsPath.UrlString {

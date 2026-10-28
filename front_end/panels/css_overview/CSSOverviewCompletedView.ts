@@ -889,7 +889,8 @@ export interface ElementDetailsViewInput {
   }>;
   visibility: Set<string>;
 }
-export type ElementDetailsViewFunction = (input: ElementDetailsViewInput, output: object, target: HTMLElement) => void;
+export type ElementDetailsViewFunction = (input: ElementDetailsViewInput, output: undefined, target: HTMLElement) =>
+    void;
 
 export const ELEMENT_DETAILS_DEFAULT_VIEW: ElementDetailsViewFunction = (input, _output, target) => {
   const {items, visibility} = input;
@@ -958,7 +959,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
   override async performUpdate(): Promise<void> {
     const visibility = new Set<string>();
     if (!this.#data.length) {
-      this.#view({items: [], visibility}, {}, this.element);
+      this.#view({items: [], visibility}, undefined, this.element);
       return;
     }
 
@@ -1006,7 +1007,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
       return {data: item, link: link as LitTemplate | undefined, showNode};
     }));
 
-    this.#view({items, visibility}, {}, this.element);
+    this.#view({items, visibility}, undefined, this.element);
   }
 }
 

@@ -68,7 +68,7 @@ interface ViewInput {
   filter?: {showFramework: boolean, showPassive: boolean, showBlocking: boolean};
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const types = input.listeners.keys().toArray().sort();
@@ -284,7 +284,7 @@ export class EventListenersView extends UI.Widget.VBox {
         }
       },
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
     this.eventListenersArrivedForTest();
   }
 

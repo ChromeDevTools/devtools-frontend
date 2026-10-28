@@ -294,7 +294,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       },
       isRegex: false,
     },
-                                           {}, container);
+                                           undefined, container);
     await assertScreenshot('elements/properties_widget_no_filter.png');
   });
 
@@ -310,7 +310,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       },
       isRegex: false,
     },
-                                           {}, container);
+                                           undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
 
     const tree = container.querySelector('devtools-tree') as UI.TreeOutline.TreeViewElement;
@@ -335,7 +335,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       },
       isRegex: false,
     },
-                                           {}, container);
+                                           undefined, container);
     await assertScreenshot('elements/properties_widget_partial_filter.png');
   });
 
@@ -351,7 +351,7 @@ describeWithEnvironment('PropertiesWidget DEFAULT_VIEW', () => {
       },
       isRegex: false,
     },
-                                           {}, container);
+                                           undefined, container);
     await assertScreenshot('elements/properties_widget_no_matches.png');
   });
 });

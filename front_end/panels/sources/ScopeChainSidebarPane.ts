@@ -81,7 +81,7 @@ interface ViewInput {
       contextMenu: UI.ContextMenu.ContextMenu,
       ) => void;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const createScopeSection = ({scope, objectTree}: {
     scope: SDK.DebuggerModel.ScopeChainEntry,
@@ -267,7 +267,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
         );
       },
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 
   #buildScopeChain({scopeChain}: SourceMapScopes.ScopeChainModel.ScopeChain): void {

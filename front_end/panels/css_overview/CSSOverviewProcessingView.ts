@@ -22,7 +22,7 @@ export interface ViewInput {
   onCancel: () => void;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -59,6 +59,6 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    this.#view({onCancel: this.#onCancel}, {}, this.element);
+    this.#view({onCancel: this.#onCancel}, undefined, this.element);
   }
 }

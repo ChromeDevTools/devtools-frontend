@@ -38,7 +38,7 @@ export interface ViewInput {
   sourceText: string;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput|null, _output: object, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: HTMLElement): void => {
   // clang-format off
   render(html`
     <style>${ruleSetDetailsViewStyles}</style>
@@ -76,7 +76,7 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
   #shouldPrettyPrint = true;
 
   constructor(element?: HTMLElement,
-              view: (input: ViewInput|null, _output: object, target: HTMLElement) => void = DEFAULT_VIEW) {
+              view: (input: ViewInput|null, _output: undefined, target: HTMLElement) => void = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }
@@ -98,7 +98,7 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
 
   override async performUpdate(): Promise<void> {
     if (!this.#ruleSet) {
-      this.#view(null, {}, this.contentElement);
+      this.#view(null, undefined, this.contentElement);
       return;
     }
 
@@ -114,14 +114,13 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
       ],
     });
 
-    this.#view(
-        {
-          url: this.#ruleSet.url || SDK.TargetManager.TargetManager.instance().inspectedURL(),
-          errorMessage: this.#ruleSet.errorMessage,
-          editorState,
-          sourceText,
-        },
-        {}, this.contentElement);
+    this.#view({
+      url: this.#ruleSet.url || SDK.TargetManager.TargetManager.instance().inspectedURL(),
+      errorMessage: this.#ruleSet.errorMessage,
+      editorState,
+      sourceText,
+    },
+               undefined, this.contentElement);
   }
 
   async #getSourceText(): Promise<string> {

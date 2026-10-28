@@ -135,7 +135,7 @@ export class ScreencastApp implements UI.App.App,
         screencastEnabled,
         screenCaptureModel: this.#screenCaptureModel,
       },
-                 {}, this.#rootView.contentElement);
+                 undefined, this.#rootView.contentElement);
     }
   }
 }

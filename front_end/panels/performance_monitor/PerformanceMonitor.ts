@@ -625,7 +625,7 @@ interface ControlPaneInput {
   onCheckboxChange: (chartName: string, e: Event) => void;
 }
 
-type ControlPaneView = (input: ControlPaneInput, output: object, target: HTMLElement) => void;
+type ControlPaneView = (input: ControlPaneInput, output: undefined, target: HTMLElement) => void;
 
 const CONTROL_PANE_DEFAULT_VIEW: ControlPaneView = (input, _output, target) => {
   // clang-format off
@@ -682,7 +682,7 @@ export class ControlPane extends UI.Widget.VBox {
       metricValues: this.#metricValues,
       onCheckboxChange: this.#onCheckboxChange.bind(this),
     };
-    this.#view(input, {}, this.element);
+    this.#view(input, undefined, this.element);
   }
 
   #onCheckboxChange(chartName: string, e: Event): void {

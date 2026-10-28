@@ -139,7 +139,7 @@ interface ViewInput {
   displayToolbar?: boolean;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const splitDescription = (description: string): [string, string] => {
   // If the description is too long we make the UI a bit better by highlighting the first sentence
@@ -1007,8 +1007,7 @@ export class JSONEditor extends JSONEditorBase {
       displayCommandInput: this.displayCommandInput,
       displayToolbar: this.displayToolbar,
     };
-    const viewOutput = {};
-    this.#view(viewInput, viewOutput, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }
 

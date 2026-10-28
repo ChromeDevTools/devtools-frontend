@@ -30,7 +30,7 @@ interface ViewInput {
   onSelect: (uiSourceCode: Workspace.UISourceCode.UISourceCode|null) => void;
   sourceCodes: Set<Workspace.UISourceCode.UISourceCode>;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const tooltip = (uiSourceCode: Workspace.UISourceCode.UISourceCode): string =>
       uiSourceCode.contentType().isFromSourceMap() ?
@@ -109,7 +109,7 @@ export class ChangesSidebar extends ChangesSidebarBase {
       sourceCodes: this.#sourceCodes,
       selectedSourceCode: this.#selectedUISourceCode,
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   #selectionChanged(

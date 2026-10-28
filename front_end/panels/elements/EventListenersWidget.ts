@@ -98,7 +98,7 @@ interface ViewInput {
   };
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -215,7 +215,7 @@ export class EventListenersWidget extends UI.Widget.VBox {
       input.eventListenerObjects = await Promise.all(promises);
     }
 
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   override wasShown(): void {

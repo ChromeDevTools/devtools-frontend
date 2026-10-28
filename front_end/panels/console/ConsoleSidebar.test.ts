@@ -146,7 +146,7 @@ describe('ConsoleSidebar', () => {
     };
 
     const container = renderElementIntoDOM(document.createElement('div'));
-    Console.ConsoleSidebar.DEFAULT_VIEW(input, {}, container);
+    Console.ConsoleSidebar.DEFAULT_VIEW(input, undefined, container);
 
     // Wait for mutation observer to fire
     await new Promise(r => setTimeout(r));

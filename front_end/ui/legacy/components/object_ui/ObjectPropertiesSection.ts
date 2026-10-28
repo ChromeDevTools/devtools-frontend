@@ -1336,7 +1336,7 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
       onRootItemContextMenu: this.onRootItemContextMenu,
       onExpand: this.onExpand,
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 
   override onDetach(): void {
@@ -1455,7 +1455,7 @@ interface ObjectTreeViewInput extends ContextMenuHandlers {
   skipProto: boolean;
   skipGettersAndSetters: boolean;
 }
-type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
+type ObjectTreeView = (input: ObjectTreeViewInput, output: undefined, target: HTMLElement) => void;
 const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
   const objectTree = input.objectTree;
   if (!objectTree) {
@@ -1796,7 +1796,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     if (this.#objectTree?.expanded) {
       await this.#populateChildrenIfNeeded(this.#objectTree);
     }
-    this.#view(this, {}, this.contentElement);
+    this.#view(this, undefined, this.contentElement);
   }
 
   override onDetach(): void {
@@ -1834,7 +1834,7 @@ interface ObjectPropertiesSectionViewInput {
   onExpand: (expanded: boolean, recursively?: boolean) => void;
 }
 
-type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: object, target: HTMLElement) =>
+type ObjectPropertiesSectionView = (input: ObjectPropertiesSectionViewInput, output: undefined, target: HTMLElement) =>
     void;
 
 export const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSectionView = (input, _output, target) => {
@@ -2293,7 +2293,7 @@ interface ExpandableTextViewInput {
   byteCount: number;
   text: string;
 }
-type ExpandableTextView = (input: ExpandableTextViewInput, output: object, target: HTMLElement) => void;
+type ExpandableTextView = (input: ExpandableTextViewInput, output: undefined, target: HTMLElement) => void;
 const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView = (input, output, target) => {
   const totalBytesText = i18n.ByteUtilities.bytesToString(input.byteCount);
   const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
@@ -2377,7 +2377,7 @@ export class ExpandableTextPropertyValue extends UI.Widget.Widget {
       maxLength: this.#maxLength,
       text: this.#text,
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

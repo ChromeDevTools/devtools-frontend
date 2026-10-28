@@ -393,7 +393,7 @@ describeWithEnvironment('EventListenersView', () => {
       removeListener: () => false,
       reveal: () => {},
     };
-    EventListeners.EventListenersView.DEFAULT_VIEW(viewInput, {}, container);
+    EventListeners.EventListenersView.DEFAULT_VIEW(viewInput, undefined, container);
 
     await UI.Widget.Widget.allUpdatesComplete;
     const tree = container.querySelector('devtools-tree');

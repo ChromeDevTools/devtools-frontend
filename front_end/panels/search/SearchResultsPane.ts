@@ -265,18 +265,17 @@ export class SearchResultsPane extends UI.Widget.VBox {
       }
       this.#resultsUpdated = false;
     }
-    this.#view(
-        {
-          results: this.#searchResults,
-          matches: this.#searchMatches,
-          expandedResults: this.#expandedResults,
-          onSelectMatch: (searchResult, matchIndex) => {
-            void Common.Revealer.reveal(searchResult.matchRevealable(matchIndex));
-          },
-          onExpandSearchResult: this.#onExpandSearchResult.bind(this),
-          onShowMoreMatches: this.#onShowMoreMatches.bind(this),
-        },
-        {}, this.contentElement);
+    this.#view({
+      results: this.#searchResults,
+      matches: this.#searchMatches,
+      expandedResults: this.#expandedResults,
+      onSelectMatch: (searchResult, matchIndex) => {
+        void Common.Revealer.reveal(searchResult.matchRevealable(matchIndex));
+      },
+      onExpandSearchResult: this.#onExpandSearchResult.bind(this),
+      onShowMoreMatches: this.#onShowMoreMatches.bind(this),
+    },
+               undefined, this.contentElement);
   }
 
   #regexMatchRanges(lineContent: string, regex: RegExp): TextUtils.TextRange.SourceRange[] {

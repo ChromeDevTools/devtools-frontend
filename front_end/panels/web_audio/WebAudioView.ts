@@ -85,7 +85,7 @@ export interface ViewInput {
   contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const {
@@ -235,7 +235,7 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
       onContextSelectorSelectionChanged: this.onContextSelectorSelectionChanged.bind(this),
       contextRealtimeData: this.contextRealtimeData,
     };
-    this.view(input, {}, this.contentElement);
+    this.view(input, undefined, this.contentElement);
   }
 
   private addEventListeners(webAudioModel: WebAudioModel): void {

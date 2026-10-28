@@ -22,18 +22,17 @@ describeWithEnvironment('EditFileSystemView view', () => {
     const target = document.createElement('div');
     renderElementIntoDOM(target, {includeCommonStyles: true});
 
-    DEFAULT_VIEW(
-        {
-          fileSystemPath: urlString`file:///home/user/project`,
-          excludedFolderPaths: [
-            {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-            {path: '/bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-          ],
-          onCreate: () => {},
-          onEdit: () => {},
-          onDelete: () => {},
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      fileSystemPath: urlString`file:///home/user/project`,
+      excludedFolderPaths: [
+        {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
+        {path: '/bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
+      ],
+      onCreate: () => {},
+      onEdit: () => {},
+      onDelete: () => {},
+    },
+                 undefined, target);
 
     await assertScreenshot('persistence/edit_file_system_basic.png');
   });
@@ -42,20 +41,19 @@ describeWithEnvironment('EditFileSystemView view', () => {
     const target = document.createElement('div');
     renderElementIntoDOM(target, {includeCommonStyles: true});
 
-    DEFAULT_VIEW(
-        {
-          fileSystemPath: urlString`file:///home/user/project`,
-          excludedFolderPaths: [
-            {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-            {path: '' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_A_PATH},
-            {path: '/bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
-            {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_UNIQUE},
-          ],
-          onCreate: () => {},
-          onEdit: () => {},
-          onDelete: () => {},
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      fileSystemPath: urlString`file:///home/user/project`,
+      excludedFolderPaths: [
+        {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
+        {path: '' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_A_PATH},
+        {path: '/bar/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.VALID},
+        {path: '/foo/' as Platform.DevToolsPath.EncodedPathString, status: ExcludedFolderStatus.ERROR_NOT_UNIQUE},
+      ],
+      onCreate: () => {},
+      onEdit: () => {},
+      onDelete: () => {},
+    },
+                 undefined, target);
 
     await assertScreenshot('persistence/edit_file_system_error.png');
   });

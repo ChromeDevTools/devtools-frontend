@@ -26,7 +26,7 @@ export interface ViewInput {
                       category: IssuesManager.Issue.IssueCategory) => Promise<Element>;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => Promise<void>;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => Promise<void>;
 
 export const DEFAULT_VIEW: View = async (input, _output, target) => {
   const templates = [];
@@ -71,6 +71,6 @@ export class AffectedLazyLoadImagesView extends AffectedResourcesView {
       issueCategory: this.issue.getCategory(),
       createElementCell: this.createElementCell.bind(this),
     };
-    await this.#view(input, {}, this.affectedResources);
+    await this.#view(input, undefined, this.affectedResources);
   }
 }

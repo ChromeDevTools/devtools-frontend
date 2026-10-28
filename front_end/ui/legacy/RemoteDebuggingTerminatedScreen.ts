@@ -46,7 +46,7 @@ interface ViewInput {
   onReconnect: () => void;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -76,7 +76,7 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
         window.location.reload();
       },
     };
-    view(input, {}, this.contentElement);
+    view(input, undefined, this.contentElement);
   }
 
   static show(reason: string): void {

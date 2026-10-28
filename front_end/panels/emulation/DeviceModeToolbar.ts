@@ -274,7 +274,7 @@ export interface ViewInput {
   showUserAgentTypeSetting: Common.Settings.Setting<boolean>;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 function createSizeInput(
     title: string, jslogContext: string, value: string|undefined, disabled: boolean|undefined,
@@ -679,7 +679,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
       showUserAgentTypeSetting: this.showUserAgentTypeSetting,
     };
 
-    this.view(input, {}, this.contentElement);
+    this.view(input, undefined, this.contentElement);
   }
 
   private getDevicePostureOptions(): Array<{title: string, value: string, selected: boolean}> {

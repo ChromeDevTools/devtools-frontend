@@ -246,7 +246,7 @@ interface ViewInput {
   warnings?: string[];
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const {metric, localValue, fieldValue} = input;
 
@@ -631,6 +631,6 @@ export class MetricCard extends UI.Widget.VBox {
       subparts: this.#subparts,
       warnings: this.#warnings,
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 }

@@ -121,7 +121,7 @@ interface ViewInput {
   timings: SelectorTiming[];
   onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
@@ -273,8 +273,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         this.#onContextMenu(event);
       },
     };
-    const viewOutput = {};
-    this.#view(viewInput, viewOutput, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   private getDescendentNodeCount(node: SDK.DOMModel.DOMNode|null): number {

@@ -43,7 +43,7 @@ describeWithEnvironment('ScreencastApp', () => {
 
     assert.isFalse(screencastApp.toggleButton.enabled);
     assert.isFalse(screencastApp.toggleButton.isToggled());
-    sinon.assert.calledOnceWithExactly(view, {screencastEnabled: false, screenCaptureModel: undefined}, {},
+    sinon.assert.calledOnceWithExactly(view, {screencastEnabled: false, screenCaptureModel: undefined}, undefined,
                                        screencastApp.rootView?.contentElement);
 
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
@@ -58,14 +58,14 @@ describeWithEnvironment('ScreencastApp', () => {
     assert.isTrue(screencastApp.toggleButton.enabled);
     assert.isTrue(screencastApp.toggleButton.isToggled());
     sinon.assert.calledTwice(view);
-    sinon.assert.calledWithExactly(view.secondCall, {screencastEnabled: true, screenCaptureModel}, {},
+    sinon.assert.calledWithExactly(view.secondCall, {screencastEnabled: true, screenCaptureModel}, undefined,
                                    screencastApp.rootView?.contentElement);
 
     screencastApp.modelRemoved(screenCaptureModel);
     assert.isFalse(screencastApp.toggleButton.enabled);
     assert.isFalse(screencastApp.toggleButton.isToggled());
     sinon.assert.calledThrice(view);
-    sinon.assert.calledWithExactly(view.thirdCall, {screencastEnabled: false, screenCaptureModel: undefined}, {},
+    sinon.assert.calledWithExactly(view.thirdCall, {screencastEnabled: false, screenCaptureModel: undefined}, undefined,
                                    screencastApp.rootView?.contentElement);
   });
 
@@ -83,14 +83,14 @@ describeWithEnvironment('ScreencastApp', () => {
     screencastApp.toggleButton.dispatchEventToListeners(UI.Toolbar.ToolbarButton.Events.CLICK, new MouseEvent('click'));
 
     assert.isFalse(Common.Settings.Settings.instance().settingForTest('screencast-enabled').get());
-    sinon.assert.calledWithExactly(view.lastCall, {screencastEnabled: false, screenCaptureModel}, {},
+    sinon.assert.calledWithExactly(view.lastCall, {screencastEnabled: false, screenCaptureModel}, undefined,
                                    screencastApp.rootView?.contentElement);
 
     screencastApp.toggleButton.setToggled(true);
     screencastApp.toggleButton.dispatchEventToListeners(UI.Toolbar.ToolbarButton.Events.CLICK, new MouseEvent('click'));
 
     assert.isTrue(Common.Settings.Settings.instance().settingForTest('screencast-enabled').get());
-    sinon.assert.calledWithExactly(view.lastCall, {screencastEnabled: true, screenCaptureModel}, {},
+    sinon.assert.calledWithExactly(view.lastCall, {screencastEnabled: true, screenCaptureModel}, undefined,
                                    screencastApp.rootView?.contentElement);
   });
 

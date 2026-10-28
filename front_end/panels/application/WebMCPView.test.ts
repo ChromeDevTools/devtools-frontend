@@ -82,13 +82,12 @@ describe('WebMCPView (View)', () => {
 
     const onCallSelect = sinon.spy();
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          toolCalls: [call],
-          onCallSelect,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      toolCalls: [call],
+      onCallSelect,
+    },
+                 undefined, target);
 
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done({waitForWork: true});
@@ -141,7 +140,7 @@ describe('WebMCPView (View)', () => {
       ...createDefaultViewInput(),
       toolCalls: [call],
     },
-                 {}, target);
+                 undefined, target);
 
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done({waitForWork: true});
@@ -205,13 +204,12 @@ describe('WebMCPView (View)', () => {
 
     const onRevealTool = sinon.spy();
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          toolCalls: [call],
-          onRevealTool,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      toolCalls: [call],
+      onRevealTool,
+    },
+                 undefined, target);
 
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done({waitForWork: true});
@@ -232,7 +230,7 @@ describe('WebMCPView (View)', () => {
     target.style.width = '600px';
     target.style.height = '400px';
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    DEFAULT_VIEW(createDefaultViewInput(), {}, target);
+    DEFAULT_VIEW(createDefaultViewInput(), undefined, target);
 
     await UI.Widget.Widget.allUpdatesComplete;
 
@@ -278,16 +276,16 @@ describe('WebMCPView (View)', () => {
         invocationId: '2',
         input: '{"path": "/tmp/test.txt"}',
         tool: tools[1],
-        result: new WebMCP.WebMCPModel.Result(
-            Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined, undefined),
+        result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Completed, 'File content here',
+                                              undefined, undefined),
         cancel: () => {},
       },
       {
         invocationId: '3',
         input: '{"path": "/root/secret.txt"}',
         tool: tools[2],
-        result: new WebMCP.WebMCPModel.Result(
-            Protocol.WebMCP.InvocationStatus.Error, undefined, 'Permission denied', undefined),
+        result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Error, undefined, 'Permission denied',
+                                              undefined),
         cancel: () => {},
       },
       {
@@ -299,13 +297,12 @@ describe('WebMCPView (View)', () => {
         cancel: () => {},
       },
     ];
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          tools,
-          toolCalls,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      tools,
+      toolCalls,
+    },
+                 undefined, target);
 
     const grid = target.querySelector('devtools-data-grid');
     assert.isNotNull(grid);
@@ -330,14 +327,13 @@ describe('WebMCPView (View)', () => {
         cancel: () => {},
       },
     ];
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          tools,
-          toolCalls,
-          selectedCall: toolCalls[0],
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      tools,
+      toolCalls,
+      selectedCall: toolCalls[0],
+    },
+                 undefined, target);
 
     const grid = target.querySelector('devtools-data-grid');
     assert.isNotNull(grid);
@@ -377,12 +373,11 @@ describe('WebMCPView (View)', () => {
       createTool('weather', 'Gets the current weather', 'frame1' as Protocol.Page.FrameId, sdkTarget),
     ];
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          tools,
-        },
-        {}, container);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      tools,
+    },
+                 undefined, container);
 
     await assertScreenshot('application/webmcp_view.png');
   });
@@ -397,12 +392,11 @@ describe('WebMCPView (View)', () => {
       createTool('test_tool', 'A test tool description', 'frame1' as Protocol.Page.FrameId, sdkTarget),
     ];
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          tools,
-        },
-        {}, container);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      tools,
+    },
+                 undefined, container);
 
     const toolItem = container.querySelector('.tool-item');
     assert.isNotNull(toolItem);
@@ -428,12 +422,11 @@ describe('WebMCPView (View)', () => {
       createTool('tool1', 'desc1', 'frame1' as Protocol.Page.FrameId, sdkTarget),
       createTool('tool2', 'desc2', 'frame1' as Protocol.Page.FrameId, sdkTarget),
     ];
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          tools,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      tools,
+    },
+                 undefined, target);
 
     const listElements = target.querySelectorAll('.tool-item');
     assert.lengthOf(listElements, 2);
@@ -452,13 +445,12 @@ describe('WebMCPView (View)', () => {
       createTool('tool1', 'desc1', 'frame1' as Protocol.Page.FrameId, sdkTarget),
       createTool('tool2', 'desc2', 'frame1' as Protocol.Page.FrameId, sdkTarget),
     ];
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          tools,
-          selectedTool: {tool: tools[1]},
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      tools,
+      selectedTool: {tool: tools[1]},
+    },
+                 undefined, target);
 
     const listElements = target.querySelectorAll('.tool-item');
     assert.lengthOf(listElements, 2);
@@ -479,18 +471,17 @@ describe('WebMCPView (View)', () => {
       invocationId: '1',
       input: '{"dir": "/tmp"}',
       tool,
-      result: new WebMCP.WebMCPModel.Result(
-          Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined, undefined),
+      result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined,
+                                            undefined),
       cancel: () => {},
     };
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          toolCalls: [selectedCall],
-          selectedCall,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      toolCalls: [selectedCall],
+      selectedCall,
+    },
+                 undefined, target);
 
     await assertScreenshot('application/webmcp-tool-call-details.png');
   });
@@ -534,13 +525,12 @@ describe('WebMCPView (View)', () => {
     assert.isDefined(selectedCall.result);
     sinon.stub(selectedCall.result, 'symbolizedError').get(() => Promise.resolve(mockSymbolizedError));
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          toolCalls: [selectedCall],
-          selectedCall,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      toolCalls: [selectedCall],
+      selectedCall,
+    },
+                 undefined, target);
 
     await UI.Widget.Widget.allUpdatesComplete;
 
@@ -558,12 +548,11 @@ describe('WebMCPView (View)', () => {
     container.style.height = '400px';
     renderElementIntoDOM(container, {includeCommonStyles: true});
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          filters: {text: 'test', toolTypes: {imperative: true}},
-        },
-        {}, container);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      filters: {text: 'test', toolTypes: {imperative: true}},
+    },
+                 undefined, container);
 
     await assertScreenshot('application/webmcp_filter_bar_applied.png');
   });
@@ -574,12 +563,11 @@ describe('WebMCPView (View)', () => {
 
     const onClearLogClick = sinon.spy();
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          onClearLogClick,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      onClearLogClick,
+    },
+                 undefined, target);
 
     const clearButton = target.querySelector('devtools-button[title="Clear log"]') as HTMLElement;
     assert.isNotNull(clearButton);
@@ -591,7 +579,7 @@ describe('WebMCPView (View)', () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container, {includeCommonStyles: true});
     const onFilterChange = sinon.spy();
-    DEFAULT_VIEW({...createDefaultViewInput(), onFilterChange}, {}, container);
+    DEFAULT_VIEW({...createDefaultViewInput(), onFilterChange}, undefined, container);
 
     const toolTypesButton = Array.from(container.querySelectorAll('button.toolbar-has-dropdown'))
                                 .find(button => button.textContent?.includes('Tool types')) as HTMLButtonElement |
@@ -618,20 +606,19 @@ describe('WebMCPView (View)', () => {
       invocationId: '1',
       input: '{"dir": "/tmp"}',
       tool,
-      result: new WebMCP.WebMCPModel.Result(
-          Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined, undefined),
+      result: new WebMCP.WebMCPModel.Result(Protocol.WebMCP.InvocationStatus.Completed, 'File content here', undefined,
+                                            undefined),
       cancel: () => {},
     };
 
     const onRevealTool = sinon.spy();
 
-    DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          toolCalls: [selectedCall],
-          onRevealTool,
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      toolCalls: [selectedCall],
+      onRevealTool,
+    },
+                 undefined, target);
 
     const dataGrid = target.querySelector('devtools-data-grid');
     assert.isNotNull(dataGrid);
@@ -764,8 +751,8 @@ describe('WebMCPView Presenter', () => {
         parameters: {arg1: 'value'},
       } as ProtocolMonitor.JSONEditor.Command,
     });
-    sinon.assert.calledWith(
-        invokeStub, {toolName: 'tool1', frameId: 'frame1' as Protocol.Page.FrameId, input: {arg1: 'value'}});
+    sinon.assert.calledWith(invokeStub,
+                            {toolName: 'tool1', frameId: 'frame1' as Protocol.Page.FrameId, input: {arg1: 'value'}});
 
     // Test with missing parameters
     nextInput.onRunTool({
@@ -1154,11 +1141,10 @@ describe('PayloadWidget (View)', () => {
     target.style.height = '400px';
     renderElementIntoDOM(target, {includeCommonStyles: true});
 
-    PAYLOAD_DEFAULT_VIEW(
-        {
-          valueObject: {key1: 'value1', key2: ['a', 'b']},
-        },
-        {}, target);
+    PAYLOAD_DEFAULT_VIEW({
+      valueObject: {key1: 'value1', key2: ['a', 'b']},
+    },
+                         undefined, target);
 
     await assertScreenshot('application/webmcp_payload_parsed.png');
   });
@@ -1169,11 +1155,10 @@ describe('PayloadWidget (View)', () => {
     target.style.height = '400px';
     renderElementIntoDOM(target, {includeCommonStyles: true});
 
-    PAYLOAD_DEFAULT_VIEW(
-        {
-          valueString: 'invalid json input',
-        },
-        {}, target);
+    PAYLOAD_DEFAULT_VIEW({
+      valueString: 'invalid json input',
+    },
+                         undefined, target);
 
     await assertScreenshot('application/webmcp_payload_unparsable.png');
   });
@@ -1187,7 +1172,7 @@ describe('PayloadWidget (View)', () => {
     PAYLOAD_DEFAULT_VIEW({
       valueObject: null,
     },
-                         {}, target);
+                         undefined, target);
 
     await raf();
     const tree = target.querySelector('devtools-tree');
@@ -1488,12 +1473,11 @@ describe('WebMCPView JSON Editor', () => {
     targetEl.style.height = '400px';
     renderElementIntoDOM(targetEl, {includeCommonStyles: true});
 
-    Application.WebMCPView.DEFAULT_VIEW(
-        {
-          ...createDefaultViewInput(),
-          selectedTool: {tool},
-        },
-        {}, targetEl);
+    Application.WebMCPView.DEFAULT_VIEW({
+      ...createDefaultViewInput(),
+      selectedTool: {tool},
+    },
+                                        undefined, targetEl);
 
     // Wait for nested Lit renders
     await UI.Widget.Widget.allUpdatesComplete;

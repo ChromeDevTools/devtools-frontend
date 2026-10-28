@@ -38,7 +38,7 @@ export interface ViewInput {
   issueDetails: readonly Protocol.Audits.CookieDeprecationMetadataIssueDetails[];
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 function renderOptOut(details: Protocol.Audits.CookieDeprecationMetadataIssueDetails): LitTemplate {
   if (details.isOptOutTopLevel || details.optOutPercentage <= 0) {
@@ -87,7 +87,7 @@ export class AffectedMetadataAllowedSitesView extends AffectedResourcesView {
 
   override update(): void {
     const issueDetails = Array.from(this.issue.getCookieDeprecationMetadataIssues(), issue => issue.details());
-    this.#view({issueDetails}, {}, this.affectedResources);
+    this.#view({issueDetails}, undefined, this.affectedResources);
     this.updateAffectedResourceCount(issueDetails.length);
   }
 }

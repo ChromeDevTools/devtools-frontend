@@ -38,7 +38,7 @@ interface ViewInput {
   onSelect(sourceCode: Workspace.UISourceCode.UISourceCode|null): void;
   workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 }
-type View = (input: ViewInput, output: object, target: DocumentFragment) => void;
+type View = (input: ViewInput, output: undefined, target: DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
       // clang-format off
@@ -87,16 +87,15 @@ export class ChangesView extends UI.Widget.VBox<ShadowRoot> {
   }
 
   override performUpdate(): void {
-    this.#view(
-        {
-          workspaceDiff: this.#workspaceDiff,
-          selectedSourceCode: this.#selectedUISourceCode,
-          onSelect: sourceCode => {
-            this.#selectedUISourceCode = sourceCode;
-            this.requestUpdate();
-          },
-        },
-        {}, this.contentElement);
+    this.#view({
+      workspaceDiff: this.#workspaceDiff,
+      selectedSourceCode: this.#selectedUISourceCode,
+      onSelect: sourceCode => {
+        this.#selectedUISourceCode = sourceCode;
+        this.requestUpdate();
+      },
+    },
+               undefined, this.contentElement);
   }
 
   override wasShown(): void {

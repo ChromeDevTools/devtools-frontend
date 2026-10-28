@@ -142,7 +142,7 @@ interface ViewInput {
   nodeProcessRunning: Boolean;
 }
 
-type View = (input: ViewInput, _output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 
 const isNodeProcessRunning = (targetInfos: Protocol.Target.TargetInfo[]): Boolean => {
   return Boolean(targetInfos.find(target => target.type === 'node' && !target.attached));
@@ -202,7 +202,7 @@ export class NodeIndicator extends UI.Widget.Widget {
     const input: ViewInput = {
       nodeProcessRunning,
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

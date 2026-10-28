@@ -304,7 +304,7 @@ export function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[],
 
   return filtered;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 type ToolStats = Map<Protocol.WebMCP.InvocationStatus|undefined, number>;
 
@@ -956,7 +956,7 @@ export class WebMCPView extends UI.Widget.VBox {
         }
       },
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
     this.#selectedTab = undefined;
   }
 }
@@ -967,7 +967,7 @@ export interface PayloadViewInput {
   symbolizedError?: Bindings.SymbolizedError.SymbolizedError|null;
 }
 
-export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: object, target: HTMLElement): void => {
+export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: undefined, target: HTMLElement): void => {
   if (input.valueObject === undefined && input.valueString === undefined && !input.errorText &&
       !input.symbolizedError) {
     render(nothing, target);
@@ -1040,7 +1040,7 @@ export class PayloadWidget extends UI.Widget.Widget {
   #view: typeof PAYLOAD_DEFAULT_VIEW;
 
   constructor(element?: HTMLElement,
-              view: (input: PayloadViewInput, output: object, target: HTMLElement) => void = PAYLOAD_DEFAULT_VIEW) {
+              view: (input: PayloadViewInput, output: undefined, target: HTMLElement) => void = PAYLOAD_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }
@@ -1106,7 +1106,7 @@ export class PayloadWidget extends UI.Widget.Widget {
       errorText: this.#errorText,
       symbolizedError: this.#symbolizedError,
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

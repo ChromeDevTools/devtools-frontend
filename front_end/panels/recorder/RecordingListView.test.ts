@@ -29,9 +29,9 @@ describeWithEnvironment('RecordingListView', () => {
     }
   });
 
-  async function createView(output?: RecordingListView.ViewOutput):
+  async function createView():
       Promise<[ViewFunctionStub<typeof RecordingListView.RecordingListView>, RecordingListView.RecordingListView]> {
-    const view = createViewFunctionStub(RecordingListView.RecordingListView, output);
+    const view = createViewFunctionStub(RecordingListView.RecordingListView);
     const component = new RecordingListView.RecordingListView(undefined, view);
     component.recordings = [{storageName: 'storage-test', name: 'test'}];
     component.replayAllowed = true;

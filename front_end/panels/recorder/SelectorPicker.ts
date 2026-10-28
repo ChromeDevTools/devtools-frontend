@@ -35,9 +35,7 @@ export interface ViewInput {
   onClick: (event: MouseEvent) => void;
 }
 
-export type ViewOutput = object;
-
-export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const {active, disabled, onClick} = input;
   Lit.render(
       html`
@@ -94,7 +92,7 @@ export class SelectorPicker extends UI.Widget.Widget implements SDK.TargetManage
           disabled: this.#disabled,
           onClick: this.#handleClickEvent.bind(this),
         },
-        {},
+        undefined,
         this.contentElement,
     );
   }

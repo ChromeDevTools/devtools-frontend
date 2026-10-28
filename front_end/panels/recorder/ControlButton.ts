@@ -80,6 +80,6 @@ export class ControlButton extends UI.Widget.Widget<ShadowRoot> {
       disabled: this.#disabled,
       onClick: this.#onClick,
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 }

@@ -34,7 +34,7 @@ export interface ViewInput {
   onItemClick: (id: string) => void;
   onItemKeyDown: (id: string, key: string) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const onClick = (event: Event): void => {
@@ -107,7 +107,7 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
       onItemClick: this.#onItemClick.bind(this),
       onItemKeyDown: this.#onItemKeyDown.bind(this),
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   set items(items: Array<{name: string, id: string}>) {

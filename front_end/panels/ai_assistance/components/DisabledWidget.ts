@@ -110,7 +110,7 @@ function renderConsentViewContents(
 
 export const DEFAULT_VIEW = (
     input: ViewProps,
-    _output: Record<string, unknown>,
+    _output: undefined,
     target: HTMLElement,
     ): void => {
   // clang-format off
@@ -160,7 +160,7 @@ export class DisabledWidget extends UI.Widget.Widget {
           aidaAvailability: this.aidaAvailability,
           hostConfig,
         },
-        {},
+        undefined,
         this.contentElement,
     );
   }

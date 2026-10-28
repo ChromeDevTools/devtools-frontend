@@ -65,7 +65,7 @@ export interface EditFileSystemViewInput {
   onDelete: (event: CustomEvent) => void;
 }
 
-export type View = (input: EditFileSystemViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: EditFileSystemViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -143,7 +143,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
           (e.currentTarget as HTMLElement).dataset.index ?? '-1', e.detail.valueBeforeEditing, e.detail.newText),
       onDelete: e => this.#onDelete((e.currentTarget as HTMLElement).dataset.index ?? '-1'),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   #onCreate(url?: string): void {

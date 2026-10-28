@@ -364,7 +364,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                   target);
 };
 
-type View = (input: ViewInput, output: object, element: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, element: HTMLElement) => void;
 export class LayoutPane extends UI.Widget.Widget {
   readonly #settings: ReadonlyArray<Common.Settings.Setting<string|boolean>>;
   readonly #uaShadowDOMSetting: Common.Settings.Setting<boolean>;
@@ -557,7 +557,7 @@ export class LayoutPane extends UI.Widget.Widget {
       onSummaryKeyDown: this.#onSummaryKeyDown.bind(this),
     };
 
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   #onBooleanSettingChange(setting: BooleanSetting, event: Event): void {

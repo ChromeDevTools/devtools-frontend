@@ -294,7 +294,7 @@ describeWithEnvironment('RequestHeadersView', () => {
         toggleShowRawRequestHeaders: () => {},
         backendLink: null,
       },
-                                              {}, container);
+                                              undefined, container);
 
       assert.strictEqual(Boolean(container.querySelector('.early-hints-warning')), expectsWarning,
                          `cacheDisabled=${cacheDisabled}, rel=${relation}`);
@@ -331,7 +331,7 @@ describeWithEnvironment('RequestHeadersView', () => {
       },
       backendLink: null,
     },
-                                            {}, container);
+                                            undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
 
@@ -355,7 +355,7 @@ describeWithEnvironment('RequestHeadersView', () => {
       },
       backendLink: null,
     },
-                                            {}, container);
+                                            undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
 
@@ -389,7 +389,7 @@ describeWithEnvironment('RequestHeadersView', () => {
       },
       backendLink: null,
     },
-                                            {}, container);
+                                            undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
 
@@ -717,7 +717,7 @@ describeWithEnvironment('RequestHeadersView', () => {
         url: new URL('http://localhost:8080/apm/trace/123'),
       },
     },
-                                            {}, container);
+                                            undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
 
@@ -746,7 +746,7 @@ describeWithEnvironment('RequestHeadersView', () => {
         url: new URL('http://localhost:8080/apm/trace/123'),
       },
     },
-                                            {}, container);
+                                            undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
     await RenderCoordinator.done();
 

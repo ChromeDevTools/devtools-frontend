@@ -125,7 +125,7 @@ export interface ViewInput {
                  newRule: NetworkForward.BackendLinking.BackendLinkingRule) => void;
   onDeleteRule: (rule: NetworkForward.BackendLinking.BackendLinkingRule) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const onCreate = (event: CustomEvent<{urlPattern?: string, targetUrlTemplate?: string, label?: string}>): void => {
     const data = event.detail;
@@ -304,6 +304,6 @@ export class BackendLinkingSettingsTab extends UI.Widget.VBox {
         }
       },
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }

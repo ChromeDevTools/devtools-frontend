@@ -519,7 +519,7 @@ export interface BreakpointsViewInput {
   itemRemoveClickHandler: (item: BreakpointItem, event: Event) => void;
 }
 
-export type View = (input: BreakpointsViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: BreakpointsViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
@@ -729,7 +729,7 @@ export class BreakpointsView extends UI.Widget.VBox {
       itemEditClickHandler: this.#itemEditClickHandler.bind(this),
       itemRemoveClickHandler: this.#itemRemoveClickHandler.bind(this),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
 
     // If no element is tabbable, set the pause-on-exceptions to be tabbable. This can happen
     // if the previously focused element was removed.

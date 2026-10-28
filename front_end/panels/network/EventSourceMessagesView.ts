@@ -205,7 +205,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
       onRowContextMenu: this.onRowContextMenu.bind(this),
     };
 
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }
 

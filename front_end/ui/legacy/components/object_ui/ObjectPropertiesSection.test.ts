@@ -653,7 +653,7 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
         onRootItemContextMenu: () => {},
         onExpand: () => {},
       },
-                                                                              {}, container);
+                                                                              undefined, container);
       renderElementIntoDOM(container);
       await UI.Widget.Widget.allUpdatesComplete;
       await raf();
@@ -694,7 +694,7 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
       onRootItemContextMenu: () => {},
       onExpand: () => {},
     },
-                                                                            {}, container);
+                                                                            undefined, container);
     renderElementIntoDOM(container);
     await UI.Widget.Widget.allUpdatesComplete;
     await raf();
@@ -736,7 +736,7 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
       onRootItemContextMenu: () => {},
       onExpand: () => {},
     },
-                                                                            {}, container);
+                                                                            undefined, container);
     renderElementIntoDOM(container);
     await UI.Widget.Widget.allUpdatesComplete;
     await raf();

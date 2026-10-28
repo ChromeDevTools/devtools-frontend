@@ -132,7 +132,7 @@ export interface ViewInput {
   requestUrl: Platform.DevToolsPath.UrlString;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const createViewSourceToggle = (viewSource: boolean, callback: (value: boolean) => void): LitTemplate =>
       html`<devtools-button
@@ -515,7 +515,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       binaryPayloadContentData: this.#binaryPayloadContentData,
       requestUrl: this.request?.url() ?? Platform.DevToolsPath.EmptyUrlString,
     };
-    this.#view(input, {}, this.element);
+    this.#view(input, undefined, this.element);
   }
 
   #refreshFormData(): void {

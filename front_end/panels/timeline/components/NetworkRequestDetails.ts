@@ -126,7 +126,7 @@ export interface ViewInput {
   linkifier: LegacyComponents.Linkifier.Linkifier|null;
   parsedTrace: Trace.TraceModel.ParsedTrace|null;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export class NetworkRequestDetails extends UI.Widget.Widget {
   #view: View;
@@ -183,17 +183,16 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   }
 
   override performUpdate(): Promise<void>|void {
-    this.#view(
-        {
-          request: this.#request,
-          previewElementsCache: this.#requestPreviewElements,
-          target: this.#target,
-          entityMapper: this.#entityMapper,
-          serverTimings: this.#serverTimings,
-          linkifier: this.#linkifier,
-          parsedTrace: this.#parsedTrace,
-        },
-        {}, this.contentElement);
+    this.#view({
+      request: this.#request,
+      previewElementsCache: this.#requestPreviewElements,
+      target: this.#target,
+      entityMapper: this.#entityMapper,
+      serverTimings: this.#serverTimings,
+      linkifier: this.#linkifier,
+      parsedTrace: this.#parsedTrace,
+    },
+               undefined, this.contentElement);
   }
 }
 

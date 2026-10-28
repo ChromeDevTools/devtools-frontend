@@ -298,7 +298,7 @@ export class WatchExpressionPromptWidget extends UI.Widget.Widget {
   }
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const onContextMenu = (watchExpression: WatchExpression|undefined, event: Event): void => {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -560,7 +560,7 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.Ac
         e.result.expanded = expanded;
       },
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 
   #getExpansionTracker(expression: string): ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker {

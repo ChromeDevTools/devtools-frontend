@@ -59,9 +59,7 @@ interface ViewInput {
   onKeyDown: (storageName: string, event: Event) => void;
 }
 
-export type ViewOutput = object;
-
-export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const {
     recordings,
     replayAllowed,
@@ -212,7 +210,7 @@ export class RecordingListView extends UI.Widget.Widget {
       onPlayRecordingClick: this.#onPlayRecordingClick.bind(this),
       onKeyDown: this.#onKeyDown.bind(this),
     },
-               {}, this.contentElement);
+               undefined, this.contentElement);
   }
 
   override wasShown(): void {

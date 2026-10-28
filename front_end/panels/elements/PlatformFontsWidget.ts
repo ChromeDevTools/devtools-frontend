@@ -47,7 +47,7 @@ interface PlatformFontsWidgetInput {
   platformFonts: Protocol.CSS.PlatformFontUsage[]|null;
 }
 
-type View = (input: PlatformFontsWidgetInput, output: object, target: HTMLElement) => void;
+type View = (input: PlatformFontsWidgetInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
@@ -110,12 +110,12 @@ export class PlatformFontsWidget extends UI.Widget.VBox {
     const cssModel = this.#sharedModel?.cssModel();
     const node = this.#sharedModel?.node;
     if (!node || !cssModel) {
-      this.#view({platformFonts: null}, {}, this.contentElement);
+      this.#view({platformFonts: null}, undefined, this.contentElement);
       return;
     }
 
     const platformFonts = await cssModel.getPlatformFonts(node.id);
     const sortedPlatformFonts = platformFonts?.sort((a, b) => b.glyphCount - a.glyphCount) || null;
-    this.#view({platformFonts: sortedPlatformFonts}, {}, this.contentElement);
+    this.#view({platformFonts: sortedPlatformFonts}, undefined, this.contentElement);
   }
 }

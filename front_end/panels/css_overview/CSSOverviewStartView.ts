@@ -50,7 +50,7 @@ export interface ViewInput {
   onStartCapture: () => void;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, output, target) => {
   // Disabled until https://crbug.com/1079231 is fixed.
@@ -100,6 +100,6 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    this.#view({onStartCapture: this.onStartCapture}, {}, this.contentElement);
+    this.#view({onStartCapture: this.onStartCapture}, undefined, this.contentElement);
   }
 }

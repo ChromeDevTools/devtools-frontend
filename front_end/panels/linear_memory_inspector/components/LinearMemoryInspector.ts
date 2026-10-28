@@ -113,7 +113,7 @@ export interface ViewInput {
   viewerStart: number;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: Record<string, unknown>, target: HTMLElement): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const navigatorAddressToShow =
       input.currentNavigatorMode === Mode.SUBMITTED ? formatAddress(input.address) : input.currentNavigatorAddressLine;
   const navigatorAddressIsValid = isValidAddress(navigatorAddressToShow, input.outerMemoryLength);
@@ -367,7 +367,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
       memorySlice: this.#memory.slice(start - this.#memoryOffset, end - this.#memoryOffset),
       viewerStart: start,
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   #onJumpToAddress(address: number): void {

@@ -20,10 +20,9 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface ViewInput {
   trackingSites: readonly string[];
 }
-export type ViewOutput = object;
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-export function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement): void {
+export function defaultView(input: ViewInput, output: undefined, target: HTMLElement): void {
   render(html`
       <tbody>
         ${input.trackingSites.map(site => html`
@@ -45,7 +44,7 @@ export class AffectedTrackingSitesView extends AffectedResourcesView {
 
   override update(): void {
     const trackingSites = Array.from(this.issue.getBounceTrackingSites());
-    this.#view({trackingSites}, {}, this.affectedResources);
+    this.#view({trackingSites}, undefined, this.affectedResources);
     this.updateAffectedResourceCount(trackingSites.length);
   }
 }

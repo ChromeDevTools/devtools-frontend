@@ -86,7 +86,7 @@ interface ViewInput {
   onStateCheckboxClicked: (event: MouseEvent) => void;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const createElementStateCheckbox = (state: ElementState): TemplateResult => {
@@ -258,7 +258,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       states: [...this.#states.values()],
       onStateCheckboxClicked: this.onStateCheckboxClicked.bind(this),
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   async #updateElementSpecificStatesTable(node: SDK.DOMModel.DOMNode|null = null): Promise<void> {

@@ -653,7 +653,7 @@ interface SummaryViewInput {
   onTreeRowClicked: (_node: Trace.Extras.TraceTree.Node|null, _events?: Trace.Types.Events.Event[]) => void;
 }
 
-type View = (input: SummaryViewInput, output: object, target: HTMLElement) => void;
+type View = (input: SummaryViewInput, output: undefined, target: HTMLElement) => void;
 const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(
@@ -691,21 +691,20 @@ class SummaryView extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    this.#view(
-        {
-          selectedEvent: this.selectedEvent,
-          eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
-          parsedTrace: this.parsedTrace,
-          entityMapper: this.entityMapper,
-          target: this.target,
-          linkifier: this.linkifier,
-          filmStrip: this.filmStrip,
-          selectedRange: this.selectedRange,
-          onTreeRowHovered: this.onTreeRowHovered,
-          onBottomUpButtonClicked: this.onBottomUpButtonClicked,
-          onTreeRowClicked: this.onTreeRowClicked,
-        },
-        {}, this.contentElement);
+    this.#view({
+      selectedEvent: this.selectedEvent,
+      eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
+      parsedTrace: this.parsedTrace,
+      entityMapper: this.entityMapper,
+      target: this.target,
+      linkifier: this.linkifier,
+      filmStrip: this.filmStrip,
+      selectedRange: this.selectedRange,
+      onTreeRowHovered: this.onTreeRowHovered,
+      onBottomUpButtonClicked: this.onBottomUpButtonClicked,
+      onTreeRowClicked: this.onTreeRowClicked,
+    },
+               undefined, this.contentElement);
   }
 }
 

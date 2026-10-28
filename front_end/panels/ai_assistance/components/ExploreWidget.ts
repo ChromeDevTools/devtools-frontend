@@ -42,7 +42,7 @@ interface ViewProps {
 
 export const DEFAULT_VIEW = (
     input: ViewProps,
-    _output: Record<string, unknown>,
+    _output: undefined,
     target: HTMLElement,
     ): void => {
   function renderFeatureCardContent(featureCard: FeatureCard): LitTemplate {
@@ -187,7 +187,7 @@ export class ExploreWidget extends UI.Widget.Widget {
         {
           featureCards,
         },
-        {},
+        undefined,
         this.contentElement,
     );
   }

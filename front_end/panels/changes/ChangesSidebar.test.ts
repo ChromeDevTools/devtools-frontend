@@ -55,7 +55,7 @@ describeWithEnvironment('ChangesSidebar', () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container, {includeCommonStyles: true});
     Changes.ChangesSidebar.DEFAULT_VIEW(
-        {onSelect: () => {}, sourceCodes: new Set(uiSourceCodes), selectedSourceCode: null}, {}, container);
+        {onSelect: () => {}, sourceCodes: new Set(uiSourceCodes), selectedSourceCode: null}, undefined, container);
     await assertScreenshot('changes/ChangesSidebar.png');
   });
 
@@ -104,13 +104,12 @@ describeWithEnvironment('ChangesSidebar', () => {
     renderElementIntoDOM(container, {includeCommonStyles: true});
     uiSourceCodes.splice(5, 1);
     uiSourceCodes.splice(3, 1);
-    Changes.ChangesSidebar.DEFAULT_VIEW(
-        {
-          onSelect: () => {},
-          sourceCodes: new Set(uiSourceCodes),
-          selectedSourceCode: uiSourceCodes[2],
-        },
-        {}, container);
+    Changes.ChangesSidebar.DEFAULT_VIEW({
+      onSelect: () => {},
+      sourceCodes: new Set(uiSourceCodes),
+      selectedSourceCode: uiSourceCodes[2],
+    },
+                                        undefined, container);
 
     await assertScreenshot('changes/ChangesSidebar-selected.png');
   });

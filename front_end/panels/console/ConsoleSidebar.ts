@@ -76,7 +76,7 @@ interface ViewInput {
   onSelectionChanged: (selectedFilter: ConsoleFilter) => void;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   render(html`<devtools-tree
         navigation-variant
@@ -214,7 +214,7 @@ export class ConsoleSidebar extends ConsoleSidebarBase {
         this.dispatchEventToListeners(Events.FILTER_SELECTED);
       },
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   clear(): void {

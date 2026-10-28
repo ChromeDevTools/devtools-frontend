@@ -188,7 +188,7 @@ describeWithEnvironment('StepView', () => {
       await createStepView(viewFunction, {step});
       const container = document.createElement('div');
 
-      StepView.DEFAULT_VIEW(viewFunction.input, {}, container);
+      StepView.DEFAULT_VIEW(viewFunction.input, undefined, container);
       let disclosure = container.querySelector<HTMLElement>('.title-container');
       assert.exists(disclosure);
       assert.strictEqual(disclosure.getAttribute('role'), 'button');
@@ -197,7 +197,7 @@ describeWithEnvironment('StepView', () => {
 
       viewFunction.input.onToggleShowDetailsKeydown(new KeyboardEvent('keydown', {key: 'Enter'}));
       const input = await viewFunction.nextInput;
-      StepView.DEFAULT_VIEW(input, {}, container);
+      StepView.DEFAULT_VIEW(input, undefined, container);
 
       disclosure = container.querySelector<HTMLElement>('.title-container');
       assert.exists(disclosure);
@@ -209,7 +209,7 @@ describeWithEnvironment('StepView', () => {
       await createStepView(viewFunction, {section});
       const container = document.createElement('div');
 
-      StepView.DEFAULT_VIEW(viewFunction.input, {}, container);
+      StepView.DEFAULT_VIEW(viewFunction.input, undefined, container);
       const title = container.querySelector<HTMLElement>('.title-container');
       assert.exists(title);
       assert.strictEqual(title.getAttribute('role'), 'presentation');
@@ -247,7 +247,7 @@ describeWithEnvironment('StepView', () => {
       it('exposes the breakpoint icon as an add breakpoint button', () => {
         const container = document.createElement('div');
 
-        StepView.DEFAULT_VIEW(createViewInput({step}), {}, container);
+        StepView.DEFAULT_VIEW(createViewInput({step}), undefined, container);
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
         assert.strictEqual(icon.getAttribute('role'), 'button');
@@ -257,7 +257,7 @@ describeWithEnvironment('StepView', () => {
       it('exposes the breakpoint icon as a remove breakpoint button', () => {
         const container = document.createElement('div');
 
-        StepView.DEFAULT_VIEW(createViewInput({hasBreakpoint: true, step}), {}, container);
+        StepView.DEFAULT_VIEW(createViewInput({hasBreakpoint: true, step}), undefined, container);
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
         assert.strictEqual(icon.getAttribute('aria-label'), 'Remove breakpoint');
@@ -266,7 +266,7 @@ describeWithEnvironment('StepView', () => {
       it('hides the non-actionable section icon from assistive technology', () => {
         const container = document.createElement('div');
 
-        StepView.DEFAULT_VIEW(createViewInput({section}), {}, container);
+        StepView.DEFAULT_VIEW(createViewInput({section}), undefined, container);
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
         assert.strictEqual(icon.getAttribute('aria-hidden'), 'true');
@@ -277,7 +277,7 @@ describeWithEnvironment('StepView', () => {
         const onBreakpointClick = sinon.spy();
         const container = document.createElement('div');
 
-        StepView.DEFAULT_VIEW(createViewInput({step, onBreakpointClick}), {}, container);
+        StepView.DEFAULT_VIEW(createViewInput({step, onBreakpointClick}), undefined, container);
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
         const event = new MouseEvent('click', {bubbles: true});
@@ -290,7 +290,7 @@ describeWithEnvironment('StepView', () => {
         const onBreakpointClick = sinon.spy();
         const container = document.createElement('div');
 
-        StepView.DEFAULT_VIEW(createViewInput({step, onBreakpointClick}), {}, container);
+        StepView.DEFAULT_VIEW(createViewInput({step, onBreakpointClick}), undefined, container);
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
         icon.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));

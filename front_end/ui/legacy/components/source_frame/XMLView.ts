@@ -115,7 +115,7 @@ interface ViewInput {
   search: UI.TreeOutline.TreeSearch<XMLTreeViewNode, SearchResult>|undefined;
   jumpToNextSearchResult: SearchResult|undefined;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   function highlight(node: XMLTreeViewNode, closeTag: boolean): {highlights: string, selected: string} {
     let highlights = '';
@@ -319,8 +319,8 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
         this.requestUpdate();
       };
       this.#view(
-          {xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump}, {},
-          this.contentElement);
+          {xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump},
+          undefined, this.contentElement);
     }
   }
 

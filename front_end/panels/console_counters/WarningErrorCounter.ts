@@ -47,7 +47,7 @@ interface ViewInput {
   showIssuesHandler: () => void;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target) => {
   const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
@@ -172,9 +172,8 @@ export class WarningErrorCounterWidget extends UI.Widget.Widget {
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     const issues = issuesManager.numberOfIssues();
 
-    this.view(
-        {compact: this.compact, errors, warnings, issues, showIssuesHandler: this.showIssues.bind(this)}, {},
-        this.contentElement);
+    this.view({compact: this.compact, errors, warnings, issues, showIssuesHandler: this.showIssues.bind(this)},
+              undefined, this.contentElement);
 
     this.setVisibility(Boolean(errors || warnings || issues));
     UI.InspectorView.InspectorView.instance().toolbarItemResized();

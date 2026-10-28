@@ -68,7 +68,7 @@ export interface ViewInput {
   aiButtonTitle?: string;
   onAiButtonClick?: (cookie: CookieData, event: Event) => void;
 }
-type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
+type ViewFunction = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME|SDK.Cookie.Attribute.VALUE|SDK.Cookie.Attribute.DOMAIN|
                          SDK.Cookie.Attribute.PATH|SDK.Cookie.Attribute.SECURE|SDK.Cookie.Attribute.SAME_SITE;
 
@@ -472,8 +472,7 @@ export class CookiesTable extends UI.Widget.VBox {
           } :
           undefined,
     };
-    const output = {};
-    this.view(input, output, this.element);
+    this.view(input, undefined, this.element);
   }
 
   private onSelect(key: string|undefined): void {

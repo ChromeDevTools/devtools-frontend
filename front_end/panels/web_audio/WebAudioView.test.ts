@@ -63,7 +63,7 @@ describeWithEnvironment('WebAudioView', () => {
       onContextSelectorSelectionChanged: () => {},
       contextRealtimeData: null,
     },
-                 {}, container);
+                 undefined, container);
     await assertScreenshot('web_audio/web-audio-view-placeholder.png');
     container.remove();
   });
@@ -78,7 +78,7 @@ describeWithEnvironment('WebAudioView', () => {
       onContextSelectorSelectionChanged: () => {},
       contextRealtimeData: null,
     },
-                 {}, container);
+                 undefined, container);
     await assertScreenshot('web_audio/web-audio-view-contexts.png');
     container.remove();
   });
@@ -93,7 +93,7 @@ describeWithEnvironment('WebAudioView', () => {
       onContextSelectorSelectionChanged: () => {},
       contextRealtimeData: null,
     },
-                 {}, container);
+                 undefined, container);
 
     const entries = Array.from(container.querySelectorAll('.context-detail-row-entry')).map(e => e.textContent?.trim());
     const values = Array.from(container.querySelectorAll('.context-detail-row-value')).map(e => e.textContent?.trim());

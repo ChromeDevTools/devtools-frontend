@@ -106,7 +106,7 @@ function renderFrameSuffix(frame: StackTrace.StackTrace.ParsedErrorStackFrame): 
   return Lit.nothing;
 }
 
-const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
+const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const renderError = (error: Bindings.SymbolizedError.SymbolizedError, isCause: boolean): Lit.LitTemplate => {
     if (error instanceof Bindings.SymbolizedError.UnparsableError) {
       // linkifyWithCustomLinkifier() returns a Widget for long strings, which Lit
@@ -225,6 +225,6 @@ export class SymbolizedErrorWidget extends UI.Widget.Widget {
       error: this.#error,
       ignoreListManager: this.#ignoreListManager,
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 }

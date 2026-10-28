@@ -39,7 +39,7 @@ export interface MediaQueryMarker {
   locations: SDK.CSSModel.CSSLocation[];
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: DocumentFragment): void => {
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: DocumentFragment): void => {
   const createBarClassMap = (marker: MediaQueryMarker): Record<string, boolean> => ({
     'media-inspector-bar': true,
     'media-inspector-marker-inactive': !marker.active,
@@ -168,7 +168,7 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
   private cachedQueryModels?: MediaQueryUIModel[];
 
   constructor(element?: HTMLElement,
-              view: (input: ViewInput, _output: object, target: DocumentFragment) => void = DEFAULT_VIEW) {
+              view: (input: ViewInput, _output: undefined, target: DocumentFragment) => void = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.view = view;
     this.#scale = 1;
@@ -399,14 +399,13 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
     }
     const markers = Map.groupBy(this.buildMediaQueryMarkers(), marker => marker.model.section());
 
-    this.view(
-        {
-          zoomFactor: this.zoomFactor(),
-          markers,
-          onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
-          onContextMenu: this.onContextMenu.bind(this),
-        },
-        {}, this.contentElement);
+    this.view({
+      zoomFactor: this.zoomFactor(),
+      markers,
+      onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
+      onContextMenu: this.onContextMenu.bind(this),
+    },
+              undefined, this.contentElement);
   }
 }
 

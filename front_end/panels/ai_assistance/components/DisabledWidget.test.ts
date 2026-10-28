@@ -23,12 +23,11 @@ describeWithEnvironment('ChatView', () => {
     target.style.maxHeight = '600px';
     target.style.padding = '12px';
     renderElementIntoDOM(target);
-    AiAssistance.DisabledWidget.DEFAULT_VIEW(
-        {
-          aidaAvailability,
-          hostConfig,
-        },
-        {}, target);
+    AiAssistance.DisabledWidget.DEFAULT_VIEW({
+      aidaAvailability,
+      hostConfig,
+    },
+                                             undefined, target);
     return target;
   }
 

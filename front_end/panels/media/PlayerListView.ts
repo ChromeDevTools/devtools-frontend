@@ -55,7 +55,7 @@ export interface ViewInput {
   onPlayerClick: (playerID: string) => void;
   onPlayerContextMenu: (playerID: string, event: Event) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -130,7 +130,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
       onPlayerClick: this.selectPlayer.bind(this),
       onPlayerContextMenu: this.rightClickPlayer.bind(this),
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   selectPlayerById(playerID: string): void {

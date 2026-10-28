@@ -325,7 +325,7 @@ const {widget} = UI.Widget;
 interface ViewInput {
   properties: Record<PlayerPropertyKeys, Property>;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   function propertyTitle(type: PlayerPropertyKeys): Platform.UIString.LocalizedString {
     switch (type) {
@@ -540,6 +540,6 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    this.#view(this, {}, this.contentElement);
+    this.#view(this, undefined, this.contentElement);
   }
 }

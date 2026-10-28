@@ -26,14 +26,13 @@ describeWithEnvironment('WorkspaceSettingsTab view', () => {
     fileSystem.path.returns(urlString`file:///home/user/foo`);
     fileSystem.excludedFolders.returns(new Set());
 
-    DEFAULT_VIEW(
-        {
-          excludePatternSetting: createFakeRegExpSetting('fake-exclude-pattern', 'node_modules|.git'),
-          fileSystems: [{displayName: 'foo', fileSystem}],
-          onAddClicked: () => {},
-          onRemoveClicked: () => {},
-        },
-        {}, target);
+    DEFAULT_VIEW({
+      excludePatternSetting: createFakeRegExpSetting('fake-exclude-pattern', 'node_modules|.git'),
+      fileSystems: [{displayName: 'foo', fileSystem}],
+      onAddClicked: () => {},
+      onRemoveClicked: () => {},
+    },
+                 undefined, target);
 
     await assertScreenshot('persistence/workspace_settings_tab.png');
   });

@@ -128,7 +128,7 @@ describeWithEnvironment('BackendLinkingSettingsTab view', () => {
       onUpdateRule,
       onDeleteRule,
     },
-                 {}, target);
+                 undefined, target);
 
     const dataGrid = target.querySelector('devtools-data-grid');
     assert.exists(dataGrid);
@@ -201,7 +201,7 @@ describeWithEnvironment('BackendLinkingSettingsTab view', () => {
       onUpdateRule: () => {},
       onDeleteRule: () => {},
     },
-                 {}, target);
+                 undefined, target);
 
     await assertScreenshot('settings/backend_linking_settings_tab.png');
   });

@@ -229,7 +229,7 @@ describeWithEnvironment('RequestPayloadView', () => {
       requestUrl: urlString`https://example.com/api`,
     };
 
-    Network.RequestPayloadView.DEFAULT_VIEW(input, {}, container);
+    Network.RequestPayloadView.DEFAULT_VIEW(input, undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
 
     const shadowRoot = container.querySelector<HTMLElement>('.request-payload-tree')?.shadowRoot;
@@ -272,7 +272,7 @@ describeWithEnvironment('RequestPayloadView', () => {
       requestUrl: urlString`https://example.com/api`,
     };
 
-    Network.RequestPayloadView.DEFAULT_VIEW(input, {}, container);
+    Network.RequestPayloadView.DEFAULT_VIEW(input, undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
 
     const shadowRoot = container.querySelector<HTMLElement>('.request-payload-tree')?.shadowRoot;
@@ -425,7 +425,7 @@ describeWithEnvironment('RequestPayloadView', () => {
       requestUrl: urlString`https://example.com/api`,
     };
 
-    Network.RequestPayloadView.DEFAULT_VIEW(input, {}, container);
+    Network.RequestPayloadView.DEFAULT_VIEW(input, undefined, container);
     await UI.Widget.Widget.allUpdatesComplete;
 
     const treeOutline = container.querySelector<HTMLElement>('.request-payload-tree');

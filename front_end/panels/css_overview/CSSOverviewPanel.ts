@@ -25,7 +25,7 @@ export interface ViewInput {
   target?: SDK.Target.Target;
 }
 
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
@@ -161,7 +161,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
         unusedDeclarations: this.#unusedDeclarations,
       },
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, undefined, this.contentElement);
   }
 
   async #startOverview(): Promise<void> {

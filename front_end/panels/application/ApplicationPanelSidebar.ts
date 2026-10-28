@@ -298,7 +298,7 @@ const UIStrings = {
    */
   resourceDescription: 'On this page you can view the frame’s resources',
   /**
-   * @description Label for the Private Verification Tokens tree element in the Application panel sidebar.
+   * @description Tree item label in the Application panel sidebar for private verification tokens, a Privacy Sandbox API that allows sites to convey limited, privacy-preserving information across origins (https://github.com/explainers-by-googlers/private-verification-tokens).
    */
   privateVerificationTokens: 'Private verification tokens',
 } as const;

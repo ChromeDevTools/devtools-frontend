@@ -28,7 +28,7 @@ export const DEFAULT_VIEW: View = (_input, _output, target) => {
     <style>${privateVerificationTokensViewStyles}</style>
     <style>${UI.inspectorCommonStyles}</style>
     <div class="pvt-view" jslog=${VisualLogging.pane('private-verification-tokens')}>
-      <div class="empty-state">${i18nString(UIStrings.noPrivateVerificationTokens)}</div>
+      ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, {header: i18nString(UIStrings.noPrivateVerificationTokens)})}
     </div>
   `, target);
   // clang-format on
@@ -40,6 +40,10 @@ export class PrivateVerificationTokensView extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
     this.requestUpdate();
   }
 

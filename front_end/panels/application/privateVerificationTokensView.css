@@ -18,8 +18,3 @@
   flex: auto;
   overflow: hidden;
 }
-
-.empty-state {
-  padding: var(--sys-size-6);
-  color: var(--sys-color-on-surface-subtle);
-}

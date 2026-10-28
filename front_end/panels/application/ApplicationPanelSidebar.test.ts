@@ -68,9 +68,14 @@ describeWithEnvironment('ApplicationPanelSidebar', () => {
 
   it('shows Private Verification Tokens when the config is enabled', async () => {
     updateHostConfig({devToolsPrivateVerificationTokens: {enabled: true}});
-    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const showViewSpy = sinon.spy(panel, 'showView');
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     assert.exists(sidebar.privateVerificationTokensTreeElement);
+
+    sidebar.privateVerificationTokensTreeElement.onselect(false);
+    sinon.assert.calledOnceWithExactly(
+        showViewSpy, sinon.match.instanceOf(Application.PrivateVerificationTokensView.PrivateVerificationTokensView));
   });
 
   it('does not show Private Verification Tokens when the config is disabled', async () => {

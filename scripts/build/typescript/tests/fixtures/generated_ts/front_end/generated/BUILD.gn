@@ -1,0 +1,29 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../ninja/generated_ts.gni")
+import("../../../../../typescript.gni")
+
+generated_ts("generate_properties") {
+  script = "generate_properties.py"
+  inputs = [ "properties.json" ]
+  outputs = [
+    "$target_gen_dir/Properties.ts",
+    "$target_gen_dir/properties-mapping.d.ts",
+  ]
+  args = [
+    "--input",
+    rebase_path("properties.json", root_build_dir),
+    "--output",
+    rebase_path("$target_gen_dir/Properties.ts", root_build_dir),
+    "--output-dts",
+    rebase_path("$target_gen_dir/properties-mapping.d.ts", root_build_dir),
+  ]
+}
+
+ts_library("generated") {
+  rootdir = target_gen_dir
+  sources = get_target_outputs(":generate_properties")
+  deps = [ ":generate_properties" ]
+}

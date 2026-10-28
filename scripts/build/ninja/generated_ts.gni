@@ -1,0 +1,82 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("./vars.gni")
+
+# Runs a generator that writes TypeScript sources into $target_gen_dir, where
+# a ts_library() with `rootdir = target_gen_dir` compiles them. The generated
+# files never live in the source tree.
+#
+# The generator runs under scripts/build/run_with_restat.py with the action's
+# outputs as tracked files: when a run rewrites an output with identical bytes,
+# the output keeps its mtime and Ninja's restat prunes everything downstream,
+# most notably the tsc invocations of the consuming ts_library(). Generators
+# must therefore always write their outputs and leave the write-if-changed
+# logic to the wrapper.
+#
+# Parameters:
+#   script: The generator, a Python script. It runs under the interpreter that
+#       runs GN actions.
+#   outputs: The files the generator writes, all in $target_gen_dir.
+#   args: Arguments for the generator. Pass input and output paths rebased
+#       to root_build_dir, as for action().
+#   inputs: Files the generator reads besides `script`: its data files and the
+#       modules it imports. Listing them keeps incremental and remote builds
+#       correct.
+#   deps, public_deps, testonly, visibility: As for action().
+#
+# Example (front_end/generated/BUILD.gn):
+#   import("../../scripts/build/ninja/chromium_deps.gni")
+#   import("../../scripts/build/ninja/generated_ts.gni")
+#
+#   generated_ts("deprecation") {
+#     script = "../../scripts/build/generate_deprecations.py"
+#     inputs = [ devtools_chromium_deps_root +
+#                "third_party/blink/renderer/core/frame/deprecation/deprecation.json5" ]
+#     outputs = [ "$target_gen_dir/Deprecation.ts" ]
+#     args = [
+#       "--input",
+#       rebase_path(inputs[0], root_build_dir),
+#       "--output",
+#       rebase_path(outputs[0], root_build_dir),
+#     ]
+#   }
+template("generated_ts") {
+  assert(defined(invoker.script), "You must specify 'script' for $target_name")
+  assert(get_path_info(invoker.script, "extension") == "py",
+         "'script' of $target_name must be a Python script")
+  assert(defined(invoker.outputs),
+         "You must specify 'outputs' for $target_name")
+  assert(filter_exclude(invoker.outputs, [ "$target_gen_dir/*" ]) == [],
+         "All 'outputs' of $target_name must be in \$target_gen_dir")
+
+  action(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "deps",
+                             "outputs",
+                             "public_deps",
+                             "testonly",
+                             "visibility",
+                           ])
+
+    script = devtools_location_prepend + "scripts/build/run_with_restat.py"
+
+    inputs = [
+      invoker.script,
+      devtools_location_prepend + "scripts/build/response_file.py",
+    ]
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
+
+    args = rebase_path(outputs, root_build_dir) + [
+             "--",
+             rebase_path(invoker.script, root_build_dir),
+           ]
+    if (defined(invoker.args)) {
+      args += invoker.args
+    }
+  }
+}

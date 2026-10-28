@@ -157,10 +157,21 @@ export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles, bundleAll
       }
     }
 
-    // 3. If file exists in gen directory (e.g. .css.js or generated JS):
+    // 3. If file exists in gen directory: a generated TS source (see
+    //    scripts/build/ninja/generated_ts.gni) takes precedence over the JS
+    //    that tsc emits for it, which bundling does not wait for; otherwise
+    //    the file itself (e.g. .css.js or generated JS):
     if (!isUnderGenRoot) {
       const relFromRoot = path.relative(root, res.id);
       const genLocation = path.join(normGenRoot, relFromRoot);
+      if (genLocation.endsWith('.js')) {
+        const genTsLocation = genLocation.slice(0, -3) + '.ts';
+        if (fs.existsSync(genTsLocation)) {
+          return {
+            path: genTsLocation,
+          };
+        }
+      }
       if (fs.existsSync(genLocation)) {
         return {
           path: genLocation,

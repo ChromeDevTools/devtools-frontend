@@ -1,0 +1,20 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("./vars.gni")
+
+# Root of the Chromium files that the build-time generators in
+# front_end/generated read (PDL and JSON5 files under third_party/blink and
+# v8/include). It points at the snapshot that scripts/deps/roll_deps.py copies
+# into this repository, or, when devtools_build_with_bundled_chromium_deps is
+# false in a Chromium checkout, at Chromium's own copy of the files.
+#
+# Usage:
+#   devtools_chromium_deps_root +
+#       "third_party/blink/renderer/core/css/css_properties.json5"
+if (devtools_build_with_bundled_chromium_deps) {
+  devtools_chromium_deps_root = devtools_location_prepend
+} else {
+  devtools_chromium_deps_root = "//"
+}

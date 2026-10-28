@@ -223,6 +223,31 @@ describe('esbuild_plugin can compute paths with', () => {
     }
   });
 
+  it('prefers generated TypeScript sources in gen directory over the JS emitted for them', () => {
+    const importer = path.join(devtoolsRoot, 'front_end/core/sdk/FirstFile.js');
+    const jsFile = path.join(devtoolsRoot, 'front_end/generated/FakeGenerated.js');
+    const tsFile = path.join(devtoolsRoot, 'front_end/generated/FakeGenerated.ts');
+    const genJsFile = path.join(genRoot, 'front_end/generated/FakeGenerated.js');
+    const genTsFile = path.join(genRoot, 'front_end/generated/FakeGenerated.ts');
+    const stub = sinon.stub(fs, 'existsSync');
+    stub.callThrough();
+    stub.withArgs(jsFile).returns(false);
+    stub.withArgs(tsFile).returns(false);
+    stub.withArgs(genJsFile).returns(true);
+    stub.withArgs(genTsFile).returns(true);
+    try {
+      const res = plugin({
+        path: '../../generated/FakeGenerated.js',
+        importer,
+      });
+      assert.deepEqual(res, {
+        path: genTsFile,
+      });
+    } finally {
+      stub.restore();
+    }
+  });
+
   it('correctly resolves external paths when root is devtools root inside chromium checkout', () => {
     const chromiumRoot = '/workspace/chromium/src';
     const devtoolsInsideChromiumRoot = path.join(chromiumRoot, 'third_party/devtools-frontend/src');

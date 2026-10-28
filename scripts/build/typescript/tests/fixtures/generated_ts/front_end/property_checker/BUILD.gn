@@ -1,0 +1,16 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../ninja/devtools_entrypoint.gni")
+import("../../../../../typescript.gni")
+
+ts_library("property_checker") {
+  sources = [ "PropertyChecker.ts" ]
+  ts_deps = [ "../generated" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "property_checker.ts"
+  ts_deps = [ ":property_checker" ]
+}

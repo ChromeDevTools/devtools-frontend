@@ -8,6 +8,7 @@ group("build") {
 
 group("tests") {
   deps = [
+    "typescript/tests/fixtures/generated_ts",
     "typescript/tests/fixtures/no_emit",
     "typescript/tests/fixtures/prebuilt",
     "typescript/tests/fixtures/simple_dep",

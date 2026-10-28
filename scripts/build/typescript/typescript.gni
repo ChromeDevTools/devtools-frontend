@@ -99,6 +99,10 @@ import("./typescript_vars.gni")
 # node_modules, have to be listed in `inputs`. List them in `public_inputs`
 # instead if the library exposes them in its public API: dependents then
 # inherit them as inputs, directly and transitively through `ts_deps`.
+#
+# Sources that a generator writes to $target_gen_dir (see
+# scripts/build/ninja/generated_ts.gni) are compiled with
+# `rootdir = target_gen_dir` and `deps` on the generator target.
 template("ts_library") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
@@ -212,18 +216,24 @@ template("ts_library") {
   }
   _compiler_options.lib = _es_libs + default_ts_base_libs
 
-  _handwritten_dts = filter_include(invoker.sources,
-                                    [
-                                      "*.d.ts",
-                                      "*.d.mts",
-                                      "*.d.cts",
-                                    ])
+  _dts_sources = filter_include(invoker.sources,
+                                [
+                                  "*.d.ts",
+                                  "*.d.mts",
+                                  "*.d.cts",
+                                ])
   _non_dts_sources = filter_exclude(invoker.sources,
                                     [
                                       "*.d.ts",
                                       "*.d.mts",
                                       "*.d.cts",
                                     ])
+
+  # Handwritten .d.ts files are copied to $target_gen_dir so that the gen dir
+  # is self-contained. Those that a generator already wrote there (see
+  # scripts/build/ninja/generated_ts.gni) are used in place.
+  _generated_dts = filter_include(_dts_sources, [ "$target_gen_dir/*" ])
+  _handwritten_dts = filter_exclude(_dts_sources, [ "$target_gen_dir/*" ])
 
   _has_handwritten_dts = _handwritten_dts != []
   _copied_dts_outputs = []
@@ -319,6 +329,7 @@ template("ts_library") {
   if (_has_handwritten_dts) {
     _compiled_sources += rebase_path(_copied_dts_outputs, target_gen_dir)
   }
+  _compiled_sources += rebase_path(_generated_dts, target_gen_dir)
 
   # Sub-target 2: Generate tsconfig.ref.json for downstream consumers.
   # Downstream dependents point to this tsconfig.ref.json as a project
@@ -453,8 +464,9 @@ template("ts_library") {
     if (_has_handwritten_dts) {
       public_deps += [ ":$_copy_dts_target" ]
     }
-    public_inputs = filter_include(_dts_outputs, [ "*.d.ts" ]) +
-                    _copied_dts_outputs + [ _tsconfig_ref_file ]
+    public_inputs =
+        filter_include(_dts_outputs, [ "*.d.ts" ]) + _copied_dts_outputs +
+        _generated_dts + [ _tsconfig_ref_file ]
     if (defined(invoker.public_inputs)) {
       public_inputs += invoker.public_inputs
     }

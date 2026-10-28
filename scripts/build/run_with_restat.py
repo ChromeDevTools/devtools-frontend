@@ -20,6 +20,10 @@ unnecessary downstream rebuilds, significantly accelerating incremental builds.
 Usage:
   run_with_restat.py [<tracked_output>...] -- <command> [<command_args>...]
 
+A <command> ending in '.py' runs under the Python interpreter that runs this
+script, i.e. the one GN resolved from `script_executable`, so Python generators
+need no interpreter path of their own in the GN action.
+
 Any argument starting with '@' (e.g. '@path/to/response_file.rsp') is expanded
 in-place, allowing all tracked outputs, the '--' separator, and compiler
 arguments to be passed inside a single GN/Ninja response file:
@@ -67,6 +71,9 @@ def main():
     if not command_args:
         print("Error: No command specified after '--'", file=sys.stderr)
         sys.exit(1)
+
+    if command_args[0].endswith('.py'):
+        command_args = [sys.executable] + command_args
 
     # Record existing state of tracked output files (nanosecond precision)
     before_state = {}

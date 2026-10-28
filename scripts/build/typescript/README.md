@@ -68,7 +68,7 @@ ts_library("my_feature") {
   Like `inputs`, but dependents inherit them as inputs as well, directly and transitively through `ts_deps`. Use this for type definitions that the library exposes in its public API, e.g. `//test/conductor:implementation` exposes the Mocha and Puppeteer types to all test targets.
 
 - **`rootdir`** (`string`, optional):
-  Custom root directory for resolving source paths if sources reside in a subfolder. Defaults to `"."`.
+  Custom root directory for resolving source paths if sources reside in a subfolder. Defaults to `"."`. Set it to `target_gen_dir` for sources that a `generated_ts()` target (see `scripts/build/ninja/generated_ts.gni`) writes to the gen dir, and list that target in `deps`.
 
 - **`visibility`** (`list(string)`, optional):
   Standard GN visibility list restricting which targets can depend on this library.

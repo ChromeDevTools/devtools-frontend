@@ -1,0 +1,10 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# A generated_ts() writes a .ts and a .d.ts into the gen dir, a ts_library()
+# with `rootdir = target_gen_dir` compiles them there, and a module in the
+# source tree imports both and bundles the result.
+group("generated_ts") {
+  deps = [ "front_end/property_checker:bundle" ]
+}

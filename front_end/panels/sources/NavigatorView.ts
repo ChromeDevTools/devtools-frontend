@@ -1099,6 +1099,22 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     }
   }
 
+  fileDragStarted(node: NavigatorUISourceCodeTreeNode, event: DragEvent): void {
+    if (!event.dataTransfer) {
+      return;
+    }
+    event.dataTransfer.setData('text/plain', node.uiSourceCode().url());
+    event.dataTransfer.effectAllowed = 'copy';
+  }
+
+  shouldRenameOnMouseDown(node: NavigatorUISourceCodeTreeNode): boolean {
+    if (!node.uiSourceCode().canRename() || !node.treeElement) {
+      return false;
+    }
+    return this.scriptsTree.selectedTreeElement === node.treeElement && this.scriptsTree.element.hasFocus() &&
+        !UI.UIUtils.isBeingEdited(this.scriptsTree.element);
+  }
+
   handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
     const uiSourceCode = node.uiSourceCode();
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
@@ -1612,56 +1628,39 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.createAiButton();
   }
 
-  private shouldRenameOnMouseDown(): boolean {
-    if (!this.#uiSourceCode.canRename()) {
-      return false;
-    }
-    if (!this.treeOutline) {
-      return false;
-    }
-    const isSelected = this === this.treeOutline.selectedTreeElement;
-    return isSelected && this.treeOutline.element.hasFocus() && !UI.UIUtils.isBeingEdited(this.treeOutline.element);
-  }
-
   override selectOnMouseDown(event: MouseEvent): void {
-    if (event.which !== 1 || !this.shouldRenameOnMouseDown()) {
+    if (event.which !== 1 || !this.navigatorView.shouldRenameOnMouseDown(this.node)) {
       super.selectOnMouseDown(event);
       return;
     }
-    window.setTimeout(rename.bind(this), 300);
-
-    function rename(this: NavigatorSourceTreeElement): void {
-      if (this.shouldRenameOnMouseDown()) {
+    window.setTimeout(() => {
+      if (this.navigatorView.shouldRenameOnMouseDown(this.node)) {
         this.navigatorView.rename(this.node, false);
       }
-    }
+    }, 300);
   }
 
   private ondragstart(event: DragEvent): void {
-    if (!event.dataTransfer) {
-      return;
-    }
-    event.dataTransfer.setData('text/plain', this.#uiSourceCode.url());
-    event.dataTransfer.effectAllowed = 'copy';
+    this.navigatorView.fileDragStarted(this.node, event);
   }
 
   override onspace(): boolean {
-    this.navigatorView.sourceSelected(this.uiSourceCode, true);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
     return true;
   }
 
   private onclick(_event: Event): void {
-    this.navigatorView.sourceSelected(this.uiSourceCode, false);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), false);
   }
 
   override ondblclick(event: Event): boolean {
     const middleClick = (event as MouseEvent).button === 1;
-    this.navigatorView.sourceSelected(this.uiSourceCode, !middleClick);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), !middleClick);
     return false;
   }
 
   override onenter(): boolean {
-    this.navigatorView.sourceSelected(this.uiSourceCode, true);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
     return true;
   }
 

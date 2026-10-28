@@ -155,12 +155,10 @@ describeWithEnvironment('NavigatorView', () => {
     return null;
   }
 
-  function activateRow(
+  function getTreeElement(
       navigatorView: Sources.NavigatorView.NavigatorView,
       title: string,
-      action: 'enter'|'space'|'dblclick',
-      options: {button?: number} = {},
-      ): void {
+      ): UI.TreeOutline.TreeElement {
     const treeElement = findTreeElement(navigatorView, el => {
       const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
       return elTitle === title;
@@ -168,7 +166,19 @@ describeWithEnvironment('NavigatorView', () => {
     if (!treeElement) {
       throw new Error(`Tree element with title "${title}" not found`);
     }
-    if (action === 'enter') {
+    return treeElement;
+  }
+
+  function activateRow(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      title: string,
+      action: 'click'|'enter'|'space'|'dblclick',
+      options: {button?: number} = {},
+      ): void {
+    const treeElement = getTreeElement(navigatorView, title);
+    if (action === 'click') {
+      treeElement.listItemElement.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}));
+    } else if (action === 'enter') {
       treeElement.select(true);
       navigatorView.scriptsTree.contentElement.dispatchEvent(
           new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
@@ -182,18 +192,32 @@ describeWithEnvironment('NavigatorView', () => {
     }
   }
 
+  function dragStartRow(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      title: string,
+      ): DataTransfer {
+    const dataTransfer = new DataTransfer();
+    getTreeElement(navigatorView, title)
+        .listItemElement.dispatchEvent(new DragEvent('dragstart', {bubbles: true, cancelable: true, dataTransfer}));
+    return dataTransfer;
+  }
+
+  function mouseDownRow(
+      navigatorView: Sources.NavigatorView.NavigatorView,
+      title: string,
+      options: {which?: number} = {},
+      ): void {
+    getTreeElement(navigatorView, title)
+        .listItemElement.dispatchEvent(
+            new MouseEvent('mousedown', {bubbles: true, cancelable: true, which: options.which ?? 1}));
+  }
+
   function openContextMenuOnRow(
       navigatorView: Sources.NavigatorView.NavigatorView,
       title: string,
       ): void {
-    const treeElement = findTreeElement(navigatorView, el => {
-      const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
-      return elTitle === title;
-    });
-    if (!treeElement) {
-      throw new Error(`Tree element with title "${title}" not found`);
-    }
-    treeElement.listItemElement.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+    getTreeElement(navigatorView, title)
+        .listItemElement.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
   }
 
   function hoverRow(
@@ -201,15 +225,9 @@ describeWithEnvironment('NavigatorView', () => {
       title: string,
       hovered: boolean,
       ): void {
-    const treeElement = findTreeElement(navigatorView, el => {
-      const elTitle = typeof el.title === 'string' ? el.title : el.title.textContent ?? '';
-      return elTitle === title;
-    });
-    if (!treeElement) {
-      throw new Error(`Tree element with title "${title}" not found`);
-    }
     const eventType = hovered ? 'mousemove' : 'mouseleave';
-    treeElement.listItemElement.dispatchEvent(new MouseEvent(eventType, {bubbles: true, cancelable: true}));
+    getTreeElement(navigatorView, title)
+        .listItemElement.dispatchEvent(new MouseEvent(eventType, {bubbles: true, cancelable: true}));
   }
 
   function addResourceAndUISourceCode(
@@ -949,41 +967,94 @@ describeWithEnvironment('NavigatorView', () => {
   });
 
   describe('selection events', () => {
-    it('dispatches SOURCE_SELECTED event on enter, space, and double click', async () => {
+    async function setupSourceNode() {
       const mainFrame = await getMainFrame(target);
       const url = urlString`http://example.com/script.js`;
-      const {uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      navigatorView.revealUISourceCode(uiSourceCode);
+      const node = navigatorView.revealUISourceCode(uiSourceCode);
+      return {project, uiSourceCode, navigatorView, node, url};
+    }
 
+    async function setupSelectionTest() {
+      const {project, uiSourceCode, navigatorView} = await setupSourceNode();
       const eventSpy = sinon.spy();
       navigatorView.addEventListener(Sources.NavigatorView.Events.SOURCE_SELECTED, eventSpy);
+      return {project, uiSourceCode, navigatorView, eventSpy};
+    }
 
-      // Enter key
+    it('dispatches SOURCE_SELECTED event on click without focusing source', async () => {
+      const {project, uiSourceCode, navigatorView, eventSpy} = await setupSelectionTest();
+      activateRow(navigatorView, 'script.js', 'click');
+      sinon.assert.calledOnce(eventSpy);
+      assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: false});
+      project.removeProject();
+    });
+
+    it('dispatches SOURCE_SELECTED event on Enter key with focusing source', async () => {
+      const {project, uiSourceCode, navigatorView, eventSpy} = await setupSelectionTest();
       activateRow(navigatorView, 'script.js', 'enter');
       sinon.assert.calledOnce(eventSpy);
       assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: true});
-      eventSpy.resetHistory();
+      project.removeProject();
+    });
 
-      // Space key
+    it('dispatches SOURCE_SELECTED event on Space key with focusing source', async () => {
+      const {project, uiSourceCode, navigatorView, eventSpy} = await setupSelectionTest();
       activateRow(navigatorView, 'script.js', 'space');
       sinon.assert.calledOnce(eventSpy);
       assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: true});
-      eventSpy.resetHistory();
+      project.removeProject();
+    });
 
-      // Double click with primary button (button: 0) -> focusSource: true
+    it('dispatches SOURCE_SELECTED event on primary double click with focusing source', async () => {
+      const {project, uiSourceCode, navigatorView, eventSpy} = await setupSelectionTest();
       activateRow(navigatorView, 'script.js', 'dblclick', {button: 0});
       sinon.assert.calledOnce(eventSpy);
       assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: true});
-      eventSpy.resetHistory();
+      project.removeProject();
+    });
 
-      // Double click with middle button (button: 1) -> focusSource: false
+    it('dispatches SOURCE_SELECTED event on middle double click without focusing source', async () => {
+      const {project, uiSourceCode, navigatorView, eventSpy} = await setupSelectionTest();
       activateRow(navigatorView, 'script.js', 'dblclick', {button: 1});
       sinon.assert.calledOnce(eventSpy);
       assert.deepEqual(eventSpy.firstCall.args[0].data, {uiSourceCode, focusSource: false});
+      project.removeProject();
+    });
+
+    it('sets URL data on drag start', async () => {
+      const {project, navigatorView, url} = await setupSourceNode();
+      const dataTransfer = dragStartRow(navigatorView, 'script.js');
+      assert.strictEqual(dataTransfer.getData('text/plain'), url);
+      project.removeProject();
+    });
+
+    it('renames on mousedown when selected and focused', async () => {
+      const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
+      try {
+        const {project, uiSourceCode, navigatorView, node} = await setupSourceNode();
+        assert.exists(node);
+        sinon.stub(uiSourceCode, 'canRename').returns(true);
+
+        const treeElement = node.treeElement;
+        assert.exists(treeElement);
+        treeElement.select();
+        sinon.stub(navigatorView.scriptsTree.element, 'hasFocus').returns(true);
+
+        const renameSpy = sinon.spy(navigatorView, 'rename');
+        mouseDownRow(navigatorView, 'script.js');
+
+        clock.tick(300);
+        sinon.assert.calledOnceWithExactly(renameSpy, node, false);
+
+        project.removeProject();
+      } finally {
+        clock.restore();
+      }
     });
   });
 

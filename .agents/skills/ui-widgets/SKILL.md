@@ -34,6 +34,7 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
   * `target`: The HTML element to render into.
 * The `input` parameter MUST NOT be destructured. Always use `input.propertyName`.
 * Responsibility: Render a `lit-html` template into `target`.
+  * **Template Formatting & Whitespace:** The custom `html` tag from `ui/lit/lit.js` (`front_end/ui/lit/strip-whitespace.ts`) automatically strips `\n\s*` outside of `<...>` tags at runtime, so multi-line formatting between text interpolations and inline elements (`<span>`, etc.) does not introduce whitespace text nodes.
 * MUST NOT hold state, fetch data, or perform business logic.
 
 #### Helper Functions in Views

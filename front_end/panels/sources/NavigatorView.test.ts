@@ -545,8 +545,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const mainFrame = await getMainFrame(target);
       const url = urlString`http://example.com/app.js`;
-      addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
-      const uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const sourceSelectedSpy = sinon.spy(navigatorView, 'sourceSelected');
@@ -560,6 +559,45 @@ describeWithEnvironment('NavigatorView', () => {
       floatingButton.click();
       sinon.assert.calledOnceWithExactly(sourceSelectedSpy, uiSourceCode, false);
       sinon.assert.calledOnce(actionExecuteSpy);
+
+      project.removeProject();
+    });
+
+    it('does not render AI floating button for non-text files', async () => {
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs('drjones.sources-floating-button')
+          .returns(true);
+
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/image.png`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'image/png', undefined,
+                                                                 Common.ResourceType.resourceTypes.Image);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
+      const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
+      treeElement.onattach();
+
+      const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
+      assert.isNull(floatingButton);
+
+      project.removeProject();
+    });
+
+    it('does not render AI floating button when action is not registered', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/app.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
+      const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
+      treeElement.onattach();
+
+      const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
+      assert.isNull(floatingButton);
+
+      project.removeProject();
     });
   });
 

@@ -1549,7 +1549,6 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   readonly nodeType: string;
   readonly node: NavigatorUISourceCodeTreeNode;
   private readonly navigatorView: NavigatorView;
-  #uiSourceCode: Workspace.UISourceCode.UISourceCode;
 
   constructor(
       navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, title: string,
@@ -1565,59 +1564,62 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     window.dispatchEvent(new CustomEvent('source-tree-file-added',
                                          {bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName()}));
     this.navigatorView = navigatorView;
-    this.#uiSourceCode = uiSourceCode;
     this.updateIcon();
     (this.titleElement as HTMLElement).setAttribute('jslog', `${VisualLogging.value('title').track({change: true})}`);
   }
 
   updateIcon(): void {
-    const icon = PanelUtils.getIconForSourceFile(this.#uiSourceCode);
+    const icon = PanelUtils.getIconForSourceFile(this.node.uiSourceCode());
     this.setLeadingIcons([icon]);
   }
 
   updateAccessibleName(): void {
-    UI.ARIAUtils.setLabel(this.listItemElement, `${this.#uiSourceCode.name()}, ${this.nodeType}`);
+    UI.ARIAUtils.setLabel(this.listItemElement, `${this.node.uiSourceCode().name()}, ${this.nodeType}`);
   }
 
-  private createAiButton(): void {
+  private renderAiButton(): Lit.TemplateResult|null {
     if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
-      return;
+      return null;
     }
-    if (!this.uiSourceCode.contentType().isTextType() ||
-        Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCode)) {
-      return;
+    const uiSourceCode = this.node.uiSourceCode();
+    if (!uiSourceCode.contentType().isTextType() ||
+        Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
+      return null;
     }
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
     const icon = AiAssistance.AiUtils.getIconName();
     // clang-format off
-    this.setTrailingIcons([
-      html`<span class="ai-button-container">
-        <devtools-floating-button
-          .iconName=${icon}
-          .title=${action.title()}
-          .jslogContext=${'ask-ai'}
-          @click=${{
-            handleEvent: (ev: Event) => {
-              ev.stopPropagation();
-              this.navigatorView.sourceSelected(this.uiSourceCode, false);
-              void action.execute();
-            },
-            capture: true,
-          }}
-          @mousedown=${{
-            handleEvent: (ev: Event) => {
-              ev.stopPropagation();
-            },
-            capture: true,
-          }}
-        ></devtools-floating-button>
-      </span>`,
-    ]);
+    return html`<span class="ai-button-container">
+      <devtools-floating-button
+        .iconName=${icon}
+        .title=${action.title()}
+        .jslogContext=${'ask-ai'}
+        @click=${{
+          handleEvent: (ev: Event) => {
+            ev.stopPropagation();
+            this.navigatorView.sourceSelected(uiSourceCode, false);
+            void action.execute();
+          },
+          capture: true,
+        }}
+        @mousedown=${{
+          handleEvent: (ev: Event) => {
+            ev.stopPropagation();
+          },
+          capture: true,
+        }}
+      ></devtools-floating-button>
+    </span>`;
     // clang-format on
   }
 
+  updateTrailingIcons(): void {
+    const aiButton = this.renderAiButton();
+    this.setTrailingIcons(aiButton ? [aiButton] : []);
+  }
+
   get uiSourceCode(): Workspace.UISourceCode.UISourceCode {
-    return this.#uiSourceCode;
+    return this.node.uiSourceCode();
   }
 
   override onattach(): void {
@@ -1625,7 +1627,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.addEventListener('click', this.onclick.bind(this), false);
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.listItemElement.addEventListener('dragstart', this.ondragstart.bind(this), false);
-    this.createAiButton();
+    this.updateTrailingIcons();
   }
 
   override selectOnMouseDown(event: MouseEvent): void {
@@ -1909,6 +1911,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
 
     this.treeElement.title = titleText;
     this.treeElement.updateIcon();
+    this.treeElement.updateTrailingIcons();
 
     this.treeElement.listItemElement.classList.toggle('is-ignore-listed', isIgnoreListed);
 

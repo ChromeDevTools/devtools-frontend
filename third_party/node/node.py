@@ -3,6 +3,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import pathlib
 import subprocess
 import sys
 import os
@@ -13,10 +14,16 @@ from node_path import GetBinaryPath
 def RunNode(cmd_parts, output=subprocess.PIPE):
     cmd = [GetBinaryPath()] + cmd_parts
     env = os.environ.copy()
+    devtools_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), '..', '..'))
     if 'NODE_PATH' not in env:
-        env['NODE_PATH'] = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', '..',
-                         'node_modules'))
+        env['NODE_PATH'] = os.path.join(devtools_root, 'node_modules')
+    hook_path = os.path.join(devtools_root, 'scripts', 'node_modules_hook.mjs')
+    if os.path.exists(hook_path):
+        hook_url = pathlib.Path(hook_path).as_uri()
+        node_options = env.get('NODE_OPTIONS', '')
+        if 'node_modules_hook.mjs' not in node_options:
+            env['NODE_OPTIONS'] = f'{node_options} --import {hook_url}'.strip()
     process = subprocess.Popen(cmd,
                                cwd=os.getcwd(),
                                env=env,

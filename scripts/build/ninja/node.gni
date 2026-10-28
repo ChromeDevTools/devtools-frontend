@@ -23,6 +23,7 @@ template("node_action") {
     inputs += [
       _full_script_location,
       devtools_location_prepend + "scripts/build/ninja/write-if-changed.js",
+      devtools_location_prepend + "scripts/node_modules_hook.mjs",
     ]
 
     if (host_os == "linux") {

@@ -58,6 +58,19 @@ describe('RunLighthouseTool', () => {
         action: 'runLighthouse(\'accessibility\', \'snapshot\')',
       });
     });
+
+    it('formats title, thought, and action defaulting to navigation mode for agentic-browsing when mode is omitted',
+       () => {
+         const displayInfo = tool.displayInfoFromArgs({
+           explanation: 'Checking agent readiness',
+           categoryId: 'agentic-browsing',
+         });
+         assert.deepEqual(displayInfo, {
+           title: 'Running Lighthouse audits: agentic-browsing (navigation)',
+           thought: 'Checking agent readiness',
+           action: 'runLighthouse(\'agentic-browsing\', \'navigation\')',
+         });
+       });
   });
 
   describe('handler', () => {
@@ -115,6 +128,22 @@ describe('RunLighthouseTool', () => {
       sinon.assert.calledOnceWithExactly(recordingStub, {
         mode: 'snapshot',
         categoryIds: ['accessibility'],
+        isAIControlled: true,
+      });
+    });
+
+    it('defaults to navigation mode for agentic-browsing when mode is omitted', async () => {
+      const recordingStub = sinon.stub().resolves({status: 'completed', report: mockReport});
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
+        runLighthouse: recordingStub,
+      };
+
+      const result =
+          await tool.handler({explanation: 'agentic browsing audit', categoryId: 'agentic-browsing'}, context);
+      assertIsContext(result);
+      sinon.assert.calledOnceWithExactly(recordingStub, {
+        mode: 'navigation',
+        categoryIds: ['agentic-browsing'],
         isAIControlled: true,
       });
     });

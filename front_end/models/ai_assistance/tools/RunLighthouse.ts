@@ -23,6 +23,12 @@ export interface RunLighthouseArgs extends ToolArgs {
   mode?: LHModel.RunTypes.RunMode;
 }
 
+// Runtime fallback in case an LLM call omits the required `mode` argument.
+// "agentic-browsing" defaults to "navigation" because its WebMCP gatherers only run during navigation.
+function resolveMode(params: RunLighthouseArgs): LHModel.RunTypes.RunMode {
+  return params.mode ?? (params.categoryId === 'agentic-browsing' ? 'navigation' : 'snapshot');
+}
+
 /**
  * Runs Lighthouse audits on the inspected page and sets the resulting report as the active conversation context.
  */
@@ -53,24 +59,25 @@ export class RunLighthouseTool implements
       mode: {
         type: Host.AidaClient.ParametersTypes.STRING,
         description:
-            'Lighthouse execution mode: "navigation", "snapshot", "timespan". Use "navigation" for initial full audits unless the user requested otherwise or in-page changes are being evaluated. Defaults to "snapshot".',
-        nullable: true,
+            'Lighthouse execution mode: "navigation", "snapshot", or "timespan". Use "navigation" to reload the page and run all audits (including page-load metrics and WebMCP gatherers); note that reloading resets unsaved in-page DOM or CSS modifications. Use "snapshot" to audit the current DOM state without reloading (preserving live edits, though navigation-only audits such as WebMCP are skipped). Use "timespan" to audit user interactions (supported only by "performance" and "best-practices").',
+        nullable: false,
       },
     },
-    required: ['explanation', 'categoryId'],
+    required: ['explanation', 'categoryId', 'mode'],
   };
 
   displayInfoFromArgs(params: RunLighthouseArgs): {title: string, thought: string, action: string} {
+    const mode = resolveMode(params);
     return {
-      title: `Running Lighthouse audits: ${params.categoryId} (${params.mode ?? 'snapshot'})`,
+      title: `Running Lighthouse audits: ${params.categoryId} (${mode})`,
       thought: params.explanation,
-      action: `runLighthouse('${params.categoryId}', '${params.mode ?? 'snapshot'}')`,
+      action: `runLighthouse('${params.categoryId}', '${mode}')`,
     };
   }
 
   async handler(params: RunLighthouseArgs, context: BaseToolCapability&LighthouseRecordingCapability):
       Promise<ContextHandlerResult<LHModel.ReporterTypes.ReportJSON>> {
-    const mode = params.mode ?? 'snapshot';
+    const mode = resolveMode(params);
     try {
       // Passing undefined for categoryIds instructs the Lighthouse runner to audit all categories supported by the mode when isAIControlled is true.
       const result = await context.runLighthouse({

@@ -1,13 +1,11 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import '../../ui/kit/kit.js';
 
 import * as Elements from '../../models/elements/elements.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {Directives, html, type LitTemplate} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type * as ElementsComponents from './components/components.js';
@@ -20,7 +18,7 @@ type PropertySelectedEvent = ElementsComponents.StylePropertyEditor.PropertySele
 type PropertyDeselectedEvent = ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent;
 
 let instance: StyleEditorWidget|null = null;
-interface Editor extends HTMLElement {
+export interface Editor extends HTMLElement {
   data: {
     authoredProperties: Map<String, String>,
     computedProperties: Map<String, String>,
@@ -29,6 +27,26 @@ interface Editor extends HTMLElement {
   jslogContext: string;
 }
 
+export interface ViewInput {
+  editor: Editor;
+  authoredProperties: Map<string, string>;
+  computedProperties: Map<string, string>;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  input.editor.data = {
+    authoredProperties: input.authoredProperties,
+    computedProperties: input.computedProperties,
+  };
+  // clang-format off
+  render(
+      html`<div tabindex="0" autofocus>${input.editor}</div>`,
+      target, {container: {classes: ['with-padding']}});
+  // clang-format on
+};
+
 /**
  * Thin UI.Widget wrapper around style editors to allow using it as a popover.
  */
@@ -36,17 +54,14 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   private editor?: Editor;
   private stylesContainer?: StylesContainer;
   private section?: StylePropertiesSection;
-  private editorContainer: HTMLElement;
+  readonly #view: View;
 
   #triggerKey: string|undefined;
   #initialProperties: Map<string, string>|null = null;
 
-  constructor() {
-    super({useShadowDom: true});
-    this.contentElement.tabIndex = 0;
-    this.setDefaultFocusedElement(this.contentElement);
-    this.editorContainer = document.createElement('div');
-    this.contentElement.appendChild(this.editorContainer);
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
     this.onPropertySelected = this.onPropertySelected.bind(this);
     this.onPropertyDeselected = this.onPropertyDeselected.bind(this);
   }
@@ -126,11 +141,13 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     if (!this.editor) {
       return;
     }
-    this.editor.data = {
+    this.#view({
+      editor: this.editor,
       authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) :
                                          new Map(),
       computedProperties: this.stylesContainer ? await fetchComputedStyles(this.stylesContainer) : new Map(),
-    };
+    },
+               undefined, this.contentElement);
   }
 
   override async performUpdate(): Promise<void> {
@@ -147,9 +164,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
 
   setEditor(editorClass: {new(): Editor}): void {
     if (!(this.editor instanceof editorClass)) {
-      this.contentElement.removeChildren();
       this.editor = new editorClass();
-      this.contentElement.appendChild(this.editor);
     }
   }
 
@@ -180,7 +195,6 @@ export class StyleEditorWidget extends UI.Widget.VBox {
           return;
         }
         const widget = StyleEditorWidget.instance();
-        widget.element.classList.toggle('with-padding', true);
         widget.setEditor(editorClass);
         widget.bindContext(stylesContainer, section);
         widget.setTriggerKey(triggerKey);

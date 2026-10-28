@@ -134,7 +134,7 @@
 }
 
 .security-explanations-main {
-  margin-top: -5px;
+  margin-top: calc(-1 * var(--sys-size-3));
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }

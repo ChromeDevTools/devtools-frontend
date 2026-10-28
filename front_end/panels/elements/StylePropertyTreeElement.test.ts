@@ -33,13 +33,12 @@ import {Icon} from '../../ui/kit/kit.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
 import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
 
-const {html} = Lit;
 describeWithEnvironment('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
@@ -1451,7 +1450,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
       assert.deepEqual(evaluations.flat().map(line => {
         const div = document.createElement('div');
-        Lit.render(line, div);
+        render(line, div);
         return div.textContent;
       }),
                        [
@@ -1859,11 +1858,11 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
           SDK.CSSPropertyParserMatchers.ShadowType.BOX_SHADOW, properties, renderingContext);
 
       const container = document.createElement('div');
-      Lit.render(model.renderContents(), container);
+      render(model.renderContents(), container);
       assert.strictEqual(container.innerText, '10px y var()');
 
       model.setBlurRadius(new InlineEditor.CSSShadowEditor.CSSLength(12, 'px'));
-      Lit.render(model.renderContents(), container);
+      render(model.renderContents(), container);
       assert.strictEqual(container.innerText, '10px y 12px spread');
       assert.deepEqual(properties.map(p => p.source), [null, null, null, null]);
     });
@@ -1924,7 +1923,10 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
       stylePropertyTreeElement.updateTitle();
       await (await waitForDecorationPromise).result;
-      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement!.querySelector('devtools-link-swatch')!;
+      assert.exists(stylePropertyTreeElement.valueElement);
+      await someMutations(stylePropertyTreeElement.valueElement);
+      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
+      assert.exists(anchorFunctionLinkSwatch);
 
       renderElementIntoDOM(anchorFunctionLinkSwatch);
       assert.strictEqual(anchorFunctionLinkSwatch.linkElement?.textContent, '--identifier');
@@ -1939,8 +1941,10 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await (await waitForDecorationPromise).result;
       assert.exists(stylePropertyTreeElement.valueElement);
+      await someMutations(stylePropertyTreeElement.valueElement);
       renderElementIntoDOM(stylePropertyTreeElement.valueElement);
-      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch')!;
+      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
+      assert.exists(anchorFunctionLinkSwatch);
       anchorFunctionLinkSwatch.dispatchEvent(new Event('mouseenter'));
 
       sinon.assert.calledOnce(highlightMock);
@@ -1955,8 +1959,10 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await (await waitForDecorationPromise).result;
       assert.exists(stylePropertyTreeElement.valueElement);
+      await someMutations(stylePropertyTreeElement.valueElement);
       renderElementIntoDOM(stylePropertyTreeElement.valueElement);
-      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement!.querySelector('devtools-link-swatch')!;
+      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
+      assert.exists(anchorFunctionLinkSwatch);
       anchorFunctionLinkSwatch.dispatchEvent(new Event('mouseleave'));
 
       sinon.assert.calledOnce(hideDOMNodeHighlightStub);
@@ -1971,8 +1977,10 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await (await waitForDecorationPromise).result;
       assert.exists(stylePropertyTreeElement.valueElement);
+      await someMutations(stylePropertyTreeElement.valueElement);
       renderElementIntoDOM(stylePropertyTreeElement.valueElement);
-      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement!.querySelector('devtools-link-swatch')!;
+      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
+      assert.exists(anchorFunctionLinkSwatch);
       anchorFunctionLinkSwatch.linkElement?.click();
 
       sinon.assert.calledOnce(revealStub);
@@ -1984,8 +1992,9 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         Promise<HTMLDivElement> {
       sinon.stub(stylesSidebarPane.node()!, 'getAnchorBySpecifier').resolves(data.anchorNode);
       const content = document.createElement('div');
-      await Elements.StylePropertyTreeElement.AnchorFunctionRenderer.decorateAnchorForAnchorLink(
-          stylesSidebarPane, content, data);
+      render(await Elements.StylePropertyTreeElement.AnchorFunctionRenderer.decorateAnchorForAnchorLink(
+                 stylesSidebarPane, data),
+             content);
       return content;
     }
 
@@ -2060,7 +2069,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         };
         const component = await createAnchorFunctionLinkSwatch(data);
 
-        assert.isEmpty(component.innerHTML);
+        assert.isEmpty(component.children);
+        assert.isEmpty(component.textContent);
       });
 
       it('should render icon link when `anchorNode` is resolved correctly', async () => {
@@ -2152,8 +2162,10 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
 
       stylePropertyTreeElement.updateTitle();
       await (await waitForDecorationPromise).result;
+      assert.exists(stylePropertyTreeElement.valueElement);
+      await someMutations(stylePropertyTreeElement.valueElement);
 
-      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement!.querySelector('devtools-link-swatch');
+      const anchorFunctionLinkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
       assert.exists(anchorFunctionLinkSwatch);
     });
   });
@@ -2840,7 +2852,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       const {evaluations} = viewFunction.args[0][0];
       assert.deepEqual(evaluations.flat().map(line => {
         const div = document.createElement('div');
-        Lit.render(line, div);
+        render(line, div);
         return div.textContent;
       }),
                        ['calc(1 + 1)']);

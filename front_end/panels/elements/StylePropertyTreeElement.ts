@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -21,6 +20,7 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -56,7 +56,7 @@ import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
 import type {StylesContainer} from './StylesContainer.js';
 import {CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME} from './StylesSidebarPane.js';
 
-const {html, nothing, render, Directives: {classMap, ref, until}} = Lit;
+const {classMap, ref, until} = Directives;
 const {ifExpanded} = Tooltips.Tooltip;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
@@ -2004,17 +2004,13 @@ export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
   // clang-format on
   readonly #stylesContainer: StylesContainer;
 
-  static async decorateAnchorForAnchorLink(
-      stylesContainer: StylesContainer, container: HTMLElement,
-      {identifier, needsSpace}: {identifier?: string, needsSpace?: boolean}): Promise<void> {
-    if (identifier) {
-      render(html`${identifier}`, container, {host: container});
-    }
-
+  static async decorateAnchorForAnchorLink(stylesContainer: StylesContainer,
+                                           {identifier, needsSpace}: {identifier?: string, needsSpace?: boolean}):
+      Promise<LitTemplate> {
     const anchorNode = await stylesContainer.node()?.getAnchorBySpecifier(identifier) ?? undefined;
 
     if (!identifier && !anchorNode) {
-      return;
+      return nothing;
     }
 
     const onLinkActivate = (): void => {
@@ -2035,37 +2031,33 @@ export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
     };
 
     if (identifier) {
-      render(
-          // clang-format off
-          html`<devtools-link-swatch
-                @mouseenter=${onMouseEnter}
-                @mouseleave=${onMouseLeave}
-                .data=${{
-                  text: identifier,
-                  tooltip: anchorNode ? undefined :
-                   {title:  i18nString(UIStrings.sIsNotDefined, {PH1: identifier})},
-                  isDefined: Boolean(anchorNode),
-                  jslogContext: 'anchor-link',
-                  onLinkActivate,
-                } as InlineEditor.LinkSwatch.LinkSwatchRenderData}
-                ></devtools-link-swatch>${needsSpace ? ' ' : ''}`,
-          // clang-format on
-          container, {host: container});
-    } else {
       // clang-format off
-      render(html`<devtools-icon
-                   role='button'
-                   title=${i18nString(UIStrings.jumpToAnchorNode)}
-                   class='icon-link'
-                   name='open-externally'
-                   jslog=${VisualLogging.action('jump-to-anchor-node').track({click: true})}
-                   @mouseenter=${onMouseEnter}
-                   @mouseleave=${onMouseLeave}
-                   @mousedown=${(ev: MouseEvent) => ev.stopPropagation()}
-                   @click=${handleIconClick}
-                  ></devtools-icon>${needsSpace ? ' ' : ''}`, container, {host: container});
+      return html`<devtools-link-swatch
+        @mouseenter=${onMouseEnter}
+        @mouseleave=${onMouseLeave}
+        .data=${{
+          text: identifier,
+          tooltip: anchorNode ? undefined : {title: i18nString(UIStrings.sIsNotDefined, {PH1: identifier})},
+          isDefined: Boolean(anchorNode),
+          jslogContext: 'anchor-link',
+          onLinkActivate,
+        } as InlineEditor.LinkSwatch.LinkSwatchRenderData}
+      ></devtools-link-swatch>${needsSpace ? ' ' : nothing}`;
       // clang-format on
     }
+    // clang-format off
+    return html`<devtools-icon
+      role='button'
+      title=${i18nString(UIStrings.jumpToAnchorNode)}
+      class='icon-link'
+      name='open-externally'
+      jslog=${VisualLogging.action('jump-to-anchor-node').track({click: true})}
+      @mouseenter=${onMouseEnter}
+      @mouseleave=${onMouseLeave}
+      @mousedown=${(ev: MouseEvent) => ev.stopPropagation()}
+      @click=${handleIconClick}
+    ></devtools-icon>${needsSpace ? ' ' : nothing}`;
+    // clang-format on
   }
 
   constructor(stylesContainer: StylesContainer) {
@@ -2073,25 +2065,22 @@ export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): Node[] {
-    const content = document.createElement('span');
+  override render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): LitTemplate {
     if (match.node.name === 'VariableName') {
       // Link an anchor double-dashed ident to its matching anchor element.
-      void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, {identifier: match.text});
-    } else {
-      // The matcher passes a 'CallExpression' node with a functionName
-      // ('anchor' or 'anchor-size') if the arguments need to have an implicit
-      // anchor link swatch rendered.
-      content.appendChild(document.createTextNode(`${match.functionName}(`));
-      const swatchContainer = document.createElement('span');
-      content.appendChild(swatchContainer);
-      const args = ASTUtils.children(match.node.getChild('ArgList'));
-      const remainingArgs = args.splice(1);
-      void AnchorFunctionRenderer.decorateAnchorForAnchorLink(
-          this.#stylesContainer, swatchContainer, {needsSpace: remainingArgs.length > 1});
-      Renderer.renderInto(remainingArgs, context, content);
+      return html`<span>${
+          until(AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, {identifier: match.text}),
+                match.text)}</span>`;
     }
-    return [content];
+    // The matcher passes a 'CallExpression' node with a functionName
+    // ('anchor' or 'anchor-size') if the arguments need to have an implicit
+    // anchor link swatch rendered.
+    const args = ASTUtils.children(match.node.getChild('ArgList'));
+    const remainingArgs = args.splice(1);
+    return html`<span>${match.functionName}(${
+        until(AnchorFunctionRenderer.decorateAnchorForAnchorLink(
+            this.#stylesContainer,
+            {needsSpace: remainingArgs.length > 1}))}${Renderer.render(remainingArgs, context).nodes}</span>`;
   }
 }
 
@@ -2107,10 +2096,10 @@ export class PositionAnchorRenderer extends PositionAnchorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): Node[] {
-    const content = document.createElement('span');
-    void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, {identifier: match.text});
-    return [content];
+  override render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): LitTemplate {
+    return html`<span>${
+        until(AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, {identifier: match.text}),
+              match.text)}</span>`;
   }
 }
 

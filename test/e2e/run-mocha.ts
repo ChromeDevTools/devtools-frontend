@@ -5,10 +5,14 @@
 import * as path from 'node:path';
 
 import {SOURCE_ROOT} from '../conductor/paths.js';
-import {loadTests} from '../conductor/test_config.js';
+import {loadTests, TestConfig} from '../conductor/test_config.js';
 import {run} from '../shared/run-mocha.js';
 
 import devtoolsTestInterface from './conductor/mocha-interface.js';
+
+if (TestConfig.tests.length === 0) {
+  TestConfig.tests.push(import.meta.dirname);
+}
 
 void run({
   require: [

@@ -241,9 +241,9 @@ export interface PositionOverride {
   z?: number;
 }
 
-export type DrawOverride =
-    (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
-     timeToPosition: (time: number) => number, transformColor: (color: string) => string) => PositionOverride;
+export type DrawOverride = (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
+                            timeToPosition: (time: number) => number, transformColor: (color: string) => string) =>
+    PositionOverride;
 
 const FlameChartBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
     Common.ObjectWrapper.eventMixin(
@@ -251,7 +251,7 @@ const FlameChartBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widg
     );
 
 export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.Calculator, ChartViewportDelegate {
-  private readonly flameChartDelegate: FlameChartDelegate;
+  private flameChartDelegate: FlameChartDelegate;
   private chartViewport: ChartViewport;
   private dataProvider: FlameChartDataProvider;
   private candyStripePattern: CanvasPattern|null;
@@ -429,17 +429,16 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
       this.dispatchEventToListeners(Events.CANVAS_FOCUSED);
     }, false);
 
-    UI.UIUtils.installDragHandle(
-        this.viewportElement, this.startDragging.bind(this), this.dragging.bind(this), this.endDragging.bind(this),
-        null);
+    UI.UIUtils.installDragHandle(this.viewportElement, this.startDragging.bind(this), this.dragging.bind(this),
+                                 this.endDragging.bind(this), null);
 
     this.rulerEnabled = true;
     this.barHeight = 17;
     this.hitMarginPx = 3;
     this.textBaseline = 5;
     this.textPadding = 5;
-    this.chartViewport.setWindowTimes(
-        dataProvider.minimumBoundary(), dataProvider.minimumBoundary() + dataProvider.totalTime());
+    this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(),
+                                      dataProvider.minimumBoundary() + dataProvider.totalTime());
 
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
@@ -470,13 +469,13 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
   override wasShown(): void {
     super.wasShown();
-    ThemeSupport.ThemeSupport.instance().addEventListener(
-        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                          this.#boundOnThemeChanged);
   }
 
   override willHide(): void {
-    ThemeSupport.ThemeSupport.instance().removeEventListener(
-        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
+    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                             this.#boundOnThemeChanged);
     this.hideHighlight();
     super.willHide();
   }
@@ -540,6 +539,21 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
   disableRangeSelection(): void {
     this.chartViewport.disableRangeSelection();
+  }
+
+  setDataProvider(dataProvider: FlameChartDataProvider): void {
+    if (this.dataProvider === dataProvider) {
+      return;
+    }
+    this.dataProvider = dataProvider;
+    this.reset();
+    this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(),
+                                      dataProvider.minimumBoundary() + dataProvider.totalTime());
+    this.scheduleUpdate();
+  }
+
+  setDelegate(flameChartDelegate: FlameChartDelegate): void {
+    this.flameChartDelegate = flameChartDelegate;
   }
 
   #shouldDimEvent(entryIndex: number): boolean {
@@ -1088,8 +1102,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     if (this.highlightedEntryIndex !== -1) {
       this.#selectGroup(groupIndex);
 
-      this.dispatchEventToListeners(
-          Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.highlightedEntryIndex, withLinkCreationButton: true});
+      this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED,
+                                    {entryIndex: this.highlightedEntryIndex, withLinkCreationButton: true});
 
       // Log the double click on the TimelineFlameChartView for VE logs.
       const flameChartView = this.flameChartDelegate.containingElement?.();
@@ -1301,8 +1315,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.#notifyProviderOfConfigurationChange();
   }
 
-  private expandGroup(
-      groupIndex: number, setExpanded: boolean|undefined = true, propagatedExpand: boolean|undefined = false): void {
+  private expandGroup(groupIndex: number, setExpanded: boolean|undefined = true,
+                      propagatedExpand: boolean|undefined = false): void {
     if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
       return;
     }
@@ -1637,8 +1651,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     // Generate context menu entries for annotations.
     const annotationSection = this.contextMenu.annotationSection();
     annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
-      this.dispatchEventToListeners(
-          Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.selectedEntryIndex, withLinkCreationButton: false});
+      this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED,
+                                    {entryIndex: this.selectedEntryIndex, withLinkCreationButton: false});
     }, {
       jslogContext: 'timeline.annotations.create-entry-label',
     });
@@ -2030,11 +2044,11 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     }
 
     const cursorTime = this.chartViewport.pixelToTime(x);
-    const indexOnLevel = Math.max(
-        Platform.ArrayUtilities.upperBound(
-            entriesOnLevel, cursorTime, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
-            1,
-        0);
+    const indexOnLevel =
+        Math.max(Platform.ArrayUtilities.upperBound(entriesOnLevel, cursorTime,
+                                                    (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+                     1,
+                 0);
 
     function checkEntryHit(this: FlameChart, entryIndex: number|undefined): boolean {
       if (entryIndex === undefined) {
@@ -2286,8 +2300,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
       throw new Error('No timeline markers');
     }
 
-    return Platform.ArrayUtilities.lowerBound(
-        timelineData.markers, time, (markerTimestamp, marker) => markerTimestamp - marker.startTime());
+    return Platform.ArrayUtilities.lowerBound(timelineData.markers, time,
+                                              (markerTimestamp, marker) => markerTimestamp - marker.startTime());
   }
 
   /**
@@ -2400,9 +2414,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * in the timeline like the Main Thread flamechart and the timings track.
    * Drawn on a color by color basis to minimize the amount of times context.style is switched.
    */
-  #drawBatchEvents(
-      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[],
-      outline: boolean): void {
+  #drawBatchEvents(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string,
+                   indexes: number[], outline: boolean): void {
     context.save();
     context.beginPath();
     for (let i = 0; i < indexes.length; ++i) {
@@ -2567,11 +2580,11 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * be changed because we have no need to do so, but this can be extended in
    * the future if required.
    **/
-  #drawEventRect(
-      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, entryIndex: number, overrides?: {
-        startX?: number,
-        width?: number,
-      }): void {
+  #drawEventRect(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, entryIndex: number,
+                 overrides?: {
+                   startX?: number,
+                   width?: number,
+                 }): void {
     const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
     const duration = entryTotalTimes[entryIndex];
     if (isNaN(duration)) {
@@ -2688,9 +2701,9 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
       // Entries are ordered by start time within a level, so find the last visible entry.
       const levelIndexes = this.timelineLevels[level];
-      const rightIndexOnLevel = Platform.ArrayUtilities.lowerBound(
-                                    levelIndexes, this.chartViewport.windowRightTime(),
-                                    (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+      const rightIndexOnLevel =
+          Platform.ArrayUtilities.lowerBound(levelIndexes, this.chartViewport.windowRightTime(),
+                                             (time, entryIndex) => time - entryStartTimes[entryIndex]) -
           1;
       let lastDrawOffset = Infinity;
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
@@ -2849,9 +2862,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
         if (parsedColor) {
           context.fillStyle = (parsedColor.setAlpha(0.8).asString());
         }
-        context.fillRect(
-            iconsWidth + HEADER_LEFT_PADDING, offset + HEADER_LABEL_Y_PADDING, labelBackgroundWidth,
-            group.style.height - 2 * HEADER_LABEL_Y_PADDING);
+        context.fillRect(iconsWidth + HEADER_LEFT_PADDING, offset + HEADER_LABEL_Y_PADDING, labelBackgroundWidth,
+                         group.style.height - 2 * HEADER_LABEL_Y_PADDING);
       }
       context.fillStyle = (this.#inTrackConfigEditMode && group.hidden) ?
           ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-token-subtle', this.contentElement) :
@@ -2908,9 +2920,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
             drawIcon(context, DOWN_ICON_LEFT, offset, EDIT_ICON_WIDTH, moveDownIconPath, iconColor);
           }
           // If this is the last visible top-level group, we will disable the hide action.
-          drawIcon(
-              context, HIDE_ICON_LEFT, offset, EDIT_ICON_WIDTH, group.hidden ? showIconPath : hideIconPath,
-              this.groupIsLastVisibleTopLevel(groupIndex) ? '--sys-color-state-disabled' : iconColor);
+          drawIcon(context, HIDE_ICON_LEFT, offset, EDIT_ICON_WIDTH, group.hidden ? showIconPath : hideIconPath,
+                   this.groupIsLastVisibleTopLevel(groupIndex) ? '--sys-color-state-disabled' : iconColor);
         }
       }
     });
@@ -2919,10 +2930,9 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-token-subtle');
     this.forEachGroupInViewport((offset, index, group) => {
       if (this.isGroupCollapsible(index)) {
-        drawExpansionArrow(
-            context, iconsWidth + EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1),
-            offset + group.style.height - this.textBaseline - ARROW_SIDE / 2,
-            this.#inTrackConfigEditMode ? false : Boolean(group.expanded));
+        drawExpansionArrow(context, iconsWidth + EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1),
+                           offset + group.style.height - this.textBaseline - ARROW_SIDE / 2,
+                           this.#inTrackConfigEditMode ? false : Boolean(group.expanded));
       }
     });
 
@@ -2960,8 +2970,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
   /**
    * Draws page load events in the Timings track (LCP, FCP, DCL, etc.)
    */
-  private drawMarkers(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, markerIndices: number[]):
-      void {
+  private drawMarkers(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData,
+                      markerIndices: number[]): void {
     const {entryStartTimes, entryLevels} = timelineData;
     this.markerPositions.clear();
     context.textBaseline = 'alphabetic';
@@ -3024,9 +3034,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
       const y = this.levelToOffset(level);
       const height = this.levelHeight(level);
       const width = unclippedXEnd - unclippedXStart;
-      const pos = drawOverride(
-          context, x, y, width, height, time => this.chartViewport.timeToPosition(time),
-          color => this.#transformColor(entryIndex, color));
+      const pos = drawOverride(context, x, y, width, height, time => this.chartViewport.timeToPosition(time),
+                               color => this.#transformColor(entryIndex, color));
       posArray.push({entryIndex, pos});
     }
     // Place in z order so coordinatesToEntryIndex finds the highest z-index match first.
@@ -3144,9 +3153,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * Process the pixels of start and end, and other data of each group, which are used in drawing the group.
    * @param callback
    */
-  private forEachGroup(
-      callback: (groupTop: number, groupIndex: number, group: Group, isFirstGroup: boolean, height: number) => void):
-      void {
+  private forEachGroup(callback: (groupTop: number, groupIndex: number, group: Group, isFirstGroup: boolean,
+                                  height: number) => void): void {
     if (!this.rawTimelineData) {
       return;
     }
@@ -3221,8 +3229,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     }
   }
 
-  private forEachGroupInViewport(
-      callback: (offset: number, index: number, group: Group, isFirst: boolean, groupHeight: number) => void): void {
+  private forEachGroupInViewport(callback: (offset: number, index: number, group: Group, isFirst: boolean,
+                                            groupHeight: number) => void): void {
     const top = this.chartViewport.scrollOffset();
     this.forEachGroup((groupTop, index, group, firstGroup, height) => {
       if (groupTop - group.style.padding > top + this.offsetHeight) {
@@ -3270,8 +3278,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     for (let level = group.startLevel; level < endLevel; ++level) {
       const levelIndexes: number[] = this.timelineLevels ? this.timelineLevels[level] : [];
       const rightIndexOnLevel =
-          Platform.ArrayUtilities.lowerBound(
-              levelIndexes, timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+          Platform.ArrayUtilities.lowerBound(levelIndexes, timeWindowRight,
+                                             (time, entryIndex) => time - entryStartTimes[entryIndex]) -
           1;
       let lastDrawOffset = Infinity;
 
@@ -3296,9 +3304,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
           context.beginPath();
           context.fillStyle = color;
           context.fillRect(barX, y, barWidth, groupBarHeight - 1);
-          this.dataProvider.decorateEntry(
-              entryIndex, context, '', barX, y, barWidth, groupBarHeight, unclippedBarX, timeToPixel,
-              color => this.#transformColor(entryIndex, color));
+          this.dataProvider.decorateEntry(entryIndex, context, '', barX, y, barWidth, groupBarHeight, unclippedBarX,
+                                          timeToPixel, color => this.#transformColor(entryIndex, color));
           continue;
         }
         range.append(new Common.SegmentedRange.Segment(barX, endBarX, color));
@@ -3320,8 +3327,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     }
     context.fill();
 
-    function mergeCallback<T>(a: Common.SegmentedRange.Segment<T>, b: Common.SegmentedRange.Segment<T>):
-        Common.SegmentedRange.Segment<T>|null {
+    function mergeCallback<T>(a: Common.SegmentedRange.Segment<T>,
+                              b: Common.SegmentedRange.Segment<T>): Common.SegmentedRange.Segment<T>|null {
       return a.data === b.data && a.end + 0.4 > b.end ? a : null;
     }
   }
@@ -3435,13 +3442,13 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     context.restore();
   }
 
-  private drawCircleAroundCollapseArrow(
-      entryIndex: number, context: CanvasRenderingContext2D,
-      timelineData: FlameChartTimelineData): {circleStartX?: number, circleEndX?: number} {
+  private drawCircleAroundCollapseArrow(entryIndex: number, context: CanvasRenderingContext2D,
+                                        timelineData: FlameChartTimelineData):
+      {circleStartX?: number, circleEndX?: number} {
     const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);
     // The circle is only drawn when the initiator arrow is going to/from some hidden entry. Make sure that the entry also has a decoration for hidden children.
-    if (!decorationsForEvent?.find(
-            decoration => decoration.type === FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW)) {
+    if (!decorationsForEvent?.find(decoration =>
+                                       decoration.type === FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW)) {
       // This should not happen, break if it does.
       return {};
     }
@@ -3765,9 +3772,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
         // This shouldn't happen. If this happen, it means the |groups| from data provider is changed. Add a sanity
         // check to avoid error.
         if (!groups[index]) {
-          console.warn(
-              'The |groups| is changed. ' +
-              'Please make sure the flamechart is reset after data change in the data provider');
+          console.warn('The |groups| is changed. ' +
+                       'Please make sure the flamechart is reset after data change in the data provider');
           return;
         }
         treeNode.startLevel = groups[index].startLevel;
@@ -3798,8 +3804,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
    * @param parentGroupIsVisible used to determine if current group's header and its levels are visible
    * @returns the offset (in pixels) after processing current group
    */
-  #traverseGroupTreeAndUpdateLevelPositionsForTheGroup(
-      groupNode: GroupTreeNode, currentOffset: number, parentGroupIsVisible: boolean): number {
+  #traverseGroupTreeAndUpdateLevelPositionsForTheGroup(groupNode: GroupTreeNode, currentOffset: number,
+                                                       parentGroupIsVisible: boolean): number {
     if (!this.visibleLevels || !this.visibleLevelOffsets || !this.visibleLevelHeights || !this.groupOffsets) {
       return currentOffset;
     }
@@ -3811,9 +3817,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
 
     // This shouldn't happen. If this happen, it means the group tree is outdated. Add a sanity check to avoid error.
     if (groupNode.index >= groups.length) {
-      console.warn(
-          'The data from the group tree is outdated. ' +
-          'Please make sure the flamechart is reset after data change in the data provider');
+      console.warn('The data from the group tree is outdated. ' +
+                   'Please make sure the flamechart is reset after data change in the data provider');
       return currentOffset;
     }
 
@@ -3844,9 +3849,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     for (let level = groupNode.startLevel; level < groupNode.endLevel; level++) {
       // This shouldn't happen. If this happen, it means the group tree is outdated. Add a sanity check to avoid error.
       if (level >= this.dataProvider.maxStackDepth()) {
-        console.warn(
-            'The data from the group tree is outdated. ' +
-            'Please make sure the flamechart is reset after data change in the data provider');
+        console.warn('The data from the group tree is outdated. ' +
+                     'Please make sure the flamechart is reset after data change in the data provider');
         return currentOffset;
       }
 
@@ -3926,8 +3930,8 @@ export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.
     this.groupOffsets = new Uint32Array(groups.length + 1);
     let currentOffset = this.rulerEnabled ? RulerHeight + 2 : 2;
     // The root is always visible, so just simply set the |parentGroupIsVisible| to visible.
-    currentOffset = this.#traverseGroupTreeAndUpdateLevelPositionsForTheGroup(
-        this.#groupTreeRoot, currentOffset, /* parentGroupIsVisible= */ true);
+    currentOffset = this.#traverseGroupTreeAndUpdateLevelPositionsForTheGroup(this.#groupTreeRoot, currentOffset,
+                                                                              /* parentGroupIsVisible= */ true);
 
     // Set the final offset to the last element of |groupOffsets| and
     // |visibleLevelOffsets|. This number represent the end of last group and
@@ -4393,10 +4397,9 @@ export class FlameChartTimelineData {
   initiatorsData: FlameChartInitiatorData[];
 
   selectedGroup: Group|null;
-  private constructor(
-      entryLevels: number[]|Uint16Array, entryTotalTimes: number[]|Float32Array, entryStartTimes: number[]|Float64Array,
-      groups: Group[]|null, entryDecorations: FlameChartDecoration[][] = [],
-      initiatorsData: FlameChartInitiatorData[] = []) {
+  private constructor(entryLevels: number[]|Uint16Array, entryTotalTimes: number[]|Float32Array,
+                      entryStartTimes: number[]|Float64Array, groups: Group[]|null,
+                      entryDecorations: FlameChartDecoration[][] = [], initiatorsData: FlameChartInitiatorData[] = []) {
     this.entryLevels = entryLevels;
     this.entryTotalTimes = entryTotalTimes;
     this.entryStartTimes = entryStartTimes;
@@ -4417,9 +4420,8 @@ export class FlameChartTimelineData {
     entryDecorations?: FlameChartDecoration[][],
     initiatorsData?: FlameChartTimelineData['initiatorsData'],
   }): FlameChartTimelineData {
-    return new FlameChartTimelineData(
-        data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups, data.entryDecorations || [],
-        data.initiatorsData || []);
+    return new FlameChartTimelineData(data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups,
+                                      data.entryDecorations || [], data.initiatorsData || []);
   }
 
   // TODO(crbug.com/1501055) Thinking about refactor this class, so we can avoid create a new object when modifying the
@@ -4484,10 +4486,9 @@ export interface FlameChartDataProvider {
    */
   entryColor(entryIndex: number): string;
 
-  decorateEntry(
-      entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number,
-      transformColor?: (color: string) => string): boolean;
+  decorateEntry(entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
+                barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number,
+                transformColor?: (color: string) => string): boolean;
 
   forceDecoration(entryIndex: number): boolean;
 
@@ -4509,8 +4510,8 @@ export interface FlameChartDataProvider {
   customizedContextMenu?
       (event: MouseEvent, eventIndex: number, groupIndex: number): UI.ContextMenu.ContextMenu|undefined;
 
-  search?(visibleWindow: Trace.Types.Timing.TraceWindowMicro, filter?: Trace.Extras.TraceFilter.TraceFilter):
-      DataProviderSearchResult[];
+  search?(visibleWindow: Trace.Types.Timing.TraceWindowMicro,
+          filter?: Trace.Extras.TraceFilter.TraceFilter): DataProviderSearchResult[];
 
   // The following three functions are used for the flame chart entry customization.
   modifyTree?(action: FilterAction, entryIndex: number): void;

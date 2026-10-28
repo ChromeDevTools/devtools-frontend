@@ -21,10 +21,11 @@ describeWithEnvironment('CSSHintDetailsView', () => {
 
     const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hintMessage);
     renderElementIntoDOM(popupComponent);
+    await popupComponent.updateComplete;
 
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-reason'));
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-possible-fix'));
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#learn-more'));
+    assert.isNotNull(popupComponent.contentElement.querySelector('.hint-popup-reason'));
+    assert.isNotNull(popupComponent.contentElement.querySelector('.hint-popup-possible-fix'));
+    assert.isNotNull(popupComponent.contentElement.querySelector('#learn-more'));
   });
 
   it('does not render learn more', async () => {
@@ -35,9 +36,10 @@ describeWithEnvironment('CSSHintDetailsView', () => {
 
     const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
     renderElementIntoDOM(popupComponent);
+    await popupComponent.updateComplete;
 
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-reason'));
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('.hint-popup-possible-fix'));
-    assert.isNull(popupComponent.shadowRoot!.querySelector('#learn-more'));
+    assert.isNotNull(popupComponent.contentElement.querySelector('.hint-popup-reason'));
+    assert.isNotNull(popupComponent.contentElement.querySelector('.hint-popup-possible-fix'));
+    assert.isNull(popupComponent.contentElement.querySelector('#learn-more'));
   });
 });

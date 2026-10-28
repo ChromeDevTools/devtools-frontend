@@ -4,31 +4,33 @@
  * found in the LICENSE file.
  */
 
-.hint-popup-wrapper {
-  max-width: 232px;
-}
+@scope to (devtools-widget > *) {
+  .hint-popup-wrapper {
+    max-width: 232px;
+  }
 
-code {
-  font-weight: bold;
-  font-family: inherit;
-}
+  code {
+    font-weight: bold;
+    font-family: inherit;
+  }
 
-.hint-popup-possible-fix {
-  margin-top: var(--sys-size-5);
-}
+  .hint-popup-possible-fix {
+    margin-top: var(--sys-size-5);
+  }
 
-.clickable {
-  color: var(--sys-color-primary);
-}
+  .clickable {
+    color: var(--sys-color-primary);
+  }
 
-.underlined {
-  text-decoration: underline;
-}
+  .underlined {
+    text-decoration: underline;
+  }
 
-.unbreakable-text {
-  white-space: nowrap;
-}
+  .unbreakable-text {
+    white-space: nowrap;
+  }
 
-.footer {
-  margin-top: var(--sys-size-5);
+  .footer {
+    margin-top: var(--sys-size-5);
+  }
 }

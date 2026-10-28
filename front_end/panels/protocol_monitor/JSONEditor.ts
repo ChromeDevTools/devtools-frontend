@@ -527,13 +527,13 @@ export class JSONEditor extends JSONEditorBase {
     return {
       box: hintElement.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
-        const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
+        const popupWidget = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
           getMessage: () => html`<span>${head}</span>`,
           getPossibleFixMessage: () => popupContent,
           getLearnMoreLink: () =>
               `https://chromedevtools.github.io/devtools-protocol/tot/${this.command.split('.')[0]}/`,
         });
-        popover.contentElement.appendChild(popupElement);
+        popupWidget.show(popover.contentElement);
         return true;
       },
     };

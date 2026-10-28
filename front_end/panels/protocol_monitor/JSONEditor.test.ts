@@ -261,8 +261,8 @@ describeWithEnvironment('JSONEditor', () => {
 
   const serializePopupContent = () => {
     const container = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
-    const hintDetailView = container?.shadowRoot?.querySelector('devtools-css-hint-details-view');
-    return hintDetailView?.shadowRoot?.querySelector('.hint-popup-wrapper')?.textContent?.replaceAll(/\s/g, '');
+    const hintDetailView = container?.shadowRoot?.querySelector('.css-hint-details-view');
+    return hintDetailView?.querySelector('.hint-popup-wrapper')?.textContent?.replaceAll(/\s/g, '');
   };
 
   const renderEditorForCommand = async(command: string, parameters: Record<string, unknown>): Promise<{

@@ -1,7 +1,6 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -9,10 +8,57 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Events, MediaModel, type PlayerEvent} from './MediaModel.js';
 import {PlayerDetailView} from './PlayerDetailView.js';
 import {PlayerListView} from './PlayerListView.js';
+
+const {widget} = UI.Widget;
+
+export interface ViewInput {
+  sidebar: PlayerListView;
+  activePanel?: PlayerDetailView;
+  hasPlayers: boolean;
+}
+
+export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const placeholderHeader =
+      input.hasPlayers ? i18nString(UIStrings.noPlayerDetailsSelected) : i18nString(UIStrings.noMediaPlayer);
+  const placeholderText =
+      input.hasPlayers ? i18nString(UIStrings.selectToViewDetails) : i18nString(UIStrings.mediaPlayerDescription);
+  // clang-format off
+  render(html`
+    <devtools-split-view direction="column"
+                         name="media-panel-split-view-state"
+                         sidebar-initial-size="200"
+                         show=${input.hasPlayers ? 'both' : 'main'}>
+      <devtools-widget slot="sidebar"
+                       class="panel-sidebar"
+                       jslog=${VisualLogging.pane('sidebar').track({resize: true})}
+                       ${widget(UI.Widget.VBox)}>
+        <devtools-widget ${widget(UI.Widget.WrapperWidget, {
+          widget: input.sidebar,
+        })}></devtools-widget>
+      </devtools-widget>
+      ${input.activePanel ? html`
+        <devtools-widget slot="main" ${widget(UI.Widget.WrapperWidget, {
+          widget: input.activePanel,
+        })}></devtools-widget>
+      ` : html`
+        <devtools-widget slot="main" ${widget(UI.EmptyWidget.EmptyWidget, {
+          header: placeholderHeader,
+          text: placeholderText,
+          link: MEDIA_PLAYER_EXPLANATION_URL,
+        })}></devtools-widget>
+      `}
+    </devtools-split-view>
+  `, target);
+  // clang-format on
+};
 
 const UIStrings = {
   /**
@@ -160,19 +206,21 @@ export class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 }
 
-export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetManager.SDKModelObserver<MediaModel> {
+export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKModelObserver<MediaModel> {
   private detailPanels: Map<string, PlayerDetailView>;
   private deletedPlayers: Set<string>;
   private readonly downloadStore: PlayerDataDownloadManager;
   private readonly sidebar: PlayerListView;
   #playerIdsToPlayers: Map<string, Protocol.Media.Player>;
   #domNodeIdsToPlayerIds: Map<Protocol.DOM.BackendNodeId, string>;
-  #placeholder: UI.EmptyWidget.EmptyWidget;
+  #activePlayerId: string|null = null;
+  readonly #view: View;
   readonly #initialPlayersLoadedPromise: Promise<void>;
   #initialPlayersLoadedPromiseResolve: () => void = () => {};
 
-  constructor(downloadStore: PlayerDataDownloadManager = new PlayerDataDownloadManager()) {
+  constructor(downloadStore: PlayerDataDownloadManager = new PlayerDataDownloadManager(), view: View = DEFAULT_VIEW) {
     super('media');
+    this.#view = view;
     this.detailPanels = new Map();
     this.#playerIdsToPlayers = new Map();
     this.#domNodeIdsToPlayerIds = new Map();
@@ -185,26 +233,28 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.downloadStore = downloadStore;
 
     this.sidebar = new PlayerListView(this);
-    this.sidebar.show(this.panelSidebarElement());
-    this.splitWidget().hideSidebar();
-
-    this.#placeholder =
-        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMediaPlayer), UIStrings.mediaPlayerDescription);
-    this.#placeholder.show(this.mainElement());
-    this.#placeholder.link = MEDIA_PLAYER_EXPLANATION_URL;
+    this.sidebar.setMinimumSize(100, 25);
+    this.requestUpdate();
 
     SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this, {scoped: true});
   }
 
+  override performUpdate(): void {
+    const activePanel = this.#activePlayerId ? this.detailPanels.get(this.#activePlayerId) : undefined;
+    this.#view({
+      sidebar: this.sidebar,
+      activePanel,
+      hasPlayers: this.detailPanels.size > 0,
+    },
+               undefined, this.contentElement);
+  }
+
   renderMainPanel(playerID: string): void {
-    if (!this.detailPanels.has(playerID)) {
+    if (!this.detailPanels.has(playerID) || this.#activePlayerId === playerID) {
       return;
     }
-    const mainWidget = this.splitWidget().mainWidget();
-    if (mainWidget) {
-      mainWidget.detachChildWidgets();
-    }
-    this.detailPanels.get(playerID)?.show(this.mainElement());
+    this.#activePlayerId = playerID;
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -338,16 +388,12 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
       this.#domNodeIdsToPlayerIds.set(player.domNodeId, player.playerId);
     }
 
-    if (this.splitWidget().showMode() !== UI.SplitWidget.ShowMode.BOTH) {
-      this.splitWidget().showBoth();
-    }
     this.sidebar.addMediaElementItem(player.playerId);
     this.detailPanels.set(player.playerId, new PlayerDetailView());
     this.downloadStore.addPlayer(player.playerId);
 
     if (this.detailPanels.size === 1) {
-      this.#placeholder.header = i18nString(UIStrings.noPlayerDetailsSelected);
-      this.#placeholder.text = i18nString(UIStrings.selectToViewDetails);
+      this.requestUpdate();
     }
 
     this.#initialPlayersLoadedPromiseResolve();
@@ -364,16 +410,10 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.#playerIdsToPlayers.delete(playerID);
     this.sidebar.deletePlayer(playerID);
     this.downloadStore.deletePlayer(playerID);
-    if (this.detailPanels.size === 0) {
-      this.#placeholder.header = i18nString(UIStrings.noMediaPlayer);
-      this.#placeholder.text = i18nString(UIStrings.mediaPlayerDescription);
-      this.splitWidget().hideSidebar();
-      const mainWidget = this.splitWidget().mainWidget();
-      if (mainWidget) {
-        mainWidget.detachChildWidgets();
-      }
-      this.#placeholder.show(this.mainElement());
+    if (this.#activePlayerId === playerID) {
+      this.#activePlayerId = null;
     }
+    this.requestUpdate();
   }
 
   markOtherPlayersForDeletion(playerID: string): void {
@@ -387,6 +427,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   exportPlayerData(playerID: string): void {
     const dump = this.downloadStore.exportPlayerData(playerID);
     const uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(dump, null, 2));
+    /* eslint-disable-next-line @devtools/no-imperative-dom-api */
     const anchor = document.createElement('a');
     anchor.href = uriContent;
     anchor.download = playerID + '.json';

@@ -12,7 +12,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Media from './media.js';
 
@@ -25,8 +27,8 @@ describeWithEnvironment('MediaMainView', () => {
     target = createTarget();
   });
 
-  function assertEmptyState(mainView: Media.MainView.MainView, expectedHeader: string, expectedDescription: string) {
-    const emptyWidgetElement = mainView.contentElement.querySelector('.empty-widget-container');
+  function assertEmptyState(container: HTMLElement, expectedHeader: string, expectedDescription: string) {
+    const emptyWidgetElement = container.querySelector('.empty-widget-container');
     assert.exists(emptyWidgetElement);
     const emptyWidgetShadowRoot = emptyWidgetElement.shadowRoot;
     assert.exists(emptyWidgetShadowRoot);
@@ -71,55 +73,87 @@ describeWithEnvironment('MediaMainView', () => {
   it('does not react to error on out of scope event',
      testUiUpdate(Media.MediaModel.Events.PLAYER_ERRORS_RAISED, 'onError', false));
 
-  it('shows a placeholder if no player is available', () => {
-    const mainView = new Media.MainView.MainView();
-    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details');
+  it('shows a placeholder if no player is available', async () => {
+    const view = createViewFunctionStub(Media.MainView.MainView);
+    const mainView = new Media.MainView.MainView(undefined, view);
+    const input = await view.nextInput;
+    assert.isFalse(input.hasPlayers);
+    assert.isUndefined(input.activePanel);
     mainView.detach();
   });
 
-  it('shows a placeholder if no player was selected', () => {
+  it('shows a placeholder if no player was selected', async () => {
     const model = target.model(Media.MediaModel.MediaModel);
     assert.exists(model);
 
     // Show main view, which will register event listeners on the model.
-    const mainView = new Media.MainView.MainView();
+    const view = createViewFunctionStub(Media.MainView.MainView);
+    const mainView = new Media.MainView.MainView(undefined, view);
     renderElementIntoDOM(mainView);
+    await view.nextInput;
 
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
-    assertEmptyState(mainView, 'No media player selected', 'Select a media player to inspect its details');
+    const input = await view.nextInput;
+    assert.isTrue(input.hasPlayers);
+    assert.isUndefined(input.activePanel);
     mainView.detach();
   });
 
-  it('shows a placeholder that no player was detected if all players are hidden', () => {
+  it('shows a placeholder that no player was detected if all players are hidden', async () => {
     const model = target.model(Media.MediaModel.MediaModel);
     assert.exists(model);
 
     // Show main view, which will register event listeners on the model.
-    const mainView = new Media.MainView.MainView();
+    const view = createViewFunctionStub(Media.MainView.MainView);
+    const mainView = new Media.MainView.MainView(undefined, view);
     renderElementIntoDOM(mainView);
+    await view.nextInput;
 
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
+    await view.nextInput;
     mainView.markPlayerForDeletion(PLAYER_ID);
+    const input = await view.nextInput;
 
-    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details');
+    assert.isFalse(input.hasPlayers);
+    assert.isUndefined(input.activePanel);
     mainView.detach();
   });
 
-  it('shows a placeholder if all players are hidden after already selecting a player and showing its details', () => {
-    const model = target.model(Media.MediaModel.MediaModel);
-    assert.exists(model);
+  it('shows a placeholder if all players are hidden after already selecting a player and showing its details',
+     async () => {
+       const model = target.model(Media.MediaModel.MediaModel);
+       assert.exists(model);
 
-    // Show main view, which will register event listeners on the model.
-    const mainView = new Media.MainView.MainView();
-    renderElementIntoDOM(mainView);
+       // Show main view, which will register event listeners on the model.
+       const view = createViewFunctionStub(Media.MainView.MainView);
+       const mainView = new Media.MainView.MainView(undefined, view);
+       renderElementIntoDOM(mainView);
+       await view.nextInput;
 
-    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
-    mainView.renderMainPanel(PLAYER_ID);
-    assert.isNull(mainView.contentElement.querySelector('.empty-widget-container'));
-    mainView.markPlayerForDeletion(PLAYER_ID);
+       model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
+       await view.nextInput;
+       mainView.renderMainPanel(PLAYER_ID);
+       assert.isDefined((await view.nextInput).activePanel);
+       mainView.markPlayerForDeletion(PLAYER_ID);
+       const input = await view.nextInput;
 
-    assertEmptyState(mainView, 'No media player', 'On this page you can view and export media player details');
-    mainView.detach();
+       assert.isFalse(input.hasPlayers);
+       assert.isUndefined(input.activePanel);
+       mainView.detach();
+     });
+
+  it('renders placeholders in DEFAULT_VIEW', () => {
+    const widget = new UI.Widget.Widget();
+    renderElementIntoDOM(widget);
+    const sidebar = new Media.PlayerListView.PlayerListView(sinon.createStubInstance(Media.MainView.MainView));
+
+    Media.MainView.DEFAULT_VIEW({sidebar, hasPlayers: false}, undefined, widget.contentElement);
+    assertEmptyState(widget.contentElement, 'No media player',
+                     'On this page you can view and export media player details');
+
+    Media.MainView.DEFAULT_VIEW({sidebar, hasPlayers: true}, undefined, widget.contentElement);
+    assertEmptyState(widget.contentElement, 'No media player selected', 'Select a media player to inspect its details');
+    widget.detach();
   });
 
   it('can select player by dom node id', () => {

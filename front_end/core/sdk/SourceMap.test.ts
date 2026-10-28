@@ -1557,6 +1557,8 @@ describe('SourceMap', () => {
 
         assert.deepEqual(sourceMap.mappings().map(entry => [entry.columnNumber, entry.isRangeMapping]),
                          [[3, false], [4, true]]);
+        assertMapping(sourceMap.findEntry(0, 6), 0, 'example.js', 0, 2);
+        assertMapping(sourceMap.findEntry(0, 3), 0, 'example.js', 1, 0);
       });
 
       it('marks entries of every section of an index map', () => {
@@ -1570,6 +1572,143 @@ describe('SourceMap', () => {
 
         assert.deepEqual(sourceMap.mappings().map(entry => [entry.lineNumber, entry.sourceURL, entry.isRangeMapping]),
                          [[0, sourceUrlExample, true], [2, sourceUrlOther, true]]);
+      });
+    });
+
+    describe('findEntry', () => {
+      it('interpolates positions inside the range along the line', () => {
+        /*
+              example.js:
+              0         1
+              01234567890123456
+                        ^ the range mapping starts here
+              ----------------------------------------
+              compiled.js:
+              0
+              0123456789
+                ^     ^ and ends where the next mapping starts
+        */
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:2 => example.js:0:10 (range)',
+          '0:8 => example.js:5:0',
+        ]));
+
+        assertMapping(sourceMap.findEntry(0, 2), 0, 'example.js', 0, 10);
+        assertMapping(sourceMap.findEntry(0, 3), 0, 'example.js', 0, 11);
+        assertMapping(sourceMap.findEntry(0, 7), 0, 'example.js', 0, 15);
+        // The range ends where the next mapping begins.
+        assertMapping(sourceMap.findEntry(0, 8), 0, 'example.js', 5, 0);
+      });
+
+      it('interpolates positions inside the range across newlines', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:4 => example.js:1:2 (range)',
+          '2:6 => example.js:9:0',
+        ]));
+
+        assertMapping(sourceMap.findEntry(0, 4), 0, 'example.js', 1, 2);
+        assertMapping(sourceMap.findEntry(0, 9), 0, 'example.js', 1, 7);
+        // Past a newline both sides restart at column 0, so the column carries over as is.
+        assertMapping(sourceMap.findEntry(1, 0), 0, 'example.js', 2, 0);
+        assertMapping(sourceMap.findEntry(1, 5), 0, 'example.js', 2, 5);
+        assertMapping(sourceMap.findEntry(2, 5), 0, 'example.js', 3, 5);
+        assertMapping(sourceMap.findEntry(2, 6), 0, 'example.js', 9, 0);
+      });
+
+      it('extends a trailing range mapping indefinitely', () => {
+        const sourceMap = createSourceMap(encodeSourceMap(['0:0 => example.js:0:0 (range)']));
+
+        assertMapping(sourceMap.findEntry(5, 3), 0, 'example.js', 5, 3);
+      });
+
+      it('reports the queried position as the generated position', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:2 => example.js:0:10 (range)',
+          '0:8 => example.js:5:0',
+        ]));
+
+        assertReverseMapping(sourceMap.findEntry(0, 5), 0, 5);
+      });
+
+      it('keeps collapsing positions inside a regular mapping', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:2 => example.js:0:10',
+          '0:8 => example.js:5:0',
+        ]));
+
+        assertMapping(sourceMap.findEntry(0, 5), 0, 'example.js', 0, 10);
+        assertReverseMapping(sourceMap.findEntry(0, 5), 0, 2);
+      });
+
+      it('returns null for positions preceding all mappings', () => {
+        const sourceMap = createSourceMap(encodeSourceMap(['0:2 => example.js:0:10 (range)']));
+
+        assert.isNull(sourceMap.findEntry(0, 1));
+      });
+
+      it('only reports the name at the exact start of the range', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:0 => example.js:0:0@foo (range)',
+          '0:10 => example.js:5:0',
+        ]));
+
+        assert.strictEqual(sourceMap.findEntry(0, 0)?.name, 'foo');
+        assert.isUndefined(sourceMap.findEntry(0, 3)?.name);
+      });
+
+      it('treats positions inside the range as exact', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:2 => example.js:0:10 (range)',
+          '0:8 => example.js:5:0',
+          '0:12 => example.js:6:0',
+        ]));
+
+        assertMapping(sourceMap.findEntryExact(0, 2), 0, 'example.js', 0, 10);
+        assertMapping(sourceMap.findEntryExact(0, 3), 0, 'example.js', 0, 11);
+        assertMapping(sourceMap.findEntryExact(0, 7), 0, 'example.js', 0, 15);
+        assert.isNull(sourceMap.findEntryExact(0, 1));
+        // Positions inside a regular mapping are still not exact.
+        assertMapping(sourceMap.findEntryExact(0, 8), 0, 'example.js', 5, 0);
+        assert.isNull(sourceMap.findEntryExact(0, 10));
+      });
+    });
+
+    describe('findEntryRanges', () => {
+      it('maps the generated range onto the matching original range', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:2 => example.js:0:10 (range)',
+          '0:8 => example.js:5:0',
+        ]));
+
+        const ranges = sourceMap.findEntryRanges(0, 4);
+
+        assert.exists(ranges);
+        assert.deepEqual(ranges.range, new TextUtils.TextRange.TextRange(0, 2, 0, 8));
+        assert.deepEqual(ranges.sourceRange, new TextUtils.TextRange.TextRange(0, 10, 0, 16));
+        assert.strictEqual(ranges.sourceURL, sourceUrlExample);
+      });
+
+      it('maps a generated range that spans newlines', () => {
+        const sourceMap = createSourceMap(encodeSourceMap([
+          '0:4 => example.js:1:2 (range)',
+          '2:6 => example.js:9:0',
+        ]));
+
+        const ranges = sourceMap.findEntryRanges(1, 0);
+
+        assert.exists(ranges);
+        assert.deepEqual(ranges.range, new TextUtils.TextRange.TextRange(0, 4, 2, 6));
+        assert.deepEqual(ranges.sourceRange, new TextUtils.TextRange.TextRange(1, 2, 3, 6));
+      });
+
+      it('keeps the unbounded end for a trailing range mapping', () => {
+        const sourceMap = createSourceMap(encodeSourceMap(['0:0 => example.js:3:1 (range)']));
+
+        const ranges = sourceMap.findEntryRanges(0, 0);
+
+        assert.exists(ranges);
+        assert.deepEqual(ranges.range, new TextUtils.TextRange.TextRange(0, 0, 2 ** 31 - 1, 2 ** 31 - 1));
+        assert.deepEqual(ranges.sourceRange, new TextUtils.TextRange.TextRange(3, 1, 2 ** 31 - 1, 2 ** 31 - 1));
       });
     });
 

@@ -1243,4 +1243,128 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     testEl.remove();
     widget.detach();
   });
+
+  it('marks the agent response as seen when a resolved thread is opened', async () => {
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+    await view.nextInput;
+
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: response-seen-test');
+    testEl.textContent = 'response seen content';
+    testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+    renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+    try {
+      const thread = overlayManager.createComment(testEl, 'Fix this');
+      assert.isNotNull(thread);
+      thread.sendToAgent();
+      // New threads open as drafts, so close the thread before the agent responds.
+      const sentInput = await view.nextInput;
+      assert.strictEqual(sentInput.activeThread?.id, thread.id);
+      sentInput.onPinClick(thread.id);
+      assert.isNull((await view.nextInput).activeThread);
+
+      commentManager.resolveCommentThread(thread.id, 'Fixed');
+      const resolvedInput = await view.nextInput;
+      assert.isNull(resolvedInput.activeThread);
+      assert.isFalse(thread.responseSeen);
+
+      resolvedInput.onPinClick(thread.id);
+      const openedInput = await view.nextInput;
+      assert.strictEqual(openedInput.activeThread?.id, thread.id);
+      assert.isTrue(thread.responseSeen);
+    } finally {
+      testEl.remove();
+      widget.detach();
+    }
+  });
+
+  it('marks the agent response as seen when a thread is revealed', async () => {
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+    await view.nextInput;
+
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: response-revealed-test');
+    testEl.textContent = 'response revealed content';
+    testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+    renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+    try {
+      const thread = overlayManager.createComment(testEl, 'Fix this');
+      assert.isNotNull(thread);
+      thread.sendToAgent();
+      // New threads open as drafts, so close the thread before the agent responds.
+      const sentInput = await view.nextInput;
+      assert.strictEqual(sentInput.activeThread?.id, thread.id);
+      sentInput.onPinClick(thread.id);
+      assert.isNull((await view.nextInput).activeThread);
+
+      commentManager.resolveCommentThread(thread.id, 'Fixed');
+      await view.nextInput;
+      assert.isFalse(thread.responseSeen);
+
+      widget.openThread(thread.id);
+      const openedInput = await view.nextInput;
+      assert.strictEqual(openedInput.activeThread?.id, thread.id);
+      assert.isTrue(thread.responseSeen);
+    } finally {
+      testEl.remove();
+      widget.detach();
+    }
+  });
+
+  it('marks the agent response as seen when the agent responds while the thread is open', async () => {
+    const view = createViewFunctionStub(PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget);
+    const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        [commentManager],
+        view,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+    await view.nextInput;
+
+    const testEl = document.createElement('div');
+    testEl.setAttribute('jslog', 'TreeItem; context: response-while-open-test');
+    testEl.textContent = 'response while open content';
+    testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+    renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+
+    try {
+      commentManager.setCommentMode(true);
+      overlayManager.handleElementClick(testEl);
+      const draftInput = await view.nextInput;
+      const thread = draftInput.activeThread;
+      assert.isNotNull(thread);
+
+      draftInput.onAddComment('Fix this');
+      await view.nextInput;
+      assert.isFalse(thread.responseSeen);
+
+      commentManager.resolveCommentThread(thread.id, 'Fixed');
+      const resolvedInput = await view.nextInput;
+      assert.strictEqual(resolvedInput.activeThread?.id, thread.id);
+      assert.isTrue(thread.responseSeen);
+    } finally {
+      testEl.remove();
+      widget.detach();
+    }
+  });
 });

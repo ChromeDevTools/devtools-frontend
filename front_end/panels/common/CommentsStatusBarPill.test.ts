@@ -36,7 +36,7 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
     const {view} = await createWidget();
     assert.isNotNull(view.input);
     assert.deepEqual(view.input.threads, []);
-    assert.strictEqual(view.input.respondedCount, 0);
+    assert.strictEqual(view.input.unseenResponseCount, 0);
   });
 
   it('counts only threads that the agent has responded to', async () => {
@@ -56,12 +56,30 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
     second.sendToAgent();
     const inputAfterSend = await view.nextInput;
     assert.lengthOf(inputAfterSend.threads, 2);
-    assert.strictEqual(inputAfterSend.respondedCount, 0);
+    assert.strictEqual(inputAfterSend.unseenResponseCount, 0);
 
     commentManager.resolveCommentThread(first.id, 'Done');
     const inputAfterResolve = await view.nextInput;
     assert.lengthOf(inputAfterResolve.threads, 2);
-    assert.strictEqual(inputAfterResolve.respondedCount, 1);
+    assert.strictEqual(inputAfterResolve.unseenResponseCount, 1);
+  });
+
+  it('does not count responses that have been seen', async () => {
+    const {commentManager, view} = await createWidget();
+
+    const thread = commentManager.createCommentThread(
+        {} as CommentManager.CommentManager.CommentAnchorSignature,
+        'comment',
+    );
+    thread.sendToAgent();
+    commentManager.resolveCommentThread(thread.id, 'Done');
+    const inputAfterResolve = await view.nextInput;
+    assert.strictEqual(inputAfterResolve.unseenResponseCount, 1);
+
+    thread.markResponseSeen();
+    const inputAfterSeen = await view.nextInput;
+    assert.lengthOf(inputAfterSeen.threads, 1);
+    assert.strictEqual(inputAfterSeen.unseenResponseCount, 0);
   });
 
   it('updates threads on COMMENT_THREADS_CHANGED while shown', async () => {
@@ -120,7 +138,7 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
             createSentThread('First comment'),
             createSentThread('Second comment'),
           ],
-          respondedCount: 0,
+          unseenResponseCount: 0,
           onPillClick: () => {},
           disabled: false,
           ...inputOverrides,
@@ -143,8 +161,8 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
     );
   });
 
-  it('renders the number of responded threads in the button text', () => {
-    const target = renderView({respondedCount: 2});
+  it('renders the number of unseen responses in the button text', () => {
+    const target = renderView({unseenResponseCount: 2});
     const button = target.querySelector<HTMLButtonElement>('button.devtools-pill');
     assert.strictEqual(button?.textContent?.trim(), 'Show comments (2)');
   });
@@ -154,8 +172,8 @@ describeWithEnvironment('DEFAULT_VIEW', () => {
     assert.isNull(target.querySelector('button.devtools-pill'));
   });
 
-  it('renders screenshot with responded count', async () => {
-    const target = renderView({respondedCount: 2});
+  it('renders screenshot with unseen response count', async () => {
+    const target = renderView({unseenResponseCount: 2});
     renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('status_bar/status_bar.png');
   });

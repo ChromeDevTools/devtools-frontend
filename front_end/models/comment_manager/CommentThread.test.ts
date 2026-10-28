@@ -112,6 +112,51 @@ describe('CommentThread', () => {
        assert.isEmpty(thread2.comments);
      });
 
+  it('markResponseSeen() marks the response of a RESOLVED thread as seen and dispatches CHANGED once', () => {
+    let changeCount = 0;
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    thread.addEventListener(CommentManager.CommentThread.Events.CHANGED, () => {
+      changeCount++;
+    });
+    assert.isFalse(thread.responseSeen);
+
+    // No-op before the thread is resolved.
+    thread.sendToAgent('Fix this');
+    changeCount = 0;
+    thread.markResponseSeen();
+    assert.isFalse(thread.responseSeen);
+    assert.strictEqual(changeCount, 0);
+
+    thread.resolve('Fixed');
+    assert.isFalse(thread.responseSeen);
+    changeCount = 0;
+
+    thread.markResponseSeen();
+    assert.isTrue(thread.responseSeen);
+    assert.strictEqual(changeCount, 1);
+
+    // Marking again does not dispatch CHANGED.
+    thread.markResponseSeen();
+    assert.strictEqual(changeCount, 1);
+  });
+
+  it('resolve() marks the response as unseen again only when there is a new reply', () => {
+    const thread = new CommentManager.CommentThread.CommentThread({
+      anchor: defaultAnchor,
+    });
+    thread.sendToAgent('Fix this');
+    thread.resolve('Fixed');
+    thread.markResponseSeen();
+
+    thread.resolve();
+    assert.isTrue(thread.responseSeen);
+
+    thread.resolve('Fixed again');
+    assert.isFalse(thread.responseSeen);
+  });
+
   it('save(text) appends comment, transitions DRAFT to ACTIVE, and dispatches CHANGED event', () => {
     let changeCount = 0;
     const thread = new CommentManager.CommentThread.CommentThread({

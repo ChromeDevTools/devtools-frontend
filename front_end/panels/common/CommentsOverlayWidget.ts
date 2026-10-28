@@ -170,7 +170,18 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         document.documentElement.removeEventListener('keydown', this.#onKeyDown);
         document.documentElement.removeEventListener('click', this.#onClickOutside, {capture: true});
       }
+      this.#markActiveThreadResponseSeen();
     }
+  }
+
+  /**
+   * The open thread shows the agent response, so the developer has seen it.
+   */
+  #markActiveThreadResponseSeen(): void {
+    if (!this.#activeThreadId) {
+      return;
+    }
+    this.#commentManager.getCommentThread(this.#activeThreadId)?.markResponseSeen();
   }
 
   constructor(
@@ -324,6 +335,8 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
 
   #onStateChanged(): void {
     this.#syncActiveThreadFromManager();
+    // The agent may respond while the thread is open.
+    this.#markActiveThreadResponseSeen();
     this.requestUpdate();
   }
 

@@ -104,6 +104,11 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   comments: Comment[];
   status: CommentThreadStatus = 'DRAFT';
   #transmitted = false;
+  /**
+   * False until the developer has opened the thread since the agent last
+   * responded. Only meaningful for RESOLVED threads.
+   */
+  responseSeen: boolean = false;
 
   constructor(options: CommentThreadOptions) {
     super();
@@ -212,14 +217,30 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   resolve(replyText?: string): void {
-    if (replyText && replyText.trim().length > 0) {
+    const reply = replyText?.trim();
+    if (reply) {
       this.comments.push({
         author: 'AGENT',
-        text: replyText.trim(),
+        text: reply,
         timestamp: Date.now(),
       });
     }
+    // A new response, or a thread that is newly resolved, has not been seen yet.
+    if (this.status !== 'RESOLVED' || reply) {
+      this.responseSeen = false;
+    }
     this.status = 'RESOLVED';
+    this.dispatchEventToListeners(Events.CHANGED);
+  }
+
+  /**
+   * Marks the agent response of a RESOLVED thread as seen by the developer.
+   */
+  markResponseSeen(): void {
+    if (this.status !== 'RESOLVED' || this.responseSeen) {
+      return;
+    }
+    this.responseSeen = true;
     this.dispatchEventToListeners(Events.CHANGED);
   }
 }

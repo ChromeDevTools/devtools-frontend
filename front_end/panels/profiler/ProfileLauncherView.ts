@@ -43,7 +43,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileLauncherView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {widget, widgetRef} = UI.Widget;
+const {widget} = UI.Widget;
 
 interface ProfileTypeEntry {
   profileType: ProfileType;
@@ -58,20 +58,15 @@ export interface ViewInput {
   controlButtonDisabled: boolean;
   controlButtonTooltip: string;
   isProfiling: boolean;
-  isolateSelector: IsolateSelector|null;
   onControlClick: () => void;
   onLoadClick: () => void;
   onProfileTypeChange: (profileType: ProfileType) => void;
 }
 
-export interface ViewOutput {
-  isolateSelector: IsolateSelector;
-}
-
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 
 // clang-format off
-export const DEFAULT_VIEW: View = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(html`
     <style>${profileLauncherViewStyles}</style>
     <div class="profile-launcher-view-content vbox" jslog=${VisualLogging.section('profiler.launcher')}>
@@ -105,13 +100,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </div>
       <div class="vbox profile-isolate-selector-block">
         <h1>${i18nString(UIStrings.selectJavascriptVmInstance)}</h1>
-        <div class="vbox profile-launcher-target-list profile-launcher-target-list-container">
-          <devtools-widget
-            ${widget(IsolateSelector)}
-            ${widgetRef(IsolateSelector, e => {output.isolateSelector = e;})}
-          ></devtools-widget>
-        </div>
-        ${input.isolateSelector?.totalMemoryElement() ?? nothing}
+        ${widget(IsolateSelector)}
       </div>
       <div class="hbox profile-launcher-buttons">
         <devtools-button
@@ -142,7 +131,6 @@ export class ProfileLauncherView extends ProfileLauncherViewBase {
   readonly panel: ProfilesPanel;
   readonly selectedProfileTypeSetting: Common.Settings.Setting<string>;
   readonly #view: View;
-  #isolateSelector: IsolateSelector|null = null;
   #profileTypes = new Map<string, ProfileType>();
   #isProfiling = false;
   #isInstantProfile = false;
@@ -243,7 +231,6 @@ export class ProfileLauncherView extends ProfileLauncherViewBase {
         (this.#isProfiling ? i18nString(UIStrings.stop) : i18nString(UIStrings.start));
     const controlButtonDisabled = !(this.#isEnabled && this.#recordButtonEnabled);
     const controlButtonTooltip = this.#recordButtonEnabled ? '' : UI.UIUtils.anotherProfilerActiveLabel();
-    const that = this;
 
     this.#view(
         {
@@ -253,7 +240,6 @@ export class ProfileLauncherView extends ProfileLauncherViewBase {
           controlButtonDisabled,
           controlButtonTooltip,
           isProfiling: this.#isProfiling,
-          isolateSelector: this.#isolateSelector,
           onControlClick: () => {
             this.panel.toggleRecord();
           },
@@ -265,15 +251,7 @@ export class ProfileLauncherView extends ProfileLauncherViewBase {
             this.#profileTypeChanged(profileType);
           },
         },
-        {
-          set isolateSelector(isolateSelector: IsolateSelector) {
-            if (that.#isolateSelector === isolateSelector) {
-              return;
-            }
-            that.#isolateSelector = isolateSelector;
-            that.requestUpdate();
-          },
-        },
+        undefined,
         this.contentElement,
     );
   }

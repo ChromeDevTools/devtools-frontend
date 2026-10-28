@@ -59,6 +59,7 @@ devtools_ui_module("unit_fixtures") {
     "unit/unit.test.ts",
     "unit/unit_2.test.ts",
   ]
+  data = [ "unit/snapshot.snapshot.txt" ]
   ts_deps = [ "../../front_end/testing" ]
 }
 

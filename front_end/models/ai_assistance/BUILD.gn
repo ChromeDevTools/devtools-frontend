@@ -232,6 +232,21 @@ devtools_foundation_module("foundation_unittests") {
     "tools/ToolRegistry.test.ts",
   ]
 
+  data = [
+    "AiHistoryStorage.snapshot.txt",
+    "agents/ContextSelectionAgent.snapshot.txt",
+    "agents/NetworkAgent.snapshot.txt",
+    "agents/PerformanceAgent.snapshot.txt",
+    "agents/StylingAgent.snapshot.txt",
+    "contexts/DOMNodeContext.snapshot.txt",
+    "contexts/LighthouseContext.snapshot.txt",
+    "contexts/RequestContext.snapshot.txt",
+    "data_formatters/LighthouseFormatter.snapshot.txt",
+    "data_formatters/PerformanceInsightFormatter.snapshot.txt",
+    "data_formatters/PerformanceTraceFormatter.snapshot.txt",
+    "performance/AICallTree.snapshot.txt",
+  ]
+
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",

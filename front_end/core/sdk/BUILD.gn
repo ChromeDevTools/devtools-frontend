@@ -169,6 +169,8 @@ ts_library("unittests") {
     "RehydratingConnection.test.ts",
   ]
 
+  data = [ "RehydratingConnection.snapshot.txt" ]
+
   ts_deps = [
     ":bundle",
     "../../generated",
@@ -245,6 +247,8 @@ devtools_foundation_module("foundation_unittests") {
     "TraceObject.test.ts",
     "WebAuthnModel.test.ts",
   ]
+
+  data = [ "AccessibilityModel.snapshot.txt" ]
 
   ts_deps = [
     ":bundle",

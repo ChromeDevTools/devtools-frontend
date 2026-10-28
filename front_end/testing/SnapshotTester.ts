@@ -222,9 +222,13 @@ class NodeSnapshotTester extends BaseSnapshotTester {
 
   async #getSnapshotPath(snapshotPath: string): Promise<string> {
     // @ts-expect-error no node types here.
+    const fs = await import('node:fs/promises');
+    // @ts-expect-error no node types here.
     const path = await import('node:path');
     // @ts-expect-error no ESM types here.
-    const SOURCE_ROOT = path.join(import.meta.dirname, '..', '..', '..', '..', '..');
+    const testDir = path.join(import.meta.dirname, '..', '..', 'test');
+    const build = JSON.parse(await fs.readFile(path.join(testDir, 'build.json'), 'utf-8'));
+    const SOURCE_ROOT = path.join(testDir, build.SOURCE_ROOT);
     return path.join(SOURCE_ROOT, snapshotPath);
   }
 }

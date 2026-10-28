@@ -46,6 +46,8 @@ devtools_foundation_module("foundation_unittests") {
     "Writer.test.ts",
   ]
 
+  data = [ "Log.snapshot.txt" ]
+
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",

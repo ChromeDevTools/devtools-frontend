@@ -45,6 +45,13 @@ devtools_ui_module("unittests") {
     "PuppeteerConverter.test.ts",
     "PuppeteerReplayConverter.test.ts",
   ]
+
+  data = [
+    "LighthouseConverter.snapshot.txt",
+    "PuppeteerConverter.snapshot.txt",
+    "PuppeteerReplayConverter.snapshot.txt",
+  ]
+
   ts_deps = [
     ":bundle",
     "../../../testing",

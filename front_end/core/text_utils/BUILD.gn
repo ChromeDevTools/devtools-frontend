@@ -70,6 +70,8 @@ devtools_foundation_module("foundation_unittests") {
     "WasmDisassembly.test.ts",
   ]
 
+  data = [ "TextUtils.snapshot.txt" ]
+
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",

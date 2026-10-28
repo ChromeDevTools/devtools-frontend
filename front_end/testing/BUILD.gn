@@ -163,6 +163,8 @@ ts_library("unittests") {
     "SourceMapEncoder.test.ts",
   ]
 
+  data = [ "SnapshotTester.snapshot.txt" ]
+
   ts_deps = [
     ":testing",
     "../core/protocol_client:bundle",

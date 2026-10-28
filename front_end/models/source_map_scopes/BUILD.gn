@@ -59,6 +59,8 @@ devtools_foundation_module("foundation_unittests") {
     "ScopeChainResolver.test.ts",
   ]
 
+  data = [ "FunctionCodeResolver.snapshot.txt" ]
+
   ts_deps = [
     ":bundle",
     "../../core/platform:bundle",

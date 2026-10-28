@@ -153,6 +153,8 @@ devtools_ui_module("unittests") {
     "components/WalkthroughView.test.ts",
   ]
 
+  data = [ "AiAssistancePanel.snapshot.txt" ]
+
   ts_deps = [
     ":bundle",
     "../../core/common:bundle",

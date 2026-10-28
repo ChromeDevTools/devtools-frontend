@@ -77,7 +77,11 @@ export async function handleExternalAIRequest(options: ExternalAIRequestOptions)
   }
 
   for (const prompt of options.prompts) {
-    await Array.fromAsync(conversation.run(prompt));
+    for await (const item of conversation.run(prompt)) {
+      if (item.type === AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT && typeof item.confirm === 'function') {
+        item.confirm(AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+      }
+    }
   }
 
   const logsRaw = localStorage.getItem('aiAssistanceStructuredLog');

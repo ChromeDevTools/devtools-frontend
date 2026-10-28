@@ -155,16 +155,14 @@ function buildTurns(steps: Step[]): Turn[] {
       continue;
     }
 
-    const [requestPart] = request.current_message.parts;
-    const userText = requestPart?.text;
-    const functionResponse = requestPart?.functionResponse;
-
-    if (userText) {
-      // User prompt starts a new turn.
-      turns.push(createUserTurn(String(turnIndex++), userText));
-    } else if (functionResponse) {
-      // Tool responses from DevTools are attached back to the preceding Gemini turn that invoked them.
-      attachToolResultToLastTurn(turns, functionResponse.name, functionResponse.response);
+    for (const requestPart of request.current_message.parts) {
+      if (requestPart?.text) {
+        // User prompt starts a new turn.
+        turns.push(createUserTurn(String(turnIndex++), requestPart.text));
+      } else if (requestPart?.functionResponse) {
+        // Tool responses from DevTools are attached back to the preceding Gemini turn that invoked them.
+        attachToolResultToLastTurn(turns, requestPart.functionResponse.name, requestPart.functionResponse.response);
+      }
     }
 
     // AIDA response turn (text explanation and/or tool call invocations).
@@ -227,13 +225,17 @@ function buildThoughts(functionCalls: RawFunctionCall[], timestamp: number): Tur
 }
 
 /**
- * Finds the preceding Gemini turn and associates the tool execution result with the matching tool call.
- * Note: DevTools executes at most one tool call per turn, so matching by tool name is sufficient.
+ * Finds the preceding Gemini turn and attaches the tool result to the matching tool call.
+ * Note that the model can call the same tool multiple times in a single turn. Since
+ * `functionResponse` parts are returned in the same order as the requests, we match the
+ * first call for `toolName` that doesn't have a result yet, such that earlier results
+ * aren't overwritten.
  */
 function attachToolResultToLastTurn(turns: Turn[], toolName: string, response: unknown): void {
   const prevTurn = turns.at(-1);
   if (prevTurn && prevTurn.role === 'gemini' && prevTurn.tool_calls) {
-    const toolCall = prevTurn.tool_calls.find(tc => tc.name === toolName);
+    const toolCall = prevTurn.tool_calls.find(tc => tc.name === toolName && tc.result === undefined) ??
+        prevTurn.tool_calls.find(tc => tc.name === toolName);
     if (toolCall) {
       toolCall.result = response;
       toolCall.status = (response && typeof response === 'object' && 'error' in response) ? 'error' : 'success';

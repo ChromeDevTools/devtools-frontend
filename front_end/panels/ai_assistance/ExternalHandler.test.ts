@@ -111,4 +111,21 @@ describe('ExternalHandler', () => {
 
     sinon.assert.notCalled(setContextSpy);
   });
+
+  it('auto-confirms SIDE_EFFECT responses during conversation execution', async () => {
+    const confirmSpy = sinon.spy();
+    sinon.stub(AiAssistanceModel.AiConversation.AiConversation.prototype, 'run').callsFake(async function*() {
+      yield {
+        type: AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT,
+        description: 'Execute JavaScript on the page',
+        confirm: confirmSpy,
+      };
+    });
+
+    await AiAssistancePanel.ExternalHandler.handleExternalAIRequest({
+      prompts: ['check styles on the page'],
+    });
+
+    sinon.assert.calledOnceWithExactly(confirmSpy, AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE);
+  });
 });

@@ -165,7 +165,7 @@ export async function stopEvalApp(app: RunningEvalApp): Promise<void> {
 export async function setupAndRunEvalApp(
     evalFolder: string,
     evalId: string,
-    flavor: AppFlavor = 'express',
+    flavor: AppFlavor = 'next',
     ): Promise<RunningEvalApp> {
   const nestedProtoPath = path.join(EVALS_DIR, evalFolder, evalId, TASK_TEXTPROTO);
   const flatProtoPath = path.join(EVALS_DIR, evalId, TASK_TEXTPROTO);

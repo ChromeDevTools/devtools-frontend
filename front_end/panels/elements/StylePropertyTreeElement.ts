@@ -3005,8 +3005,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           event.consume(true);
           return;
         }
+        if (tooltip.firstElementChild) {
+          UI.Widget.Widget.get(tooltip.firstElementChild)?.detach(/* overrideHideOnDetach= */ true);
+        }
         tooltip.removeChildren();
-        tooltip.appendChild(new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty));
+        const docsView = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
+        docsView.markAsRoot();
+        docsView.show(tooltip);
       };
       this.listItemElement.appendChild(tooltip);
     }

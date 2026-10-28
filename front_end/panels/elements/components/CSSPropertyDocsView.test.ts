@@ -5,13 +5,12 @@
 import {assert} from 'chai';
 import {it} from 'mocha';
 
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ElementsComponents from './components.js';
 
 describeWithEnvironment('CSSPropertyDocsView', () => {
-  it('renders every section', async () => {
+  it('renders every section', () => {
     const cssProperty = {
       name: 'display',
       description:
@@ -40,12 +39,16 @@ describeWithEnvironment('CSSPropertyDocsView', () => {
       ],
     };
 
-    const popupComponent = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
-    renderElementIntoDOM(popupComponent);
+    const container = document.createElement('div');
+    ElementsComponents.CSSPropertyDocsView.DEFAULT_VIEW(
+        {cssProperty, onDontShowChanged: () => {}},
+        undefined,
+        container,
+    );
 
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#description'));
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#baseline'));
-    assert.isNotNull(popupComponent.shadowRoot!.querySelector('#learn-more'));
+    assert.isNotNull(container.querySelector('#description'));
+    assert.isNotNull(container.querySelector('#baseline'));
+    assert.isNotNull(container.querySelector('#learn-more'));
   });
 
   it('renders correct baseline text for various scenarios', () => {
@@ -116,16 +119,20 @@ describeWithEnvironment('CSSPropertyDocsView', () => {
     ];
 
     for (const testCase of testCases) {
-      const popupComponent = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(testCase.cssProperty);
-      renderElementIntoDOM(popupComponent, {allowMultipleChildren: true});
+      const container = document.createElement('div');
+      ElementsComponents.CSSPropertyDocsView.DEFAULT_VIEW(
+          {cssProperty: testCase.cssProperty, onDontShowChanged: () => {}},
+          undefined,
+          container,
+      );
 
-      const baselineSection = popupComponent.shadowRoot!.querySelector('#baseline');
+      const baselineSection = container.querySelector('#baseline');
       assert.isNotNull(baselineSection, `${testCase.description}: baseline section should exist`);
 
-      const baselineTextElement = baselineSection!.querySelector('span');
+      const baselineTextElement = baselineSection.querySelector('span');
       assert.isNotNull(baselineTextElement, `${testCase.description}: baseline text element should exist`);
 
-      const actualText = baselineTextElement!.textContent?.trim();
+      const actualText = baselineTextElement.textContent?.trim();
       assert.include(
           actualText || '', testCase.expectedText,
           `${testCase.description}: baseline text did not contain expected text`);

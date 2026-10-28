@@ -2930,6 +2930,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             this.getComputedStyles() ?? new Map(), this.getComputedStyleExtraFields()) :
         [];
 
+    const existingDocWidget =
+        this.listItemElement.querySelector('devtools-tooltip[jslogcontext="elements.css-property-doc"]')
+            ?.firstElementChild;
+    if (existingDocWidget) {
+      UI.Widget.Widget.get(existingDocWidget)?.detach(/* overrideHideOnDetach= */ true);
+    }
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
     this.#edits = matchedResult ? new ValueUpdateTracking(matchedResult.ast) : undefined;
@@ -2993,12 +2999,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           return;
         }
         if (tooltip.firstElementChild) {
-          UI.Widget.Widget.get(tooltip.firstElementChild)?.detach(/* overrideHideOnDetach= */ true);
+          return;
         }
-        tooltip.removeChildren();
         const docsView = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
-        docsView.markAsRoot();
-        docsView.show(tooltip);
+        docsView.markAsExternallyManaged();
+        docsView.show(tooltip, undefined, /* suppressOrphanWidgetError= */ true);
       };
       this.listItemElement.appendChild(tooltip);
     }

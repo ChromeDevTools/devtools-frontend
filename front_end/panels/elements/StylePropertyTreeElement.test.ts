@@ -3125,13 +3125,15 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     const treeElementWithTooltip = getTreeElement('color', 'blue');
     treeElementWithTooltip.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
     treeElementWithTooltip.updateTitle();
-    renderElementIntoDOM(treeElementWithTooltip.listItemElement);
+    stylesSidebarPane.contentElement.appendChild(treeElementWithTooltip.listItemElement);
+    renderElementIntoDOM(stylesSidebarPane);
     const tooltip = treeElementWithTooltip.listItemElement.querySelector(
         'devtools-tooltip[jslogcontext="elements.css-property-doc"]');
     assert.instanceOf(tooltip, Tooltips.Tooltip.Tooltip);
 
     tooltip.showPopover();
     assert.isTrue(tooltip.open);
+    assert.exists(tooltip.firstElementChild);
     tooltip.hidePopover();
     assert.isFalse(tooltip.open);
 
@@ -3140,6 +3142,8 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
         .set(false);
     tooltip.showPopover();
     assert.isFalse(tooltip.open);
+
+    treeElementWithTooltip.updateTitle();
   });
 
   it('does not show a variable tooltip on custom property names in function rules', async () => {

@@ -271,7 +271,7 @@ export class CSSPropertyDocsView extends UI.Widget.Widget {
     super(element);
     this.#cssProperty = cssProperty;
     this.#view = view;
-    this.requestUpdate();
+    this.performUpdate();
   }
 
   #dontShowChanged = (showDocumentation: boolean): void => {

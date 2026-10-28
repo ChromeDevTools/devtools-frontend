@@ -53,8 +53,8 @@ describe('Third party tree', function() {
   });
 
   it('includes 1p and extension badges', async function() {
-    // This trace creates 2 nodes in the tree. One representing the first party entity, and one for
-    // a chrome extension.
+    // This trace creates 3 nodes in the tree: first party (localhost), a chrome extension,
+    // and a third-party image request (wikimedia.org) with transfer size but 0 main-thread selfTime.
     const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
     const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
@@ -71,25 +71,15 @@ describe('Third party tree', function() {
     // Node with first party
     let node = topNodesIterator[0];
     assert.strictEqual(node.id.toString(), 'localhost');
-    assert.strictEqual(node.selfTime, 1008.3260016441345);
+    assert.strictEqual(node.selfTime, 1008.4510016441345);
     let gridNode =
         new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
     let entity = gridNode?.createCell('site');
     let gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, '1st party');
 
-    // Node for third party origin
-    node = topNodesIterator[1];
-    assert.strictEqual(node.id.toString(), 'wikimedia.org');
-    assert.strictEqual(node.selfTime, 148.06499981880188);
-    gridNode =
-        new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
-    entity = gridNode?.createCell('site');
-    gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
-    assert.strictEqual(gotBadgeName, '');  // no badge
-
     // Node with ext
-    node = topNodesIterator[2];
+    node = topNodesIterator[1];
     assert.strictEqual(node.id.toString(), 'ienfalfjdbdpebioblfackkekamfmbnh');
     assert.strictEqual(node.selfTime, 2.5320003032684326);
     gridNode =
@@ -97,6 +87,17 @@ describe('Third party tree', function() {
     entity = gridNode?.createCell('site');
     gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
     assert.strictEqual(gotBadgeName, 'Extension');
+
+    // Node for third party origin (network request only, so 0 CPU selfTime)
+    node = topNodesIterator[2];
+    assert.strictEqual(node.id.toString(), 'wikimedia.org');
+    assert.strictEqual(node.selfTime, 0);
+    assert.isAbove(node.transferSize, 0);
+    gridNode =
+        new Timeline.TimelineTreeView.TreeGridNode(node, node.totalTime, node.selfTime, node.totalTime, treeView);
+    entity = gridNode?.createCell('site');
+    gotBadgeName = entity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
+    assert.strictEqual(gotBadgeName, '');  // no badge
   });
 
   it('allows setting maxRows', async function() {

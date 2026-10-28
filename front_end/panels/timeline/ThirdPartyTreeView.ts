@@ -88,12 +88,10 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       });
     }
 
-    // The filters for this view are slightly different; we want to use the set
-    // of visible event types, but also include network events, which by
-    // default are not in the set of visible entries (as they are not shown on
-    // the main flame chart).
-    const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
-        Trace.Styles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
+    // visibleTypes() includes ResourceReceivedData / ResourceReceiveResponse / ResourceFinish for
+    // transferSize accounting, but excludes SyntheticNetworkRequest so network download durations
+    // are not counted as main thread CPU time.
+    const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(Trace.Styles.visibleTypes());
 
     const node = new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents, {
       textFilter: this.textFilter(),

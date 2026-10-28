@@ -88,12 +88,14 @@ export class AffectedDirectivesView extends AffectedResourcesView {
 
   #appendBlockedElement(
       element: Element, nodeId: Protocol.DOM.BackendNodeId|undefined, model: SDK.IssuesModel.IssuesModel): void {
-    const elementsPanelLinkComponent = new IssuesComponents.ElementsPanelLink.ElementsPanelLink();
+    const violatingNode = document.createElement('td');
+    violatingNode.classList.add('affected-resource-csp-info-node');
     if (nodeId) {
       const violatingNodeId = nodeId;
-      elementsPanelLinkComponent.title = i18nString(UIStrings.clickToRevealTheViolatingDomNode);
+      const elementsPanelLinkComponent = new IssuesComponents.ElementsPanelLink.ElementsPanelLink();
+      elementsPanelLinkComponent.element.title = i18nString(UIStrings.clickToRevealTheViolatingDomNode);
 
-      const onElementRevealIconClick: (arg0?: Event|undefined) => void = () => {
+      elementsPanelLinkComponent.onElementRevealIconClick = () => {
         const target = model.getTargetIfNotDisposed();
         if (target) {
           Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.ELEMENT);
@@ -102,7 +104,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
         }
       };
 
-      const onElementRevealIconMouseEnter: (arg0?: Event|undefined) => void = () => {
+      elementsPanelLinkComponent.onElementRevealIconMouseEnter = () => {
         const target = model.getTargetIfNotDisposed();
         if (target) {
           const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
@@ -112,17 +114,14 @@ export class AffectedDirectivesView extends AffectedResourcesView {
         }
       };
 
-      const onElementRevealIconMouseLeave: (arg0?: Event|undefined) => void = () => {
+      elementsPanelLinkComponent.onElementRevealIconMouseLeave = () => {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
       };
 
-      elementsPanelLinkComponent
-          .data = {onElementRevealIconClick, onElementRevealIconMouseEnter, onElementRevealIconMouseLeave};
+      elementsPanelLinkComponent.markAsRoot();
+      elementsPanelLinkComponent.show(violatingNode);
     }
 
-    const violatingNode = document.createElement('td');
-    violatingNode.classList.add('affected-resource-csp-info-node');
-    violatingNode.appendChild(elementsPanelLinkComponent);
     element.appendChild(violatingNode);
   }
 

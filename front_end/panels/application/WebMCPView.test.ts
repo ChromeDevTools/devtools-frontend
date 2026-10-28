@@ -17,7 +17,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {
   findMenuItemWithLabel,
   getContextMenuForElement,
-  getMenuForToolbarButton,
+  getMenu,
 } from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
@@ -46,7 +46,6 @@ const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
     filters: {text: ''},
     tools: [],
     toolCalls: [],
-    filterButtons: WebMCPView.createFilterButtons(() => {}, () => {}),
     onClearLogClick: () => {},
     onFilterChange: () => {},
     selectedTool: null,
@@ -559,16 +558,10 @@ describe('WebMCPView (View)', () => {
     container.style.height = '400px';
     renderElementIntoDOM(container, {includeCommonStyles: true});
 
-    const filterButtons = WebMCPView.createFilterButtons(() => {}, () => {});
-
-    // Simulate setting an active filter visually
-    filterButtons.toolTypes.setCount(1);
-
     DEFAULT_VIEW(
         {
           ...createDefaultViewInput(),
           filters: {text: 'test', toolTypes: {imperative: true}},
-          filterButtons,
         },
         {}, container);
 
@@ -592,6 +585,25 @@ describe('WebMCPView (View)', () => {
     assert.isNotNull(clearButton);
     clearButton.click();
     sinon.assert.calledOnce(onClearLogClick);
+  });
+
+  it('calls onFilterChange when drop down filters are toggled', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+    const onFilterChange = sinon.spy();
+    DEFAULT_VIEW({...createDefaultViewInput(), onFilterChange}, {}, container);
+
+    const toolTypesButton = Array.from(container.querySelectorAll('button.toolbar-has-dropdown'))
+                                .find(button => button.textContent?.includes('Tool types')) as HTMLButtonElement |
+        undefined;
+    assert.isDefined(toolTypesButton);
+
+    const contextMenu = getMenu(() => toolTypesButton.click());
+    const imperativeItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'Imperative');
+    assert.isDefined(imperativeItem);
+
+    contextMenu.invokeHandler(imperativeItem.id());
+    sinon.assert.calledOnceWithExactly(onFilterChange, {text: '', toolTypes: {imperative: true}});
   });
 
   it('calls onRevealTool on context menu actions', async () => {
@@ -810,13 +822,7 @@ describe('WebMCPView Presenter', () => {
 
   it('updates filter state when drop down filters are set', async () => {
     const {viewStub} = await setup();
-
-    const contextMenu = getMenuForToolbarButton(viewStub.input.filterButtons.toolTypes.button);
-    const imperativeItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'Imperative');
-    assert.isDefined(imperativeItem);
-
-    contextMenu.invokeHandler(imperativeItem.id());
-
+    viewStub.input.onFilterChange({text: '', toolTypes: {imperative: true}});
     const input = await viewStub.nextInput;
     assert.isTrue(input.filters.toolTypes?.imperative);
   });
@@ -1454,7 +1460,6 @@ describe('WebMCPView JSON Editor', () => {
       filters: {text: ''},
       tools: [],
       toolCalls: [],
-      filterButtons: Application.WebMCPView.WebMCPView.createFilterButtons(() => {}, () => {}),
       onClearLogClick: () => {},
       onFilterChange: () => {},
       selectedTool: null,

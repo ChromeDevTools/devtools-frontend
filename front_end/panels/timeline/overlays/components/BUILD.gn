@@ -72,5 +72,6 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../../models/trace:bundle",
     "../../../../testing",
+    "../../../../ui/lit:bundle",
   ]
 }

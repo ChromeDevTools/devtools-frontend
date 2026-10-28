@@ -16,8 +16,11 @@ import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js
 import {
   microsecondsTraceWindow,
 } from '../../../../testing/TraceHelpers.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
 import * as Components from './components.js';
+
+const {html} = Lit;
 
 describeWithEnvironment('TimespanBreakdownOverlay', () => {
   it('renders the sections with the labels and time', async () => {
@@ -68,6 +71,16 @@ describeWithEnvironment('TimespanBreakdownOverlay', () => {
         label: labelEl,
         showDuration: true,
       },
+      {
+        bounds: microsecondsTraceWindow(30_055, 45_055),
+        label: html`<span class="template-span">template</span> label`,
+        showDuration: true,
+      },
+      {
+        bounds: microsecondsTraceWindow(45_055, 55_055),
+        label: html`<span class="template-span">template</span> two`,
+        showDuration: false,
+      },
     ];
 
     component.sections = sections;
@@ -81,6 +94,8 @@ describeWithEnvironment('TimespanBreakdownOverlay', () => {
       '1 ms section one',
       'section two',
       '10 ms element label',
+      '15 ms template label',
+      'template two',
     ]);
   });
 

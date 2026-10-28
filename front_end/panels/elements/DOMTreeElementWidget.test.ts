@@ -552,16 +552,21 @@ describeWithEnvironment('DOMTreeElementWidget', () => {
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
     const widget = createTreeWidget(node);
+    renderElementIntoDOM(widget);
     widget.isExpandable = true;
     widget.expanded = false;
     const expandNode = sinon.spy();
     widget.expandNode = expandNode;
     widget.onbind();
-    await widget.updateComplete;
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    const expandButton = widget.contentElement.querySelector('devtools-elements-tree-expand-button');
+    const expandButton = widget.contentElement.querySelector<HTMLElement>('.elements-tree-expand-button');
     assert.exists(expandButton);
-    expandButton.shadowRoot?.querySelector('button')?.click();
+    const expandButtonWidget = UI.Widget.Widget.get(expandButton);
+    assert.exists(expandButtonWidget);
+    const button = expandButtonWidget.contentElement.querySelector('button');
+    assert.exists(button);
+    button.click();
 
     sinon.assert.calledOnce(expandNode);
   });

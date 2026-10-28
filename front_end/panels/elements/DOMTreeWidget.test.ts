@@ -648,9 +648,13 @@ describeWithEnvironment('DOMTreeWidget', () => {
         const widgetEl = devtoolsTree.shadowRoot.querySelector('devtools-widget');
         assert.exists(widgetEl);
         const widget = UI.Widget.Widget.get(widgetEl) as Elements.DOMTreeElementWidget.DOMTreeElementWidget;
-        const expandButton = widget.contentElement.querySelector('devtools-elements-tree-expand-button');
+        const expandButton = widget.contentElement.querySelector<HTMLElement>('.elements-tree-expand-button');
         assert.exists(expandButton);
-        expandButton.shadowRoot?.querySelector('button')?.click();
+        const expandButtonWidget = UI.Widget.Widget.get(expandButton);
+        assert.exists(expandButtonWidget);
+        const button = expandButtonWidget.contentElement.querySelector('button');
+        assert.exists(button);
+        button.click();
 
         assert.isTrue(domTree.isNodeExpanded(rootNode));
       } finally {

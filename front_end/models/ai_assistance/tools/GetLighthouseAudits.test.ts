@@ -103,4 +103,40 @@ describe('GetLighthouseAuditsTool', () => {
     assert.include(result.result.audits, '# Audits for Performance');
     assert.isUndefined(result.widgets);
   });
+
+  const largeReport = {
+    finalDisplayedUrl: 'https://example.com',
+    categories: {
+      accessibility: {
+        title: 'Accessibility',
+        score: 0.8,
+        auditRefs: [{id: 'color-contrast', weight: 1}],
+      },
+    },
+    audits: {
+      'color-contrast': {
+        id: 'color-contrast',
+        score: 0,
+        title: 'Low contrast',
+        description: 'x'.repeat(AiAssistance.Tool.MAX_FUNCTION_RESULT_BYTE_LENGTH),
+      },
+    },
+  } as unknown as LHModel.ReporterTypes.ReportJSON;
+  const largeContext: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseReportCapability = {
+    getLighthouseReport: () => largeReport,
+  };
+
+  it('returns error when categoryId is "all" and output exceeds MAX_FUNCTION_RESULT_BYTE_LENGTH', async () => {
+    const result = await tool.handler({categoryId: 'all'}, largeContext);
+    assertIsError(result);
+    assert.strictEqual(
+        result.error,
+        'The Lighthouse audits output for "all" is too large to fit in the context window. Request a single category instead.');
+  });
+
+  it('allows single-category output even when it exceeds MAX_FUNCTION_RESULT_BYTE_LENGTH', async () => {
+    const result = await tool.handler({categoryId: 'accessibility'}, largeContext);
+    assertIsResult(result);
+    assert.include(result.result.audits, '# Audits for Accessibility');
+  });
 });

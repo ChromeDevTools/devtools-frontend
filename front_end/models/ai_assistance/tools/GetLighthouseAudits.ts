@@ -10,6 +10,7 @@ import {
   type DataHandlerResult,
   type DataTool,
   type LighthouseReportCapability,
+  MAX_FUNCTION_RESULT_BYTE_LENGTH,
   PermissionPrompt,
   type ToolArgs,
   ToolName,
@@ -55,6 +56,14 @@ export class GetLighthouseAuditsTool implements
       return {error: 'Error: Active context is not a Lighthouse report.'};
     }
     const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
+    // Reject oversized "all" requests so the agent narrows its query to a single category.
+    // Single-category requests bypass this limit so the agent is not left without a narrower query to make.
+    if (params.categoryId === 'all' && audits.length > MAX_FUNCTION_RESULT_BYTE_LENGTH) {
+      return {
+        error:
+            'The Lighthouse audits output for "all" is too large to fit in the context window. Request a single category instead.',
+      };
+    }
     return {
       result: {audits},
     };

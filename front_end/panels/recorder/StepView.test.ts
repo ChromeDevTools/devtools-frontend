@@ -80,6 +80,33 @@ describeWithEnvironment('StepView', () => {
   }
 
   describe('Step and section actions menu', () => {
+    for (const {input, title} of [{input: {step}, title: 'Scroll'}, {input: {section}, title: 'test'}]) {
+      it(`includes the title "${title}" in the actions menu label`, () => {
+        const container = document.createElement('div');
+
+        StepView.DEFAULT_VIEW(createViewInput(input), undefined, container);
+
+        const menu = container.querySelector('.step-actions');
+        assert.exists(menu);
+        assert.propertyVal(menu, 'accessibleLabel', `Open step actions for ${title}`);
+      });
+    }
+
+    it('uses the placeholder title in the actions menu label for an untitled section', () => {
+      const container = document.createElement('div');
+
+      StepView.DEFAULT_VIEW(createViewInput({section: {...section, title: ''}}), undefined, container);
+
+      const title = container.querySelector('.main-title');
+      assert.exists(title);
+      assert.strictEqual(title.textContent, '(No title)');
+      assert.strictEqual(title.getAttribute('title'), '(No title)');
+
+      const menu = container.querySelector('.step-actions');
+      assert.exists(menu);
+      assert.propertyVal(menu, 'accessibleLabel', 'Open step actions for (No title)');
+    });
+
     it('should produce actions for a step', async () => {
       const viewFunction = createViewFunctionStub(StepView.StepView);
       await createStepView(viewFunction, {step});
@@ -88,12 +115,21 @@ describeWithEnvironment('StepView', () => {
         {id: 'add-step-after', label: 'Add step after', group: 'stepManagement', groupTitle: 'Manage steps'},
         {
           id: 'add-breakpoint',
-          label: 'Add breakpoint',
+          label: 'Add breakpoint for Scroll',
           group: 'breakPointManagement',
           groupTitle: 'Breakpoints',
         },
         {id: 'copy-step-as-json', label: 'JSON', group: 'copy', groupTitle: 'Copy as'},
       ]);
+    });
+
+    it('includes the step title in the remove breakpoint menu action', async () => {
+      const viewFunction = createViewFunctionStub(StepView.StepView);
+      await createStepView(viewFunction, {step, hasBreakpoint: true});
+
+      const action = viewFunction.input.actions.find(action => action.id === 'remove-breakpoint');
+      assert.exists(action);
+      assert.strictEqual(action.label, 'Remove breakpoint for Scroll');
     });
 
     it('should produce actions for a section', async () => {
@@ -251,7 +287,7 @@ describeWithEnvironment('StepView', () => {
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
         assert.strictEqual(icon.getAttribute('role'), 'button');
-        assert.strictEqual(icon.getAttribute('aria-label'), 'Add breakpoint');
+        assert.strictEqual(icon.getAttribute('aria-label'), 'Add breakpoint for Scroll');
       });
 
       it('exposes the breakpoint icon as a remove breakpoint button', () => {
@@ -260,7 +296,7 @@ describeWithEnvironment('StepView', () => {
         StepView.DEFAULT_VIEW(createViewInput({hasBreakpoint: true, step}), undefined, container);
         const icon = container.querySelector<SVGElement>('.icon');
         assert.exists(icon);
-        assert.strictEqual(icon.getAttribute('aria-label'), 'Remove breakpoint');
+        assert.strictEqual(icon.getAttribute('aria-label'), 'Remove breakpoint for Scroll');
       });
 
       it('hides the non-actionable section icon from assistive technology', () => {

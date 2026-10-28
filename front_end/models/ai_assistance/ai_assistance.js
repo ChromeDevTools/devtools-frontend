@@ -4326,7 +4326,8 @@ const data = {
     return {
       title: params.title,
       thought: params.explanation,
-      action: params.code
+      action: params.code,
+      javascriptCode: params.code
     };
   }
   async handler(params, context, options) {
@@ -9880,10 +9881,12 @@ var AiAgent = class {
       return { error };
     }
     debugLog2(`[AiAgent] Executing tool '${name}' with args:`, args);
-    let code;
+    let action;
+    let javascriptCode;
     if (call.displayInfoFromArgs) {
-      const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
-      code = callCode;
+      const { title, thought, action: callAction, javascriptCode: callJavascriptCode } = call.displayInfoFromArgs(args);
+      action = callAction;
+      javascriptCode = callJavascriptCode;
       if (title) {
         yield {
           type: "title" /* TITLE */,
@@ -9917,11 +9920,11 @@ var AiAgent = class {
       throw new CrossOriginError();
     }
     if ("requiresApproval" in result) {
-      if (code) {
+      if (action) {
         yield {
           type: "action" /* ACTION */,
           callId,
-          code,
+          action,
           canceled: false
         };
       }
@@ -9943,6 +9946,7 @@ var AiAgent = class {
         callId,
         confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
         description: result.description,
+        javascriptCode,
         permissionPrompt: call.permissionPrompt,
         permissionTitle: call.permissionTitle
       };
@@ -9959,7 +9963,7 @@ var AiAgent = class {
         yield {
           type: "action" /* ACTION */,
           callId,
-          code,
+          action,
           output: "Error: User denied code execution with side effects.",
           canceled: true
         };
@@ -9983,7 +9987,7 @@ var AiAgent = class {
       yield {
         type: "action" /* ACTION */,
         callId,
-        code,
+        action,
         output: typeof result.result === "string" ? result.result : JSON.stringify(result.result),
         widgets: result.widgets,
         canceled: false,
@@ -9995,7 +9999,7 @@ var AiAgent = class {
       yield {
         type: "action" /* ACTION */,
         callId,
-        code,
+        action,
         output: result.error,
         canceled: false,
         toolName: name
@@ -14894,6 +14898,10 @@ var AiConversation = class _AiConversation {
         return { ...entry, confirm: () => {
         } };
       }
+      if (entry.type === "action" /* ACTION */ && "code" in entry) {
+        const { code, ...rest } = entry;
+        return { ...rest, action: rest.action ?? code };
+      }
       return entry;
     });
     return new _AiConversation({
@@ -15066,10 +15074,10 @@ ${item.query}`);
           if (!item.output) {
             break;
           }
-          if (item.code) {
+          if (item.action) {
             contentParts.push(`**Code executed:**
 \`\`\`
-${item.code.trim()}
+${item.action.trim()}
 \`\`\``);
           }
           contentParts.push(`**Data returned:**

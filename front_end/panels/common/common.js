@@ -5077,10 +5077,15 @@ import * as Lit5 from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings8 = {
   /**
-   * @description Button text for the comments status bar pill showing the number of open comments.
+   * @description Button text for the comments status bar pill. Clicking it opens the Comments panel.
+   */
+  showComments: "Show comments",
+  /**
+   * @description Button text for the comments status bar pill when the AI agent has responded to some
+   * comments. Clicking it opens the Comments panel.
    * @example {2} PH1
    */
-  commentsCount: "Comments ({PH1})"
+  showCommentsWithCount: "Show comments ({PH1})"
 };
 var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings8);
 var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
@@ -5095,7 +5100,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         ?disabled=${input.disabled}
         @click=${input.onPillClick}
         jslog=${VisualLogging5.action("comments-status-bar-pill").track({ click: true })}>
-        ${i18nString8(UIStrings8.commentsCount, { PH1: input.threads.length })}
+        ${input.respondedCount > 0 ? i18nString8(UIStrings8.showCommentsWithCount, { PH1: input.respondedCount }) : i18nString8(UIStrings8.showComments)}
       </button>
     `}
   `, target);
@@ -5140,8 +5145,10 @@ var CommentsStatusBarPill = class extends UI11.Widget.Widget {
     super.willHide();
   }
   performUpdate() {
+    const threads = this.#commentManager.isAgentAttached() ? this.#commentManager.getCommentThreads().filter((thread) => thread.status !== "DRAFT") : [];
     const viewInput = {
-      threads: this.#commentManager.isAgentAttached() ? this.#commentManager.getCommentThreads().filter((thread) => thread.status !== "DRAFT") : [],
+      threads,
+      respondedCount: threads.filter((thread) => thread.status === "RESOLVED").length,
       onPillClick: this.#handlePillClick
     };
     this.#view(viewInput, void 0, this.contentElement);

@@ -58,7 +58,7 @@ export declare class InspectorFrontendHostStub implements InspectorFrontendHostA
     setInjectedScriptForOrigin(_origin: string, _script: string): void;
     inspectedURLChanged(url: Platform.DevToolsPath.UrlString): void;
     copyText(text?: string | null): void;
-    openInNewTab(url: Platform.DevToolsPath.UrlString): void;
+    openInNewTab(url: Platform.DevToolsPath.UrlString, _initiatorId?: string): void;
     openSearchResultsInNewTab(_query: string): void;
     showItemInFolder(_fileSystemPath: Platform.DevToolsPath.RawPathString): void;
     save(url: Platform.DevToolsPath.RawPathString | Platform.DevToolsPath.UrlString, content: string, _forceSaveAs: boolean, isBase64: boolean): void;

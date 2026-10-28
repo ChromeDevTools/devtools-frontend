@@ -19,16 +19,33 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class RequestHTMLView extends UI.Widget.VBox {
-    #dataURL;
+    #dataURL = '';
     #view;
-    constructor(dataURL, view = DEFAULT_VIEW) {
-        super({ useShadowDom: true });
-        this.#dataURL = dataURL;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
         this.#view = view;
     }
     static create(contentData) {
         const dataURL = contentData.asDataUrl();
-        return dataURL ? new RequestHTMLView(dataURL) : null;
+        if (!dataURL) {
+            return null;
+        }
+        const view = new RequestHTMLView();
+        view.dataURL = dataURL;
+        return view;
+    }
+    get dataURL() {
+        return this.#dataURL;
+    }
+    set dataURL(dataURL) {
+        // Only data: URLs are allowed to be rendered in the sandboxed preview
+        // frame; this used to be guaranteed by the private constructor.
+        const safeURL = dataURL.startsWith('data:') ? dataURL : '';
+        if (this.#dataURL === safeURL) {
+            return;
+        }
+        this.#dataURL = safeURL;
+        this.requestUpdate();
     }
     wasShown() {
         super.wasShown();

@@ -277,6 +277,31 @@ export class TopDownRootNode extends TopDownNode {
         return this.eventGroupIdCallback;
     }
 }
+/**
+ * Maps a trace events array to the set of network request IDs served from cache.
+ * Timeline pans and zooms rebuild the tree with new time bounds over the same
+ * events array; memoizing this lookup avoids an O(N) full-trace scan per rebuild.
+ */
+const cacheHitRequestIdsByEvents = new WeakMap();
+function getCacheHitRequestIds(events) {
+    let cacheHitRequestIds = cacheHitRequestIdsByEvents.get(events);
+    if (!cacheHitRequestIds) {
+        const requestIds = new Set();
+        for (const e of events) {
+            if (Types.Events.isResourceReceiveResponse(e)) {
+                if (e.args.data.fromCache) {
+                    requestIds.add(e.args.data.requestId);
+                }
+                else {
+                    requestIds.delete(e.args.data.requestId);
+                }
+            }
+        }
+        cacheHitRequestIds = requestIds;
+        cacheHitRequestIdsByEvents.set(events, cacheHitRequestIds);
+    }
+    return cacheHitRequestIds;
+}
 export class BottomUpRootNode extends Node {
     childrenInternal;
     textFilter;
@@ -334,7 +359,6 @@ export class BottomUpRootNode extends Node {
         // TODO(paulirish): rename to getGroupNodeId
         const eventGroupIdCallback = this.eventGroupIdCallback;
         const forceGroupIdCallback = this.forceGroupIdCallback;
-        const idToIsCacheHit = new Map();
         // Node IDs are cached so that every event with the same ID reuses one
         // string. Building a new ID string per event, and hashing it again on
         // each Map lookup, is a large part of the cost of this loop on big
@@ -376,11 +400,9 @@ export class BottomUpRootNode extends Node {
             }
             return groupedId;
         };
-        for (const e of this.events) {
-            if (Types.Events.isReceivedDataEvent(e) && e.name === 'ResourceReceiveResponse') {
-                idToIsCacheHit.set(nodeIdForEvent(e), e.args.data.fromCache || false);
-            }
-        }
+        // Evaluated lazily on the first relevant event to avoid a WeakMap lookup or
+        // full-trace scan when the time window contains no network data events.
+        let cacheHitRequestIds = null;
         // encodedDataLength is provided solely on instant events.
         const sumTransferSizeOfInstantEvent = (e) => {
             if (Types.Events.isReceivedDataEvent(e)) {
@@ -396,7 +418,8 @@ export class BottomUpRootNode extends Node {
                 // ResourceReceivedData events tally up the transfer size over time, but the
                 // ResourceReceiveResponse / ResourceFinish events hold the final result.
                 if (e.name === 'ResourceReceivedData') {
-                    if (idToIsCacheHit.get(id)) {
+                    cacheHitRequestIds ??= getCacheHitRequestIds(this.events);
+                    if (cacheHitRequestIds.has(e.args.data.requestId)) {
                         // It's a cache hit, so the actual network transfer size is 0.
                         // We overwrite the tallied sum (which is uncompressed body size) with 0.
                         node.transferSize = 0;
@@ -405,8 +428,11 @@ export class BottomUpRootNode extends Node {
                         node.transferSize += e.args.data.encodedDataLength;
                     }
                 }
-                else if (e.name === 'ResourceFinish' && e.args.data.encodedDataLength === 0 && idToIsCacheHit.get(id)) {
-                    node.transferSize = 0;
+                else if (e.name === 'ResourceFinish' && e.args.data.encodedDataLength === 0) {
+                    cacheHitRequestIds ??= getCacheHitRequestIds(this.events);
+                    if (cacheHitRequestIds.has(e.args.data.requestId)) {
+                        node.transferSize = 0;
+                    }
                 }
                 else if (e.args.data.encodedDataLength > 0) {
                     // For some reason, ResourceFinish can be zero even if data was sent.

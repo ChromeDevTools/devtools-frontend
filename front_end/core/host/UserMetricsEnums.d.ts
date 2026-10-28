@@ -288,7 +288,8 @@ export declare enum PanelCodes {
     'autofill-view' = 67,
     freestyler = 68,
     ads = 69,
-    MAX_VALUE = 70
+    'private-verification-tokens' = 70,
+    MAX_VALUE = 71
 }
 export declare enum MediaTypes {
     Unknown = 0,

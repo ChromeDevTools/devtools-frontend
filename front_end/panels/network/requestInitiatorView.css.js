@@ -9,9 +9,11 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.request-initiator-view {
-  display: flex;
-  margin: var(--sys-size-4);
+@scope to (devtools-widget > *) {
+  .request-initiator-view-tree {
+    display: flex;
+    margin: var(--sys-size-4);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./requestInitiatorView.css')} */`;

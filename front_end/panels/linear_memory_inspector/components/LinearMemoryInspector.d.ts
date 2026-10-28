@@ -1,4 +1,3 @@
-import * as Common from '../../../core/common/common.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { Mode, Navigation } from './LinearMemoryNavigator.js';
 import type { HighlightInfo } from './LinearMemoryViewerUtils.js';
@@ -24,22 +23,6 @@ export interface Settings {
     valueTypes: Set<ValueType>;
     modes: Map<ValueType, ValueTypeMode>;
     endianness: Endianness;
-}
-export declare const enum Events {
-    MEMORY_REQUEST = "MemoryRequest",
-    ADDRESS_CHANGED = "AddressChanged",
-    SETTINGS_CHANGED = "SettingsChanged",
-    DELETE_MEMORY_HIGHLIGHT = "DeleteMemoryHighlight"
-}
-export interface EventTypes {
-    [Events.MEMORY_REQUEST]: {
-        start: number;
-        end: number;
-        address: number;
-    };
-    [Events.ADDRESS_CHANGED]: number;
-    [Events.SETTINGS_CHANGED]: Settings;
-    [Events.DELETE_MEMORY_HIGHLIGHT]: HighlightInfo;
 }
 export interface ViewInput {
     memory: Uint8Array;
@@ -71,8 +54,7 @@ export interface ViewInput {
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: Record<string, unknown>, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
-declare const LinearMemoryInspectorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
-export declare class LinearMemoryInspector extends LinearMemoryInspectorBase {
+export declare class LinearMemoryInspector extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);
     set memory(value: Uint8Array<ArrayBuffer>);
@@ -84,7 +66,14 @@ export declare class LinearMemoryInspector extends LinearMemoryInspectorBase {
     set endianness(value: Endianness);
     set hideValueInspector(value: boolean);
     get hideValueInspector(): boolean;
+    set onMemoryRequest(value: ((request: {
+        start: number;
+        end: number;
+        address: number;
+    }) => void) | undefined);
+    set onAddressChanged(value: ((address: number) => void) | undefined);
+    set onSettingsChanged(value: ((settings: Settings) => void) | undefined);
+    set onDeleteMemoryHighlight(value: ((highlightInfo: HighlightInfo) => void) | undefined);
     performUpdate(): void;
     set address(address: number);
 }
-export {};

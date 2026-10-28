@@ -56,10 +56,13 @@ import * as SDK from '../../core/sdk/sdk.js';
  * @param url the URL to open in a new tab.
  * @param allowPrivileged whether to also open URLs with privileged or other non-web-safe schemes. By default,
  *     only URLs with web-safe schemes (see `Common.ParsedURL.hasWebSafeScheme`) are opened.
+ * @param initiatorId the DevTools frame id or target id of the frame or worker that `url` came from, if any. The
+ *     browser attributes the navigation to it; without it, the navigation is treated as cross-site. See
+ *     `InspectorFrontendHostAPI.openInNewTab()`.
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */
-export function openInNewTab(url, allowPrivileged) {
+export function openInNewTab(url, allowPrivileged, initiatorId) {
     url = new URL(url);
     if (Common.ParsedURL.schemeIs(url, 'javascript:')) {
         return;
@@ -78,7 +81,7 @@ export function openInNewTab(url, allowPrivileged) {
         }
         void rootTarget.targetAgent().invoke_createTarget({ url: url.toString() }).then(result => {
             if (result.getError()) {
-                Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString `${url}`);
+                Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString `${url}`, initiatorId);
             }
         });
     }
@@ -98,7 +101,7 @@ export function openInNewTab(url, allowPrivileged) {
                 url.searchParams.append('utm_campaign', channel);
             }
         }
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString `${url}`);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString `${url}`, initiatorId);
     }
 }
 //# sourceMappingURL=OpenInNewTab.js.map

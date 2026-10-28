@@ -699,8 +699,9 @@ var FlameChart = class extends FlameChartBase {
     lastWidth: 0
   };
   /**
-   * Caches middle-truncated entry titles keyed by entry index.
-   * Stores the `width` (maximum available text width in pixels) and `text` (trimmed string or null).
+   * Caches entry titles keyed by entry index.
+   * Stores `rawText` (untruncated title capped at 200 graphemes, or null), `fullWidth` (measured pixel
+   * width of `rawText`), `width` (last truncated bar width in pixels), and `text` (trimmed string or null).
    */
   #entryTitleCache = /* @__PURE__ */ new Map();
   /**
@@ -2897,28 +2898,33 @@ var FlameChart = class extends FlameChartBase {
    * entry title cache to avoid repeated text measurements and trimming during animation frames.
    */
   #getEntryTitle(entryIndex, maxBarWidth, context) {
-    if (maxBarWidth <= 0) {
+    if (maxBarWidth <= 10) {
       return null;
     }
-    const cached = this.#entryTitleCache.get(entryIndex);
-    if (cached && cached.width === maxBarWidth) {
+    let cached = this.#entryTitleCache.get(entryIndex);
+    if (!cached) {
+      const rawTitle = this.dataProvider.entryTitle(entryIndex);
+      if (!rawTitle?.length) {
+        this.#entryTitleCache.set(entryIndex, { rawText: null, fullWidth: 0, width: 0, text: null });
+        return null;
+      }
+      const rawText = rawTitle.length > 200 ? Platform2.StringUtilities.trimMiddle(rawTitle, 200) : rawTitle;
+      const fullWidth = UI2.UIUtils.measureTextWidth(context, rawText);
+      cached = { rawText, fullWidth, width: 0, text: null };
+      this.#entryTitleCache.set(entryIndex, cached);
+    }
+    if (!cached.rawText) {
+      return null;
+    }
+    if (maxBarWidth >= cached.fullWidth) {
+      return cached.rawText;
+    }
+    if (cached.width === maxBarWidth) {
       return cached.text;
     }
-    let text = null;
-    const rawText = this.dataProvider.entryTitle(entryIndex);
-    if (rawText?.length) {
-      text = UI2.UIUtils.trimTextMiddle(
-        context,
-        rawText,
-        maxBarWidth
-      );
-    }
-    if (cached) {
-      cached.width = maxBarWidth;
-      cached.text = text;
-    } else {
-      this.#entryTitleCache.set(entryIndex, { width: maxBarWidth, text });
-    }
+    const text = UI2.UIUtils.trimTextMiddle(context, cached.rawText, maxBarWidth);
+    cached.width = maxBarWidth;
+    cached.text = text;
     return text;
   }
   /**
@@ -4009,7 +4015,12 @@ var ChartViewport = class extends UI3.Widget.VBox {
   minimumBoundary;
   totalTime;
   isUpdateScheduled;
-  cancelWindowTimesAnimation;
+  /**
+   * Tracks an in-flight `setWindowTimes` `requestAnimationFrame` loop so high-frequency
+   * events (such as trackpad `wheel` zooming and panning) can retarget the animation in
+   * place without canceling the pending frame.
+   */
+  #animState = null;
   #config;
   constructor(delegate, config) {
     super();
@@ -4408,7 +4419,7 @@ var ChartViewport = class extends UI3.Widget.VBox {
     this.delegate.windowChanged(bounds.left, bounds.right, animate);
   }
   scheduleUpdate() {
-    if (this.cancelWindowTimesAnimation || this.isUpdateScheduled) {
+    if (this.#animState !== null || this.isUpdateScheduled) {
       return;
     }
     this.isUpdateScheduled = true;
@@ -4420,53 +4431,100 @@ var ChartViewport = class extends UI3.Widget.VBox {
   update() {
     this.delegate.update();
   }
+  #cancelWindowTimesAnimation() {
+    if (this.#animState !== null) {
+      this.element.window().cancelAnimationFrame(this.#animState.rafId);
+      this.#animState = null;
+    }
+  }
   willHide() {
     super.willHide();
-    if (this.cancelWindowTimesAnimation) {
-      this.cancelWindowTimesAnimation();
-      this.cancelWindowTimesAnimation = null;
+    if (this.#animState !== null) {
+      this.#cancelWindowTimesAnimation();
       this.setWindowTimes(this.targetLeftTime, this.targetRightTime, false);
     }
   }
+  /**
+   * Updates the visible window to `[startTime, endTime]`.
+   *
+   * ### Why in-place retargeting is needed
+   * In Chromium's `BeginMainThreadFrame` pipeline, aligned `wheel` input events are
+   * dispatched at the start of the frame (`HandleInputEvent`), immediately before
+   * `requestAnimationFrame` callbacks (`FireAnimationFrame`) execute in that same frame.
+   *
+   * Canceling the active `requestAnimationFrame` and starting a new animation anchored
+   * at `performance.now()` on every `wheel` event starves itself:
+   * 1. `wheel` runs during `HandleInputEvent` and records `start = performance.now()`.
+   * 2. Moments later in the same `BeginMainThreadFrame`, `FireAnimationFrame` runs and
+   *    passes the frame's vsync clock (`rafClockMs <= start`), so
+   *    `(rafClockMs - start) / duration` clamps to `0` and the visible window does not move.
+   * 3. On the next vsync, the next `wheel` event cancels the second frame before it can
+   *    run and starts over from `completionRatio = 0`, freezing the viewport until scrolling stops.
+   *
+   * Instead, if an animation is already in flight (`this.#animState !== null`), we preserve
+   * the scheduled frame, update `fromLeft`/`fromRight` to the current visible bounds, and
+   * backdate `startClockMs` by one clamped frame delta (`[8ms, 32ms]`, or `16ms` on the
+   * initial frame) on the next tick so `completionRatio` advances smoothly on every vsync.
+   */
   setWindowTimes(startTime, endTime, animate) {
-    if (animate && this.cancelWindowTimesAnimation && this.targetLeftTime === startTime && this.targetRightTime === endTime) {
+    if (animate && this.#animState !== null && this.targetLeftTime === startTime && this.targetRightTime === endTime) {
       return;
     }
-    if (!this.cancelWindowTimesAnimation && this.visibleLeftTime === startTime && this.visibleRightTime === endTime) {
+    if (this.#animState === null && this.visibleLeftTime === startTime && this.visibleRightTime === endTime) {
       return;
     }
-    if (this.cancelWindowTimesAnimation) {
-      this.cancelWindowTimesAnimation();
-      this.cancelWindowTimesAnimation = null;
-    }
-    this.targetLeftTime = startTime;
-    this.targetRightTime = endTime;
     const hasInitialWindow = Number.isFinite(this.visibleLeftTime) && Number.isFinite(this.visibleRightTime) && this.visibleRightTime > this.visibleLeftTime;
     const isFiniteTarget = Number.isFinite(startTime) && Number.isFinite(endTime) && endTime > startTime;
     const canAnimate = Boolean(animate) && hasInitialWindow && isFiniteTarget;
+    this.targetLeftTime = startTime;
+    this.targetRightTime = endTime;
     if (!canAnimate) {
+      this.#cancelWindowTimesAnimation();
       this.visibleLeftTime = startTime;
       this.visibleRightTime = endTime;
       this.scheduleUpdate();
       return;
     }
-    this.cancelWindowTimesAnimation = UI3.UIUtils.animateFunction(
-      this.element.window(),
-      animateWindowTimes.bind(this),
-      [{ from: this.visibleLeftTime, to: startTime }, { from: this.visibleRightTime, to: endTime }],
-      100,
-      () => {
-        this.cancelWindowTimesAnimation = null;
-      }
-    );
-    function animateWindowTimes(startTime2, endTime2) {
-      if (!this.isShowing()) {
+    if (this.#animState !== null) {
+      this.#animState.fromLeft = this.visibleLeftTime;
+      this.#animState.fromRight = this.visibleRightTime;
+      this.#animState.needsRetarget = true;
+      return;
+    }
+    const durationMs = 100;
+    const defaultInitialStepMs = 16;
+    const state = {
+      rafId: 0,
+      fromLeft: this.visibleLeftTime,
+      fromRight: this.visibleRightTime,
+      startClockMs: 0,
+      lastRafClockMs: null,
+      needsRetarget: true
+    };
+    this.#animState = state;
+    const win = this.element.window();
+    const animationStep = (rafClockMs) => {
+      if (this.#animState !== state || !this.isShowing()) {
+        this.#animState = null;
         return;
       }
-      this.visibleLeftTime = startTime2;
-      this.visibleRightTime = endTime2;
+      if (state.needsRetarget) {
+        const frameDeltaMs = state.lastRafClockMs !== null ? Platform3.NumberUtilities.clamp(rafClockMs - state.lastRafClockMs, 8, 32) : defaultInitialStepMs;
+        state.startClockMs = rafClockMs - frameDeltaMs;
+        state.needsRetarget = false;
+      }
+      state.lastRafClockMs = rafClockMs;
+      const completionRatio = Platform3.NumberUtilities.clamp((rafClockMs - state.startClockMs) / durationMs, 0, 1);
+      this.visibleLeftTime = state.fromLeft + (this.targetLeftTime - state.fromLeft) * completionRatio;
+      this.visibleRightTime = state.fromRight + (this.targetRightTime - state.fromRight) * completionRatio;
       this.update();
-    }
+      if (completionRatio < 1) {
+        state.rafId = win.requestAnimationFrame(animationStep);
+      } else {
+        this.#animState = null;
+      }
+    };
+    state.rafId = win.requestAnimationFrame(animationStep);
   }
   windowLeftTime() {
     return this.visibleLeftTime;

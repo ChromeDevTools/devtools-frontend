@@ -72,7 +72,13 @@ export class JSONView extends UI.Widget.VBox {
         jsonView.element.tabIndex = 0;
         return searchableView;
     }
+    get parsedJSON() {
+        return this.#parsedJSON;
+    }
     set parsedJSON(parsedJSON) {
+        if (this.#parsedJSON === parsedJSON) {
+            return;
+        }
         if (this.objectTree) {
             this.objectTree.removeEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.#onChildrenChanged, this);
             this.objectTree.removeEventListener("expanded-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.#onChildrenChanged, this);
@@ -246,7 +252,16 @@ export class SearchableJsonView extends UI.SearchableView.SearchableView {
         jsonView.element.tabIndex = 0;
     }
     set jsonObject(obj) {
-        this.#jsonView.parsedJSON = new ParsedJSON(obj, '', '');
+        this.parsedJSON = new ParsedJSON(obj, '', '');
+    }
+    get parsedJSON() {
+        return this.#jsonView.parsedJSON;
+    }
+    set parsedJSON(parsedJSON) {
+        if (this.#jsonView.parsedJSON === parsedJSON) {
+            return;
+        }
+        this.#jsonView.parsedJSON = parsedJSON;
         this.searchProvider = this.#jsonView;
         this.#jsonView.show(this.element);
         this.requestUpdate();

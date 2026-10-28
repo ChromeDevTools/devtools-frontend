@@ -3242,7 +3242,7 @@ import * as i18n16 from "../../core/i18n/i18n.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
-import { Directive, html as html10, nothing as nothing3, render as render7 } from "../../ui/lit/lit.js";
+import { Directive, html as html10, nothing as nothing4, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/ImagePreviewPopover.ts
@@ -5012,7 +5012,7 @@ function escapeAsSingleQuotedJsString(text) {
 }
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
-var { html: html7, nothing, render: render4, Directives: { classMap: classMap2, ref: ref3, until } } = Lit5;
+var { html: html7, nothing: nothing2, render: render4, Directives: { classMap: classMap2, ref: ref3, until } } = Lit5;
 var ASTUtils = SDK4.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 var GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -5177,7 +5177,7 @@ var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
     ) ?? "env";
     const valueClass = classMap2({ "inactive-value": !match.varNameIsValid });
     const fallbackClass = classMap2({ "inactive-value": match.varNameIsValid });
-    return html7`<span>${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ? html7`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` : nothing})</span>`;
+    return html7`<span>${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ? html7`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` : nothing2})</span>`;
   }
 };
 var FlexGridRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.FlexGridGridLanesMatch);
@@ -5350,10 +5350,10 @@ var VariableRenderer = class extends VariableRendererBase {
       text: match.name,
       isDefined: computedValue !== null && !fromFallback,
       onLinkActivate
-    }}></devtools-link-swatch>${renderedFallback ? html7`, ${renderedFallback.nodes}` : nothing})</span>${tooltipId ? html7`<devtools-tooltip
+    }}></devtools-link-swatch>${renderedFallback ? html7`, ${renderedFallback.nodes}` : nothing2})</span>${tooltipId ? html7`<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
+            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing2}`;
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
       return varSwatch;
@@ -5400,7 +5400,7 @@ var VariableNameRenderer = class extends VariableNameRendererBase {
     }}></devtools-link-swatch>${tooltipId ? html7`<devtools-tooltip
         id=${tooltipId}
         variant=rich
-        jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
+        jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing2}`;
   }
 };
 var AttributeRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.AttributeMatch);
@@ -5483,7 +5483,7 @@ var AttributeRenderer = class extends AttributeRendererBase {
           id=${tooltipId}
           variant=rich
           jslogContext=elements.css-var
-        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing}${match.type ? html7` <span class=${typeClass}>${match.type}</span>` : nothing}${renderedFallback ? html7`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing})</span>`;
+        >${JSON.stringify(rawValue)}</devtools-tooltip>` : nothing2}${match.type ? html7` <span class=${typeClass}>${match.type}</span>` : nothing2}${renderedFallback ? html7`, <span class=${fallbackClass}>${renderedFallback.nodes}</span>` : nothing2})</span>`;
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
       return varSwatch;
@@ -5829,24 +5829,20 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     const color1RenderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
     const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
     const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
-    const contentChild = document.createElement("span");
-    const color1 = Renderer.renderInto(match.color1, color1RenderingContext, contentChild);
-    const color2 = Renderer.renderInto(match.color2, color2RenderingContext, contentChild);
-    render4(
-      html7`${this.#treeElement?.getTracingTooltip(
-        "color-mix",
-        match.node,
-        this.#matchedStyles,
-        this.#computedStyles,
-        this.#computedStyleExtraFields,
-        context
-      ) ?? "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ""}${color1.nodes}, ${color2.nodes})`,
-      contentChild
-    );
+    const color1 = Renderer.render(match.color1, color1RenderingContext);
+    const color2 = Renderer.render(match.color2, color2RenderingContext);
+    const contentChild = html7`<span>${this.#treeElement?.getTracingTooltip(
+      "color-mix",
+      match.node,
+      this.#matchedStyles,
+      this.#computedStyles,
+      this.#computedStyleExtraFields,
+      context
+    ) ?? "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ""}${color1.nodes}, ${color2.nodes})</span>`;
     const color1Controls = color1.cssControls.get("color") ?? [];
     const color2Controls = color2.cssControls.get("color") ?? [];
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 || color2Controls.length !== 1) {
-      return [contentChild];
+      return contentChild;
     }
     const space = match.space.map((space2) => context.matchedResult.getComputedText(space2)).join(" ");
     const color1Text = match.color1.map((color) => context.matchedResult.getComputedText(color)).join(" ");
@@ -5856,11 +5852,10 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     if (nodeId !== void 0 && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const initialColor = Common.Color.parse("#000");
-        const colorText = document.createElement("span");
-        colorText.textContent = initialColor.asString();
+        const { promise, resolve } = Promise.withResolvers();
         const swatch2 = new ColorRenderer(this.#stylesContainer, null).renderColorSwatch(initialColor, match, context);
         swatch2.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-          colorText.textContent = ev.data.color.asString();
+          resolve(ev.data.color.asString());
         });
         context.addControl("color", swatch2);
         const asyncEvalCallback = async () => {
@@ -5877,7 +5872,10 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
           }
           return false;
         };
-        return { placeholder: [swatch2, colorText], asyncEvalCallback };
+        return {
+          placeholder: html7`${swatch2}<span>${until(promise, initialColor.asString())}</span>`,
+          asyncEvalCallback
+        };
       });
       if (evaluation) {
         return evaluation;
@@ -5885,39 +5883,35 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     }
     const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
     if (!hookUpColorArg(color1Controls[0], (text) => swatch.setFirstColor(text)) || !hookUpColorArg(color2Controls[0], (text) => swatch.setSecondColor(text))) {
-      return [contentChild];
+      return contentChild;
     }
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
     UI6.ARIAUtils.setLabel(swatch, colorMixText);
     context.addControl("color", swatch);
     if (context.tracing) {
-      return [swatch, contentChild];
+      return html7`${swatch}${contentChild}`;
     }
     const tooltipId = this.#treeElement?.getTooltipId("color-mix");
     if (!tooltipId) {
-      return [swatch, contentChild];
+      return html7`${swatch}${contentChild}`;
     }
     swatch.setAttribute("aria-details", tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip({
-      id: tooltipId,
-      variant: "rich",
-      anchor: swatch,
-      jslogContext: "elements.css-color-mix"
-    });
-    const colorTextSpan = tooltip.appendChild(document.createElement("span"));
-    tooltip.onbeforetoggle = (e) => {
+    return html7`${swatch}${contentChild}<devtools-tooltip
+        id=${tooltipId}
+        variant=rich
+        jslogContext=elements.css-color-mix
+        @beforetoggle=${(e) => {
       if (e.newState !== "open") {
         return;
       }
       const color = swatch.mixedColor();
-      if (!color) {
+      if (!color || !(e.target instanceof HTMLElement)) {
         return;
       }
       const rgb = color.as(Common.Color.Format.HEX);
-      colorTextSpan.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
-    };
-    return [swatch, contentChild, tooltip];
+      e.target.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
+    }}></devtools-tooltip>`;
   }
 };
 var ContrastColorRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.ContrastColorMatch);
@@ -5931,13 +5925,9 @@ var ContrastColorRenderer = class extends ContrastColorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
   render(match, context) {
-    const content = document.createElement("span");
-    content.appendChild(document.createTextNode("contrast-color("));
-    const param = content.appendChild(document.createElement("span"));
-    content.appendChild(document.createTextNode(")"));
-    Renderer.renderInto(match.color, context, param);
+    const content = html7`<span>contrast-color(${Renderer.render(match.color, context).nodes})</span>`;
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
-      return [content];
+      return content;
     }
     const colorText = context.matchedResult.getComputedText(match.node);
     const fakeSpan = document.body.appendChild(document.createElement("span"));
@@ -5946,11 +5936,11 @@ var ContrastColorRenderer = class extends ContrastColorRendererBase {
     fakeSpan.remove();
     const color = Common.Color.parse(resolvedColorText);
     if (!color) {
-      return [content];
+      return content;
     }
     const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
     context.addControl("color", colorSwatch);
-    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` : [colorSwatch, content];
+    return this.#treeElement?.editable() ? html7`<devtools-widget ${widget(EditableContent)}>${colorSwatch}${content}</devtools-widget>` : html7`${colorSwatch}${content}`;
   }
 };
 var AngleRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.AngleMatch);
@@ -6055,9 +6045,8 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
     }
   }
   render(match) {
-    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
     const { metric, jslogContext, ruleBlock, isDefined } = this.#getLinkData(match);
-    swatch.data = {
+    const swatch = html7`<devtools-link-swatch .data=${{
       text: match.text,
       tooltip: isDefined ? void 0 : { title: i18nString4(UIStrings4.sIsNotDefined, { PH1: match.text }) },
       isDefined,
@@ -6072,31 +6061,23 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
         }
       },
       jslogContext
-    };
+    }}></devtools-link-swatch>`;
     if (match.propertyName === SDK4.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION || match.propertyName === SDK4.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION_NAME) {
-      const el = document.createElement("span");
-      el.appendChild(swatch);
       const node = this.#stylesContainer.node();
-      if (node) {
-        const animationModel = node.domModel().target().model(SDK4.AnimationModel.AnimationModel);
-        void animationModel?.getAnimationGroupForAnimation(match.text, node.id).then((maybeAnimationGroup) => {
-          if (!maybeAnimationGroup) {
-            return;
-          }
-          const icon = createIcon("animation", "open-in-animations-panel");
-          icon.setAttribute("jslog", `${VisualLogging3.link("open-in-animations-panel").track({ click: true })}`);
-          icon.setAttribute("role", "button");
-          icon.setAttribute("title", i18nString4(UIStrings4.jumpToAnimationsPanel));
-          icon.addEventListener("mouseup", (ev) => {
-            ev.consume(true);
-            void Common.Revealer.reveal(maybeAnimationGroup);
-          });
-          el.insertBefore(icon, swatch);
-        });
-      }
-      return [el];
+      const animationModel = node?.domModel().target().model(SDK4.AnimationModel.AnimationModel);
+      const icon = node && animationModel ? until(animationModel.getAnimationGroupForAnimation(match.text, node.id).then((maybeAnimationGroup) => maybeAnimationGroup ? html7`<devtools-icon
+                  class="open-in-animations-panel"
+                  name="animation"
+                  jslog=${VisualLogging3.link("open-in-animations-panel").track({ click: true })}
+                  role="button"
+                  title=${i18nString4(UIStrings4.jumpToAnimationsPanel)}
+                  @mouseup=${(ev) => {
+        ev.consume(true);
+        void Common.Revealer.reveal(maybeAnimationGroup);
+      }}></devtools-icon>` : Lit5.nothing)) : Lit5.nothing;
+      return html7`<span>${icon}${swatch}</span>`;
     }
-    return [swatch];
+    return swatch;
   }
 };
 var BezierRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.BezierMatch);
@@ -6135,20 +6116,11 @@ var AutoBaseRenderer = class extends AutoBaseRendererBase {
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
   render(match, context) {
-    const content = document.createElement("span");
-    content.appendChild(document.createTextNode("-internal-auto-base("));
-    const auto = content.appendChild(document.createElement("span"));
-    content.appendChild(document.createTextNode(", "));
-    const base = content.appendChild(document.createElement("span"));
-    content.appendChild(document.createTextNode(")"));
-    Renderer.renderInto(match.auto, context, auto);
-    Renderer.renderInto(match.base, context, base);
-    if (this.#computedStyleExtraFields?.isAppearanceBase) {
-      auto.classList.add("inactive-value");
-    } else {
-      base.classList.add("inactive-value");
-    }
-    return [content];
+    const auto = Renderer.render(match.auto, context).nodes;
+    const base = Renderer.render(match.base, context).nodes;
+    const isAppearanceBase = Boolean(this.#computedStyleExtraFields?.isAppearanceBase);
+    return html7`<span>-internal-auto-base(<span class=${classMap2({ "inactive-value": isAppearanceBase })}>${auto}</span>,
+        <span class=${classMap2({ "inactive-value": !isAppearanceBase })}>${base}</span>)</span>`;
   }
 };
 var ShadowPropertyType = /* @__PURE__ */ ((ShadowPropertyType2) => {
@@ -6496,8 +6468,7 @@ var GridTemplateRenderer = class extends GridTemplateRendererBase {
       return Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes;
     }
     const indent = Common.Settings.Settings.instance().resolve(SDK4.SDKSettings.textEditorIndentSettingDescriptor).get();
-    const container = document.createDocumentFragment();
-    const template = html7`
+    return html7`
       ${match.lines.map((line) => {
       const lines = Renderer.render(line, context).nodes;
       return html7`
@@ -6505,8 +6476,6 @@ var GridTemplateRenderer = class extends GridTemplateRendererBase {
         ${lines}`;
     })}
     `;
-    render4(template, container);
-    return [container];
   }
 };
 var SHORTHANDS_FOR_PERCENTAGES = /* @__PURE__ */ new Set([
@@ -8794,7 +8763,7 @@ import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
-import { html as html9, nothing as nothing2, render as render5 } from "../../ui/lit/lit.js";
+import { html as html9, nothing as nothing3, render as render5 } from "../../ui/lit/lit.js";
 import * as SettingsUI2 from "../../ui/settings/settings.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
@@ -9206,7 +9175,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   static createRuleOriginNode(matchedStyles, linkifier, rule) {
     if (!rule) {
-      return nothing2;
+      return nothing3;
     }
     const ruleLocation = _StylePropertiesSection.getRuleLocationFromCSSRule(rule);
     const header = rule.header;
@@ -9269,7 +9238,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (node) {
       return node;
     }
-    return nothing2;
+    return nothing3;
   }
   createRuleOriginNode(matchedStyles, linkifier, rule) {
     return _StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
@@ -14059,7 +14028,7 @@ function rendererBase(matchT) {
   class RendererBaseClass {
     matchType = matchT;
     render(_match, _context) {
-      return nothing3;
+      return nothing4;
     }
   }
   return RendererBaseClass;
@@ -14148,7 +14117,7 @@ var HighlightDirective = class extends Directive.Directive {
   #startNode = null;
   update(part, [highlighting, match]) {
     if (part.type !== Directive.PartType.CHILD) {
-      return nothing3;
+      return nothing4;
     }
     this.#startNode ??= part.startNode?.parentNode?.firstChild ?? null;
     const nodes = [];
@@ -14158,10 +14127,10 @@ var HighlightDirective = class extends Directive.Directive {
       }
     }
     highlighting.addMatch(match, nodes);
-    return nothing3;
+    return nothing4;
   }
   render(_highlighting, _match) {
-    return nothing3;
+    return nothing4;
   }
 };
 var highlightDirective = Directive.directive(HighlightDirective);
@@ -14559,7 +14528,7 @@ var Renderer = class _Renderer extends SDK7.CSSPropertyParser.TreeWalker {
       const rendered = renderer?.render(match, this.#context) ?? html10`<span>${match.text}</span>`;
       const output = highlight(this.#context.tracing?.highlighting, match, Array.isArray(rendered) ? html10`${rendered}` : rendered);
       this.renderedMatchForTest(output, match);
-      if (this.#output.some((t) => t !== nothing3)) {
+      if (this.#output.some((t) => t !== nothing4)) {
         const spacing = precedingSpace(node, this.#context.ast, this.#matchedResult);
         if (spacing) {
           this.#output.push(html10`${spacing}`);
@@ -17177,7 +17146,7 @@ function buildChangeSelector(tracker, node) {
   }
   return void 0;
 }
-var { html: html15, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ifDefined: ifDefined2, ref: ref6, repeat, styleMap, until: until2 } } = Lit8;
+var { html: html15, nothing: nothing6, render: render11, Directives: { classMap: classMap3, ifDefined: ifDefined2, ref: ref6, repeat, styleMap, until: until2 } } = Lit8;
 var { animateOn } = UI15.UIUtils;
 var { RegisteredAdorners } = ElementsComponents5.AdornerManager;
 var UIStrings14 = {
@@ -17753,7 +17722,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
     valueType = 2 /* SRCSET */;
   }
-  let valueContent = nothing5;
+  let valueContent = nothing6;
   if (valueType === 1 /* SRC */) {
     valueContent = renderLinkifiedValue(value5, node);
   } else if (valueType === 2 /* SRCSET */) {
@@ -17780,7 +17749,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
       ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until2(relationPromise, name) : name}</span>${hasText ? html15`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
     Boolean(updateRecord?.isAttributeModified(name) && hasText),
     DOM_UPDATE_ANIMATION_CLASS_NAME
-  )}>${valueContent}</span>"` : nothing5}</span>`;
+  )}>${valueContent}</span>"` : nothing6}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord, issues) {
   const tagClasses = {
@@ -17807,13 +17776,13 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   const ariaLabel = isClosingTag ? `</${tagName}>` : `<${tagName}${attributes.map((attr) => attr.value ? ` ${attr.name}="${attr.value}"` : ` ${attr.name}`).join("")}>`;
   return html15`<span
       class=${classMap3(tagClasses)} aria-label=${ariaLabel}
-      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html15` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing6} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html15` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function renderAdorner(adorner3) {
   const interactive = Boolean(adorner3.onClick);
   const toggleable = adorner3.active !== void 0;
   const classes = [adorner3.classes, interactive ? "clickable" : void 0].filter(Boolean).join(" ");
-  const onKeyDown = adorner3.onClick && adorner3.keyboardActivatable !== false ? handleAdornerKeydown(adorner3.onClick) : nothing5;
+  const onKeyDown = adorner3.onClick && adorner3.keyboardActivatable !== false ? handleAdornerKeydown(adorner3.onClick) : nothing6;
   return html15`<devtools-adorner
       class=${classes}
       role=${ifDefined2(interactive ? "button" : void 0)}
@@ -17823,14 +17792,14 @@ function renderAdorner(adorner3) {
       .name=${adorner3.name}
       jslog=${VisualLogging10.adorner(adorner3.name).track({ click: true })}
       aria-label=${ifDefined2(adorner3.ariaLabel)}
-      @click=${adorner3.onClick ?? nothing5}
+      @click=${adorner3.onClick ?? nothing6}
       @keydown=${onKeyDown}
-      @mousedown=${adorner3.onMouseDown ?? nothing5}
+      @mousedown=${adorner3.onMouseDown ?? nothing6}
       ${adornerRef()}>${adorner3.content ?? html15`<span>${adorner3.name}</span>`}</devtools-adorner>`;
 }
 function maybeRenderAdAdorner(input) {
   if (!input.adProvenance) {
-    return nothing5;
+    return nothing6;
   }
   return html15`
     <devtools-adorner
@@ -17851,7 +17820,7 @@ function maybeRenderAdAdorner(input) {
         ${input.adProvenance.filterlistRule ? html15`
           <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.filterListRule)}</div>
           <div class="ad-provenance-tooltip-content">${input.adProvenance.filterlistRule}</div>
-        ` : nothing5}
+        ` : nothing6}
 
         ${input.adProvenance.adScriptAncestry && input.target ? html15`
           <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.creatorAdScriptAncestry)}</div>
@@ -17872,12 +17841,12 @@ function maybeRenderAdAdorner(input) {
             <div class="ad-provenance-tooltip-content">
               ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule}
             </div>
-          ` : nothing5}
-        ` : nothing5}
+          ` : nothing6}
+        ` : nothing6}
 
         ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html15`
             <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.noProvenanceAvailable)}</div>
-          ` : nothing5}
+          ` : nothing6}
       </div>
     </devtools-tooltip>
   `;
@@ -17890,7 +17859,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     hidden: Boolean(input.editorState)
   };
   if (input.clearDOM) {
-    render11(nothing5, target);
+    render11(nothing6, target);
   }
   render11(html15`
     <div style=${styleMap({ "--indent": `${input.indent}px` })}
@@ -17898,8 +17867,8 @@ var DEFAULT_VIEW5 = (input, output, target) => {
          ${ref6((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html15`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input)}</span>` : nothing5}
-      ${input.renderSelection !== false ? html15`<div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing5}
+      ${input.node ? html15`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input)}</span>` : nothing6}
+      ${input.renderSelection !== false ? html15`<div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>` : nothing6}
       <div class=${classMap3(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -17909,7 +17878,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
              title=${input.decorationsTooltip}>
              ${input.decorations.map((d) => html15`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
              ${input.descendantDecorations.map((d) => html15`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
-        </div>` : nothing5}
+        </div>` : nothing6}
       </div>
       ${hasAdorners ? html15`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
         ${maybeRenderAdAdorner(input)}
@@ -17917,13 +17886,13 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     name: RegisteredAdorners.VIEW_SOURCE,
     ariaLabel: i18nString13(UIStrings14.viewSourceCode),
     onClick: input.onViewSourceAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showCustomElementAdorner ? renderAdorner({
     name: RegisteredAdorners.CUSTOM_ELEMENT,
     classes: "custom-element",
     ariaLabel: i18nString13(UIStrings14.showCustomElementDefinition),
     onClick: input.onCustomElementAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showContainerAdorner ? renderAdorner({
     name: RegisteredAdorners.CONTAINER,
     active: input.containerAdornerActive,
@@ -17933,25 +17902,25 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <devtools-icon name="container"></devtools-icon>
             <span>${input.containerType}</span>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showFlexAdorner ? renderAdorner({
     name: RegisteredAdorners.FLEX,
     active: input.flexAdornerActive,
     ariaLabel: input.flexAdornerActive ? i18nString13(UIStrings14.disableFlexMode) : i18nString13(UIStrings14.enableFlexMode),
     onClick: input.onFlexAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showGridAdorner ? renderAdorner({
     name: input.isSubgrid ? RegisteredAdorners.SUBGRID : RegisteredAdorners.GRID,
     active: input.gridAdornerActive,
     ariaLabel: input.gridAdornerActive ? i18nString13(UIStrings14.disableGridMode) : i18nString13(UIStrings14.enableGridMode),
     onClick: input.onGridAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showGridLanesAdorner ? renderAdorner({
     name: RegisteredAdorners.GRID_LANES,
     active: input.gridAdornerActive,
     ariaLabel: input.gridAdornerActive ? i18nString13(UIStrings14.disableGridLanesMode) : i18nString13(UIStrings14.enableGridLanesMode),
     onClick: input.onGridAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showMediaAdorner ? renderAdorner({
     name: RegisteredAdorners.MEDIA,
     ariaLabel: i18nString13(UIStrings14.openMediaPanel),
@@ -17959,19 +17928,19 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     content: html15`<span class="adorner-with-icon">
             ${RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showPopoverAdorner ? renderAdorner({
     name: RegisteredAdorners.POPOVER,
     active: input.popoverAdornerActive,
     ariaLabel: input.popoverAdornerActive ? i18nString13(UIStrings14.stopForceOpenPopover) : i18nString13(UIStrings14.forceOpenPopover),
     onClick: input.onPopoverAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showInterestAdorner ? renderAdorner({
     name: RegisteredAdorners.INTEREST,
     active: input.interestAdornerActive,
     ariaLabel: input.interestAdornerActive ? i18nString13(UIStrings14.stopForceShowInterest) : i18nString13(UIStrings14.forceShowInterest),
     onClick: input.onInterestAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showTopLayerAdorner ? renderAdorner({
     name: RegisteredAdorners.TOP_LAYER,
     ariaLabel: i18nString13(UIStrings14.reveal),
@@ -17979,19 +17948,19 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     content: html15`<span class="adorner-with-icon">
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showStartingStyleAdorner ? renderAdorner({
     name: RegisteredAdorners.STARTING_STYLE,
     classes: "starting-style",
     active: input.startingStyleAdornerActive,
     ariaLabel: input.startingStyleAdornerActive ? i18nString13(UIStrings14.disableStartingStyle) : i18nString13(UIStrings14.enableStartingStyle),
     onClick: input.onStartingStyleAdornerClick
-  }) : nothing5}
+  }) : nothing6}
         ${input.showScrollAdorner ? renderAdorner({
     name: RegisteredAdorners.SCROLL,
     classes: "scroll",
     ariaLabel: i18nString13(UIStrings14.elementHasScrollableOverflow)
-  }) : nothing5}
+  }) : nothing6}
         ${input.showSlotAdorner ? renderAdorner({
     name: RegisteredAdorners.SLOT,
     onClick: input.onSlotAdornerClick,
@@ -18001,18 +17970,18 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <devtools-icon name="select-element"></devtools-icon>
             <span>${RegisteredAdorners.SLOT}</span>
           </span>`
-  }) : nothing5}
+  }) : nothing6}
         ${input.showScrollSnapAdorner ? renderAdorner({
     name: RegisteredAdorners.SCROLL_SNAP,
     classes: "scroll-snap",
     active: input.scrollSnapAdornerActive,
     ariaLabel: input.scrollSnapAdornerActive ? i18nString13(UIStrings14.disableScrollSnap) : i18nString13(UIStrings14.enableScrollSnap),
     onClick: input.onScrollSnapAdornerClick
-  }) : nothing5}
-      </div>` : nothing5}
+  }) : nothing6}
+      </div>` : nothing6}
       ${input.isSelected && input.canInspect ? html15`
         <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString13(UIStrings14.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
-      ` : nothing5}
+      ` : nothing6}
       ${input.showAiButton ? html15`
         <span class="ai-button-container ${input.editorState ? "hidden" : ""}">
           <devtools-floating-button
@@ -18023,7 +17992,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             @mousedown=${(e) => e.stopPropagation()}>
           </devtools-floating-button>
         </span>
-      ` : nothing5}
+      ` : nothing6}
       ${input.editorState ? html15`<div @keydown=${(event) => {
     if (event.key === "Escape") {
       event.consume(true);
@@ -18035,7 +18004,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
         <devtools-text-editor .state=${input.editorState} ${ref6((el) => {
     output.editorRef = el;
   })}></devtools-text-editor>
-      </div>` : nothing5}
+      </div>` : nothing6}
     </div>
   `, target);
 };
@@ -20619,7 +20588,7 @@ li.hovered:not(.always-parent) + ol.children {
 /*# sourceURL=${import.meta.resolve("./domTreeWidget.css")} */`;
 
 // ../../front_end/panels/elements/DOMTreeWidget.ts
-var { html: html16, nothing: nothing6, render: render12, Directives: { classMap: classMap4, ifDefined: ifDefined3, repeat: repeat2, styleMap: styleMap2 } } = Lit9;
+var { html: html16, nothing: nothing7, render: render12, Directives: { classMap: classMap4, ifDefined: ifDefined3, repeat: repeat2, styleMap: styleMap2 } } = Lit9;
 var UIStrings16 = {
   /**
    * @description ARIA accessible name in the DOM tree outline of the Elements panel.
@@ -20839,14 +20808,14 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           <ul role="group">
             ${shortcut.childShortcuts.map((child) => renderShortcut(child, shortcutDepth + 1))}
           </ul>
-        ` : nothing6}
+        ` : nothing7}
       </li>
     `;
   };
   const renderTopLayerContainer = (doc, containerDepth) => {
     const shortcuts = input.getTopLayerShortcuts(doc);
     if (shortcuts.length === 0) {
-      return nothing6;
+      return nothing7;
     }
     const isTopLayerExpanded = input.isTopLayerExpanded(doc);
     const onTopLayerExpand = (event) => {
@@ -20894,7 +20863,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       text: linkText,
       preventClick: true,
       showColumnNumber: false
-    })})` : nothing6}</span>
+    })})` : nothing7}</span>
         <ul role="group">
           ${UI17.TreeOutline.ifExpanded(html16`
             ${header ? html16`
@@ -20904,7 +20873,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
                   jslog=${treeItemJslog("adopted-style-sheet-contents")}>
                 ${UI17.Widget.widget(AdoptedStyleSheetContentsWidget, { styleSheetHeader: header })}
               </li>
-            ` : nothing6}
+            ` : nothing7}
           `)}
         </ul>
       </li>
@@ -20913,7 +20882,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   const renderAdoptedStyleSheets = (node, depth) => {
     const sheets = node.adoptedStyleSheetsForNode;
     if (!sheets || sheets.length === 0) {
-      return nothing6;
+      return nothing7;
     }
     const isExpanded = input.isAdoptedStyleSheetsExpanded(node);
     const onExpand2 = (event) => {
@@ -21170,7 +21139,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       updateRecord: input.updateRecordForNode(node) ?? null
     })}${hasChildren ? html16`<ul role="group">
             ${isExpanded && !isEditingAsHTML ? html16`
-              ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing6}
+              ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing7}
               ${repeat2(children, (child) => child.id, (child) => renderNode(child, depth + 1))}
               ${remainingChildrenCount > 0 ? html16`
                 <li role="treeitem"
@@ -21184,9 +21153,9 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       event.stopPropagation();
       input.onExpandAllChildren(node);
     })}>${i18nString15(UIStrings16.showAllNodesDMore, { PH1: remainingChildrenCount })}</devtools-button></li>
-              ` : nothing6}
-              ${node.isInsertionPoint() ? node.distributedNodes().map((distributedNode) => renderShortcut(distributedNode, depth + 1)) : nothing6}
-              ${node instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing6}
+              ` : nothing7}
+              ${node.isInsertionPoint() ? node.distributedNodes().map((distributedNode) => renderShortcut(distributedNode, depth + 1)) : nothing7}
+              ${node instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing7}
               ${needsClosingTag ? html16`
                 <li role="treeitem"
                     data-backend-node-id=${ifDefined3(node.backendNodeId())}
@@ -21237,9 +21206,9 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       },
       updateRecord: input.updateRecordForNode(node) ?? null
     })}</li>
-              ` : nothing6}
-            ` : nothing6}
-          </ul>` : nothing6}</li>
+              ` : nothing7}
+            ` : nothing7}
+          </ul>` : nothing7}</li>
     `;
   };
   const isSingleNode = Boolean(input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input));
@@ -21274,12 +21243,12 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           <style>${domTreeWidget_css_default}</style>
           <style>${CodeHighlighter5.codeHighlighterStyles}</style>
           <ul role="tree" class="elements-tree-outline source-code ${input.wrap ? "" : "elements-tree-nowrap"} ${input.hideGutter ? "elements-hide-gutter" : ""} ${isSingleNode ? "single-node" : ""}" aria-label=${i18nString15(UIStrings16.pageDom)}>
-            ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(input.rootDOMNode, 0) : nothing6}
+            ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(input.rootDOMNode, 0) : nothing7}
             ${repeat2(rootNodes, (node) => node.id, (node) => renderNode(node))}
             ${input.omitRootDOMNode && input.rootDOMNode ? (() => {
     const remaining = allRootNodes.length - rootNodes.length;
     if (remaining <= 0) {
-      return nothing6;
+      return nothing7;
     }
     const root = input.rootDOMNode;
     return html16`
@@ -21295,8 +21264,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       input.onExpandAllChildren(root);
     })}>${i18nString15(UIStrings16.showAllNodesDMore, { PH1: remaining })}</devtools-button></li>
               `;
-  })() : nothing6}
-            ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 0) : nothing6}
+  })() : nothing7}
+            ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK15.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 0) : nothing7}
           </ul>
         `}>
       </devtools-tree>
@@ -21309,7 +21278,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         @click=${input.onClearMaxRows}>
         ${i18nString15(UIStrings16.showAllLines, { PH1: truncatedLines })}
       </button>
-    ` : nothing6}
+    ` : nothing7}
   `, target);
   if (input.nodesWithDirtyAdorners.size > 0) {
     input.onDirtyAdornersUpdated();
@@ -21576,7 +21545,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
             if (!elementIssueDetails) {
-              return nothing6;
+              return nothing7;
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common11.Revealer.reveal(issue);
@@ -23714,7 +23683,7 @@ import * as Common13 from "../../core/common/common.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html18, nothing as nothing7, render as render14 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html18, nothing as nothing8, render as render14 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -23920,7 +23889,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     Common13.Color.Legacy.fromRGBA([0, 0, 0, 0])
   ];
   const boxLabels = ["content", "padding", "border", "margin", "position"];
-  let previousBox = nothing7;
+  let previousBox = nothing8;
   for (let i = 0; i < boxes.length; ++i) {
     const name = boxes[i];
     const display = style.get("display");
@@ -26090,7 +26059,7 @@ import * as Platform11 from "../../core/platform/platform.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
-import { html as html21, nothing as nothing8, render as render17 } from "../../ui/lit/lit.js";
+import { html as html21, nothing as nothing9, render as render17 } from "../../ui/lit/lit.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -26160,7 +26129,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
       </div>
       ${input.objectTree && input.allChildrenFiltered ? html21`
         <div class="gray-info-message">${i18nString20(UIStrings21.noMatchingProperty)}</div>
-      ` : nothing8}
+      ` : nothing9}
       <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html21`
         <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
         <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>

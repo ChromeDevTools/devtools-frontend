@@ -30,6 +30,7 @@ export declare class ApplicationPanelSidebar extends UI.Widget.VBox implements S
     indexedDBListTreeElement: IndexedDBTreeElement;
     cookieListTreeElement: ExpandableApplicationPanelTreeElement;
     trustTokensTreeElement: TrustTokensTreeElement;
+    privateVerificationTokensTreeElement?: ApplicationPanelTreeElement;
     cacheStorageListTreeElement: ServiceWorkerCacheTreeElement;
     storageBucketsTreeElement: StorageBucketsTreeParentElement | undefined;
     private backForwardCacheListTreeElement?;

@@ -1,3 +1,4 @@
+import '../../../kit/kit.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import { type TemplateResult } from '../../../lit/lit.js';
@@ -8,6 +9,8 @@ export interface ViewInput {
     fontFamily: string;
     previewFontSize: string;
     previewVisible: boolean;
+    showToolbar: boolean;
+    mimeType: string;
 }
 export interface ViewOutput {
     measureDimensions?: () => {
@@ -21,7 +24,9 @@ export declare class FontView extends UI.View.SimpleView {
     #private;
     private readonly url;
     private readonly contentProvider;
-    constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view?: View);
+    constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, element?: HTMLElement, view?: View);
+    get showToolbar(): boolean;
+    set showToolbar(showToolbar: boolean);
     toolbarItems(): Promise<TemplateResult>;
     wasShown(): void;
     onResize(): void;

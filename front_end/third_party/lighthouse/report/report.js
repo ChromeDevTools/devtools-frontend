@@ -2,26 +2,26 @@
 var De = 0.8999999999999999;
 var Pe = 0.5;
 var Re = 0.49999999999999994;
-function Ne(r5) {
-  let e = Math.sign(r5);
-  r5 = Math.abs(r5);
-  let t = 0.254829592, n = -0.284496736, o = 1.421413741, i = -1.453152027, a = 1.061405429, s = 1 / (1 + 0.3275911 * r5), c = s * (t + s * (n + s * (o + s * (i + s * a))));
-  return e * (1 - c * Math.exp(-r5 * r5));
+function Ie(o5) {
+  let e = Math.sign(o5);
+  o5 = Math.abs(o5);
+  let t = 0.254829592, n = -0.284496736, r = 1.421413741, i = -1.453152027, a = 1.061405429, s = 1 / (1 + 0.3275911 * o5), c = s * (t + s * (n + s * (r + s * (i + s * a))));
+  return e * (1 - c * Math.exp(-o5 * o5));
 }
-function me({ median: r5, p10: e }, t) {
-  if (r5 <= 0) throw new Error("median must be greater than zero");
+function me({ median: o5, p10: e }, t) {
+  if (o5 <= 0) throw new Error("median must be greater than zero");
   if (e <= 0) throw new Error("p10 must be greater than zero");
-  if (e >= r5) throw new Error("p10 must be less than the median");
+  if (e >= o5) throw new Error("p10 must be less than the median");
   if (t <= 0) return 1;
-  let n = 0.9061938024368232, o = Math.max(Number.MIN_VALUE, t / r5), i = Math.log(o), a = Math.max(Number.MIN_VALUE, e / r5), l = -Math.log(a), s = i * n / l, c = (1 - Ne(s)) / 2, d;
-  return t <= e ? d = Math.max(0.9, Math.min(1, c)) : t <= r5 ? d = Math.max(Pe, Math.min(De, c)) : d = Math.max(0, Math.min(Re, c)), d;
+  let n = 0.9061938024368232, r = Math.max(Number.MIN_VALUE, t / o5), i = Math.log(r), a = Math.max(Number.MIN_VALUE, e / o5), l = -Math.log(a), s = i * n / l, c = (1 - Ie(s)) / 2, d;
+  return t <= e ? d = Math.max(0.9, Math.min(1, c)) : t <= o5 ? d = Math.max(Pe, Math.min(De, c)) : d = Math.max(0, Math.min(Re, c)), d;
 }
 var O = "\u2026";
 var He = "\xA0";
 var fe = 0.9;
 var Ue = { PASS: { label: "pass", minScore: fe }, AVERAGE: { label: "average", minScore: 0.5 }, FAIL: { label: "fail" }, ERROR: { label: "error" } };
 var Oe = ["com", "co", "gov", "edu", "ac", "org", "go", "gob", "or", "net", "in", "ne", "nic", "gouv", "web", "spb", "blog", "jus", "kiev", "mil", "wi", "qc", "ca", "bel", "on"];
-var E = class r {
+var E = class o {
   static get RATINGS() {
     return Ue;
   }
@@ -46,14 +46,14 @@ var E = class r {
     return e.fullPageScreenshot ? e.fullPageScreenshot : e.audits["full-page-screenshot"]?.details;
   }
   static getEntityFromUrl(e, t) {
-    return t && t.find((o) => o.origins.find((i) => e.startsWith(i))) || r.getPseudoRootDomain(e);
+    return t && t.find((r) => r.origins.find((i) => e.startsWith(i))) || o.getPseudoRootDomain(e);
   }
   static splitMarkdownCodeSpans(e) {
     let t = [], n = e.split(/`(.*?)`/g);
-    for (let o = 0; o < n.length; o++) {
-      let i = n[o];
+    for (let r = 0; r < n.length; r++) {
+      let i = n[r];
       if (!i) continue;
-      let a = o % 2 !== 0;
+      let a = r % 2 !== 0;
       t.push({ isCode: a, text: i });
     }
     return t;
@@ -61,8 +61,8 @@ var E = class r {
   static splitMarkdownLink(e) {
     let t = [], n = e.split(/\[([^\]]+?)\]\((https?:\/\/.*?)\)/g);
     for (; n.length; ) {
-      let [o, i, a] = n.splice(0, 3);
-      o && t.push({ isLink: false, text: o }), i && a && t.push({ isLink: true, text: i, linkHref: a });
+      let [r, i, a] = n.splice(0, 3);
+      r && t.push({ isLink: false, text: r }), i && a && t.push({ isLink: true, text: i, linkHref: a });
     }
     return t;
   }
@@ -79,12 +79,12 @@ var E = class r {
   }
   static getURLDisplayName(e, t) {
     t = t || { numPathParts: void 0, preserveQuery: void 0, preserveHost: void 0 };
-    let n = t.numPathParts !== void 0 ? t.numPathParts : 2, o = t.preserveQuery !== void 0 ? t.preserveQuery : true, i = t.preserveHost || false, a;
+    let n = t.numPathParts !== void 0 ? t.numPathParts : 2, r = t.preserveQuery !== void 0 ? t.preserveQuery : true, i = t.preserveHost || false, a;
     if (e.protocol === "about:" || e.protocol === "data:") a = e.href;
     else {
       a = e.pathname;
       let s = a.split("/").filter((c) => c.length);
-      n && s.length > n && (a = O + s.slice(-1 * n).join("/")), i && (a = `${e.host}/${a.replace(/^\//, "")}`), o && (a = `${a}${e.search}`);
+      n && s.length > n && (a = O + s.slice(-1 * n).join("/")), i && (a = `${e.host}/${a.replace(/^\//, "")}`), r && (a = `${a}${e.search}`);
     }
     let l = 64;
     if (e.protocol !== "data:" && (a = a.slice(0, 200), a = a.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${O}`), a = a.replace(/([a-zA-Z0-9-_]{9})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9-_]{10,}/g, `$1${O}`), a = a.replace(/(\d{3})\d{6,}/g, `$1${O}`), a = a.replace(/\u2026+/g, O), a.length > l && a.includes("?") && (a = a.replace(/\?([^=]*)(=)?.*/, `?$1$2${O}`), a.length > l && (a = a.replace(/\?.*/, `?${O}`)))), a.length > l) {
@@ -99,7 +99,7 @@ var E = class r {
   }
   static parseURL(e) {
     let t = new URL(e);
-    return { file: r.getURLDisplayName(t), hostname: t.hostname, origin: t.protocol === "chrome-extension:" ? r.getChromeExtensionOrigin(e) : t.origin };
+    return { file: o.getURLDisplayName(t), hostname: t.hostname, origin: t.protocol === "chrome-extension:" ? o.getChromeExtensionOrigin(e) : t.origin };
   }
   static createOrReturnURL(e) {
     return e instanceof URL ? e : new URL(e);
@@ -109,16 +109,16 @@ var E = class r {
     return Oe.includes(t[0]) ? `.${t.join(".")}` : `.${t[t.length - 1]}`;
   }
   static getPseudoRootDomain(e) {
-    let t = r.createOrReturnURL(e).hostname, o = r.getPseudoTld(t).split(".");
-    return t.split(".").slice(-o.length).join(".");
+    let t = o.createOrReturnURL(e).hostname, r = o.getPseudoTld(t).split(".");
+    return t.split(".").slice(-r.length).join(".");
   }
   static filterRelevantLines(e, t, n) {
     if (t.length === 0) return e.slice(0, n * 2 + 1);
-    let o = 3, i = /* @__PURE__ */ new Set();
+    let r = 3, i = /* @__PURE__ */ new Set();
     return t = t.sort((a, l) => (a.lineNumber || 0) - (l.lineNumber || 0)), t.forEach(({ lineNumber: a }) => {
       let l = a - n, s = a + n;
       for (; l < 1; ) l++, s++;
-      i.has(l - o - 1) && (l -= o);
+      i.has(l - r - 1) && (l -= r);
       for (let c = l; c <= s; c++) {
         let d = c;
         i.add(d);
@@ -130,8 +130,8 @@ var E = class r {
     return n > 0.9 && (n += 0.05 * (n - 0.9)), Math.floor(n * 100) / 100;
   }
 };
-function $e(r5) {
-  let e = r5.createFragment(), t = r5.createElement("style");
+function $e(o5) {
+  let e = o5.createFragment(), t = o5.createElement("style");
   t.append(`
     .lh-3p-filter {
       color: var(--color-gray-600);
@@ -146,43 +146,43 @@ function $e(r5) {
       text-decoration: line-through;
     }
   `), e.append(t);
-  let n = r5.createElement("div", "lh-3p-filter"), o = r5.createElement("label", "lh-3p-filter-label"), i = r5.createElement("input", "lh-3p-filter-input");
+  let n = o5.createElement("div", "lh-3p-filter"), r = o5.createElement("label", "lh-3p-filter-label"), i = o5.createElement("input", "lh-3p-filter-input");
   i.setAttribute("type", "checkbox"), i.setAttribute("checked", "");
-  let a = r5.createElement("span", "lh-3p-ui-string");
+  let a = o5.createElement("span", "lh-3p-ui-string");
   a.append("Show 3rd party resources");
-  let l = r5.createElement("span", "lh-3p-filter-count");
-  return o.append(" ", i, " ", a, " (", l, ") "), n.append(" ", o, " "), e.append(n), e;
+  let l = o5.createElement("span", "lh-3p-filter-count");
+  return r.append(" ", i, " ", a, " (", l, ") "), n.append(" ", r, " "), e.append(n), e;
 }
-function Ve(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-audit"), n = r5.createElement("details", "lh-expandable-details"), o = r5.createElement("summary"), i = r5.createElement("div", "lh-audit__header lh-expandable-details__summary"), a = r5.createElement("span", "lh-audit__score-icon"), l = r5.createElement("span", "lh-audit__title-and-text"), s = r5.createElement("span", "lh-audit__title"), c = r5.createElement("span", "lh-audit__display-text");
+function Ve(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-audit"), n = o5.createElement("details", "lh-expandable-details"), r = o5.createElement("summary"), i = o5.createElement("div", "lh-audit__header lh-expandable-details__summary"), a = o5.createElement("span", "lh-audit__score-icon"), l = o5.createElement("span", "lh-audit__title-and-text"), s = o5.createElement("span", "lh-audit__title"), c = o5.createElement("span", "lh-audit__display-text");
   l.append(" ", s, " ", c, " ");
-  let d = r5.createElement("div", "lh-chevron-container");
-  i.append(" ", a, " ", l, " ", d, " "), o.append(" ", i, " ");
-  let h = r5.createElement("div", "lh-audit__description"), p = r5.createElement("div", "lh-audit__stackpacks");
-  return n.append(" ", o, " ", h, " ", p, " "), t.append(" ", n, " "), e.append(t), e;
+  let d = o5.createElement("div", "lh-chevron-container");
+  i.append(" ", a, " ", l, " ", d, " "), r.append(" ", i, " ");
+  let h = o5.createElement("div", "lh-audit__description"), p = o5.createElement("div", "lh-audit__stackpacks");
+  return n.append(" ", r, " ", h, " ", p, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function Ge(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-category-header"), n = r5.createElement("div", "lh-score__gauge");
+function Ge(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-category-header"), n = o5.createElement("div", "lh-score__gauge");
   n.setAttribute("role", "heading"), n.setAttribute("aria-level", "2");
-  let o = r5.createElement("div", "lh-category-header__description");
-  return t.append(" ", n, " ", o, " "), e.append(t), e;
+  let r = o5.createElement("div", "lh-category-header__description");
+  return t.append(" ", n, " ", r, " "), e.append(t), e;
 }
-function Be(r5) {
-  let e = r5.createFragment(), t = r5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-chevron");
+function Be(o5) {
+  let e = o5.createFragment(), t = o5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-chevron");
   t.setAttribute("viewBox", "0 0 100 100");
-  let n = r5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-chevron__lines"), o = r5.createElementNS("http://www.w3.org/2000/svg", "path", "lh-chevron__line lh-chevron__line-left");
-  o.setAttribute("d", "M10 50h40");
-  let i = r5.createElementNS("http://www.w3.org/2000/svg", "path", "lh-chevron__line lh-chevron__line-right");
-  return i.setAttribute("d", "M90 50H50"), n.append(" ", o, " ", i, " "), t.append(" ", n, " "), e.append(t), e;
+  let n = o5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-chevron__lines"), r = o5.createElementNS("http://www.w3.org/2000/svg", "path", "lh-chevron__line lh-chevron__line-left");
+  r.setAttribute("d", "M10 50h40");
+  let i = o5.createElementNS("http://www.w3.org/2000/svg", "path", "lh-chevron__line lh-chevron__line-right");
+  return i.setAttribute("d", "M90 50H50"), n.append(" ", r, " ", i, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function qe(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-audit-group"), n = r5.createElement("details", "lh-clump"), o = r5.createElement("summary"), i = r5.createElement("div", "lh-audit-group__summary"), a = r5.createElement("div", "lh-audit-group__header"), l = r5.createElement("span", "lh-audit-group__title"), s = r5.createElement("span", "lh-audit-group__itemcount");
+function qe(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-audit-group"), n = o5.createElement("details", "lh-clump"), r = o5.createElement("summary"), i = o5.createElement("div", "lh-audit-group__summary"), a = o5.createElement("div", "lh-audit-group__header"), l = o5.createElement("span", "lh-audit-group__title"), s = o5.createElement("span", "lh-audit-group__itemcount");
   a.append(" ", l, " ", s, " ", " ", " ");
-  let c = r5.createElement("div", "lh-clump-toggle"), d = r5.createElement("span", "lh-clump-toggletext--show"), h = r5.createElement("span", "lh-clump-toggletext--hide");
-  return c.append(" ", d, " ", h, " "), i.append(" ", a, " ", c, " "), o.append(" ", i, " "), n.append(" ", o, " "), t.append(" ", " ", n, " "), e.append(t), e;
+  let c = o5.createElement("div", "lh-clump-toggle"), d = o5.createElement("span", "lh-clump-toggletext--show"), h = o5.createElement("span", "lh-clump-toggletext--hide");
+  return c.append(" ", d, " ", h, " "), i.append(" ", a, " ", c, " "), r.append(" ", i, " "), n.append(" ", r, " "), t.append(" ", " ", n, " "), e.append(t), e;
 }
-function je(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-crc-container"), n = r5.createElement("style");
+function je(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-crc-container"), n = o5.createElement("style");
   n.append(`
       .lh-crc .lh-tree-marker {
         width: 12px;
@@ -236,35 +236,35 @@ function je(r5) {
         margin-bottom: 10px;
       }
     `);
-  let o = r5.createElement("div"), i = r5.createElement("div", "lh-crc__summary-value"), a = r5.createElement("span", "lh-crc__longest_duration_label"), l = r5.createElement("b", "lh-crc__longest_duration");
-  i.append(" ", a, " ", l, " "), o.append(" ", i, " ");
-  let s = r5.createElement("div", "lh-crc"), c = r5.createElement("div", "lh-crc-initial-nav");
-  return s.append(" ", c, " ", " "), t.append(" ", n, " ", o, " ", s, " "), e.append(t), e;
+  let r = o5.createElement("div"), i = o5.createElement("div", "lh-crc__summary-value"), a = o5.createElement("span", "lh-crc__longest_duration_label"), l = o5.createElement("b", "lh-crc__longest_duration");
+  i.append(" ", a, " ", l, " "), r.append(" ", i, " ");
+  let s = o5.createElement("div", "lh-crc"), c = o5.createElement("div", "lh-crc-initial-nav");
+  return s.append(" ", c, " ", " "), t.append(" ", n, " ", r, " ", s, " "), e.append(t), e;
 }
-function We(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-crc-node"), n = r5.createElement("span", "lh-crc-node__tree-marker"), o = r5.createElement("span", "lh-crc-node__tree-value");
-  return t.append(" ", n, " ", o, " "), e.append(t), e;
+function We(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-crc-node"), n = o5.createElement("span", "lh-crc-node__tree-marker"), r = o5.createElement("span", "lh-crc-node__tree-value");
+  return t.append(" ", n, " ", r, " "), e.append(t), e;
 }
-function Ke(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-element-screenshot"), n = r5.createElement("div", "lh-element-screenshot__content"), o = r5.createElement("div", "lh-element-screenshot__image"), i = r5.createElement("div", "lh-element-screenshot__mask"), a = r5.createElementNS("http://www.w3.org/2000/svg", "svg");
+function Ke(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-element-screenshot"), n = o5.createElement("div", "lh-element-screenshot__content"), r = o5.createElement("div", "lh-element-screenshot__image"), i = o5.createElement("div", "lh-element-screenshot__mask"), a = o5.createElementNS("http://www.w3.org/2000/svg", "svg");
   a.setAttribute("height", "0"), a.setAttribute("width", "0");
-  let l = r5.createElementNS("http://www.w3.org/2000/svg", "defs"), s = r5.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+  let l = o5.createElementNS("http://www.w3.org/2000/svg", "defs"), s = o5.createElementNS("http://www.w3.org/2000/svg", "clipPath");
   s.setAttribute("clipPathUnits", "objectBoundingBox"), l.append(" ", s, " ", " "), a.append(" ", l, " "), i.append(" ", a, " ");
-  let c = r5.createElement("div", "lh-element-screenshot__element-marker");
-  return o.append(" ", i, " ", c, " "), n.append(" ", o, " "), t.append(" ", n, " "), e.append(t), e;
+  let c = o5.createElement("div", "lh-element-screenshot__element-marker");
+  return r.append(" ", i, " ", c, " "), n.append(" ", r, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function Ze(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-exp-gauge-component"), n = r5.createElement("div", "lh-exp-gauge__wrapper");
+function Ze(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-exp-gauge-component"), n = o5.createElement("div", "lh-exp-gauge__wrapper");
   n.setAttribute("target", "_blank");
-  let o = r5.createElement("div", "lh-exp-gauge__svg-wrapper"), i = r5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-exp-gauge"), a = r5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-exp-gauge__inner"), l = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__bg"), s = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__base lh-exp-gauge--faded"), c = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__arc"), d = r5.createElementNS("http://www.w3.org/2000/svg", "text", "lh-exp-gauge__percentage");
+  let r = o5.createElement("div", "lh-exp-gauge__svg-wrapper"), i = o5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-exp-gauge"), a = o5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-exp-gauge__inner"), l = o5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__bg"), s = o5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__base lh-exp-gauge--faded"), c = o5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-exp-gauge__arc"), d = o5.createElementNS("http://www.w3.org/2000/svg", "text", "lh-exp-gauge__percentage");
   a.append(" ", l, " ", s, " ", c, " ", d, " ");
-  let h = r5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-exp-gauge__outer"), p = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-cover");
+  let h = o5.createElementNS("http://www.w3.org/2000/svg", "g", "lh-exp-gauge__outer"), p = o5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-cover");
   h.append(" ", p, " ");
-  let g = r5.createElementNS("http://www.w3.org/2000/svg", "text", "lh-exp-gauge__label");
-  return g.setAttribute("text-anchor", "middle"), g.setAttribute("x", "0"), g.setAttribute("y", "60"), i.append(" ", a, " ", h, " ", g, " "), o.append(" ", i, " "), n.append(" ", o, " "), t.append(" ", n, " "), e.append(t), e;
+  let m = o5.createElementNS("http://www.w3.org/2000/svg", "text", "lh-exp-gauge__label");
+  return m.setAttribute("text-anchor", "middle"), m.setAttribute("x", "0"), m.setAttribute("y", "60"), i.append(" ", a, " ", h, " ", m, " "), r.append(" ", i, " "), n.append(" ", r, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function Je(r5) {
-  let e = r5.createFragment(), t = r5.createElement("style");
+function Je(o5) {
+  let e = o5.createFragment(), t = o5.createElement("style");
   t.append(`
     .lh-footer {
       padding: var(--footer-padding-vertical) calc(var(--default-padding) * 2);
@@ -275,31 +275,31 @@ function Je(r5) {
       text-align: center;
     }
   `), e.append(t);
-  let n = r5.createElement("footer", "lh-footer"), o = r5.createElement("ul", "lh-meta__items");
-  o.append(" ");
-  let i = r5.createElement("div", "lh-generated"), a = r5.createElement("b");
+  let n = o5.createElement("footer", "lh-footer"), r = o5.createElement("ul", "lh-meta__items");
+  r.append(" ");
+  let i = o5.createElement("div", "lh-generated"), a = o5.createElement("b");
   a.append("Lighthouse");
-  let l = r5.createElement("span", "lh-footer__version"), s = r5.createElement("a", "lh-footer__version_issue");
-  return s.setAttribute("href", "https://github.com/GoogleChrome/Lighthouse/issues"), s.setAttribute("target", "_blank"), s.setAttribute("rel", "noopener"), s.append("File an issue"), i.append(" ", " Generated by ", a, " ", l, " | ", s, " "), n.append(" ", o, " ", i, " "), e.append(n), e;
+  let l = o5.createElement("span", "lh-footer__version"), s = o5.createElement("a", "lh-footer__version_issue");
+  return s.setAttribute("href", "https://github.com/GoogleChrome/Lighthouse/issues"), s.setAttribute("target", "_blank"), s.setAttribute("rel", "noopener"), s.append("File an issue"), i.append(" ", " Generated by ", a, " ", l, " | ", s, " "), n.append(" ", r, " ", i, " "), e.append(n), e;
 }
-function Qe(r5) {
-  let e = r5.createFragment(), t = r5.createElement("a", "lh-fraction__wrapper"), n = r5.createElement("div", "lh-fraction__content-wrapper"), o = r5.createElement("div", "lh-fraction__content"), i = r5.createElement("div", "lh-fraction__background");
-  o.append(" ", i, " "), n.append(" ", o, " ");
-  let a = r5.createElement("div", "lh-fraction__label");
+function Qe(o5) {
+  let e = o5.createFragment(), t = o5.createElement("a", "lh-fraction__wrapper"), n = o5.createElement("div", "lh-fraction__content-wrapper"), r = o5.createElement("div", "lh-fraction__content"), i = o5.createElement("div", "lh-fraction__background");
+  r.append(" ", i, " "), n.append(" ", r, " ");
+  let a = o5.createElement("div", "lh-fraction__label");
   return t.append(" ", n, " ", a, " "), e.append(t), e;
 }
-function Xe(r5) {
-  let e = r5.createFragment(), t = r5.createElement("a", "lh-gauge__wrapper"), n = r5.createElement("div", "lh-gauge__svg-wrapper"), o = r5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-gauge");
-  o.setAttribute("viewBox", "0 0 120 120");
-  let i = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge-base");
+function Xe(o5) {
+  let e = o5.createFragment(), t = o5.createElement("a", "lh-gauge__wrapper"), n = o5.createElement("div", "lh-gauge__svg-wrapper"), r = o5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-gauge");
+  r.setAttribute("viewBox", "0 0 120 120");
+  let i = o5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge-base");
   i.setAttribute("r", "56"), i.setAttribute("cx", "60"), i.setAttribute("cy", "60"), i.setAttribute("stroke-width", "8");
-  let a = r5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge-arc");
-  a.setAttribute("r", "56"), a.setAttribute("cx", "60"), a.setAttribute("cy", "60"), a.setAttribute("stroke-width", "8"), o.append(" ", i, " ", a, " "), n.append(" ", o, " ");
-  let l = r5.createElement("div", "lh-gauge__percentage"), s = r5.createElement("div", "lh-gauge__label");
+  let a = o5.createElementNS("http://www.w3.org/2000/svg", "circle", "lh-gauge-arc");
+  a.setAttribute("r", "56"), a.setAttribute("cx", "60"), a.setAttribute("cy", "60"), a.setAttribute("stroke-width", "8"), r.append(" ", i, " ", a, " "), n.append(" ", r, " ");
+  let l = o5.createElement("div", "lh-gauge__percentage"), s = o5.createElement("div", "lh-gauge__label");
   return t.append(" ", " ", n, " ", l, " ", " ", s, " "), e.append(t), e;
 }
-function Ye(r5) {
-  let e = r5.createFragment(), t = r5.createElement("style");
+function Ye(o5) {
+  let e = o5.createFragment(), t = o5.createElement("style");
   t.append(`
     /* CSS Fireworks. Originally by Eddie Lin
        https://codepen.io/paulirish/pen/yEVMbP
@@ -372,23 +372,23 @@ function Ye(r5) {
       }
     }
   `), e.append(t);
-  let n = r5.createElement("div", "lh-header-container"), o = r5.createElement("div", "lh-scores-wrapper-placeholder");
-  return n.append(" ", o, " "), e.append(n), e;
+  let n = o5.createElement("div", "lh-header-container"), r = o5.createElement("div", "lh-scores-wrapper-placeholder");
+  return n.append(" ", r, " "), e.append(n), e;
 }
-function et(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-metric"), n = r5.createElement("div", "lh-metric__innerwrap"), o = r5.createElement("div", "lh-metric__icon"), i = r5.createElement("span", "lh-metric__title"), a = r5.createElement("div", "lh-metric__value"), l = r5.createElement("div", "lh-metric__description");
-  return n.append(" ", o, " ", i, " ", a, " ", l, " "), t.append(" ", n, " "), e.append(t), e;
+function et(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-metric"), n = o5.createElement("div", "lh-metric__innerwrap"), r = o5.createElement("div", "lh-metric__icon"), i = o5.createElement("span", "lh-metric__title"), a = o5.createElement("div", "lh-metric__value"), l = o5.createElement("div", "lh-metric__description");
+  return n.append(" ", r, " ", i, " ", a, " ", l, " "), t.append(" ", n, " "), e.append(t), e;
 }
-function tt(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-scorescale"), n = r5.createElement("span", "lh-scorescale-range lh-scorescale-range--fail");
+function tt(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-scorescale"), n = o5.createElement("span", "lh-scorescale-range lh-scorescale-range--fail");
   n.append("0\u201349");
-  let o = r5.createElement("span", "lh-scorescale-range lh-scorescale-range--average");
-  o.append("50\u201389");
-  let i = r5.createElement("span", "lh-scorescale-range lh-scorescale-range--pass");
-  return i.append("90\u2013100"), t.append(" ", n, " ", o, " ", i, " "), e.append(t), e;
+  let r = o5.createElement("span", "lh-scorescale-range lh-scorescale-range--average");
+  r.append("50\u201389");
+  let i = o5.createElement("span", "lh-scorescale-range lh-scorescale-range--pass");
+  return i.append("90\u2013100"), t.append(" ", n, " ", r, " ", i, " "), e.append(t), e;
 }
-function nt(r5) {
-  let e = r5.createFragment(), t = r5.createElement("style");
+function nt(o5) {
+  let e = o5.createFragment(), t = o5.createElement("style");
   t.append(`
     .lh-scores-container {
       display: flex;
@@ -453,11 +453,11 @@ function nt(r5) {
       right: 0px;
     }
   `), e.append(t);
-  let n = r5.createElement("div", "lh-scores-wrapper"), o = r5.createElement("div", "lh-scores-container"), i = r5.createElement("div", "lh-pyro"), a = r5.createElement("div", "lh-pyro-before"), l = r5.createElement("div", "lh-pyro-after");
-  return i.append(" ", a, " ", l, " "), o.append(" ", i, " "), n.append(" ", o, " "), e.append(n), e;
+  let n = o5.createElement("div", "lh-scores-wrapper"), r = o5.createElement("div", "lh-scores-container"), i = o5.createElement("div", "lh-pyro"), a = o5.createElement("div", "lh-pyro-before"), l = o5.createElement("div", "lh-pyro-after");
+  return i.append(" ", a, " ", l, " "), r.append(" ", i, " "), n.append(" ", r, " "), e.append(n), e;
 }
-function rt(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-snippet"), n = r5.createElement("style");
+function rt(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-snippet"), n = o5.createElement("style");
   return n.append(`
           :root {
             --snippet-highlight-light: #fbf1f2;
@@ -568,20 +568,20 @@ function rt(r5) {
         }
     `), t.append(" ", n, " "), e.append(t), e;
 }
-function ot(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-snippet__snippet"), n = r5.createElement("div", "lh-snippet__snippet-inner");
+function ot(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-snippet__snippet"), n = o5.createElement("div", "lh-snippet__snippet-inner");
   return t.append(" ", n, " "), e.append(t), e;
 }
-function it(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-snippet__header"), n = r5.createElement("div", "lh-snippet__title"), o = r5.createElement("div", "lh-snippet__node"), i = r5.createElement("button", "lh-snippet__toggle-expand"), a = r5.createElement("span", "lh-snippet__btn-label-collapse lh-snippet__show-if-expanded"), l = r5.createElement("span", "lh-snippet__btn-label-expand lh-snippet__show-if-collapsed");
-  return i.append(" ", a, " ", l, " "), t.append(" ", n, " ", o, " ", i, " "), e.append(t), e;
+function it(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-snippet__header"), n = o5.createElement("div", "lh-snippet__title"), r = o5.createElement("div", "lh-snippet__node"), i = o5.createElement("button", "lh-snippet__toggle-expand"), a = o5.createElement("span", "lh-snippet__btn-label-collapse lh-snippet__show-if-expanded"), l = o5.createElement("span", "lh-snippet__btn-label-expand lh-snippet__show-if-collapsed");
+  return i.append(" ", a, " ", l, " "), t.append(" ", n, " ", r, " ", i, " "), e.append(t), e;
 }
-function at(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-snippet__line"), n = r5.createElement("div", "lh-snippet__line-number"), o = r5.createElement("div", "lh-snippet__line-icon"), i = r5.createElement("code");
-  return t.append(" ", n, " ", o, " ", i, " "), e.append(t), e;
+function at(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-snippet__line"), n = o5.createElement("div", "lh-snippet__line-number"), r = o5.createElement("div", "lh-snippet__line-icon"), i = o5.createElement("code");
+  return t.append(" ", n, " ", r, " ", i, " "), e.append(t), e;
 }
-function lt(r5) {
-  let e = r5.createFragment(), t = r5.createElement("style");
+function lt(o5) {
+  let e = o5.createFragment(), t = o5.createElement("style");
   return t.append(`/**
  * @license
  * Copyright 2017 Google LLC
@@ -2915,8 +2915,8 @@ details[open] .lh-clump-toggletext--hide { display: block;}
 /*# sourceURL=report-styles.css */
 `), e.append(t), e;
 }
-function st(r5) {
-  let e = r5.createFragment(), t = r5.createElement("style");
+function st(o5) {
+  let e = o5.createFragment(), t = o5.createElement("style");
   t.append(`
     .lh-topbar {
       position: sticky;
@@ -3072,107 +3072,107 @@ function st(r5) {
       }
     }
   `), e.append(t);
-  let n = r5.createElement("div", "lh-topbar"), o = r5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-topbar__logo");
-  o.setAttribute("role", "img"), o.setAttribute("title", "Lighthouse logo"), o.setAttribute("fill", "none"), o.setAttribute("xmlns", "http://www.w3.org/2000/svg"), o.setAttribute("viewBox", "0 0 48 48");
-  let i = r5.createElementNS("http://www.w3.org/2000/svg", "path");
+  let n = o5.createElement("div", "lh-topbar"), r = o5.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-topbar__logo");
+  r.setAttribute("role", "img"), r.setAttribute("title", "Lighthouse logo"), r.setAttribute("fill", "none"), r.setAttribute("xmlns", "http://www.w3.org/2000/svg"), r.setAttribute("viewBox", "0 0 48 48");
+  let i = o5.createElementNS("http://www.w3.org/2000/svg", "path");
   i.setAttribute("d", "m14 7 10-7 10 7v10h5v7h-5l5 24H9l5-24H9v-7h5V7Z"), i.setAttribute("fill", "#F63");
-  let a = r5.createElementNS("http://www.w3.org/2000/svg", "path");
+  let a = o5.createElementNS("http://www.w3.org/2000/svg", "path");
   a.setAttribute("d", "M31.561 24H14l-1.689 8.105L31.561 24ZM18.983 48H9l1.022-4.907L35.723 32.27l1.663 7.98L18.983 48Z"), a.setAttribute("fill", "#FFA385");
-  let l = r5.createElementNS("http://www.w3.org/2000/svg", "path");
-  l.setAttribute("fill", "#FF3"), l.setAttribute("d", "M20.5 10h7v7h-7z"), o.append(" ", i, " ", a, " ", l, " ");
-  let s = r5.createElement("a", "lh-topbar__url");
+  let l = o5.createElementNS("http://www.w3.org/2000/svg", "path");
+  l.setAttribute("fill", "#FF3"), l.setAttribute("d", "M20.5 10h7v7h-7z"), r.append(" ", i, " ", a, " ", l, " ");
+  let s = o5.createElement("a", "lh-topbar__url");
   s.setAttribute("href", ""), s.setAttribute("target", "_blank"), s.setAttribute("rel", "noopener");
-  let c = r5.createElement("div", "lh-tools"), d = r5.createElement("div", "lh-tools-locale lh-hidden"), h = r5.createElement("button", "lh-button lh-tool-locale__button");
+  let c = o5.createElement("div", "lh-tools"), d = o5.createElement("div", "lh-tools-locale lh-hidden"), h = o5.createElement("button", "lh-button lh-tool-locale__button");
   h.setAttribute("id", "lh-button__swap-locales"), h.setAttribute("title", "Show Language Picker"), h.setAttribute("aria-label", "Toggle language picker"), h.setAttribute("aria-haspopup", "menu"), h.setAttribute("aria-expanded", "false"), h.setAttribute("aria-controls", "lh-tools-locale__selector-wrapper");
-  let p = r5.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let p = o5.createElementNS("http://www.w3.org/2000/svg", "svg");
   p.setAttribute("width", "20px"), p.setAttribute("height", "20px"), p.setAttribute("viewBox", "0 0 24 24"), p.setAttribute("fill", "currentColor");
-  let g = r5.createElementNS("http://www.w3.org/2000/svg", "path");
-  g.setAttribute("d", "M0 0h24v24H0V0z"), g.setAttribute("fill", "none");
-  let b = r5.createElementNS("http://www.w3.org/2000/svg", "path");
-  b.setAttribute("d", "M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"), p.append(g, b), h.append(" ", p, " ");
-  let w = r5.createElement("div", "lh-tools-locale__selector-wrapper");
+  let m = o5.createElementNS("http://www.w3.org/2000/svg", "path");
+  m.setAttribute("d", "M0 0h24v24H0V0z"), m.setAttribute("fill", "none");
+  let b = o5.createElementNS("http://www.w3.org/2000/svg", "path");
+  b.setAttribute("d", "M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"), p.append(m, b), h.append(" ", p, " ");
+  let w = o5.createElement("div", "lh-tools-locale__selector-wrapper");
   w.setAttribute("id", "lh-tools-locale__selector-wrapper"), w.setAttribute("role", "menu"), w.setAttribute("aria-labelledby", "lh-button__swap-locales"), w.setAttribute("aria-hidden", "true"), w.append(" ", " "), d.append(" ", h, " ", w, " ");
-  let f = r5.createElement("button", "lh-tools__button");
+  let f = o5.createElement("button", "lh-tools__button");
   f.setAttribute("id", "lh-tools-button"), f.setAttribute("title", "Tools menu"), f.setAttribute("aria-label", "Toggle report tools menu"), f.setAttribute("aria-haspopup", "menu"), f.setAttribute("aria-expanded", "false"), f.setAttribute("aria-controls", "lh-tools-dropdown");
-  let u = r5.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let u = o5.createElementNS("http://www.w3.org/2000/svg", "svg");
   u.setAttribute("width", "100%"), u.setAttribute("height", "100%"), u.setAttribute("viewBox", "0 0 24 24");
-  let v = r5.createElementNS("http://www.w3.org/2000/svg", "path");
+  let v = o5.createElementNS("http://www.w3.org/2000/svg", "path");
   v.setAttribute("d", "M0 0h24v24H0z"), v.setAttribute("fill", "none");
-  let _ = r5.createElementNS("http://www.w3.org/2000/svg", "path");
+  let _ = o5.createElementNS("http://www.w3.org/2000/svg", "path");
   _.setAttribute("d", "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"), u.append(" ", v, " ", _, " "), f.append(" ", u, " ");
-  let x = r5.createElement("div", "lh-tools__dropdown");
-  x.setAttribute("id", "lh-tools-dropdown"), x.setAttribute("role", "menu"), x.setAttribute("aria-labelledby", "lh-tools-button");
-  let L = r5.createElement("a", "lh-report-icon lh-report-icon--print");
-  L.setAttribute("role", "menuitem"), L.setAttribute("tabindex", "-1"), L.setAttribute("href", "#"), L.setAttribute("data-i18n", "dropdownPrintSummary"), L.setAttribute("data-action", "print-summary");
-  let S = r5.createElement("a", "lh-report-icon lh-report-icon--print");
-  S.setAttribute("role", "menuitem"), S.setAttribute("tabindex", "-1"), S.setAttribute("href", "#"), S.setAttribute("data-i18n", "dropdownPrintExpanded"), S.setAttribute("data-action", "print-expanded");
-  let A = r5.createElement("a", "lh-report-icon lh-report-icon--copy");
-  A.setAttribute("role", "menuitem"), A.setAttribute("tabindex", "-1"), A.setAttribute("href", "#"), A.setAttribute("data-i18n", "dropdownCopyJSON"), A.setAttribute("data-action", "copy");
-  let z = r5.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
-  z.setAttribute("role", "menuitem"), z.setAttribute("tabindex", "-1"), z.setAttribute("href", "#"), z.setAttribute("data-i18n", "dropdownSaveHTML"), z.setAttribute("data-action", "save-html");
-  let V = r5.createElement("a", "lh-report-icon lh-report-icon--download");
+  let y = o5.createElement("div", "lh-tools__dropdown");
+  y.setAttribute("id", "lh-tools-dropdown"), y.setAttribute("role", "menu"), y.setAttribute("aria-labelledby", "lh-tools-button");
+  let S = o5.createElement("a", "lh-report-icon lh-report-icon--print");
+  S.setAttribute("role", "menuitem"), S.setAttribute("tabindex", "-1"), S.setAttribute("href", "#"), S.setAttribute("data-i18n", "dropdownPrintSummary"), S.setAttribute("data-action", "print-summary");
+  let C = o5.createElement("a", "lh-report-icon lh-report-icon--print");
+  C.setAttribute("role", "menuitem"), C.setAttribute("tabindex", "-1"), C.setAttribute("href", "#"), C.setAttribute("data-i18n", "dropdownPrintExpanded"), C.setAttribute("data-action", "print-expanded");
+  let z = o5.createElement("a", "lh-report-icon lh-report-icon--copy");
+  z.setAttribute("role", "menuitem"), z.setAttribute("tabindex", "-1"), z.setAttribute("href", "#"), z.setAttribute("data-i18n", "dropdownCopyJSON"), z.setAttribute("data-action", "copy");
+  let A = o5.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
+  A.setAttribute("role", "menuitem"), A.setAttribute("tabindex", "-1"), A.setAttribute("href", "#"), A.setAttribute("data-i18n", "dropdownSaveHTML"), A.setAttribute("data-action", "save-html");
+  let V = o5.createElement("a", "lh-report-icon lh-report-icon--download");
   V.setAttribute("role", "menuitem"), V.setAttribute("tabindex", "-1"), V.setAttribute("href", "#"), V.setAttribute("data-i18n", "dropdownSaveJSON"), V.setAttribute("data-action", "save-json");
-  let N = r5.createElement("a", "lh-report-icon lh-report-icon--open");
-  N.setAttribute("role", "menuitem"), N.setAttribute("tabindex", "-1"), N.setAttribute("href", "#"), N.setAttribute("data-i18n", "dropdownViewer"), N.setAttribute("data-action", "open-viewer");
-  let I = r5.createElement("a", "lh-report-icon lh-report-icon--open");
-  I.setAttribute("role", "menuitem"), I.setAttribute("tabindex", "-1"), I.setAttribute("href", "#"), I.setAttribute("data-i18n", "dropdownSaveGist"), I.setAttribute("data-action", "save-gist");
-  let P = r5.createElement("a", "lh-report-icon lh-report-icon--open lh-hidden");
+  let I = o5.createElement("a", "lh-report-icon lh-report-icon--open");
+  I.setAttribute("role", "menuitem"), I.setAttribute("tabindex", "-1"), I.setAttribute("href", "#"), I.setAttribute("data-i18n", "dropdownViewer"), I.setAttribute("data-action", "open-viewer");
+  let N = o5.createElement("a", "lh-report-icon lh-report-icon--open");
+  N.setAttribute("role", "menuitem"), N.setAttribute("tabindex", "-1"), N.setAttribute("href", "#"), N.setAttribute("data-i18n", "dropdownSaveGist"), N.setAttribute("data-action", "save-gist");
+  let P = o5.createElement("a", "lh-report-icon lh-report-icon--open lh-hidden");
   P.setAttribute("role", "menuitem"), P.setAttribute("tabindex", "-1"), P.setAttribute("href", "#"), P.setAttribute("data-i18n", "dropdownViewUnthrottledTrace"), P.setAttribute("data-action", "view-unthrottled-trace");
-  let H = r5.createElement("a", "lh-report-icon lh-report-icon--dark");
-  return H.setAttribute("role", "menuitem"), H.setAttribute("tabindex", "-1"), H.setAttribute("href", "#"), H.setAttribute("data-i18n", "dropdownDarkTheme"), H.setAttribute("data-action", "toggle-dark"), x.append(" ", L, " ", S, " ", A, " ", " ", z, " ", V, " ", N, " ", I, " ", " ", P, " ", H, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
+  let H = o5.createElement("a", "lh-report-icon lh-report-icon--dark");
+  return H.setAttribute("role", "menuitem"), H.setAttribute("tabindex", "-1"), H.setAttribute("href", "#"), H.setAttribute("data-i18n", "dropdownDarkTheme"), H.setAttribute("data-action", "toggle-dark"), y.append(" ", S, " ", C, " ", z, " ", " ", A, " ", V, " ", I, " ", N, " ", " ", P, " ", H, " "), c.append(" ", d, " ", f, " ", y, " "), n.append(" ", " ", r, " ", s, " ", c, " "), e.append(n), e;
 }
-function ct(r5) {
-  let e = r5.createFragment(), t = r5.createElement("div", "lh-warnings lh-warnings--toplevel"), n = r5.createElement("p", "lh-warnings__msg"), o = r5.createElement("ul");
-  return t.append(" ", n, " ", o, " "), e.append(t), e;
+function ct(o5) {
+  let e = o5.createFragment(), t = o5.createElement("div", "lh-warnings lh-warnings--toplevel"), n = o5.createElement("p", "lh-warnings__msg"), r = o5.createElement("ul");
+  return t.append(" ", n, " ", r, " "), e.append(t), e;
 }
-function ve(r5, e) {
+function ve(o5, e) {
   switch (e) {
     case "3pFilter":
-      return $e(r5);
+      return $e(o5);
     case "audit":
-      return Ve(r5);
+      return Ve(o5);
     case "categoryHeader":
-      return Ge(r5);
+      return Ge(o5);
     case "chevron":
-      return Be(r5);
+      return Be(o5);
     case "clump":
-      return qe(r5);
+      return qe(o5);
     case "crc":
-      return je(r5);
+      return je(o5);
     case "crcChain":
-      return We(r5);
+      return We(o5);
     case "elementScreenshot":
-      return Ke(r5);
+      return Ke(o5);
     case "explodeyGauge":
-      return Ze(r5);
+      return Ze(o5);
     case "footer":
-      return Je(r5);
+      return Je(o5);
     case "fraction":
-      return Qe(r5);
+      return Qe(o5);
     case "gauge":
-      return Xe(r5);
+      return Xe(o5);
     case "heading":
-      return Ye(r5);
+      return Ye(o5);
     case "metric":
-      return et(r5);
+      return et(o5);
     case "scorescale":
-      return tt(r5);
+      return tt(o5);
     case "scoresWrapper":
-      return nt(r5);
+      return nt(o5);
     case "snippet":
-      return rt(r5);
+      return rt(o5);
     case "snippetContent":
-      return ot(r5);
+      return ot(o5);
     case "snippetHeader":
-      return it(r5);
+      return it(o5);
     case "snippetLine":
-      return at(r5);
+      return at(o5);
     case "styles":
-      return lt(r5);
+      return lt(o5);
     case "topbar":
-      return st(r5);
+      return st(o5);
     case "warningsToplevel":
-      return ct(r5);
+      return ct(o5);
   }
   throw new Error("unexpected component: " + e);
 }
@@ -3182,13 +3182,13 @@ var Q = class {
   }
   createElement(e, t) {
     let n = this._document.createElement(e);
-    if (t) for (let o of t.split(/\s+/)) o && n.classList.add(o);
+    if (t) for (let r of t.split(/\s+/)) r && n.classList.add(r);
     return n;
   }
   createElementNS(e, t, n) {
-    let o = this._document.createElementNS(e, t);
-    if (n) for (let i of n.split(/\s+/)) i && o.classList.add(i);
-    return o;
+    let r = this._document.createElementNS(e, t);
+    if (n) for (let i of n.split(/\s+/)) i && r.classList.add(i);
+    return r;
   }
   createSVGElement(e, t) {
     return this._document.createElementNS("http://www.w3.org/2000/svg", e, t);
@@ -3200,14 +3200,14 @@ var Q = class {
     return this._document.createTextNode(e);
   }
   createChildOf(e, t, n) {
-    let o = this.createElement(t, n);
-    return e.append(o), o;
+    let r = this.createElement(t, n);
+    return e.append(r), r;
   }
   createComponent(e) {
     let t = this._componentCache.get(e);
     if (t) {
-      let o = t.cloneNode(true);
-      return this.findAll("style", o).forEach((i) => i.remove()), o;
+      let r = t.cloneNode(true);
+      return this.findAll("style", r).forEach((i) => i.remove()), r;
     }
     return t = ve(this, e), this._componentCache.set(e, t), t.cloneNode(true);
   }
@@ -3216,13 +3216,13 @@ var Q = class {
   }
   convertMarkdownLinkSnippets(e, t = {}) {
     let n = this.createElement("span");
-    for (let o of E.splitMarkdownLink(e)) {
-      let i = o.text.includes("`") ? this.convertMarkdownCodeSnippets(o.text) : o.text;
-      if (!o.isLink) {
+    for (let r of E.splitMarkdownLink(e)) {
+      let i = r.text.includes("`") ? this.convertMarkdownCodeSnippets(r.text) : r.text;
+      if (!r.isLink) {
         n.append(i);
         continue;
       }
-      let a = new URL(o.linkHref);
+      let a = new URL(r.linkHref);
       (["https://developers.google.com", "https://web.dev", "https://developer.chrome.com"].includes(a.origin) || t.alwaysAppendUtmSource) && (a.searchParams.set("utm_source", "lighthouse"), a.searchParams.set("utm_medium", this._lighthouseChannel));
       let s = this.createElement("a");
       s.rel = "noopener", s.target = "_blank", s.append(i), this.safelySetHref(s, a.href), n.append(s);
@@ -3234,23 +3234,35 @@ var Q = class {
       e.href = t;
       return;
     }
-    let n = ["https:", "http:"], o;
+    let n = ["https:", "http:"], r;
     try {
-      o = new URL(t);
+      r = new URL(t);
     } catch {
     }
-    o && n.includes(o.protocol) && (e.href = o.href);
+    r && n.includes(r.protocol) ? e.href = r.href : e.removeAttribute("href");
   }
   safelySetBlobHref(e, t) {
     if (t.type !== "text/html" && t.type !== "application/json") throw new Error("Unsupported blob type");
     let n = URL.createObjectURL(t);
     e.href = n;
   }
+  safelySetImageSrc(e, t) {
+    if (t = t || "", t.startsWith("data:image/")) {
+      e.src = t;
+      return;
+    }
+    let n = ["https:", "http:"], r;
+    try {
+      r = new URL(t);
+    } catch {
+    }
+    r && n.includes(r.protocol) ? e.src = r.href : e.removeAttribute("src");
+  }
   convertMarkdownCodeSnippets(e) {
     let t = this.createElement("span");
     for (let n of E.splitMarkdownCodeSpans(e)) if (n.isCode) {
-      let o = this.createElement("code");
-      o.textContent = n.text, t.append(o);
+      let r = this.createElement("code");
+      r.textContent = n.text, t.append(r);
     } else t.append(this._document.createTextNode(n.text));
     return t;
   }
@@ -3275,8 +3287,8 @@ var Q = class {
     return Array.from(t.querySelectorAll(e));
   }
   fireEventOn(e, t = this._document, n) {
-    let o = new CustomEvent(e, n ? { detail: n } : void 0);
-    t.dispatchEvent(o);
+    let r = new CustomEvent(e, n ? { detail: n } : void 0);
+    t.dispatchEvent(r);
   }
   saveFile(e, t) {
     let n = this.createElement("a");
@@ -3284,12 +3296,12 @@ var Q = class {
   }
 };
 var be = 0;
-var m = class r2 {
+var g = class o2 {
   static i18n = null;
   static strings = {};
   static reportJson = null;
   static apply(e) {
-    r2.strings = { ..._e, ...e.providedStrings }, r2.i18n = e.i18n, r2.reportJson = e.reportJson;
+    o2.strings = { ..._e, ...e.providedStrings }, o2.i18n = e.i18n, o2.reportJson = e.reportJson;
   }
   static getUniqueSuffix() {
     return be++;
@@ -3299,66 +3311,66 @@ var m = class r2 {
   }
 };
 var we = "data:image/jpeg;base64,";
-function ye(r5) {
-  r5.configSettings.locale || (r5.configSettings.locale = "en"), r5.configSettings.formFactor || (r5.configSettings.formFactor = r5.configSettings.emulatedFormFactor), r5.finalDisplayedUrl = E.getFinalDisplayedUrl(r5), r5.mainDocumentUrl = E.getMainDocumentUrl(r5);
-  for (let n of Object.values(r5.audits)) if ((n.scoreDisplayMode === "not_applicable" || n.scoreDisplayMode === "not-applicable") && (n.scoreDisplayMode = "notApplicable"), n.scoreDisplayMode === "informative" && (n.score = 1), n.details) {
-    if ((n.details.type === void 0 || n.details.type === "diagnostic") && (n.details.type = "debugdata"), n.details.type === "filmstrip") for (let o of n.details.items) o.data.startsWith(we) || (o.data = we + o.data);
-    if (n.details.type === "table") for (let o of n.details.headings) {
-      let { itemType: i, text: a } = o;
-      i !== void 0 && (o.valueType = i, delete o.itemType), a !== void 0 && (o.label = a, delete o.text);
-      let l = o.subItemsHeading?.itemType;
-      o.subItemsHeading && l !== void 0 && (o.subItemsHeading.valueType = l, delete o.subItemsHeading.itemType);
+function ye(o5) {
+  o5.configSettings.locale || (o5.configSettings.locale = "en"), o5.configSettings.formFactor || (o5.configSettings.formFactor = o5.configSettings.emulatedFormFactor), o5.finalDisplayedUrl = E.getFinalDisplayedUrl(o5), o5.mainDocumentUrl = E.getMainDocumentUrl(o5);
+  for (let n of Object.values(o5.audits)) if ((n.scoreDisplayMode === "not_applicable" || n.scoreDisplayMode === "not-applicable") && (n.scoreDisplayMode = "notApplicable"), n.scoreDisplayMode === "informative" && (n.score = 1), n.details) {
+    if ((n.details.type === void 0 || n.details.type === "diagnostic") && (n.details.type = "debugdata"), n.details.type === "filmstrip") for (let r of n.details.items) r.data.startsWith(we) || (r.data = we + r.data);
+    if (n.details.type === "table") for (let r of n.details.headings) {
+      let { itemType: i, text: a } = r;
+      i !== void 0 && (r.valueType = i, delete r.itemType), a !== void 0 && (r.label = a, delete r.text);
+      let l = r.subItemsHeading?.itemType;
+      r.subItemsHeading && l !== void 0 && (r.subItemsHeading.valueType = l, delete r.subItemsHeading.itemType);
     }
     if (n.id === "third-party-summary" && (n.details.type === "opportunity" || n.details.type === "table")) {
-      let { headings: o, items: i } = n.details;
-      if (o[0].valueType === "link") {
-        o[0].valueType = "text";
+      let { headings: r, items: i } = n.details;
+      if (r[0].valueType === "link") {
+        r[0].valueType = "text";
         for (let a of i) typeof a.entity == "object" && a.entity.type === "link" && (a.entity = a.entity.text);
         n.details.isEntityGrouped = true;
       }
     }
   }
-  let [e] = r5.lighthouseVersion.split(".").map(Number), t = r5.categories.performance;
+  let [e] = o5.lighthouseVersion.split(".").map(Number), t = o5.categories.performance;
   if (t) {
     if (e < 9) {
-      r5.categoryGroups || (r5.categoryGroups = {}), r5.categoryGroups.hidden = { title: "" };
+      o5.categoryGroups || (o5.categoryGroups = {}), o5.categoryGroups.hidden = { title: "" };
       for (let n of t.auditRefs) n.group ? n.group === "load-opportunities" && (n.group = "diagnostics") : n.group = "hidden";
     } else if (e < 12) for (let n of t.auditRefs) n.group || (n.group = "diagnostics");
   }
   if (e < 12 && t) {
     let n = /* @__PURE__ */ new Map();
-    for (let o of t.auditRefs) {
-      let i = o.relevantAudits;
-      if (!(!i || !o.acronym)) for (let a of i) {
+    for (let r of t.auditRefs) {
+      let i = r.relevantAudits;
+      if (!(!i || !r.acronym)) for (let a of i) {
         let l = n.get(a) || [];
-        l.push(o.acronym), n.set(a, l);
+        l.push(r.acronym), n.set(a, l);
       }
     }
-    for (let [o, i] of n) {
+    for (let [r, i] of n) {
       if (!i.length) continue;
-      let a = r5.audits[o];
+      let a = o5.audits[r];
       if (a && !a.metricSavings) {
         a.metricSavings = {};
         for (let l of i) a.metricSavings[l] = 0;
       }
     }
   }
-  if (r5.environment || (r5.environment = { benchmarkIndex: 0, networkUserAgent: r5.userAgent, hostUserAgent: r5.userAgent }), r5.configSettings.screenEmulation || (r5.configSettings.screenEmulation = { width: -1, height: -1, deviceScaleFactor: -1, mobile: /mobile/i.test(r5.environment.hostUserAgent), disabled: false }), r5.i18n || (r5.i18n = {}), r5.audits["full-page-screenshot"]) {
-    let n = r5.audits["full-page-screenshot"].details;
-    n ? r5.fullPageScreenshot = { screenshot: n.screenshot, nodes: n.nodes } : r5.fullPageScreenshot = null, delete r5.audits["full-page-screenshot"];
+  if (o5.environment || (o5.environment = { benchmarkIndex: 0, networkUserAgent: o5.userAgent, hostUserAgent: o5.userAgent }), o5.configSettings.screenEmulation || (o5.configSettings.screenEmulation = { width: -1, height: -1, deviceScaleFactor: -1, mobile: /mobile/i.test(o5.environment.hostUserAgent), disabled: false }), o5.i18n || (o5.i18n = {}), o5.audits["full-page-screenshot"]) {
+    let n = o5.audits["full-page-screenshot"].details;
+    n ? o5.fullPageScreenshot = { screenshot: n.screenshot, nodes: n.nodes } : o5.fullPageScreenshot = null, delete o5.audits["full-page-screenshot"];
   }
 }
 var $ = E.RATINGS;
-var k = class r3 {
+var k = class o3 {
   static prepareReportResult(e) {
     let t = JSON.parse(JSON.stringify(e));
     ye(t);
-    for (let o of Object.values(t.audits)) o.details && (o.details.type === "opportunity" || o.details.type === "table") && !o.details.isEntityGrouped && t.entities && r3.classifyEntities(t.entities, o.details);
+    for (let r of Object.values(t.audits)) r.details && (r.details.type === "opportunity" || r.details.type === "table") && !r.details.isEntityGrouped && t.entities && o3.classifyEntities(t.entities, r.details);
     if (typeof t.categories != "object") throw new Error("No categories provided.");
     let n = /* @__PURE__ */ new Map();
-    for (let o of Object.values(t.categories)) o.auditRefs.forEach((i) => {
+    for (let r of Object.values(t.categories)) r.auditRefs.forEach((i) => {
       i.acronym && n.set(i.acronym, i);
-    }), o.auditRefs.forEach((i) => {
+    }), r.auditRefs.forEach((i) => {
       let a = t.audits[i.id];
       i.result = a;
       let l = Object.keys(i.result.metricSavings || {});
@@ -3380,21 +3392,21 @@ var k = class r3 {
     return t;
   }
   static getUrlLocatorFn(e) {
-    let t = e.find((o) => o.valueType === "url")?.key;
-    if (t && typeof t == "string") return (o) => {
-      let i = o[t];
+    let t = e.find((r) => r.valueType === "url")?.key;
+    if (t && typeof t == "string") return (r) => {
+      let i = r[t];
       if (typeof i == "string") return i;
     };
-    let n = e.find((o) => o.valueType === "source-location")?.key;
-    if (n) return (o) => {
-      let i = o[n];
+    let n = e.find((r) => r.valueType === "source-location")?.key;
+    if (n) return (r) => {
+      let i = r[n];
       if (typeof i == "object" && i.type === "source-location") return i.url;
     };
   }
   static classifyEntities(e, t) {
-    let { items: n, headings: o } = t;
+    let { items: n, headings: r } = t;
     if (!n.length || n.some((a) => a.entity)) return;
-    let i = r3.getUrlLocatorFn(o);
+    let i = o3.getUrlLocatorFn(r);
     if (i) for (let a of n) {
       let l = i(a);
       if (!l) continue;
@@ -3410,37 +3422,37 @@ var k = class r3 {
   }
   static getTableItemSortComparator(e) {
     return (t, n) => {
-      for (let o of e) {
-        let i = t[o], a = n[o];
-        if ((typeof i != typeof a || !["number", "string"].includes(typeof i)) && console.warn(`Warning: Attempting to sort unsupported value type: ${o}.`), typeof i == "number" && typeof a == "number" && i !== a) return a - i;
+      for (let r of e) {
+        let i = t[r], a = n[r];
+        if ((typeof i != typeof a || !["number", "string"].includes(typeof i)) && console.warn(`Warning: Attempting to sort unsupported value type: ${r}.`), typeof i == "number" && typeof a == "number" && i !== a) return a - i;
         if (typeof i == "string" && typeof a == "string" && i !== a) return i.localeCompare(a);
       }
       return 0;
     };
   }
   static getEmulationDescriptions(e) {
-    let t, n, o, i = e.throttling, a = m.i18n, l = m.strings;
+    let t, n, r, i = e.throttling, a = g.i18n, l = g.strings;
     switch (e.throttlingMethod) {
       case "provided":
-        o = n = t = l.throttlingProvided;
+        r = n = t = l.throttlingProvided;
         break;
       case "devtools": {
-        let { cpuSlowdownMultiplier: p, requestLatencyMs: g } = i;
-        t = `${a.formatNumber(p)}x slowdown (DevTools)`, n = `${a.formatMilliseconds(g)} HTTP RTT, ${a.formatKbps(i.downloadThroughputKbps)} down, ${a.formatKbps(i.uploadThroughputKbps)} up (DevTools)`, o = g === 150 * 3.75 && i.downloadThroughputKbps === 1.6 * 1024 * 0.9 && i.uploadThroughputKbps === 750 * 0.9 ? l.runtimeSlow4g : l.runtimeCustom;
+        let { cpuSlowdownMultiplier: p, requestLatencyMs: m } = i;
+        t = `${a.formatNumber(p)}x slowdown (DevTools)`, n = `${a.formatMilliseconds(m)} HTTP RTT, ${a.formatKbps(i.downloadThroughputKbps)} down, ${a.formatKbps(i.uploadThroughputKbps)} up (DevTools)`, r = m === 150 * 3.75 && i.downloadThroughputKbps === 1.6 * 1024 * 0.9 && i.uploadThroughputKbps === 750 * 0.9 ? l.runtimeSlow4g : l.runtimeCustom;
         break;
       }
       case "simulate": {
-        let { cpuSlowdownMultiplier: p, rttMs: g, throughputKbps: b } = i;
-        t = `${a.formatNumber(p)}x slowdown (Simulated)`, n = `${a.formatMilliseconds(g)} TCP RTT, ${a.formatKbps(b)} throughput (Simulated)`, o = g === 150 && b === 1.6 * 1024 ? l.runtimeSlow4g : l.runtimeCustom;
+        let { cpuSlowdownMultiplier: p, rttMs: m, throughputKbps: b } = i;
+        t = `${a.formatNumber(p)}x slowdown (Simulated)`, n = `${a.formatMilliseconds(m)} TCP RTT, ${a.formatKbps(b)} throughput (Simulated)`, r = m === 150 && b === 1.6 * 1024 ? l.runtimeSlow4g : l.runtimeCustom;
         break;
       }
       default:
-        o = t = n = l.runtimeUnknown;
+        r = t = n = l.runtimeUnknown;
     }
     let s = e.channel === "devtools" ? false : e.screenEmulation.disabled, c = e.channel === "devtools" ? e.formFactor === "mobile" : e.screenEmulation.mobile, d = l.runtimeMobileEmulation;
     s ? d = l.runtimeNoEmulation : c || (d = l.runtimeDesktopEmulation);
     let h = s ? void 0 : `${e.screenEmulation.width}x${e.screenEmulation.height}, DPR ${e.screenEmulation.deviceScaleFactor}`;
-    return { deviceEmulation: d, screenEmulation: h, cpuThrottling: t, networkThrottling: n, summary: o };
+    return { deviceEmulation: d, screenEmulation: h, cpuThrottling: t, networkThrottling: n, summary: r };
   }
   static showAsPassed(e) {
     switch (e.scoreDisplayMode) {
@@ -3462,18 +3474,18 @@ var k = class r3 {
     return e >= $.PASS.minScore ? n = $.PASS.label : e >= $.AVERAGE.minScore && (n = $.AVERAGE.label), n;
   }
   static calculateCategoryFraction(e) {
-    let t = 0, n = 0, o = 0, i = 0;
+    let t = 0, n = 0, r = 0, i = 0;
     for (let a of e.auditRefs) {
-      let l = r3.showAsPassed(a.result);
+      let l = o3.showAsPassed(a.result);
       if (!(a.group === "hidden" || a.result.scoreDisplayMode === "manual" || a.result.scoreDisplayMode === "notApplicable")) {
         if (a.result.scoreDisplayMode === "informative") {
-          l || ++o;
+          l || ++r;
           continue;
         }
         ++t, i += a.weight, l && n++;
       }
     }
-    return { numPassed: n, numPassableAudits: t, numInformative: o, totalWeight: i };
+    return { numPassed: n, numPassableAudits: t, numInformative: r, totalWeight: i };
   }
   static isPluginCategory(e) {
     return E.isPluginCategory(e);
@@ -3482,70 +3494,70 @@ var k = class r3 {
     return e === "timespan" || e === "snapshot" || t?.categoryScoreDisplayMode === "fraction";
   }
 };
-var _e = { varianceDisclaimer: "Values are estimated and may vary. The [performance score is calculated](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directly from these metrics.", calculatorLink: "See calculator.", showRelevantAudits: "Show audits relevant to:", opportunityResourceColumnLabel: "Opportunity", opportunitySavingsColumnLabel: "Estimated Savings", errorMissingAuditInfo: "Report error: no audit information", errorLabel: "Error!", warningHeader: "Warnings: ", warningAuditsGroupTitle: "Passed audits but with warnings", passedAuditsGroupTitle: "Passed audits", notApplicableAuditsGroupTitle: "Not applicable", manualAuditsGroupTitle: "Additional items to manually check", toplevelWarningsMessage: "There were issues affecting this run of Lighthouse:", crcInitialNavigation: "Initial Navigation", crcLongestDurationLabel: "Maximum critical path latency:", snippetExpandButtonLabel: "Expand snippet", snippetCollapseButtonLabel: "Collapse snippet", lsPerformanceCategoryDescription: "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.", labDataTitle: "Lab Data", thirdPartyResourcesLabel: "Show 3rd-party resources", viewTreemapLabel: "View Treemap", viewTraceLabel: "View Trace", dropdownPrintSummary: "Print Summary", dropdownPrintExpanded: "Print Expanded", dropdownCopyJSON: "Copy JSON", dropdownSaveHTML: "Save as HTML", dropdownSaveJSON: "Save as JSON", dropdownViewer: "Open in Viewer", dropdownSaveGist: "Save as Gist", dropdownDarkTheme: "Toggle Dark Theme", dropdownViewUnthrottledTrace: "View Unthrottled Trace", runtimeSettingsDevice: "Device", runtimeSettingsNetworkThrottling: "Network throttling", runtimeSettingsCPUThrottling: "CPU throttling", runtimeSettingsUANetwork: "User agent (network)", runtimeSettingsBenchmark: "Unthrottled CPU/Memory Power", runtimeSettingsAxeVersion: "Axe version", runtimeSettingsScreenEmulation: "Screen emulation", footerIssue: "File an issue", runtimeNoEmulation: "No emulation", runtimeMobileEmulation: "Emulated Moto G Power", runtimeDesktopEmulation: "Emulated Desktop", runtimeUnknown: "Unknown", runtimeSingleLoad: "Single page session", runtimeAnalysisWindow: "Initial page load", runtimeAnalysisWindowTimespan: "User interactions timespan", runtimeAnalysisWindowSnapshot: "Point-in-time snapshot", runtimeSingleLoadTooltip: "This data is taken from a single page session, as opposed to field data summarizing many sessions.", throttlingProvided: "Provided by environment", show: "Show", hide: "Hide", expandView: "Expand view", collapseView: "Collapse view", runtimeSlow4g: "Slow 4G throttling", runtimeCustom: "Custom throttling", firstPartyChipLabel: "1st party", openInANewTabTooltip: "Open in a new tab", unattributable: "Unattributable", unscoredLabel: "Unscored", unscoredTitle: "This audit does not contribute to the overall category score." };
+var _e = { varianceDisclaimer: "Values are estimated and may vary. The [performance score is calculated](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directly from these metrics.", calculatorLink: "See calculator.", showRelevantAudits: "Show audits relevant to:", opportunityResourceColumnLabel: "Opportunity", opportunitySavingsColumnLabel: "Estimated Savings", errorMissingAuditInfo: "Report error: no audit information", errorLabel: "Error!", warningHeader: "Warnings: ", warningAuditsGroupTitle: "Passed audits but with warnings", passedAuditsGroupTitle: "Passed audits", notApplicableAuditsGroupTitle: "Not applicable", manualAuditsGroupTitle: "Additional items to manually check", toplevelWarningsMessage: "There were issues affecting this run of Lighthouse:", crcInitialNavigation: "Initial Navigation", crcLongestDurationLabel: "Maximum critical path latency:", snippetExpandButtonLabel: "Expand snippet", snippetCollapseButtonLabel: "Collapse snippet", lsPerformanceCategoryDescription: "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.", labDataTitle: "Lab Data", thirdPartyResourcesLabel: "Show 3rd-party resources", viewTreemapLabel: "View Treemap", viewTraceLabel: "View Trace", dropdownPrintSummary: "Print Summary", dropdownPrintExpanded: "Print Expanded", dropdownCopyJSON: "Copy JSON", dropdownSaveHTML: "Save as HTML", dropdownSaveJSON: "Save as JSON", dropdownViewer: "Open in Viewer", dropdownSaveGist: "Save as Gist", dropdownDarkTheme: "Toggle Dark Theme", dropdownViewUnthrottledTrace: "View Unthrottled Trace", runtimeSettingsDevice: "Device", runtimeSettingsNetworkThrottling: "Network throttling", runtimeSettingsCPUThrottling: "CPU throttling", runtimeSettingsUANetwork: "User agent (network)", runtimeSettingsBenchmark: "Unthrottled CPU/Memory Power", runtimeSettingsAxeVersion: "Axe version", runtimeSettingsArdVersion: "ARD version", runtimeSettingsScreenEmulation: "Screen emulation", footerIssue: "File an issue", runtimeNoEmulation: "No emulation", runtimeMobileEmulation: "Emulated Moto G Power", runtimeDesktopEmulation: "Emulated Desktop", runtimeUnknown: "Unknown", runtimeSingleLoad: "Single page session", runtimeAnalysisWindow: "Initial page load", runtimeAnalysisWindowTimespan: "User interactions timespan", runtimeAnalysisWindowSnapshot: "Point-in-time snapshot", runtimeSingleLoadTooltip: "This data is taken from a single page session, as opposed to field data summarizing many sessions.", throttlingProvided: "Provided by environment", show: "Show", hide: "Hide", expandView: "Expand view", collapseView: "Collapse view", runtimeSlow4g: "Slow 4G throttling", runtimeCustom: "Custom throttling", firstPartyChipLabel: "1st party", openInANewTabTooltip: "Open in a new tab", unattributable: "Unattributable", unscoredLabel: "Unscored", unscoredTitle: "This audit does not contribute to the overall category score." };
 var B = class {
   constructor(e, t) {
     this.dom = e, this.detailsRenderer = t;
   }
   get _clumpTitles() {
-    return { warning: m.strings.warningAuditsGroupTitle, manual: m.strings.manualAuditsGroupTitle, passed: m.strings.passedAuditsGroupTitle, notApplicable: m.strings.notApplicableAuditsGroupTitle };
+    return { warning: g.strings.warningAuditsGroupTitle, manual: g.strings.manualAuditsGroupTitle, passed: g.strings.passedAuditsGroupTitle, notApplicable: g.strings.notApplicableAuditsGroupTitle };
   }
   renderAudit(e) {
-    let t = m.strings, n = this.dom.createComponent("audit"), o = this.dom.find("div.lh-audit", n);
-    o.id = e.result.id;
+    let t = g.strings, n = this.dom.createComponent("audit"), r = this.dom.find("div.lh-audit", n);
+    r.id = e.result.id;
     let i = e.result.scoreDisplayMode;
-    e.result.displayValue && (this.dom.find(".lh-audit__display-text", o).textContent = e.result.displayValue);
-    let a = this.dom.find(".lh-audit__title", o);
+    e.result.displayValue && (this.dom.find(".lh-audit__display-text", r).textContent = e.result.displayValue);
+    let a = this.dom.find(".lh-audit__title", r);
     a.append(this.dom.convertMarkdownCodeSnippets(e.result.title));
-    let l = this.dom.find(".lh-audit__description", o);
+    let l = this.dom.find(".lh-audit__description", r);
     l.append(this.dom.convertMarkdownLinkSnippets(e.result.description));
     for (let p of e.relevantMetrics || []) {
-      let g = this.dom.createChildOf(l, "span", "lh-audit__adorn");
-      g.title = `Relevant to ${p.result.title}`, g.textContent = p.acronym || p.id;
+      let m = this.dom.createChildOf(l, "span", "lh-audit__adorn");
+      m.title = `Relevant to ${p.result.title}`, m.textContent = p.acronym || p.id;
     }
     if (e.weight === 0) {
       let p = this.dom.createChildOf(l, "span", "lh-audit__adorn");
-      p.title = m.strings.unscoredTitle, p.textContent = m.strings.unscoredLabel;
+      p.title = g.strings.unscoredTitle, p.textContent = g.strings.unscoredLabel;
     }
     e.stackPacks && e.stackPacks.forEach((p) => {
-      let g = this.dom.createElement("img", "lh-audit__stackpack__img");
-      g.src = p.iconDataURL, g.alt = p.title;
+      let m = this.dom.createElement("img", "lh-audit__stackpack__img");
+      this.dom.safelySetImageSrc(m, p.iconDataURL), m.alt = p.title;
       let b = this.dom.convertMarkdownLinkSnippets(p.description, { alwaysAppendUtmSource: true }), w = this.dom.createElement("div", "lh-audit__stackpack");
-      w.append(g, b), this.dom.find(".lh-audit__stackpacks", o).append(w);
+      w.append(m, b), this.dom.find(".lh-audit__stackpacks", r).append(w);
     });
-    let s = this.dom.find("details", o);
+    let s = this.dom.find("details", r);
     if (e.result.details) {
       let p = this.detailsRenderer.render(e.result.details);
       p && (p.classList.add("lh-details"), s.append(p));
     }
-    if (this.dom.find(".lh-chevron-container", o).append(this._createChevron()), this._setRatingClass(o, e.result.score, i), e.result.scoreDisplayMode === "error") {
-      o.classList.add("lh-audit--error");
-      let p = this.dom.find(".lh-audit__display-text", o);
+    if (this.dom.find(".lh-chevron-container", r).append(this._createChevron()), this._setRatingClass(r, e.result.score, i), e.result.scoreDisplayMode === "error") {
+      r.classList.add("lh-audit--error");
+      let p = this.dom.find(".lh-audit__display-text", r);
       p.textContent = t.errorLabel, p.classList.add("lh-tooltip-boundary");
-      let g = this.dom.createChildOf(p, "div", "lh-tooltip lh-tooltip--error");
-      g.textContent = e.result.errorMessage || t.errorMissingAuditInfo;
+      let m = this.dom.createChildOf(p, "div", "lh-tooltip lh-tooltip--error");
+      m.textContent = e.result.errorMessage || t.errorMissingAuditInfo;
     } else if (e.result.explanation) {
       let p = this.dom.createChildOf(a, "div", "lh-audit-explanation");
       p.textContent = e.result.explanation;
     }
     let c = e.result.warnings;
-    if (!c || c.length === 0) return o;
+    if (!c || c.length === 0) return r;
     let d = this.dom.find("summary", s), h = this.dom.createChildOf(d, "div", "lh-warnings");
     if (this.dom.createChildOf(h, "span").textContent = t.warningHeader, c.length === 1) h.append(this.dom.createTextNode(c.join("")));
     else {
       let p = this.dom.createChildOf(h, "ul");
-      for (let g of c) {
+      for (let m of c) {
         let b = this.dom.createChildOf(p, "li");
-        b.textContent = g;
+        b.textContent = m;
       }
     }
-    return o;
+    return r;
   }
   injectFinalScreenshot(e, t, n) {
-    let o = t["final-screenshot"];
-    if (!o || o.scoreDisplayMode === "error" || !o.details || o.details.type !== "screenshot") return null;
-    let i = this.dom.createElement("img", "lh-final-ss-image"), a = o.details.data;
-    i.src = a, i.alt = o.title;
+    let r = t["final-screenshot"];
+    if (!r || r.scoreDisplayMode === "error" || !r.details || r.details.type !== "screenshot") return null;
+    let i = this.dom.createElement("img", "lh-final-ss-image"), a = r.details.data;
+    this.dom.safelySetImageSrc(i, a), i.alt = r.title;
     let l = this.dom.find(".lh-category .lh-category-header", e), s = this.dom.createElement("div", "lh-category-headercol"), c = this.dom.createElement("div", "lh-category-headercol lh-category-headercol--separator"), d = this.dom.createElement("div", "lh-category-headercol");
     s.append(...l.childNodes), s.append(n), d.append(i), l.append(s, c, d), l.classList.add("lh-category-header__finalscreenshot");
   }
@@ -3554,33 +3566,33 @@ var B = class {
     return this.dom.find("svg.lh-chevron", e);
   }
   _setRatingClass(e, t, n) {
-    let o = k.calculateRating(t, n);
-    return e.classList.add(`lh-audit--${n.toLowerCase()}`), n !== "informative" && e.classList.add(`lh-audit--${o}`), e;
+    let r = k.calculateRating(t, n);
+    return e.classList.add(`lh-audit--${n.toLowerCase()}`), n !== "informative" && e.classList.add(`lh-audit--${r}`), e;
   }
   renderCategoryHeader(e, t, n) {
-    let o = this.dom.createComponent("categoryHeader"), i = this.dom.find(".lh-score__gauge", o), a = this.renderCategoryScore(e, t, n);
+    let r = this.dom.createComponent("categoryHeader"), i = this.dom.find(".lh-score__gauge", r), a = this.renderCategoryScore(e, t, n);
     if (i.append(a), e.description) {
       let l = this.dom.convertMarkdownLinkSnippets(e.description);
-      this.dom.find(".lh-category-header__description", o).append(l);
+      this.dom.find(".lh-category-header__description", r).append(l);
     }
-    return o;
+    return r;
   }
   renderAuditGroup(e) {
     let t = this.dom.createElement("div", "lh-audit-group"), n = this.dom.createElement("div", "lh-audit-group__header");
     this.dom.createChildOf(n, "span", "lh-audit-group__title").textContent = e.title, t.append(n);
-    let o = null;
-    return e.description && (o = this.dom.convertMarkdownLinkSnippets(e.description), o.classList.add("lh-audit-group__description", "lh-audit-group__footer"), t.append(o)), [t, o];
+    let r = null;
+    return e.description && (r = this.dom.convertMarkdownLinkSnippets(e.description), r.classList.add("lh-audit-group__description", "lh-audit-group__footer"), t.append(r)), [t, r];
   }
   _renderGroupedAudits(e, t) {
-    let n = /* @__PURE__ */ new Map(), o = "NotAGroup";
-    n.set(o, []);
+    let n = /* @__PURE__ */ new Map(), r = "NotAGroup";
+    n.set(r, []);
     for (let a of e) {
-      let l = a.group || o, s = n.get(l) || [];
+      let l = a.group || r, s = n.get(l) || [];
       s.push(a), n.set(l, s);
     }
     let i = [];
     for (let [a, l] of n) {
-      if (a === o) {
+      if (a === r) {
         for (let h of l) i.push(this.renderAudit(h));
         continue;
       }
@@ -3594,9 +3606,9 @@ var B = class {
     let n = this.dom.createElement("div");
     return this._renderGroupedAudits(e, t).forEach((i) => n.append(i)), n;
   }
-  renderClump(e, { auditRefsOrEls: t, description: n, openByDefault: o }) {
+  renderClump(e, { auditRefsOrEls: t, description: n, openByDefault: r }) {
     let i = this.dom.createComponent("clump"), a = this.dom.find(".lh-clump", i);
-    o && a.setAttribute("open", "");
+    r && a.setAttribute("open", "");
     let l = this.dom.find(".lh-audit-group__header", a), s = this._clumpTitles[e];
     this.dom.find(".lh-audit-group__title", l).textContent = s;
     let c = this.dom.find(".lh-audit-group__itemcount", a);
@@ -3608,27 +3620,27 @@ var B = class {
       let p = this.dom.convertMarkdownLinkSnippets(n);
       p.classList.add("lh-audit-group__description", "lh-audit-group__footer"), h.append(p);
     }
-    return this.dom.find(".lh-clump-toggletext--show", h).textContent = m.strings.show, this.dom.find(".lh-clump-toggletext--hide", h).textContent = m.strings.hide, a.classList.add(`lh-clump--${e.toLowerCase()}`), h;
+    return this.dom.find(".lh-clump-toggletext--show", h).textContent = g.strings.show, this.dom.find(".lh-clump-toggletext--hide", h).textContent = g.strings.hide, a.classList.add(`lh-clump--${e.toLowerCase()}`), h;
   }
   renderCategoryScore(e, t, n) {
-    let o;
-    if (n && k.shouldDisplayAsFraction(n.gatherMode, e) ? o = this.renderCategoryFraction(e) : o = this.renderScoreGauge(e, t), n?.omitLabel && this.dom.find(".lh-gauge__label,.lh-fraction__label", o).remove(), n?.onPageAnchorRendered) {
-      let i = this.dom.find("a", o);
+    let r;
+    if (n && k.shouldDisplayAsFraction(n.gatherMode, e) ? r = this.renderCategoryFraction(e) : r = this.renderScoreGauge(e, t), n?.omitLabel && this.dom.find(".lh-gauge__label,.lh-fraction__label", r).remove(), n?.onPageAnchorRendered) {
+      let i = this.dom.find("a", r);
       n.onPageAnchorRendered(i);
     }
-    return o;
+    return r;
   }
   renderScoreGauge(e, t) {
-    let n = this.dom.createComponent("gauge"), o = this.dom.find("a.lh-gauge__wrapper", n);
-    k.isPluginCategory(e.id) && o.classList.add("lh-gauge__wrapper--plugin");
+    let n = this.dom.createComponent("gauge"), r = this.dom.find("a.lh-gauge__wrapper", n);
+    k.isPluginCategory(e.id) && r.classList.add("lh-gauge__wrapper--plugin");
     let i = Number(e.score), a = this.dom.find(".lh-gauge", n), l = this.dom.find("circle.lh-gauge-arc", a);
     l && this._setGaugeArc(l, i);
     let s = Math.round(i * 100), c = this.dom.find("div.lh-gauge__percentage", n);
-    return c.textContent = s.toString(), e.score === null && (c.classList.add("lh-gauge--error"), c.textContent = "", c.title = m.strings.errorLabel), e.auditRefs.length === 0 || this.hasApplicableAudits(e) ? o.classList.add(`lh-gauge__wrapper--${k.calculateRating(e.score)}`) : (o.classList.add("lh-gauge__wrapper--not-applicable"), c.textContent = "-", c.title = m.strings.notApplicableAuditsGroupTitle), this.dom.find(".lh-gauge__label", n).textContent = e.title, n;
+    return c.textContent = s.toString(), e.score === null && (c.classList.add("lh-gauge--error"), c.textContent = "", c.title = g.strings.errorLabel), e.auditRefs.length === 0 || this.hasApplicableAudits(e) ? r.classList.add(`lh-gauge__wrapper--${k.calculateRating(e.score)}`) : (r.classList.add("lh-gauge__wrapper--not-applicable"), c.textContent = "-", c.title = g.strings.notApplicableAuditsGroupTitle), this.dom.find(".lh-gauge__label", n).textContent = e.title, n;
   }
   renderCategoryFraction(e) {
-    let t = this.dom.createComponent("fraction"), n = this.dom.find("a.lh-fraction__wrapper", t), { numPassed: o, numPassableAudits: i, totalWeight: a } = k.calculateCategoryFraction(e), l = o / i, s = this.dom.find(".lh-fraction__content", t), c = this.dom.createElement("span");
-    c.textContent = `${o}/${i}`, s.append(c);
+    let t = this.dom.createComponent("fraction"), n = this.dom.find("a.lh-fraction__wrapper", t), { numPassed: r, numPassableAudits: i, totalWeight: a } = k.calculateCategoryFraction(e), l = r / i, s = this.dom.find(".lh-fraction__content", t), c = this.dom.createElement("span");
+    c.textContent = `${r}/${i}`, s.append(c);
     let d = k.calculateRating(l);
     return a === 0 && (d = "null"), n.classList.add(`lh-fraction__wrapper--${d}`), this.dom.find(".lh-fraction__label", t).textContent = e.title, t;
   }
@@ -3636,9 +3648,9 @@ var B = class {
     return e.auditRefs.some((t) => t.result.scoreDisplayMode !== "notApplicable");
   }
   _setGaugeArc(e, t) {
-    let n = 2 * Math.PI * Number(e.getAttribute("r")), o = Number(e.getAttribute("stroke-width")), i = 0.25 * o / n;
+    let n = 2 * Math.PI * Number(e.getAttribute("r")), r = Number(e.getAttribute("stroke-width")), i = 0.25 * r / n;
     e.style.transform = `rotate(${-90 + i * 360}deg)`;
-    let a = t * n - o / 2;
+    let a = t * n - r / 2;
     t === 0 && (e.style.opacity = "0"), t === 1 && (a = n), e.style.strokeDasharray = `${Math.max(a, 0)} ${n}`;
   }
   _auditHasWarning(e) {
@@ -3649,8 +3661,8 @@ var B = class {
     return t === "manual" || t === "notApplicable" ? t : k.showAsPassed(e.result) ? this._auditHasWarning(e) ? "warning" : "passed" : "failed";
   }
   render(e, t = {}, n) {
-    let o = this.dom.createElement("div", "lh-category");
-    o.id = e.id, o.append(this.renderCategoryHeader(e, t, n));
+    let r = this.dom.createElement("div", "lh-category");
+    r.id = e.id, r.append(this.renderCategoryHeader(e, t, n));
     let i = /* @__PURE__ */ new Map();
     i.set("failed", []), i.set("warning", []), i.set("manual", []), i.set("passed", []), i.set("notApplicable", []);
     for (let l of e.auditRefs) {
@@ -3664,118 +3676,118 @@ var B = class {
       if (s.length === 0) continue;
       if (l === "failed") {
         let p = this.renderUnexpandableClump(s, t);
-        p.classList.add("lh-clump--failed"), o.append(p);
+        p.classList.add("lh-clump--failed"), r.append(p);
         continue;
       }
       let c = l === "manual" ? e.manualDescription : void 0, d = l === "warning" || l === "manual" && a === 0, h = this.renderClump(l, { auditRefsOrEls: s, description: c, openByDefault: d });
-      o.append(h);
+      r.append(h);
     }
-    return o;
+    return r;
   }
 };
 var Y = class {
-  static createSegment(e, t, n, o) {
+  static createSegment(e, t, n, r) {
     let i = e[t], a = Object.keys(e), l = a.indexOf(t) === a.length - 1, s = !!i.children && Object.keys(i.children).length > 0, c = Array.isArray(n) ? n.slice(0) : [];
-    return typeof o < "u" && c.push(!o), { node: i, isLastChild: l, hasChildren: s, treeMarkers: c };
+    return typeof r < "u" && c.push(!r), { node: i, isLastChild: l, hasChildren: s, treeMarkers: c };
   }
   static createChainNode(e, t, n) {
-    let o = e.createComponent("crcChain"), i, a, l, s, c;
+    let r = e.createComponent("crcChain"), i, a, l, s, c;
     "request" in t.node ? (a = t.node.request.transferSize, l = t.node.request.url, i = (t.node.request.endTime - t.node.request.startTime) * 1e3, s = false) : (a = t.node.transferSize, l = t.node.url, i = t.node.navStartToEndTime, s = true, c = t.node.isLongest);
-    let d = e.find(".lh-crc-node", o);
+    let d = e.find(".lh-crc-node", r);
     d.setAttribute("title", l), c && d.classList.add("lh-crc-node__longest");
-    let h = e.find(".lh-crc-node__tree-marker", o);
+    let h = e.find(".lh-crc-node__tree-marker", r);
     t.treeMarkers.forEach((f) => {
       let u = f ? "lh-tree-marker lh-vert" : "lh-tree-marker";
       h.append(e.createElement("span", u), e.createElement("span", "lh-tree-marker"));
     });
-    let p = t.isLastChild ? "lh-tree-marker lh-up-right" : "lh-tree-marker lh-vert-right", g = t.hasChildren ? "lh-tree-marker lh-horiz-down" : "lh-tree-marker lh-right";
-    h.append(e.createElement("span", p), e.createElement("span", "lh-tree-marker lh-right"), e.createElement("span", g));
-    let b = n.renderTextURL(l), w = e.find(".lh-crc-node__tree-value", o);
+    let p = t.isLastChild ? "lh-tree-marker lh-up-right" : "lh-tree-marker lh-vert-right", m = t.hasChildren ? "lh-tree-marker lh-horiz-down" : "lh-tree-marker lh-right";
+    h.append(e.createElement("span", p), e.createElement("span", "lh-tree-marker lh-right"), e.createElement("span", m));
+    let b = n.renderTextURL(l), w = e.find(".lh-crc-node__tree-value", r);
     if (w.append(b), !t.hasChildren || s) {
       let f = e.createElement("span", "lh-crc-node__chain-duration");
-      f.textContent = " - " + m.i18n.formatMilliseconds(i) + ", ";
+      f.textContent = " - " + g.i18n.formatMilliseconds(i) + ", ";
       let u = e.createElement("span", "lh-crc-node__chain-size");
-      u.textContent = m.i18n.formatBytesToKiB(a, 0.01), w.append(f, u);
+      u.textContent = g.i18n.formatBytesToKiB(a, 0.01), w.append(f, u);
     }
-    return o;
+    return r;
   }
-  static buildTree(e, t, n, o) {
-    if (n.append(X.createChainNode(e, t, o)), t.node.children) for (let i of Object.keys(t.node.children)) {
+  static buildTree(e, t, n, r) {
+    if (n.append(X.createChainNode(e, t, r)), t.node.children) for (let i of Object.keys(t.node.children)) {
       let a = X.createSegment(t.node.children, i, t.treeMarkers, t.isLastChild);
-      X.buildTree(e, a, n, o);
+      X.buildTree(e, a, n, r);
     }
   }
   static render(e, t, n) {
-    let o = e.createComponent("crc"), i = e.find(".lh-crc", o);
-    e.find(".lh-crc-initial-nav", o).textContent = m.strings.crcInitialNavigation, e.find(".lh-crc__longest_duration_label", o).textContent = m.strings.crcLongestDurationLabel, e.find(".lh-crc__longest_duration", o).textContent = m.i18n.formatMilliseconds(t.longestChain.duration);
+    let r = e.createComponent("crc"), i = e.find(".lh-crc", r);
+    e.find(".lh-crc-initial-nav", r).textContent = g.strings.crcInitialNavigation, e.find(".lh-crc__longest_duration_label", r).textContent = g.strings.crcLongestDurationLabel, e.find(".lh-crc__longest_duration", r).textContent = g.i18n.formatMilliseconds(t.longestChain.duration);
     let a = t.chains;
     for (let l of Object.keys(a)) {
       let s = X.createSegment(a, l);
       X.buildTree(e, s, i, n);
     }
-    return e.find(".lh-crc-container", o);
+    return e.find(".lh-crc-container", r);
   }
 };
 var X = Y;
-function dt(r5, e) {
-  return e.left <= r5.width && 0 <= e.right && e.top <= r5.height && 0 <= e.bottom;
+function dt(o5, e) {
+  return e.left <= o5.width && 0 <= e.right && e.top <= o5.height && 0 <= e.bottom;
 }
-function xe(r5, e, t) {
-  return r5 < e ? e : r5 > t ? t : r5;
+function xe(o5, e, t) {
+  return o5 < e ? e : o5 > t ? t : o5;
 }
-function ht(r5) {
-  return { x: r5.left + r5.width / 2, y: r5.top + r5.height / 2 };
+function ht(o5) {
+  return { x: o5.left + o5.width / 2, y: o5.top + o5.height / 2 };
 }
-var G = class r4 {
+var G = class o4 {
   static getScreenshotPositions(e, t, n) {
-    let o = ht(e), i = xe(o.x - t.width / 2, 0, n.width - t.width), a = xe(o.y - t.height / 2, 0, n.height - t.height);
+    let r = ht(e), i = xe(r.x - t.width / 2, 0, n.width - t.width), a = xe(r.y - t.height / 2, 0, n.height - t.height);
     return { screenshot: { left: i, top: a }, clip: { left: e.left - i, top: e.top - a } };
   }
-  static renderClipPathInScreenshot(e, t, n, o, i) {
-    let a = e.find("clipPath", t), l = `clip-${m.getUniqueSuffix()}`;
+  static renderClipPathInScreenshot(e, t, n, r, i) {
+    let a = e.find("clipPath", t), l = `clip-${g.getUniqueSuffix()}`;
     a.id = l, t.style.clipPath = `url(#${l})`;
-    let s = n.top / i.height, c = s + o.height / i.height, d = n.left / i.width, h = d + o.width / i.width, p = [`0,0             1,0            1,${s}          0,${s}`, `0,${c}     1,${c}    1,1               0,1`, `0,${s}        ${d},${s} ${d},${c} 0,${c}`, `${h},${s} 1,${s}       1,${c}       ${h},${c}`];
-    for (let g of p) {
+    let s = n.top / i.height, c = s + r.height / i.height, d = n.left / i.width, h = d + r.width / i.width, p = [`0,0             1,0            1,${s}          0,${s}`, `0,${c}     1,${c}    1,1               0,1`, `0,${s}        ${d},${s} ${d},${c} 0,${c}`, `${h},${s} 1,${s}       1,${c}       ${h},${c}`];
+    for (let m of p) {
       let b = e.createElementNS("http://www.w3.org/2000/svg", "polygon");
-      b.setAttribute("points", g), a.append(b);
+      b.setAttribute("points", m), a.append(b);
     }
   }
   static installFullPageScreenshot(e, t) {
-    e.style.setProperty("--element-screenshot-url", `url('${t.data}')`);
+    !t.data.startsWith("data:image/") || /['"()\\\r\n]/.test(t.data) || e.style.setProperty("--element-screenshot-url", `url('${t.data}')`);
   }
   static installOverlayFeature(e) {
-    let { dom: t, rootEl: n, overlayContainerEl: o, fullPageScreenshot: i } = e, a = "lh-screenshot-overlay--enabled";
+    let { dom: t, rootEl: n, overlayContainerEl: r, fullPageScreenshot: i } = e, a = "lh-screenshot-overlay--enabled";
     n.classList.contains(a) || (n.classList.add(a), n.addEventListener("click", (l) => {
       let s = l.target;
       if (!s) return;
       let c = s.closest(".lh-node > .lh-element-screenshot");
       if (!c) return;
       let d = t.createElement("div", "lh-element-screenshot__overlay");
-      o.append(d);
-      let h = { width: d.clientWidth * 0.95, height: d.clientHeight * 0.8 }, p = { width: Number(c.dataset.rectWidth), height: Number(c.dataset.rectHeight), left: Number(c.dataset.rectLeft), right: Number(c.dataset.rectLeft) + Number(c.dataset.rectWidth), top: Number(c.dataset.rectTop), bottom: Number(c.dataset.rectTop) + Number(c.dataset.rectHeight) }, g = r4.render(t, i.screenshot, p, h);
-      if (!g) {
+      r.append(d);
+      let h = { width: d.clientWidth * 0.95, height: d.clientHeight * 0.8 }, p = { width: Number(c.dataset.rectWidth), height: Number(c.dataset.rectHeight), left: Number(c.dataset.rectLeft), right: Number(c.dataset.rectLeft) + Number(c.dataset.rectWidth), top: Number(c.dataset.rectTop), bottom: Number(c.dataset.rectTop) + Number(c.dataset.rectHeight) }, m = o4.render(t, i.screenshot, p, h);
+      if (!m) {
         d.remove();
         return;
       }
-      d.append(g), d.addEventListener("click", () => d.remove());
+      d.append(m), d.addEventListener("click", () => d.remove());
     }));
   }
   static _computeZoomFactor(e, t) {
-    let o = { x: t.width / e.width, y: t.height / e.height }, i = 0.75 * Math.min(o.x, o.y);
+    let r = { x: t.width / e.width, y: t.height / e.height }, i = 0.75 * Math.min(r.x, r.y);
     return Math.min(1, i);
   }
-  static render(e, t, n, o) {
+  static render(e, t, n, r) {
     if (!dt(t, n)) return null;
     let i = e.createComponent("elementScreenshot"), a = e.find("div.lh-element-screenshot", i);
     a.dataset.rectWidth = n.width.toString(), a.dataset.rectHeight = n.height.toString(), a.dataset.rectLeft = n.left.toString(), a.dataset.rectTop = n.top.toString();
-    let l = this._computeZoomFactor(n, o), s = { width: o.width / l, height: o.height / l };
+    let l = this._computeZoomFactor(n, r), s = { width: r.width / l, height: r.height / l };
     s.width = Math.min(t.width, s.width), s.height = Math.min(t.height, s.height);
-    let c = { width: s.width * l, height: s.height * l }, d = r4.getScreenshotPositions(n, s, { width: t.width, height: t.height }), h = e.find("div.lh-element-screenshot__image", a);
+    let c = { width: s.width * l, height: s.height * l }, d = o4.getScreenshotPositions(n, s, { width: t.width, height: t.height }), h = e.find("div.lh-element-screenshot__image", a);
     h.style.width = c.width + "px", h.style.height = c.height + "px", h.style.backgroundPositionY = -(d.screenshot.top * l) + "px", h.style.backgroundPositionX = -(d.screenshot.left * l) + "px", h.style.backgroundSize = `${t.width * l}px ${t.height * l}px`;
     let p = e.find("div.lh-element-screenshot__element-marker", a);
     p.style.width = n.width * l + "px", p.style.height = n.height * l + "px", p.style.left = d.clip.left * l + "px", p.style.top = d.clip.top * l + "px";
-    let g = e.find("div.lh-element-screenshot__mask", a);
-    return g.style.width = c.width + "px", g.style.height = c.height + "px", r4.renderClipPathInScreenshot(e, g, d.clip, n, s), a;
+    let m = e.find("div.lh-element-screenshot__mask", a);
+    return m.style.width = c.width + "px", m.style.height = c.height + "px", o4.renderClipPathInScreenshot(e, m, d.clip, n, s), a;
   }
 };
 var pt = ["http://", "https://", "data:"];
@@ -3807,24 +3819,24 @@ var ee = class {
     }
   }
   _renderBytes(e) {
-    let t = m.i18n.formatBytesToKiB(e.value, e.granularity || 0.1), n = this._renderText(t);
-    return n.title = m.i18n.formatBytes(e.value), n;
+    let t = g.i18n.formatBytesToKiB(e.value, e.granularity || 0.1), n = this._renderText(t);
+    return n.title = g.i18n.formatBytes(e.value), n;
   }
   _renderMilliseconds(e) {
     let t;
-    return e.displayUnit === "duration" ? t = m.i18n.formatDuration(e.value) : t = m.i18n.formatMilliseconds(e.value, e.granularity || 10), this._renderText(t);
+    return e.displayUnit === "duration" ? t = g.i18n.formatDuration(e.value) : t = g.i18n.formatMilliseconds(e.value, e.granularity || 10), this._renderText(t);
   }
   renderTextURL(e) {
-    let t = e, n, o, i;
+    let t = e, n, r, i;
     try {
       let l = E.parseURL(t);
-      n = l.file === "/" ? l.origin : l.file, o = l.file === "/" || l.hostname === "" ? "" : `(${l.hostname})`, i = t;
+      n = l.file === "/" ? l.origin : l.file, r = l.file === "/" || l.hostname === "" ? "" : `(${l.hostname})`, i = t;
     } catch {
       n = t;
     }
     let a = this._dom.createElement("div", "lh-text__url");
-    if (a.append(this._createLink({ text: n, url: t })), o) {
-      let l = this._renderText(o);
+    if (a.append(this._createLink({ text: n, url: t })), r) {
+      let l = this._renderText(r);
       l.classList.add("lh-text__url-host"), a.append(l);
     }
     return i && (a.title = t, a.dataset.url = t), a;
@@ -3849,12 +3861,12 @@ var ee = class {
     return t.classList.add(`lh-baseline-status--${n}`), t.textContent = String(e.displayString), t;
   }
   _renderNumeric(e) {
-    let t = m.i18n.formatNumber(e.value, e.granularity || 0.1), n = this._dom.createElement("div", "lh-numeric");
+    let t = g.i18n.formatNumber(e.value, e.granularity || 0.1), n = this._dom.createElement("div", "lh-numeric");
     return n.textContent = t, n;
   }
   _renderThumbnail(e) {
     let t = this._dom.createElement("img", "lh-thumbnail"), n = e;
-    return t.src = n, t.title = n, t.alt = "", t;
+    return this._dom.safelySetImageSrc(t, n), t.title = n, t.alt = "", t;
   }
   _renderUnknown(e, t) {
     console.error(`Unknown details type: ${e}`, t);
@@ -3914,7 +3926,7 @@ var ee = class {
       }
       case "url": {
         let n = String(e);
-        return pt.some((o) => n.startsWith(o)) ? this.renderTextURL(n) : this._renderCode(n);
+        return pt.some((r) => n.startsWith(r)) ? this.renderTextURL(n) : this._renderCode(n);
       }
       default:
         return this._renderUnknown(t.valueType, e);
@@ -3925,14 +3937,14 @@ var ee = class {
   }
   _renderTableRow(e, t) {
     let n = this._dom.createElement("tr");
-    for (let o of t) {
-      if (!o || !o.key) {
+    for (let r of t) {
+      if (!r || !r.key) {
         this._dom.createChildOf(n, "td", "lh-table-column--empty");
         continue;
       }
-      let i = e[o.key], a;
-      if (i != null && (a = this._renderTableValue(i, o)), a) {
-        let l = `lh-table-column--${o.valueType}`;
+      let i = e[r.key], a;
+      if (i != null && (a = this._renderTableValue(i, r)), a) {
+        let l = `lh-table-column--${r.valueType}`;
         this._dom.createChildOf(n, "td", l).append(a);
       } else this._dom.createChildOf(n, "td", "lh-table-column--empty");
     }
@@ -3941,10 +3953,10 @@ var ee = class {
   _renderTableRowsFromItem(e, t) {
     let n = this._dom.createFragment();
     if (n.append(this._renderTableRow(e, t)), !e.subItems) return n;
-    let o = t.map(this._getDerivedSubItemsHeading);
-    if (!o.some(Boolean)) return n;
+    let r = t.map(this._getDerivedSubItemsHeading);
+    if (!r.some(Boolean)) return n;
     for (let i of e.subItems.items) {
-      let a = this._renderTableRow(i, o);
+      let a = this._renderTableRow(i, r);
       a.classList.add("lh-sub-item-row"), n.append(a);
     }
     return n;
@@ -3954,28 +3966,28 @@ var ee = class {
     if (!t) return;
     let n = this._entities?.find((i) => i.name === t);
     if (!n) return;
-    let o = this._dom.find("td", e);
+    let r = this._dom.find("td", e);
     if (n.category) {
       let i = this._dom.createElement("span");
-      i.classList.add("lh-audit__adorn"), i.textContent = n.category, o.append(" ", i);
+      i.classList.add("lh-audit__adorn"), i.textContent = n.category, r.append(" ", i);
     }
     if (n.isFirstParty) {
       let i = this._dom.createElement("span");
-      i.classList.add("lh-audit__adorn", "lh-audit__adorn1p"), i.textContent = m.strings.firstPartyChipLabel, o.append(" ", i);
+      i.classList.add("lh-audit__adorn", "lh-audit__adorn1p"), i.textContent = g.strings.firstPartyChipLabel, r.append(" ", i);
     }
     if (n.homepage) {
       let i = this._dom.createElement("a");
-      this._dom.safelySetHref(i, n.homepage), i.href && (i.target = "_blank", i.title = m.strings.openInANewTabTooltip, i.classList.add("lh-report-icon--external"), o.append(" ", i));
+      this._dom.safelySetHref(i, n.homepage), i.href && (i.target = "_blank", i.rel = "noopener", i.title = g.strings.openInANewTabTooltip, i.classList.add("lh-report-icon--external"), r.append(" ", i));
     }
   }
   _renderEntityGroupRow(e, t) {
     let n = { ...t[0] };
     n.valueType = "text";
-    let o = [n, ...t.slice(1)], i = this._dom.createFragment();
-    return i.append(this._renderTableRow(e, o)), this._dom.find("tr", i).classList.add("lh-row--group"), i;
+    let r = [n, ...t.slice(1)], i = this._dom.createFragment();
+    return i.append(this._renderTableRow(e, r)), this._dom.find("tr", i).classList.add("lh-row--group"), i;
   }
   _getEntityGroupItems(e) {
-    let { items: t, headings: n, sortedBy: o } = e;
+    let { items: t, headings: n, sortedBy: r } = e;
     if (!t.length || e.isEntityGrouped || !t.some((d) => d.entity)) return [];
     let i = new Set(e.skipSumming || []), a = [];
     for (let d of n) !d.key || i.has(d.key) || ut.includes(d.valueType) && a.push(d.key);
@@ -3983,19 +3995,19 @@ var ee = class {
     if (!l) return [];
     let s = /* @__PURE__ */ new Map();
     for (let d of t) {
-      let h = typeof d.entity == "string" ? d.entity : void 0, p = s.get(h) || { [l]: h || m.strings.unattributable, entity: h };
-      for (let g of a) p[g] = Number(p[g] || 0) + Number(d[g] || 0);
+      let h = typeof d.entity == "string" ? d.entity : void 0, p = s.get(h) || { [l]: h || g.strings.unattributable, entity: h };
+      for (let m of a) p[m] = Number(p[m] || 0) + Number(d[m] || 0);
       s.set(h, p);
     }
     let c = [...s.values()];
-    return o && c.sort(k.getTableItemSortComparator(o)), c;
+    return r && c.sort(k.getTableItemSortComparator(r)), c;
   }
   _renderTable(e) {
     if (!e.items.length) return this._dom.createElement("span");
-    let t = this._dom.createElement("table", "lh-table"), n = this._dom.createChildOf(t, "thead"), o = this._dom.createChildOf(n, "tr");
+    let t = this._dom.createElement("table", "lh-table"), n = this._dom.createChildOf(t, "thead"), r = this._dom.createChildOf(n, "tr");
     for (let l of e.headings) {
       let c = `lh-table-column--${l.valueType || "text"}`, d = this._dom.createElement("div", "lh-text");
-      d.textContent = l.label, this._dom.createChildOf(o, "th", c).append(d);
+      d.textContent = l.label, this._dom.createChildOf(r, "th", c).append(d);
     }
     let i = this._getEntityGroupItems(e), a = this._dom.createChildOf(t, "tbody");
     if (i.length) for (let l of i) {
@@ -4028,15 +4040,15 @@ var ee = class {
         a && i.append(a), t.append(i);
         return;
       }
-      let o = this._renderListValue(n);
-      o && t.append(o);
+      let r = this._renderListValue(n);
+      r && t.append(r);
     }), t;
   }
   _renderChecklist(e) {
     let t = this._dom.createElement("ul", "lh-checklist");
     return Object.values(e.items).forEach((n) => {
-      let o = this._dom.createChildOf(t, "li", "lh-checklist-item"), i = n.value ? "lh-report-plain-icon--checklist-pass" : "lh-report-plain-icon--checklist-fail";
-      this._dom.createChildOf(o, "span", `lh-report-plain-icon ${i}`).textContent = n.label;
+      let r = this._dom.createChildOf(t, "li", "lh-checklist-item"), i = n.value ? "lh-report-plain-icon--checklist-pass" : "lh-report-plain-icon--checklist-fail";
+      this._dom.createChildOf(r, "span", `lh-report-plain-icon ${i}`).textContent = n.label;
     }), t;
   }
   renderNode(e) {
@@ -4052,26 +4064,26 @@ var ee = class {
     if (e.selector && (t.title = e.selector), e.path && t.setAttribute("data-path", e.path), e.selector && t.setAttribute("data-selector", e.selector), e.snippet && t.setAttribute("data-snippet", e.snippet), !this._fullPageScreenshot) return t;
     let n = e.lhId && this._fullPageScreenshot.nodes[e.lhId];
     if (!n || n.width === 0 || n.height === 0) return t;
-    let o = { width: 147, height: 100 }, i = G.render(this._dom, this._fullPageScreenshot.screenshot, n, o);
+    let r = { width: 147, height: 100 }, i = G.render(this._dom, this._fullPageScreenshot.screenshot, n, r);
     return i && t.prepend(i), t;
   }
   renderSourceLocation(e) {
     if (!e.url) return null;
     let t = `${e.url}:${e.line + 1}:${e.column}`, n;
     e.original && (n = `${e.original.file || "<unmapped>"}:${e.original.line + 1}:${e.original.column}`);
-    let o;
-    if (e.urlProvider === "network" && n) o = this._createLink({ url: e.url, text: n }), o.title = `maps to generated location ${t}`;
-    else if (e.urlProvider === "network" && !n) o = this.renderTextURL(e.url), this._dom.find(".lh-link", o).textContent += `:${e.line + 1}:${e.column}`;
-    else if (e.urlProvider === "comment" && n) o = this._renderText(`${n} (from source map)`), o.title = `${t} (from sourceURL)`;
-    else if (e.urlProvider === "comment" && !n) o = this._renderText(`${t} (from sourceURL)`);
+    let r;
+    if (e.urlProvider === "network" && n) r = this._createLink({ url: e.url, text: n }), r.title = `maps to generated location ${t}`;
+    else if (e.urlProvider === "network" && !n) r = this.renderTextURL(e.url), this._dom.find(".lh-link", r).textContent += `:${e.line + 1}:${e.column}`;
+    else if (e.urlProvider === "comment" && n) r = this._renderText(`${n} (from source map)`), r.title = `${t} (from sourceURL)`;
+    else if (e.urlProvider === "comment" && !n) r = this._renderText(`${t} (from sourceURL)`);
     else return null;
-    return o.classList.add("lh-source-location"), o.setAttribute("data-source-url", e.url), o.setAttribute("data-source-line", String(e.line)), o.setAttribute("data-source-column", String(e.column)), o;
+    return r.classList.add("lh-source-location"), r.setAttribute("data-source-url", e.url), r.setAttribute("data-source-line", String(e.line)), r.setAttribute("data-source-column", String(e.column)), r;
   }
   _renderFilmstrip(e) {
     let t = this._dom.createElement("div", "lh-filmstrip");
     for (let n of e.items) {
-      let o = this._dom.createChildOf(t, "div", "lh-filmstrip__frame"), i = this._dom.createChildOf(o, "img", "lh-filmstrip__thumbnail");
-      i.src = n.data, i.alt = "Screenshot";
+      let r = this._dom.createChildOf(t, "div", "lh-filmstrip__frame"), i = this._dom.createChildOf(r, "img", "lh-filmstrip__thumbnail");
+      this._dom.safelySetImageSrc(i, n.data), i.alt = "Screenshot";
     }
     return t;
   }
@@ -4089,8 +4101,8 @@ var re = class {
       let a = -Math.log10(t);
       Number.isInteger(a) || (console.warn(`granularity of ${t} is invalid. Using 1 instead`), t = 1), t < 1 && (n = { ...n }, n.minimumFractionDigits = n.maximumFractionDigits = Math.ceil(a)), e = Math.round(e / t) * t, Object.is(e, -0) && (e = 0);
     } else Math.abs(e) < 5e-4 && (e = 0);
-    let o, i = [n.minimumFractionDigits, n.maximumFractionDigits, n.style, n.unit, n.unitDisplay, this._locale].join("");
-    return o = this._cachedNumberFormatters.get(i), o || (o = new Intl.NumberFormat(this._locale, n), this._cachedNumberFormatters.set(i, o)), o.format(e).replace(" ", "\xA0");
+    let r, i = [n.minimumFractionDigits, n.maximumFractionDigits, n.style, n.unit, n.unitDisplay, this._locale].join("");
+    return r = this._cachedNumberFormatters.get(i), r || (r = new Intl.NumberFormat(this._locale, n), this._cachedNumberFormatters.set(i, r)), r.format(e).replace(" ", "\xA0");
   }
   formatNumber(e, t) {
     return this._formatNumberWithGranularity(e, t);
@@ -4134,9 +4146,9 @@ var re = class {
   formatDuration(e) {
     let t = e / 1e3;
     if (Math.round(t) === 0) return "None";
-    let n = [], o = { day: 3600 * 24, hour: 3600, minute: 60, second: 1 };
-    return Object.keys(o).forEach((i) => {
-      let a = o[i], l = Math.floor(t / a);
+    let n = [], r = { day: 3600 * 24, hour: 3600, minute: 60, second: 1 };
+    return Object.keys(r).forEach((i) => {
+      let a = r[i], l = Math.floor(t / a);
       if (l > 0) {
         t -= l * a;
         let s = this._formatNumberWithGranularity(l, 1, { style: "unit", unit: i, unitDisplay: "narrow" });
@@ -4145,36 +4157,36 @@ var re = class {
     }), n.join(" ");
   }
 };
-function ke(r5) {
-  let e = r5.createComponent("explodeyGauge");
-  return r5.find(".lh-exp-gauge-component", e);
+function ke(o5) {
+  let e = o5.createComponent("explodeyGauge");
+  return o5.find(".lh-exp-gauge-component", e);
 }
-function Ee(r5, e, t) {
-  let n = r5.find("div.lh-exp-gauge__wrapper", e);
-  n.className = "", n.classList.add("lh-exp-gauge__wrapper", `lh-exp-gauge__wrapper--${k.calculateRating(t.score)}`), mt(r5, n, t);
+function Ee(o5, e, t) {
+  let n = o5.find("div.lh-exp-gauge__wrapper", e);
+  n.className = "", n.classList.add("lh-exp-gauge__wrapper", `lh-exp-gauge__wrapper--${k.calculateRating(t.score)}`), mt(o5, n, t);
 }
-function gt(r5, e, t) {
-  t = t || r5 / 32;
-  let n = r5 / t, o = 0.5 * t, i = n + o + t, a = 2 * Math.PI * n, l = Math.acos(1 - 0.5 * Math.pow(0.5 * t / n, 2)) * n, s = 2 * Math.PI * i, c = Math.acos(1 - 0.5 * Math.pow(0.5 * t / i, 2)) * i;
+function gt(o5, e, t) {
+  t = t || o5 / 32;
+  let n = o5 / t, r = 0.5 * t, i = n + r + t, a = 2 * Math.PI * n, l = Math.acos(1 - 0.5 * Math.pow(0.5 * t / n, 2)) * n, s = 2 * Math.PI * i, c = Math.acos(1 - 0.5 * Math.pow(0.5 * t / i, 2)) * i;
   return { radiusInner: n, radiusOuter: i, circumferenceInner: a, circumferenceOuter: s, getArcLength: () => Math.max(0, Number(e * a)), getMetricArcLength: (d, h = false) => {
     let p = h ? 0 : 2 * c;
-    return Math.max(0, Number(d * s - o - p));
-  }, endDiffInner: l, endDiffOuter: c, strokeWidth: t, strokeGap: o };
+    return Math.max(0, Number(d * s - r - p));
+  }, endDiffInner: l, endDiffOuter: c, strokeWidth: t, strokeGap: r };
 }
-function mt(r5, e, t) {
-  let i = Number(t.score), { radiusInner: a, radiusOuter: l, circumferenceInner: s, circumferenceOuter: c, getArcLength: d, getMetricArcLength: h, endDiffInner: p, endDiffOuter: g, strokeWidth: b, strokeGap: w } = gt(128, i), f = r5.find("svg.lh-exp-gauge", e);
-  r5.find(".lh-exp-gauge__label", f).textContent = t.title, f.setAttribute("viewBox", [-64, -64 / 2, 128, 128 / 2].join(" ")), f.style.setProperty("--stroke-width", `${b}px`), f.style.setProperty("--circle-meas", (2 * Math.PI).toFixed(4));
-  let u = r5.find("g.lh-exp-gauge__outer", e), v = r5.find("g.lh-exp-gauge__inner", e), _ = r5.find("circle.lh-cover", u), x = r5.find("circle.lh-exp-gauge__arc", v), L = r5.find("text.lh-exp-gauge__percentage", v);
-  u.style.setProperty("--scale-initial", String(a / l)), u.style.setProperty("--radius", `${l}px`), _.style.setProperty("--radius", `${0.5 * (a + l)}px`), _.setAttribute("stroke-width", String(w)), f.style.setProperty("--radius", `${a}px`), x.setAttribute("stroke-dasharray", `${d()} ${(s - d()).toFixed(4)}`), x.setAttribute("stroke-dashoffset", String(0.25 * s - p)), L.textContent = Math.round(i * 100).toString();
-  let S = l + b, A = l - b, z = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), V = z.reduce((y, C) => y += C.weight, 0), N = 0.25 * c - g - 0.5 * w, I = -0.5 * Math.PI;
-  u.querySelectorAll(".metric").forEach((y) => {
-    z.map((R) => `metric--${R.id}`).find((R) => y.classList.contains(R)) || y.remove();
-  }), z.forEach((y, C) => {
-    let M = y.acronym ?? y.id, R = !u.querySelector(`.metric--${M}`), T = r5.maybeFind(`g.metric--${M}`, u) || r5.createSVGElement("g"), K = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge--faded`, u) || r5.createSVGElement("circle"), q = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge--miniarc`, u) || r5.createSVGElement("circle"), U = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge-hovertarget`, u) || r5.createSVGElement("circle"), D = r5.maybeFind(`.metric--${M} text.metric__label`, u) || r5.createSVGElement("text"), F = r5.maybeFind(`.metric--${M} text.metric__value`, u) || r5.createSVGElement("text");
+function mt(o5, e, t) {
+  let i = Number(t.score), { radiusInner: a, radiusOuter: l, circumferenceInner: s, circumferenceOuter: c, getArcLength: d, getMetricArcLength: h, endDiffInner: p, endDiffOuter: m, strokeWidth: b, strokeGap: w } = gt(128, i), f = o5.find("svg.lh-exp-gauge", e);
+  o5.find(".lh-exp-gauge__label", f).textContent = t.title, f.setAttribute("viewBox", [-64, -64 / 2, 128, 128 / 2].join(" ")), f.style.setProperty("--stroke-width", `${b}px`), f.style.setProperty("--circle-meas", (2 * Math.PI).toFixed(4));
+  let u = o5.find("g.lh-exp-gauge__outer", e), v = o5.find("g.lh-exp-gauge__inner", e), _ = o5.find("circle.lh-cover", u), y = o5.find("circle.lh-exp-gauge__arc", v), S = o5.find("text.lh-exp-gauge__percentage", v);
+  u.style.setProperty("--scale-initial", String(a / l)), u.style.setProperty("--radius", `${l}px`), _.style.setProperty("--radius", `${0.5 * (a + l)}px`), _.setAttribute("stroke-width", String(w)), f.style.setProperty("--radius", `${a}px`), y.setAttribute("stroke-dasharray", `${d()} ${(s - d()).toFixed(4)}`), y.setAttribute("stroke-dashoffset", String(0.25 * s - p)), S.textContent = Math.round(i * 100).toString();
+  let C = l + b, z = l - b, A = t.auditRefs.filter((x) => x.group === "metrics" && x.weight), V = A.reduce((x, L) => x += L.weight, 0), I = 0.25 * c - m - 0.5 * w, N = -0.5 * Math.PI;
+  u.querySelectorAll(".metric").forEach((x) => {
+    A.map((R) => `metric--${R.id}`).find((R) => x.classList.contains(R)) || x.remove();
+  }), A.forEach((x, L) => {
+    let M = x.acronym ?? x.id, R = !u.querySelector(`.metric--${M}`), T = o5.maybeFind(`g.metric--${M}`, u) || o5.createSVGElement("g"), K = o5.maybeFind(`.metric--${M} circle.lh-exp-gauge--faded`, u) || o5.createSVGElement("circle"), q = o5.maybeFind(`.metric--${M} circle.lh-exp-gauge--miniarc`, u) || o5.createSVGElement("circle"), U = o5.maybeFind(`.metric--${M} circle.lh-exp-gauge-hovertarget`, u) || o5.createSVGElement("circle"), D = o5.maybeFind(`.metric--${M} text.metric__label`, u) || o5.createSVGElement("text"), F = o5.maybeFind(`.metric--${M} text.metric__value`, u) || o5.createSVGElement("text");
     T.classList.add("metric", `metric--${M}`), K.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--faded"), q.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--miniarc"), U.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget");
-    let j = y.weight / V, ce = h(j), de = y.result.score ? y.result.score * j : 0, he = h(de), Fe = j * c, pe = h(j, true), ue = k.calculateRating(y.result.score, y.result.scoreDisplayMode);
-    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${N}`), T.style.setProperty("--i", C.toString()), K.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), q.style.setProperty("--metric-array", `${he} ${c - he}`), U.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), D.classList.add("metric__label"), F.classList.add("metric__value"), D.textContent = M, F.textContent = `+${Math.round(de * 100)}`;
-    let ge = I + j * Math.PI, Z = Math.cos(ge), J = Math.sin(ge);
+    let j = x.weight / V, ce = h(j), de = x.result.score ? x.result.score * j : 0, he = h(de), Fe = j * c, pe = h(j, true), ue = k.calculateRating(x.result.score, x.result.scoreDisplayMode);
+    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${I}`), T.style.setProperty("--i", L.toString()), K.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), q.style.setProperty("--metric-array", `${he} ${c - he}`), U.setAttribute("stroke-dasharray", `${pe} ${c - pe - m}`), D.classList.add("metric__label"), F.classList.add("metric__value"), D.textContent = M, F.textContent = `+${Math.round(de * 100)}`;
+    let ge = N + j * Math.PI, Z = Math.cos(ge), J = Math.sin(ge);
     switch (true) {
       case Z > 0:
         F.setAttribute("text-anchor", "end");
@@ -4197,62 +4209,62 @@ function mt(r5, e, t) {
         D.setAttribute("dominant-baseline", "middle"), F.setAttribute("dominant-baseline", "middle");
         break;
     }
-    D.setAttribute("x", (S * Z).toFixed(2)), D.setAttribute("y", (S * J).toFixed(2)), F.setAttribute("x", (A * Z).toFixed(2)), F.setAttribute("y", (A * J).toFixed(2)), R && (T.appendChild(K), T.appendChild(q), T.appendChild(U), T.appendChild(D), T.appendChild(F), u.appendChild(T)), N -= Fe, I += j * 2 * Math.PI;
+    D.setAttribute("x", (C * Z).toFixed(2)), D.setAttribute("y", (C * J).toFixed(2)), F.setAttribute("x", (z * Z).toFixed(2)), F.setAttribute("y", (z * J).toFixed(2)), R && (T.appendChild(K), T.appendChild(q), T.appendChild(U), T.appendChild(D), T.appendChild(F), u.appendChild(T)), I -= Fe, N += j * 2 * Math.PI;
   });
-  let P = u.querySelector(".lh-exp-gauge-underhovertarget") || r5.createSVGElement("circle");
+  let P = u.querySelector(".lh-exp-gauge-underhovertarget") || o5.createSVGElement("circle");
   P.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget", "lh-exp-gauge-underhovertarget");
   let H = h(1, true);
-  if (P.setAttribute("stroke-dasharray", `${H} ${c - H - g}`), P.isConnected || u.prepend(P), f.dataset.listenersSetup) return;
-  f.dataset.listenersSetup = true, Te(f), f.addEventListener("pointerover", (y) => {
-    if (y.target === f && f.classList.contains("state--expanded")) {
-      f.classList.remove("state--expanded"), f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), r5.find(".metric--highlight", f).classList.remove("metric--highlight"));
+  if (P.setAttribute("stroke-dasharray", `${H} ${c - H - m}`), P.isConnected || u.prepend(P), f.dataset.listenersSetup) return;
+  f.dataset.listenersSetup = true, Te(f), f.addEventListener("pointerover", (x) => {
+    if (x.target === f && f.classList.contains("state--expanded")) {
+      f.classList.remove("state--expanded"), f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), o5.find(".metric--highlight", f).classList.remove("metric--highlight"));
       return;
     }
-    if (!(y.target instanceof Element)) return;
-    let C = y.target.parentNode;
-    if (C instanceof SVGElement) {
-      if (C && C === v) {
-        f.classList.contains("state--expanded") ? f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), r5.find(".metric--highlight", f).classList.remove("metric--highlight")) : f.classList.add("state--expanded");
+    if (!(x.target instanceof Element)) return;
+    let L = x.target.parentNode;
+    if (L instanceof SVGElement) {
+      if (L && L === v) {
+        f.classList.contains("state--expanded") ? f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), o5.find(".metric--highlight", f).classList.remove("metric--highlight")) : f.classList.add("state--expanded");
         return;
       }
-      if (C && C.classList && C.classList.contains("metric")) {
-        let M = C.style.getPropertyValue("--metric-rating");
-        if (e.style.setProperty("--color-highlight", `var(--color-${M}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), C.classList.add("metric--highlight");
+      if (L && L.classList && L.classList.contains("metric")) {
+        let M = L.style.getPropertyValue("--metric-rating");
+        if (e.style.setProperty("--color-highlight", `var(--color-${M}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), L.classList.add("metric--highlight");
         else {
-          let R = r5.find(".metric--highlight", f);
-          C !== R && (R.classList.remove("metric--highlight"), C.classList.add("metric--highlight"));
+          let R = o5.find(".metric--highlight", f);
+          L !== R && (R.classList.remove("metric--highlight"), L.classList.add("metric--highlight"));
         }
       }
     }
   }), f.addEventListener("mouseleave", () => {
     f.classList.remove("state--highlight"), f.querySelector(".metric--highlight")?.classList.remove("metric--highlight");
   });
-  async function Te(y) {
-    if (await new Promise((U) => setTimeout(U, 1e3)), y.classList.contains("state--expanded")) return;
-    let C = r5.find(".lh-exp-gauge__inner", y), M = Array.from(C.querySelectorAll("circle")).map((U) => {
+  async function Te(x) {
+    if (await new Promise((U) => setTimeout(U, 1e3)), x.classList.contains("state--expanded")) return;
+    let L = o5.find(".lh-exp-gauge__inner", x), M = Array.from(L.querySelectorAll("circle")).map((U) => {
       let D = `uniq-${Math.random()}`;
       U.setAttribute("id", D);
-      let F = r5.createSVGElement("use");
-      return F.setAttribute("href", `#${D}`), y.appendChild(F), F;
+      let F = o5.createSVGElement("use");
+      return F.setAttribute("href", `#${D}`), x.appendChild(F), F;
     }), R = 2.5;
-    y.style.setProperty("--peek-dur", `${R}s`), y.classList.add("state--peek", "state--expanded");
+    x.style.setProperty("--peek-dur", `${R}s`), x.classList.add("state--peek", "state--expanded");
     let T = () => {
-      y.classList.remove("state--peek", "state--expanded"), M.forEach((U) => U.remove());
+      x.classList.remove("state--peek", "state--expanded"), M.forEach((U) => U.remove());
     }, K = setTimeout(() => {
-      y.removeEventListener("mouseenter", q), T();
+      x.removeEventListener("mouseenter", q), T();
     }, R * 1e3 * 1.5);
     function q() {
       clearTimeout(K), T();
     }
-    y.addEventListener("mouseenter", q, { once: true });
+    x.addEventListener("mouseenter", q, { once: true });
   }
 }
 var oe = class extends B {
   _renderMetric(e) {
     let t = this.dom.createComponent("metric"), n = this.dom.find(".lh-metric", t);
     n.id = e.result.id;
-    let o = k.calculateRating(e.result.score, e.result.scoreDisplayMode);
-    n.classList.add(`lh-metric--${o}`);
+    let r = k.calculateRating(e.result.score, e.result.scoreDisplayMode);
+    n.classList.add(`lh-metric--${r}`);
     let i = this.dom.find(".lh-metric__title", t);
     i.textContent = e.result.title;
     let a = this.dom.find(".lh-metric__value", t);
@@ -4266,53 +4278,53 @@ var oe = class extends B {
     return n;
   }
   _getScoringCalculatorHref(e) {
-    let t = e.filter((h) => h.group === "metrics"), n = e.find((h) => h.id === "interactive"), o = e.find((h) => h.id === "first-cpu-idle"), i = e.find((h) => h.id === "first-meaningful-paint");
-    n && t.push(n), o && t.push(o), i && typeof i.result.score == "number" && t.push(i);
+    let t = e.filter((h) => h.group === "metrics"), n = e.find((h) => h.id === "interactive"), r = e.find((h) => h.id === "first-cpu-idle"), i = e.find((h) => h.id === "first-meaningful-paint");
+    n && t.push(n), r && t.push(r), i && typeof i.result.score == "number" && t.push(i);
     let a = (h) => Math.round(h * 100) / 100, s = [...t.map((h) => {
       let p;
       return typeof h.result.numericValue == "number" ? (p = h.id === "cumulative-layout-shift" ? a(h.result.numericValue) : Math.round(h.result.numericValue), p = p.toString()) : p = "null", [h.acronym || h.id, p];
     })];
-    m.reportJson && (s.push(["device", m.reportJson.configSettings.formFactor]), s.push(["version", m.reportJson.lighthouseVersion]));
+    g.reportJson && (s.push(["device", g.reportJson.configSettings.formFactor]), s.push(["version", g.reportJson.lighthouseVersion]));
     let c = new URLSearchParams(s), d = new URL("https://googlechrome.github.io/lighthouse/scorecalc/");
     return d.hash = c.toString(), d.href;
   }
   overallImpact(e, t) {
     if (!e.result.metricSavings) return { overallImpact: 0, overallLinearImpact: 0 };
-    let n = 0, o = 0;
+    let n = 0, r = 0;
     for (let [i, a] of Object.entries(e.result.metricSavings)) {
       if (a === void 0) continue;
-      let l = t.find((g) => g.acronym === i);
+      let l = t.find((m) => m.acronym === i);
       if (!l || l.result.score === null) continue;
       let s = l.result.numericValue;
       if (!s) continue;
       let c = a / s * l.weight;
-      o += c;
+      r += c;
       let d = l.result.scoringOptions;
       if (!d) continue;
       let p = (E.computeLogNormalScore(d, s - a) - l.result.score) * l.weight;
       n += p;
     }
-    return { overallImpact: n, overallLinearImpact: o };
+    return { overallImpact: n, overallLinearImpact: r };
   }
   render(e, t, n) {
-    let o = m.strings, i = this.dom.createElement("div", "lh-category");
+    let r = g.strings, i = this.dom.createElement("div", "lh-category");
     i.id = e.id, i.append(this.renderCategoryHeader(e, t, n));
     let a = e.auditRefs.filter((p) => p.group === "metrics");
     if (a.length) {
-      let [p, g] = this.renderAuditGroup(t.metrics), b = this.dom.createElement("input", "lh-metrics-toggle__input"), w = `lh-metrics-toggle${m.getUniqueSuffix()}`;
+      let [p, m] = this.renderAuditGroup(t.metrics), b = this.dom.createElement("input", "lh-metrics-toggle__input"), w = `lh-metrics-toggle${g.getUniqueSuffix()}`;
       b.setAttribute("aria-label", "Toggle the display of metric descriptions"), b.type = "checkbox", b.id = w, p.prepend(b);
       let f = this.dom.find(".lh-audit-group__header", p), u = this.dom.createChildOf(f, "label", "lh-metrics-toggle__label");
       u.htmlFor = w;
       let v = this.dom.createChildOf(u, "span", "lh-metrics-toggle__labeltext--show"), _ = this.dom.createChildOf(u, "span", "lh-metrics-toggle__labeltext--hide");
-      v.textContent = m.strings.expandView, _.textContent = m.strings.collapseView;
-      let x = this.dom.createElement("div", "lh-metrics-container");
-      if (p.insertBefore(x, g), a.forEach((L) => {
-        x.append(this._renderMetric(L));
+      v.textContent = g.strings.expandView, _.textContent = g.strings.collapseView;
+      let y = this.dom.createElement("div", "lh-metrics-container");
+      if (p.insertBefore(y, m), a.forEach((S) => {
+        y.append(this._renderMetric(S));
       }), i.querySelector(".lh-gauge__wrapper")) {
-        let L = this.dom.find(".lh-category-header__description", i), S = this.dom.createChildOf(L, "div", "lh-metrics__disclaimer"), A = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
-        S.append(A);
-        let z = this.dom.createChildOf(S, "a", "lh-calclink");
-        z.target = "_blank", z.textContent = o.calculatorLink, this.dom.safelySetHref(z, this._getScoringCalculatorHref(e.auditRefs));
+        let S = this.dom.find(".lh-category-header__description", i), C = this.dom.createChildOf(S, "div", "lh-metrics__disclaimer"), z = this.dom.convertMarkdownLinkSnippets(r.varianceDisclaimer);
+        C.append(z);
+        let A = this.dom.createChildOf(C, "a", "lh-calclink");
+        A.target = "_blank", A.rel = "noopener", A.textContent = r.calculatorLink, this.dom.safelySetHref(A, this._getScoringCalculatorHref(e.auditRefs));
       }
       p.classList.add("lh-audit-group--metrics"), i.append(p);
     }
@@ -4329,11 +4341,11 @@ var oe = class extends B {
     }
     return i;
   }
-  renderFilterableSection(e, t, n, o) {
-    if (n.some((u) => !t[u])) return null;
+  renderFilterableSection(e, t, n, r) {
+    if (n = n.filter((u) => !!t[u]), !n.length) return null;
     let i = this.dom.createElement("div"), a = (u) => u.group ?? "", s = e.auditRefs.filter((u) => n.includes(a(u))).map((u) => {
-      let { overallImpact: v, overallLinearImpact: _ } = this.overallImpact(u, o), x = u.result.guidanceLevel || 1, L = this.renderAudit(u);
-      return { auditRef: u, auditEl: L, overallImpact: v, overallLinearImpact: _, guidanceLevel: x };
+      let { overallImpact: v, overallLinearImpact: _ } = this.overallImpact(u, r), y = u.result.guidanceLevel || 1, S = this.renderAudit(u);
+      return { auditRef: u, auditEl: S, overallImpact: v, overallLinearImpact: _, guidanceLevel: y };
     }), c = s.filter((u) => !k.showAsPassed(u.auditRef.result)), d = s.filter((u) => k.showAsPassed(u.auditRef.result)), h = {};
     for (let u of n) {
       let v = this.renderAuditGroup(t[u]);
@@ -4346,11 +4358,11 @@ var oe = class extends B {
         v.auditEl.hidden = _;
       }
       c.sort((v, _) => {
-        let x = v.auditRef.result.score || 0, L = _.auditRef.result.score || 0;
-        if (x !== L) return x - L;
+        let y = v.auditRef.result.score || 0, S = _.auditRef.result.score || 0;
+        if (y !== S) return y - S;
         if (u !== "All") {
-          let S = v.auditRef.result.metricSavings?.[u] ?? -1, A = _.auditRef.result.metricSavings?.[u] ?? -1;
-          if (S !== A) return A - S;
+          let C = v.auditRef.result.metricSavings?.[u] ?? -1, z = _.auditRef.result.metricSavings?.[u] ?? -1;
+          if (C !== z) return z - C;
         }
         return v.overallImpact !== _.overallImpact ? _.overallImpact * _.guidanceLevel - v.overallImpact * v.guidanceLevel : v.overallImpact === 0 && _.overallImpact === 0 && v.overallLinearImpact !== _.overallLinearImpact ? _.overallLinearImpact * _.guidanceLevel - v.overallLinearImpact * v.guidanceLevel : _.guidanceLevel - v.guidanceLevel;
       });
@@ -4358,16 +4370,16 @@ var oe = class extends B {
         if (!v.auditRef.group) continue;
         let _ = h[a(v.auditRef)];
         if (!_) continue;
-        let [x, L] = _;
-        x.insertBefore(v.auditEl, L);
+        let [y, S] = _;
+        y.insertBefore(v.auditEl, S);
       }
     }
-    let g = /* @__PURE__ */ new Set();
+    let m = /* @__PURE__ */ new Set();
     for (let u of c) {
       let v = u.auditRef.result.metricSavings || {};
-      for (let [_, x] of Object.entries(v)) typeof x == "number" && g.add(_);
+      for (let [_, y] of Object.entries(v)) typeof y == "number" && m.add(_);
     }
-    let b = o.filter((u) => u.acronym && g.has(u.acronym));
+    let b = r.filter((u) => u.acronym && m.has(u.acronym));
     b.length && this.renderMetricAuditFilter(b, i, p), p("All");
     for (let u of n) if (c.some((v) => a(v.auditRef) === u)) {
       let v = h[u];
@@ -4379,18 +4391,18 @@ var oe = class extends B {
     return i.append(f), i;
   }
   renderMetricAuditFilter(e, t, n) {
-    let o = this.dom.createElement("div", "lh-metricfilter"), i = this.dom.createChildOf(o, "span", "lh-metricfilter__text");
-    i.textContent = m.strings.showRelevantAudits;
-    let a = [{ acronym: "All", id: "All" }, ...e], l = m.getUniqueSuffix();
+    let r = this.dom.createElement("div", "lh-metricfilter"), i = this.dom.createChildOf(r, "span", "lh-metricfilter__text");
+    i.textContent = g.strings.showRelevantAudits;
+    let a = [{ acronym: "All", id: "All" }, ...e], l = g.getUniqueSuffix();
     for (let s of a) {
-      let c = `metric-${s.acronym}-${l}`, d = this.dom.createChildOf(o, "input", "lh-metricfilter__radio");
+      let c = `metric-${s.acronym}-${l}`, d = this.dom.createChildOf(r, "input", "lh-metricfilter__radio");
       d.type = "radio", d.name = `metricsfilter-${l}`, d.id = c;
-      let h = this.dom.createChildOf(o, "label", "lh-metricfilter__label");
-      h.htmlFor = c, h.title = "result" in s ? s.result.title : "", h.textContent = s.acronym || s.id, s.acronym === "All" && (d.checked = true, h.classList.add("lh-metricfilter__label--active")), t.append(o), d.addEventListener("input", (p) => {
+      let h = this.dom.createChildOf(r, "label", "lh-metricfilter__label");
+      h.htmlFor = c, h.title = "result" in s ? s.result.title : "", h.textContent = s.acronym || s.id, s.acronym === "All" && (d.checked = true, h.classList.add("lh-metricfilter__label--active")), t.append(r), d.addEventListener("input", (p) => {
         for (let b of t.querySelectorAll("label.lh-metricfilter__label")) b.classList.toggle("lh-metricfilter__label--active", b.htmlFor === c);
         t.classList.toggle("lh-category--filtered", s.acronym !== "All"), n(s.acronym || "All");
-        let g = t.querySelectorAll("div.lh-audit-group, details.lh-audit-group");
-        for (let b of g) {
+        let m = t.querySelectorAll("div.lh-audit-group, details.lh-audit-group");
+        for (let b of m) {
           b.hidden = false;
           let w = Array.from(b.querySelectorAll("div.lh-audit")), f = !!w.length && w.every((u) => u.hidden);
           b.hidden = f;
@@ -4410,8 +4422,8 @@ var te = class {
       i ? this._dom.rootEl = i : (t.classList.add("lh-root", "lh-vars"), this._dom.rootEl = t);
     } else this._dom.rootEl && t && (this._dom.rootEl = t);
     n && (this._opts = n), this._dom.setLighthouseChannel(e.configSettings.channel || "unknown");
-    let o = k.prepareReportResult(e);
-    return this._dom.rootEl.textContent = "", this._dom.rootEl.append(this._renderReport(o)), this._opts.occupyEntireViewport && this._dom.rootEl.classList.add("lh-max-viewport"), this._dom.rootEl;
+    let r = k.prepareReportResult(e);
+    return this._dom.rootEl.textContent = "", this._dom.rootEl.append(this._renderReport(r)), this._opts.occupyEntireViewport && this._dom.rootEl.classList.add("lh-max-viewport"), this._dom.rootEl;
   }
   _renderReportTopbar(e) {
     let t = this._dom.createComponent("topbar"), n = this._dom.find("a.lh-topbar__url", t);
@@ -4423,62 +4435,62 @@ var te = class {
   }
   _renderReportFooter(e) {
     let t = this._dom.createComponent("footer");
-    return this._renderMetaBlock(e, t), this._dom.find(".lh-footer__version_issue", t).textContent = m.strings.footerIssue, this._dom.find(".lh-footer__version", t).textContent = e.lighthouseVersion, t;
+    return this._renderMetaBlock(e, t), this._dom.find(".lh-footer__version_issue", t).textContent = g.strings.footerIssue, this._dom.find(".lh-footer__version", t).textContent = e.lighthouseVersion, t;
   }
   _renderMetaBlock(e, t) {
-    let n = k.getEmulationDescriptions(e.configSettings || {}), o = e.userAgent.match(/(\w*Chrome\/[\d.]+)/), i = Array.isArray(o) ? o[1].replace("/", " ").replace("Chrome", "Chromium") : "Chromium", a = e.configSettings.channel, l = e.environment.benchmarkIndex.toFixed(0), s = e.environment.credits?.["axe-core"], c = [`${m.strings.runtimeSettingsBenchmark}: ${l}`, `${m.strings.runtimeSettingsCPUThrottling}: ${n.cpuThrottling}`];
-    n.screenEmulation && c.push(`${m.strings.runtimeSettingsScreenEmulation}: ${n.screenEmulation}`), s && c.push(`${m.strings.runtimeSettingsAxeVersion}: ${s}`);
-    let d = m.strings.runtimeAnalysisWindow;
-    e.gatherMode === "timespan" ? d = m.strings.runtimeAnalysisWindowTimespan : e.gatherMode === "snapshot" && (d = m.strings.runtimeAnalysisWindowSnapshot);
-    let h = [["date", `Captured at ${m.i18n.formatDateTime(e.fetchTime)}`], ["devices", `${n.deviceEmulation} with Lighthouse ${e.lighthouseVersion}`, c.join(`
-`)], ["samples-one", m.strings.runtimeSingleLoad, m.strings.runtimeSingleLoadTooltip], ["stopwatch", d], ["networkspeed", `${n.summary}`, `${m.strings.runtimeSettingsNetworkThrottling}: ${n.networkThrottling}`], ["chrome", `Using ${i}` + (a ? ` with ${a}` : ""), `${m.strings.runtimeSettingsUANetwork}: "${e.environment.networkUserAgent}"`]], p = Object.keys(e.categories).filter((b) => k.isPluginCategory(b));
-    for (let b of p) {
-      let w = e.environment.credits?.[b];
-      h.push(["plugin", w ? `${b} ${w}` : b, void 0, `https://www.npmjs.com/package/${b}`]);
+    let n = k.getEmulationDescriptions(e.configSettings || {}), r = e.userAgent.match(/(\w*Chrome\/[\d.]+)/), i = Array.isArray(r) ? r[1].replace("/", " ").replace("Chrome", "Chromium") : "Chromium", a = e.configSettings.channel, l = e.environment.benchmarkIndex.toFixed(0), s = e.environment.credits?.["axe-core"], c = e.environment.credits?.ard, d = [`${g.strings.runtimeSettingsBenchmark}: ${l}`, `${g.strings.runtimeSettingsCPUThrottling}: ${n.cpuThrottling}`];
+    n.screenEmulation && d.push(`${g.strings.runtimeSettingsScreenEmulation}: ${n.screenEmulation}`), s && d.push(`${g.strings.runtimeSettingsAxeVersion}: ${s}`), c && d.push(`${g.strings.runtimeSettingsArdVersion}: ${c}`);
+    let h = g.strings.runtimeAnalysisWindow;
+    e.gatherMode === "timespan" ? h = g.strings.runtimeAnalysisWindowTimespan : e.gatherMode === "snapshot" && (h = g.strings.runtimeAnalysisWindowSnapshot);
+    let p = [["date", `Captured at ${g.i18n.formatDateTime(e.fetchTime)}`], ["devices", `${n.deviceEmulation} with Lighthouse ${e.lighthouseVersion}`, d.join(`
+`)], ["samples-one", g.strings.runtimeSingleLoad, g.strings.runtimeSingleLoadTooltip], ["stopwatch", h], ["networkspeed", `${n.summary}`, `${g.strings.runtimeSettingsNetworkThrottling}: ${n.networkThrottling}`], ["chrome", `Using ${i}` + (a ? ` with ${a}` : ""), `${g.strings.runtimeSettingsUANetwork}: "${e.environment.networkUserAgent}"`]], m = Object.keys(e.categories).filter((w) => k.isPluginCategory(w));
+    for (let w of m) {
+      let f = e.environment.credits?.[w];
+      p.push(["plugin", f ? `${w} ${f}` : w, void 0, `https://www.npmjs.com/package/${w}`]);
     }
-    let g = this._dom.find(".lh-meta__items", t);
-    for (let [b, w, f, u] of h) {
-      let v = this._dom.createChildOf(g, "li", "lh-meta__item");
+    let b = this._dom.find(".lh-meta__items", t);
+    for (let [w, f, u, v] of p) {
+      let _ = this._dom.createChildOf(b, "li", "lh-meta__item");
+      if (v) {
+        let y = this._dom.createChildOf(_, "a");
+        y.rel = "noopener", y.target = "_blank", y.textContent = f, this._dom.safelySetHref(y, v);
+      } else _.textContent = f;
       if (u) {
-        let _ = this._dom.createChildOf(v, "a");
-        _.rel = "noopener", _.target = "_blank", _.textContent = w, this._dom.safelySetHref(_, u);
-      } else v.textContent = w;
-      if (f) {
-        v.classList.add("lh-tooltip-boundary");
-        let _ = this._dom.createChildOf(v, "div", "lh-tooltip");
-        _.textContent = f;
+        _.classList.add("lh-tooltip-boundary");
+        let y = this._dom.createChildOf(_, "div", "lh-tooltip");
+        y.textContent = u;
       }
-      v.classList.add("lh-report-icon", `lh-report-icon--${b}`);
+      _.classList.add("lh-report-icon", `lh-report-icon--${w}`);
     }
   }
   _renderReportWarnings(e) {
     if (!e.runWarnings || e.runWarnings.length === 0) return this._dom.createElement("div");
     let t = this._dom.createComponent("warningsToplevel"), n = this._dom.find(".lh-warnings__msg", t);
-    n.textContent = m.strings.toplevelWarningsMessage;
-    let o = [];
+    n.textContent = g.strings.toplevelWarningsMessage;
+    let r = [];
     for (let i of e.runWarnings) {
       let a = this._dom.createElement("li");
-      a.append(this._dom.convertMarkdownLinkSnippets(i)), o.push(a);
+      a.append(this._dom.convertMarkdownLinkSnippets(i)), r.push(a);
     }
-    return this._dom.find("ul", t).append(...o), t;
+    return this._dom.find("ul", t).append(...r), t;
   }
   _renderScoreGauges(e, t, n) {
-    let o = [], i = [];
+    let r = [], i = [];
     for (let a of Object.values(e.categories)) {
       let s = (n[a.id] || t).renderCategoryScore(a, e.categoryGroups || {}, { gatherMode: e.gatherMode }), c = this._dom.find("a.lh-gauge__wrapper, a.lh-fraction__wrapper", s);
       c && (this._dom.safelySetHref(c, `#${a.id}`), c.addEventListener("click", (d) => {
         if (!c.matches('[href^="#"]')) return;
         let h = c.getAttribute("href"), p = this._dom.rootEl;
         if (!h || !p) return;
-        let g = this._dom.find(h, p);
-        d.preventDefault(), g.scrollIntoView();
-      }), this._opts.onPageAnchorRendered?.(c)), k.isPluginCategory(a.id) ? i.push(s) : o.push(s);
+        let m = this._dom.find(h, p);
+        d.preventDefault(), m.scrollIntoView();
+      }), this._opts.onPageAnchorRendered?.(c)), k.isPluginCategory(a.id) ? i.push(s) : r.push(s);
     }
-    return [...o, ...i];
+    return [...r, ...i];
   }
   _renderReport(e) {
-    m.apply({ providedStrings: e.i18n.rendererFormattedStrings, i18n: new re(e.configSettings.locale), reportJson: e });
-    let t = new ee(this._dom, { fullPageScreenshot: e.fullPageScreenshot ?? void 0, entities: e.entities }), n = new B(this._dom, t), o = { performance: new oe(this._dom, t) }, i = this._dom.createElement("div");
+    g.apply({ providedStrings: e.i18n.rendererFormattedStrings, i18n: new re(e.configSettings.locale), reportJson: e });
+    let t = new ee(this._dom, { fullPageScreenshot: e.fullPageScreenshot ?? void 0, entities: e.entities }), n = new B(this._dom, t), r = { performance: new oe(this._dom, t) }, i = this._dom.createElement("div");
     i.append(this._renderReportHeader());
     let a = this._dom.createElement("div", "lh-container"), l = this._dom.createElement("div", "lh-report");
     l.append(this._renderReportWarnings(e));
@@ -4487,76 +4499,76 @@ var te = class {
     let d = this._dom.createElement("div");
     if (d.classList.add("lh-scorescale-wrap"), d.append(this._dom.createComponent("scorescale")), s) {
       let b = this._dom.find(".lh-scores-container", i);
-      s.append(...this._renderScoreGauges(e, n, o)), b.append(s, d);
+      s.append(...this._renderScoreGauges(e, n, r)), b.append(s, d);
       let w = this._dom.createElement("div", "lh-sticky-header");
-      w.append(...this._renderScoreGauges(e, n, o)), a.append(w);
+      w.append(...this._renderScoreGauges(e, n, r)), a.append(w);
     }
     let h = this._dom.createElement("div", "lh-categories");
     l.append(h);
     let p = { gatherMode: e.gatherMode };
     for (let b of Object.values(e.categories)) {
-      let w = o[b.id] || n;
+      let w = r[b.id] || n;
       w.dom.createChildOf(h, "div", "lh-category-wrapper").append(w.render(b, e.categoryGroups, p));
     }
     n.injectFinalScreenshot(h, e.audits, d);
-    let g = this._dom.createFragment();
-    return this._opts.omitGlobalStyles || g.append(this._dom.createComponent("styles")), this._opts.omitTopbar || g.append(this._renderReportTopbar(e)), g.append(a), l.append(this._renderReportFooter(e)), a.append(i, l), e.fullPageScreenshot && G.installFullPageScreenshot(this._dom.rootEl, e.fullPageScreenshot.screenshot), g;
+    let m = this._dom.createFragment();
+    return this._opts.omitGlobalStyles || m.append(this._dom.createComponent("styles")), this._opts.omitTopbar || m.append(this._renderReportTopbar(e)), m.append(a), l.append(this._renderReportFooter(e)), a.append(i, l), e.fullPageScreenshot && G.installFullPageScreenshot(this._dom.rootEl, e.fullPageScreenshot.screenshot), m;
   }
 };
-function W(r5, e) {
-  let t = r5.rootEl;
+function W(o5, e) {
+  let t = o5.rootEl;
   typeof e > "u" ? t.classList.toggle("lh-dark") : t.classList.toggle("lh-dark", e);
 }
-var ft = typeof btoa < "u" ? btoa : (r5) => Buffer.from(r5).toString("base64");
-var vt = typeof atob < "u" ? atob : (r5) => Buffer.from(r5, "base64").toString();
-async function bt(r5, e) {
-  let t = new TextEncoder().encode(r5);
+var ft = typeof btoa < "u" ? btoa : (o5) => Buffer.from(o5).toString("base64");
+var vt = typeof atob < "u" ? atob : (o5) => Buffer.from(o5, "base64").toString();
+async function bt(o5, e) {
+  let t = new TextEncoder().encode(o5);
   if (e.gzip) if (typeof CompressionStream < "u") {
     let i = new CompressionStream("gzip"), a = i.writable.getWriter();
     a.write(t), a.close();
     let l = await new Response(i.readable).arrayBuffer();
     t = new Uint8Array(l);
-  } else t = window.pako.gzip(r5);
-  let n = "", o = 5e3;
-  for (let i = 0; i < t.length; i += o) n += String.fromCharCode(...t.subarray(i, i + o));
+  } else t = window.pako.gzip(o5);
+  let n = "", r = 5e3;
+  for (let i = 0; i < t.length; i += r) n += String.fromCharCode(...t.subarray(i, i + r));
   return ft(n);
 }
-function _t(r5, e) {
-  let t = vt(r5), n = Uint8Array.from(t, (o) => o.charCodeAt(0));
-  return e.gzip ? window.pako.ungzip(n, { to: "string" }) : new TextDecoder().decode(n);
+function _t(o5, e) {
+  let t = vt(o5), n = Uint8Array.from(t, (r) => r.charCodeAt(0));
+  return e.gzip ? window.pako.ungzip(n, { toText: true }) : new TextDecoder().decode(n);
 }
-var Le = { toBase64: bt, fromBase64: _t };
+var Se = { toBase64: bt, fromBase64: _t };
 function le() {
-  let r5 = window.location.host.endsWith(".vercel.app"), e = new URLSearchParams(window.location.search).has("dev");
-  return r5 ? `https://${window.location.host}/gh-pages` : e ? "http://localhost:7333" : "https://googlechrome.github.io/lighthouse";
+  let o5 = window.location.host.endsWith(".vercel.app"), e = new URLSearchParams(window.location.search).has("dev");
+  return o5 ? `https://${window.location.host}/gh-pages` : e ? "http://localhost:7333" : "https://googlechrome.github.io/lighthouse";
 }
-function se(r5) {
-  let e = r5.generatedTime, t = r5.fetchTime || e;
-  return `${r5.lighthouseVersion}-${r5.finalDisplayedUrl}-${t}`;
+function se(o5) {
+  let e = o5.generatedTime, t = o5.fetchTime || e;
+  return `${o5.lighthouseVersion}-${o5.finalDisplayedUrl}-${t}`;
 }
-function wt(r5, e, t) {
+function wt(o5, e, t) {
   let n = new URL(e).origin;
   window.addEventListener("message", function i(a) {
-    a.origin === n && o && a.data.opened && (o.postMessage(r5, n), window.removeEventListener("message", i));
+    a.origin === n && r && a.data.opened && (r.postMessage(o5, n), window.removeEventListener("message", i));
   });
-  let o = window.open(e, t);
+  let r = window.open(e, t);
 }
-async function Ce(r5, e, t) {
-  let n = new URL(e), o = !!window.CompressionStream;
-  n.hash = await Le.toBase64(JSON.stringify(r5), { gzip: o }), o && n.searchParams.set("gzip", "1"), window.open(n.toString(), t);
+async function Le(o5, e, t) {
+  let n = new URL(e), r = !!window.CompressionStream;
+  n.hash = await Se.toBase64(JSON.stringify(o5), { gzip: r }), r && n.searchParams.set("gzip", "1"), window.open(n.toString(), t);
 }
-async function Se(r5) {
-  let e = "viewer-" + se(r5), t = le() + "/viewer/";
-  await Ce({ lhr: r5 }, t, e);
+async function Ce(o5) {
+  let e = "viewer-" + se(o5), t = le() + "/viewer/";
+  await Le({ lhr: o5 }, t, e);
 }
-async function Ae(r5) {
-  let e = "viewer-" + se(r5), t = le() + "/viewer/";
-  wt({ lhr: r5 }, t, e);
+async function Ae(o5) {
+  let e = "viewer-" + se(o5), t = le() + "/viewer/";
+  wt({ lhr: o5 }, t, e);
 }
-function ze(r5) {
-  if (!r5.audits["script-treemap-data"].details) throw new Error("no script treemap data found");
-  let t = { lhr: { mainDocumentUrl: r5.mainDocumentUrl, finalUrl: r5.finalUrl, finalDisplayedUrl: r5.finalDisplayedUrl, audits: { "script-treemap-data": r5.audits["script-treemap-data"] }, configSettings: { locale: r5.configSettings.locale } } }, n = le() + "/treemap/", o = "treemap-" + se(r5);
-  Ce(t, n, o);
+function ze(o5) {
+  if (!o5.audits["script-treemap-data"].details) throw new Error("no script treemap data found");
+  let t = { lhr: { mainDocumentUrl: o5.mainDocumentUrl, finalUrl: o5.finalUrl, finalDisplayedUrl: o5.finalDisplayedUrl, audits: { "script-treemap-data": o5.audits["script-treemap-data"] }, configSettings: { locale: o5.configSettings.locale } } }, n = le() + "/treemap/", r = "treemap-" + se(o5);
+  Le(t, n, r);
 }
 var ie = class {
   constructor(e) {
@@ -4615,8 +4627,8 @@ var ie = class {
     this._menuEl.contains(t) || this.close();
   }
   _getNextSelectableNode(e, t) {
-    let n = e.filter((i) => i instanceof HTMLElement).filter((i) => !(i.hasAttribute("disabled") || window.getComputedStyle(i).display === "none")), o = t ? n.indexOf(t) + 1 : 0;
-    return o >= n.length && (o = 0), n[o];
+    let n = e.filter((i) => i instanceof HTMLElement).filter((i) => !(i.hasAttribute("disabled") || window.getComputedStyle(i).display === "none")), r = t ? n.indexOf(t) + 1 : 0;
+    return r >= n.length && (r = 0), n[r];
   }
   _getNextMenuItem(e) {
     let t = Array.from(this._menuEl.childNodes);
@@ -4657,13 +4669,13 @@ var ae = class {
           let n = this._reportUIFeatures.getReportHtml();
           try {
             this._reportUIFeatures._saveFile(new Blob([n], { type: "text/html" }));
-          } catch (o) {
-            this._dom.fireEventOn("lh-log", this._dom.document(), { cmd: "error", msg: "Could not export as HTML. " + o.message });
+          } catch (r) {
+            this._dom.fireEventOn("lh-log", this._dom.document(), { cmd: "error", msg: "Could not export as HTML. " + r.message });
           }
           break;
         }
         case "open-viewer": {
-          this._dom.isDevTools() ? Se(this.lhr) : Ae(this.lhr);
+          this._dom.isDevTools() ? Ce(this.lhr) : Ae(this.lhr);
           break;
         }
         case "save-gist": {
@@ -4735,18 +4747,18 @@ var ae = class {
     this.highlightEl.style.transform = `translate(${d}px)`, this.stickyHeaderEl.classList.toggle("lh-sticky-header--visible", n);
   }
 };
-function yt(r5, e) {
-  let t = e ? new Date(e) : /* @__PURE__ */ new Date(), n = t.toLocaleTimeString("en-US", { hour12: false }), o = t.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }).split("/");
-  o.unshift(o.pop());
-  let i = o.join("-");
-  return `${r5}_${i}_${n}`.replace(/[/?<>\\:*|"]/g, "-");
+function yt(o5, e) {
+  let t = e ? new Date(e) : /* @__PURE__ */ new Date(), n = t.toLocaleTimeString("en-US", { hour12: false }), r = t.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }).split("/");
+  r.unshift(r.pop());
+  let i = r.join("-");
+  return `${o5.slice(0, 200)}_${i}_${n}`.replace(/[/?<>\\:*|"]/g, "-");
 }
-function Me(r5) {
-  let e = new URL(r5.finalDisplayedUrl).hostname;
-  return yt(e, r5.fetchTime);
+function Me(o5) {
+  let { hostname: e, pathname: t } = new URL(o5.finalDisplayedUrl), n = e + t.replace(/\/$/, "");
+  return yt(n, o5.fetchTime);
 }
-function xt(r5) {
-  return Array.from(r5.tBodies[0].rows);
+function xt(o5) {
+  return Array.from(o5.tBodies[0].rows);
 }
 var ne = class {
   constructor(e, t = {}) {
@@ -4756,18 +4768,18 @@ var ne = class {
     this.json = e, this._fullPageScreenshot = E.getFullPageScreenshot(e), this._topbar && (this._topbar.enable(e), this._topbar.resetUIState()), this._setupMediaQueryListeners(), this._setupThirdPartyFilter(), this._setupElementScreenshotOverlay(this._dom.rootEl);
     let t = this._dom.isDevTools() || this._opts.disableDarkMode || this._opts.disableAutoDarkModeAndFireworks;
     !t && window.matchMedia("(prefers-color-scheme: dark)").matches && W(this._dom, true);
-    let o = ["performance", "accessibility", "best-practices", "seo"].every((s) => {
+    let r = ["performance", "accessibility", "best-practices", "seo"].every((s) => {
       let c = e.categories[s];
       return c && c.score === 1;
     }), i = this._opts.disableFireworks || this._opts.disableAutoDarkModeAndFireworks;
-    if (o && !i && (this._enableFireworks(), t || W(this._dom, true)), e.categories.performance && e.categories.performance.auditRefs.some((s) => !!(s.group === "metrics" && e.audits[s.id].errorMessage))) {
+    if (r && !i && (this._enableFireworks(), t || W(this._dom, true)), e.categories.performance && e.categories.performance.auditRefs.some((s) => !!(s.group === "metrics" && e.audits[s.id].errorMessage))) {
       let s = this._dom.find("input.lh-metrics-toggle__input", this._dom.rootEl);
       s.checked = true;
     }
-    this.json.audits["script-treemap-data"] && this.json.audits["script-treemap-data"].details && this.addButton({ text: m.strings.viewTreemapLabel, icon: "treemap", onClick: () => ze(this.json) }), this._opts.onViewTrace && (e.configSettings.throttlingMethod === "simulate" ? this._dom.find('a[data-action="view-unthrottled-trace"]', this._dom.rootEl).classList.remove("lh-hidden") : this.addButton({ text: m.strings.viewTraceLabel, onClick: () => this._opts.onViewTrace?.() })), this._opts.getStandaloneReportHTML && this._dom.find('a[data-action="save-html"]', this._dom.rootEl).classList.remove("lh-hidden");
+    this.json.audits["script-treemap-data"] && this.json.audits["script-treemap-data"].details && this.addButton({ text: g.strings.viewTreemapLabel, icon: "treemap", onClick: () => ze(this.json) }), this._opts.onViewTrace && (e.configSettings.throttlingMethod === "simulate" ? this._dom.find('a[data-action="view-unthrottled-trace"]', this._dom.rootEl).classList.remove("lh-hidden") : this.addButton({ text: g.strings.viewTraceLabel, onClick: () => this._opts.onViewTrace?.() })), this._opts.getStandaloneReportHTML && this._dom.find('a[data-action="save-html"]', this._dom.rootEl).classList.remove("lh-hidden");
     for (let s of this._dom.findAll("[data-i18n]", this._dom.rootEl)) {
       let d = s.getAttribute("data-i18n");
-      s.textContent = m.strings[d];
+      s.textContent = g.strings[d];
     }
   }
   addButton(e) {
@@ -4775,9 +4787,9 @@ var ne = class {
     if (!t) return;
     let n = t.querySelector(".lh-buttons");
     n || (n = this._dom.createChildOf(t, "div", "lh-buttons"));
-    let o = ["lh-button"];
-    e.icon && (o.push("lh-report-icon"), o.push(`lh-report-icon--${e.icon}`));
-    let i = this._dom.createChildOf(n, "button", o.join(" "));
+    let r = ["lh-button"];
+    e.icon && (r.push("lh-report-icon"), r.push(`lh-report-icon--${e.icon}`));
+    let i = this._dom.createChildOf(n, "button", r.join(" "));
     return i.textContent = e.text, i.addEventListener("click", e.onClick), i;
   }
   resetUIState() {
@@ -4814,31 +4826,31 @@ var ne = class {
       h.addEventListener("change", (f) => {
         let u = f.target instanceof HTMLInputElement && !f.target.checked, v = true, _ = l[0];
         for (; _; ) {
-          let x = u && s.includes(_);
+          let y = u && s.includes(_);
           do
-            _.classList.toggle("lh-row--hidden", x), c && (_.classList.toggle("lh-row--even", !x && v), _.classList.toggle("lh-row--odd", !x && !v)), _ = _.nextElementSibling;
+            _.classList.toggle("lh-row--hidden", y), c && (_.classList.toggle("lh-row--even", !y && v), _.classList.toggle("lh-row--odd", !y && !v)), _ = _.nextElementSibling;
           while (_ && _.classList.contains("lh-sub-item-row"));
-          x || (v = !v);
+          y || (v = !v);
         }
       });
       let p = s.filter((f) => !f.classList.contains("lh-row--group")).length;
-      this._dom.find(".lh-3p-filter-count", d).textContent = `${p}`, this._dom.find(".lh-3p-ui-string", d).textContent = m.strings.thirdPartyResourcesLabel;
-      let g = s.length === l.length, b = !s.length;
-      if ((g || b) && (this._dom.find("div.lh-3p-filter", d).hidden = true), !i.parentNode) return;
+      this._dom.find(".lh-3p-filter-count", d).textContent = `${p}`, this._dom.find(".lh-3p-ui-string", d).textContent = g.strings.thirdPartyResourcesLabel;
+      let m = s.length === l.length, b = !s.length;
+      if ((m || b) && (this._dom.find("div.lh-3p-filter", d).hidden = true), !i.parentNode) return;
       i.parentNode.insertBefore(d, i);
       let w = i.closest(".lh-audit");
       if (!w) throw new Error(".lh-table not within audit");
-      t.includes(w.id) && !g && h.click();
+      t.includes(w.id) && !m && h.click();
     });
   }
   _setupElementScreenshotOverlay(e) {
     this._fullPageScreenshot && G.installOverlayFeature({ dom: this._dom, rootEl: e, overlayContainerEl: e, fullPageScreenshot: this._fullPageScreenshot });
   }
   _getThirdPartyRows(e, t) {
-    let n = E.getEntityFromUrl(t, this.json.entities), o = this.json.entities?.find((a) => a.isFirstParty === true)?.name, i = [];
+    let n = E.getEntityFromUrl(t, this.json.entities), r = this.json.entities?.find((a) => a.isFirstParty === true)?.name, i = [];
     for (let a of e) {
-      if (o) {
-        if (!a.dataset.entity || a.dataset.entity === o) continue;
+      if (r) {
+        if (!a.dataset.entity || a.dataset.entity === r) continue;
       } else {
         let l = a.querySelector("div.lh-text__url");
         if (!l) continue;
@@ -4854,26 +4866,26 @@ var ne = class {
     this._opts.onSaveFileOverride ? this._opts.onSaveFileOverride(e, n) : this._dom.saveFile(e, n);
   }
 };
-function kt(r5, e = {}) {
+function kt(o5, e = {}) {
   let t = document.createElement("article");
   t.classList.add("lh-root", "lh-vars");
   let n = new Q(t.ownerDocument, t);
-  return new te(n).renderReport(r5, t, e), new ne(n, e).initFeatures(r5), t;
+  return new te(n).renderReport(o5, t, e), new ne(n, e).initFeatures(o5), t;
 }
-function Et(r5, e) {
-  return { lhr: r5, missingIcuMessageIds: [] };
+function Et(o5, e) {
+  return { lhr: o5, missingIcuMessageIds: [] };
 }
-function Lt(r5, e) {
+function St(o5, e) {
 }
-function Ct(r5) {
+function Lt(o5) {
   return false;
 }
-var St = { registerLocaleData: Lt, hasLocale: Ct };
+var Ct = { registerLocaleData: St, hasLocale: Lt };
 export {
   Q as DOM,
   te as ReportRenderer,
   ne as ReportUIFeatures,
-  St as format,
+  Ct as format,
   kt as renderReport,
   Et as swapLocale
 };

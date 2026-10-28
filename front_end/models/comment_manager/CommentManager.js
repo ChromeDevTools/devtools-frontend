@@ -48,7 +48,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
         return this.#commentMode;
     }
     createCommentThread(anchor, text, author = 'DEVELOPER', isGeneratedComment) {
-        const comments = text ? [{
+        const comments = text !== undefined ? [{
                 author,
                 text,
                 timestamp: Date.now(),

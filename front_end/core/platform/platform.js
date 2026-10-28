@@ -612,6 +612,13 @@ __export(StringUtilities_exports, {
   truncateToCodeUnitLength: () => truncateToCodeUnitLength
 });
 var graphemeSegmenter = null;
+var PRINTABLE_ASCII_REGEX = /^[\x20-\x7e]*$/;
+function getGraphemeSegmenter() {
+  if (!graphemeSegmenter) {
+    graphemeSegmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
+  }
+  return graphemeSegmenter;
+}
 var escapeCharacters = (inputString, charsToEscape) => {
   let foundChar = false;
   for (let i = 0; i < charsToEscape.length; ++i) {
@@ -929,7 +936,6 @@ var trimMiddle = (str, maxLength) => {
   if (str.length <= maxLength) {
     return str;
   }
-  const segmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
   const ellipsis = "\u2026";
   const ellipsisLength = 1;
   if (maxLength <= ellipsisLength) {
@@ -938,6 +944,10 @@ var trimMiddle = (str, maxLength) => {
   const freeSpace = maxLength - ellipsisLength;
   const leftCount = Math.ceil(freeSpace / 2);
   const rightCount = Math.floor(freeSpace / 2);
+  if (PRINTABLE_ASCII_REGEX.test(str.slice(0, leftCount + 1)) && PRINTABLE_ASCII_REGEX.test(str.slice(str.length - rightCount - 1))) {
+    return str.slice(0, leftCount) + ellipsis + str.slice(str.length - rightCount);
+  }
+  const segmenter = getGraphemeSegmenter();
   let currentGraphemeCount = 0;
   let leftEndIndex = 0;
   const rightIndexBuffer = [];
@@ -965,7 +975,13 @@ var trimEndWithMaxLength = (str, maxLength) => {
   }
   const ellipsis = "\u2026";
   const ellipsisLength = 1;
-  const segmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
+  if (maxLength <= ellipsisLength) {
+    return ellipsis;
+  }
+  if (PRINTABLE_ASCII_REGEX.test(str.slice(0, maxLength + 1))) {
+    return str.slice(0, maxLength - ellipsisLength) + ellipsis;
+  }
+  const segmenter = getGraphemeSegmenter();
   const iterator = segmenter.segment(str)[Symbol.iterator]();
   let lastSegmentIndex = 0;
   for (let i = 0; i <= maxLength - ellipsisLength; i++) {
@@ -989,11 +1005,11 @@ var truncateToCodeUnitLength = (str, maxCodeUnits) => {
   if (str.length <= maxCodeUnits) {
     return str;
   }
-  if (!graphemeSegmenter) {
-    graphemeSegmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
+  if (PRINTABLE_ASCII_REGEX.test(str.slice(0, maxCodeUnits + 1))) {
+    return str.slice(0, maxCodeUnits);
   }
   let lastSafeIndex = 0;
-  for (const { index, segment } of graphemeSegmenter.segment(str)) {
+  for (const { index, segment } of getGraphemeSegmenter().segment(str)) {
     if (index + segment.length > maxCodeUnits) {
       break;
     }

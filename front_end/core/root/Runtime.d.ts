@@ -265,6 +265,9 @@ interface DevToolsNetworkBackendLinking {
 interface DevToolsAiNaturalLanguageInterface {
     enabled: boolean;
 }
+interface DevToolsPrivateVerificationTokens {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -324,6 +327,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsInstrumentationBreakpoints: DevToolsInstrumentationBreakpoints;
     devToolsMobileSafeAreaEmulation: DevToolsMobileSafeAreaEmulation;
     devToolsNetworkBackendLinking: DevToolsNetworkBackendLinking;
+    devToolsPrivateVerificationTokens: DevToolsPrivateVerificationTokens;
     extensionsOnChromeUrls: ExtensionsOnChromeUrls;
     devToolsComments: HostConfigDevToolsComments;
 }>;

@@ -747,6 +747,25 @@ var TopDownRootNode = class extends TopDownNode {
     return this.eventGroupIdCallback;
   }
 };
+var cacheHitRequestIdsByEvents = /* @__PURE__ */ new WeakMap();
+function getCacheHitRequestIds(events) {
+  let cacheHitRequestIds = cacheHitRequestIdsByEvents.get(events);
+  if (!cacheHitRequestIds) {
+    const requestIds = /* @__PURE__ */ new Set();
+    for (const e of events) {
+      if (Types4.Events.isResourceReceiveResponse(e)) {
+        if (e.args.data.fromCache) {
+          requestIds.add(e.args.data.requestId);
+        } else {
+          requestIds.delete(e.args.data.requestId);
+        }
+      }
+    }
+    cacheHitRequestIds = requestIds;
+    cacheHitRequestIdsByEvents.set(events, cacheHitRequestIds);
+  }
+  return cacheHitRequestIds;
+}
 var BottomUpRootNode = class extends Node {
   childrenInternal;
   textFilter;
@@ -809,7 +828,6 @@ var BottomUpRootNode = class extends Node {
     const totalTimeById = /* @__PURE__ */ new Map();
     const eventGroupIdCallback = this.eventGroupIdCallback;
     const forceGroupIdCallback = this.forceGroupIdCallback;
-    const idToIsCacheHit = /* @__PURE__ */ new Map();
     const profileCallIdByCallFrame = /* @__PURE__ */ new Map();
     const groupedIdsByEventId = /* @__PURE__ */ new Map();
     const nodeIdForEvent = (e) => {
@@ -841,11 +859,7 @@ var BottomUpRootNode = class extends Node {
       }
       return groupedId;
     };
-    for (const e of this.events) {
-      if (Types4.Events.isReceivedDataEvent(e) && e.name === "ResourceReceiveResponse") {
-        idToIsCacheHit.set(nodeIdForEvent(e), e.args.data.fromCache || false);
-      }
-    }
+    let cacheHitRequestIds = null;
     const sumTransferSizeOfInstantEvent = (e) => {
       if (Types4.Events.isReceivedDataEvent(e)) {
         const id = nodeIdForEvent(e);
@@ -857,13 +871,17 @@ var BottomUpRootNode = class extends Node {
           node.events.push(e);
         }
         if (e.name === "ResourceReceivedData") {
-          if (idToIsCacheHit.get(id)) {
+          cacheHitRequestIds ??= getCacheHitRequestIds(this.events);
+          if (cacheHitRequestIds.has(e.args.data.requestId)) {
             node.transferSize = 0;
           } else {
             node.transferSize += e.args.data.encodedDataLength;
           }
-        } else if (e.name === "ResourceFinish" && e.args.data.encodedDataLength === 0 && idToIsCacheHit.get(id)) {
-          node.transferSize = 0;
+        } else if (e.name === "ResourceFinish" && e.args.data.encodedDataLength === 0) {
+          cacheHitRequestIds ??= getCacheHitRequestIds(this.events);
+          if (cacheHitRequestIds.has(e.args.data.requestId)) {
+            node.transferSize = 0;
+          }
         } else if (e.args.data.encodedDataLength > 0) {
           node.transferSize = e.args.data.encodedDataLength;
         }

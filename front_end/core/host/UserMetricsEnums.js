@@ -297,8 +297,9 @@ export var PanelCodes;
     PanelCodes[PanelCodes["autofill-view"] = 67] = "autofill-view";
     PanelCodes[PanelCodes["freestyler"] = 68] = "freestyler";
     PanelCodes[PanelCodes["ads"] = 69] = "ads";
+    PanelCodes[PanelCodes["private-verification-tokens"] = 70] = "private-verification-tokens";
     /* eslint-enable @typescript-eslint/naming-convention */
-    PanelCodes[PanelCodes["MAX_VALUE"] = 70] = "MAX_VALUE";
+    PanelCodes[PanelCodes["MAX_VALUE"] = 71] = "MAX_VALUE";
 })(PanelCodes || (PanelCodes = {}));
 export var MediaTypes;
 (function (MediaTypes) {

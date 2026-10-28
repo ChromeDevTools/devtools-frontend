@@ -295,14 +295,13 @@ export class NavigatorView extends NavigatorViewBase {
         }
         this.requestUpdate();
     }
-    static treeElementOrder(treeElement) {
-        if (boostOrderForNode.has(treeElement)) {
+    static nodeOrder(node) {
+        if (node.boostOrder) {
             return 0;
         }
-        const actualElement = treeElement;
-        let order = TYPE_ORDERS.get(actualElement.nodeType) || 0;
-        if (actualElement.uiSourceCode) {
-            const contentType = actualElement.uiSourceCode.contentType();
+        let order = TYPE_ORDERS.get(node.type) || 0;
+        if (node instanceof NavigatorUISourceCodeTreeNode) {
+            const contentType = node.uiSourceCode().contentType();
             if (contentType.isDocument()) {
                 order += 3;
             }
@@ -318,19 +317,30 @@ export class NavigatorView extends NavigatorViewBase {
         }
         return order;
     }
+    static compareNodes(node1, node2) {
+        const order1 = NavigatorView.nodeOrder(node1);
+        const order2 = NavigatorView.nodeOrder(node2);
+        if (order1 > order2) {
+            return 1;
+        }
+        if (order1 < order2) {
+            return -1;
+        }
+        return 0;
+    }
     static appendSearchItem(contextMenu, path) {
         const searchLabel = path ? i18nString(UIStrings.searchInFolder) : i18nString(UIStrings.searchInAllFiles);
         const searchSources = new SearchSources(path && `file:${path}`);
         contextMenu.viewSection().appendItem(searchLabel, () => Common.Revealer.reveal(searchSources), { jslogContext: path ? 'search-in-folder' : 'search-in-all-files' });
     }
     static treeElementsCompare(treeElement1, treeElement2) {
-        const typeWeight1 = NavigatorView.treeElementOrder(treeElement1);
-        const typeWeight2 = NavigatorView.treeElementOrder(treeElement2);
-        if (typeWeight1 > typeWeight2) {
-            return 1;
-        }
-        if (typeWeight1 < typeWeight2) {
-            return -1;
+        const node1 = treeElement1.node;
+        const node2 = treeElement2.node;
+        if (node1 && node2) {
+            const order = NavigatorView.compareNodes(node1, node2);
+            if (order !== 0) {
+                return order;
+            }
         }
         return Platform.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
     }
@@ -645,7 +655,7 @@ export class NavigatorView extends NavigatorViewBase {
         }
         domainNode = new NavigatorGroupTreeNode(this, project, projectOrigin, Types.Domain, this.computeProjectDisplayName(target, projectOrigin));
         if (frame && projectOrigin === Common.ParsedURL.ParsedURL.extractOrigin(frame.url)) {
-            boostOrderForNode.add(domainNode.treeNode());
+            domainNode.boostOrder = true;
         }
         frameNode.appendChild(domainNode);
         if (isAuthored && this.groupByAuthored) {
@@ -666,10 +676,12 @@ export class NavigatorView extends NavigatorViewBase {
         frameNode.setHoverCallback(hoverCallback);
         this.frameNodes.set(frame, frameNode);
         const parentFrame = frame.parentFrame();
+        if (!parentFrame) {
+            frameNode.boostOrder = true;
+        }
         this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored)
             .appendChild(frameNode);
         if (!parentFrame) {
-            boostOrderForNode.add(frameNode.treeNode());
             frameNode.treeNode().expand();
         }
         function hoverCallback(hovered) {
@@ -1136,7 +1148,6 @@ export class NavigatorView extends NavigatorViewBase {
         }
     }
 }
-const boostOrderForNode = new WeakSet();
 export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     nodeType;
     navigatorView;
@@ -1385,6 +1396,7 @@ export class NavigatorTreeNode {
     id;
     navigatorView;
     type;
+    boostOrder = false;
     populated;
     isMerged;
     parent;

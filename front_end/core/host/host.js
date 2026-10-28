@@ -1224,7 +1224,7 @@ var InspectorFrontendHostStub = class {
     }
     void navigator.clipboard.writeText(text);
   }
-  openInNewTab(url) {
+  openInNewTab(url, _initiatorId) {
     if (Common2.ParsedURL.schemeIs(url, "javascript:")) {
       return;
     }
@@ -2842,7 +2842,8 @@ var PanelCodes = /* @__PURE__ */ ((PanelCodes3) => {
   PanelCodes3[PanelCodes3["autofill-view"] = 67] = "autofill-view";
   PanelCodes3[PanelCodes3["freestyler"] = 68] = "freestyler";
   PanelCodes3[PanelCodes3["ads"] = 69] = "ads";
-  PanelCodes3[PanelCodes3["MAX_VALUE"] = 70] = "MAX_VALUE";
+  PanelCodes3[PanelCodes3["private-verification-tokens"] = 70] = "private-verification-tokens";
+  PanelCodes3[PanelCodes3["MAX_VALUE"] = 71] = "MAX_VALUE";
   return PanelCodes3;
 })(PanelCodes || {});
 var MediaTypes = /* @__PURE__ */ ((MediaTypes3) => {

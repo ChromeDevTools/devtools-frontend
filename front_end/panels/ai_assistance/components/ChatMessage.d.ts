@@ -60,9 +60,15 @@ export interface Step {
      */
     title?: string;
     /**
-     * Executable JavaScript code generated or executed in this step.
+     * Display string of the tool call, e.g. `getCookieValues(["session"])`.
+     * Shown in the walkthrough step.
      */
-    code?: string;
+    action?: string;
+    /**
+     * Exact JavaScript the tool runs in the page. Shown in the permission prompt.
+     * Only set for tools that execute JavaScript.
+     */
+    javascriptCode?: string;
     /**
      * Raw string output or data returned by code execution.
      */

@@ -15,8 +15,15 @@ export default `/*
   }
 
   .image-view > .image {
+    flex: 1;
+    overflow: auto;
     padding: var(--sys-size-9) var(--sys-size-9) 10px;
     text-align: center;
+  }
+
+  .image-view > devtools-toolbar {
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    background-color: var(--sys-color-surface1);
   }
 
   .image-view img.resource-image-view {

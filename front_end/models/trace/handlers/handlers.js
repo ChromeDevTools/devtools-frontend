@@ -4089,7 +4089,7 @@ function parseCPUProfileData(parseOptions) {
           if (threadId === void 0) {
             return;
           }
-          const ts = Helpers6.Timing.milliToMicro(Types7.Timing.Milli(timeStampMilliseconds));
+          const ts = Types7.Timing.Micro(Math.round(Helpers6.Timing.milliToMicro(Types7.Timing.Milli(timeStampMilliseconds))));
           const nodeId = node.id;
           const profileCall = Helpers6.Trace.makeProfileCall(node, selectedProfileId, sampleIndex, ts, processId, threadId);
           finalizedData.profileCalls.push(profileCall);
@@ -4101,7 +4101,7 @@ function parseCPUProfileData(parseOptions) {
             finalizedData.profileTree?.roots.add(traceEntryNode);
           }
         }
-        function closeFrameCallback(_depth, _node, _sampleIndex, _timeStampMillis, durMs, selfTimeMs) {
+        function closeFrameCallback(_depth, _node, sampleIndex, _timeStampMillis, _durMs, _selfTimeMs) {
           const profileCallIndex = indexStack.pop();
           const profileCall = profileCallIndex !== void 0 && finalizedData.profileCalls[profileCallIndex];
           if (!profileCall) {
@@ -4112,8 +4112,11 @@ function parseCPUProfileData(parseOptions) {
           if (callFrame === void 0 || ts === void 0 || pid === void 0 || selectedProfileId === void 0 || tid === void 0 || traceEntryNode === void 0) {
             return;
           }
-          const dur = Helpers6.Timing.milliToMicro(Types7.Timing.Milli(durMs));
-          const selfTime = Helpers6.Timing.milliToMicro(Types7.Timing.Milli(selfTimeMs));
+          const endTimeMs = profileModel.timestamps[sampleIndex] ?? profileModel.profileEndTime;
+          const endTime = Types7.Timing.Micro(Math.round(Helpers6.Timing.milliToMicro(Types7.Timing.Milli(endTimeMs))));
+          const dur = Types7.Timing.Micro(endTime - ts);
+          const childrenDur = traceEntryNode.children.reduce((sum, child) => sum + (child.entry.dur ?? 0), 0);
+          const selfTime = Types7.Timing.Micro(dur - childrenDur);
           profileCall.dur = dur;
           traceEntryNode.selfTime = selfTime;
           const parentIndex = indexStack.at(-1);
@@ -6843,9 +6846,8 @@ async function buildLayoutShiftsClusters() {
     if (worstShiftEvent) {
       cluster.worstShiftEvent = worstShiftEvent;
     }
-    cluster.ts = cluster.events[0].ts;
-    const lastShiftTimings = Helpers17.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
-    cluster.dur = Types23.Timing.Micro(lastShiftTimings.endTime - cluster.events[0].ts + MAX_SHIFT_TIME_DELTA);
+    cluster.ts = cluster.clusterWindow.min;
+    cluster.dur = cluster.clusterWindow.range;
     if (weightedScore > sessionMaxScore) {
       clsWindowID = windowID;
       sessionMaxScore = weightedScore;

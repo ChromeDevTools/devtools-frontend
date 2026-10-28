@@ -198,10 +198,7 @@ export interface ThoughtResponse extends ToolCallEvent {
 export interface SideEffectResponse extends ToolCallEvent {
     type: ResponseType.SIDE_EFFECT;
     description: string | null;
-    /**
-     * No agent sets this field. The code comes from the preceding `ACTION`.
-     */
-    code?: string;
+    javascriptCode?: string;
     confirm: (decision: PermissionDecision) => void;
     permissionPrompt?: PermissionPrompt;
     permissionTitle?: string;
@@ -244,7 +241,7 @@ export interface ActionResponse extends ToolCallEvent {
      * code, such as `executeJavaScript`. For other tools it is a readable form of
      * the call.
      */
-    code?: string;
+    action?: string;
     /**
      * The tool's result, error message, or the denial message. Missing on the
      * code-only `ACTION` that precedes an approval prompt.
@@ -547,16 +544,19 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
      * - `title`: the step heading, sent as `TITLE`.
      * - `thought`: optional explanation shown in the step, sent as `THOUGHT`.
      * - `action`: the text shown in the step's code box, sent as
-     *   `ACTION.code`. It is real code only for tools that run code, such as
-     *   `executeJavaScript`. For other tools it is a readable form of the call,
-     *   for example `getInsightDetails('NAVIGATION_0', 'LCPBreakdown')`, and is
-     *   never executed.
+     *   `ACTION.action`. It is a readable form of the call, for example
+     *   `getInsightDetails('NAVIGATION_0', 'LCPBreakdown')`, and is never
+     *   executed.
+     * - `javascriptCode`: the exact JavaScript the tool runs in the page, sent
+     *   as `SIDE_EFFECT.javascriptCode` and shown in the permission prompt.
+     *   Only set by tools that execute JavaScript, such as `executeJavaScript`.
      * - `suggestions`: `AiAgent` does not use this field.
      */
     displayInfoFromArgs?: (args: Args) => {
         title?: string;
         thought?: string;
         action?: string;
+        javascriptCode?: string;
         suggestions?: [string, ...string[]];
     };
     /**

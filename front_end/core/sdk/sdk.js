@@ -20469,7 +20469,7 @@ function treeScopeDistance(node, property) {
 }
 function distanceToTreeScope(node, treeScope) {
   let distance = 0;
-  for (let ancestor = node; ancestor; ancestor = ancestor.parentNode) {
+  for (let ancestor = node.shadowRoots()?.[0] ?? node; ancestor; ancestor = ancestor.parentNode) {
     if (ancestor.backendNodeId() === treeScope) {
       return distance;
     }
@@ -21292,7 +21292,7 @@ var NodeCascade = class {
     }
   }
   #needsCascadeContextStep() {
-    if (!this.#node.isInShadowTree()) {
+    if (!this.#node.isInShadowTree() && !this.#node.shadowRoots()?.length) {
       return false;
     }
     if (this.#node.ancestorShadowRoot()?.shadowRootType() === "user-agent") {
@@ -21301,9 +21301,35 @@ var NodeCascade = class {
     }
     return true;
   }
+  #shouldOverload(activeProperty, propertyWithHigherSpecificity) {
+    if (activeProperty.important !== propertyWithHigherSpecificity.important) {
+      return activeProperty.important;
+    }
+    if (!activeProperty.important) {
+      return this.#needsCascadeContextStep() && treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity);
+    }
+    const activeIsUA = Boolean(activeProperty.ownerStyle.parentRule?.isUserAgent());
+    const higherSpecIsUA = Boolean(propertyWithHigherSpecificity.ownerStyle.parentRule?.isUserAgent());
+    if (activeIsUA !== higherSpecIsUA) {
+      return activeIsUA;
+    }
+    if (this.#needsCascadeContextStep()) {
+      const activeDistance = treeScopeDistance(this.#node, activeProperty);
+      const higherSpecDistance = treeScopeDistance(this.#node, propertyWithHigherSpecificity);
+      if (activeDistance !== higherSpecDistance) {
+        return activeDistance < higherSpecDistance;
+      }
+    }
+    const activeRule = activeProperty.ownerStyle.parentRule;
+    const higherSpecRule = propertyWithHigherSpecificity.ownerStyle.parentRule;
+    if (activeRule instanceof CSSStyleRule && higherSpecRule instanceof CSSStyleRule) {
+      return layerIdentifier(activeRule) !== layerIdentifier(higherSpecRule);
+    }
+    return false;
+  }
   updatePropertyState(propertyWithHigherSpecificity, canonicalName) {
     const activeProperty = this.activeProperties.get(canonicalName);
-    if (activeProperty?.important && !propertyWithHigherSpecificity.important || activeProperty && this.#needsCascadeContextStep() && treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity)) {
+    if (activeProperty && this.#shouldOverload(activeProperty, propertyWithHigherSpecificity)) {
       this.propertiesState.set(propertyWithHigherSpecificity, "Overloaded" /* OVERLOADED */);
       return;
     }
@@ -21317,6 +21343,9 @@ var NodeCascade = class {
     this.activeProperties.set(canonicalName, propertyWithHigherSpecificity);
   }
 };
+function layerIdentifier(rule) {
+  return rule.layers.map((layer) => layer.text || `anonymous:${layer.styleSheetId ?? ""}:${layer.range ? `${layer.range.startLine}:${layer.range.startColumn}:${layer.range.endLine}:${layer.range.endColumn}` : ""}`).join(".");
+}
 function isRegular(declaration2) {
   return "ownerStyle" in declaration2;
 }
@@ -42837,6 +42866,7 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common38.ObjectWr
   }
   initialize() {
     this.#targetManager.observeModels(EmulationModel, this);
+    this.#calibratedCpuThrottlingSetting.addChangeListener(this.#onCalibratedCPUThrottlingSettingChanged, this);
     this.#cpuPerformanceSetting.addChangeListener(this.#onCPUPerformanceSettingChanged, this);
     this.#onCPUPerformanceSettingChanged();
   }
@@ -42921,6 +42951,11 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common38.ObjectWr
       return this.#manualCPUPerformanceOverride;
     }
     return this.calculatedCPUPerformanceTier();
+  }
+  #onCalibratedCPUThrottlingSettingChanged() {
+    if (this.#manualCPUPerformanceOverride === void 0) {
+      this.#syncCPUPerformanceTier();
+    }
   }
   #onCPUPerformanceSettingChanged() {
     const val = this.#cpuPerformanceSetting.get();
@@ -46443,16 +46478,41 @@ var ServiceWorkerVersion = class _ServiceWorkerVersion {
     }
     return urlPattern;
   }
+  parseCondition(condition) {
+    const result = { ...condition };
+    if (condition.urlPattern !== void 0) {
+      result.urlPattern = this.parseURLPatternCondition(condition.urlPattern);
+      if (result.urlPattern === null) {
+        console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
+        return null;
+      }
+    }
+    if (condition.or !== void 0) {
+      const parsedOr = [];
+      for (const subCondition of condition.or) {
+        const parsedSub = this.parseCondition(subCondition);
+        if (parsedSub === null) {
+          return null;
+        }
+        parsedOr.push(parsedSub);
+      }
+      result.or = parsedOr;
+    }
+    if (condition.not !== void 0) {
+      const parsedNot = this.parseCondition(condition.not);
+      if (parsedNot === null) {
+        return null;
+      }
+      result.not = parsedNot;
+    }
+    return result;
+  }
   parseTypedRules(rules) {
     const routerRules = [];
     for (const rule of rules) {
-      const condition = { ...rule.condition };
-      if (rule.condition.urlPattern) {
-        condition.urlPattern = this.parseURLPatternCondition(rule.condition.urlPattern);
-        if (condition.urlPattern === null) {
-          console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
-          return null;
-        }
+      const condition = this.parseCondition(rule.condition);
+      if (condition === null) {
+        return null;
       }
       let source;
       if (rule.source.type === ServiceWorker.ServiceWorkerRouterSourceType.SourceDict) {

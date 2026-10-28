@@ -98,7 +98,7 @@ export class InspectorFrontendHostStub {
         }
         void navigator.clipboard.writeText(text);
     }
-    openInNewTab(url) {
+    openInNewTab(url, _initiatorId) {
         if (Common.ParsedURL.schemeIs(url, 'javascript:')) {
             return;
         }

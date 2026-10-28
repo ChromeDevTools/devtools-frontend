@@ -2,6 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 let graphemeSegmenter = null;
+// Excludes control characters (0x00-0x1F, 0x7F) to prevent splitting \r\n, which forms a single grapheme cluster.
+const PRINTABLE_ASCII_REGEX = /^[\x20-\x7e]*$/;
+function getGraphemeSegmenter() {
+    if (!graphemeSegmenter) {
+        graphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    }
+    return graphemeSegmenter;
+}
 export const escapeCharacters = (inputString, charsToEscape) => {
     let foundChar = false;
     for (let i = 0; i < charsToEscape.length; ++i) {
@@ -377,7 +385,6 @@ export const trimMiddle = (str, maxLength) => {
     if (str.length <= maxLength) {
         return str;
     }
-    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
     // If the max length is so small it can't fit the ellipsis, just return the ellipsis.
     const ellipsis = '…';
     const ellipsisLength = 1;
@@ -388,6 +395,14 @@ export const trimMiddle = (str, maxLength) => {
     const freeSpace = maxLength - ellipsisLength;
     const leftCount = Math.ceil(freeSpace / 2);
     const rightCount = Math.floor(freeSpace / 2);
+    // Printable ASCII characters (0x20-0x7E) cannot form multi-code-unit grapheme clusters.
+    // Checking one extra character inside each truncation boundary guarantees both slice boundaries
+    // fall between graphemes and the string contains at least maxLength + 1 graphemes.
+    if (PRINTABLE_ASCII_REGEX.test(str.slice(0, leftCount + 1)) &&
+        PRINTABLE_ASCII_REGEX.test(str.slice(str.length - rightCount - 1))) {
+        return str.slice(0, leftCount) + ellipsis + str.slice(str.length - rightCount);
+    }
+    const segmenter = getGraphemeSegmenter();
     let currentGraphemeCount = 0;
     let leftEndIndex = 0;
     // Sliding Window Buffer
@@ -426,7 +441,15 @@ export const trimEndWithMaxLength = (str, maxLength) => {
     }
     const ellipsis = '…';
     const ellipsisLength = 1;
-    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    if (maxLength <= ellipsisLength) {
+        return ellipsis;
+    }
+    // Printable ASCII characters (0x20-0x7E) cannot form multi-code-unit grapheme clusters.
+    // Checking up to maxLength + 1 characters guarantees at least maxLength + 1 graphemes in O(maxLength).
+    if (PRINTABLE_ASCII_REGEX.test(str.slice(0, maxLength + 1))) {
+        return str.slice(0, maxLength - ellipsisLength) + ellipsis;
+    }
+    const segmenter = getGraphemeSegmenter();
     const iterator = segmenter.segment(str)[Symbol.iterator]();
     let lastSegmentIndex = 0;
     for (let i = 0; i <= maxLength - ellipsisLength; i++) {
@@ -463,11 +486,11 @@ export const truncateToCodeUnitLength = (str, maxCodeUnits) => {
     if (str.length <= maxCodeUnits) {
         return str;
     }
-    if (!graphemeSegmenter) {
-        graphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    if (PRINTABLE_ASCII_REGEX.test(str.slice(0, maxCodeUnits + 1))) {
+        return str.slice(0, maxCodeUnits);
     }
     let lastSafeIndex = 0;
-    for (const { index, segment } of graphemeSegmenter.segment(str)) {
+    for (const { index, segment } of getGraphemeSegmenter().segment(str)) {
         if (index + segment.length > maxCodeUnits) {
             break;
         }

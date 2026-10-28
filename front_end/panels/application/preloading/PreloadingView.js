@@ -175,6 +175,15 @@ function pageURL() {
     return SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ??
         Platform.DevToolsPath.EmptyUrlString;
 }
+function toPreloadingWarnings(event) {
+    return {
+        disabledByPreference: event.disabledByPreference,
+        disabledByDataSaver: event.disabledByDataSaver,
+        disabledByBatterySaver: event.disabledByBatterySaver,
+        disabledByHoldbackPrefetchSpeculationRules: event.disabledByHoldbackPrefetchSpeculationRules,
+        disabledByHoldbackPrerenderSpeculationRules: event.disabledByHoldbackPrerenderSpeculationRules,
+    };
+}
 const RULE_SET_DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
@@ -238,20 +247,26 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         this.shouldPrettyPrint = !this.shouldPrettyPrint;
         this.requestUpdate();
     };
+    #onWarningsUpdated = (event) => {
+        this.#warnings = toPreloadingWarnings(event.data);
+        this.requestUpdate();
+    };
     constructor(model, view = RULE_SET_DEFAULT_VIEW) {
         super({ useShadowDom: true });
         this.#view = view;
         this.model = model;
         SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "ModelUpdated" /* SDK.PreloadingModel.Events.MODEL_UPDATED */, this.requestUpdate, this, { scoped: true });
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "WarningsUpdated" /* SDK.PreloadingModel.Events.WARNINGS_UPDATED */, e => {
-            this.#warnings = e.data;
-            this.requestUpdate();
-        }, this, { scoped: true });
     }
     wasShown() {
         super.wasShown();
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "ModelUpdated" /* SDK.PreloadingModel.Events.MODEL_UPDATED */, this.requestUpdate, this, { scoped: true });
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "WarningsUpdated" /* SDK.PreloadingModel.Events.WARNINGS_UPDATED */, this.#onWarningsUpdated, this, { scoped: true });
         this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.PreloadingModel.PreloadingModel, "ModelUpdated" /* SDK.PreloadingModel.Events.MODEL_UPDATED */, this.requestUpdate, this);
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.PreloadingModel.PreloadingModel, "WarningsUpdated" /* SDK.PreloadingModel.Events.WARNINGS_UPDATED */, this.#onWarningsUpdated, this);
     }
     onScopeChange() {
         const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
@@ -433,13 +448,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         this.requestUpdate();
     };
     #onWarningsUpdated = (event) => {
-        this.#warnings = {
-            disabledByPreference: event.data.disabledByPreference,
-            disabledByDataSaver: event.data.disabledByDataSaver,
-            disabledByBatterySaver: event.data.disabledByBatterySaver,
-            disabledByHoldbackPrefetchSpeculationRules: event.data.disabledByHoldbackPrefetchSpeculationRules,
-            disabledByHoldbackPrerenderSpeculationRules: event.data.disabledByHoldbackPrerenderSpeculationRules,
-        };
+        this.#warnings = toPreloadingWarnings(event.data);
         this.requestUpdate();
     };
     constructor(model, view = ATTEMPT_DEFAULT_VIEW) {
@@ -552,6 +561,10 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
     model;
     #view;
     #warnings;
+    #onWarningsUpdated = (event) => {
+        this.#warnings = toPreloadingWarnings(event.data);
+        this.requestUpdate();
+    };
     constructor(model, view = SUMMARY_DEFAULT_VIEW) {
         super({
             jslog: `${VisualLogging.pane('speculative-loads')}`,
@@ -560,15 +573,17 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
         this.#view = view;
         this.model = model;
         SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "ModelUpdated" /* SDK.PreloadingModel.Events.MODEL_UPDATED */, this.requestUpdate, this, { scoped: true });
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "WarningsUpdated" /* SDK.PreloadingModel.Events.WARNINGS_UPDATED */, e => {
-            this.#warnings = e.data;
-            this.requestUpdate();
-        }, this, { scoped: true });
     }
     wasShown() {
         super.wasShown();
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "ModelUpdated" /* SDK.PreloadingModel.Events.MODEL_UPDATED */, this.requestUpdate, this, { scoped: true });
+        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.PreloadingModel.PreloadingModel, "WarningsUpdated" /* SDK.PreloadingModel.Events.WARNINGS_UPDATED */, this.#onWarningsUpdated, this, { scoped: true });
         this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.PreloadingModel.PreloadingModel, "ModelUpdated" /* SDK.PreloadingModel.Events.MODEL_UPDATED */, this.requestUpdate, this);
+        SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.PreloadingModel.PreloadingModel, "WarningsUpdated" /* SDK.PreloadingModel.Events.WARNINGS_UPDATED */, this.#onWarningsUpdated, this);
     }
     onScopeChange() {
         const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);

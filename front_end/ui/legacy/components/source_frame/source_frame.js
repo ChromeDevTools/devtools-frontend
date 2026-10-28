@@ -1358,17 +1358,10 @@ var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
   #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
   constructor(element) {
     super(element);
-    this.#inspector.addEventListener(
-      LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST,
-      this.#memoryRequested,
-      this
-    );
-    this.#inspector.addEventListener(
-      LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED,
-      (event) => {
-        this.#address = event.data;
-      }
-    );
+    this.#inspector.onMemoryRequest = this.#memoryRequested.bind(this);
+    this.#inspector.onAddressChanged = (address) => {
+      this.#address = address;
+    };
     this.#inspector.show(this.contentElement);
   }
   wasShown() {
@@ -1404,8 +1397,8 @@ var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
     this.#inspector.outerMemoryLength = this.#memory.length;
     this.#inspector.hideValueInspector = true;
   }
-  #memoryRequested(event) {
-    const { start, end, address } = event.data;
+  #memoryRequested(request) {
+    const { start, end, address } = request;
     if (address < start || address >= end) {
       throw new Error("Requested address is out of bounds.");
     }
@@ -1556,9 +1549,10 @@ __export(FontView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   FontView: () => FontView
 });
+import "../../../kit/kit.js";
 import * as i18n5 from "../../../../core/i18n/i18n.js";
 import * as TextUtils6 from "../../../../core/text_utils/text_utils.js";
-import { Directives, html as html3, render as render3 } from "../../../lit/lit.js";
+import { Directives, html as html3, nothing as nothing3, render as render3 } from "../../../lit/lit.js";
 import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
 import * as UI4 from "../../legacy.js";
 
@@ -1570,11 +1564,18 @@ var fontView_css_default = `/*
  */
 
 .font-view {
+  flex: 1;
+  overflow: auto;
   font-size: 60px;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   text-align: center;
   padding: 15px;
+}
+
+devtools-toolbar.font-view-toolbar {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  background-color: var(--sys-color-surface1);
 }
 
 /*# sourceURL=${import.meta.resolve("./fontView.css")} */`;
@@ -1611,6 +1612,11 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   })}
       style="visibility: hidden; z-index: -1; display: inline; position: absolute; font-family: ${input.fontFamily}; font-size: ${MEASURE_FONT_SIZE}px"
     >${FONT_PREVIEW_LINES.map((line, i) => html3`${i > 0 ? html3`<br>` : ""}${line}`)}</div>
+    ${input.showToolbar ? html3`
+      <devtools-toolbar class="font-view-toolbar">
+        <div class="toolbar-text">${input.mimeType}</div>
+      </devtools-toolbar>
+    ` : nothing3}
   `, target);
   output.measureDimensions = () => {
     if (!dummyEl) {
@@ -1628,9 +1634,10 @@ var FontView = class extends UI4.View.SimpleView {
   #fontFamily = "";
   #previewFontSize = "";
   #previewVisible = false;
+  #showToolbar = false;
   #contentLoaded = false;
-  constructor(mimeType, contentProvider, view = DEFAULT_VIEW3) {
-    super({
+  constructor(mimeType, contentProvider, element, view = DEFAULT_VIEW3) {
+    super(element, {
       title: i18nString3(UIStrings3.font),
       viewId: "font",
       jslog: `${VisualLogging2.pane("font-view")}`
@@ -1639,6 +1646,16 @@ var FontView = class extends UI4.View.SimpleView {
     this.url = contentProvider.contentURL();
     this.contentProvider = contentProvider;
     this.#mimeType = mimeType;
+  }
+  get showToolbar() {
+    return this.#showToolbar;
+  }
+  set showToolbar(showToolbar) {
+    if (this.#showToolbar === showToolbar) {
+      return;
+    }
+    this.#showToolbar = showToolbar;
+    this.requestUpdate();
   }
   async toolbarItems() {
     return html3`<div class="toolbar-text">${this.#mimeType}</div>`;
@@ -1697,7 +1714,9 @@ var FontView = class extends UI4.View.SimpleView {
         fontFaceRule: this.#fontFaceRule,
         fontFamily: this.#fontFamily,
         previewFontSize: this.#previewFontSize,
-        previewVisible: this.#previewVisible
+        previewVisible: this.#previewVisible,
+        showToolbar: this.#showToolbar,
+        mimeType: this.#mimeType
       },
       output,
       this.contentElement
@@ -1727,11 +1746,13 @@ import * as Common3 from "../../../../core/common/common.js";
 import * as Host2 from "../../../../core/host/host.js";
 import * as i18n7 from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
 import * as TextUtils7 from "../../../../core/text_utils/text_utils.js";
 import * as Workspace from "../../../../models/workspace/workspace.js";
-import { html as html4, render as render4 } from "../../../lit/lit.js";
+import { html as html4, nothing as nothing4, render as render4 } from "../../../lit/lit.js";
 import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
 import * as UI5 from "../../legacy.js";
+import * as Components from "../utils/utils.js";
 
 // gen/front_end/ui/legacy/components/source_frame/imageView.css.js
 var imageView_css_default = `/*
@@ -1746,8 +1767,15 @@ var imageView_css_default = `/*
   }
 
   .image-view > .image {
+    flex: 1;
+    overflow: auto;
     padding: var(--sys-size-9) var(--sys-size-9) 10px;
     text-align: center;
+  }
+
+  .image-view > devtools-toolbar {
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    background-color: var(--sys-color-surface1);
   }
 
   .image-view img.resource-image-view {
@@ -1850,6 +1878,17 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         ${i18nString4(UIStrings4.thisImageIsTooBig)}
       </devtools-link>
     </div>
+    ${input.showToolbar ? html4`
+      <devtools-toolbar>
+        <div class="toolbar-text">${input.size}</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-text">${input.dimensions}</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-text">${input.aspectRatio}</div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-text">${input.mimeType}</div>
+      </devtools-toolbar>
+    ` : nothing4}
   `, target, {
     container: {
       classes: ["image-view"],
@@ -1879,10 +1918,11 @@ var ImageView = class extends ImageViewBase {
   #view;
   #imageSrc = null;
   #isUnavailable = false;
+  #showToolbar = false;
   #loadPromise;
   #loadResolve;
-  constructor(mimeType, contentProvider, view = DEFAULT_VIEW4) {
-    super({
+  constructor(mimeType, contentProvider, element, view = DEFAULT_VIEW4) {
+    super(element, {
       title: i18nString4(UIStrings4.image),
       viewId: "image",
       jslog: `${VisualLogging3.pane("image-view")}`
@@ -1908,12 +1948,27 @@ var ImageView = class extends ImageViewBase {
     this.#mimeType = mimeType;
     this.performUpdate();
   }
+  get showToolbar() {
+    return this.#showToolbar;
+  }
+  set showToolbar(showToolbar) {
+    if (this.#showToolbar === showToolbar) {
+      return;
+    }
+    this.#showToolbar = showToolbar;
+    this.requestUpdate();
+  }
   performUpdate() {
     this.#view(
       {
         url: this.#url,
         imageSrc: this.#imageSrc,
         isUnavailable: this.#isUnavailable,
+        showToolbar: this.#showToolbar,
+        size: this.#size,
+        dimensions: this.#dimensions,
+        aspectRatio: this.#aspectRatio,
+        mimeType: this.#mimeType,
         onImageLoad: this.#onImageLoad,
         onImageError: this.#onImageError,
         onContextMenu: this.#contextMenu.bind(this)
@@ -1926,6 +1981,9 @@ var ImageView = class extends ImageViewBase {
     const img = event.target;
     this.#dimensions = i18nString4(UIStrings4.dD, { PH1: img.naturalWidth, PH2: img.naturalHeight });
     this.#aspectRatio = Platform2.NumberUtilities.aspectRatio(img.naturalWidth, img.naturalHeight);
+    if (this.#showToolbar) {
+      this.requestUpdate();
+    }
     this.#loadResolve?.();
     this.#loadResolve = void 0;
     this.#loadPromise = void 0;
@@ -1933,6 +1991,9 @@ var ImageView = class extends ImageViewBase {
   #onImageError = () => {
     this.#dimensions = "";
     this.#aspectRatio = "";
+    if (this.#showToolbar) {
+      this.requestUpdate();
+    }
     this.#loadResolve?.();
     this.#loadResolve = void 0;
     this.#loadPromise = void 0;
@@ -2069,7 +2130,18 @@ var ImageView = class extends ImageViewBase {
     if (Common3.ParsedURL.isPrivilegedScheme(this.#url)) {
       return;
     }
-    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#url);
+    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#url, this.#initiatorId());
+  }
+  /**
+   * The frame or worker that the image belongs to, which the browser attributes opening it in a new tab to; see
+   * {@link Components.Linkifier.openInNewTabInitiatorId}.
+   */
+  #initiatorId() {
+    const contentProvider = this.#contentProvider;
+    if (contentProvider instanceof SDK2.NetworkRequest.NetworkRequest || contentProvider instanceof SDK2.Resource.Resource || contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      return Components.Linkifier.openInNewTabInitiatorId(contentProvider);
+    }
+    return void 0;
   }
   async #handleDrop(dataTransfer) {
     const items = dataTransfer.items;
@@ -2114,7 +2186,7 @@ __export(JSONView_exports, {
   SearchableJsonView: () => SearchableJsonView
 });
 import * as i18n9 from "../../../../core/i18n/i18n.js";
-import * as SDK2 from "../../../../core/sdk/sdk.js";
+import * as SDK3 from "../../../../core/sdk/sdk.js";
 import { html as html5, render as render5 } from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 import * as UI6 from "../../legacy.js";
@@ -2148,7 +2220,7 @@ var UIStrings5 = {
 var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/source_frame/JSONView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(input.parsedJSON.data);
+  const obj = SDK3.RemoteObject.RemoteObject.fromLocalObject(input.parsedJSON.data);
   const titleText = input.parsedJSON.prefix + obj.description + input.parsedJSON.suffix;
   const title = html5`<span>${titleText}</span>`;
   render5(
@@ -2205,7 +2277,13 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     jsonView.element.tabIndex = 0;
     return searchableView;
   }
+  get parsedJSON() {
+    return this.#parsedJSON;
+  }
   set parsedJSON(parsedJSON) {
+    if (this.#parsedJSON === parsedJSON) {
+      return;
+    }
     if (this.objectTree) {
       this.objectTree.removeEventListener(
         ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
@@ -2281,7 +2359,7 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     if (this.objectTree) {
       return;
     }
-    const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(this.#parsedJSON.data);
+    const obj = SDK3.RemoteObject.RemoteObject.fromLocalObject(this.#parsedJSON.data);
     this.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(obj, {
       readOnly: true,
       propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
@@ -2390,7 +2468,16 @@ var SearchableJsonView = class extends UI6.SearchableView.SearchableView {
     jsonView.element.tabIndex = 0;
   }
   set jsonObject(obj) {
-    this.#jsonView.parsedJSON = new ParsedJSON(obj, "", "");
+    this.parsedJSON = new ParsedJSON(obj, "", "");
+  }
+  get parsedJSON() {
+    return this.#jsonView.parsedJSON;
+  }
+  set parsedJSON(parsedJSON) {
+    if (this.#jsonView.parsedJSON === parsedJSON) {
+      return;
+    }
+    this.#jsonView.parsedJSON = parsedJSON;
     this.searchProvider = this.#jsonView;
     this.#jsonView.show(this.element);
     this.requestUpdate();
@@ -2753,10 +2840,17 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
       );
     }
   }
-  static createSearchableView(parsedXML) {
+  static createSearchableView(parsedXML, element) {
     const xmlView = new _XMLView();
     xmlView.parsedXML = parsedXML;
-    const searchableView = new UI7.SearchableView.SearchableView(xmlView, null);
+    const searchableView = new UI7.SearchableView.SearchableView(
+      xmlView,
+      /* replaceable= */
+      null,
+      /* settingName= */
+      void 0,
+      element
+    );
     searchableView.setPlaceholder(i18nString6(UIStrings6.find));
     xmlView.searchableView = searchableView;
     xmlView.show(searchableView.element);

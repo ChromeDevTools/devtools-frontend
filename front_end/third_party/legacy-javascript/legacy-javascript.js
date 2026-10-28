@@ -887,8 +887,8 @@ function getPolyfillPatterns() {
   }
   const esShimsBranches = [];
   for (const [object, props] of byObject) {
-    const propAlt = `(?:${props.join("|")})`;
-    esShimsBranches.push(`${escapeRegExp(object)},\\s*{${propAlt}:.*},\\s*{${propAlt}`);
+    const propBranches = props.map((p) => `${p}:[^};]*},\\s*{${p}\\b`).join("|");
+    esShimsBranches.push(`${escapeRegExp(object)},\\s*{(?:${propBranches})`);
   }
   const targetBranches = [];
   for (const [target, props] of byTarget) {

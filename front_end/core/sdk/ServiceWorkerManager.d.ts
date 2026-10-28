@@ -93,6 +93,7 @@ export declare class ServiceWorkerVersion {
      * Parses it to an object if valid JSON, otherwise falls back to the original string.
      */
     private parseURLPatternCondition;
+    private parseCondition;
     private parseTypedRules;
 }
 export declare namespace ServiceWorkerVersion {

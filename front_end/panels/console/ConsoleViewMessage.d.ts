@@ -129,6 +129,14 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     searchCount(): number;
     searchHighlightNode(index: number): Element;
     static linkifyWithCustomLinkifier(string: string, linkifier: (arg0: string, arg1: Platform.DevToolsPath.UrlString, arg2?: number, arg3?: number) => Node): DocumentFragment | UI.Widget.Widget;
+    /**
+     * The frame or worker that this message came from, which the browser attributes opening one of the message's
+     * URLs in a new tab to; see {@link Components.Linkifier.openInNewTabInitiatorId}. That is the frame of the
+     * request for messages about a request, and the frame of the execution context otherwise, as long as that
+     * context still exists. Messages whose context is gone (e.g. from a document that has since been navigated
+     * away from, kept with "Preserve log") are not attributed to anything.
+     */
+    private initiatorId;
     private linkifyStringAsFragment;
     private static tokenizeMessageText;
     groupKey(): string;

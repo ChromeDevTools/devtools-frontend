@@ -60,7 +60,8 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     set enableAuthoredGrouping(enableAuthoredGrouping: boolean);
     get projectFilter(): ((project: Workspace.Workspace.Project) => boolean) | undefined;
     set projectFilter(projectFilter: ((project: Workspace.Workspace.Project) => boolean) | undefined);
-    private static treeElementOrder;
+    private static nodeOrder;
+    static compareNodes(node1: NavigatorTreeNode, node2: NavigatorTreeNode): number;
     static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void;
     private static treeElementsCompare;
     performUpdate(): void;
@@ -179,6 +180,7 @@ export declare class NavigatorTreeNode {
     id: string;
     protected navigatorView: NavigatorView;
     type: string;
+    boostOrder: boolean;
     private populated;
     isMerged: boolean;
     parent: NavigatorTreeNode | null;

@@ -58,6 +58,7 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     initialize() {
         this.#targetManager.observeModels(EmulationModel, this);
+        this.#calibratedCpuThrottlingSetting.addChangeListener(this.#onCalibratedCPUThrottlingSettingChanged, this);
         this.#cpuPerformanceSetting.addChangeListener(this.#onCPUPerformanceSettingChanged, this);
         this.#onCPUPerformanceSettingChanged();
     }
@@ -147,6 +148,11 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
             return this.#manualCPUPerformanceOverride;
         }
         return this.calculatedCPUPerformanceTier();
+    }
+    #onCalibratedCPUThrottlingSettingChanged() {
+        if (this.#manualCPUPerformanceOverride === undefined) {
+            this.#syncCPUPerformanceTier();
+        }
     }
     #onCPUPerformanceSettingChanged() {
         const val = this.#cpuPerformanceSetting.get();

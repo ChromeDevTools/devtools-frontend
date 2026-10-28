@@ -10,11 +10,18 @@ export default `/*
  */
 
 .font-view {
+  flex: 1;
+  overflow: auto;
   font-size: 60px;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   text-align: center;
   padding: 15px;
+}
+
+devtools-toolbar.font-view-toolbar {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  background-color: var(--sys-color-surface1);
 }
 
 /*# sourceURL=${import.meta.resolve('./fontView.css')} */`;

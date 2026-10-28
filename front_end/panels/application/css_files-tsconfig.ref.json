@@ -19,6 +19,7 @@
     "originTrialTreeView.css.js",
     "preloading/preloadingView.css.js",
     "preloading/preloadingViewDropDown.css.js",
+    "privateVerificationTokensView.css.js",
     "resourcesPanel.css.js",
     "resourcesSidebar.css.js",
     "serviceWorkerCacheViews.css.js",

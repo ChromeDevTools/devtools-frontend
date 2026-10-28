@@ -11,7 +11,7 @@ export class SimpleView extends VBox {
     constructor(elementOrOptions, options) {
         // @ts-expect-error
         super(elementOrOptions, options);
-        const optionsObj = (elementOrOptions instanceof HTMLElement ? options : elementOrOptions);
+        const optionsObj = (elementOrOptions instanceof HTMLElement || elementOrOptions === undefined ? options : elementOrOptions);
         this.#title = optionsObj.title;
         this.#viewId = optionsObj.viewId;
         if (!Platform.StringUtilities.isExtendedKebabCase(this.#viewId)) {

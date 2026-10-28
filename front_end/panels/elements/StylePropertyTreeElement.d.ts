@@ -87,13 +87,13 @@ declare const ColorMixRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.C
 export declare class ColorMixRenderer extends ColorMixRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const ContrastColorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.ContrastColorMatch>;
 export declare class ContrastColorRenderer extends ContrastColorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.ContrastColorMatch, context: RenderingContext): Lit.LitTemplate;
 }
 declare const AngleRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AngleMatch>;
 export declare class AngleRenderer extends AngleRendererBase {
@@ -105,7 +105,7 @@ declare const LinkableNameRendererBase: RendererBase<SDK.CSSPropertyParserMatche
 export declare class LinkableNameRenderer extends LinkableNameRendererBase {
     #private;
     constructor(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, stylesContainer: StylesContainer);
-    render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Lit.LitTemplate;
 }
 declare const BezierRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BezierMatch>;
 export declare class BezierRenderer extends BezierRendererBase {
@@ -117,7 +117,7 @@ declare const AutoBaseRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.A
 export declare class AutoBaseRenderer extends AutoBaseRendererBase {
     #private;
     constructor(computedStyle: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
-    render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Lit.LitTemplate;
 }
 export declare const enum ShadowPropertyType {
     X = "x",
@@ -165,7 +165,7 @@ export declare class ShadowRenderer extends ShadowRendererBase {
 }
 declare const GridTemplateRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.GridTemplateMatch>;
 export declare class GridTemplateRenderer extends GridTemplateRendererBase {
-    render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Node[] | Lit.LitTemplate;
+    render(match: SDK.CSSPropertyParserMatchers.GridTemplateMatch, context: RenderingContext): Lit.LitTemplate;
 }
 export declare const SHORTHANDS_FOR_PERCENTAGES: Set<string>;
 declare const LengthRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.LengthMatch>;

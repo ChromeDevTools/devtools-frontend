@@ -61,10 +61,6 @@ export declare const animateOn: (_condition: boolean, _className: string) => Lit
 export declare function measurePreferredSize(element: Element, containerElement?: Element | null): Geometry.Size;
 export declare function startBatchUpdate(): void;
 export declare function endBatchUpdate(): void;
-export declare function animateFunction(window: Window, func: (...args: any[]) => void, params: Array<{
-    from: number;
-    to: number;
-}>, duration: number, animationComplete?: (() => void)): () => void;
 export declare class LongClickController {
     private readonly element;
     private readonly callback;
@@ -150,7 +146,7 @@ export declare class CheckboxLabel extends HTMLElement {
     static readonly observedAttributes: string[];
     constructor();
     static create(title?: Platform.UIString.LocalizedString, checked?: boolean, subtitle?: Platform.UIString.LocalizedString, jslogContext?: string, small?: boolean, tooltip?: Platform.UIString.LocalizedString): CheckboxLabel;
-    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
+    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     getLabelText(): string | null;
     setLabelText(content: string): void;
     get ariaLabel(): string | null;
@@ -167,6 +163,8 @@ export declare class CheckboxLabel extends HTMLElement {
     get title(): string;
     set name(name: string);
     get name(): string;
+    set jslogContext(jslogContext: string | null | undefined);
+    get jslogContext(): string | null;
     click(): void;
     /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */
     static createWithStringLiteral(title?: string, checked?: boolean, jslogContext?: string, small?: boolean): CheckboxLabel;

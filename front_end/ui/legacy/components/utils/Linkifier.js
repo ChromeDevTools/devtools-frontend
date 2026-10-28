@@ -534,6 +534,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             userMetric: options?.userMetric,
             onRef: options.onRef,
             allowPrivileged: options?.allowPrivileged,
+            initiatorId: options.initiatorId,
         };
         return Linkifier.renderLink(linkText, className, linkOptions);
     }
@@ -601,6 +602,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
                     columnNumber: options.columnNumber,
                     userMetric: options.userMetric,
                     allowPrivileged: options.allowPrivileged,
+                    initiatorId: options.initiatorId,
                 };
                 infoByAnchor.set(link, linkInfo);
             });
@@ -762,6 +764,24 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
     static uiLocation(link) {
         return Linkifier.linkInfo(link)?.uiLocation ?? null;
     }
+    /**
+     * Returns the frame or worker to attribute opening `info`'s URL in a new tab to: the one it was linkified for,
+     * if given; the one that the network request it reveals belongs to; or the one that the source it points at
+     * was loaded by. A URL that merely matches some resource of the page is not attributed to that resource's
+     * frame: where the text came from matters, not what it happens to spell.
+     */
+    static initiatorIdForLink(info) {
+        if (info.initiatorId) {
+            return info.initiatorId;
+        }
+        if (info.revealable instanceof SDK.NetworkRequest.NetworkRequest) {
+            return openInNewTabInitiatorId(info.revealable);
+        }
+        if (info.uiLocation) {
+            return openInNewTabInitiatorId(info.uiLocation.uiSourceCode);
+        }
+        return undefined;
+    }
     static linkActions(info) {
         const result = [];
         if (!info) {
@@ -827,7 +847,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
                     section: 'reveal',
                     title: UI.UIUtils.openLinkExternallyLabel(),
                     jslogContext: 'open-in-new-tab',
-                    handler: () => UIHelpers.openInNewTab(url, info.allowPrivileged),
+                    handler: () => UIHelpers.openInNewTab(url, info.allowPrivileged, Linkifier.initiatorIdForLink(info)),
                 });
             }
             result.push({
@@ -965,6 +985,55 @@ export class ContentProviderContextMenuProvider {
         else {
             contextMenu.clipboardSection().appendItem(UI.UIUtils.copyFileNameLabel(), () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName), { jslogContext: 'copy-file-name' });
         }
+    }
+}
+/**
+ * Returns the {@link OpenInNewTabInitiatorId} for a URL that came from `source`: the frame that `source` belongs
+ * to, or the worker that it belongs to when there is no frame, if DevTools knows that unambiguously. Returns
+ * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin.
+ */
+export function openInNewTabInitiatorId(source) {
+    if (source instanceof SDK.NetworkRequest.NetworkRequest) {
+        return source.frameId ?? workerTargetId(SDK.NetworkManager.NetworkManager.forRequest(source)?.target());
+    }
+    if (source instanceof SDK.Resource.Resource) {
+        return source.frameId ?? undefined;
+    }
+    if (source instanceof SDK.RuntimeModel.ExecutionContext) {
+        return source.frameId ?? workerTargetId(source.target());
+    }
+    if (source instanceof Workspace.UISourceCode.UISourceCode) {
+        const frames = Bindings.NetworkProject.NetworkProject.framesForUISourceCode(source);
+        if (frames.length === 1) {
+            return frames[0].id;
+        }
+        if (frames.length > 1) {
+            // Loaded by several frames, which may not all be same-origin; whichever of them the link was created for
+            // is unknown by now.
+            return undefined;
+        }
+        return workerTargetId(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(source));
+    }
+    return undefined;
+}
+/**
+ * Returns the id of `target` if it is a worker (or worklet), which has an origin but no frame. A frame target is
+ * never used as a fallback: its id stands for its main frame, which may not be where a URL came from.
+ */
+function workerTargetId(target) {
+    switch (target?.type()) {
+        case SDK.Target.Type.Worker:
+        case SDK.Target.Type.SHARED_WORKER:
+        case SDK.Target.Type.ServiceWorker:
+        case SDK.Target.Type.WORKLET:
+        case SDK.Target.Type.AUCTION_WORKLET: {
+            const id = target.id();
+            // 'main' is the frontend's placeholder for a root target that it did not learn the id of; the browser does
+            // not know it by that name.
+            return id === 'main' ? undefined : id;
+        }
+        default:
+            return undefined;
     }
 }
 export var Events;

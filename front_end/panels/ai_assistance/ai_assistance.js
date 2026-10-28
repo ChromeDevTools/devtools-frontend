@@ -2136,14 +2136,14 @@ function renderTitle(step) {
   const paused = step.state.type === "needs_approval" ? html5`<span class="paused">${lockedString2(UIStringsNotTranslate.paused)}: </span>` : Lit5.nothing;
   return html5`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
-function renderStepCode(step) {
-  if (!step.code && !step.output) {
+function renderStepAction(step) {
+  if (!step.action && !step.output) {
     return Lit5.nothing;
   }
   const codeHeadingText = step.output && step.state.type !== "canceled" ? lockedString2(UIStringsNotTranslate.codeExecuted) : lockedString2(UIStringsNotTranslate.codeToExecute);
-  const code = step.code ? html5`<div class="action-result">
+  const code = step.action ? html5`<div class="action-result">
       <devtools-code-block
-        .code=${step.code.trim()}
+        .code=${step.action.trim()}
         .codeLang=${"js"}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
@@ -2156,7 +2156,7 @@ function renderStepCode(step) {
       .codeLang=${"js"}
       .displayNotice=${true}
       .header=${lockedString2(UIStringsNotTranslate.dataReturned)}
-      .showCopyButton=${false}
+      .showCopyButton=${true}
     ></devtools-code-block>
   </div>` : Lit5.nothing;
   return html5`<div class="step-code">${code}${output}</div>`;
@@ -2184,7 +2184,7 @@ function renderStepDetails({
   )}` : Lit5.nothing;
   return html5`<div class="step-details">
     ${thought}
-    ${renderStepCode(step)}
+    ${renderStepAction(step)}
     ${sideEffects}
     ${contextDetails}
   </div>`;
@@ -2309,7 +2309,7 @@ function renderStepBadge({ step, isLast }) {
 function renderStep({ step, markdownRenderer, isLast }) {
   const stepClasses = Lit5.Directives.classMap({
     step: true,
-    empty: !step.thought && !step.code && !step.contextDetails && step.state.type !== "needs_approval",
+    empty: !step.thought && !step.action && !step.contextDetails && step.state.type !== "needs_approval",
     paused: step.state.type === "needs_approval",
     canceled: step.state.type === "canceled"
   });
@@ -6281,13 +6281,13 @@ var Debugger;
   })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
 })(Debugger || (Debugger = {}));
 var Runtime;
-((Runtime6) => {
+((Runtime7) => {
   let SerializationOptionsSerialization;
   ((SerializationOptionsSerialization2) => {
     SerializationOptionsSerialization2["Deep"] = "deep";
     SerializationOptionsSerialization2["Json"] = "json";
     SerializationOptionsSerialization2["IdOnly"] = "idOnly";
-  })(SerializationOptionsSerialization = Runtime6.SerializationOptionsSerialization || (Runtime6.SerializationOptionsSerialization = {}));
+  })(SerializationOptionsSerialization = Runtime7.SerializationOptionsSerialization || (Runtime7.SerializationOptionsSerialization = {}));
   let DeepSerializedValueType;
   ((DeepSerializedValueType2) => {
     DeepSerializedValueType2["Undefined"] = "undefined";
@@ -6314,7 +6314,7 @@ var Runtime;
     DeepSerializedValueType2["Node"] = "node";
     DeepSerializedValueType2["Window"] = "window";
     DeepSerializedValueType2["Generator"] = "generator";
-  })(DeepSerializedValueType = Runtime6.DeepSerializedValueType || (Runtime6.DeepSerializedValueType = {}));
+  })(DeepSerializedValueType = Runtime7.DeepSerializedValueType || (Runtime7.DeepSerializedValueType = {}));
   let RemoteObjectType;
   ((RemoteObjectType2) => {
     RemoteObjectType2["Object"] = "object";
@@ -6325,7 +6325,7 @@ var Runtime;
     RemoteObjectType2["Boolean"] = "boolean";
     RemoteObjectType2["Symbol"] = "symbol";
     RemoteObjectType2["Bigint"] = "bigint";
-  })(RemoteObjectType = Runtime6.RemoteObjectType || (Runtime6.RemoteObjectType = {}));
+  })(RemoteObjectType = Runtime7.RemoteObjectType || (Runtime7.RemoteObjectType = {}));
   let RemoteObjectSubtype;
   ((RemoteObjectSubtype2) => {
     RemoteObjectSubtype2["Array"] = "array";
@@ -6349,7 +6349,7 @@ var Runtime;
     RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
     RemoteObjectSubtype2["Deferredmodule"] = "deferredmodule";
     RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
-  })(RemoteObjectSubtype = Runtime6.RemoteObjectSubtype || (Runtime6.RemoteObjectSubtype = {}));
+  })(RemoteObjectSubtype = Runtime7.RemoteObjectSubtype || (Runtime7.RemoteObjectSubtype = {}));
   let ObjectPreviewType;
   ((ObjectPreviewType2) => {
     ObjectPreviewType2["Object"] = "object";
@@ -6360,7 +6360,7 @@ var Runtime;
     ObjectPreviewType2["Boolean"] = "boolean";
     ObjectPreviewType2["Symbol"] = "symbol";
     ObjectPreviewType2["Bigint"] = "bigint";
-  })(ObjectPreviewType = Runtime6.ObjectPreviewType || (Runtime6.ObjectPreviewType = {}));
+  })(ObjectPreviewType = Runtime7.ObjectPreviewType || (Runtime7.ObjectPreviewType = {}));
   let ObjectPreviewSubtype;
   ((ObjectPreviewSubtype2) => {
     ObjectPreviewSubtype2["Array"] = "array";
@@ -6384,7 +6384,7 @@ var Runtime;
     ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     ObjectPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(ObjectPreviewSubtype = Runtime6.ObjectPreviewSubtype || (Runtime6.ObjectPreviewSubtype = {}));
+  })(ObjectPreviewSubtype = Runtime7.ObjectPreviewSubtype || (Runtime7.ObjectPreviewSubtype = {}));
   let PropertyPreviewType;
   ((PropertyPreviewType2) => {
     PropertyPreviewType2["Object"] = "object";
@@ -6396,7 +6396,7 @@ var Runtime;
     PropertyPreviewType2["Symbol"] = "symbol";
     PropertyPreviewType2["Accessor"] = "accessor";
     PropertyPreviewType2["Bigint"] = "bigint";
-  })(PropertyPreviewType = Runtime6.PropertyPreviewType || (Runtime6.PropertyPreviewType = {}));
+  })(PropertyPreviewType = Runtime7.PropertyPreviewType || (Runtime7.PropertyPreviewType = {}));
   let PropertyPreviewSubtype;
   ((PropertyPreviewSubtype2) => {
     PropertyPreviewSubtype2["Array"] = "array";
@@ -6420,7 +6420,7 @@ var Runtime;
     PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     PropertyPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(PropertyPreviewSubtype = Runtime6.PropertyPreviewSubtype || (Runtime6.PropertyPreviewSubtype = {}));
+  })(PropertyPreviewSubtype = Runtime7.PropertyPreviewSubtype || (Runtime7.PropertyPreviewSubtype = {}));
   let ConsoleAPICalledEventType;
   ((ConsoleAPICalledEventType2) => {
     ConsoleAPICalledEventType2["Log"] = "log";
@@ -6441,7 +6441,7 @@ var Runtime;
     ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
     ConsoleAPICalledEventType2["Count"] = "count";
     ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
-  })(ConsoleAPICalledEventType = Runtime6.ConsoleAPICalledEventType || (Runtime6.ConsoleAPICalledEventType = {}));
+  })(ConsoleAPICalledEventType = Runtime7.ConsoleAPICalledEventType || (Runtime7.ConsoleAPICalledEventType = {}));
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/panels/ai_assistance/components/ChatInput.ts
@@ -8467,9 +8467,9 @@ function renderPermissionPrompt(step, disclaimerText) {
   const dialog3 = step.state.sideEffectDialog;
   const title = dialog3.permissionTitle ?? lockedString5(UIStringsNotTranslate4.allowThisAction);
   const description = dialog3.description ? html9`<p class="permission-prompt-description">${dialog3.description}</p>` : Lit9.nothing;
-  const code = step.code ? html9`<devtools-code-block
+  const code = step.javascriptCode ? html9`<devtools-code-block
       class="permission-prompt-code"
-      .code=${step.code.trim()}
+      .code=${step.javascriptCode.trim()}
       .codeLang=${"js"}
       .displayNotice=${true}
       .header=${lockedString5(UIStringsNotTranslate4.codeToExecute)}
@@ -11155,7 +11155,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           case AiAssistanceModel8.AiAgent.ResponseType.SIDE_EFFECT: {
             step = stepForCall(data.callId);
             const approvalStep = step;
-            approvalStep.code ??= data.code;
+            approvalStep.javascriptCode = data.javascriptCode;
             const promptShownAt = performance.now();
             approvalStep.state = {
               type: "needs_approval",
@@ -11179,7 +11179,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
           case AiAssistanceModel8.AiAgent.ResponseType.ACTION: {
             step = stepForCall(data.callId);
             step.state = data.canceled ? { type: "canceled" } : { type: "completed" };
-            step.code ??= data.code;
+            step.action ??= data.action;
             step.output ??= data.output;
             step.widgets ??= data.widgets;
             commitStep();
@@ -11223,7 +11223,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI10.Panel.Panel {
             }
             if (systemMessage.parts.length > 1) {
               const firstPart = systemMessage.parts[0];
-              if (firstPart.type === "step" && firstPart.step.state.type === "in_progress" && !firstPart.step.thought && !firstPart.step.code && !firstPart.step.contextDetails) {
+              if (firstPart.type === "step" && firstPart.step.state.type === "in_progress" && !firstPart.step.thought && !firstPart.step.action && !firstPart.step.contextDetails) {
                 systemMessage.parts.shift();
               }
             }
@@ -11313,10 +11313,10 @@ ${part.text}`);
       if (step.thought) {
         contentParts.push(step.thought);
       }
-      if (step.code) {
+      if (step.action) {
         contentParts.push(`**Code executed:**
 \`\`\`
-${step.code.trim()}
+${step.action.trim()}
 \`\`\``);
       }
       if (step.output) {
@@ -11388,10 +11388,12 @@ __export(ExternalHandler_exports, {
   handleExternalAIRequest: () => handleExternalAIRequest
 });
 import * as Host6 from "../../core/host/host.js";
+import * as Root5 from "../../core/root/root.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
 import * as AiAssistanceModel9 from "../../models/ai_assistance/ai_assistance.js";
 import * as NetworkTimeCalculator from "../../models/network_time_calculator/network_time_calculator.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
+import * as TimelinePanel4 from "../timeline/timeline.js";
 function resolveConversationType(contextType) {
   switch (contextType) {
     case "NETWORK_REQUEST":
@@ -11427,7 +11429,8 @@ async function handleExternalAIRequest(options) {
     type: conversationType,
     data: [],
     isReadOnly: false,
-    aidaClient
+    aidaClient,
+    performanceRecordAndReload: Root5.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? () => TimelinePanel4.TimelinePanel.TimelinePanel.executeRecordAndReload() : void 0
   });
   const resolvedContext = getMatchingFlavorContext(options.context);
   if (resolvedContext) {

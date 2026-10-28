@@ -410,7 +410,8 @@ __export(Linkifier_exports, {
   LinkDecorator: () => LinkDecorator,
   LinkHandlerSettingUI: () => LinkHandlerSettingUI,
   Linkifier: () => Linkifier,
-  ScriptLocationLink: () => ScriptLocationLink
+  ScriptLocationLink: () => ScriptLocationLink,
+  openInNewTabInitiatorId: () => openInNewTabInitiatorId
 });
 import * as Common2 from "../../../../core/common/common.js";
 import * as Host2 from "../../../../core/host/host.js";
@@ -972,7 +973,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       columnNumber,
       userMetric: options?.userMetric,
       onRef: options.onRef,
-      allowPrivileged: options?.allowPrivileged
+      allowPrivileged: options?.allowPrivileged,
+      initiatorId: options.initiatorId
     };
     return _Linkifier.renderLink(linkText, className, linkOptions);
   }
@@ -1036,7 +1038,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
           lineNumber: options.lineNumber,
           columnNumber: options.columnNumber,
           userMetric: options.userMetric,
-          allowPrivileged: options.allowPrivileged
+          allowPrivileged: options.allowPrivileged,
+          initiatorId: options.initiatorId
         };
         infoByAnchor.set(link3, linkInfo);
       });
@@ -1188,6 +1191,24 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   static uiLocation(link3) {
     return _Linkifier.linkInfo(link3)?.uiLocation ?? null;
   }
+  /**
+   * Returns the frame or worker to attribute opening `info`'s URL in a new tab to: the one it was linkified for,
+   * if given; the one that the network request it reveals belongs to; or the one that the source it points at
+   * was loaded by. A URL that merely matches some resource of the page is not attributed to that resource's
+   * frame: where the text came from matters, not what it happens to spell.
+   */
+  static initiatorIdForLink(info) {
+    if (info.initiatorId) {
+      return info.initiatorId;
+    }
+    if (info.revealable instanceof SDK2.NetworkRequest.NetworkRequest) {
+      return openInNewTabInitiatorId(info.revealable);
+    }
+    if (info.uiLocation) {
+      return openInNewTabInitiatorId(info.uiLocation.uiSourceCode);
+    }
+    return void 0;
+  }
   static linkActions(info) {
     const result = [];
     if (!info) {
@@ -1249,7 +1270,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
           section: "reveal",
           title: UI.UIUtils.openLinkExternallyLabel(),
           jslogContext: "open-in-new-tab",
-          handler: () => UIHelpers.openInNewTab(url, info.allowPrivileged)
+          handler: () => UIHelpers.openInNewTab(url, info.allowPrivileged, _Linkifier.initiatorIdForLink(info))
         });
       }
       result.push({
@@ -1401,6 +1422,42 @@ var ContentProviderContextMenuProvider = class {
     }
   }
 };
+function openInNewTabInitiatorId(source) {
+  if (source instanceof SDK2.NetworkRequest.NetworkRequest) {
+    return source.frameId ?? workerTargetId(SDK2.NetworkManager.NetworkManager.forRequest(source)?.target());
+  }
+  if (source instanceof SDK2.Resource.Resource) {
+    return source.frameId ?? void 0;
+  }
+  if (source instanceof SDK2.RuntimeModel.ExecutionContext) {
+    return source.frameId ?? workerTargetId(source.target());
+  }
+  if (source instanceof Workspace.UISourceCode.UISourceCode) {
+    const frames = Bindings.NetworkProject.NetworkProject.framesForUISourceCode(source);
+    if (frames.length === 1) {
+      return frames[0].id;
+    }
+    if (frames.length > 1) {
+      return void 0;
+    }
+    return workerTargetId(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(source));
+  }
+  return void 0;
+}
+function workerTargetId(target) {
+  switch (target?.type()) {
+    case SDK2.Target.Type.Worker:
+    case SDK2.Target.Type.SHARED_WORKER:
+    case SDK2.Target.Type.ServiceWorker:
+    case SDK2.Target.Type.WORKLET:
+    case SDK2.Target.Type.AUCTION_WORKLET: {
+      const id = target.id();
+      return id === "main" ? void 0 : id;
+    }
+    default:
+      return void 0;
+  }
+}
 var Events = /* @__PURE__ */ ((Events2) => {
   Events2["LIVE_LOCATION_UPDATED"] = "liveLocationUpdated";
   return Events2;

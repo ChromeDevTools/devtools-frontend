@@ -6,8 +6,15 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as PreloadingComponents from './components/components.js';
 import * as PreloadingHelper from './helper/helper.js';
+interface PreloadingWarnings {
+    disabledByPreference: boolean;
+    disabledByDataSaver: boolean;
+    disabledByBatterySaver: boolean;
+    disabledByHoldbackPrefetchSpeculationRules: boolean;
+    disabledByHoldbackPrerenderSpeculationRules: boolean;
+}
 interface RuleSetViewInput {
-    warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+    warnings?: PreloadingWarnings;
     rows: PreloadingComponents.RuleSetGrid.RuleSetGridRow[];
     pageURL: Platform.DevToolsPath.UrlString;
     ruleSet: Protocol.Preload.RuleSet | null;
@@ -23,6 +30,7 @@ export declare class PreloadingRuleSetView extends UI.Widget.VBox {
     private shouldPrettyPrint;
     constructor(model: SDK.PreloadingModel.PreloadingModel, view?: RuleSetView);
     wasShown(): void;
+    willHide(): void;
     onScopeChange(): void;
     revealRuleSet(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void;
     private getRuleSet;
@@ -33,13 +41,6 @@ export declare class PreloadingRuleSetView extends UI.Widget.VBox {
  * Exported for testability.
  */
 export declare function applyFilterText(filterText: string, rows: PreloadingComponents.PreloadingGrid.PreloadingGridRow[]): PreloadingComponents.PreloadingGrid.PreloadingGridRow[];
-interface PreloadingWarnings {
-    disabledByPreference: boolean;
-    disabledByDataSaver: boolean;
-    disabledByBatterySaver: boolean;
-    disabledByHoldbackPrefetchSpeculationRules: boolean;
-    disabledByHoldbackPrerenderSpeculationRules: boolean;
-}
 interface AttemptViewInput {
     warnings?: PreloadingWarnings;
     rows: PreloadingComponents.PreloadingGrid.PreloadingGridRow[];
@@ -73,7 +74,7 @@ export declare class PreloadingAttemptView extends UI.Widget.VBox {
     selectRuleSetOnFilterForTest(id: Protocol.Preload.RuleSetId | null): void;
 }
 interface SummaryViewInput {
-    warnings?: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+    warnings?: PreloadingWarnings;
     usedPreloading: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData;
 }
 type SummaryView = (input: SummaryViewInput, output: undefined, target: HTMLElement) => void;
@@ -82,6 +83,7 @@ export declare class PreloadingSummaryView extends UI.Widget.VBox {
     private model;
     constructor(model: SDK.PreloadingModel.PreloadingModel, view?: SummaryView);
     wasShown(): void;
+    willHide(): void;
     onScopeChange(): void;
     performUpdate(): void;
 }

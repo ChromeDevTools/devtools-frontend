@@ -43,7 +43,6 @@ export declare class ChartViewport extends UI.Widget.VBox {
     private minimumBoundary;
     private totalTime;
     private isUpdateScheduled?;
-    private cancelWindowTimesAnimation?;
     constructor(delegate: ChartViewportDelegate, config: Config);
     alwaysShowVerticalScroll(): void;
     disableRangeSelection(): void;
@@ -109,6 +108,28 @@ export declare class ChartViewport extends UI.Widget.VBox {
     scheduleUpdate(): void;
     update(): void;
     willHide(): void;
+    /**
+     * Updates the visible window to `[startTime, endTime]`.
+     *
+     * ### Why in-place retargeting is needed
+     * In Chromium's `BeginMainThreadFrame` pipeline, aligned `wheel` input events are
+     * dispatched at the start of the frame (`HandleInputEvent`), immediately before
+     * `requestAnimationFrame` callbacks (`FireAnimationFrame`) execute in that same frame.
+     *
+     * Canceling the active `requestAnimationFrame` and starting a new animation anchored
+     * at `performance.now()` on every `wheel` event starves itself:
+     * 1. `wheel` runs during `HandleInputEvent` and records `start = performance.now()`.
+     * 2. Moments later in the same `BeginMainThreadFrame`, `FireAnimationFrame` runs and
+     *    passes the frame's vsync clock (`rafClockMs <= start`), so
+     *    `(rafClockMs - start) / duration` clamps to `0` and the visible window does not move.
+     * 3. On the next vsync, the next `wheel` event cancels the second frame before it can
+     *    run and starts over from `completionRatio = 0`, freezing the viewport until scrolling stops.
+     *
+     * Instead, if an animation is already in flight (`this.#animState !== null`), we preserve
+     * the scheduled frame, update `fromLeft`/`fromRight` to the current visible bounds, and
+     * backdate `startClockMs` by one clamped frame delta (`[8ms, 32ms]`, or `16ms` on the
+     * initial frame) on the next tick so `completionRatio` advances smoothly on every vsync.
+     */
     setWindowTimes(startTime: number, endTime: number, animate?: boolean): void;
     windowLeftTime(): number;
     windowRightTime(): number;

@@ -19,10 +19,10 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     #inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
     constructor(element) {
         super(element);
-        this.#inspector.addEventListener("MemoryRequest" /* LinearMemoryInspectorComponents.LinearMemoryInspector.Events.MEMORY_REQUEST */, this.#memoryRequested, this);
-        this.#inspector.addEventListener("AddressChanged" /* LinearMemoryInspectorComponents.LinearMemoryInspector.Events.ADDRESS_CHANGED */, (event) => {
-            this.#address = event.data;
-        });
+        this.#inspector.onMemoryRequest = this.#memoryRequested.bind(this);
+        this.#inspector.onAddressChanged = (address) => {
+            this.#address = address;
+        };
         this.#inspector.show(this.contentElement);
     }
     wasShown() {
@@ -63,10 +63,10 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         this.#inspector.outerMemoryLength = this.#memory.length;
         this.#inspector.hideValueInspector = true;
     }
-    #memoryRequested(event) {
+    #memoryRequested(request) {
         // TODO(szuend): The following lines are copied from `LinearMemoryInspectorController`. We can't reuse them
         // as depending on a module in `panels/` from a component is a layering violation.
-        const { start, end, address } = event.data;
+        const { start, end, address } = request;
         if (address < start || address >= end) {
             throw new Error('Requested address is out of bounds.');
         }

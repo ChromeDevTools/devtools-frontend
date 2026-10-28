@@ -6304,7 +6304,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     if (!Common5.ParsedURL.hasWebSafeScheme(this.requestInternal.url())) {
       return;
     }
-    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
+    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+      this.requestInternal.url(),
+      Components.Linkifier.openInNewTabInitiatorId(this.requestInternal)
+    );
   }
   isFailed() {
     return PanelUtils3.isFailedNetworkRequest(this.requestInternal);
@@ -10042,9 +10045,11 @@ var requestInitiatorView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.request-initiator-view {
-  display: flex;
-  margin: var(--sys-size-4);
+@scope to (devtools-widget > *) {
+  .request-initiator-view-tree {
+    display: flex;
+    margin: var(--sys-size-4);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./requestInitiatorView.css")} */`;
@@ -10123,14 +10128,12 @@ function trimUrl(url) {
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
-    render9(
-      html8`
+    render9(html8`
+      <style>${requestInitiatorView_css_default}</style>
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString10(UIStrings11.noInitiator)}
       </div>
-    `,
-      target
-    );
+    `, target);
     return;
   }
   const renderStackTraceSection = () => {
@@ -10230,6 +10233,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
   };
   const hasInitiatorChain = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.isConsoleOriginated;
   render9(html8`
+    <style>${requestInitiatorView_css_default}</style>
     <div class="request-initiator-view-tree" jslog=${VisualLogging8.tree("initiator-tree")}>
       <devtools-tree .template=${html8`
         <style>${requestInitiatorViewTree_css_default}</style>
@@ -10243,12 +10247,11 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
   `, target);
 };
 var RequestInitiatorView = class extends UI12.Widget.VBox {
-  request;
+  #request;
   #view;
   constructor(request, view = DEFAULT_VIEW8) {
     super({ jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` });
-    this.element.classList.add("request-initiator-view");
-    this.request = request;
+    this.#request = request;
     this.#view = view;
   }
   static async createStackTracePreview(request, linkifier, focusableLink) {
@@ -10269,27 +10272,31 @@ var RequestInitiatorView = class extends UI12.Widget.VBox {
     return { preview, stackTrace };
   }
   async performUpdate() {
-    const initiatorGraph = Logs4.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
+    const initiatorGraph = Logs4.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
     const targetManager = SDK10.TargetManager.TargetManager.instance();
-    const networkManager = SDK10.NetworkManager.NetworkManager.forRequest(this.request);
+    const networkManager = SDK10.NetworkManager.NetworkManager.forRequest(this.#request);
     const target = networkManager?.target() ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
-    const rawStack = this.request.initiator()?.stack;
+    const rawStack = this.#request.initiator()?.stack;
     let stackTrace = null;
     if (rawStack && target) {
       stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(rawStack, target);
     }
-    const isConsoleOriginated = NetworkRequestNode.isConsoleOriginated(this.request);
+    const isConsoleOriginated = NetworkRequestNode.isConsoleOriginated(this.#request);
     const viewInput = {
       initiatorGraph,
       stackTrace,
-      request: this.request,
+      request: this.#request,
       isConsoleOriginated
     };
-    this.#view(viewInput, void 0, this.contentElement);
+    this.#view(
+      viewInput,
+      /* output= */
+      void 0,
+      this.contentElement
+    );
   }
   wasShown() {
     super.wasShown();
-    this.registerRequiredCSS(requestInitiatorView_css_default);
     this.requestUpdate();
   }
 };
@@ -16856,16 +16863,31 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
   );
 };
 var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
-  #dataURL;
+  #dataURL = "";
   #view;
-  constructor(dataURL, view = DEFAULT_VIEW12) {
-    super({ useShadowDom: true });
-    this.#dataURL = dataURL;
+  constructor(element, view = DEFAULT_VIEW12) {
+    super(element, { useShadowDom: true });
     this.#view = view;
   }
   static create(contentData) {
     const dataURL = contentData.asDataUrl();
-    return dataURL ? new _RequestHTMLView(dataURL) : null;
+    if (!dataURL) {
+      return null;
+    }
+    const view = new _RequestHTMLView();
+    view.dataURL = dataURL;
+    return view;
+  }
+  get dataURL() {
+    return this.#dataURL;
+  }
+  set dataURL(dataURL) {
+    const safeURL = dataURL.startsWith("data:") ? dataURL : "";
+    if (this.#dataURL === safeURL) {
+      return;
+    }
+    this.#dataURL = safeURL;
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
@@ -17102,8 +17124,8 @@ var str_19 = i18n37.i18n.registerUIStrings("panels/network/SignedExchangeInfoVie
 var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var SignedExchangeInfoView = class extends UI20.Widget.VBox {
   responseHeadersItem;
-  constructor(request) {
-    super();
+  constructor(request, element) {
+    super(element);
     this.registerRequiredCSS(signedExchangeInfoView_css_default);
     console.assert(request.signedExchangeInfo() !== null);
     const signedExchangeInfo = request.signedExchangeInfo();

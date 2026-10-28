@@ -275,10 +275,10 @@ export class XMLView extends UI.Widget.Widget {
             this.#view({ xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump }, {}, this.contentElement);
         }
     }
-    static createSearchableView(parsedXML) {
+    static createSearchableView(parsedXML, element) {
         const xmlView = new XMLView();
         xmlView.parsedXML = parsedXML;
-        const searchableView = new UI.SearchableView.SearchableView(xmlView, null);
+        const searchableView = new UI.SearchableView.SearchableView(xmlView, /* replaceable= */ null, /* settingName= */ undefined, element);
         searchableView.setPlaceholder(i18nString(UIStrings.find));
         xmlView.searchableView = searchableView;
         xmlView.show(searchableView.element);

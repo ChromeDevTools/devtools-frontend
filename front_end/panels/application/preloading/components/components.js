@@ -4602,13 +4602,22 @@ var PreloadingGrid = class extends UI4.Widget.VBox {
     this.#view = view;
     this.requestUpdate();
   }
+  get rows() {
+    return this.#rows;
+  }
   set rows(rows) {
     this.#rows = rows;
     this.requestUpdate();
   }
+  get pageURL() {
+    return this.#pageURL;
+  }
   set pageURL(pageURL) {
     this.#pageURL = pageURL;
     this.requestUpdate();
+  }
+  get onSelect() {
+    return this.#onSelect;
   }
   set onSelect(onSelect) {
     if (this.#onSelect === onSelect) {

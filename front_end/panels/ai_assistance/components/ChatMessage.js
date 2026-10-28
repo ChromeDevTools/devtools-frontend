@@ -486,8 +486,8 @@ function renderTitle(step) {
         Lit.nothing;
     return html `<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
-function renderStepCode(step) {
-    if (!step.code && !step.output) {
+function renderStepAction(step) {
+    if (!step.action && !step.output) {
         return Lit.nothing;
     }
     // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
@@ -498,9 +498,9 @@ function renderStepCode(step) {
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
     // clang-format off
-    const code = step.code ? html `<div class="action-result">
+    const code = step.action ? html `<div class="action-result">
       <devtools-code-block
-        .code=${step.code.trim()}
+        .code=${step.action.trim()}
         .codeLang=${'js'}
         .displayNotice=${!Boolean(step.output)}
         .header=${codeHeadingText}
@@ -514,7 +514,7 @@ function renderStepCode(step) {
       .codeLang=${'js'}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.dataReturned)}
-      .showCopyButton=${false}
+      .showCopyButton=${true}
     ></devtools-code-block>
   </div>` :
         Lit.nothing;
@@ -541,7 +541,7 @@ function renderStepDetails({ step, markdownRenderer, isLast, }) {
         })}` : Lit.nothing;
     return html `<div class="step-details">
     ${thought}
-    ${renderStepCode(step)}
+    ${renderStepAction(step)}
     ${sideEffects}
     ${contextDetails}
   </div>`;
@@ -702,7 +702,7 @@ function renderStepBadge({ step, isLast }) {
 export function renderStep({ step, markdownRenderer, isLast }) {
     const stepClasses = Lit.Directives.classMap({
         step: true,
-        empty: !step.thought && !step.code && !step.contextDetails && step.state.type !== 'needs_approval',
+        empty: !step.thought && !step.action && !step.contextDetails && step.state.type !== 'needs_approval',
         paused: step.state.type === 'needs_approval',
         canceled: step.state.type === 'canceled',
     });

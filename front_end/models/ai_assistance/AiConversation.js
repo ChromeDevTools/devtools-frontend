@@ -45,6 +45,11 @@ export class AiConversation {
             if (entry.type === "side-effect" /* ResponseType.SIDE_EFFECT */) {
                 return { ...entry, confirm: () => { } };
             }
+            if (entry.type === "action" /* ResponseType.ACTION */ && 'code' in entry) {
+                // Entries saved before `ActionResponse.code` was renamed to `action`.
+                const { code, ...rest } = entry;
+                return { ...rest, action: rest.action ?? code };
+            }
             return entry;
         });
         return new AiConversation({
@@ -207,8 +212,8 @@ export class AiConversation {
                     if (!item.output) {
                         break;
                     }
-                    if (item.code) {
-                        contentParts.push(`**Code executed:**\n\`\`\`\n${item.code.trim()}\n\`\`\``);
+                    if (item.action) {
+                        contentParts.push(`**Code executed:**\n\`\`\`\n${item.action.trim()}\n\`\`\``);
                     }
                     contentParts.push(`**Data returned:**\n\`\`\`\n${item.output}\n\`\`\``);
                     break;

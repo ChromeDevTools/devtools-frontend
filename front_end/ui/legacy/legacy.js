@@ -747,7 +747,6 @@ __export(UIUtils_exports, {
   PromotionManager: () => PromotionManager,
   StyleValueDelimiters: () => StyleValueDelimiters,
   addPlatformClass: () => addPlatformClass,
-  animateFunction: () => animateFunction,
   animateOn: () => animateOn,
   anotherProfilerActiveLabel: () => anotherProfilerActiveLabel,
   asyncFragmentLabel: () => asyncFragmentLabel,
@@ -16680,20 +16679,6 @@ function endBatchUpdate() {
     postUpdateHandlers = null;
   }
 }
-function animateFunction(window2, func, params, duration, animationComplete) {
-  const start = window2.performance.now();
-  let raf = window2.requestAnimationFrame(animationStep);
-  function animationStep(timestamp) {
-    const progress = Platform15.NumberUtilities.clamp((timestamp - start) / duration, 0, 1);
-    func(...params.map((p) => p.from + (p.to - p.from) * progress));
-    if (progress < 1) {
-      raf = window2.requestAnimationFrame(animationStep);
-    } else if (animationComplete) {
-      animationComplete();
-    }
-  }
-  return () => window2.cancelAnimationFrame(raf);
-}
 var LongClickController = class _LongClickController {
   element;
   callback;
@@ -16904,7 +16889,7 @@ function setTitle(element, title) {
   Tooltip.install(element, title);
 }
 var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
-  static observedAttributes = ["checked", "disabled", "indeterminate", "name", "title", "aria-label", "small"];
+  static observedAttributes = ["checked", "disabled", "indeterminate", "name", "title", "aria-label", "small", "jslogcontext"];
   #shadowRoot;
   #checkboxElement;
   #textElement;
@@ -16926,10 +16911,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     const element = document.createElement("devtools-checkbox");
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
-      element.#checkboxElement.setAttribute(
-        "jslog",
-        `${VisualLogging16.toggle().track({ change: true }).context(jslogContext)}`
-      );
+      element.jslogContext = jslogContext;
     }
     if (title !== void 0) {
       element.#textElement.textContent = title;
@@ -16945,7 +16927,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     element.#checkboxElement.classList.toggle("small", small);
     return element;
   }
-  attributeChangedCallback(name, _oldValue, newValue) {
+  attributeChangedCallback(name, oldValue, newValue) {
     if (name === "checked") {
       this.#checkboxElement.checked = newValue !== null;
     } else if (name === "disabled") {
@@ -16961,6 +16943,24 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
       this.#checkboxElement.ariaLabel = newValue;
     } else if (name === "small") {
       this.#checkboxElement.classList.toggle("small", newValue !== null);
+    } else if (name === "jslogcontext" && oldValue !== newValue) {
+      const oldCheckbox = this.#checkboxElement;
+      const hadFocus = this.shadowRoot?.activeElement === oldCheckbox;
+      const newCheckbox = oldCheckbox.cloneNode(false);
+      newCheckbox.checked = oldCheckbox.checked;
+      newCheckbox.disabled = oldCheckbox.disabled;
+      newCheckbox.indeterminate = oldCheckbox.indeterminate;
+      if (newValue) {
+        newCheckbox.setAttribute("jslog", `${VisualLogging16.toggle().track({ change: true }).context(newValue)}`);
+      } else {
+        newCheckbox.removeAttribute("jslog");
+      }
+      newCheckbox.addEventListener("change", () => this.dispatchEvent(new Event("change")));
+      oldCheckbox.replaceWith(newCheckbox);
+      this.#checkboxElement = newCheckbox;
+      if (hadFocus) {
+        newCheckbox.focus();
+      }
     }
   }
   getLabelText() {
@@ -17010,6 +17010,16 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
   }
   get name() {
     return this.#checkboxElement.name;
+  }
+  set jslogContext(jslogContext) {
+    if (jslogContext) {
+      this.setAttribute("jslogcontext", jslogContext);
+    } else {
+      this.removeAttribute("jslogcontext");
+    }
+  }
+  get jslogContext() {
+    return this.getAttribute("jslogcontext");
   }
   click() {
     this.#checkboxElement.click();
@@ -22983,7 +22993,7 @@ var SimpleView = class extends VBox {
   #viewId;
   constructor(elementOrOptions, options) {
     super(elementOrOptions, options);
-    const optionsObj = elementOrOptions instanceof HTMLElement ? options : elementOrOptions;
+    const optionsObj = elementOrOptions instanceof HTMLElement || elementOrOptions === void 0 ? options : elementOrOptions;
     this.#title = optionsObj.title;
     this.#viewId = optionsObj.viewId;
     if (!Platform23.StringUtilities.isExtendedKebabCase(this.#viewId)) {

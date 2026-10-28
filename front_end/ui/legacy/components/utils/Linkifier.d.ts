@@ -73,6 +73,13 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
     static isRegisteredLinkHandlerScheme(scheme: string): boolean;
     static shouldHandleOpenResource(openResourceScheme: string | null, url: Platform.DevToolsPath.UrlString, otherSchemeRegistrations: Set<string>): boolean;
     static uiLocation(link: Element): Workspace.UISourceCode.UILocation | null;
+    /**
+     * Returns the frame or worker to attribute opening `info`'s URL in a new tab to: the one it was linkified for,
+     * if given; the one that the network request it reveals belongs to; or the one that the source it points at
+     * was loaded by. A URL that merely matches some resource of the page is not attributed to that resource's
+     * frame: where the text came from matters, not what it happens to spell.
+     */
+    private static initiatorIdForLink;
     static linkActions(info: LinkInfo): Array<{
         section: string;
         title: string;
@@ -108,6 +115,12 @@ export declare class ContentProviderContextMenuProvider implements UI.ContextMen
     .Provider<Workspace.UISourceCode.UISourceCode | SDK.Resource.Resource | SDK.NetworkRequest.NetworkRequest> {
     appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, contentProvider: Workspace.UISourceCode.UISourceCode | SDK.Resource.Resource | SDK.NetworkRequest.NetworkRequest): void;
 }
+/**
+ * Returns the {@link OpenInNewTabInitiatorId} for a URL that came from `source`: the frame that `source` belongs
+ * to, or the worker that it belongs to when there is no frame, if DevTools knows that unambiguously. Returns
+ * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin.
+ */
+export declare function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | SDK.RuntimeModel.ExecutionContext | Workspace.UISourceCode.UISourceCode): OpenInNewTabInitiatorId | undefined;
 interface LinkInfo {
     enableDecorator?: boolean;
     uiLocation?: Workspace.UISourceCode.UILocation;
@@ -118,9 +131,20 @@ interface LinkInfo {
     fallback?: Element;
     userMetric?: Host.UserMetrics.Action;
     allowPrivileged?: boolean;
+    initiatorId?: OpenInNewTabInitiatorId;
 }
+/**
+ * The DevTools frame id or target id of the frame or worker that a linkified URL came from. When the URL is opened
+ * in a new tab, the browser attributes the navigation to it, like a link clicked in that frame or worker; see
+ * `InspectorFrontendHostAPI.openInNewTab()`.
+ */
+export type OpenInNewTabInitiatorId = Protocol.Page.FrameId | Protocol.Target.TargetID;
 export interface LinkifyURLOptions {
     allowPrivileged?: boolean;
+    /**
+     * {@link OpenInNewTabInitiatorId}
+     */
+    initiatorId?: OpenInNewTabInitiatorId;
     text?: string;
     className?: string;
     lineNumber?: number;

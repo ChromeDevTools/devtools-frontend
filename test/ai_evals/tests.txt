@@ -1,2 +1,6 @@
 ai_smoke.test.js
-network/server-error-5xx.test.js
+performance/cls-dynamic-element-shift.test.js
+performance/cls-good-cwv-check.test.js
+performance/cls-layout-animations.test.js
+performance/cls-unsized-image.test.js
+performance/cls-webfont-loading.test.js

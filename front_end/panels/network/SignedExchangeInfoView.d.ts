@@ -2,7 +2,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class SignedExchangeInfoView extends UI.Widget.VBox {
     private readonly responseHeadersItem?;
-    constructor(request: SDK.NetworkRequest.NetworkRequest);
+    constructor(request: SDK.NetworkRequest.NetworkRequest, element?: HTMLElement);
     private formatHeader;
     private formatHeaderForHexData;
 }

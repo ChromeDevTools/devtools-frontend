@@ -188,7 +188,7 @@ var CommentManager = class extends Common2.ObjectWrapper.ObjectWrapper {
     return this.#commentMode;
   }
   createCommentThread(anchor, text, author = "DEVELOPER", isGeneratedComment) {
-    const comments = text ? [{
+    const comments = text !== void 0 ? [{
       author,
       text,
       timestamp: Date.now()

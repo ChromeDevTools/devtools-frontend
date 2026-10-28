@@ -26,6 +26,7 @@ export declare class ExecuteJavaScriptTool implements DataTool<ExecuteJavaScript
         title: string;
         thought: string;
         action: string;
+        javascriptCode: string;
     };
     handler(params: ExecuteJavaScriptArgs, context: BaseToolCapability & PageExecutionCapability & StyleMutationCapability & OriginLockCapability, options?: FunctionHandlerOptions): Promise<DataHandlerResult<unknown>>;
 }

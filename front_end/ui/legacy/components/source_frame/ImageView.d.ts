@@ -8,6 +8,11 @@ export interface ViewInput {
     url: Platform.DevToolsPath.UrlString;
     imageSrc: string | null;
     isUnavailable: boolean;
+    showToolbar: boolean;
+    size: string;
+    dimensions: string;
+    aspectRatio: string;
+    mimeType: string;
     onImageLoad: (event: Event) => void;
     onImageError: (event: Event) => void;
     onContextMenu: (event: Event) => void;
@@ -23,7 +28,9 @@ export interface EventTypes {
 declare const ImageViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.View.SimpleView>;
 export declare class ImageView extends ImageViewBase {
     #private;
-    constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, view?: View);
+    constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider, element?: HTMLElement, view?: View);
+    get showToolbar(): boolean;
+    set showToolbar(showToolbar: boolean);
     performUpdate(): void;
     toolbarItems(): Promise<TemplateResult>;
     wasShown(): void;

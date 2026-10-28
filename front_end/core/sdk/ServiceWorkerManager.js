@@ -407,19 +407,44 @@ export class ServiceWorkerVersion {
         }
         return urlPattern;
     }
+    parseCondition(condition) {
+        const result = { ...condition };
+        // "urlPattern" condition can have structural URLPatternInit encoded into a JSON string.
+        // If `condition` is directly stringified, such JSON strings are double-escaped (`"abc"` -> `\"abc\""`).
+        // Expand "urlPattern" condition to native object and stringify whole conditions in such cases to avoid this.
+        if (condition.urlPattern !== undefined) {
+            result.urlPattern = this.parseURLPatternCondition(condition.urlPattern);
+            if (result.urlPattern === null) {
+                console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
+                return null;
+            }
+        }
+        if (condition.or !== undefined) {
+            const parsedOr = [];
+            for (const subCondition of condition.or) {
+                const parsedSub = this.parseCondition(subCondition);
+                if (parsedSub === null) {
+                    return null;
+                }
+                parsedOr.push(parsedSub);
+            }
+            result.or = parsedOr;
+        }
+        if (condition.not !== undefined) {
+            const parsedNot = this.parseCondition(condition.not);
+            if (parsedNot === null) {
+                return null;
+            }
+            result.not = parsedNot;
+        }
+        return result;
+    }
     parseTypedRules(rules) {
         const routerRules = [];
         for (const rule of rules) {
-            const condition = { ...rule.condition };
-            // "urlPattern" condition can have structural URLPatternInit encoded into a JSON string.
-            // If `condition` is directly stringified, such JSON strings are double-escaped (`"abc"` -> `\"abc\""`).
-            // Expand "urlPattern" condition to native object and stringify whole conditions in such cases to avoid this.
-            if (rule.condition.urlPattern) {
-                condition.urlPattern = this.parseURLPatternCondition(rule.condition.urlPattern);
-                if (condition.urlPattern === null) {
-                    console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
-                    return null;
-                }
+            const condition = this.parseCondition(rule.condition);
+            if (condition === null) {
+                return null;
             }
             let source;
             if (rule.source.type === "sourceDict" /* Protocol.ServiceWorker.ServiceWorkerRouterSourceType.SourceDict */) {

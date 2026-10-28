@@ -18,7 +18,10 @@
  * @param url the URL to open in a new tab.
  * @param allowPrivileged whether to also open URLs with privileged or other non-web-safe schemes. By default,
  *     only URLs with web-safe schemes (see `Common.ParsedURL.hasWebSafeScheme`) are opened.
+ * @param initiatorId the DevTools frame id or target id of the frame or worker that `url` came from, if any. The
+ *     browser attributes the navigation to it; without it, the navigation is treated as cross-site. See
+ *     `InspectorFrontendHostAPI.openInNewTab()`.
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */
-export declare function openInNewTab(url: URL | string, allowPrivileged?: boolean): void;
+export declare function openInNewTab(url: URL | string, allowPrivileged?: boolean, initiatorId?: string): void;

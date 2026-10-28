@@ -3209,6 +3209,9 @@
   "panels/animation/AnimationTimeline.ts | animationDescription": {
     "message": "On this page you can inspect and modify animations"
   },
+  "panels/animation/AnimationTimeline.ts | animationInspectionPaused": {
+    "message": "Animation inspection paused"
+  },
   "panels/animation/AnimationTimeline.ts | animationPreviews": {
     "message": "Animation previews"
   },
@@ -3391,6 +3394,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
     "message": "On this page you can view windows opened via window.open()"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | privateVerificationTokens": {
+    "message": "Private verification tokens"
   },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Refresh IndexedDB"
@@ -5927,6 +5933,9 @@
   "panels/application/PreloadingTreeElement.ts | speculativeLoads": {
     "message": "Speculative loads"
   },
+  "panels/application/PrivateVerificationTokensView.ts | noPrivateVerificationTokens": {
+    "message": "No private verification tokens for this origin"
+  },
   "panels/application/ReportingApiTreeElement.ts | crashReportContext": {
     "message": "Crash report context"
   },
@@ -6731,8 +6740,11 @@
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "View profile"
   },
-  "panels/common/CommentsStatusBarPill.ts | commentsCount": {
-    "message": "Comments ({PH1})"
+  "panels/common/CommentsStatusBarPill.ts | showComments": {
+    "message": "Show comments"
+  },
+  "panels/common/CommentsStatusBarPill.ts | showCommentsWithCount": {
+    "message": "Show comments ({PH1})"
   },
   "panels/common/CommentThreadWidget.ts | commentInputAriaLabel": {
     "message": "Comment input"

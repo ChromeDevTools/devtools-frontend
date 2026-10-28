@@ -25,8 +25,13 @@ export declare const PRELOADING_GRID_DEFAULT_VIEW: View;
 export declare class PreloadingGrid extends UI.Widget.VBox {
     #private;
     constructor(element?: HTMLElement, view?: View);
+    get rows(): PreloadingGridRow[] | undefined;
     set rows(rows: PreloadingGridRow[]);
+    get pageURL(): Platform.DevToolsPath.UrlString | undefined;
     set pageURL(pageURL: Platform.DevToolsPath.UrlString);
+    get onSelect(): (({ rowId }: {
+        rowId: string;
+    }) => void) | undefined;
     set onSelect(onSelect: ({ rowId }: {
         rowId: string;
     }) => void);

@@ -9,11 +9,10 @@ export interface ViewInput {
     request: SDK.NetworkRequest.NetworkRequest;
     isConsoleOriginated: boolean;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
-type View = typeof DEFAULT_VIEW;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class RequestInitiatorView extends UI.Widget.VBox {
     #private;
-    private readonly request;
     constructor(request: SDK.NetworkRequest.NetworkRequest, view?: View);
     static createStackTracePreview(request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): Promise<{
         preview: Components.JSPresentationUtils.StackTracePreviewContent;
@@ -22,4 +21,3 @@ export declare class RequestInitiatorView extends UI.Widget.VBox {
     performUpdate(): Promise<void>;
     wasShown(): void;
 }
-export {};

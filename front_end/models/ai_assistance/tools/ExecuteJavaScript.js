@@ -130,6 +130,7 @@ const data = {
             title: params.title,
             thought: params.explanation,
             action: params.code,
+            javascriptCode: params.code,
         };
     }
     async handler(params, context, options) {

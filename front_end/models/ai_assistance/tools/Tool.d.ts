@@ -284,16 +284,19 @@ export interface BaseTool<ArgsType extends ToolArgs = ToolArgs> {
      * - `title`: the step heading, sent as `TITLE`.
      * - `thought`: optional explanation shown in the step, sent as `THOUGHT`.
      * - `action`: the text shown in the step's code box, sent as
-     *   `ACTION.code`. It is real code only for tools that run code, such as
-     *   `executeJavaScript`. For other tools it is a readable form of the call,
-     *   for example `getInsightDetails('NAVIGATION_0', 'LCPBreakdown')`, and is
-     *   never executed.
+     *   `ACTION.action`. It is a readable form of the call, for example
+     *   `getInsightDetails('NAVIGATION_0', 'LCPBreakdown')`, and is never
+     *   executed.
+     * - `javascriptCode`: the exact JavaScript the tool runs in the page, sent
+     *   as `SIDE_EFFECT.javascriptCode` and shown in the permission prompt.
+     *   Only set by tools that execute JavaScript, such as `executeJavaScript`.
      * - `suggestions`: `AiAgent` does not use this field.
      */
     readonly displayInfoFromArgs?: (args: ArgsType) => {
         title?: string;
         thought?: string;
         action?: string;
+        javascriptCode?: string;
         suggestions?: [string, ...string[]];
     };
     readonly annotations?: ToolAnnotation[];

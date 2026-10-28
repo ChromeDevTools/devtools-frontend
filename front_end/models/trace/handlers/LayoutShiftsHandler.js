@@ -400,12 +400,8 @@ async function buildLayoutShiftsClusters() {
         if (worstShiftEvent) {
             cluster.worstShiftEvent = worstShiftEvent;
         }
-        // layout shifts are already sorted by time ascending.
-        // Capture the time range of the cluster.
-        cluster.ts = cluster.events[0].ts;
-        const lastShiftTimings = Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
-        // Add MAX_SHIFT_TIME_DELTA, the section gap after the last layout shift. This marks the end of the cluster.
-        cluster.dur = Types.Timing.Micro((lastShiftTimings.endTime - cluster.events[0].ts) + MAX_SHIFT_TIME_DELTA);
+        cluster.ts = cluster.clusterWindow.min;
+        cluster.dur = cluster.clusterWindow.range;
         if (weightedScore > sessionMaxScore) {
             clsWindowID = windowID;
             sessionMaxScore = weightedScore;

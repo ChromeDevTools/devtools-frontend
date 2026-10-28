@@ -4,7 +4,7 @@ import * as Host from "../../core/host/host.js";
 import * as Platform from "../../core/platform/platform.js";
 import * as Root from "../../core/root/root.js";
 import * as SDK from "../../core/sdk/sdk.js";
-function openInNewTab(url, allowPrivileged) {
+function openInNewTab(url, allowPrivileged, initiatorId) {
   url = new URL(url);
   if (Common.ParsedURL.schemeIs(url, "javascript:")) {
     return;
@@ -19,7 +19,10 @@ function openInNewTab(url, allowPrivileged) {
     }
     void rootTarget.targetAgent().invoke_createTarget({ url: url.toString() }).then((result) => {
       if (result.getError()) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString`${url}`);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          Platform.DevToolsPath.urlString`${url}`,
+          initiatorId
+        );
       }
     });
   } else {
@@ -37,7 +40,10 @@ function openInNewTab(url, allowPrivileged) {
         url.searchParams.append("utm_campaign", channel);
       }
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString`${url}`);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+      Platform.DevToolsPath.urlString`${url}`,
+      initiatorId
+    );
   }
 }
 export {

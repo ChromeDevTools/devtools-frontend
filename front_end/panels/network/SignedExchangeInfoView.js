@@ -99,8 +99,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {
     responseHeadersItem;
-    constructor(request) {
-        super();
+    constructor(request, element) {
+        super(element);
         this.registerRequiredCSS(signedExchangeInfoViewStyles);
         console.assert(request.signedExchangeInfo() !== null);
         const signedExchangeInfo = request.signedExchangeInfo();

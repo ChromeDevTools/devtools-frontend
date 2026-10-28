@@ -67,6 +67,7 @@
     "../../../../../../front_end/panels/application/OpenedWindowDetailsView.ts",
     "../../../../../../front_end/panels/application/OriginTrialTreeView.ts",
     "../../../../../../front_end/panels/application/PreloadingTreeElement.ts",
+    "../../../../../../front_end/panels/application/PrivateVerificationTokensView.ts",
     "../../../../../../front_end/panels/application/ReportingApiTreeElement.ts",
     "../../../../../../front_end/panels/application/ReportingApiView.ts",
     "../../../../../../front_end/panels/application/ResourcesPanel.ts",

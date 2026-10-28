@@ -82,9 +82,9 @@ export function renderPermissionPrompt(step, disclaimerText) {
     const dialog = step.state.sideEffectDialog;
     const title = dialog.permissionTitle ?? lockedString(UIStringsNotTranslate.allowThisAction);
     const description = dialog.description ? html `<p class="permission-prompt-description">${dialog.description}</p>` : Lit.nothing;
-    const code = step.code ? html `<devtools-code-block
+    const code = step.javascriptCode ? html `<devtools-code-block
       class="permission-prompt-code"
-      .code=${step.code.trim()}
+      .code=${step.javascriptCode.trim()}
       .codeLang=${'js'}
       .displayNotice=${true}
       .header=${lockedString(UIStringsNotTranslate.codeToExecute)}

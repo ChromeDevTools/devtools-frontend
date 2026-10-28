@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/ai_evals/performance",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/ai_evals/performance/cls-dynamic-element-shift.test.ts",
+    "../../../../../../test/ai_evals/performance/cls-good-cwv-check.test.ts",
+    "../../../../../../test/ai_evals/performance/cls-layout-animations.test.ts",
+    "../../../../../../test/ai_evals/performance/cls-unsized-image.test.ts",
+    "../../../../../../test/ai_evals/performance/cls-webfont-loading.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../harness_library-tsconfig.ref.json"
+    },
+    {
+      "path": "../../e2e/helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    }
+  ]
+}

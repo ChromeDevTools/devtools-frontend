@@ -679,10 +679,12 @@ export class AiAgent {
             return { error };
         }
         debugLog(`[AiAgent] Executing tool '${name}' with args:`, args);
-        let code;
+        let action;
+        let javascriptCode;
         if (call.displayInfoFromArgs) {
-            const { title, thought, action: callCode } = call.displayInfoFromArgs(args);
-            code = callCode;
+            const { title, thought, action: callAction, javascriptCode: callJavascriptCode } = call.displayInfoFromArgs(args);
+            action = callAction;
+            javascriptCode = callJavascriptCode;
             if (title) {
                 yield {
                     type: "title" /* ResponseType.TITLE */,
@@ -723,11 +725,11 @@ export class AiAgent {
             throw new CrossOriginError();
         }
         if ('requiresApproval' in result) {
-            if (code) {
+            if (action) {
                 yield {
                     type: "action" /* ResponseType.ACTION */,
                     callId,
-                    code,
+                    action,
                     canceled: false,
                 };
             }
@@ -748,6 +750,7 @@ export class AiAgent {
                 callId,
                 confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
                 description: result.description,
+                javascriptCode,
                 permissionPrompt: call.permissionPrompt,
                 permissionTitle: call.permissionTitle,
             };
@@ -765,7 +768,7 @@ export class AiAgent {
                 yield {
                     type: "action" /* ResponseType.ACTION */,
                     callId,
-                    code,
+                    action,
                     output: 'Error: User denied code execution with side effects.',
                     canceled: true,
                 };
@@ -795,7 +798,7 @@ export class AiAgent {
             yield {
                 type: "action" /* ResponseType.ACTION */,
                 callId,
-                code,
+                action,
                 output: typeof result.result === 'string' ? result.result : JSON.stringify(result.result),
                 widgets: result.widgets,
                 canceled: false,
@@ -807,7 +810,7 @@ export class AiAgent {
             yield {
                 type: "action" /* ResponseType.ACTION */,
                 callId,
-                code,
+                action,
                 output: result.error,
                 canceled: false,
                 toolName: name,

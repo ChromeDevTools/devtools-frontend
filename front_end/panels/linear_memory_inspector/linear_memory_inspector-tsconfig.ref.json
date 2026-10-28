@@ -15,6 +15,7 @@
   "files": [
     "../../../../../../front_end/panels/linear_memory_inspector/LinearMemoryInspectorController.ts",
     "../../../../../../front_end/panels/linear_memory_inspector/LinearMemoryInspectorPane.ts",
+    "../../../../../../front_end/panels/linear_memory_inspector/LinearMemoryInspectorView.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -44,6 +45,9 @@
     },
     {
       "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/visual_logging/bundle-tsconfig.ref.json"

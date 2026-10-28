@@ -28,7 +28,7 @@ __export(ApplicationPanelSidebar_exports, {
 });
 import * as Common18 from "../../core/common/common.js";
 import * as Host4 from "../../core/host/host.js";
-import * as i18n59 from "../../core/i18n/i18n.js";
+import * as i18n61 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
 import * as SDK24 from "../../core/sdk/sdk.js";
@@ -2873,7 +2873,7 @@ var Runtime;
 import * as AiAssistance2 from "../../models/ai_assistance/ai_assistance.js";
 import { createIcon as createIcon10 } from "../../ui/kit/kit.js";
 import * as SourceFrame6 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI31 from "../../ui/legacy/legacy.js";
+import * as UI32 from "../../ui/legacy/legacy.js";
 
 // ../../front_end/panels/application/ApplicationPanelTreeElement.ts
 var ApplicationPanelTreeElement_exports = {};
@@ -9256,6 +9256,15 @@ var PreloadingUIUtils = class {
 function pageURL() {
   return SDK11.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ?? Platform4.DevToolsPath.EmptyUrlString;
 }
+function toPreloadingWarnings(event) {
+  return {
+    disabledByPreference: event.disabledByPreference,
+    disabledByDataSaver: event.disabledByDataSaver,
+    disabledByBatterySaver: event.disabledByBatterySaver,
+    disabledByHoldbackPrefetchSpeculationRules: event.disabledByHoldbackPrefetchSpeculationRules,
+    disabledByHoldbackPrerenderSpeculationRules: event.disabledByHoldbackPrerenderSpeculationRules
+  };
+}
 var RULE_SET_DEFAULT_VIEW = (input, _output, target) => {
   render8(
     html8`
@@ -9319,11 +9328,18 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
     this.shouldPrettyPrint = !this.shouldPrettyPrint;
     this.requestUpdate();
   };
+  #onWarningsUpdated = (event) => {
+    this.#warnings = toPreloadingWarnings(event.data);
+    this.requestUpdate();
+  };
   constructor(model, view = RULE_SET_DEFAULT_VIEW) {
     super({ useShadowDom: true });
     this.#view = view;
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+  }
+  wasShown() {
+    super.wasShown();
     SDK11.TargetManager.TargetManager.instance().addModelListener(
       SDK11.PreloadingModel.PreloadingModel,
       SDK11.PreloadingModel.Events.MODEL_UPDATED,
@@ -9334,17 +9350,26 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
     SDK11.TargetManager.TargetManager.instance().addModelListener(
       SDK11.PreloadingModel.PreloadingModel,
       SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
-      (e) => {
-        this.#warnings = e.data;
-        this.requestUpdate();
-      },
+      this.#onWarningsUpdated,
       this,
       { scoped: true }
     );
-  }
-  wasShown() {
-    super.wasShown();
     this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    SDK11.TargetManager.TargetManager.instance().removeModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.MODEL_UPDATED,
+      this.requestUpdate,
+      this
+    );
+    SDK11.TargetManager.TargetManager.instance().removeModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
+      this.#onWarningsUpdated,
+      this
+    );
   }
   onScopeChange() {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
@@ -9522,13 +9547,7 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
     this.requestUpdate();
   };
   #onWarningsUpdated = (event) => {
-    this.#warnings = {
-      disabledByPreference: event.data.disabledByPreference,
-      disabledByDataSaver: event.data.disabledByDataSaver,
-      disabledByBatterySaver: event.data.disabledByBatterySaver,
-      disabledByHoldbackPrefetchSpeculationRules: event.data.disabledByHoldbackPrefetchSpeculationRules,
-      disabledByHoldbackPrerenderSpeculationRules: event.data.disabledByHoldbackPrerenderSpeculationRules
-    };
+    this.#warnings = toPreloadingWarnings(event.data);
     this.requestUpdate();
   };
   constructor(model, view = ATTEMPT_DEFAULT_VIEW) {
@@ -9658,6 +9677,10 @@ var PreloadingSummaryView = class extends UI11.Widget.VBox {
   model;
   #view;
   #warnings;
+  #onWarningsUpdated = (event) => {
+    this.#warnings = toPreloadingWarnings(event.data);
+    this.requestUpdate();
+  };
   constructor(model, view = SUMMARY_DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging5.pane("speculative-loads")}`,
@@ -9666,6 +9689,9 @@ var PreloadingSummaryView = class extends UI11.Widget.VBox {
     this.#view = view;
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+  }
+  wasShown() {
+    super.wasShown();
     SDK11.TargetManager.TargetManager.instance().addModelListener(
       SDK11.PreloadingModel.PreloadingModel,
       SDK11.PreloadingModel.Events.MODEL_UPDATED,
@@ -9676,17 +9702,26 @@ var PreloadingSummaryView = class extends UI11.Widget.VBox {
     SDK11.TargetManager.TargetManager.instance().addModelListener(
       SDK11.PreloadingModel.PreloadingModel,
       SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
-      (e) => {
-        this.#warnings = e.data;
-        this.requestUpdate();
-      },
+      this.#onWarningsUpdated,
       this,
       { scoped: true }
     );
-  }
-  wasShown() {
-    super.wasShown();
     this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    SDK11.TargetManager.TargetManager.instance().removeModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.MODEL_UPDATED,
+      this.requestUpdate,
+      this
+    );
+    SDK11.TargetManager.TargetManager.instance().removeModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
+      this.#onWarningsUpdated,
+      this
+    );
   }
   onScopeChange() {
     const model = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
@@ -10012,33 +10047,103 @@ var PreloadingAttemptTreeElement = class extends PreloadingTreeElementBase {
   }
 };
 
+// ../../front_end/panels/application/PrivateVerificationTokensView.ts
+var PrivateVerificationTokensView_exports = {};
+__export(PrivateVerificationTokensView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  PrivateVerificationTokensView: () => PrivateVerificationTokensView
+});
+import * as i18n23 from "../../core/i18n/i18n.js";
+import * as UI12 from "../../ui/legacy/legacy.js";
+import { html as html9, render as render9 } from "../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
+
+// gen/front_end/panels/application/privateVerificationTokensView.css.js
+var privateVerificationTokensView_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pvt-view {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  overflow: hidden;
+}
+
+.empty-state {
+  padding: var(--sys-size-6);
+  color: var(--sys-color-on-surface-subtle);
+}
+
+/*# sourceURL=${import.meta.resolve("./privateVerificationTokensView.css")} */`;
+
+// ../../front_end/panels/application/PrivateVerificationTokensView.ts
+var UIStrings12 = {
+  /**
+   * @description Empty state message when no private verification tokens match the current origin.
+   */
+  noPrivateVerificationTokens: "No private verification tokens for this origin"
+};
+var str_12 = i18n23.i18n.registerUIStrings("panels/application/PrivateVerificationTokensView.ts", UIStrings12);
+var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var DEFAULT_VIEW5 = (_input, _output, target) => {
+  render9(html9`
+    <style>${privateVerificationTokensView_css_default}</style>
+    <style>${UI12.inspectorCommonStyles}</style>
+    <div class="pvt-view" jslog=${VisualLogging6.pane("private-verification-tokens")}>
+      <div class="empty-state">${i18nString12(UIStrings12.noPrivateVerificationTokens)}</div>
+    </div>
+  `, target);
+};
+var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
+  #view;
+  constructor(element, view = DEFAULT_VIEW5) {
+    super(element, { useShadowDom: true });
+    this.#view = view;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({}, void 0, this.contentElement);
+  }
+};
+
 // ../../front_end/panels/application/ReportingApiTreeElement.ts
 var ReportingApiTreeElement_exports = {};
 __export(ReportingApiTreeElement_exports, {
   CrashReportContextTreeElement: () => CrashReportContextTreeElement,
   ReportingApiTreeElement: () => ReportingApiTreeElement,
-  i18nString: () => i18nString14
+  i18nString: () => i18nString15
 });
-import * as i18n27 from "../../core/i18n/i18n.js";
+import * as i18n29 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon5 } from "../../ui/kit/kit.js";
-import * as UI14 from "../../ui/legacy/legacy.js";
+import * as UI15 from "../../ui/legacy/legacy.js";
 
 // ../../front_end/panels/application/CrashReportContextView.ts
 var CrashReportContextView_exports = {};
 __export(CrashReportContextView_exports, {
   CrashReportContextView: () => CrashReportContextView,
-  DEFAULT_VIEW: () => DEFAULT_VIEW5
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
 import "../../ui/legacy/legacy.js";
-import * as i18n23 from "../../core/i18n/i18n.js";
+import * as i18n25 from "../../core/i18n/i18n.js";
 import * as Platform5 from "../../core/platform/platform.js";
 import * as SDK12 from "../../core/sdk/sdk.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
-import * as UI12 from "../../ui/legacy/legacy.js";
-import { html as html9, render as render9 } from "../../ui/lit/lit.js";
-import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
+import * as UI13 from "../../ui/legacy/legacy.js";
+import { html as html10, render as render10 } from "../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents6 from "./components/components.js";
-var UIStrings12 = {
+var UIStrings13 = {
   /**
    * @description Header text in an empty state view when no context entries are detected in the crash report context view of the Application panel.
    */
@@ -10056,13 +10161,13 @@ var UIStrings12 = {
    */
   refresh: "Refresh"
 };
-var str_12 = i18n23.i18n.registerUIStrings("panels/application/CrashReportContextView.ts", UIStrings12);
-var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  const { widget: widget13 } = UI12.Widget;
-  render9(
-    html9`
-    <style>${UI12.inspectorCommonStyles}</style>
+var str_13 = i18n25.i18n.registerUIStrings("panels/application/CrashReportContextView.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  const { widget: widget13 } = UI13.Widget;
+  render10(
+    html10`
+    <style>${UI13.inspectorCommonStyles}</style>
     <style>
       .crash-report-context-view {
         padding-top: 5px;
@@ -10101,23 +10206,23 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         background-color: var(--sys-color-cdt-base-container);
       }
     </style>
-    <div class="vbox flex-auto" jslog=${VisualLogging6.pane("crash-report-context")}>
-      <devtools-toolbar class="crash-report-context-toolbar" role="toolbar" jslog=${VisualLogging6.toolbar()}>
-        <devtools-button title=${i18nString12(UIStrings12.refresh)}
+    <div class="vbox flex-auto" jslog=${VisualLogging7.pane("crash-report-context")}>
+      <devtools-toolbar class="crash-report-context-toolbar" role="toolbar" jslog=${VisualLogging7.toolbar()}>
+        <devtools-button title=${i18nString13(UIStrings13.refresh)}
                          @click=${input.onRefresh}
                          .iconName=${"refresh"}
                          .variant=${Buttons6.Button.Variant.TOOLBAR}
-                         jslog=${VisualLogging6.action("refresh").track({
+                         jslog=${VisualLogging7.action("refresh").track({
       click: true
     })}>
         </devtools-button>
-        <devtools-toolbar-input type="filter" placeholder=${i18nString12(UIStrings12.filterByText)}
+        <devtools-toolbar-input type="filter" placeholder=${i18nString13(UIStrings13.filterByText)}
             @change=${(e) => input.onFilterChanged(e)} class="flex-auto">
         </devtools-toolbar-input>
       </devtools-toolbar>
-      ${input.frames.length > 0 ? html9`
+      ${input.frames.length > 0 ? html10`
         <div class="crash-report-context-view flex-auto">
-          ${input.frames.map((frame) => html9`
+          ${input.frames.map((frame) => html10`
             <div class="frame-section">
               <div class="frame-header">
                 <span class="frame-url" title="URL: ${frame.url}\nFrame ID: ${frame.frameId}">${frame.displayName}</span>
@@ -10137,9 +10242,9 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
             </div>
           `)}
         </div>
-      ` : html9`
-        ${widget13(UI12.EmptyWidget.EmptyWidget, {
-      header: i18nString12(UIStrings12.noContext)
+      ` : html10`
+        ${widget13(UI13.EmptyWidget.EmptyWidget, {
+      header: i18nString13(UIStrings13.noContext)
     })}
       `}
     </div>
@@ -10147,11 +10252,11 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
     target
   );
 };
-var CrashReportContextView = class extends UI12.Widget.VBox {
+var CrashReportContextView = class extends UI13.Widget.VBox {
   selectedKey = null;
   #view;
   #filters = [];
-  constructor(view = DEFAULT_VIEW5) {
+  constructor(view = DEFAULT_VIEW6) {
     super();
     this.#view = view;
     this.requestUpdate();
@@ -10196,7 +10301,7 @@ var CrashReportContextView = class extends UI12.Widget.VBox {
     const entriesByFrame = Map.groupBy(allEntries, (entry) => entry.frameId);
     return [...entriesByFrame.entries()].map(([frameId, frameEntries]) => {
       const frame = SDK12.FrameManager.FrameManager.instance().getFrame(frameId);
-      const url = frame?.url || i18nString12(UIStrings12.unknownFrame);
+      const url = frame?.url || i18nString13(UIStrings13.unknownFrame);
       const displayName = frame?.displayName() || url;
       return {
         url,
@@ -10225,19 +10330,19 @@ var CrashReportContextView = class extends UI12.Widget.VBox {
 // ../../front_end/panels/application/ReportingApiView.ts
 var ReportingApiView_exports = {};
 __export(ReportingApiView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ReportingApiView: () => ReportingApiView,
-  i18nString: () => i18nString13
+  i18nString: () => i18nString14
 });
-import * as i18n25 from "../../core/i18n/i18n.js";
+import * as i18n27 from "../../core/i18n/i18n.js";
 import * as SDK13 from "../../core/sdk/sdk.js";
 import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI13 from "../../ui/legacy/legacy.js";
-import { html as html10, render as render10 } from "../../ui/lit/lit.js";
-import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
+import * as UI14 from "../../ui/legacy/legacy.js";
+import { html as html11, render as render11 } from "../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents7 from "./components/components.js";
-var { widget: widget6 } = UI13.Widget;
-var UIStrings13 = {
+var { widget: widget6 } = UI14.Widget;
+var UIStrings14 = {
   /**
    * @description Header text in an empty state view when no report or endpoint has been detected in the reporting API view of the Application panel.
    */
@@ -10255,15 +10360,15 @@ var UIStrings13 = {
    */
   clickToDisplayBody: "Click any report to display its body"
 };
-var str_13 = i18n25.i18n.registerUIStrings("panels/application/ReportingApiView.ts", UIStrings13);
-var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("panels/application/ReportingApiView.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var REPORTING_API_EXPLANATION_URL = "https://developer.chrome.com/docs/capabilities/web-apis/reporting-api";
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   if (input.hasReports || input.hasEndpoints) {
-    render10(html10`
-      <style>${UI13.inspectorCommonStyles}</style>
-      <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${VisualLogging7.pane("reporting-api")}>
-        ${input.hasReports ? html10`
+    render11(html11`
+      <style>${UI14.inspectorCommonStyles}</style>
+      <devtools-split-view sidebar-position="second" sidebar-initial-size="150" jslog=${VisualLogging8.pane("reporting-api")}>
+        ${input.hasReports ? html11`
           <devtools-split-view slot="main" sidebar-position="second" sidebar-initial-size="150">
             <div slot="main">
               ${widget6(ApplicationComponents7.ReportsGrid.ReportsGrid, {
@@ -10271,14 +10376,14 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       onReportSelected: input.onReportSelected
     })}
             </div>
-            <div slot="sidebar" class="vbox" jslog=${VisualLogging7.pane("preview").track({ resize: true })}>
-              ${input.focusedReport ? widget6(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.focusedReport.body }) : widget6(UI13.EmptyWidget.EmptyWidget, {
-      header: i18nString13(UIStrings13.noReportSelected),
-      text: i18nString13(UIStrings13.clickToDisplayBody)
+            <div slot="sidebar" class="vbox" jslog=${VisualLogging8.pane("preview").track({ resize: true })}>
+              ${input.focusedReport ? widget6(SourceFrame.JSONView.SearchableJsonView, { jsonObject: input.focusedReport.body }) : widget6(UI14.EmptyWidget.EmptyWidget, {
+      header: i18nString14(UIStrings14.noReportSelected),
+      text: i18nString14(UIStrings14.clickToDisplayBody)
     })}
             </div>
           </devtools-split-view>
-        ` : html10`
+        ` : html11`
           <div slot="main">
             ${widget6(ApplicationComponents7.ReportsGrid.ReportsGrid, {
       reports: input.reports,
@@ -10294,22 +10399,22 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       </devtools-split-view>
     `, target);
   } else {
-    render10(html10`
-      <devtools-widget ${widget6(UI13.EmptyWidget.EmptyWidget, {
-      header: i18nString13(UIStrings13.noReportOrEndpoint),
-      text: i18nString13(UIStrings13.reportingApiDescription),
+    render11(html11`
+      <devtools-widget ${widget6(UI14.EmptyWidget.EmptyWidget, {
+      header: i18nString14(UIStrings14.noReportOrEndpoint),
+      text: i18nString14(UIStrings14.reportingApiDescription),
       link: REPORTING_API_EXPLANATION_URL
-    })} jslog=${VisualLogging7.pane("reporting-api-empty")}></devtools-widget>
+    })} jslog=${VisualLogging8.pane("reporting-api-empty")}></devtools-widget>
     `, target);
   }
 };
-var ReportingApiView = class extends UI13.Widget.VBox {
+var ReportingApiView = class extends UI14.Widget.VBox {
   #endpoints;
   #view;
   #networkManager;
   #reports = [];
   #focusedReport;
-  constructor(view = DEFAULT_VIEW6) {
+  constructor(view = DEFAULT_VIEW7) {
     super();
     this.#view = view;
     this.#endpoints = /* @__PURE__ */ new Map();
@@ -10390,7 +10495,7 @@ var ReportingApiView = class extends UI13.Widget.VBox {
 };
 
 // ../../front_end/panels/application/ReportingApiTreeElement.ts
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Label for an item in the sidebar of the Application panel.
    */
@@ -10400,13 +10505,13 @@ var UIStrings14 = {
    */
   crashReportContext: "Crash report context"
 };
-var str_14 = i18n27.i18n.registerUIStrings("panels/application/ReportingApiTreeElement.ts", UIStrings14);
-var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("panels/application/ReportingApiTreeElement.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var ReportingApiTreeElement = class extends ApplicationPanelTreeElement {
   view;
   #childrenInitialized = false;
   constructor(storagePanel) {
-    super(storagePanel, i18nString14(UIStrings14.reportingApi), true, "reporting-api");
+    super(storagePanel, i18nString15(UIStrings15.reportingApi), true, "reporting-api");
     const icon = createIcon5("document");
     this.setLeadingIcons([icon]);
   }
@@ -10426,14 +10531,14 @@ var ReportingApiTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ReportingApiView();
     }
     this.showView(this.view);
-    UI14.UIUserMetrics.UIUserMetrics.instance().panelShown("reporting-api");
+    UI15.UIUserMetrics.UIUserMetrics.instance().panelShown("reporting-api");
     return false;
   }
 };
 var CrashReportContextTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
-    super(storagePanel, i18nString14(UIStrings14.crashReportContext), false, "crash-report-context");
+    super(storagePanel, i18nString15(UIStrings15.crashReportContext), false, "crash-report-context");
     const icon = createIcon5("table");
     this.setLeadingIcons([icon]);
   }
@@ -10447,7 +10552,7 @@ var CrashReportContextTreeElement = class extends ApplicationPanelTreeElement {
     }
     this.view.requestUpdate();
     this.showView(this.view);
-    UI14.UIUserMetrics.UIUserMetrics.instance().panelShown("crash-report-context");
+    UI15.UIUserMetrics.UIUserMetrics.instance().panelShown("crash-report-context");
     return false;
   }
 };
@@ -10544,15 +10649,15 @@ __export(ServiceWorkerCacheTreeElement_exports, {
   SWCacheTreeElement: () => SWCacheTreeElement,
   ServiceWorkerCacheTreeElement: () => ServiceWorkerCacheTreeElement
 });
-import * as i18n31 from "../../core/i18n/i18n.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
 import * as SDK15 from "../../core/sdk/sdk.js";
 import { createIcon as createIcon6 } from "../../ui/kit/kit.js";
-import * as UI16 from "../../ui/legacy/legacy.js";
+import * as UI17 from "../../ui/legacy/legacy.js";
 
 // ../../front_end/panels/application/ServiceWorkerCacheViews.ts
 var ServiceWorkerCacheViews_exports = {};
 __export(ServiceWorkerCacheViews_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW7,
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   REQUEST_VIEW_DEFAULT_VIEW: () => REQUEST_VIEW_DEFAULT_VIEW,
   RequestView: () => RequestView,
   ServiceWorkerCacheView: () => ServiceWorkerCacheView
@@ -10560,15 +10665,15 @@ __export(ServiceWorkerCacheViews_exports, {
 import "../../ui/legacy/legacy.js";
 import "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Common9 from "../../core/common/common.js";
-import * as i18n29 from "../../core/i18n/i18n.js";
+import * as i18n31 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
 import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 import * as Buttons7 from "../../ui/components/buttons/buttons.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
-import * as UI15 from "../../ui/legacy/legacy.js";
-import { html as html11, nothing as nothing6, render as render11 } from "../../ui/lit/lit.js";
-import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
+import { html as html12, nothing as nothing6, render as render12 } from "../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 import * as Network2 from "../network/network.js";
 import * as ApplicationComponents8 from "./components/components.js";
 
@@ -10642,8 +10747,8 @@ var serviceWorkerCacheViews_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./serviceWorkerCacheViews.css")} */`;
 
 // ../../front_end/panels/application/ServiceWorkerCacheViews.ts
-var { widget: widget7 } = UI15.Widget;
-var UIStrings15 = {
+var { widget: widget7 } = UI16.Widget;
+var UIStrings16 = {
   /**
    * @description Title of the cache storage view in the Application panel.
    */
@@ -10703,14 +10808,14 @@ var UIStrings15 = {
    */
   preview: "Preview"
 };
-var str_15 = i18n29.i18n.registerUIStrings("panels/application/ServiceWorkerCacheViews.ts", UIStrings15);
-var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var DEFAULT_VIEW7 = (input, _output, target) => {
-  render11(html11`
-    <devtools-toolbar class="data-view-toolbar" jslog=${VisualLogging8.toolbar()}>
+var str_16 = i18n31.i18n.registerUIStrings("panels/application/ServiceWorkerCacheViews.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  render12(html12`
+    <devtools-toolbar class="data-view-toolbar" jslog=${VisualLogging9.toolbar()}>
       <devtools-button
-        title=${i18nString15(UIStrings15.refresh)}
-        aria-label=${i18nString15(UIStrings15.refresh)}
+        title=${i18nString16(UIStrings16.refresh)}
+        aria-label=${i18nString16(UIStrings16.refresh)}
         .iconName=${"refresh"}
         .disabled=${!input.refreshEnabled}
         .variant=${Buttons7.Button.Variant.TOOLBAR}
@@ -10718,8 +10823,8 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         @click=${input.onRefresh}>
       </devtools-button>
       <devtools-button
-        title=${i18nString15(UIStrings15.deleteSelected)}
-        aria-label=${i18nString15(UIStrings15.deleteSelected)}
+        title=${i18nString16(UIStrings16.deleteSelected)}
+        aria-label=${i18nString16(UIStrings16.deleteSelected)}
         .iconName=${"cross"}
         .variant=${Buttons7.Button.Variant.TOOLBAR}
         .jslogContext=${"cache-storage.delete-selected"}
@@ -10727,7 +10832,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
       </devtools-button>
       <devtools-toolbar-input
         type="filter"
-        placeholder=${i18nString15(UIStrings15.filterByPath)}
+        placeholder=${i18nString16(UIStrings16.filterByPath)}
         style="flex-grow:1"
         @change=${(e) => input.onFilterChanged(e.detail)}>
       </devtools-toolbar-input>
@@ -10741,23 +10846,23 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
   })}>
     </devtools-widget>
     <devtools-split-view direction="row" sidebar-position="first">
-      <devtools-widget slot="sidebar" ${widget7(UI15.Widget.VBox, { minimumSize: new Geometry.Size(0, 100) })}>
+      <devtools-widget slot="sidebar" ${widget7(UI16.Widget.VBox, { minimumSize: new Geometry.Size(0, 100) })}>
         <devtools-data-grid
           striped
           deletable
           class="flex-auto"
-          name=${i18nString15(UIStrings15.serviceWorkerCache)}
+          name=${i18nString16(UIStrings16.serviceWorkerCache)}
           @refresh=${input.onRefresh}
           @deselect=${() => input.onSelect(null)}>
           <table>
             <tr>
               <th id="number" width="3px">${"#"}</th>
-              <th id="name" weight="4" sortable>${i18nString15(UIStrings15.name)}</th>
-              <th id="response-type" weight="1" align="right" sortable>${i18n29.i18n.lockedString("Response-Type")}</th>
-              <th id="content-type" weight="1" sortable>${i18n29.i18n.lockedString("Content-Type")}</th>
-              <th id="content-length" weight="1" align="right" type="numeric" sortable>${i18n29.i18n.lockedString("Content-Length")}</th>
-              <th id="response-time" width="12em" weight="1" align="right" type="numeric" sortable>${i18nString15(UIStrings15.timeCached)}</th>
-              <th id="vary-header" weight="1" sortable>${i18n29.i18n.lockedString("Vary Header")}</th>
+              <th id="name" weight="4" sortable>${i18nString16(UIStrings16.name)}</th>
+              <th id="response-type" weight="1" align="right" sortable>${i18n31.i18n.lockedString("Response-Type")}</th>
+              <th id="content-type" weight="1" sortable>${i18n31.i18n.lockedString("Content-Type")}</th>
+              <th id="content-length" weight="1" align="right" type="numeric" sortable>${i18n31.i18n.lockedString("Content-Length")}</th>
+              <th id="response-time" width="12em" weight="1" align="right" type="numeric" sortable>${i18nString16(UIStrings16.timeCached)}</th>
+              <th id="vary-header" weight="1" sortable>${i18n31.i18n.lockedString("Vary Header")}</th>
             </tr>
             ${input.entries.map((item4, index) => {
     const requestUrl = item4.request.url();
@@ -10765,7 +10870,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
     const name = parsed.isValid ? Platform6.StringUtilities.trimURL(requestUrl, parsed.domain()) : requestUrl;
     const responseType = item4.entry.responseType === "opaqueResponse" ? "opaque" : item4.entry.responseType === "opaqueRedirect" ? "opaqueredirect" : item4.entry.responseType;
     const varyHeader = item4.request.responseHeaders.find((header) => header.name.toLowerCase() === "vary")?.value || "";
-    return html11`
+    return html12`
                 <tr
                   ?selected=${input.selectedRequest === item4.request}
                   @select=${() => input.onSelect(item4.request)}
@@ -10776,29 +10881,29 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
                   <td class="content-type-column" title=${requestUrl}>${item4.request.mimeType}</td>
                   <td class="content-length-column" title=${requestUrl} data-value=${item4.request.resourceSize}>${(item4.request.resourceSize | 0).toLocaleString("en-US")}</td>
                   <td class="response-time-column" title=${requestUrl} data-value=${item4.request.endTime}>${new Date(item4.request.endTime * 1e3).toLocaleString()}</td>
-                  <td class="vary-header-column" title=${varyHeader ? i18nString15(UIStrings15.varyHeaderWarning) : requestUrl}>${varyHeader}</td>
+                  <td class="vary-header-column" title=${varyHeader ? i18nString16(UIStrings16.varyHeaderWarning) : requestUrl}>${varyHeader}</td>
                 </tr>
               `;
   })}
           </table>
         </devtools-data-grid>
       </devtools-widget>
-      <devtools-widget slot="main" ${widget7(UI15.Widget.VBox)}>
+      <devtools-widget slot="main" ${widget7(UI16.Widget.VBox)}>
         <div class="cache-preview-panel-resizer"></div>
-        ${input.selectedRequest ? widget7(RequestView, { request: input.selectedRequest }) : widget7(UI15.EmptyWidget.EmptyWidget, {
-    header: i18nString15(UIStrings15.noCacheEntrySelected),
-    text: i18nString15(UIStrings15.selectACacheEntryAboveToPreview)
+        ${input.selectedRequest ? widget7(RequestView, { request: input.selectedRequest }) : widget7(UI16.EmptyWidget.EmptyWidget, {
+    header: i18nString16(UIStrings16.noCacheEntrySelected),
+    text: i18nString16(UIStrings16.selectACacheEntryAboveToPreview)
   })}
       </devtools-widget>
     </devtools-split-view>
-    ${input.returnCount !== null ? html11`
+    ${input.returnCount !== null ? html12`
       <div class="cache-storage-summary-bar">
-        <span>${input.entryPathFilter ? i18nString15(UIStrings15.matchingEntriesS, { PH1: String(input.returnCount) }) : i18nString15(UIStrings15.totalEntriesS, { PH1: String(input.returnCount) })}</span>
+        <span>${input.entryPathFilter ? i18nString16(UIStrings16.matchingEntriesS, { PH1: String(input.returnCount) }) : i18nString16(UIStrings16.totalEntriesS, { PH1: String(input.returnCount) })}</span>
       </div>
     ` : nothing6}
   `, target, { container: { classes: ["service-worker-cache-data-view", "storage-view"] } });
 };
-var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
+var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
   #view;
   model;
   entriesForTest = null;
@@ -10811,11 +10916,11 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
   entryPathFilter = "";
   returnCount = null;
   #loadingPromise = null;
-  constructor(model, cache, view = DEFAULT_VIEW7) {
+  constructor(model, cache, view = DEFAULT_VIEW8) {
     super({
-      title: i18nString15(UIStrings15.cache),
+      title: i18nString16(UIStrings16.cache),
       viewId: "cache",
-      jslog: `${VisualLogging8.pane("cache-storage-data")}`
+      jslog: `${VisualLogging9.pane("cache-storage-data")}`
     });
     this.#view = view;
     this.registerRequiredCSS(serviceWorkerCacheViews_css_default);
@@ -11001,26 +11106,26 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
   }
 };
 var REQUEST_VIEW_DEFAULT_VIEW = (input, _output, target) => {
-  render11(html11`
+  render12(html12`
     <devtools-tabbed-pane
-      jslog=${VisualLogging8.section("network-item-preview")}
+      jslog=${VisualLogging9.section("network-item-preview")}
       @select=${(event) => input.onTabSelected(event.detail.tabId, Boolean(event.detail.isUserGesture))}>
       <devtools-widget
         id="headers"
-        label=${i18nString15(UIStrings15.headers)}
+        label=${i18nString16(UIStrings16.headers)}
         ?selected=${input.selectedTabId !== "preview"}
         ${widget7(Network2.RequestHeadersView.RequestHeadersView, { request: input.request })}>
       </devtools-widget>
       <devtools-widget
         id="preview"
-        label=${i18nString15(UIStrings15.preview)}
+        label=${i18nString16(UIStrings16.preview)}
         ?selected=${input.selectedTabId === "preview"}
         ${widget7(Network2.RequestPreviewView.RequestPreviewView, { request: input.request })}>
       </devtools-widget>
     </devtools-tabbed-pane>
   `, target);
 };
-var RequestView = class extends UI15.Widget.VBox {
+var RequestView = class extends UI16.Widget.VBox {
   #view;
   #request;
   #resourceViewTabSetting;
@@ -11064,7 +11169,7 @@ var RequestView = class extends UI15.Widget.VBox {
 };
 
 // ../../front_end/panels/application/ServiceWorkerCacheTreeElement.ts
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Label for the cache storage tree element in the Application panel sidebar.
    */
@@ -11086,8 +11191,8 @@ var UIStrings16 = {
    */
   delete: "Delete"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/application/ServiceWorkerCacheTreeElement.ts", UIStrings16);
-var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("panels/application/ServiceWorkerCacheTreeElement.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTreeElement {
   swCacheModels;
   swCacheTreeElements;
@@ -11096,9 +11201,9 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
   constructor(resourcesPanel, storageBucket) {
     super(
       resourcesPanel,
-      i18nString16(UIStrings16.cacheStorage),
-      i18nString16(UIStrings16.noCacheStorage),
-      i18nString16(UIStrings16.cacheStorageDescription),
+      i18nString17(UIStrings17.cacheStorage),
+      i18nString17(UIStrings17.noCacheStorage),
+      i18nString17(UIStrings17.cacheStorageDescription),
       "cache-storage"
     );
     const icon = createIcon6("database");
@@ -11134,9 +11239,9 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI16.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI17.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString16(UIStrings16.refreshCaches),
+      i18nString17(UIStrings17.refreshCaches),
       this.refreshCaches.bind(this),
       { jslogContext: "refresh-caches" }
     );
@@ -11231,9 +11336,9 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI16.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI17.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString16(UIStrings16.delete),
+      i18nString17(UIStrings17.delete),
       this.clearCache.bind(this),
       { jslogContext: "delete" }
     );
@@ -11254,7 +11359,7 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ServiceWorkerCacheView(this.model, this.cache);
     }
     this.showView(this.view);
-    UI16.UIUserMetrics.UIUserMetrics.instance().panelShown("service-worker-cache");
+    UI17.UIUserMetrics.UIUserMetrics.instance().panelShown("service-worker-cache");
     return false;
   }
   hasModelAndCache(model, cache) {
@@ -11266,7 +11371,7 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
 var ServiceWorkersView_exports = {};
 __export(ServiceWorkersView_exports, {
   DEFAULT_SECTION_VIEW: () => DEFAULT_SECTION_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW9,
+  DEFAULT_VIEW: () => DEFAULT_VIEW10,
   Section: () => Section,
   ServiceWorkersView: () => ServiceWorkersView,
   setThrottleDisabledForDebugging: () => setThrottleDisabledForDebugging
@@ -11275,14 +11380,14 @@ import "../../ui/components/report_view/report_view.js";
 import "../../ui/kit/kit.js";
 import * as Common10 from "../../core/common/common.js";
 import * as Host2 from "../../core/host/host.js";
-import * as i18n35 from "../../core/i18n/i18n.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as NetworkForward2 from "../network/forward/forward.js";
 import * as Buttons8 from "../../ui/components/buttons/buttons.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
-import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html13, nothing as nothing8, render as render13 } from "../../ui/lit/lit.js";
-import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
+import { Directives as Directives5, html as html14, nothing as nothing8, render as render14 } from "../../ui/lit/lit.js";
+import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
 import * as ApplicationComponents9 from "./components/components.js";
 
@@ -11492,15 +11597,15 @@ devtools-widget {
 // ../../front_end/panels/application/ServiceWorkerUpdateCycleView.ts
 var ServiceWorkerUpdateCycleView_exports = {};
 __export(ServiceWorkerUpdateCycleView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW8,
+  DEFAULT_VIEW: () => DEFAULT_VIEW9,
   ServiceWorkerUpdateCycleView: () => ServiceWorkerUpdateCycleView,
   ServiceWorkerUpdateNames: () => ServiceWorkerUpdateNames
 });
-import * as i18n33 from "../../core/i18n/i18n.js";
+import * as i18n35 from "../../core/i18n/i18n.js";
 import * as SDK16 from "../../core/sdk/sdk.js";
-import * as UI17 from "../../ui/legacy/legacy.js";
-import { html as html12, nothing as nothing7, render as render12 } from "../../ui/lit/lit.js";
-import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
+import * as UI18 from "../../ui/legacy/legacy.js";
+import { html as html13, nothing as nothing7, render as render13 } from "../../ui/lit/lit.js";
+import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/serviceWorkerUpdateCycleView.css.js
 var serviceWorkerUpdateCycleView_css_default = `/*
@@ -11621,7 +11726,7 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./serviceWorkerUpdateCycleView.css")} */`;
 
 // ../../front_end/panels/application/ServiceWorkerUpdateCycleView.ts
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Table column header for the version column in the Service Worker update cycle table of the Application panel.
    */
@@ -11645,9 +11750,9 @@ var UIStrings17 = {
    */
   endTimeS: "End time: {PH1}"
 };
-var str_17 = i18n33.i18n.registerUIStrings("panels/application/ServiceWorkerUpdateCycleView.ts", UIStrings17);
-var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var DEFAULT_VIEW8 = (input, _output, target) => {
+var str_18 = i18n35.i18n.registerUIStrings("panels/application/ServiceWorkerUpdateCycleView.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var DEFAULT_VIEW9 = (input, _output, target) => {
   let tableRows = nothing7;
   if (input.timeRanges.length > 0) {
     const startTimes = input.timeRanges.map((r) => r.start);
@@ -11655,14 +11760,14 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
     const startTime = startTimes.reduce((a, b) => Math.min(a, b));
     const endTime = endTimes.reduce((a, b) => Math.max(a, b));
     const scale = 100 / (endTime - startTime);
-    tableRows = html12`${input.timeRanges.map((range) => {
+    tableRows = html13`${input.timeRanges.map((range) => {
       const phaseName = range.phase;
       const left = scale * (range.start - startTime);
       const right = scale * (endTime - range.end);
       const key = `${range.id}-${range.phase}`;
       const expanded = input.expandedRows.has(key);
-      return html12`
-        <tr class="service-worker-update-timeline" jslog=${VisualLogging9.treeItem("update-timeline").track({
+      return html13`
+        <tr class="service-worker-update-timeline" jslog=${VisualLogging10.treeItem("update-timeline").track({
         click: true,
         resize: true,
         keydown: "ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space"
@@ -11673,7 +11778,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
               @focus=${input.onFocus}
               @keydown=${(e) => input.onKeydown(e, key)}
               @click=${(e) => input.onClick(e, key)}
-              jslog=${VisualLogging9.expand("timing-info").track({ click: true })}>
+              jslog=${VisualLogging10.expand("timing-info").track({ click: true })}>
             #${range.id}
           </td>
           <td>${phaseName}</td>
@@ -11685,33 +11790,33 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           </td>
         </tr>
         <tr class="service-worker-update-timing-bar-details ${expanded ? "service-worker-update-timing-bar-details-expanded" : "service-worker-update-timing-bar-details-collapsed"}" tabindex="0">
-          <td colspan="3"><span>${i18nString17(UIStrings17.startTimeS, { PH1: new Date(range.start).toISOString() })}</span></td>
+          <td colspan="3"><span>${i18nString18(UIStrings18.startTimeS, { PH1: new Date(range.start).toISOString() })}</span></td>
         </tr>
         <tr class="service-worker-update-timing-bar-details ${expanded ? "service-worker-update-timing-bar-details-expanded" : "service-worker-update-timing-bar-details-collapsed"}" tabindex="0">
-          <td colspan="3"><span>${i18nString17(UIStrings17.endTimeS, { PH1: new Date(range.end).toISOString() })}</span></td>
+          <td colspan="3"><span>${i18nString18(UIStrings18.endTimeS, { PH1: new Date(range.end).toISOString() })}</span></td>
         </tr>
       `;
     })}`;
   }
-  render12(html12`
+  render13(html13`
     <style>${serviceWorkerUpdateCycleView_css_default}</style>
-    <table class="service-worker-update-timing-table" jslog=${VisualLogging9.tree("update-timing-table")}>
+    <table class="service-worker-update-timing-table" jslog=${VisualLogging10.tree("update-timing-table")}>
       <tr class="service-worker-update-timing-table-header">
-        <td>${i18nString17(UIStrings17.version)}</td>
-        <td>${i18nString17(UIStrings17.updateActivity)}</td>
-        <td>${i18nString17(UIStrings17.timeline)}</td>
+        <td>${i18nString18(UIStrings18.version)}</td>
+        <td>${i18nString18(UIStrings18.updateActivity)}</td>
+        <td>${i18nString18(UIStrings18.timeline)}</td>
       </tr>
       ${tableRows}
     </table>
   `, target);
 };
-var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
+var ServiceWorkerUpdateCycleView = class extends UI18.Widget.Widget {
   #registration;
   rows;
   selectedRowIndex;
   expandedRows = /* @__PURE__ */ new Set();
   #view;
-  constructor(element, view = DEFAULT_VIEW8) {
+  constructor(element, view = DEFAULT_VIEW9) {
     super(element);
     this.#view = view;
     this.rows = [];
@@ -11932,7 +12037,7 @@ var ServiceWorkerUpdateNames = /* @__PURE__ */ ((ServiceWorkerUpdateNames2) => {
 })(ServiceWorkerUpdateNames || {});
 
 // ../../front_end/panels/application/ServiceWorkersView.ts
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Section header for Service Worker registrations from other origins in the Service Workers view of the Application panel.
    */
@@ -12080,38 +12185,38 @@ var UIStrings18 = {
    */
   seeAllRegistrations: "See all registrations"
 };
-var str_18 = i18n35.i18n.registerUIStrings("panels/application/ServiceWorkersView.ts", UIStrings18);
-var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("panels/application/ServiceWorkersView.ts", UIStrings19);
+var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var { until } = Directives5;
-var { widget: widget8 } = UI18.Widget;
-var { bindToSetting } = UI18.UIUtils;
+var { widget: widget8 } = UI19.Widget;
+var { bindToSetting } = UI19.UIUtils;
 function renderToolbar2() {
   const updateOnReloadSetting = Common10.Settings.Settings.instance().createSetting("service-worker-update-on-reload", false);
   const bypassServiceWorkerSetting = Common10.Settings.Settings.instance().createSetting("bypass-service-worker", false);
-  return html13`<devtools-toolbar class="service-worker-toolbar">
+  return html14`<devtools-toolbar class="service-worker-toolbar">
     ${MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox().element}
-    <devtools-checkbox title=${i18nString18(UIStrings18.onPageReloadForceTheService)}
+    <devtools-checkbox title=${i18nString19(UIStrings19.onPageReloadForceTheService)}
                        ${bindToSetting(updateOnReloadSetting)}>
-      ${i18nString18(UIStrings18.updateOnReload)}
+      ${i18nString19(UIStrings19.updateOnReload)}
     </devtools-checkbox>
-    <devtools-checkbox title=${i18nString18(UIStrings18.bypassTheServiceWorkerAndLoad)}
+    <devtools-checkbox title=${i18nString19(UIStrings19.bypassTheServiceWorkerAndLoad)}
                        ${bindToSetting(bypassServiceWorkerSetting)}>
-      ${i18nString18(UIStrings18.bypassForNetwork)}
+      ${i18nString19(UIStrings19.bypassForNetwork)}
      </devtools-checkbox>
   </devtools-toolbar>`;
 }
 function renderOthersOriginView() {
-  return html13`<div class="service-workers-other-origin"
-                   jslog=${VisualLogging10.section("other-origin")}>
+  return html14`<div class="service-workers-other-origin"
+                   jslog=${VisualLogging11.section("other-origin")}>
     <devtools-report>
       <devtools-report-section-header>
-         ${i18nString18(UIStrings18.serviceWorkersFromOtherOrigins)}
+         ${i18nString19(UIStrings19.serviceWorkersFromOtherOrigins)}
       </devtools-report-section-header>
       <div class="service-worker-section">
          <devtools-link href="chrome://serviceworker-internals"
                         jslogcontext="view-all"
                         .allowPrivileged=${true}>
-           ${i18nString18(UIStrings18.seeAllRegistrations)}
+           ${i18nString19(UIStrings19.seeAllRegistrations)}
          </devtools-link>
       </div>
     </devtools-report>
@@ -12145,16 +12250,16 @@ function renderOriginReport(input) {
     const bTimestamp = getTimeStamp(b.registration);
     return bTimestamp - aTimestamp;
   });
-  return html13`<div class="service-workers-this-origin" jslog=${VisualLogging10.section("this-origin")}>
-    <devtools-report .data=${{ reportTitle: i18n35.i18n.lockedString("Service workers") }}>
+  return html14`<div class="service-workers-this-origin" jslog=${VisualLogging11.section("this-origin")}>
+    <devtools-report .data=${{ reportTitle: i18n37.i18n.lockedString("Service workers") }}>
       <div class="service-worker-toolbar" slot="toolbar">${renderToolbar2()}</div>
-      ${sortedSections.map((section9) => html13`<devtools-widget class="service-worker-section-container" ${widget8(Section, { section: section9 })}></devtools-widget>`)}
+      ${sortedSections.map((section9) => html14`<devtools-widget class="service-worker-section-container" ${widget8(Section, { section: section9 })}></devtools-widget>`)}
     </devtools-report>
   </div>`;
 }
-var DEFAULT_VIEW9 = (input, _output, target) => {
-  render13(
-    html13`
+var DEFAULT_VIEW10 = (input, _output, target) => {
+  render14(
+    html14`
     <!-- This Origin Report -->
     ${renderOriginReport(input)}
     ${renderOthersOriginView()}`,
@@ -12173,16 +12278,16 @@ var throttleDisabledForDebugging = false;
 var setThrottleDisabledForDebugging = (enable) => {
   throttleDisabledForDebugging = enable;
 };
-var ServiceWorkersView = class extends UI18.Widget.VBox {
+var ServiceWorkersView = class extends UI19.Widget.VBox {
   sections;
   manager;
   securityOriginManager;
   eventListeners;
   #output = void 0;
   #view;
-  constructor(view = DEFAULT_VIEW9) {
+  constructor(view = DEFAULT_VIEW10) {
     super({
-      jslog: `${VisualLogging10.pane("service-workers")}`,
+      jslog: `${VisualLogging11.pane("service-workers")}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -12324,37 +12429,37 @@ var ServiceWorkersView = class extends UI18.Widget.VBox {
   }
 };
 function renderHeaderButtons(input) {
-  return html13`
+  return html14`
     <devtools-button .data=${{
     variant: Buttons8.Button.Variant.TEXT,
-    title: i18nString18(UIStrings18.networkRequests),
+    title: i18nString19(UIStrings19.networkRequests),
     jslogContext: "show-network-requests"
   }}
         .disabled=${input.isDeleted}
         @click=${input.onNetworkRequests}>
-      ${i18nString18(UIStrings18.networkRequests)}
+      ${i18nString19(UIStrings19.networkRequests)}
     </devtools-button>
     <devtools-button .data=${{
     variant: Buttons8.Button.Variant.TEXT,
-    title: i18nString18(UIStrings18.update),
+    title: i18nString19(UIStrings19.update),
     jslogContext: "update"
   }}
         .disabled=${input.isDeleted}
         @click=${input.onUpdate}>
-      ${i18nString18(UIStrings18.update)}
+      ${i18nString19(UIStrings19.update)}
     </devtools-button>
     <devtools-button .data=${{
     variant: Buttons8.Button.Variant.TEXT,
-    title: i18nString18(UIStrings18.unregisterServiceWorker),
+    title: i18nString19(UIStrings19.unregisterServiceWorker),
     jslogContext: "unregister"
   }}
         .disabled=${input.isDeleted}
         @click=${input.onUnregister}>
-      ${i18nString18(UIStrings18.unregister)}
+      ${i18nString19(UIStrings19.unregister)}
     </devtools-button>`;
 }
 function renderSyncNotificationField(label, initialValue, placeholder, callback, jslogContext) {
-  return html13`
+  return html14`
     <div class="report-field">
     <div class="report-field-name">${label}</div>
       <div class="report-field-value">
@@ -12368,7 +12473,7 @@ function renderSyncNotificationField(label, initialValue, placeholder, callback,
           placeholder=${placeholder}
           aria-label=${label}
           .spellcheck=${false}
-          jslog=${VisualLogging10.textField().track({ change: true }).context(jslogContext)}
+          jslog=${VisualLogging11.textField().track({ change: true }).context(jslogContext)}
         >
         <devtools-button .data=${{
     type: "submit",
@@ -12382,7 +12487,7 @@ function renderSyncNotificationField(label, initialValue, placeholder, callback,
     </div>`;
 }
 function renderVersion(icon, label, content = nothing8) {
-  return html13`
+  return html14`
     <div class="service-worker-version">
       <div class=${icon}></div>
       <span class="service-worker-version-string" role="alert" aria-live="polite">
@@ -12393,15 +12498,15 @@ function renderVersion(icon, label, content = nothing8) {
 }
 function renderClientsField(input, version) {
   if (!version?.controlledClients?.length) {
-    return html13`<div class="report-field">
-      <div class="report-field-name">${i18nString18(UIStrings18.clients)}</div>
+    return html14`<div class="report-field">
+      <div class="report-field-name">${i18nString19(UIStrings19.clients)}</div>
       <div class="report-field-value"></div>
     </div>`;
   }
-  return html13`<div class="report-field">
-      <div class="report-field-name">${i18nString18(UIStrings18.clients)}</div>
+  return html14`<div class="report-field">
+      <div class="report-field-name">${i18nString19(UIStrings19.clients)}</div>
       <div class="report-field-value">
-      ${version.controlledClients.map((client) => html13`
+      ${version.controlledClients.map((client) => html14`
         <div class="service-worker-client">
           ${until(input.renderClientInfo(client))}
        </div>`)}
@@ -12410,14 +12515,14 @@ function renderClientsField(input, version) {
 }
 function renderSourceField(input, version) {
   if (!version) {
-    return html13`<div class="report-field">
-      <div class="report-field-name">${i18nString18(UIStrings18.source)}</div>
+    return html14`<div class="report-field">
+      <div class="report-field-name">${i18nString19(UIStrings19.source)}</div>
       <div class="report-field-value"></div>
     </div>`;
   }
   const fileName = Common10.ParsedURL.ParsedURL.extractName(version.scriptURL);
-  return html13`<div class="report-field">
-    <div class="report-field-name">${i18nString18(UIStrings18.source)}</div>
+  return html14`<div class="report-field">
+    <div class="report-field-name">${i18nString19(UIStrings19.source)}</div>
     <div class="report-field-value">
       <div class="report-field-value-filename">
         ${Components3.Linkifier.Linkifier.renderLinkifiedUrl(version.scriptURL, {
@@ -12425,75 +12530,75 @@ function renderSourceField(input, version) {
     tabStop: true,
     jslogContext: "source-location"
   })}
-        ${input.errorsLength ? html13`
+        ${input.errorsLength ? html14`
           <button
               class="devtools-link link"
               tabindex="0"
-              aria-label=${i18nString18(UIStrings18.sRegistrationErrors, { PH1: input.errorsLength })}
+              aria-label=${i18nString19(UIStrings19.sRegistrationErrors, { PH1: input.errorsLength })}
               @click=${() => Common10.Console.Console.instance().show()}>
             <devtools-icon name="cross-circle-filled" class="error-icon">
             </devtools-icon>
             ${input.errorsLength}
           </button>` : nothing8}
       </div>
-      ${version.scriptResponseTime !== void 0 ? html13`
+      ${version.scriptResponseTime !== void 0 ? html14`
         <div class="report-field-value-subtitle">
-          ${i18nString18(UIStrings18.receivedS, { PH1: new Date(version.scriptResponseTime * 1e3).toLocaleString() })}
+          ${i18nString19(UIStrings19.receivedS, { PH1: new Date(version.scriptResponseTime * 1e3).toLocaleString() })}
         </div>
       ` : nothing8}
     </div>
   </div>`;
 }
 function renderStatusField(input, active, waiting, installing, redundant) {
-  return html13`<div class="report-field">
-    <div class="report-field-name">${i18nString18(UIStrings18.status)}</div>
+  return html14`<div class="report-field">
+    <div class="report-field-name">${i18nString19(UIStrings19.status)}</div>
     <div class="report-field-value">
       <div class="service-worker-version-stack">
         <div class="service-worker-version-stack-bar"></div>
         ${active ? renderVersion(
     "service-worker-active-circle",
-    i18nString18(UIStrings18.sActivatedAndIsS, {
+    i18nString19(UIStrings19.sActivatedAndIsS, {
       PH1: active.id,
       PH2: SDK17.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]()
     }),
-    active.isRunning() || active.isStarting() ? html13`
+    active.isRunning() || active.isStarting() ? html14`
               <devtools-button .data=${{ jslogContext: "stop", variant: Buttons8.Button.Variant.OUTLINED }}
                               @click=${() => input.onStop(active.id)}>
-                  ${i18nString18(UIStrings18.stopString)}
-              </devtools-button>` : active.isStartable() ? html13`
+                  ${i18nString19(UIStrings19.stopString)}
+              </devtools-button>` : active.isStartable() ? html14`
               <devtools-button .data=${{ jslogContext: "start", variant: Buttons8.Button.Variant.OUTLINED }}
                               @click=${input.onStart}>
-                  ${i18nString18(UIStrings18.startString)}
+                  ${i18nString19(UIStrings19.startString)}
               </devtools-button>` : nothing8
   ) : redundant ? renderVersion(
     "service-worker-redundant-circle",
-    i18nString18(UIStrings18.sIsRedundant, { PH1: redundant.id })
+    i18nString19(UIStrings19.sIsRedundant, { PH1: redundant.id })
   ) : nothing8}
         ${waiting ? renderVersion(
     "service-worker-waiting-circle",
-    i18nString18(UIStrings18.sWaitingToActivate, { PH1: waiting.id }),
-    html13`
+    i18nString19(UIStrings19.sWaitingToActivate, { PH1: waiting.id }),
+    html14`
               <devtools-button .data=${{
       jslogContext: "skip-waiting",
-      title: i18n35.i18n.lockedString("skipWaiting"),
+      title: i18n37.i18n.lockedString("skipWaiting"),
       variant: Buttons8.Button.Variant.OUTLINED
     }}
                   @click=${input.onSkipWaiting}>
-                ${i18n35.i18n.lockedString("skipWaiting")}
+                ${i18n37.i18n.lockedString("skipWaiting")}
               </devtools-button>
-              ${waiting.scriptResponseTime !== void 0 ? html13`
+              ${waiting.scriptResponseTime !== void 0 ? html14`
                 <div class="service-worker-subtitle">
-                  ${i18nString18(UIStrings18.receivedS, { PH1: new Date(waiting.scriptResponseTime * 1e3).toLocaleString() })}
+                  ${i18nString19(UIStrings19.receivedS, { PH1: new Date(waiting.scriptResponseTime * 1e3).toLocaleString() })}
                 </div>
               ` : nothing8}
           `
   ) : nothing8}
         ${installing ? renderVersion(
     "service-worker-installing-circle",
-    i18nString18(UIStrings18.sTryingToInstall, { PH1: installing.id }),
-    installing.scriptResponseTime !== void 0 ? html13`
+    i18nString19(UIStrings19.sTryingToInstall, { PH1: installing.id }),
+    installing.scriptResponseTime !== void 0 ? html14`
             <div class="service-worker-subtitle">
-              ${i18nString18(UIStrings18.receivedS, { PH1: new Date(installing.scriptResponseTime * 1e3).toLocaleString() })}
+              ${i18nString19(UIStrings19.receivedS, { PH1: new Date(installing.scriptResponseTime * 1e3).toLocaleString() })}
             </div>` : nothing8
   ) : nothing8}
       </div>
@@ -12501,9 +12606,9 @@ function renderStatusField(input, active, waiting, installing, redundant) {
   </div>`;
 }
 function renderUpdateCycleField(input) {
-  return html13`
+  return html14`
     <div class="report-field">
-      <div class="report-field-name">${i18nString18(UIStrings18.updateCycle)}</div>
+      <div class="report-field-name">${i18nString19(UIStrings19.updateCycle)}</div>
       <div class="report-field-value">
         ${widget8(ServiceWorkerUpdateCycleView, {
     registration: input.registration,
@@ -12514,9 +12619,9 @@ function renderUpdateCycleField(input) {
 }
 function renderRouterField(input) {
   const active = input.activeVersion;
-  const title = i18nString18(UIStrings18.routers);
+  const title = i18nString19(UIStrings19.routers);
   if (active?.routerRules && active.routerRules.length > 0) {
-    return html13`
+    return html14`
       <div class="report-field">
         <div class="report-field-name">${title}</div>
         <div class="report-field-value">
@@ -12527,35 +12632,35 @@ function renderRouterField(input) {
   return nothing8;
 }
 var DEFAULT_SECTION_VIEW = (input, _output, target) => {
-  render13(html13`
+  render14(html14`
       <style>${serviceWorkersView_css_default}</style>
       <devtools-report-section-header role="heading" aria-level="2"
-              aria-label=${i18nString18(UIStrings18.serviceWorkerForS, { PH1: input.title })}>
+              aria-label=${i18nString19(UIStrings19.serviceWorkerForS, { PH1: input.title })}>
         <span style="flex: 1 1 auto">${input.title}</span>
         ${renderHeaderButtons(input)}
       </devtools-report-section-header>
-      <div class="service-worker-section" jslog=${VisualLogging10.section("service-worker")}>
+      <div class="service-worker-section" jslog=${VisualLogging11.section("service-worker")}>
          ${renderSourceField(input, input.activeVersion ?? input.redundantVersion)}
          ${renderStatusField(input, input.activeVersion, input.waitingVersion, input.installingVersion, input.redundantVersion)}
          ${renderClientsField(input, input.activeVersion ?? input.redundantVersion)}
          ${renderSyncNotificationField(
-    i18nString18(UIStrings18.pushString),
+    i18nString19(UIStrings19.pushString),
     input.pushData,
-    i18nString18(UIStrings18.pushData),
+    i18nString19(UIStrings19.pushData),
     input.onPush,
     "push-message"
   )}
          ${renderSyncNotificationField(
-    i18nString18(UIStrings18.syncString),
+    i18nString19(UIStrings19.syncString),
     input.syncTag,
-    i18nString18(UIStrings18.syncTag),
+    i18nString19(UIStrings19.syncTag),
     input.onSync,
     "sync-tag"
   )}
          ${renderSyncNotificationField(
-    i18nString18(UIStrings18.periodicSync),
+    i18nString19(UIStrings19.periodicSync),
     input.periodicSyncTag,
-    i18nString18(UIStrings18.periodicSyncTag),
+    i18nString19(UIStrings19.periodicSyncTag),
     input.onPeriodicSync,
     "periodic-sync-tag"
   )}
@@ -12564,7 +12669,7 @@ var DEFAULT_SECTION_VIEW = (input, _output, target) => {
       </div>
   `, target);
 };
-var Section = class extends UI18.Widget.VBox {
+var Section = class extends UI19.Widget.VBox {
   manager;
   registration;
   sectionInternal;
@@ -12590,7 +12695,7 @@ var Section = class extends UI18.Widget.VBox {
     if (!this.pushNotificationDataSetting) {
       this.pushNotificationDataSetting = Common10.Settings.Settings.instance().createLocalSetting(
         "push-data",
-        i18nString18(UIStrings18.testPushMessageFromDevtools)
+        i18nString19(UIStrings19.testPushMessageFromDevtools)
       );
       this.syncTagNameSetting = Common10.Settings.Settings.instance().createLocalSetting("sync-tag-name", "test-tag-from-devtools");
       this.periodicSyncTagNameSetting = Common10.Settings.Settings.instance().createLocalSetting("periodic-sync-tag-name", "test-tag-from-devtools");
@@ -12604,7 +12709,7 @@ var Section = class extends UI18.Widget.VBox {
   }
   getTitle() {
     const scopeURL = this.registration.scopeURL;
-    return this.registration.isDeleted ? i18nString18(UIStrings18.sDeleted, { PH1: scopeURL }) : scopeURL;
+    return this.registration.isDeleted ? i18nString19(UIStrings19.sDeleted, { PH1: scopeURL }) : scopeURL;
   }
   requestUpdate() {
     if (throttleDisabledForDebugging) {
@@ -12692,18 +12797,18 @@ var Section = class extends UI18.Widget.VBox {
       this.clientInfoCache.set(clientId, targetInfo);
     }
     if (targetInfo.type !== "page" && targetInfo.type !== "iframe") {
-      return html13`<span class="service-worker-client-string">
-        ${i18nString18(UIStrings18.workerS, { PH1: targetInfo.url })}
+      return html14`<span class="service-worker-client-string">
+        ${i18nString19(UIStrings19.workerS, { PH1: targetInfo.url })}
       </span>`;
     }
-    return html13`
+    return html14`
       <span class="service-worker-client-string">${targetInfo.url}</span>
       <devtools-button
         .data=${{
       iconName: "select-element",
       variant: Buttons8.Button.Variant.ICON,
       size: Buttons8.Button.Size.SMALL,
-      title: i18nString18(UIStrings18.focus),
+      title: i18nString19(UIStrings19.focus),
       jslogContext: "client-focus"
     }}
         class="service-worker-client-focus-link"
@@ -12729,13 +12834,13 @@ var StorageBucketsTreeElement_exports = {};
 __export(StorageBucketsTreeElement_exports, {
   StorageBucketsTreeElement: () => StorageBucketsTreeElement,
   StorageBucketsTreeParentElement: () => StorageBucketsTreeParentElement,
-  i18nString: () => i18nString19
+  i18nString: () => i18nString20
 });
-import * as i18n37 from "../../core/i18n/i18n.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
 import * as SDK18 from "../../core/sdk/sdk.js";
 import { createIcon as createIcon7 } from "../../ui/kit/kit.js";
 import { StorageMetadataView as StorageMetadataView3 } from "./components/components.js";
-var UIStrings19 = {
+var UIStrings20 = {
   /**
    * @description Label for the storage buckets tree element in the Application panel sidebar.
    */
@@ -12749,16 +12854,16 @@ var UIStrings19 = {
    */
   storageBucketsDescription: "On this page you can view and delete storage buckets, and their associated `Storage APIs`"
 };
-var str_19 = i18n37.i18n.registerUIStrings("panels/application/StorageBucketsTreeElement.ts", UIStrings19);
-var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("panels/application/StorageBucketsTreeElement.ts", UIStrings20);
+var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var StorageBucketsTreeParentElement = class extends ExpandableApplicationPanelTreeElement {
   bucketTreeElements = /* @__PURE__ */ new Set();
   constructor(storagePanel) {
     super(
       storagePanel,
-      i18nString19(UIStrings19.storageBuckets),
-      i18nString19(UIStrings19.noStorageBuckets),
-      i18nString19(UIStrings19.storageBucketsDescription),
+      i18nString20(UIStrings20.storageBuckets),
+      i18nString20(UIStrings20.noStorageBuckets),
+      i18nString20(UIStrings20.storageBucketsDescription),
       "storage-buckets"
     );
     const icon = createIcon7("bucket");
@@ -12899,7 +13004,7 @@ var StorageView_exports = {};
 __export(StorageView_exports, {
   ActionDelegate: () => ActionDelegate2,
   AllStorageTypes: () => AllStorageTypes,
-  DEFAULT_VIEW: () => DEFAULT_VIEW13,
+  DEFAULT_VIEW: () => DEFAULT_VIEW14,
   StorageRevealable: () => StorageRevealable,
   StorageRevealer: () => StorageRevealer,
   StorageView: () => StorageView,
@@ -12909,14 +13014,14 @@ import "../../ui/components/report_view/report_view.js";
 import "../../ui/kit/kit.js";
 import "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Common16 from "../../core/common/common.js";
-import * as i18n51 from "../../core/i18n/i18n.js";
+import * as i18n53 from "../../core/i18n/i18n.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
 import * as Buttons10 from "../../ui/components/buttons/buttons.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
-import * as UI26 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html18, nothing as nothing12, render as render19 } from "../../ui/lit/lit.js";
-import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
+import * as UI27 from "../../ui/legacy/legacy.js";
+import { Directives as Directives7, html as html19, nothing as nothing12, render as render20 } from "../../ui/lit/lit.js";
+import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/ResourcesPanel.ts
 var ResourcesPanel_exports = {};
@@ -12933,27 +13038,27 @@ import * as Common15 from "../../core/common/common.js";
 import * as Platform8 from "../../core/platform/platform.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
 import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI25 from "../../ui/legacy/legacy.js";
-import { nothing as nothing11, render as render18 } from "../../ui/lit/lit.js";
-import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
+import * as UI26 from "../../ui/legacy/legacy.js";
+import { nothing as nothing11, render as render19 } from "../../ui/lit/lit.js";
+import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/CookieItemsView.ts
 var CookieItemsView_exports = {};
 __export(CookieItemsView_exports, {
   CookieItemsView: () => CookieItemsView,
   DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: () => DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW11
+  DEFAULT_VIEW: () => DEFAULT_VIEW12
 });
 import * as Common12 from "../../core/common/common.js";
-import * as i18n41 from "../../core/i18n/i18n.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
 import * as SDK19 from "../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js";
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 import * as Geometry2 from "../../ui/geometry/geometry.js";
 import * as CookieTable from "../../ui/legacy/components/cookie_table/cookie_table.js";
-import * as UI20 from "../../ui/legacy/legacy.js";
-import { html as html15, render as render15 } from "../../ui/lit/lit.js";
-import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
+import { html as html16, render as render16 } from "../../ui/lit/lit.js";
+import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/cookieItemsView.css.js
 var cookieItemsView_css_default = `/*
@@ -13001,19 +13106,19 @@ var cookieItemsView_css_default = `/*
 // ../../front_end/panels/application/StorageItemsToolbar.ts
 var StorageItemsToolbar_exports = {};
 __export(StorageItemsToolbar_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW10,
+  DEFAULT_VIEW: () => DEFAULT_VIEW11,
   StorageItemsToolbar: () => StorageItemsToolbar
 });
 import "../../ui/legacy/legacy.js";
 import * as Common11 from "../../core/common/common.js";
-import * as i18n39 from "../../core/i18n/i18n.js";
+import * as i18n41 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
 import * as Buttons9 from "../../ui/components/buttons/buttons.js";
-import * as UI19 from "../../ui/legacy/legacy.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
-import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents10 from "./components/components.js";
-var UIStrings20 = {
+var UIStrings21 = {
   /**
    * @description Tooltip text for the refresh button in the storage items toolbar of the Application panel.
    */
@@ -13031,17 +13136,17 @@ var UIStrings20 = {
    */
   refreshedStatus: "Table refreshed"
 };
-var str_20 = i18n39.i18n.registerUIStrings("panels/application/StorageItemsToolbar.ts", UIStrings20);
-var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
-var { html: html14, render: render14 } = Lit2;
-var DEFAULT_VIEW10 = (input, _output, target) => {
-  render14(
+var str_21 = i18n41.i18n.registerUIStrings("panels/application/StorageItemsToolbar.ts", UIStrings21);
+var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
+var { html: html15, render: render15 } = Lit2;
+var DEFAULT_VIEW11 = (input, _output, target) => {
+  render15(
     // clang-format off
-    html14`
+    html15`
       <devtools-toolbar class="top-resources-toolbar"
-                        jslog=${VisualLogging11.toolbar()}>
-        <devtools-button title=${i18nString20(UIStrings20.refresh)}
-                         jslog=${VisualLogging11.action("storage-items-view.refresh").track({
+                        jslog=${VisualLogging12.toolbar()}>
+        <devtools-button title=${i18nString21(UIStrings21.refresh)}
+                         jslog=${VisualLogging12.action("storage-items-view.refresh").track({
       click: true
     })}
                          @click=${input.onRefresh}
@@ -13051,33 +13156,33 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
                                 ?disabled=${!input.filterItemEnabled}
                                 @change=${input.onFilterChanged}
                                 style="flex-grow:0.4"></devtools-toolbar-input>
-        ${new UI19.Toolbar.ToolbarSeparator().element}
+        ${new UI20.Toolbar.ToolbarSeparator().element}
         <devtools-button title=${input.deleteAllButtonTitle}
                          @click=${input.onDeleteAll}
                          id=storage-items-delete-all
                          ?disabled=${!input.deleteAllButtonEnabled}
-                         jslog=${VisualLogging11.action("storage-items-view.clear-all").track({
+                         jslog=${VisualLogging12.action("storage-items-view.clear-all").track({
       click: true
     })}
                          .iconName=${input.deleteAllButtonIconName}
                          .variant=${Buttons9.Button.Variant.TOOLBAR}></devtools-button>
-        <devtools-button title=${i18nString20(UIStrings20.deleteSelected)}
+        <devtools-button title=${i18nString21(UIStrings21.deleteSelected)}
                          @click=${input.onDeleteSelected}
                          ?disabled=${!input.deleteSelectedButtonDisabled}
-                         jslog=${VisualLogging11.action("storage-items-view.delete-selected").track({
+                         jslog=${VisualLogging12.action("storage-items-view.delete-selected").track({
       click: true
     })}
                          .iconName=${"cross"}
                          .variant=${Buttons9.Button.Variant.TOOLBAR}></devtools-button>
         ${input.mainToolbarItems.map((item4) => item4.element)}
       </devtools-toolbar>
-      ${UI19.Widget.widget(UI19.Widget.WrapperWidget, { widget: input.metadataView })}`,
+      ${UI20.Widget.widget(UI20.Widget.WrapperWidget, { widget: input.metadataView })}`,
     // clang-format on
     target
   );
 };
 var StorageItemsToolbarBase = Common11.ObjectWrapper.eventMixin(
-  UI19.Widget.VBox
+  UI20.Widget.VBox
 );
 var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbarBase {
   filterRegex;
@@ -13087,9 +13192,9 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
   #deleteSelectedButtonDisabled = true;
   #filterItemEnabled = true;
   #deleteAllButtonIconName = "clear";
-  #deleteAllButtonTitle = i18nString20(UIStrings20.clearAll);
+  #deleteAllButtonTitle = i18nString21(UIStrings21.clearAll);
   #mainToolbarItems = [];
-  constructor(element, view = DEFAULT_VIEW10) {
+  constructor(element, view = DEFAULT_VIEW11) {
     super(element);
     this.#view = view;
     this.filterRegex = null;
@@ -13115,7 +13220,7 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
         this.dispatchEventToListeners(_StorageItemsToolbar.Events.REFRESH);
-        UI19.ARIAUtils.LiveAnnouncer.alert(i18nString20(UIStrings20.refreshedStatus));
+        UI20.ARIAUtils.LiveAnnouncer.alert(i18nString21(UIStrings21.refreshedStatus));
       },
       onDeleteAll: () => {
         this.dispatchEventToListeners(_StorageItemsToolbar.Events.DELETE_ALL);
@@ -13172,7 +13277,7 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
 })(StorageItemsToolbar || (StorageItemsToolbar = {}));
 
 // ../../front_end/panels/application/CookieItemsView.ts
-var UIStrings21 = {
+var UIStrings22 = {
   /**
    * @description Checkbox label to show URL-decoded cookie values in the cookie preview of the Application panel.
    */
@@ -13215,10 +13320,10 @@ var UIStrings21 = {
    */
   numberOfCookiesShownInTableS: "Number of cookies shown in table: {PH1}"
 };
-var str_21 = i18n41.i18n.registerUIStrings("panels/application/CookieItemsView.ts", UIStrings21);
-var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
+var str_22 = i18n43.i18n.registerUIStrings("panels/application/CookieItemsView.ts", UIStrings22);
+var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var { Size: Size2 } = Geometry2;
-var { widget: widget9 } = UI20.Widget;
+var { widget: widget9 } = UI21.Widget;
 var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
   const cookieValue = input.cookie ? input.showDecoded ? decodeURIComponent(input.cookie.value()) : input.cookie.value() : "";
   function handleDblClickOnCookieValue(event) {
@@ -13232,17 +13337,17 @@ var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
     selection.removeAllRanges();
     selection.addRange(range);
   }
-  render15(
-    html15`<style>${cookieItemsView_css_default}</style>
+  render16(
+    html16`<style>${cookieItemsView_css_default}</style>
     <div class="cookie-preview-widget">
       <div class="cookie-preview-widget-header">
         <span class="cookie-preview-widget-header-label">Cookie Value</span>
         <devtools-checkbox
           .checked=${input.showDecoded}
           @change=${(e) => input.onShowDecodedChanged(e.target.checked)}
-          title=${i18nString21(UIStrings21.showUrlDecoded)}
-          jslog=${VisualLogging12.toggle("show-url-decoded").track({ click: true })}>
-          ${i18nString21(UIStrings21.showUrlDecoded)}
+          title=${i18nString22(UIStrings22.showUrlDecoded)}
+          jslog=${VisualLogging13.toggle("show-url-decoded").track({ click: true })}>
+          ${i18nString22(UIStrings22.showUrlDecoded)}
         </devtools-checkbox>
       </div>
       <div class="cookie-preview-widget-cookie-value"
@@ -13253,10 +13358,10 @@ var DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW = (input, output, target) => {
   `,
     // clang-format on
     target,
-    { container: { attributes: { jslog: `${VisualLogging12.pane("cookie-preview")}` } } }
+    { container: { attributes: { jslog: `${VisualLogging13.pane("cookie-preview")}` } } }
   );
 };
-var CookiePreviewWidget = class extends UI20.Widget.VBox {
+var CookiePreviewWidget = class extends UI21.Widget.VBox {
   view;
   #cookie;
   showDecodedSetting;
@@ -13284,21 +13389,21 @@ var CookiePreviewWidget = class extends UI20.Widget.VBox {
     this.view(input, void 0, this.contentElement);
   }
 };
-var DEFAULT_VIEW11 = (input, output, target) => {
-  render15(
-    html15`<style>${cookieItemsView_css_default}</style>
-    <devtools-widget class="storage-view" ${widget9(UI20.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
+var DEFAULT_VIEW12 = (input, output, target) => {
+  render16(
+    html16`<style>${cookieItemsView_css_default}</style>
+    <devtools-widget class="storage-view" ${widget9(UI21.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
       <devtools-widget ${widget9(StorageItemsToolbar, { filterRegex: null })}
         class=flex-none
         @Refresh=${input.onRefreshItems}
         @DeleteAll=${input.onDeleteAllItems}
         @DeleteSelected=${input.onDeleteSelectedItems}
-        ${UI20.Widget.widgetRef(StorageItemsToolbar, (toolbar8) => {
+        ${UI21.Widget.widgetRef(StorageItemsToolbar, (toolbar8) => {
       output.toolbar = toolbar8;
     })}
       ></devtools-widget>
       <devtools-split-view sidebar-position="second" name="cookie-items-split-view-state">
-        <devtools-widget slot="main" ${widget9(UI20.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
+        <devtools-widget slot="main" ${widget9(UI21.Widget.VBox, { minimumSize: new Size2(0, 50) })}>
           <devtools-widget slot="main" ${widget9(CookieTable.CookiesTable.CookiesTable, {
       cookieDomain: input.cookieDomain,
       cookiesData: input.cookiesData,
@@ -13314,12 +13419,12 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     })}
           ></devtools-widget>
         </devtools-widget>
-        <devtools-widget slot="sidebar" ${widget9(UI20.Widget.VBox, { minimumSize: new Size2(0, 50) })}
-          jslog=${VisualLogging12.pane("preview").track({ resize: true })}>
-          ${input.selectedCookie ? html15`<devtools-widget ${widget9(CookiePreviewWidget, { cookie: input.selectedCookie })}>
-                 </devtools-widget>` : html15`<devtools-widget ${widget9(UI20.EmptyWidget.EmptyWidget, {
-      header: i18nString21(UIStrings21.noCookieSelected),
-      text: i18nString21(UIStrings21.selectACookieToPreviewItsValue)
+        <devtools-widget slot="sidebar" ${widget9(UI21.Widget.VBox, { minimumSize: new Size2(0, 50) })}
+          jslog=${VisualLogging13.pane("preview").track({ resize: true })}>
+          ${input.selectedCookie ? html16`<devtools-widget ${widget9(CookiePreviewWidget, { cookie: input.selectedCookie })}>
+                 </devtools-widget>` : html16`<devtools-widget ${widget9(UI21.EmptyWidget.EmptyWidget, {
+      header: i18nString22(UIStrings22.noCookieSelected),
+      text: i18nString22(UIStrings22.selectACookieToPreviewItsValue)
     })}></devtools-widget>`}
         </devtools-widget>
       </devtools-split-view>
@@ -13327,10 +13432,10 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   `,
     // clang-format on
     target,
-    { container: { attributes: { jslog: `${VisualLogging12.pane("cookies-data")}` } } }
+    { container: { attributes: { jslog: `${VisualLogging13.pane("cookies-data")}` } } }
   );
 };
-var CookieItemsView = class extends UI20.Widget.VBox {
+var CookieItemsView = class extends UI21.Widget.VBox {
   view;
   model;
   cookieDomain;
@@ -13339,14 +13444,14 @@ var CookieItemsView = class extends UI20.Widget.VBox {
   shownCookies;
   selectedCookie;
   #toolbar;
-  constructor(model, cookieDomain, view = DEFAULT_VIEW11) {
+  constructor(model, cookieDomain, view = DEFAULT_VIEW12) {
     super();
     this.view = view;
     this.model = model;
     this.cookieDomain = cookieDomain;
-    this.onlyIssuesFilterUI = new UI20.Toolbar.ToolbarCheckbox(
-      i18nString21(UIStrings21.onlyShowCookiesWithAnIssue),
-      i18nString21(UIStrings21.onlyShowCookiesWhichHaveAn),
+    this.onlyIssuesFilterUI = new UI21.Toolbar.ToolbarCheckbox(
+      i18nString22(UIStrings22.onlyShowCookiesWithAnIssue),
+      i18nString22(UIStrings22.onlyShowCookiesWhichHaveAn),
       () => {
         this.updateWithCookies(this.allCookies);
       },
@@ -13397,7 +13502,7 @@ var CookieItemsView = class extends UI20.Widget.VBox {
       aiButtonIsEnabled: this.isAiButtonEnabled(),
       onPopulateAiContextMenu: this.#onPopulateAiContextMenu.bind(this),
       onAiButtonClick: this.#onAiButtonClick.bind(this),
-      aiButtonTitle: this.isAiButtonEnabled() ? UI20.ActionRegistry.ActionRegistry.instance().getAction("ai-assistance.storage-floating-button").title() : void 0
+      aiButtonTitle: this.isAiButtonEnabled() ? UI21.ActionRegistry.ActionRegistry.instance().getAction("ai-assistance.storage-floating-button").title() : void 0
     };
     this.view(input, output, this.contentElement);
   }
@@ -13414,17 +13519,17 @@ var CookieItemsView = class extends UI20.Widget.VBox {
   }
   #updateAiAssistanceContext(cookie) {
     if (cookie && cookie.httpOnly()) {
-      UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
     const target = SDK19.TargetManager.TargetManager.instance().primaryPageTarget();
     const mainPageOrigin = target?.inspectedURL() ? Common12.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin) {
-      UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
     const storageItem = new AiAssistanceModel.StorageItem.CookieItem(mainPageOrigin, this.cookieDomain, cookie?.name());
-    UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
+    UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
   handleCookieSelected(selectedCookie) {
     if (!this.#toolbar) {
@@ -13450,14 +13555,14 @@ var CookieItemsView = class extends UI20.Widget.VBox {
     this.allCookies = allCookies;
     this.shownCookies = this.filter(allCookies, (cookie) => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     if (this.#toolbar.hasFilter()) {
-      this.#toolbar.setDeleteAllTitle(i18nString21(UIStrings21.clearFilteredCookies));
+      this.#toolbar.setDeleteAllTitle(i18nString22(UIStrings22.clearFilteredCookies));
       this.#toolbar.setDeleteAllGlyph("filter-clear");
     } else {
-      this.#toolbar.setDeleteAllTitle(i18nString21(UIStrings21.clearAllCookies));
+      this.#toolbar.setDeleteAllTitle(i18nString22(UIStrings22.clearAllCookies));
       this.#toolbar.setDeleteAllGlyph("clear-list");
     }
-    UI20.ARIAUtils.LiveAnnouncer.alert(
-      i18nString21(UIStrings21.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length })
+    UI21.ARIAUtils.LiveAnnouncer.alert(
+      i18nString22(UIStrings22.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length })
     );
     this.#toolbar.setCanFilter(true);
     this.#toolbar.setCanDeleteAll(this.shownCookies.length > 0);
@@ -13480,7 +13585,7 @@ var CookieItemsView = class extends UI20.Widget.VBox {
    * This will only delete the currently visible cookies.
    */
   deleteAllItems() {
-    UI20.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+    UI21.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
     this.showPreview(null);
     void this.model.deleteCookies(this.shownCookies);
   }
@@ -13498,18 +13603,18 @@ var CookieItemsView = class extends UI20.Widget.VBox {
     void this.model.getCookiesForDomain(this.cookieDomain, true).then(this.updateWithCookies.bind(this));
   }
   isAiButtonEnabled() {
-    return UI20.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
+    return UI21.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
   }
   #onPopulateAiContextMenu(cookie, contextMenu) {
     const openAiAssistanceId = "ai-assistance.application-panel-context";
-    if (this.isAiButtonEnabled() && UI20.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+    if (this.isAiButtonEnabled() && UI21.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       this.#updateAiAssistanceContext(cookie);
-      if (UI20.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
-        const action8 = UI20.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      if (UI21.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
+        const action8 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString21(UIStrings21.startAChat));
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString22(UIStrings22.startAChat));
         submenu.defaultSection().appendItem(
-          i18nString21(UIStrings21.explainCookie),
+          i18nString22(UIStrings22.explainCookie),
           () => action8.execute({ prompt: "What is the purpose of this cookie?" }),
           { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
         );
@@ -13518,7 +13623,7 @@ var CookieItemsView = class extends UI20.Widget.VBox {
   }
   #onAiButtonClick(cookie, _event) {
     this.#updateAiAssistanceContext(cookie);
-    const actionRegistry = UI20.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI21.ActionRegistry.ActionRegistry.instance();
     const storageFloatingButtonId = "ai-assistance.storage-floating-button";
     if (actionRegistry.hasAction(storageFloatingButtonId)) {
       void actionRegistry.getAction(storageFloatingButtonId).execute();
@@ -13529,16 +13634,16 @@ var CookieItemsView = class extends UI20.Widget.VBox {
 // ../../front_end/panels/application/DeviceBoundSessionsView.ts
 var DeviceBoundSessionsView_exports = {};
 __export(DeviceBoundSessionsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW12,
+  DEFAULT_VIEW: () => DEFAULT_VIEW13,
   DeviceBoundSessionsView: () => DeviceBoundSessionsView
 });
 import "../../ui/components/report_view/report_view.js";
 import "../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n43 from "../../core/i18n/i18n.js";
+import * as i18n45 from "../../core/i18n/i18n.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI21 from "../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html16, nothing as nothing9, render as render16 } from "../../ui/lit/lit.js";
-import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
+import { Directives as Directives6, html as html17, nothing as nothing9, render as render17 } from "../../ui/lit/lit.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/deviceBoundSessionsView.css.js
 var deviceBoundSessionsView_css_default = `/*
@@ -13572,8 +13677,8 @@ var deviceBoundSessionsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./deviceBoundSessionsView.css")} */`;
 
 // ../../front_end/panels/application/DeviceBoundSessionsView.ts
-var { widget: widget10 } = UI21.Widget;
-var UIStrings22 = {
+var { widget: widget10 } = UI22.Widget;
+var UIStrings23 = {
   /**
    *@description Label for the site in the device bound sessions view of the Application panel.
    */
@@ -14099,69 +14204,69 @@ var UIStrings22 = {
    */
   refreshFatalError: "Fatal error during refresh"
 };
-var str_22 = i18n43.i18n.registerUIStrings("panels/application/DeviceBoundSessionsView.ts", UIStrings22);
-var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
-var DEFAULT_VIEW12 = (input, _output, target) => {
+var str_23 = i18n45.i18n.registerUIStrings("panels/application/DeviceBoundSessionsView.ts", UIStrings23);
+var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
+var DEFAULT_VIEW13 = (input, _output, target) => {
   const { sessionAndEvents, preserveLogSetting, defaultTitle, defaultDescription, selectedEvent, onEventRowSelected } = input;
-  const toolbarHtml = preserveLogSetting ? html16`
+  const toolbarHtml = preserveLogSetting ? html17`
         <devtools-toolbar class="device-bound-sessions-toolbar">
-        <devtools-checkbox title=${i18nString22(UIStrings22.doNotClearLogOnPageReload)} ${UI21.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString22(UIStrings22.preserveLog)}</devtools-checkbox>
+        <devtools-checkbox title=${i18nString23(UIStrings23.doNotClearLogOnPageReload)} ${UI22.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString23(UIStrings23.preserveLog)}</devtools-checkbox>
         </devtools-toolbar>
   ` : nothing9;
   if (!sessionAndEvents) {
     if (!defaultTitle || !defaultDescription) {
-      render16(nothing9, target);
+      render17(nothing9, target);
       return;
     }
-    render16(
-      html16`
-      <style>${UI21.inspectorCommonStyles}</style>
+    render17(
+      html17`
+      <style>${UI22.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
-      <devtools-widget ${widget10(UI21.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging13.pane("device-bound-sessions-empty")}></devtools-widget>
+      <devtools-widget ${widget10(UI22.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging14.pane("device-bound-sessions-empty")}></devtools-widget>
     `,
       target,
-      { container: { attributes: { jslog: `${VisualLogging13.pane("device-bound-sessions")}` } } }
+      { container: { attributes: { jslog: `${VisualLogging14.pane("device-bound-sessions")}` } } }
     );
     return;
   }
   let sessionDetailsHtml;
   if (sessionAndEvents.session) {
     const { key, inclusionRules, cookieCravings } = sessionAndEvents.session;
-    sessionDetailsHtml = html16`
+    sessionDetailsHtml = html17`
         <devtools-report>
-          <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.sessionConfig)}</devtools-report-section-header>
-          <devtools-report-key>${i18nString22(UIStrings22.keySite)}</devtools-report-key>
+          <devtools-report-section-header role="heading" aria-level="2">${i18nString23(UIStrings23.sessionConfig)}</devtools-report-section-header>
+          <devtools-report-key>${i18nString23(UIStrings23.keySite)}</devtools-report-key>
           <devtools-report-value>${key.site}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.keyId)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.keyId)}</devtools-report-key>
           <devtools-report-value>${key.id}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.refreshUrl)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.refreshUrl)}</devtools-report-key>
           <devtools-report-value>${sessionAndEvents.session.refreshUrl}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.expiryDate)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.expiryDate)}</devtools-report-key>
           <devtools-report-value>${new Date(sessionAndEvents.session.expiryDate * 1e3).toLocaleString()}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.cachedChallenge)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.cachedChallenge)}</devtools-report-key>
           <devtools-report-value>${sessionAndEvents.session.cachedChallenge || ""}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.allowedRefreshInitiators)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.allowedRefreshInitiators)}</devtools-report-key>
           <devtools-report-value>${sessionAndEvents.session.allowedRefreshInitiators.join(", ")}</devtools-report-value>
-          <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.scope)}</devtools-report-section-header>
-          <devtools-report-key>${i18nString22(UIStrings22.origin)}</devtools-report-key>
+          <devtools-report-section-header role="heading" aria-level="2">${i18nString23(UIStrings23.scope)}</devtools-report-section-header>
+          <devtools-report-key>${i18nString23(UIStrings23.origin)}</devtools-report-key>
           <devtools-report-value>${inclusionRules.origin}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.includeSite)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.includeSite)}</devtools-report-key>
           <devtools-report-value>${boolToString(inclusionRules.includeSite)}</devtools-report-value>
         </devtools-report>
-        ${inclusionRules.urlRules.length > 0 ? html16`
+        ${inclusionRules.urlRules.length > 0 ? html17`
           <div class="device-bound-session-grid-wrapper">
-            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline name=${i18nString22(UIStrings22.scope)}>
+            <devtools-data-grid class="device-bound-session-url-rules-grid" striped inline name=${i18nString23(UIStrings23.scope)}>
               <table>
                 <thead>
                   <tr>
-                    <th id="should-include" sortable>${i18nString22(UIStrings22.ruleType)}</th>
-                    <th id="host-pattern" sortable>${i18nString22(UIStrings22.ruleHostPattern)}</th>
-                    <th id="path-prefix" sortable>${i18nString22(UIStrings22.rulePathPrefix)}</th>
+                    <th id="should-include" sortable>${i18nString23(UIStrings23.ruleType)}</th>
+                    <th id="host-pattern" sortable>${i18nString23(UIStrings23.ruleHostPattern)}</th>
+                    <th id="path-prefix" sortable>${i18nString23(UIStrings23.rulePathPrefix)}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${inclusionRules.urlRules.map((rule) => html16`
+                  ${inclusionRules.urlRules.map((rule) => html17`
                     <tr>
                       <td>${ruleTypeToString(rule.ruleType)}</td>
                       <td>${rule.hostPattern}</td>
@@ -14173,23 +14278,23 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
             </devtools-data-grid>
           </div>
         ` : nothing9}
-        <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.cookieCravings)}</devtools-report-section-header>
-        ${cookieCravings.length > 0 ? html16`
+        <devtools-report-section-header role="heading" aria-level="2">${i18nString23(UIStrings23.cookieCravings)}</devtools-report-section-header>
+        ${cookieCravings.length > 0 ? html17`
           <div class="device-bound-session-grid-wrapper">
-            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline name=${i18nString22(UIStrings22.cookieCravings)}>
+            <devtools-data-grid class="device-bound-session-cookie-cravings-grid" striped inline name=${i18nString23(UIStrings23.cookieCravings)}>
               <table>
                 <thead>
                   <tr>
-                    <th id="name" sortable>${i18nString22(UIStrings22.name)}</th>
-                    <th id="domain" sortable>${i18n43.i18n.lockedString("Domain")}</th>
-                    <th id="path" sortable>${i18n43.i18n.lockedString("Path")}</th>
-                    <th id="secure" type="boolean" align="center" sortable>${i18n43.i18n.lockedString("Secure")}</th>
-                    <th id="http-only" type="boolean" align="center" sortable>${i18n43.i18n.lockedString("HttpOnly")}</th>
-                    <th id="same-site" sortable>${i18n43.i18n.lockedString("SameSite")}</th>
+                    <th id="name" sortable>${i18nString23(UIStrings23.name)}</th>
+                    <th id="domain" sortable>${i18n45.i18n.lockedString("Domain")}</th>
+                    <th id="path" sortable>${i18n45.i18n.lockedString("Path")}</th>
+                    <th id="secure" type="boolean" align="center" sortable>${i18n45.i18n.lockedString("Secure")}</th>
+                    <th id="http-only" type="boolean" align="center" sortable>${i18n45.i18n.lockedString("HttpOnly")}</th>
+                    <th id="same-site" sortable>${i18n45.i18n.lockedString("SameSite")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${cookieCravings.map((craving) => html16`
+                  ${cookieCravings.map((craving) => html17`
                     <tr>
                       <td>${craving.name}</td>
                       <td>${craving.domain}</td>
@@ -14206,11 +14311,11 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         ` : nothing9}`;
   }
   const events = [...sessionAndEvents.eventsById.values()];
-  const eventsHtml = html16`
-      <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.events)}</devtools-report-section-header>
-          ${events.length > 0 && onEventRowSelected ? html16`
+  const eventsHtml = html17`
+      <devtools-report-section-header role="heading" aria-level="2">${i18nString23(UIStrings23.events)}</devtools-report-section-header>
+          ${events.length > 0 && onEventRowSelected ? html17`
             <div class="device-bound-session-grid-wrapper">
-                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString22(UIStrings22.events)} ${Directives6.ref((el) => {
+                <devtools-data-grid class="device-bound-session-events-grid" striped inline name=${i18nString23(UIStrings23.events)} ${Directives6.ref((el) => {
     if (!el || !(el instanceof HTMLElement)) {
       return;
     }
@@ -14222,12 +14327,12 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
                 <table>
                   <thead>
                     <tr>
-                      <th id="type" sortable>${i18nString22(UIStrings22.type)}</th>
-                      <th id="timestamp" sortable>${i18nString22(UIStrings22.timestamp)}</th>
-                      <th id="details" sortable>${i18nString22(UIStrings22.result)}</th>
+                      <th id="type" sortable>${i18nString23(UIStrings23.type)}</th>
+                      <th id="timestamp" sortable>${i18nString23(UIStrings23.timestamp)}</th>
+                      <th id="details" sortable>${i18nString23(UIStrings23.result)}</th>
                     </tr>
                   </thead>
-                  <tbody>${events.map(({ event, timestamp }) => html16`
+                  <tbody>${events.map(({ event, timestamp }) => html17`
                       <tr @select=${() => onEventRowSelected(event)}>
                         <td>${getEventTypeString(event)}</td>
                         <td>${timestamp.toLocaleString()}</td>
@@ -14238,100 +14343,100 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
                 </table>
               </devtools-data-grid>
             </div>
-          ` : html16`<div class="device-bound-session-no-events-wrapper">${i18nString22(UIStrings22.noEvents)}</div>`}`;
+          ` : html17`<div class="device-bound-session-no-events-wrapper">${i18nString23(UIStrings23.noEvents)}</div>`}`;
   const failedRequestDetailsGetter = (failedRequest) => {
     if (!failedRequest) {
       return nothing9;
     }
-    return html16`${failedRequest.requestUrl && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.failedRequestUrl)}</devtools-report-key>
+    return html17`${failedRequest.requestUrl && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.failedRequestUrl)}</devtools-report-key>
           <devtools-report-value>${failedRequest.requestUrl}</devtools-report-value>`}
-        ${failedRequest.netError && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.failedRequestNetError)}</devtools-report-key>
+        ${failedRequest.netError && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.failedRequestNetError)}</devtools-report-key>
           <devtools-report-value>${failedRequest.netError}</devtools-report-value>`}
-        ${failedRequest.responseError !== void 0 ? html16`
-          <devtools-report-key>${i18nString22(UIStrings22.failedRequestResponseCode)}</devtools-report-key>
+        ${failedRequest.responseError !== void 0 ? html17`
+          <devtools-report-key>${i18nString23(UIStrings23.failedRequestResponseCode)}</devtools-report-key>
           <devtools-report-value>${failedRequest.responseError}</devtools-report-value>` : nothing9}
-        ${failedRequest.responseErrorBody && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.failedRequestResponseBody)}</devtools-report-key>
+        ${failedRequest.responseErrorBody && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.failedRequestResponseBody)}</devtools-report-key>
           <devtools-report-value>
             ${widget10(SourceFrame2.JSONView.SearchableJsonView, {
       jsonObject: tryParseJson(failedRequest.responseErrorBody)
     })}
           </devtools-report-value>`}`;
   };
-  const creationEventDetails = selectedEvent?.creationEventDetails && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.fetchResult)}</devtools-report-key>
+  const creationEventDetails = selectedEvent?.creationEventDetails && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.fetchResult)}</devtools-report-key>
           <devtools-report-value>${fetchResultToString(selectedEvent.creationEventDetails.fetchResult)}</devtools-report-value>
-            ${selectedEvent.creationEventDetails.newSession && html16`
-              <devtools-report-key>${i18nString22(UIStrings22.updatedSessionConfig)}</devtools-report-key>
-              <devtools-report-value>${i18nString22(UIStrings22.yes)}</devtools-report-value>
+            ${selectedEvent.creationEventDetails.newSession && html17`
+              <devtools-report-key>${i18nString23(UIStrings23.updatedSessionConfig)}</devtools-report-key>
+              <devtools-report-value>${i18nString23(UIStrings23.yes)}</devtools-report-value>
             `}
           ${failedRequestDetailsGetter(selectedEvent.creationEventDetails.failedRequest)}
       `;
-  const refreshEventDetails = selectedEvent?.refreshEventDetails && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.refreshResult)}</devtools-report-key>
+  const refreshEventDetails = selectedEvent?.refreshEventDetails && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.refreshResult)}</devtools-report-key>
           <devtools-report-value>${refreshResultToString(selectedEvent.refreshEventDetails.refreshResult)}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.causedAnyRequestDeferrals)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.causedAnyRequestDeferrals)}</devtools-report-key>
           <devtools-report-value>${boolToString(!selectedEvent.refreshEventDetails.wasFullyProactiveRefresh)}</devtools-report-value>
-            ${selectedEvent.refreshEventDetails.fetchResult && html16`
-              <devtools-report-key>${i18nString22(UIStrings22.fetchResult)}</devtools-report-key>
+            ${selectedEvent.refreshEventDetails.fetchResult && html17`
+              <devtools-report-key>${i18nString23(UIStrings23.fetchResult)}</devtools-report-key>
               <devtools-report-value>${fetchResultToString(selectedEvent.refreshEventDetails.fetchResult)}</devtools-report-value>
             `}
-            ${selectedEvent.refreshEventDetails.newSession && html16`
-              <devtools-report-key>${i18nString22(UIStrings22.updatedSessionConfig)}</devtools-report-key>
-              <devtools-report-value>${i18nString22(UIStrings22.yes)}</devtools-report-value>
+            ${selectedEvent.refreshEventDetails.newSession && html17`
+              <devtools-report-key>${i18nString23(UIStrings23.updatedSessionConfig)}</devtools-report-key>
+              <devtools-report-value>${i18nString23(UIStrings23.yes)}</devtools-report-value>
             `}
           ${failedRequestDetailsGetter(selectedEvent.refreshEventDetails.failedRequest)}
       `;
-  const challengeEventDetails = selectedEvent?.challengeEventDetails && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.challengeResult)}</devtools-report-key>
+  const challengeEventDetails = selectedEvent?.challengeEventDetails && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.challengeResult)}</devtools-report-key>
           <devtools-report-value>${challengeResultToString(selectedEvent.challengeEventDetails.challengeResult)}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.challenge)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.challenge)}</devtools-report-key>
           <devtools-report-value>${selectedEvent.challengeEventDetails.challenge}</devtools-report-value>
           `;
-  const terminationEventDetails = selectedEvent?.terminationEventDetails && html16`
-          <devtools-report-key>${i18nString22(UIStrings22.deletionReason)}</devtools-report-key>
+  const terminationEventDetails = selectedEvent?.terminationEventDetails && html17`
+          <devtools-report-key>${i18nString23(UIStrings23.deletionReason)}</devtools-report-key>
           <devtools-report-value>${deletionReasonToString(selectedEvent.terminationEventDetails.deletionReason)}</devtools-report-value>
           `;
-  const eventDetailsContentHtml = selectedEvent ? html16`
+  const eventDetailsContentHtml = selectedEvent ? html17`
         <devtools-report>
-          <devtools-report-key>${i18nString22(UIStrings22.keySite)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.keySite)}</devtools-report-key>
           <devtools-report-value>${selectedEvent.site}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.sessionId)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.sessionId)}</devtools-report-key>
           <devtools-report-value>${selectedEvent.sessionId}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.type)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.type)}</devtools-report-key>
           <devtools-report-value>${getEventTypeString(selectedEvent)}</devtools-report-value>
-          <devtools-report-key>${i18nString22(UIStrings22.eventResult)}</devtools-report-key>
+          <devtools-report-key>${i18nString23(UIStrings23.eventResult)}</devtools-report-key>
           <devtools-report-value>${succeededToString(selectedEvent.succeeded)}</devtools-report-value>
           ${creationEventDetails}
           ${refreshEventDetails}
           ${challengeEventDetails}
           ${terminationEventDetails}
         </devtools-report>
-    ` : html16`<div class="device-bound-session-no-event-details">${i18nString22(UIStrings22.selectEventToViewDetails)}</div>`;
-  const eventDetailsHtml = html16`
-      <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.eventDetails)}</devtools-report-section-header>
+    ` : html17`<div class="device-bound-session-no-event-details">${i18nString23(UIStrings23.selectEventToViewDetails)}</div>`;
+  const eventDetailsHtml = html17`
+      <devtools-report-section-header role="heading" aria-level="2">${i18nString23(UIStrings23.eventDetails)}</devtools-report-section-header>
       ${eventDetailsContentHtml}
   `;
-  render16(
-    html16`
-        <style>${UI21.inspectorCommonStyles}</style>
+  render17(
+    html17`
+        <style>${UI22.inspectorCommonStyles}</style>
         <style>${deviceBoundSessionsView_css_default}</style>
         ${toolbarHtml}
         <devtools-split-view sidebar-position="second">
-          <div slot="main" class="device-bound-session-view-wrapper" role="region" aria-label=${i18nString22(UIStrings22.sessionDetails)}>
+          <div slot="main" class="device-bound-session-view-wrapper" role="region" aria-label=${i18nString23(UIStrings23.sessionDetails)}>
             ${sessionDetailsHtml || nothing9}
             ${eventsHtml}
           </div>
-          <div slot="sidebar" class="device-bound-session-sidebar" role="region" aria-label=${i18nString22(UIStrings22.eventDetails)}>
+          <div slot="sidebar" class="device-bound-session-sidebar" role="region" aria-label=${i18nString23(UIStrings23.eventDetails)}>
             ${eventDetailsHtml}
           </div>
         </devtools-split-view>`,
     target
   );
 };
-var DeviceBoundSessionsView = class extends UI21.Widget.VBox {
+var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
   #site;
   #sessionId;
   #model;
@@ -14339,7 +14444,7 @@ var DeviceBoundSessionsView = class extends UI21.Widget.VBox {
   #defaultTitle;
   #defaultDescription;
   #selectedEvent;
-  constructor(view = DEFAULT_VIEW12) {
+  constructor(view = DEFAULT_VIEW13) {
     super();
     this.#view = view;
   }
@@ -14401,170 +14506,170 @@ var DeviceBoundSessionsView = class extends UI21.Widget.VBox {
 function ruleTypeToString(ruleType) {
   switch (ruleType) {
     case Network.DeviceBoundSessionUrlRuleRuleType.Exclude:
-      return i18nString22(UIStrings22.ruleTypeExclude);
+      return i18nString23(UIStrings23.ruleTypeExclude);
     case Network.DeviceBoundSessionUrlRuleRuleType.Include:
-      return i18nString22(UIStrings22.ruleTypeInclude);
+      return i18nString23(UIStrings23.ruleTypeInclude);
     default:
       return ruleType;
   }
 }
 function getEventTypeString(event) {
   if (event.creationEventDetails) {
-    return i18nString22(UIStrings22.creation);
+    return i18nString23(UIStrings23.creation);
   }
   if (event.refreshEventDetails) {
-    return i18nString22(UIStrings22.refresh);
+    return i18nString23(UIStrings23.refresh);
   }
   if (event.challengeEventDetails) {
-    return i18nString22(UIStrings22.challenge);
+    return i18nString23(UIStrings23.challenge);
   }
   if (event.terminationEventDetails) {
-    return i18nString22(UIStrings22.termination);
+    return i18nString23(UIStrings23.termination);
   }
-  return i18nString22(UIStrings22.unknown);
+  return i18nString23(UIStrings23.unknown);
 }
 function fetchResultToString(fetchResult) {
   switch (fetchResult) {
     case Network.DeviceBoundSessionFetchResult.Success:
-      return i18nString22(UIStrings22.success);
+      return i18nString23(UIStrings23.success);
     case Network.DeviceBoundSessionFetchResult.SigningKeyGenerationError:
-      return i18nString22(UIStrings22.signingKeyGenerationError);
+      return i18nString23(UIStrings23.signingKeyGenerationError);
     case Network.DeviceBoundSessionFetchResult.AttestationKeyGenerationError:
-      return i18nString22(UIStrings22.attestationKeyGenerationError);
+      return i18nString23(UIStrings23.attestationKeyGenerationError);
     case Network.DeviceBoundSessionFetchResult.SigningError:
-      return i18nString22(UIStrings22.signingError);
+      return i18nString23(UIStrings23.signingError);
     case Network.DeviceBoundSessionFetchResult.TransientSigningError:
-      return i18nString22(UIStrings22.transientSigningError);
+      return i18nString23(UIStrings23.transientSigningError);
     case Network.DeviceBoundSessionFetchResult.ServerRequestedTermination:
-      return i18nString22(UIStrings22.serverRequestedTermination);
+      return i18nString23(UIStrings23.serverRequestedTermination);
     case Network.DeviceBoundSessionFetchResult.InvalidSessionId:
-      return i18nString22(UIStrings22.invalidSessionId);
+      return i18nString23(UIStrings23.invalidSessionId);
     case Network.DeviceBoundSessionFetchResult.InvalidChallenge:
-      return i18nString22(UIStrings22.invalidChallenge);
+      return i18nString23(UIStrings23.invalidChallenge);
     case Network.DeviceBoundSessionFetchResult.TooManyChallenges:
-      return i18nString22(UIStrings22.tooManyChallenges);
+      return i18nString23(UIStrings23.tooManyChallenges);
     case Network.DeviceBoundSessionFetchResult.InvalidFetcherUrl:
-      return i18nString22(UIStrings22.invalidFetcherUrl);
+      return i18nString23(UIStrings23.invalidFetcherUrl);
     case Network.DeviceBoundSessionFetchResult.InvalidRefreshUrl:
-      return i18nString22(UIStrings22.invalidRefreshUrl);
+      return i18nString23(UIStrings23.invalidRefreshUrl);
     case Network.DeviceBoundSessionFetchResult.TransientHttpError:
-      return i18nString22(UIStrings22.transientHttpError);
+      return i18nString23(UIStrings23.transientHttpError);
     case Network.DeviceBoundSessionFetchResult.ScopeOriginSameSiteMismatch:
-      return i18nString22(UIStrings22.scopeOriginSameSiteMismatch);
+      return i18nString23(UIStrings23.scopeOriginSameSiteMismatch);
     case Network.DeviceBoundSessionFetchResult.RefreshUrlSameSiteMismatch:
-      return i18nString22(UIStrings22.refreshUrlSameSiteMismatch);
+      return i18nString23(UIStrings23.refreshUrlSameSiteMismatch);
     case Network.DeviceBoundSessionFetchResult.MismatchedSessionId:
-      return i18nString22(UIStrings22.mismatchedSessionId);
+      return i18nString23(UIStrings23.mismatchedSessionId);
     case Network.DeviceBoundSessionFetchResult.MissingScope:
-      return i18nString22(UIStrings22.missingScope);
+      return i18nString23(UIStrings23.missingScope);
     case Network.DeviceBoundSessionFetchResult.NoCredentials:
-      return i18nString22(UIStrings22.noCredentials);
+      return i18nString23(UIStrings23.noCredentials);
     case Network.DeviceBoundSessionFetchResult.SubdomainRegistrationWellKnownUnavailable:
-      return i18nString22(UIStrings22.subdomainRegistrationWellKnownUnavailable);
+      return i18nString23(UIStrings23.subdomainRegistrationWellKnownUnavailable);
     case Network.DeviceBoundSessionFetchResult.SubdomainRegistrationUnauthorized:
-      return i18nString22(UIStrings22.subdomainRegistrationUnauthorized);
+      return i18nString23(UIStrings23.subdomainRegistrationUnauthorized);
     case Network.DeviceBoundSessionFetchResult.SubdomainRegistrationWellKnownMalformed:
-      return i18nString22(UIStrings22.subdomainRegistrationWellKnownMalformed);
+      return i18nString23(UIStrings23.subdomainRegistrationWellKnownMalformed);
     case Network.DeviceBoundSessionFetchResult.SessionProviderWellKnownUnavailable:
-      return i18nString22(UIStrings22.sessionProviderWellKnownUnavailable);
+      return i18nString23(UIStrings23.sessionProviderWellKnownUnavailable);
     case Network.DeviceBoundSessionFetchResult.RelyingPartyWellKnownUnavailable:
-      return i18nString22(UIStrings22.relyingPartyWellKnownUnavailable);
+      return i18nString23(UIStrings23.relyingPartyWellKnownUnavailable);
     case Network.DeviceBoundSessionFetchResult.FederatedKeyThumbprintMismatch:
-      return i18nString22(UIStrings22.federatedKeyThumbprintMismatch);
+      return i18nString23(UIStrings23.federatedKeyThumbprintMismatch);
     case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionUrl:
-      return i18nString22(UIStrings22.invalidFederatedSessionUrl);
+      return i18nString23(UIStrings23.invalidFederatedSessionUrl);
     case Network.DeviceBoundSessionFetchResult.InvalidFederatedKey:
-      return i18nString22(UIStrings22.invalidFederatedKey);
+      return i18nString23(UIStrings23.invalidFederatedKey);
     case Network.DeviceBoundSessionFetchResult.TooManyRelyingOriginLabels:
-      return i18nString22(UIStrings22.tooManyRelyingOriginLabels);
+      return i18nString23(UIStrings23.tooManyRelyingOriginLabels);
     case Network.DeviceBoundSessionFetchResult.BoundCookieSetForbidden:
-      return i18nString22(UIStrings22.boundCookieSetForbidden);
+      return i18nString23(UIStrings23.boundCookieSetForbidden);
     case Network.DeviceBoundSessionFetchResult.NetError:
-      return i18nString22(UIStrings22.netError);
+      return i18nString23(UIStrings23.netError);
     case Network.DeviceBoundSessionFetchResult.ProxyError:
-      return i18nString22(UIStrings22.proxyError);
+      return i18nString23(UIStrings23.proxyError);
     case Network.DeviceBoundSessionFetchResult.EmptySessionConfig:
-      return i18nString22(UIStrings22.emptySessionConfig);
+      return i18nString23(UIStrings23.emptySessionConfig);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsConfig:
-      return i18nString22(UIStrings22.invalidCredentialsConfig);
+      return i18nString23(UIStrings23.invalidCredentialsConfig);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsType:
-      return i18nString22(UIStrings22.invalidCredentialsType);
+      return i18nString23(UIStrings23.invalidCredentialsType);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsEmptyName:
-      return i18nString22(UIStrings22.invalidCredentialsEmptyName);
+      return i18nString23(UIStrings23.invalidCredentialsEmptyName);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookie:
-      return i18nString22(UIStrings22.invalidCredentialsCookie);
+      return i18nString23(UIStrings23.invalidCredentialsCookie);
     case Network.DeviceBoundSessionFetchResult.PersistentHttpError:
-      return i18nString22(UIStrings22.persistentHttpError);
+      return i18nString23(UIStrings23.persistentHttpError);
     case Network.DeviceBoundSessionFetchResult.RegistrationAttemptedChallenge:
-      return i18nString22(UIStrings22.registrationAttemptedChallenge);
+      return i18nString23(UIStrings23.registrationAttemptedChallenge);
     case Network.DeviceBoundSessionFetchResult.InvalidScopeOrigin:
-      return i18nString22(UIStrings22.invalidScopeOrigin);
+      return i18nString23(UIStrings23.invalidScopeOrigin);
     case Network.DeviceBoundSessionFetchResult.ScopeOriginContainsPath:
-      return i18nString22(UIStrings22.scopeOriginContainsPath);
+      return i18nString23(UIStrings23.scopeOriginContainsPath);
     case Network.DeviceBoundSessionFetchResult.RefreshInitiatorNotString:
-      return i18nString22(UIStrings22.refreshInitiatorNotString);
+      return i18nString23(UIStrings23.refreshInitiatorNotString);
     case Network.DeviceBoundSessionFetchResult.RefreshInitiatorInvalidHostPattern:
-      return i18nString22(UIStrings22.refreshInitiatorInvalidHostPattern);
+      return i18nString23(UIStrings23.refreshInitiatorInvalidHostPattern);
     case Network.DeviceBoundSessionFetchResult.InvalidScopeSpecification:
-      return i18nString22(UIStrings22.invalidScopeSpecification);
+      return i18nString23(UIStrings23.invalidScopeSpecification);
     case Network.DeviceBoundSessionFetchResult.MissingScopeSpecificationType:
-      return i18nString22(UIStrings22.missingScopeSpecificationType);
+      return i18nString23(UIStrings23.missingScopeSpecificationType);
     case Network.DeviceBoundSessionFetchResult.EmptyScopeSpecificationDomain:
-      return i18nString22(UIStrings22.emptyScopeSpecificationDomain);
+      return i18nString23(UIStrings23.emptyScopeSpecificationDomain);
     case Network.DeviceBoundSessionFetchResult.EmptyScopeSpecificationPath:
-      return i18nString22(UIStrings22.emptyScopeSpecificationPath);
+      return i18nString23(UIStrings23.emptyScopeSpecificationPath);
     case Network.DeviceBoundSessionFetchResult.InvalidScopeSpecificationType:
-      return i18nString22(UIStrings22.invalidScopeSpecificationType);
+      return i18nString23(UIStrings23.invalidScopeSpecificationType);
     case Network.DeviceBoundSessionFetchResult.InvalidScopeIncludeSite:
-      return i18nString22(UIStrings22.invalidScopeIncludeSite);
+      return i18nString23(UIStrings23.invalidScopeIncludeSite);
     case Network.DeviceBoundSessionFetchResult.MissingScopeIncludeSite:
-      return i18nString22(UIStrings22.missingScopeIncludeSite);
+      return i18nString23(UIStrings23.missingScopeIncludeSite);
     case Network.DeviceBoundSessionFetchResult.FederatedNotAuthorizedByProvider:
-      return i18nString22(UIStrings22.federatedNotAuthorizedByProvider);
+      return i18nString23(UIStrings23.federatedNotAuthorizedByProvider);
     case Network.DeviceBoundSessionFetchResult.FederatedNotAuthorizedByRelyingParty:
-      return i18nString22(UIStrings22.federatedNotAuthorizedByRelyingParty);
+      return i18nString23(UIStrings23.federatedNotAuthorizedByRelyingParty);
     case Network.DeviceBoundSessionFetchResult.SessionProviderWellKnownMalformed:
-      return i18nString22(UIStrings22.sessionProviderWellKnownMalformed);
+      return i18nString23(UIStrings23.sessionProviderWellKnownMalformed);
     case Network.DeviceBoundSessionFetchResult.SessionProviderWellKnownHasProviderOrigin:
-      return i18nString22(UIStrings22.sessionProviderWellKnownHasProviderOrigin);
+      return i18nString23(UIStrings23.sessionProviderWellKnownHasProviderOrigin);
     case Network.DeviceBoundSessionFetchResult.RelyingPartyWellKnownMalformed:
-      return i18nString22(UIStrings22.relyingPartyWellKnownMalformed);
+      return i18nString23(UIStrings23.relyingPartyWellKnownMalformed);
     case Network.DeviceBoundSessionFetchResult.RelyingPartyWellKnownHasRelyingOrigins:
-      return i18nString22(UIStrings22.relyingPartyWellKnownHasRelyingOrigins);
+      return i18nString23(UIStrings23.relyingPartyWellKnownHasRelyingOrigins);
     case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionProviderSessionMissing:
-      return i18nString22(UIStrings22.invalidFederatedSessionProviderSessionMissing);
+      return i18nString23(UIStrings23.invalidFederatedSessionProviderSessionMissing);
     case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionWrongProviderOrigin:
-      return i18nString22(UIStrings22.invalidFederatedSessionWrongProviderOrigin);
+      return i18nString23(UIStrings23.invalidFederatedSessionWrongProviderOrigin);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieCreationTime:
-      return i18nString22(UIStrings22.invalidCredentialsCookieCreationTime);
+      return i18nString23(UIStrings23.invalidCredentialsCookieCreationTime);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieName:
-      return i18nString22(UIStrings22.invalidCredentialsCookieName);
+      return i18nString23(UIStrings23.invalidCredentialsCookieName);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieParsing:
-      return i18nString22(UIStrings22.invalidCredentialsCookieParsing);
+      return i18nString23(UIStrings23.invalidCredentialsCookieParsing);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieUnpermittedAttribute:
-      return i18nString22(UIStrings22.invalidCredentialsCookieUnpermittedAttribute);
+      return i18nString23(UIStrings23.invalidCredentialsCookieUnpermittedAttribute);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieInvalidDomain:
-      return i18nString22(UIStrings22.invalidCredentialsCookieInvalidDomain);
+      return i18nString23(UIStrings23.invalidCredentialsCookieInvalidDomain);
     case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookiePrefix:
-      return i18nString22(UIStrings22.invalidCredentialsCookiePrefix);
+      return i18nString23(UIStrings23.invalidCredentialsCookiePrefix);
     case Network.DeviceBoundSessionFetchResult.InvalidScopeRulePath:
-      return i18nString22(UIStrings22.invalidScopeRulePath);
+      return i18nString23(UIStrings23.invalidScopeRulePath);
     case Network.DeviceBoundSessionFetchResult.InvalidScopeRuleHostPattern:
-      return i18nString22(UIStrings22.invalidScopeRuleHostPattern);
+      return i18nString23(UIStrings23.invalidScopeRuleHostPattern);
     case Network.DeviceBoundSessionFetchResult.ScopeRuleOriginScopedHostPatternMismatch:
-      return i18nString22(UIStrings22.scopeRuleOriginScopedHostPatternMismatch);
+      return i18nString23(UIStrings23.scopeRuleOriginScopedHostPatternMismatch);
     case Network.DeviceBoundSessionFetchResult.ScopeRuleSiteScopedHostPatternMismatch:
-      return i18nString22(UIStrings22.scopeRuleSiteScopedHostPatternMismatch);
+      return i18nString23(UIStrings23.scopeRuleSiteScopedHostPatternMismatch);
     case Network.DeviceBoundSessionFetchResult.SigningQuotaExceeded:
-      return i18nString22(UIStrings22.signingQuotaExceeded);
+      return i18nString23(UIStrings23.signingQuotaExceeded);
     case Network.DeviceBoundSessionFetchResult.InvalidConfigJson:
-      return i18nString22(UIStrings22.invalidConfigJson);
+      return i18nString23(UIStrings23.invalidConfigJson);
     case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionProviderFailedToRestoreKey:
-      return i18nString22(UIStrings22.invalidFederatedSessionProviderFailedToRestoreKey);
+      return i18nString23(UIStrings23.invalidFederatedSessionProviderFailedToRestoreKey);
     case Network.DeviceBoundSessionFetchResult.FailedToUnwrapKey:
-      return i18nString22(UIStrings22.failedToUnwrapKey);
+      return i18nString23(UIStrings23.failedToUnwrapKey);
     case Network.DeviceBoundSessionFetchResult.SessionDeletedDuringRefresh:
-      return i18nString22(UIStrings22.sessionDeletedDuringRefresh);
+      return i18nString23(UIStrings23.sessionDeletedDuringRefresh);
     default:
       return fetchResult;
   }
@@ -14572,17 +14677,17 @@ function fetchResultToString(fetchResult) {
 function refreshResultToString(refreshResult) {
   switch (refreshResult) {
     case Network.RefreshEventDetailsRefreshResult.Refreshed:
-      return i18nString22(UIStrings22.refreshed);
+      return i18nString23(UIStrings23.refreshed);
     case Network.RefreshEventDetailsRefreshResult.InitializedService:
-      return i18nString22(UIStrings22.initializedService);
+      return i18nString23(UIStrings23.initializedService);
     case Network.RefreshEventDetailsRefreshResult.Unreachable:
-      return i18nString22(UIStrings22.unreachable);
+      return i18nString23(UIStrings23.unreachable);
     case Network.RefreshEventDetailsRefreshResult.ServerError:
-      return i18nString22(UIStrings22.serverError);
+      return i18nString23(UIStrings23.serverError);
     case Network.RefreshEventDetailsRefreshResult.FatalError:
-      return i18nString22(UIStrings22.fatalError);
+      return i18nString23(UIStrings23.fatalError);
     case Network.RefreshEventDetailsRefreshResult.SigningQuotaExceeded:
-      return i18nString22(UIStrings22.signingQuotaExceeded);
+      return i18nString23(UIStrings23.signingQuotaExceeded);
     default:
       return refreshResult;
   }
@@ -14590,13 +14695,13 @@ function refreshResultToString(refreshResult) {
 function challengeResultToString(challengeResult) {
   switch (challengeResult) {
     case Network.ChallengeEventDetailsChallengeResult.Success:
-      return i18nString22(UIStrings22.success);
+      return i18nString23(UIStrings23.success);
     case Network.ChallengeEventDetailsChallengeResult.NoSessionId:
-      return i18nString22(UIStrings22.noSessionId);
+      return i18nString23(UIStrings23.noSessionId);
     case Network.ChallengeEventDetailsChallengeResult.NoSessionMatch:
-      return i18nString22(UIStrings22.noSessionMatch);
+      return i18nString23(UIStrings23.noSessionMatch);
     case Network.ChallengeEventDetailsChallengeResult.CantSetBoundCookie:
-      return i18nString22(UIStrings22.cantSetBoundCookie);
+      return i18nString23(UIStrings23.cantSetBoundCookie);
     default:
       return challengeResult;
   }
@@ -14604,30 +14709,30 @@ function challengeResultToString(challengeResult) {
 function deletionReasonToString(deletionReason) {
   switch (deletionReason) {
     case Network.TerminationEventDetailsDeletionReason.Expired:
-      return i18nString22(UIStrings22.expired);
+      return i18nString23(UIStrings23.expired);
     case Network.TerminationEventDetailsDeletionReason.FailedToRestoreKey:
-      return i18nString22(UIStrings22.failedToRestoreKey);
+      return i18nString23(UIStrings23.failedToRestoreKey);
     case Network.TerminationEventDetailsDeletionReason.FailedToUnwrapKey:
-      return i18nString22(UIStrings22.failedToUnwrapKey);
+      return i18nString23(UIStrings23.failedToUnwrapKey);
     case Network.TerminationEventDetailsDeletionReason.StoragePartitionCleared:
-      return i18nString22(UIStrings22.storagePartitionCleared);
+      return i18nString23(UIStrings23.storagePartitionCleared);
     case Network.TerminationEventDetailsDeletionReason.ClearBrowsingData:
-      return i18nString22(UIStrings22.clearBrowsingData);
+      return i18nString23(UIStrings23.clearBrowsingData);
     case Network.TerminationEventDetailsDeletionReason.ServerRequested:
-      return i18nString22(UIStrings22.serverRequestedTermination);
+      return i18nString23(UIStrings23.serverRequestedTermination);
     case Network.TerminationEventDetailsDeletionReason.InvalidSessionParams:
-      return i18nString22(UIStrings22.invalidSessionParams);
+      return i18nString23(UIStrings23.invalidSessionParams);
     case Network.TerminationEventDetailsDeletionReason.RefreshFatalError:
-      return i18nString22(UIStrings22.refreshFatalError);
+      return i18nString23(UIStrings23.refreshFatalError);
     default:
       return deletionReason;
   }
 }
 function boolToString(bool) {
-  return bool ? i18nString22(UIStrings22.yes) : i18nString22(UIStrings22.no);
+  return bool ? i18nString23(UIStrings23.yes) : i18nString23(UIStrings23.no);
 }
 function succeededToString(succeeded) {
-  return succeeded ? i18nString22(UIStrings22.success) : i18nString22(UIStrings22.error);
+  return succeeded ? i18nString23(UIStrings23.success) : i18nString23(UIStrings23.error);
 }
 function tryParseJson(body) {
   let parsedBody;
@@ -14648,13 +14753,13 @@ __export(DOMStorageItemsView_exports, {
   DOMStorageItemsView: () => DOMStorageItemsView
 });
 import * as Common13 from "../../core/common/common.js";
-import * as i18n47 from "../../core/i18n/i18n.js";
+import * as i18n49 from "../../core/i18n/i18n.js";
 import * as SDK20 from "../../core/sdk/sdk.js";
 import * as TextUtils4 from "../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI23 from "../../ui/legacy/legacy.js";
-import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
+import * as UI24 from "../../ui/legacy/legacy.js";
+import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/application/KeyValueStorageItemsView.ts
 var KeyValueStorageItemsView_exports = {};
@@ -14662,7 +14767,7 @@ __export(KeyValueStorageItemsView_exports, {
   KeyValueStorageItemsView: () => KeyValueStorageItemsView
 });
 import "../../ui/components/buttons/buttons.js";
-import * as i18n45 from "../../core/i18n/i18n.js";
+import * as i18n47 from "../../core/i18n/i18n.js";
 import * as AIAssistance from "../../models/ai_assistance/ai_assistance.js";
 import * as Geometry3 from "../../ui/geometry/geometry.js";
 
@@ -14691,17 +14796,17 @@ var dataGridAiButton_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
 
 // ../../front_end/panels/application/KeyValueStorageItemsView.ts
-import * as UI22 from "../../ui/legacy/legacy.js";
-import { Directives as LitDirectives, html as html17, nothing as nothing10, render as render17 } from "../../ui/lit/lit.js";
-import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
+import { Directives as LitDirectives, html as html18, nothing as nothing10, render as render18 } from "../../ui/lit/lit.js";
+import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents11 from "./components/components.js";
 var STORAGE_FLOATING_BUTTON_ACTION_ID = "ai-assistance.storage-floating-button";
-var { ARIAUtils: ARIAUtils7 } = UI22;
-var { EmptyWidget: EmptyWidget9 } = UI22.EmptyWidget;
-var { VBox, widget: widget11 } = UI22.Widget;
+var { ARIAUtils: ARIAUtils7 } = UI23;
+var { EmptyWidget: EmptyWidget9 } = UI23.EmptyWidget;
+var { VBox, widget: widget11 } = UI23.Widget;
 var { Size: Size3 } = Geometry3;
 var { repeat: repeat2, ifDefined } = LitDirectives;
-var UIStrings23 = {
+var UIStrings24 = {
   /**
    * @description Empty state header in the storage items view of the Application panel when no value is selected.
    */
@@ -14724,10 +14829,10 @@ var UIStrings23 = {
    */
   value: "Value"
 };
-var str_23 = i18n45.i18n.registerUIStrings("panels/application/KeyValueStorageItemsView.ts", UIStrings23);
-var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
+var str_24 = i18n47.i18n.registerUIStrings("panels/application/KeyValueStorageItemsView.ts", UIStrings24);
+var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var MAX_VALUE_LENGTH = 4096;
-var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
+var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
   #preview;
   #previewValue;
   #items = [];
@@ -14743,15 +14848,15 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
     metadataView ??= new ApplicationComponents11.StorageMetadataView.StorageMetadataView();
     if (!view) {
       view = (input, output, target) => {
-        render17(
-          html17`
+        render18(
+          html18`
             <devtools-widget
               ${widget11(StorageItemsToolbar, { metadataView })}
               class=flex-none
               @Refresh=${input.onRefresh}
               @DeleteAll=${input.onDeleteAll}
               @DeleteSelected=${input.onDeleteSelected}
-              ${UI22.Widget.widgetRef(StorageItemsToolbar, (view2) => {
+              ${UI23.Widget.widgetRef(StorageItemsToolbar, (view2) => {
             output.toolbar = view2;
           })}
             ></devtools-widget>
@@ -14770,23 +14875,23 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
                   @deselect=${() => input.onSelect(null)}
                 >
                   <table>
-                    ${input.showAiButton ? html17`<style>${dataGridAiButton_css_default}</style>` : nothing10}
+                    ${input.showAiButton ? html18`<style>${dataGridAiButton_css_default}</style>` : nothing10}
                     <tr>
                       <th id="key" sortable ?editable=${input.editable}>
-                        ${i18nString23(UIStrings23.key)}
+                        ${i18nString24(UIStrings24.key)}
                       </th>
                       <th id="value" ?editable=${input.editable}>
-                        ${i18nString23(UIStrings23.value)}
+                        ${i18nString24(UIStrings24.value)}
                       </th>
                     </tr>
-                    ${repeat2(input.items, (item4) => item4.key, (item4) => html17`
+                    ${repeat2(input.items, (item4) => item4.key, (item4) => html18`
                       <tr data-key=${item4.key} data-value=${item4.value}
                           @select=${() => input.onSelect(item4)}
                           @edit=${(e) => input.onEdit(item4.key, item4.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
                           @delete=${() => input.onDelete(item4.key)}
                           @contextmenu=${(e) => input.onContextMenu?.(item4, e.detail)}
                           selected=${input.selectedKey === item4.key || nothing10}>
-                        <td>${input.showAiButton ? html17`
+                        <td>${input.showAiButton ? html18`
                             <span class="ai-button-container">
                               <devtools-floating-button
                                 icon-name=${AIAssistance.AiUtils.getIconName()}
@@ -14804,7 +14909,7 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
               <devtools-widget
                   slot="sidebar"
                   ${widget11(VBox, { minimumSize: new Size3(0, 50) })}
-                  jslog=${VisualLogging14.pane("preview").track({ resize: true })}>
+                  jslog=${VisualLogging15.pane("preview").track({ resize: true })}>
                ${input.preview?.element}
               </devtools-widget>
             </devtools-split-view>`,
@@ -14821,7 +14926,7 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
     this.#classes = classes;
     this.#view = view;
     this.performUpdate();
-    this.#preview = new EmptyWidget9(i18nString23(UIStrings23.noPreviewSelected), i18nString23(UIStrings23.selectAValueToPreview));
+    this.#preview = new EmptyWidget9(i18nString24(UIStrings24.noPreviewSelected), i18nString24(UIStrings24.selectAValueToPreview));
     this.#previewValue = null;
     this.showPreview(null, null);
   }
@@ -14844,7 +14949,7 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
       jslog: this.#jslog,
       classes: this.#classes,
       showAiButton: this.isAiButtonEnabled(),
-      aiButtonTitle: this.isAiButtonEnabled() && UI22.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ? UI22.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() : void 0,
+      aiButtonTitle: this.isAiButtonEnabled() && UI23.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ? UI23.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() : void 0,
       onSelect: (item4) => {
         this.#toolbar?.setCanDeleteSelected(Boolean(item4));
         void this.#previewEntry(item4);
@@ -14945,7 +15050,7 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
     }
     this.performUpdate();
     this.#toolbar?.setCanDeleteSelected(Boolean(this.#selectedKey));
-    ARIAUtils7.LiveAnnouncer.alert(i18nString23(UIStrings23.numberEntries, { PH1: this.#items.length }));
+    ARIAUtils7.LiveAnnouncer.alert(i18nString24(UIStrings24.numberEntries, { PH1: this.#items.length }));
   }
   deleteSelectedItem() {
     if (!this.#selectedKey) {
@@ -14996,7 +15101,7 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
       this.#preview.detach();
     }
     if (!preview) {
-      preview = new EmptyWidget9(i18nString23(UIStrings23.noPreviewSelected), i18nString23(UIStrings23.selectAValueToPreview));
+      preview = new EmptyWidget9(i18nString24(UIStrings24.noPreviewSelected), i18nString24(UIStrings24.selectAValueToPreview));
     }
     this.#previewValue = value;
     this.#preview = preview;
@@ -15036,7 +15141,7 @@ var KeyValueStorageItemsView = class extends UI22.Widget.VBox {
 };
 
 // ../../front_end/panels/application/DOMStorageItemsView.ts
-var UIStrings24 = {
+var UIStrings25 = {
   /**
    * @description Accessible name for the DOM storage items datagrid in the Application panel.
    */
@@ -15058,14 +15163,14 @@ var UIStrings24 = {
    */
   explainItem: "Explain this item"
 };
-var str_24 = i18n47.i18n.registerUIStrings("panels/application/DOMStorageItemsView.ts", UIStrings24);
-var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
+var str_25 = i18n49.i18n.registerUIStrings("panels/application/DOMStorageItemsView.ts", UIStrings25);
+var i18nString25 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   domStorage;
   eventListeners;
   constructor(domStorage) {
     super(
-      i18nString24(UIStrings24.domStorageItems),
+      i18nString25(UIStrings25.domStorageItems),
       "dom-storage",
       true,
       /* view=*/
@@ -15101,7 +15206,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     Common13.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
     const storageKind = domStorage.isLocalStorage ? "local-storage-data" : "session-storage-data";
-    this.jslog = `${VisualLogging15.pane().context(storageKind)}`;
+    this.jslog = `${VisualLogging16.pane().context(storageKind)}`;
     if (domStorage.storageKey) {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
@@ -15137,7 +15242,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
   itemsCleared() {
     super.itemsCleared();
-    UI23.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.domStorageItemsCleared));
+    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.domStorageItemsCleared));
   }
   domStorageItemRemoved(event) {
     if (!this.isShowing()) {
@@ -15147,7 +15252,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
   itemRemoved(key) {
     super.itemRemoved(key);
-    UI23.ARIAUtils.LiveAnnouncer.alert(i18nString24(UIStrings24.domStorageItemDeleted));
+    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.domStorageItemDeleted));
   }
   domStorageItemAdded(event) {
     if (!this.isShowing()) {
@@ -15184,7 +15289,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     const target = SDK20.TargetManager.TargetManager.instance().primaryPageTarget();
     const mainPageOrigin = target?.inspectedURL() ? Common13.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : "";
     if (!mainPageOrigin) {
-      UI23.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
+      UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
       return;
     }
     const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(
@@ -15194,7 +15299,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       storageType,
       item4 ? item4.key : void 0
     );
-    UI23.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
+    UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
   }
   deleteAllItems() {
     this.domStorage.clear();
@@ -15204,18 +15309,18 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
     this.#setAiStorageContext(item4);
   }
   isAiButtonEnabled() {
-    return UI23.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
+    return UI24.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
   }
   populateContextMenu(item4, contextMenu) {
     const openAiAssistanceId = "ai-assistance.application-panel-context";
-    const actionRegistry = UI23.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
       this.#setAiStorageContext(item4);
       const action8 = actionRegistry.getAction(openAiAssistanceId);
       const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString24(UIStrings24.startAChat));
+      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString25(UIStrings25.startAChat));
       submenu.defaultSection().appendItem(
-        i18nString24(UIStrings24.explainItem),
+        i18nString25(UIStrings25.explainItem),
         () => action8.execute({ prompt: "Explain this storage item." }),
         { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".storage" }
       );
@@ -15224,7 +15329,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   onAiButtonClick(item4, _event) {
     this.#setAiStorageContext(item4);
     const aiFloatingActionId = "ai-assistance.storage-floating-button";
-    const actionRegistry = UI23.ActionRegistry.ActionRegistry.instance();
+    const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(aiFloatingActionId)) {
       void actionRegistry.getAction(aiFloatingActionId).execute();
     }
@@ -15244,13 +15349,13 @@ __export(ExtensionStorageItemsView_exports, {
   ExtensionStorageItemsView: () => ExtensionStorageItemsView
 });
 import * as Common14 from "../../core/common/common.js";
-import * as i18n49 from "../../core/i18n/i18n.js";
+import * as i18n51 from "../../core/i18n/i18n.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 import * as JSON5 from "../../third_party/json5/json5.js";
 import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI24 from "../../ui/legacy/legacy.js";
-import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
-var UIStrings25 = {
+import * as UI25 from "../../ui/legacy/legacy.js";
+import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
+var UIStrings26 = {
   /**
    * @description Accessible name for the extension storage items datagrid in the Application panel.
    */
@@ -15260,8 +15365,8 @@ var UIStrings25 = {
    */
   extensionStorageItemsCleared: "Extension storage items cleared"
 };
-var str_25 = i18n49.i18n.registerUIStrings("panels/application/ExtensionStorageItemsView.ts", UIStrings25);
-var i18nString25 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
+var str_26 = i18n51.i18n.registerUIStrings("panels/application/ExtensionStorageItemsView.ts", UIStrings26);
+var i18nString26 = i18n51.i18n.getLocalizedString.bind(void 0, str_26);
 var ExtensionStorageItemsDispatcher;
 ((ExtensionStorageItemsDispatcher2) => {
   let Events5;
@@ -15275,12 +15380,12 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   extensionStorageItemsDispatcher;
   constructor(extensionStorage, view) {
     super(
-      i18nString25(UIStrings25.extensionStorageItems),
+      i18nString26(UIStrings26.extensionStorageItems),
       "extension-storage",
       true,
       view,
       void 0,
-      `${VisualLogging16.pane().context("extension-storage-data")}`,
+      `${VisualLogging17.pane().context("extension-storage-data")}`,
       ["storage-view", "table"]
     );
     this.extensionStorageItemsDispatcher = new Common14.ObjectWrapper.ObjectWrapper();
@@ -15333,7 +15438,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
       return;
     }
     this.itemsCleared();
-    UI24.ARIAUtils.LiveAnnouncer.alert(i18nString25(UIStrings25.extensionStorageItemsCleared));
+    UI25.ARIAUtils.LiveAnnouncer.alert(i18nString26(UIStrings26.extensionStorageItemsCleared));
   }
   deleteSelectedItem() {
     if (!this.#isEditable) {
@@ -15523,7 +15628,7 @@ var resourcesPanel_css_default = `/*
 
 // ../../front_end/panels/application/ResourcesPanel.ts
 var resourcesPanelInstance;
-var ResourcesPanel = class _ResourcesPanel extends UI25.Panel.PanelWithSidebar {
+var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
   resourcesLastSelectedItemSetting;
   visibleView;
   pendingViewPromise;
@@ -15544,7 +15649,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI25.Panel.PanelWithSidebar {
     this.visibleView = null;
     this.pendingViewPromise = null;
     this.categoryView = null;
-    const mainContainer = new UI25.Widget.VBox();
+    const mainContainer = new UI26.Widget.VBox();
     mainContainer.setMinimumSize(100, 0);
     this.storageViews = mainContainer.element.createChild("div", "vbox flex-auto");
     this.storageViewToolbar = mainContainer.element.createChild("devtools-toolbar", "resources-toolbar");
@@ -15573,7 +15678,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI25.Panel.PanelWithSidebar {
     return viewClassesToClose.some((type) => view instanceof type);
   }
   static async showAndGetSidebar() {
-    await UI25.ViewManager.ViewManager.instance().showView("resources");
+    await UI26.ViewManager.ViewManager.instance().showView("resources");
     return _ResourcesPanel.instance().sidebar;
   }
   focus() {
@@ -15604,12 +15709,12 @@ var ResourcesPanel = class _ResourcesPanel extends UI25.Panel.PanelWithSidebar {
     this.visibleView = view;
     this.storageViewToolbar.removeToolbarItems();
     this.storageViewToolbar.classList.toggle("hidden", true);
-    if (view instanceof UI25.View.SimpleView) {
+    if (view instanceof UI26.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         if (items === nothing11) {
           this.storageViewToolbar.classList.toggle("hidden", true);
         } else {
-          render18(items, this.storageViewToolbar);
+          render19(items, this.storageViewToolbar);
           this.storageViewToolbar.classList.toggle("hidden", false);
         }
       });
@@ -15630,7 +15735,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI25.Panel.PanelWithSidebar {
     }
     this.categoryView.element.setAttribute(
       "jslog",
-      `${VisualLogging17.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`
+      `${VisualLogging18.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`
     );
     this.categoryView.setHeadline(categoryHeadline);
     this.categoryView.setText(categoryDescription);
@@ -15829,8 +15934,8 @@ devtools-report-section:has(.quota-override-error:empty) {
 
 // ../../front_end/panels/application/StorageView.ts
 var { classMap: classMap3, ifDefined: ifDefined2, live: live2, ref: ref2 } = Directives7;
-var { bindToSetting: bindToSetting2 } = UI26.UIUtils;
-var UIStrings26 = {
+var { bindToSetting: bindToSetting2 } = UI27.UIUtils;
+var UIStrings27 = {
   /**
    * @description Text in the storage view that expresses the amount of used and available storage quota.
    * @example {1.5 MB} PH1
@@ -15971,39 +16076,39 @@ var storagePieColors = /* @__PURE__ */ new Map([
   [Storage.StorageType.Service_workers, "rgb(255, 167, 36)"]
   // orange
 ]);
-var str_26 = i18n51.i18n.registerUIStrings("panels/application/StorageView.ts", UIStrings26);
-var i18nString26 = i18n51.i18n.getLocalizedString.bind(void 0, str_26);
-var DEFAULT_VIEW13 = (input, output, target) => {
+var str_27 = i18n53.i18n.registerUIStrings("panels/application/StorageView.ts", UIStrings27);
+var i18nString27 = i18n53.i18n.getLocalizedString.bind(void 0, str_27);
+var DEFAULT_VIEW14 = (input, output, target) => {
   function renderSettingCheckbox(title, settingName, className) {
     const setting = input.settings.get(settingName);
     if (!setting) {
       throw new Error(`Missing setting for storage type: ${settingName}`);
     }
-    return html18`<devtools-checkbox class=${className} title=${title} ${bindToSetting2(setting)}>${title}</devtools-checkbox>`;
+    return html19`<devtools-checkbox class=${className} title=${title} ${bindToSetting2(setting)}>${title}</devtools-checkbox>`;
   }
   function renderClearSiteData() {
-    return html18`
-      <div class="report-section" jslog=${VisualLogging18.section("clear-storage")}>
+    return html19`
+      <div class="report-section" jslog=${VisualLogging19.section("clear-storage")}>
         <devtools-report-section-header role="heading" aria-level="2">
-          ${i18nString26(UIStrings26.clearSiteData)}
+          ${i18nString27(UIStrings27.clearSiteData)}
         </devtools-report-section-header>
         <devtools-report-section>
-          <div class="clear-site-data-checkboxes-row" role="group" aria-label=${i18nString26(UIStrings26.clearSiteData)}>
+          <div class="clear-site-data-checkboxes-row" role="group" aria-label=${i18nString27(UIStrings27.clearSiteData)}>
             <div class="clear-site-data-checkbox-column">
-              ${renderSettingCheckbox(i18nString26(UIStrings26.cacheStorage), Storage.StorageType.Cache_storage, "cache-storage-checkbox")}
-              ${renderSettingCheckbox(i18nString26(UIStrings26.fileSystem), Storage.StorageType.File_systems, "file-systems-checkbox")}
-              ${renderSettingCheckbox(i18nString26(UIStrings26.indexDB), Storage.StorageType.Indexeddb, "indexeddb-checkbox")}
-              ${renderSettingCheckbox(i18nString26(UIStrings26.localAndSessionStorage), Storage.StorageType.Local_storage, "local-and-session-storage-checkbox")}
+              ${renderSettingCheckbox(i18nString27(UIStrings27.cacheStorage), Storage.StorageType.Cache_storage, "cache-storage-checkbox")}
+              ${renderSettingCheckbox(i18nString27(UIStrings27.fileSystem), Storage.StorageType.File_systems, "file-systems-checkbox")}
+              ${renderSettingCheckbox(i18nString27(UIStrings27.indexDB), Storage.StorageType.Indexeddb, "indexeddb-checkbox")}
+              ${renderSettingCheckbox(i18nString27(UIStrings27.localAndSessionStorage), Storage.StorageType.Local_storage, "local-and-session-storage-checkbox")}
             </div>
             <div class="clear-site-data-checkbox-column">
-              ${renderSettingCheckbox(i18nString26(UIStrings26.unregisterServiceWorker), Storage.StorageType.Service_workers, "unregister-service-worker-checkbox")}
-              ${renderSettingCheckbox(i18nString26(UIStrings26.cookies), Storage.StorageType.Cookies, "cookies-checkbox cookies-row")}
+              ${renderSettingCheckbox(i18nString27(UIStrings27.unregisterServiceWorker), Storage.StorageType.Service_workers, "unregister-service-worker-checkbox")}
+              ${renderSettingCheckbox(i18nString27(UIStrings27.cookies), Storage.StorageType.Cookies, "cookies-checkbox cookies-row")}
               <div class="include-third-party-cookies-row">
                 <devtools-checkbox class="third-party-cookies-checkbox"
-                    title=${i18nString26(UIStrings26.thirdPartyCookies)}
+                    title=${i18nString27(UIStrings27.thirdPartyCookies)}
                     ?disabled=${input.includeThirdPartyCookiesDisabled}
                     ${bindToSetting2(input.includeThirdPartyCookiesSetting)}>
-                  ${i18nString26(UIStrings26.thirdPartyCookies)}
+                  ${i18nString27(UIStrings27.thirdPartyCookies)}
                 </devtools-checkbox>
               </div>
             </div>
@@ -16018,7 +16123,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
               ${ref2((e) => {
       output.focusClearButton = e instanceof HTMLElement ? () => e.focus() : void 0;
     })}
-              >${input.clearing ? i18nString26(UIStrings26.clearing) : i18nString26(UIStrings26.clearSelected)}</devtools-button>
+              >${input.clearing ? i18nString27(UIStrings27.clearing) : i18nString27(UIStrings27.clearSelected)}</devtools-button>
         </devtools-report-section>
       </div>`;
   }
@@ -16026,8 +16131,8 @@ var DEFAULT_VIEW13 = (input, output, target) => {
     if (input.quotaUsage === null || input.quotaQuota === null) {
       return void 0;
     }
-    return i18nString26(
-      UIStrings26.storageQuotaUsedWithBytes,
+    return i18nString27(
+      UIStrings27.storageQuotaUsedWithBytes,
       { PH1: input.quotaUsage.toLocaleString(), PH2: input.quotaQuota.toLocaleString() }
     );
   }
@@ -16035,21 +16140,21 @@ var DEFAULT_VIEW13 = (input, output, target) => {
     if (input.quotaUsage === null || input.quotaQuota === null) {
       return nothing12;
     }
-    const quotaAsString = i18n51.ByteUtilities.bytesToString(input.quotaQuota);
-    const usageAsString = i18n51.ByteUtilities.bytesToString(input.quotaUsage);
-    const formattedQuotaAsString = i18nString26(UIStrings26.storageWithCustomMarker, { PH1: quotaAsString });
-    const quota = input.quotaOverrideActive ? html18`<b>${formattedQuotaAsString}</b>` : quotaAsString;
-    return html18`
-      ${uiI18n.getFormatLocalizedStringTemplate(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota })}
-      ${!input.quotaOverrideActive && input.quotaQuota < 125829120 ? html18`
+    const quotaAsString = i18n53.ByteUtilities.bytesToString(input.quotaQuota);
+    const usageAsString = i18n53.ByteUtilities.bytesToString(input.quotaUsage);
+    const formattedQuotaAsString = i18nString27(UIStrings27.storageWithCustomMarker, { PH1: quotaAsString });
+    const quota = input.quotaOverrideActive ? html19`<b>${formattedQuotaAsString}</b>` : quotaAsString;
+    return html19`
+      ${uiI18n.getFormatLocalizedStringTemplate(str_27, UIStrings27.storageQuotaUsed, { PH1: usageAsString, PH2: quota })}
+      ${!input.quotaOverrideActive && input.quotaQuota < 125829120 ? html19`
         <devtools-icon name="info" class="small" style="color: var(--icon-info)"
-            title=${i18nString26(UIStrings26.storageQuotaIsLimitedIn)}></devtools-icon>` : nothing12}`;
+            title=${i18nString27(UIStrings27.storageQuotaIsLimitedIn)}></devtools-icon>` : nothing12}`;
   }
   function renderUsage() {
     const pieChartData = {
-      chartName: i18nString26(UIStrings26.storageUsage),
+      chartName: i18nString27(UIStrings27.storageUsage),
       size: 110,
-      formatter: i18n51.ByteUtilities.bytesToString,
+      formatter: i18n53.ByteUtilities.bytesToString,
       showLegend: true,
       total: input.quotaUsage ?? 0,
       slices: input.pieChartSlices
@@ -16067,32 +16172,32 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       input.onApplyQuotaOverride(event.target.value);
       event.consume(true);
     };
-    return html18`
-      <div class="report-section" jslog=${VisualLogging18.section("usage")}>
+    return html19`
+      <div class="report-section" jslog=${VisualLogging19.section("usage")}>
         <devtools-report-section-header role="heading" aria-level="2">
-          ${i18nString26(UIStrings26.usage)}
+          ${i18nString27(UIStrings27.usage)}
         </devtools-report-section-header>
-        <devtools-report-section class="quota-usage-row" jslog=${VisualLogging18.item("storage-usage")}
+        <devtools-report-section class="quota-usage-row" jslog=${VisualLogging19.item("storage-usage")}
             title=${ifDefined2(quotaTooltip())}>${renderQuotaRow()}</devtools-report-section>
         <devtools-report-section>
           <devtools-link href="https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses"
-              jslogcontext="learn-more">${i18nString26(UIStrings26.learnMore)}</devtools-link>
+              jslogcontext="learn-more">${i18nString27(UIStrings27.learnMore)}</devtools-link>
         </devtools-report-section>
-        <devtools-report-section class="usage-breakdown-row" jslog=${VisualLogging18.item("usage-breakdown")}>
+        <devtools-report-section class="usage-breakdown-row" jslog=${VisualLogging19.item("usage-breakdown")}>
           <devtools-perf-piechart .data=${pieChartData}></devtools-perf-piechart>
         </devtools-report-section>
         <devtools-report-section class="quota-override-row">
           <devtools-checkbox .checked=${live2(input.quotaOverrideEnabled)}
-              title=${i18nString26(UIStrings26.simulateCustomStorage)}
+              title=${i18nString27(UIStrings27.simulateCustomStorage)}
               @change=${input.onToggleQuotaOverride}
-              jslog=${VisualLogging18.toggle("simulate-custom-quota").track({ change: true })}>
-            ${i18nString26(UIStrings26.simulateCustomStorage)}
+              jslog=${VisualLogging19.toggle("simulate-custom-quota").track({ change: true })}>
+            ${i18nString27(UIStrings27.simulateCustomStorage)}
           </devtools-checkbox>
         </devtools-report-section>
         <devtools-report-section class=${classMap3({ hidden: !input.quotaOverrideEnabled })}>
           <input class="quota-override-notification-editor"
-              aria-label=${i18nString26(UIStrings26.simulateCustomStorage)}
-              placeholder=${i18nString26(UIStrings26.pleaseEnterANumber)}
+              aria-label=${i18nString27(UIStrings27.simulateCustomStorage)}
+              placeholder=${i18nString27(UIStrings27.pleaseEnterANumber)}
               .value=${live2(input.quotaOverrideValue)}
               @input=${onEditorInput}
               @keyup=${onEditorKeyUp}
@@ -16100,21 +16205,21 @@ var DEFAULT_VIEW13 = (input, output, target) => {
               ${ref2((e) => {
       output.focusQuotaOverrideEditor = e instanceof HTMLElement ? () => e.focus() : void 0;
     })}
-              jslog=${VisualLogging18.textField("quota-override").track({ change: true })}>
-          <label>${i18nString26(UIStrings26.mb)}</label>
+              jslog=${VisualLogging19.textField("quota-override").track({ change: true })}>
+          <label>${i18nString27(UIStrings27.mb)}</label>
         </devtools-report-section>
         <devtools-report-section><div class="quota-override-error">${input.quotaOverrideError}</div></devtools-report-section>
       </div>`;
   }
-  render19(html18`
-    <devtools-report class="clear-storage-header" .data=${{ reportTitle: i18nString26(UIStrings26.storageTitle) }}>
-      ${input.subtitle ? html18`<div class="report-subtitle" slot="toolbar">${input.subtitle}</div>` : nothing12}
+  render20(html19`
+    <devtools-report class="clear-storage-header" .data=${{ reportTitle: i18nString27(UIStrings27.storageTitle) }}>
+      ${input.subtitle ? html19`<div class="report-subtitle" slot="toolbar">${input.subtitle}</div>` : nothing12}
       ${renderClearSiteData()}
       <devtools-report-divider></devtools-report-divider>
       ${renderUsage()}
     </devtools-report>`, target);
 };
-var StorageView = class _StorageView extends UI26.Widget.VBox {
+var StorageView = class _StorageView extends UI27.Widget.VBox {
   #view;
   #viewOutput = {};
   pieColors;
@@ -16141,8 +16246,8 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
   boundOnIncludeThirdPartyCookiesSettingChanged = (event) => {
     this.onIncludeThirdPartyCookiesSettingChanged(event.data);
   };
-  constructor(element, view = DEFAULT_VIEW13) {
-    super(element, { useShadowDom: true, jslog: `${VisualLogging18.pane("clear-storage")}` });
+  constructor(element, view = DEFAULT_VIEW14) {
+    super(element, { useShadowDom: true, jslog: `${VisualLogging19.pane("clear-storage")}` });
     this.#view = view;
     this.registerRequiredCSS(storageView_css_default);
     this.pieColors = storagePieColors;
@@ -16245,7 +16350,7 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     const oldOrigin = this.securityOrigin;
     if (unreachableMainOrigin) {
       this.securityOrigin = unreachableMainOrigin;
-      this.subtitle = i18nString26(UIStrings26.sFailedToLoad, { PH1: unreachableMainOrigin });
+      this.subtitle = i18nString27(UIStrings27.sFailedToLoad, { PH1: unreachableMainOrigin });
     } else {
       this.securityOrigin = mainOrigin;
       this.subtitle = mainOrigin;
@@ -16274,7 +16379,7 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
   async applyQuotaOverrideFromInputField(editorString) {
     this.quotaOverrideFieldValue = editorString;
     if (!this.target || !this.securityOrigin) {
-      this.quotaOverrideError = i18nString26(UIStrings26.internalError);
+      this.quotaOverrideError = i18nString27(UIStrings27.internalError);
       this.requestUpdate();
       return;
     }
@@ -16287,18 +16392,18 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
     }
     const quota = parseFloat(editorString);
     if (!Number.isFinite(quota)) {
-      this.quotaOverrideError = i18nString26(UIStrings26.pleaseEnterANumber);
+      this.quotaOverrideError = i18nString27(UIStrings27.pleaseEnterANumber);
       this.requestUpdate();
       return;
     }
     if (quota < 0) {
-      this.quotaOverrideError = i18nString26(UIStrings26.numberMustBeNonNegative);
+      this.quotaOverrideError = i18nString27(UIStrings27.numberMustBeNonNegative);
       this.requestUpdate();
       return;
     }
     const cutoff = 9e12;
     if (quota >= cutoff) {
-      this.quotaOverrideError = i18nString26(UIStrings26.numberMustBeSmaller, { PH1: cutoff.toLocaleString() });
+      this.quotaOverrideError = i18nString27(UIStrings27.numberMustBeSmaller, { PH1: cutoff.toLocaleString() });
       this.requestUpdate();
       return;
     }
@@ -16364,7 +16469,7 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
         this.#viewOutput.focusClearButton?.();
       }
     }, 500);
-    UI26.ARIAUtils.LiveAnnouncer.alert(i18nString26(UIStrings26.SiteDataCleared));
+    UI27.ARIAUtils.LiveAnnouncer.alert(i18nString27(UIStrings27.SiteDataCleared));
   }
   static clear(target, storageKey, originForCookies, selectedStorageTypes, includeThirdPartyCookies) {
     console.assert(Boolean(storageKey));
@@ -16503,15 +16608,15 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
   static getStorageTypeName(type) {
     switch (type) {
       case Storage.StorageType.File_systems:
-        return i18nString26(UIStrings26.fileSystem);
+        return i18nString27(UIStrings27.fileSystem);
       case Storage.StorageType.Indexeddb:
-        return i18nString26(UIStrings26.indexDB);
+        return i18nString27(UIStrings27.indexDB);
       case Storage.StorageType.Cache_storage:
-        return i18nString26(UIStrings26.cacheStorage);
+        return i18nString27(UIStrings27.cacheStorage);
       case Storage.StorageType.Service_workers:
-        return i18nString26(UIStrings26.serviceWorkers);
+        return i18nString27(UIStrings27.serviceWorkers);
       default:
-        return i18nString26(UIStrings26.other);
+        return i18nString27(UIStrings27.other);
     }
   }
   /**
@@ -16522,17 +16627,17 @@ var StorageView = class _StorageView extends UI26.Widget.VBox {
   static getStorageTypeNameForWidget(type) {
     switch (type) {
       case "session_storage":
-        return i18nString26(UIStrings26.sessionStorage);
+        return i18nString27(UIStrings27.sessionStorage);
       case "local_storage":
-        return i18nString26(UIStrings26.localStorage);
+        return i18nString27(UIStrings27.localStorage);
       case "cookies":
-        return i18nString26(UIStrings26.cookies);
+        return i18nString27(UIStrings27.cookies);
       case "indexeddb":
-        return i18nString26(UIStrings26.indexDB);
+        return i18nString27(UIStrings27.indexDB);
       case "cache_storage":
-        return i18nString26(UIStrings26.cacheStorage);
+        return i18nString27(UIStrings27.cacheStorage);
       case "service_workers":
-        return i18nString26(UIStrings26.serviceWorkers);
+        return i18nString27(UIStrings27.serviceWorkers);
       default:
         return _StorageView.getStorageTypeName(type);
     }
@@ -16589,16 +16694,16 @@ var StorageRevealer = class {
 // ../../front_end/panels/application/SubAppsView.ts
 var SubAppsView_exports = {};
 __export(SubAppsView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW14,
+  DEFAULT_VIEW: () => DEFAULT_VIEW15,
   SubAppsView: () => SubAppsView,
-  i18nString: () => i18nString27
+  i18nString: () => i18nString28
 });
 import "../../ui/kit/kit.js";
 import "../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n53 from "../../core/i18n/i18n.js";
-import * as UI27 from "../../ui/legacy/legacy.js";
+import * as i18n55 from "../../core/i18n/i18n.js";
+import * as UI28 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
-import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging20 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/subAppsView.css.js
 var subAppsView_css_default = `/*
@@ -16626,8 +16731,8 @@ var subAppsView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./subAppsView.css")} */`;
 
 // ../../front_end/panels/application/SubAppsView.ts
-var { html: html19 } = Lit3;
-var UIStrings27 = {
+var { html: html20 } = Lit3;
+var UIStrings28 = {
   /**
    * @description Heading label for Sub Apps view
    */
@@ -16657,8 +16762,8 @@ var UIStrings27 = {
    */
   startUrl: "Start URL"
 };
-var str_27 = i18n53.i18n.registerUIStrings("panels/application/SubAppsView.ts", UIStrings27);
-var i18nString27 = i18n53.i18n.getLocalizedString.bind(void 0, str_27);
+var str_28 = i18n55.i18n.registerUIStrings("panels/application/SubAppsView.ts", UIStrings28);
+var i18nString28 = i18n55.i18n.getLocalizedString.bind(void 0, str_28);
 function stripOrigin(url) {
   try {
     const parsed = new URL(url);
@@ -16667,34 +16772,34 @@ function stripOrigin(url) {
     return url;
   }
 }
-var DEFAULT_VIEW14 = (input, output, target) => {
+var DEFAULT_VIEW15 = (input, output, target) => {
   const hasDistinctManifestId = input.subApps.some((subApp) => subApp.manifestId && subApp.startUrl && subApp.manifestId !== subApp.startUrl);
-  const headingText = input.isSiblingSubApps ? i18nString27(UIStrings27.siblingSubApps) : i18nString27(UIStrings27.subApps);
-  Lit3.render(html19`
+  const headingText = input.isSiblingSubApps ? i18nString28(UIStrings28.siblingSubApps) : i18nString28(UIStrings28.subApps);
+  Lit3.render(html20`
     <style>${subAppsView_css_default}</style>
-    <style>${UI27.inspectorCommonStyles}</style>
-    <div jslog=${VisualLogging19.pane("sub-apps")}>
+    <style>${UI28.inspectorCommonStyles}</style>
+    <div jslog=${VisualLogging20.pane("sub-apps")}>
       <span class="heading">${headingText}</span>
       <devtools-data-grid striped inline role="grid" aria-label=${headingText}>
         <table>
           <tr>
-            <th id="name" weight="10" sortable>${i18nString27(UIStrings27.name)}</th>
-            <th id="scope" weight="10" sortable>${i18nString27(UIStrings27.scope)}</th>
-            ${hasDistinctManifestId ? html19`
-              <th id="manifest-id" weight="10" sortable>${i18nString27(UIStrings27.manifestId)}</th>
-              <th id="start-url" weight="10" sortable>${i18nString27(UIStrings27.startUrl)}</th>
-            ` : html19`
-              <th id="manifest-id-start-url" weight="10" sortable>${i18nString27(UIStrings27.manifestIdAndStartUrl)}</th>
+            <th id="name" weight="10" sortable>${i18nString28(UIStrings28.name)}</th>
+            <th id="scope" weight="10" sortable>${i18nString28(UIStrings28.scope)}</th>
+            ${hasDistinctManifestId ? html20`
+              <th id="manifest-id" weight="10" sortable>${i18nString28(UIStrings28.manifestId)}</th>
+              <th id="start-url" weight="10" sortable>${i18nString28(UIStrings28.startUrl)}</th>
+            ` : html20`
+              <th id="manifest-id-start-url" weight="10" sortable>${i18nString28(UIStrings28.manifestIdAndStartUrl)}</th>
             `}
           </tr>
-          ${input.subApps.map((subApp) => html19`
+          ${input.subApps.map((subApp) => html20`
             <tr>
               <td>${subApp.name}</td>
               <td title=${subApp.scope}>${stripOrigin(subApp.scope)}</td>
-              ${hasDistinctManifestId ? html19`
+              ${hasDistinctManifestId ? html20`
                 <td title=${subApp.manifestId}>${stripOrigin(subApp.manifestId)}</td>
                 <td title=${subApp.startUrl}>${stripOrigin(subApp.startUrl)}</td>
-              ` : html19`
+              ` : html20`
                 <td title=${subApp.manifestId || subApp.startUrl}>${stripOrigin(subApp.manifestId || subApp.startUrl)}</td>
               `}
             </tr>
@@ -16704,11 +16809,11 @@ var DEFAULT_VIEW14 = (input, output, target) => {
     </div>
   `, target);
 };
-var SubAppsView = class extends UI27.Widget.VBox {
+var SubAppsView = class extends UI28.Widget.VBox {
   #subApps = [];
   #isSiblingSubApps = false;
   #view;
-  constructor(element, view = DEFAULT_VIEW14) {
+  constructor(element, view = DEFAULT_VIEW15) {
     super(element);
     this.#view = view;
   }
@@ -16741,24 +16846,24 @@ var SubAppsView = class extends UI27.Widget.VBox {
 var TrustTokensTreeElement_exports = {};
 __export(TrustTokensTreeElement_exports, {
   TrustTokensTreeElement: () => TrustTokensTreeElement,
-  i18nString: () => i18nString28
+  i18nString: () => i18nString29
 });
-import * as i18n55 from "../../core/i18n/i18n.js";
+import * as i18n57 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon8 } from "../../ui/kit/kit.js";
-import * as UI28 from "../../ui/legacy/legacy.js";
+import * as UI29 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents12 from "./components/components.js";
-var UIStrings28 = {
+var UIStrings29 = {
   /**
    * @description Label for the private state tokens tree element in the Application panel sidebar.
    */
   trustTokens: "Private state tokens"
 };
-var str_28 = i18n55.i18n.registerUIStrings("panels/application/TrustTokensTreeElement.ts", UIStrings28);
-var i18nString28 = i18n55.i18n.getLocalizedString.bind(void 0, str_28);
+var str_29 = i18n57.i18n.registerUIStrings("panels/application/TrustTokensTreeElement.ts", UIStrings29);
+var i18nString29 = i18n57.i18n.getLocalizedString.bind(void 0, str_29);
 var TrustTokensTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
-    super(storagePanel, i18nString28(UIStrings28.trustTokens), false, "private-state-tokens");
+    super(storagePanel, i18nString29(UIStrings29.trustTokens), false, "private-state-tokens");
     const icon = createIcon8("database");
     this.setLeadingIcons([icon]);
   }
@@ -16771,7 +16876,7 @@ var TrustTokensTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ApplicationComponents12.TrustTokensView.TrustTokensView();
     }
     this.showView(this.view);
-    UI28.UIUserMetrics.UIUserMetrics.instance().panelShown("trust-tokens");
+    UI29.UIUserMetrics.UIUserMetrics.instance().panelShown("trust-tokens");
     return false;
   }
 };
@@ -16782,13 +16887,13 @@ __export(WebMCPTreeElement_exports, {
   WebMCPTreeElement: () => WebMCPTreeElement
 });
 import { createIcon as createIcon9 } from "../../ui/kit/kit.js";
-import * as UI30 from "../../ui/legacy/legacy.js";
-import { html as html21, render as render22 } from "../../ui/lit/lit.js";
+import * as UI31 from "../../ui/legacy/legacy.js";
+import { html as html22, render as render23 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/application/WebMCPView.ts
 var WebMCPView_exports = {};
 __export(WebMCPView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW15,
+  DEFAULT_VIEW: () => DEFAULT_VIEW16,
   PAYLOAD_DEFAULT_VIEW: () => PAYLOAD_DEFAULT_VIEW,
   PayloadWidget: () => PayloadWidget,
   TabId: () => TabId,
@@ -16806,7 +16911,7 @@ import "../../ui/legacy/components/data_grid/data_grid.js";
 import "../../ui/legacy/legacy.js";
 import * as Common17 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
-import * as i18n57 from "../../core/i18n/i18n.js";
+import * as i18n59 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
 import * as SDK23 from "../../core/sdk/sdk.js";
 import * as WebMCP2 from "../../models/web_mcp/web_mcp.js";
@@ -16814,14 +16919,14 @@ import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Buttons11 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
-import * as UI29 from "../../ui/legacy/legacy.js";
+import * as UI30 from "../../ui/legacy/legacy.js";
 import {
   Directives as Directives8,
-  html as html20,
+  html as html21,
   nothing as nothing13,
-  render as render21
+  render as render22
 } from "../../ui/lit/lit.js";
-import * as VisualLogging20 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging21 from "../../ui/visual_logging/visual_logging.js";
 import * as Console2 from "../console/console.js";
 
 // gen/front_end/panels/console/symbolizedErrorWidget.css.js
@@ -17196,7 +17301,7 @@ var webMCPView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
 
 // ../../front_end/panels/application/WebMCPView.ts
-var UIStrings29 = {
+var UIStrings30 = {
   /**
    * @description Section header for the available tools list in the WebMCP view of the Application panel.
    */
@@ -17366,9 +17471,9 @@ var UIStrings29 = {
    */
   origin: "Origin"
 };
-var str_29 = i18n57.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings29);
-var i18nString29 = i18n57.i18n.getLocalizedString.bind(void 0, str_29);
-var { widget: widget12 } = UI29.Widget;
+var str_30 = i18n59.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings30);
+var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
+var { widget: widget12 } = UI30.Widget;
 var TabId = /* @__PURE__ */ ((TabId2) => {
   TabId2["DETAILS"] = "webmcp.tool-details";
   TabId2["INPUT"] = "webmcp.call-inputs";
@@ -17485,7 +17590,7 @@ function getJSONEditorParameters(tool) {
     enumsByName: parsedSchema.enumsByName
   };
 }
-var DEFAULT_VIEW15 = (input, output, target) => {
+var DEFAULT_VIEW16 = (input, output, target) => {
   const tools = input.tools;
   let editorWidget = null;
   const toolStats = calculateToolStats(input.toolCalls);
@@ -17505,13 +17610,13 @@ var DEFAULT_VIEW15 = (input, output, target) => {
   const statusString = (call) => {
     switch (call.result?.status) {
       case WebMCP.InvocationStatus.Error:
-        return i18nString29(UIStrings29.error);
+        return i18nString30(UIStrings30.error);
       case WebMCP.InvocationStatus.Canceled:
-        return i18nString29(UIStrings29.canceled);
+        return i18nString30(UIStrings30.canceled);
       case WebMCP.InvocationStatus.Completed:
-        return i18nString29(UIStrings29.completed);
+        return i18nString30(UIStrings30.completed);
       default:
-        return i18nString29(UIStrings29.inProgress);
+        return i18nString30(UIStrings30.inProgress);
     }
   };
   const onIconClick = (toolName, status) => {
@@ -17532,30 +17637,30 @@ var DEFAULT_VIEW15 = (input, output, target) => {
     });
   };
   const onToolContextMenu = (event, tool) => {
-    const contextMenu = new UI29.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.copyName), () => {
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.copyName), () => {
       Host3.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.name);
     }, { jslogContext: "webmcp.copy-tool-name" });
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.copyDescription), () => {
+    contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.copyDescription), () => {
       Host3.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(tool.description);
     }, { jslogContext: "webmcp.copy-tool-description" });
     void contextMenu.show();
   };
-  render21(html20`
+  render22(html21`
     <style>${webMCPView_css_default}</style>
-    <style>${UI29.FilterBar.filterStyles}</style>
-    <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view" jslog=${VisualLogging20.pane("webmcp-view")}>
-      <div slot="main" class="call-log" jslog=${VisualLogging20.section("call-log")}>
-        <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging20.toolbar()}>
+    <style>${UI30.FilterBar.filterStyles}</style>
+    <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view" jslog=${VisualLogging21.pane("webmcp-view")}>
+      <div slot="main" class="call-log" jslog=${VisualLogging21.section("call-log")}>
+        <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging21.toolbar()}>
           <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
-            <devtools-button title=${i18nString29(UIStrings29.clearLog)}
+            <devtools-button title=${i18nString30(UIStrings30.clearLog)}
                              .iconName=${"clear"}
                              .variant=${Buttons11.Button.Variant.TOOLBAR}
                              .jslogContext=${"clear"}
                              @click=${input.onClearLogClick}></devtools-button>
             <div class="toolbar-divider"></div>
             <devtools-toolbar-input type="filter"
-                                    placeholder=${i18nString29(UIStrings29.filter)}
+                                    placeholder=${i18nString30(UIStrings30.filter)}
                                     @change=${(e) => input.onFilterChange({ ...input.filters, text: e.detail })}
                                     .value=${input.filters.text}>
             </devtools-toolbar-input>
@@ -17564,7 +17669,7 @@ var DEFAULT_VIEW15 = (input, output, target) => {
             <div class="toolbar-divider"></div>
             ${input.filterButtons.statusTypes.button.element}
             <div class="toolbar-spacer"></div>
-            <devtools-button title=${i18nString29(UIStrings29.clearFilters)}
+            <devtools-button title=${i18nString30(UIStrings30.clearFilters)}
                              .iconName=${"filter-clear"}
                              .variant=${Buttons11.Button.Variant.TOOLBAR}
                              .jslogContext=${"clear-filter"}
@@ -17572,46 +17677,46 @@ var DEFAULT_VIEW15 = (input, output, target) => {
                              ?hidden=${!isFilterActive}></devtools-button>
           </devtools-toolbar>
         </div>
-        ${input.toolCalls.length > 0 ? html20`
+        ${input.toolCalls.length > 0 ? html21`
           <devtools-split-view name="webmcp-call-split-view"
                                direction="column"
                                sidebar-position="second"
                                show=${input.selectedCall ? "both" : "main"}>
             <div slot="main" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-              <devtools-data-grid striped .template=${html20`
+              <devtools-data-grid striped .template=${html21`
                 <table>
                   <style>${webMCPView_css_default}</style>
                   <tr>
                     <th id="name" weight="20">
-                      ${i18nString29(UIStrings29.name)}
+                      ${i18nString30(UIStrings30.name)}
                     </th>
-                    <th id="status" weight="20">${i18nString29(UIStrings29.status)}</th>
-                            ${!input.selectedCall ? html20`
-                    <th id="input" weight="30">${i18nString29(UIStrings29.input)}</th>
-                    <th id="output" weight="30">${i18nString29(UIStrings29.output)}</th>
+                    <th id="status" weight="20">${i18nString30(UIStrings30.status)}</th>
+                            ${!input.selectedCall ? html21`
+                    <th id="input" weight="30">${i18nString30(UIStrings30.input)}</th>
+                    <th id="output" weight="30">${i18nString30(UIStrings30.output)}</th>
                             ` : nothing13}
                   </tr>
                       ${Directives8.repeat(
     input.toolCalls,
     (call) => call.invocationId + "-" + (call.result?.status ?? ""),
-    (call) => html20`
+    (call) => html21`
                     <tr class=${Directives8.classMap({
       "status-error": call.result?.status === WebMCP.InvocationStatus.Error,
       "status-cancelled": call.result?.status === WebMCP.InvocationStatus.Canceled,
       selected: call === input.selectedCall
-    })} jslog=${VisualLogging20.tableRow().track({ click: true })} @click=${() => input.onCallSelect(call)}
+    })} jslog=${VisualLogging21.tableRow().track({ click: true })} @click=${() => input.onCallSelect(call)}
                         @contextmenu=${(e) => {
       const contextMenu = e.detail;
       const isUnregistered = !input.tools.includes(call.tool);
-      contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.revealTool), () => {
+      contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.revealTool), () => {
         input.onRevealTool(call.tool);
       }, { jslogContext: "webmcp.reveal-tool", disabled: isUnregistered });
-      contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.editAndRun), () => {
+      contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.editAndRun), () => {
         const payload = parsePayload(call.input);
         input.onRevealTool(call.tool, payload.valueObject);
       }, { jslogContext: "webmcp.edit-and-run", disabled: isUnregistered });
       if (call.result === void 0) {
-        contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.cancelCall), () => {
+        contextMenu.defaultSection().appendItem(i18nString30(UIStrings30.cancelCall), () => {
           call.cancel();
         }, { jslogContext: "webmcp.cancel-call" });
       }
@@ -17623,9 +17728,9 @@ var DEFAULT_VIEW15 = (input, output, target) => {
                         <div class="name-cell">
                           <span>${call.tool.name}</span>
                           <button class="run-tool-action-button"
-                                  title=${i18nString29(UIStrings29.editAndRun)}
-                                  aria-label=${i18nString29(UIStrings29.editAndRun)}
-                                  jslog=${VisualLogging20.action("edit-and-run").track({ click: true })}
+                                  title=${i18nString30(UIStrings30.editAndRun)}
+                                  aria-label=${i18nString30(UIStrings30.editAndRun)}
+                                  jslog=${VisualLogging21.action("edit-and-run").track({ click: true })}
                                   @click=${(e) => {
       e.stopPropagation();
       const payload = parsePayload(call.input);
@@ -17643,11 +17748,11 @@ var DEFAULT_VIEW15 = (input, output, target) => {
       input.onCallSelect(call, "webmcp.call-outputs" /* OUTPUT */);
     }}>
                         <div class="status-cell">
-                          ${iconName(call) ? html20`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
+                          ${iconName(call) ? html21`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
                           <span>${statusString(call)}</span>
                         </div>
                       </td>
-                      ${!input.selectedCall ? html20`
+                      ${!input.selectedCall ? html21`
                         <td @click=${(e) => {
       e.stopPropagation();
       input.onCallSelect(call, "webmcp.call-inputs" /* INPUT */);
@@ -17673,25 +17778,25 @@ var DEFAULT_VIEW15 = (input, output, target) => {
                   .size=${Buttons11.Button.Size.SMALL}
                   .variant=${Buttons11.Button.Variant.ICON}
                   .jslogContext=${"close"}
-                  title=${i18nString29(UIStrings29.close)}
+                  title=${i18nString30(UIStrings30.close)}
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
                 <devtools-widget
                   id=${"webmcp.tool-details" /* DETAILS */}
                   ?selected=${Directives8.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
-                  label=${i18nString29(UIStrings29.toolDetails)}
+                  label=${i18nString30(UIStrings30.toolDetails)}
                   ${widget12(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-inputs" /* INPUT */}
                   ?selected=${Directives8.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
-                  label=${i18nString29(UIStrings29.input)}
+                  label=${i18nString30(UIStrings30.input)}
                   ${widget12(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
                   id=${"webmcp.call-outputs" /* OUTPUT */}
                   ?selected=${Directives8.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
-                  label=${i18nString29(UIStrings29.output)}
+                  label=${i18nString30(UIStrings30.output)}
                   ${widget12(PayloadWidget, {
     valueObject: input.selectedCall?.result?.output,
     errorText: input.selectedCall?.result?.errorText,
@@ -17701,30 +17806,30 @@ var DEFAULT_VIEW15 = (input, output, target) => {
               </devtools-tabbed-pane>
             </div>
           </devtools-split-view>
-          <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging20.toolbar("summary")}>
+          <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging21.toolbar("summary")}>
             <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
-              <span class="toolbar-text">${i18nString29(UIStrings29.totalCalls, { PH1: input.toolCalls.length })}</span>
+              <span class="toolbar-text">${i18nString30(UIStrings30.totalCalls, { PH1: input.toolCalls.length })}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text status-error-text">${i18nString29(
-    UIStrings29.failed,
+              <span class="toolbar-text status-error-text">${i18nString30(
+    UIStrings30.failed,
     { PH1: toolStats.totals.get(WebMCP.InvocationStatus.Error) ?? 0 }
   )}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text status-cancelled-text">${i18nString29(
-    UIStrings29.canceledCount,
+              <span class="toolbar-text status-cancelled-text">${i18nString30(
+    UIStrings30.canceledCount,
     { PH1: toolStats.totals.get(WebMCP.InvocationStatus.Canceled) ?? 0 }
   )}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text">${i18nString29(
-    UIStrings29.inProgressCount,
+              <span class="toolbar-text">${i18nString30(
+    UIStrings30.inProgressCount,
     { PH1: toolStats.totals.get(void 0) ?? 0 }
   )}</span>
             </devtools-toolbar>
           </div>
-        ` : html20`
-        ${UI29.Widget.widget(UI29.EmptyWidget.EmptyWidget, {
-    header: i18nString29(UIStrings29.noCallsPlaceholderTitle),
-    text: i18nString29(UIStrings29.noCallsPlaceholder)
+        ` : html21`
+        ${UI30.Widget.widget(UI30.EmptyWidget.EmptyWidget, {
+    header: i18nString30(UIStrings30.noCallsPlaceholderTitle),
+    text: i18nString30(UIStrings30.noCallsPlaceholder)
   })}
         `}
       </div>
@@ -17733,31 +17838,31 @@ var DEFAULT_VIEW15 = (input, output, target) => {
                            sidebar-position="second"
                            name="webmcp-details-split-view"
                            show=${input.selectedTool ? "both" : "main"}>
-        <div slot="main" class="tool-list" jslog=${VisualLogging20.section("tool-list")}>
-          <div class="section-title">${i18nString29(UIStrings29.toolRegistry)}</div>
-          ${tools.length === 0 ? html20`
-          ${UI29.Widget.widget(UI29.EmptyWidget.EmptyWidget, {
-    header: i18nString29(UIStrings29.noToolsPlaceholderTitle),
-    text: i18nString29(UIStrings29.noToolsPlaceholder)
+        <div slot="main" class="tool-list" jslog=${VisualLogging21.section("tool-list")}>
+          <div class="section-title">${i18nString30(UIStrings30.toolRegistry)}</div>
+          ${tools.length === 0 ? html21`
+          ${UI30.Widget.widget(UI30.EmptyWidget.EmptyWidget, {
+    header: i18nString30(UIStrings30.noToolsPlaceholderTitle),
+    text: i18nString30(UIStrings30.noToolsPlaceholder)
   })}
-          ` : html20`
+          ` : html21`
             <devtools-list class="square-corners">
-              ${tools.map((tool) => html20`
+              ${tools.map((tool) => html21`
                     <div class=${Directives8.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
-                         jslog=${VisualLogging20.item().track({ click: true }).context("tool")}
+                         jslog=${VisualLogging21.item().track({ click: true }).context("tool")}
                          @click=${() => input.onToolSelect(tool)}
                          @contextmenu=${(e) => onToolContextMenu(e, tool)}>
                     <div class="tool-name-container">
                       <div class="tool-name source-code">${tool.name}</div>
                     <div class="tool-icons">
-                      ${getIconGroupsFromStats(toolStats.stats.get(tool)).map((group) => html20`
+                      ${getIconGroupsFromStats(toolStats.stats.get(tool)).map((group) => html21`
                         <icon-button
                           .data=${{
     groups: [group],
     compact: false,
     clickHandler: () => onIconClick(tool.name, group.status)
   }}
-                          jslog=${VisualLogging20.action("filter-by-status").track({ click: true })}
+                          jslog=${VisualLogging21.action("filter-by-status").track({ click: true })}
                           @click=${(e) => e.stopPropagation()}></icon-button>`)}
                     </div>
                     </div>
@@ -17766,33 +17871,33 @@ var DEFAULT_VIEW15 = (input, output, target) => {
             </devtools-list>
           `}
         </div>
-        <div slot="sidebar" class="tool-details" jslog=${VisualLogging20.section("tool-details")}>
+        <div slot="sidebar" class="tool-details" jslog=${VisualLogging21.section("tool-details")}>
           <div class="section-title">
             <devtools-button
               .iconName=${"cross"}
               .size=${Buttons11.Button.Size.SMALL}
               .variant=${Buttons11.Button.Variant.ICON}
               .jslogContext=${"close"}
-              title=${i18nString29(UIStrings29.close)}
+              title=${i18nString30(UIStrings30.close)}
               @click=${() => input.onToolSelect(null)}
             ></devtools-button>
-            <span>${i18nString29(UIStrings29.toolDetails)}</span>
+            <span>${i18nString30(UIStrings30.toolDetails)}</span>
           </div>
-          ${input.selectedTool ? html20`
+          ${input.selectedTool ? html21`
             <div class="sidebar-tool-details">
               ${widget12(ToolDetailsWidget, { tool: input.selectedTool.tool })}
             </div>
             <div class="section-title">
-              <span>${i18nString29(UIStrings29.runTool)}</span>
+              <span>${i18nString30(UIStrings30.runTool)}</span>
               <div style="flex: auto;"></div>
               <devtools-button
                 .iconName=${"import"}
                 .size=${Buttons11.Button.Size.SMALL}
                 .variant=${Buttons11.Button.Variant.TEXT}
                 .jslogContext=${"paste"}
-                title=${i18nString29(UIStrings29.pasteTooltip)}
+                title=${i18nString30(UIStrings30.pasteTooltip)}
                 @click=${input.onPaste}
-              >${i18nString29(UIStrings29.paste)}</devtools-button>
+              >${i18nString30(UIStrings30.paste)}</devtools-button>
             </div>
             <devtools-widget
               class="json-editor-widget"
@@ -17806,7 +17911,7 @@ var DEFAULT_VIEW15 = (input, output, target) => {
       parameters: input.selectedTool.parameters || {}
     }
   })}
-              ${UI29.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, (e) => {
+              ${UI30.Widget.widgetRef(ProtocolMonitor.JSONEditor.JSONEditor, (e) => {
     editorWidget = e;
   })}
               @submiteditor=${(e) => input.onRunTool({ data: e.detail })}
@@ -17826,14 +17931,14 @@ var DEFAULT_VIEW15 = (input, output, target) => {
         }
       });
     }
-  }}>${i18nString29(UIStrings29.runTool)}</devtools-button>
+  }}>${i18nString30(UIStrings30.runTool)}</devtools-button>
           ` : nothing13}
         </div>
       </devtools-split-view>
     </devtools-split-view>
   `, target);
 };
-var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
+var WebMCPView = class _WebMCPView extends UI30.Widget.VBox {
   #view;
   #selectedTool = null;
   #selectedCall = null;
@@ -17845,7 +17950,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
   #filterButtons;
   static createFilterButtons(onToolTypesClick, onStatusTypesClick) {
     const createButton = (label, onContextMenu, jsLogContext) => {
-      const button = new UI29.Toolbar.ToolbarMenuButton(
+      const button = new UI30.Toolbar.ToolbarMenuButton(
         onContextMenu,
         /* isIconDropdown=*/
         false,
@@ -17872,11 +17977,11 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
       return { button, setCount };
     };
     return {
-      toolTypes: createButton(i18nString29(UIStrings29.toolTypes), onToolTypesClick, "webmcp.tool-types"),
-      statusTypes: createButton(i18nString29(UIStrings29.statusTypes), onStatusTypesClick, "webmcp.status-types")
+      toolTypes: createButton(i18nString30(UIStrings30.toolTypes), onToolTypesClick, "webmcp.tool-types"),
+      statusTypes: createButton(i18nString30(UIStrings30.statusTypes), onStatusTypesClick, "webmcp.status-types")
     };
   }
-  constructor(target, view = DEFAULT_VIEW15) {
+  constructor(target, view = DEFAULT_VIEW16) {
     super(target);
     this.#view = view;
     this.#filterButtons = _WebMCPView.createFilterButtons(
@@ -17900,12 +18005,12 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
       this.#handleFilterChange({ ...this.#filterState, toolTypes: toolTypesToPass });
     };
     contextMenu.defaultSection().appendCheckboxItem(
-      i18nString29(UIStrings29.imperative),
+      i18nString30(UIStrings30.imperative),
       () => toggle5("imperative"),
       { checked: this.#filterState.toolTypes?.imperative ?? false, jslogContext: "webmcp.imperative" }
     );
     contextMenu.defaultSection().appendCheckboxItem(
-      i18nString29(UIStrings29.declarative),
+      i18nString30(UIStrings30.declarative),
       () => toggle5("declarative"),
       { checked: this.#filterState.toolTypes?.declarative ?? false, jslogContext: "webmcp.declarative" }
     );
@@ -17921,22 +18026,22 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
       this.#handleFilterChange({ ...this.#filterState, statusTypes: statusTypesToPass });
     };
     contextMenu.defaultSection().appendCheckboxItem(
-      i18nString29(UIStrings29.completed),
+      i18nString30(UIStrings30.completed),
       () => toggle5("completed"),
       { checked: this.#filterState.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" }
     );
     contextMenu.defaultSection().appendCheckboxItem(
-      i18nString29(UIStrings29.error),
+      i18nString30(UIStrings30.error),
       () => toggle5("error"),
       { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" }
     );
     contextMenu.defaultSection().appendCheckboxItem(
-      i18nString29(UIStrings29.canceled),
+      i18nString30(UIStrings30.canceled),
       () => toggle5("canceled"),
       { checked: this.#filterState.statusTypes?.["canceled"] ?? false, jslogContext: "webmcp.canceled" }
     );
     contextMenu.defaultSection().appendCheckboxItem(
-      i18nString29(UIStrings29.pending),
+      i18nString30(UIStrings30.pending),
       () => toggle5("pending"),
       { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" }
     );
@@ -18061,7 +18166,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
 };
 var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   if (input.valueObject === void 0 && input.valueString === void 0 && !input.errorText && !input.symbolizedError) {
-    render21(nothing13, target);
+    render22(nothing13, target);
     return;
   }
   const isParsable = input.valueObject !== void 0;
@@ -18072,7 +18177,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
       propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
     objectTree.expanded = true;
-    return html20`<devtools-tree .template=${html20`
+    return html21`<devtools-tree .template=${html21`
           <style>${ObjectUI2.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI2.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <ul role="tree">
@@ -18083,22 +18188,22 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
           </ul>
         `}></devtools-tree>`;
   };
-  const createSourceText = (text) => html20`<div class="payload-value source-code">${text}</div>`;
-  const createErrorText = (text) => html20`<div class="payload-value source-code error-text">${text}</div>`;
+  const createSourceText = (text) => html21`<div class="payload-value source-code">${text}</div>`;
+  const createErrorText = (text) => html21`<div class="payload-value source-code error-text">${text}</div>`;
   const createException = (error) => {
     if (!error) {
       return nothing13;
     }
-    return html20`
+    return html21`
       <div class="payload-value source-code error-text">
         <devtools-widget
-          ${UI29.Widget.widget(Console2.SymbolizedErrorWidget.SymbolizedErrorWidget, { error })}
+          ${UI30.Widget.widget(Console2.SymbolizedErrorWidget.SymbolizedErrorWidget, { error })}
         ></devtools-widget>
       </div>
     `;
   };
-  render21(
-    html20`
+  render22(
+    html21`
     <style>${webMCPView_css_default}</style>
     <style>${symbolizedErrorWidget_css_default}</style>
     <div class="call-payload-view">
@@ -18110,7 +18215,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
     target
   );
 };
-var PayloadWidget = class extends UI29.Widget.Widget {
+var PayloadWidget = class extends UI30.Widget.Widget {
   #valueObject;
   #valueString;
   #errorText;
@@ -18177,34 +18282,34 @@ var PayloadWidget = class extends UI29.Widget.Widget {
 };
 var TOOL_DETAILS_VIEW = (input, output, target) => {
   if (!input.tool) {
-    render21(nothing13, target);
+    render22(nothing13, target);
     return;
   }
   const tool = input.tool;
   const origin = input.origin;
   const flags = tool.flags;
-  const formatter = new Intl.ListFormat(i18n57.DevToolsLocale.DevToolsLocale.instance().locale, {
+  const formatter = new Intl.ListFormat(i18n59.DevToolsLocale.DevToolsLocale.instance().locale, {
     style: "short",
     type: "unit"
   });
   const formattedFlags = formatter.format(flags);
-  render21(html20`
+  render22(html21`
     <style>${webMCPView_css_default}</style>
     <div class="tool-details-grid">
-      <div class="label">${i18nString29(UIStrings29.name)}</div>
+      <div class="label">${i18nString30(UIStrings30.name)}</div>
       <div class="value source-code">${tool.name}</div>
-      <div class="label">${i18nString29(UIStrings29.description)}</div>
+      <div class="label">${i18nString30(UIStrings30.description)}</div>
       <div class="value">${tool.description}</div>
-      ${flags.length > 0 ? html20`
-      <div class="label">${i18nString29(UIStrings29.flags)}</div>
+      ${flags.length > 0 ? html21`
+      <div class="label">${i18nString30(UIStrings30.flags)}</div>
       <div class="value">${formattedFlags}</div>
       ` : nothing13}
-      ${tool.frame ? html20`
-      <div class="label">${i18nString29(UIStrings29.frame)}</div>
+      ${tool.frame ? html21`
+      <div class="label">${i18nString30(UIStrings30.frame)}</div>
       <div class="value">${Components4.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
       ` : nothing13}
-      ${origin instanceof SDK23.DOMModel.DOMNode ? html20`
-      <div class="label">${i18nString29(UIStrings29.origin)}</div>
+      ${origin instanceof SDK23.DOMModel.DOMNode ? html21`
+      <div class="label">${i18nString30(UIStrings30.origin)}</div>
       <div class="value tool-origin-container">
         <span
             class="node-text-container source-code tool-origin-node"
@@ -18219,16 +18324,16 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
           </devtools-node-text>
         </span>
         <devtools-button class="show-element"
-           .title=${i18nString29(UIStrings29.viewInElementsPanel)}
-           aria-label=${i18nString29(UIStrings29.viewInElementsPanel)}
+           .title=${i18nString30(UIStrings30.viewInElementsPanel)}
+           aria-label=${i18nString30(UIStrings30.viewInElementsPanel)}
            .iconName=${"select-element"}
            .jslogContext=${"elements.select-element"}
            .size=${Buttons11.Button.Size.SMALL}
            .variant=${Buttons11.Button.Variant.ICON}
            @click=${() => input.revealNode(origin)}
            ></devtools-button>
-      </div>` : origin ? html20`
-      <div class="label">${i18nString29(UIStrings29.origin)}</div>
+      </div>` : origin ? html21`
+      <div class="label">${i18nString30(UIStrings30.origin)}</div>
       <div class="value stack-trace">
         ${widget12(
     Components4.JSPresentationUtils.StackTracePreviewContent,
@@ -18236,19 +18341,19 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
   )}
       </div>` : nothing13}
     </div>
-    ${input.isUnregistered ? html20`
+    ${input.isUnregistered ? html21`
       <div class="call-to-action">
         <div class="call-to-action-body">
           <div class="explanation">
             <devtools-icon class="inline-icon medium" name="warning-filled"></devtools-icon>
-            ${i18nString29(UIStrings29.toolUnregisteredNotice)}
+            ${i18nString30(UIStrings30.toolUnregisteredNotice)}
           </div>
         </div>
       </div>
     ` : nothing13}
   `, target);
 };
-var ToolDetailsWidget = class extends UI29.Widget.Widget {
+var ToolDetailsWidget = class extends UI30.Widget.Widget {
   #tool = null;
   #origin;
   #isUnregistered = false;
@@ -18525,10 +18630,10 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
     super(storagePanel, "WebMCP", false, "web-mcp");
     const icon = createIcon9("document");
     this.setLeadingIcons([icon]);
-    const newBadge = UI30.UIUtils.maybeCreateNewBadge("web-mcp");
+    const newBadge = UI31.UIUtils.maybeCreateNewBadge("web-mcp");
     if (newBadge) {
       const fragment = document.createDocumentFragment();
-      render22(html21`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
+      render23(html22`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
       this.listItemElement.appendChild(fragment);
     }
   }
@@ -18541,13 +18646,13 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
       this.#view = new WebMCPView();
     }
     this.showView(this.#view);
-    UI30.UIUserMetrics.UIUserMetrics.instance().panelShown("web-mcp");
+    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("web-mcp");
     return false;
   }
 };
 
 // ../../front_end/panels/application/ApplicationPanelSidebar.ts
-var UIStrings30 = {
+var UIStrings31 = {
   /**
    * @description Context menu item to start a chat with AI in the Application panel sidebar.
    */
@@ -18757,10 +18862,14 @@ var UIStrings30 = {
   /**
    * @description Informational text describing a frame's resources in the Application panel.
    */
-  resourceDescription: "On this page you can view the frame\u2019s resources"
+  resourceDescription: "On this page you can view the frame\u2019s resources",
+  /**
+   * @description Label for the Private Verification Tokens tree element in the Application panel sidebar.
+   */
+  privateVerificationTokens: "Private verification tokens"
 };
-var str_30 = i18n59.i18n.registerUIStrings("panels/application/ApplicationPanelSidebar.ts", UIStrings30);
-var i18nString30 = i18n59.i18n.getLocalizedString.bind(void 0, str_30);
+var str_31 = i18n61.i18n.registerUIStrings("panels/application/ApplicationPanelSidebar.ts", UIStrings31);
+var i18nString31 = i18n61.i18n.getLocalizedString.bind(void 0, str_31);
 function assertNotMainTarget(targetId) {
   if (targetId === "main") {
     throw new Error("Unexpected main target id");
@@ -18769,18 +18878,18 @@ function assertNotMainTarget(targetId) {
 function nameForExtensionStorageArea(storageArea) {
   switch (storageArea) {
     case Extensions.StorageArea.Session:
-      return i18nString30(UIStrings30.extensionSessionStorage);
+      return i18nString31(UIStrings31.extensionSessionStorage);
     case Extensions.StorageArea.Local:
-      return i18nString30(UIStrings30.extensionLocalStorage);
+      return i18nString31(UIStrings31.extensionLocalStorage);
     case Extensions.StorageArea.Sync:
-      return i18nString30(UIStrings30.extensionSyncStorage);
+      return i18nString31(UIStrings31.extensionSyncStorage);
     case Extensions.StorageArea.Managed:
-      return i18nString30(UIStrings30.extensionManagedStorage);
+      return i18nString31(UIStrings31.extensionManagedStorage);
     default:
       throw new Error(`Unrecognized storage type: ${storageArea}`);
   }
 }
-var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
+var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
   panel;
   sidebarTree;
   applicationTreeElement;
@@ -18791,6 +18900,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
   indexedDBListTreeElement;
   cookieListTreeElement;
   trustTokensTreeElement;
+  privateVerificationTokensTreeElement;
   cacheStorageListTreeElement;
   storageBucketsTreeElement;
   backForwardCacheListTreeElement;
@@ -18821,18 +18931,18 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
   constructor(panel) {
     super();
     this.panel = panel;
-    this.sidebarTree = new UI31.TreeOutline.TreeOutlineInShadow(UI31.TreeOutline.TreeVariant.NAVIGATION_TREE);
+    this.sidebarTree = new UI32.TreeOutline.TreeOutlineInShadow(UI32.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.sidebarTree.registerRequiredCSS(resourcesSidebar_css_default);
     this.sidebarTree.element.classList.add("resources-sidebar");
     this.sidebarTree.setHideOverflow(true);
     this.sidebarTree.element.classList.add("filter-all");
-    this.sidebarTree.addEventListener(UI31.TreeOutline.Events.ElementAttached, this.treeElementAdded, this);
+    this.sidebarTree.addEventListener(UI32.TreeOutline.Events.ElementAttached, this.treeElementAdded, this);
     this.contentElement.appendChild(this.sidebarTree.element);
-    const applicationSectionTitle = i18nString30(UIStrings30.application);
+    const applicationSectionTitle = i18nString31(UIStrings31.application);
     this.applicationTreeElement = this.addSidebarSection(applicationSectionTitle, "application");
     const applicationPanelSidebar = this.applicationTreeElement.treeOutline?.contentElement;
     if (applicationPanelSidebar) {
-      applicationPanelSidebar.ariaLabel = i18nString30(UIStrings30.applicationSidebarPanel);
+      applicationPanelSidebar.ariaLabel = i18nString31(UIStrings31.applicationSidebarPanel);
     }
     const manifestTreeElement = new AppManifestTreeElement(panel);
     this.applicationTreeElement.appendChild(manifestTreeElement);
@@ -18846,12 +18956,12 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     this.webMcpTreeElement = new WebMCPTreeElement(panel);
     this.applicationTreeElement.appendChild(this.webMcpTreeElement);
     if (Root2.Runtime.hostConfig.devToolsAdsPanel?.enabled) {
-      const adsTreeElement = new ApplicationPanelTreeElement(panel, i18nString30(UIStrings30.ads), false, "ads");
+      const adsTreeElement = new ApplicationPanelTreeElement(panel, i18nString31(UIStrings31.ads), false, "ads");
       adsTreeElement.listItemElement.classList.add("ads-tree-element");
       const icon = createIcon10("ads");
       adsTreeElement.setLeadingIcons([icon]);
       const experimentIcon = createIcon10("experiment", "medium");
-      UI31.Tooltip.Tooltip.install(experimentIcon, i18nString30(UIStrings30.experimental));
+      UI32.Tooltip.Tooltip.install(experimentIcon, i18nString31(UIStrings31.experimental));
       adsTreeElement.setTrailingIcons([experimentIcon]);
       adsTreeElement.itemURL = "ads://";
       let adsView;
@@ -18861,19 +18971,19 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
           adsView = new ApplicationComponents13.AdsView.AdsView();
         }
         adsTreeElement.showView(adsView);
-        UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("ads");
+        UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("ads");
         return false;
       };
       this.adsTreeElement = adsTreeElement;
       this.applicationTreeElement.appendChild(this.adsTreeElement);
     }
-    const storageSectionTitle = i18nString30(UIStrings30.storage);
+    const storageSectionTitle = i18nString31(UIStrings31.storage);
     const storageTreeElement = this.addSidebarSection(storageSectionTitle, "storage");
     this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
       panel,
-      i18nString30(UIStrings30.localStorage),
-      i18nString30(UIStrings30.noLocalStorage),
-      i18nString30(UIStrings30.localStorageDescription),
+      i18nString31(UIStrings31.localStorage),
+      i18nString31(UIStrings31.noLocalStorage),
+      i18nString31(UIStrings31.localStorageDescription),
       "local-storage"
     );
     this.localStorageListTreeElement.setLink(
@@ -18884,9 +18994,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
       panel,
-      i18nString30(UIStrings30.sessionStorage),
-      i18nString30(UIStrings30.noSessionStorage),
-      i18nString30(UIStrings30.sessionStorageDescription),
+      i18nString31(UIStrings31.sessionStorage),
+      i18nString31(UIStrings31.noSessionStorage),
+      i18nString31(UIStrings31.sessionStorageDescription),
       "session-storage"
     );
     this.sessionStorageListTreeElement.setLink(
@@ -18897,9 +19007,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
     this.extensionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
       panel,
-      i18nString30(UIStrings30.extensionStorage),
-      i18nString30(UIStrings30.noExtensionStorage),
-      i18nString30(UIStrings30.extensionStorageDescription),
+      i18nString31(UIStrings31.extensionStorage),
+      i18nString31(UIStrings31.noExtensionStorage),
+      i18nString31(UIStrings31.extensionStorageDescription),
       "extension-storage"
     );
     this.extensionStorageListTreeElement.setLink(
@@ -18915,9 +19025,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(
       panel,
-      i18nString30(UIStrings30.cookies),
-      i18nString30(UIStrings30.noCookies),
-      i18nString30(UIStrings30.cookiesDescription),
+      i18nString31(UIStrings31.cookies),
+      i18nString31(UIStrings31.noCookies),
+      i18nString31(UIStrings31.cookiesDescription),
       "cookies"
     );
     this.cookieListTreeElement.setLink(
@@ -18928,11 +19038,34 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     storageTreeElement.appendChild(this.cookieListTreeElement);
     this.trustTokensTreeElement = new TrustTokensTreeElement(panel);
     storageTreeElement.appendChild(this.trustTokensTreeElement);
+    if (Root2.Runtime.hostConfig.devToolsPrivateVerificationTokens?.enabled) {
+      const privateVerificationTokensTreeElement = new ApplicationPanelTreeElement(
+        panel,
+        i18nString31(UIStrings31.privateVerificationTokens),
+        /* expandable= */
+        false,
+        "private-verification-tokens"
+      );
+      privateVerificationTokensTreeElement.setLeadingIcons([createIcon10("database")]);
+      privateVerificationTokensTreeElement.itemURL = Platform11.DevToolsPath.urlString`privateVerificationTokens://`;
+      let pvtView;
+      privateVerificationTokensTreeElement.onselect = (selectedByUser) => {
+        ApplicationPanelTreeElement.prototype.onselect.call(privateVerificationTokensTreeElement, selectedByUser);
+        if (!pvtView) {
+          pvtView = new PrivateVerificationTokensView();
+        }
+        privateVerificationTokensTreeElement.showView(pvtView);
+        UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("private-verification-tokens");
+        return false;
+      };
+      this.privateVerificationTokensTreeElement = privateVerificationTokensTreeElement;
+      storageTreeElement.appendChild(this.privateVerificationTokensTreeElement);
+    }
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     storageTreeElement.appendChild(this.cacheStorageListTreeElement);
     this.storageBucketsTreeElement = new StorageBucketsTreeParentElement(panel);
     storageTreeElement.appendChild(this.storageBucketsTreeElement);
-    const backgroundServiceSectionTitle = i18nString30(UIStrings30.backgroundServices);
+    const backgroundServiceSectionTitle = i18nString31(UIStrings31.backgroundServices);
     const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle, "background-services");
     this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
     backgroundServiceTreeElement.appendChild(this.backForwardCacheListTreeElement);
@@ -18960,7 +19093,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       this.deviceBoundSessionsRootTreeElement = new RootTreeElement(panel, this.deviceBoundSessionsModel);
       backgroundServiceTreeElement.appendChild(this.deviceBoundSessionsRootTreeElement);
     }
-    const resourcesSectionTitle = i18nString30(UIStrings30.frames);
+    const resourcesSectionTitle = i18nString31(UIStrings31.frames);
     const resourcesTreeElement = this.addSidebarSection(resourcesSectionTitle, "frames");
     this.resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
     this.domStorageTreeElements = /* @__PURE__ */ new Map();
@@ -19017,13 +19150,13 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     this.contentElement.style.contain = "layout style";
   }
   addSidebarSection(title, jslogContext) {
-    const treeElement = new UI31.TreeOutline.TreeElement(title, true, jslogContext);
+    const treeElement = new UI32.TreeOutline.TreeElement(title, true, jslogContext);
     treeElement.listItemElement.classList.add("storage-group-list-item");
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
     this.sidebarTree.appendChild(treeElement);
-    UI31.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
-    UI31.ARIAUtils.setLabel(treeElement.childrenListElement, title);
+    UI32.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
+    UI32.ARIAUtils.setLabel(treeElement.childrenListElement, title);
     return treeElement;
   }
   targetAdded(target) {
@@ -19171,7 +19304,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       if (selectedElement instanceof ExpandableApplicationPanelTreeElement) {
         const item4 = selectedElement.createGenericStorageAiContext();
         if (item4) {
-          UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item4);
+          UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item4);
         }
       }
     }
@@ -19343,11 +19476,11 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     if (!nodeUnderMouse) {
       return;
     }
-    const listNode = UI31.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, "li");
+    const listNode = UI32.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, "li");
     if (!listNode) {
       return;
     }
-    const element = UI31.TreeOutline.TreeElement.getTreeElementBylistItemNode(listNode);
+    const element = UI32.TreeOutline.TreeElement.getTreeElementBylistItemNode(listNode);
     if (this.previousHoveredElement === element) {
       return;
     }
@@ -19435,15 +19568,15 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
       this.view.model = this.model;
     }
     this.showView(this.view);
-    UI31.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("background_service_" + this.serviceName);
+    UI32.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("background_service_" + this.serviceName);
     return false;
   }
 };
 var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
-    super(storagePanel, i18n59.i18n.lockedString("Service workers"), false, "service-workers");
+    super(storagePanel, i18n61.i18n.lockedString("Service workers"), false, "service-workers");
     const icon = createIcon10("gears");
     this.setLeadingIcons([icon]);
   }
@@ -19456,19 +19589,19 @@ var ServiceWorkersTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new ServiceWorkersView();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("service-workers");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("service-workers");
     return false;
   }
 };
 var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
-    super(storagePanel, i18nString30(UIStrings30.manifest), true, "manifest");
+    super(storagePanel, i18nString31(UIStrings31.manifest), true, "manifest");
     const icon = createIcon10("document");
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     this.view = new AppManifestView();
-    UI31.ARIAUtils.setLabel(this.listItemElement, i18nString30(UIStrings30.onInvokeManifestAlert));
+    UI32.ARIAUtils.setLabel(this.listItemElement, i18nString31(UIStrings31.onInvokeManifestAlert));
     const handleExpansion = (hasManifest) => {
       this.setExpandable(hasManifest);
     };
@@ -19480,7 +19613,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("app-manifest");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("app-manifest");
     return false;
   }
   generateChildren() {
@@ -19505,16 +19638,16 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
           event.consume(true);
         }
       });
-      UI31.ARIAUtils.setLabel(
+      UI32.ARIAUtils.setLabel(
         child.listItemElement,
-        i18nString30(UIStrings30.beforeInvokeAlert, { PH1: child.listItemElement.title })
+        i18nString31(UIStrings31.beforeInvokeAlert, { PH1: child.listItemElement.title })
       );
       this.appendChild(child);
     }
   }
   onInvoke() {
     this.view.getManifestElement().scrollIntoView();
-    UI31.ARIAUtils.LiveAnnouncer.alert(i18nString30(UIStrings30.onInvokeAlert, { PH1: this.listItemElement.title }));
+    UI32.ARIAUtils.LiveAnnouncer.alert(i18nString31(UIStrings31.onInvokeAlert, { PH1: this.listItemElement.title }));
   }
 };
 var SubAppsTreeElement = class extends ApplicationPanelTreeElement {
@@ -19523,7 +19656,7 @@ var SubAppsTreeElement = class extends ApplicationPanelTreeElement {
   #isSubApp = false;
   #latestUpdate;
   constructor(storagePanel) {
-    super(storagePanel, i18nString30(UIStrings30.subApps), false, "sub-apps");
+    super(storagePanel, i18nString31(UIStrings31.subApps), false, "sub-apps");
     const icon = createIcon10("table");
     this.setLeadingIcons([icon]);
     this.hidden = true;
@@ -19539,7 +19672,7 @@ var SubAppsTreeElement = class extends ApplicationPanelTreeElement {
     this.#view.subApps = this.#subApps;
     this.#view.isSiblingSubApps = this.#isSubApp;
     this.showView(this.#view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("sub-apps");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("sub-apps");
     return false;
   }
   /**
@@ -19577,9 +19710,9 @@ var SubAppsTreeElement = class extends ApplicationPanelTreeElement {
     this.#subApps = subApps;
     this.#isSubApp = isSubApp;
     this.hidden = subApps.length === 0;
-    const title = isSubApp ? i18nString30(UIStrings30.siblingSubApps) : i18nString30(UIStrings30.subApps);
+    const title = isSubApp ? i18nString31(UIStrings31.siblingSubApps) : i18nString31(UIStrings31.subApps);
     this.title = title;
-    UI31.ARIAUtils.setLabel(this.listItemElement, title);
+    UI32.ARIAUtils.setLabel(this.listItemElement, title);
     if (this.#view) {
       this.#view.subApps = this.#subApps;
       this.#view.isSiblingSubApps = this.#isSubApp;
@@ -19592,7 +19725,7 @@ var SubAppsTreeElement = class extends ApplicationPanelTreeElement {
 var StorageTreeElement = class extends ApplicationPanelTreeElement {
   view;
   constructor(storagePanel) {
-    super(storagePanel, i18nString30(UIStrings30.storage), false, "storage");
+    super(storagePanel, i18nString31(UIStrings31.storage), false, "storage");
     const icon = createIcon10("database");
     this.setLeadingIcons([icon]);
   }
@@ -19605,7 +19738,7 @@ var StorageTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new StorageView();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown(
       Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.storage]
     );
     return false;
@@ -19617,9 +19750,9 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   constructor(storagePanel, storageBucket) {
     super(
       storagePanel,
-      i18nString30(UIStrings30.indexeddb),
-      i18nString30(UIStrings30.noIndexeddb),
-      i18nString30(UIStrings30.indexeddbDescription),
+      i18nString31(UIStrings31.indexeddb),
+      i18nString31(UIStrings31.noIndexeddb),
+      i18nString31(UIStrings31.indexeddbDescription),
       "indexed-db"
     );
     const icon = createIcon10("database");
@@ -19681,9 +19814,9 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString30(UIStrings30.refreshIndexeddb),
+      i18nString31(UIStrings31.refreshIndexeddb),
       this.refreshIndexedDB.bind(this),
       { jslogContext: "refresh-indexeddb" }
     );
@@ -19775,9 +19908,9 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString30(UIStrings30.refreshIndexeddb),
+      i18nString31(UIStrings31.refreshIndexeddb),
       this.refreshIndexedDB.bind(this),
       { jslogContext: "refresh-indexeddb" }
     );
@@ -19822,9 +19955,9 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
   updateTooltip() {
     const version = this.database ? this.database.version : "-";
     if (Object.keys(this.idbObjectStoreTreeElements).length === 0) {
-      this.tooltip = i18nString30(UIStrings30.versionSEmpty, { PH1: version });
+      this.tooltip = i18nString31(UIStrings31.versionSEmpty, { PH1: version });
     } else {
-      this.tooltip = i18nString30(UIStrings30.versionS, { PH1: version });
+      this.tooltip = i18nString31(UIStrings31.versionS, { PH1: version });
     }
   }
   get selectable() {
@@ -19842,7 +19975,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDatabaseView(this.model, this.database);
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
     return false;
   }
   objectStoreRemoved(objectStoreName) {
@@ -19892,9 +20025,9 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString30(UIStrings30.clear),
+      i18nString31(UIStrings31.clear),
       this.clearObjectStore.bind(this),
       { jslogContext: "clear" }
     );
@@ -19953,9 +20086,9 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
   }
   updateTooltip() {
     const keyPathString = this.objectStore.keyPathString;
-    let tooltipString = keyPathString !== null ? i18nString30(UIStrings30.keyPathS, { PH1: keyPathString }) : "";
+    let tooltipString = keyPathString !== null ? i18nString31(UIStrings31.keyPathS, { PH1: keyPathString }) : "";
     if (this.objectStore.autoIncrement) {
-      tooltipString += "\n" + i18n59.i18n.lockedString("autoIncrement");
+      tooltipString += "\n" + i18n61.i18n.lockedString("autoIncrement");
     }
     this.tooltip = tooltipString;
   }
@@ -19965,7 +20098,7 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDataView(this.model, this.databaseId, this.objectStore, null, this.refreshObjectStore.bind(this));
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
     return false;
   }
   indexRemoved(indexName) {
@@ -20024,12 +20157,12 @@ var IDBIndexTreeElement = class extends ApplicationPanelTreeElement {
   updateTooltip() {
     const tooltipLines = [];
     const keyPathString = this.index.keyPathString;
-    tooltipLines.push(i18nString30(UIStrings30.keyPathS, { PH1: keyPathString }));
+    tooltipLines.push(i18nString31(UIStrings31.keyPathS, { PH1: keyPathString }));
     if (this.index.unique) {
-      tooltipLines.push(i18n59.i18n.lockedString("unique"));
+      tooltipLines.push(i18n61.i18n.lockedString("unique"));
     }
     if (this.index.multiEntry) {
-      tooltipLines.push(i18n59.i18n.lockedString("multiEntry"));
+      tooltipLines.push(i18n61.i18n.lockedString("multiEntry"));
     }
     this.tooltip = tooltipLines.join("\n");
   }
@@ -20039,7 +20172,7 @@ var IDBIndexTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new IDBDataView(this.model, this.databaseId, this.objectStore, this.index, this.refreshObjectStore);
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
     return false;
   }
   clear() {
@@ -20053,7 +20186,7 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, domStorage) {
     super(
       storagePanel,
-      domStorage.storageKey ? SDK24.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString30(UIStrings30.localFiles),
+      domStorage.storageKey ? SDK24.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString31(UIStrings31.localFiles),
       false,
       domStorage.isLocalStorage ? "local-storage-for-domain" : "session-storage-for-domain"
     );
@@ -20066,10 +20199,10 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("dom-storage");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("dom-storage");
     this.resourcesPanel.showDOMStorage(this.domStorage);
     const storageItem = this.#getStorageItem();
-    UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+    UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
     return false;
   }
   /**
@@ -20095,22 +20228,22 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString30(UIStrings30.clear),
+      i18nString31(UIStrings31.clear),
       () => this.domStorage.clear(),
       { jslogContext: "clear" }
     );
     const storageItem = this.#getStorageItem();
     if (storageItem) {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
-      if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action8 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      if (UI32.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+        const action8 = UI32.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString30(UIStrings30.startAChat));
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString31(UIStrings31.startAChat));
         submenu.defaultSection().appendItem(
-          i18nString30(UIStrings30.explainStorage),
+          i18nString31(UIStrings31.explainStorage),
           () => action8.execute({ prompt: "What is the purpose of this storage bucket?" }),
           { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".storage" }
         );
@@ -20141,7 +20274,7 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showExtensionStorage(this.extensionStorage);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("extension-storage");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("extension-storage");
     return false;
   }
   onattach() {
@@ -20149,9 +20282,9 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), true);
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString30(UIStrings30.clear),
+      i18nString31(UIStrings31.clear),
       () => this.extensionStorage.clear(),
       { jslogContext: "clear" }
     );
@@ -20174,10 +20307,10 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
   target;
   #cookieDomain;
   constructor(storagePanel, frame, cookieUrl) {
-    super(storagePanel, cookieUrl.securityOrigin() || i18nString30(UIStrings30.localFiles), false, "cookies-for-frame");
+    super(storagePanel, cookieUrl.securityOrigin() || i18nString31(UIStrings31.localFiles), false, "cookies-for-frame");
     this.target = frame.resourceTreeModel().target();
     this.#cookieDomain = cookieUrl.securityOrigin();
-    this.tooltip = i18nString30(UIStrings30.cookiesUsedByFramesFromS, { PH1: this.#cookieDomain });
+    this.tooltip = i18nString31(UIStrings31.cookiesUsedByFramesFromS, { PH1: this.#cookieDomain });
     const icon = createIcon10("cookie");
     this.setLeadingIcons([icon]);
   }
@@ -20208,22 +20341,22 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
     }
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-      i18nString30(UIStrings30.clear),
+      i18nString31(UIStrings31.clear),
       () => this.resourcesPanel.clearCookies(this.target, this.#cookieDomain),
       { jslogContext: "clear" }
     );
     const storageItem = this.#getStorageItem();
     if (storageItem) {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
-      if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
-        UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action8 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+      if (UI32.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+        const action8 = UI32.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action8.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString30(UIStrings30.startAChat));
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString31(UIStrings31.startAChat));
         submenu.defaultSection().appendItem(
-          i18nString30(UIStrings30.explainCookies),
+          i18nString31(UIStrings31.explainCookies),
           () => action8.execute({ prompt: "What is the purpose of these cookies?" }),
           { disabled: !action8.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
         );
@@ -20234,20 +20367,20 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this.target, this.#cookieDomain);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown(
       Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.cookies]
     );
     const storageItem = this.#getStorageItem();
-    UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
+    UI32.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
     return false;
   }
 };
-var StorageCategoryView = class extends UI31.Widget.VBox {
+var StorageCategoryView = class extends UI32.Widget.VBox {
   emptyWidget;
   constructor() {
     super();
     this.element.classList.add("storage-view");
-    this.emptyWidget = new UI31.EmptyWidget.EmptyWidget("", "");
+    this.emptyWidget = new UI32.EmptyWidget.EmptyWidget("", "");
     this.emptyWidget.show(this.element);
   }
   setText(text) {
@@ -20268,7 +20401,7 @@ var ResourcesSection = class {
   constructor(storagePanel, treeElement) {
     this.panel = storagePanel;
     this.treeElement = treeElement;
-    UI31.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
+    UI32.ARIAUtils.setLabel(this.treeElement.listItemNode, "Resources Section");
     this.treeElementForFrameId = /* @__PURE__ */ new Map();
     this.treeElementForTargetId = /* @__PURE__ */ new Map();
     const frameManager = SDK24.FrameManager.FrameManager.instance();
@@ -20518,7 +20651,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     this.invalidateChildren();
     if (this.title !== frame.displayName()) {
       this.title = frame.displayName();
-      UI31.ARIAUtils.setLabel(this.listItemElement, this.title);
+      UI32.ARIAUtils.setLabel(this.listItemElement, this.title);
       if (this.parent) {
         const parent = this.parent;
         parent.removeChild(this);
@@ -20560,7 +20693,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
       this.view = new FrameDetailsReportView();
       this.view.frame = this.frame;
     }
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-details");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-details");
     this.showView(this.view);
     this.listItemElement.classList.remove("hovered");
     SDK24.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK24.TargetManager.TargetManager.instance());
@@ -20588,7 +20721,7 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
         this.section.panel,
         resource.resourceType().category().title(),
         "",
-        i18nString30(UIStrings30.resourceDescription),
+        i18nString31(UIStrings31.resourceDescription),
         categoryName,
         categoryName === "Frames"
       );
@@ -20605,9 +20738,9 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
         this.section.panel,
-        i18nString30(UIStrings30.openedWindows),
+        i18nString31(UIStrings31.openedWindows),
         "",
-        i18nString30(UIStrings30.openedWindowsDescription),
+        i18nString31(UIStrings31.openedWindowsDescription),
         categoryKey
       );
       this.categoryElements.set(categoryKey, categoryElement);
@@ -20621,14 +20754,14 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
   }
   workerCreated(targetInfo) {
     const categoryKey = targetInfo.type === "service_worker" ? "service-workers" : "web-workers";
-    const categoryName = targetInfo.type === "service_worker" ? i18n59.i18n.lockedString("Service workers") : i18nString30(UIStrings30.webWorkers);
+    const categoryName = targetInfo.type === "service_worker" ? i18n61.i18n.lockedString("Service workers") : i18nString31(UIStrings31.webWorkers);
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
         this.section.panel,
         categoryName,
         "",
-        i18nString30(UIStrings30.workerDescription),
+        i18nString31(UIStrings31.workerDescription),
         categoryKey
       );
       this.categoryElements.set(categoryKey, categoryElement);
@@ -20686,7 +20819,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
   constructor(storagePanel, resource) {
     super(
       storagePanel,
-      resource.isGenerated ? i18nString30(UIStrings30.documentNotAvailable) : resource.displayName,
+      resource.isGenerated ? i18nString31(UIStrings31.documentNotAvailable) : resource.displayName,
       false,
       "frame-resource"
     );
@@ -20714,7 +20847,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
       if (view) {
         return view;
       }
-      return new UI31.EmptyWidget.EmptyWidget("", this.resource.url);
+      return new UI32.EmptyWidget.EmptyWidget("", this.resource.url);
     });
     return this.previewPromise;
   }
@@ -20723,18 +20856,21 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     if (this.resource.isGenerated) {
       this.panel.showCategoryView(
         "",
-        i18nString30(UIStrings30.documentNotAvailable),
-        i18nString30(UIStrings30.theContentOfThisDocumentHasBeen),
+        i18nString31(UIStrings31.documentNotAvailable),
+        i18nString31(UIStrings31.theContentOfThisDocumentHasBeen),
         null
       );
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-resource");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-resource");
     return false;
   }
   ondblclick(_event) {
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.resource.url);
+    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+      this.resource.url,
+      this.resource.frameId ?? void 0
+    );
     return false;
   }
   onattach() {
@@ -20752,7 +20888,7 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
     return true;
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI31.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI32.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(this.resource);
     void contextMenu.show();
   }
@@ -20770,7 +20906,7 @@ var FrameWindowTreeElement = class extends ApplicationPanelTreeElement {
   isWindowClosed;
   view;
   constructor(storagePanel, targetInfo) {
-    super(storagePanel, targetInfo.title || i18nString30(UIStrings30.windowWithoutTitle), false, "window");
+    super(storagePanel, targetInfo.title || i18nString31(UIStrings31.windowWithoutTitle), false, "window");
     this.targetInfo = targetInfo;
     this.isWindowClosed = false;
     this.view = null;
@@ -20805,7 +20941,7 @@ var FrameWindowTreeElement = class extends ApplicationPanelTreeElement {
       this.view.requestUpdate();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-window");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-window");
     return false;
   }
   get itemURL() {
@@ -20816,7 +20952,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
   targetInfo;
   view;
   constructor(storagePanel, targetInfo) {
-    super(storagePanel, targetInfo.title || targetInfo.url || i18nString30(UIStrings30.worker), false, "worker");
+    super(storagePanel, targetInfo.title || targetInfo.url || i18nString31(UIStrings31.worker), false, "worker");
     this.targetInfo = targetInfo;
     this.view = null;
     const icon = createIcon10("gears", "navigator-file-tree-item");
@@ -20830,7 +20966,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
       this.view.requestUpdate();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-worker");
+    UI32.UIUserMetrics.UIUserMetrics.instance().panelShown("frame-worker");
     return false;
   }
   get itemURL() {
@@ -20864,6 +21000,7 @@ export {
   OriginTrialTreeView_exports as OriginTrialTreeView,
   PreloadingTreeElement_exports as PreloadingTreeElement,
   PreloadingView_exports as PreloadingView,
+  PrivateVerificationTokensView_exports as PrivateVerificationTokensView,
   ReportingApiTreeElement_exports as ReportingApiTreeElement,
   ReportingApiView_exports as ReportingApiView,
   ResourcesPanel_exports as ResourcesPanel,

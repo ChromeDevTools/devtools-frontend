@@ -1,7 +1,8 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
+
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -14,15 +15,16 @@ import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import {Icon} from '../../ui/kit/kit.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as Settings from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 import consolePromptStyles from './consolePrompt.css.js';
 
+const {classMap, ref} = Directives;
 const {Direction} = TextEditor.TextEditorHistory;
 
 const UIStrings = {
@@ -31,13 +33,16 @@ const UIStrings = {
    */
   consolePrompt: 'Console prompt',
   /**
-   * @description Warning shown to users when pasting text into the DevTools Console. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @description Warning shown to users when pasting text into the DevTools
+   * Console. IMPORTANT: keep double quotes around PH1 and do not use single
+   * quotes.
    * @example {allow pasting} PH1
    */
   selfXssWarning:
       'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type "{PH1}" below and press Enter to allow pasting.',
   /**
-   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
+   * @description Text a user needs to type in order to confirm that they are
+   * aware of the danger of pasting code into the DevTools Console.
    */
   allowPasting: 'allow pasting',
 } as const;
@@ -49,27 +54,80 @@ const ConsolePromptBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.W
         UI.Widget.Widget,
     );
 
+export interface ViewInput {
+  editorState: CodeMirror.EditorState;
+  eagerEvalEnabled: boolean;
+  preview: DocumentFragment|null;
+  isIncomplete: boolean;
+  onBelowEditorClick: () => void;
+}
+
+export interface ViewOutput {
+  editor?: TextEditor.TextEditor.TextEditor;
+  getBelowEditorHeight?: () => number;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <style>${consolePromptStyles}</style>
+    <div class="console-prompt-editor-container">
+      <devtools-text-editor
+        .state=${input.editorState}
+        @keydown=${(event: Event) => {
+          if (event.defaultPrevented) {
+            event.stopPropagation();
+          }
+        }}
+        ${ref(e => {
+          output.editor = e instanceof TextEditor.TextEditor.TextEditor ? e : undefined;
+        })}
+      ></devtools-text-editor>
+    </div>
+    <div
+      class=${classMap({'console-eager-preview': true, hidden: !input.eagerEvalEnabled})}
+      @click=${input.onBelowEditorClick}
+      ${ref(e => {
+        output.getBelowEditorHeight = e instanceof HTMLElement ? () => e.offsetHeight : undefined;
+      })}
+    >
+      <div class="console-eager-inner-preview">${input.preview ?? nothing}</div>
+      <devtools-icon name="chevron-left-dot" class="preview-result-icon medium"></devtools-icon>
+    </div>
+    <devtools-icon
+      name="chevron-right"
+      style="color: var(--icon-action)"
+      class=${classMap({'console-prompt-icon': true, medium: true, 'console-prompt-incomplete': input.isIncomplete})}
+    ></devtools-icon>
+  `, target);
+  // clang-format on
+};
+
 export class ConsolePrompt extends ConsolePromptBase {
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
   private addCompletionsFromHistory: boolean;
   #history: TextEditor.AutocompleteHistory.AutocompleteHistory;
   private initialText: string;
-  private editor: TextEditor.TextEditor.TextEditor;
-  private readonly eagerPreviewElement: HTMLDivElement;
+  #editorState: CodeMirror.EditorState;
+  private editor?: TextEditor.TextEditor.TextEditor;
   private textChangeThrottler: Common.Throttler.Throttler;
   private requestPreviewBound: () => Promise<void>;
   private requestPreviewCurrent = 0;
-  private readonly innerPreviewElement: HTMLElement;
-  private readonly promptIcon: Icon;
+  #preview: DocumentFragment|null = null;
+  #isIncomplete = false;
   private readonly iconThrottler: Common.Throttler.Throttler;
   private readonly eagerEvalSetting: Common.Settings.Setting<boolean>;
   protected previewRequestForTest: Promise<void>|null;
   private highlightingNode: boolean;
-  // The CodeMirror state field that controls whether the argument hints are showing.
-  // If they are, the escape key will clear them. However, if they aren't, then the
-  // console drawer should be hidden as a whole.
+  // The CodeMirror state field that controls whether the argument hints are
+  // showing. If they are, the escape key will clear them. However, if they
+  // aren't, then the console drawer should be hidden as a whole.
   #argumentHintsState: CodeMirror.StateField<CodeMirror.Tooltip|null>;
 
-  #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
+  #editorHistory?: TextEditor.TextEditorHistory.TextEditorHistory;
   #selfXssWarningShown = false;
   #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
 
@@ -93,48 +151,31 @@ export class ConsolePrompt extends ConsolePromptBase {
   #updateJavaScriptCompletionCompartment(): void {
     const extensions = this.#getJavaScriptCompletionExtensions();
     const effects = this.#javaScriptCompletionCompartment.reconfigure(extensions);
-    this.editor.dispatch({effects});
+    this.editor?.dispatch({effects});
   }
 
-  constructor(aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig) {
+  constructor(aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig,
+              view: View = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.textField('console-prompt').track({
         change: true,
         keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
       })}`,
     });
-    this.registerRequiredCSS(consolePromptStyles);
+    this.#view = view;
     this.addCompletionsFromHistory = true;
     this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
         Common.Settings.Settings.instance().createLocalSetting('console-history', []));
 
     this.initialText = '';
-    this.eagerPreviewElement = document.createElement('div');
-    this.eagerPreviewElement.classList.add('console-eager-preview');
     this.textChangeThrottler = new Common.Throttler.Throttler(150);
     this.requestPreviewBound = this.requestPreview.bind(this);
-    this.innerPreviewElement = this.eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
-    const previewIcon = new Icon();
-    previewIcon.name = 'chevron-left-dot';
-    previewIcon.classList.add('preview-result-icon', 'medium');
-    this.eagerPreviewElement.appendChild(previewIcon);
-
-    const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
-    this.element.appendChild(this.eagerPreviewElement);
-
-    this.promptIcon = new Icon();
-    this.promptIcon.name = 'chevron-right';
-    this.promptIcon.style.color = 'var(--icon-action)';
-    this.promptIcon.classList.add('console-prompt-icon', 'medium');
-    this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 
     this.eagerEvalSetting =
         Common.Settings.Settings.instance().resolve(Settings.ConsoleSettings.consoleEagerEvalSettingDescriptor);
     this.eagerEvalSetting.addChangeListener(this.eagerSettingChanged.bind(this));
-    this.eagerPreviewElement.classList.toggle('hidden', !this.eagerEvalSetting.get());
 
-    this.element.tabIndex = 0;
     this.previewRequestForTest = null;
     this.highlightingNode = false;
     const argumentHints = TextEditor.JavaScript.argumentHints();
@@ -154,7 +195,7 @@ export class ConsolePrompt extends ConsolePromptBase {
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.javascript.javascriptLanguage.data.of({
         autocomplete: (context: CodeMirror.CompletionContext) =>
-            this.addCompletionsFromHistory ? this.#editorHistory.historyCompletions(context) : null,
+            this.addCompletionsFromHistory ? (this.#editorHistory?.historyCompletions(context) ?? null) : null,
       }),
       CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
       CodeMirror.EditorView.lineWrapping,
@@ -170,53 +211,63 @@ export class ConsolePrompt extends ConsolePromptBase {
     }
 
     const doc = this.initialText;
-    const editorState = CodeMirror.EditorState.create({doc, extensions});
+    this.#editorState = CodeMirror.EditorState.create({doc, extensions});
 
-    this.editor = new TextEditor.TextEditor.TextEditor(editorState);
-
-    if (this.aiCodeCompletionProvider) {
-      this.aiCodeCompletionProvider.editorInitialized(this.editor);
-      this.editor.editor.dispatch({
-        effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(
-            TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ONLY_SHOW_ON_EMPTY),
-      });
-    }
-
-    this.editor.addEventListener('keydown', event => {
-      if (event.defaultPrevented) {
-        event.stopPropagation();
-      }
-    });
-    editorContainerElement.appendChild(this.editor);
-    this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
+    this.performUpdate();
 
     if (this.hasFocus()) {
       this.focus();
     }
-    this.element.removeAttribute('tabindex');
 
-    this.editorSetForTest();
-
-    // Record the console tool load time after the console prompt constructor is complete.
+    // Record the console tool load time after the console prompt constructor is
+    // complete.
     UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('console', 'DevTools.Launch.Console');
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      editorState: this.#editorState,
+      eagerEvalEnabled: this.eagerEvalSetting.get(),
+      preview: this.#preview,
+      isIncomplete: this.#isIncomplete,
+      onBelowEditorClick: () => {
+        if (!this.element.hasSelection()) {
+          this.moveCaretToEndOfPrompt();
+          this.focus();
+        }
+      },
+    },
+               this.#viewOutput, this.contentElement);
+    if (this.#viewOutput.editor && this.editor !== this.#viewOutput.editor) {
+      this.editor = this.#viewOutput.editor;
+      this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);
+      if (this.aiCodeCompletionProvider) {
+        this.aiCodeCompletionProvider.editorInitialized(this.editor);
+        this.editor.editor.dispatch({
+          effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(
+              TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ONLY_SHOW_ON_EMPTY),
+        });
+      }
+      this.editorSetForTest();
+    }
   }
 
   private eagerSettingChanged(): void {
     const enabled = this.eagerEvalSetting.get();
-    this.eagerPreviewElement.classList.toggle('hidden', !enabled);
+    this.requestUpdate();
     if (enabled) {
       void this.requestPreview();
     }
   }
 
-  belowEditorElement(): Element {
-    return this.eagerPreviewElement;
+  belowEditorHeight(): number {
+    return this.#viewOutput.getBelowEditorHeight?.() ?? 0;
   }
 
   private onTextChanged(): void {
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
-    if (this.eagerEvalSetting.get()) {
+    if (this.eagerEvalSetting.get() && this.editor) {
       const asSoonAsPossible = !TextEditor.Config.contentIncludingHint(this.editor.editor);
       this.previewRequestForTest = this.textChangeThrottler.schedule(
           this.requestPreviewBound,
@@ -227,18 +278,23 @@ export class ConsolePrompt extends ConsolePromptBase {
   }
 
   private async requestPreview(): Promise<void> {
+    if (!this.editor) {
+      return;
+    }
     const id = ++this.requestPreviewCurrent;
     const text = TextEditor.Config.contentIncludingHint(this.editor.editor).trim();
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
         text, true /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
-    if (this.requestPreviewCurrent !== id) {
+    if (this.requestPreviewCurrent !== id || !this.editor) {
       return;
     }
-    this.innerPreviewElement.removeChildren();
     if (preview.deepTextContent() !== TextEditor.Config.contentIncludingHint(this.editor.editor).trim()) {
-      this.innerPreviewElement.appendChild(preview);
+      this.#preview = preview;
+    } else {
+      this.#preview = null;
     }
+    this.requestUpdate();
     if (result && 'object' in result && result.object?.subtype === 'node') {
       this.highlightingNode = true;
       SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result.object);
@@ -264,7 +320,9 @@ export class ConsolePrompt extends ConsolePromptBase {
   }
 
   clearAutocomplete(): void {
-    CodeMirror.closeCompletion(this.editor.editor);
+    if (this.editor) {
+      CodeMirror.closeCompletion(this.editor.editor);
+    }
   }
 
   clearAiCodeCompletionCache(): void {
@@ -272,15 +330,19 @@ export class ConsolePrompt extends ConsolePromptBase {
   }
 
   moveCaretToEndOfPrompt(): void {
-    this.editor.dispatch({
-      selection: CodeMirror.EditorSelection.cursor(this.editor.state.doc.length),
-    });
+    if (this.editor) {
+      this.editor.dispatch({
+        selection: CodeMirror.EditorSelection.cursor(this.editor.state.doc.length),
+      });
+    }
   }
 
   clear(): void {
-    this.editor.dispatch({
-      changes: {from: 0, to: this.editor.state.doc.length},
-    });
+    if (this.editor) {
+      this.editor.dispatch({
+        changes: {from: 0, to: this.editor.state.doc.length},
+      });
+    }
   }
 
   /**
@@ -288,15 +350,17 @@ export class ConsolePrompt extends ConsolePromptBase {
    * at the end, and scrolls the editor into view.
    */
   insertText(text: string): void {
-    this.editor.dispatch({
-      changes: {from: 0, to: this.editor.state.doc.length, insert: text},
-      selection: {anchor: text.length},
-      scrollIntoView: true,
-    });
+    if (this.editor) {
+      this.editor.dispatch({
+        changes: {from: 0, to: this.editor.state.doc.length, insert: text},
+        selection: {anchor: text.length},
+        scrollIntoView: true,
+      });
+    }
   }
 
   text(): string {
-    return this.editor.state.doc.toString();
+    return this.editor?.state.doc.toString() ?? '';
   }
 
   setAddCompletionsFromHistory(value: boolean): void {
@@ -308,31 +372,39 @@ export class ConsolePrompt extends ConsolePromptBase {
       {
         // Handle the KeyboardEvent manually.
         any: (_view, event) => {
-          // Events with `repeat=true` are excluded from altering the history state because
-          // they are often not intended as such. Example:
+          // Events with `repeat=true` are excluded from altering the history
+          // state because they are often not intended as such. Example:
           // Scrolling through long snippets.
           if (event.repeat) {
             return false;
           }
 
           if (event.key === 'ArrowUp') {
-            return this.#editorHistory.moveHistory(Direction.BACKWARD);
+            return this.#editorHistory?.moveHistory(Direction.BACKWARD) ?? false;
           }
 
           if (event.key === 'ArrowDown') {
-            return this.#editorHistory.moveHistory(Direction.FORWARD);
+            return this.#editorHistory?.moveHistory(Direction.FORWARD) ?? false;
           }
 
           return false;
         },
       },
 
-      {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
-      {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
+      {
+        mac: 'Ctrl-p',
+        run: () => this.#editorHistory?.moveHistory(Direction.BACKWARD, true) ?? false,
+      },
+      {
+        mac: 'Ctrl-n',
+        run: () => this.#editorHistory?.moveHistory(Direction.FORWARD, true) ?? false,
+      },
       {
         key: 'Escape',
         run: () => {
-          return TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
+          return this.editor ?
+              TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState) :
+              false;
         },
       },
       {
@@ -354,6 +426,9 @@ export class ConsolePrompt extends ConsolePromptBase {
   }
 
   private async enterWillEvaluate(forceEvaluate?: boolean): Promise<boolean> {
+    if (!this.editor) {
+      return false;
+    }
     const {doc, selection} = this.editor.state;
     if (!doc.length) {
       return false;
@@ -364,7 +439,8 @@ export class ConsolePrompt extends ConsolePromptBase {
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const isExpressionComplete = await TextEditor.JavaScript.isExpressionComplete(doc.toString());
     if (currentExecutionContext !== UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext)) {
-      // We should not evaluate if the current context has changed since user action
+      // We should not evaluate if the current context has changed since user
+      // action
       return false;
     }
     return isExpressionComplete;
@@ -380,6 +456,9 @@ export class ConsolePrompt extends ConsolePromptBase {
   }
 
   private async handleEnter(forceEvaluate?: boolean): Promise<void> {
+    if (!this.editor) {
+      return;
+    }
     if (this.#selfXssWarningShown &&
         (this.text() === i18nString(UIStrings.allowPasting) ||
          this.text() === `'${i18nString(UIStrings.allowPasting)}'`)) {
@@ -423,7 +502,8 @@ export class ConsolePrompt extends ConsolePromptBase {
 
   private updatePromptIcon(): void {
     void this.iconThrottler.schedule(async () => {
-      this.promptIcon.classList.toggle('console-prompt-incomplete', !(await this.enterWillEvaluate()));
+      this.#isIncomplete = !(await this.enterWillEvaluate());
+      this.requestUpdate();
     });
   }
 
@@ -444,9 +524,9 @@ export class ConsolePrompt extends ConsolePromptBase {
     }
   }
 
-  private async evaluateCommandInConsole(
-      executionContext: SDK.RuntimeModel.ExecutionContext, message: SDK.ConsoleModel.ConsoleMessage, expression: string,
-      useCommandLineAPI: boolean): Promise<void> {
+  private async evaluateCommandInConsole(executionContext: SDK.RuntimeModel.ExecutionContext,
+                                         message: SDK.ConsoleModel.ConsoleMessage, expression: string,
+                                         useCommandLineAPI: boolean): Promise<void> {
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
     if (callFrame?.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
@@ -478,7 +558,7 @@ export class ConsolePrompt extends ConsolePromptBase {
   }
 
   override focus(): void {
-    this.editor.focus();
+    this.editor?.focus();
   }
 
   private editorSetForTest(): void {

@@ -376,8 +376,8 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.consoleToolbarContainer = this.element.createChild('div', 'console-toolbar-container');
     this.consoleToolbarContainer.role = 'toolbar';
-    this.splitWidget = new UI.SplitWidget.SplitWidget(
-        true /* isVertical */, false /* secondIsSidebar */, 'console.sidebar.width', 100);
+    this.splitWidget = new UI.SplitWidget.SplitWidget(true /* isVertical */, false /* secondIsSidebar */,
+                                                      'console.sidebar.width', 100);
     this.splitWidget.setMainWidget(this.#searchableView);
     this.splitWidget.setSidebarWidget(this.sidebar);
     this.splitWidget.show(this.element);
@@ -633,8 +633,8 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     this.registerWithMessageSink();
 
-    UI.Context.Context.instance().addFlavorChangeListener(
-        SDK.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext,
+                                                          this.executionContextChanged, this);
 
     this.messagesElement.addEventListener(
         'mousedown', (event: Event) => this.updateStickToBottomOnPointerDown((event as MouseEvent).button === 2),
@@ -646,24 +646,24 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.messagesElement.addEventListener('touchend', this.updateStickToBottomOnPointerUp.bind(this), false);
     this.messagesElement.addEventListener('touchcancel', this.updateStickToBottomOnPointerUp.bind(this), false);
 
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this,
-        {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this.onConsoleMessageAdded, this,
-        {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this.onConsoleMessageUpdated, this,
-        {scoped: true});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, this.commandEvaluated, this,
-        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel,
+                                                                SDK.ConsoleModel.Events.ConsoleCleared,
+                                                                this.consoleCleared, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel,
+                                                                SDK.ConsoleModel.Events.MessageAdded,
+                                                                this.onConsoleMessageAdded, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel,
+                                                                SDK.ConsoleModel.Events.MessageUpdated,
+                                                                this.onConsoleMessageUpdated, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel,
+                                                                SDK.ConsoleModel.Events.CommandEvaluated,
+                                                                this.commandEvaluated, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ConsoleModel.ConsoleModel, this, {scoped: true});
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
-    issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
+    issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
+                                   this.#onIssuesCountUpdateBound);
   }
 
   static clearConsoleViewInstanceForTest(): void {
@@ -890,16 +890,16 @@ export class ConsoleView extends UI.Widget.VBox implements
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.ConsoleModel.ConsoleModel, this);
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-    issuesManager.removeEventListener(
-        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
+    issuesManager.removeEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
+                                      this.#onIssuesCountUpdateBound);
   }
 
   override wasShown(): void {
     super.wasShown();
     if (this.#isDetached) {
       const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-      issuesManager.addEventListener(
-          IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
+      issuesManager.addEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
+                                     this.#onIssuesCountUpdateBound);
     }
     this.#isDetached = false;
     this.updateIssuesToolbarItem();
@@ -975,8 +975,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   override onDetach(): void {
     this.#isDetached = true;
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-    issuesManager.removeEventListener(
-        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
+    issuesManager.removeEventListener(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
+                                      this.#onIssuesCountUpdateBound);
   }
 
   private updateIssuesToolbarItem(): void {
@@ -1233,22 +1233,21 @@ export class ConsoleView extends UI.Widget.VBox implements
   private createViewMessage(message: SDK.ConsoleModel.ConsoleMessage): ConsoleViewMessage {
     switch (message.type) {
       case SDK.ConsoleModel.FrontendMessageType.Command:
-        return new ConsoleCommand(
-            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
+        return new ConsoleCommand(message, this.linkifier, this.requestResolver, this.issueResolver,
+                                  this.onMessageResizedBound);
       case SDK.ConsoleModel.FrontendMessageType.Result:
-        return new ConsoleCommandResult(
-            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
+        return new ConsoleCommandResult(message, this.linkifier, this.requestResolver, this.issueResolver,
+                                        this.onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed:
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroup:
-        return new ConsoleGroupViewMessage(
-            message, this.linkifier, this.requestResolver, this.issueResolver, this.updateMessageList.bind(this),
-            this.onMessageResizedBound);
+        return new ConsoleGroupViewMessage(message, this.linkifier, this.requestResolver, this.issueResolver,
+                                           this.updateMessageList.bind(this), this.onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.Table:
-        return new ConsoleTableMessageView(
-            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
+        return new ConsoleTableMessageView(message, this.linkifier, this.requestResolver, this.issueResolver,
+                                           this.onMessageResizedBound);
       default:
-        return new ConsoleViewMessage(
-            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
+        return new ConsoleViewMessage(message, this.linkifier, this.requestResolver, this.issueResolver,
+                                      this.onMessageResizedBound);
     }
   }
 
@@ -1329,28 +1328,28 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     if (consoleMessage && !consoleViewMessage?.element()?.matches('.has-insight') &&
         consoleViewMessage?.shouldShowInsights()) {
-      contextMenu.headerSection().appendAction(
-          consoleViewMessage?.getExplainActionId(), undefined, /* optional=*/ true);
+      contextMenu.headerSection().appendAction(consoleViewMessage?.getExplainActionId(), undefined,
+                                               /* optional=*/ true);
     }
 
     if (consoleMessage?.url) {
-      const menuTitle = i18nString(
-          UIStrings.hideMessagesFromS, {PH1: new Common.ParsedURL.ParsedURL(consoleMessage.url).displayName});
-      contextMenu.headerSection().appendItem(
-          menuTitle, this.filter.addMessageURLFilter.bind(this.filter, consoleMessage.url),
-          {jslogContext: 'hide-messages-from'});
+      const menuTitle = i18nString(UIStrings.hideMessagesFromS,
+                                   {PH1: new Common.ParsedURL.ParsedURL(consoleMessage.url).displayName});
+      contextMenu.headerSection().appendItem(menuTitle,
+                                             this.filter.addMessageURLFilter.bind(this.filter, consoleMessage.url),
+                                             {jslogContext: 'hide-messages-from'});
     }
 
     contextMenu.defaultSection().appendAction('console.clear');
     contextMenu.defaultSection().appendAction('console.clear.history');
-    contextMenu.saveSection().appendItem(
-        i18nString(UIStrings.copyConsole), this.copyConsole.bind(this), {jslogContext: 'copy-console'});
-    contextMenu.saveSection().appendItem(
-        i18nString(UIStrings.saveAs), this.saveConsole.bind(this), {jslogContext: 'save-as'});
+    contextMenu.saveSection().appendItem(i18nString(UIStrings.copyConsole), this.copyConsole.bind(this),
+                                         {jslogContext: 'copy-console'});
+    contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this.saveConsole.bind(this),
+                                         {jslogContext: 'save-as'});
     if (this.element.hasSelection()) {
-      contextMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyVisibleStyledSelection), this.viewport.copyWithStyles.bind(this.viewport),
-          {jslogContext: 'copy-visible-styled-selection'});
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyVisibleStyledSelection),
+                                                this.viewport.copyWithStyles.bind(this.viewport),
+                                                {jslogContext: 'copy-visible-styled-selection'});
     }
 
     if (consoleMessage) {
@@ -1368,9 +1367,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   private async saveConsole(): Promise<void> {
     const url = (SDK.TargetManager.TargetManager.instance().scopeTarget() as SDK.Target.Target).inspectedURL();
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    const filename =
-        Platform.StringUtilities.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now()) as
-        Platform.DevToolsPath.RawPathString;
+    const filename = Platform.StringUtilities.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console',
+                                                      Date.now()) as Platform.DevToolsPath.RawPathString;
     const stream = new Bindings.FileUtils.FileOutputStream(Workspace.FileManager.FileManager.instance());
 
     const progressIndicator = document.createElement('devtools-progress');
@@ -1528,9 +1526,9 @@ export class ConsoleView extends UI.Widget.VBox implements
       // Create artificial group start and end messages.
       let startGroupViewMessage = this.groupableMessageTitle.get(key);
       if (!startGroupViewMessage) {
-        const startGroupMessage = new SDK.ConsoleModel.ConsoleMessage(
-            null, message.source, message.level, viewMessage.groupTitle(),
-            {type: Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed});
+        const startGroupMessage =
+            new SDK.ConsoleModel.ConsoleMessage(null, message.source, message.level, viewMessage.groupTitle(),
+                                                {type: Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed});
         startGroupViewMessage = this.createViewMessage(startGroupMessage);
         this.groupableMessageTitle.set(key, startGroupViewMessage);
       }
@@ -1545,9 +1543,9 @@ export class ConsoleView extends UI.Widget.VBox implements
         alreadyAdded.add(viewMessageInGroup.consoleMessage());
       }
 
-      const endGroupMessage = new SDK.ConsoleModel.ConsoleMessage(
-          null, message.source, message.level, message.messageText,
-          {type: Protocol.Runtime.ConsoleAPICalledEventType.EndGroup});
+      const endGroupMessage =
+          new SDK.ConsoleModel.ConsoleMessage(null, message.source, message.level, message.messageText,
+                                              {type: Protocol.Runtime.ConsoleAPICalledEventType.EndGroup});
       this.appendMessageToEnd(this.createViewMessage(endGroupMessage));
     }
   }
@@ -1556,8 +1554,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     const target = (event.target as Node | null);
     // Do not focus prompt if messages have selection.
     if (!this.messagesElement.hasSelection()) {
-      const clickedOutsideMessageList =
-          target === this.messagesElement || this.prompt.belowEditorElement().isSelfOrAncestor(target);
+      const clickedOutsideMessageList = target === this.messagesElement;
       if (clickedOutsideMessageList) {
         this.prompt.moveCaretToEndOfPrompt();
         this.focusPrompt();
@@ -1589,9 +1586,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private registerShortcuts(): void {
-    this.shortcuts.set(
-        UI.KeyboardShortcut.KeyboardShortcut.makeKey('u', UI.KeyboardShortcut.Modifiers.Ctrl.value),
-        this.clearPromptBackwards.bind(this));
+    this.shortcuts.set(UI.KeyboardShortcut.KeyboardShortcut.makeKey('u', UI.KeyboardShortcut.Modifiers.Ctrl.value),
+                       this.clearPromptBackwards.bind(this));
   }
 
   private clearPromptBackwards(e: KeyboardEvent): void {
@@ -1614,9 +1610,9 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
   }
 
-  private printResult(
-      result: SDK.RemoteObject.RemoteObject|null, originatingConsoleMessage: SDK.ConsoleModel.ConsoleMessage,
-      exceptionDetails?: Protocol.Runtime.ExceptionDetails): void {
+  private printResult(result: SDK.RemoteObject.RemoteObject|null,
+                      originatingConsoleMessage: SDK.ConsoleModel.ConsoleMessage,
+                      exceptionDetails?: Protocol.Runtime.ExceptionDetails): void {
     if (!result) {
       return;
     }
@@ -1834,7 +1830,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private isScrolledToBottom(): boolean {
     const distanceToPromptEditorBottom = this.messagesElement.scrollHeight - this.messagesElement.scrollTop -
-        this.messagesElement.clientHeight - (this.prompt.belowEditorElement() as HTMLElement).offsetHeight;
+        this.messagesElement.clientHeight - this.prompt.belowEditorHeight();
     return distanceToPromptEditorBottom <= 2;
   }
 
@@ -1881,14 +1877,14 @@ export class ConsoleViewFilter {
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
-    UI.Context.Context.instance().addFlavorChangeListener(
-        SDK.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.onFilterChanged,
+                                                          this);
 
     const filterKeys = Object.values(FilterType);
     this.suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
-    this.textFilterUI = new UI.Toolbar.ToolbarFilter(
-        undefined, 1, 1, i18nString(UIStrings.egEventdCdnUrlacom),
-        this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
+    this.textFilterUI =
+        new UI.Toolbar.ToolbarFilter(undefined, 1, 1, i18nString(UIStrings.egEventdCdnUrlacom),
+                                     this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
     this.textFilterSetting = Common.Settings.Settings.instance().createSetting('console.text-filter', '');
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
@@ -1945,8 +1941,8 @@ export class ConsoleViewFilter {
   }
 
   static levelFilterSetting(): Common.Settings.Setting<LevelsMask> {
-    return Common.Settings.Settings.instance().createSetting(
-        'message-level-filters', ConsoleFilter.defaultLevelsFilterValue());
+    return Common.Settings.Settings.instance().createSetting('message-level-filters',
+                                                             ConsoleFilter.defaultLevelsFilterValue());
   }
 
   private updateCurrentFilter(): void {
@@ -2019,12 +2015,12 @@ export class ConsoleViewFilter {
     const setting = this.messageLevelFiltersSetting;
     const levels = setting.get();
 
-    contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.default), () => setting.set(ConsoleFilter.defaultLevelsFilterValue()),
-        {jslogContext: 'default'});
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.default),
+                                           () => setting.set(ConsoleFilter.defaultLevelsFilterValue()),
+                                           {jslogContext: 'default'});
     for (const [level, levelText] of this.levelLabels.entries()) {
-      contextMenu.defaultSection().appendCheckboxItem(
-          levelText, toggleShowLevel.bind(null, level), {checked: levels[level], jslogContext: level});
+      contextMenu.defaultSection().appendCheckboxItem(levelText, toggleShowLevel.bind(null, level),
+                                                      {checked: levels[level], jslogContext: level});
     }
 
     function toggleShowLevel(level: string): void {

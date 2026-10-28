@@ -329,6 +329,7 @@ devtools_issue_description_files = [
 
 generated_file("description_list") {
   outputs = [ "$target_gen_dir/description_list.json" ]
+  data = outputs
   contents = devtools_issue_description_files
   output_conversion = "json"
 }

@@ -62,7 +62,10 @@ ts_library("testing") {
     "test_setup.ts",
   ]
 
-  data_deps = [ "../core/i18n/locales" ]
+  data_deps = [
+    "../core/i18n/locales",
+    "../panels/timeline/fixtures/traces",
+  ]
 
   ts_deps = [
     "../../extension-api",

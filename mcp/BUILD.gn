@@ -51,6 +51,7 @@ ts_library("foundation_unittests") {
 generated_file("test_inputs") {
   testonly = true
   outputs = [ "$target_gen_dir/foundation_tests.txt" ]
+  data = outputs
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 

@@ -115,6 +115,7 @@ copy_to_gen_with_grd("embedder-scripts") {
 group("unittests") {
   testonly = true
   deps = [
+    ":color_tokens",
     ":foundation_unittests",
     "Images:optimize_images",
     "core/sdk:unittests",
@@ -318,6 +319,7 @@ group("api_tests") {
 generated_file("api_test_inputs") {
   testonly = true
   outputs = [ "$target_gen_dir/api_tests.txt" ]
+  data = outputs
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 
@@ -327,6 +329,7 @@ generated_file("api_test_inputs") {
 generated_file("foundation_test_inputs") {
   testonly = true
   outputs = [ "$target_gen_dir/foundation_tests.txt" ]
+  data = outputs
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 
@@ -336,6 +339,7 @@ generated_file("foundation_test_inputs") {
 generated_file("test_inputs") {
   testonly = true
   outputs = [ "$target_gen_dir/tests.txt" ]
+  data = outputs
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 

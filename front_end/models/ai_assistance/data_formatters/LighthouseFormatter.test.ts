@@ -477,4 +477,86 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(imageInsightReport, 'performance');
     snapshotTester.assert(this, output);
   });
+
+  it('formats 0-based source locations as 1-based', function() {
+    const locationReport = {
+      ...report,
+      categories: {
+        accessibility: {
+          title: 'Accessibility',
+          description: 'Category description.',
+          score: 0,
+          auditRefs: [{id: 'button-name', score: 0, weight: 1}],
+        },
+      },
+      audits: {
+        'button-name': {
+          id: 'button-name',
+          title: 'Buttons do not have an accessible name',
+          description: 'Audit description.',
+          score: 0,
+          details: {
+            type: 'table',
+            headings: [
+              {key: 'location', label: 'Location', valueType: 'source-location'},
+            ],
+            items: [
+              {
+                location: {type: 'source-location', url: 'https://example.com/app.js', line: 0, column: 0},
+              },
+              {
+                location: {type: 'source-location', url: 'https://example.com/no-line.js'},
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(locationReport, 'accessibility');
+    snapshotTester.assert(this, output);
+  });
+
+  it('collapses multi-line values onto a single line', function() {
+    const multiLineReport = {
+      ...report,
+      categories: {
+        accessibility: {
+          title: 'Accessibility',
+          description: 'Category description\n  spanning two lines.',
+          score: 0,
+          auditRefs: [{id: 'button-name', score: 0, weight: 1}],
+        },
+      },
+      audits: {
+        'button-name': {
+          id: 'button-name',
+          title: 'Buttons do not have an accessible name',
+          description: 'Audit description\n  spanning two lines.',
+          score: 0,
+          details: {
+            type: 'table',
+            headings: [
+              {key: 'node', label: 'Failing Elements', valueType: 'node'},
+              {key: 'schema', label: 'Schema', valueType: 'code'},
+            ],
+            items: [
+              {
+                node: {
+                  type: 'node',
+                  nodeLabel: 'button',
+                  explanation:
+                      'Fix any of the following:\n  Element does not have inner text\n  aria-label attribute does not exist',
+                },
+                schema: '{\n  "type": "object",\n  "properties": {}\n}',
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(multiLineReport, 'accessibility');
+    snapshotTester.assert(this, output);
+  });
 });

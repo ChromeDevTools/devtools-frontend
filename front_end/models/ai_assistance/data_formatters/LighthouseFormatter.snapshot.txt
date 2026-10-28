@@ -44,7 +44,7 @@ The following audits in this category have a score below 90 and may need attenti
       * **Wasted Bytes**: 1 kB
       * **Node**: div.main
       * **Node path**: 1,HTML,1,BODY,5,DIV
-      * **Location**: https://example.com/script.js:10:5
+      * **Location**: https://example.com/script.js:11:5
     - Item:
       * **URL**: https://example.com/style.css
       * **Wasted Bytes**: 512 B
@@ -92,7 +92,7 @@ The following audits in this category have a score below 90 and may need attenti
     - Item:
       * **Failing Elements**: html
       * **Failing Elements path**: 1,HTML
-      * **Failing Elements explanation**: Fix all of the following:   Document does not have a main landmark
+      * **Failing Elements explanation**: Fix all of the following: Document does not have a main landmark
 === end content
 
 Title: LighthouseFormatter formats table details with subItems
@@ -143,4 +143,34 @@ Content:
 
 ### Accessibility (categoryId: "accessibility")
 - No failing audits.
+=== end content
+
+Title: LighthouseFormatter formats 0-based source locations as 1-based
+Content:
+# Audits for Accessibility
+Category description.
+
+The following audits in this category have a score below 90 and may need attention:
+- **Buttons do not have an accessible name**: 0
+  * Audit description.
+
+    - Item:
+      * **Location**: https://example.com/app.js:1:0
+    - Item:
+      * **Location**: https://example.com/no-line.js
+=== end content
+
+Title: LighthouseFormatter collapses multi-line values onto a single line
+Content:
+# Audits for Accessibility
+Category description spanning two lines.
+
+The following audits in this category have a score below 90 and may need attention:
+- **Buttons do not have an accessible name**: 0
+  * Audit description spanning two lines.
+
+    - Item:
+      * **Failing Elements**: button
+      * **Failing Elements explanation**: Fix any of the following: Element does not have inner text; aria-label attribute does not exist
+      * **Schema**: { "type": "object", "properties": {} }
 === end content

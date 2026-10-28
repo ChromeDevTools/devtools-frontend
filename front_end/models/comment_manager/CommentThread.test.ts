@@ -343,4 +343,50 @@ describe('CommentThread UMA', () => {
 
     sinon.assert.notCalled(commentCreated);
   });
+
+  describe('CommentThread CommentQueued UMA', () => {
+    const anchor: CommentManager.CommentThread.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeItem: rule',
+    };
+
+    let commentQueued: sinon.SinonStub;
+
+    beforeEach(() => {
+      commentQueued = sinon.stub(Host.userMetrics, 'commentQueued');
+    });
+
+    it('records once when a draft is queued', () => {
+      const thread = new CommentManager.CommentThread.CommentThread({anchor});
+      thread.save('Make this blue');
+      thread.save('Follow-up');
+      thread.sendToAgent();
+
+      sinon.assert.calledOnceWithExactly(commentQueued, 1);
+    });
+
+    it('does not record when a draft is sent to the agent directly', () => {
+      const thread = new CommentManager.CommentThread.CommentThread({anchor});
+      thread.sendToAgent('Fix padding');
+
+      sinon.assert.notCalled(commentQueued);
+    });
+
+    it('does not record for generated comments', () => {
+      const thread = new CommentManager.CommentThread.CommentThread({
+        anchor,
+        comments: [{author: 'DEVELOPER', text: 'Changed color', timestamp: 0}],
+        isGeneratedComment: true,
+      });
+      thread.save();
+
+      sinon.assert.notCalled(commentQueued);
+    });
+
+    it('does not record for empty text', () => {
+      const thread = new CommentManager.CommentThread.CommentThread({anchor});
+      thread.save('   ');
+
+      sinon.assert.notCalled(commentQueued);
+    });
+  });
 });

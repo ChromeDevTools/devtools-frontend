@@ -164,8 +164,9 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   /**
    * Records UMA for a developer-authored comment when it leaves the DRAFT state.
+   * Returns true if this is the first user comment. Returns false otherwise.
    */
-  #recordCommentCreated(): void {
+  #recordCommentCreated(queued: boolean = false): void {
     if (this.isGeneratedComment) {
       return;
     }
@@ -175,12 +176,17 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     Host.userMetrics.commentCreated(1);
     Host.userMetrics.commentSize(text.length);
+    if (queued) {
+      Host.userMetrics.commentQueued(1);
+    }
+
+    return;
   }
 
   save(text?: string, author: 'DEVELOPER'|'AGENT' = 'DEVELOPER'): void {
     let changed = this.#saveText(text, author);
     if (this.status === 'DRAFT') {
-      this.#recordCommentCreated();
+      this.#recordCommentCreated(true);
       this.status = 'ACTIVE';
       changed = true;
     }

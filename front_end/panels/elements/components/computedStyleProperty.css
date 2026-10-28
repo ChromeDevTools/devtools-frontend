@@ -62,6 +62,8 @@
   margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--goto-size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
+  border: none;
+  padding: 0;
 }
 
 .computed-style-property:hover .goto {

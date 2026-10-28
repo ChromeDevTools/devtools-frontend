@@ -54,6 +54,7 @@ import {StylePropertiesSection} from './StylePropertiesSection.js';
 
 const {html, render} = Lit;
 const {bindToSetting} = UI.UIUtils;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -131,18 +132,21 @@ const createPropertyElement =
      category?: Category): Lit.TemplateResult => {
       const {name, value} = renderPropertyContents(node, cache, propertyName, propertyValue, category);
       // clang-format off
-      return html`<devtools-computed-style-property
-        .traceable=${traceable}
-        .inherited=${inherited}
-        @oncontextmenu=${onContextMenu}
-        @onnavigatetosource=${(event: ElementsComponents.ComputedStyleProperty.NavigateToSourceEvent):void => {
-          if (activeProperty) {
-            navigateToSource(activeProperty, event);
-          }
-        }}>
+      return html`<devtools-widget
+        class="computed-style-property"
+        ${widget(ElementsComponents.ComputedStyleProperty.ComputedStyleProperty, {
+          traceable,
+          inherited,
+          onNavigateToSource: (): void => {
+            if (activeProperty) {
+              navigateToSource(activeProperty);
+            }
+          },
+        })}
+        @oncontextmenu=${onContextMenu}>
           ${name}
           ${value}
-      </devtools-computed-style-property>`;
+      </devtools-widget>`;
       // clang-format on
     };
 
@@ -215,11 +219,8 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
 }
 
 const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event?: Event): void => {
-  if (!event) {
-    return;
-  }
   void Common.Revealer.reveal(cssProperty);
-  event.consume(true);
+  event?.consume(true);
 };
 
 const propertySorter = (propA: string, propB: string): number => {

@@ -31,7 +31,7 @@ const CSS_DECLARATION_SELECTOR =
     `[role="treeitem"]:has(${CSS_PROPERTY_NAME_SELECTOR}):has(${CSS_PROPERTY_VALUE_SELECTOR})`;
 const COLOR_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
-const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
+const COMPUTED_PROPERTY_SELECTOR = 'devtools-widget.computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
 const COMPUTED_STYLES_SHOW_ALL_SELECTOR = '[title="Show all"]';
 export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';

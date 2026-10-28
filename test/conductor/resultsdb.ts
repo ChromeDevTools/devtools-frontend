@@ -71,6 +71,7 @@ export function buildTestProperties(exactTestId: string, coarseName: string, fin
       fileName: string,
     },
   },
+  tags: Array<{key: string, value: string}>,
 } {
   return {
     testId: sanitizedTestId(exactTestId),
@@ -88,6 +89,7 @@ export function buildTestProperties(exactTestId: string, coarseName: string, fin
         fileName: `//${coarseName}${fineName}`,
       },
     },
+    tags: [{key: 'test_name', value: exactTestId}],
   };
 }
 

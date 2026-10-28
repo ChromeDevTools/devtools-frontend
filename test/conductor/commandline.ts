@@ -87,6 +87,8 @@ export interface CommandLineOptions {
   'ota-password'?: string;
   'isolated-script-test-output'?: string;
   'isolated-script-test-perf-output'?: string;
+  'isolated-script-test-filter'?: string|string[];
+  'isolated-script-test-filter-file'?: string|string[];
 }
 
 export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>): Yargs.Argv<T&CommandLineOptions> {
@@ -217,5 +219,13 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
       .option('isolated-script-test-perf-output', {
         type: 'string',
         desc: 'Path to write perf output to (passed by Chromium Swarming, unused by functional tests).',
+      })
+      .option('isolated-script-test-filter', {
+        type: 'string',
+        desc: '::-separated list of test filters (used by Chromium Swarming).',
+      })
+      .option('isolated-script-test-filter-file', {
+        type: 'string',
+        desc: 'Path to a file containing test filters (used by Chromium Swarming).',
       });
 }

@@ -18,6 +18,7 @@ import {
 import {
   BUILD_ROOT,
   defaultChromePath,
+  resolveBuildTestId,
   SOURCE_ROOT,
   TEST_ID_REGEX,
 } from './paths.js';
@@ -33,6 +34,7 @@ const argv = sliceArrayFromElement(expandResponseFiles(hideBin(process.argv)), '
 const options = commandLineArgs(yargs(argv)).help(false).parseSync();
 interface Config {
   tests: string[];
+  excludedTests: string[];
   verbose: number;
   artifactsDir: string;
   chromeBinary: string;
@@ -98,16 +100,37 @@ function mochaGrep(): Config['mochaGrep'] {
   return grep;
 }
 
-function getTestsFromOptions() {
-  const tests = options['tests'];
-  if (Array.isArray(tests)) {
-    return tests;
+function getFilterTokens(): string[] {
+  const tokens: string[] = [];
+  for (const filterArg of asArray(options['isolated-script-test-filter'])) {
+    for (const token of filterArg.split('::').map(t => t.trim()).filter(Boolean)) {
+      tokens.push(token);
+    }
   }
+  for (const filterFile of asArray(options['isolated-script-test-filter-file'])) {
+    const content = fs.readFileSync(path.resolve(filterFile), 'utf-8');
+    for (const rawLine of content.split(/\r?\n/)) {
+      const line = rawLine.split('#')[0].trim();
+      if (!line) {
+        continue;
+      }
+      for (const token of line.split('::').map(t => t.trim()).filter(Boolean)) {
+        tokens.push(token);
+      }
+    }
+  }
+  return tokens;
+}
 
-  if (typeof tests === 'string') {
-    return [tests];
-  }
-  return [];
+function getTestsFromOptions(): {tests: string[], excludedTests: string[]} {
+  const rawTests = asArray(options['tests'] as string | string[] | undefined);
+  const filterTokens = getFilterTokens();
+  const positiveFilters = filterTokens.filter(t => !t.startsWith('-'));
+  const negativeFilters = filterTokens.filter(t => t.startsWith('-')).map(t => t.slice(1)).filter(Boolean);
+  return {
+    tests: [...rawTests, ...positiveFilters.map(resolveBuildTestId)],
+    excludedTests: negativeFilters.map(resolveBuildTestId),
+  };
 }
 
 function runProcess(
@@ -163,8 +186,11 @@ const getDefaultArtifactDir = () => {
   return artifactsPath;
 };
 
+const {tests: parsedTests, excludedTests: parsedExcludedTests} = getTestsFromOptions();
+
 export const TestConfig: Config = {
-  tests: getTestsFromOptions(),
+  tests: parsedTests,
+  excludedTests: parsedExcludedTests,
   verbose: Number(options['verbose'] ?? 0),
   artifactsDir: options['artifacts-dir'] || getDefaultArtifactDir(),
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),

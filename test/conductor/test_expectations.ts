@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import {GEN_DIR, SOURCE_ROOT, TEST_ID_REGEX} from './paths.js';
+import {resolveBuildTestId, SOURCE_ROOT, TEST_ID_REGEX} from './paths.js';
 import {platform} from './platform.js';
 import {TestConfig} from './test_config.js';
 import {parseExpectations as parse, serializeExpectations as serialize} from './test_expectations_parser.js';
@@ -89,26 +89,19 @@ export function getSkippedTests(): string[] {
 
   const expectations = parsedExpectations.get(expectationsPath)!;
 
-  return expectations
-      .filter(e => {
-        if (!e.testName) {
-          return false;
-        }
-        if (e.results && !e.results.includes('Skip')) {
-          return false;
-        }
-        if (e.platforms && e.platforms.length > 0 && !e.platforms.includes(platform)) {
-          return false;
-        }
-        return true;
-      })
-      .map(e => e.testName as string)
-      .map(skipped => {
-        const parts = skipped.split(':');
-        const file = parts[0];
-        const caseName = parts.slice(1).join(':');
-        const jsFile = file.replace(/\.ts$/, '.js');
-        const absoluteJsFile = path.isAbsolute(jsFile) ? jsFile : path.join(GEN_DIR, jsFile);
-        return parts.length > 1 ? `${absoluteJsFile}:${caseName}` : absoluteJsFile;
-      });
+  const skippedFromExpectations = expectations
+                                      .filter(e => {
+                                        if (!e.testName) {
+                                          return false;
+                                        }
+                                        if (e.results && !e.results.includes('Skip')) {
+                                          return false;
+                                        }
+                                        if (e.platforms && e.platforms.length > 0 && !e.platforms.includes(platform)) {
+                                          return false;
+                                        }
+                                        return true;
+                                      })
+                                      .map(e => resolveBuildTestId(e.testName as string));
+  return [...skippedFromExpectations, ...TestConfig.excludedTests];
 }

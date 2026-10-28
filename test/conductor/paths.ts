@@ -97,6 +97,23 @@ export class TestId<Pair extends PathPair = PathPair> {
   }
 }
 
+/**
+ * Converts a test ID or file path (such as `front_end/core/common/Color.test.ts:case_name`
+ * from ResultDB or TestExpectations) into an absolute path in GEN_DIR with a `.js` extension.
+ */
+export function resolveBuildTestId(spec: string): string {
+  let file = spec;
+  let caseName: string|undefined;
+  if (TEST_ID_REGEX.test(spec)) {
+    const match = spec.match(TEST_ID_REGEX)!;
+    file = match[1];
+    caseName = match[2];
+  }
+  const jsFile = file.replace(/\.ts$/, '.js');
+  const absoluteJsFile = path.isAbsolute(jsFile) ? jsFile : path.join(GEN_DIR, jsFile);
+  return caseName !== undefined ? `${absoluteJsFile}:${caseName}` : absoluteJsFile;
+}
+
 export function defaultChromePath(): string {
   if (BUILD_WITH_CHROMIUM) {
     // In a full chromium checkout, find the chrome binary in the build directory.

@@ -1913,41 +1913,41 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
     this.#propertyName = propertyName;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Node[] {
-    const childTracingContexts = context.tracing?.evaluation(match.args, {match, context});
-    const renderedArgs = match.args.map((arg, idx) => {
-      const span = document.createElement('span');
-      Renderer.renderInto(
-          arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context, span);
-      return span;
-    });
+  #renderFunction(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, renderedArgs: Lit.LitTemplate[],
+                  context: RenderingContext, activeArgs?: boolean[]): Lit.TemplateResult {
+    return html`${
+        this.#treeElement?.getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles,
+                                             this.#computedStyleExtraFields, context) ??
+        match.func}(${renderedArgs.map((arg, idx) => {
+      const classes = classMap({'inactive-value': activeArgs?.[idx] === false});
+      return html`${idx === 0 ? nothing : ', '}<span class=${classes}>${arg}</span>`;
+    })})`;
+  }
 
-    const span = document.createElement('span');
-    render(
-        html`${
-            this.#treeElement?.getTracingTooltip(
-                match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields,
-                context) ??
-            match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html`, `, arg]).flat()})`,
-        span);
+  override render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
+                  context: RenderingContext): Lit.LitTemplate {
+    const childTracingContexts = context.tracing?.evaluation(match.args, {match, context});
+    const renderedArgs = match.args.map(
+        (arg, idx) =>
+            Renderer.render(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context)
+                .nodes);
+    const template = this.#renderFunction(match, renderedArgs, context);
 
     if (childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(
-          childTracingContexts,
-          () => ({placeholder: [span], asyncEvalCallback: () => this.applyEvaluation(span, match, context)}));
+          childTracingContexts, () => ({template, asyncEvalCallback: () => this.applyEvaluation(match, context)}));
       if (evaluation) {
-        return evaluation;
+        return html`<span>${evaluation}</span>`;
       }
     } else if (match instanceof SDK.CSSPropertyParserMatchers.MathFunctionMatch && !match.isArithmeticFunctionCall()) {
-      void this.applyMathFunction(renderedArgs, match, context);
+      return html`<span>${until(this.applyMathFunction(renderedArgs, match, context), template)}</span>`;
     }
 
-    return [span];
+    return html`<span>${template}</span>`;
   }
 
-  async applyEvaluation(
-      span: HTMLSpanElement, match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
-      context: RenderingContext): Promise<boolean> {
+  async applyEvaluation(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
+                        context: RenderingContext): Promise<Lit.LitTemplate|null> {
     const value = context.matchedResult.getComputedText(match.node, match => {
       if (match instanceof SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
         const relativeColor =
@@ -1957,19 +1957,15 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
       return null;
     });
     const evaled = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, value);
-    if (context.signal?.aborted) {
-      return false;
+    if (context.signal?.aborted || !evaled?.[0] || evaled[0] === value) {
+      return null;
     }
-    if (!evaled?.[0] || evaled[0] === value) {
-      return false;
-    }
-    span.textContent = evaled[0];
-    return true;
+    return html`${evaled[0]}`;
   }
 
-  async applyMathFunction(
-      renderedArgs: HTMLElement[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
-      context: RenderingContext): Promise<void> {
+  async applyMathFunction(renderedArgs: Lit.LitTemplate[],
+                          match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>,
+                          context: RenderingContext): Promise<Lit.LitTemplate> {
     // To understand which argument was selected by the function, we evaluate the function as well as all the arguments
     // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
     // function calls and normalizes all units to px.
@@ -1982,21 +1978,12 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
     });
     values.unshift(context.matchedResult.getComputedText(match.node));
     const evaledArgs = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, ...values);
-    if (context.signal?.aborted) {
-      return;
+    const functionResult = evaledArgs?.shift();
+    if (context.signal?.aborted || !evaledArgs || !functionResult) {
+      return this.#renderFunction(match, renderedArgs, context);
     }
-    if (!evaledArgs) {
-      return;
-    }
-    const functionResult = evaledArgs.shift();
-    if (!functionResult) {
-      return;
-    }
-    for (let i = 0; i < renderedArgs.length; ++i) {
-      if (evaledArgs[i] !== functionResult) {
-        renderedArgs[i].classList.add('inactive-value');
-      }
-    }
+    return this.#renderFunction(match, renderedArgs, context,
+                                evaledArgs.map(evaledArg => evaledArg === functionResult));
   }
 }
 

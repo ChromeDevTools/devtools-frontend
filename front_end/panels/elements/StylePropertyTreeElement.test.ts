@@ -2752,7 +2752,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       sinon.assert.calledOnce(strikeOutSpy);
-      await strikeOutSpy.returnValues[0];
+      await Promise.all(strikeOutSpy.returnValues);
       const args = stylePropertyTreeElement.valueElement?.querySelectorAll(
                        ':scope > span > span:not(.tracing-anchor)') as NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 3);
@@ -2793,7 +2793,7 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       sinon.assert.calledOnce(strikeOutSpy);
-      await strikeOutSpy.returnValues[0];
+      await Promise.all(strikeOutSpy.returnValues);
       const args = stylePropertyTreeElement.valueElement?.querySelectorAll(
                        ':scope > span > span:not(.tracing-anchor)') as NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 2);
@@ -2823,17 +2823,25 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
           sinon.spy(Elements.StylePropertyTreeElement.MathFunctionRenderer.prototype, 'applyEvaluation');
       const property = addProperty('width', 'calc(1 + 1)');
 
-      const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, () => {});
+      const viewFunction = sinon.stub<Parameters<Elements.CSSValueTraceView.View>>();
+      const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, viewFunction);
       await view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
               property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map(), null),
           false, 0, false);
+      await view.updateComplete;
 
       sinon.assert.calledOnce(evaluationSpy);
-      const originalText = evaluationSpy.args[0][0].textContent;
-      await evaluationSpy.returnValues[0];
-      assert.strictEqual(originalText, evaluationSpy.args[0][0].textContent);
+      assert.isNull(await evaluationSpy.returnValues[0]);
+      sinon.assert.calledOnce(viewFunction);
+      const {evaluations} = viewFunction.args[0][0];
+      assert.deepEqual(evaluations.flat().map(line => {
+        const div = document.createElement('div');
+        Lit.render(line, div);
+        return div.textContent;
+      }),
+                       ['calc(1 + 1)']);
     });
 
     it('should try to resolve the values for the correct property name', async () => {

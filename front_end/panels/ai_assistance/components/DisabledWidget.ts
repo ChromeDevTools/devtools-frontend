@@ -8,9 +8,8 @@ import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import {html, type LitTemplate, render} from '../../../ui/lit/lit.js';
+import {html, i18nTemplate, type LitTemplate, render} from '../../../ui/lit/lit.js';
 
 import disabledWidgetStyles from './disabledWidget.css.js';
 
@@ -85,31 +84,28 @@ function renderConsentViewContents(
     return html`${i18nString(UIStrings.notAvailableInIncognitoMode)}`;
   }
 
-  // eslint-disable-next-line @devtools/no-imperative-dom-api
-  const settingsLink = document.createElement('devtools-link');
-  settingsLink.textContent = i18nString(UIStrings.settingsLink);
-  settingsLink.classList.add('link');
-  UI.ARIAUtils.markAsLink(settingsLink);
-  settingsLink.addEventListener('click', () => {
-    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-  });
-  settingsLink.jslogContext = 'open-ai-settings';
+  // clang-format off
+  const settingsLink = html`<devtools-link
+      class="link"
+      jslogcontext="open-ai-settings"
+      @click=${() => {
+        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+      }}
+    >${i18nString(UIStrings.settingsLink)}</devtools-link>`;
+  // clang-format on
 
-  let consentViewContents: HTMLSpanElement;
+  let stringId: string;
   if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(
-        str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, {PH1: settingsLink});
+    stringId = UIStrings.turnOnForStylesRequestsPerformanceAndFiles;
   } else if (hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
-    consentViewContents =
-        uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsAndFiles, {PH1: settingsLink});
+    stringId = UIStrings.turnOnForStylesRequestsAndFiles;
   } else if (hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
-    consentViewContents =
-        uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink});
+    stringId = UIStrings.turnOnForStylesAndRequests;
   } else {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink});
+    stringId = UIStrings.turnOnForStyles;
   }
 
-  return html`${consentViewContents}`;
+  return i18nTemplate(str_, stringId, {PH1: settingsLink});
 }
 
 export const DEFAULT_VIEW = (

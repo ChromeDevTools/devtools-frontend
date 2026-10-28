@@ -84,7 +84,6 @@ devtools_ui_module("ai_assistance") {
     "../../ui/components/spinners:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/helpers:bundle",
-    "../../ui/i18n:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/perf_ui:bundle",

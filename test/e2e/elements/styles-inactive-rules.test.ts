@@ -25,7 +25,7 @@ async function getRuleActivity(devToolsPage: DevToolsPage) {
       const ancestorRules =
           Array.from(s.querySelectorAll('.ancestor-rule-list > *'))
               .map(c => {
-                if (c.tagName.toLowerCase() === 'devtools-css-query') {
+                if (c.classList.contains('css-query')) {
                   return c.shadowRoot?.querySelector('.query')?.textContent?.replace(/\{$/, '').trim() || '';
                 }
                 const sel = c.querySelector('.selector');
@@ -178,7 +178,7 @@ describe('The Elements tab', function() {
     // There should be an inactive @starting-style { .starting-style-target {}}
     // and also an active .starting-style-target rule
     await devToolsPage.waitFor(
-        '.styles-section-inactive[aria-label=".starting-style-target, css selector"]:has(.ancestor-rule-list devtools-css-query)');
+        '.styles-section-inactive[aria-label=".starting-style-target, css selector"]:has(.ancestor-rule-list .css-query)');
     await devToolsPage.waitFor('[aria-label=".starting-style-target, css selector"]:not(.styles-section-inactive)');
 
     rules = await getRuleActivity(devToolsPage);

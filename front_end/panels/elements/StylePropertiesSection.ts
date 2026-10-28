@@ -981,7 +981,12 @@ export class StylePropertiesSection {
           break;
       }
       if (ancestorRuleElement) {
-        this.#ancestorRuleListElement.prepend(ancestorRuleElement);
+        if (ancestorRuleElement instanceof UI.Widget.Widget) {
+          ancestorRuleElement.show(this.#ancestorRuleListElement, this.#ancestorRuleListElement.firstChild,
+                                   /* suppressOrphanWidgetError= */ true);
+        } else {
+          this.#ancestorRuleListElement.prepend(ancestorRuleElement);
+        }
         this.#ancestorClosingBracesElement.prepend(this.indentElement(this.createClosingBrace(), this.nestingLevel));
         this.nestingLevel++;
       }
@@ -1002,7 +1007,8 @@ export class StylePropertiesSection {
         jslogContext: 'at-rule-' + rule.type(),
       };
 
-      this.#ancestorRuleListElement.prepend(atRuleElement);
+      atRuleElement.show(this.#ancestorRuleListElement, this.#ancestorRuleListElement.firstChild,
+                         /* suppressOrphanWidgetError= */ true);
       this.#ancestorClosingBracesElement.prepend(this.indentElement(this.createClosingBrace(), 0));
       this.nestingLevel = 1;
     }
@@ -1250,6 +1256,9 @@ export class StylePropertiesSection {
   }
 
   private updateAncestorRuleList(): void {
+    for (const child of [...this.#ancestorRuleListElement.children]) {
+      UI.Widget.Widget.get(child)?.detach(true);
+    }
     this.#ancestorRuleListElement.removeChildren();
     this.#ancestorClosingBracesElement.removeChildren();
     this.maybeCreateAncestorRules(this.styleInternal);
@@ -2222,6 +2231,8 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
 }
 
 export class FunctionRuleSection extends StylePropertiesSection {
+  private conditionWidgets?: ElementsComponents.CSSQuery.CSSQuery[];
+
   constructor(
       stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number,
@@ -2233,6 +2244,14 @@ export class FunctionRuleSection extends StylePropertiesSection {
     this.selectorElement.className = 'function-key';
     this.customPopulateCallback = () => this.addChildren(children, this.propertiesTreeOutline);
     this.onpopulate();
+  }
+
+  override onpopulate(): void {
+    for (const widget of this.conditionWidgets ?? []) {
+      widget.detach(true);
+    }
+    this.conditionWidgets = [];
+    super.onpopulate();
   }
 
   override isHeaderEditable(): boolean {
@@ -2257,7 +2276,8 @@ export class FunctionRuleSection extends StylePropertiesSection {
     }
   }
 
-  createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): HTMLElement|undefined {
+  createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): ElementsComponents.CSSQuery.CSSQuery
+      |undefined {
     if ('media' in condition) {
       return this.createMediaElement(condition.media);
     }
@@ -2291,7 +2311,9 @@ export class FunctionRuleSection extends StylePropertiesSection {
         this.nestingLevel++;
         if (conditionElement) {
           const treeElement = new UI.TreeOutline.TreeElement();
-          treeElement.listItemElement.appendChild(this.positionNestingElement(conditionElement));
+          this.positionNestingElement(conditionElement.element);
+          conditionElement.show(treeElement.listItemElement, null, /* suppressOrphanWidgetError= */ true);
+          this.conditionWidgets?.push(conditionElement);
           treeElement.setExpandable(true);
           treeElement.setCollapsible(false);
           parent.appendChild(treeElement);

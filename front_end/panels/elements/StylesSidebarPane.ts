@@ -1105,8 +1105,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     this.hasMatchedStyles = matchedStyles !== null && node !== null;
     if (!this.hasMatchedStyles) {
       this.sectionBlocks = [];
-      this.sectionsContainer.contentElement.removeChildren();
       this.sectionsContainer.detachChildWidgets();
+      this.sectionsContainer.contentElement.removeChildren();
       this.noMatchesElement.classList.remove('hidden');
       return;
     }
@@ -1134,8 +1134,8 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
       }
     }
 
-    this.sectionsContainer.contentElement.removeChildren();
     this.sectionsContainer.detachChildWidgets();
+    this.sectionsContainer.contentElement.removeChildren();
     const fragment = document.createDocumentFragment();
 
     let index = 0;

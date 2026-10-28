@@ -8,7 +8,6 @@ import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -22,7 +21,7 @@ describe('CSSQuery', () => {
       jslogContext: 'foo',
     };
 
-    const queryElement = component.shadowRoot!.querySelector<HTMLElement>('.query');
+    const queryElement = component.contentElement.querySelector<HTMLElement>('.query');
     assert.isNotNull(queryElement, 'query element should exist');
 
     assert.strictEqual(
@@ -46,7 +45,7 @@ describe('CSSQuery', () => {
       jslogContext: 'foo',
     };
 
-    const queryElement = component.shadowRoot!.querySelector<HTMLElement>('.query');
+    const queryElement = component.contentElement.querySelector<HTMLElement>('.query');
     assert.isNotNull(queryElement, 'query element should exist');
 
     assert.strictEqual(
@@ -72,7 +71,7 @@ describe('CSSQuery', () => {
       jslogContext: 'foo',
     };
 
-    const queryElement = component.shadowRoot!.querySelector<HTMLElement>('.query');
+    const queryElement = component.contentElement.querySelector<HTMLElement>('.query');
     assert.isNotNull(queryElement, 'query element should exist');
 
     assert.strictEqual(
@@ -105,11 +104,11 @@ describe('CSSQuery', () => {
 
     component.parseStyleQueries(matchedStyles, style, node, '');
 
-    const swatch = component.shadowRoot!.querySelector('devtools-link-swatch') as InlineEditor.LinkSwatch.LinkSwatch;
+    const swatch = component.contentElement.querySelector('devtools-link-swatch');
     assert.exists(swatch);
-    assert.strictEqual(swatch.data.text, '--foo');
+    assert.strictEqual(swatch.innerText, '--foo');
 
-    swatch.data.onLinkActivate('--foo');
+    swatch.linkElement?.click();
     sinon.assert.calledOnce(clickListener);
   });
 });

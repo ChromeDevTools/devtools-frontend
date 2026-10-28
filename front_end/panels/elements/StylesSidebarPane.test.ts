@@ -33,7 +33,6 @@ import {html} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as PanelsCommon from '../common/common.js';
 
-import type * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
 
 describe('StylesSidebarPane', () => {
@@ -711,9 +710,9 @@ describe('StylesSidebarPane', () => {
         assert.lengthOf(sections, 1);
         const section = sections[0];
 
-        const mediaQueryElements = section.element.querySelectorAll('devtools-css-query');
+        const mediaQueryElements = section.element.querySelectorAll('.css-query');
         assert.lengthOf(mediaQueryElements, 1);
-        const mediaQueryElement = mediaQueryElements[0] as ElementsComponents.CSSQuery.CSSQuery;
+        const mediaQueryElement = mediaQueryElements[0];
 
         const queryDiv = mediaQueryElement.shadowRoot?.querySelector('.query');
         assert.exists(queryDiv);
@@ -762,7 +761,7 @@ describe('StylesSidebarPane', () => {
         assert.lengthOf(sections, 1);
         const section = sections[0];
 
-        const mediaQueryElements = section.element.querySelectorAll('devtools-css-query');
+        const mediaQueryElements = section.element.querySelectorAll('.css-query');
         assert.lengthOf(mediaQueryElements, 2);
 
         const queryTexts = Array.from(mediaQueryElements).map(el => {
@@ -4398,7 +4397,7 @@ describeWithEnvironment('StylesSidebarPane Inactive Styles', () => {
     assert.isTrue(nestedSection.isInactive(), 'Nested @starting-style rule should be inactive');
     assert.isFalse(normalSection.isInactive(), 'Normal rule should remain active');
 
-    const cssQuery = nestedSection.element.querySelector('devtools-css-query');
+    const cssQuery = nestedSection.element.querySelector('.css-query');
     assert.isNotNull(cssQuery);
     assert.isNotNull(cssQuery.querySelector('devtools-icon.styles-section-status'));
     assert.isNotNull(cssQuery.querySelector('devtools-icon.section-collapse-icon'));
@@ -4808,8 +4807,8 @@ describeWithEnvironment('StylesSidebarPane updates, completions, and media/keyfr
     });
     const blocks =
         await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map(), null);
-    const q1 = blocks[0].sections[0].element.querySelector('devtools-css-query')?.shadowRoot?.querySelector('.query');
-    const q2 = blocks[0].sections[1].element.querySelector('devtools-css-query')?.shadowRoot?.querySelector('.query');
+    const q1 = blocks[0].sections[0].element.querySelector('.css-query')?.shadowRoot?.querySelector('.query');
+    const q2 = blocks[0].sections[1].element.querySelector('.css-query')?.shadowRoot?.querySelector('.query');
     assert.include(q1?.textContent ?? '', '(max-width: 900px)');
     assert.include(q2?.textContent ?? '', '(min-width: 500px)');
   });

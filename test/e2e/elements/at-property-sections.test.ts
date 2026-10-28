@@ -35,7 +35,7 @@ describe('The styles pane', () => {
     await devToolsPage.hover(
         '.invalid-property-value:has(> [aria-label="CSS property name: --my-color"]) .exclamation-mark');
 
-    const popover = await devToolsPage.waitFor(':popover-open devtools-css-variable-parser-error');
+    const popover = await devToolsPage.waitFor(':popover-open .css-variable-parser-error');
     const firstSection = await devToolsPage.waitFor('.variable-value-popup-wrapper', popover);
     const popoverContents = await firstSection.evaluate(e => e.deepInnerText());
 
@@ -118,13 +118,13 @@ describe('The styles pane', () => {
         await devToolsPage.hover(`aria/CSS property name: ${label}`);
       }
 
-      const popover = await devToolsPage.waitFor(':popover-open devtools-css-variable-value-view');
+      const popover = await devToolsPage.waitFor(':popover-open .css-variable-value-view');
       const popoverContents = await popover.evaluate(e => {
         return e.deepInnerText();
       });
 
       await devToolsPage.hover(ELEMENTS_PANEL_SELECTOR);
-      await devToolsPage.waitForNone(':popover-open devtools-css-variable-value-view');
+      await devToolsPage.waitForNone(':popover-open .css-variable-value-view');
 
       return popoverContents;
     }

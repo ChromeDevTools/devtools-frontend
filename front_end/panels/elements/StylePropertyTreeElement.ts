@@ -437,13 +437,13 @@ export class VariableRenderer extends VariableRendererBase {
         tooltipId ? html`<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
-    // clang-format on
+            jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
+          // clang-format on
 
-    const color = computedValue && Common.Color.parse(computedValue);
-    if (!color) {
-      return varSwatch;
-    }
+          const color = computedValue && Common.Color.parse(computedValue);
+          if (!color) {
+            return varSwatch;
+          }
 
     const colorSwatch =
         new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, match, context);
@@ -501,8 +501,8 @@ export class VariableNameRenderer extends VariableNameRendererBase {
       }}></devtools-link-swatch>${tooltipId ? html`<devtools-tooltip
         id=${tooltipId}
         variant=rich
-        jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
-    // clang-format on
+        jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
+      // clang-format on
   }
 }
 
@@ -2957,7 +2957,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.nameElement.setAttribute('aria-details', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip(
           {anchor: this.nameElement, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var'});
-      tooltip.appendChild(contents);
+      contents.show(tooltip, undefined, /* suppressOrphanWidgetError= */ true);
       tooltip.onbeforetoggle = (e: Event) => {
         if ((e as ToggleEvent).newState === 'open') {
           contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
@@ -3083,7 +3083,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
+  createExclamationMark(property: SDK.CSSProperty.CSSProperty,
+                        title: ElementsComponents.CSSVariableValueView.CSSVariableParserError|HTMLElement|
+                        null): Element {
     const container = document.createElement('span');
     const exclamationElement = container.createChild('span');
     exclamationElement.tabIndex = -1;
@@ -3102,7 +3104,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         id: tooltipId,
         jslogContext: 'elements.invalid-property-decl-popover',
       });
-      tooltip.appendChild(title);
+      if (title instanceof UI.Widget.Widget) {
+        title.show(tooltip, undefined, /* suppressOrphanWidgetError= */ true);
+      } else {
+        tooltip.appendChild(title);
+      }
       container.appendChild(tooltip);
     }
     const invalidString =

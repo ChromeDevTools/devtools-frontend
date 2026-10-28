@@ -82,7 +82,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               variant="rich"
               jslogContext="elements.css-var"
             >
-              ${tooltipContents}
+              ${tooltipContents ? html`<devtools-widget>${tooltipContents.element}</devtools-widget>` : Lit.nothing}
             </devtools-tooltip>
           `;
         }

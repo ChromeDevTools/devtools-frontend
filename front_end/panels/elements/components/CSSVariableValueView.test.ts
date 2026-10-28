@@ -18,6 +18,6 @@ describeWithEnvironment('CSSVariableValueView', () => {
     });
     renderElementIntoDOM(view);
 
-    assert.strictEqual(view.shadowRoot!.querySelector('.variable-value-popup-wrapper')!.textContent!.trim(), 'pink');
+    assert.strictEqual(view.contentElement.querySelector('.variable-value-popup-wrapper')!.textContent!.trim(), 'pink');
   });
 });

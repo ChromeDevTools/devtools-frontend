@@ -1035,8 +1035,10 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
       stylePropertyTreeElement.updateTitle();
 
-      const popoverContents =
-          stylePropertyTreeElement.listItemElement.querySelector('devtools-tooltip > devtools-css-variable-value-view');
+      const popoverElement =
+          stylePropertyTreeElement.listItemElement.querySelector('devtools-tooltip > .css-variable-value-view');
+      assert.exists(popoverElement);
+      const popoverContents = LegacyUI.Widget.Widget.get(popoverElement);
       assert.instanceOf(popoverContents, ElementsComponents.CSSVariableValueView.CSSVariableValueView);
       const {details} = popoverContents;
       assert.exists(details);

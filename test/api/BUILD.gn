@@ -46,6 +46,8 @@ node_script_test("devtools_api_tests") {
     ":api",
     "../../front_end:api_test_inputs",
     "../../front_end:api_tests",
+    "../../scripts/hosted_mode",
+    "../e2e/resources",
   ]
 
   if (!devtools_build_with_bundled_chromium_deps) {

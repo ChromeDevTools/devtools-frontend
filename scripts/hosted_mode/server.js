@@ -17,27 +17,12 @@ const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT ?? '9222'
 const port = parseInt(process.env.PORT ?? '0', 10);
 const requestedPort = port === 0 ? port : 8090;
 
-let pathToOutTargetDir = import.meta.dirname;
-/**
- * If we are in the gen directory, we need to find the out/Default folder to use
- * as our base to find files from. We could do this with path.join(x, '..',
- * '..') until we get the right folder, but that's brittle. It's better to
- * search up for the directory containing args.gn to be robust to any folder structures.
- */
-const fileSystemRootDirectory = path.parse(process.cwd()).root;
-while (!fs.existsSync(path.join(pathToOutTargetDir, 'args.gn'))) {
-  pathToOutTargetDir = path.resolve(pathToOutTargetDir, '..');
-  if (pathToOutTargetDir === fileSystemRootDirectory) {
-    console.error(
-        'Could not find the build root directory. You must run the hosted server from within the build root directory containing the args.gn file for it to work (node gen/scripts/hosted_mode/server.js). The hosted mode server only works on the built output from DevTools, not from the source input.');
-    process.exit(1);
-  }
-}
-// We care about everything in the gen/ directory, unless we are in a full checkout.
-let devtoolsFolder = path.resolve(path.join(pathToOutTargetDir, 'gen'));
-const fullCheckoutDevtoolsRootFolder = path.join(devtoolsFolder, 'third_party', 'devtools-frontend', 'src');
-if (import.meta.dirname.startsWith(fullCheckoutDevtoolsRootFolder)) {
-  devtoolsFolder = fullCheckoutDevtoolsRootFolder;
+// The hosted mode server runs from <GEN_DIR>/scripts/hosted_mode/server.js.
+const devtoolsFolder = path.resolve(import.meta.dirname, '..', '..');
+if (!devtoolsFolder.split(path.sep).includes('gen')) {
+  console.error(
+      'Could not find the generated build directory. The hosted mode server only works on the built output from DevTools (node gen/scripts/hosted_mode/server.js), not from the source input.');
+  process.exit(1);
 }
 
 // The certificate is taken from

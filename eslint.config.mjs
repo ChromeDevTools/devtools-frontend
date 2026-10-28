@@ -868,7 +868,6 @@ export default defineConfig([
       'front_end/models/workspace/**/*.ts',
       'front_end/models/workspace_diff/**/*.ts',
       'front_end/panels/recorder/**/*.ts',
-      'front_end/ui/components/suggestion_input/*.ts',
     ],
     rules: {
       // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.

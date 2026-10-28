@@ -2,13 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import path from 'node:path';
-
 import {createRule} from './utils/ruleCreator.ts';
-
-const allowedPaths = [
-  'front_end/ui/components/suggestion_input/',
-];
 
 export default createRule({
   name: 'no-new-lit-element-components',
@@ -25,12 +19,6 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const filename = context.filename;
-    const normalizedFilename = path.normalize(filename);
-    if (allowedPaths.some(allowedPath => normalizedFilename.includes(path.normalize(allowedPath)))) {
-      return {};
-    }
-
     return {
       ClassDeclaration(node) {
         // Use `extends LitElement` or `extends Lit.LitElement` as a signal.

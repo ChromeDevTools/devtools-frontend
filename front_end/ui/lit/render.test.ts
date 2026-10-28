@@ -4,11 +4,10 @@
 
 import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
-import * as sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
-import {CustomDirectives, html, render} from './lit.js';
+import {html, render} from './lit.js';
 
 describe('render', () => {
   let container: HTMLElement;
@@ -100,17 +99,6 @@ describe('render', () => {
     render(html`<span>Content</span>`, container, {container: {listeners: {}}});
     container.click();
     assert.strictEqual(clicked2, 1);
-  });
-
-  it('updates interceptedListeners on the container using InterceptBindingDirective', () => {
-    const stub = sinon.stub(CustomDirectives.InterceptBindingDirective, 'registerListeners');
-
-    const listener1 = () => {};
-    render(html`<span>Content</span>`, container, {container: {interceptedListeners: {click: listener1}}});
-    sinon.assert.calledOnceWithExactly(stub, container, {click: listener1});
-
-    render(html`<span>Content</span>`, container, {container: {interceptedListeners: undefined}});
-    sinon.assert.calledWithExactly(stub, container, undefined);
   });
 
   it('applies options to the host when rendering into a ShadowRoot', () => {

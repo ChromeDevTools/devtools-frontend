@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import * as Lit from '../../third_party/lit/lit.js';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type BindingEventListener = (arg: any) => any;
 
 export class InterceptBindingDirective extends Lit.Directive.Directive {
-  static readonly #interceptedBindings = new WeakMap<Element, Map<string, BindingEventListener>>();
+  static readonly #interceptedBindings =
+      new WeakMap<Element, {bindings: Map<string, BindingEventListener>, lastAttachment?: WeakRef<Element>}>();
   static readonly #attachedBindings = new WeakMap<Element, Map<string, Set<BindingEventListener>>>();
 
   override update(part: Lit.Directive.Part, [listener]: [BindingEventListener]): unknown {
@@ -17,12 +19,40 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
     }
     let eventListeners = InterceptBindingDirective.#interceptedBindings.get(part.element);
     if (!eventListeners) {
-      eventListeners = new Map();
+      eventListeners = {bindings: new Map()};
       InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
     }
-    eventListeners.set(part.name, listener);
+
+    InterceptBindingDirective.#updateAttachedListener(part.element, part.name, listener);
+    eventListeners.bindings.set(part.name, listener);
 
     return this.render(listener);
+  }
+
+  static #updateAttachedListener(templateElement: Element, name: string, listener: BindingEventListener): void {
+    const binding = this.#interceptedBindings.get(templateElement);
+    if (!binding) {
+      return;
+    }
+    const lastAttachment = binding.lastAttachment?.deref();
+    if (!lastAttachment) {
+      return;
+    }
+    const oldListener = binding.bindings.get(name);
+    if (oldListener === listener) {
+      return;
+    }
+    const attachedBindings = this.#attachedBindings.get(lastAttachment);
+    if (!attachedBindings) {
+      return;
+    }
+    const attachedListeners = Platform.MapUtilities.getWithDefault(attachedBindings, name, () => new Set());
+    if (oldListener) {
+      lastAttachment.removeEventListener(name, oldListener);
+      attachedListeners.delete(oldListener);
+    }
+    lastAttachment.addEventListener(name, listener);
+    attachedListeners.add(listener);
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
@@ -45,7 +75,8 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
     for (const templateElement of elements) {
       const newListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
       if (newListeners) {
-        for (const [name, listener] of newListeners) {
+        newListeners.lastAttachment = new WeakRef(renderedElement);
+        for (const [name, listener] of newListeners.bindings) {
           renderedElement.addEventListener(name, listener);
           let listenersSet = newAttachedListeners.get(name);
           if (!listenersSet) {
@@ -62,19 +93,5 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
     } else {
       InterceptBindingDirective.#attachedBindings.delete(renderedElement);
     }
-  }
-
-  static registerListeners(element: Element, listeners?: Record<string, EventListenerOrEventListenerObject>): void {
-    if (!listeners) {
-      InterceptBindingDirective.#interceptedBindings.delete(element);
-      return;
-    }
-    const map = new Map<string, BindingEventListener>();
-    for (const [name, listener] of Object.entries(listeners)) {
-      map.set(name,
-              typeof listener === 'function' ? listener as BindingEventListener :
-                                               listener.handleEvent.bind(listener) as BindingEventListener);
-    }
-    InterceptBindingDirective.#interceptedBindings.set(element, map);
   }
 }

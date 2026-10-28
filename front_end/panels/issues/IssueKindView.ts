@@ -14,7 +14,9 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 
-import type * as Components from './components/components.js';
+import * as Components from './components/components.js';
+
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -66,7 +68,8 @@ interface ViewInput {
   iconName: string;
   count: number;
   title: Common.UIString.LocalizedString;
-  hideMenuData: Components.HideIssuesMenu.HiddenIssuesMenuData;
+  menuItemLabel: Common.UIString.LocalizedString;
+  menuItemAction: () => void;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -80,7 +83,10 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         <span>${input.count}</span>
       </devtools-adorner>
       <div class="title">${input.title}</div>
-      <devtools-hide-issues-menu class="hide-available-issues" .data=${input.hideMenuData}></devtools-hide-issues-menu>
+      <devtools-widget class="hide-available-issues" ${widget(Components.HideIssuesMenu.HideIssuesMenu, {
+        menuItemLabel: input.menuItemLabel,
+        menuItemAction: input.menuItemAction,
+      })}></devtools-widget>
     </div>
   `, target);
   // clang-format on
@@ -123,18 +129,16 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
           iconName: IssueCounter.IssueCounter.getIssueKindIconName(this.#kind),
           count: this.#issueCount,
           title: IssuesManager.Issue.getIssueKindName(this.#kind),
-          hideMenuData: {
-            menuItemLabel: this.getHideAllCurrentKindString(),
-            menuItemAction: () => {
-              const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
-              const values = setting.get();
-              for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {
-                if (issue.getKind() === this.#kind) {
-                  values[issue.code()] = IssuesManager.IssuesManager.IssueStatus.HIDDEN;
-                }
+          menuItemLabel: this.getHideAllCurrentKindString(),
+          menuItemAction: () => {
+            const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
+            const values = setting.get();
+            for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {
+              if (issue.getKind() === this.#kind) {
+                values[issue.code()] = IssuesManager.IssuesManager.IssueStatus.HIDDEN;
               }
-              setting.set(values);
-            },
+            }
+            setting.set(values);
           },
         },
         undefined,

@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -21,62 +20,87 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/components/HideIssuesMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface HiddenIssuesMenuData {
+export interface ViewInput {
   menuItemLabel: Common.UIString.LocalizedString;
   menuItemAction: () => void;
 }
 
-export class HideIssuesMenu extends HTMLElement {
-  readonly #shadow: ShadowRoot = this.attachShadow({mode: 'open'});
-  #menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
-  #menuItemAction: () => void = () => {};
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-  set data(data: HiddenIssuesMenuData) {
-    this.#menuItemLabel = data.menuItemLabel;
-    this.#menuItemAction = data.menuItemAction;
-    this.#render();
-  }
-
-  onMenuOpen(event: Event): void {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const onMenuOpen = (event: Event): void => {
     event.stopPropagation();
-    const buttonElement = this.#shadow.querySelector('devtools-button');
+    const buttonElement = event.currentTarget as HTMLElement | null;
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
       x: buttonElement?.getBoundingClientRect().left,
       y: buttonElement?.getBoundingClientRect().bottom,
     });
-    contextMenu.headerSection().appendItem(
-        this.#menuItemLabel, () => this.#menuItemAction(), {jslogContext: 'toggle-similar-issues'});
+    contextMenu.headerSection().appendItem(input.menuItemLabel, () => input.menuItemAction(),
+                                           {jslogContext: 'toggle-similar-issues'});
     void contextMenu.show();
-  }
+  };
 
-  onKeydown(event: KeyboardEvent): void {
+  const onKeydown = (event: KeyboardEvent): void => {
     if (event.key === 'Enter' || event.key === 'Space') {
       // Make sure we don't propagate 'Enter' or 'Space' key events to parents,
       // so that these get turned into 'click' events properly.
       event.stopImmediatePropagation();
     }
-  }
+  };
 
-  #render(): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    render(html`
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  render(html`
     <style>${hideIssuesMenuStyles}</style>
     <devtools-button
-      .data=${{variant: Buttons.Button.Variant.ICON,iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
+      .data=${{variant: Buttons.Button.Variant.ICON, iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
       .jslogContext=${'hide-issues'}
       class="hide-issues-menu-btn"
-      @click=${this.onMenuOpen}
-      @keydown=${this.onKeydown}></devtools-button>
-    `, this.#shadow, {host: this});
+      @click=${onMenuOpen}
+      @keydown=${onKeydown}></devtools-button>
+  `, target);
+  // clang-format on
+};
+
+export class HideIssuesMenu extends UI.Widget.Widget {
+  #menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
+  #menuItemAction: () => void = () => {};
+  readonly #view: View;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true, classes: ['hide-issues-menu']});
+    this.#view = view;
   }
-}
 
-customElements.define('devtools-hide-issues-menu', HideIssuesMenu);
+  set menuItemLabel(menuItemLabel: Common.UIString.LocalizedString) {
+    if (this.#menuItemLabel === menuItemLabel) {
+      return;
+    }
+    this.#menuItemLabel = menuItemLabel;
+    this.requestUpdate();
+  }
 
-declare global {
+  set menuItemAction(menuItemAction: () => void) {
+    if (this.#menuItemAction === menuItemAction) {
+      return;
+    }
+    this.#menuItemAction = menuItemAction;
+    this.requestUpdate();
+  }
 
-  interface HTMLElementTagNameMap {
-    'devtools-hide-issues-menu': HideIssuesMenu;
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          menuItemLabel: this.#menuItemLabel,
+          menuItemAction: this.#menuItemAction,
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 }

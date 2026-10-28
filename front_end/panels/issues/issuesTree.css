@@ -117,12 +117,13 @@ p {
   }
 }
 
-.header devtools-hide-issues-menu {
+.header .hide-issues-menu {
   visibility: hidden;
+  flex: none;
 }
 
-.header:hover devtools-hide-issues-menu,
-.issue.selected devtools-hide-issues-menu {
+.header:hover .hide-issues-menu,
+.issue.selected .hide-issues-menu {
   visibility: visible;
 }
 

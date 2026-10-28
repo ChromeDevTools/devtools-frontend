@@ -356,7 +356,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     title.textContent = this.#description.title;
     header.appendChild(title);
     if (this.#hiddenIssuesMenu) {
-      header.appendChild(this.#hiddenIssuesMenu);
+      this.#hiddenIssuesMenu.show(header, undefined, /* suppressOrphanWidgetError= */ true);
     }
     this.#updateFromIssue();
     this.listItemElement.appendChild(header);
@@ -396,18 +396,15 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     }
     this.listItemElement.classList.toggle('hidden-issue', this.#issue.isHidden());
     if (this.#hiddenIssuesMenu) {
-      const data: Components.HideIssuesMenu.HiddenIssuesMenuData = {
-        menuItemLabel: this.#issue.isHidden() ? i18nString(UIStrings.unhideIssuesLikeThis) :
-                                                i18nString(UIStrings.hideIssuesLikeThis),
-        menuItemAction: () => {
-          const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
-          const values = setting.get();
-          values[this.#issue.code()] = this.#issue.isHidden() ? IssuesManager.IssuesManager.IssueStatus.UNHIDDEN :
-                                                                IssuesManager.IssuesManager.IssueStatus.HIDDEN;
-          setting.set(values);
-        },
+      this.#hiddenIssuesMenu.menuItemLabel = this.#issue.isHidden() ? i18nString(UIStrings.unhideIssuesLikeThis) :
+                                                                      i18nString(UIStrings.hideIssuesLikeThis);
+      this.#hiddenIssuesMenu.menuItemAction = () => {
+        const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
+        const values = setting.get();
+        values[this.#issue.code()] = this.#issue.isHidden() ? IssuesManager.IssuesManager.IssueStatus.UNHIDDEN :
+                                                              IssuesManager.IssuesManager.IssueStatus.HIDDEN;
+        setting.set(values);
       };
-      this.#hiddenIssuesMenu.data = data;
     }
   }
 

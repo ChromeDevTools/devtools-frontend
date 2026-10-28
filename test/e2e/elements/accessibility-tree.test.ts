@@ -189,8 +189,8 @@ describe('Accessibility Tree in the Elements Tab', function() {
            if (!selected) {
              return null;
            }
-           const axNode = selected.querySelector('devtools-accessibility-tree-node');
-           return axNode && axNode.shadowRoot ? axNode.shadowRoot.textContent : null;
+           const axNode = selected.querySelector('devtools-widget');
+           return axNode ? axNode.textContent : null;
          });
          return text && text.includes('cats');
        });

@@ -7,7 +7,6 @@ import {describe, it} from 'mocha';
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -17,32 +16,27 @@ describe('AccessibilityTreeNode', () => {
     const component = new ElementsComponents.AccessibilityTreeNode.AccessibilityTreeNode();
     renderElementIntoDOM(component);
 
-    component.data = {
-      name: 'NodeName',
-      role: 'NodeRole',
-      ignored: false,
-      properties: [],
-      id: 'NodeId',
-    };
+    component.name = 'NodeName';
+    component.role = 'NodeRole';
+    component.ignored = false;
+    component.properties = [];
 
-    await RenderCoordinator.done();
+    await component.updateComplete;
 
-    assert.strictEqual(component.shadowRoot?.querySelector('.container')?.textContent, 'NodeRole\xa0"NodeName"');
+    assert.strictEqual(component.contentElement.querySelector('.container')?.textContent, 'NodeRole\xa0"NodeName"');
   });
 
   it('renders ignored nodes as "ignored"', async () => {
     const component = new ElementsComponents.AccessibilityTreeNode.AccessibilityTreeNode();
     renderElementIntoDOM(component);
 
-    component.data = {
-      name: 'NodeName',
-      role: 'NodeRole',
-      ignored: true,
-      properties: [],
-      id: 'NodeId',
-    };
-    await RenderCoordinator.done();
+    component.name = 'NodeName';
+    component.role = 'NodeRole';
+    component.ignored = true;
+    component.properties = [];
 
-    assert.strictEqual(component.shadowRoot?.querySelector('.container')?.textContent, 'Ignored');
+    await component.updateComplete;
+
+    assert.strictEqual(component.contentElement.querySelector('.container')?.textContent, 'Ignored');
   });
 });

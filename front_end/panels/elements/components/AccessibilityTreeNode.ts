@@ -1,13 +1,11 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../../ui/lit/lit.js';
 
@@ -35,57 +33,88 @@ function truncateTextIfNeeded(text: string): string {
   return text;
 }
 
-export interface AccessibilityTreeNodeData {
+export interface ViewInput {
   ignored: boolean;
   name: string;
   role: string;
   properties: Protocol.Accessibility.AXProperty[];
-  id: string;
 }
 
-export class AccessibilityTreeNode extends HTMLElement {
-  readonly #shadow = UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: accessibilityTreeNodeStyles});
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const role = html`<span class='role-value'>${truncateTextIfNeeded(input.role)}</span>`;
+  const name = html`"<span class='attribute-value'>${input.name}</span>"`;
+  const properties = input.properties.map(
+      ({name, value}) => SDK.AccessibilityModel.isPrintableType(value.type) ?
+          html` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` :
+          nothing);
+  const content =
+      input.ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
+  // clang-format off
+  render(
+    html`
+      <style>${accessibilityTreeNodeStyles}</style>
+      <div class='container'>${content}</div>
+    `,
+    target);
+  // clang-format on
+};
+
+export class AccessibilityTreeNode extends UI.Widget.Widget {
   #ignored = true;
   #name = '';
   #role = '';
   #properties: Protocol.Accessibility.AXProperty[] = [];
-  #id = '';
+  readonly #view: View;
 
-  set data(data: AccessibilityTreeNodeData) {
-    this.#ignored = data.ignored;
-    this.#name = data.name;
-    this.#role = data.role;
-    this.#properties = data.properties;
-    this.#id = data.id;
-    void this.#render();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
 
-  async #render(): Promise<void> {
-    const role = html`<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
-    const name = html`"<span class='attribute-value'>${this.#name}</span>"`;
-    const properties =
-        this.#properties.map(({name, value}) => SDK.AccessibilityModel.isPrintableType(value.type) ?
-                                 html` <span class='attribute-name'>${
-                                     name}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` :
-                                 nothing);
-    const content =
-        this.#ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
-    await RenderCoordinator.write(`Accessibility node ${this.#id} render`, () => {
-      // clang-format off
-      render(
-        html`<div class='container'>${content}</div>`,
-        this.#shadow,
-        {host: this});
-      // clang-format on
-    });
+  set ignored(ignored: boolean) {
+    if (this.#ignored === ignored) {
+      return;
+    }
+    this.#ignored = ignored;
+    this.requestUpdate();
   }
-}
 
-customElements.define('devtools-accessibility-tree-node', AccessibilityTreeNode);
+  set name(name: string) {
+    if (this.#name === name) {
+      return;
+    }
+    this.#name = name;
+    this.requestUpdate();
+  }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-accessibility-tree-node': AccessibilityTreeNode;
+  set role(role: string) {
+    if (this.#role === role) {
+      return;
+    }
+    this.#role = role;
+    this.requestUpdate();
+  }
+
+  set properties(properties: Protocol.Accessibility.AXProperty[]) {
+    if (this.#properties === properties) {
+      return;
+    }
+    this.#properties = properties;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          ignored: this.#ignored,
+          name: this.#name,
+          role: this.#role,
+          properties: this.#properties,
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 }

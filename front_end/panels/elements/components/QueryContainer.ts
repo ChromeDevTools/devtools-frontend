@@ -1,12 +1,12 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 
 import '../../../ui/kit/kit.js';
 import '../../../ui/components/node_text/node_text.js';
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -25,42 +25,121 @@ export class QueriedSizeRequestedEvent extends Event {
 export interface QueryContainerData {
   container: SDK.DOMModel.DOMNode;
   queryName?: string;
-  onContainerLinkClick: (event: Event) => void;
+  onContainerLinkClick: () => void;
 }
 
-export class QueryContainer extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+export interface ViewInput {
+  nodeTitle: string;
+  idToDisplay?: string;
+  classesToDisplay?: string[];
+  onContainerLinkClick?: () => void;
+  onContainerLinkMouseEnter: () => void;
+  onContainerLinkMouseLeave: () => void;
+  isContainerLinkHovered: boolean;
+  queriedSizeDetails?: SDK.CSSContainerQuery.ContainerQueriedSizeDetails;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const renderQueriedSizeDetails = (): Lit.LitTemplate => {
+    if (!input.queriedSizeDetails || input.queriedSizeDetails.queryAxis === QueryAxis.NONE) {
+      return Lit.nothing;
+    }
+
+    const areBothAxesQueried = input.queriedSizeDetails.queryAxis === QueryAxis.BOTH;
+
+    const axisIconClasses = Lit.Directives.classMap({
+      'axis-icon': true,
+      hidden: areBothAxesQueried,
+      vertical: input.queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL,
+    });
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`
+      <span class="queried-size-details">
+        (${input.queriedSizeDetails.queryAxis}
+        <devtools-icon
+          class=${axisIconClasses} name="width"></devtools-icon>
+        ) ${areBothAxesQueried && input.queriedSizeDetails.width ? ' width: ' : Lit.nothing}
+        ${input.queriedSizeDetails.width || Lit.nothing}
+        ${areBothAxesQueried && input.queriedSizeDetails.height ? ' height: ' : Lit.nothing}
+        ${input.queriedSizeDetails.height || Lit.nothing}
+      </span>
+    `;
+    // clang-format on
+  };
+
+  // Disabled until https://crbug.com/1079231 is fixed.
+  // clang-format off
+  // eslint-disable-next-line @devtools/no-a-tags-in-lit
+  render(html`
+    <style>${queryContainerStyles}</style>
+    \u2192
+    <a href="#" draggable=false class="container-link"
+       jslog=${VisualLogging.cssRuleHeader('container-query').track({click: true})}
+       @click=${(event: Event) => {
+         event.preventDefault();
+         input.onContainerLinkClick?.();
+       }}
+       @mouseenter=${input.onContainerLinkMouseEnter}
+       @mouseleave=${input.onContainerLinkMouseLeave}>
+      <devtools-node-text data-node-title=${input.nodeTitle} .data=${{
+        nodeTitle: input.nodeTitle,
+        nodeId: input.idToDisplay,
+        nodeClasses: input.classesToDisplay,
+      }}>
+      </devtools-node-text>
+    </a>
+    ${input.isContainerLinkHovered ? renderQueriedSizeDetails() : Lit.nothing}
+  `, target);
+  // clang-format on
+};
+
+export class QueryContainer extends UI.Widget.Widget {
+  #view: View;
   #queryName?: string;
   #container?: SDK.DOMModel.DOMNode;
-  #onContainerLinkClick?: (event: Event) => void;
+  #onContainerLinkClick?: () => void;
   #isContainerLinkHovered = false;
   #queriedSizeDetails?: SDK.CSSContainerQuery.ContainerQueriedSizeDetails;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+  }
 
   set data(data: QueryContainerData) {
     this.#queryName = data.queryName;
     this.#container = data.container;
     this.#onContainerLinkClick = data.onContainerLinkClick;
-    this.#render();
+    this.performUpdate();
   }
 
   updateContainerQueriedSizeDetails(details: SDK.CSSContainerQuery.ContainerQueriedSizeDetails): void {
     this.#queriedSizeDetails = details;
-    this.#render();
+    this.performUpdate();
   }
 
-  async #onContainerLinkMouseEnter(): Promise<void> {
+  override wasShown(): void {
+    super.wasShown();
+    this.performUpdate();
+  }
+
+  #onContainerLinkMouseEnter = (): void => {
     this.#container?.highlight('container-outline');
     this.#isContainerLinkHovered = true;
-    this.dispatchEvent(new QueriedSizeRequestedEvent());
-  }
+    this.dispatchDOMEvent(new QueriedSizeRequestedEvent());
+  };
 
-  #onContainerLinkMouseLeave(): void {
+  #onContainerLinkMouseLeave = (): void => {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     this.#isContainerLinkHovered = false;
-    this.#render();
-  }
+    this.performUpdate();
+  };
 
-  #render(): void {
+  override performUpdate(): void {
     if (!this.#container) {
       return;
     }
@@ -73,65 +152,16 @@ export class QueryContainer extends HTMLElement {
 
     const nodeTitle = this.#queryName || this.#container.nodeNameInCorrectCase();
 
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    // eslint-disable-next-line @devtools/no-a-tags-in-lit
-    render(html`
-      <style>${queryContainerStyles}</style>
-      \u2192
-      <a href="#" draggable=false class="container-link"
-         jslog=${VisualLogging.cssRuleHeader('container-query').track({click: true})}
-         @click=${this.#onContainerLinkClick}
-         @mouseenter=${this.#onContainerLinkMouseEnter}
-         @mouseleave=${this.#onContainerLinkMouseLeave}>
-        <devtools-node-text data-node-title=${nodeTitle} .data=${{
-          nodeTitle,
-          nodeId: idToDisplay,
-          nodeClasses: classesToDisplay,
-        }}>
-        </devtools-node-text>
-      </a>
-      ${this.#isContainerLinkHovered ? this.#renderQueriedSizeDetails() : Lit.nothing}
-    `, this.#shadow, {
-      host: this,
-    });
-    // clang-format on
-  }
-
-  #renderQueriedSizeDetails(): Lit.LitTemplate {
-    if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === QueryAxis.NONE) {
-      return Lit.nothing;
-    }
-
-    const areBothAxesQueried = this.#queriedSizeDetails.queryAxis === QueryAxis.BOTH;
-
-    const axisIconClasses = Lit.Directives.classMap({
-      'axis-icon': true,
-      hidden: areBothAxesQueried,
-      vertical: this.#queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL,
-    });
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <span class="queried-size-details">
-        (${this.#queriedSizeDetails.queryAxis}
-        <devtools-icon
-          class=${axisIconClasses} name="width"></devtools-icon>
-        ) ${areBothAxesQueried && this.#queriedSizeDetails.width ? ' width: ' : Lit.nothing}
-        ${this.#queriedSizeDetails.width || Lit.nothing}
-        ${areBothAxesQueried && this.#queriedSizeDetails.height ? ' height: ' : Lit.nothing}
-        ${this.#queriedSizeDetails.height || Lit.nothing}
-      </span>
-    `;
-    // clang-format on
-  }
-}
-
-customElements.define('devtools-query-container', QueryContainer);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-query-container': QueryContainer;
+    this.#view({
+      nodeTitle,
+      idToDisplay,
+      classesToDisplay,
+      onContainerLinkClick: this.#onContainerLinkClick,
+      onContainerLinkMouseEnter: this.#onContainerLinkMouseEnter,
+      onContainerLinkMouseLeave: this.#onContainerLinkMouseLeave,
+      isContainerLinkHovered: this.#isContainerLinkHovered,
+      queriedSizeDetails: this.#queriedSizeDetails,
+    },
+               undefined, this.contentElement);
   }
 }

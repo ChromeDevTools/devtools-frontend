@@ -1237,22 +1237,22 @@ export class StylePropertiesSection {
     containerElement.data = {
       container: container.containerNode,
       queryName: containerQuery.name,
-      onContainerLinkClick: event => {
-        event.preventDefault();
+      onContainerLinkClick: () => {
         void ElementsPanel.instance().revealAndSelectNode(
             container.containerNode, {showPanel: true, focusNode: true, highlightInOverlay: false});
         void container.containerNode.scrollIntoView();
       },
     };
 
-    containerElement.addEventListener('queriedsizerequested', async () => {
+    containerElement.element.addEventListener('queriedsizerequested', async () => {
       const details = await container.getContainerSizeDetails();
       if (details) {
         containerElement.updateContainerQueriedSizeDetails(details);
       }
     });
 
-    this.#ancestorRuleListElement.prepend(containerElement);
+    containerElement.show(this.#ancestorRuleListElement, this.#ancestorRuleListElement.firstChild,
+                          /* suppressOrphanWidgetError= */ true);
   }
 
   private updateAncestorRuleList(): void {

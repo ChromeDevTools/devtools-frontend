@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/components/spinners/spinners.js';
+import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -16,7 +17,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
@@ -1434,25 +1434,30 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.title = title;
     this.tooltip = title;
     this.navigatorView = navigatorView;
+    this.updateIcon();
+  }
 
-    let iconType = 'folder';
+  updateIcon(): void {
+    const iconType = NavigatorFolderTreeElement.#iconTypeForType(this.nodeType);
+    this.setLeadingIcons([html`<devtools-icon name=${iconType}></devtools-icon>`]);
+  }
 
-    if (type === Types.Domain) {
-      iconType = 'cloud';
-    } else if (type === Types.Frame) {
-      iconType = 'frame';
-    } else if (type === Types.Worker) {
-      iconType = 'gears';
-    } else if (type === Types.Authored) {
-      iconType = 'code';
-    } else if (type === Types.Deployed) {
-      iconType = 'deployed';
-    } else if (type === Types.AutomaticFileSystem) {
-      iconType = 'folder-asterisk';
+  static #iconTypeForType(type: string): string {
+    switch (type) {
+      case Types.Domain:
+        return 'cloud';
+      case Types.Frame:
+        return 'frame';
+      case Types.Worker:
+        return 'gears';
+      case Types.Authored:
+        return 'code';
+      case Types.Deployed:
+        return 'deployed';
+      case Types.AutomaticFileSystem:
+        return 'folder-asterisk';
     }
-
-    const icon = createIcon(iconType);
-    this.setLeadingIcons([icon]);
+    return 'folder';
   }
 
   override async onpopulate(): Promise<void> {
@@ -2210,40 +2215,48 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     const expandable = !(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem);
     this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, expandable);
     this.treeElement.setNode(this);
-    if (this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem) {
-      const {automaticFileSystem, automaticFileSystemManager} = this.project;
-      switch (automaticFileSystem?.state) {
-        case 'connecting': {
-          // clang-format off
-          this.treeElement.setTrailingIcons([
-            html`<devtools-spinner></devtools-spinner>`,
-          ]);
-          // clang-format on
-          break;
-        }
-        case 'disconnected': {
-          // clang-format off
-          this.treeElement.setTrailingIcons([
-            html`<devtools-button
-              .data=${{
-                variant: Buttons.Button.Variant.OUTLINED,
-                size: Buttons.Button.Size.MICRO,
-                title: i18nString(UIStrings.connectFolderToWorkspace),
-                jslogContext: 'automatic-workspace-folders.connect',
-              } as Buttons.Button.ButtonData}
-              @click=${async (event: Event) => {
-                event.consume();
-                await automaticFileSystemManager.connectAutomaticFileSystem(
-                    /* addIfMissing= */ true);
-              }}
-            >${i18nString(UIStrings.connect)}</devtools-button>`,
-          ]);
-          // clang-format on
-          break;
-        }
+    this.updateTrailingIcons();
+    return this.treeElement;
+  }
+
+  private renderTrailingIcons(): Lit.TemplateResult|null {
+    if (!(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem)) {
+      return null;
+    }
+    const {automaticFileSystem, automaticFileSystemManager} = this.project;
+    switch (automaticFileSystem?.state) {
+      case 'connecting': {
+        // clang-format off
+        return html`<devtools-spinner></devtools-spinner>`;
+        // clang-format on
+      }
+      case 'disconnected': {
+        // clang-format off
+        return html`<devtools-button
+          .data=${{
+            variant: Buttons.Button.Variant.OUTLINED,
+            size: Buttons.Button.Size.MICRO,
+            title: i18nString(UIStrings.connectFolderToWorkspace),
+            jslogContext: 'automatic-workspace-folders.connect',
+          } as Buttons.Button.ButtonData}
+          @click=${async (event: Event) => {
+            event.consume();
+            await automaticFileSystemManager.connectAutomaticFileSystem(
+                /* addIfMissing= */ true);
+          }}
+        >${i18nString(UIStrings.connect)}</devtools-button>`;
+        // clang-format on
       }
     }
-    return this.treeElement;
+    return null;
+  }
+
+  updateTrailingIcons(): void {
+    if (!this.treeElement) {
+      return;
+    }
+    const trailingIcon = this.renderTrailingIcons();
+    this.treeElement.setTrailingIcons(trailingIcon ? [trailingIcon] : []);
   }
 
   override onattach(): void {
@@ -2251,6 +2264,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   }
 
   override updateTitle(): void {
+    this.updateTrailingIcons();
     if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }

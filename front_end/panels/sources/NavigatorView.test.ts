@@ -492,6 +492,17 @@ describeWithEnvironment('NavigatorView', () => {
     });
   });
 
+  describe('NavigatorFolderTreeElement', () => {
+    it('renders a devtools-icon with the appropriate icon type in leading icons', () => {
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const folderTreeElement = new Sources.NavigatorView.NavigatorFolderTreeElement(
+          navigatorView, Sources.NavigatorView.Types.Domain, 'example.com');
+      const icon = folderTreeElement.listItemElement.querySelector('.leading-icons devtools-icon');
+      assert.exists(icon);
+      assert.strictEqual(icon.getAttribute('name'), 'cloud');
+    });
+  });
+
   describe('NavigatorGroupTreeNode automatic file system controls', () => {
     const root = '/path/to/bar' as Platform.DevToolsPath.RawPathString;
     const uuid = '549bbf9b-48b2-4af7-aebd-d3ba68993094';
@@ -506,7 +517,7 @@ describeWithEnvironment('NavigatorView', () => {
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
       const treeElement = groupNode.treeNode();
 
-      const spinner = treeElement.listItemElement.querySelector('devtools-spinner');
+      const spinner = treeElement.listItemElement.querySelector('.trailing-icons devtools-spinner');
       assert.exists(spinner);
     });
 
@@ -520,12 +531,36 @@ describeWithEnvironment('NavigatorView', () => {
           navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
       const treeElement = groupNode.treeNode();
 
-      const button = treeElement.listItemElement.querySelector('devtools-button');
+      const button = treeElement.listItemElement.querySelector<HTMLElement>('.trailing-icons devtools-button');
       assert.exists(button);
       assert.strictEqual(button.textContent?.trim(), 'Connect');
 
       button.click();
       sinon.assert.calledOnceWithExactly(automaticFileSystemManager.connectAutomaticFileSystem, true);
+    });
+
+    it('updates trailing icons when automatic file system state changes', () => {
+      const automaticFileSystemManager =
+          sinon.createStubInstance(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
+      const fsData = {
+        root,
+        uuid,
+        state: 'connecting' as Persistence.AutomaticFileSystemManager.AutomaticFileSystem['state'],
+      };
+      const fileSystem =
+          new Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem(fsData, automaticFileSystemManager, workspace);
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
+          navigatorView, fileSystem, 'auto-fs', Sources.NavigatorView.Types.AutomaticFileSystem, 'bar');
+      const treeElement = groupNode.treeNode();
+
+      assert.exists(treeElement.listItemElement.querySelector('.trailing-icons devtools-spinner'));
+
+      fsData.state = 'disconnected';
+      groupNode.updateTrailingIcons();
+
+      assert.isNull(treeElement.listItemElement.querySelector('.trailing-icons devtools-spinner'));
+      assert.exists(treeElement.listItemElement.querySelector('.trailing-icons devtools-button'));
     });
   });
 

@@ -355,6 +355,15 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
                this.#viewOutput, this.contentElement);
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
+      void this.updateComplete.then(() => {
+        this.#startLoadingAnimation();
+      });
+    }
+  }
+
   override willHide(): void {
     super.willHide();
     this.#stopLoadingAnimation();
@@ -379,14 +388,17 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     if (this.#displayState === AiCodeGenerationTeaserDisplayState.LOADING) {
       // wait update to complete so that setTimerText has been set properly
       void this.updateComplete.then(() => {
-        void this.#startLoadingAnimation();
+        this.#startLoadingAnimation();
       });
-    } else if (this.#loadStartTime) {
+    } else {
       this.#stopLoadingAnimation();
     }
   }
 
   #startLoadingAnimation(): void {
+    if (this.#displayState !== AiCodeGenerationTeaserDisplayState.LOADING || !this.isShowing()) {
+      return;
+    }
     this.#stopLoadingAnimation();
     this.#loadStartTime = performance.now();
 

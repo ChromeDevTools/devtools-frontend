@@ -77,6 +77,21 @@ describeWithEnvironment('AiCodeGenerationTeaser', () => {
     assert.strictEqual(timerCallCount, setTimerText.callCount);
   });
 
+  it('does not start loading timer if state leaves LOADING before updateComplete resolves', async () => {
+    const clock =
+        sinon.useFakeTimers({toFake: ['performance', 'setInterval', 'clearInterval'], shouldAdvanceTime: true});
+    const {view, widget, setTimerText} = await createTeaser();
+
+    widget.displayState = AiCodeGenerationTeaserDisplayState.LOADING;
+    widget.displayState = AiCodeGenerationTeaserDisplayState.TRIGGER;
+    await view.nextInput;
+    await widget.updateComplete;
+
+    clock.tick(1100);
+    sinon.assert.notCalled(setTimerText);
+    clock.restore();
+  });
+
   it('disclaimerTextVariant is updated', async () => {
     const {view, widget} = await createTeaser();
     assert.isUndefined(view.input.disclaimerTextVariant);

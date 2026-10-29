@@ -26,24 +26,24 @@ Use it for self-review before upload and for reviewing other people's CLs.
   - Read the CL description first. Then check that the diff does what the
     description says, and nothing else.
 
-## 2. Consult the specialized skills
+## 2. Consult the specialized skills and rules
 
-Load the skill that matches what the diff touches, and apply its rules:
+Load the skill or `.agents/rules/` files that match what the diff touches, and apply their rules:
 
-| If the diff touches… | Use skill |
+| If the diff touches… | Load skill or rules |
 | :--- | :--- |
 | Any `import` statement, or a new cross-module dependency | `devtools-imports` |
 | `UI.Widget`, lit-html views, components, CSS | `ui-widgets` |
-| Reviewing UI and widgets (`front_end/(panels|ui)/**/*.{ts,css}`) | `review-ui-widgets` |
+| Reviewing UI and widgets (`front_end/(panels|ui)/**/*.{ts,css}`) | `.agents/rules/ui-and-widgets/*.md` |
 | Migration of legacy imperative DOM to widgets or Lit | `ui-eng-vision-orchestrator` (and its sub-skills) |
 | New or changed tests: choosing unit, API, or E2E | `devtools-testing-guidance` |
-| Reviewing tests (`*.test.ts`, `test/**`, `front_end/testing/**`) | `review-tests` |
+| Reviewing tests (`*.test.ts`, `test/**`, `front_end/testing/**`) | `.agents/rules/tests/*.md` |
 | Tests that use `describeWithEnvironment` or `describeWithMockConnection`, or foundation modules | `foundation-test-migration` |
 | Ported Chromium web tests (`web_tests/http/tests/devtools`) | `migrate-chromium-test` |
 | Flaky or disabled tests, or `it.skip` / `it.skipOnPlatforms` | `fix-tests` |
 | Rendering user-controlled strings (URLs, names, console text) | `devtools-unicode-escaping` |
 | `front_end/models/*`, `BUILD.gn`, `devtools_grd_files.gni`, entrypoints | `devtools-model-management` |
-| Reviewing foundation, models, and build configs (`front_end/(core|models|entrypoints|generated)/**`, `BUILD.gn`, `*.gni`) | `review-models-core` |
+| Reviewing foundation, models, and build configs (`front_end/(core|models|entrypoints|generated)/**`, `BUILD.gn`, `*.gni`) | `.agents/rules/models-and-core/*.md` |
 | Merging modules or consolidating `BUILD.gn` | `merging-devtools-module` |
 | `Settings` registrations and descriptors | `devtools-setting-migration` |
 | Stack traces, source maps, `DebuggerWorkspaceBinding` | `devtools-source-maps` |

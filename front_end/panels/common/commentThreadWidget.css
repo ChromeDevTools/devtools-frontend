@@ -192,6 +192,29 @@
     cursor: pointer;
   }
 
+  .element-removed-banner {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    gap: var(--sys-size-3);
+    /* Bleed past the widget padding so the banner spans the full width and sits flush with the bottom edge. */
+    margin: var(--sys-size-4) calc(-1 * var(--sys-size-8)) calc(-1 * var(--sys-size-8));
+    padding: var(--sys-size-5) var(--sys-size-8);
+    border-radius: 0 0 var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
+    background: var(--sys-color-tonal-container);
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body5-size);
+    line-height: var(--sys-size-8);
+    color: var(--sys-color-on-tonal-container);
+  }
+
+  .element-removed-icon {
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    flex-shrink: 0;
+    color: var(--sys-color-on-tonal-container);
+  }
+
   .selected-item devtools-widget,
   .selected-item-text {
     display: block;

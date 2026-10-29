@@ -39,6 +39,7 @@ function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> 
         commentText: '',
         isEditing: false,
         isQueueModifierPressed: false,
+        elementRemoved: false,
         textAreaRef: Lit.Directives.createRef(),
         onAddComment: () => {},
         onDeleteQueuedComment: () => {},
@@ -158,6 +159,20 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     assert.strictEqual(threadBody.scrollHeight, threadBody.clientHeight);
   });
 
+  it('renders an agent response with the element removed banner', async () => {
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+      {
+        author: 'AGENT',
+        text: 'Updated the rule to use `margin: 8px;`',
+        timestamp: 1,
+      },
+    ];
+    const target = renderView({comments, status: 'RESOLVED', elementRemoved: true});
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    await assertScreenshot('comments/comment_thread_widget_element_removed.png');
+  });
+
   it('keeps sent status within widget bounds when title is long', () => {
     const comments: CommentManager.CommentManager.Comment[] = [
       {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
@@ -177,6 +192,23 @@ describeWithEnvironment('CommentThreadWidget DEFAULT_VIEW', () => {
     const sentRect = sentStatusEl.getBoundingClientRect();
 
     assert.isAtMost(sentRect.right, widgetRect.right);
+  });
+
+  it('does not render the element removed banner by default', () => {
+    const target = renderView();
+    assert.isNull(target.querySelector('.element-removed-banner'));
+  });
+
+  it('renders the element removed banner when elementRemoved is true', () => {
+    const comments: CommentManager.CommentManager.Comment[] = [
+      {author: 'DEVELOPER', text: 'Align this to the grid', timestamp: 0},
+      {author: 'AGENT', text: 'Updated the rule to use `margin: 8px;`', timestamp: 1},
+    ];
+    const target = renderView({comments, elementRemoved: true});
+
+    const banner = target.querySelector('.element-removed-banner');
+    assert.isNotNull(banner);
+    assert.strictEqual(banner.textContent?.trim(), 'The element is no longer available');
   });
 });
 
@@ -581,5 +613,16 @@ describeWithEnvironment('CommentThreadWidget presenter', () => {
     } finally {
       widget.detach();
     }
+  });
+
+  it('passes elementRemoved to view input', async () => {
+    const view = createViewFunctionStub(CommentThreadWidget);
+    const widget = new CommentThreadWidget(undefined, view);
+    widget.performUpdate();
+    assert.isFalse(view.input.elementRemoved);
+
+    widget.elementRemoved = true;
+    await widget.updateComplete;
+    assert.isTrue(view.input.elementRemoved);
   });
 });

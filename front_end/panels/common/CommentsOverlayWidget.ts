@@ -128,6 +128,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
                 onQueueComment: input.onQueueComment,
                 onSaveEdit: input.onSaveEdit,
                 onStartEdit: input.onStartEdit,
+                elementRemoved: item.thread.isOrphaned,
               })}
             </div>
           `;

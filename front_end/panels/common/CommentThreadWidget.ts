@@ -64,6 +64,11 @@ const UIStrings = {
    * @description aria-label for the comment text area.
    */
   commentInputAriaLabel: 'Comment input',
+  /**
+   * @description Banner text shown at the bottom of a comment thread when the element the comment was
+   * attached to has been removed and can no longer be found.
+   */
+  elementNoLongerAvailable: 'The element is no longer available',
 } as const;
 
 const UIStringsNotTranslate = {
@@ -92,6 +97,8 @@ export interface ViewInput {
   commentText: string;
   /** Whether Cmd (Mac) or Ctrl (other platforms) is currently held, switching submit to "queue". */
   isQueueModifierPressed: boolean;
+  /** True when the element the thread is anchored to has been removed. */
+  elementRemoved: boolean;
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
   status: CommentManager.CommentManager.CommentThreadStatus;
   /** Whether the thread has been taken by the agent. */
@@ -268,6 +275,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
           </div>
         `)}</div>
       `}
+
+      ${input.elementRemoved ? html`
+        <div class="element-removed-banner" role="status">
+          <span>${i18nString(UIStrings.elementNoLongerAvailable)}</span>
+        </div>
+      ` : Lit.nothing}
     </div>
   `, target);
   // clang-format on
@@ -282,6 +295,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
   #status: CommentManager.CommentManager.CommentThreadStatus = 'DRAFT';
   #transmitted = false;
   #isQueueModifierPressed = false;
+  #elementRemoved = false;
   #textAreaRef = createRef<HTMLTextAreaElement>();
   #view: View;
   #isEditing: boolean = false;
@@ -325,6 +339,21 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     }
     this.#transmitted = transmitted;
     this.requestUpdate();
+  }
+
+  /**
+   * When true, shows a banner indicating that the element the thread is anchored to has been removed.
+   */
+  set elementRemoved(elementRemoved: boolean) {
+    if (this.#elementRemoved === elementRemoved) {
+      return;
+    }
+    this.#elementRemoved = elementRemoved;
+    this.requestUpdate();
+  }
+
+  get elementRemoved(): boolean {
+    return this.#elementRemoved;
   }
 
   #onSetEditMode = (value: boolean): void => {
@@ -386,6 +415,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       comments: this.#comments,
       commentText: this.#commentText,
       isQueueModifierPressed: this.#isQueueModifierPressed,
+      elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,
       status: this.#status,
       transmitted: this.#transmitted,

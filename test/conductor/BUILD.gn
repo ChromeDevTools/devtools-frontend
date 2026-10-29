@@ -30,6 +30,7 @@ node_ts_library("implementation") {
       typescript_test_types_inputs + typescript_puppeteer_types_inputs
 
   deps = [ "../:build_config" ]
+  data = [ "../../scripts/deps/set_lpac_acls.py" ]
   ts_deps = [
     ":expectations_parser",
     "../../front_end/testing:test_id_generation",

@@ -542,6 +542,7 @@ template("node_ts_library") {
                              "sources",
                              "visibility",
                              "deps",
+                             "data",
                              "data_deps",
                              "public_deps",
                              "public_inputs",

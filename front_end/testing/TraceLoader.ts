@@ -5,6 +5,7 @@
 import type * as Mocha from 'mocha';
 
 import * as Common from '../core/common/common.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Trace from '../models/trace/trace.js';
@@ -167,6 +168,11 @@ export class TraceLoader {
    */
   static async traceEngine(context: Mocha.Context|Mocha.Suite|null, name: string,
                            options: TraceEngineLoaderOptions = {}): Promise<Trace.TraceModel.ParsedTrace> {
+    // Ensure a DevToolsLocale instance exists (e.g. via setupLocaleHooks() or
+    // describeWithEnvironment) before checking the cache or parsing a trace,
+    // as trace insights localize strings during parsing.
+    i18n.DevToolsLocale.DevToolsLocale.instance();
+
     const {
       config = Trace.Types.Configuration.defaults(),
       withModificationsManager = false,
@@ -245,6 +251,7 @@ export class TraceLoader {
   static async executeTraceEngineOnFileContents(
       contents: Trace.Types.File.Contents, emulateFreshRecording = false,
       traceEngineConfig?: Trace.Types.Configuration.Configuration): Promise<ParsedTraceAndModel> {
+    i18n.DevToolsLocale.DevToolsLocale.instance();
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
     const metadata = 'metadata' in contents ? contents.metadata : {};
     return await new Promise((resolve, reject) => {

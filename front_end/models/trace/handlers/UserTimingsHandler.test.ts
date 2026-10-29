@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import {after, before, beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {
   type ConsoleAPIExtensionTestData,
   makeCompleteEvent,
@@ -43,6 +44,7 @@ async function createUserTimingsDataFromEvents(events: readonly Trace.Types.Even
 }
 
 describe('UserTimingsHandler', function() {
+  setupLocaleHooks();
   let timingsData: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', function() {
     async function getTimingsDataFromEvents(events: readonly Trace.Types.Events.Event[]):
@@ -153,7 +155,7 @@ describe('UserTimingsHandler', function() {
   });
 
   describe('console timings', function() {
-    before(async function() {
+    beforeEach(async function() {
       const {data} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
       timingsData = data.UserTimings;
     });
@@ -549,7 +551,7 @@ describe('UserTimingsHandler', function() {
       });
     }
 
-    before(async function() {
+    beforeEach(async function() {
       const {data} = await TraceLoader.traceEngine(this, 'user-timings-overlaps.json.gz');
 
       measures = data.UserTimings.performanceMeasures;

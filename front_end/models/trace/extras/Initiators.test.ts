@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import type * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
@@ -17,13 +18,14 @@ import * as Extras from './extras.js';
  * https://github.com/ChromeDevTools/performance-stories/tree/main/resource-initiators
  */
 describe('getNetworkInitiator', () => {
+  setupLocaleHooks();
 
   const {getNetworkInitiator} = Extras.Initiators;
 
   let parsedTrace: Handlers.Types.HandlerData;
   let documentRequest: Types.Events.SyntheticNetworkRequest;
 
-  before(async function() {
+  beforeEach(async function() {
     const {data} = await TraceLoader.traceEngine(this, 'resource-initiators.json.gz');
     parsedTrace = data;
     documentRequest = parsedTrace.NetworkRequests.byTime[0];

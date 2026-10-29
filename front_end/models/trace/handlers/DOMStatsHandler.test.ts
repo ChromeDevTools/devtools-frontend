@@ -5,10 +5,12 @@
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('DOMStatsHandler', () => {
+  setupLocaleHooks();
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.DOMStats.reset();
     Trace.Handlers.ModelHandlers.Meta.reset();

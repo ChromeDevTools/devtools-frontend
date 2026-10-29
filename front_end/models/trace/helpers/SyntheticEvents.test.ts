@@ -5,10 +5,12 @@
 import {assert} from 'chai';
 import {afterEach, beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('SyntheticEvents', function() {
+  setupLocaleHooks();
   beforeEach(() => {
     Trace.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
   });

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {
@@ -34,7 +34,7 @@ describe('RendererHandler', function() {
   setupLocaleHooks();
   describe('process and thread structure with multiple navigations and iframes', () => {
     let parsedData: Trace.Handlers.Types.HandlerData;
-    before(async function() {
+    beforeEach(async function() {
       parsedData = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     });
 

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -128,7 +128,7 @@ describe('Name', () => {
   describe('profile calls', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
-    before(async function() {
+    beforeEach(async function() {
       parsedTrace = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
     });
 

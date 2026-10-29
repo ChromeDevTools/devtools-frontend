@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, beforeEach, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
@@ -13,9 +14,10 @@ import {toLanternTrace} from '../testing/testing.js';
 const {NetworkAnalyzer} = Lantern.Core;
 
 describe('NetworkAnalyzer', () => {
+  setupLocaleHooks();
   let requests: Trace.Lantern.Types.NetworkRequest[];
   let requestsWithRedirect: Trace.Lantern.Types.NetworkRequest[];
-  before(async function() {
+  beforeEach(async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
     const parsedTraceWithRedirect = await TraceLoader.traceEngine(this, 'lantern/redirect/trace.json.gz');
     const trace = toLanternTrace(parsedTrace.traceEvents);

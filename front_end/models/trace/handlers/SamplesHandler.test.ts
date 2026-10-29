@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import type * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {getAllNodes, getMainThread} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
@@ -47,6 +48,7 @@ async function handleEventsFromCpuProfile(context: Mocha.Context|Mocha.Suite|nul
 }
 
 describe('SamplesHandler', function() {
+  setupLocaleHooks();
   it('finds all the profiles in a real world recording', async () => {
     const data = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     // The same thread id is shared across profiles in the profiled

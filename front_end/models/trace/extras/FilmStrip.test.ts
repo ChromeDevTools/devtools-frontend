@@ -5,10 +5,12 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('FilmStrip', function() {
+  setupLocaleHooks();
   /**
    * See `models/trace/types/TraceEvents.ts` for the type of `LegacyScreenshot`
    * and the comment explaining the differences in the "old" and "new" format.

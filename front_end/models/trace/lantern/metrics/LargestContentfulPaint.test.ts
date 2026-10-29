@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Lantern from '../lantern.js';
 import {getComputationDataFromFixture} from '../testing/testing.js';
@@ -12,6 +13,7 @@ import {getComputationDataFromFixture} from '../testing/testing.js';
 const {FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern LCP', function() {
+  setupLocaleHooks();
   it('should compute predicted value', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
     const data = await getComputationDataFromFixture(this, {parsedTrace});

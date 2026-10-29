@@ -5,10 +5,12 @@
 import {assert} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('LargestImagePaintHandler', function() {
+  setupLocaleHooks();
   beforeEach(async () => {
     Trace.Handlers.ModelHandlers.LargestImagePaint.reset();
   });

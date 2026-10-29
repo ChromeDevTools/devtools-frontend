@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -22,6 +23,7 @@ function countMetricOcurrences(
 }
 
 describe('PageLoadMetricsHandler', function() {
+  setupLocaleHooks();
   describe('contentful paints', () => {
     it('obtains all the FCP and LCP events for all frames', async function() {
       const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
@@ -52,7 +54,7 @@ describe('PageLoadMetricsHandler', function() {
       let meta: Trace.Handlers.ModelHandlers.Meta.MetaHandlerData;
       let pageLoadMetrics: Trace.Handlers.ModelHandlers.PageLoadMetrics.PageLoadMetricsData;
 
-      before(async function() {
+      beforeEach(async function() {
         const result = await TraceLoader.traceEngine(this, 'reload-and-trace-page.json.gz');
         meta = result.data.Meta;
         pageLoadMetrics = result.data.PageLoadMetrics;
@@ -133,7 +135,7 @@ describe('PageLoadMetricsHandler', function() {
     }
     const firstNavigationId = '05059ACF683224E6FC7E344F544A4050';
     const secondNavigationId = '550FC08C662EF691E1535F305CBC0FCA';
-    before(async function() {
+    beforeEach(async function() {
       const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       const {Meta, PageLoadMetrics} = data;
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
@@ -246,7 +248,7 @@ describe('PageLoadMetricsHandler', function() {
       let mainFrameId: string;
       let allMarkerEvents: Trace.Types.Events.PageLoadEvent[];
 
-      before(async function() {
+      beforeEach(async function() {
         const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
         const {PageLoadMetrics, Meta} = data;
         mainFrameId = Meta.mainFrameId;

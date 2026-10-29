@@ -5,11 +5,13 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('TraceEvent types', function() {
+  setupLocaleHooks();
   const {Phase, isNestableAsyncPhase, isPhaseAsync, isFlowPhase} = Trace.Types.Events;
   it('is able to determine if a phase is a nestable async phase', function() {
     assert.isTrue(isNestableAsyncPhase(Phase.ASYNC_NESTABLE_START));

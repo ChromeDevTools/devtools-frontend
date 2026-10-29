@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {before, describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import type * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
@@ -13,8 +14,9 @@ import {getComputationDataFromFixture} from '../testing/testing.js';
 const {FirstContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern FCP', function() {
+  setupLocaleHooks();
   let parsedTrace: Trace.TraceModel.ParsedTrace;
-  before(async function() {
+  beforeEach(async function() {
     parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz');
   });
 

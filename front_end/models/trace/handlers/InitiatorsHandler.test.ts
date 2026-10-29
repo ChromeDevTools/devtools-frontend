@@ -5,11 +5,13 @@
 import {assert} from 'chai';
 import {before, beforeEach, describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpersCore.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('InitiatorsHandler', () => {
+  setupLocaleHooks();
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.AsyncJSCalls.reset();
     Trace.Handlers.ModelHandlers.Flows.reset();
@@ -90,7 +92,7 @@ describe('InitiatorsHandler', () => {
   describe('for async-js-calls trace', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
-    before(async function() {
+    beforeEach(async function() {
       parsedTrace = await TraceLoader.traceEngine(
           this,
           'async-js-calls.json.gz',

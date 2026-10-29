@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {after, before, describe, it} from 'mocha';
+import {after, before, beforeEach, describe, it} from 'mocha';
 
 import type * as Protocol from '../../../../generated/protocol.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
@@ -72,17 +73,21 @@ function cpuTask({tid, ts, duration}: {
 }
 
 describe('DependencyGraph/Simulator', () => {
+  setupLocaleHooks();
   // Insulate the simulator tests from DNS multiplier changes
   let originalDNSMultiplier = 1;
   let realTraceGraph: Lantern.Graph.Node<Trace.Types.Events.SyntheticNetworkRequest>;
 
-  before(async function() {
+  before(() => {
+    originalDNSMultiplier = DNSCache.rttMultiplier;
+    DNSCache.rttMultiplier = 1;
+  });
+
+  beforeEach(async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz');
     const trace = toLanternTrace(parsedTrace.traceEvents);
     const requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace.data);
     realTraceGraph = Trace.LanternComputationData.createGraph(requests, trace, parsedTrace.data);
-    originalDNSMultiplier = DNSCache.rttMultiplier;
-    DNSCache.rttMultiplier = 1;
   });
 
   after(() => {

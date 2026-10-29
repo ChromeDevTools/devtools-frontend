@@ -5,10 +5,12 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 describe('Handler Threads helper', function() {
+  setupLocaleHooks();
   it('returns all the threads for a trace that used tracing', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const data = parsedTrace.data;

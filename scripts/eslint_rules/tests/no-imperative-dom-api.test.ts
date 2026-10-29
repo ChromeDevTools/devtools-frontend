@@ -1681,10 +1681,16 @@ class ListItem {
     UI.ARIAUtils.markAsOption(this.element);
     LIST_ITEM_VIEW({name: 'main'}, undefined, this.element);
   }
+  renderDirect() {
+    const container = document.createElement('div');
+    container.classList.add('custom-container');
+    render(html\`<span>Hello</span>\`, container);
+  }
 }`,
       errors: [
         {messageId: 'preferTemplateLiterals', line: 6},
         {messageId: 'preferTemplateLiterals', line: 7},
+        {messageId: 'preferTemplateLiterals', line: 12},
       ],
     },
   ],

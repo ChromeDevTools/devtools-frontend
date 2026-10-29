@@ -8,47 +8,64 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Events, MediaModel, type PlayerEvent} from './MediaModel.js';
 import {PlayerDetailView} from './PlayerDetailView.js';
 import {PlayerListView} from './PlayerListView.js';
 
+const {repeat} = Directives;
 const {widget} = UI.Widget;
 
+export interface PlayerData {
+  properties: Map<string, string>;
+  messages: Protocol.Media.PlayerMessage[];
+  events: PlayerEvent[];
+  errors: Protocol.Media.PlayerError[];
+}
+
 export interface ViewInput {
-  sidebar: PlayerListView;
-  activePanel?: PlayerDetailView;
-  hasPlayers: boolean;
+  players: Map<string, PlayerData>;
+  activePlayerId: string|null;
+  onPlayerSelected: (playerID: string) => void;
+  onHidePlayer: (playerID: string) => void;
+  onHideOtherPlayers: (playerID: string) => void;
+  onSavePlayerInfo: (playerID: string) => void;
 }
 
 export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const hasPlayers = input.players.size > 0;
+  const activePlayerData = input.activePlayerId ? input.players.get(input.activePlayerId) : undefined;
   const placeholderHeader =
-      input.hasPlayers ? i18nString(UIStrings.noPlayerDetailsSelected) : i18nString(UIStrings.noMediaPlayer);
+      hasPlayers ? i18nString(UIStrings.noPlayerDetailsSelected) : i18nString(UIStrings.noMediaPlayer);
   const placeholderText =
-      input.hasPlayers ? i18nString(UIStrings.selectToViewDetails) : i18nString(UIStrings.mediaPlayerDescription);
+      hasPlayers ? i18nString(UIStrings.selectToViewDetails) : i18nString(UIStrings.mediaPlayerDescription);
   // clang-format off
   render(html`
     <devtools-split-view direction="column"
                          name="media-panel-split-view-state"
                          sidebar-initial-size="200"
-                         show=${input.hasPlayers ? 'both' : 'main'}>
+                         show=${hasPlayers ? 'both' : 'main'}>
       <devtools-widget slot="sidebar"
                        class="panel-sidebar"
                        jslog=${VisualLogging.pane('sidebar').track({resize: true})}
-                       ${widget(UI.Widget.VBox)}>
-        <devtools-widget ${widget(UI.Widget.WrapperWidget, {
-          widget: input.sidebar,
-        })}></devtools-widget>
+                       ${widget(PlayerListView, {
+                         players: input.players,
+                         selectedPlayerID: input.activePlayerId,
+                         onSelectPlayer: input.onPlayerSelected,
+                         onHidePlayer: input.onHidePlayer,
+                         onHideOtherPlayers: input.onHideOtherPlayers,
+                         onSavePlayerInfo: input.onSavePlayerInfo,
+                       })}>
       </devtools-widget>
-      ${input.activePanel ? html`
-        <devtools-widget slot="main" ${widget(UI.Widget.WrapperWidget, {
-          widget: input.activePanel,
+      ${activePlayerData && input.activePlayerId ? repeat([input.activePlayerId], id => id, () => html`
+        <devtools-widget slot="main" ${widget(PlayerDetailView, {
+          playerData: activePlayerData,
         })}></devtools-widget>
-      ` : html`
+      `) : html`
         <devtools-widget slot="main" ${widget(UI.EmptyWidget.EmptyWidget, {
           header: placeholderHeader,
           text: placeholderText,
@@ -131,12 +148,7 @@ class PlayerDataCollection implements TriggerHandler {
     this.events.push(event);
   }
 
-  export(): {
-    properties: Map<string, string>,
-    messages: Protocol.Media.PlayerMessage[],
-    events: PlayerEvent[],
-    errors: Protocol.Media.PlayerError[],
-  } {
+  export(): PlayerData {
     return {properties: this.properties, messages: this.messages, events: this.events, errors: this.errors};
   }
 }
@@ -187,12 +199,7 @@ export class PlayerDataDownloadManager implements TriggerDispatcher {
     playerProperty.onEvent(event);
   }
 
-  exportPlayerData(playerID: string): {
-    properties: Map<string, string>,
-    messages: Protocol.Media.PlayerMessage[],
-    events: PlayerEvent[],
-    errors: Protocol.Media.PlayerError[],
-  } {
+  exportPlayerData(playerID: string): PlayerData {
     const playerProperty = this.playerDataCollection.get(playerID);
     if (!playerProperty) {
       throw new Error('Unable to find player');
@@ -207,21 +214,24 @@ export class PlayerDataDownloadManager implements TriggerDispatcher {
 }
 
 export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKModelObserver<MediaModel> {
-  private detailPanels: Map<string, PlayerDetailView>;
   private deletedPlayers: Set<string>;
   private readonly downloadStore: PlayerDataDownloadManager;
-  private readonly sidebar: PlayerListView;
+  #playerData: Map<string, PlayerData>;
   #playerIdsToPlayers: Map<string, Protocol.Media.Player>;
   #domNodeIdsToPlayerIds: Map<Protocol.DOM.BackendNodeId, string>;
   #activePlayerId: string|null = null;
   readonly #view: View;
   readonly #initialPlayersLoadedPromise: Promise<void>;
   #initialPlayersLoadedPromiseResolve: () => void = () => {};
+  readonly #boundRenderMainPanel = this.renderMainPanel.bind(this);
+  readonly #boundMarkPlayerForDeletion = this.markPlayerForDeletion.bind(this);
+  readonly #boundMarkOtherPlayersForDeletion = this.markOtherPlayersForDeletion.bind(this);
+  readonly #boundExportPlayerData = this.exportPlayerData.bind(this);
 
   constructor(downloadStore: PlayerDataDownloadManager = new PlayerDataDownloadManager(), view: View = DEFAULT_VIEW) {
     super('media');
     this.#view = view;
-    this.detailPanels = new Map();
+    this.#playerData = new Map();
     this.#playerIdsToPlayers = new Map();
     this.#domNodeIdsToPlayerIds = new Map();
     this.#initialPlayersLoadedPromise = new Promise(resolve => {
@@ -231,26 +241,25 @@ export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKMod
     this.deletedPlayers = new Set();
 
     this.downloadStore = downloadStore;
-
-    this.sidebar = new PlayerListView(this);
-    this.sidebar.setMinimumSize(100, 25);
     this.requestUpdate();
 
     SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this, {scoped: true});
   }
 
   override performUpdate(): void {
-    const activePanel = this.#activePlayerId ? this.detailPanels.get(this.#activePlayerId) : undefined;
-    this.#view({
-      sidebar: this.sidebar,
-      activePanel,
-      hasPlayers: this.detailPanels.size > 0,
-    },
-               undefined, this.contentElement);
+    const input: ViewInput = {
+      players: new Map(this.#playerData),
+      activePlayerId: this.#activePlayerId,
+      onPlayerSelected: this.#boundRenderMainPanel,
+      onHidePlayer: this.#boundMarkPlayerForDeletion,
+      onHideOtherPlayers: this.#boundMarkOtherPlayersForDeletion,
+      onSavePlayerInfo: this.#boundExportPlayerData,
+    };
+    this.#view(input, undefined, this.contentElement);
   }
 
   renderMainPanel(playerID: string): void {
-    if (!this.detailPanels.has(playerID) || this.#activePlayerId === playerID) {
+    if (!this.#playerData.has(playerID) || this.#activePlayerId === playerID) {
       return;
     }
     this.#activePlayerId = playerID;
@@ -327,43 +336,59 @@ export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKMod
   }
 
   private shouldPropagate(playerID: string): boolean {
-    return !this.deletedPlayers.has(playerID) && this.detailPanels.has(playerID);
+    return !this.deletedPlayers.has(playerID) && this.#playerData.has(playerID);
   }
 
   onProperty(playerID: string, property: Protocol.Media.PlayerProperty): void {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onProperty(playerID, property);
     this.downloadStore.onProperty(playerID, property);
-    this.detailPanels.get(playerID)?.onProperty(property);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.properties.set(property.name, property.value);
+      this.#playerData.set(playerID, {...data});
+      this.requestUpdate();
+    }
   }
 
   onError(playerID: string, error: Protocol.Media.PlayerError): void {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onError(playerID, error);
     this.downloadStore.onError(playerID, error);
-    this.detailPanels.get(playerID)?.onError(error);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.errors.push(error);
+      this.#playerData.set(playerID, {...data});
+      this.requestUpdate();
+    }
   }
 
   onMessage(playerID: string, message: Protocol.Media.PlayerMessage): void {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onMessage(playerID, message);
     this.downloadStore.onMessage(playerID, message);
-    this.detailPanels.get(playerID)?.onMessage(message);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.messages.push(message);
+      this.#playerData.set(playerID, {...data});
+      this.requestUpdate();
+    }
   }
 
   onEvent(playerID: string, event: PlayerEvent): void {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onEvent(playerID, event);
     this.downloadStore.onEvent(playerID, event);
-    this.detailPanels.get(playerID)?.onEvent(event);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.events.push(event);
+      this.#playerData.set(playerID, {...data});
+      this.requestUpdate();
+    }
   }
 
   selectPlayerByDOMNodeId(domNodeId: Protocol.DOM.BackendNodeId): void {
@@ -373,7 +398,7 @@ export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKMod
     }
     const player = this.#playerIdsToPlayers.get(playerId);
     if (player) {
-      this.sidebar.selectPlayerById(player.playerId);
+      this.renderMainPanel(player.playerId);
     }
   }
 
@@ -388,13 +413,14 @@ export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKMod
       this.#domNodeIdsToPlayerIds.set(player.domNodeId, player.playerId);
     }
 
-    this.sidebar.addMediaElementItem(player.playerId);
-    this.detailPanels.set(player.playerId, new PlayerDetailView());
+    this.#playerData.set(player.playerId, {
+      properties: new Map(),
+      messages: [],
+      events: [],
+      errors: [],
+    });
     this.downloadStore.addPlayer(player.playerId);
-
-    if (this.detailPanels.size === 1) {
-      this.requestUpdate();
-    }
+    this.requestUpdate();
 
     this.#initialPlayersLoadedPromiseResolve();
   }
@@ -402,13 +428,12 @@ export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKMod
   markPlayerForDeletion(playerID: string): void {
     // TODO(tmathmeyer): send this to chromium to save the storage space there too.
     this.deletedPlayers.add(playerID);
-    this.detailPanels.delete(playerID);
+    this.#playerData.delete(playerID);
     const player = this.#playerIdsToPlayers.get(playerID);
     if (player?.domNodeId) {
       this.#domNodeIdsToPlayerIds.delete(player.domNodeId);
     }
     this.#playerIdsToPlayers.delete(playerID);
-    this.sidebar.deletePlayer(playerID);
     this.downloadStore.deletePlayer(playerID);
     if (this.#activePlayerId === playerID) {
       this.#activePlayerId = null;
@@ -417,7 +442,7 @@ export class MainView extends UI.Panel.Panel implements SDK.TargetManager.SDKMod
   }
 
   markOtherPlayersForDeletion(playerID: string): void {
-    for (const keyID of this.detailPanels.keys()) {
+    for (const keyID of this.#playerData.keys()) {
       if (keyID !== playerID) {
         this.markPlayerForDeletion(keyID);
       }

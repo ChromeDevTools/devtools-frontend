@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {PlayerEventsView} from './EventDisplayTable.js';
 import {PlayerEventsTimeline} from './EventTimelineView.js';
-import type {TriggerHandler} from './MainView.js';
+import type {PlayerData, TriggerHandler} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
 import {PlayerMessagesView} from './PlayerMessagesView.js';
 import {PlayerPropertiesView} from './PlayerPropertiesView.js';
@@ -62,26 +62,44 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements Trigge
   private readonly propertyView: PlayerPropertiesView;
   private readonly messageView: PlayerMessagesView;
   private readonly timelineView: PlayerEventsTimeline;
+  #processedEventsCount = 0;
+  #processedMessagesCount = 0;
+  #processedErrorsCount = 0;
 
-  constructor() {
-    super();
+  constructor(element?: HTMLElement) {
+    super(element);
 
     this.eventView = new PlayerEventsView();
     this.propertyView = new PlayerPropertiesView();
     this.messageView = new PlayerMessagesView();
     this.timelineView = new PlayerEventsTimeline();
 
-    this.appendTab(
-        PlayerDetailViewTabs.PROPERTIES, i18nString(UIStrings.properties), this.propertyView,
-        i18nString(UIStrings.playerProperties));
-    this.appendTab(
-        PlayerDetailViewTabs.EVENTS, i18nString(UIStrings.events), this.eventView, i18nString(UIStrings.playerEvents));
-    this.appendTab(
-        PlayerDetailViewTabs.MESSAGES, i18nString(UIStrings.messages), this.messageView,
-        i18nString(UIStrings.playerMessages));
-    this.appendTab(
-        PlayerDetailViewTabs.TIMELINE, i18nString(UIStrings.timeline), this.timelineView,
-        i18nString(UIStrings.playerTimeline));
+    this.appendTab(PlayerDetailViewTabs.PROPERTIES, i18nString(UIStrings.properties), this.propertyView,
+                   i18nString(UIStrings.playerProperties));
+    this.appendTab(PlayerDetailViewTabs.EVENTS, i18nString(UIStrings.events), this.eventView,
+                   i18nString(UIStrings.playerEvents));
+    this.appendTab(PlayerDetailViewTabs.MESSAGES, i18nString(UIStrings.messages), this.messageView,
+                   i18nString(UIStrings.playerMessages));
+    this.appendTab(PlayerDetailViewTabs.TIMELINE, i18nString(UIStrings.timeline), this.timelineView,
+                   i18nString(UIStrings.playerTimeline));
+  }
+
+  set playerData(data: PlayerData) {
+    for (const [name, value] of data.properties) {
+      this.onProperty({name, value});
+    }
+    for (let i = this.#processedEventsCount; i < data.events.length; i++) {
+      this.onEvent(data.events[i]);
+    }
+    this.#processedEventsCount = data.events.length;
+    for (let i = this.#processedMessagesCount; i < data.messages.length; i++) {
+      this.onMessage(data.messages[i]);
+    }
+    this.#processedMessagesCount = data.messages.length;
+    for (let i = this.#processedErrorsCount; i < data.errors.length; i++) {
+      this.onError(data.errors[i]);
+    }
+    this.#processedErrorsCount = data.errors.length;
   }
 
   onProperty(property: Protocol.Media.PlayerProperty): void {

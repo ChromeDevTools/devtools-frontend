@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {MainView, TriggerDispatcher} from './MainView.js';
+import type {MainView, PlayerData, TriggerDispatcher} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
 import playerListViewStyles from './playerListView.css.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
@@ -106,29 +106,86 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   #view: View;
   private readonly playerStatuses: Map<string, PlayerStatus>;
   private readonly playerEntriesWithHostnameFrameTitle: Set<string>;
-  private readonly mainContainer: MainView;
+  private readonly mainContainer?: MainView;
   private currentlySelectedPlayerID: string|null;
+  readonly #processedEventCounts = new Map<string, number>();
+  #onSelectPlayer?: (playerID: string) => void;
+  #onHidePlayer?: (playerID: string) => void;
+  #onHideOtherPlayers?: (playerID: string) => void;
+  #onSavePlayerInfo?: (playerID: string) => void;
+  readonly #boundSelectPlayer = this.selectPlayer.bind(this);
+  readonly #boundRightClickPlayer = this.rightClickPlayer.bind(this);
 
-  constructor(mainContainer: MainView, view: View = DEFAULT_VIEW) {
-    super({useShadowDom: true});
+  constructor(mainContainerOrElement?: MainView|HTMLElement, view: View = DEFAULT_VIEW) {
+    const element = mainContainerOrElement instanceof HTMLElement ? mainContainerOrElement : undefined;
+    super(element, {useShadowDom: true});
     this.#view = view;
+    this.setMinimumSize(100, 25);
 
     this.playerStatuses = new Map();
     this.playerEntriesWithHostnameFrameTitle = new Set();
 
     // Container where new panels can be added based on clicks.
-    this.mainContainer = mainContainer;
+    if (mainContainerOrElement && !(mainContainerOrElement instanceof HTMLElement)) {
+      this.mainContainer = mainContainerOrElement;
+    }
 
     this.currentlySelectedPlayerID = null;
     this.requestUpdate();
+  }
+
+  set players(players: Map<string, PlayerData>) {
+    for (const playerID of Array.from(this.playerStatuses.keys())) {
+      if (!players.has(playerID)) {
+        this.deletePlayer(playerID);
+        this.#processedEventCounts.delete(playerID);
+      }
+    }
+    for (const [playerID, data] of players) {
+      if (!this.playerStatuses.has(playerID)) {
+        this.addMediaElementItem(playerID);
+      }
+      for (const [name, value] of data.properties) {
+        this.onProperty(playerID, {name, value});
+      }
+      const prevCount = this.#processedEventCounts.get(playerID) ?? 0;
+      for (let i = prevCount; i < data.events.length; i++) {
+        this.onEvent(playerID, data.events[i]);
+      }
+      this.#processedEventCounts.set(playerID, data.events.length);
+    }
+  }
+
+  set selectedPlayerID(playerID: string|null) {
+    if (this.currentlySelectedPlayerID === playerID) {
+      return;
+    }
+    this.currentlySelectedPlayerID = playerID;
+    this.requestUpdate();
+  }
+
+  set onSelectPlayer(callback: ((playerID: string) => void)|undefined) {
+    this.#onSelectPlayer = callback;
+  }
+
+  set onHidePlayer(callback: ((playerID: string) => void)|undefined) {
+    this.#onHidePlayer = callback;
+  }
+
+  set onHideOtherPlayers(callback: ((playerID: string) => void)|undefined) {
+    this.#onHideOtherPlayers = callback;
+  }
+
+  set onSavePlayerInfo(callback: ((playerID: string) => void)|undefined) {
+    this.#onSavePlayerInfo = callback;
   }
 
   override performUpdate(): void {
     const input: ViewInput = {
       players: Array.from(this.playerStatuses.values()),
       selectedPlayerID: this.currentlySelectedPlayerID,
-      onPlayerClick: this.selectPlayer.bind(this),
-      onPlayerContextMenu: this.rightClickPlayer.bind(this),
+      onPlayerClick: this.#boundSelectPlayer,
+      onPlayerContextMenu: this.#boundRightClickPlayer,
     };
     this.#view(input, undefined, this.contentElement);
   }
@@ -140,23 +197,26 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   }
 
   private selectPlayer(playerID: string): void {
-    this.mainContainer.renderMainPanel(playerID);
+    this.mainContainer?.renderMainPanel(playerID);
+    this.#onSelectPlayer?.(playerID);
     this.currentlySelectedPlayerID = playerID;
     this.requestUpdate();
   }
 
   private rightClickPlayer(playerID: string, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.hidePlayer), this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID),
-        {jslogContext: 'hide-player'});
-    contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.hideAllOthers),
-        this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID),
-        {jslogContext: 'hide-all-others'});
-    contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID),
-        {jslogContext: 'save-player-info'});
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.hidePlayer), () => {
+      this.mainContainer?.markPlayerForDeletion(playerID);
+      this.#onHidePlayer?.(playerID);
+    }, {jslogContext: 'hide-player'});
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.hideAllOthers), () => {
+      this.mainContainer?.markOtherPlayersForDeletion(playerID);
+      this.#onHideOtherPlayers?.(playerID);
+    }, {jslogContext: 'hide-all-others'});
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.savePlayerInfo), () => {
+      this.mainContainer?.exportPlayerData(playerID);
+      this.#onSavePlayerInfo?.(playerID);
+    }, {jslogContext: 'save-player-info'});
     void contextMenu.show();
   }
 
@@ -204,8 +264,8 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     }
   }
 
-  private formatAndEvaluate(
-      playerID: string, func: (...args: any[]) => unknown, candidate: string, min: number, max: number): void {
+  private formatAndEvaluate(playerID: string, func: (...args: any[]) => unknown, candidate: string, min: number,
+                            max: number): void {
     if (candidate.length <= min) {
       return;
     }

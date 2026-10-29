@@ -77,8 +77,8 @@ describeWithEnvironment('MediaMainView', () => {
     const view = createViewFunctionStub(Media.MainView.MainView);
     const mainView = new Media.MainView.MainView(undefined, view);
     const input = await view.nextInput;
-    assert.isFalse(input.hasPlayers);
-    assert.isUndefined(input.activePanel);
+    assert.strictEqual(input.players.size, 0);
+    assert.isNull(input.activePlayerId);
     mainView.detach();
   });
 
@@ -94,8 +94,8 @@ describeWithEnvironment('MediaMainView', () => {
 
     model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
     const input = await view.nextInput;
-    assert.isTrue(input.hasPlayers);
-    assert.isUndefined(input.activePanel);
+    assert.strictEqual(input.players.size, 1);
+    assert.isNull(input.activePlayerId);
     mainView.detach();
   });
 
@@ -114,8 +114,8 @@ describeWithEnvironment('MediaMainView', () => {
     mainView.markPlayerForDeletion(PLAYER_ID);
     const input = await view.nextInput;
 
-    assert.isFalse(input.hasPlayers);
-    assert.isUndefined(input.activePanel);
+    assert.strictEqual(input.players.size, 0);
+    assert.isNull(input.activePlayerId);
     mainView.detach();
   });
 
@@ -133,25 +133,40 @@ describeWithEnvironment('MediaMainView', () => {
        model.dispatchEventToListeners(Media.MediaModel.Events.PLAYER_CREATED, {playerId: PLAYER_ID});
        await view.nextInput;
        mainView.renderMainPanel(PLAYER_ID);
-       assert.isDefined((await view.nextInput).activePanel);
+       assert.strictEqual((await view.nextInput).activePlayerId, PLAYER_ID);
        mainView.markPlayerForDeletion(PLAYER_ID);
        const input = await view.nextInput;
 
-       assert.isFalse(input.hasPlayers);
-       assert.isUndefined(input.activePanel);
+       assert.strictEqual(input.players.size, 0);
+       assert.isNull(input.activePlayerId);
        mainView.detach();
      });
 
   it('renders placeholders in DEFAULT_VIEW', () => {
     const widget = new UI.Widget.Widget();
     renderElementIntoDOM(widget);
-    const sidebar = new Media.PlayerListView.PlayerListView(sinon.createStubInstance(Media.MainView.MainView));
 
-    Media.MainView.DEFAULT_VIEW({sidebar, hasPlayers: false}, undefined, widget.contentElement);
+    const emptyInput: Media.MainView.ViewInput = {
+      players: new Map(),
+      activePlayerId: null,
+      onPlayerSelected: () => {},
+      onHidePlayer: () => {},
+      onHideOtherPlayers: () => {},
+      onSavePlayerInfo: () => {},
+    };
+    Media.MainView.DEFAULT_VIEW(emptyInput, undefined, widget.contentElement);
     assertEmptyState(widget.contentElement, 'No media player',
                      'On this page you can view and export media player details');
 
-    Media.MainView.DEFAULT_VIEW({sidebar, hasPlayers: true}, undefined, widget.contentElement);
+    const unselectedInput: Media.MainView.ViewInput = {
+      players: new Map([[PLAYER_ID, {properties: new Map(), messages: [], events: [], errors: []}]]),
+      activePlayerId: null,
+      onPlayerSelected: () => {},
+      onHidePlayer: () => {},
+      onHideOtherPlayers: () => {},
+      onSavePlayerInfo: () => {},
+    };
+    Media.MainView.DEFAULT_VIEW(unselectedInput, undefined, widget.contentElement);
     assertEmptyState(widget.contentElement, 'No media player selected', 'Select a media player to inspect its details');
     widget.detach();
   });

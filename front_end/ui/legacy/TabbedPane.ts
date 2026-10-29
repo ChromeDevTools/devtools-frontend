@@ -1779,9 +1779,26 @@ export interface TabbedPaneTabDelegate {
  * before and after the title in the header of that tab.
  */
 export class TabbedPaneElement extends WidgetElement<TabbedPane> {
+  static readonly observedAttributes: string[] = ['vertical'];
+
   #closeableTabs = false;
   #allowTabReorder = false;
   #automaticReorder = false;
+  #vertical = false;
+
+  get vertical(): boolean {
+    return this.#vertical;
+  }
+
+  set vertical(vertical: boolean) {
+    if (this.#vertical === vertical) {
+      return;
+    }
+    this.#vertical = vertical;
+    if (vertical) {
+      this.getWidget()?.makeVerticalTabLayout();
+    }
+  }
 
   set closeableTabs(closeable: boolean) {
     this.#closeableTabs = closeable;
@@ -1835,6 +1852,9 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
     registerWidgetConfig(
         this, widgetConfig(element => {
           const widget = new TabbedPane(element as TabbedPaneElement);
+          if (this.#vertical) {
+            widget.makeVerticalTabLayout();
+          }
           widget.setCloseableTabs(this.#closeableTabs);
           widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
           if (this.#delegate) {
@@ -1847,6 +1867,15 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
           if (slot) {
             slot.addEventListener('slotchange', () => this.#syncTabs());
           }
+          widget.addEventListener(Events.TabInvoked, event => {
+            this.dispatchEvent(new CustomEvent('tabinvoked', {
+              detail: {
+                tabId: event.data.tabId,
+                prevTabId: event.data.prevTabId,
+                isUserGesture: event.data.isUserGesture,
+              },
+            }));
+          });
           widget.addEventListener(Events.TabSelected, event => {
             const nodes = this.#getTabNodes(widget);
             for (const child of nodes) {
@@ -1856,8 +1885,13 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
                 child.removeAttribute('selected');
               }
             }
-            this.dispatchEvent(new CustomEvent(
-                'select', {detail: {tabId: widget.selectedTabId, isUserGesture: event.data?.isUserGesture}}));
+            this.dispatchEvent(new CustomEvent('select', {
+              detail: {
+                tabId: widget.selectedTabId,
+                prevTabId: event.data?.prevTabId,
+                isUserGesture: event.data?.isUserGesture,
+              },
+            }));
           });
           widget.addEventListener(Events.TabClosed, event => {
             this.dispatchEvent(
@@ -1873,6 +1907,12 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
           this.#syncTabs(widget);
           return widget;
         }));
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string|null, newValue: string|null): void {
+    if (name === 'vertical') {
+      this.vertical = newValue !== null;
+    }
   }
 
   override disconnectedCallback(): void {
@@ -1997,3 +2037,9 @@ export class TabbedPaneElement extends WidgetElement<TabbedPane> {
 }
 
 customElements.define('devtools-tabbed-pane', TabbedPaneElement);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-tabbed-pane': TabbedPaneElement;
+  }
+}

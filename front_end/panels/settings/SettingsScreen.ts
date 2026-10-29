@@ -114,9 +114,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     this.tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
         () => SettingsScreen.revealSettingsScreen(), 'settings-view');
     const tabbedPane = this.tabbedLocation.tabbedPane();
-    tabbedPane.registerRequiredCSS(settingsScreenStyles);
     tabbedPane.headerElement().prepend(settingsLabelElement);
-    tabbedPane.setShrinkableTabs(false);
     tabbedPane.makeVerticalTabLayout();
     const keyBindsView = UI.ViewManager.ViewManager.instance().view('keybinds');
     if (keyBindsView) {

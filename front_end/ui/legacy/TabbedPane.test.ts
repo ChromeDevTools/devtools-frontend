@@ -929,5 +929,58 @@ describeWithEnvironment('TabbedPaneElement', () => {
       assert.isTrue(tab2.shown);
       assert.isAtMost(tab2.width(), tab2WidthWithoutIcon);
     });
+
+    it('supports the vertical attribute', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+
+      render(html`
+        <devtools-tabbed-pane vertical>
+          <div id="tab1" label="Tab 1">Content 1</div>
+          <div id="tab2" label="Tab 2">Content 2</div>
+        </devtools-tabbed-pane>`,
+             container);
+
+      await doubleRaf();
+      const element = container.querySelector('devtools-tabbed-pane')!;
+      const widget = UI.Widget.Widget.get(element) as UI.TabbedPane.TabbedPane;
+      assert.isTrue(element.vertical);
+      assert.isTrue(widget.contentElement.classList.contains('vertical-tab-layout'));
+    });
+
+    it('dispatches tabinvoked and select events', async () => {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      const onTabInvoked = sinon.spy();
+      const onSelect = sinon.spy();
+
+      render(html`
+        <devtools-tabbed-pane @tabinvoked=${onTabInvoked} @select=${onSelect}>
+          <div id="tab1" label="Tab 1">Content 1</div>
+          <div id="tab2" label="Tab 2">Content 2</div>
+        </devtools-tabbed-pane>`,
+             container);
+
+      await doubleRaf();
+      const element = container.querySelector('devtools-tabbed-pane')!;
+      const widget = UI.Widget.Widget.get(element) as UI.TabbedPane.TabbedPane;
+
+      onTabInvoked.resetHistory();
+      onSelect.resetHistory();
+
+      widget.selectTab('tab2', true);
+      sinon.assert.calledOnceWithExactly(
+          onTabInvoked, sinon.match({detail: {tabId: 'tab2', prevTabId: 'tab1', isUserGesture: true}}));
+      sinon.assert.calledOnceWithExactly(
+          onSelect, sinon.match({detail: {tabId: 'tab2', prevTabId: 'tab1', isUserGesture: true}}));
+
+      onTabInvoked.resetHistory();
+      onSelect.resetHistory();
+
+      widget.selectTab('tab2', true);
+      sinon.assert.calledOnceWithExactly(
+          onTabInvoked, sinon.match({detail: {tabId: 'tab2', prevTabId: 'tab2', isUserGesture: true}}));
+      sinon.assert.notCalled(onSelect);
+    });
   });
 });

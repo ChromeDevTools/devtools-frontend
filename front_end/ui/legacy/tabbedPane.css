@@ -247,6 +247,12 @@
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-content {
   padding-top: var(--sys-size-10);
   overflow-x: hidden;
+
+  slot::slotted(.widget) {
+    /* '!important' in order to overwrite the slotted widget's 'overflow-auto' class.
+    This prevents the focus-ring of selectable elements from being cut off. */
+    overflow: visible !important; /* stylelint-disable-line declaration-no-important */
+  }
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-contents {

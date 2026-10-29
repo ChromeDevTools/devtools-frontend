@@ -81,7 +81,15 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
   override wasShown(): void {
     super.wasShown();
+    SDK.TargetManager.TargetManager.instance().addEventListener(SDK.TargetManager.Events.NAME_CHANGED,
+                                                                this.#targetNameChanged);
     this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    SDK.TargetManager.TargetManager.instance().removeEventListener(SDK.TargetManager.Events.NAME_CHANGED,
+                                                                   this.#targetNameChanged);
   }
 
   #getThreadName(debuggerModel: SDK.DebuggerModel.DebuggerModel): string {
@@ -122,8 +130,6 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
     debuggerModel.runtimeModel().addEventListener(
         SDK.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
-    SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NAME_CHANGED, this.#targetNameChanged);
 
     this.requestUpdate();
   }
@@ -134,8 +140,6 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
     debuggerModel.runtimeModel().removeEventListener(
         SDK.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
-    SDK.TargetManager.TargetManager.instance().removeEventListener(
-        SDK.TargetManager.Events.NAME_CHANGED, this.#targetNameChanged);
 
     this.requestUpdate();
   }

@@ -68,4 +68,18 @@ describeWithEnvironment('ThreadsSidebarPane', () => {
     await threadsSidebarPane.updateComplete;
     sinon.assert.calledOnce(view);
   });
+
+  it('continues updating on target name changes after another target is removed', async () => {
+    const target1 = createTarget();
+    const target2 = createTarget();
+    await threadsSidebarPane.updateComplete;
+
+    SDK.TargetManager.TargetManager.instance().removeTarget(target2);
+    await threadsSidebarPane.updateComplete;
+    view.resetHistory();
+
+    target1.setName('renamed-target');
+    await threadsSidebarPane.updateComplete;
+    sinon.assert.calledOnce(view);
+  });
 });

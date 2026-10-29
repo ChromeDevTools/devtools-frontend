@@ -220,7 +220,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
                     },
                 });
             },
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     #buildScopeChain({ scopeChain }) {
         const oldExpansionTrackers = this.#expansionTrackers;

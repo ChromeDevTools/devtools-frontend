@@ -1,3 +1,4 @@
+import { AsyncDirective, type LitTemplate } from '../../lit/lit.js';
 interface ProposedRect {
     left: number;
     top: number;
@@ -86,6 +87,15 @@ export declare class Tooltip extends HTMLElement {
     hideTooltip: (event?: MouseEvent | FocusEvent) => void;
     toggle: () => void;
 }
+type IfExpandedContent = LitTemplate | Iterable<LitTemplate> | Promise<LitTemplate | Iterable<LitTemplate>>;
+declare class IfExpandedDirective extends AsyncDirective.AsyncDirective {
+    #private;
+    constructor(partInfo: AsyncDirective.PartInfo);
+    render(content: IfExpandedContent | (() => IfExpandedContent)): unknown;
+    protected disconnected(): void;
+    protected reconnected(): void;
+}
+export declare const ifExpanded: (content: IfExpandedContent | (() => IfExpandedContent)) => AsyncDirective.DirectiveResult<typeof IfExpandedDirective>;
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-tooltip': Tooltip;

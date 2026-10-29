@@ -980,7 +980,7 @@ var EventListenersView = class _EventListenersView extends UI.Widget.VBox {
         }
       }
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
     this.eventListenersArrivedForTest();
   }
   static #createObjectTree(listener) {

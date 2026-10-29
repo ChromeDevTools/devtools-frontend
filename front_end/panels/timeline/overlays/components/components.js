@@ -1750,7 +1750,7 @@ var renderSection = (section, position) => {
   );
   const durationText = section.showDuration ? i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : "";
   const labelText = section.label instanceof HTMLElement ? section.label.textContent || "" : typeof section.label === "string" ? section.label : "";
-  const tooltip = durationText ? `${durationText} ${labelText}` : labelText;
+  const tooltip = labelText ? durationText ? `${durationText} ${labelText}` : labelText : "";
   return html4`
       <div class="timespan-breakdown-overlay-section" style=${style} title=${tooltip}>
         <div class="timespan-breakdown-overlay-label">
@@ -1844,18 +1844,23 @@ var TimespanBreakdownOverlay = class extends UI3.Widget.Widget {
     if (!sections) {
       return;
     }
-    if (!this.#canvasRect) {
-      return;
-    }
-    const paddingForScrollbar = 9;
     for (const section of sections) {
       const label = section.querySelector(".timespan-breakdown-overlay-label");
       if (!label) {
         continue;
       }
+      if (!section.title) {
+        const durationText = label.querySelector(".duration-text")?.textContent ?? "";
+        const labelText = label.querySelector(".section-label-text")?.textContent ?? "";
+        section.title = durationText && labelText ? `${durationText} ${labelText}` : durationText || labelText;
+      }
       label.classList.remove("labelHidden", "labelTruncated", "offScreenLeft", "offScreenRight");
       label.style.marginLeft = "";
     }
+    if (!this.#canvasRect) {
+      return;
+    }
+    const paddingForScrollbar = 9;
     const sectionLayoutData = /* @__PURE__ */ new Map();
     for (const section of sections) {
       const label = section.querySelector(".timespan-breakdown-overlay-label");

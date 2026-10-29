@@ -21,7 +21,7 @@ export interface ViewInput {
     aiButtonTitle?: string;
     onAiButtonClick?: (cookie: CookieData, event: Event) => void;
 }
-type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
+type ViewFunction = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME | SDK.Cookie.Attribute.VALUE | SDK.Cookie.Attribute.DOMAIN | SDK.Cookie.Attribute.PATH | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.SAME_SITE;
 type BooleanAttributes = SDK.Cookie.Attribute.HTTP_ONLY | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR;
 type CookieData = Partial<Record<Exclude<SDK.Cookie.Attribute, BooleanAttributes>, string>> & Partial<Record<BooleanAttributes, string | boolean>> & {

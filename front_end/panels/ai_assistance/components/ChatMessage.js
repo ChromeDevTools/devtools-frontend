@@ -1963,13 +1963,16 @@ async function makeNetworkTrackWidget(widgetData) {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     // clang-format off
     const template = html `
-    <devtools-performance-agent-network-track
-      .data=${{
-        parsedTrace,
-        bounds,
-        dataProvider,
-    }}
-    ></devtools-performance-agent-network-track>`;
+    <devtools-widget
+      class="network-track-widget"
+      ${widget(TimelineComponents.NetworkTrackWidget.NetworkTrackWidget, {
+        data: {
+            parsedTrace,
+            bounds,
+            dataProvider,
+        },
+    })}
+    ></devtools-widget>`;
     // clang-format on
     return {
         renderedWidget: template,

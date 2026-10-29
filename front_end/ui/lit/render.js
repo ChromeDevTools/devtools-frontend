@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Lit from '../../third_party/lit/lit.js';
-import { InterceptBindingDirective } from './Directives.js';
 const renderOptions = new WeakMap();
 const containerListeners = new WeakMap();
 export function render(template, container, options) {
@@ -92,9 +91,6 @@ export function render(template, container, options) {
             host.removeEventListener(name, entry.wrapper);
             listenersMap.delete(name);
         }
-    }
-    if (host instanceof Element) {
-        InterceptBindingDirective.registerListeners(host, options?.container?.interceptedListeners);
     }
     renderOptions.set(container, options);
     return Lit.render(template, container, options);

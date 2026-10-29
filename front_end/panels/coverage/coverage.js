@@ -1209,7 +1209,7 @@ var CoverageListView = class extends UI.Widget.VBox {
       },
       highlightRegExp: this.#highlightRegExp
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
   reset() {
     this.#coverageInfo = [];

@@ -4,7 +4,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 interface PlatformFontsWidgetInput {
     platformFonts: Protocol.CSS.PlatformFontUsage[] | null;
 }
-type View = (input: PlatformFontsWidgetInput, output: object, target: HTMLElement) => void;
+type View = (input: PlatformFontsWidgetInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class PlatformFontsWidget extends UI.Widget.VBox {
     #private;

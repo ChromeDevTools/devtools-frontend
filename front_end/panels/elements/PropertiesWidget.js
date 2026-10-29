@@ -200,7 +200,7 @@ export class PropertiesWidget extends UI.Widget.VBox {
             isRegex: this.#isRegex,
             allChildrenFiltered,
             objectTree: this.#objectTree,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     onNodeChange(event) {
         if (!this.#lastRequestedNode) {

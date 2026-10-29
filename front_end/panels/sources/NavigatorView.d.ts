@@ -110,6 +110,8 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private handleContextMenuRename;
     private handleContextMenuExclude;
     private handleContextMenuDelete;
+    fileDragStarted(node: NavigatorUISourceCodeTreeNode, event: DragEvent): void;
+    shouldRenameOnMouseDown(node: NavigatorUISourceCodeTreeNode): boolean;
     handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void;
     private handleSaveAs;
     private addJSExtension;
@@ -117,7 +119,8 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private removeUISourceCodeFromProject;
     private deleteDirectoryRecursively;
     private findTopNonMergedNode;
-    handleFolderContextMenu(event: Event, node: NavigatorFolderTreeNode): void;
+    folderHovered(node: NavigatorTreeNode, hovered: boolean): void;
+    handleFolderContextMenu(event: Event, node: NavigatorFolderTreeNode | NavigatorGroupTreeNode): void;
     rename(node: NavigatorUISourceCodeTreeNode, creatingNewUISourceCode: boolean): void;
     create(project: Workspace.Workspace.Project, path: Platform.DevToolsPath.EncodedPathString, uiSourceCodeToCopy?: Workspace.UISourceCode.UISourceCode): Promise<void>;
     private groupingChanged;
@@ -133,11 +136,10 @@ export declare class NavigatorFolderTreeElement extends UI.TreeOutline.TreeEleme
     #private;
     private readonly nodeType;
     private readonly navigatorView;
-    private hoverCallback;
     node: NavigatorTreeNode;
     private hovered?;
     private isIgnoreListed?;
-    constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void), expandable?: boolean);
+    constructor(navigatorView: NavigatorView, type: string, title: string, expandable?: boolean);
     onpopulate(): Promise<void>;
     onattach(): void;
     setIgnoreListed(isIgnoreListed: boolean): void;
@@ -149,17 +151,16 @@ export declare class NavigatorFolderTreeElement extends UI.TreeOutline.TreeEleme
     private mouseLeave;
 }
 export declare class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
-    #private;
     readonly nodeType: string;
     readonly node: NavigatorUISourceCodeTreeNode;
     private readonly navigatorView;
     constructor(navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, title: string, node: NavigatorUISourceCodeTreeNode);
     updateIcon(): void;
     updateAccessibleName(): void;
-    private createAiButton;
+    private renderAiButton;
+    updateTrailingIcons(): void;
     get uiSourceCode(): Workspace.UISourceCode.UISourceCode;
     onattach(): void;
-    private shouldRenameOnMouseDown;
     selectOnMouseDown(event: MouseEvent): void;
     private ondragstart;
     onspace(): boolean;
@@ -246,12 +247,11 @@ export declare class NavigatorFolderTreeNode extends NavigatorTreeNode {
     willRemoveChild(node: NavigatorTreeNode): void;
 }
 export declare class NavigatorGroupTreeNode extends NavigatorTreeNode {
-    private readonly project;
+    readonly project: Workspace.Workspace.Project | null;
     title: string;
-    private hoverCallback?;
+    readonly frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
     private treeElement?;
-    constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project | null, id: string, type: string, title: string, tooltip?: string);
-    setHoverCallback(hoverCallback: (arg0: boolean) => void): void;
+    constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project | null, id: string, type: string, title: string, tooltip?: string, frame?: SDK.ResourceTreeModel.ResourceTreeFrame);
     treeNode(): UI.TreeOutline.TreeElement;
     onattach(): void;
     updateTitle(): void;

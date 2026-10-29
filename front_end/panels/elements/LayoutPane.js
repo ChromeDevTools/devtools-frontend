@@ -455,7 +455,7 @@ export class LayoutPane extends UI.Widget.Widget {
             booleanSettings: settings.filter(isBooleanSetting),
             onSummaryKeyDown: this.#onSummaryKeyDown.bind(this),
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     #onBooleanSettingChange(setting, event) {
         event.preventDefault();

@@ -122,7 +122,7 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
             isFreshRecording: this.#isFreshRecording,
             togglePopover: e => this.#togglePopover(e),
             onEventClick: e => this.#handleTraceEventClick(e),
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 export const DEFAULT_VIEW = (input, _output, target) => {

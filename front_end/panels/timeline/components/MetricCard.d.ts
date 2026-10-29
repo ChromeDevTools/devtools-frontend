@@ -12,7 +12,7 @@ interface ViewInput {
     subparts?: SubpartTable;
     warnings?: string[];
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class MetricCard extends UI.Widget.VBox {
     #private;

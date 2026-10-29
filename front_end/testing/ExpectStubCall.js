@@ -64,6 +64,7 @@ export function spyCall(obj, method) {
         const result = original.apply(this, args);
         resolve({ args, result });
         stub.restore();
+        return result;
     });
     return promise;
 }

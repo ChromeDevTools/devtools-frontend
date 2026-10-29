@@ -2084,7 +2084,7 @@ var LinearMemoryInspector = class extends UI7.Widget.Widget {
       memorySlice: this.#memory.slice(start - this.#memoryOffset, end - this.#memoryOffset),
       viewerStart: start
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, void 0, this.contentElement);
   }
   #onJumpToAddress(address) {
     this.#currentNavigatorMode = "Submitted" /* SUBMITTED */;

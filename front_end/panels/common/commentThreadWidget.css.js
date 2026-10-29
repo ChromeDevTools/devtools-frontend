@@ -42,7 +42,8 @@ export default `/*
     flex-shrink: 0;
   }
 
-  .sent-status {
+  .sent-status,
+  .working-status {
     display: flex;
     align-items: center;
     gap: var(--sys-size-2);

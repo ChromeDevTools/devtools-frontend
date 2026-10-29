@@ -1,3 +1,4 @@
+import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as CommentManager from '../../models/comment_manager/comment_manager.js';
@@ -20,6 +21,8 @@ export interface ViewInput {
     isQueueModifierPressed: boolean;
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
     status: CommentManager.CommentManager.CommentThreadStatus;
+    /** Whether the thread has been taken by the agent. */
+    transmitted: boolean;
     isEditing: boolean;
     onAddComment: (text: string) => void;
     onQueueComment: (text: string) => void;
@@ -46,6 +49,7 @@ export declare class CommentThreadWidget extends UI.Widget.Widget {
     willHide(): void;
     set comments(comments: CommentManager.CommentManager.Comment[]);
     set status(commentStatus: CommentManager.CommentManager.CommentThreadStatus);
+    set transmitted(transmitted: boolean);
     performUpdate(): void;
 }
 export declare function computeCommentTitle(anchor: CommentManager.CommentManager.CommentAnchorSignature): Promise<Title>;

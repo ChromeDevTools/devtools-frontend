@@ -471,7 +471,7 @@ export class WatchExpressionsSidebarPane extends UI.Widget.VBox {
                 }
                 e.result.expanded = expanded;
             },
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     #getExpansionTracker(expression) {
         if (expression === null) {

@@ -608,7 +608,7 @@ export class RequestTimingView extends UI.Widget.VBox {
             wasThrottled: conditions?.urlPattern ? conditions : undefined,
             timeRanges,
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     set request(request) {
         this.#request = request;

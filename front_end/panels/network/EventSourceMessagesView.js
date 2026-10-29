@@ -172,7 +172,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
             onFilterChanged: this.onFilterChanged.bind(this),
             onRowContextMenu: this.onRowContextMenu.bind(this),
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
 }
 function formatTime(d) {

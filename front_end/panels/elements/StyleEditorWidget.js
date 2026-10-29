@@ -1,15 +1,23 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import '../../ui/kit/kit.js';
 import * as Elements from '../../models/elements/elements.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { Directives, html } from '../../ui/lit/lit.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
 const { ref } = Directives;
 let instance = null;
+export const DEFAULT_VIEW = (input, _output, target) => {
+    input.editor.data = {
+        authoredProperties: input.authoredProperties,
+        computedProperties: input.computedProperties,
+    };
+    // clang-format off
+    render(html `<div tabindex="0" autofocus>${input.editor}</div>`, target, { container: { classes: ['with-padding'] } });
+    // clang-format on
+};
 /**
  * Thin UI.Widget wrapper around style editors to allow using it as a popover.
  */
@@ -17,15 +25,12 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     editor;
     stylesContainer;
     section;
-    editorContainer;
+    #view;
     #triggerKey;
     #initialProperties = null;
-    constructor() {
-        super({ useShadowDom: true });
-        this.contentElement.tabIndex = 0;
-        this.setDefaultFocusedElement(this.contentElement);
-        this.editorContainer = document.createElement('div');
-        this.contentElement.appendChild(this.editorContainer);
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: true });
+        this.#view = view;
         this.onPropertySelected = this.onPropertySelected.bind(this);
         this.onPropertyDeselected = this.onPropertyDeselected.bind(this);
     }
@@ -97,11 +102,12 @@ export class StyleEditorWidget extends UI.Widget.VBox {
         if (!this.editor) {
             return;
         }
-        this.editor.data = {
+        this.#view({
+            editor: this.editor,
             authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) :
                 new Map(),
             computedProperties: this.stylesContainer ? await fetchComputedStyles(this.stylesContainer) : new Map(),
-        };
+        }, undefined, this.contentElement);
     }
     async performUpdate() {
         await super.performUpdate();
@@ -115,9 +121,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     }
     setEditor(editorClass) {
         if (!(this.editor instanceof editorClass)) {
-            this.contentElement.removeChildren();
             this.editor = new editorClass();
-            this.contentElement.appendChild(this.editor);
         }
     }
     static createTriggerButton(stylesContainer, section, editorClass, buttonTitle, triggerKey, jslogContext, onClick) {
@@ -145,7 +149,6 @@ export class StyleEditorWidget extends UI.Widget.VBox {
                 return;
             }
             const widget = StyleEditorWidget.instance();
-            widget.element.classList.toggle('with-padding', true);
             widget.setEditor(editorClass);
             widget.bindContext(stylesContainer, section);
             widget.setTriggerKey(triggerKey);

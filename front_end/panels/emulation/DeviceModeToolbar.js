@@ -576,7 +576,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
             showDeviceScaleFactorSetting: this.showDeviceScaleFactorSetting,
             showUserAgentTypeSetting: this.showUserAgentTypeSetting,
         };
-        this.view(input, {}, this.contentElement);
+        this.view(input, undefined, this.contentElement);
     }
     getDevicePostureOptions() {
         const currentPosture = this.currentDevicePosture();

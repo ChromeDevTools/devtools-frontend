@@ -226,7 +226,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
             states: [...this.#states.values()],
             onStateCheckboxClicked: this.onStateCheckboxClicked.bind(this),
         };
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
     async #updateElementSpecificStatesTable(node = null) {
         if (!node || node.nodeType() !== Node.ELEMENT_NODE) {

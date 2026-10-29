@@ -164,7 +164,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
             serverTimings: this.#serverTimings,
             linkifier: this.#linkifier,
             parsedTrace: this.#parsedTrace,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 export const DEFAULT_VIEW = (input, _output, target) => {

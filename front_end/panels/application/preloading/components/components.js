@@ -3739,7 +3739,7 @@ var MismatchedPreloadingGrid = class extends UI.Widget.Widget {
     if (!this.#data) {
       return;
     }
-    this.#view(this.#data, {}, this.contentElement);
+    this.#view(this.#data, void 0, this.contentElement);
   }
 };
 
@@ -4751,7 +4751,7 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
   }
   async performUpdate() {
     if (!this.#ruleSet) {
-      this.#view(null, {}, this.contentElement);
+      this.#view(null, void 0, this.contentElement);
       return;
     }
     const sourceText = await this.#getSourceText();
@@ -4772,7 +4772,7 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
         editorState,
         sourceText
       },
-      {},
+      void 0,
       this.contentElement
     );
   }

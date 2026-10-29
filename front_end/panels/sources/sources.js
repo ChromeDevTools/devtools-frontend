@@ -1885,7 +1885,7 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
       itemEditClickHandler: this.#itemEditClickHandler.bind(this),
       itemRemoveClickHandler: this.#itemRemoveClickHandler.bind(this)
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
     if (this.contentElement.querySelector('[tabindex="0"]') === null) {
       const element = this.contentElement.querySelector("[data-first-pause]");
       element?.setAttribute("tabindex", "0");
@@ -2161,7 +2161,7 @@ import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
 import * as Workspace25 from "../../models/workspace/workspace.js";
 import { Icon } from "../../ui/kit/kit.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html17, render as render13 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html18, render as render14 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -5175,7 +5175,7 @@ import * as Buttons9 from "../../ui/components/buttons/buttons.js";
 import * as Geometry2 from "../../ui/geometry/geometry.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
-import { html as html16, nothing as nothing10, render as render12 } from "../../ui/lit/lit.js";
+import { html as html17, nothing as nothing10, render as render13 } from "../../ui/lit/lit.js";
 import * as Settings10 from "../../ui/settings/settings.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 import * as Snippets5 from "../snippets/snippets.js";
@@ -6950,8 +6950,15 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (frameNode) {
       return frameNode;
     }
-    frameNode = new NavigatorGroupTreeNode(this, project, target.id() + ":" + frame.id, Types.Frame, frame.displayName());
-    frameNode.setHoverCallback(hoverCallback);
+    frameNode = new NavigatorGroupTreeNode(
+      this,
+      project,
+      target.id() + ":" + frame.id,
+      Types.Frame,
+      frame.displayName(),
+      void 0,
+      frame
+    );
     this.frameNodes.set(frame, frameNode);
     const parentFrame = frame.parentFrame();
     if (!parentFrame) {
@@ -6960,16 +6967,6 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored).appendChild(frameNode);
     if (!parentFrame) {
       frameNode.treeNode().expand();
-    }
-    function hoverCallback(hovered) {
-      if (hovered) {
-        const overlayModel = target.model(SDK5.OverlayModel.OverlayModel);
-        if (overlayModel && frame) {
-          overlayModel.highlightFrame(frame.id);
-        }
-      } else {
-        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
-      }
     }
     return frameNode;
   }
@@ -7216,6 +7213,19 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
   }
+  fileDragStarted(node, event) {
+    if (!event.dataTransfer) {
+      return;
+    }
+    event.dataTransfer.setData("text/plain", node.uiSourceCode().url());
+    event.dataTransfer.effectAllowed = "copy";
+  }
+  shouldRenameOnMouseDown(node) {
+    if (!node.uiSourceCode().canRename() || !node.treeElement) {
+      return false;
+    }
+    return this.scriptsTree.selectedTreeElement === node.treeElement && this.scriptsTree.element.hasFocus() && !UI7.UIUtils.isBeingEdited(this.scriptsTree.element);
+  }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
@@ -7325,8 +7335,20 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     return this.findTopNonMergedNode(node.parent);
   }
+  folderHovered(node, hovered) {
+    if (node instanceof NavigatorGroupTreeNode && node.frame) {
+      if (hovered) {
+        const overlayModel = node.frame.resourceTreeModel().target().model(SDK5.OverlayModel.OverlayModel);
+        if (overlayModel) {
+          overlayModel.highlightFrame(node.frame.id);
+        }
+      } else {
+        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
+      }
+    }
+  }
   handleFolderContextMenu(event, node) {
-    const path = node.folderPath || Platform5.DevToolsPath.EmptyEncodedPathString;
+    const path = node instanceof NavigatorFolderTreeNode ? node.folderPath : Platform5.DevToolsPath.EmptyEncodedPathString;
     const project = node.project || null;
     const contextMenu = new UI7.ContextMenu.ContextMenu(event);
     if (project?.type() !== Workspace5.Workspace.projectTypes.ConnectableFileSystem) {
@@ -7350,7 +7372,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           this.handleContextMenuCreate(project, path, void 0);
         }, { jslogContext: "new-file" });
       }
-    } else if (node.origin && node.folderPath) {
+    } else if (node instanceof NavigatorFolderTreeNode && node.origin && node.folderPath) {
       const url = Common7.ParsedURL.ParsedURL.concatenate(node.origin, "/", node.folderPath);
       const options = {
         isContentScript: node.recursiveProperties.exclusivelyContentScripts || false,
@@ -7498,11 +7520,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
 var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.TreeOutline.TreeElement {
   nodeType;
   navigatorView;
-  hoverCallback;
   node;
   hovered;
   isIgnoreListed;
-  constructor(navigatorView, type, title, hoverCallback, expandable = true) {
+  constructor(navigatorView, type, title, expandable = true) {
     super("", expandable, _NavigatorFolderTreeElement.#contextForType(type));
     this.listItemElement.classList.add("navigator-" + type + "-tree-item", "navigator-folder-tree-item");
     UI7.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
@@ -7510,7 +7531,6 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.T
     this.title = title;
     this.tooltip = title;
     this.navigatorView = navigatorView;
-    this.hoverCallback = hoverCallback;
     let iconType = "folder";
     if (type === Types.Domain) {
       iconType = "cloud";
@@ -7572,25 +7592,25 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.T
     }
   }
   handleContextMenuEvent(event) {
-    if (!this.node) {
+    if (!this.node || !(this.node instanceof NavigatorFolderTreeNode || this.node instanceof NavigatorGroupTreeNode)) {
       return;
     }
     this.select();
     this.navigatorView.handleFolderContextMenu(event, this.node);
   }
   mouseMove(_event) {
-    if (this.hovered || !this.hoverCallback) {
+    if (this.hovered || !this.node) {
       return;
     }
     this.hovered = true;
-    this.hoverCallback(true);
+    this.navigatorView.folderHovered(this.node, true);
   }
   mouseLeave(_event) {
-    if (!this.hoverCallback) {
+    if (!this.node) {
       return;
     }
     this.hovered = false;
-    this.hoverCallback(false);
+    this.navigatorView.folderHovered(this.node, false);
   }
   static #contextForType(type) {
     switch (type) {
@@ -7612,7 +7632,6 @@ var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
   nodeType;
   node;
   navigatorView;
-  #uiSourceCode;
   constructor(navigatorView, uiSourceCode, title, node) {
     super("", false, uiSourceCode.contentType().name());
     this.nodeType = Types.File;
@@ -7629,103 +7648,90 @@ var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
       { bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName() }
     ));
     this.navigatorView = navigatorView;
-    this.#uiSourceCode = uiSourceCode;
     this.updateIcon();
     this.titleElement.setAttribute("jslog", `${VisualLogging5.value("title").track({ change: true })}`);
   }
   updateIcon() {
-    const icon = PanelUtils.getIconForSourceFile(this.#uiSourceCode);
+    const icon = PanelUtils.getIconForSourceFile(this.node.uiSourceCode());
     this.setLeadingIcons([icon]);
   }
   updateAccessibleName() {
-    UI7.ARIAUtils.setLabel(this.listItemElement, `${this.#uiSourceCode.name()}, ${this.nodeType}`);
+    UI7.ARIAUtils.setLabel(this.listItemElement, `${this.node.uiSourceCode().name()}, ${this.nodeType}`);
   }
-  createAiButton() {
+  renderAiButton() {
     if (!UI7.ActionRegistry.ActionRegistry.instance().hasAction("drjones.sources-floating-button")) {
-      return;
+      return null;
     }
-    if (!this.uiSourceCode.contentType().isTextType() || Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCode)) {
-      return;
+    const uiSourceCode = this.node.uiSourceCode();
+    if (!uiSourceCode.contentType().isTextType() || Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
+      return null;
     }
     const action3 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
     const icon = AiAssistance.AiUtils.getIconName();
-    this.setTrailingIcons([
-      html6`<span class="ai-button-container">
-        <devtools-floating-button
-          .iconName=${icon}
-          .title=${action3.title()}
-          .jslogContext=${"ask-ai"}
-          @click=${{
-        handleEvent: (ev) => {
-          ev.stopPropagation();
-          this.navigatorView.sourceSelected(this.uiSourceCode, false);
-          void action3.execute();
-        },
-        capture: true
-      }}
-          @mousedown=${{
-        handleEvent: (ev) => {
-          ev.stopPropagation();
-        },
-        capture: true
-      }}
-        ></devtools-floating-button>
-      </span>`
-    ]);
+    return html6`<span class="ai-button-container">
+      <devtools-floating-button
+        .iconName=${icon}
+        .title=${action3.title()}
+        .jslogContext=${"ask-ai"}
+        @click=${{
+      handleEvent: (ev) => {
+        ev.stopPropagation();
+        this.navigatorView.sourceSelected(uiSourceCode, false);
+        void action3.execute();
+      },
+      capture: true
+    }}
+        @mousedown=${{
+      handleEvent: (ev) => {
+        ev.stopPropagation();
+      },
+      capture: true
+    }}
+      ></devtools-floating-button>
+    </span>`;
+  }
+  updateTrailingIcons() {
+    const aiButton = this.renderAiButton();
+    this.setTrailingIcons(aiButton ? [aiButton] : []);
   }
   get uiSourceCode() {
-    return this.#uiSourceCode;
+    return this.node.uiSourceCode();
   }
   onattach() {
     this.listItemElement.draggable = true;
     this.listItemElement.addEventListener("click", this.onclick.bind(this), false);
     this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
     this.listItemElement.addEventListener("dragstart", this.ondragstart.bind(this), false);
-    this.createAiButton();
-  }
-  shouldRenameOnMouseDown() {
-    if (!this.#uiSourceCode.canRename()) {
-      return false;
-    }
-    if (!this.treeOutline) {
-      return false;
-    }
-    const isSelected = this === this.treeOutline.selectedTreeElement;
-    return isSelected && this.treeOutline.element.hasFocus() && !UI7.UIUtils.isBeingEdited(this.treeOutline.element);
+    this.updateTrailingIcons();
   }
   selectOnMouseDown(event) {
-    if (event.which !== 1 || !this.shouldRenameOnMouseDown()) {
+    if (event.which !== 1 || !this.navigatorView.shouldRenameOnMouseDown(this.node)) {
       super.selectOnMouseDown(event);
       return;
     }
-    window.setTimeout(rename.bind(this), 300);
-    function rename() {
-      if (this.shouldRenameOnMouseDown()) {
+    window.setTimeout(() => {
+      if (this.navigatorView.shouldRenameOnMouseDown(this.node)) {
         this.navigatorView.rename(this.node, false);
       }
-    }
+    }, 300);
   }
   ondragstart(event) {
-    if (!event.dataTransfer) {
-      return;
-    }
-    event.dataTransfer.setData("text/plain", this.#uiSourceCode.url());
-    event.dataTransfer.effectAllowed = "copy";
+    this.navigatorView.fileDragStarted(this.node, event);
   }
   onspace() {
-    this.navigatorView.sourceSelected(this.uiSourceCode, true);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
     return true;
   }
   onclick(_event) {
-    this.navigatorView.sourceSelected(this.uiSourceCode, false);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), false);
   }
   ondblclick(event) {
     const middleClick = event.button === 1;
-    this.navigatorView.sourceSelected(this.uiSourceCode, !middleClick);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), !middleClick);
     return false;
   }
   onenter() {
-    this.navigatorView.sourceSelected(this.uiSourceCode, true);
+    this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
     return true;
   }
   ondelete() {
@@ -7923,6 +7929,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     }
     this.treeElement.title = titleText;
     this.treeElement.updateIcon();
+    this.treeElement.updateTrailingIcons();
     this.treeElement.listItemElement.classList.toggle("is-ignore-listed", isIgnoreListed);
     let tooltip = this.#uiSourceCode.url();
     if (this.#uiSourceCode.contentType().isFromSourceMap()) {
@@ -8163,23 +8170,21 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
 var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
   project;
   title;
-  hoverCallback;
+  frame;
   treeElement;
-  constructor(navigatorView, project, id, type, title, tooltip) {
+  constructor(navigatorView, project, id, type, title, tooltip, frame) {
     super(navigatorView, id, type, tooltip);
     this.project = project;
     this.title = title;
+    this.frame = frame;
     this.populate();
-  }
-  setHoverCallback(hoverCallback) {
-    this.hoverCallback = hoverCallback;
   }
   treeNode() {
     if (this.treeElement) {
       return this.treeElement;
     }
     const expandable = !(this.project instanceof Persistence3.AutomaticFileSystemWorkspaceBinding.FileSystem);
-    this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, this.hoverCallback, expandable);
+    this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, expandable);
     this.treeElement.setNode(this);
     if (this.project instanceof Persistence3.AutomaticFileSystemWorkspaceBinding.FileSystem) {
       const { automaticFileSystem, automaticFileSystemManager } = this.project;
@@ -8934,7 +8939,7 @@ import * as Buttons8 from "../../ui/components/buttons/buttons.js";
 import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as SourceFrame11 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import { html as html14, nothing as nothing8, render as render10 } from "../../ui/lit/lit.js";
+import { html as html15, nothing as nothing8, render as render11 } from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/sourcesView.css.js
@@ -8991,7 +8996,7 @@ import * as Workspace19 from "../../models/workspace/workspace.js";
 import * as uiI18n3 from "../../ui/i18n/i18n.js";
 import * as SourceFrame9 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html13, nothing as nothing7, render as render9 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html14, nothing as nothing7, render as render10 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "../common/common.js";
 import * as Snippets4 from "../snippets/snippets.js";
@@ -9375,7 +9380,7 @@ import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.j
 import * as TextEditor5 from "../../ui/components/text_editor/text_editor.js";
 import * as SourceFrame7 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html12, nothing as nothing6, render as render8 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html13, nothing as nothing6, render as render9 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/sources/CoveragePlugin.ts
 var CoveragePlugin_exports = {};
@@ -12392,6 +12397,7 @@ import * as i18n21 from "../../core/i18n/i18n.js";
 import * as Platform8 from "../../core/platform/platform.js";
 import * as Workspace16 from "../../models/workspace/workspace.js";
 import * as CodeMirror5 from "../../third_party/codemirror.next/codemirror.next.js";
+import { html as html10, render as render8 } from "../../ui/lit/lit.js";
 var UIStrings11 = {
   /**
    * @description The millisecond unit.
@@ -12400,6 +12406,14 @@ var UIStrings11 = {
 };
 var str_11 = i18n21.i18n.registerUIStrings("panels/sources/ProfilePlugin.ts", UIStrings11);
 var i18nString10 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+function renderPerformanceMarker(input, _output, target) {
+  render8(html10`
+    <div class="cm-profileMarker"
+         style="background-color: hsla(44, 100%, 50%, ${input.intensity.toFixed(3)})">
+      ${input.value.toFixed(1)}
+      <span class="cm-units">${i18nString10(UIStrings11.ms)}</span>
+    </div>`, target);
+}
 var PerformanceMarker = class extends CodeMirror5.GutterMarker {
   constructor(value2) {
     super();
@@ -12410,16 +12424,10 @@ var PerformanceMarker = class extends CodeMirror5.GutterMarker {
     return this.value === other.value;
   }
   toDOM() {
-    const element = document.createElement("div");
-    element.className = "cm-profileMarker";
+    const fragment = document.createDocumentFragment();
     const intensity = Platform8.NumberUtilities.clamp(Math.log10(1 + 10 * this.value) / 5, 0.02, 1);
-    element.textContent = this.value.toFixed(1);
-    element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
-    const span = document.createElement("span");
-    span.className = "cm-units";
-    span.textContent = i18nString10(UIStrings11.ms);
-    element.appendChild(span);
-    return element;
+    renderPerformanceMarker({ value: this.value, intensity }, void 0, fragment);
+    return fragment.firstElementChild;
   }
 };
 function markersFromProfileData(map, state) {
@@ -12529,7 +12537,7 @@ import * as i18n23 from "../../core/i18n/i18n.js";
 import * as Bindings7 from "../../models/bindings/bindings.js";
 import * as uiI18n2 from "../../ui/i18n/i18n.js";
 import * as Components from "../../ui/legacy/components/utils/utils.js";
-import { html as html10, nothing as nothing5 } from "../../ui/lit/lit.js";
+import { html as html11, nothing as nothing5 } from "../../ui/lit/lit.js";
 var UIStrings12 = {
   /**
    * @description Text in the bottom toolbar of the Sources panel that lists the source mapped origin scripts.
@@ -12579,9 +12587,9 @@ var ResourceOriginPlugin = class extends Plugin {
       if (links.length === 0) {
         return [];
       }
-      const linksTemplate = html10`<span>${links.map((link, index) => html10`${index > 0 ? ", " : nothing5}${link}`)}</span>`;
+      const linksTemplate = html11`<span>${links.map((link, index) => html11`${index > 0 ? ", " : nothing5}${link}`)}</span>`;
       return [
-        html10`<div class="toolbar-item">${uiI18n2.getFormatLocalizedStringTemplate(str_12, UIStrings12.fromS, { PH1: linksTemplate })}</div>`
+        html11`<div class="toolbar-item">${uiI18n2.getFormatLocalizedStringTemplate(str_12, UIStrings12.fromS, { PH1: linksTemplate })}</div>`
       ];
     }
     for (const script of debuggerWorkspaceBinding.scriptsForUISourceCode(this.uiSourceCode)) {
@@ -12589,7 +12597,7 @@ var ResourceOriginPlugin = class extends Plugin {
         const link = this.#linkifier.linkifyStackTraceTopFrame(script.debuggerModel.target(), script.originStackTrace);
         link.tabIndex = 0;
         return [
-          html10`<div class="toolbar-item">${uiI18n2.getFormatLocalizedStringTemplate(str_12, UIStrings12.fromS, { PH1: link })}</div>`
+          html11`<div class="toolbar-item">${uiI18n2.getFormatLocalizedStringTemplate(str_12, UIStrings12.fromS, { PH1: link })}</div>`
         ];
       }
     }
@@ -12611,7 +12619,7 @@ import * as i18n25 from "../../core/i18n/i18n.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as TextEditor4 from "../../ui/components/text_editor/text_editor.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
-import { html as html11 } from "../../ui/lit/lit.js";
+import { html as html12 } from "../../ui/lit/lit.js";
 import * as Snippets3 from "../snippets/snippets.js";
 var { bindToAction: bindToAction2 } = UI12.UIUtils;
 var UIStrings13 = {
@@ -12633,7 +12641,7 @@ var SnippetsPlugin = class extends Plugin {
   rightToolbarItems() {
     const action3 = UI12.ActionRegistry.ActionRegistry.instance().getAction("debugger.run-snippet");
     const text = Host6.Platform.isMac() ? i18nString12(UIStrings13.enter) : i18nString12(UIStrings13.ctrlenter);
-    return [html11`<devtools-button
+    return [html12`<devtools-button
       class="toolbar-button"
       title=${action3.title()}
       aria-label=${action3.title()}
@@ -13048,7 +13056,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     const isJavaScript = Common12.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const isInplaceFormattable = isEditable && isJavaScript;
     if (isInplaceFormattable) {
-      leftToolbarItems.unshift(html12`<devtools-button
+      leftToolbarItems.unshift(html13`<devtools-button
         class="toolbar-button"
         title=${i18nString13(UIStrings14.format)}
         aria-label=${i18nString13(UIStrings14.format)}
@@ -13062,9 +13070,9 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       leftToolbarItems.push(...plugin.leftToolbarItems());
       rightToolbarItems.push(...plugin.rightToolbarItems());
     }
-    return html12`
+    return html13`
       ${leftToolbarItems}
-      ${rightToolbarItems.length ? html12`
+      ${rightToolbarItems.length ? html13`
         <div class="toolbar-spacer"></div>
         ${rightToolbarItems}
       ` : nothing6}
@@ -13267,10 +13275,10 @@ var MessageWidget = class extends CodeMirror6.WidgetType {
     const maxIssueIconData = maxIssue && getIconDataForLevel(maxIssue.level());
     const issue = this.messages.find((m) => m.level() === Workspace17.UISourceCode.Message.Level.ISSUE);
     const issueIconData = issue && getIconDataForMessage(issue);
-    render8(html12`<span class="cm-messageIcon">${maxIssueIconData ? html12`<devtools-icon
+    render9(html13`<span class="cm-messageIcon">${maxIssueIconData ? html13`<devtools-icon
           class="cm-messageIcon-error"
           name=${maxIssueIconData.iconName}
-          style=${styleMap({ height: maxIssueIconData.height, width: maxIssueIconData.width })}></devtools-icon>` : nothing6}${issueIconData ? html12`<devtools-icon
+          style=${styleMap({ height: maxIssueIconData.height, width: maxIssueIconData.width })}></devtools-icon>` : nothing6}${issueIconData ? html13`<devtools-icon
           class="cm-messageIcon-issue extra-small"
           @click=${() => (issue.clickHandler() || Math.min)()}
           name=${issueIconData.iconName}
@@ -13336,7 +13344,7 @@ function renderMessage(message, count) {
   let iconOrCounter;
   if (count === 1) {
     const data = getIconDataForMessage(message);
-    iconOrCounter = html12`<devtools-icon
+    iconOrCounter = html13`<devtools-icon
       name=${data.iconName}
       style=${styleMap({
       height: data.height,
@@ -13345,22 +13353,22 @@ function renderMessage(message, count) {
       class="text-editor-row-message-icon extra-small"
       @click=${() => (message.clickHandler() || Math.min)()}></devtools-icon>`;
   } else {
-    iconOrCounter = html12`<dt-small-bubble
+    iconOrCounter = html13`<dt-small-bubble
           class="text-editor-row-message-repeat-count"
           .type=${getBubbleTypePerLevel(message.level())}
         >${String(count)}</dt-small-bubble>`;
   }
-  return html12`<div class="text-editor-row-message">
+  return html13`<div class="text-editor-row-message">
     ${iconOrCounter}
     <div>
-      ${message.text().split("\n").map((line) => html12`<div>${line}</div>`)}
+      ${message.text().split("\n").map((line) => html13`<div>${line}</div>`)}
     </div>
   </div>`;
 }
 var DEFAULT_POPOVER_VIEW = (input, _output, target) => {
   const counts = countDuplicates(input.messages);
-  render8(
-    html12`<style>
+  render9(
+    html13`<style>
         .text-editor-row-message {
           display: flex;
           align-items: center;
@@ -13488,7 +13496,7 @@ function removeSourceViewCache(uiSourceCode) {
   return view;
 }
 function renderPlaceholder(input) {
-  return html13`
+  return html14`
     <style>${tabbedEditorContainer_css_default}</style>
     <div class="sources-placeholder">
       <div class="tabbed-pane-placeholder-row workspace">
@@ -13502,10 +13510,10 @@ function renderPlaceholder(input) {
       </div>
       <div class="shortcuts-list tabbed-pane-placeholder-row" role="list"
             aria-label=${i18nString14(UIStrings15.sourceViewActions)}>
-        ${input.shortcuts.map((shortcut) => !shortcut.keys.length ? html13`<div class="shortcut-line" role="listitem"></div>` : html13`<div class="shortcut-line" role="listitem">
+        ${input.shortcuts.map((shortcut) => !shortcut.keys.length ? html14`<div class="shortcut-line" role="listitem"></div>` : html14`<div class="shortcut-line" role="listitem">
               <button @click=${shortcut.onClick}>${shortcut.description}</button>
               <span class="shortcuts">
-                ${shortcut.keys.map((key) => html13`
+                ${shortcut.keys.map((key) => html14`
                   <span class="keybinds-key"><span>${key}</span></span>
                 `)}
               </span>
@@ -13515,13 +13523,13 @@ function renderPlaceholder(input) {
 }
 function renderTabIcon(tab) {
   if (tab.hasLoadError) {
-    return html13`
+    return html14`
       <devtools-icon slot=${`icon-${tab.tabId}`} class="small" name="cross-circle-filled"
                      title=${i18nString14(UIStrings15.unableToLoadThisContent)}>
       </devtools-icon>`;
   }
   if (tab.icon) {
-    return html13`<span slot=${`icon-${tab.tabId}`}>${tab.icon}</span>`;
+    return html14`<span slot=${`icon-${tab.tabId}`}>${tab.icon}</span>`;
   }
   return nothing7;
 }
@@ -13530,7 +13538,7 @@ function renderTabSuffix(tab, input) {
     return nothing7;
   }
   const tooltipId = `tab-tooltip-${tab.tabId}`;
-  return html13`
+  return html14`
     <div slot=${`suffix-${tab.tabId}`}>
       <devtools-icon name="warning-filled" class="small" aria-describedby=${tooltipId}></devtools-icon>
       <devtools-tooltip id=${tooltipId} variant="rich">
@@ -13538,20 +13546,20 @@ function renderTabSuffix(tab, input) {
     str_15,
     UIStrings15.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace,
     {
-      PH1: html13`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`
+      PH1: html14`<devtools-link class="devtools-link" @click=${input.onConnectAutomaticFileSystem}>${tab.disconnectedAutomaticFileSystemRoot}</devtools-link>`
     }
   ) : uiI18n3.getFormatLocalizedStringTemplate(
     str_15,
     UIStrings15.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace,
     {
-      PH1: html13`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
+      PH1: html14`<devtools-link href="https://developer.chrome.com/docs/devtools/workspaces/">Workspace</devtools-link>`
     }
   )}
       </devtools-tooltip>
     </div>`;
 }
 var DEFAULT_VIEW6 = (input, _output, target) => {
-  render9(html13`
+  render10(html14`
     <devtools-tabbed-pane
       class="flex-auto vbox"
       .closeableTabs=${true}
@@ -13570,14 +13578,14 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       <devtools-toolbar class="tabbed-pane-right-toolbar" slot="right">
         ${input.rightToolbarItems}
       </devtools-toolbar>
-      ${repeat2(input.openTabs, (tab) => tab.tabId, (tab) => html13`
+      ${repeat2(input.openTabs, (tab) => tab.tabId, (tab) => html14`
         <div id=${tab.tabId}
              class="vbox flex-auto"
              label=${tab.title}
              tab-tooltip=${tab.tooltip}
              ?closeable=${tab.isCloseable}
              ?selected=${input.activeTabId === tab.tabId}>
-             ${tab.widget ? html13`${widget3(UI14.Widget.WrapperWidget, { widget: tab.widget })}` : nothing7}
+             ${tab.widget ? html14`${widget3(UI14.Widget.WrapperWidget, { widget: tab.widget })}` : nothing7}
         </div>
         ${renderTabIcon(tab)}
         ${renderTabSuffix(tab, input)}`)}
@@ -14525,7 +14533,7 @@ var toolbarItemsCache = /* @__PURE__ */ new WeakMap();
 function renderNavigatorToggleButton(isNavigatorSidebarOpen, onToggleNavigatorSidebar) {
   const navHidden = !isNavigatorSidebarOpen;
   const title = navHidden ? i18nString15(UIStrings16.showNavigator) : i18nString15(UIStrings16.hideNavigator);
-  return html14`
+  return html15`
     <devtools-button
       class="toolbar-button"
       title=${title}
@@ -14540,7 +14548,7 @@ function renderDebuggerToggleButton(isDebuggerSidebarOpen, isVertical, isDebugge
   const debuggerHidden = !isDebuggerSidebarOpen;
   const title = debuggerHidden ? i18nString15(UIStrings16.showDebugger) : i18nString15(UIStrings16.hideDebugger);
   const glyph = debuggerHidden ? isVertical ? "right-panel-open" : "bottom-panel-open" : isVertical ? "right-panel-close" : "bottom-panel-close";
-  return html14`
+  return html15`
     <devtools-button
       class="toolbar-button"
       title=${title}
@@ -14577,7 +14585,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     input.isDebuggerSidebarButtonEnabled,
     input.onToggleDebuggerSidebar
   ) : nothing8;
-  render10(html14`
+  render11(html15`
     <style>${sourcesView_css_default}</style>
     <devtools-widget class="vbox flex-auto"
       ${widget4(UI15.SearchableView.SearchableView, {
@@ -15143,7 +15151,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // ../../front_end/panels/sources/ThreadsSidebarPane.ts
-var { html: html15, render: render11, nothing: nothing9 } = Lit5;
+var { html: html16, render: render12, nothing: nothing9 } = Lit5;
 var UIStrings17 = {
   /**
    * @description Text in Threads sidebar of the Sources panel.
@@ -15153,10 +15161,10 @@ var UIStrings17 = {
 var str_17 = i18n33.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var DEFAULT_VIEW8 = (input, _output, target) => {
-  render11(html15`
+  render12(html16`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
-    ${input.threads.map((thread) => html15`
+    ${input.threads.map((thread) => html16`
       <button
         class="thread-item"
         @click=${thread.onSelect}
@@ -15166,7 +15174,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
       >
         <div class="thread-item-title">${thread.name}</div>
         <div class="thread-item-paused-state">${thread.paused ? i18nString16(UIStrings17.paused) : ""}</div>
-        ${thread.selected ? html15`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing9}
+        ${thread.selected ? html16`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing9}
       </button>
     `)}
     </div>
@@ -15389,7 +15397,7 @@ function setSidebarOpenInSplitSetting(settingName, isVertical, open) {
   setting.set(state);
 }
 var DEFAULT_VIEW9 = (input, _output, target) => {
-  render12(html16`
+  render13(html17`
     <style>${sourcesPanel_css_default}</style>
     <devtools-split-view
         class="widget split-widget ${input.isVertical ? "" : "sources-split-view-vertical"}"
@@ -15418,7 +15426,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
             ${widget5(UI17.Widget.WrapperWidget, { widget: input.sourcesView })}>
         </devtools-widget>
       </devtools-split-view>
-      ${!input.isTraceApp && input.sidebarPaneStackWidget ? input.isVertical ? html16`
+      ${!input.isTraceApp && input.sidebarPaneStackWidget ? input.isVertical ? html17`
         <devtools-widget
             slot="sidebar"
             ${widget5(UI17.Widget.VBox, {
@@ -15426,7 +15434,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
   })}>
           ${renderDebugPaneContent(input)}
         </devtools-widget>
-      ` : html16`
+      ` : html17`
         <devtools-split-view
             slot="sidebar"
             direction="column"
@@ -15440,7 +15448,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
   })}>
             ${renderDebugPaneContent(input)}
           </devtools-widget>
-          ${input.debuggerSidebarTabbedPane ? html16`
+          ${input.debuggerSidebarTabbedPane ? html17`
             <devtools-widget
                 slot="sidebar"
                 ${widget5(UI17.Widget.WrapperWidget, { widget: input.debuggerSidebarTabbedPane })}>
@@ -15452,8 +15460,8 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
   `, target);
 };
 function renderDebugPaneContent(input) {
-  return html16`
-    ${input.isDebuggerSidebarOpen ? html16`
+  return html17`
+    ${input.isDebuggerSidebarOpen ? html17`
       <devtools-toolbar
           class="scripts-debug-toolbar"
           jslog=${VisualLogging12.toolbar("debug").track({
@@ -16590,7 +16598,7 @@ var ActionDelegate4 = class {
   }
 };
 var QUICK_SOURCE_DEFAULT_VIEW = (input, _output, target) => {
-  render12(html16`
+  render13(html17`
     <div class="sources-view-wrapper vbox flex-auto">
       ${input.sourcesView ? widget5(UI17.Widget.WrapperWidget, { widget: input.sourcesView }) : nothing10}
     </div>
@@ -16747,7 +16755,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this.requestUpdate();
     };
-    render13(html17`
+    render14(html18`
       <style>${callStackSidebarPane_css_default}</style>
       <div class='ignore-listed-message' ${ref3(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
@@ -17271,7 +17279,7 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Persistence13 from "../../models/persistence/persistence.js";
 import * as Workspace26 from "../../models/workspace/workspace.js";
 import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives5, html as html18, nothing as nothing11 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html19, nothing as nothing11 } from "../../ui/lit/lit.js";
 import * as SettingsUI4 from "../../ui/settings/settings.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
@@ -17483,7 +17491,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       }
     }
     const isFileSystem = this.isFileSystemFile(uiSourceCode);
-    return html18`
+    return html19`
       <style>${filteredUISourceCodeListProvider_css_default}</style>
       <div class="filtered-ui-source-code-list-item
                   ${classMap2({ "is-ignore-listed": isIgnoreListed })}">
@@ -17499,7 +17507,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
             class="filtered-ui-source-code-subtitle" title=${tooltipText}>
           ${this.renderSubtitleElement(fullDisplayName.substring(0, fileNameIndex + 1))}
         </devtools-highlight>
-        ${isFileSystem ? html18`<span class="tag">${i18nString19(UIStrings20.workspace)}</span>` : nothing11}
+        ${isFileSystem ? html19`<span class="tag">${i18nString19(UIStrings20.workspace)}</span>` : nothing11}
       </div>`;
   }
   renderSubtitleElement(text) {
@@ -17508,7 +17516,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (text.length > maxTextLength) {
       splitPosition = text.length - maxTextLength;
     }
-    return html18`
+    return html19`
       <div class="first-part">${text.substring(0, splitPosition)}</div>
       <div class="second-part">${text.substring(splitPosition)}</div>`;
   }
@@ -17587,7 +17595,7 @@ import "../../ui/kit/kit.js";
 import * as i18n41 from "../../core/i18n/i18n.js";
 import * as QuickOpen4 from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
-import { html as html19 } from "../../ui/lit/lit.js";
+import { html as html20 } from "../../ui/lit/lit.js";
 var UIStrings21 = {
   /**
    * @description Text in the go to line quick open menu of the Sources panel.
@@ -17648,7 +17656,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     return this.#goToLineStrings.length;
   }
   renderItem(itemIndex, _query) {
-    return html19`
+    return html20`
       <devtools-icon name="colon"></devtools-icon>
       <div>
         <div>${this.#goToLineStrings[itemIndex]}</div>
@@ -17739,7 +17747,7 @@ import "../../ui/kit/kit.js";
 import * as Common18 from "../../core/common/common.js";
 import * as Host11 from "../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
-import { Directives as Directives6, html as html20 } from "../../ui/lit/lit.js";
+import { Directives as Directives6, html as html21 } from "../../ui/lit/lit.js";
 var { styleMap: styleMap2 } = Directives6;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   attach() {
@@ -17762,7 +17770,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
   renderItem(itemIndex, query) {
     const { iconName, color } = PanelUtils2.iconDataForResourceType(this.itemContentTypeAt(itemIndex));
-    return html20`
+    return html21`
       <devtools-icon class="large" name=${iconName} style=${styleMap2({ color })}></devtools-icon>
       ${super.renderItem(itemIndex, query)}`;
   }
@@ -17780,7 +17788,7 @@ import * as i18n43 from "../../core/i18n/i18n.js";
 import * as CodeMirror7 from "../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { html as html21, nothing as nothing12 } from "../../ui/lit/lit.js";
+import { html as html22, nothing as nothing12 } from "../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
    * @description Text in Go to line Quick Open of the Sources panel.
@@ -18097,10 +18105,10 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     }
     const title = item.title + (item.subtitle ? item.subtitle : "");
     const highlightRanges = QuickOpen5.FilteredListWidget.FilteredListWidget.getHighlightRanges(title, query, true);
-    return html21`
+    return html22`
       <devtools-icon name="deployed"></devtools-icon>
       <div><devtools-highlight type="markup" ranges=${highlightRanges}>${title}</devtools-highlight></div>
-      ${location ? html21`<span class="tag">${location}</span>` : nothing12}`;
+      ${location ? html22`<span class="tag">${location}</span>` : nothing12}`;
   }
   selectItem(itemIndex, _promptValue) {
     if (itemIndex === null) {
@@ -18382,7 +18390,7 @@ import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
-import { html as html22, nothing as nothing13, render as render14 } from "../../ui/lit/lit.js";
+import { html as html23, nothing as nothing13, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -18461,11 +18469,11 @@ var DEFAULT_VIEW10 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder;
     if (scope.type() === Debugger.ScopeType.Local || scope.type() === Debugger.ScopeType.Closure) {
-      emptyPlaceholder = html22`${i18nString23(UIStrings24.noVariables)}`;
+      emptyPlaceholder = html23`${i18nString23(UIStrings24.noVariables)}`;
     }
     const icon = scope.icon();
     const { title, subtitle } = scopeTitle(scope);
-    return html22`
+    return html23`
           <li role="treeitem"
               class="scope-chain-sidebar-pane-section"
               aria-label=${title}
@@ -18482,26 +18490,26 @@ var DEFAULT_VIEW10 = (input, output, target) => {
                  @click=${() => {
       input.onToggle(objectTree, !objectTree.expanded);
     }}>
-              ${icon ? html22`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing13}
+              ${icon ? html23`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing13}
               <div class="scope-chain-sidebar-pane-section-title">${title}</div>
               <div class="scope-chain-sidebar-pane-section-subtitle">${subtitle}</div>
             </div>
 
-            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html22`<ul role="group"></ul>`}
+            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html23`<ul role="group"></ul>`}
           </li>`;
   };
-  render14(
+  render15(
     // clang-format off
-    html22`
+    html23`
     <style>${scopeChainSidebarPane_css_default}</style>
-    ${input.scopeChain ? html22`
-      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html22`<ul role=tree class="source-code object-properties-section">
+    ${input.scopeChain ? html23`
+      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html23`<ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPane_css_default}</style>
           ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing13}
         </ul>`}>
-      </devtools-tree>` : html22`
+      </devtools-tree>` : html23`
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
     `,
     // clang-format on
@@ -18619,7 +18627,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
           );
         }
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
@@ -18801,7 +18809,7 @@ var objectValue_css_default = `/*
 // ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html23, nothing as nothing14, render as render15 } from "../../ui/lit/lit.js";
+import { Directives as Directives7, html as html24, nothing as nothing14, render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -19019,7 +19027,7 @@ var { widget: widget6 } = UI23.Widget;
 var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
   const e = input.expression;
   if (!e) {
-    render15(nothing14, target);
+    render16(nothing14, target);
     return;
   }
   const stopPropagationIfEditing = (event) => {
@@ -19033,8 +19041,8 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     false,
     e.expression ?? void 0
   );
-  render15(
-    html23`
+  render16(
+    html24`
         <devtools-prompt
             class=${classMap3({
       monospace: true,
@@ -19073,7 +19081,7 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
                 @click=${input.onDelete}></devtools-button>
               ${renderNameElement()}
               <span class=watch-expressions-separator>: </span>
-              ${e.exceptionDetails || !e.result ? html23`<span
+              ${e.exceptionDetails || !e.result ? html24`<span
                     class="watch-expression-error value"
                     title=${ifDefined3(e.exceptionDetails?.exception?.description)}
                     >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
@@ -19089,9 +19097,9 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     )}
             </div>
           </div>
-          ${e.editing ? html23`
+          ${e.editing ? html24`
             <datalist id=${input.completionsId}>
-              ${input.completions.map((c) => html23`<option>${c}</option>`)}
+              ${input.completions.map((c) => html24`<option>${c}</option>`)}
             </datalist>
           ` : nothing14}
         </devtools-prompt>
@@ -19235,7 +19243,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   };
   const renderTreeElement = (e) => {
     const completionsId = `watch-expression-completions-${input.watchExpressions.indexOf(e)}`;
-    return html23`<li
+    return html24`<li
           class=${classMap3({ "watch-expression-tree-item": true, "watch-expression-editing": e.editing })}
           ?open=${Boolean(e.result?.expanded)}
           @keydown=${onExpressionKeydown.bind(void 0, e)}
@@ -19254,12 +19262,12 @@ var DEFAULT_VIEW11 = (input, output, target) => {
         ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing14 : ObjectUI4.ObjectPropertiesSection.renderObjectTree(e.result, input.linkifier)}
       </li>`;
   };
-  render15(
+  render16(
     // clang-format off
-    html23`
-      ${input.watchExpressions.length === 0 ? html23`<div class=gray-info-message tabindex=-1 >
+    html24`
+      ${input.watchExpressions.length === 0 ? html24`<div class=gray-info-message tabindex=-1 >
         ${i18nString24(UIStrings25.noWatchExpressions)}
-        </div>` : html23`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html23`
+        </div>` : html24`<devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus toggle-on-click .template=${html24`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI4.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI4.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
@@ -19316,7 +19324,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     return this.#watchExpressions;
   }
   toolbarItems() {
-    return html23`
+    return html24`
       <devtools-button .data=${{
       variant: Buttons10.Button.Variant.TOOLBAR,
       iconName: "plus",
@@ -19430,7 +19438,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
           e.result.expanded = expanded;
         }
       },
-      {},
+      void 0,
       this.contentElement
     );
   }

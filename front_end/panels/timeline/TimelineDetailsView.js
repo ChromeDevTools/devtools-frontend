@@ -570,7 +570,7 @@ class SummaryView extends UI.Widget.Widget {
             onTreeRowHovered: this.onTreeRowHovered,
             onBottomUpButtonClicked: this.onBottomUpButtonClicked,
             onTreeRowClicked: this.onTreeRowClicked,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 function generateRangeSummaryDetails(input) {

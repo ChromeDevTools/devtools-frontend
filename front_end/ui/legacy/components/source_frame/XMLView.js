@@ -272,7 +272,7 @@ export class XMLView extends UI.Widget.Widget {
                 }
                 this.requestUpdate();
             };
-            this.#view({ xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump }, {}, this.contentElement);
+            this.#view({ xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump }, undefined, this.contentElement);
         }
     }
     static createSearchableView(parsedXML, element) {

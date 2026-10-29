@@ -708,14 +708,13 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     this.detach();
   };
   performUpdate() {
-    const output = {};
     this.#view(
       {
         aidaAvailability: this.#aidaAvailability,
         onAction: this.onAction,
         onDismiss: this.onDismiss
       },
-      output,
+      void 0,
       this.contentElement
     );
   }

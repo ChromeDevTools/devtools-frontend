@@ -182,7 +182,7 @@ export class SymbolizedErrorWidget extends UI.Widget.Widget {
             error: this.#error,
             ignoreListManager: this.#ignoreListManager,
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=SymbolizedErrorWidget.js.map

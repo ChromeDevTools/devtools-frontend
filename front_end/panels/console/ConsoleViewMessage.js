@@ -524,7 +524,7 @@ export class ConsoleViewMessage {
         }
         else {
             const messageText = this.message.messageText;
-            const initiatorId = this.initiatorId();
+            const initiatorId = () => this.initiatorId();
             const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
                 const linkElement = url === request.url() ?
                     Components.Linkifier.Linkifier.linkifyRevealable((request), url, request.url(), undefined, undefined, 'network-request') :
@@ -1748,7 +1748,8 @@ export class ConsoleViewMessage {
      * URLs in a new tab to; see {@link Components.Linkifier.openInNewTabInitiatorId}. That is the frame of the
      * request for messages about a request, and the frame of the execution context otherwise, as long as that
      * context still exists. Messages whose context is gone (e.g. from a document that has since been navigated
-     * away from, kept with "Preserve log") are not attributed to anything.
+     * away from, kept with "Preserve log") are not attributed to anything. Determined when a link is opened rather
+     * than when the message is rendered, as the context may be destroyed in between.
      */
     initiatorId() {
         const requestId = this.message.getAffectedResources()?.requestId;
@@ -1762,7 +1763,7 @@ export class ConsoleViewMessage {
         return executionContext ? Components.Linkifier.openInNewTabInitiatorId(executionContext) : undefined;
     }
     linkifyStringAsFragment(string) {
-        const initiatorId = this.initiatorId();
+        const initiatorId = () => this.initiatorId();
         return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
             const options = { text, lineNumber, columnNumber, initiatorId };
             const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);

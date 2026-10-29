@@ -23,7 +23,7 @@ export default `/*
 
 #console-prompt .console-prompt-icon {
   position: absolute;
-  left: -9px;
+  left: calc(-1 * var(--sys-size-6));
   top: var(--sys-size-3);
   user-select: none;
 }

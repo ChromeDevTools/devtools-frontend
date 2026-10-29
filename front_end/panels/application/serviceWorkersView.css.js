@@ -53,7 +53,7 @@ export default `/*
   width: 10px;
   height: 10px;
   z-index: 10;
-  margin-right: 5px;
+  margin-right: var(--sys-size-4);
   border-radius: var(--sys-shape-corner-full);
   border: var(--sys-size-1) solid var(--sys-color-token-subtle);
   align-self: center;

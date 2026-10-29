@@ -21264,7 +21264,7 @@ var RemoteDebuggingTerminatedScreen = class _RemoteDebuggingTerminatedScreen ext
         window.location.reload();
       }
     };
-    view(input, {}, this.contentElement);
+    view(input, void 0, this.contentElement);
   }
   static show(reason) {
     const dialog3 = new Dialog("remote-debnugging-terminated");
@@ -23176,7 +23176,7 @@ var TargetCrashedScreen = class extends VBox {
   hideCallback;
   constructor(hideCallback, view = DEFAULT_VIEW5) {
     super({ useShadowDom: true });
-    view({}, {}, this.contentElement);
+    view({}, void 0, this.contentElement);
     this.hideCallback = hideCallback;
   }
   willHide() {

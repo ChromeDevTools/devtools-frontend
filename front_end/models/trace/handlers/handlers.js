@@ -5744,26 +5744,32 @@ var lastInvalidationEventForFrame = /* @__PURE__ */ new Map();
 var lastRecalcByFrame = /* @__PURE__ */ new Map();
 var eventToInitiatorMap2 = /* @__PURE__ */ new WeakMap();
 var initiatorToEventsMap = /* @__PURE__ */ new WeakMap();
-var timerInstallEventsById = /* @__PURE__ */ new Map();
-var requestIdleCallbackEventsById = /* @__PURE__ */ new Map();
-var webSocketCreateEventsById = /* @__PURE__ */ new Map();
-var schedulePostTaskCallbackEventsById = /* @__PURE__ */ new Map();
+var initiatorEventsByKey = /* @__PURE__ */ new Map();
+function executionContextKey(kind, event, data30, id) {
+  return `${kind}:${event.pid}:${data30.frame ?? data30.workerId ?? event.tid}:${id}`;
+}
 function reset16() {
   lastScheduleStyleRecalcByFrame = /* @__PURE__ */ new Map();
   lastInvalidationEventForFrame = /* @__PURE__ */ new Map();
   lastRecalcByFrame = /* @__PURE__ */ new Map();
-  timerInstallEventsById = /* @__PURE__ */ new Map();
+  initiatorEventsByKey = /* @__PURE__ */ new Map();
   eventToInitiatorMap2 = /* @__PURE__ */ new WeakMap();
   initiatorToEventsMap = /* @__PURE__ */ new WeakMap();
-  requestIdleCallbackEventsById = /* @__PURE__ */ new Map();
-  webSocketCreateEventsById = /* @__PURE__ */ new Map();
-  schedulePostTaskCallbackEventsById = /* @__PURE__ */ new Map();
 }
 function storeInitiator(data30) {
   eventToInitiatorMap2.set(data30.event, data30.initiator);
   const eventsForInitiator = initiatorToEventsMap.get(data30.initiator) || [];
   eventsForInitiator.push(data30.event);
   initiatorToEventsMap.set(data30.initiator, eventsForInitiator);
+}
+function storeInitiatorById(kind, event, data30, id) {
+  initiatorEventsByKey.set(executionContextKey(kind, event, data30, id), event);
+}
+function pairInitiatorById(kind, event, data30, id) {
+  const initiator = initiatorEventsByKey.get(executionContextKey(kind, event, data30, id));
+  if (initiator) {
+    storeInitiator({ event, initiator });
+  }
 }
 function handleEvent16(event) {
   if (Types17.Events.isScheduleStyleRecalculation(event)) {
@@ -5802,39 +5808,21 @@ function handleEvent16(event) {
     }
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
   } else if (Types17.Events.isTimerInstall(event)) {
-    timerInstallEventsById.set(event.args.data.timerId, event);
+    storeInitiatorById("timer", event, event.args.data, event.args.data.timerId);
   } else if (Types17.Events.isTimerFire(event)) {
-    const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
-    if (matchingInstall) {
-      storeInitiator({ event, initiator: matchingInstall });
-    }
+    pairInitiatorById("timer", event, event.args.data, event.args.data.timerId);
   } else if (Types17.Events.isRequestIdleCallback(event)) {
-    requestIdleCallbackEventsById.set(event.args.data.id, event);
+    storeInitiatorById("idle", event, event.args.data, event.args.data.id);
   } else if (Types17.Events.isFireIdleCallback(event)) {
-    const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
-    if (matchingRequestEvent) {
-      storeInitiator({
-        event,
-        initiator: matchingRequestEvent
-      });
-    }
+    pairInitiatorById("idle", event, event.args.data, event.args.data.id);
   } else if (Types17.Events.isWebSocketCreate(event)) {
-    webSocketCreateEventsById.set(event.args.data.identifier, event);
+    storeInitiatorById("ws", event, event.args.data, event.args.data.identifier);
   } else if (Types17.Events.isWebSocketInfo(event) || Types17.Events.isWebSocketTransfer(event)) {
-    const matchingCreateEvent = webSocketCreateEventsById.get(event.args.data.identifier);
-    if (matchingCreateEvent) {
-      storeInitiator({
-        event,
-        initiator: matchingCreateEvent
-      });
-    }
+    pairInitiatorById("ws", event, event.args.data, event.args.data.identifier);
   } else if (Types17.Events.isSchedulePostTaskCallback(event)) {
-    schedulePostTaskCallbackEventsById.set(event.args.data.taskId, event);
+    storeInitiatorById("postTask", event, event.args.data, event.args.data.taskId);
   } else if (Types17.Events.isRunPostTaskCallback(event) || Types17.Events.isAbortPostTaskCallback(event)) {
-    const matchingSchedule = schedulePostTaskCallbackEventsById.get(event.args.data.taskId);
-    if (matchingSchedule) {
-      storeInitiator({ event, initiator: matchingSchedule });
-    }
+    pairInitiatorById("postTask", event, event.args.data, event.args.data.taskId);
   }
 }
 function createRelationshipsFromFlows() {

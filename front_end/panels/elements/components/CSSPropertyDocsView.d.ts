@@ -1,5 +1,5 @@
 import '../../../ui/kit/kit.js';
-import '../../../ui/legacy/legacy.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 export declare const enum BaselineStatus {
     LIMITED = "false",
     LOW = "low",
@@ -41,13 +41,15 @@ export interface CSSProperty {
         url: string;
     }>;
 }
-export declare class CSSPropertyDocsView extends HTMLElement {
-    #private;
-    constructor(cssProperty: CSSProperty);
+export interface ViewInput {
+    cssProperty: CSSProperty;
+    onDontShowChanged: (showDocumentation: boolean) => void;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-css-property-docs-view': CSSPropertyDocsView;
-    }
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class CSSPropertyDocsView extends UI.Widget.Widget {
+    #private;
+    constructor(cssProperty: CSSProperty, element?: HTMLElement, view?: View);
+    performUpdate(): void;
 }
 export {};

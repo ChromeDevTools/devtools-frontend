@@ -142,7 +142,7 @@ export class ExploreWidget extends UI.Widget.Widget {
         }
         this.#view({
             featureCards,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=ExploreWidget.js.map

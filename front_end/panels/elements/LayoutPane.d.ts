@@ -57,7 +57,7 @@ interface ViewInput {
     gridElements: LayoutElement[] | undefined;
     onSummaryKeyDown(e: KeyboardEvent): unknown;
 }
-type View = (input: ViewInput, output: object, element: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, element: HTMLElement) => void;
 export declare class LayoutPane extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);

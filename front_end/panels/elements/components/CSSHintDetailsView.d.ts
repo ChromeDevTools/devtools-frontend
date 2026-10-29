@@ -1,18 +1,20 @@
 import '../../../ui/kit/kit.js';
-import '../../../ui/legacy/legacy.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../../ui/lit/lit.js';
 interface Hint {
     getMessage(): LitTemplate | string;
     getPossibleFixMessage(): LitTemplate | string | null;
     getLearnMoreLink(): string | undefined;
 }
-export declare class CSSHintDetailsView extends HTMLElement {
-    #private;
-    constructor(authoringHint: Hint);
+export interface ViewInput {
+    authoringHint?: Hint;
 }
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-css-hint-details-view': CSSHintDetailsView;
-    }
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class CSSHintDetailsView extends UI.Widget.Widget {
+    #private;
+    constructor(authoringHint?: Hint, element?: HTMLElement, view?: View);
+    set authoringHint(authoringHint: Hint);
+    performUpdate(): void;
 }
 export {};

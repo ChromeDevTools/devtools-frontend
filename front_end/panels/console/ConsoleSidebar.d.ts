@@ -16,7 +16,7 @@ interface ViewInput {
     selectedFilter: ConsoleFilter;
     onSelectionChanged: (selectedFilter: ConsoleFilter) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement | DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class ConsoleFilterGroup {
     #private;

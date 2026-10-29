@@ -185,7 +185,7 @@ export class CoverageListView extends UI.Widget.VBox {
             },
             highlightRegExp: this.#highlightRegExp,
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     reset() {
         this.#coverageInfo = [];

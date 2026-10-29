@@ -7,12 +7,12 @@ var __export = (target, all) => {
 // ../../front_end/panels/elements/components/AccessibilityTreeNode.ts
 var AccessibilityTreeNode_exports = {};
 __export(AccessibilityTreeNode_exports, {
-  AccessibilityTreeNode: () => AccessibilityTreeNode
+  AccessibilityTreeNode: () => AccessibilityTreeNode,
+  DEFAULT_VIEW: () => DEFAULT_VIEW
 });
 import * as i18n from "../../../core/i18n/i18n.js";
 import * as Platform from "../../../core/platform/platform.js";
 import * as SDK from "../../../core/sdk/sdk.js";
-import * as RenderCoordinator from "../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI from "../../../ui/legacy/legacy.js";
 import { html, nothing, render } from "../../../ui/lit/lit.js";
 
@@ -23,31 +23,33 @@ var accessibilityTreeNode_css_default = `/*
  * found in the LICENSE file.
  */
 
-.container {
-  width: 100%;
-  display: inline-block;
-}
+@scope to (devtools-widget > *) {
+  .container {
+    width: 100%;
+    display: inline-block;
+  }
 
-.container:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
+  .container:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 
-span {
-  color: var(--sys-color-token-meta);
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
+  span {
+    color: var(--sys-color-token-meta);
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
 
-.role-value {
-  color: var(--sys-color-token-tag);
-}
+  .role-value {
+    color: var(--sys-color-token-tag);
+  }
 
-.attribute-name {
-  color: var(--sys-color-token-attribute);
-}
+  .attribute-name {
+    color: var(--sys-color-token-attribute);
+  }
 
-.attribute-value {
-  color: var(--sys-color-token-attribute-value);
+  .attribute-value {
+    color: var(--sys-color-token-attribute-value);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./accessibilityTreeNode.css")} */`;
@@ -68,36 +70,72 @@ function truncateTextIfNeeded(text) {
   }
   return text;
 }
-var AccessibilityTreeNode = class extends HTMLElement {
-  #shadow = UI.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: accessibilityTreeNode_css_default });
+var DEFAULT_VIEW = (input, _output, target) => {
+  const role = html`<span class='role-value'>${truncateTextIfNeeded(input.role)}</span>`;
+  const name = html`"<span class='attribute-value'>${input.name}</span>"`;
+  const properties = input.properties.map(
+    ({ name: name2, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ? html` <span class='attribute-name'>${name2}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` : nothing
+  );
+  const content = input.ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
+  render(
+    html`
+      <style>${accessibilityTreeNode_css_default}</style>
+      <div class='container'>${content}</div>
+    `,
+    target
+  );
+};
+var AccessibilityTreeNode = class extends UI.Widget.Widget {
   #ignored = true;
   #name = "";
   #role = "";
   #properties = [];
-  #id = "";
-  set data(data) {
-    this.#ignored = data.ignored;
-    this.#name = data.name;
-    this.#role = data.role;
-    this.#properties = data.properties;
-    this.#id = data.id;
-    void this.#render();
+  #view;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
   }
-  async #render() {
-    const role = html`<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
-    const name = html`"<span class='attribute-value'>${this.#name}</span>"`;
-    const properties = this.#properties.map(({ name: name2, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ? html` <span class='attribute-name'>${name2}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` : nothing);
-    const content = this.#ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
-    await RenderCoordinator.write(`Accessibility node ${this.#id} render`, () => {
-      render(
-        html`<div class='container'>${content}</div>`,
-        this.#shadow,
-        { host: this }
-      );
-    });
+  set ignored(ignored) {
+    if (this.#ignored === ignored) {
+      return;
+    }
+    this.#ignored = ignored;
+    this.requestUpdate();
+  }
+  set name(name) {
+    if (this.#name === name) {
+      return;
+    }
+    this.#name = name;
+    this.requestUpdate();
+  }
+  set role(role) {
+    if (this.#role === role) {
+      return;
+    }
+    this.#role = role;
+    this.requestUpdate();
+  }
+  set properties(properties) {
+    if (this.#properties === properties) {
+      return;
+    }
+    this.#properties = properties;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        ignored: this.#ignored,
+        name: this.#name,
+        role: this.#role,
+        properties: this.#properties
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-customElements.define("devtools-accessibility-tree-node", AccessibilityTreeNode);
 
 // ../../front_end/panels/elements/components/AdornerManager.ts
 var AdornerManager_exports = {};
@@ -176,9 +214,10 @@ var AdornerManager = class {
 var ComputedStyleProperty_exports = {};
 __export(ComputedStyleProperty_exports, {
   ComputedStyleProperty: () => ComputedStyleProperty,
-  NavigateToSourceEvent: () => NavigateToSourceEvent
+  DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
-import { html as html2, render as render2 } from "../../../ui/lit/lit.js";
+import * as UI2 from "../../../ui/legacy/legacy.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "../../../ui/lit/lit.js";
 import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/computedStyleProperty.css.js
@@ -246,6 +285,8 @@ var computedStyleProperty_css_default = `/*
   margin: calc(-1 * var(--sys-size-1)) 0 0 calc(-1 * var(--goto-size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
   background-color: var(--sys-color-primary-bright);
+  border: none;
+  padding: 0;
 }
 
 .computed-style-property:hover .goto {
@@ -306,56 +347,73 @@ var computedStyleProperty_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./computedStyleProperty.css")} */`;
 
 // ../../front_end/panels/elements/components/ComputedStyleProperty.ts
-var NavigateToSourceEvent = class _NavigateToSourceEvent extends Event {
-  static eventName = "onnavigatetosource";
-  constructor() {
-    super(_NavigateToSourceEvent.eventName, { bubbles: true, composed: true });
-  }
+var { classMap } = Directives;
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render2(html2`
+    <style>${computedStyleProperty_css_default}</style>
+    <div class=${classMap({ "computed-style-property": true, inherited: input.inherited })}>
+      <div class="property-name">
+        <slot name="name"></slot>
+      </div>
+      <span class="hidden" aria-hidden="false">: </span>
+      ${input.traceable ? html2`<button class="goto" @click=${(event) => {
+    event.consume(true);
+    input.onNavigateToSource();
+  }} jslog=${VisualLogging.action("elements.jump-to-style").track({ click: true })}></button>` : nothing2}
+      <div class="property-value">
+        <slot name="value"></slot>
+      </div>
+      <span class="hidden" aria-hidden="false">;</span>
+    </div>
+  `, target);
 };
-var ComputedStyleProperty = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var ComputedStyleProperty = class extends UI2.Widget.Widget {
   #inherited = false;
   #traceable = false;
-  connectedCallback() {
-    this.#render();
+  #onNavigateToSource = () => {
+  };
+  #view;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element, { useShadowDom: true, classes: ["computed-style-property"] });
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
   set inherited(inherited) {
     if (inherited === this.#inherited) {
       return;
     }
     this.#inherited = inherited;
-    this.#render();
+    this.requestUpdate();
   }
   set traceable(traceable) {
     if (traceable === this.#traceable) {
       return;
     }
     this.#traceable = traceable;
-    this.#render();
+    this.requestUpdate();
   }
-  #onNavigateToSourceClick() {
-    this.dispatchEvent(new NavigateToSourceEvent());
+  set onNavigateToSource(onNavigateToSource) {
+    if (onNavigateToSource === this.#onNavigateToSource) {
+      return;
+    }
+    this.#onNavigateToSource = onNavigateToSource;
+    this.requestUpdate();
   }
-  #render() {
-    render2(html2`
-      <style>${computedStyleProperty_css_default}</style>
-      <div class="computed-style-property ${this.#inherited ? "inherited" : ""}">
-        <div class="property-name">
-          <slot name="name"></slot>
-        </div>
-        <span class="hidden" aria-hidden="false">: </span>
-        ${this.#traceable ? html2`<span class="goto" @click=${this.#onNavigateToSourceClick} jslog=${VisualLogging.action("elements.jump-to-style").track({ click: true })}></span>` : null}
-        <div class="property-value">
-          <slot name="value"></slot>
-        </div>
-        <span class="hidden" aria-hidden="false">;</span>
-      </div>
-    `, this.#shadow, {
-      host: this
-    });
+  performUpdate() {
+    this.#view(
+      {
+        inherited: this.#inherited,
+        traceable: this.#traceable,
+        onNavigateToSource: this.#onNavigateToSource
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-customElements.define("devtools-computed-style-property", ComputedStyleProperty);
 
 // ../../front_end/panels/elements/components/ComputedStyleTrace.ts
 var ComputedStyleTrace_exports = {};
@@ -363,7 +421,7 @@ __export(ComputedStyleTrace_exports, {
   ComputedStyleTrace: () => ComputedStyleTrace
 });
 import * as Buttons from "../../../ui/components/buttons/buttons.js";
-import * as UI2 from "../../../ui/legacy/legacy.js";
+import * as UI3 from "../../../ui/legacy/legacy.js";
 import { html as html3, render as render3 } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/computedStyleTrace.css.js
@@ -480,7 +538,7 @@ var ComputedStyleTrace = class extends HTMLElement {
   #render() {
     render3(html3`
       <style>${Buttons.textButtonStyles}</style>
-      <style>${UI2.inspectorCommonStyles}</style>
+      <style>${UI3.inspectorCommonStyles}</style>
       <style>${computedStyleTrace_css_default}</style>
       <div class="computed-style-trace ${this.#active ? "active" : "inactive"}">
         <span class="goto" @click=${this.#onNavigateToSource}></span>
@@ -498,11 +556,12 @@ customElements.define("devtools-computed-style-trace", ComputedStyleTrace);
 // ../../front_end/panels/elements/components/CSSHintDetailsView.ts
 var CSSHintDetailsView_exports = {};
 __export(CSSHintDetailsView_exports, {
-  CSSHintDetailsView: () => CSSHintDetailsView
+  CSSHintDetailsView: () => CSSHintDetailsView,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import "../../../ui/kit/kit.js";
-import "../../../ui/legacy/legacy.js";
 import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as UI4 from "../../../ui/legacy/legacy.js";
 import { html as html4, render as render4 } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/cssHintDetailsView.css.js
@@ -512,33 +571,35 @@ var cssHintDetailsView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.hint-popup-wrapper {
-  max-width: 232px;
-}
+@scope to (devtools-widget > *) {
+  .hint-popup-wrapper {
+    max-width: 232px;
+  }
 
-code {
-  font-weight: bold;
-  font-family: inherit;
-}
+  code {
+    font-weight: bold;
+    font-family: inherit;
+  }
 
-.hint-popup-possible-fix {
-  margin-top: var(--sys-size-5);
-}
+  .hint-popup-possible-fix {
+    margin-top: var(--sys-size-5);
+  }
 
-.clickable {
-  color: var(--sys-color-primary);
-}
+  .clickable {
+    color: var(--sys-color-primary);
+  }
 
-.underlined {
-  text-decoration: underline;
-}
+  .underlined {
+    text-decoration: underline;
+  }
 
-.unbreakable-text {
-  white-space: nowrap;
-}
+  .unbreakable-text {
+    white-space: nowrap;
+  }
 
-.footer {
-  margin-top: var(--sys-size-5);
+  .footer {
+    margin-top: var(--sys-size-5);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./cssHintDetailsView.css")} */`;
@@ -552,53 +613,65 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/elements/components/CSSHintDetailsView.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var CSSHintDetailsView = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #authoringHint;
-  constructor(authoringHint) {
-    super();
-    this.#authoringHint = authoringHint;
-    this.#render();
+var DEFAULT_VIEW3 = (input, _output, target) => {
+  if (!input.authoringHint) {
+    return;
   }
-  #render() {
-    const link = this.#authoringHint.getLearnMoreLink();
-    render4(html4`
-        <style>${cssHintDetailsView_css_default}</style>
-        <div class="hint-popup-wrapper">
-          <div class="hint-popup-reason">
-            ${this.#authoringHint.getMessage()}
+  const link = input.authoringHint.getLearnMoreLink();
+  render4(html4`
+    <style>${cssHintDetailsView_css_default}</style>
+    <div class="hint-popup-wrapper">
+      <div class="hint-popup-reason">
+        ${input.authoringHint.getMessage()}
+      </div>
+      ${input.authoringHint.getPossibleFixMessage() ? html4`
+          <div class="hint-popup-possible-fix">
+              ${input.authoringHint.getPossibleFixMessage()}
           </div>
-          ${this.#authoringHint.getPossibleFixMessage() ? html4`
-              <div class="hint-popup-possible-fix">
-                  ${this.#authoringHint.getPossibleFixMessage()}
-              </div>
-          ` : ""}
-          ${link ? html4`
-                      <div class="footer">
-                        <devtools-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
-                            ${i18nString2(UIStrings2.learnMore)}
-                        </devtools-link>
-                      </div>
-                  ` : ""}
-        </div>
-      `, this.#shadow, {
-      host: this
-    });
+      ` : ""}
+      ${link ? html4`
+                  <div class="footer">
+                    <devtools-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
+                        ${i18nString2(UIStrings2.learnMore)}
+                    </devtools-link>
+                  </div>
+              ` : ""}
+    </div>
+  `, target, { container: { classes: ["css-hint-details-view"] } });
+};
+var CSSHintDetailsView = class extends UI4.Widget.Widget {
+  #authoringHint;
+  #view;
+  constructor(authoringHint, element, view = DEFAULT_VIEW3) {
+    super(element);
+    this.#authoringHint = authoringHint;
+    this.#view = view;
+    this.performUpdate();
+  }
+  set authoringHint(authoringHint) {
+    if (this.#authoringHint === authoringHint) {
+      return;
+    }
+    this.#authoringHint = authoringHint;
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({ authoringHint: this.#authoringHint }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-css-hint-details-view", CSSHintDetailsView);
 
 // ../../front_end/panels/elements/components/CSSPropertyDocsView.ts
 var CSSPropertyDocsView_exports = {};
 __export(CSSPropertyDocsView_exports, {
   BaselineStatus: () => BaselineStatus,
-  CSSPropertyDocsView: () => CSSPropertyDocsView
+  CSSPropertyDocsView: () => CSSPropertyDocsView,
+  DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
 import "../../../ui/kit/kit.js";
-import "../../../ui/legacy/legacy.js";
 import * as Common from "../../../core/common/common.js";
 import * as i18n5 from "../../../core/i18n/i18n.js";
-import { html as html5, nothing as nothing2, render as render5 } from "../../../ui/lit/lit.js";
+import * as UI5 from "../../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing3, render as render5 } from "../../../ui/lit/lit.js";
 import * as SettingsUI from "../../../ui/settings/settings.js";
 import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -609,42 +682,44 @@ var cssPropertyDocsView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.docs-popup-wrapper {
-  max-width: 420px;
-  font-size: var(--sys-typescale-body4-size);
-  line-height: 1.4;
-}
+@scope to (devtools-widget > *) {
+  .docs-popup-wrapper {
+    max-width: 420px;
+    font-size: var(--sys-typescale-body4-size);
+    line-height: 1.4;
+  }
 
-.docs-popup-section {
-  margin-top: var(--sys-size-5);
-}
+  .docs-popup-section {
+    margin-top: var(--sys-size-5);
+  }
 
-.clickable {
-  color: var(--sys-color-primary);
-}
+  .clickable {
+    color: var(--sys-color-primary);
+  }
 
-.underlined {
-  text-decoration: underline;
-}
+  .underlined {
+    text-decoration: underline;
+  }
 
-.unbreakable-text {
-  white-space: nowrap;
-}
+  .unbreakable-text {
+    white-space: nowrap;
+  }
 
-.footer {
-  display: flex;
-  justify-content: space-between;
-}
+  .footer {
+    display: flex;
+    justify-content: space-between;
+  }
 
-#baseline {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: var(--sys-size-3);
-}
+  #baseline {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--sys-size-3);
+  }
 
-#baseline-icon {
-  width: 18px;
-  height: 18px;
+  #baseline-icon {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./cssPropertyDocsView.css")} */`;
@@ -775,64 +850,74 @@ var BaselineStatus = /* @__PURE__ */ ((BaselineStatus2) => {
   BaselineStatus2["HIGH"] = "high";
   return BaselineStatus2;
 })(BaselineStatus || {});
-var CSSPropertyDocsView = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #cssProperty;
-  constructor(cssProperty) {
-    super();
-    this.#cssProperty = cssProperty;
-    this.#render();
-  }
-  #dontShowChanged(e) {
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  const { description, references, baseline, browsers } = input.cssProperty;
+  const link = references?.[0].url;
+  render5(html5`
+    <style>${cssPropertyDocsView_css_default}</style>
+    <div class="docs-popup-wrapper">
+      ${description ? html5`
+        <div id="description">
+          ${description}
+        </div>
+      ` : nothing3}
+      ${baseline ? html5`
+        <div id="baseline" class="docs-popup-section">
+          <img
+            id="baseline-icon"
+            src=${getBaselineIconPath(baseline)}
+            role="presentation"
+          >
+          <span>
+            ${getBaselineText(baseline, browsers)}
+          </span>
+        </div>
+      ` : nothing3}
+      ${link ? html5`
+        <div class="docs-popup-section footer">
+          <devtools-link
+            id="learn-more"
+            href=${link}
+            class="clickable underlined unbreakable-text"
+          >
+            ${i18nString3(UIStrings3.learnMore)}
+          </devtools-link>
+          <devtools-checkbox
+            @change=${(e) => {
     const showDocumentation = !e.target.checked;
-    Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).set(showDocumentation);
+    input.onDontShowChanged(showDocumentation);
+  }}
+            jslog=${VisualLogging2.toggle("css-property-doc").track({ change: true })}>
+            ${i18nString3(UIStrings3.dontShow)}
+          </devtools-checkbox>
+        </div>
+      ` : nothing3}
+    </div>
+  `, target, { container: { classes: ["css-property-docs-view"] } });
+};
+var CSSPropertyDocsView = class extends UI5.Widget.Widget {
+  #cssProperty;
+  #view;
+  constructor(cssProperty, element, view = DEFAULT_VIEW4) {
+    super(element);
+    this.#cssProperty = cssProperty;
+    this.#view = view;
+    this.performUpdate();
   }
-  #render() {
-    const { description, references, baseline, browsers } = this.#cssProperty;
-    const link = references?.[0].url;
-    render5(html5`
-      <style>${cssPropertyDocsView_css_default}</style>
-      <div class="docs-popup-wrapper">
-        ${description ? html5`
-          <div id="description">
-            ${description}
-          </div>
-        ` : nothing2}
-        ${baseline ? html5`
-          <div id="baseline" class="docs-popup-section">
-            <img
-              id="baseline-icon"
-              src=${getBaselineIconPath(baseline)}
-              role="presentation"
-            >
-            <span>
-              ${getBaselineText(baseline, browsers)}
-            </span>
-          </div>
-        ` : nothing2}
-        ${link ? html5`
-          <div class="docs-popup-section footer">
-            <devtools-link
-              id="learn-more"
-              href=${link}
-              class="clickable underlined unbreakable-text"
-            >
-              ${i18nString3(UIStrings3.learnMore)}
-            </devtools-link>
-            <devtools-checkbox
-              @change=${this.#dontShowChanged}
-              jslog=${VisualLogging2.toggle("css-property-doc").track({ change: true })}>
-              ${i18nString3(UIStrings3.dontShow)}
-            </devtools-checkbox>
-          </div>
-        ` : nothing2}
-      </div>
-    `, this.#shadow, {
-      host: this
-    });
+  #dontShowChanged = (showDocumentation) => {
+    Common.Settings.Settings.instance().resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor).set(showDocumentation);
+  };
+  performUpdate() {
+    this.#view(
+      {
+        cssProperty: this.#cssProperty,
+        onDontShowChanged: this.#dontShowChanged
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-customElements.define("devtools-css-property-docs-view", CSSPropertyDocsView);
 
 // ../../front_end/panels/elements/components/CSSPropertyIconResolver.ts
 var CSSPropertyIconResolver_exports = {};
@@ -1285,12 +1370,13 @@ function findGridItemIcon(text, parentComputedStyles) {
 // ../../front_end/panels/elements/components/CSSQuery.ts
 var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
-  CSSQuery: () => CSSQuery
+  CSSQuery: () => CSSQuery,
+  DEFAULT_VIEW: () => DEFAULT_VIEW5
 });
 import "../../../ui/components/tooltips/tooltips.js";
 import "../../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as SDK2 from "../../../core/sdk/sdk.js";
-import * as UI3 from "../../../ui/legacy/legacy.js";
+import * as UI6 from "../../../ui/legacy/legacy.js";
 import * as Lit from "../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -1322,8 +1408,60 @@ var cssQuery_css_default = `/*
 
 // ../../front_end/panels/elements/components/CSSQuery.ts
 var { render: render6, html: html6 } = Lit;
-var CSSQuery = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  const queryClasses = Lit.Directives.classMap({
+    query: true,
+    editable: Boolean(input.onQueryTextClick)
+  });
+  const queryText = html6`
+    <span class="query-text" @click=${input.onQueryTextClick}>${input.queryText.map((section, index) => {
+    if (section.isVariable && input.matchedStyles && input.style && input.onLinkActivate) {
+      const variableName = section.text;
+      const variable = input.matchedStyles.computeCSSVariable(input.style, variableName, input.containerNode);
+      const isDefined = variable !== null && variable.value !== void 0;
+      const onLinkActivate = () => {
+        if (input.onLinkActivate) {
+          input.onLinkActivate(variable ? variable.declaration : variableName);
+        }
+      };
+      const tooltipContents = input.getPopoverContents?.(variableName, variable?.value ?? null) ?? null;
+      const tooltipId = `${input.tooltipPrefix || "css-query"}-${index}-${variableName}`;
+      const tooltip = { tooltipId };
+      return html6`
+            <devtools-link-swatch class="css-var-link" .data=${{
+        tooltip,
+        text: variableName,
+        isDefined,
+        onLinkActivate
+      }}>
+            </devtools-link-swatch>
+            <devtools-tooltip
+              id=${tooltipId}
+              variant="rich"
+              jslogContext="elements.css-var"
+            >
+              ${tooltipContents ? html6`<devtools-widget>${tooltipContents.element}</devtools-widget>` : Lit.nothing}
+            </devtools-tooltip>
+          `;
+    }
+    return html6`${section.text}`;
+  })}</span>
+  `;
+  render6(
+    html6`
+      <style>${cssQuery_css_default}</style>
+      <style>${UI6.inspectorCommonStyles}</style>
+      <div class=${queryClasses} jslog=${VisualLogging3.cssRuleHeader(input.jslogContext).track({ click: true, change: true })}>
+        <slot name="indent"></slot>
+        ${input.queryPrefix ? html6`<span>${input.queryPrefix + " "}</span>` : Lit.nothing}
+        ${input.queryName ? html6`<span>${input.queryName + " "}</span>` : Lit.nothing}
+        ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
+      </div>`,
+    target
+  );
+};
+var CSSQuery = class extends UI6.Widget.Widget {
+  #view;
   #queryPrefix = "";
   #queryName;
   #queryText = [];
@@ -1335,6 +1473,11 @@ var CSSQuery = class extends HTMLElement {
   #style;
   #containerNode;
   #tooltipPrefix = "";
+  constructor(element, view = DEFAULT_VIEW5) {
+    super(element, { useShadowDom: true, classes: ["css-query"] });
+    this.element.classList.remove("vbox", "flex-auto");
+    this.#view = view;
+  }
   set data(data) {
     this.#queryPrefix = data.queryPrefix;
     this.#queryName = data.queryName;
@@ -1343,7 +1486,11 @@ var CSSQuery = class extends HTMLElement {
     this.#onLinkActivate = data.onLinkActivate;
     this.#getPopoverContents = data.getPopoverContents;
     this.#jslogContext = data.jslogContext;
-    this.#render();
+    this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.performUpdate();
   }
   parseStyleQueries(matchedStyles, style, containerNode, tooltipPrefix) {
     this.#matchedStyles = matchedStyles;
@@ -1391,71 +1538,39 @@ var CSSQuery = class extends HTMLElement {
       });
     }
     this.#queryText = sections;
-    this.#render();
+    this.performUpdate();
   }
-  #render() {
-    const queryClasses = Lit.Directives.classMap({
-      query: true,
-      editable: Boolean(this.#onQueryTextClick)
-    });
-    const queryText = html6`
-      <span class="query-text" @click=${this.#onQueryTextClick}>${this.#queryText.map((section, index) => {
-      if (section.isVariable && this.#matchedStyles && this.#style && this.#onLinkActivate) {
-        const variableName = section.text;
-        const variable = this.#matchedStyles.computeCSSVariable(this.#style, variableName, this.#containerNode);
-        const isDefined = variable !== null && variable.value !== void 0;
-        const onLinkActivate = () => {
-          if (this.#onLinkActivate) {
-            this.#onLinkActivate(variable ? variable.declaration : variableName);
-          }
-        };
-        const tooltipContents = this.#getPopoverContents?.(variableName, variable?.value ?? null) ?? null;
-        const tooltipId = `${this.#tooltipPrefix}-${index}-${variableName}`;
-        const tooltip = { tooltipId };
-        return html6`
-              <devtools-link-swatch class="css-var-link" .data=${{
-          tooltip,
-          text: variableName,
-          isDefined,
-          onLinkActivate
-        }}>
-              </devtools-link-swatch>
-              <devtools-tooltip
-                id=${tooltipId}
-                variant="rich"
-                jslogContext="elements.css-var"
-              >
-                ${tooltipContents}
-              </devtools-tooltip>
-            `;
-      }
-      return html6`${section.text}`;
-    })}</span>
-    `;
-    render6(
-      html6`
-        <style>${cssQuery_css_default}</style>
-        <style>${UI3.inspectorCommonStyles}</style>
-        <div class=${queryClasses} jslog=${VisualLogging3.cssRuleHeader(this.#jslogContext).track({ click: true, change: true })}>
-          <slot name="indent"></slot>
-          ${this.#queryPrefix ? html6`<span>${this.#queryPrefix + " "}</span>` : Lit.nothing}
-          ${this.#queryName ? html6`<span>${this.#queryName + " "}</span>` : Lit.nothing}
-          ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
-        </div>`,
-      this.#shadow,
-      { host: this }
+  performUpdate() {
+    this.#view(
+      {
+        queryPrefix: this.#queryPrefix,
+        queryName: this.#queryName,
+        queryText: this.#queryText,
+        onQueryTextClick: this.#onQueryTextClick,
+        onLinkActivate: this.#onLinkActivate,
+        getPopoverContents: this.#getPopoverContents,
+        jslogContext: this.#jslogContext,
+        matchedStyles: this.#matchedStyles,
+        style: this.#style,
+        containerNode: this.#containerNode,
+        tooltipPrefix: this.#tooltipPrefix
+      },
+      void 0,
+      this.contentElement
     );
   }
 };
-customElements.define("devtools-css-query", CSSQuery);
 
 // ../../front_end/panels/elements/components/CSSVariableValueView.ts
 var CSSVariableValueView_exports = {};
 __export(CSSVariableValueView_exports, {
   CSSVariableParserError: () => CSSVariableParserError,
-  CSSVariableValueView: () => CSSVariableValueView
+  CSSVariableValueView: () => CSSVariableValueView,
+  DEFAULT_PARSER_ERROR_VIEW: () => DEFAULT_PARSER_ERROR_VIEW,
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
 import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as UI7 from "../../../ui/legacy/legacy.js";
 import * as Lit2 from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/cssVariableValueView.css.js
@@ -1465,46 +1580,48 @@ var cssVariableValueView_css_default = `/*
  * found in the LICENSE file.
  */
 
-.registered-property-popup-wrapper {
-  max-width: 232px;
-  font-size: var(--sys-typescale-body4-size);
-  line-height: 1.4;
-  word-break: break-all;
-}
+@scope to (devtools-widget > *) {
+  .registered-property-popup-wrapper {
+    max-width: 232px;
+    font-size: var(--sys-typescale-body4-size);
+    line-height: 1.4;
+    word-break: break-all;
+  }
 
-.monospace {
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
+  .monospace {
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
 
-.divider {
-  margin: var(--sys-size-5) -7px;
-  border: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .divider {
+    margin: var(--sys-size-5) -7px;
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.registered-property-links {
-  margin-top: var(--sys-size-5);
-}
+  .registered-property-links {
+    margin-top: var(--sys-size-5);
+  }
 
-.clickable {
-  color: var(--sys-color-primary);
-  cursor: pointer;
-}
+  .clickable {
+    color: var(--sys-color-primary);
+    cursor: pointer;
+  }
 
-.underlined {
-  text-decoration: underline;
-}
+  .underlined {
+    text-decoration: underline;
+  }
 
-.unbreakable-text {
-  white-space: nowrap;
-}
+  .unbreakable-text {
+    white-space: nowrap;
+  }
 
-.css-property {
-  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
-}
+  .css-property {
+    color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
 
-.title {
-  color: var(--sys-color-state-disabled);
+  .title {
+    color: var(--sys-color-state-disabled);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./cssVariableValueView.css")} */`;
@@ -1539,30 +1656,62 @@ function getLinkSection(details) {
             </span>
           </div>`;
 }
-var CSSVariableParserError = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  constructor(details) {
+var DEFAULT_PARSER_ERROR_VIEW = (input, _output, target) => {
+  const type = html7`<span class="monospace css-property">${input.details.registration.syntax()}</span>`;
+  render7(
+    html7`
+    <style>${cssVariableValueView_css_default}</style>
+    <div class="variable-value-popup-wrapper">
+      ${i18nTemplate2(UIStrings4.invalidPropertyValue, { type })}
+      ${getLinkSection(input.details)}
+    </div>`,
+    target,
+    { container: { classes: ["css-variable-parser-error"] } }
+  );
+};
+var CSSVariableParserError = class extends UI7.Widget.Widget {
+  #view;
+  #details;
+  constructor(details, view = DEFAULT_PARSER_ERROR_VIEW) {
     super();
-    this.#render(details);
+    this.#view = view;
+    this.#details = details;
+    this.performUpdate();
   }
-  #render(details) {
-    const type = html7`<span class="monospace css-property">${details.registration.syntax()}</span>`;
-    render7(
-      html7`
-      <style>${cssVariableValueView_css_default}</style>
-      <div class="variable-value-popup-wrapper">
-        ${i18nTemplate2(UIStrings4.invalidPropertyValue, { type })}
-        ${getLinkSection(details)}
-      </div>`,
-      this.#shadow,
-      {
-        host: this
-      }
-    );
+  wasShown() {
+    super.wasShown();
+    this.performUpdate();
+  }
+  performUpdate() {
+    this.#view({ details: this.#details }, void 0, this.contentElement);
   }
 };
-var CSSVariableValueView = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  const initialValue = input.details?.registration.initialValue();
+  const registrationView = input.details ? html7`
+      <hr class=divider />
+      <div class=registered-property-popup-wrapper>
+        <div class="monospace">
+          <div><span class="css-property">syntax:</span> ${input.details.registration.syntax()}</div>
+          <div><span class="css-property">inherits:</span> ${input.details.registration.inherits()}</div>
+          ${initialValue ? html7`<div><span class="css-property">initial-value:</span> ${initialValue}</div>` : ""}
+        </div>
+        ${getLinkSection(input.details)}
+      </div>` : "";
+  const valueText = input.value ?? i18nString4(UIStrings4.sIsNotDefined, { PH1: input.variableName });
+  render7(
+    html7`<style>${cssVariableValueView_css_default}</style>
+           <div class="variable-value-popup-wrapper">
+             ${valueText}
+           </div>
+           ${registrationView}
+           `,
+    target,
+    { container: { classes: ["css-variable-value-view"] } }
+  );
+};
+var CSSVariableValueView = class extends UI7.Widget.Widget {
+  #view;
   variableName;
   #value;
   details;
@@ -1570,8 +1719,9 @@ var CSSVariableValueView = class extends HTMLElement {
     variableName,
     value,
     details
-  }) {
+  }, view = DEFAULT_VIEW6) {
     super();
+    this.#view = view;
     this.variableName = variableName;
     this.details = details;
     this.value = value;
@@ -1581,37 +1731,24 @@ var CSSVariableValueView = class extends HTMLElement {
   }
   set value(value) {
     this.#value = value;
-    this.#render();
+    this.performUpdate();
   }
-  #render() {
-    const initialValue = this.details?.registration.initialValue();
-    const registrationView = this.details ? html7`
-        <hr class=divider />
-        <div class=registered-property-popup-wrapper>
-          <div class="monospace">
-            <div><span class="css-property">syntax:</span> ${this.details.registration.syntax()}</div>
-            <div><span class="css-property">inherits:</span> ${this.details.registration.inherits()}</div>
-            ${initialValue ? html7`<div><span class="css-property">initial-value:</span> ${initialValue}</div>` : ""}
-          </div>
-          ${getLinkSection(this.details)}
-        </div>` : "";
-    const valueText = this.value ?? i18nString4(UIStrings4.sIsNotDefined, { PH1: this.variableName });
-    render7(
-      html7`<style>${cssVariableValueView_css_default}</style>
-             <div class="variable-value-popup-wrapper">
-               ${valueText}
-             </div>
-             ${registrationView}
-             `,
-      this.#shadow,
+  wasShown() {
+    super.wasShown();
+    this.performUpdate();
+  }
+  performUpdate() {
+    this.#view(
       {
-        host: this
-      }
+        variableName: this.variableName,
+        value: this.#value,
+        details: this.details
+      },
+      void 0,
+      this.contentElement
     );
   }
 };
-customElements.define("devtools-css-variable-value-view", CSSVariableValueView);
-customElements.define("devtools-css-variable-parser-error", CSSVariableParserError);
 
 // ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
 var ElementsBreadcrumbs_exports = {};
@@ -1624,7 +1761,7 @@ import "../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "../../../core/i18n/i18n.js";
 import * as SDK3 from "../../../core/sdk/sdk.js";
 import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
-import * as RenderCoordinator2 from "../../../ui/components/render_coordinator/render_coordinator.js";
+import * as RenderCoordinator from "../../../ui/components/render_coordinator/render_coordinator.js";
 import * as Lit3 from "../../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -1858,10 +1995,10 @@ var ElementsBreadcrumbs = class extends HTMLElement {
     if (!crumbScrollContainer || !crumbWindow) {
       return;
     }
-    const crumbWindowWidth = await RenderCoordinator2.read(() => {
+    const crumbWindowWidth = await RenderCoordinator.read(() => {
       return crumbWindow.clientWidth;
     });
-    const scrollContainerWidth = await RenderCoordinator2.read(() => {
+    const scrollContainerWidth = await RenderCoordinator.read(() => {
       return crumbScrollContainer.clientWidth;
     });
     if (this.#overflowing) {
@@ -1911,10 +2048,10 @@ var ElementsBreadcrumbs = class extends HTMLElement {
     if (!crumbScrollContainer || !crumbWindow) {
       return;
     }
-    const crumbWindowWidth = await RenderCoordinator2.read(() => {
+    const crumbWindowWidth = await RenderCoordinator.read(() => {
       return crumbWindow.clientWidth;
     });
-    const scrollContainerWidth = await RenderCoordinator2.read(() => {
+    const scrollContainerWidth = await RenderCoordinator.read(() => {
       return crumbScrollContainer.clientWidth;
     });
     if (this.#overflowing) {
@@ -2033,7 +2170,7 @@ var ElementsBreadcrumbs = class extends HTMLElement {
     const activeCrumbId = this.#selectedDOMNode.id;
     const activeCrumb = this.#shadow.querySelector(`.crumb[data-node-id="${activeCrumbId}"]`);
     if (activeCrumb) {
-      await RenderCoordinator2.scroll(() => {
+      await RenderCoordinator.scroll(() => {
         activeCrumb.scrollIntoView({
           // We only want to scroll smoothly when the user is clicking the
           // buttons manually. If we are automatically scrolling, we could be
@@ -2052,10 +2189,12 @@ customElements.define("devtools-elements-breadcrumbs", ElementsBreadcrumbs);
 // ../../front_end/panels/elements/components/ElementsTreeExpandButton.ts
 var ElementsTreeExpandButton_exports = {};
 __export(ElementsTreeExpandButton_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ElementsTreeExpandButton: () => ElementsTreeExpandButton
 });
 import "../../../ui/kit/kit.js";
 import * as i18n13 from "../../../core/i18n/i18n.js";
+import * as UI8 from "../../../ui/legacy/legacy.js";
 import { html as html9, render as render9 } from "../../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -2066,12 +2205,14 @@ var elementsTreeExpandButton_css_default = `/*
  * found in the LICENSE file.
  */
 
-:host {
+:host,
+.elements-tree-expand-button {
   display: inline-flex;
   vertical-align: middle;
 }
 
-:host(.hidden) {
+:host(.hidden),
+.elements-tree-expand-button.hidden {
   display: none;
 }
 
@@ -2126,43 +2267,55 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/elements/components/ElementsTreeExpandButton.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
-var ElementsTreeExpandButton = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #clickHandler = () => {
-  };
-  set data(data) {
-    this.#clickHandler = data.clickHandler;
-    this.#update();
-  }
-  #update() {
-    this.#render();
-  }
-  #render() {
-    render9(
-      html9`
+var DEFAULT_VIEW7 = (input, _output, target) => {
+  render9(
+    html9`
       <style>${elementsTreeExpandButton_css_default}</style>
       <button
         class="expand-button"
         tabindex="-1"
         aria-label=${i18nString7(UIStrings7.expand)}
         jslog=${VisualLogging5.action("expand").track({ click: true })}
-        @click=${this.#clickHandler}><devtools-icon name="dots-horizontal"></devtools-icon></button>`,
-      this.#shadow,
-      { host: this }
-    );
+        @click=${() => input.clickHandler()}><devtools-icon name="dots-horizontal"></devtools-icon></button>`,
+    target,
+    { container: { classes: ["elements-tree-expand-button"] } }
+  );
+};
+var ElementsTreeExpandButton = class extends UI8.Widget.Widget {
+  #clickHandler = () => {
+  };
+  #view;
+  constructor(element, view = DEFAULT_VIEW7) {
+    super(element, { useShadowDom: true, classes: ["elements-tree-expand-button"] });
+    this.#view = view;
+  }
+  set clickHandler(clickHandler) {
+    if (this.#clickHandler === clickHandler) {
+      return;
+    }
+    this.#clickHandler = clickHandler;
+    this.requestUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({ clickHandler: this.#clickHandler }, void 0, this.contentElement);
   }
 };
-customElements.define("devtools-elements-tree-expand-button", ElementsTreeExpandButton);
 
 // ../../front_end/panels/elements/components/QueryContainer.ts
 var QueryContainer_exports = {};
 __export(QueryContainer_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW8,
   QueriedSizeRequestedEvent: () => QueriedSizeRequestedEvent,
   QueryContainer: () => QueryContainer
 });
 import "../../../ui/kit/kit.js";
 import "../../../ui/components/node_text/node_text.js";
 import * as SDK4 from "../../../core/sdk/sdk.js";
+import * as UI9 from "../../../ui/legacy/legacy.js";
 import * as Lit4 from "../../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
@@ -2173,32 +2326,34 @@ var queryContainer_css_default = `/*
  * found in the LICENSE file.
  */
 
-.container-link {
-  display: inline-block;
-  color: var(--sys-color-state-disabled);
-}
+@scope to (devtools-widget > *) {
+  .container-link {
+    display: inline-block;
+    color: var(--sys-color-state-disabled);
+  }
 
-.container-link:hover {
-  color: var(--sys-color-primary);
-}
+  .container-link:hover {
+    color: var(--sys-color-primary);
+  }
 
-.queried-size-details {
-  color: var(--sys-color-on-surface);
-}
+  .queried-size-details {
+    color: var(--sys-color-on-surface);
+  }
 
-.axis-icon {
-  margin-left: 0.4em;
-  width: var(--sys-size-8);
-  height: var(--sys-size-6);
-  vertical-align: text-top;
-}
+  .axis-icon {
+    margin-left: 0.4em;
+    width: var(--sys-size-8);
+    height: var(--sys-size-6);
+    vertical-align: text-top;
+  }
 
-.axis-icon.hidden {
-  display: none;
-}
+  .axis-icon.hidden {
+    display: none;
+  }
 
-.axis-icon.vertical {
-  transform: rotate(90deg);
+  .axis-icon.vertical {
+    transform: rotate(90deg);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./queryContainer.css")} */`;
@@ -2212,34 +2367,86 @@ var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
     super(_QueriedSizeRequestedEvent.eventName, {});
   }
 };
-var QueryContainer = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
+var DEFAULT_VIEW8 = (input, _output, target) => {
+  const renderQueriedSizeDetails = () => {
+    if (!input.queriedSizeDetails || input.queriedSizeDetails.queryAxis === QueryAxis.NONE) {
+      return Lit4.nothing;
+    }
+    const areBothAxesQueried = input.queriedSizeDetails.queryAxis === QueryAxis.BOTH;
+    const axisIconClasses = Lit4.Directives.classMap({
+      "axis-icon": true,
+      hidden: areBothAxesQueried,
+      vertical: input.queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL
+    });
+    return html10`
+      <span class="queried-size-details">
+        (${input.queriedSizeDetails.queryAxis}
+        <devtools-icon
+          class=${axisIconClasses} name="width"></devtools-icon>
+        ) ${areBothAxesQueried && input.queriedSizeDetails.width ? " width: " : Lit4.nothing}
+        ${input.queriedSizeDetails.width || Lit4.nothing}
+        ${areBothAxesQueried && input.queriedSizeDetails.height ? " height: " : Lit4.nothing}
+        ${input.queriedSizeDetails.height || Lit4.nothing}
+      </span>
+    `;
+  };
+  render10(html10`
+    <style>${queryContainer_css_default}</style>
+    \u2192
+    <a href="#" draggable=false class="container-link"
+       jslog=${VisualLogging6.cssRuleHeader("container-query").track({ click: true })}
+       @click=${(event) => {
+    event.preventDefault();
+    input.onContainerLinkClick?.();
+  }}
+       @mouseenter=${input.onContainerLinkMouseEnter}
+       @mouseleave=${input.onContainerLinkMouseLeave}>
+      <devtools-node-text data-node-title=${input.nodeTitle} .data=${{
+    nodeTitle: input.nodeTitle,
+    nodeId: input.idToDisplay,
+    nodeClasses: input.classesToDisplay
+  }}>
+      </devtools-node-text>
+    </a>
+    ${input.isContainerLinkHovered ? renderQueriedSizeDetails() : Lit4.nothing}
+  `, target);
+};
+var QueryContainer = class extends UI9.Widget.Widget {
+  #view;
   #queryName;
   #container;
   #onContainerLinkClick;
   #isContainerLinkHovered = false;
   #queriedSizeDetails;
+  constructor(element, view = DEFAULT_VIEW8) {
+    super(element);
+    this.#view = view;
+  }
   set data(data) {
     this.#queryName = data.queryName;
     this.#container = data.container;
     this.#onContainerLinkClick = data.onContainerLinkClick;
-    this.#render();
+    this.performUpdate();
   }
   updateContainerQueriedSizeDetails(details) {
     this.#queriedSizeDetails = details;
-    this.#render();
+    this.performUpdate();
   }
-  async #onContainerLinkMouseEnter() {
+  wasShown() {
+    super.wasShown();
+    this.performUpdate();
+  }
+  #onContainerLinkMouseEnter = () => {
     this.#container?.highlight("container-outline");
     this.#isContainerLinkHovered = true;
-    this.dispatchEvent(new QueriedSizeRequestedEvent());
-  }
-  #onContainerLinkMouseLeave() {
+    this.dispatchDOMEvent(new QueriedSizeRequestedEvent());
+  };
+  #onContainerLinkMouseLeave = () => {
     SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK4.TargetManager.TargetManager.instance());
     this.#isContainerLinkHovered = false;
-    this.#render();
-  }
-  #render() {
+    this.performUpdate();
+  };
+  performUpdate() {
     if (!this.#container) {
       return;
     }
@@ -2249,50 +2456,22 @@ var QueryContainer = class extends HTMLElement {
       classesToDisplay = this.#container.getAttribute("class")?.split(/\s+/).filter(Boolean);
     }
     const nodeTitle = this.#queryName || this.#container.nodeNameInCorrectCase();
-    render10(html10`
-      <style>${queryContainer_css_default}</style>
-      \u2192
-      <a href="#" draggable=false class="container-link"
-         jslog=${VisualLogging6.cssRuleHeader("container-query").track({ click: true })}
-         @click=${this.#onContainerLinkClick}
-         @mouseenter=${this.#onContainerLinkMouseEnter}
-         @mouseleave=${this.#onContainerLinkMouseLeave}>
-        <devtools-node-text data-node-title=${nodeTitle} .data=${{
-      nodeTitle,
-      nodeId: idToDisplay,
-      nodeClasses: classesToDisplay
-    }}>
-        </devtools-node-text>
-      </a>
-      ${this.#isContainerLinkHovered ? this.#renderQueriedSizeDetails() : Lit4.nothing}
-    `, this.#shadow, {
-      host: this
-    });
-  }
-  #renderQueriedSizeDetails() {
-    if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === QueryAxis.NONE) {
-      return Lit4.nothing;
-    }
-    const areBothAxesQueried = this.#queriedSizeDetails.queryAxis === QueryAxis.BOTH;
-    const axisIconClasses = Lit4.Directives.classMap({
-      "axis-icon": true,
-      hidden: areBothAxesQueried,
-      vertical: this.#queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL
-    });
-    return html10`
-      <span class="queried-size-details">
-        (${this.#queriedSizeDetails.queryAxis}
-        <devtools-icon
-          class=${axisIconClasses} name="width"></devtools-icon>
-        ) ${areBothAxesQueried && this.#queriedSizeDetails.width ? " width: " : Lit4.nothing}
-        ${this.#queriedSizeDetails.width || Lit4.nothing}
-        ${areBothAxesQueried && this.#queriedSizeDetails.height ? " height: " : Lit4.nothing}
-        ${this.#queriedSizeDetails.height || Lit4.nothing}
-      </span>
-    `;
+    this.#view(
+      {
+        nodeTitle,
+        idToDisplay,
+        classesToDisplay,
+        onContainerLinkClick: this.#onContainerLinkClick,
+        onContainerLinkMouseEnter: this.#onContainerLinkMouseEnter,
+        onContainerLinkMouseLeave: this.#onContainerLinkMouseLeave,
+        isContainerLinkHovered: this.#isContainerLinkHovered,
+        queriedSizeDetails: this.#queriedSizeDetails
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-customElements.define("devtools-query-container", QueryContainer);
 
 // ../../front_end/panels/elements/components/StylePropertyEditor.ts
 var StylePropertyEditor_exports = {};
@@ -2419,7 +2598,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/elements/components/StylePropertyEditor.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { render: render11, html: html11, Directives: Directives4 } = Lit5;
+var { render: render11, html: html11, Directives: Directives5 } = Lit5;
 var PropertySelectedEvent = class _PropertySelectedEvent extends Event {
   static eventName = "propertyselected";
   data;
@@ -2464,7 +2643,7 @@ var StylePropertyEditor = class extends HTMLElement {
     const authoredValue = this.#authoredProperties.get(prop.propertyName);
     const notAuthored = !authoredValue;
     const shownValue = authoredValue || this.#computedProperties.get(prop.propertyName);
-    const classes = Directives4.classMap({
+    const classes = Directives5.classMap({
       "property-value": true,
       "not-authored": notAuthored
     });
@@ -2527,7 +2706,7 @@ var StylePropertyEditor = class extends HTMLElement {
       throw new Error(`Icon for ${query} is not found`);
     }
     const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
-    const classes = Directives4.classMap({
+    const classes = Directives5.classMap({
       button: true,
       selected
     });

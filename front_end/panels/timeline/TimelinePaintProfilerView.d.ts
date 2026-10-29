@@ -36,10 +36,11 @@ export interface TimelinePaintImageViewInput {
         borderBottomWidth?: string;
     };
 }
-export type View = (input: TimelinePaintImageViewInput, output: undefined, target: HTMLElement) => {
-    imageElementNaturalHeight: number;
-    imageElementNaturalWidth: number;
-};
+export interface TimelinePaintImageViewOutput {
+    imageElementNaturalHeight?: number;
+    imageElementNaturalWidth?: number;
+}
+export type View = (input: TimelinePaintImageViewInput, output: TimelinePaintImageViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class TimelinePaintImageView extends UI.Widget.Widget {
     #private;

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as uiI18n from '../../../../ui/i18n/i18n.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import { BaseInsightComponent } from './BaseInsightComponent.js';
@@ -11,7 +10,7 @@ import { Checklist } from './Checklist.js';
 import { imageRef } from './ImageRef.js';
 const { widget } = UI.Widget;
 const { UIStrings, i18nString, getImageData } = Trace.Insights.Models.LCPDiscovery;
-const { html } = Lit;
+const { html, i18nTemplate } = Lit;
 // eslint-disable-next-line @devtools/l10n-filename-matches
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 export class LCPDiscovery extends BaseInsightComponent {
@@ -33,7 +32,10 @@ export class LCPDiscovery extends BaseInsightComponent {
         }
         const timespanOverlaySection = overlays.find(overlay => overlay.type === 'TIMESPAN_BREAKDOWN')?.sections[0];
         if (timespanOverlaySection) {
-            timespanOverlaySection.label = this.#renderDiscoveryDelay(imageResults.discoveryDelay);
+            const label = this.#renderDiscoveryDelay(imageResults.discoveryDelay);
+            if (label !== Lit.nothing) {
+                timespanOverlaySection.label = label;
+            }
         }
         return overlays;
     }
@@ -44,13 +46,10 @@ export class LCPDiscovery extends BaseInsightComponent {
         return getImageData(this.model)?.estimatedSavings ?? null;
     }
     #renderDiscoveryDelay(delay) {
-        // Trace.Types.Overlays.TimespanBreakdownEntryBreakdown needs an HTMLElement, which we have to localize here.
-        /* eslint-disable @devtools/no-imperative-dom-api */
-        const timeWrapper = document.createElement('span');
-        timeWrapper.classList.add('discovery-time-ms');
-        timeWrapper.innerText = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(delay);
-        return uiI18n.getFormatLocalizedString(str_, UIStrings.lcpLoadDelay, { PH1: timeWrapper });
-        /* eslint-enable @devtools/no-imperative-dom-api */
+        // clang-format off
+        const timeWrapper = html `<span class="discovery-time-ms">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(delay)}</span>`;
+        // clang-format on
+        return i18nTemplate(str_, UIStrings.lcpLoadDelay, { PH1: timeWrapper });
     }
     renderContent() {
         if (!this.model) {

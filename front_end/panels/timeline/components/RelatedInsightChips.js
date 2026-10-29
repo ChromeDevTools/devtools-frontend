@@ -48,7 +48,7 @@ export class RelatedInsightChips extends UI.Widget.Widget {
                 insight.activateInsight();
             },
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
 }
 export const DEFAULT_VIEW = (input, _output, target) => {

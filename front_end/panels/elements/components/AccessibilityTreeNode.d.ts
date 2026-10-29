@@ -1,17 +1,19 @@
 import type * as Protocol from '../../../generated/protocol.js';
-export interface AccessibilityTreeNodeData {
+import * as UI from '../../../ui/legacy/legacy.js';
+export interface ViewInput {
     ignored: boolean;
     name: string;
     role: string;
     properties: Protocol.Accessibility.AXProperty[];
-    id: string;
 }
-export declare class AccessibilityTreeNode extends HTMLElement {
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class AccessibilityTreeNode extends UI.Widget.Widget {
     #private;
-    set data(data: AccessibilityTreeNodeData);
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-accessibility-tree-node': AccessibilityTreeNode;
-    }
+    constructor(element?: HTMLElement, view?: View);
+    set ignored(ignored: boolean);
+    set name(name: string);
+    set role(role: string);
+    set properties(properties: Protocol.Accessibility.AXProperty[]);
+    performUpdate(): void;
 }

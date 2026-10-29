@@ -176,7 +176,7 @@ export class EventListenersWidget extends UI.Widget.VBox {
             }
             input.eventListenerObjects = await Promise.all(promises);
         }
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     wasShown() {
         UI.Context.Context.instance().setFlavor(EventListenersWidget, this);

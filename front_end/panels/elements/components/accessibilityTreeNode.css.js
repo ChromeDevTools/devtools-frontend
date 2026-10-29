@@ -9,31 +9,33 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.container {
-  width: 100%;
-  display: inline-block;
-}
+@scope to (devtools-widget > *) {
+  .container {
+    width: 100%;
+    display: inline-block;
+  }
 
-.container:hover {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
+  .container:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 
-span {
-  color: var(--sys-color-token-meta);
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
+  span {
+    color: var(--sys-color-token-meta);
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
 
-.role-value {
-  color: var(--sys-color-token-tag);
-}
+  .role-value {
+    color: var(--sys-color-token-tag);
+  }
 
-.attribute-name {
-  color: var(--sys-color-token-attribute);
-}
+  .attribute-name {
+    color: var(--sys-color-token-attribute);
+  }
 
-.attribute-value {
-  color: var(--sys-color-token-attribute-value);
+  .attribute-value {
+    color: var(--sys-color-token-attribute-value);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./accessibilityTreeNode.css')} */`;

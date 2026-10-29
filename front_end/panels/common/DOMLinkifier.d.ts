@@ -25,7 +25,7 @@ interface ViewInput {
     onMouseOver: () => void;
     onMouseLeave: () => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class DOMNodeLink extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, node?: SDK.DOMModel.DOMNode, options?: Options, view?: View);
@@ -37,7 +37,7 @@ interface DeferredViewInput {
     preventKeyboardFocus?: boolean;
     onClick: () => void;
 }
-type DeferredView = (input: DeferredViewInput, output: object, target: HTMLElement) => void;
+type DeferredView = (input: DeferredViewInput, output: undefined, target: HTMLElement) => void;
 export declare class DeferredDOMNodeLink extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options, styleSheetId?: Protocol.DOM.StyleSheetId, view?: DeferredView);

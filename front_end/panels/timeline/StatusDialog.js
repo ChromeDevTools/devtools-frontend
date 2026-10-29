@@ -213,7 +213,7 @@ export class StatusDialog extends UI.Widget.VBox {
             onDownloadClick: () => {
                 void this.#downloadRawTraceAfterError();
             },
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
         this.#focusStopButton = false;
     }
     wasShown() {

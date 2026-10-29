@@ -5509,7 +5509,7 @@ var StatusView = class {
         onCancel: this.cancel.bind(this),
         bugReport: this.bugReport || void 0
       },
-      {},
+      void 0,
       this.dialogRoot
     );
   }

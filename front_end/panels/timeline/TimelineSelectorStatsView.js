@@ -240,8 +240,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
                 this.#onContextMenu(event);
             },
         };
-        const viewOutput = {};
-        this.#view(viewInput, viewOutput, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
     getDescendentNodeCount(node) {
         if (!node) {

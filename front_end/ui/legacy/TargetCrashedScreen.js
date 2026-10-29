@@ -29,7 +29,7 @@ export class TargetCrashedScreen extends VBox {
     hideCallback;
     constructor(hideCallback, view = DEFAULT_VIEW) {
         super({ useShadowDom: true });
-        view({}, {}, this.contentElement);
+        view({}, undefined, this.contentElement);
         this.hideCallback = hideCallback;
     }
     willHide() {

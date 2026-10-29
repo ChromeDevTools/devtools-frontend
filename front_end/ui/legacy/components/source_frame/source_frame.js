@@ -2835,7 +2835,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
       };
       this.#view(
         { xml: this.#treeViewModel.root, onExpand, search: this.#search, jumpToNextSearchResult: this.#nextJump },
-        {},
+        void 0,
         this.contentElement
       );
     }

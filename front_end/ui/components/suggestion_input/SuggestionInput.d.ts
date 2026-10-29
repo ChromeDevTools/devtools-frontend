@@ -1,4 +1,3 @@
-import * as Lit from '../../../ui/lit/lit.js';
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-suggestion-input': SuggestionInput;
@@ -18,47 +17,96 @@ declare class EditableContent extends HTMLElement {
     constructor();
     attributeChangedCallback(name: string, _: string | null, value: string | null): void;
 }
+/**
+ * Contains a suggestion emitted due to action by the user.
+ */
+declare class SuggestEvent extends Event {
+    static readonly eventName = "suggest";
+    suggestion: string;
+    constructor(suggestion: string);
+}
+/**
+ * Parents should listen for this event and register the listeners provided by
+ * this event.
+ */
+declare class SuggestionInitEvent extends Event {
+    static readonly eventName = "suggestioninit";
+    listeners: Array<[string, (event: Event) => void]>;
+    constructor(listeners: Array<[string, (event: Event) => void]>);
+}
 export type SuggestionFilter = (option: string, query: string) => boolean;
+interface SuggestionBoxViewInput {
+    suggestions: readonly string[];
+    cursor: number;
+    hasVisibleSuggestions: boolean;
+    onSuggest: (suggestion: string) => void;
+}
+declare const SUGGESTION_BOX_VIEW: (input: SuggestionBoxViewInput, _output: undefined, target: ShadowRoot) => void;
 /**
  * @fires SuggestionInitEvent#suggestioninit
  * @fires SuggestEvent#suggest
  */
-declare class SuggestionBox extends Lit.LitElement {
+declare class SuggestionBox extends HTMLElement {
     #private;
-    static properties: typeof Lit.LitElement.properties;
-    options: readonly string[];
-    expression: string;
-    suggestionFilter?: SuggestionFilter;
-    hideExactMatch: boolean;
-    private cursor;
-    constructor();
+    constructor(view?: typeof SUGGESTION_BOX_VIEW);
+    get renderRoot(): ShadowRoot;
+    get updateComplete(): Promise<boolean>;
+    get options(): readonly string[];
+    set options(options: readonly string[]);
+    get expression(): string;
+    set expression(expression: string);
+    get suggestionFilter(): SuggestionFilter | undefined;
+    set suggestionFilter(suggestionFilter: SuggestionFilter | undefined);
+    get hideExactMatch(): boolean;
+    set hideExactMatch(hideExactMatch: boolean);
     connectedCallback(): void;
-    willUpdate(changedProperties: Lit.PropertyValues<this>): void;
-    protected render(): Lit.TemplateResult | undefined;
 }
-export declare class SuggestionInput extends Lit.LitElement {
-    #private;
-    static shadowRootOptions: ShadowRootInit;
-    static properties: typeof Lit.LitElement.properties;
-    /**
-     * State passed to devtools-suggestion-box.
-     */
-    options: readonly string[];
-    autocomplete?: boolean;
-    suggestionFilter?: SuggestionFilter;
-    hideExactMatch: boolean;
-    expression: string;
-    /**
-     * State passed to devtools-editable-content.
-     */
-    placeholder: string;
-    value: string;
+export interface SuggestionInputViewInput {
     disabled: boolean;
     strikethrough: boolean;
+    value: string;
     mimeType: string;
-    jslogContext?: string;
-    constructor();
-    protected willUpdate(properties: Lit.PropertyValues<this>): void;
-    protected render(): Lit.TemplateResult;
+    placeholder: string;
+    options: readonly string[];
+    suggestionFilter?: SuggestionFilter;
+    hideExactMatch: boolean;
+    expression: string;
+    onFocus: (event: FocusEvent) => void;
+    onInput: (event: {
+        target: EditableContent;
+    }) => void;
+    onKeyDown: (event: KeyboardEvent) => void;
+    onSuggestionInit: (event: SuggestionInitEvent) => void;
+    onSuggest: (event: SuggestEvent) => void;
+}
+export declare const SUGGESTION_INPUT_VIEW: (input: SuggestionInputViewInput, _output: undefined, target: ShadowRoot) => void;
+export declare class SuggestionInput extends HTMLElement {
+    #private;
+    constructor(view?: typeof SUGGESTION_INPUT_VIEW);
+    get renderRoot(): ShadowRoot;
+    get updateComplete(): Promise<boolean>;
+    get options(): readonly string[];
+    set options(options: readonly string[]);
+    get autocomplete(): boolean | undefined;
+    set autocomplete(autocomplete: boolean | undefined);
+    get suggestionFilter(): SuggestionFilter | undefined;
+    set suggestionFilter(suggestionFilter: SuggestionFilter | undefined);
+    get hideExactMatch(): boolean;
+    set hideExactMatch(hideExactMatch: boolean);
+    get expression(): string;
+    set expression(expression: string);
+    get placeholder(): string;
+    set placeholder(placeholder: string);
+    get value(): string;
+    set value(value: string);
+    get disabled(): boolean;
+    set disabled(disabled: boolean);
+    get strikethrough(): boolean;
+    set strikethrough(strikethrough: boolean);
+    get mimeType(): string;
+    set mimeType(mimeType: string);
+    get jslogContext(): string | undefined;
+    set jslogContext(jslogContext: string | undefined);
+    connectedCallback(): void;
 }
 export {};

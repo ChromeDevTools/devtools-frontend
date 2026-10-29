@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { type TemplateResult } from '../../ui/lit/lit.js';
 export declare const HotColorScheme: string[];
 export declare const ColdColorScheme: string[];
 interface EventHandlers {
@@ -15,6 +16,16 @@ export interface EventProperties {
     name: string;
     color?: string;
 }
+export interface EventPopoverInput {
+    title: string;
+    startTimeReadable: string;
+    live: boolean;
+    durationReadable?: string;
+}
+/**
+ * Renders the hover popover contents for an event on the timeline.
+ */
+export declare function renderEventPopover(input: EventPopoverInput): TemplateResult;
 /**
  * Wrapper class for each event displayed on the timeline.
  */
@@ -28,9 +39,9 @@ export declare class Event {
     title: string;
     constructor(timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventHandlers: EventHandlers, eventProperties?: EventProperties | undefined);
     /**
-     * Render hovertext into the |htmlElement|
+     * The data shown in the hover popover for this event.
      */
-    decorate(htmlElement: HTMLElement): void;
+    popoverInput(): EventPopoverInput;
     /**
      * set an event to be "live" where it's ended time is always the chart maximum
      * or to be a fixed time.
@@ -46,6 +57,11 @@ export declare class Event {
     get duration(): number;
     get live(): boolean;
 }
+export interface TickingFlameChartViewInput {
+    chart: PerfUI.FlameChart.FlameChart;
+}
+export type TickingFlameChartView = (input: TickingFlameChartViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: TickingFlameChartView;
 export declare class TickingFlameChart extends UI.Widget.VBox {
     #private;
     private intervalTimer;
@@ -58,7 +74,8 @@ export declare class TickingFlameChart extends UI.Widget.VBox {
     private readonly chartGroupExpansionSetting;
     private readonly chart;
     private stoppedPermanently?;
-    constructor();
+    constructor(element?: HTMLElement, view?: TickingFlameChartView);
+    performUpdate(): void;
     /**
      * Add a marker with |properties| at |time|.
      */

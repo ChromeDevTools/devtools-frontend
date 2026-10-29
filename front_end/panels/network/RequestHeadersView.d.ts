@@ -21,7 +21,7 @@ interface ViewInput {
         url: URL;
     } | null;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare function renderGeneralRows(input: ViewInput): Lit.LitTemplate;
 export declare function renderGeneralSection(input: ViewInput, forceOpen: boolean): Lit.LitTemplate;
 export declare const DEFAULT_VIEW: View;

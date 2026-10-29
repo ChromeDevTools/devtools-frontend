@@ -1197,7 +1197,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
       throttlingGroups,
       customConditionsGroup
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
 ((NetworkThrottlingSelect2) => {

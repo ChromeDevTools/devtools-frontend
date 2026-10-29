@@ -6,7 +6,7 @@ interface ViewInput {
     search: UI.TreeOutline.TreeSearch<XMLTreeViewNode, SearchResult> | undefined;
     jumpToNextSearchResult: SearchResult | undefined;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class XMLTreeViewNode {
     #private;

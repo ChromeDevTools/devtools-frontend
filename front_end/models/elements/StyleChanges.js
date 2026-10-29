@@ -76,4 +76,29 @@ export function trackPropertyRuleNameChange(tracker, node, oldName, newName) {
 export function trackKeyframeKeyChange(tracker, node, oldKey, newKey) {
     trackRuleHeaderChange(tracker, node, 'keyframe key', oldKey, newKey);
 }
+function describeStyleQueryChange(queryType, oldQuery, newQuery) {
+    if (!newQuery) {
+        return `Cleared ${queryType} query "${trimValue(oldQuery)}"`;
+    }
+    return `Changed ${queryType} query from "${trimValue(oldQuery)}" to "${trimValue(newQuery)}"`;
+}
+export function trackStyleQueryChange(tracker, node, queryType, oldQuery, newQuery) {
+    if (!tracker?.isTracking) {
+        return;
+    }
+    const trimmedOld = Platform.StringUtilities.collapseWhitespace(oldQuery.trim());
+    const trimmedNew = Platform.StringUtilities.collapseWhitespace(newQuery.trim());
+    if (trimmedOld === trimmedNew) {
+        return;
+    }
+    // Empty `trimmedOld` is unreachable as empty queries are not editable in the Styles pane.
+    if (!trimmedOld) {
+        return;
+    }
+    // Only `@media` and `@scope` allow empty query text in CSS.
+    if (!trimmedNew && queryType !== '@media' && queryType !== '@scope') {
+        return;
+    }
+    tracker.trackChange(describeStyleQueryChange(queryType, trimmedOld, trimmedNew), buildAnchor(STYLES_PANE_VE_PATH, node));
+}
 //# sourceMappingURL=StyleChanges.js.map

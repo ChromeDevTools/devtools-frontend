@@ -1133,7 +1133,8 @@ export class ConsoleView extends UI.Widget.VBox {
         }
         if (consoleMessage && !consoleViewMessage?.element()?.matches('.has-insight') &&
             consoleViewMessage?.shouldShowInsights()) {
-            contextMenu.headerSection().appendAction(consoleViewMessage?.getExplainActionId(), undefined, /* optional=*/ true);
+            contextMenu.headerSection().appendAction(consoleViewMessage?.getExplainActionId(), undefined, 
+            /* optional=*/ true);
         }
         if (consoleMessage?.url) {
             const menuTitle = i18nString(UIStrings.hideMessagesFromS, { PH1: new Common.ParsedURL.ParsedURL(consoleMessage.url).displayName });
@@ -1315,7 +1316,7 @@ export class ConsoleView extends UI.Widget.VBox {
         const target = event.target;
         // Do not focus prompt if messages have selection.
         if (!this.messagesElement.hasSelection()) {
-            const clickedOutsideMessageList = target === this.messagesElement || this.prompt.belowEditorElement().isSelfOrAncestor(target);
+            const clickedOutsideMessageList = target === this.messagesElement;
             if (clickedOutsideMessageList) {
                 this.prompt.moveCaretToEndOfPrompt();
                 this.focusPrompt();
@@ -1544,7 +1545,7 @@ export class ConsoleView extends UI.Widget.VBox {
     }
     isScrolledToBottom() {
         const distanceToPromptEditorBottom = this.messagesElement.scrollHeight - this.messagesElement.scrollTop -
-            this.messagesElement.clientHeight - this.prompt.belowEditorElement().offsetHeight;
+            this.messagesElement.clientHeight - this.prompt.belowEditorHeight();
         return distanceToPromptEditorBottom <= 2;
     }
     setupAiCodeCompletion() {
@@ -1586,7 +1587,8 @@ export class ConsoleViewFilter {
         UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
         const filterKeys = Object.values(FilterType);
         this.suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
-        this.textFilterUI = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, i18nString(UIStrings.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
+        this.textFilterUI =
+            new UI.Toolbar.ToolbarFilter(undefined, 1, 1, i18nString(UIStrings.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
         this.textFilterSetting = Common.Settings.Settings.instance().createSetting('console.text-filter', '');
         if (this.textFilterSetting.get()) {
             this.textFilterUI.setValue(this.textFilterSetting.get());

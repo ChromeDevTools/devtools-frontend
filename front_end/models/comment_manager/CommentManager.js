@@ -74,7 +74,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
         const threads = [];
         for (const thread of this.#commentThreads.values()) {
             if (thread.status === 'SENT_TO_AGENT' && !thread.transmitted) {
-                thread.transmitted = true;
+                thread.markTransmitted();
                 threads.push(thread);
             }
         }

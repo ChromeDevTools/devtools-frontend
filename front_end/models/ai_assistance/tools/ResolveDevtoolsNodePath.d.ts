@@ -10,6 +10,10 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
      * representing the path from the root to the target element (e.g., "1,HTML,1,BODY").
      */
     path: string;
+    /**
+     * CSS selector or node label identifying the target element in the report.
+     */
+    selector?: string;
     explanation: string;
 }
 /**

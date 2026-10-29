@@ -154,7 +154,7 @@ export class MismatchedPreloadingGrid extends UI.Widget.Widget {
         if (!this.#data) {
             return;
         }
-        this.#view(this.#data, {}, this.contentElement);
+        this.#view(this.#data, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=MismatchedPreloadingGrid.js.map

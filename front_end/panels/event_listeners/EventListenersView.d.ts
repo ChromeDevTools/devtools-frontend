@@ -17,7 +17,7 @@ interface ViewInput {
         showBlocking: boolean;
     };
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class EventListenersView extends UI.Widget.VBox {
     #private;

@@ -1,3 +1,4 @@
+import '../../ui/components/adorners/adorners.js';
 import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/lists/lists.js';
 import '../../ui/components/node_text/node_text.js';
@@ -24,14 +25,6 @@ export interface FilterState {
         canceled?: boolean;
     };
 }
-export interface FilterMenuButton {
-    button: UI.Toolbar.ToolbarMenuButton;
-    setCount: (count: number) => void;
-}
-export interface FilterMenuButtons {
-    toolTypes: FilterMenuButton;
-    statusTypes: FilterMenuButton;
-}
 export declare const enum TabId {
     DETAILS = "webmcp.tool-details",
     INPUT = "webmcp.call-inputs",
@@ -51,7 +44,6 @@ export interface ViewInput {
     onCallSelect: (call: WebMCP.WebMCPModel.Call | null, tabId?: TabId) => void;
     onTabSelect: (tabId: TabId) => void;
     filters: FilterState;
-    filterButtons: FilterMenuButtons;
     onClearLogClick: () => void;
     onFilterChange: (filters: FilterState) => void;
     toolCalls: WebMCP.WebMCPModel.Call[];
@@ -59,7 +51,7 @@ export interface ViewInput {
     onPaste: () => void;
 }
 export declare function filterToolCalls(toolCalls: WebMCP.WebMCPModel.Call[], filterState: FilterState): WebMCP.WebMCPModel.Call[];
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare function parsePayload(payload?: unknown): {
     valueObject: unknown;
     valueString: string | undefined;
@@ -76,7 +68,6 @@ export declare function getJSONEditorParameters(tool: WebMCP.WebMCPModel.Tool): 
 export declare const DEFAULT_VIEW: View;
 export declare class WebMCPView extends UI.Widget.VBox {
     #private;
-    static createFilterButtons(onToolTypesClick: (contextMenu: UI.ContextMenu.ContextMenu) => void, onStatusTypesClick: (contextMenu: UI.ContextMenu.ContextMenu) => void): FilterMenuButtons;
     constructor(target?: HTMLElement, view?: View);
     performUpdate(): void;
 }
@@ -86,10 +77,10 @@ export interface PayloadViewInput {
     errorText?: string;
     symbolizedError?: Bindings.SymbolizedError.SymbolizedError | null;
 }
-export declare const PAYLOAD_DEFAULT_VIEW: (input: PayloadViewInput, output: object, target: HTMLElement) => void;
+export declare const PAYLOAD_DEFAULT_VIEW: (input: PayloadViewInput, output: undefined, target: HTMLElement) => void;
 export declare class PayloadWidget extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, view?: (input: PayloadViewInput, output: object, target: HTMLElement) => void);
+    constructor(element?: HTMLElement, view?: (input: PayloadViewInput, output: undefined, target: HTMLElement) => void);
     set valueObject(valueObject: unknown);
     get valueObject(): unknown;
     set valueString(valueString: string | undefined);

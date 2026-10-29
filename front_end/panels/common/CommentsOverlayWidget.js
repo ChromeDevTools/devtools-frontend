@@ -74,6 +74,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
             title: input.title,
             comments: [...item.thread.comments],
             status: item.thread.status,
+            transmitted: item.thread.transmitted,
             onAddComment: input.onAddComment,
             onDeleteQueuedComment: input.onDeleteQueuedComment,
             onQueueComment: input.onQueueComment,

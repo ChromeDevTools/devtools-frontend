@@ -62,7 +62,7 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
                 window.location.reload();
             },
         };
-        view(input, {}, this.contentElement);
+        view(input, undefined, this.contentElement);
     }
     static show(reason) {
         const dialog = new Dialog('remote-debnugging-terminated');

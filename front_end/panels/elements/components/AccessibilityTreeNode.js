@@ -1,11 +1,9 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../../ui/lit/lit.js';
 import accessibilityTreeNodeStyles from './accessibilityTreeNode.css.js';
@@ -28,34 +26,65 @@ function truncateTextIfNeeded(text) {
     }
     return text;
 }
-export class AccessibilityTreeNode extends HTMLElement {
-    #shadow = UI.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: accessibilityTreeNodeStyles });
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const role = html `<span class='role-value'>${truncateTextIfNeeded(input.role)}</span>`;
+    const name = html `"<span class='attribute-value'>${input.name}</span>"`;
+    const properties = input.properties.map(({ name, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ?
+        html ` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` :
+        nothing);
+    const content = input.ignored ? html `<span>${i18nString(UIStrings.ignored)}</span>` : html `${role}&nbsp;${name}${properties}`;
+    // clang-format off
+    render(html `
+      <style>${accessibilityTreeNodeStyles}</style>
+      <div class='container'>${content}</div>
+    `, target);
+    // clang-format on
+};
+export class AccessibilityTreeNode extends UI.Widget.Widget {
     #ignored = true;
     #name = '';
     #role = '';
     #properties = [];
-    #id = '';
-    set data(data) {
-        this.#ignored = data.ignored;
-        this.#name = data.name;
-        this.#role = data.role;
-        this.#properties = data.properties;
-        this.#id = data.id;
-        void this.#render();
+    #view;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
     }
-    async #render() {
-        const role = html `<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
-        const name = html `"<span class='attribute-value'>${this.#name}</span>"`;
-        const properties = this.#properties.map(({ name, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ?
-            html ` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` :
-            nothing);
-        const content = this.#ignored ? html `<span>${i18nString(UIStrings.ignored)}</span>` : html `${role}&nbsp;${name}${properties}`;
-        await RenderCoordinator.write(`Accessibility node ${this.#id} render`, () => {
-            // clang-format off
-            render(html `<div class='container'>${content}</div>`, this.#shadow, { host: this });
-            // clang-format on
-        });
+    set ignored(ignored) {
+        if (this.#ignored === ignored) {
+            return;
+        }
+        this.#ignored = ignored;
+        this.requestUpdate();
+    }
+    set name(name) {
+        if (this.#name === name) {
+            return;
+        }
+        this.#name = name;
+        this.requestUpdate();
+    }
+    set role(role) {
+        if (this.#role === role) {
+            return;
+        }
+        this.#role = role;
+        this.requestUpdate();
+    }
+    set properties(properties) {
+        if (this.#properties === properties) {
+            return;
+        }
+        this.#properties = properties;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            ignored: this.#ignored,
+            name: this.#name,
+            role: this.#role,
+            properties: this.#properties,
+        }, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-accessibility-tree-node', AccessibilityTreeNode);
 //# sourceMappingURL=AccessibilityTreeNode.js.map

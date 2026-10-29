@@ -7,7 +7,7 @@ export interface ViewInput {
     togglePopover: (e: MouseEvent) => void;
     onEventClick: (event: Trace.Types.Events.Event) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class LayoutShiftDetails extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);

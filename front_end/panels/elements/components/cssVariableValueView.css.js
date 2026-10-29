@@ -9,46 +9,48 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.registered-property-popup-wrapper {
-  max-width: 232px;
-  font-size: var(--sys-typescale-body4-size);
-  line-height: 1.4;
-  word-break: break-all;
-}
+@scope to (devtools-widget > *) {
+  .registered-property-popup-wrapper {
+    max-width: 232px;
+    font-size: var(--sys-typescale-body4-size);
+    line-height: 1.4;
+    word-break: break-all;
+  }
 
-.monospace {
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
-}
+  .monospace {
+    font-family: var(--monospace-font-family);
+    font-size: var(--monospace-font-size);
+  }
 
-.divider {
-  margin: var(--sys-size-5) -7px;
-  border: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .divider {
+    margin: var(--sys-size-5) -7px;
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.registered-property-links {
-  margin-top: var(--sys-size-5);
-}
+  .registered-property-links {
+    margin-top: var(--sys-size-5);
+  }
 
-.clickable {
-  color: var(--sys-color-primary);
-  cursor: pointer;
-}
+  .clickable {
+    color: var(--sys-color-primary);
+    cursor: pointer;
+  }
 
-.underlined {
-  text-decoration: underline;
-}
+  .underlined {
+    text-decoration: underline;
+  }
 
-.unbreakable-text {
-  white-space: nowrap;
-}
+  .unbreakable-text {
+    white-space: nowrap;
+  }
 
-.css-property {
-  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
-}
+  .css-property {
+    color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
 
-.title {
-  color: var(--sys-color-state-disabled);
+  .title {
+    color: var(--sys-color-state-disabled);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./cssVariableValueView.css')} */`;

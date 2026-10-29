@@ -1,10 +1,9 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/kit/kit.js';
-import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import { html, render } from '../../../ui/lit/lit.js';
 import cssHintDetailsViewStyles from './cssHintDetailsView.css.js';
 const UIStrings = {
@@ -15,41 +14,52 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSHintDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class CSSHintDetailsView extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #authoringHint;
-    constructor(authoringHint) {
-        super();
-        this.#authoringHint = authoringHint;
-        this.#render();
+export const DEFAULT_VIEW = (input, _output, target) => {
+    if (!input.authoringHint) {
+        return;
     }
-    #render() {
-        const link = this.#authoringHint.getLearnMoreLink();
-        // clang-format off
-        render(html `
-        <style>${cssHintDetailsViewStyles}</style>
-        <div class="hint-popup-wrapper">
-          <div class="hint-popup-reason">
-            ${this.#authoringHint.getMessage()}
+    const link = input.authoringHint.getLearnMoreLink();
+    // clang-format off
+    render(html `
+    <style>${cssHintDetailsViewStyles}</style>
+    <div class="hint-popup-wrapper">
+      <div class="hint-popup-reason">
+        ${input.authoringHint.getMessage()}
+      </div>
+      ${input.authoringHint.getPossibleFixMessage() ? html `
+          <div class="hint-popup-possible-fix">
+              ${input.authoringHint.getPossibleFixMessage()}
           </div>
-          ${this.#authoringHint.getPossibleFixMessage() ? html `
-              <div class="hint-popup-possible-fix">
-                  ${this.#authoringHint.getPossibleFixMessage()}
-              </div>
-          ` : ''}
-          ${link ? html `
-                      <div class="footer">
-                        <devtools-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
-                            ${i18nString(UIStrings.learnMore)}
-                        </devtools-link>
-                      </div>
-                  ` : ''}
-        </div>
-      `, this.#shadow, {
-            host: this,
-        });
-        // clang-format on
+      ` : ''}
+      ${link ? html `
+                  <div class="footer">
+                    <devtools-link id="learn-more" href=${link} class="clickable underlined unbreakable-text">
+                        ${i18nString(UIStrings.learnMore)}
+                    </devtools-link>
+                  </div>
+              ` : ''}
+    </div>
+  `, target, { container: { classes: ['css-hint-details-view'] } });
+    // clang-format on
+};
+export class CSSHintDetailsView extends UI.Widget.Widget {
+    #authoringHint;
+    #view;
+    constructor(authoringHint, element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#authoringHint = authoringHint;
+        this.#view = view;
+        this.performUpdate();
+    }
+    set authoringHint(authoringHint) {
+        if (this.#authoringHint === authoringHint) {
+            return;
+        }
+        this.#authoringHint = authoringHint;
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({ authoringHint: this.#authoringHint }, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-css-hint-details-view', CSSHintDetailsView);
 //# sourceMappingURL=CSSHintDetailsView.js.map

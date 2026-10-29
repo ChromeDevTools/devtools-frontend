@@ -2,10 +2,10 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as ElementsComponents from './components/components.js';
 import { type CSSControlMap, type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
 import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
@@ -172,16 +172,16 @@ declare const LengthRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.Len
 export declare class LengthRenderer extends LengthRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, propertyName: string, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[];
-    getTooltipValue(tooltip: Tooltips.Tooltip.Tooltip, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<void>;
+    render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Lit.LitTemplate;
+    getTooltipValue(match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<Lit.LitTemplate | null>;
 }
 declare const BaseFunctionRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>>;
 export declare class BaseFunctionRenderer extends BaseFunctionRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, propertyName: string, treeElement: StylePropertyTreeElement | null);
-    render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Node[];
-    applyEvaluation(span: HTMLSpanElement, match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<boolean>;
-    applyMathFunction(renderedArgs: HTMLElement[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<void>;
+    render(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Lit.LitTemplate;
+    applyEvaluation(match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<Lit.LitTemplate | null>;
+    applyMathFunction(renderedArgs: Lit.LitTemplate[], match: SDK.CSSPropertyParserMatchers.BaseFunctionMatch<string>, context: RenderingContext): Promise<Lit.LitTemplate>;
 }
 export declare class MathFunctionRenderer extends BaseFunctionRenderer {
     readonly matchType: typeof SDK.CSSPropertyParserMatchers.MathFunctionMatch;
@@ -270,7 +270,7 @@ export declare class StylePropertyTreeElement extends UI.TreeOutline.TreeElement
     private updateExpandElement;
     refreshIfComputedValueChanged(): void;
     updateTitle(): void;
-    createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement | null): Element;
+    createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: ElementsComponents.CSSVariableValueView.CSSVariableParserError | HTMLElement | null): Element;
     getTracingTooltip(functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null, context: RenderingContext): Lit.TemplateResult;
     getTooltipId(key: string): string;
     updateAuthoringHint(): void;

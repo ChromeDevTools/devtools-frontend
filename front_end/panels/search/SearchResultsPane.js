@@ -228,7 +228,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
             },
             onExpandSearchResult: this.#onExpandSearchResult.bind(this),
             onShowMoreMatches: this.#onShowMoreMatches.bind(this),
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     #regexMatchRanges(lineContent, regex) {
         regex.lastIndex = 0;

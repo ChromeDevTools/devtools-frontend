@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 import * as UI from '../../legacy/legacy.js';
-import * as Lit from '../../lit/lit.js';
+import { AsyncDirective, Directives, html, nothing, render } from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import tooltipStyles from './tooltip.css.js';
-const { html } = Lit;
 export var PositionOption;
 (function (PositionOption) {
     PositionOption["BOTTOM_SPAN_RIGHT"] = "bottom-span-right";
@@ -312,7 +311,7 @@ export class Tooltip extends HTMLElement {
         this.#registerEventListeners();
         this.#setAttributes();
         // clang-format off
-        Lit.render(html `
+        render(html `
       <style>${tooltipStyles}</style>
       <!-- Wrapping it into a container, so that the tooltip doesn't disappear when the mouse moves from the anchor to the tooltip. -->
       <div class="container ${this.padding === 'large' ? 'large-padding' : ''}">
@@ -561,5 +560,45 @@ export class Tooltip extends HTMLElement {
         this.#anchorObserver.observe(anchor.parentElement, { childList: true });
     }
 }
+class IfExpandedDirective extends AsyncDirective.AsyncDirective {
+    #partInfo;
+    #tooltip = null;
+    #content = nothing;
+    constructor(partInfo) {
+        if (partInfo.type !== AsyncDirective.PartType.CHILD) {
+            throw new Error('ifExpanded directive must be used in a child node');
+        }
+        super(partInfo);
+        this.#partInfo = partInfo;
+    }
+    #resolveContent() {
+        return Directives.until(typeof this.#content === 'function' ? this.#content() : this.#content);
+    }
+    #onBeforeToggle = (event) => {
+        this.setValue(event.newState === 'open' ? this.#resolveContent() : nothing);
+    };
+    render(content) {
+        this.#content = content;
+        const startNode = this.#partInfo.startNode;
+        const parentElement = startNode instanceof HTMLElement ? startNode : startNode?.parentElement;
+        const tooltip = parentElement?.closest('devtools-tooltip') ?? null;
+        if (tooltip !== this.#tooltip) {
+            this.#tooltip?.removeEventListener('beforetoggle', this.#onBeforeToggle);
+            this.#tooltip = tooltip;
+            this.#tooltip?.addEventListener('beforetoggle', this.#onBeforeToggle);
+        }
+        if (!this.#tooltip?.open) {
+            return nothing;
+        }
+        return this.#resolveContent();
+    }
+    disconnected() {
+        this.#tooltip?.removeEventListener('beforetoggle', this.#onBeforeToggle);
+    }
+    reconnected() {
+        this.#tooltip?.addEventListener('beforetoggle', this.#onBeforeToggle);
+    }
+}
+export const ifExpanded = AsyncDirective.directive(IfExpandedDirective);
 customElements.define('devtools-tooltip', Tooltip);
 //# sourceMappingURL=Tooltip.js.map

@@ -11,7 +11,7 @@ export interface ViewInput {
     eventToInsightsMap: EventToRelatedInsightsMap;
     onInsightClick: (insight: RelatedInsight) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export interface Data {
     eventToRelatedInsightsMap: EventToRelatedInsightsMap | null;
     activeEvent: Trace.Types.Events.Event | null;

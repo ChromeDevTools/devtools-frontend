@@ -6710,6 +6710,12 @@
   "panels/comments/CommentsPane.ts | sent": {
     "message": "Sent"
   },
+  "panels/comments/CommentsPane.ts | sentCheckmark": {
+    "message": "Sent checkmark"
+  },
+  "panels/comments/CommentsPane.ts | sentStatus": {
+    "message": "Sent"
+  },
   "panels/comments/CommentsPane.ts | working": {
     "message": "Working"
   },
@@ -6769,6 +6775,9 @@
   },
   "panels/common/CommentThreadWidget.ts | sentCheckmark": {
     "message": "Sent checkmark"
+  },
+  "panels/common/CommentThreadWidget.ts | working": {
+    "message": "Working"
   },
   "panels/common/common-meta.ts | comments": {
     "message": "Comments"
@@ -10084,6 +10093,18 @@
   },
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Video playback roughness"
+  },
+  "panels/media/TickingFlameChart.ts | duration": {
+    "message": "Duration: {PH1} - {PH2}"
+  },
+  "panels/media/TickingFlameChart.ts | durationLive": {
+    "message": "Duration: {PH1} - LIVE!"
+  },
+  "panels/media/TickingFlameChart.ts | name": {
+    "message": "Name: {PH1}"
+  },
+  "panels/media/TickingFlameChart.ts | time": {
+    "message": "Time: {PH1}"
   },
   "panels/mobile_throttling/CalibrationController.ts | runningCalibration": {
     "message": "Running CPU calibration, don’t leave this tab or close DevTools"

@@ -14,7 +14,7 @@ export interface ViewInput {
     onShowMore: () => void;
     onShowLess: () => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement | DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
 export interface Options {
     tabStops?: boolean;

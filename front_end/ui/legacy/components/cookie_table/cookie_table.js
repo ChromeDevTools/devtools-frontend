@@ -393,8 +393,7 @@ var CookiesTable = class extends UI.Widget.VBox {
         }
       } : void 0
     };
-    const output = {};
-    this.view(input, output, this.element);
+    this.view(input, void 0, this.element);
   }
   onSelect(key) {
     this.selectedKey = key;

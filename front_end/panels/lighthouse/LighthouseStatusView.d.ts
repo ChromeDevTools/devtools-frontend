@@ -15,7 +15,7 @@ export interface ViewInput {
         knownBugPattern?: boolean;
     };
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: HTMLElement | DocumentFragment) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare class StatusView {
     private readonly panel;
     private inspectedURL;

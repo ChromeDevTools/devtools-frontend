@@ -7,7 +7,7 @@ export interface ViewInput {
     onAction: (event: Event) => void;
     onDismiss: (event: Event) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 interface AiCodeCompletionTeaserConfig {
     onDetach: () => void;

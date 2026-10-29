@@ -1971,7 +1971,7 @@ import * as Workspace6 from "../../models/workspace/workspace.js";
 import * as PerfUI16 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI18 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "../../ui/legacy/theme_support/theme_support.js";
-import { html as html8 } from "../../ui/lit/lit.js";
+import { html as html10 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/timeline/Initiators.ts
 var Initiators_exports = {};
@@ -3226,7 +3226,7 @@ import * as TraceBounds13 from "../../services/trace_bounds/trace_bounds.js";
 import * as Tracing6 from "../../services/tracing/tracing.js";
 import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html6, nothing as nothing2, render as render6 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html8, nothing as nothing4, render as render8 } from "../../ui/lit/lit.js";
 import * as SettingsUI6 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
@@ -3242,6 +3242,7 @@ import * as i18n39 from "../../core/i18n/i18n.js";
 import * as Trace27 from "../../models/trace/trace.js";
 import * as DataGrid3 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing3, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/timeline/TimelineFilters.ts
@@ -6353,10 +6354,10 @@ var IsolateSelector = class extends UI2.Toolbar.ToolbarItem {
     }
   }
   #onSelectMenuSelected(event) {
-    this.itemByIsolate.forEach((item2, isolate) => {
-      item2.selected = item2.value === event.itemValue;
-      if (item2.selected) {
-        const selectedIsolateTitle = item2.textContent?.slice(0, 29);
+    this.itemByIsolate.forEach((item3, isolate) => {
+      item3.selected = item3.value === event.itemValue;
+      if (item3.selected) {
+        const selectedIsolateTitle = item3.textContent?.slice(0, 29);
         this.menu.buttonTitle = selectedIsolateTitle || i18nString9(UIStrings9.empty);
         const model = isolate.runtimeModel();
         UI2.Context.Context.instance().setFlavor(
@@ -6420,9 +6421,9 @@ function* arrayOfObjectsJsonGenerator(arrayOfObjects) {
     yield `  ${JSON.stringify(firstItem)}`;
     let itemsRemaining = ITEMS_PER_ITERATION;
     let itemsJSON = "";
-    for (const item2 of itemsIterator) {
+    for (const item3 of itemsIterator) {
       itemsJSON += `,
-  ${JSON.stringify(item2)}`;
+  ${JSON.stringify(item3)}`;
       itemsRemaining--;
       if (itemsRemaining === 0) {
         yield itemsJSON;
@@ -6770,7 +6771,7 @@ var StatusDialog = class extends UI3.Widget.VBox {
           void this.#downloadRawTraceAfterError();
         }
       },
-      {},
+      void 0,
       this.contentElement
     );
     this.#focusStopButton = false;
@@ -6887,10 +6888,10 @@ var StatusChecker = class {
   #listener = null;
   #currentStatus = null;
   add(title, promise) {
-    const item2 = { title, complete: false };
-    this.#checkers.push(item2);
+    const item3 = { title, complete: false };
+    this.#checkers.push(item3);
     void promise.finally(() => {
-      item2.complete = true;
+      item3.complete = true;
       this.#evaluate();
     });
   }
@@ -8094,16 +8095,16 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
   navigateToLandingPage() {
     this.#setActiveTrace({ type: "LANDING_PAGE" });
   }
-  #setActiveTrace(item2) {
-    if (item2.type === "TRACE_INDEX") {
-      const data = _TimelineHistoryManager.dataForTraceIndex(item2.parsedTraceIndex);
+  #setActiveTrace(item3) {
+    if (item3.type === "TRACE_INDEX") {
+      const data = _TimelineHistoryManager.dataForTraceIndex(item3.parsedTraceIndex);
       if (!data) {
         throw new Error("Unable to find data for model");
       }
       data.lastUsed = Date.now();
     }
-    this.lastActiveTrace = item2;
-    const modelTitle = this.title(item2);
+    this.lastActiveTrace = item3;
+    const modelTitle = this.title(item3);
     const buttonTitle = this.action.title();
     this.#button.setText(modelTitle);
     UI5.ARIAUtils.setLabel(
@@ -8121,11 +8122,11 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
     }
     return data.preview;
   }
-  title(item2) {
-    if (item2.type === "LANDING_PAGE") {
+  title(item3) {
+    if (item3.type === "LANDING_PAGE") {
       return this.#landingPageTitle;
     }
-    const data = _TimelineHistoryManager.dataForTraceIndex(item2.parsedTraceIndex);
+    const data = _TimelineHistoryManager.dataForTraceIndex(item3.parsedTraceIndex);
     if (!data) {
       throw new Error("Unable to find data for model");
     }
@@ -12070,14 +12071,14 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     if (!items.length) {
       return;
     }
-    const item2 = items[0];
+    const item3 = items[0];
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.PerfPanelTraceImported);
-    if (item2.kind === "string") {
+    if (item3.kind === "string") {
       const url = dataTransfer.getData("text/uri-list");
       if (new Common10.ParsedURL.ParsedURL(url).isValid) {
         void this.loadFromURL(url);
       }
-    } else if (item2.kind === "file") {
+    } else if (item3.kind === "file") {
       const file = items[0].getAsFile();
       if (!file) {
         return;
@@ -14484,6 +14485,7 @@ import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components2 from "../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport17 from "../../ui/legacy/theme_support/theme_support.js";
+import { html as html4, nothing as nothing2, render as render4 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import * as Extensions4 from "./extensions/extensions.js";
 
@@ -14659,7 +14661,8 @@ var timelineTreeView_css_default = `/*
 // ../../front_end/panels/timeline/TimelineTreeView.ts
 var UIStrings19 = {
   /**
-   * @description Data grid name for timeline tree view tables in the Performance panel.
+   * @description Data grid name for timeline tree view tables in the
+   * Performance panel.
    */
   performance: "Performance",
   /**
@@ -14675,7 +14678,8 @@ var UIStrings19 = {
    */
   activity: "Activity",
   /**
-   * @description Banner message shown when no tree item is selected for details in the Performance panel.
+   * @description Banner message shown when no tree item is selected for details
+   * in the Performance panel.
    */
   selectItemForDetails: "Select item for details",
   /**
@@ -14684,7 +14688,8 @@ var UIStrings19 = {
    */
   percentPlaceholder: "{PH1}\xA0%",
   /**
-   * @description Row label for Chrome extensions overhead in timeline tree views.
+   * @description Row label for Chrome extensions overhead in timeline tree
+   * views.
    */
   chromeExtensionsOverhead: "[`Chrome` extensions overhead]",
   /**
@@ -14700,39 +14705,48 @@ var UIStrings19 = {
    */
   page: "Page",
   /**
-   * @description Option in the grouping dropdown for no grouping in timeline tree views.
+   * @description Option in the grouping dropdown for no grouping in timeline
+   * tree views.
    */
   noGrouping: "No grouping",
   /**
-   * @description Option in the grouping dropdown to group by activity in timeline tree views.
+   * @description Option in the grouping dropdown to group by activity in
+   * timeline tree views.
    */
   groupByActivity: "Group by activity",
   /**
-   * @description Option in the grouping dropdown to group by category in timeline tree views.
+   * @description Option in the grouping dropdown to group by category in
+   * timeline tree views.
    */
   groupByCategory: "Group by category",
   /**
-   * @description Option in the grouping dropdown to group by domain in timeline tree views.
+   * @description Option in the grouping dropdown to group by domain in timeline
+   * tree views.
    */
   groupByDomain: "Group by domain",
   /**
-   * @description Option in the grouping dropdown to group by frame in timeline tree views.
+   * @description Option in the grouping dropdown to group by frame in timeline
+   * tree views.
    */
   groupByFrame: "Group by frame",
   /**
-   * @description Option in the grouping dropdown to group by subdomain in timeline tree views.
+   * @description Option in the grouping dropdown to group by subdomain in
+   * timeline tree views.
    */
   groupBySubdomain: "Group by subdomain",
   /**
-   * @description Option in the grouping dropdown to group by URL in timeline tree views.
+   * @description Option in the grouping dropdown to group by URL in timeline
+   * tree views.
    */
   groupByUrl: "Group by URL",
   /**
-   * @description Option in the grouping dropdown to group by third parties in timeline tree views.
+   * @description Option in the grouping dropdown to group by third parties in
+   * timeline tree views.
    */
   groupByThirdParties: "Group by 3rd parties",
   /**
-   * @description Accessible label for the grouping dropdown in timeline tree views.
+   * @description Accessible label for the grouping dropdown in timeline tree
+   * views.
    */
   groupBy: "Group by",
   /**
@@ -14740,43 +14754,53 @@ var UIStrings19 = {
    */
   heaviestStack: "Heaviest stack",
   /**
-   * @description Tooltip for the button to show the heaviest stack sidebar in timeline tree views.
+   * @description Tooltip for the button to show the heaviest stack sidebar in
+   * timeline tree views.
    */
   showHeaviestStack: "Show heaviest stack",
   /**
-   * @description Tooltip for the button to hide the heaviest stack sidebar in timeline tree views.
+   * @description Tooltip for the button to hide the heaviest stack sidebar in
+   * timeline tree views.
    */
   hideHeaviestStack: "Hide heaviest stack",
   /**
-   * @description Screen reader announcement when the heaviest stack sidebar is shown in the Performance panel.
+   * @description Screen reader announcement when the heaviest stack sidebar is
+   * shown in the Performance panel.
    */
   heaviestStackShown: "Heaviest stack sidebar shown",
   /**
-   * @description Screen reader announcement when the heaviest stack sidebar is hidden in the Performance panel.
+   * @description Screen reader announcement when the heaviest stack sidebar is
+   * hidden in the Performance panel.
    */
   heaviestStackHidden: "Heaviest stack sidebar hidden",
   /**
-   * @description Data grid name for heaviest stack tables in the Performance panel.
+   * @description Data grid name for heaviest stack tables in the Performance
+   * panel.
    */
   timelineStack: "Timeline stack",
   /**
-   * @description Tooltip for the match case search button in timeline tree views.
+   * @description Tooltip for the match case search button in timeline tree
+   * views.
    */
   matchCase: "Match case",
   /**
-   * @description Tooltip for the regular expression search button in timeline tree views.
+   * @description Tooltip for the regular expression search button in timeline
+   * tree views.
    */
   useRegularExpression: "Use regular expression",
   /**
-   * @description Tooltip for the match whole word search button in timeline tree views.
+   * @description Tooltip for the match whole word search button in timeline
+   * tree views.
    */
   matchWholeWord: "Match whole word",
   /**
-   * @description Tooltip for the button to switch to the bottom-up view in timeline tree views.
+   * @description Tooltip for the button to switch to the bottom-up view in
+   * timeline tree views.
    */
   bottomUp: "Bottom-up",
   /**
-   * @description Accessible label for the button to switch to the bottom-up view in timeline tree views.
+   * @description Accessible label for the button to switch to the bottom-up
+   * view in timeline tree views.
    */
   viewBottomUp: "View bottom-up",
   /**
@@ -14793,6 +14817,12 @@ var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var TimelineTreeViewBase = Common12.ObjectWrapper.eventMixin(
   UI10.Widget.VBox
 );
+function renderDetailsPlaceholder(input, _output, target) {
+  render4(
+    input.showPlaceholder ? html4`<div class="empty-state">${i18nString19(UIStrings19.selectItemForDetails)}</div>` : nothing2,
+    target
+  );
+}
 var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   /** This is sorted by ts. */
   #selectedEvents;
@@ -15012,7 +15042,11 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
     }
   }
   filters() {
-    return [this.taskFilter, this.textFilterInternal, ...ActiveFilters.instance().activeFilters()];
+    return [
+      this.taskFilter,
+      this.textFilterInternal,
+      ...ActiveFilters.instance().activeFilters()
+    ];
   }
   filtersWithoutTextFilter() {
     return [this.taskFilter, ...ActiveFilters.instance().activeFilters()];
@@ -15150,23 +15184,40 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   }
   populateColumns(columns) {
     if (this.compactMode) {
-      columns.push(
-        { id: "self", title: i18nString19(UIStrings19.selfTime), width: "15%", sortable: true }
-      );
-      columns.push(
-        { id: "total", title: i18nString19(UIStrings19.totalTime), width: "15%", sortable: true }
-      );
+      columns.push({
+        id: "self",
+        title: i18nString19(UIStrings19.selfTime),
+        width: "15%",
+        sortable: true
+      });
+      columns.push({
+        id: "total",
+        title: i18nString19(UIStrings19.totalTime),
+        width: "15%",
+        sortable: true
+      });
     } else {
-      columns.push(
-        { id: "self", title: i18nString19(UIStrings19.selfTime), width: "120px", fixedWidth: true, sortable: true }
-      );
-      columns.push(
-        { id: "total", title: i18nString19(UIStrings19.totalTime), width: "120px", fixedWidth: true, sortable: true }
-      );
+      columns.push({
+        id: "self",
+        title: i18nString19(UIStrings19.selfTime),
+        width: "120px",
+        fixedWidth: true,
+        sortable: true
+      });
+      columns.push({
+        id: "total",
+        title: i18nString19(UIStrings19.totalTime),
+        width: "120px",
+        fixedWidth: true,
+        sortable: true
+      });
     }
-    columns.push(
-      { id: "activity", title: i18nString19(UIStrings19.activity), disclosure: true, sortable: true }
-    );
+    columns.push({
+      id: "activity",
+      title: i18nString19(UIStrings19.activity),
+      disclosure: true,
+      sortable: true
+    });
   }
   sortingChanged() {
     const columnId = this.dataGrid.sortColumnId();
@@ -15259,13 +15310,12 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
       return;
     }
     this.detailsView.detachChildWidgets();
-    this.detailsView.element.removeChildren();
     this.lastSelectedNodeInternal = selectedNode;
     if (selectedNode && this.showDetailsForNode(selectedNode)) {
+      renderDetailsPlaceholder({ showPlaceholder: false }, void 0, this.detailsView.element);
       return;
     }
-    const banner = this.detailsView.element.createChild("div", "empty-state");
-    UI10.UIUtils.createTextChild(banner, i18nString19(UIStrings19.selectItemForDetails));
+    renderDetailsPlaceholder({ showPlaceholder: true }, void 0, this.detailsView.element);
   }
   showDetailsForNode(_node) {
     return false;
@@ -15521,7 +15571,8 @@ var GridNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
     }
     return cell;
   }
-  // Generates bottom up tree hover button and appends it to the provided cell element.
+  // Generates bottom up tree hover button and appends it to the provided cell
+  // element.
   generateBottomUpButton(textDiv) {
     const button = new Buttons3.Button.Button();
     button.data = {
@@ -15668,13 +15719,22 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
     const groupBy = _AggregatedTimelineTreeView.GroupBy;
     const options = [
       { label: i18nString19(UIStrings19.noGrouping), value: groupBy.None },
-      { label: i18nString19(UIStrings19.groupByActivity), value: groupBy.EventName },
+      {
+        label: i18nString19(UIStrings19.groupByActivity),
+        value: groupBy.EventName
+      },
       { label: i18nString19(UIStrings19.groupByCategory), value: groupBy.Category },
       { label: i18nString19(UIStrings19.groupByDomain), value: groupBy.Domain },
       { label: i18nString19(UIStrings19.groupByFrame), value: groupBy.Frame },
-      { label: i18nString19(UIStrings19.groupBySubdomain), value: groupBy.Subdomain },
+      {
+        label: i18nString19(UIStrings19.groupBySubdomain),
+        value: groupBy.Subdomain
+      },
       { label: i18nString19(UIStrings19.groupByUrl), value: groupBy.URL },
-      { label: i18nString19(UIStrings19.groupByThirdParties), value: groupBy.ThirdParties }
+      {
+        label: i18nString19(UIStrings19.groupByThirdParties),
+        value: groupBy.ThirdParties
+      }
     ];
     toolbar4.appendToolbarItem(
       new UI10.Toolbar.ToolbarSettingComboBox(options, this.groupBySetting, i18nString19(UIStrings19.groupBy))
@@ -15746,9 +15806,11 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
         return null;
     }
   }
-  // This is our groupingFunction that returns the eventId in Domain, Subdomain, and ThirdParty groupBy scenarios.
-  // The eventid == the identity of a node that we expect in a bottomUp tree (either without grouping or with the groupBy grouping)
-  // A "top node" (in `ungroupedTopNodes`) is aggregated by this. (But so are all the other nodes, except the `GroupNode`s)
+  // This is our groupingFunction that returns the eventId in Domain, Subdomain,
+  // and ThirdParty groupBy scenarios. The eventid == the identity of a node
+  // that we expect in a bottomUp tree (either without grouping or with the
+  // groupBy grouping) A "top node" (in `ungroupedTopNodes`) is aggregated by
+  // this. (But so are all the other nodes, except the `GroupNode`s)
   domainByEvent(groupBy, event) {
     const parsedTrace = this.parsedTrace;
     if (!parsedTrace) {
@@ -15873,9 +15935,11 @@ var BottomUpTimelineTreeView = class extends AggregatedTimelineTreeView {
       endTime: this.endTime,
       eventGroupIdCallback: this.groupingFunction(this.groupBySetting.get()),
       // To include instant events. When this is set to true, instant events are
-      // considered (to calculate transfer size). This then includes these events in tree nodes.
+      // considered (to calculate transfer size). This then includes these
+      // events in tree nodes.
       calculateTransferSize: true,
-      // We should forceGroupIdCallback if filtering by 3P for correct 3P grouping.
+      // We should forceGroupIdCallback if filtering by 3P for correct 3P
+      // grouping.
       forceGroupIdCallback: this.groupBySetting.get() === "ThirdParties" /* ThirdParties */
     });
   }
@@ -15892,8 +15956,18 @@ var TimelineStackView = class _TimelineStackView extends TimelineStackViewBase {
     header.textContent = i18nString19(UIStrings19.heaviestStack);
     this.treeView = treeView;
     const columns = [
-      { id: "total", title: i18nString19(UIStrings19.totalTime), fixedWidth: true, width: "110px", sortable: false },
-      { id: "activity", title: i18nString19(UIStrings19.activity), sortable: false }
+      {
+        id: "total",
+        title: i18nString19(UIStrings19.totalTime),
+        fixedWidth: true,
+        width: "110px",
+        sortable: false
+      },
+      {
+        id: "activity",
+        title: i18nString19(UIStrings19.activity),
+        sortable: false
+      }
     ];
     this.dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
       displayName: i18nString19(UIStrings19.timelineStack),
@@ -15946,17 +16020,52 @@ var TimelineStackView = class _TimelineStackView extends TimelineStackViewBase {
 })(TimelineStackView || (TimelineStackView = {}));
 
 // ../../front_end/panels/timeline/EventsTimelineTreeView.ts
+function renderNodeDetails(input, _output, target) {
+  render5(html5`${input}`, target);
+}
+function renderFilterToolbar(input, _output, target) {
+  render5(html5`
+    <select title=${i18nString20(UIStrings20.durationFilter)}
+        aria-label=${i18nString20(UIStrings20.durationFilter)}
+        jslog=${VisualLogging8.dropDown("duration").track({ change: true })}
+        @change=${(event) => {
+    const duration = event.target.value;
+    input.onDurationChange(parseInt(duration, 10));
+  }}>
+      ${input.durationPresetsMs.map((durationMs) => html5`
+        <option value=${String(durationMs)}
+            jslog=${VisualLogging8.item(String(durationMs)).track({ click: true })}>
+          ${durationMs ? `\u2265 ${i18n39.TimeUtilities.millisToString(durationMs)}` : i18nString20(UIStrings20.all)}
+        </option>
+      `)}
+    </select>
+    ${Object.entries(input.categories).map(([categoryName, category]) => category.visible ? html5`
+      <devtools-checkbox
+          checked
+          jslog=${VisualLogging8.toggle().track({ change: true }).context(categoryName)}
+          @change=${(event) => {
+    const checkBox = event.target;
+    input.onCategoryChange(categoryName, checkBox.checked);
+  }}>
+        ${category.title}
+      </devtools-checkbox>
+    ` : nothing3)}
+  `, target);
+}
 var UIStrings20 = {
   /**
-   * @description Column header for start time in the event log tree view of the Performance panel.
+   * @description Column header for start time in the event log tree view of the
+   * Performance panel.
    */
   startTime: "Start time",
   /**
-   * @description Screen reader label for a select box that filters the event log by duration in the Performance panel.
+   * @description Screen reader label for a select box that filters the event
+   * log by duration in the Performance panel.
    */
   durationFilter: "Duration filter",
   /**
-   * @description Option in the duration filter dropdown to show all events in the event log of the Performance panel.
+   * @description Option in the duration filter dropdown to show all events in
+   * the event log of the Performance panel.
    */
   all: "All"
 };
@@ -15967,8 +16076,7 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
   delegate;
   currentTree;
   constructor(delegate) {
-    super();
-    this.element.setAttribute("jslog", `${VisualLogging8.pane("event-log").track({ resize: true })}`);
+    super(void 0, { jslog: `${VisualLogging8.pane("event-log").track({ resize: true })}` });
     this.filtersControl = new Filters();
     this.filtersControl.addEventListener("FilterChanged" /* FILTER_CHANGED */, this.onFilterChanged, this);
     this.init();
@@ -16036,7 +16144,11 @@ var EventsTimelineTreeView = class extends TimelineTreeView {
     if (!traceEvent) {
       return false;
     }
-    void TimelineUIUtils.buildTraceEventDetails(parsedTrace, traceEvent, this.linkifier, false, null).then((fragment) => this.detailsView.element.appendChild(fragment));
+    void TimelineUIUtils.buildTraceEventDetails(parsedTrace, traceEvent, this.linkifier, false, null).then((fragment) => {
+      if (this.lastSelectedNode() === node) {
+        renderNodeDetails(fragment, void 0, this.detailsView.element);
+      }
+    });
     return true;
   }
   onHover(node) {
@@ -16057,46 +16169,30 @@ var Filters = class _Filters extends Common13.ObjectWrapper.ObjectWrapper {
     return this.#filters;
   }
   populateToolbar(toolbar4) {
-    const durationFilterUI = new UI11.Toolbar.ToolbarComboBox(
-      durationFilterChanged.bind(this),
-      i18nString20(UIStrings20.durationFilter),
-      void 0,
-      "duration"
-    );
-    for (const durationMs of _Filters.durationFilterPresetsMs) {
-      durationFilterUI.addOption(durationFilterUI.createOption(
-        durationMs ? `\u2265 ${i18n39.TimeUtilities.millisToString(durationMs)}` : i18nString20(UIStrings20.all),
-        String(durationMs)
-      ));
-    }
-    toolbar4.appendToolbarItem(durationFilterUI);
-    const categoryFiltersUI = /* @__PURE__ */ new Map();
     const categories2 = Trace27.Styles.getCategoryStyles();
-    for (const categoryName in categories2) {
-      const category = categories2[categoryName];
-      if (!category.visible) {
-        continue;
+    const fragment = document.createDocumentFragment();
+    renderFilterToolbar(
+      {
+        durationPresetsMs: _Filters.durationFilterPresetsMs,
+        onDurationChange: durationFilterChanged.bind(this),
+        categories: categories2,
+        onCategoryChange: categoriesFilterChanged.bind(this)
+      },
+      void 0,
+      fragment
+    );
+    for (const child of Array.from(fragment.children)) {
+      if (child instanceof HTMLElement) {
+        toolbar4.appendToolbarItem(new UI11.Toolbar.ToolbarItem(child));
       }
-      const checkbox = new UI11.Toolbar.ToolbarCheckbox(
-        category.title,
-        void 0,
-        categoriesFilterChanged.bind(this, categoryName),
-        categoryName
-      );
-      checkbox.setChecked(true);
-      categoryFiltersUI.set(category.name, checkbox);
-      toolbar4.appendToolbarItem(checkbox);
     }
-    function durationFilterChanged() {
-      const duration = durationFilterUI.selectedOption().value;
-      const minimumRecordDuration = parseInt(duration, 10);
+    function durationFilterChanged(minimumRecordDuration) {
       this.durationFilter.setMinimumRecordDuration(Trace27.Types.Timing.Milli(minimumRecordDuration));
       this.notifyFiltersChanged();
     }
-    function categoriesFilterChanged(name) {
+    function categoriesFilterChanged(name, checked) {
       const categories3 = Trace27.Styles.getCategoryStyles();
-      const checkBox = categoryFiltersUI.get(name);
-      categories3[name].hidden = !checkBox?.checked();
+      categories3[name].hidden = !checked;
       this.notifyFiltersChanged();
     }
   }
@@ -17006,8 +17102,8 @@ var TracingLayer = class {
       if (!fragments.length || !this.paintProfilerModel) {
         return null;
       }
-      const x0 = fragments.reduce((min, item2) => Math.min(min, item2.x), Infinity);
-      const y0 = fragments.reduce((min, item2) => Math.min(min, item2.y), Infinity);
+      const x0 = fragments.reduce((min, item3) => Math.min(min, item3.x), Infinity);
+      const y0 = fragments.reduce((min, item3) => Math.min(min, item3.y), Infinity);
       const rect = { x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3] };
       return this.paintProfilerModel.loadSnapshotFromFragments(fragments).then(
         (snapshot) => snapshot ? { rect, snapshot } : null
@@ -17075,7 +17171,7 @@ async function getPaintProfilerSnapshot(paintProfilerModel, paint) {
 }
 
 // ../../front_end/panels/timeline/TimelinePaintProfilerView.ts
-var { html: html4, render: render4 } = Lit;
+var { html: html6, render: render6 } = Lit;
 var { createRef, ref } = Lit.Directives;
 var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
   logAndImageSplitWidget;
@@ -17231,10 +17327,10 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
     this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
   }
 };
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var DEFAULT_VIEW2 = (input, output, target) => {
   const imageElementRef = createRef();
-  render4(
-    html4`
+  render6(
+    html6`
   <div class="paint-profiler-image-view fill">
     <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
       <img src=${input.imageURL} display=${input.imageContainerHidden ? "none" : "block"} ${ref(imageElementRef)}>
@@ -17251,7 +17347,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   if (!imageElement?.naturalHeight || !imageElement.naturalWidth) {
     throw new Error("ImageElement were not found in the TimelinePaintImageView.");
   }
-  return { imageElementNaturalHeight: imageElement.naturalHeight, imageElementNaturalWidth: imageElement.naturalWidth };
+  output.imageElementNaturalHeight = imageElement.naturalHeight;
+  output.imageElementNaturalWidth = imageElement.naturalWidth;
 };
 var TimelinePaintImageView = class extends UI13.Widget.Widget {
   transformController;
@@ -17332,8 +17429,14 @@ var TimelinePaintImageView = class extends UI13.Widget.Widget {
     this.requestUpdate();
   }
   performUpdate() {
-    const { imageElementNaturalHeight, imageElementNaturalWidth } = this.#view(this.#inputData, void 0, this.contentElement);
-    this.#imageElementDimensions = { naturalHeight: imageElementNaturalHeight, naturalWidth: imageElementNaturalWidth };
+    const output = {};
+    this.#view(this.#inputData, output, this.contentElement);
+    if (output.imageElementNaturalHeight !== void 0 && output.imageElementNaturalWidth !== void 0) {
+      this.#imageElementDimensions = {
+        naturalHeight: output.imageElementNaturalHeight,
+        naturalWidth: output.imageElementNaturalWidth
+      };
+    }
     this.updateImagePosition();
   }
 };
@@ -17345,7 +17448,7 @@ import * as i18n43 from "../../core/i18n/i18n.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
 import * as Trace30 from "../../models/trace/trace.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { html as html5, render as render5 } from "../../ui/lit/lit.js";
+import { html as html7, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
@@ -17456,8 +17559,8 @@ var str_22 = i18n43.i18n.registerUIStrings("panels/timeline/TimelineSelectorStat
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var SelectorTimingsKey = Trace30.Types.Events.SelectorTimingsKey;
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render5(
-    html5`
+  render7(
+    html7`
       <devtools-data-grid striped name=${i18nString22(UIStrings22.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -17495,7 +17598,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
       const locations = timing.locations;
       const locationMessage = locations ? null : locations === null ? "" : i18nString22(UIStrings22.unableToLinkViaStyleSheetId, { PH1: styleSheetId });
-      return html5`<tr>
+      return html7`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1e3).toFixed(3)}
             </td>
@@ -17510,7 +17613,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
             </td>
-            <td data-value=${styleSheetId}>${locations ? html5`${locations.map((location, itemIndex) => html5`
+            <td data-value=${styleSheetId}>${locations ? html7`${locations.map((location, itemIndex) => html7`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? "," : ""}`)}` : locationMessage}
             </td>
@@ -17593,8 +17696,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
         this.#onContextMenu(event);
       }
     };
-    const viewOutput = {};
-    this.#view(viewInput, viewOutput, this.contentElement);
+    this.#view(viewInput, void 0, this.contentElement);
   }
   getDescendentNodeCount(node) {
     if (!node) {
@@ -18281,11 +18383,11 @@ var Tab = /* @__PURE__ */ ((Tab2) => {
   return Tab2;
 })(Tab || {});
 var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  render6(
-    html6`
+  render8(
+    html8`
         <style>${timelineDetailsView_css_default}</style>
         ${Directives2.until(renderSelectedEventDetails(input))}
-        ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing2}
+        ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing4}
         <devtools-widget data-related-insight-chips ${widget(
       TimelineComponents5.RelatedInsightChips.RelatedInsightChips,
       {
@@ -18332,19 +18434,19 @@ var SummaryView = class extends UI15.Widget.Widget {
         onBottomUpButtonClicked: this.onBottomUpButtonClicked,
         onTreeRowClicked: this.onTreeRowClicked
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
 };
 function generateRangeSummaryDetails(input) {
-  return html6`${widget(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+  return html8`${widget(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
     data: {
       parsedTrace: input.parsedTrace,
       events: input.selectedRange?.events,
       startTime: input.selectedRange?.startTime,
       endTime: input.selectedRange?.endTime,
-      thirdPartyTreeTemplate: input.selectedRange ? html6`${widget(ThirdPartyTreeViewWidget, {
+      thirdPartyTreeTemplate: input.selectedRange ? html8`${widget(ThirdPartyTreeViewWidget, {
         model: {
           parsedTrace: input.parsedTrace,
           entityMapper: input.entityMapper,
@@ -18354,18 +18456,18 @@ function generateRangeSummaryDetails(input) {
         onRowHovered: input.onTreeRowHovered,
         onBottomUpButtonClicked: input.onBottomUpButtonClicked,
         onRowClicked: input.onTreeRowClicked
-      })}` : nothing2
+      })}` : nothing4
     }
   })}`;
 }
 async function renderSelectedEventDetails(input) {
   const { selectedEvent, parsedTrace, linkifier } = input;
   if (!selectedEvent || !parsedTrace || !linkifier) {
-    return nothing2;
+    return nothing4;
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing6.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace31.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace31.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
-    return html6`
+    return html8`
       <devtools-widget data-layout-shift-details ${widget(
       TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails,
       {
@@ -18377,7 +18479,7 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>`;
   }
   if (Trace31.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
-    return html6`
+    return html8`
       <devtools-widget data-network-request-details ${widget(
       TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails,
       {
@@ -18394,10 +18496,10 @@ async function renderSelectedEventDetails(input) {
   if (Trace31.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
-    return html6`${content}`;
+    return html8`${content}`;
   }
   const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
-  return html6`${traceEventDetails}`;
+  return html8`${traceEventDetails}`;
 }
 var filmStripFrameCache = /* @__PURE__ */ new WeakMap();
 function getFilmStripFrame(filmStrip, frame) {
@@ -18663,7 +18765,7 @@ function keyForTraceConfig(trace) {
 }
 
 // ../../front_end/panels/timeline/TimelineFlameChartNetworkDataProvider.ts
-var { html: html7 } = Lit2;
+var { html: html9 } = Lit2;
 var TimelineFlameChartNetworkDataProvider = class {
   #minimumBoundary = 0;
   #timeSpan = 0;
@@ -18990,7 +19092,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (!event || !Trace33.Types.Events.isSyntheticNetworkRequest(event)) {
       return null;
     }
-    return html7`
+    return html9`
       <div class="timeline-flamechart-popover">
         ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(
       event,
@@ -21687,7 +21789,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     for (const warningElement of warningElements) {
       warningElement.classList.add("popoverinfo-warning");
     }
-    return html8`
+    return html10`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class=${timeElementClassName}>${time}</span>
@@ -21705,7 +21807,7 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     if (!hiddenEntriesAmount) {
       return null;
     }
-    return html8`
+    return html10`
       <style>${timelineFlamechartPopover_css_default}</style>
       <div class="timeline-flamechart-popover">
         <span class="popoverinfo-title">${hiddenEntriesAmount} hidden</span>

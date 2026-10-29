@@ -15,7 +15,7 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
     #isOrphaned = false;
     comments;
     status = 'DRAFT';
-    transmitted = false;
+    #transmitted = false;
     constructor(options) {
         super();
         this.anchor = options.anchor;
@@ -30,6 +30,22 @@ export class CommentThread extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         this.#isOrphaned = isOrphaned;
+        this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
+    }
+    /**
+     * True once the thread has been taken by the agent (e.g. via CD4ABridge).
+     */
+    get transmitted() {
+        return this.#transmitted;
+    }
+    /**
+     * Marks the thread as taken by the agent.
+     */
+    markTransmitted() {
+        if (this.#transmitted) {
+            return;
+        }
+        this.#transmitted = true;
         this.dispatchEventToListeners("Changed" /* Events.CHANGED */);
     }
     /**

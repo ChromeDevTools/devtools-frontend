@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../../core/platform/platform.js';
 import * as Lit from '../../third_party/lit/lit.js';
 export class InterceptBindingDirective extends Lit.Directive.Directive {
     static #interceptedBindings = new WeakMap();
@@ -11,11 +12,37 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
         }
         let eventListeners = InterceptBindingDirective.#interceptedBindings.get(part.element);
         if (!eventListeners) {
-            eventListeners = new Map();
+            eventListeners = { bindings: new Map() };
             InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
         }
-        eventListeners.set(part.name, listener);
+        InterceptBindingDirective.#updateAttachedListener(part.element, part.name, listener);
+        eventListeners.bindings.set(part.name, listener);
         return this.render(listener);
+    }
+    static #updateAttachedListener(templateElement, name, listener) {
+        const binding = this.#interceptedBindings.get(templateElement);
+        if (!binding) {
+            return;
+        }
+        const lastAttachment = binding.lastAttachment?.deref();
+        if (!lastAttachment) {
+            return;
+        }
+        const oldListener = binding.bindings.get(name);
+        if (oldListener === listener) {
+            return;
+        }
+        const attachedBindings = this.#attachedBindings.get(lastAttachment);
+        if (!attachedBindings) {
+            return;
+        }
+        const attachedListeners = Platform.MapUtilities.getWithDefault(attachedBindings, name, () => new Set());
+        if (oldListener) {
+            lastAttachment.removeEventListener(name, oldListener);
+            attachedListeners.delete(oldListener);
+        }
+        lastAttachment.addEventListener(name, listener);
+        attachedListeners.add(listener);
     }
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
     render(listener) {
@@ -35,7 +62,8 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
         for (const templateElement of elements) {
             const newListeners = InterceptBindingDirective.#interceptedBindings.get(templateElement);
             if (newListeners) {
-                for (const [name, listener] of newListeners) {
+                newListeners.lastAttachment = new WeakRef(renderedElement);
+                for (const [name, listener] of newListeners.bindings) {
                     renderedElement.addEventListener(name, listener);
                     let listenersSet = newAttachedListeners.get(name);
                     if (!listenersSet) {
@@ -52,18 +80,6 @@ export class InterceptBindingDirective extends Lit.Directive.Directive {
         else {
             InterceptBindingDirective.#attachedBindings.delete(renderedElement);
         }
-    }
-    static registerListeners(element, listeners) {
-        if (!listeners) {
-            InterceptBindingDirective.#interceptedBindings.delete(element);
-            return;
-        }
-        const map = new Map();
-        for (const [name, listener] of Object.entries(listeners)) {
-            map.set(name, typeof listener === 'function' ? listener :
-                listener.handleEvent.bind(listener));
-        }
-        InterceptBindingDirective.#interceptedBindings.set(element, map);
     }
 }
 //# sourceMappingURL=Directives.js.map

@@ -252,7 +252,7 @@ export class LinearMemoryInspector extends UI.Widget.Widget {
             memorySlice: this.#memory.slice(start - this.#memoryOffset, end - this.#memoryOffset),
             viewerStart: start,
         };
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
     #onJumpToAddress(address) {
         this.#currentNavigatorMode = "Submitted" /* Mode.SUBMITTED */;

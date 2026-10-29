@@ -146,6 +146,14 @@ export declare class StylePropertiesSection {
     private editingMediaCancelled;
     private editingMediaBlurHandler;
     private editingMediaCommitted;
+    /**
+     * Replaces the text of the given at-rule query (`@media`, `@container`,
+     * `@supports`, `@scope`, `@navigation`) in the stylesheet, records the
+     * change with the change tracker and refreshes the section.
+     *
+     * @returns whether the stylesheet was updated.
+     */
+    setQueryText(query: SDK.CSSQuery.CSSQuery, newContent: string): Promise<boolean>;
     private editingMediaTextCommittedForTest;
     private handleSelectorClick;
     private handleContextMenuEvent;
@@ -191,10 +199,12 @@ export declare class RegisteredPropertiesSection extends StylePropertiesSection 
     createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
 }
 export declare class FunctionRuleSection extends StylePropertiesSection {
+    private conditionWidgets?;
     constructor(stylesContainer: StylesContainer, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number, functionName: string, expandedByDefault: boolean);
+    onpopulate(): void;
     isHeaderEditable(): boolean;
     moveEditorFromSelector(moveDirection: string): void;
-    createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): HTMLElement | undefined;
+    createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): ElementsComponents.CSSQuery.CSSQuery | undefined;
     positionNestingElement(element: HTMLElement): HTMLElement;
     addChildren(children: SDK.CSSRule.CSSNestedStyle[], parent: TreeElementParent): void;
 }

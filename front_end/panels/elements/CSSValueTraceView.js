@@ -135,7 +135,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
             evaluations: this.#evaluations,
             onToggle: () => this.onResize(),
         };
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
         const tabStop = this.contentElement.querySelector('[tabindex]');
         this.setDefaultFocusedElement(tabStop);
         if (tabStop && this.#pendingFocus) {

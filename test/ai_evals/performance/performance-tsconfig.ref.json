@@ -28,9 +28,6 @@
       "path": "../harness_library-tsconfig.ref.json"
     },
     {
-      "path": "../../e2e/helpers/helpers-tsconfig.ref.json"
-    },
-    {
       "path": "../helpers/helpers-tsconfig.ref.json"
     }
   ]

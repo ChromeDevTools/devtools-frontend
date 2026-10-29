@@ -179,7 +179,7 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
                 this.contentElement.dispatchEvent(new RemoveAnnotation(annotation));
             },
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
 }
 function detailedAriaDescriptionForAnnotation(annotation) {

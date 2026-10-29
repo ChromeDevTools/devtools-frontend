@@ -584,7 +584,7 @@ export class BreakpointsView extends UI.Widget.VBox {
             itemEditClickHandler: this.#itemEditClickHandler.bind(this),
             itemRemoveClickHandler: this.#itemRemoveClickHandler.bind(this),
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
         // If no element is tabbable, set the pause-on-exceptions to be tabbable. This can happen
         // if the previously focused element was removed.
         if (this.contentElement.querySelector('[tabindex="0"]') === null) {

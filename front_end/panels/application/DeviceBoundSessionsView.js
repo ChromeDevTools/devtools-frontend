@@ -832,7 +832,7 @@ export class DeviceBoundSessionsView extends UI.Widget.VBox {
             defaultDescription: this.#defaultDescription,
             selectedEvent: this.#selectedEvent,
             onEventRowSelected: this.#onEventRowSelected.bind(this),
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     #onEventRowSelected(selectedEvent) {
         this.#selectedEvent = selectedEvent;

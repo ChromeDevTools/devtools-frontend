@@ -1,28 +1,65 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { Category, IsLong } from './TimelineFilters.js';
 import { selectionIsEvent } from './TimelineSelection.js';
 import { TimelineTreeView } from './TimelineTreeView.js';
 import { TimelineUIUtils } from './TimelineUIUtils.js';
+function renderNodeDetails(input, _output, target) {
+    render(html `${input}`, target);
+}
+function renderFilterToolbar(input, _output, target) {
+    // clang-format off
+    render(html `
+    <select title=${i18nString(UIStrings.durationFilter)}
+        aria-label=${i18nString(UIStrings.durationFilter)}
+        jslog=${VisualLogging.dropDown('duration').track({ change: true })}
+        @change=${(event) => {
+        const duration = event.target.value;
+        input.onDurationChange(parseInt(duration, 10));
+    }}>
+      ${input.durationPresetsMs.map(durationMs => html `
+        <option value=${String(durationMs)}
+            jslog=${VisualLogging.item(String(durationMs)).track({ click: true })}>
+          ${durationMs ? `≥ ${i18n.TimeUtilities.millisToString(durationMs)}` : i18nString(UIStrings.all)}
+        </option>
+      `)}
+    </select>
+    ${Object.entries(input.categories).map(([categoryName, category]) => category.visible ? html `
+      <devtools-checkbox
+          checked
+          jslog=${VisualLogging.toggle().track({ change: true }).context(categoryName)}
+          @change=${(event) => {
+        const checkBox = event.target;
+        input.onCategoryChange(categoryName, checkBox.checked);
+    }}>
+        ${category.title}
+      </devtools-checkbox>
+    ` : nothing)}
+  `, target);
+    // clang-format on
+}
 const UIStrings = {
     /**
-     * @description Column header for start time in the event log tree view of the Performance panel.
+     * @description Column header for start time in the event log tree view of the
+     * Performance panel.
      */
     startTime: 'Start time',
     /**
-     * @description Screen reader label for a select box that filters the event log by duration in the Performance panel.
+     * @description Screen reader label for a select box that filters the event
+     * log by duration in the Performance panel.
      */
     durationFilter: 'Duration filter',
     /**
-     * @description Option in the duration filter dropdown to show all events in the event log of the Performance panel.
+     * @description Option in the duration filter dropdown to show all events in
+     * the event log of the Performance panel.
      */
     all: 'All',
 };
@@ -33,8 +70,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     delegate;
     currentTree;
     constructor(delegate) {
-        super();
-        this.element.setAttribute('jslog', `${VisualLogging.pane('event-log').track({ resize: true })}`);
+        super(undefined, { jslog: `${VisualLogging.pane('event-log').track({ resize: true })}` });
         this.filtersControl = new Filters();
         this.filtersControl.addEventListener("FilterChanged" /* Events.FILTER_CHANGED */, this.onFilterChanged, this);
         this.init();
@@ -102,8 +138,11 @@ export class EventsTimelineTreeView extends TimelineTreeView {
         if (!traceEvent) {
             return false;
         }
-        void TimelineUIUtils.buildTraceEventDetails(parsedTrace, traceEvent, this.linkifier, false, null)
-            .then(fragment => this.detailsView.element.appendChild(fragment));
+        void TimelineUIUtils.buildTraceEventDetails(parsedTrace, traceEvent, this.linkifier, false, null).then(fragment => {
+            if (this.lastSelectedNode() === node) {
+                renderNodeDetails(fragment, undefined, this.detailsView.element);
+            }
+        });
         return true;
     }
     onHover(node) {
@@ -124,33 +163,26 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
         return this.#filters;
     }
     populateToolbar(toolbar) {
-        const durationFilterUI = new UI.Toolbar.ToolbarComboBox(durationFilterChanged.bind(this), i18nString(UIStrings.durationFilter), undefined, 'duration');
-        for (const durationMs of Filters.durationFilterPresetsMs) {
-            durationFilterUI.addOption(durationFilterUI.createOption(durationMs ? `≥ ${i18n.TimeUtilities.millisToString(durationMs)}` : i18nString(UIStrings.all), String(durationMs)));
-        }
-        toolbar.appendToolbarItem(durationFilterUI);
-        const categoryFiltersUI = new Map();
         const categories = Trace.Styles.getCategoryStyles();
-        for (const categoryName in categories) {
-            const category = categories[categoryName];
-            if (!category.visible) {
-                continue;
+        const fragment = document.createDocumentFragment();
+        renderFilterToolbar({
+            durationPresetsMs: Filters.durationFilterPresetsMs,
+            onDurationChange: durationFilterChanged.bind(this),
+            categories,
+            onCategoryChange: categoriesFilterChanged.bind(this),
+        }, undefined, fragment);
+        for (const child of Array.from(fragment.children)) {
+            if (child instanceof HTMLElement) {
+                toolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(child));
             }
-            const checkbox = new UI.Toolbar.ToolbarCheckbox(category.title, undefined, categoriesFilterChanged.bind(this, categoryName), categoryName);
-            checkbox.setChecked(true);
-            categoryFiltersUI.set(category.name, checkbox);
-            toolbar.appendToolbarItem(checkbox);
         }
-        function durationFilterChanged() {
-            const duration = durationFilterUI.selectedOption().value;
-            const minimumRecordDuration = parseInt(duration, 10);
+        function durationFilterChanged(minimumRecordDuration) {
             this.durationFilter.setMinimumRecordDuration(Trace.Types.Timing.Milli(minimumRecordDuration));
             this.notifyFiltersChanged();
         }
-        function categoriesFilterChanged(name) {
+        function categoriesFilterChanged(name, checked) {
             const categories = Trace.Styles.getCategoryStyles();
-            const checkBox = categoryFiltersUI.get(name);
-            categories[name].hidden = !checkBox?.checked();
+            categories[name].hidden = !checked;
             this.notifyFiltersChanged();
         }
     }

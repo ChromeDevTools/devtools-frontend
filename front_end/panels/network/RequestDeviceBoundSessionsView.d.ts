@@ -5,8 +5,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 interface ViewInput {
     deviceBoundSessionUsages: Protocol.Network.DeviceBoundSessionWithUsage[];
 }
-type ViewOutput = object;
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 export declare class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
     #private;
     constructor(request: SDK.NetworkRequest.NetworkRequest, view?: typeof DEFAULT_VIEW);

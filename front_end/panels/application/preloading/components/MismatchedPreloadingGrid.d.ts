@@ -9,7 +9,7 @@ export interface ViewInput {
     rows: MismatchedPreloadingGridRow[];
     pageURL: string;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: Record<string, never>, target: DocumentFragment) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: DocumentFragment) => void;
 export interface MismatchedPreloadingGridRow {
     action: Protocol.Preload.SpeculationAction;
     url: string;

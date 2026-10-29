@@ -76,7 +76,7 @@ interface ViewInput {
     displayCommandInput?: boolean;
     displayToolbar?: boolean;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare function suggestionFilter(option: string, query: string): boolean;
 export declare const enum Events {
     SUBMIT_EDITOR = "submiteditor"

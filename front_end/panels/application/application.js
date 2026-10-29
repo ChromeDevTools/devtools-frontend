@@ -11442,7 +11442,7 @@ var serviceWorkersView_css_default = `/*
   width: 10px;
   height: 10px;
   z-index: 10;
-  margin-right: 5px;
+  margin-right: var(--sys-size-4);
   border-radius: var(--sys-shape-corner-full);
   border: var(--sys-size-1) solid var(--sys-color-token-subtle);
   align-self: center;
@@ -13229,7 +13229,7 @@ var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbar
         this.dispatchEventToListeners(_StorageItemsToolbar.Events.DELETE_SELECTED);
       }
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, void 0, this.contentElement);
   }
   setDeleteAllTitle(title) {
     this.#deleteAllButtonTitle = title;
@@ -14494,7 +14494,7 @@ var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
         selectedEvent: this.#selectedEvent,
         onEventRowSelected: this.#onEventRowSelected.bind(this)
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
@@ -16904,6 +16904,7 @@ __export(WebMCPView_exports, {
   parsePayload: () => parsePayload,
   parseToolSchema: () => parseToolSchema
 });
+import "../../ui/components/adorners/adorners.js";
 import "../../ui/components/icon_button/icon_button.js";
 import "../../ui/components/lists/lists.js";
 import "../../ui/components/node_text/node_text.js";
@@ -16915,7 +16916,6 @@ import * as i18n59 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
 import * as SDK23 from "../../core/sdk/sdk.js";
 import * as WebMCP2 from "../../models/web_mcp/web_mcp.js";
-import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Buttons11 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
@@ -17590,11 +17590,93 @@ function getJSONEditorParameters(tool) {
     enumsByName: parsedSchema.enumsByName
   };
 }
+function renderFilterMenuButton(label, jslogContext, count, populateMenu) {
+  const openMenu = (event) => {
+    const buttonElement = event.currentTarget;
+    const contextMenu = new UI30.ContextMenu.ContextMenu(event, {
+      useSoftMenu: true,
+      keepOpen: true,
+      x: buttonElement.getBoundingClientRect().left,
+      y: buttonElement.getBoundingClientRect().top + buttonElement.offsetHeight,
+      onSoftMenuClosed: () => setTimeout(() => buttonElement.removeAttribute("aria-expanded"), 50)
+    });
+    populateMenu(contextMenu);
+    buttonElement.setAttribute("aria-expanded", "true");
+    void contextMenu.show();
+  };
+  return html21`
+    <button
+      class="toolbar-button toolbar-item toolbar-has-dropdown"
+      aria-haspopup="true"
+      jslog=${VisualLogging21.dropDown().track({ click: true }).context(jslogContext)}
+      @click=${openMenu}
+    ><devtools-adorner
+        class=${Directives8.classMap({ "active-filters-count": true, hidden: count === 0 })}
+        .name=${"countWrapper"}
+      ><span>${count}</span></devtools-adorner><div class="toolbar-text">${label}</div><devtools-icon
+        name="triangle-down"
+        class="toolbar-dropdown-arrow"
+      ></devtools-icon></button>`;
+}
 var DEFAULT_VIEW16 = (input, output, target) => {
   const tools = input.tools;
   let editorWidget = null;
   const toolStats = calculateToolStats(input.toolCalls);
   const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
+  const toolTypesCount = input.filters.toolTypes ? Object.values(input.filters.toolTypes).filter(Boolean).length : 0;
+  const statusTypesCount = input.filters.statusTypes ? Object.values(input.filters.statusTypes).filter(Boolean).length : 0;
+  const showToolTypesContextMenu = (contextMenu) => {
+    const toggle5 = (key) => {
+      const current = input.filters.toolTypes ?? {};
+      const next = { ...current, [key]: !current[key] };
+      let toolTypesToPass = next;
+      if (!next.imperative && !next.declarative) {
+        toolTypesToPass = void 0;
+      }
+      input.onFilterChange({ ...input.filters, toolTypes: toolTypesToPass });
+    };
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString30(UIStrings30.imperative),
+      () => toggle5("imperative"),
+      { checked: input.filters.toolTypes?.imperative ?? false, jslogContext: "webmcp.imperative" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString30(UIStrings30.declarative),
+      () => toggle5("declarative"),
+      { checked: input.filters.toolTypes?.declarative ?? false, jslogContext: "webmcp.declarative" }
+    );
+  };
+  const showStatusTypesContextMenu = (contextMenu) => {
+    const toggle5 = (key) => {
+      const current = input.filters.statusTypes ?? {};
+      const next = { ...current, [key]: !current[key] };
+      let statusTypesToPass = next;
+      if (!next.completed && !next.error && !next.pending && !next.canceled) {
+        statusTypesToPass = void 0;
+      }
+      input.onFilterChange({ ...input.filters, statusTypes: statusTypesToPass });
+    };
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString30(UIStrings30.completed),
+      () => toggle5("completed"),
+      { checked: input.filters.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString30(UIStrings30.error),
+      () => toggle5("error"),
+      { checked: input.filters.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString30(UIStrings30.canceled),
+      () => toggle5("canceled"),
+      { checked: input.filters.statusTypes?.["canceled"] ?? false, jslogContext: "webmcp.canceled" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString30(UIStrings30.pending),
+      () => toggle5("pending"),
+      { checked: input.filters.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" }
+    );
+  };
   const iconName = (call) => {
     switch (call.result?.status) {
       case WebMCP.InvocationStatus.Error:
@@ -17665,9 +17747,19 @@ var DEFAULT_VIEW16 = (input, output, target) => {
                                     .value=${input.filters.text}>
             </devtools-toolbar-input>
             <div class="toolbar-divider"></div>
-            ${input.filterButtons.toolTypes.button.element}
+            ${renderFilterMenuButton(
+    i18nString30(UIStrings30.toolTypes),
+    "webmcp.tool-types",
+    toolTypesCount,
+    showToolTypesContextMenu
+  )}
             <div class="toolbar-divider"></div>
-            ${input.filterButtons.statusTypes.button.element}
+            ${renderFilterMenuButton(
+    i18nString30(UIStrings30.statusTypes),
+    "webmcp.status-types",
+    statusTypesCount,
+    showStatusTypesContextMenu
+  )}
             <div class="toolbar-spacer"></div>
             <devtools-button title=${i18nString30(UIStrings30.clearFilters)}
                              .iconName=${"filter-clear"}
@@ -17938,7 +18030,7 @@ var DEFAULT_VIEW16 = (input, output, target) => {
     </devtools-split-view>
   `, target);
 };
-var WebMCPView = class _WebMCPView extends UI30.Widget.VBox {
+var WebMCPView = class extends UI30.Widget.VBox {
   #view;
   #selectedTool = null;
   #selectedCall = null;
@@ -17947,104 +18039,14 @@ var WebMCPView = class _WebMCPView extends UI30.Widget.VBox {
   #filterState = {
     text: ""
   };
-  #filterButtons;
-  static createFilterButtons(onToolTypesClick, onStatusTypesClick) {
-    const createButton = (label, onContextMenu, jsLogContext) => {
-      const button = new UI30.Toolbar.ToolbarMenuButton(
-        onContextMenu,
-        /* isIconDropdown=*/
-        false,
-        /* useSoftMenu=*/
-        true,
-        jsLogContext,
-        /* iconName=*/
-        void 0,
-        /* keepOpen=*/
-        true
-      );
-      button.setText(label);
-      const adorner = new Adorners.Adorner.Adorner();
-      adorner.name = "countWrapper";
-      const countElement = document.createElement("span");
-      adorner.append(countElement);
-      adorner.classList.add("active-filters-count");
-      adorner.classList.add("hidden");
-      button.setAdorner(adorner);
-      const setCount = (count) => {
-        countElement.textContent = `${count}`;
-        count === 0 ? adorner.hide() : adorner.show();
-      };
-      return { button, setCount };
-    };
-    return {
-      toolTypes: createButton(i18nString30(UIStrings30.toolTypes), onToolTypesClick, "webmcp.tool-types"),
-      statusTypes: createButton(i18nString30(UIStrings30.statusTypes), onStatusTypesClick, "webmcp.status-types")
-    };
-  }
   constructor(target, view = DEFAULT_VIEW16) {
     super(target);
     this.#view = view;
-    this.#filterButtons = _WebMCPView.createFilterButtons(
-      this.#showToolTypesContextMenu.bind(this),
-      this.#showStatusTypesContextMenu.bind(this)
-    );
     SDK23.TargetManager.TargetManager.instance().observeModels(WebMCP2.WebMCPModel.WebMCPModel, {
       modelAdded: (model) => this.#webMCPModelAdded(model),
       modelRemoved: (model) => this.#webMCPModelRemoved(model)
     });
     this.requestUpdate();
-  }
-  #showToolTypesContextMenu(contextMenu) {
-    const toggle5 = (key) => {
-      const current = this.#filterState.toolTypes ?? {};
-      const next = { ...current, [key]: !current[key] };
-      let toolTypesToPass = next;
-      if (!next.imperative && !next.declarative) {
-        toolTypesToPass = void 0;
-      }
-      this.#handleFilterChange({ ...this.#filterState, toolTypes: toolTypesToPass });
-    };
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString30(UIStrings30.imperative),
-      () => toggle5("imperative"),
-      { checked: this.#filterState.toolTypes?.imperative ?? false, jslogContext: "webmcp.imperative" }
-    );
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString30(UIStrings30.declarative),
-      () => toggle5("declarative"),
-      { checked: this.#filterState.toolTypes?.declarative ?? false, jslogContext: "webmcp.declarative" }
-    );
-  }
-  #showStatusTypesContextMenu(contextMenu) {
-    const toggle5 = (key) => {
-      const current = this.#filterState.statusTypes ?? {};
-      const next = { ...current, [key]: !current[key] };
-      let statusTypesToPass = next;
-      if (!next.completed && !next.error && !next.pending && !next.canceled) {
-        statusTypesToPass = void 0;
-      }
-      this.#handleFilterChange({ ...this.#filterState, statusTypes: statusTypesToPass });
-    };
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString30(UIStrings30.completed),
-      () => toggle5("completed"),
-      { checked: this.#filterState.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" }
-    );
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString30(UIStrings30.error),
-      () => toggle5("error"),
-      { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" }
-    );
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString30(UIStrings30.canceled),
-      () => toggle5("canceled"),
-      { checked: this.#filterState.statusTypes?.["canceled"] ?? false, jslogContext: "webmcp.canceled" }
-    );
-    contextMenu.defaultSection().appendCheckboxItem(
-      i18nString30(UIStrings30.pending),
-      () => toggle5("pending"),
-      { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" }
-    );
   }
   #webMCPModelAdded(model) {
     model.addEventListener(WebMCP2.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
@@ -18081,10 +18083,6 @@ var WebMCPView = class _WebMCPView extends UI30.Widget.VBox {
   };
   #handleFilterChange = (filters) => {
     this.#filterState = filters;
-    const toolTypesCount = this.#filterState.toolTypes ? Object.values(this.#filterState.toolTypes).filter(Boolean).length : 0;
-    this.#filterButtons.toolTypes.setCount(toolTypesCount);
-    const statusTypesCount = this.#filterState.statusTypes ? Object.values(this.#filterState.statusTypes).filter(Boolean).length : 0;
-    this.#filterButtons.statusTypes.setCount(statusTypesCount);
     this.requestUpdate();
   };
   #getTools() {
@@ -18127,7 +18125,6 @@ var WebMCPView = class _WebMCPView extends UI30.Widget.VBox {
       },
       toolCalls: filteredCalls,
       filters: this.#filterState,
-      filterButtons: this.#filterButtons,
       onClearLogClick: this.#handleClearLogClick,
       onFilterChange: this.#handleFilterChange,
       onRunTool: async (event) => {
@@ -18160,7 +18157,7 @@ var WebMCPView = class _WebMCPView extends UI30.Widget.VBox {
         }
       }
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
     this.#selectedTab = void 0;
   }
 };
@@ -18277,7 +18274,7 @@ var PayloadWidget = class extends UI30.Widget.Widget {
       errorText: this.#errorText,
       symbolizedError: this.#symbolizedError
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
 };
 var TOOL_DETAILS_VIEW = (input, output, target) => {

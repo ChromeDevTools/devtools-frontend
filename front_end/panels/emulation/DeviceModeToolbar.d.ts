@@ -82,7 +82,7 @@ export interface ViewInput {
     showDeviceScaleFactorSetting: Common.Settings.Setting<boolean>;
     showUserAgentTypeSetting: Common.Settings.Setting<boolean>;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement | DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class DeviceModeToolbar extends UI.Widget.Widget {
     #private;

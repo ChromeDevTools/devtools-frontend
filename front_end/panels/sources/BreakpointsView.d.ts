@@ -84,7 +84,7 @@ export interface BreakpointsViewInput {
     itemEditClickHandler: (item: BreakpointItem, event: Event) => void;
     itemRemoveClickHandler: (item: BreakpointItem, event: Event) => void;
 }
-export type View = (input: BreakpointsViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: BreakpointsViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class BreakpointsView extends UI.Widget.VBox {
     #private;

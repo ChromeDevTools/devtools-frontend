@@ -11,7 +11,7 @@ export interface SidebarAnnotationsTabViewInput {
     onAnnotationHoverOut: () => void;
     onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => void;
 }
-export type View = (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: SidebarAnnotationsTabViewInput, output: undefined, target: HTMLElement) => void;
 export declare class SidebarAnnotationsTab extends UI.Widget.Widget {
     #private;
     constructor(view?: View);

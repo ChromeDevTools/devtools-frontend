@@ -1,3 +1,4 @@
+import '../../../ui/kit/kit.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 export declare function buildWarningElementsForEvent(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): HTMLSpanElement[];

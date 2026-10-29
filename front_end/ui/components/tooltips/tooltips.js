@@ -9,11 +9,12 @@ var Tooltip_exports = {};
 __export(Tooltip_exports, {
   PositionOption: () => PositionOption,
   Tooltip: () => Tooltip,
+  ifExpanded: () => ifExpanded,
   proposedRectForRichTooltip: () => proposedRectForRichTooltip,
   proposedRectForSimpleTooltip: () => proposedRectForSimpleTooltip
 });
 import * as UI from "../../legacy/legacy.js";
-import * as Lit from "../../lit/lit.js";
+import { AsyncDirective, Directives, html, nothing, render } from "../../lit/lit.js";
 import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/tooltips/tooltip.css.js
@@ -75,7 +76,6 @@ var tooltip_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./tooltip.css")} */`;
 
 // ../../front_end/ui/components/tooltips/Tooltip.ts
-var { html } = Lit;
 var PositionOption = /* @__PURE__ */ ((PositionOption2) => {
   PositionOption2["BOTTOM_SPAN_RIGHT"] = "bottom-span-right";
   PositionOption2["BOTTOM_SPAN_LEFT"] = "bottom-span-left";
@@ -332,7 +332,7 @@ var Tooltip = class _Tooltip extends HTMLElement {
     this.#attachToAnchor();
     this.#registerEventListeners();
     this.#setAttributes();
-    Lit.render(html`
+    render(html`
       <style>${tooltip_css_default}</style>
       <!-- Wrapping it into a container, so that the tooltip doesn't disappear when the mouse moves from the anchor to the tooltip. -->
       <div class="container ${this.padding === "large" ? "large-padding" : ""}">
@@ -551,6 +551,46 @@ var Tooltip = class _Tooltip extends HTMLElement {
     this.#anchorObserver.observe(anchor.parentElement, { childList: true });
   }
 };
+var IfExpandedDirective = class extends AsyncDirective.AsyncDirective {
+  #partInfo;
+  #tooltip = null;
+  #content = nothing;
+  constructor(partInfo) {
+    if (partInfo.type !== AsyncDirective.PartType.CHILD) {
+      throw new Error("ifExpanded directive must be used in a child node");
+    }
+    super(partInfo);
+    this.#partInfo = partInfo;
+  }
+  #resolveContent() {
+    return Directives.until(typeof this.#content === "function" ? this.#content() : this.#content);
+  }
+  #onBeforeToggle = (event) => {
+    this.setValue(event.newState === "open" ? this.#resolveContent() : nothing);
+  };
+  render(content) {
+    this.#content = content;
+    const startNode = this.#partInfo.startNode;
+    const parentElement = startNode instanceof HTMLElement ? startNode : startNode?.parentElement;
+    const tooltip = parentElement?.closest("devtools-tooltip") ?? null;
+    if (tooltip !== this.#tooltip) {
+      this.#tooltip?.removeEventListener("beforetoggle", this.#onBeforeToggle);
+      this.#tooltip = tooltip;
+      this.#tooltip?.addEventListener("beforetoggle", this.#onBeforeToggle);
+    }
+    if (!this.#tooltip?.open) {
+      return nothing;
+    }
+    return this.#resolveContent();
+  }
+  disconnected() {
+    this.#tooltip?.removeEventListener("beforetoggle", this.#onBeforeToggle);
+  }
+  reconnected() {
+    this.#tooltip?.addEventListener("beforetoggle", this.#onBeforeToggle);
+  }
+};
+var ifExpanded = AsyncDirective.directive(IfExpandedDirective);
 customElements.define("devtools-tooltip", Tooltip);
 export {
   Tooltip_exports as Tooltip

@@ -8,7 +8,7 @@ interface PropertiesWidgetInput {
     objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree | null;
     allChildrenFiltered: boolean;
 }
-type View = (input: PropertiesWidgetInput, output: object, target: HTMLElement) => void;
+type View = (input: PropertiesWidgetInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class PropertiesWidget extends UI.Widget.VBox {
     #private;

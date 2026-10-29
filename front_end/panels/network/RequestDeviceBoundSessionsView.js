@@ -113,7 +113,7 @@ export class RequestDeviceBoundSessionsView extends UI.Widget.VBox {
         if (!this.isShowing()) {
             return;
         }
-        this.#view({ deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages() }, {}, this.contentElement);
+        this.#view({ deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages() }, undefined, this.contentElement);
     }
 }
 function getDeferralDecision(usage) {

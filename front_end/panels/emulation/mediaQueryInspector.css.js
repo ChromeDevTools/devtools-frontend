@@ -11,7 +11,7 @@ export default `/*
 /* Media query bars */
 
 .media-inspector-view {
-  height: 50px;
+  height: var(--sys-size-16);
 }
 
 .media-inspector-marker-container {

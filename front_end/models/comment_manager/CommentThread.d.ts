@@ -88,10 +88,17 @@ export declare class CommentThread extends Common.ObjectWrapper.ObjectWrapper<Ev
     readonly isGeneratedComment: boolean;
     comments: Comment[];
     status: CommentThreadStatus;
-    transmitted: boolean;
     constructor(options: CommentThreadOptions);
     get isOrphaned(): boolean;
     setOrphaned(isOrphaned: boolean): void;
+    /**
+     * True once the thread has been taken by the agent (e.g. via CD4ABridge).
+     */
+    get transmitted(): boolean;
+    /**
+     * Marks the thread as taken by the agent.
+     */
+    markTransmitted(): void;
     save(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;
     editComment(text: string): void;
     sendToAgent(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;

@@ -118,7 +118,8 @@ export declare class ContentProviderContextMenuProvider implements UI.ContextMen
 /**
  * Returns the {@link OpenInNewTabInitiatorId} for a URL that came from `source`: the frame that `source` belongs
  * to, or the worker that it belongs to when there is no frame, if DevTools knows that unambiguously. Returns
- * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin.
+ * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin. A request or
+ * resource is not attributed to its frame once the frame has navigated away from the document it belongs to.
  */
 export declare function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | SDK.RuntimeModel.ExecutionContext | Workspace.UISourceCode.UISourceCode): OpenInNewTabInitiatorId | undefined;
 interface LinkInfo {
@@ -131,7 +132,7 @@ interface LinkInfo {
     fallback?: Element;
     userMetric?: Host.UserMetrics.Action;
     allowPrivileged?: boolean;
-    initiatorId?: OpenInNewTabInitiatorId;
+    initiatorId?: OpenInNewTabInitiatorIdOrProvider;
 }
 /**
  * The DevTools frame id or target id of the frame or worker that a linkified URL came from. When the URL is opened
@@ -139,12 +140,18 @@ interface LinkInfo {
  * `InspectorFrontendHostAPI.openInNewTab()`.
  */
 export type OpenInNewTabInitiatorId = Protocol.Page.FrameId | Protocol.Target.TargetID;
+/**
+ * An {@link OpenInNewTabInitiatorId}, or a function that determines it at the time the link is opened. Use the
+ * function when where the link came from may be gone by then: a frame keeps its id across navigations, so the id
+ * of a frame that has since navigated would attribute the navigation to whatever document the frame shows now.
+ */
+export type OpenInNewTabInitiatorIdOrProvider = OpenInNewTabInitiatorId | (() => OpenInNewTabInitiatorId | undefined);
 export interface LinkifyURLOptions {
     allowPrivileged?: boolean;
     /**
-     * {@link OpenInNewTabInitiatorId}
+     * {@link OpenInNewTabInitiatorIdOrProvider}
      */
-    initiatorId?: OpenInNewTabInitiatorId;
+    initiatorId?: OpenInNewTabInitiatorIdOrProvider;
     text?: string;
     className?: string;
     lineNumber?: number;

@@ -78,6 +78,9 @@
     },
     {
       "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
     }
   ]
 }

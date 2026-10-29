@@ -17,8 +17,7 @@ export interface ViewInput {
     onStopClick: () => void;
     onDownloadClick: () => void;
 }
-export type ViewOutput = Record<string, never>;
-export type View = (input: ViewInput, output: ViewOutput, target: DocumentFragment) => void;
+export type View = (input: ViewInput, output: undefined, target: DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
 /**
  * This is the dialog shown whilst a trace is being recorded/imported.

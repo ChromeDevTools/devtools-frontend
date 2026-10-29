@@ -10,10 +10,10 @@ export interface PaneViewInput {
     onRemove: (pin: ConsolePin) => void;
     onContextMenu: (event: Event) => void;
 }
-export declare const DEFAULT_PANE_VIEW: (input: PaneViewInput, _output: object, target: HTMLElement) => void;
+export declare const DEFAULT_PANE_VIEW: (input: PaneViewInput, _output: undefined, target: HTMLElement) => void;
 export declare class ConsolePinPane extends UI.Widget.VBox {
     #private;
-    constructor(focusOut: () => void, view?: (input: PaneViewInput, _output: object, target: HTMLElement) => void);
+    constructor(focusOut: () => void, view?: (input: PaneViewInput, _output: undefined, target: HTMLElement) => void);
     willHide(): void;
     private contextMenuEventFired;
     private removeAllPins;

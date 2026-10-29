@@ -319,7 +319,7 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
             throttlingGroups,
             customConditionsGroup,
         };
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
 (function (NetworkThrottlingSelect) {

@@ -7,32 +7,34 @@ export default `/* Copyright 2026 The Chromium Authors
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file. */
 
-:host {
-  display: flex;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    display: flex;
+  }
 
-.container {
-  display: flex;
-  width: 100%;
-  height: 150px;
-  background-color: var(--sys-color-cdt-base-container);
-  border-radius: var(--sys-shape-corner-small);
-  border: var(--sys-size-1) solid var(--sys-color-divider);
-}
+  .container {
+    display: flex;
+    width: 100%;
+    height: 150px;
+    background-color: var(--sys-color-cdt-base-container);
+    border-radius: var(--sys-shape-corner-small);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 
-.container canvas {
-  /* stylelint-disable-next-line declaration-no-important */
-  pointer-events: none !important;
-}
+  .container canvas {
+    /* stylelint-disable-next-line declaration-no-important */
+    pointer-events: none !important;
+  }
 
-.flex-auto {
-  flex: auto;
-}
+  .flex-auto {
+    flex: auto;
+  }
 
-.vbox {
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  .vbox {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./networkTrackWidget.css')} */`;

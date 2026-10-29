@@ -118,7 +118,7 @@ export class StorageItemsToolbar extends StorageItemsToolbarBase {
                 this.dispatchEventToListeners("DeleteSelected" /* StorageItemsToolbar.Events.DELETE_SELECTED */);
             },
         };
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
     setDeleteAllTitle(title) {
         this.#deleteAllButtonTitle = title;

@@ -254,12 +254,11 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
         this.detach();
     };
     performUpdate() {
-        const output = {};
         this.#view({
             aidaAvailability: this.#aidaAvailability,
             onAction: this.onAction,
             onDismiss: this.onDismiss,
-        }, output, this.contentElement);
+        }, undefined, this.contentElement);
     }
     wasShown() {
         super.wasShown();

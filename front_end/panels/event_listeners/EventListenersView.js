@@ -247,7 +247,7 @@ export class EventListenersView extends UI.Widget.VBox {
                 }
             },
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
         this.eventListenersArrivedForTest();
     }
     static #createObjectTree(listener) {

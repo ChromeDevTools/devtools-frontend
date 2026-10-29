@@ -98,7 +98,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
             ariaDescription: options.ariaDescription,
         };
         if (!this.#node) {
-            this.#view(viewInput, {}, this.contentElement);
+            this.#view(viewInput, undefined, this.contentElement);
             return;
         }
         let node = this.#node;
@@ -111,12 +111,12 @@ export class DOMNodeLink extends UI.Widget.Widget {
         // they always have the same ancestor. See crbug.com/340633630.
         if (node.isViewTransitionPseudoNode()) {
             viewInput.pseudo = `::${this.#node.pseudoType()}(${this.#node.pseudoIdentifier()})`;
-            this.#view(viewInput, {}, this.contentElement);
+            this.#view(viewInput, undefined, this.contentElement);
             return;
         }
         if (options.textContent) {
             viewInput.tagName = options.textContent;
-            this.#view(viewInput, {}, this.contentElement);
+            this.#view(viewInput, undefined, this.contentElement);
             return;
         }
         viewInput.tagName = node.nodeNameInCorrectCase();
@@ -146,7 +146,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
             }
             viewInput.pseudo = pseudoText;
         }
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
 const DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
@@ -195,7 +195,7 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
                 });
             },
         };
-        this.#view(viewInput, {}, this.contentElement);
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
 let linkifierInstance;

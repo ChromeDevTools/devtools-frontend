@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // ../../front_end/ui/components/suggestion_input/SuggestionInput.ts
 var SuggestionInput_exports = {};
 __export(SuggestionInput_exports, {
+  SUGGESTION_INPUT_VIEW: () => SUGGESTION_INPUT_VIEW,
   SuggestionInput: () => SuggestionInput
 });
 import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
@@ -115,12 +116,6 @@ function assert(predicate, message = "Assertion failed!") {
 }
 var { html, Directives } = Lit;
 var { classMap } = Directives;
-var jsonPropertyOptions = {
-  hasChanged(value2, oldValue) {
-    return JSON.stringify(value2) !== JSON.stringify(oldValue);
-  },
-  attribute: false
-};
 var EditableContent = class extends HTMLElement {
   static get observedAttributes() {
     return ["disabled", "placeholder"];
@@ -184,24 +179,93 @@ var SuggestionInitEvent = class _SuggestionInitEvent extends Event {
   }
 };
 var defaultSuggestionFilter = (option, query) => option.toLowerCase().startsWith(query.toLowerCase());
-var SuggestionBox = class extends Lit.LitElement {
-  static properties = {
-    options: jsonPropertyOptions,
-    expression: { type: String },
-    suggestionFilter: { attribute: false },
-    hideExactMatch: { type: Boolean },
-    cursor: { state: true }
-  };
+var SUGGESTION_BOX_VIEW = (input, _output, target) => {
+  if (!input.hasVisibleSuggestions) {
+    Lit.render(Lit.nothing, target);
+    return;
+  }
+  Lit.render(html`<style>${suggestionInput_css_default}</style><ul class="suggestions">
+    ${input.suggestions.map((suggestion, index) => html`
+      <li class=${classMap({ selected: index === input.cursor })}
+          @mousedown=${() => input.onSuggest(suggestion)}
+          jslog=${VisualLogging.item("suggestion").track({ click: true, resize: true })}>
+        ${suggestion}
+      </li>`)}
+  </ul>`, target);
+};
+var SuggestionBox = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #view;
+  #options = [];
+  #expression = "";
+  #suggestionFilter;
+  #hideExactMatch = false;
+  #cursor = 0;
   #suggestions = [];
-  constructor() {
+  constructor(view = SUGGESTION_BOX_VIEW) {
     super();
-    this.options = [];
-    this.expression = "";
-    this.hideExactMatch = false;
-    this.cursor = 0;
+    this.#view = view;
+  }
+  get renderRoot() {
+    return this.#shadow;
+  }
+  get updateComplete() {
+    return Promise.resolve(true);
+  }
+  get options() {
+    return this.#options;
+  }
+  set options(options) {
+    const sorted = Object.freeze([...options].sort());
+    if (JSON.stringify(sorted) === JSON.stringify(this.#options)) {
+      return;
+    }
+    this.#options = sorted;
+    this.#cursor = 0;
+    this.#updateSuggestions();
+    this.#render();
+  }
+  get expression() {
+    return this.#expression;
+  }
+  set expression(expression) {
+    if (this.#expression === expression) {
+      return;
+    }
+    this.#expression = expression;
+    this.#cursor = 0;
+    this.#updateSuggestions();
+    this.#render();
+  }
+  get suggestionFilter() {
+    return this.#suggestionFilter;
+  }
+  set suggestionFilter(suggestionFilter) {
+    if (this.#suggestionFilter === suggestionFilter) {
+      return;
+    }
+    this.#suggestionFilter = suggestionFilter;
+    this.#cursor = 0;
+    this.#updateSuggestions();
+    this.#render();
+  }
+  get hideExactMatch() {
+    return this.#hideExactMatch;
+  }
+  set hideExactMatch(hideExactMatch) {
+    if (this.#hideExactMatch === hideExactMatch) {
+      return;
+    }
+    this.#hideExactMatch = hideExactMatch;
+    this.#render();
+  }
+  #updateSuggestions() {
+    this.#suggestions = this.#options.filter(
+      (option) => (this.#suggestionFilter || defaultSuggestionFilter)(option, this.#expression)
+    );
   }
   #hasVisibleSuggestions() {
-    return this.#suggestions.length > 0 && !(this.hideExactMatch && this.#suggestions.length === 1 && this.#suggestions[0] === this.expression);
+    return this.#suggestions.length > 0 && !(this.#hideExactMatch && this.#suggestions.length === 1 && this.#suggestions[0] === this.#expression);
   }
   #handleKeyDownEvent = (event) => {
     assert(event instanceof KeyboardEvent, "Bound to the wrong event.");
@@ -221,85 +285,214 @@ var SuggestionBox = class extends Lit.LitElement {
     }
     switch (event.key) {
       case "Enter":
-        if (this.#hasVisibleSuggestions() && this.#suggestions[this.cursor]) {
-          this.#dispatchSuggestEvent(this.#suggestions[this.cursor]);
+        if (this.#hasVisibleSuggestions() && this.#suggestions[this.#cursor]) {
+          this.#dispatchSuggestEvent(this.#suggestions[this.#cursor]);
         }
         event.preventDefault();
         break;
     }
   };
   #moveCursor(delta) {
-    this.cursor = mod(this.cursor + delta, this.#suggestions.length);
+    this.#cursor = mod(this.#cursor + delta, this.#suggestions.length);
+    this.#render();
   }
-  #dispatchSuggestEvent(suggestion) {
+  #dispatchSuggestEvent = (suggestion) => {
     this.dispatchEvent(new SuggestEvent(suggestion));
-  }
+  };
   connectedCallback() {
-    super.connectedCallback();
     this.dispatchEvent(
       new SuggestionInitEvent([["keydown", this.#handleKeyDownEvent]])
     );
+    this.#render();
   }
-  willUpdate(changedProperties) {
-    if (changedProperties.has("options")) {
-      this.options = Object.freeze([...this.options].sort());
-    }
-    if (changedProperties.has("expression") || changedProperties.has("options")) {
-      this.cursor = 0;
-      this.#suggestions = this.options.filter(
-        (option) => (this.suggestionFilter || defaultSuggestionFilter)(option, this.expression)
-      );
-    }
-  }
-  render() {
-    if (!this.#hasVisibleSuggestions()) {
-      return;
-    }
-    return html`<style>${suggestionInput_css_default}</style><ul class="suggestions">
-      ${this.#suggestions.map((suggestion, index) => html`
-        <li class=${classMap({ selected: index === this.cursor })}
-            @mousedown=${this.#dispatchSuggestEvent.bind(this, suggestion)}
-            jslog=${VisualLogging.item("suggestion").track({ click: true, resize: true })}>
-          ${suggestion}
-        </li>`)}
-    </ul>`;
+  #render() {
+    this.#view(
+      {
+        suggestions: this.#suggestions,
+        cursor: this.#cursor,
+        hasVisibleSuggestions: this.#hasVisibleSuggestions(),
+        onSuggest: this.#dispatchSuggestEvent
+      },
+      void 0,
+      this.#shadow
+    );
   }
 };
-var SuggestionInput = class extends Lit.LitElement {
-  static shadowRootOptions = {
-    ...Lit.LitElement.shadowRootOptions,
-    delegatesFocus: true
-  };
-  static properties = {
-    options: jsonPropertyOptions,
-    autocomplete: { type: Boolean },
-    suggestionFilter: { attribute: false },
-    hideExactMatch: { type: Boolean },
-    expression: { state: true },
-    placeholder: { type: String },
-    value: { type: String },
-    disabled: { type: Boolean },
-    strikethrough: { type: Boolean },
-    mimeType: { type: String },
-    jslogContext: { type: String }
-  };
-  constructor() {
+var SUGGESTION_INPUT_VIEW = (input, _output, target) => {
+  Lit.render(html`<style>${suggestionInput_css_default}</style>
+    <style>${CodeHighlighter.codeHighlighterStyles}</style>
+    <devtools-editable-content
+      ?disabled=${input.disabled}
+      class=${classMap({
+    strikethrough: !input.strikethrough
+  })}
+      .enterKeyHint=${"done"}
+      .value=${input.value}
+      .mimeType=${input.mimeType}
+      @focus=${input.onFocus}
+      @input=${input.onInput}
+      @keydown=${input.onKeyDown}
+      autocapitalize="off"
+      inputmode="text"
+      placeholder=${input.placeholder}
+      spellcheck="false"
+    ></devtools-editable-content>
+    <devtools-suggestion-box
+      @suggestioninit=${input.onSuggestionInit}
+      @suggest=${input.onSuggest}
+      .options=${input.options}
+      .suggestionFilter=${input.suggestionFilter}
+      .hideExactMatch=${input.hideExactMatch}
+      .expression=${input.expression}
+    ></devtools-suggestion-box>`, target);
+};
+var SuggestionInput = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
+  #view;
+  /**
+   * State passed to devtools-suggestion-box.
+   */
+  #options = [];
+  #autocomplete = true;
+  #suggestionFilter;
+  #hideExactMatch = false;
+  #expression = "";
+  /**
+   * State passed to devtools-editable-content.
+   */
+  #placeholder = "";
+  #value = "";
+  #disabled = false;
+  #strikethrough = true;
+  #mimeType = "";
+  #jslogContext;
+  constructor(view = SUGGESTION_INPUT_VIEW) {
     super();
-    this.options = [];
-    this.expression = "";
-    this.placeholder = "";
-    this.value = "";
-    this.disabled = false;
-    this.strikethrough = true;
-    this.mimeType = "";
-    this.autocomplete = true;
-    this.hideExactMatch = false;
+    this.#view = view;
     this.addEventListener("blur", this.#handleBlurEvent);
     let jslog = VisualLogging.value().track({ keydown: "ArrowUp|ArrowDown|Enter", change: true, click: true });
     if (this.jslogContext) {
       jslog = jslog.context(this.jslogContext);
     }
     this.setAttribute("jslog", jslog.toString());
+    this.#render();
+  }
+  get renderRoot() {
+    return this.#shadow;
+  }
+  get updateComplete() {
+    return Promise.resolve(true);
+  }
+  get options() {
+    return this.#options;
+  }
+  set options(options) {
+    if (JSON.stringify(options) === JSON.stringify(this.#options)) {
+      return;
+    }
+    this.#options = options;
+    this.#render();
+  }
+  get autocomplete() {
+    return this.#autocomplete;
+  }
+  set autocomplete(autocomplete) {
+    if (this.#autocomplete === autocomplete) {
+      return;
+    }
+    this.#autocomplete = autocomplete;
+    this.#render();
+  }
+  get suggestionFilter() {
+    return this.#suggestionFilter;
+  }
+  set suggestionFilter(suggestionFilter) {
+    if (this.#suggestionFilter === suggestionFilter) {
+      return;
+    }
+    this.#suggestionFilter = suggestionFilter;
+    this.#render();
+  }
+  get hideExactMatch() {
+    return this.#hideExactMatch;
+  }
+  set hideExactMatch(hideExactMatch) {
+    if (this.#hideExactMatch === hideExactMatch) {
+      return;
+    }
+    this.#hideExactMatch = hideExactMatch;
+    this.#render();
+  }
+  get expression() {
+    return this.#expression;
+  }
+  set expression(expression) {
+    if (this.#expression === expression) {
+      return;
+    }
+    this.#expression = expression;
+    this.#render();
+  }
+  get placeholder() {
+    return this.#placeholder;
+  }
+  set placeholder(placeholder) {
+    if (this.#placeholder === placeholder) {
+      return;
+    }
+    this.#placeholder = placeholder;
+    this.#render();
+  }
+  get value() {
+    return this.#value;
+  }
+  set value(value2) {
+    if (this.#value === value2) {
+      return;
+    }
+    this.#value = value2;
+    this.#expression = value2;
+    this.#render();
+  }
+  get disabled() {
+    return this.#disabled;
+  }
+  set disabled(disabled) {
+    if (this.#disabled === disabled) {
+      return;
+    }
+    this.#disabled = disabled;
+    this.#render();
+  }
+  get strikethrough() {
+    return this.#strikethrough;
+  }
+  set strikethrough(strikethrough) {
+    if (this.#strikethrough === strikethrough) {
+      return;
+    }
+    this.#strikethrough = strikethrough;
+    this.#render();
+  }
+  get mimeType() {
+    return this.#mimeType;
+  }
+  set mimeType(mimeType) {
+    if (this.#mimeType === mimeType) {
+      return;
+    }
+    this.#mimeType = mimeType;
+    this.#render();
+  }
+  get jslogContext() {
+    return this.#jslogContext;
+  }
+  set jslogContext(jslogContext) {
+    if (this.#jslogContext === jslogContext) {
+      return;
+    }
+    this.#jslogContext = jslogContext;
+    this.#render();
   }
   #cachedEditableContent;
   get #editableContent() {
@@ -343,38 +536,30 @@ var SuggestionInput = class extends Lit.LitElement {
     this.#editableContent.value = event.suggestion;
     setTimeout(this.blur.bind(this), 0);
   };
-  willUpdate(properties) {
-    if (properties.has("value")) {
-      this.expression = this.value;
-    }
+  connectedCallback() {
+    this.#render();
   }
-  render() {
-    return html`<style>${suggestionInput_css_default}</style>
-      <style>${CodeHighlighter.codeHighlighterStyles}</style>
-      <devtools-editable-content
-        ?disabled=${this.disabled}
-        class=${classMap({
-      strikethrough: !this.strikethrough
-    })}
-        .enterKeyHint=${"done"}
-        .value=${this.value}
-        .mimeType=${this.mimeType}
-        @focus=${this.#handleFocusEvent}
-        @input=${this.#handleInputEvent}
-        @keydown=${this.#handleKeyDownEvent}
-        autocapitalize="off"
-        inputmode="text"
-        placeholder=${this.placeholder}
-        spellcheck="false"
-      ></devtools-editable-content>
-      <devtools-suggestion-box
-        @suggestioninit=${this.#handleSuggestionInitEvent}
-        @suggest=${this.#handleSuggestEvent}
-        .options=${this.options}
-        .suggestionFilter=${this.suggestionFilter}
-        .hideExactMatch=${this.hideExactMatch}
-        .expression=${this.autocomplete ? this.expression : ""}
-      ></devtools-suggestion-box>`;
+  #render() {
+    this.#view(
+      {
+        disabled: this.#disabled,
+        strikethrough: this.#strikethrough,
+        value: this.#value,
+        mimeType: this.#mimeType,
+        placeholder: this.#placeholder,
+        options: this.#options,
+        suggestionFilter: this.#suggestionFilter,
+        hideExactMatch: this.#hideExactMatch,
+        expression: this.#autocomplete ? this.#expression : "",
+        onFocus: this.#handleFocusEvent,
+        onInput: this.#handleInputEvent,
+        onKeyDown: this.#handleKeyDownEvent,
+        onSuggestionInit: this.#handleSuggestionInitEvent,
+        onSuggest: this.#handleSuggestEvent
+      },
+      void 0,
+      this.#shadow
+    );
   }
 };
 customElements.define("devtools-editable-content", EditableContent);

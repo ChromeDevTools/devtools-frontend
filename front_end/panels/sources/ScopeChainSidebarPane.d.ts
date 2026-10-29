@@ -13,7 +13,7 @@ interface ViewInput {
     onToggle: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, expanded: boolean, recursively?: boolean) => void;
     onContextMenu: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, contextMenu: UI.ContextMenu.ContextMenu) => void;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextFlavorListener.ContextFlavorListener {
     #private;

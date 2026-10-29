@@ -627,7 +627,7 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
       showDeviceScaleFactorSetting: this.showDeviceScaleFactorSetting,
       showUserAgentTypeSetting: this.showUserAgentTypeSetting
     };
-    this.view(input, {}, this.contentElement);
+    this.view(input, void 0, this.contentElement);
   }
   getDevicePostureOptions() {
     const currentPosture = this.currentDevicePosture();
@@ -1539,7 +1539,7 @@ var mediaQueryInspector_css_default = `/*
 /* Media query bars */
 
 .media-inspector-view {
-  height: 50px;
+  height: var(--sys-size-16);
 }
 
 .media-inspector-marker-container {
@@ -1992,7 +1992,7 @@ var MediaQueryInspector = class extends UI3.Widget.Widget {
         onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
         onContextMenu: this.onContextMenu.bind(this)
       },
-      {},
+      void 0,
       this.contentElement
     );
   }

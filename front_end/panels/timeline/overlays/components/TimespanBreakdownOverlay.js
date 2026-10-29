@@ -11,7 +11,7 @@ const renderSection = (section, position) => {
     const labelText = section.label instanceof HTMLElement ? (section.label.textContent || '') :
         typeof section.label === 'string' ? section.label :
             '';
-    const tooltip = durationText ? `${durationText} ${labelText}` : labelText;
+    const tooltip = labelText ? (durationText ? `${durationText} ${labelText}` : labelText) : '';
     // clang-format off
     return html `
       <div class="timespan-breakdown-overlay-section" style=${style} title=${tooltip}>
@@ -107,6 +107,19 @@ export class TimespanBreakdownOverlay extends UI.Widget.Widget {
         if (!sections) {
             return;
         }
+        for (const section of sections) {
+            const label = section.querySelector('.timespan-breakdown-overlay-label');
+            if (!label) {
+                continue;
+            }
+            if (!section.title) {
+                const durationText = label.querySelector('.duration-text')?.textContent ?? '';
+                const labelText = label.querySelector('.section-label-text')?.textContent ?? '';
+                section.title = durationText && labelText ? `${durationText} ${labelText}` : durationText || labelText;
+            }
+            label.classList.remove('labelHidden', 'labelTruncated', 'offScreenLeft', 'offScreenRight');
+            label.style.marginLeft = '';
+        }
         if (!this.#canvasRect) {
             return;
         }
@@ -115,14 +128,6 @@ export class TimespanBreakdownOverlay extends UI.Widget.Widget {
         // values and label positioning from the left hand side in order to be
         // consistent on both edges of the UI.
         const paddingForScrollbar = 9;
-        for (const section of sections) {
-            const label = section.querySelector('.timespan-breakdown-overlay-label');
-            if (!label) {
-                continue;
-            }
-            label.classList.remove('labelHidden', 'labelTruncated', 'offScreenLeft', 'offScreenRight');
-            label.style.marginLeft = '';
-        }
         // Fetch the rects for each section and label now, rather than in the loop,
         // to avoid causing a bunch of recalcStyles
         const sectionLayoutData = new Map();

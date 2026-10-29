@@ -4589,7 +4589,7 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
         onRootItemContextMenu: this.onRootItemContextMenu,
         onExpand: this.onExpand
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
@@ -4981,7 +4981,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     if (this.#objectTree?.expanded) {
       await this.#populateChildrenIfNeeded(this.#objectTree);
     }
-    this.#view(this, {}, this.contentElement);
+    this.#view(this, void 0, this.contentElement);
   }
   onDetach() {
     this.#objectTree?.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
@@ -5451,7 +5451,7 @@ var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2
       maxLength: this.#maxLength,
       text: this.#text
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
 };
 UI2.ContextMenu.registerProvider({

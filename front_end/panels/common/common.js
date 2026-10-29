@@ -3783,7 +3783,7 @@ var DOMNodeLink = class extends UI8.Widget.Widget {
       ariaDescription: options.ariaDescription
     };
     if (!this.#node) {
-      this.#view(viewInput, {}, this.contentElement);
+      this.#view(viewInput, void 0, this.contentElement);
       return;
     }
     let node = this.#node;
@@ -3793,12 +3793,12 @@ var DOMNodeLink = class extends UI8.Widget.Widget {
     }
     if (node.isViewTransitionPseudoNode()) {
       viewInput.pseudo = `::${this.#node.pseudoType()}(${this.#node.pseudoIdentifier()})`;
-      this.#view(viewInput, {}, this.contentElement);
+      this.#view(viewInput, void 0, this.contentElement);
       return;
     }
     if (options.textContent) {
       viewInput.tagName = options.textContent;
-      this.#view(viewInput, {}, this.contentElement);
+      this.#view(viewInput, void 0, this.contentElement);
       return;
     }
     viewInput.tagName = node.nodeNameInCorrectCase();
@@ -3828,7 +3828,7 @@ var DOMNodeLink = class extends UI8.Widget.Widget {
       }
       viewInput.pseudo = pseudoText;
     }
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
 var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
@@ -3875,7 +3875,7 @@ var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
         });
       }
     };
-    this.#view(viewInput, {}, this.contentElement);
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
 var linkifierInstance;
@@ -3905,6 +3905,7 @@ __export(CommentThreadWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
   computeCommentTitle: () => computeCommentTitle
 });
+import "../../ui/components/spinners/spinners.js";
 import "../../ui/components/tooltips/tooltips.js";
 import * as i18n17 from "../../core/i18n/i18n.js";
 import * as SDK5 from "../../core/sdk/sdk.js";
@@ -3955,7 +3956,8 @@ var commentThreadWidget_css_default = `/*
     flex-shrink: 0;
   }
 
-  .sent-status {
+  .sent-status,
+  .working-status {
     display: flex;
     align-items: center;
     gap: var(--sys-size-2);
@@ -4142,6 +4144,11 @@ var UIStrings7 = {
    */
   sentCheckmark: "Sent checkmark",
   /**
+   * @description Text next to a spinner in the comment thread header indicating that the agent has picked up the
+   * comments and is working on them.
+   */
+  working: "Working",
+  /**
    * @description Label for the agent response section in the comment thread.
    */
   response: "Response:",
@@ -4198,6 +4205,14 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     }
     switch (input.status) {
       case "SENT_TO_AGENT":
+        if (input.transmitted) {
+          return html8`
+            <div class="working-status">
+              <devtools-spinner></devtools-spinner>
+              <span>${i18nString7(UIStrings7.working)}</span>
+            </div>
+          `;
+        }
         return html8`
           <div class="sent-status">
             <devtools-icon
@@ -4318,6 +4333,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
   #comments = [];
   #commentText = "";
   #status = "DRAFT";
+  #transmitted = false;
   #isQueueModifierPressed = false;
   #textAreaRef = createRef();
   #view;
@@ -4348,6 +4364,13 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
   }
   set status(commentStatus) {
     this.#status = commentStatus;
+    this.requestUpdate();
+  }
+  set transmitted(transmitted) {
+    if (this.#transmitted === transmitted) {
+      return;
+    }
+    this.#transmitted = transmitted;
     this.requestUpdate();
   }
   #onSetEditMode = (value) => {
@@ -4401,6 +4424,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
       isQueueModifierPressed: this.#isQueueModifierPressed,
       textAreaRef: this.#textAreaRef,
       status: this.#status,
+      transmitted: this.#transmitted,
       onAddComment: this.#handleAddComment,
       onQueueComment: this.#handleQueueComment,
       onCommentTextChange: this.#handleCommentTextChange,
@@ -4614,6 +4638,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         title: input.title,
         comments: [...item2.thread.comments],
         status: item2.thread.status,
+        transmitted: item2.thread.transmitted,
         onAddComment: input.onAddComment,
         onDeleteQueuedComment: input.onDeleteQueuedComment,
         onQueueComment: input.onQueueComment,

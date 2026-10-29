@@ -52,7 +52,7 @@ export interface ViewInput {
     memorySlice: Uint8Array<ArrayBuffer>;
     viewerStart: number;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: Record<string, unknown>, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
 export declare class LinearMemoryInspector extends UI.Widget.Widget {
     #private;

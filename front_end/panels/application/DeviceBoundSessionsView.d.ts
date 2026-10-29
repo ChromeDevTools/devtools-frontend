@@ -12,8 +12,7 @@ interface ViewInput {
     selectedEvent?: Protocol.Network.DeviceBoundSessionEventOccurredEvent;
     onEventRowSelected?(selectedEvent?: Protocol.Network.DeviceBoundSessionEventOccurredEvent | undefined): void;
 }
-type ViewOutput = object;
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 export declare class DeviceBoundSessionsView extends UI.Widget.VBox {
     #private;
     constructor(view?: typeof DEFAULT_VIEW);

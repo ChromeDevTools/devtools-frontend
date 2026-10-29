@@ -2161,12 +2161,11 @@ __export(LCPDiscovery_exports, {
 });
 import * as i18n16 from "../../../../core/i18n/i18n.js";
 import * as Trace12 from "../../../../models/trace/trace.js";
-import * as uiI18n from "../../../../ui/i18n/i18n.js";
 import * as UI17 from "../../../../ui/legacy/legacy.js";
 import * as Lit19 from "../../../../ui/lit/lit.js";
 var { widget: widget14 } = UI17.Widget;
 var { UIStrings: UIStrings13, i18nString: i18nString13, getImageData } = Trace12.Insights.Models.LCPDiscovery;
-var { html: html19 } = Lit19;
+var { html: html19, i18nTemplate } = Lit19;
 var str_4 = i18n16.i18n.registerUIStrings("models/trace/insights/LCPDiscovery.ts", UIStrings13);
 var LCPDiscovery = class extends BaseInsightComponent {
   internalName = "lcp-discovery";
@@ -2187,7 +2186,10 @@ var LCPDiscovery = class extends BaseInsightComponent {
     }
     const timespanOverlaySection = overlays.find((overlay) => overlay.type === "TIMESPAN_BREAKDOWN")?.sections[0];
     if (timespanOverlaySection) {
-      timespanOverlaySection.label = this.#renderDiscoveryDelay(imageResults.discoveryDelay);
+      const label = this.#renderDiscoveryDelay(imageResults.discoveryDelay);
+      if (label !== Lit19.nothing) {
+        timespanOverlaySection.label = label;
+      }
     }
     return overlays;
   }
@@ -2198,10 +2200,8 @@ var LCPDiscovery = class extends BaseInsightComponent {
     return getImageData(this.model)?.estimatedSavings ?? null;
   }
   #renderDiscoveryDelay(delay) {
-    const timeWrapper = document.createElement("span");
-    timeWrapper.classList.add("discovery-time-ms");
-    timeWrapper.innerText = i18n16.TimeUtilities.formatMicroSecondsAsMillisFixed(delay);
-    return uiI18n.getFormatLocalizedString(str_4, UIStrings13.lcpLoadDelay, { PH1: timeWrapper });
+    const timeWrapper = html19`<span class="discovery-time-ms">${i18n16.TimeUtilities.formatMicroSecondsAsMillisFixed(delay)}</span>`;
+    return i18nTemplate(str_4, UIStrings13.lcpLoadDelay, { PH1: timeWrapper });
   }
   renderContent() {
     if (!this.model) {

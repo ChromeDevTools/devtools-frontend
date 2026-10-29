@@ -1,8 +1,8 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import cssVariableValueViewStyles from './cssVariableValueView.css.js';
 const UIStrings = {
@@ -34,31 +34,61 @@ function getLinkSection(details) {
             </span>
           </div>`;
 }
-export class CSSVariableParserError extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    constructor(details) {
+export const DEFAULT_PARSER_ERROR_VIEW = (input, _output, target) => {
+    const type = html `<span class="monospace css-property">${input.details.registration.syntax()}</span>`;
+    render(html `
+    <style>${cssVariableValueViewStyles}</style>
+    <div class="variable-value-popup-wrapper">
+      ${i18nTemplate(UIStrings.invalidPropertyValue, { type })}
+      ${getLinkSection(input.details)}
+    </div>`, target, { container: { classes: ['css-variable-parser-error'] } });
+};
+export class CSSVariableParserError extends UI.Widget.Widget {
+    #view;
+    #details;
+    constructor(details, view = DEFAULT_PARSER_ERROR_VIEW) {
         super();
-        this.#render(details);
+        this.#view = view;
+        this.#details = details;
+        this.performUpdate();
     }
-    #render(details) {
-        const type = html `<span class="monospace css-property">${details.registration.syntax()}</span>`;
-        render(html `
-      <style>${cssVariableValueViewStyles}</style>
-      <div class="variable-value-popup-wrapper">
-        ${i18nTemplate(UIStrings.invalidPropertyValue, { type })}
-        ${getLinkSection(details)}
-      </div>`, this.#shadow, {
-            host: this,
-        });
+    wasShown() {
+        super.wasShown();
+        this.performUpdate();
+    }
+    performUpdate() {
+        this.#view({ details: this.#details }, undefined, this.contentElement);
     }
 }
-export class CSSVariableValueView extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const initialValue = input.details?.registration.initialValue();
+    const registrationView = input.details ? html `
+      <hr class=divider />
+      <div class=registered-property-popup-wrapper>
+        <div class="monospace">
+          <div><span class="css-property">syntax:</span> ${input.details.registration.syntax()}</div>
+          <div><span class="css-property">inherits:</span> ${input.details.registration.inherits()}</div>
+          ${initialValue ? html `<div><span class="css-property">initial-value:</span> ${initialValue}</div>` : ''}
+        </div>
+        ${getLinkSection(input.details)}
+      </div>` :
+        '';
+    const valueText = input.value ?? i18nString(UIStrings.sIsNotDefined, { PH1: input.variableName });
+    render(html `<style>${cssVariableValueViewStyles}</style>
+           <div class="variable-value-popup-wrapper">
+             ${valueText}
+           </div>
+           ${registrationView}
+           `, target, { container: { classes: ['css-variable-value-view'] } });
+};
+export class CSSVariableValueView extends UI.Widget.Widget {
+    #view;
     variableName;
     #value;
     details;
-    constructor({ variableName, value, details, }) {
+    constructor({ variableName, value, details, }, view = DEFAULT_VIEW) {
         super();
+        this.#view = view;
         this.variableName = variableName;
         this.details = details;
         this.value = value;
@@ -68,32 +98,18 @@ export class CSSVariableValueView extends HTMLElement {
     }
     set value(value) {
         this.#value = value;
-        this.#render();
+        this.performUpdate();
     }
-    #render() {
-        const initialValue = this.details?.registration.initialValue();
-        const registrationView = this.details ? html `
-        <hr class=divider />
-        <div class=registered-property-popup-wrapper>
-          <div class="monospace">
-            <div><span class="css-property">syntax:</span> ${this.details.registration.syntax()}</div>
-            <div><span class="css-property">inherits:</span> ${this.details.registration.inherits()}</div>
-            ${initialValue ? html `<div><span class="css-property">initial-value:</span> ${initialValue}</div>` : ''}
-          </div>
-          ${getLinkSection(this.details)}
-        </div>` :
-            '';
-        const valueText = this.value ?? i18nString(UIStrings.sIsNotDefined, { PH1: this.variableName });
-        render(html `<style>${cssVariableValueViewStyles}</style>
-             <div class="variable-value-popup-wrapper">
-               ${valueText}
-             </div>
-             ${registrationView}
-             `, this.#shadow, {
-            host: this,
-        });
+    wasShown() {
+        super.wasShown();
+        this.performUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            variableName: this.variableName,
+            value: this.#value,
+            details: this.details,
+        }, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-css-variable-value-view', CSSVariableValueView);
-customElements.define('devtools-css-variable-parser-error', CSSVariableParserError);
 //# sourceMappingURL=CSSVariableValueView.js.map

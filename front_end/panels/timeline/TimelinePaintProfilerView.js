@@ -169,7 +169,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
     }
 }
-export const DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, output, target) => {
     const imageElementRef = createRef();
     // clang-format off
     render(html `
@@ -190,7 +190,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     if (!imageElement?.naturalHeight || !imageElement.naturalWidth) {
         throw new Error('ImageElement were not found in the TimelinePaintImageView.');
     }
-    return { imageElementNaturalHeight: imageElement.naturalHeight, imageElementNaturalWidth: imageElement.naturalWidth };
+    output.imageElementNaturalHeight = imageElement.naturalHeight;
+    output.imageElementNaturalWidth = imageElement.naturalWidth;
 };
 export class TimelinePaintImageView extends UI.Widget.Widget {
     transformController;
@@ -273,8 +274,14 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
         this.requestUpdate();
     }
     performUpdate() {
-        const { imageElementNaturalHeight, imageElementNaturalWidth } = this.#view(this.#inputData, undefined, this.contentElement);
-        this.#imageElementDimensions = { naturalHeight: imageElementNaturalHeight, naturalWidth: imageElementNaturalWidth };
+        const output = {};
+        this.#view(this.#inputData, output, this.contentElement);
+        if (output.imageElementNaturalHeight !== undefined && output.imageElementNaturalWidth !== undefined) {
+            this.#imageElementDimensions = {
+                naturalHeight: output.imageElementNaturalHeight,
+                naturalWidth: output.imageElementNaturalWidth,
+            };
+        }
         // Image can only be updated to correctly fit the component when the component has loaded.
         this.updateImagePosition();
     }

@@ -739,7 +739,7 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
     if (!this.#condition || !this.#lookUpRequestCount) {
       return;
     }
-    this.#view({ count: this.#lookUpRequestCount(this.#condition) }, {}, this.element);
+    this.#view({ count: this.#lookUpRequestCount(this.#condition) }, void 0, this.element);
   }
   wasShown() {
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -3991,7 +3991,7 @@ var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
     if (!this.isShowing()) {
       return;
     }
-    this.#view({ deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages() }, {}, this.contentElement);
+    this.#view({ deviceBoundSessionUsages: this.#request.getDeviceBoundSessionUsages() }, void 0, this.contentElement);
   }
 };
 function getDeferralDecision(usage) {
@@ -4215,7 +4215,7 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
       onFilterChanged: this.onFilterChanged.bind(this),
       onRowContextMenu: this.onRowContextMenu.bind(this)
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
 };
 function formatTime(d) {
@@ -9428,7 +9428,7 @@ var RequestTimingView = class _RequestTimingView extends UI10.Widget.VBox {
       wasThrottled: conditions?.urlPattern ? conditions : void 0,
       timeRanges
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
   set request(request) {
     this.#request = request;
@@ -15434,7 +15434,7 @@ var ShowMoreDetailsWidget = class extends UI16.Widget.Widget {
           this.requestUpdate();
         }
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
@@ -15773,7 +15773,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI17.Widget.Widget {
       showRequestHeadersText: this.#showRequestHeadersText,
       backendLink: Root2.Runtime.hostConfig.devToolsNetworkBackendLinking?.enabled ? NetworkPanel.instance().backendLinking?.getLink(this.#request) ?? null : null
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
   #getHeaderOverridesFileUrl() {
     if (!this.#request) {
@@ -16729,7 +16729,7 @@ var RequestPayloadView = class _RequestPayloadView extends UI18.Widget.VBox {
       binaryPayloadContentData: this.#binaryPayloadContentData,
       requestUrl: this.request?.url() ?? Platform10.DevToolsPath.EmptyUrlString
     };
-    this.#view(input, {}, this.element);
+    this.#view(input, void 0, this.element);
   }
   #refreshFormData() {
     this.#refreshFormDataPromiseForTest = this.#doRefreshFormData();
@@ -16898,7 +16898,7 @@ var RequestHTMLView = class _RequestHTMLView extends UI19.Widget.VBox {
     this.requestUpdate();
   }
   performUpdate() {
-    this.#view({ dataURL: this.#dataURL }, {}, this.contentElement);
+    this.#view({ dataURL: this.#dataURL }, void 0, this.contentElement);
   }
 };
 

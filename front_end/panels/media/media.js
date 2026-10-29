@@ -157,12 +157,15 @@ var PlayerEventsView = class extends UI.Widget.VBox {
 // ../../front_end/panels/media/MainView.ts
 var MainView_exports = {};
 __export(MainView_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW5,
   MainView: () => MainView,
   PlayerDataDownloadManager: () => PlayerDataDownloadManager
 });
-import * as i18n13 from "../../core/i18n/i18n.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
+import { html as html6, render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/media/MediaModel.ts
 var MediaModel_exports = {};
@@ -222,26 +225,30 @@ __export(PlayerDetailView_exports, {
   PlayerDetailView: () => PlayerDetailView,
   PlayerDetailViewTabs: () => PlayerDetailViewTabs
 });
-import * as i18n9 from "../../core/i18n/i18n.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 
 // ../../front_end/panels/media/EventTimelineView.ts
-import * as i18n3 from "../../core/i18n/i18n.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/media/TickingFlameChart.ts
 var TickingFlameChart_exports = {};
 __export(TickingFlameChart_exports, {
   ColdColorScheme: () => ColdColorScheme,
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
   Event: () => Event,
   HotColorScheme: () => HotColorScheme,
-  TickingFlameChart: () => TickingFlameChart
+  TickingFlameChart: () => TickingFlameChart,
+  renderEventPopover: () => renderEventPopover
 });
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
 import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
+import { html as html2, render as render2 } from "../../ui/lit/lit.js";
 
 // ../../front_end/panels/media/TickingFlameChartHelpers.ts
 var TickingFlameChartHelpers_exports = {};
@@ -357,6 +364,35 @@ var Bounds = class {
 };
 
 // ../../front_end/panels/media/TickingFlameChart.ts
+var UIStrings2 = {
+  /**
+   * @description Name of an event shown in the hover popover of the media
+   * panel timeline.
+   * @example {Play} PH1
+   */
+  name: "Name: {PH1}",
+  /**
+   * @description Duration of an event shown in the hover popover of the media
+   * panel timeline, given as a start time and an end time in seconds.
+   * @example {1.00s} PH1
+   * @example {2.50s} PH2
+   */
+  duration: "Duration: {PH1} - {PH2}",
+  /**
+   * @description Duration of an event that is still ongoing, shown in the
+   * hover popover of the media panel timeline.
+   * @example {1.00s} PH1
+   */
+  durationLive: "Duration: {PH1} - LIVE!",
+  /**
+   * @description Time of an instantaneous event shown in the hover popover of
+   * the media panel timeline.
+   * @example {1.00s} PH1
+   */
+  time: "Time: {PH1}"
+};
+var str_2 = i18n3.i18n.registerUIStrings("panels/media/TickingFlameChart.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var defaultFont = "11px " + Host.Platform.fontFamily();
 function getGroupDefaultTextColor() {
   return ThemeSupport.ThemeSupport.instance().getComputedValue("--sys-color-on-surface");
@@ -382,6 +418,13 @@ function calculateFontColor(backgroundColor) {
     return "#eee";
   }
   return "#444";
+}
+function renderEventPopover(input) {
+  return html2`
+    <span>${i18nString2(UIStrings2.name, { PH1: input.title })}</span>
+    <br>
+    ${input.live ? html2`<span>${i18nString2(UIStrings2.durationLive, { PH1: input.startTimeReadable })}</span>` : input.durationReadable !== void 0 ? html2`<span>${i18nString2(UIStrings2.duration, { PH1: input.startTimeReadable, PH2: input.durationReadable })}</span>` : html2`<span>${i18nString2(UIStrings2.time, { PH1: input.startTimeReadable })}</span>`}
+  `;
 }
 var Event = class {
   timelineData;
@@ -412,20 +455,17 @@ var Event = class {
     this.#fontColor = calculateFontColor(this.#color);
   }
   /**
-   * Render hovertext into the |htmlElement|
+   * The data shown in the hover popover for this event.
    */
-  decorate(htmlElement) {
-    htmlElement.createChild("span").textContent = `Name: ${this.title}`;
-    htmlElement.createChild("br");
+  popoverInput() {
     const startTimeReadable = formatMillisecondsToSeconds(this.startTime, 2);
-    if (this.#live) {
-      htmlElement.createChild("span").textContent = `Duration: ${startTimeReadable} - LIVE!`;
-    } else if (!isNaN(this.duration)) {
-      const durationReadable = formatMillisecondsToSeconds(this.duration + this.startTime, 2);
-      htmlElement.createChild("span").textContent = `Duration: ${startTimeReadable} - ${durationReadable}`;
-    } else {
-      htmlElement.createChild("span").textContent = `Time: ${startTimeReadable}`;
-    }
+    const durationReadable = !this.#live && !isNaN(this.duration) ? formatMillisecondsToSeconds(this.duration + this.startTime, 2) : void 0;
+    return {
+      title: this.title,
+      startTimeReadable,
+      live: this.#live,
+      durationReadable
+    };
   }
   /**
    * set an event to be "live" where it's ended time is always the chart maximum
@@ -470,6 +510,11 @@ var Event = class {
     return this.#live;
   }
 };
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render2(html2`
+    <devtools-widget class="flex-auto vbox" ${UI2.Widget.widget(() => input.chart)}></devtools-widget>
+  `, target);
+};
 var TickingFlameChart = class extends UI2.Widget.VBox {
   intervalTimer;
   lastTimestamp;
@@ -482,8 +527,10 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
   chartGroupExpansionSetting;
   chart;
   stoppedPermanently;
-  constructor() {
-    super();
+  #view;
+  constructor(element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#view = view;
     this.intervalTimer = 0;
     this.lastTimestamp = 0;
     this.#canTick = true;
@@ -500,7 +547,10 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
     this.chart.bindCanvasEvent("wheel", (e) => {
       this.onScroll(e);
     });
-    this.chart.show(this.contentElement);
+    this.performUpdate();
+  }
+  performUpdate() {
+    this.#view({ chart: this.chart }, void 0, this.contentElement);
   }
   /**
    * Add a marker with |properties| at |time|.
@@ -708,9 +758,8 @@ var TickingFlameChartDataProvider = class {
     return false;
   }
   preparePopoverElement(index) {
-    const element = document.createElement("div");
-    this.eventMap.get(index).decorate(element);
-    return element;
+    const event = this.eventMap.get(index);
+    return event ? renderEventPopover(event.popoverInput()) : null;
   }
   formatValue(value, _precision) {
     value += Math.round(this.bounds.low);
@@ -729,7 +778,7 @@ var TickingFlameChartDataProvider = class {
 
 // ../../front_end/panels/media/EventTimelineView.ts
 var NO_NORMALIZED_TIMESTAMP = -1.5;
-var UIStrings2 = {
+var UIStrings3 = {
   /**
    * @description Title of the 'Playback status' button.
    */
@@ -739,8 +788,8 @@ var UIStrings2 = {
    */
   bufferingStatus: "Buffering status"
 };
-var str_2 = i18n3.i18n.registerUIStrings("panels/media/EventTimelineView.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_3 = i18n5.i18n.registerUIStrings("panels/media/EventTimelineView.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var PlayerEventsTimeline = class extends TickingFlameChart {
   normalizedTimestamp;
   playbackStatusLastEvent;
@@ -750,8 +799,8 @@ var PlayerEventsTimeline = class extends TickingFlameChart {
     super();
     this.element.setAttribute("jslog", `${VisualLogging2.pane("timeline")}`);
     this.normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
-    this.addGroup(i18nString2(UIStrings2.playbackStatus), 2);
-    this.addGroup(i18nString2(UIStrings2.bufferingStatus), 2);
+    this.addGroup(i18nString3(UIStrings3.playbackStatus), 2);
+    this.addGroup(i18nString3(UIStrings3.bufferingStatus), 2);
     this.playbackStatusLastEvent = null;
     this.audioBufferingStateEvent = null;
     this.videoBufferingStateEvent = null;
@@ -887,9 +936,9 @@ __export(PlayerMessagesView_exports, {
   PlayerMessagesView: () => PlayerMessagesView
 });
 import "../../ui/legacy/legacy.js";
-import * as i18n5 from "../../core/i18n/i18n.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
 import * as UI3 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html2, nothing, render as render2 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html3, nothing, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerMessagesView.css.js
@@ -981,7 +1030,7 @@ var playerMessagesView_css_default = `/*
 
 // ../../front_end/panels/media/PlayerMessagesView.ts
 var { classMap } = Directives2;
-var UIStrings3 = {
+var UIStrings4 = {
   /**
    * @description A context menu item in the Console view of the Console panel.
    */
@@ -1039,8 +1088,8 @@ var UIStrings3 = {
    */
   errorCauseLabel: "Caused by:"
 };
-var str_3 = i18n5.i18n.registerUIStrings("panels/media/PlayerMessagesView.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var str_4 = i18n7.i18n.registerUIStrings("panels/media/PlayerMessagesView.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var MessageLevelSelector = class {
   items;
   view;
@@ -1057,9 +1106,9 @@ var MessageLevelSelector = class {
     this.itemMap = /* @__PURE__ */ new Map();
     this.hiddenLevels = [];
     this.bitFieldValue = 7 /* DEFAULT */;
-    this.#defaultTitle = i18nString3(UIStrings3.default);
-    this.customTitle = i18nString3(UIStrings3.custom);
-    this.allTitle = i18nString3(UIStrings3.all);
+    this.#defaultTitle = i18nString4(UIStrings4.default);
+    this.customTitle = i18nString4(UIStrings4.custom);
+    this.allTitle = i18nString4(UIStrings4.all);
     this.elementsForItems = /* @__PURE__ */ new WeakMap();
   }
   defaultTitle() {
@@ -1086,7 +1135,7 @@ var MessageLevelSelector = class {
     this.items.insert(this.items.length, allLevel);
     this.itemMap.set(allLevel.value, allLevel);
     const errorLevel = {
-      title: i18nString3(UIStrings3.error),
+      title: i18nString4(UIStrings4.error),
       overwrite: false,
       stringValue: "error",
       value: 1 /* ERROR */
@@ -1094,7 +1143,7 @@ var MessageLevelSelector = class {
     this.items.insert(this.items.length, errorLevel);
     this.itemMap.set(errorLevel.value, errorLevel);
     const warningLevel = {
-      title: i18nString3(UIStrings3.warning),
+      title: i18nString4(UIStrings4.warning),
       overwrite: false,
       stringValue: "warning",
       value: 2 /* WARNING */
@@ -1102,7 +1151,7 @@ var MessageLevelSelector = class {
     this.items.insert(this.items.length, warningLevel);
     this.itemMap.set(warningLevel.value, warningLevel);
     const infoLevel = {
-      title: i18nString3(UIStrings3.info),
+      title: i18nString4(UIStrings4.info),
       overwrite: false,
       stringValue: "info",
       value: 4 /* INFO */
@@ -1110,7 +1159,7 @@ var MessageLevelSelector = class {
     this.items.insert(this.items.length, infoLevel);
     this.itemMap.set(infoLevel.value, infoLevel);
     const debugLevel = {
-      title: i18nString3(UIStrings3.debug),
+      title: i18nString4(UIStrings4.debug),
       overwrite: false,
       stringValue: "debug",
       value: 8 /* DEBUG */
@@ -1120,10 +1169,10 @@ var MessageLevelSelector = class {
   }
   #renderItem(item2, target) {
     const checked = Boolean(item2.value & this.bitFieldValue);
-    render2(html2`
+    render3(html3`
       <div class="media-messages-level-dropdown-element">
         <div class="media-messages-level-dropdown-checkbox">
-          ${!item2.overwrite && checked ? html2`<div>\u2713</div>` : nothing}
+          ${!item2.overwrite && checked ? html3`<div>\u2713</div>` : nothing}
         </div>
         <span class="media-messages-level-dropdown-text">${item2.title}</span>
       </div>
@@ -1212,12 +1261,12 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     dropDownItem.setTitle(this.messageLevelSelector.defaultTitle());
     UI3.ARIAUtils.setLabel(
       dropDownItem.element,
-      `${i18nString3(UIStrings3.logLevel)} ${this.messageLevelSelector.defaultTitle()}`
+      `${i18nString4(UIStrings4.logLevel)} ${this.messageLevelSelector.defaultTitle()}`
     );
     return dropDownItem;
   }
   createFilterInput() {
-    const filterInput = new UI3.Toolbar.ToolbarFilter(i18nString3(UIStrings3.filterByLogMessages), 1, 1);
+    const filterInput = new UI3.Toolbar.ToolbarFilter(i18nString4(UIStrings4.filterByLogMessages), 1, 1);
     filterInput.addEventListener(UI3.Toolbar.ToolbarInput.Event.TEXT_CHANGED, (data) => {
       this.filterByString(data);
     }, this);
@@ -1228,9 +1277,9 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     this.#renderMessages();
   }
   #renderToolbar() {
-    render2(html2`
+    render3(html3`
       <devtools-toolbar class="media-messages-toolbar">
-        <div class="toolbar-text">${i18nString3(UIStrings3.logLevel)}</div>
+        <div class="toolbar-text">${i18nString4(UIStrings4.logLevel)}</div>
         ${this.#dropDownItem?.element}
         <div class="toolbar-divider"></div>
         ${this.#filterInput?.element}
@@ -1238,7 +1287,7 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     `, this.headerPanel, { host: this });
   }
   #renderMessages() {
-    render2(html2`
+    render3(html3`
       ${this.#items.map((item2) => {
       const isUnselected = this.#isLevelHidden(item2.level);
       let isFiltered = false;
@@ -1255,7 +1304,7 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
         "media-messages-message-unselected": isUnselected,
         "media-messages-message-filtered": isFiltered
       };
-      return html2`
+      return html3`
           <div class=${classMap(classes)}>
             ${item2.type === "message" ? item2.message.message : this.renderError(item2.error)}
           </div>
@@ -1300,44 +1349,44 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     this.performUpdate();
   }
   renderError(error) {
-    return html2`
+    return html3`
       <div class="status-error-box">
         <div class="status-error-field-labeled">
           <span class="status-error-field-label"
-            >${i18nString3(UIStrings3.errorGroupLabel)}</span
+            >${i18nString4(UIStrings4.errorGroupLabel)}</span
           >
           <span>${error.errorType}</span>
         </div>
         <div class="status-error-field-labeled">
           <span class="status-error-field-label"
-            >${i18nString3(UIStrings3.errorCodeLabel)}</span
+            >${i18nString4(UIStrings4.errorCodeLabel)}</span
           >
           <span>${error.code}</span>
         </div>
         <div class="status-error-field-labeled">
-        ${Object.keys(error.data).length !== 0 ? html2`<span class="status-error-field-label"
-                  >${i18nString3(UIStrings3.errorDataLabel)}</span
+        ${Object.keys(error.data).length !== 0 ? html3`<span class="status-error-field-label"
+                  >${i18nString4(UIStrings4.errorDataLabel)}</span
                 >
                 <div>
                   ${Object.entries(error.data).map(
-      ([key, value]) => html2`<div>${key}: ${value}</div>`
+      ([key, value]) => html3`<div>${key}: ${value}</div>`
     )}
                 </div>` : nothing}
         </div>
         <div class="status-error-field-labeled">
-          ${error.stack.length !== 0 ? html2`<span class="status-error-field-label"
-                    >${i18nString3(UIStrings3.errorStackLabel)}</span
+          ${error.stack.length !== 0 ? html3`<span class="status-error-field-label"
+                    >${i18nString4(UIStrings4.errorStackLabel)}</span
                   >
                   <div>
                     ${error.stack.map(
-      (stackEntry) => html2`<div>${stackEntry.file}:${stackEntry.line}</div>`
+      (stackEntry) => html3`<div>${stackEntry.file}:${stackEntry.line}</div>`
     )}
                   </div>` : nothing}
         </div>
         <div class="status-error-field-labeled">
-          ${error.cause.length !== 0 ? html2`
+          ${error.cause.length !== 0 ? html3`
                   <span class="status-error-field-label"
-                    >${i18nString3(UIStrings3.errorCauseLabel)}</span
+                    >${i18nString4(UIStrings4.errorCauseLabel)}</span
                   >
                   <div>
                     ${error.cause.map((cause) => this.renderError(cause))}
@@ -1356,15 +1405,15 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
 // ../../front_end/panels/media/PlayerPropertiesView.ts
 var PlayerPropertiesView_exports = {};
 __export(PlayerPropertiesView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   PlayerPropertiesView: () => PlayerPropertiesView,
   PlayerPropertyKeys: () => PlayerPropertyKeys
 });
-import * as i18n7 from "../../core/i18n/i18n.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerPropertiesView.css.js
@@ -1433,7 +1482,7 @@ var playerPropertiesView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./playerPropertiesView.css")} */`;
 
 // ../../front_end/panels/media/PlayerPropertiesView.ts
-var UIStrings4 = {
+var UIStrings5 = {
   /**
    * @description A video or audio stream - but capitalized.
    */
@@ -1553,8 +1602,8 @@ var UIStrings4 = {
    */
   hlsBufferedRanges: "Buffered media ranges"
 };
-var str_4 = i18n7.i18n.registerUIStrings("panels/media/PlayerPropertiesView.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_5 = i18n9.i18n.registerUIStrings("panels/media/PlayerPropertiesView.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var PlayerPropertyKeys = /* @__PURE__ */ ((PlayerPropertyKeys2) => {
   PlayerPropertyKeys2["RESOLUTION"] = "kResolution";
   PlayerPropertyKeys2["TOTAL_BYTES"] = "kTotalBytes";
@@ -1708,61 +1757,61 @@ var TrackProperty = class extends Property {
 };
 var { classMap: classMap2 } = Directives3;
 var { widget: widget2 } = UI4.Widget;
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   function propertyTitle(type) {
     switch (type) {
       case "kResolution" /* RESOLUTION */:
-        return i18nString4(UIStrings4.resolution);
+        return i18nString5(UIStrings5.resolution);
       case "kTotalBytes" /* TOTAL_BYTES */:
-        return i18nString4(UIStrings4.fileSize);
+        return i18nString5(UIStrings5.fileSize);
       case "kBitrate" /* BITRATE */:
-        return i18nString4(UIStrings4.bitrate);
+        return i18nString5(UIStrings5.bitrate);
       case "kMaxDuration" /* MAX_DURATION */:
-        return i18nString4(UIStrings4.duration);
+        return i18nString5(UIStrings5.duration);
       case "kStartTime" /* START_TIME */:
-        return i18nString4(UIStrings4.startTime);
+        return i18nString5(UIStrings5.startTime);
       case "kIsStreaming" /* IS_STREAMING */:
-        return i18nString4(UIStrings4.streaming);
+        return i18nString5(UIStrings5.streaming);
       case "kFrameUrl" /* FRAME_URL */:
-        return i18nString4(UIStrings4.playbackFrameUrl);
+        return i18nString5(UIStrings5.playbackFrameUrl);
       case "kFrameTitle" /* FRAME_TITLE */:
-        return i18nString4(UIStrings4.playbackFrameTitle);
+        return i18nString5(UIStrings5.playbackFrameTitle);
       case "kIsSingleOrigin" /* IS_SINGLE_ORIGIN */:
-        return i18nString4(UIStrings4.singleoriginPlayback);
+        return i18nString5(UIStrings5.singleoriginPlayback);
       case "kIsRangeHeaderSupported" /* IS_RANGE_HEADER_SUPPORTED */:
-        return i18nString4(UIStrings4.rangeHeaderSupport);
+        return i18nString5(UIStrings5.rangeHeaderSupport);
       case "kFramerate" /* FRAMERATE */:
-        return i18nString4(UIStrings4.frameRate);
+        return i18nString5(UIStrings5.frameRate);
       case "kVideoPlaybackRoughness" /* VIDEO_PLAYBACK_ROUGHNESS */:
-        return i18nString4(UIStrings4.videoPlaybackRoughness);
+        return i18nString5(UIStrings5.videoPlaybackRoughness);
       case "kVideoPlaybackFreezing" /* VIDEO_PLAYBACK_FREEZING */:
-        return i18nString4(UIStrings4.videoFreezingScore);
+        return i18nString5(UIStrings5.videoFreezingScore);
       case "kRendererName" /* RENDERER_NAME */:
-        return i18nString4(UIStrings4.rendererName);
+        return i18nString5(UIStrings5.rendererName);
       case "kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */:
-        return i18nString4(UIStrings4.hlsBufferedRanges);
+        return i18nString5(UIStrings5.hlsBufferedRanges);
       case "kVideoDecoderName" /* VIDEO_DECODER_NAME */:
-        return i18nString4(UIStrings4.decoderName);
+        return i18nString5(UIStrings5.decoderName);
       case "kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */:
-        return i18nString4(UIStrings4.hardwareDecoder);
+        return i18nString5(UIStrings5.hardwareDecoder);
       case "kVideoEncoderName" /* VIDEO_ENCODER_NAME */:
-        return i18nString4(UIStrings4.encoderName);
+        return i18nString5(UIStrings5.encoderName);
       case "kIsPlatformVideoEncoder" /* IS_PLATFORM_VIDEO_ENCODER */:
-        return i18nString4(UIStrings4.hardwareEncoder);
+        return i18nString5(UIStrings5.hardwareEncoder);
       case "kIsVideoDecryptingDemuxerStream" /* IS_VIDEO_DECRYPTION_DEMUXER_STREAM */:
-        return i18nString4(UIStrings4.decryptingDemuxer);
+        return i18nString5(UIStrings5.decryptingDemuxer);
       case "kAudioDecoderName" /* AUDIO_DECODER_NAME */:
-        return i18nString4(UIStrings4.decoderName);
+        return i18nString5(UIStrings5.decoderName);
       case "kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */:
-        return i18nString4(UIStrings4.hardwareDecoder);
+        return i18nString5(UIStrings5.hardwareDecoder);
       case "kIsAudioDecryptingDemuxerStream" /* IS_AUDIO_DECRYPTING_DEMUXER_STREAM */:
-        return i18nString4(UIStrings4.decryptingDemuxer);
+        return i18nString5(UIStrings5.decryptingDemuxer);
       default:
         return Platform2.UIString.LocalizedEmptyString;
     }
   }
   const renderAttribute = (data, title) => {
-    return html3`<div class=${classMap2({
+    return html4`<div class=${classMap2({
       widget: true,
       vbox: true,
       "media-property-renderer": true,
@@ -1775,19 +1824,19 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   const renderProperty = (property) => {
     let fallback = null;
     if (property.type === "kVideoDecoderName" /* VIDEO_DECODER_NAME */ || property.type === "kAudioDecoderName" /* AUDIO_DECODER_NAME */) {
-      fallback = i18nString4(UIStrings4.noDecoder);
+      fallback = i18nString5(UIStrings5.noDecoder);
     } else if (property.type === "kVideoEncoderName" /* VIDEO_ENCODER_NAME */) {
-      fallback = i18nString4(UIStrings4.noEncoder);
+      fallback = i18nString5(UIStrings5.noEncoder);
     }
     return renderAttribute(property.data ?? fallback, propertyTitle(property.type));
   };
   const renderTracks = (property, trackName, idPrefix) => property instanceof TrackProperty && property.entries !== null ? property.entries.map(
     // clang-format off
-    (track, i) => html3`
-              <div id=track-${idPrefix}-${i} label=${i18nString4(UIStrings4.trackNumber, { PH1: trackName, PH2: i + 1 })}>
+    (track, i) => html4`
+              <div id=track-${idPrefix}-${i} label=${i18nString5(UIStrings5.trackNumber, { PH1: trackName, PH2: i + 1 })}>
                 <div class="widget vbox media-attributes-view">
                   ${Object.entries(track).map(([name, data]) => renderAttribute(
-      typeof data === "object" ? html3`${widget2((e) => new SourceFrame2.JSONView.JSONView(
+      typeof data === "object" ? html4`${widget2((e) => new SourceFrame2.JSONView.JSONView(
         new SourceFrame2.JSONView.ParsedJSON(data, "", ""),
         true,
         e
@@ -1797,9 +1846,9 @@ var DEFAULT_VIEW2 = (input, output, target) => {
                 </div>
               </div>`
   ) : [nothing2];
-  render3(
+  render4(
     // clang-format off
-    html3`
+    html4`
     <style>${playerPropertiesView_css_default}</style>
     <div class="widget vbox media-attributes-view">
       ${renderProperty(input.properties["kResolution" /* RESOLUTION */])}
@@ -1819,7 +1868,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       ${renderProperty(input.properties["kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */])}
     </div>
     <devtools-tabbed-pane>
-      <div id=decoder-properties label=${i18nString4(UIStrings4.videoDecoderProperties)}>
+      <div id=decoder-properties label=${i18nString5(UIStrings5.videoDecoderProperties)}>
         <div class="widget vbox media-attributes-view">
           ${renderProperty(input.properties["kVideoDecoderName" /* VIDEO_DECODER_NAME */])}
           ${renderProperty(input.properties["kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */])}
@@ -1828,21 +1877,21 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           ${renderProperty(input.properties["kIsVideoDecryptingDemuxerStream" /* IS_VIDEO_DECRYPTION_DEMUXER_STREAM */])}
         </div>
       </div>
-      ${renderTracks(input.properties["kVideoTracks" /* VIDEO_TRACKS */], i18nString4(UIStrings4.track), "video")}
+      ${renderTracks(input.properties["kVideoTracks" /* VIDEO_TRACKS */], i18nString5(UIStrings5.track), "video")}
     </devtools-tabbed-pane>
     <devtools-tabbed-pane>
-      <div id=decoder-properties label=${i18nString4(UIStrings4.audioDecoderProperties)}>
+      <div id=decoder-properties label=${i18nString5(UIStrings5.audioDecoderProperties)}>
         <div class="widget vbox media-attributes-view">
           ${renderProperty(input.properties["kAudioDecoderName" /* AUDIO_DECODER_NAME */])}
           ${renderProperty(input.properties["kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */])}
           ${renderProperty(input.properties["kIsAudioDecryptingDemuxerStream" /* IS_AUDIO_DECRYPTING_DEMUXER_STREAM */])}
         </div>
       </div>
-      ${renderTracks(input.properties["kAudioTracks" /* AUDIO_TRACKS */], i18nString4(UIStrings4.track), "audio")}
+      ${renderTracks(input.properties["kAudioTracks" /* AUDIO_TRACKS */], i18nString5(UIStrings5.track), "audio")}
     </devtools-tabbed-pane>
-    ${input.properties["kTextTracks" /* TEXT_TRACKS */] instanceof TrackProperty && input.properties["kTextTracks" /* TEXT_TRACKS */].entries !== null ? html3`
+    ${input.properties["kTextTracks" /* TEXT_TRACKS */] instanceof TrackProperty && input.properties["kTextTracks" /* TEXT_TRACKS */].entries !== null ? html4`
         <devtools-tabbed-pane>
-          ${input.properties["kTextTracks" /* TEXT_TRACKS */].entries.length === 0 ? html3`<div id=_placeholder label=${i18nString4(UIStrings4.noTextTracks)}></div>` : renderTracks(input.properties["kTextTracks" /* TEXT_TRACKS */], i18nString4(UIStrings4.textTrack), "text")}
+          ${input.properties["kTextTracks" /* TEXT_TRACKS */].entries.length === 0 ? html4`<div id=_placeholder label=${i18nString5(UIStrings5.noTextTracks)}></div>` : renderTracks(input.properties["kTextTracks" /* TEXT_TRACKS */], i18nString5(UIStrings5.textTrack), "text")}
         </devtools-tabbed-pane>` : nothing2}
     `,
     // clang-format on
@@ -1883,7 +1932,7 @@ var PlayerPropertiesView = class extends UI4.Widget.VBox {
     ["kAudioTracks" /* AUDIO_TRACKS */]: new TrackProperty("kAudioTracks" /* AUDIO_TRACKS */),
     ["kTextTracks" /* TEXT_TRACKS */]: new TrackProperty("kTextTracks" /* TEXT_TRACKS */)
   };
-  constructor(target, view = DEFAULT_VIEW2) {
+  constructor(target, view = DEFAULT_VIEW3) {
     super(target);
     this.#view = view;
   }
@@ -1902,12 +1951,12 @@ var PlayerPropertiesView = class extends UI4.Widget.VBox {
     this.requestUpdate();
   }
   performUpdate() {
-    this.#view(this, {}, this.contentElement);
+    this.#view(this, void 0, this.contentElement);
   }
 };
 
 // ../../front_end/panels/media/PlayerDetailView.ts
-var UIStrings5 = {
+var UIStrings6 = {
   /**
    * @description Title of the 'Properties' tool in the sidebar of the Elements tool.
    */
@@ -1941,8 +1990,8 @@ var UIStrings5 = {
    */
   playerTimeline: "Player timeline"
 };
-var str_5 = i18n9.i18n.registerUIStrings("panels/media/PlayerDetailView.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("panels/media/PlayerDetailView.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var PlayerDetailViewTabs = /* @__PURE__ */ ((PlayerDetailViewTabs2) => {
   PlayerDetailViewTabs2["EVENTS"] = "events";
   PlayerDetailViewTabs2["PROPERTIES"] = "properties";
@@ -1963,27 +2012,27 @@ var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
     this.timelineView = new PlayerEventsTimeline();
     this.appendTab(
       "properties" /* PROPERTIES */,
-      i18nString5(UIStrings5.properties),
+      i18nString6(UIStrings6.properties),
       this.propertyView,
-      i18nString5(UIStrings5.playerProperties)
+      i18nString6(UIStrings6.playerProperties)
     );
     this.appendTab(
       "events" /* EVENTS */,
-      i18nString5(UIStrings5.events),
+      i18nString6(UIStrings6.events),
       this.eventView,
-      i18nString5(UIStrings5.playerEvents)
+      i18nString6(UIStrings6.playerEvents)
     );
     this.appendTab(
       "messages" /* MESSAGES */,
-      i18nString5(UIStrings5.messages),
+      i18nString6(UIStrings6.messages),
       this.messageView,
-      i18nString5(UIStrings5.playerMessages)
+      i18nString6(UIStrings6.playerMessages)
     );
     this.appendTab(
       "timeline" /* TIMELINE */,
-      i18nString5(UIStrings5.timeline),
+      i18nString6(UIStrings6.timeline),
       this.timelineView,
-      i18nString5(UIStrings5.playerTimeline)
+      i18nString6(UIStrings6.playerTimeline)
     );
   }
   onProperty(property) {
@@ -2007,10 +2056,10 @@ __export(PlayerListView_exports, {
   PlayerListView: () => PlayerListView
 });
 import "../../ui/kit/kit.js";
-import * as i18n11 from "../../core/i18n/i18n.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
 import * as Platform3 from "../../core/platform/platform.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html4, render as render4 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html5, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerListView.css.js
@@ -2107,7 +2156,7 @@ li.storage-group-list-item::before {
 
 // ../../front_end/panels/media/PlayerListView.ts
 var { classMap: classMap3 } = Directives4;
-var UIStrings6 = {
+var UIStrings7 = {
   /**
    * @description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
    */
@@ -2125,17 +2174,17 @@ var UIStrings6 = {
    */
   players: "Players"
 };
-var str_6 = i18n11.i18n.registerUIStrings("panels/media/PlayerListView.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var DEFAULT_VIEW3 = (input, _output, target) => {
-  render4(
-    html4`
+var str_7 = i18n13.i18n.registerUIStrings("panels/media/PlayerListView.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var DEFAULT_VIEW4 = (input, _output, target) => {
+  render5(
+    html5`
       <style>${playerListView_css_default}</style>
-      <div class="player-entry-header" id="players-header">${i18nString6(UIStrings6.players)}</div>
+      <div class="player-entry-header" id="players-header">${i18nString7(UIStrings7.players)}</div>
       <div role="listbox" aria-labelledby="players-header">
       ${input.players.map((player) => {
       const isSelected = player.playerID === input.selectedPlayerID;
-      return html4`
+      return html5`
           <div class=${classMap3({
         "player-entry-row": true,
         hbox: true,
@@ -2175,7 +2224,7 @@ var PlayerListView = class extends UI6.Widget.VBox {
   playerEntriesWithHostnameFrameTitle;
   mainContainer;
   currentlySelectedPlayerID;
-  constructor(mainContainer, view = DEFAULT_VIEW3) {
+  constructor(mainContainer, view = DEFAULT_VIEW4) {
     super({ useShadowDom: true });
     this.#view = view;
     this.playerStatuses = /* @__PURE__ */ new Map();
@@ -2191,7 +2240,7 @@ var PlayerListView = class extends UI6.Widget.VBox {
       onPlayerClick: this.selectPlayer.bind(this),
       onPlayerContextMenu: this.rightClickPlayer.bind(this)
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
   }
   selectPlayerById(playerID) {
     if (this.playerStatuses.has(playerID)) {
@@ -2206,17 +2255,17 @@ var PlayerListView = class extends UI6.Widget.VBox {
   rightClickPlayer(playerID, event) {
     const contextMenu = new UI6.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
-      i18nString6(UIStrings6.hidePlayer),
+      i18nString7(UIStrings7.hidePlayer),
       this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID),
       { jslogContext: "hide-player" }
     );
     contextMenu.headerSection().appendItem(
-      i18nString6(UIStrings6.hideAllOthers),
+      i18nString7(UIStrings7.hideAllOthers),
       this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID),
       { jslogContext: "hide-all-others" }
     );
     contextMenu.headerSection().appendItem(
-      i18nString6(UIStrings6.savePlayerInfo),
+      i18nString7(UIStrings7.savePlayerInfo),
       this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID),
       { jslogContext: "save-player-info" }
     );
@@ -2328,7 +2377,38 @@ var PlayerListView = class extends UI6.Widget.VBox {
 };
 
 // ../../front_end/panels/media/MainView.ts
-var UIStrings7 = {
+var { widget: widget3 } = UI7.Widget;
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  const placeholderHeader = input.hasPlayers ? i18nString8(UIStrings8.noPlayerDetailsSelected) : i18nString8(UIStrings8.noMediaPlayer);
+  const placeholderText = input.hasPlayers ? i18nString8(UIStrings8.selectToViewDetails) : i18nString8(UIStrings8.mediaPlayerDescription);
+  render6(html6`
+    <devtools-split-view direction="column"
+                         name="media-panel-split-view-state"
+                         sidebar-initial-size="200"
+                         show=${input.hasPlayers ? "both" : "main"}>
+      <devtools-widget slot="sidebar"
+                       class="panel-sidebar"
+                       jslog=${VisualLogging6.pane("sidebar").track({ resize: true })}
+                       ${widget3(UI7.Widget.VBox)}>
+        <devtools-widget ${widget3(UI7.Widget.WrapperWidget, {
+    widget: input.sidebar
+  })}></devtools-widget>
+      </devtools-widget>
+      ${input.activePanel ? html6`
+        <devtools-widget slot="main" ${widget3(UI7.Widget.WrapperWidget, {
+    widget: input.activePanel
+  })}></devtools-widget>
+      ` : html6`
+        <devtools-widget slot="main" ${widget3(UI7.EmptyWidget.EmptyWidget, {
+    header: placeholderHeader,
+    text: placeholderText,
+    link: MEDIA_PLAYER_EXPLANATION_URL
+  })}></devtools-widget>
+      `}
+    </devtools-split-view>
+  `, target);
+};
+var UIStrings8 = {
   /**
    * @description Text to show if no media player has been selected.
    * A media player can be an audio and video source of a page.
@@ -2350,8 +2430,8 @@ var UIStrings7 = {
    */
   mediaPlayerDescription: "On this page you can view and export media player details"
 };
-var str_7 = i18n13.i18n.registerUIStrings("panels/media/MainView.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("panels/media/MainView.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var MEDIA_PLAYER_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/media-panel#hide-show";
 var PlayerDataCollection = class {
   properties;
@@ -2427,19 +2507,21 @@ var PlayerDataDownloadManager = class {
     this.playerDataCollection.delete(playerID);
   }
 };
-var MainView = class extends UI7.Panel.PanelWithSidebar {
+var MainView = class extends UI7.Panel.Panel {
   detailPanels;
   deletedPlayers;
   downloadStore;
   sidebar;
   #playerIdsToPlayers;
   #domNodeIdsToPlayerIds;
-  #placeholder;
+  #activePlayerId = null;
+  #view;
   #initialPlayersLoadedPromise;
   #initialPlayersLoadedPromiseResolve = () => {
   };
-  constructor(downloadStore = new PlayerDataDownloadManager()) {
+  constructor(downloadStore = new PlayerDataDownloadManager(), view = DEFAULT_VIEW5) {
     super("media");
+    this.#view = view;
     this.detailPanels = /* @__PURE__ */ new Map();
     this.#playerIdsToPlayers = /* @__PURE__ */ new Map();
     this.#domNodeIdsToPlayerIds = /* @__PURE__ */ new Map();
@@ -2449,22 +2531,28 @@ var MainView = class extends UI7.Panel.PanelWithSidebar {
     this.deletedPlayers = /* @__PURE__ */ new Set();
     this.downloadStore = downloadStore;
     this.sidebar = new PlayerListView(this);
-    this.sidebar.show(this.panelSidebarElement());
-    this.splitWidget().hideSidebar();
-    this.#placeholder = new UI7.EmptyWidget.EmptyWidget(i18nString7(UIStrings7.noMediaPlayer), UIStrings7.mediaPlayerDescription);
-    this.#placeholder.show(this.mainElement());
-    this.#placeholder.link = MEDIA_PLAYER_EXPLANATION_URL;
+    this.sidebar.setMinimumSize(100, 25);
+    this.requestUpdate();
     SDK2.TargetManager.TargetManager.instance().observeModels(MediaModel, this, { scoped: true });
   }
+  performUpdate() {
+    const activePanel = this.#activePlayerId ? this.detailPanels.get(this.#activePlayerId) : void 0;
+    this.#view(
+      {
+        sidebar: this.sidebar,
+        activePanel,
+        hasPlayers: this.detailPanels.size > 0
+      },
+      void 0,
+      this.contentElement
+    );
+  }
   renderMainPanel(playerID) {
-    if (!this.detailPanels.has(playerID)) {
+    if (!this.detailPanels.has(playerID) || this.#activePlayerId === playerID) {
       return;
     }
-    const mainWidget = this.splitWidget().mainWidget();
-    if (mainWidget) {
-      mainWidget.detachChildWidgets();
-    }
-    this.detailPanels.get(playerID)?.show(this.mainElement());
+    this.#activePlayerId = playerID;
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
@@ -2575,15 +2663,11 @@ var MainView = class extends UI7.Panel.PanelWithSidebar {
     if (player.domNodeId) {
       this.#domNodeIdsToPlayerIds.set(player.domNodeId, player.playerId);
     }
-    if (this.splitWidget().showMode() !== UI7.SplitWidget.ShowMode.BOTH) {
-      this.splitWidget().showBoth();
-    }
     this.sidebar.addMediaElementItem(player.playerId);
     this.detailPanels.set(player.playerId, new PlayerDetailView());
     this.downloadStore.addPlayer(player.playerId);
     if (this.detailPanels.size === 1) {
-      this.#placeholder.header = i18nString7(UIStrings7.noPlayerDetailsSelected);
-      this.#placeholder.text = i18nString7(UIStrings7.selectToViewDetails);
+      this.requestUpdate();
     }
     this.#initialPlayersLoadedPromiseResolve();
   }
@@ -2597,16 +2681,10 @@ var MainView = class extends UI7.Panel.PanelWithSidebar {
     this.#playerIdsToPlayers.delete(playerID);
     this.sidebar.deletePlayer(playerID);
     this.downloadStore.deletePlayer(playerID);
-    if (this.detailPanels.size === 0) {
-      this.#placeholder.header = i18nString7(UIStrings7.noMediaPlayer);
-      this.#placeholder.text = i18nString7(UIStrings7.mediaPlayerDescription);
-      this.splitWidget().hideSidebar();
-      const mainWidget = this.splitWidget().mainWidget();
-      if (mainWidget) {
-        mainWidget.detachChildWidgets();
-      }
-      this.#placeholder.show(this.mainElement());
+    if (this.#activePlayerId === playerID) {
+      this.#activePlayerId = null;
     }
+    this.requestUpdate();
   }
   markOtherPlayersForDeletion(playerID) {
     for (const keyID of this.detailPanels.keys()) {

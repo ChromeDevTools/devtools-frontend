@@ -325,7 +325,7 @@ export class AffectedCountWidget extends UI.Widget.Widget {
         if (!this.#condition || !this.#lookUpRequestCount) {
             return;
         }
-        this.#view({ count: this.#lookUpRequestCount(this.#condition) }, {}, this.element);
+        this.#view({ count: this.#lookUpRequestCount(this.#condition) }, undefined, this.element);
     }
     wasShown() {
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this, { scoped: true });

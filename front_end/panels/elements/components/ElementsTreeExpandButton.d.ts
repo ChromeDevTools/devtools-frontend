@@ -1,13 +1,14 @@
 import '../../../ui/kit/kit.js';
-export interface ElementsTreeExpandButtonData {
-    clickHandler: (event?: Event) => void;
+import * as UI from '../../../ui/legacy/legacy.js';
+export interface ViewInput {
+    clickHandler: () => void;
 }
-export declare class ElementsTreeExpandButton extends HTMLElement {
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class ElementsTreeExpandButton extends UI.Widget.Widget {
     #private;
-    set data(data: ElementsTreeExpandButtonData);
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-elements-tree-expand-button': ElementsTreeExpandButton;
-    }
+    constructor(element?: HTMLElement, view?: View);
+    set clickHandler(clickHandler: () => void);
+    wasShown(): void;
+    performUpdate(): void;
 }

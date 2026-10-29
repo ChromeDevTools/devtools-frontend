@@ -414,7 +414,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
             binaryPayloadContentData: this.#binaryPayloadContentData,
             requestUrl: this.request?.url() ?? Platform.DevToolsPath.EmptyUrlString,
         };
-        this.#view(input, {}, this.element);
+        this.#view(input, undefined, this.element);
     }
     #refreshFormData() {
         this.#refreshFormDataPromiseForTest = this.#doRefreshFormData();

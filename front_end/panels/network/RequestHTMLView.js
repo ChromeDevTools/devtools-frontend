@@ -56,7 +56,7 @@ export class RequestHTMLView extends UI.Widget.VBox {
         this.requestUpdate();
     }
     performUpdate() {
-        this.#view({ dataURL: this.#dataURL }, {}, this.contentElement);
+        this.#view({ dataURL: this.#dataURL }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=RequestHTMLView.js.map

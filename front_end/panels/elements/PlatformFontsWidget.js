@@ -88,12 +88,12 @@ export class PlatformFontsWidget extends UI.Widget.VBox {
         const cssModel = this.#sharedModel?.cssModel();
         const node = this.#sharedModel?.node;
         if (!node || !cssModel) {
-            this.#view({ platformFonts: null }, {}, this.contentElement);
+            this.#view({ platformFonts: null }, undefined, this.contentElement);
             return;
         }
         const platformFonts = await cssModel.getPlatformFonts(node.id);
         const sortedPlatformFonts = platformFonts?.sort((a, b) => b.glyphCount - a.glyphCount) || null;
-        this.#view({ platformFonts: sortedPlatformFonts }, {}, this.contentElement);
+        this.#view({ platformFonts: sortedPlatformFonts }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=PlatformFontsWidget.js.map

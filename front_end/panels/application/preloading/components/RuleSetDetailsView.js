@@ -75,7 +75,7 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
     }
     async performUpdate() {
         if (!this.#ruleSet) {
-            this.#view(null, {}, this.contentElement);
+            this.#view(null, undefined, this.contentElement);
             return;
         }
         const sourceText = await this.#getSourceText();
@@ -94,7 +94,7 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
             errorMessage: this.#ruleSet.errorMessage,
             editorState,
             sourceText,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     async #getSourceText() {
         if (this.#shouldPrettyPrint && this.#ruleSet?.sourceText !== undefined) {

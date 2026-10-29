@@ -1,11 +1,10 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/kit/kit.js';
-import '../../../ui/legacy/legacy.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../../ui/lit/lit.js';
 import * as SettingsUI from '../../../ui/settings/settings.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -150,67 +149,73 @@ export var BaselineStatus;
     BaselineStatus["LOW"] = "low";
     BaselineStatus["HIGH"] = "high";
 })(BaselineStatus || (BaselineStatus = {}));
-export class CSSPropertyDocsView extends HTMLElement {
-    #shadow = this.attachShadow({ mode: 'open' });
-    #cssProperty;
-    constructor(cssProperty) {
-        super();
-        this.#cssProperty = cssProperty;
-        this.#render();
-    }
-    #dontShowChanged(e) {
+export const DEFAULT_VIEW = (input, _output, target) => {
+    const { description, references, baseline, browsers } = input.cssProperty;
+    const link = references?.[0].url;
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    render(html `
+    <style>${CSSPropertyDocsViewStyles}</style>
+    <div class="docs-popup-wrapper">
+      ${description ? html `
+        <div id="description">
+          ${description}
+        </div>
+      ` : nothing}
+      ${baseline ? html `
+        <div id="baseline" class="docs-popup-section">
+          <img
+            id="baseline-icon"
+            src=${getBaselineIconPath(baseline)}
+            role="presentation"
+          >
+          <span>
+            ${getBaselineText(baseline, browsers)}
+          </span>
+        </div>
+      ` : nothing}
+      ${link ? html `
+        <div class="docs-popup-section footer">
+          <devtools-link
+            id="learn-more"
+            href=${link}
+            class="clickable underlined unbreakable-text"
+          >
+            ${i18nString(UIStrings.learnMore)}
+          </devtools-link>
+          <devtools-checkbox
+            @change=${(e) => {
         const showDocumentation = !e.target.checked;
+        input.onDontShowChanged(showDocumentation);
+    }}
+            jslog=${VisualLogging.toggle('css-property-doc').track({ change: true })}>
+            ${i18nString(UIStrings.dontShow)}
+          </devtools-checkbox>
+        </div>
+      ` : nothing}
+    </div>
+  `, target, { container: { classes: ['css-property-docs-view'] } });
+    // clang-format on
+};
+export class CSSPropertyDocsView extends UI.Widget.Widget {
+    #cssProperty;
+    #view;
+    constructor(cssProperty, element, view = DEFAULT_VIEW) {
+        super(element);
+        this.#cssProperty = cssProperty;
+        this.#view = view;
+        this.performUpdate();
+    }
+    #dontShowChanged = (showDocumentation) => {
         Common.Settings.Settings.instance()
             .resolve(SettingsUI.ElementsSettings.showCSSPropertyDocumentationOnHoverSettingDescriptor)
             .set(showDocumentation);
-    }
-    #render() {
-        const { description, references, baseline, browsers } = this.#cssProperty;
-        const link = references?.[0].url;
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
-        render(html `
-      <style>${CSSPropertyDocsViewStyles}</style>
-      <div class="docs-popup-wrapper">
-        ${description ? html `
-          <div id="description">
-            ${description}
-          </div>
-        ` : nothing}
-        ${baseline ? html `
-          <div id="baseline" class="docs-popup-section">
-            <img
-              id="baseline-icon"
-              src=${getBaselineIconPath(baseline)}
-              role="presentation"
-            >
-            <span>
-              ${getBaselineText(baseline, browsers)}
-            </span>
-          </div>
-        ` : nothing}
-        ${link ? html `
-          <div class="docs-popup-section footer">
-            <devtools-link
-              id="learn-more"
-              href=${link}
-              class="clickable underlined unbreakable-text"
-            >
-              ${i18nString(UIStrings.learnMore)}
-            </devtools-link>
-            <devtools-checkbox
-              @change=${this.#dontShowChanged}
-              jslog=${VisualLogging.toggle('css-property-doc').track({ change: true })}>
-              ${i18nString(UIStrings.dontShow)}
-            </devtools-checkbox>
-          </div>
-        ` : nothing}
-      </div>
-    `, this.#shadow, {
-            host: this,
-        });
-        // clang-format on
+    };
+    performUpdate() {
+        this.#view({
+            cssProperty: this.#cssProperty,
+            onDontShowChanged: this.#dontShowChanged,
+        }, undefined, this.contentElement);
     }
 }
-customElements.define('devtools-css-property-docs-view', CSSPropertyDocsView);
 //# sourceMappingURL=CSSPropertyDocsView.js.map

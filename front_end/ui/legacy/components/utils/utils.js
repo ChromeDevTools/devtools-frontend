@@ -1199,7 +1199,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
    */
   static initiatorIdForLink(info) {
     if (info.initiatorId) {
-      return info.initiatorId;
+      return typeof info.initiatorId === "function" ? info.initiatorId() : info.initiatorId;
     }
     if (info.revealable instanceof SDK2.NetworkRequest.NetworkRequest) {
       return openInNewTabInitiatorId(info.revealable);
@@ -1383,7 +1383,12 @@ var ContentProviderContextMenuProvider = class {
     if (!Common2.ParsedURL.isPrivilegedScheme(contentUrl)) {
       contextMenu.revealSection().appendItem(
         UI.UIUtils.openLinkExternallyLabel(),
-        () => UIHelpers.openInNewTab(contentUrl.endsWith(":formatted") ? Common2.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(":")) : contentUrl),
+        () => UIHelpers.openInNewTab(
+          contentUrl.endsWith(":formatted") ? Common2.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(":")) : contentUrl,
+          /* allowPrivileged= */
+          false,
+          openInNewTabInitiatorId(contentProvider)
+        ),
         { jslogContext: "open-in-new-tab" }
       );
     }
@@ -1424,10 +1429,17 @@ var ContentProviderContextMenuProvider = class {
 };
 function openInNewTabInitiatorId(source) {
   if (source instanceof SDK2.NetworkRequest.NetworkRequest) {
-    return source.frameId ?? workerTargetId(SDK2.NetworkManager.NetworkManager.forRequest(source)?.target());
+    if (source.frameId) {
+      return frameIdUnlessNavigatedSince(
+        source.frameId,
+        source.loaderId,
+        SDK2.ResourceTreeModel.ResourceTreeModel.frameForRequest(source)
+      );
+    }
+    return workerTargetId(SDK2.NetworkManager.NetworkManager.forRequest(source)?.target());
   }
   if (source instanceof SDK2.Resource.Resource) {
-    return source.frameId ?? void 0;
+    return source.frameId ? frameIdUnlessNavigatedSince(source.frameId, source.loaderId, source.frame()) : void 0;
   }
   if (source instanceof SDK2.RuntimeModel.ExecutionContext) {
     return source.frameId ?? workerTargetId(source.target());
@@ -1443,6 +1455,12 @@ function openInNewTabInitiatorId(source) {
     return workerTargetId(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(source));
   }
   return void 0;
+}
+function frameIdUnlessNavigatedSince(frameId, loaderId, frame) {
+  if (frame && loaderId && frame.loaderId !== loaderId) {
+    return void 0;
+  }
+  return frameId;
 }
 function workerTargetId(target) {
   switch (target?.type()) {
@@ -1655,7 +1673,7 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
       onShowMore: this.#onShowMoreLess.bind(this, true),
       onShowLess: this.#onShowMoreLess.bind(this, false)
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, void 0, this.contentElement);
     this.#updateHasNonIgnoredLinks();
   }
   // Propagate ignore-list state to the host element so that CSS outside the

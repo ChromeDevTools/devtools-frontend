@@ -535,7 +535,7 @@ export class MetricCard extends UI.Widget.VBox {
             histogram: this.#histogram,
             subparts: this.#subparts,
             warnings: this.#warnings,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=MetricCard.js.map

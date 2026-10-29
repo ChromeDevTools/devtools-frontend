@@ -176,7 +176,7 @@ export class ConsoleSidebar extends ConsoleSidebarBase {
                 this.dispatchEventToListeners("FilterSelected" /* Events.FILTER_SELECTED */);
             },
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     clear() {
         for (const group of this.#groups) {

@@ -366,7 +366,7 @@ var SearchResultsPane = class extends UI.Widget.VBox {
         onExpandSearchResult: this.#onExpandSearchResult.bind(this),
         onShowMoreMatches: this.#onShowMoreMatches.bind(this)
       },
-      {},
+      void 0,
       this.contentElement
     );
   }

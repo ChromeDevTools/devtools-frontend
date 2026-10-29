@@ -48,6 +48,7 @@ import { Renderer, rendererBase, StringRenderer, URLRenderer } from './PropertyR
 import { StylePropertiesSection } from './StylePropertiesSection.js';
 const { html, render } = Lit;
 const { bindToSetting } = UI.UIUtils;
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Text for a checkbox setting that controls whether the user-supplied filter text
@@ -113,18 +114,21 @@ function renderPropertyContents(node, cache, propertyName, propertyValue, catego
 const createPropertyElement = (node, cache, propertyName, propertyValue, traceable, inherited, activeProperty, onContextMenu, category) => {
     const { name, value } = renderPropertyContents(node, cache, propertyName, propertyValue, category);
     // clang-format off
-    return html `<devtools-computed-style-property
-        .traceable=${traceable}
-        .inherited=${inherited}
-        @oncontextmenu=${onContextMenu}
-        @onnavigatetosource=${(event) => {
-        if (activeProperty) {
-            navigateToSource(activeProperty, event);
-        }
-    }}>
+    return html `<devtools-widget
+        class="computed-style-property"
+        ${widget(ElementsComponents.ComputedStyleProperty.ComputedStyleProperty, {
+        traceable,
+        inherited,
+        onNavigateToSource: () => {
+            if (activeProperty) {
+                navigateToSource(activeProperty);
+            }
+        },
+    })}
+        @oncontextmenu=${onContextMenu}>
           ${name}
           ${value}
-      </devtools-computed-style-property>`;
+      </devtools-widget>`;
     // clang-format on
 };
 const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
@@ -181,11 +185,8 @@ class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatc
     }
 }
 const navigateToSource = (cssProperty, event) => {
-    if (!event) {
-        return;
-    }
     void Common.Revealer.reveal(cssProperty);
-    event.consume(true);
+    event?.consume(true);
 };
 const propertySorter = (propA, propB) => {
     if (propA.startsWith('--') !== propB.startsWith('--')) {

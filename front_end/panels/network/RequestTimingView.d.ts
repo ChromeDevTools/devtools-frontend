@@ -11,7 +11,7 @@ interface ViewInput {
     calculator: NetworkTimeCalculator.NetworkTimeCalculator;
     wasThrottled?: SDK.NetworkManager.AppliedNetworkConditions;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class RequestTimingView extends UI.Widget.VBox {
     #private;

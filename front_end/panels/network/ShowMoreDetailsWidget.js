@@ -73,7 +73,7 @@ export class ShowMoreDetailsWidget extends UI.Widget.Widget {
                 this.#showMore = true;
                 this.requestUpdate();
             },
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=ShowMoreDetailsWidget.js.map

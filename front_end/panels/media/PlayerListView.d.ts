@@ -18,7 +18,7 @@ export interface ViewInput {
     onPlayerClick: (playerID: string) => void;
     onPlayerContextMenu: (playerID: string, event: Event) => void;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher {
     #private;
     private readonly playerStatuses;

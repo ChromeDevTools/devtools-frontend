@@ -251,7 +251,7 @@ export class StatusView {
             cancelButtonVisible: this.cancelButtonVisible,
             onCancel: this.cancel.bind(this),
             bugReport: this.bugReport || undefined,
-        }, {}, this.dialogRoot);
+        }, undefined, this.dialogRoot);
     }
     reset() {
         this.resetProgressBarClasses();

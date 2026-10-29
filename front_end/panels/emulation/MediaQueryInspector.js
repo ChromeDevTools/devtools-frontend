@@ -341,7 +341,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             markers,
             onMediaQueryClicked: this.onMediaQueryClicked.bind(this),
             onContextMenu: this.onContextMenu.bind(this),
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
 }
 export var Section;

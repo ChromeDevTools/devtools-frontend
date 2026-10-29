@@ -379,8 +379,7 @@ export class CookiesTable extends UI.Widget.VBox {
                 } :
                 undefined,
         };
-        const output = {};
-        this.view(input, output, this.element);
+        this.view(input, undefined, this.element);
     }
     onSelect(key) {
         this.selectedKey = key;

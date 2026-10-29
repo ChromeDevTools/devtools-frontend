@@ -197,7 +197,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
             onShowMore: this.#onShowMoreLess.bind(this, true),
             onShowLess: this.#onShowMoreLess.bind(this, false),
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
         this.#updateHasNonIgnoredLinks();
     }
     // Propagate ignore-list state to the host element so that CSS outside the

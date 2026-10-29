@@ -29,6 +29,9 @@
     },
     {
       "path": "../../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../ui/lit/bundle-tsconfig.ref.json"
     }
   ]
 }

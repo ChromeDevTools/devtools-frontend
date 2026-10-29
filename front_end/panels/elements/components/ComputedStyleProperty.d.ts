@@ -1,15 +1,17 @@
-export declare class NavigateToSourceEvent extends Event {
-    static readonly eventName = "onnavigatetosource";
-    constructor();
+import * as UI from '../../../ui/legacy/legacy.js';
+export interface ViewInput {
+    inherited: boolean;
+    traceable: boolean;
+    onNavigateToSource: () => void;
 }
-export declare class ComputedStyleProperty extends HTMLElement {
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class ComputedStyleProperty extends UI.Widget.Widget {
     #private;
-    connectedCallback(): void;
+    constructor(element?: HTMLElement, view?: View);
+    wasShown(): void;
     set inherited(inherited: boolean);
     set traceable(traceable: boolean);
-}
-declare global {
-    interface HTMLElementTagNameMap {
-        'devtools-computed-style-property': ComputedStyleProperty;
-    }
+    set onNavigateToSource(onNavigateToSource: () => void);
+    performUpdate(): void;
 }

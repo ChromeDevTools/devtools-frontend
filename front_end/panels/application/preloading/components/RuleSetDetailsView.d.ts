@@ -8,10 +8,10 @@ export interface ViewInput {
     editorState: CodeMirror.EditorState;
     sourceText: string;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput | null, _output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput | null, _output: undefined, target: HTMLElement) => void;
 export declare class RuleSetDetailsView extends UI.Widget.VBox {
     #private;
-    constructor(element?: HTMLElement, view?: (input: ViewInput | null, _output: object, target: HTMLElement) => void);
+    constructor(element?: HTMLElement, view?: (input: ViewInput | null, _output: undefined, target: HTMLElement) => void);
     wasShown(): void;
     set ruleSet(ruleSet: RuleSet | null);
     set shouldPrettyPrint(shouldPrettyPrint: boolean);

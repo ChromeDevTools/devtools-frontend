@@ -12,7 +12,7 @@ export interface ViewInput {
     linkifier: LegacyComponents.Linkifier.Linkifier | null;
     parsedTrace: Trace.TraceModel.ParsedTrace | null;
 }
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class NetworkRequestDetails extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: View);

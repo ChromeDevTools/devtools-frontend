@@ -1,27 +1,40 @@
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 declare const ConsolePromptBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export interface ViewInput {
+    editorState: CodeMirror.EditorState;
+    eagerEvalEnabled: boolean;
+    preview: DocumentFragment | null;
+    isIncomplete: boolean;
+    onBelowEditorClick: () => void;
+}
+export interface ViewOutput {
+    editor?: TextEditor.TextEditor.TextEditor;
+    getBelowEditorHeight?: () => number;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class ConsolePrompt extends ConsolePromptBase {
     #private;
     private addCompletionsFromHistory;
     private initialText;
-    private editor;
-    private readonly eagerPreviewElement;
+    private editor?;
     private textChangeThrottler;
     private requestPreviewBound;
     private requestPreviewCurrent;
-    private readonly innerPreviewElement;
-    private readonly promptIcon;
     private readonly iconThrottler;
     private readonly eagerEvalSetting;
     protected previewRequestForTest: Promise<void> | null;
     private highlightingNode;
     private aiCodeCompletionConfig?;
     private aiCodeCompletionProvider?;
-    constructor(aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig);
+    constructor(aiCodeCompletionConfig?: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig, view?: View);
+    performUpdate(): void;
     private eagerSettingChanged;
-    belowEditorElement(): Element;
+    belowEditorHeight(): number;
     private onTextChanged;
     private requestPreview;
     willHide(): void;

@@ -3523,13 +3523,16 @@ async function makeNetworkTrackWidget(widgetData) {
   const { parsedTrace, bounds } = widgetData.data;
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
   const template = html5`
-    <devtools-performance-agent-network-track
-      .data=${{
-    parsedTrace,
-    bounds,
-    dataProvider
-  }}
-    ></devtools-performance-agent-network-track>`;
+    <devtools-widget
+      class="network-track-widget"
+      ${widget(TimelineComponents.NetworkTrackWidget.NetworkTrackWidget, {
+    data: {
+      parsedTrace,
+      bounds,
+      dataProvider
+    }
+  })}
+    ></devtools-widget>`;
   return {
     renderedWidget: template,
     revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
@@ -8806,9 +8809,8 @@ import "../../ui/kit/kit.js";
 import * as Host4 from "../../core/host/host.js";
 import * as i18n15 from "../../core/i18n/i18n.js";
 import * as Root from "../../core/root/root.js";
-import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
-import { html as html11, render as render6 } from "../../ui/lit/lit.js";
+import { html as html11, i18nTemplate, render as render6 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
 var disabledWidget_css_default = `/*
@@ -8915,29 +8917,24 @@ function renderConsentViewContents(hostConfig) {
   if (hostConfig.isOffTheRecord) {
     return html11`${i18nString5(UIStrings5.notAvailableInIncognitoMode)}`;
   }
-  const settingsLink = document.createElement("devtools-link");
-  settingsLink.textContent = i18nString5(UIStrings5.settingsLink);
-  settingsLink.classList.add("link");
-  UI7.ARIAUtils.markAsLink(settingsLink);
-  settingsLink.addEventListener("click", () => {
+  const settingsLink = html11`<devtools-link
+      class="link"
+      jslogcontext="open-ai-settings"
+      @click=${() => {
     void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
-  });
-  settingsLink.jslogContext = "open-ai-settings";
-  let consentViewContents;
+  }}
+    >${i18nString5(UIStrings5.settingsLink)}</devtools-link>`;
+  let stringId;
   if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(
-      str_5,
-      UIStrings5.turnOnForStylesRequestsPerformanceAndFiles,
-      { PH1: settingsLink }
-    );
+    stringId = UIStrings5.turnOnForStylesRequestsPerformanceAndFiles;
   } else if (hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_5, UIStrings5.turnOnForStylesRequestsAndFiles, { PH1: settingsLink });
+    stringId = UIStrings5.turnOnForStylesRequestsAndFiles;
   } else if (hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_5, UIStrings5.turnOnForStylesAndRequests, { PH1: settingsLink });
+    stringId = UIStrings5.turnOnForStylesAndRequests;
   } else {
-    consentViewContents = uiI18n.getFormatLocalizedString(str_5, UIStrings5.turnOnForStyles, { PH1: settingsLink });
+    stringId = UIStrings5.turnOnForStyles;
   }
-  return html11`${consentViewContents}`;
+  return i18nTemplate(str_5, stringId, { PH1: settingsLink });
 }
 var DEFAULT_VIEW6 = (input, _output, target) => {
   render6(
@@ -8975,7 +8972,7 @@ var DisabledWidget = class extends UI7.Widget.Widget {
         aidaAvailability: this.aidaAvailability,
         hostConfig
       },
-      {},
+      void 0,
       this.contentElement
     );
   }
@@ -9275,7 +9272,7 @@ var ExploreWidget = class extends UI8.Widget.Widget {
       {
         featureCards
       },
-      {},
+      void 0,
       this.contentElement
     );
   }

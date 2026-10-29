@@ -93,7 +93,7 @@ export class PlayerListView extends UI.Widget.VBox {
             onPlayerClick: this.selectPlayer.bind(this),
             onPlayerContextMenu: this.rightClickPlayer.bind(this),
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     selectPlayerById(playerID) {
         if (this.playerStatuses.has(playerID)) {

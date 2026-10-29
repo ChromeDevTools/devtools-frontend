@@ -9,42 +9,44 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.docs-popup-wrapper {
-  max-width: 420px;
-  font-size: var(--sys-typescale-body4-size);
-  line-height: 1.4;
-}
+@scope to (devtools-widget > *) {
+  .docs-popup-wrapper {
+    max-width: 420px;
+    font-size: var(--sys-typescale-body4-size);
+    line-height: 1.4;
+  }
 
-.docs-popup-section {
-  margin-top: var(--sys-size-5);
-}
+  .docs-popup-section {
+    margin-top: var(--sys-size-5);
+  }
 
-.clickable {
-  color: var(--sys-color-primary);
-}
+  .clickable {
+    color: var(--sys-color-primary);
+  }
 
-.underlined {
-  text-decoration: underline;
-}
+  .underlined {
+    text-decoration: underline;
+  }
 
-.unbreakable-text {
-  white-space: nowrap;
-}
+  .unbreakable-text {
+    white-space: nowrap;
+  }
 
-.footer {
-  display: flex;
-  justify-content: space-between;
-}
+  .footer {
+    display: flex;
+    justify-content: space-between;
+  }
 
-#baseline {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: var(--sys-size-3);
-}
+  #baseline {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--sys-size-3);
+  }
 
-#baseline-icon {
-  width: 18px;
-  height: 18px;
+  #baseline-icon {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./cssPropertyDocsView.css')} */`;

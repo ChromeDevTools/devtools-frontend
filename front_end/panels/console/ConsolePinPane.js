@@ -145,7 +145,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
             focusOut: this.#focusOut,
             onRemove: (pin) => this.removePin(pin),
             onContextMenu: this.contextMenuEventFired.bind(this),
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
         // Focus the freshly created pin if the user clicked the button.
         // We need to give it a tick though, so the child can also finish rendering.
         for (const child of this.children()) {

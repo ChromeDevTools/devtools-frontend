@@ -350,7 +350,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
                 NetworkPanel.instance().backendLinking?.getLink(this.#request) ?? null :
                 null,
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
     #getHeaderOverridesFileUrl() {
         if (!this.#request) {

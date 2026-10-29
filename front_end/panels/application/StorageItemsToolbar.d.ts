@@ -15,8 +15,8 @@ interface ViewInput {
     deleteAllButtonTitle: string;
     mainToolbarItems: UI.Toolbar.ToolbarItem[];
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: HTMLElement) => void;
-export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 declare const StorageItemsToolbarBase: Common.ObjectWrapper.EventMixin<StorageItemsToolbar.EventTypes, typeof UI.Widget.VBox>;
 export declare class StorageItemsToolbar extends StorageItemsToolbarBase {
     #private;

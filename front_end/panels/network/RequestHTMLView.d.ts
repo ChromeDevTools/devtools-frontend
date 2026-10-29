@@ -3,7 +3,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 interface ViewInput {
     dataURL: string | null;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class RequestHTMLView extends UI.Widget.VBox {
     #private;

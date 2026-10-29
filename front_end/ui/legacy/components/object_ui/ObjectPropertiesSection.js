@@ -1133,7 +1133,7 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
             showOverflow: this.#showOverflow,
             onRootItemContextMenu: this.onRootItemContextMenu,
             onExpand: this.onExpand,
-        }, {}, this.contentElement);
+        }, undefined, this.contentElement);
     }
     onDetach() {
         this.#root?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
@@ -1499,7 +1499,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
         if (this.#objectTree?.expanded) {
             await this.#populateChildrenIfNeeded(this.#objectTree);
         }
-        this.#view(this, {}, this.contentElement);
+        this.#view(this, undefined, this.contentElement);
     }
     onDetach() {
         this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
@@ -1950,7 +1950,7 @@ export class ExpandableTextPropertyValue extends UI.Widget.Widget {
             maxLength: this.#maxLength,
             text: this.#text,
         };
-        this.#view(input, {}, this.contentElement);
+        this.#view(input, undefined, this.contentElement);
     }
 }
 UI.ContextMenu.registerProvider({

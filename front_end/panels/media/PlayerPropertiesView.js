@@ -486,7 +486,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
         this.requestUpdate();
     }
     performUpdate() {
-        this.#view(this, {}, this.contentElement);
+        this.#view(this, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=PlayerPropertiesView.js.map

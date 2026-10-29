@@ -10,7 +10,6 @@ import {
   Decorators,
   Directive as Directive2,
   Directives,
-  LitElement,
   noChange,
   nothing as nothing2,
   StaticHtml as StaticHtml2,
@@ -22,6 +21,7 @@ var Directives_exports = {};
 __export(Directives_exports, {
   InterceptBindingDirective: () => InterceptBindingDirective
 });
+import * as Platform from "../../core/platform/platform.js";
 import * as Lit from "../../third_party/lit/lit.js";
 var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Directive.Directive {
   static #interceptedBindings = /* @__PURE__ */ new WeakMap();
@@ -32,11 +32,37 @@ var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Dir
     }
     let eventListeners = _InterceptBindingDirective.#interceptedBindings.get(part.element);
     if (!eventListeners) {
-      eventListeners = /* @__PURE__ */ new Map();
+      eventListeners = { bindings: /* @__PURE__ */ new Map() };
       _InterceptBindingDirective.#interceptedBindings.set(part.element, eventListeners);
     }
-    eventListeners.set(part.name, listener);
+    _InterceptBindingDirective.#updateAttachedListener(part.element, part.name, listener);
+    eventListeners.bindings.set(part.name, listener);
     return this.render(listener);
+  }
+  static #updateAttachedListener(templateElement, name, listener) {
+    const binding = this.#interceptedBindings.get(templateElement);
+    if (!binding) {
+      return;
+    }
+    const lastAttachment = binding.lastAttachment?.deref();
+    if (!lastAttachment) {
+      return;
+    }
+    const oldListener = binding.bindings.get(name);
+    if (oldListener === listener) {
+      return;
+    }
+    const attachedBindings = this.#attachedBindings.get(lastAttachment);
+    if (!attachedBindings) {
+      return;
+    }
+    const attachedListeners = Platform.MapUtilities.getWithDefault(attachedBindings, name, () => /* @__PURE__ */ new Set());
+    if (oldListener) {
+      lastAttachment.removeEventListener(name, oldListener);
+      attachedListeners.delete(oldListener);
+    }
+    lastAttachment.addEventListener(name, listener);
+    attachedListeners.add(listener);
   }
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-function-type */
   render(listener) {
@@ -56,7 +82,8 @@ var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Dir
     for (const templateElement of elements) {
       const newListeners = _InterceptBindingDirective.#interceptedBindings.get(templateElement);
       if (newListeners) {
-        for (const [name, listener] of newListeners) {
+        newListeners.lastAttachment = new WeakRef(renderedElement);
+        for (const [name, listener] of newListeners.bindings) {
           renderedElement.addEventListener(name, listener);
           let listenersSet = newAttachedListeners.get(name);
           if (!listenersSet) {
@@ -72,20 +99,6 @@ var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Dir
     } else {
       _InterceptBindingDirective.#attachedBindings.delete(renderedElement);
     }
-  }
-  static registerListeners(element, listeners) {
-    if (!listeners) {
-      _InterceptBindingDirective.#interceptedBindings.delete(element);
-      return;
-    }
-    const map = /* @__PURE__ */ new Map();
-    for (const [name, listener] of Object.entries(listeners)) {
-      map.set(
-        name,
-        typeof listener === "function" ? listener : listener.handleEvent.bind(listener)
-      );
-    }
-    _InterceptBindingDirective.#interceptedBindings.set(element, map);
   }
 };
 
@@ -197,15 +210,12 @@ function render2(template, container, options) {
       listenersMap.delete(name);
     }
   }
-  if (host instanceof Element) {
-    InterceptBindingDirective.registerListeners(host, options?.container?.interceptedListeners);
-  }
   renderOptions.set(container, options);
   return Lit3.render(template, container, options);
 }
 
 // ../../front_end/ui/lit/strip-whitespace.ts
-import * as Platform from "../../core/platform/platform.js";
+import * as Platform2 from "../../core/platform/platform.js";
 import * as Lit4 from "../../third_party/lit/lit.js";
 var templates = /* @__PURE__ */ new WeakMap();
 function isLitDirective(value) {
@@ -223,7 +233,7 @@ function html3(strings, ...values) {
   templates.set(strings, stripped);
   const escapeValue = (val) => {
     if (typeof val === "string") {
-      return Platform.StringUtilities.safeEscapeUnicode(val);
+      return Platform2.StringUtilities.safeEscapeUnicode(val);
     }
     if (Array.isArray(val)) {
       return val.map(escapeValue);
@@ -258,7 +268,6 @@ export {
   Decorators,
   Directive2 as Directive,
   Directives,
-  LitElement,
   StaticHtml2 as StaticHtml,
   html3 as html,
   i18nTemplate,

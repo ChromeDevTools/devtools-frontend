@@ -30,6 +30,7 @@ import { StyleEditorWidget } from './StyleEditorWidget.js';
 import { getCssDeclarationAsJavascriptProperty } from './StylePropertyUtils.js';
 import { CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME } from './StylesSidebarPane.js';
 const { html, nothing, render, Directives: { classMap, ref, until } } = Lit;
+const { ifExpanded } = Tooltips.Tooltip;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -351,7 +352,7 @@ export class VariableRenderer extends VariableRendererBase {
         }}></devtools-link-swatch>${renderedFallback ? html `, ${renderedFallback.nodes}` : nothing})</span>${tooltipId ? html `<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
+            jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
         // clang-format on
         const color = computedValue && Common.Color.parse(computedValue);
         if (!color) {
@@ -401,7 +402,7 @@ export class VariableNameRenderer extends VariableNameRendererBase {
         }}></devtools-link-swatch>${tooltipId ? html `<devtools-tooltip
         id=${tooltipId}
         variant=rich
-        jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>` : nothing}`;
+        jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
         // clang-format on
     }
 }
@@ -880,17 +881,14 @@ export class ColorMixRenderer extends ColorMixRendererBase {
         id=${tooltipId}
         variant=rich
         jslogContext=elements.css-color-mix
-        @beforetoggle=${(e) => {
-            if (e.newState !== 'open') {
-                return;
-            }
+      >${ifExpanded(() => {
             const color = swatch.mixedColor();
-            if (!color || !(e.target instanceof HTMLElement)) {
-                return;
+            if (!color) {
+                return Lit.nothing;
             }
             const rgb = color.as("hex" /* Common.Color.Format.HEX */);
-            e.target.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
-        }}></devtools-tooltip>`;
+            return html `${rgb.isGamutClipped() ? color.asString() : rgb.asString()}`;
+        })}</devtools-tooltip>`;
         // clang-format on
     }
 }
@@ -1523,51 +1521,29 @@ export class LengthRenderer extends LengthRendererBase {
         this.#propertyName = propertyName;
     }
     render(match, context) {
-        const valueElement = document.createElement('span');
-        valueElement.tabIndex = -1;
-        valueElement.textContent = match.text;
-        const tooltip = this.#getTooltip(valueElement, match, context);
-        const evaluation = context.tracing?.applyEvaluation([], () => {
-            return {
-                placeholder: [valueElement],
-                asyncEvalCallback: () => this.#applyEvaluation(valueElement, match, context),
-            };
-        });
-        if (evaluation) {
-            return evaluation;
-        }
-        return tooltip ? [valueElement, tooltip] : [valueElement];
-    }
-    async #applyEvaluation(valueElement, match, context) {
-        const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
-        if (context.signal?.aborted) {
-            return false;
-        }
-        if (pixelValue?.[0] && pixelValue?.[0] !== match.text) {
-            valueElement.textContent = pixelValue[0];
-            return true;
-        }
-        return false;
-    }
-    #getTooltip(valueElement, match, context) {
+        const template = html `${match.text}`;
+        const evaluation = context.tracing?.applyEvaluation([], () => ({
+            template,
+            asyncEvalCallback: () => this.getTooltipValue(match, context),
+        }));
         const tooltipId = this.#treeElement?.getTooltipId('length');
-        if (!tooltipId) {
-            return undefined;
+        if (evaluation || !tooltipId) {
+            return html `<span tabindex=-1>${evaluation ?? template}</span>`;
         }
-        valueElement.setAttribute('aria-details', tooltipId);
-        const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: valueElement, variant: 'rich', id: tooltipId, jslogContext: 'length-popover' });
-        tooltip.addEventListener('beforetoggle', () => this.getTooltipValue(tooltip, match, context), { once: true });
-        return tooltip;
+        // clang-format off
+        return html `<span tabindex=-1 aria-details=${tooltipId}>${template}</span><devtools-tooltip
+      variant=rich
+      id=${tooltipId}
+      jslogContext=length-popover
+    >${ifExpanded(async () => (await this.getTooltipValue(match, context)) ?? template)}</devtools-tooltip>`;
+        // clang-format on
     }
-    async getTooltipValue(tooltip, match, context) {
-        const pixelValue = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text);
-        if (context.signal?.aborted) {
-            return;
+    async getTooltipValue(match, context) {
+        const pixelValue = (await resolveValues(this.#stylesContainer, this.#propertyName, match, context, match.text))?.[0];
+        if (context.signal?.aborted || !pixelValue || pixelValue === match.text) {
+            return null;
         }
-        if (!pixelValue) {
-            return;
-        }
-        tooltip.appendChild(document.createTextNode(pixelValue[0]));
+        return html `${pixelValue}`;
     }
 }
 const BaseFunctionRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BaseFunctionMatch);
@@ -1589,28 +1565,30 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
         this.#treeElement = treeElement;
         this.#propertyName = propertyName;
     }
+    #renderFunction(match, renderedArgs, context, activeArgs) {
+        return html `${this.#treeElement?.getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ??
+            match.func}(${renderedArgs.map((arg, idx) => {
+            const classes = classMap({ 'inactive-value': activeArgs?.[idx] === false });
+            return html `${idx === 0 ? nothing : ', '}<span class=${classes}>${arg}</span>`;
+        })})`;
+    }
     render(match, context) {
         const childTracingContexts = context.tracing?.evaluation(match.args, { match, context });
-        const renderedArgs = match.args.map((arg, idx) => {
-            const span = document.createElement('span');
-            Renderer.renderInto(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context, span);
-            return span;
-        });
-        const span = document.createElement('span');
-        render(html `${this.#treeElement?.getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ??
-            match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html `, `, arg]).flat()})`, span);
+        const renderedArgs = match.args.map((arg, idx) => Renderer.render(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context)
+            .nodes);
+        const template = this.#renderFunction(match, renderedArgs, context);
         if (childTracingContexts) {
-            const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => ({ placeholder: [span], asyncEvalCallback: () => this.applyEvaluation(span, match, context) }));
+            const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => ({ template, asyncEvalCallback: () => this.applyEvaluation(match, context) }));
             if (evaluation) {
-                return evaluation;
+                return html `<span>${evaluation}</span>`;
             }
         }
         else if (match instanceof SDK.CSSPropertyParserMatchers.MathFunctionMatch && !match.isArithmeticFunctionCall()) {
-            void this.applyMathFunction(renderedArgs, match, context);
+            return html `<span>${until(this.applyMathFunction(renderedArgs, match, context), template)}</span>`;
         }
-        return [span];
+        return html `<span>${template}</span>`;
     }
-    async applyEvaluation(span, match, context) {
+    async applyEvaluation(match, context) {
         const value = context.matchedResult.getComputedText(match.node, match => {
             if (match instanceof SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
                 const relativeColor = context.findParent(match.node, SDK.CSSPropertyParserMatchers.ColorMatch)?.relativeColor ?? null;
@@ -1619,14 +1597,10 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
             return null;
         });
         const evaled = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, value);
-        if (context.signal?.aborted) {
-            return false;
+        if (context.signal?.aborted || !evaled?.[0] || evaled[0] === value) {
+            return null;
         }
-        if (!evaled?.[0] || evaled[0] === value) {
-            return false;
-        }
-        span.textContent = evaled[0];
-        return true;
+        return html `${evaled[0]}`;
     }
     async applyMathFunction(renderedArgs, match, context) {
         // To understand which argument was selected by the function, we evaluate the function as well as all the arguments
@@ -1641,21 +1615,11 @@ export class BaseFunctionRenderer extends BaseFunctionRendererBase {
         });
         values.unshift(context.matchedResult.getComputedText(match.node));
         const evaledArgs = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, ...values);
-        if (context.signal?.aborted) {
-            return;
+        const functionResult = evaledArgs?.shift();
+        if (context.signal?.aborted || !evaledArgs || !functionResult) {
+            return this.#renderFunction(match, renderedArgs, context);
         }
-        if (!evaledArgs) {
-            return;
-        }
-        const functionResult = evaledArgs.shift();
-        if (!functionResult) {
-            return;
-        }
-        for (let i = 0; i < renderedArgs.length; ++i) {
-            if (evaledArgs[i] !== functionResult) {
-                renderedArgs[i].classList.add('inactive-value');
-            }
-        }
+        return this.#renderFunction(match, renderedArgs, context, evaledArgs.map(evaledArg => evaledArg === functionResult));
     }
 }
 export class MathFunctionRenderer extends BaseFunctionRenderer {
@@ -2468,6 +2432,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const renderers = this.property.parsedOk ?
             getPropertyRenderers(this.name, this.style, this.#stylesContainer, this.#matchedStyles, this, this.getComputedStyles() ?? new Map(), this.getComputedStyleExtraFields()) :
             [];
+        const existingDocWidget = this.listItemElement.querySelector('devtools-tooltip[jslogcontext="elements.css-property-doc"]')
+            ?.firstElementChild;
+        if (existingDocWidget) {
+            UI.Widget.Widget.get(existingDocWidget)?.detach(/* overrideHideOnDetach= */ true);
+        }
         this.listItemElement.removeChildren();
         const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
         this.#edits = matchedResult ? new ValueUpdateTracking(matchedResult.ast) : undefined;
@@ -2487,7 +2456,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             const tooltipId = this.getTooltipId('custom-property-decl');
             this.nameElement.setAttribute('aria-details', tooltipId);
             const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: this.nameElement, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var' });
-            tooltip.appendChild(contents);
+            contents.show(tooltip, undefined, /* suppressOrphanWidgetError= */ true);
             tooltip.onbeforetoggle = (e) => {
                 if (e.newState === 'open') {
                     contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
@@ -2522,8 +2491,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                     event.consume(true);
                     return;
                 }
-                tooltip.removeChildren();
-                tooltip.appendChild(new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty));
+                if (tooltip.firstElementChild) {
+                    return;
+                }
+                const docsView = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
+                docsView.markAsExternallyManaged();
+                docsView.show(tooltip, undefined, /* suppressOrphanWidgetError= */ true);
             };
             this.listItemElement.appendChild(tooltip);
         }
@@ -2619,7 +2592,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 id: tooltipId,
                 jslogContext: 'elements.invalid-property-decl-popover',
             });
-            tooltip.appendChild(title);
+            if (title instanceof UI.Widget.Widget) {
+                title.show(tooltip, undefined, /* suppressOrphanWidgetError= */ true);
+            }
+            else {
+                tooltip.appendChild(title);
+            }
             container.appendChild(tooltip);
         }
         const invalidString = i18nString(UIStrings.invalidString, { PH1: invalidMessage, PH2: property.name, PH3: property.value });
@@ -2738,7 +2716,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 const tooltipId = this.getTooltipId('css-hint');
                 hintIcon.setAttribute('aria-details', tooltipId);
                 const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: hintIcon, variant: 'rich', padding: 'large', id: tooltipId, jslogContext: 'elements.css-hint' });
-                tooltip.appendChild(new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint));
+                const hintDetailsView = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
+                hintDetailsView.markAsRoot();
+                hintDetailsView.show(tooltip);
                 this.listItemElement.appendChild(tooltip);
                 break;
             }

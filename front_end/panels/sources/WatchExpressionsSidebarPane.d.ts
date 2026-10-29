@@ -47,7 +47,7 @@ export declare class WatchExpressionPromptWidget extends UI.Widget.Widget {
     wasHidden(): void;
     performUpdate(): void;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class WatchExpressionsSidebarPane extends UI.Widget.VBox implements UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider {
     #private;

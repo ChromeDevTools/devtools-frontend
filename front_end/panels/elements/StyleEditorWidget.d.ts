@@ -6,7 +6,7 @@ import type { StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylesContainer } from './StylesContainer.js';
 type PropertySelectedEvent = ElementsComponents.StylePropertyEditor.PropertySelectedEvent;
 type PropertyDeselectedEvent = ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent;
-interface Editor extends HTMLElement {
+export interface Editor extends HTMLElement {
     data: {
         authoredProperties: Map<String, String>;
         computedProperties: Map<String, String>;
@@ -16,6 +16,13 @@ interface Editor extends HTMLElement {
     }>;
     jslogContext: string;
 }
+export interface ViewInput {
+    editor: Editor;
+    authoredProperties: Map<string, string>;
+    computedProperties: Map<string, string>;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 /**
  * Thin UI.Widget wrapper around style editors to allow using it as a popover.
  */
@@ -24,8 +31,7 @@ export declare class StyleEditorWidget extends UI.Widget.VBox {
     private editor?;
     private stylesContainer?;
     private section?;
-    private editorContainer;
-    constructor();
+    constructor(element?: HTMLElement, view?: View);
     getSection(): StylePropertiesSection | undefined;
     onPropertySelected(event: PropertySelectedEvent): Promise<void>;
     onPropertyDeselected(event: PropertyDeselectedEvent): Promise<void>;

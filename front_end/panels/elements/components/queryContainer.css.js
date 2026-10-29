@@ -9,32 +9,34 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.container-link {
-  display: inline-block;
-  color: var(--sys-color-state-disabled);
-}
+@scope to (devtools-widget > *) {
+  .container-link {
+    display: inline-block;
+    color: var(--sys-color-state-disabled);
+  }
 
-.container-link:hover {
-  color: var(--sys-color-primary);
-}
+  .container-link:hover {
+    color: var(--sys-color-primary);
+  }
 
-.queried-size-details {
-  color: var(--sys-color-on-surface);
-}
+  .queried-size-details {
+    color: var(--sys-color-on-surface);
+  }
 
-.axis-icon {
-  margin-left: 0.4em;
-  width: var(--sys-size-8);
-  height: var(--sys-size-6);
-  vertical-align: text-top;
-}
+  .axis-icon {
+    margin-left: 0.4em;
+    width: var(--sys-size-8);
+    height: var(--sys-size-6);
+    vertical-align: text-top;
+  }
 
-.axis-icon.hidden {
-  display: none;
-}
+  .axis-icon.hidden {
+    display: none;
+  }
 
-.axis-icon.vertical {
-  transform: rotate(90deg);
+  .axis-icon.vertical {
+    transform: rotate(90deg);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./queryContainer.css')} */`;

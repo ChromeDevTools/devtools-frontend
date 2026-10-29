@@ -174,3 +174,15 @@ The following audits in this category have a score below 90 and may need attenti
       * **Failing Elements explanation**: Fix any of the following: Element does not have inner text; aria-label attribute does not exist
       * **Schema**: { "type": "object", "properties": {} }
 === end content
+
+Title: LighthouseFormatter formats audit explanations and warnings
+Content:
+# Audits for Agentic Browsing
+
+The following audits in this category have a score below 90 and may need attention:
+- **llms.txt is valid**: 0
+  * Checks whether /llms.txt exists and is valid.
+  * Explanation: Failed to fetch https://example.com/llms.txt: HTTP 404 Not Found
+  * Warning: First warning message
+  * Warning: Second warning spanning two lines
+=== end content

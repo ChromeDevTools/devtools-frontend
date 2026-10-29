@@ -98,22 +98,36 @@ export class LighthouseFormatter {
 
     lines.push('The following audits in this category have a score below 90 and may need attention:');
     for (const audit of failingAudits) {
-      let line = `- **${audit.title}**: ${this.#formatScore(audit.score)}`;
-      if (audit.displayValue) {
-        line += ` (${audit.displayValue})`;
-      }
-      lines.push(line);
-      lines.push(`  * ${this.#toSingleLine(audit.description)}`);
-      if (audit.details) {
-        const formattedDetails = this.#formatDetails(audit.details);
-        if (formattedDetails) {
-          lines.push('');
-          lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
-        }
-      }
+      lines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
     }
 
     return lines.join('\n');
+  }
+
+  #formatAudit(audit: LHModel.ReporterTypes.AuditResultJSON, score: string|number): string[] {
+    const lines: string[] = [];
+    let line = `- **${audit.title}**: ${score}`;
+    if (audit.displayValue) {
+      line += ` (${audit.displayValue})`;
+    }
+    lines.push(line);
+    lines.push(`  * ${this.#toSingleLine(audit.description)}`);
+    if (audit.explanation) {
+      lines.push(`  * Explanation: ${this.#joinExplanationLines(audit.explanation)}`);
+    }
+    if (audit.warnings) {
+      for (const warning of audit.warnings) {
+        lines.push(`  * Warning: ${this.#toSingleLine(warning)}`);
+      }
+    }
+    if (audit.details) {
+      const formattedDetails = this.#formatDetails(audit.details);
+      if (formattedDetails) {
+        lines.push('');
+        lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
+      }
+    }
+    return lines;
   }
 
   /**

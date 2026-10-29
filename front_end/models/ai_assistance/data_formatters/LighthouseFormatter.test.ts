@@ -559,4 +559,33 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(multiLineReport, 'accessibility');
     snapshotTester.assert(this, output);
   });
+
+  it('formats audit explanations and warnings', function() {
+    const explanationWarningsReport = {
+      ...report,
+      categories: {
+        'agentic-browsing': {
+          title: 'Agentic Browsing',
+          score: 0,
+          auditRefs: [{id: 'llms-txt', score: 0, weight: 1}],
+        },
+      },
+      audits: {
+        'llms-txt': {
+          id: 'llms-txt',
+          title: 'llms.txt is valid',
+          description: 'Checks whether /llms.txt exists and is valid.',
+          explanation: 'Failed to fetch https://example.com/llms.txt:\n  HTTP 404 Not Found',
+          warnings: [
+            'First warning message',
+            'Second warning\nspanning two lines',
+          ],
+          score: 0,
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(explanationWarningsReport, 'agentic-browsing');
+    snapshotTester.assert(this, output);
+  });
 });

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
 import * as Comments from '../../ui/comments/comments.js';
@@ -11,6 +12,15 @@ import * as Lit from '../../ui/lit/lit.js';
 
 import commentsOverlayStyles from './commentsOverlay.css.js';
 import {CommentThreadWidget, computeCommentTitle, type Title} from './CommentThreadWidget.js';
+
+const UIStrings = {
+  /**
+   * @description Context menu item that creates a comment anchored to the right-clicked part of the DevTools UI.
+   */
+  addComment: 'Add comment',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('panels/common/CommentsOverlayWidget.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {
   html,
@@ -524,6 +534,15 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.#fallbackPosition = fallbackPosition ?? null;
     this.requestUpdate();
   }
+
+  /**
+   * Opens a draft comment anchored to `element`. Comment mode must already be
+   * active.
+   * @returns whether a draft comment was created.
+   */
+  addCommentAt(element: Element, coordinates?: {clientX: number, clientY: number}): boolean {
+    return this.#commentOverlayManager.handleElementClick(element, coordinates);
+  }
 }
 
 let widgetInstance: CommentsOverlayWidget|null = null;
@@ -561,6 +580,46 @@ export class ThreadRevealer implements Common.Revealer.Revealer<CommentManager.C
   }
 }
 
+/**
+ * When entering comment mode with the drawer open, add the Comments tab to
+ * the drawer without selecting it or moving focus away from the page being
+ * commented on. When leaving comment mode, always open the drawer on the
+ * Comments tab, as checking the responses is the likely next step.
+ */
+function revealCommentsDrawerView(enteringCommentMode: boolean): void {
+  const viewManager = UI.ViewManager.ViewManager.instance();
+  if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
+    return;
+  }
+  if (enteringCommentMode) {
+    if (!UI.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
+      return;
+    }
+    void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then(location => {
+      return location?.showView(viewManager.view(COMMENTS_VIEW_ID), undefined, false,
+                                /* omitFocus */ true, /* shouldSelectTab */ false);
+    });
+    return;
+  }
+  void viewManager.showView(COMMENTS_VIEW_ID, /* userGesture */ true);
+}
+
+/**
+ * Single entry point for comment mode changes requested by the user (toolbar
+ * toggle, shortcut, context menu): shows the overlay, updates the mode and
+ * reveals the Comments drawer tab. Changes not initiated by the user, such as
+ * the agent detaching, go directly through `CommentManager` and leave the
+ * drawer alone. The toggle button follows the mode in
+ * `CommentsOverlayWidget#onCommentModeChanged`.
+ */
+function setCommentModeByUser(commentManager: CommentManager.CommentManager.CommentManager, active: boolean): void {
+  getOrCreateOverlayWidget(commentManager);
+  if (commentManager.isCommentMode() !== active) {
+    commentManager.setCommentMode(active);
+    revealCommentsDrawerView(active);
+  }
+}
+
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   readonly #commentManager: CommentManager.CommentManager.CommentManager;
 
@@ -576,38 +635,10 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       if (!this.#commentManager.isAgentAttached()) {
         return false;
       }
-      getOrCreateOverlayWidget(this.#commentManager);
-      const enteringCommentMode = !this.#commentManager.isCommentMode();
-      this.#commentManager.setCommentMode(enteringCommentMode);
-      this.#revealCommentsView(enteringCommentMode);
+      setCommentModeByUser(this.#commentManager, !this.#commentManager.isCommentMode());
       return true;
     }
     return false;
-  }
-
-  /**
-   * When entering comment mode with the drawer open, add the Comments tab to
-   * the drawer without selecting it or moving focus away from the page being
-   * commented on. When leaving comment mode, always open the drawer on the
-   * Comments tab, as checking the responses is the likely next step.
-   */
-  #revealCommentsView(enteringCommentMode: boolean): void {
-    const viewManager = UI.ViewManager.ViewManager.instance();
-    if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
-      return;
-    }
-    if (enteringCommentMode) {
-      if (!UI.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
-        return;
-      }
-      void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then(location => {
-        return location?.showView(viewManager.view(COMMENTS_VIEW_ID), /* insertBefore */ undefined,
-                                  /* userGesture */ false,
-                                  /* omitFocus */ true, /* shouldSelectTab */ false);
-      });
-      return;
-    }
-    void viewManager.showView(COMMENTS_VIEW_ID, /* userGesture */ true);
   }
 
   static resetForTest(): void {
@@ -615,6 +646,39 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       widgetInstance.detach();
       widgetInstance = null;
     }
+  }
+}
+
+/**
+ * Menus that already have the "Add comment" item. A menu can have several
+ * `Node` targets, for example when a DataGrid row also appends its link
+ * element, and the provider is called once per target. The first target is
+ * the deepest element under the cursor, so only that one adds the item.
+ */
+const menusWithAddComment = new WeakSet<UI.ContextMenu.ContextMenu>();
+
+/**
+ * Adds an "Add comment" item to the context menu of commentable regions while
+ * the comment mode toggle is available. Choosing it turns comment mode on and
+ * opens a draft comment on the right-clicked region.
+ */
+export class ContextMenuProvider implements UI.ContextMenu.Provider<Node> {
+  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Node): void {
+    if (menusWithAddComment.has(contextMenu) || !Root.Runtime.hostConfig.devToolsComments?.enabled ||
+        !(target instanceof HTMLElement) || !(event instanceof MouseEvent)) {
+      return;
+    }
+    const commentManager = UI.Widget.lookupUniverseForElement(target)?.commentManager;
+    const coordinates = {clientX: event.clientX, clientY: event.clientY};
+    if (!commentManager?.isAgentAttached() ||
+        !Comments.CommentAnchorResolver.resolveCommentAnchorElement(target, coordinates)) {
+      return;
+    }
+    menusWithAddComment.add(contextMenu);
+    contextMenu.annotationSection().appendItem(i18nString(UIStrings.addComment), () => {
+      setCommentModeByUser(commentManager, true);
+      getOrCreateOverlayWidget(commentManager).addCommentAt(target, coordinates);
+    }, {jslogContext: 'add-comment'});
   }
 }
 

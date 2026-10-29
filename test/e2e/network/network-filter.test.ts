@@ -40,7 +40,7 @@ async function openMoreFiltersDropdown(devToolsPage: DevToolsPage) {
 }
 
 async function getFilter(devToolsPage: DevToolsPage, label: string, root?: ElementHandle) {
-  const filter = await devToolsPage.$textContent(label, root);
+  const filter = await devToolsPage.waitForElementWithTextContent(label, root);
 
   assert.isOk(filter, `Could not find ${label} filter.`);
   return filter;

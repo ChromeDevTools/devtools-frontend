@@ -8,8 +8,10 @@ import sinon from 'sinon';
 
 import type * as Protocol from '../../generated/protocol.js';
 import * as CommentManager from '../../models/comment_manager/comment_manager.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
+import {renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Comments from '../../ui/comments/comments.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -417,6 +419,112 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       commentManager.setAgentAttached(false);
       assert.isFalse(commentManager.isCommentMode());
       sinon.assert.notCalled(showViewStub);
+    });
+  });
+
+  describe('ContextMenuProvider', () => {
+    let testEl: HTMLElement;
+
+    beforeEach(() => {
+      updateHostConfig({devToolsComments: {enabled: true}});
+      const universe = new TestUniverse();
+      setTestUniverseForWidgets(universe);
+      commentManager = universe.commentManager;
+      commentManager.setAgentAttached(true);
+      testEl = document.createElement('div');
+      testEl.setAttribute('jslog', 'TreeItem; context: context-menu-test');
+      testEl.textContent = 'context menu target';
+      testEl.getBoundingClientRect = () => new DOMRect(10, 20, 100, 20);
+      renderElementIntoDOM(testEl, {allowMultipleChildren: true});
+    });
+
+    afterEach(() => {
+      testEl.remove();
+    });
+
+    function openContextMenu(target: Node):
+        {contextMenu: UI.ContextMenu.ContextMenu, addCommentOption?: UI.ContextMenu.Item} {
+      const event = new MouseEvent('contextmenu', {clientX: 20, clientY: 25});
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      const provider = new PanelCommon.CommentsOverlayWidget.ContextMenuProvider();
+      provider.appendApplicableItems(event, contextMenu, target);
+      return {contextMenu, addCommentOption: findMenuItemWithLabel(contextMenu.annotationSection(), 'Add comment')};
+    }
+
+    it('offers "Add comment" on a commentable element', () => {
+      const {addCommentOption} = openContextMenu(testEl);
+      assert.exists(addCommentOption);
+    });
+
+    it('does not offer "Add comment" when the comments feature is disabled', () => {
+      updateHostConfig({devToolsComments: {enabled: false}});
+      const {addCommentOption} = openContextMenu(testEl);
+      assert.isUndefined(addCommentOption);
+    });
+
+    it('does not offer "Add comment" when no agent is attached', () => {
+      commentManager.setAgentAttached(false);
+      const {addCommentOption} = openContextMenu(testEl);
+      assert.isUndefined(addCommentOption);
+    });
+
+    it('does not offer "Add comment" on an element that cannot be commented on', () => {
+      const plainEl = document.createElement('div');
+      renderElementIntoDOM(plainEl, {allowMultipleChildren: true});
+      const {addCommentOption} = openContextMenu(plainEl);
+      assert.isUndefined(addCommentOption);
+      plainEl.remove();
+    });
+
+    it('offers "Add comment" only once when the menu has several targets in the same row', () => {
+      const row = document.createElement('div');
+      row.setAttribute('jslog', 'TableRow; context: context-menu-row');
+      row.getBoundingClientRect = () => new DOMRect(10, 60, 100, 20);
+      const cell = row.createChild('span');
+      cell.textContent = 'cell';
+      const link = row.createChild('span');
+      link.textContent = 'link';
+      renderElementIntoDOM(row, {allowMultipleChildren: true});
+
+      const event = new MouseEvent('contextmenu', {clientX: 20, clientY: 65});
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      const provider = new PanelCommon.CommentsOverlayWidget.ContextMenuProvider();
+      provider.appendApplicableItems(event, contextMenu, cell);
+      provider.appendApplicableItems(event, contextMenu, link);
+
+      const labels = contextMenu.annotationSection().items.map(item => item.buildDescriptor().label);
+      assert.deepEqual(labels, ['Add comment']);
+      row.remove();
+    });
+
+    it('turns comment mode on and opens a draft on the element when "Add comment" is chosen', () => {
+      assert.isFalse(commentManager.isCommentMode());
+      const {contextMenu, addCommentOption} = openContextMenu(testEl);
+      assert.exists(addCommentOption);
+
+      contextMenu.invokeHandler(addCommentOption.id());
+
+      assert.isTrue(commentManager.isCommentMode());
+      const threads = commentManager.getCommentThreads();
+      assert.lengthOf(threads, 1);
+      assert.strictEqual(threads[0].status, 'DRAFT');
+    });
+
+    it('keeps comment mode on and replaces an existing draft when "Add comment" is chosen in comment mode', () => {
+      const {contextMenu: firstMenu, addCommentOption: firstAddCommentOption} = openContextMenu(testEl);
+      assert.exists(firstAddCommentOption);
+      firstMenu.invokeHandler(firstAddCommentOption.id());
+      const firstDraft = commentManager.getCommentThreads()[0];
+
+      const {contextMenu: secondMenu, addCommentOption: secondAddCommentOption} = openContextMenu(testEl);
+      assert.exists(secondAddCommentOption);
+      secondMenu.invokeHandler(secondAddCommentOption.id());
+
+      assert.isTrue(commentManager.isCommentMode());
+      const threads = commentManager.getCommentThreads();
+      assert.lengthOf(threads, 1);
+      assert.notStrictEqual(threads[0], firstDraft);
+      assert.strictEqual(threads[0].status, 'DRAFT');
     });
   });
 

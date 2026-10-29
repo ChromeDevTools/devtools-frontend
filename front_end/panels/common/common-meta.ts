@@ -95,3 +95,13 @@ Common.Revealer.registerRevealer({
     return new CommonModule.CommentsOverlayWidget.ThreadRevealer();
   },
 });
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [Node];
+  },
+  async loadProvider() {
+    const CommonModule = await loadCommonModule();
+    return new CommonModule.CommentsOverlayWidget.ContextMenuProvider();
+  },
+});

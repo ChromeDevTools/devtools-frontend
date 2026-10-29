@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import type * as Common from '../../core/common/common.js';
@@ -35,6 +35,10 @@ describe('StylesSourceMapping', () => {
 
   beforeEach(() => {
     universe = new TestUniverse();
+  });
+
+  afterEach(() => {
+    universe.dispose();
   });
 
   it('does not overwrite CSS files when CSS model reports error on getStyleSheetText', async () => {

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -34,6 +34,10 @@ describe('Automapping', () => {
     backend = new MockDebuggerBackend();
     // Eagerly instantiate persistence so it registers listeners on the workspace before we add files.
     void backend.universe.persistence;
+  });
+
+  afterEach(() => {
+    backend.universe.dispose();
   });
 
   it('correctly maps sourcemap sources even when compiled URL matches one of the source URLs', async () => {

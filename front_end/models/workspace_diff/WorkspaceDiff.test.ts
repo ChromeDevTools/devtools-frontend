@@ -25,6 +25,7 @@ describe('UISourceCodeDiff', () => {
   });
 
   afterEach(() => {
+    universe.dispose();
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
   });
 

@@ -32,12 +32,13 @@ describe('Universe', () => {
   }
 
   it('can be instantiated', () => {
-    new Foundation.Universe.Universe({
+    const universe = new Foundation.Universe.Universe({
       settingsCreationOptions: createSettingsCreationOptions(),
       hostConfig: {} as Root.Runtime.HostConfig,
       inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
       supportsEmulation: false,
     });
+    universe.dispose();
   });
 
   it('returns DeviceModeModel when emulation is supported', () => {
@@ -49,6 +50,7 @@ describe('Universe', () => {
       supportsEmulation: true,
     });
     assert.isNotNull(universe.deviceModeModel);
+    universe.dispose();
   });
 
   it('returns null for DeviceModeModel when emulation is not supported', () => {
@@ -59,6 +61,7 @@ describe('Universe', () => {
       supportsEmulation: false,
     });
     assert.isNull(universe.deviceModeModel);
+    universe.dispose();
   });
 
   it('returns ProjectSettingsModel when initAutomaticFilesystem is true', () => {
@@ -72,6 +75,7 @@ describe('Universe', () => {
     assert.isNotNull(universe.projectSettingsModel);
     assert.isNotNull(universe.automaticFileSystemManager);
     assert.isNotNull(universe.automaticFileSystemWorkspaceBinding);
+    universe.dispose();
   });
 
   it('returns null for ProjectSettingsModel and throws for automatic file system when initAutomaticFilesystem is false',
@@ -86,6 +90,7 @@ describe('Universe', () => {
        assert.isNull(universe.projectSettingsModel);
        assert.throws(() => universe.automaticFileSystemManager);
        assert.throws(() => universe.automaticFileSystemWorkspaceBinding);
+       universe.dispose();
      });
 
   it('handles initAutomaticFilesystem in TestUniverse', () => {
@@ -93,11 +98,13 @@ describe('Universe', () => {
     assert.isNotNull(defaultUniverse.projectSettingsModel);
     assert.isNotNull(defaultUniverse.automaticFileSystemManager);
     assert.isNotNull(defaultUniverse.automaticFileSystemWorkspaceBinding);
+    defaultUniverse.dispose();
 
     const disabledUniverse = new TestUniverse({initAutomaticFilesystem: false});
     assert.throws(() => disabledUniverse.projectSettingsModel);
     assert.throws(() => disabledUniverse.automaticFileSystemManager);
     assert.throws(() => disabledUniverse.automaticFileSystemWorkspaceBinding);
+    disabledUniverse.dispose();
   });
 
   it('retrieves registered services via universe.get(...)', () => {
@@ -109,6 +116,7 @@ describe('Universe', () => {
     });
     assert.strictEqual(universe.get(SDK.TargetManager.TargetManager), universe.targetManager);
     assert.strictEqual(universe.get(Common.Settings.Settings), universe.settings);
+    universe.dispose();
   });
 
   it('does not produce unexpected CDP traffic during target bootstrapping', async () => {
@@ -241,6 +249,7 @@ describe('Universe', () => {
       assert.isTrue(toleratedCommands.includes(method),
                     `Unexpected CDP command '${method}' was called during target bootstrapping.`);
     }
+    universe.dispose();
   });
 
   it('cleans up IsolatedFileSystemManager on dispose', () => {

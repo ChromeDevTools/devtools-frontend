@@ -132,6 +132,7 @@ describe('BreakpointManager', () => {
   });
 
   afterEach(() => {
+    backend.universe.dispose();
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
     Root.DevToolsContext.setGlobalInstance(null);
   });

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
@@ -59,6 +59,10 @@ describe('PersistenceImpl', () => {
     // Eagerly instantiate persistence so it registers listeners on the workspace before we add files.
     void backend.universe.persistence;
     target = backend.createTarget();
+  });
+
+  afterEach(() => {
+    backend.universe.dispose();
   });
 
   async function setBreakpointOnFileSystem(

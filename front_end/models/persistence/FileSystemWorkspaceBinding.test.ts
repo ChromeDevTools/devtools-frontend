@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import {afterEach, beforeEach, describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -30,6 +30,10 @@ describe('FileSystemWorkspaceBinding', () => {
 
   beforeEach(() => {
     universe = new TestUniverse();
+  });
+
+  afterEach(() => {
+    universe.dispose();
   });
 
   it('does not conflict when file system paths share a prefix', async () => {
@@ -311,6 +315,7 @@ describe('FileSystemWorkspaceBinding', () => {
       } finally {
         removeFileSystem();
         binding.dispose();
+        manager.dispose();
       }
     });
 
@@ -339,6 +344,7 @@ describe('FileSystemWorkspaceBinding', () => {
       } finally {
         removeFileSystem();
         binding.dispose();
+        manager.dispose();
       }
     });
 
@@ -358,6 +364,7 @@ describe('FileSystemWorkspaceBinding', () => {
         assert.isNull(workspace.uiSourceCodeForURL(fileURL));
       } finally {
         binding.dispose();
+        manager.dispose();
       }
     });
   });

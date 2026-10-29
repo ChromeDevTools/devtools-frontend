@@ -59,6 +59,7 @@ function setupEnvironmentHooks() {
     }
     SDK.TargetManager.TargetManager.removeInstance();
     Workspace.Workspace.WorkspaceImpl.removeInstance();
+    Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
     Root.DevToolsContext.setGlobalInstance(null);
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();

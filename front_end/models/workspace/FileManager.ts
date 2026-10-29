@@ -35,6 +35,9 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): FileManager {
     const {forceNew} = opts;
     if (!Root.DevToolsContext.globalInstance().has(FileManager) || forceNew) {
+      if (Root.DevToolsContext.globalInstance().has(FileManager)) {
+        Root.DevToolsContext.globalInstance().get(FileManager).dispose();
+      }
       Root.DevToolsContext.globalInstance().set(FileManager, new FileManager());
     }
 
@@ -42,6 +45,9 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   static removeInstance(): void {
+    if (Root.DevToolsContext.globalInstance().has(FileManager)) {
+      Root.DevToolsContext.globalInstance().get(FileManager).dispose();
+    }
     Root.DevToolsContext.globalInstance().delete(FileManager);
   }
 

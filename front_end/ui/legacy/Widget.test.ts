@@ -107,6 +107,24 @@ describeWithEnvironment('Widget', () => {
           'Section; context: bar',
       );
     });
+
+    it('does not add `vbox` or `flex-auto` to `element` when `useShadowDom` is `\'pure\'`', () => {
+      const widget = new Widget<ShadowRoot>({useShadowDom: 'pure'});
+      assert.isTrue(widget.element.classList.contains('widget'));
+      assert.isFalse(widget.element.classList.contains('vbox'));
+      assert.isFalse(widget.element.classList.contains('flex-auto'));
+
+      const vbox = new UI.Widget.VBox<ShadowRoot>({useShadowDom: 'pure'});
+      assert.isTrue(vbox.element.classList.contains('widget'));
+      assert.isTrue(vbox.element.classList.contains('vbox'));
+      assert.isFalse(vbox.element.classList.contains('flex-auto'));
+
+      const hbox = new UI.Widget.HBox<ShadowRoot>({useShadowDom: 'pure'});
+      assert.isTrue(hbox.element.classList.contains('widget'));
+      assert.isTrue(hbox.element.classList.contains('hbox'));
+      assert.isFalse(hbox.element.classList.contains('vbox'));
+      assert.isFalse(hbox.element.classList.contains('flex-auto'));
+    });
   });
 
   describe('parentWidget', () => {

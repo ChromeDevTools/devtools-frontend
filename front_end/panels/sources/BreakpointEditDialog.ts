@@ -174,7 +174,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget<ShadowRoot> {
       useShadowDom: 'pure',
       delegatesFocus: true,
     });
-    this.element.classList.remove('vbox', 'flex-auto');
     this.#view = view;
   }
 

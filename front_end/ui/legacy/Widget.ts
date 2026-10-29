@@ -586,14 +586,14 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
     }
     this.#shadowRoot = this.element.shadowRoot;
     if (options?.useShadowDom && !this.#shadowRoot) {
-      this.element.classList.add('vbox');
-      this.element.classList.add('flex-auto');
       this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
         delegatesFocus: options?.delegatesFocus,
       });
       if (options.useShadowDom === 'pure') {
         this.#contentElement = (this.#shadowRoot as unknown as ContentTypeT);
       } else {
+        this.element.classList.add('vbox');
+        this.element.classList.add('flex-auto');
         const div = document.createElement('div');
         this.#shadowRoot.appendChild(div);
         this.#contentElement = (div as unknown as ContentTypeT);
@@ -1371,7 +1371,6 @@ export class HBox<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElemen
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add('hbox');
     } else {
-      this.element.classList.remove('vbox');
       this.element.classList.add('hbox');
     }
   }

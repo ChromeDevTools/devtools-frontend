@@ -1609,7 +1609,7 @@ class ShadowWidget extends UI.Widget.Widget {
 
   constructor(element?: HTMLElement, view: ShadowWidgetView = SHADOW_WIDGET_DEFAULT_VIEW) {
     super(element);
-    this.element.classList.remove('vbox', 'flex-auto', 'widget');
+    this.element.classList.remove('widget');
     this.#view = view;
   }
 

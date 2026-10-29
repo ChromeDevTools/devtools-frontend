@@ -125,7 +125,6 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
-    this.element.classList.remove('vbox', 'flex-auto');
     this.#view = view;
   }
 

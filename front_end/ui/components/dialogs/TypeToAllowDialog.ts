@@ -72,14 +72,12 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
       >
       <div class="button">
         <devtools-button
-          class="text-button"
           .variant=${Buttons.Button.Variant.PRIMARY}
           .jslogContext=${'confirm'}
           .disabled=${input.allowDisabled}
           @click=${input.onAllow}
         >${i18nString(UIStrings.allow)}</devtools-button>
         <devtools-button
-          class="text-button"
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'cancel'}
           @click=${input.onCancel}

@@ -28,7 +28,9 @@ devtools_entrypoint("bundle") {
 
   ts_deps = [ ":lists" ]
 
-  visibility = default_components_visibility
+  visibility = [ "../../../entrypoints/node_app/app/*" ]
+
+  visibility += default_components_visibility
 }
 
 devtools_ui_module("unittests") {

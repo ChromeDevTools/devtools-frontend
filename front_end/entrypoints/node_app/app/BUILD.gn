@@ -26,10 +26,11 @@ devtools_module("app") {
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../../ui/components/buttons:bundle",
-    "../../../ui/i18n:bundle",
+    "../../../ui/components/lists:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/utils:bundle",
+    "../../../ui/lit:bundle",
   ]
   deps = [ ":css_files" ]
 }

@@ -38,6 +38,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/inspector_main/*",
     "../../entrypoints/main/*",
+    "../../entrypoints/node_app/app/*",
     "../../panels/*",
     "../../testing/*",
     "../../ui/components/*",

@@ -15,3 +15,6 @@
 # crbug.com/1342718 [ mac win32 linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:ConsoleInsight:shows_opt-in_teaser_when_setting_is_turned_off [ Failure Pass Skip ]
 # crbug.com/1342718 front_end/panels/explain/components/ConsoleInsight.test.ts:ConsoleInsight:shows_opt-in_teaser_when_setting_is_turned_off [ Failure Pass ]
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
+
+# 2026 Oct 29 gardener shift
+crbug.com/548390264 [ linux mac win32 ] test/e2e/memory/memory.test.ts:the_memory_panel:does_not_include_backing_store_size_in_the_shallow_size_of_a_js_set [ Failure Pass ]

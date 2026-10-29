@@ -26133,7 +26133,8 @@
                         "BrowsingDataRemoved",
                         "PrerenderHostReused",
                         "FormSubmitWhenPrerendering",
-                        "CrossDocumentRestart"
+                        "CrossDocumentRestart",
+                        "PrefetchFailedCrossOriginSubframe"
                     ]
                 },
                 {

@@ -17516,6 +17516,7 @@ export namespace Preload {
     PrerenderHostReused = 'PrerenderHostReused',
     FormSubmitWhenPrerendering = 'FormSubmitWhenPrerendering',
     CrossDocumentRestart = 'CrossDocumentRestart',
+    PrefetchFailedCrossOriginSubframe = 'PrefetchFailedCrossOriginSubframe',
   }
 
   /**

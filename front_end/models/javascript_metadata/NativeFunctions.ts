@@ -8022,6 +8022,10 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
     signatures: [["type","eventInitDict"]]
   },
   {
+    name: "DeviceBoundSessionRegistrationObserver",
+    signatures: [["callback","?options"]]
+  },
+  {
     name: "DeviceMotionEvent",
     signatures: [["type","?eventInitDict"]]
   },

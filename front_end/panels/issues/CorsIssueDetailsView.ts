@@ -2,24 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/request_link_icon/request_link_icon.js';
+
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as Logs from '../../models/logs/logs.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import type * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 import type {IssueView} from './IssueView.js';
 
+const {widget} = UI.Widget;
+
+export interface RequestCellData {
+  affectedRequest: Protocol.Audits.AffectedRequest;
+  linkToPreflight?: boolean;
+  highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
+  additionalOnClickAction?: () => void;
+}
+
+export interface SourceLocationData {
+  target: SDK.Target.Target|null;
+  scriptId: Protocol.Runtime.ScriptId|null;
+  url: Platform.DevToolsPath.UrlString;
+  lineNumber: number;
+  columnNumber?: number;
+}
+
 export interface CorsRow {
-  requestCell: Element;
+  request: RequestCellData;
   isWarning: boolean;
-  preflightCell: Element|null;
+  preflight?: RequestCellData;
   header: string;
   problem: string;
   failedParameter: string;
@@ -27,12 +48,13 @@ export interface CorsRow {
   resourceIPAddressSpace: string;
   initiatorIPAddressSpace: string;
   initiatorIsSecureContext: boolean|undefined;
-  sourceAnchor: HTMLElement|null;
+  sourceLocation?: SourceLocationData;
 }
 
 export interface ViewInput {
   issueCode?: IssuesManager.CorsIssue.IssueCode;
   rows: CorsRow[];
+  requestResolver: Logs.RequestResolver.RequestResolver;
 }
 
 export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
@@ -44,12 +66,46 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     </td>
   `;
 
-  const renderPreflightCell = (preflightCell: Element|null): Element|LitTemplate => preflightCell ?? html`<td></td>`;
+  const renderRequestCell = (request: RequestCellData): LitTemplate => {
+    // clang-format off
+    return html`
+      <td class="affected-resource-cell">
+        <devtools-request-link-icon .data=${{
+          ...request,
+          requestResolver: input.requestResolver,
+          displayURL: true,
+        } as RequestLinkIcon.RequestLinkIcon.RequestLinkIconData}></devtools-request-link-icon>
+      </td>
+    `;
+    // clang-format on
+  };
+
+  const renderPreflightCell = (preflight: RequestCellData|undefined): LitTemplate =>
+      preflight ? renderRequestCell(preflight) : html`<td></td>`;
 
   const renderCodeExampleCell = (text: string): LitTemplate => html`<td class="code-example">${text}</td>`;
 
-  const renderSourceLocationCell = (sourceAnchor: HTMLElement|null): LitTemplate =>
-      html`<td class="affected-source-location">${sourceAnchor}</td>`;
+  const renderSourceLocationCell = (location: SourceLocationData|undefined): LitTemplate => {
+    if (!location) {
+      return html`<td class="affected-source-location"></td>`;
+    }
+    // clang-format off
+    return html`
+      <td class="affected-source-location">${
+        widget(Components.Linkifier.ScriptLocationLink, {
+          target: location.target ?? undefined,
+          scriptId: location.scriptId ?? undefined,
+          sourceURL: location.url,
+          lineNumber: location.lineNumber,
+          options: {
+            columnNumber: location.columnNumber,
+            maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
+            jslogContext: 'source-location',
+          },
+        })}</td>
+    `;
+    // clang-format on
+  };
 
   const renderSecureContextCell = (isSecureContext: boolean|undefined): LitTemplate => html`
     <td>${
@@ -149,9 +205,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
-            ${renderPreflightCell(row.preflightCell)}
+            ${renderPreflightCell(row.preflight)}
             ${renderCodeExampleCell(row.header)}
             <td>${row.problem}</td>
             ${renderCodeExampleCell(row.failedParameter)}
@@ -162,9 +218,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
-            ${renderPreflightCell(row.preflightCell)}
+            ${renderPreflightCell(row.preflight)}
           </tr>
         `;
         // clang-format on
@@ -172,9 +228,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
-            ${renderPreflightCell(row.preflightCell)}
+            ${renderPreflightCell(row.preflight)}
             <td>${row.problem}</td>
           </tr>
         `;
@@ -183,9 +239,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
-            ${renderPreflightCell(row.preflightCell)}
+            ${renderPreflightCell(row.preflight)}
             ${renderCodeExampleCell(row.initiatorOrigin)}
             ${renderCodeExampleCell(row.failedParameter)}
           </tr>
@@ -197,9 +253,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
-            ${renderPreflightCell(row.preflightCell)}
+            ${renderPreflightCell(row.preflight)}
             ${renderCodeExampleCell(row.failedParameter)}
           </tr>
         `;
@@ -208,7 +264,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
             <td>${row.resourceIPAddressSpace}</td>
             <td>${row.initiatorIPAddressSpace}</td>
@@ -220,10 +276,10 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
             ${renderCodeExampleCell(row.initiatorOrigin)}
-            ${renderSourceLocationCell(row.sourceAnchor)}
+            ${renderSourceLocationCell(row.sourceLocation)}
           </tr>
         `;
         // clang-format on
@@ -231,10 +287,10 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
             ${renderCodeExampleCell(row.initiatorOrigin)}
-            ${renderSourceLocationCell(row.sourceAnchor)}
+            ${renderSourceLocationCell(row.sourceLocation)}
             ${renderCodeExampleCell(row.failedParameter)}
           </tr>
         `;
@@ -243,9 +299,9 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
-            ${renderSourceLocationCell(row.sourceAnchor)}
+            ${renderSourceLocationCell(row.sourceLocation)}
           </tr>
         `;
         // clang-format on
@@ -257,7 +313,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         // clang-format off
         return html`
           <tr class="affected-resource-directive">
-            ${row.requestCell}
+            ${renderRequestCell(row.request)}
             ${renderStatus(row.isWarning)}
           </tr>
         `;
@@ -423,7 +479,9 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CorsIssueDetailsView extends AffectedResourcesView {
   readonly #view: View;
-  readonly #linkifier = new Components.Linkifier.Linkifier(UI.UIUtils.MaxLengthForDisplayedURLsInConsole);
+  readonly #onRequestClick = (): void => {
+    Host.userMetrics.issuesPanelResourceOpened(IssuesManager.Issue.IssueCategory.CORS, AffectedItem.REQUEST);
+  };
 
   constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
               view: View = DEFAULT_VIEW) {
@@ -442,7 +500,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     for (const issue of issues) {
       rows.push(this.#createDetailRow(issueCode, issue));
     }
-    this.#view({issueCode, rows}, undefined, this.affectedResources);
+    const input: ViewInput = {issueCode, rows, requestResolver: this.requestResolver};
+    this.#view(input, undefined, this.affectedResources);
     this.updateAffectedResourceCount(rows.length);
   }
 
@@ -510,59 +569,64 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     };
 
     const opts = {
-      additionalOnClickAction(): void {
-        Host.userMetrics.issuesPanelResourceOpened(IssuesManager.Issue.IssueCategory.CORS, AffectedItem.REQUEST);
-      },
+      additionalOnClickAction: this.#onRequestClick,
     };
 
-    let requestCell: Element;
+    let request: RequestCellData;
     if (issueCode === IssuesManager.CorsIssue.IssueCode.HEADER_DISALLOWED_BY_PREFLIGHT_RESPONSE) {
-      requestCell = this.createRequestCell(details.request, {
+      request = {
+        affectedRequest: details.request,
         ...opts,
         highlightHeader: {
           section: NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST,
           name: corsErrorStatus.failedParameter,
         },
-      });
+      };
     } else if (issueCode === IssuesManager.CorsIssue.IssueCode.REDIRECT_CONTAINS_CREDENTIALS ||
                issueCode === IssuesManager.CorsIssue.IssueCode.CORS_DISABLED_SCHEME) {
-      requestCell = this.createRequestCell(details.request, {
+      request = {
+        affectedRequest: details.request,
         ...opts,
         highlightHeader,
-      });
+      };
     } else {
-      requestCell = this.createRequestCell(details.request, opts);
+      request = {
+        affectedRequest: details.request,
+        ...opts,
+      };
     }
 
-    let preflightCell: Element|null = null;
+    let preflight: RequestCellData|undefined;
     if (issueCode === IssuesManager.CorsIssue.IssueCode.PREFLIGHT_RESPONSE_INVALID) {
       const specialHighlightHeader = corsError === Protocol.Network.CorsError.PreflightInvalidStatus ? {
         section: NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL,
         name: 'Status-Code',
       } :
                                                                                                        highlightHeader;
-      preflightCell = this.createRequestCell(details.request, {
+      preflight = {
+        affectedRequest: details.request,
         ...opts,
         linkToPreflight: true,
         highlightHeader: specialHighlightHeader,
-      });
+      };
     } else if (issueCode === IssuesManager.CorsIssue.IssueCode.METHOD_DISALLOWED_BY_PREFLIGHT_RESPONSE) {
-      preflightCell = this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader});
+      preflight = {affectedRequest: details.request, ...opts, linkToPreflight: true, highlightHeader};
     } else if (issueCode === IssuesManager.CorsIssue.IssueCode.HEADER_DISALLOWED_BY_PREFLIGHT_RESPONSE) {
-      preflightCell = this.createRequestCell(details.request, {
+      preflight = {
+        affectedRequest: details.request,
         ...opts,
         linkToPreflight: true,
         highlightHeader: {
           section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
           name: 'Access-Control-Allow-Headers',
         },
-      });
+      };
     } else if ((issueCode === IssuesManager.CorsIssue.IssueCode.INVALID_HEADER_VALUES ||
                 issueCode === IssuesManager.CorsIssue.IssueCode.WILDCARD_ORIGN_NOT_ALLOWED ||
                 issueCode === IssuesManager.CorsIssue.IssueCode.ORIGIN_MISMATCH ||
                 issueCode === IssuesManager.CorsIssue.IssueCode.ALLOW_CREDENTIALS_REQUIRED) &&
                corsError.includes('Preflight')) {
-      preflightCell = this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader});
+      preflight = {affectedRequest: details.request, ...opts, linkToPreflight: true, highlightHeader};
     }
 
     let problem = '';
@@ -571,22 +635,24 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       problem = CorsIssueDetailsView.getProblemFromError(details.corsErrorStatus);
     }
 
-    let sourceAnchor: HTMLElement|null = null;
+    let sourceLocation: SourceLocationData|undefined;
     if ((issueCode === IssuesManager.CorsIssue.IssueCode.DISALLOWED_BY_MODE ||
          issueCode === IssuesManager.CorsIssue.IssueCode.CORS_DISABLED_SCHEME ||
          issueCode === IssuesManager.CorsIssue.IssueCode.NO_CORS_REDIRECT_MODE_NOT_FOLLOW) &&
         details.location) {
-      sourceAnchor = this.#linkifier.linkifyScriptLocation(
-          issue.model()?.getTargetIfNotDisposed() || null, details.location.scriptId || null,
-          details.location.url as Platform.DevToolsPath.UrlString, details.location.lineNumber,
-          {columnNumber: details.location.columnNumber});
-      sourceAnchor.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);
+      sourceLocation = {
+        target: issue.model()?.getTargetIfNotDisposed() || null,
+        scriptId: details.location.scriptId || null,
+        url: details.location.url as Platform.DevToolsPath.UrlString,
+        lineNumber: details.location.lineNumber,
+        columnNumber: details.location.columnNumber,
+      };
     }
 
     return {
-      requestCell,
+      request,
       isWarning: details.isWarning,
-      preflightCell,
+      preflight,
       header: CorsIssueDetailsView.getHeaderFromError(corsError),
       problem,
       failedParameter: details.corsErrorStatus.failedParameter ?? '',
@@ -594,17 +660,17 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       resourceIPAddressSpace: details.resourceIPAddressSpace ?? '',
       initiatorIPAddressSpace: details.clientSecurityState?.initiatorIPAddressSpace ?? '',
       initiatorIsSecureContext: details.clientSecurityState?.initiatorIsSecureContext,
-      sourceAnchor,
+      sourceLocation,
     };
   }
 
   update(): void {
     this.requestResolver.clear();
-    this.#linkifier.reset();
     const issues = this.issue.getCorsIssues();
     const issue = issues.values().next();
     if (issue.done) {
-      this.#view({rows: []}, undefined, this.affectedResources);
+      const input: ViewInput = {rows: [], requestResolver: this.requestResolver};
+      this.#view(input, undefined, this.affectedResources);
       this.updateAffectedResourceCount(0);
     } else {
       this.#appendDetails(issue.value.code(), issues);

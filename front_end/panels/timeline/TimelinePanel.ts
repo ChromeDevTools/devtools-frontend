@@ -477,6 +477,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
       'flamechart-selected-navigation', 'Modern - normal scrolling', 'timeline.select-modern-navigation');
   #classicNavRadioButton = UI.UIUtils.createRadioButton(
       'flamechart-selected-navigation', 'Classic - scroll to zoom', 'timeline.select-classic-navigation');
+  #navigationSettingInitialized = false;
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #hiddenTracksInfoBarByParsedTrace = new WeakMap<Trace.TraceModel.ParsedTrace, UI.Infobar.Infobar|'DISMISSED'>();
@@ -2307,7 +2308,8 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
 
     // When the timeline is loaded for the first time, setup the shortcuts dialog and log what navigation setting is selected.
     // Logging the setting on the first timeline load will allow us to get an estimate number of people using each option.
-    if (this.#traceEngineModel.size() === 1) {
+    if (!this.#navigationSettingInitialized && this.#traceEngineModel.size() === 1) {
+      this.#navigationSettingInitialized = true;
       this.#setupNavigationSetting();
       if (Common.Settings.Settings.instance()
               .resolve(SettingUIRegistration.TimelineSettings.flamechartSelectedNavigationSettingDescriptor)

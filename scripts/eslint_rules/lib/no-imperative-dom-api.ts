@@ -26,6 +26,7 @@ import {toolbar} from './no-imperative-dom-api/toolbar.ts';
 import {treeOutline} from './no-imperative-dom-api/tree-outline.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
+import {isLitHtmlRenderCall, isViewCallCallee} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 type Identifier = TSESTree.Identifier;
@@ -202,12 +203,35 @@ export default createRule({
       return ranges.filter(r => r[0] < r[1]);
     }
 
+    function isRenderOrViewTarget(domFragment: DomFragment): boolean {
+      return domFragment.references.some(reference => {
+        const parent = reference.node.parent;
+        if (!parent || parent.type !== 'CallExpression') {
+          return false;
+        }
+        return (isLitHtmlRenderCall(parent) && parent.arguments[1] === reference.node) ||
+            (isViewCallCallee(parent.callee) && parent.arguments[2] === reference.node);
+      });
+    }
+
     function maybeReportDomFragment(domFragment: DomFragment): void {
       const isStandalone = domFragment.references.length === 1 && !domFragment.initializer && !domFragment.replacer &&
           domFragment.references[0].node.parent?.type === 'ReturnStatement';
       if ((!isStandalone && !domFragment.initializer && !domFragment.replacer) || domFragment.parent ||
           !(domFragment.tagName || domFragment.expression) ||
           (!isStandalone && domFragment.references.every(r => !r.processed))) {
+        return;
+      }
+      if (!isStandalone && isRenderOrViewTarget(domFragment)) {
+        for (const reference of domFragment.references) {
+          if (!reference.processed) {
+            continue;
+          }
+          context.report({
+            node: getEnclosingExpression(reference.node) ?? reference.node,
+            messageId: 'preferTemplateLiterals',
+          });
+        }
         return;
       }
       context.report({

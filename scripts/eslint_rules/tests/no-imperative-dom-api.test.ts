@@ -1669,5 +1669,23 @@ class SomeWidget extends UI.Widget.Widget {
         {messageId: 'preferTemplateLiterals'},
       ],
     },
+    {
+      name: 'reports imperative mutations on a render or view target container on their respective lines',
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class ListItem {
+  element: HTMLDivElement;
+  constructor() {
+    this.element = document.createElement('div');
+    this.element.classList.add('profile-memory-usage-item', 'hbox');
+    UI.ARIAUtils.markAsOption(this.element);
+    LIST_ITEM_VIEW({name: 'main'}, undefined, this.element);
+  }
+}`,
+      errors: [
+        {messageId: 'preferTemplateLiterals', line: 6},
+        {messageId: 'preferTemplateLiterals', line: 7},
+      ],
+    },
   ],
 });

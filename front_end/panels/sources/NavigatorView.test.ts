@@ -564,7 +564,7 @@ describeWithEnvironment('NavigatorView', () => {
     });
   });
 
-  describe('NavigatorSourceTreeElement AI floating button', () => {
+  describe('NavigatorUISourceCodeTreeNode AI floating button', () => {
     it('renders AI floating button when action is registered and executes it on click', async () => {
       const actionExecuteSpy = sinon.spy();
       const mockAction = {
@@ -585,8 +585,7 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const sourceSelectedSpy = sinon.spy(navigatorView, 'sourceSelected');
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
-      treeElement.onattach();
+      const treeElement = node.treeNode();
 
       const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
       assert.exists(floatingButton);
@@ -610,8 +609,7 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
-      treeElement.onattach();
+      const treeElement = node.treeNode();
 
       const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
       assert.isNull(floatingButton);
@@ -626,13 +624,44 @@ describeWithEnvironment('NavigatorView', () => {
 
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
-      const treeElement = node.treeNode() as Sources.NavigatorView.NavigatorSourceTreeElement;
-      treeElement.onattach();
+      const treeElement = node.treeNode();
 
       const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
       assert.isNull(floatingButton);
 
       project.removeProject();
+    });
+  });
+
+  describe('treeElement <-> NavigatorTreeNode association', () => {
+    it('associates treeElement with NavigatorUISourceCodeTreeNode on treeNode()', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, 'console.log(1);', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, mainFrame);
+      const treeElement = node.treeNode();
+
+      assert.strictEqual(navigatorView.nodeForTreeElement(treeElement), node);
+
+      project.removeProject();
+    });
+
+    it('updates treeElement <-> NavigatorTreeNode association on NavigatorFolderTreeElement.setNode()', () => {
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const node1 = new Sources.NavigatorView.NavigatorGroupTreeNode(navigatorView, null, 'group1',
+                                                                     Sources.NavigatorView.Types.Frame, 'Group 1');
+      const node2 = new Sources.NavigatorView.NavigatorGroupTreeNode(navigatorView, null, 'group2',
+                                                                     Sources.NavigatorView.Types.Frame, 'Group 2');
+      const folderTreeElement = new Sources.NavigatorView.NavigatorFolderTreeElement(
+          navigatorView, Sources.NavigatorView.Types.Frame, 'Group');
+
+      folderTreeElement.setNode(node1);
+      assert.strictEqual(navigatorView.nodeForTreeElement(folderTreeElement), node1);
+
+      folderTreeElement.setNode(node2);
+      assert.strictEqual(navigatorView.nodeForTreeElement(folderTreeElement), node2);
     });
   });
 

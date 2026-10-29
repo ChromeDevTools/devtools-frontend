@@ -96,7 +96,14 @@ export class TypeScriptImportExtractor {
     if (importPath.endsWith('.js')) {
       const potentialTsName = baseName.replace(/\.js$/, '.ts');
       const potentialDtsName = baseName.replace(/\.js$/, '.d.ts');
-      return exists(potentialTsName, potentialDtsName, baseName);
+      const existing = exists(potentialTsName, potentialDtsName, baseName);
+      if (existing || dirListing.size === 0) {
+        return existing;
+      }
+      // A source that a generator writes to the gen dir (see
+      // scripts/build/ninja/generated_ts.gni) is missing from the source tree.
+      // The BUILD.gn of its directory still declares the target that owns it.
+      return path.join(targetDir, potentialTsName);
     }
 
     return exists(baseName);

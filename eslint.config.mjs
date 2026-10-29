@@ -29,7 +29,6 @@ export default defineConfig([
     'front_end/diff/diff_match_patch.js',
     'front_end/models/javascript_metadata/NativeFunctions.ts',
     // All of these scripts are auto-generated so don't lint them.
-    'front_end/generated/ARIAProperties.ts',
     'front_end/generated/Deprecation.ts',
     'front_end/generated/InspectorBackendCommands.ts',
     'front_end/generated/protocol-mapping.d.ts',

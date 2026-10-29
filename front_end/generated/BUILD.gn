@@ -2,11 +2,42 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/ninja/chromium_deps.gni")
+import("../../scripts/build/ninja/generated_ts.gni")
 import("../../scripts/build/typescript/typescript.gni")
+
+# The JSON5 parser the generators import.
+_pyjson5_inputs = [
+  "../../third_party/pyjson5/src/json5/__init__.py",
+  "../../third_party/pyjson5/src/json5/lib.py",
+  "../../third_party/pyjson5/src/json5/parser.py",
+]
+
+generated_ts("generate_aria_properties") {
+  script = "../../scripts/build/generate_aria.py"
+  _input = devtools_chromium_deps_root +
+           "third_party/blink/renderer/core/html/aria_properties.json5"
+  inputs = [ _input ] + _pyjson5_inputs
+  outputs = [ "$target_gen_dir/ARIAProperties.ts" ]
+  args = [
+    "--input",
+    rebase_path(_input, root_build_dir),
+    "--output",
+    rebase_path(outputs[0], root_build_dir),
+  ]
+}
+
+# Generated sources live in $target_gen_dir and a ts_library() has a single
+# root directory, so they get their own library until the remaining sources of
+# :generated are generated at build time too.
+ts_library("aria_properties") {
+  rootdir = target_gen_dir
+  sources = [ "$target_gen_dir/ARIAProperties.ts" ]
+  deps = [ ":generate_aria_properties" ]
+}
 
 ts_library("generated") {
   sources = [
-    "ARIAProperties.ts",
     "Deprecation.ts",
     "InspectorBackendCommands.ts",
     "SupportedCSSProperties.ts",

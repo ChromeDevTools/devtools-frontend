@@ -2,18 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 import type {AstTargetInfo} from '../gn_ast/gn_ast_types.ts';
 import {withConcurrencyLimit} from '../utils/concurrency.ts';
+import {isNotFoundError} from '../utils/error.ts';
 import {GnLabel} from '../utils/gn_label.ts';
 
-import {GnAstExtractor} from './gn_ast_extractor.ts';
+import {GnAstExtractor, isGeneratedSource, resolveSourcePath} from './gn_ast_extractor.ts';
 import {TypeScriptImportExtractor} from './typescript_import.ts';
 
 export interface ImportResolutionResult {
   success: boolean;
   deps: string[];
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.promises.access(filePath);
+    return true;
+  } catch (e) {
+    if (!isNotFoundError(e)) {
+      throw e;
+    }
+    return false;
+  }
 }
 
 // Map internal targets of third_party bundles (often GN groups without entrypoints) back to their public bundle target.
@@ -89,10 +103,10 @@ export class TypeScriptAnalyzer {
     const buildDir = path.dirname(targetInfo.buildFile);
     const resolved = new Set<string>();
     for (const src of targetInfo.sources) {
-      if (TypeScriptAnalyzer.isTypeScriptSource(src)) {
-        resolved.add(
-            src.startsWith('//') ? path.resolve(rootDir, src.slice(2)) : path.resolve(buildDir, src),
-        );
+      // Generated sources only exist after a build, so their imports cannot
+      // be analyzed. A target with only generated sources is skipped.
+      if (TypeScriptAnalyzer.isTypeScriptSource(src) && !isGeneratedSource(src)) {
+        resolved.add(resolveSourcePath(src, buildDir, rootDir));
       }
     }
     return Array.from(resolved);
@@ -240,6 +254,12 @@ export class TypeScriptAnalyzer {
     const impTargets = await this.#astExtractor.getTargetsForFile(importedFile);
 
     if (impTargets.length === 0) {
+      // A file that is missing from the source tree and that no BUILD.gn
+      // declares as a generated source is an output of the build that the
+      // verifier does not track, e.g. front_end/Images/Images.js.
+      if (!await fileExists(importedFile)) {
+        return {success: true, deps: []};
+      }
       const importedBy = importedBySources.join(', ');
       console.error(
           `Failed to find target for import: ${importedFile}\n` +

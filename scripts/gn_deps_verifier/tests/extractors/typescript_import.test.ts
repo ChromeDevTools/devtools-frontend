@@ -86,4 +86,23 @@ describe('TypeScriptImportExtractor', () => {
     assert.isDefined(fileImports);
     assert.isEmpty(fileImports);
   });
+
+  it('resolves a .js import without a file in the source tree to its .ts path', async () => {
+    // Generated sources are written to the gen dir; the directory exists in
+    // the source tree (it holds the BUILD.gn), the file does not.
+    const consumerFile = path.join(FIXTURES_DIR, 'typescript_analyzer/GeneratedConsumer.ts');
+
+    const extractor = TypeScriptImportExtractor.create();
+    const result = await extractor.extractTsImports([consumerFile]);
+
+    const fileImports = result.get(consumerFile);
+    assert.isDefined(fileImports);
+    assert.deepEqual(
+        fileImports.sort(),
+        [
+          path.join(FIXTURES_DIR, 'typescript_analyzer/generated/Properties.ts'),
+          path.join(FIXTURES_DIR, 'typescript_analyzer/Untracked.ts'),
+        ].sort(),
+    );
+  });
 });

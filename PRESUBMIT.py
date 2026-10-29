@@ -329,8 +329,6 @@ def CheckGeneratedFiles(input_api, output_api):
     scripts_generated_output_path = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end', 'generated')
 
-    generated_aria_path = input_api.os_path.join(scripts_build_path,
-                                                 'generate_aria.py')
     generated_supported_css_path = input_api.os_path.join(
         scripts_build_path, 'generate_supported_css.py')
     generated_deprecation_path = input_api.os_path.join(
@@ -348,7 +346,6 @@ def CheckGeneratedFiles(input_api, output_api):
         blink_directory_path,
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party',
                                'pyjson5'),
-        generated_aria_path,
         generated_supported_css_path,
         generated_deprecation_path,
         concatenate_protocols_path,

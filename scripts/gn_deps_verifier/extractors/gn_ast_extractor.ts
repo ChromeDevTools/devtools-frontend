@@ -18,6 +18,32 @@ export function isInsideRoot(rootDir: string, candidate: string): boolean {
   return (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
 }
 
+const GENERATED_SOURCE_PREFIX = '$target_gen_dir/';
+
+/**
+ * Whether a source of a target is written by a generator at build time (see
+ * scripts/build/ninja/generated_ts.gni) and thus does not exist in the source
+ * tree.
+ */
+export function isGeneratedSource(source: string): boolean {
+  return source.startsWith(GENERATED_SOURCE_PREFIX);
+}
+
+/**
+ * Resolves a source of a target to an absolute path. A generated source
+ * resolves to the path it would have in the source tree, which is the path
+ * that imports of it resolve to.
+ */
+export function resolveSourcePath(source: string, buildDir: string, rootDir: string): string {
+  if (source.startsWith('//')) {
+    return path.resolve(rootDir, source.slice(2));
+  }
+  if (isGeneratedSource(source)) {
+    return path.resolve(buildDir, source.slice(GENERATED_SOURCE_PREFIX.length));
+  }
+  return path.resolve(buildDir, source);
+}
+
 export interface GnAstExtractorOptions {
   excludedDirectories?: string[];
 }
@@ -142,8 +168,7 @@ export class GnAstExtractor {
       const buildDir = path.dirname(absBuildFile);
       for (const targetInfo of gnBuild.targets.values()) {
         for (const val of targetInfo.sources) {
-          const srcAbsPath =
-              val.startsWith('//') ? path.resolve(this.rootDir, val.slice(2)) : path.resolve(buildDir, val);
+          const srcAbsPath = resolveSourcePath(val, buildDir, this.rootDir);
           let currentTargets = this.#fileToTarget.get(srcAbsPath);
           if (!currentTargets) {
             currentTargets = new Set<string>();

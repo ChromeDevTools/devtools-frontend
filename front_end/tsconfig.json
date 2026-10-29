@@ -2,6 +2,7 @@
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
+    "rootDirs": [".", "../out/Default/gen/front_end"],
     "target": "ES2023",
     "noEmit": true,
     "lib": [

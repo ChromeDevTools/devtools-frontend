@@ -40,6 +40,7 @@ devtools_ui_module("accessibility") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../generated:aria_properties",
     "../../models/bindings:bundle",
     "../../models/workspace:bundle",
     "../../ui/components/buttons:bundle",

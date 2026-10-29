@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import sinon from 'sinon';
 
-import {GnAstExtractor, isInsideRoot} from '../../extractors/gn_ast_extractor.ts';
+import {GnAstExtractor, isGeneratedSource, isInsideRoot, resolveSourcePath} from '../../extractors/gn_ast_extractor.ts';
 
 const FIXTURES_DIR = path.join(import.meta.dirname, '../fixtures');
 const ROOT_DIR = path.resolve(import.meta.dirname, '../../../../');
@@ -125,6 +125,14 @@ describe('GnAstExtractor', () => {
       const subPath = path.join(FIXTURES_DIR, 'sub.ts');
       const subTarget = await extractor.getTargetsForFile(subPath);
       assert.deepEqual(subTarget, ['//scripts/gn_deps_verifier/tests/fixtures:subtraction_target']);
+    });
+
+    it('maps a generated source in $target_gen_dir to its path in the source tree', async () => {
+      // The file only exists in the gen dir after a build, but imports of it
+      // point here.
+      const generatedPath = path.join(FIXTURES_DIR, 'typescript_analyzer/generated/Properties.ts');
+      const target = await extractor.getTargetsForFile(generatedPath);
+      assert.deepEqual(target, ['//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer/generated:properties']);
     });
 
     it('finds target declared in an ancestor BUILD.gn when nearer BUILD.gn exists without the source', async () => {
@@ -334,6 +342,36 @@ describe('GnAstExtractor', () => {
 
     it('returns false for sibling directories outside root', () => {
       assert.isFalse(isInsideRoot(ROOT_DIR, path.resolve(ROOT_DIR, '../sibling')));
+    });
+  });
+
+  describe('isGeneratedSource', () => {
+    it('recognizes sources in $target_gen_dir', () => {
+      assert.isTrue(isGeneratedSource('$target_gen_dir/Properties.ts'));
+    });
+
+    it('returns false for source tree paths', () => {
+      assert.isFalse(isGeneratedSource('Properties.ts'));
+      assert.isFalse(isGeneratedSource('//front_end/generated/Properties.ts'));
+    });
+  });
+
+  describe('resolveSourcePath', () => {
+    const buildDir = path.join(ROOT_DIR, 'front_end/generated');
+
+    it('resolves relative sources against the BUILD.gn directory', () => {
+      assert.strictEqual(resolveSourcePath('Properties.ts', buildDir, ROOT_DIR),
+                         path.join(ROOT_DIR, 'front_end/generated/Properties.ts'));
+    });
+
+    it('resolves GN root-relative // sources against rootDir', () => {
+      assert.strictEqual(resolveSourcePath('//front_end/core/Foo.ts', buildDir, ROOT_DIR),
+                         path.join(ROOT_DIR, 'front_end/core/Foo.ts'));
+    });
+
+    it('resolves generated sources to the matching path in the source tree', () => {
+      assert.strictEqual(resolveSourcePath('$target_gen_dir/Properties.ts', buildDir, ROOT_DIR),
+                         path.join(ROOT_DIR, 'front_end/generated/Properties.ts'));
     });
   });
 });

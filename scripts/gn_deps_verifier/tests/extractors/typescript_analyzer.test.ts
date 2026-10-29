@@ -142,6 +142,24 @@ describe('typescript_analyzer', () => {
       );
       assert.deepEqual(resolved, ['/path/to/repo/test/dir/file1.ts']);
     });
+
+    it('skips generated sources, which only exist after a build', () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//test/dir:target',
+        templateName: 'ts_library',
+        buildFile: '/path/to/repo/test/dir/BUILD.gn',
+        sources: ['$target_gen_dir/Generated.ts', 'file1.ts'],
+        deps: [],
+        ts_deps: [],
+        testonly: false,
+      };
+
+      const resolved = TypeScriptAnalyzer.resolveTargetSourceFiles(
+          targetInfo,
+          '/path/to/repo',
+      );
+      assert.deepEqual(resolved, ['/path/to/repo/test/dir/file1.ts']);
+    });
   });
 
   describe('mapImportsToSources', () => {
@@ -600,8 +618,10 @@ describe('typescript_analyzer', () => {
         ts_deps: [],
       };
 
+      // Exists in the source tree, but no BUILD.gn lists it.
+      const unlistedFile = path.join(FIXTURES_DIR, '../foo.ts');
       const res = await analyzer.resolveImportDependencies(
-          '/non/existent/imported/file.ts',
+          unlistedFile,
           ['main.ts'],
           '//test:target',
           targetInfo,
@@ -609,6 +629,51 @@ describe('typescript_analyzer', () => {
 
       assert.isFalse(res.success);
       assert.deepEqual(res.deps, []);
+    });
+
+    it('ignores imports of build outputs that no BUILD.gn declares as generated sources', async () => {
+      const targetInfo: AstTargetInfo = {
+        testonly: false,
+        label: '//test:target',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['main.ts'],
+        deps: [],
+        ts_deps: [],
+      };
+
+      const res = await analyzer.resolveImportDependencies(
+          '/non/existent/imported/file.ts',
+          ['main.ts'],
+          '//test:target',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
+    it('maps imports of generated sources to the target that declares them', async () => {
+      const targetInfo: AstTargetInfo = {
+        testonly: false,
+        label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:generated_consumer',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['GeneratedConsumer.ts'],
+        deps: [],
+        ts_deps: [],
+      };
+
+      const res = await analyzer.resolveImportDependencies(
+          path.join(FIXTURES_DIR, 'generated/Properties.ts'),
+          ['GeneratedConsumer.ts'],
+          '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:generated_consumer',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps,
+                       ['//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer/generated:properties']);
     });
 
     it('returns empty deps successfully when imported file is a .json file', async () => {
@@ -991,6 +1056,23 @@ describe('typescript_analyzer', () => {
       const animDeps = result.get('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation');
       assert.isDefined(animDeps);
       assert.isFalse(animDeps?.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle'));
+    });
+
+    it('requires the target of a generated source and skips targets with only generated sources', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const generatedBuildGn = path.join(FIXTURES_DIR, 'generated/BUILD.gn');
+      const result = await analyzer.analyze([FIXTURES_BUILD_GN, generatedBuildGn]);
+
+      // GeneratedConsumer.ts imports generated/Properties.js, which only
+      // exists in the gen dir, and Untracked.js, which no BUILD.gn declares.
+      const consumerDeps =
+          result.get('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:generated_consumer');
+      assert.isDefined(consumerDeps);
+      assert.deepEqual(Array.from(consumerDeps),
+                       ['//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer/generated:properties']);
+
+      // The imports of a generated source cannot be analyzed without a build.
+      assert.isFalse(result.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer/generated:properties'));
     });
 
     it('ignores legacy_test_runner and third_party targets', async () => {

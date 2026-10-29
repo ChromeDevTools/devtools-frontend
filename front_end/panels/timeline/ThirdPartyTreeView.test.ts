@@ -10,7 +10,6 @@ import * as Trace from '../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
 
@@ -31,8 +30,7 @@ describe('Third party tree', function() {
     const sel: Timeline.TimelineSelection.TimeRangeSelection = {
       bounds: parsedTrace.data.Meta.traceBounds,
     };
-    const box = new UI.Widget.VBox();
-    treeView.show(box.element);
+    renderElementIntoDOM(treeView);
     treeView.activeSelection = sel;
     assert.isNull(treeView.dataGrid.selectedNode);
   });

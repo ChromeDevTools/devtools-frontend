@@ -2336,11 +2336,7 @@ async function makeTimelineRangeSummaryWidget(widgetData: AiAssistanceModel.AiAg
     return null;
   }
 
-  const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
   const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
-  thirdPartyTree.model = {selectedEvents: events as Trace.Types.Events.Event[], parsedTrace, entityMapper: mapper};
-  thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
-  thirdPartyTree.refreshTree(true);
 
   // clang-format off
   const template = html`
@@ -2357,9 +2353,9 @@ async function makeTimelineRangeSummaryWidget(widgetData: AiAssistanceModel.AiAg
               maxRows: 10,
               isInAIWidget: true,
               model: {
-                selectedEvents: thirdPartyTree.selectedEvents ?? null,
+                selectedEvents: events as Trace.Types.Events.Event[],
                 parsedTrace,
-                entityMapper: thirdPartyTree.entityMapper(),
+                entityMapper: mapper,
               },
               activeSelection: { bounds },
               onBottomUpButtonClicked: (node: Trace.Extras.TraceTree.Node|null) => {

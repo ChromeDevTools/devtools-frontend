@@ -13,6 +13,7 @@ import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/Enviro
 import {allThreadEntriesInTrace, renderWidgetInVbox} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
 
@@ -595,6 +596,33 @@ describe('TimelineTreeView', function() {
 
       bottomUpTreeView.activeSelection = {bounds: nextTrace.data.Meta.traceBounds};
       sinon.assert.callCount(buildSpy, 2);
+    });
+
+    it('defers refreshTree when attached to an unmounted parent and refreshes once shown', function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const parentBox = new UI.Widget.VBox();
+      bottomUpTreeView.show(parentBox.element);
+
+      assert.isNotNull(bottomUpTreeView.element.parentElement);
+      assert.isFalse(bottomUpTreeView.isShowing());
+
+      const buildSpy = sinon.spy(bottomUpTreeView, 'buildTree');
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+
+      bottomUpTreeView.setRange(startTime, endTime);
+      bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+
+      // Since the tree view is not showing, buildTree should not have been called.
+      sinon.assert.callCount(buildSpy, 0);
+
+      const refreshSpy = sinon.spy(bottomUpTreeView, 'refreshTree');
+      renderElementIntoDOM(parentBox);
+      assert.isTrue(bottomUpTreeView.isShowing());
+      sinon.assert.callCount(refreshSpy, 1);
+      sinon.assert.callCount(buildSpy, 1);
     });
   });
 });

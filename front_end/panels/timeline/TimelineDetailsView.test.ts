@@ -12,6 +12,7 @@ import {doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js'
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Components from './components/components.js';
 import * as Timeline from './timeline.js';
@@ -227,6 +228,87 @@ describe('TimelineDetailsView', function() {
 
     renderElementIntoDOM(detailsView);
     sinon.assert.calledOnce(setSelection);
+    detailsView.detach();
+  });
+
+  it('reuses a provided entityMapper instance in setModel', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: null,
+      eventToRelatedInsightsMap: null,
+      entityMapper: mapper,
+    });
+    await raf();
+
+    // Switch to the Bottom-up tab so its tree view is visible and populated.
+    const bottomUpTab = detailsView.headerElement().querySelector<HTMLElement>('#tab-bottom-up');
+    assert.isNotNull(bottomUpTab);
+    bottomUpTab.dispatchEvent(new MouseEvent('mousedown', {button: 0, bubbles: true}));
+    await raf();
+
+    const treeViewElement = detailsView.element.querySelector('.timeline-tree-view');
+    assert.isNotNull(treeViewElement);
+    const treeView = UI.Widget.Widget.get(treeViewElement);
+    assert.instanceOf(treeView, Timeline.TimelineTreeView.TimelineTreeView);
+    assert.strictEqual(treeView.entityMapper(), mapper);
+    detailsView.detach();
+  });
+
+  it('defers updating the summary view when another tab is active and updates when switching back', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
+    renderElementIntoDOM(detailsView);
+
+    await detailsView.setModel({
+      parsedTrace,
+      selectedEvents: allThreadEntriesInTrace(parsedTrace),
+      eventToRelatedInsightsMap: null,
+      entityMapper: null,
+    });
+    const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.data.Meta.traceBounds);
+    const initialSelection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(
+        bounds.min,
+        bounds.max,
+    );
+    await detailsView.setSelection(initialSelection);
+    await raf();
+
+    const detailsContentElement = detailsView.getDetailsContentElementForTest();
+    const summaryWidget = UI.Widget.Widget.get(detailsContentElement);
+    assert.isDefined(summaryWidget);
+
+    // Switch to the Bottom-up tab.
+    const bottomUpTab = detailsView.headerElement().querySelector<HTMLElement>('#tab-bottom-up');
+    assert.isNotNull(bottomUpTab);
+    bottomUpTab.dispatchEvent(new MouseEvent('mousedown', {button: 0, bubbles: true}));
+    await raf();
+
+    const requestUpdateSpy = sinon.spy(summaryWidget, 'requestUpdate');
+
+    // Update the range selection while Bottom-up is active.
+    const subRangeSelection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(
+        bounds.min,
+        Trace.Types.Timing.Milli(bounds.min + 1000),
+    );
+    await detailsView.setSelection(subRangeSelection);
+    await raf();
+
+    // Summary view should not have requested an update while Bottom-up is active.
+    sinon.assert.notCalled(requestUpdateSpy);
+
+    // Switch back to the Summary tab.
+    const summaryTab = detailsView.headerElement().querySelector<HTMLElement>('#tab-details');
+    assert.isNotNull(summaryTab);
+    summaryTab.dispatchEvent(new MouseEvent('mousedown', {button: 0, bubbles: true}));
+    await raf();
+
+    // Summary view now requests an update when the tab becomes active.
+    sinon.assert.calledOnce(requestUpdateSpy);
     detailsView.detach();
   });
 });

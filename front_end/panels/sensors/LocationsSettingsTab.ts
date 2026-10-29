@@ -426,7 +426,7 @@ export const DEFAULT_VIEW = (input: LocationsViewInput, _output: ViewOutput, tar
       </div>
     </div>
     ${input.activeDialog ? renderLocationDialog(input.activeDialog) : nothing}
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.pane('emulation-locations')}`}}});
   // clang-format on
 };
 
@@ -443,7 +443,6 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {
-      jslog: `${VisualLogging.pane('emulation-locations')}`,
       useShadowDom: true,
     });
     this.#view = view;

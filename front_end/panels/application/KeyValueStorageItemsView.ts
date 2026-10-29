@@ -49,7 +49,6 @@ const {VBox, widget} = UI.Widget;
 const {Size} = Geometry;
 const {repeat, ifDefined} = LitDirectives;
 
-type Widget = UI.Widget.Widget;
 type VBox = UI.Widget.VBox;
 
 const UIStrings = {
@@ -82,7 +81,7 @@ export interface ViewInput {
   items: Array<{key: string, value: string}>;
   selectedKey: string|null;
   editable: boolean;
-  preview: Widget;
+  preview: UI.Widget.AnyWidget;
   onSelect: (item: {key: string, value: string}|null) => void;
   onSort: (ascending: boolean) => void;
   onCreate: (key: string, value: string) => void;
@@ -111,7 +110,7 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
  * between a DataGrid displaying key-value pairs and a preview Widget.
  */
 export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
-  #preview: Widget;
+  #preview: UI.Widget.AnyWidget;
   #previewValue: string|null;
 
   #items: Array<{key: string, value: string}> = [];
@@ -408,7 +407,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     this.removeItem(key);
   }
 
-  showPreview(preview: Widget|null, value: string|null): void {
+  showPreview(preview: UI.Widget.AnyWidget|null, value: string|null): void {
     if (this.#preview && this.#previewValue === value) {
       return;
     }
@@ -463,5 +462,5 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
 
   protected abstract setItem(key: string, value: string): void;
   protected abstract removeItem(key: string): void;
-  protected abstract createPreview(key: string, value: string): Promise<Widget|null>;
+  protected abstract createPreview(key: string, value: string): Promise<UI.Widget.AnyWidget|null>;
 }

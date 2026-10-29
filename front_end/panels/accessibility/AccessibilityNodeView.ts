@@ -123,8 +123,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
-  private readonly noNodeInfo: UI.Widget.Widget;
-  private readonly ignoredInfo: UI.Widget.Widget;
+  private readonly noNodeInfo: UI.EmptyWidget.EmptyWidget;
+  private readonly ignoredInfo: UI.EmptyWidget.EmptyWidget;
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
   private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
   constructor(element?: HTMLElement) {
@@ -367,8 +367,8 @@ export const StringProperties: Set<Protocol.Accessibility.AXValueType> = new Set
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
   private readonly property: SDK.AccessibilityModel.CoreOrProtocolAxProperty;
   override toggleOnClick: boolean;
-  constructor(
-      property: SDK.AccessibilityModel.CoreOrProtocolAxProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
+  constructor(property: SDK.AccessibilityModel.CoreOrProtocolAxProperty,
+              axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
 
     this.property = property;
@@ -537,12 +537,11 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
   private value: Protocol.Accessibility.AXRelatedNode|undefined;
   private readonly axRelatedNodeElement: AXRelatedNodeElement;
 
-  constructor(
-      node: {
-        deferredNode?: SDK.DOMModel.DeferredDOMNode,
-        idref?: string,
-      },
-      value?: Protocol.Accessibility.AXRelatedNode) {
+  constructor(node: {
+    deferredNode?: SDK.DOMModel.DeferredDOMNode,
+    idref?: string,
+  },
+              value?: Protocol.Accessibility.AXRelatedNode) {
     super('');
 
     this.value = value;
@@ -589,11 +588,10 @@ export class AXRelatedNodeElement {
         if (!node) {
           return;
         }
-        render(
-            PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
-              preventKeyboardFocus: true,
-            }),
-            valueElement);
+        render(PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {
+          preventKeyboardFocus: true,
+        }),
+               valueElement);
       });
     } else if (this.idref) {
       element.classList.add('invalid');
@@ -648,8 +646,8 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
       case 'ariaHiddenSubtree': {
         const ariaHiddenSpan = document.createElement('span', {is: 'source-code'}).textContent = 'aria-hidden';
         const trueSpan = document.createElement('span', {is: 'source-code'}).textContent = 'true';
-        reasonElement = uiI18n.getFormatLocalizedString(
-            str_, UIStrings.placeholderIsPlaceholderOnAncestor, {PH1: ariaHiddenSpan, PH2: trueSpan});
+        reasonElement = uiI18n.getFormatLocalizedString(str_, UIStrings.placeholderIsPlaceholderOnAncestor,
+                                                        {PH1: ariaHiddenSpan, PH2: trueSpan});
         break;
       }
       case 'emptyAlt':

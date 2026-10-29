@@ -203,7 +203,7 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
     </div>`, target, {
     container: {
       attributes: {
-        id: 'sources-panel-sources-view',
+        id: 'sources-panel-sources-view', jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`,
       },
     },
   });
@@ -243,7 +243,7 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
   readonly #onEditorClosed = this.#editorClosed.bind(this);
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {jslog: `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`});
+    super(element);
     this.#view = view;
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 

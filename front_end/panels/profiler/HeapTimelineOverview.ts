@@ -47,7 +47,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   `, target, {
     container: {
       classes: ['heap-tracking-overview'],
-      attributes: {id: 'heap-recording-view'},
+      attributes: {
+        id: 'heap-recording-view',
+        jslog: `${VisualLogging.section('heap-tracking-overview')}`,
+      },
     },
   });
   // clang-format on
@@ -78,7 +81,7 @@ export class HeapTimelineOverview extends HeapTimelineOverviewBase {
   readonly #onWindowChangedBound = this.onWindowChanged.bind(this);
   readonly #onThemeChanged = (): void => this.update();
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {jslog: `${VisualLogging.section('heap-tracking-overview')}`});
+    super(element);
     this.#view = view;
 
     this.overviewCalculator = new OverviewCalculator();

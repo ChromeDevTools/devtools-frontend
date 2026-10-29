@@ -141,7 +141,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           input.isPaused ? i18nString(UIStrings.loading) : i18nString(UIStrings.notPaused)}</div>`}
     `,
       // clang-format on
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.section('sources.scope-chain')}`}}});
 };
 
 function scopeTitle(scope: SDK.DebuggerModel.ScopeChainEntry): {title: string, subtitle: string|null} {
@@ -188,7 +188,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target, {
-      jslog: `${VisualLogging.section('sources.scope-chain')}`,
       useShadowDom: true,
     });
 

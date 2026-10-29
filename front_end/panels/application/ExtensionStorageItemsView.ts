@@ -72,9 +72,8 @@ export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
       Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>;
 
   constructor(extensionStorage: ExtensionStorage, view?: KeyValueStorageItemsViewFunction) {
-    super(
-        i18nString(UIStrings.extensionStorageItems), 'extension-storage', true, view, undefined,
-        `${VisualLogging.pane().context('extension-storage-data')}`, ['storage-view', 'table']);
+    super(i18nString(UIStrings.extensionStorageItems), 'extension-storage', true, view, undefined,
+          `${VisualLogging.pane().context('extension-storage-data')}`, ['storage-view', 'table']);
 
     this.extensionStorageItemsDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>();
@@ -113,7 +112,7 @@ export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
     });
   }
 
-  protected createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
+  protected createPreview(key: string, value: string): Promise<UI.Widget.AnyWidget|null> {
     const url = 'extension-storage://' + this.#extensionStorage.extensionId + '/' + this.#extensionStorage.storageArea +
             '/preview/' + key as Platform.DevToolsPath.UrlString;
     const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(

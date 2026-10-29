@@ -96,7 +96,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         <div class="toolbar-text">${input.mimeType}</div>
       </devtools-toolbar>
     ` : nothing}
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.pane('font-view')}`}}});
   output.measureDimensions = () => {
     if (!dummyEl) {
       return {width: 0, height: 0};
@@ -123,7 +123,6 @@ export class FontView extends UI.View.SimpleView {
     super(element, {
       title: i18nString(UIStrings.font),
       viewId: 'font',
-      jslog: `${VisualLogging.pane('font-view')}`,
     });
     this.#view = view;
     this.url = contentProvider.contentURL();

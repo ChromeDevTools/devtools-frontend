@@ -118,7 +118,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         >${input.controlButtonText}</devtools-button>
       </div>
     </div>
-  `, target);
+  `, target, {container: {classes: ['profile-launcher-view']}});
 };
 // clang-format on
 
@@ -139,7 +139,7 @@ export class ProfileLauncherView extends ProfileLauncherViewBase {
   #selectedTypeId = '';
 
   constructor(profilesPanel: ProfilesPanel, view: View = DEFAULT_VIEW) {
-    super({classes: ['profile-launcher-view']});
+    super();
 
     this.#view = view;
     this.panel = profilesPanel;

@@ -154,7 +154,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
     container: {
       classes: ['image-view'],
       attributes: {
-        tabindex: '-1',
+        tabindex: '-1', jslog: `${VisualLogging.pane('image-view')}`,
       },
     },
   });
@@ -197,7 +197,6 @@ export class ImageView extends ImageViewBase {
     super(element, {
       title: i18nString(UIStrings.image),
       viewId: 'image',
-      jslog: `${VisualLogging.pane('image-view')}`,
     });
     this.#view = view;
     this.#url = contentProvider.contentURL();

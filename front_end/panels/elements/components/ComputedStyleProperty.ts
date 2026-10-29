@@ -16,7 +16,7 @@ export interface ViewInput {
   onNavigateToSource: () => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // Disabled until https://crbug.com/1079231 is fixed.
@@ -39,18 +39,18 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       </div>
       <span class="hidden" aria-hidden="false">;</span>
     </div>
-  `, target);
+  `, target, {container: {classes: ['computed-style-property']}});
   // clang-format on
 };
 
-export class ComputedStyleProperty extends UI.Widget.Widget {
+export class ComputedStyleProperty extends UI.Widget.Widget<ShadowRoot> {
   #inherited = false;
   #traceable = false;
   #onNavigateToSource: () => void = () => {};
   readonly #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['computed-style-property']});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
 

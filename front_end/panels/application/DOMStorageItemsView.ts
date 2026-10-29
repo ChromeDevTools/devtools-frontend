@@ -69,9 +69,9 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
   private eventListeners: Common.EventTarget.EventDescriptor[];
 
   constructor(domStorage: SDK.DOMStorageModel.DOMStorage) {
-    super(
-        i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined, /* metadataView=*/ undefined,
-        /* jslog=*/ undefined, ['storage-view', 'table']);
+    super(i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined,
+          /* metadataView=*/ undefined,
+          /* jslog=*/ undefined, ['storage-view', 'table']);
 
     this.domStorage = domStorage;
     if (domStorage.storageKey) {
@@ -84,7 +84,7 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     this.setStorage(domStorage);
   }
 
-  protected createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
+  protected createPreview(key: string, value: string): Promise<UI.Widget.AnyWidget|null> {
     const protocol = this.domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
     const url = `${protocol}://${key}` as Platform.DevToolsPath.UrlString;
     const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
@@ -107,14 +107,14 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
     this.eventListeners = [
-      this.domStorage.addEventListener(
-          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED, this.domStorageItemsCleared, this),
-      this.domStorage.addEventListener(
-          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED, this.domStorageItemRemoved, this),
-      this.domStorage.addEventListener(
-          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED, this.domStorageItemAdded, this),
-      this.domStorage.addEventListener(
-          SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED, this.domStorageItemUpdated, this),
+      this.domStorage.addEventListener(SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED,
+                                       this.domStorageItemsCleared, this),
+      this.domStorage.addEventListener(SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED,
+                                       this.domStorageItemRemoved, this),
+      this.domStorage.addEventListener(SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED,
+                                       this.domStorageItemAdded, this),
+      this.domStorage.addEventListener(SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED,
+                                       this.domStorageItemUpdated, this),
     ];
     this.refreshItems();
   }
@@ -199,8 +199,8 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
       return;
     }
 
-    const storageItem = new AiAssistanceModel.StorageItem.DOMStorageItem(
-        mainPageOrigin, origin, storageKey, storageType, item ? item.key : undefined);
+    const storageItem = new AiAssistanceModel.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey,
+                                                                         storageType, item ? item.key : undefined);
     UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
 

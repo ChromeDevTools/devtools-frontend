@@ -27,8 +27,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/PreviewFactory.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PreviewFactory {
-  static async createPreview(provider: TextUtils.ContentProvider.ContentProvider, mimeType: string):
-      Promise<UI.Widget.Widget|null> {
+  static async createPreview(provider: TextUtils.ContentProvider.ContentProvider,
+                             mimeType: string): Promise<UI.Widget.AnyWidget|null> {
     let resourceType = Common.ResourceType.ResourceType.fromMimeType(mimeType);
     if (resourceType === Common.ResourceType.resourceTypes.Other) {
       resourceType = provider.contentType();

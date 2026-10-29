@@ -45,7 +45,7 @@ export interface ViewInput {
   tooltipPrefix: string;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const queryClasses = Lit.Directives.classMap({
@@ -101,11 +101,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
         ${input.queryName ? html`<span>${input.queryName + ' '}</span>` : Lit.nothing}
         ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
       </div>`,
-      target);
+      target, {container: {classes: ['css-query']}});
   // clang-format on
 };
 
-export class CSSQuery extends UI.Widget.Widget {
+export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
   #view: View;
   #queryPrefix = '';
   #queryName?: string;
@@ -120,7 +120,7 @@ export class CSSQuery extends UI.Widget.Widget {
   #tooltipPrefix = '';
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['css-query']});
+    super(element, {useShadowDom: 'pure'});
     this.element.classList.remove('vbox', 'flex-auto');
     this.#view = view;
   }

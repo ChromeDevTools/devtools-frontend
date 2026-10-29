@@ -344,7 +344,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       ${renderClearSiteData()}
       <devtools-report-divider></devtools-report-divider>
       ${renderUsage()}
-    </devtools-report>`, target);
+    </devtools-report>`, target, {container: {attributes: {jslog: `${VisualLogging.pane('clear-storage')}`}}});
   // clang-format on
 };
 
@@ -381,7 +381,7 @@ export class StorageView extends UI.Widget.VBox {
       };
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, jslog: `${VisualLogging.pane('clear-storage')}`});
+    super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(storageViewStyles);
     this.pieColors = storagePieColors;

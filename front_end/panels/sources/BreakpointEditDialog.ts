@@ -84,7 +84,7 @@ interface ViewInput {
 interface ViewOutput {
   editor: TextEditor.TextEditor.TextEditor|undefined;
 }
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const editorRef = (e: Element|undefined): void => {
     output.editor = e as TextEditor.TextEditor.TextEditor;
@@ -147,10 +147,15 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     </div>
     `,
          // clang-format on
-         target, {container: {attributes: {tabindex: -1}}});
+         target, {
+           container: {
+             attributes: {tabindex: -1, jslog: `${VisualLogging.dialog('edit-breakpoint')}`},
+             classes: ['sources-edit-breakpoint-dialog'],
+           },
+         });
 };
 
-export class BreakpointEditDialog extends UI.Widget.Widget {
+export class BreakpointEditDialog extends UI.Widget.Widget<ShadowRoot> {
   readonly #view: View;
   readonly #history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
       Common.Settings.Settings.instance().createLocalSetting('breakpoint-condition-history', []));
@@ -166,11 +171,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target, {
-      jslog: `${VisualLogging.dialog('edit-breakpoint')}`,
-      useShadowDom: true,
+      useShadowDom: 'pure',
       delegatesFocus: true,
-      classes: ['sources-edit-breakpoint-dialog'],
     });
+    this.element.classList.remove('vbox', 'flex-auto');
     this.#view = view;
   }
 

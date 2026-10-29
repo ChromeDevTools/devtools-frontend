@@ -10,6 +10,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -214,5 +215,16 @@ describeWithEnvironment('ConsoleContextSelector', () => {
     sinon.assert.calledOnce(dispatchSpy);
     const transaction = dispatchSpy.firstCall.args[0] as {scrollIntoView?: boolean};
     assert.isTrue(transaction.scrollIntoView);
+  });
+
+  it('preserves editor content across performUpdate after reconnecting to the DOM', () => {
+    renderElementIntoDOM(consolePrompt);
+    consolePrompt.detach();
+    renderElementIntoDOM(consolePrompt);
+
+    setCodeMirrorContent('inspect(document.body)');
+    consolePrompt.performUpdate();
+
+    assert.strictEqual(consolePrompt.text(), 'inspect(document.body)');
   });
 });

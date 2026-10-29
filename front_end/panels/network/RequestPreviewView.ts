@@ -30,7 +30,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPreviewView.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends UI.Widget.VBox {
   #request!: SDK.NetworkRequest.NetworkRequest;
-  private contentViewPromise: Promise<UI.Widget.Widget>|null = null;
+  private contentViewPromise: Promise<UI.Widget.AnyWidget>|null = null;
 
   constructor(request?: SDK.NetworkRequest.NetworkRequest|HTMLElement, element?: HTMLElement) {
     super(request instanceof HTMLElement ? request : element,
@@ -58,7 +58,7 @@ export class RequestPreviewView extends UI.Widget.VBox {
     }
   }
 
-  async showPreview(): Promise<UI.Widget.Widget> {
+  async showPreview(): Promise<UI.Widget.AnyWidget> {
     const request = this.#request;
     const view = await this.createPreview();
     if (this.#request !== request) {
@@ -82,14 +82,14 @@ export class RequestPreviewView extends UI.Widget.VBox {
     void this.doShowPreview();
   }
 
-  private doShowPreview(): Promise<UI.Widget.Widget> {
+  private doShowPreview(): Promise<UI.Widget.AnyWidget> {
     if (!this.contentViewPromise) {
       this.contentViewPromise = this.showPreview();
     }
     return this.contentViewPromise;
   }
 
-  private async htmlPreview(): Promise<UI.Widget.Widget|null> {
+  private async htmlPreview(): Promise<UI.Widget.AnyWidget|null> {
     const contentData = await this.request.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData), contentData.error);
@@ -109,7 +109,7 @@ export class RequestPreviewView extends UI.Widget.VBox {
     return RequestHTMLView.create(contentData);
   }
 
-  async createPreview(): Promise<UI.Widget.Widget> {
+  async createPreview(): Promise<UI.Widget.AnyWidget> {
     if (this.request.signedExchangeInfo()) {
       return new SignedExchangeInfoView(this.request);
     }

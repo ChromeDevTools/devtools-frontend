@@ -48,7 +48,7 @@ export class AccessibilitySubPane<ContentTypeT extends HTMLElement|DocumentFragm
     this.nodeInternal = node;
   }
 
-  createInfo(textContent: string, ...classNames: string[]): UI.Widget.Widget {
+  createInfo(textContent: string, ...classNames: string[]): UI.EmptyWidget.EmptyWidget {
     const info = new UI.EmptyWidget.EmptyWidget(textContent);
     if (classNames.length === 0) {
       classNames.push('gray-info-message');

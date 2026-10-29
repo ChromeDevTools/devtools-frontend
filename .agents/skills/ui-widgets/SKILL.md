@@ -18,7 +18,7 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
 * Location: Co-located in the same file as its View.
 * MUST extend a base `UI.Widget` class (e.g., `UI.Widget.Widget`). Note that `UI.Widget.Widget` is not an `HTMLElement` and must be appended via `.show()` or `UI.Widget.widget`
 * Constructor MUST assign the injected view function to a private `#view` field.
-* Constructor MUST call `super()`. If taking `element?: HTMLElement`, pass it to `super(element)`. `super(true)` is forbidden.
+* Constructor MUST call `super()`. If taking `element?: HTMLElement`, pass it to `super(element)`. `super(true)` is forbidden. Do not pass `classes` or `jslog` in `WidgetOptions` (`super(..., {classes: [...], jslog: ...})`); instead, pass container CSS classes and `jslog` via the third parameter of `render(template, target, {container: {classes: [...], attributes: {jslog: ...}}})` in the view function (and if the widget uses shadow DOM, pass `useShadowDom: 'pure'` and extend `Widget<ShadowRoot>` / `VBox<ShadowRoot>` with `target: HTMLElement|DocumentFragment` so `render()` applies `container.classes` and `container.attributes` to the shadow host `this.element`).
 * Dependencies from `Universe` SHOULD be requested via static `INJECT`: `static override readonly INJECT = [...] as const;` and received as constructor parameter #2 (`[dep1, dep2]: UI.Widget.WidgetDependencies<typeof MyWidget>`).
 * Styling MUST be handled within the View. `this.registerCSSFiles()` is forbidden.
 * Initial render MUST be triggered in `override wasShown(): void` by calling `this.requestUpdate()`.

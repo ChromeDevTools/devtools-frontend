@@ -1122,7 +1122,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}
-    </devtools-report>`}`, target);
+    </devtools-report>`}`, target, {container: {attributes: {jslog: `${VisualLogging.pane('manifest')}`}}});
   // clang-format on
 };
 
@@ -1149,7 +1149,6 @@ export class AppManifestView extends AppManifestViewBase implements SDK.TargetMa
 
   constructor(view: View = DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging.pane('manifest')}`,
       useShadowDom: true,
     });
     this.view = view;

@@ -61,6 +61,7 @@ export interface ViewInput {
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const renderOptions = {container: {attributes: {jslog: `${VisualLogging.pane('initiator').track({resize: true})}`}}};
   const hasInitiatorData =
       input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
 
@@ -71,7 +72,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString(UIStrings.noInitiator)}
       </div>
-    `, target);
+    `, target, renderOptions);
     // clang-format on
     return;
   }
@@ -209,7 +210,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           </ul>` : nothing}
       `}></devtools-tree>
     </div>
-  `, target);
+  `, target, renderOptions);
   // clang-format on
 };
 
@@ -218,7 +219,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   readonly #view: View;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.pane('initiator').track({resize: true})}`});
+    super();
     this.#request = request;
     this.#view = view;
   }

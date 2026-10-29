@@ -208,7 +208,12 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           i18nString(UIStrings.totalEntriesS, {PH1: String(input.returnCount)})}</span>
       </div>
     ` : nothing}
-  `, target, {container: {classes: ['service-worker-cache-data-view', 'storage-view']}});
+  `, target, {
+    container: {
+      classes: ['service-worker-cache-data-view', 'storage-view'],
+      attributes: {jslog: `${VisualLogging.pane('cache-storage-data')}`},
+    },
+  });
   // clang-format on
 };
 
@@ -237,7 +242,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     super({
       title: i18nString(UIStrings.cache),
       viewId: 'cache',
-      jslog: `${VisualLogging.pane('cache-storage-data')}`,
     });
     this.#view = view;
     this.registerRequiredCSS(serviceWorkerCacheViewsStyles);
@@ -360,10 +364,10 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
 
     this.#loadingPromise = new Promise(resolve => {
-      this.model.loadAllCacheData(
-          this.cache, this.entryPathFilter, (entries: Protocol.CacheStorage.DataEntry[], returnCount: number) => {
-            resolve({entries, returnCount});
-          });
+      this.model.loadAllCacheData(this.cache, this.entryPathFilter,
+                                  (entries: Protocol.CacheStorage.DataEntry[], returnCount: number) => {
+                                    resolve({entries, returnCount});
+                                  });
     });
 
     const {entries, returnCount} = await this.#loadingPromise;
@@ -424,8 +428,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     if (!response) {
       return {error: 'No cached response found'};
     }
-    return new TextUtils.ContentData.ContentData(
-        response.body, /* isBase64=*/ true, request.mimeType, request.charset() ?? undefined);
+    return new TextUtils.ContentData.ContentData(response.body, /* isBase64=*/ true, request.mimeType,
+                                                 request.charset() ?? undefined);
   }
 
   private updatedForTest(): void {

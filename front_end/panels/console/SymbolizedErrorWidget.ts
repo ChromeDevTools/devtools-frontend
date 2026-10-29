@@ -165,7 +165,11 @@ const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement)
   };
 
   // clang-format off
-  render(html`<span class="symbolized-error-widget">${renderError(input.error, false)}</span>`, target);
+  render(
+      html`<span class="symbolized-error-widget">${renderError(input.error, false)}</span>`,
+      target,
+      {container: {classes: ['symbolized-error-widget-host']}},
+  );
   // clang-format on
 };
 
@@ -176,7 +180,7 @@ export class SymbolizedErrorWidget extends UI.Widget.Widget {
 
   constructor(element?: HTMLElement, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
     const host = element || document.createElement('span');
-    super(host, {classes: ['symbolized-error-widget-host']});
+    super(host);
     this.#view = view;
   }
 

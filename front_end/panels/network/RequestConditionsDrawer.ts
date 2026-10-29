@@ -207,7 +207,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     `}
     `,
       // clang-format on
-      target, {container: {classes: (!input.enabled && input.conditions.length > 0) ? ['blocking-disabled'] : []}});
+      target, {
+        container: {
+          classes: (!input.enabled && input.conditions.length > 0) ? ['blocking-disabled'] : [],
+          attributes: {jslog: `${VisualLogging.panel('network.blocked-urls').track({resize: true})}`},
+        },
+      });
 };
 
 function renderItem({
@@ -461,7 +466,6 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
 
   constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target, {
-      jslog: `${VisualLogging.panel('network.blocked-urls').track({resize: true})}`,
       useShadowDom: true,
     });
     this.#view = view;

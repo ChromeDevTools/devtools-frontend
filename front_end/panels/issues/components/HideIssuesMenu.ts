@@ -25,7 +25,7 @@ export interface ViewInput {
   menuItemAction: () => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const onMenuOpen = (event: Event): void => {
@@ -58,17 +58,17 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
       class="hide-issues-menu-btn"
       @click=${onMenuOpen}
       @keydown=${onKeydown}></devtools-button>
-  `, target);
+  `, target, {container: {classes: ['hide-issues-menu']}});
   // clang-format on
 };
 
-export class HideIssuesMenu extends UI.Widget.Widget {
+export class HideIssuesMenu extends UI.Widget.Widget<ShadowRoot> {
   #menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
   #menuItemAction: () => void = () => {};
   readonly #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['hide-issues-menu']});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
 

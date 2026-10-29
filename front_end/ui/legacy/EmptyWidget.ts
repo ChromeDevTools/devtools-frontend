@@ -28,7 +28,7 @@ interface ViewInput {
   link?: Platform.DevToolsPath.UrlString|null;
 }
 
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -42,11 +42,11 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         ${input.link ? html`<devtools-link href=${input.link} jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>` : ''}
       </div>
       <slot></slot>
-    </div>`, target, {container: {classes: ['empty-view-scroller']}});
+    </div>`, target, {container: {classes: ['empty-widget-container', 'empty-view-scroller']}});
   // clang-format on
 };
 
-export class EmptyWidget extends VBox {
+export class EmptyWidget extends VBox<ShadowRoot> {
   #header: string;
   #text: string;
   #link: Platform.DevToolsPath.UrlString|undefined|null;
@@ -57,7 +57,7 @@ export class EmptyWidget extends VBox {
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
     }
-    super(element, {useShadowDom: true, classes: ['empty-widget-container']});
+    super(element, {useShadowDom: 'pure'});
     this.#header = header;
     this.#text = text;
     this.#link = undefined;

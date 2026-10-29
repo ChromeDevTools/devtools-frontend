@@ -1590,7 +1590,7 @@ export const QUICK_SOURCE_DEFAULT_VIEW: QuickSourceViewFunc = (input, _output, t
     <div class="sources-view-wrapper vbox flex-auto">
       ${input.sourcesView ? widget(UI.Widget.WrapperWidget, {widget: input.sourcesView}) : nothing}
     </div>
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.panel('sources.quick').track({resize: true})}`}}});
   // clang-format on
 };
 
@@ -1600,7 +1600,7 @@ export class QuickSourceView extends UI.Widget.VBox {
   #showInWrapper = false;
 
   constructor(view: QuickSourceViewFunc = QUICK_SOURCE_DEFAULT_VIEW) {
-    super({jslog: `${VisualLogging.panel('sources.quick').track({resize: true})}`});
+    super();
     this.#view = view;
     this.#sourcesView = SourcesPanel.instance().sourcesView();
     this.performUpdate();

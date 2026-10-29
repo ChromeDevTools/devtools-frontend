@@ -483,7 +483,7 @@ export const EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW: ExperimentsSettingsTabView =
           </div>
         </div>
       `,
-      target);
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('experiments')}`}}});
   // clang-format on
 };
 
@@ -498,7 +498,7 @@ export class ExperimentsSettingsTab extends UI.Widget.Widget implements Settings
   #filterText = '';
 
   constructor(element?: HTMLElement, view: ExperimentsSettingsTabView = EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW) {
-    super(element, {jslog: `${VisualLogging.pane('experiments')}`});
+    super(element);
     this.element.classList.add('settings-tab-container');
     this.element.id = 'experiments-tab-content';
     this.#view = view;

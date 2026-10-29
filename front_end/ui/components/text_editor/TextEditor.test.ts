@@ -50,6 +50,9 @@ describeWithEnvironment('TextEditor', () => {
       renderElementIntoDOM(editor);
       assert.strictEqual(editor.editor.state.doc.toString(), 'two');
       editor.editor.dispatch({changes: {from: 3, insert: '!'}});
+      const setStateSpy = sinon.spy(editor.editor, 'setState');
+      editor.state = editor.state;
+      sinon.assert.notCalled(setStateSpy);
       editor.remove();
       assert.strictEqual(editor.editor.state.doc.toString(), 'two!');
     });

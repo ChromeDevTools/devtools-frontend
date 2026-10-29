@@ -158,9 +158,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   let header = '', text = '';
   if (!query) {
     header = i18nString(UIStrings.noSearchResult);
-    text = i18nString(
-        UIStrings.typeAndPressSToSearch,
-        {PH1: UI.KeyboardShortcut.KeyboardShortcut.shortcutToString(UI.KeyboardShortcut.Keys.Enter)});
+    text = i18nString(UIStrings.typeAndPressSToSearch,
+                      {PH1: UI.KeyboardShortcut.KeyboardShortcut.shortcutToString(UI.KeyboardShortcut.Keys.Enter)});
   } else if (progress) {
     header = i18nString(UIStrings.searching);
   } else if (!searchResults.length) {
@@ -276,7 +275,7 @@ export class SearchView extends UI.Widget.VBox<ShadowRoot> {
   #searchMatchesCount: number;
   #searchResultsCount: number;
   #nonEmptySearchResultsCount: number;
-  #searchingView: UI.Widget.Widget|null;
+  #searchingView: UI.EmptyWidget.EmptyWidget|null;
   #searchConfig: Workspace.SearchConfig.SearchConfig|null;
   #pendingSearchConfig: Workspace.SearchConfig.SearchConfig|null;
   #progress: Common.Progress.Progress|null;
@@ -465,9 +464,9 @@ export class SearchView extends UI.Widget.VBox<ShadowRoot> {
         new Common.Progress.ProgressProxy(new Common.Progress.Progress(), undefined, this.requestUpdate.bind(this));
     this.#searchStarted();
     if (this.#searchScope) {
-      void this.#searchScope.performSearch(
-          searchConfig, this.#progress, this.#onSearchResult.bind(this, this.#searchId),
-          this.#onSearchFinished.bind(this, this.#searchId));
+      void this.#searchScope.performSearch(searchConfig, this.#progress,
+                                           this.#onSearchResult.bind(this, this.#searchId),
+                                           this.#onSearchFinished.bind(this, this.#searchId));
     }
   }
 
@@ -508,9 +507,8 @@ export class SearchView extends UI.Widget.VBox<ShadowRoot> {
       } else if (this.#searchMatchesCount > 1 && this.#nonEmptySearchResultsCount === 1) {
         this.#searchResultsMessage = i18nString(UIStrings.foundDMatchingLinesInFile, {PH1: this.#searchMatchesCount});
       } else {
-        this.#searchResultsMessage = i18nString(
-            UIStrings.foundDMatchingLinesInDFiles,
-            {PH1: this.#searchMatchesCount, PH2: this.#nonEmptySearchResultsCount});
+        this.#searchResultsMessage = i18nString(UIStrings.foundDMatchingLinesInDFiles,
+                                                {PH1: this.#searchMatchesCount, PH2: this.#nonEmptySearchResultsCount});
       }
     } else {
       this.#searchResultsMessage = '';

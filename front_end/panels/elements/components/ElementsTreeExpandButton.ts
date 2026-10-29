@@ -24,7 +24,7 @@ export interface ViewInput {
   clickHandler: () => void;
 }
 
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
@@ -42,12 +42,12 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class ElementsTreeExpandButton extends UI.Widget.Widget {
+export class ElementsTreeExpandButton extends UI.Widget.Widget<ShadowRoot> {
   #clickHandler: () => void = () => {};
   readonly #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true, classes: ['elements-tree-expand-button']});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
 

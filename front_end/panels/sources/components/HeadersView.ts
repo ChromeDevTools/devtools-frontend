@@ -78,7 +78,7 @@ export const HEADERS_VIEW_DEFAULT_VIEW: WrapperView = (input, output, target) =>
         }
       })}
     ></devtools-sources-headers-view>
-  `, target);
+  `, target, {container: {attributes: {jslog: `${VisualLogging.pane('headers-view')}`}}});
 };
 // clang-format on
 
@@ -92,7 +92,6 @@ export class HeadersView extends UI.View.SimpleView {
     super({
       title: i18n.i18n.lockedString('HeadersView'),
       viewId: 'headers-view',
-      jslog: `${VisualLogging.pane('headers-view')}`,
     });
     this.#view = view;
     this.#uiSourceCode = uiSourceCode;

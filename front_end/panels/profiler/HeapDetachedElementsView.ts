@@ -97,7 +97,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
         `)}
       </table>
     </devtools-data-grid>
-  `, target);
+  `, target, {container: {classes: ['detached-elements-view']}});
   // clang-format on
 };
 
@@ -139,7 +139,6 @@ export class DetachedElementsProfileView extends UI.View.SimpleView implements D
     super({
       title: i18nString(UIStrings.detachedElementsTitle),
       viewId: 'detached-elements',
-      classes: ['detached-elements-view'],
     });
     this.#view = view;
     this.profile = profile;

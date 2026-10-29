@@ -111,18 +111,18 @@ export class Trie<T extends ArrayLike<ElementType<T>>> {
       }
     }
     const results: T[] = [];
-    this.dfs(node, prefix, results);
+    this.#dfs(node, prefix, results);
     return results;
   }
 
-  private dfs(node: number, prefix: T, results: T[]): void {
+  #dfs(node: number, prefix: T, results: T[]): void {
     if (this.#isWord[node]) {
       results.push(prefix);
     }
     const edges = this.#edges[node];
     for (const [edge, node] of edges) {
       const newPrefix = this.#traitImpl.append(prefix, edge);
-      this.dfs(node, newPrefix, results);
+      this.#dfs(node, newPrefix, results);
     }
   }
 

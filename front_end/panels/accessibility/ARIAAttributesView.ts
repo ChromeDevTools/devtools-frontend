@@ -149,7 +149,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
       this.requestUpdate();
     };
 
-    const attributes = this.node?.attributes()?.filter(attribute => this.isARIAAttribute(attribute)) ?? [];
+    const attributes = this.node?.attributes()?.filter(attribute => this.#isARIAAttribute(attribute)) ?? [];
     const propertyCompletions =
         new Map(attributes.map(attribute => [attribute, ariaMetadata().valuesForProperty(attribute.name)]));
 
@@ -166,7 +166,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
     this.#view(input, undefined, this.contentElement);
   }
 
-  private isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
+  #isARIAAttribute(attribute: SDK.DOMModel.Attribute): boolean {
     return SDK.DOMModel.ARIA_ATTRIBUTES.has(attribute.name);
   }
 }

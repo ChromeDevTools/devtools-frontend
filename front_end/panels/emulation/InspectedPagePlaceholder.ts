@@ -40,7 +40,7 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     this.setMinimumSize(1, 1);
   }
 
-  private dipPageRect(): {
+  #dipPageRect(): {
     x: number,
     y: number,
     width: number,
@@ -65,7 +65,7 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     if (!this.element.isConnected) {
       return;
     }
-    const rect = this.dipPageRect();
+    const rect = this.#dipPageRect();
     const bounds = {
       x: Math.round(rect.x),
       y: Math.round(rect.y),

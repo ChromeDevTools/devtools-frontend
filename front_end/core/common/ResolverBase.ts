@@ -28,7 +28,7 @@ export abstract class ResolverBase<Id, T> {
   async waitFor(id: Id): Promise<T> {
     const obj = this.getForId(id);
     if (!obj) {
-      return await this.getOrCreatePromise(id);
+      return await this.#getOrCreatePromise(id);
     }
     return obj;
   }
@@ -42,7 +42,7 @@ export abstract class ResolverBase<Id, T> {
     const obj = this.getForId(id);
     if (!obj) {
       const swallowTheError = (): void => {};
-      void this.getOrCreatePromise(id).catch(swallowTheError).then(obj => {
+      void this.#getOrCreatePromise(id).catch(swallowTheError).then(obj => {
         if (obj) {
           callback(obj);
         }
@@ -63,7 +63,7 @@ export abstract class ResolverBase<Id, T> {
     this.#unresolvedIds.clear();
   }
 
-  private getOrCreatePromise(id: Id): Promise<T> {
+  #getOrCreatePromise(id: Id): Promise<T> {
     const promiseInfo = this.#unresolvedIds.get(id);
     if (promiseInfo) {
       return promiseInfo.promise;

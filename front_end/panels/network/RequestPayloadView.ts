@@ -420,20 +420,6 @@ export class RequestPayloadView extends UI.Widget.VBox {
     this.request?.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
   }
 
-  private addEntryContextMenuHandler(
-      treeElement: UI.TreeOutline.TreeElement, menuItem: string, jslogContext: string, getValue: () => string): void {
-    treeElement.listItemElement.addEventListener('contextmenu', event => {
-      event.consume(true);
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      const copyValueHandler = (): void => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(getValue());
-      };
-      contextMenu.clipboardSection().appendItem(menuItem, copyValueHandler, {jslogContext});
-      void contextMenu.show();
-    });
-  }
-
   override performUpdate(): void {
     if (!this.request) {
       return;

@@ -133,7 +133,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     const {loading, resources} = this.#loader.getScopedNumberOfResources();
     const input = {
       onFilterChanged: (e: CustomEvent<string>) => {
-        this.onFilterChanged(e.detail);
+        this.#onFilterChanged(e.detail);
       },
       items: this.#loader.getResourcesLoaded().values(),
       selectedItem: this.#selectedItem,
@@ -159,7 +159,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     return this.#selectedItem;
   }
 
-  private onFilterChanged(text: string): void {
+  #onFilterChanged(text: string): void {
     const textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
     if (textFilterRegExp) {
       this.#filters = [

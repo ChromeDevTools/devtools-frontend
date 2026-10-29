@@ -68,14 +68,14 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
     if (details.violatingNodeId) {
       const target = genericIssue.model()?.target() || null;
       element.appendChild(await this.createElementCell(
-          {backendNodeId: details.violatingNodeId, nodeName: this.violatingNodeIdName(details.errorType), target},
+          {backendNodeId: details.violatingNodeId, nodeName: this.#violatingNodeIdName(details.errorType), target},
           genericIssue.getCategory()));
     }
 
     this.affectedResources.appendChild(element);
   }
 
-  private violatingNodeIdName(errorType: Protocol.Audits.GenericIssueErrorType): Platform.UIString.LocalizedString {
+  #violatingNodeIdName(errorType: Protocol.Audits.GenericIssueErrorType): Platform.UIString.LocalizedString {
     switch (errorType) {
       case Protocol.Audits.GenericIssueErrorType.FormLabelForNameError:
         // Since the error is referencing the <label> tag, this string doesn't

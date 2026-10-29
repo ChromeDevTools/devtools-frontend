@@ -25,6 +25,8 @@ devtools_entrypoint("bundle") {
 
   ts_deps = [ ":formatter" ]
 
+  data_deps = [ "../../entrypoints/formatter_worker:worker_entrypoint" ]
+
   visibility = [
     ":*",
     "../../../mcp/*",

@@ -1272,8 +1272,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 };
 ```
 
-### Pre-existing Widget Instances (`WrapperWidget`)
-When embedding pre-existing `UI.Widget` instances that are created elsewhere (such as `UI.ViewManager` locations: `TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`), render them declaratively using `${widget(UI.Widget.WrapperWidget, {widget: myWidgetInstance})}` instead of creating custom wrapper widget classes. `WrapperWidget` automatically forwards constraints and manages child widget attach/detach lifecycles.
+### Avoid `WrapperWidget` for Child Widgets, `TabbedPane`, and `StackLocation`
+**Do NOT instantiate child widgets or layout containers (`new ChildWidget()`, `UI.TabbedPane.TabbedPane` / `tabbedLocation.tabbedPane()`, `StackLocation.widget()`, `UI.ListWidget.ListWidget`, `UI.SplitWidget.SplitWidget`) in the constructor/presenter and pass them via `ViewInput` to `UI.Widget.WrapperWidget`.**
+- **Child widgets:** Refactor the child widget to accept `element?: HTMLElement` in its constructor and setters for its state, and instantiate it declaratively in the view with `${widget(ChildWidget, {...})}`.
+- **`TabbedPane` and `StackLocation`:** Create tabbed panes and stack panes declaratively in the view using `<devtools-tabbed-pane>` (or `${widget(UI.TabbedPane.TabbedPane, ...)}`) and `<devtools-stack-pane>` rather than passing a `TabbedPane` or `StackLocation` widget instance through `ViewInput` to `WrapperWidget`.
+
+`WrapperWidget` is only justified when reparenting a shared stateful singleton across multiple containers (such as `ConsoleView.instance()` or `SourcesView`) or bridging an opaque `UI.Widget` returned by an external factory. When using `WrapperWidget`, note that it sets `display: contents` on its `<devtools-widget>` host element, so never put sizing, border, or background classes on the `<devtools-widget>` hosting `WrapperWidget` (wrap it in a `<div>` instead).
 
 ### Preserving `showMode` Settings
 When migrating a `SplitWidget` that persists sidebar visibility (e.g. via `splitWidget.showModeSetting()`), bind the setting's value to the `<devtools-split-view show=${input.showMode}>` property (`Both`, `OnlyMain`, or `OnlySidebar`) to preserve user settings and layout state across sessions.
@@ -1531,7 +1535,7 @@ export class NodeIndicator extends UI.Widget.Widget {
   readonly #view: View;
 
   constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
-    super(element, {useShadowDom: true});
+    super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }
 
@@ -1597,9 +1601,14 @@ ranges `10,2` and the current range `5,3` will also be highlighted.
 
 Replace the legacy imperative `UI.ListWidget.ListWidget` (which rendered inline editing controls and required custom delegates) with the modern `<devtools-list>` component.
 
+**Anti-pattern — Do NOT pass `list: UI.ListWidget.ListWidget` in `ViewInput` to `WrapperWidget`:**
+Do not keep `this.list = new UI.ListWidget.ListWidget(this)` and `implements UI.ListWidget.Delegate` on the presenter (imperatively calling `this.list.clear()`, `this.list.appendItem()`, `this.list.addNewItem()`), render `renderItem`/`beginEdit` into `DocumentFragment` adapters, and mount `this.list` via `UI.Widget.WrapperWidget`. That leaks a view widget into the presenter's state and misuses `WrapperWidget`. Instead:
+- **Recommended (`<devtools-list>`)**: Replace `UI.ListWidget` and `UI.ListWidget.Delegate` with `<devtools-list>`, passing pure data (`items`, `editingIndex`, `validationError`) and callbacks (`onEdit`, `onDelete`, `onCommitEdit`, `onCancelEdit`) in `ViewInput`, and rendering all markup inside `DEFAULT_VIEW`.
+- **Incremental fallback (if preserving legacy `ListWidget.Editor` DOM/screenshot goldens temporarily)**: Move `ListWidget` and `ListWidget.Delegate` ownership out of the presenter and into the view layer — pass only pure data and callbacks in `ViewInput`, encapsulate `ListWidget` + `ListWidget.Delegate` inside a small view-layer child `Widget` instantiated via `${widget(...)}` in `DEFAULT_VIEW`, and expose a narrow action callback on `ViewOutput` (e.g. `output.addNewItem = () => ...`) if needed.
+
 ### Guidelines
 1. **Dialogue Modals for Complex Editors:** If the editor contains multiple input fields (e.g., location details, headers), show the editor in a modal card dialog powered by `UI.Dialog.Dialog`.
-2. **Inline Prompts for Trivial Editors:** If the editor is trivial (i.e., a single text input, such as URL pattern blocking rules), handle editing inline using a `<devtools-prompt>` component. In this case, clicking the item focuses the prompt and toggles `editing` mode inline, dispatching `@commit` and `@cancel` events to update the state. See `RequestConditionsDrawer` for a reference implementation.
+2. **Inline Prompts or Rows for Trivial Editors:** If the editor is trivial (i.e., a single text input, such as URL pattern or regex ignore-list rules), handle editing inline using a `<devtools-prompt>` component (see `RequestConditionsDrawer.ts`) or an inline editor row in the template (see `EditFileSystemView.ts`). When using `<devtools-prompt>`, clicking the item focuses the prompt and toggles `editing` mode inline, dispatching `@commit` and `@cancel` events to update the state.
 3. **Conditionally render list:** Use `<devtools-list>` and conditionally render it inside the card only if the list has elements (`input.locations.length > 0`). This ensures empty state layout rules are correctly applied and prevents extra spacing/gaps.
 4. **Declarative dialog views:** Define the edit/add modal content in a separate, customizable view function (e.g. `DEFAULT_DIALOG_VIEW`). Instantiating `UI.Dialog.Dialog` in the class is fine, but its content rendering should be driven declaratively by the dialog view function.
 5. **Common styles integration:** Ensure `{includeCommonStyles: true}` is passed when rendering elements into the DOM inside test setups to import proper layout variables and global typography styles (e.g. Roboto).

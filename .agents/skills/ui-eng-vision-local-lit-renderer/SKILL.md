@@ -148,15 +148,44 @@ existing element containers.
         configuration through setters on the child widget, or if imperative
         actions are strictly required, expose individual functions on `ViewOutput`
         (e.g., `output.doLayout = () => w.doLayout()`).
-    *   **Pre-Existing Widget Instances (`UI.Widget.WrapperWidget`)**: Use
-        `${widget(UI.Widget.WrapperWidget, {widget: input.childWidget})}` when
-        embedding widgets owned by `UI.ViewManager`
-        (`TabbedViewLocation.tabbedPane()`, `StackLocation.widget()`) or when
-        conditionally moving a shared widget instance between containers
-        (`{widget: shouldShow ? this.#sharedWidget : null}`).
-    *   `WrapperWidget` automatically handles showing and detaching the inner
-        widget and forwards calculateConstraints without requiring custom wrapper
-        classes.
+    *   **Avoid `UI.Widget.WrapperWidget`**: Do **NOT** instantiate child widgets
+        or layout containers (`new ChildWidget()`, `UI.TabbedPane.TabbedPane` /
+        `tabbedLocation.tabbedPane()`, `StackLocation.widget()`,
+        `UI.ListWidget.ListWidget`, `UI.SplitWidget.SplitWidget`) in the
+        constructor/presenter and pass them via `ViewInput` to
+        `UI.Widget.WrapperWidget`.
+        *   **Child widgets**: Refactor the child widget to accept
+            `element?: HTMLElement` in its constructor and setters for its state,
+            and instantiate it declaratively with `${widget(ChildWidget, {...})}`.
+        *   **`TabbedPane` and `StackLocation`**: Create tabbed panes and stack
+            panes declaratively in the view using `<devtools-tabbed-pane>` (or
+            `${widget(UI.TabbedPane.TabbedPane, ...)}`) and
+            `<devtools-stack-pane>` instead of wrapping a `TabbedPane` or
+            `StackLocation.widget()` in `WrapperWidget`.
+    *   **Migrating `UI.ListWidget.ListWidget` + `UI.ListWidget.Delegate`**: Do
+        NOT keep `this.list = new UI.ListWidget.ListWidget(this)` and `implements
+        UI.ListWidget.Delegate` on the presenter, convert `renderItem` /
+        `beginEdit` to render into a `DocumentFragment`, and pass `list` via
+        `ViewInput` to `WrapperWidget`. Instead:
+        1. **Recommended**: Replace `ListWidget` + `ListWidget.Delegate` with
+           `<devtools-list>` (`ui/components/lists/lists.js`), passing pure data
+           (`items`, `editingIndex`, `validationError`) and callbacks in
+           `ViewInput`, and handling editing via `<devtools-prompt>`, an inline
+           editor row, or `UI.Dialog.Dialog`.
+        2. **Incremental fallback (if preserving `ListWidget.Editor` screenshot
+           goldens temporarily)**: Move `ListWidget` + `ListWidget.Delegate`
+           ownership out of the presenter into a view-layer child class
+           extending `UI.ListWidget.ListWidget` directly and instantiated via
+           `${widget(...)}` in `DEFAULT_VIEW` (with an imperative trigger on
+           `ViewOutput` if needed, and without `WrapperWidget`), keeping
+           `ViewInput` pure data and callbacks.
+    *   `WrapperWidget` is only justified when reparenting a shared stateful
+        singleton across multiple containers (such as `ConsoleView.instance()`
+        or `SourcesView`) or bridging an opaque `UI.Widget` returned by an
+        external factory. Note that `WrapperWidget` sets `display: contents` on
+        its `<devtools-widget>` host, so never put sizing, border, or background
+        classes on the `<devtools-widget>` hosting `WrapperWidget` (wrap it in a
+        `<div>` instead).
 
 13. **Declarative `<devtools-split-view>` Guidelines**:
 
@@ -209,5 +238,4 @@ existing element containers.
 5.  ❓ **Split Views**: Does `<devtools-split-view>` have `flex: auto; height: 100%;` CSS and reuse existing split settings?
 6.  ❓ **String Audit**: Did I verify that any removed `UIStrings` weren't from accidentally dropped UI branches?
 7.  ❓ **Build**: Does the code compile and do visual tests pass with 0% diff?
-
 

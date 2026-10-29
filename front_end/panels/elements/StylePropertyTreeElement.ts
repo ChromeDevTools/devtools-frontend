@@ -1401,6 +1401,7 @@ type ShadowLengthProperty = ShadowProperty&{
 
 // A part of a shadow as it is rendered: either text, or a node together with the context to render and read it in.
 type ShadowPart = string|{node: CodeMirror.SyntaxNode, context: RenderingContext};
+
 /**
  * The shadow model is an abstraction over the various shadow properties on the one hand and the order they were defined
  * in on the other, so that modifications through the shadow editor can retain the property order in the authored text.
@@ -1557,6 +1558,7 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     }
     return html`${parts}`;
   }
+
   // The text of the shadow as `renderContents` renders it, including the changes that renderers recorded for its parts.
   text(): string {
     const texts = this.#parts().map(part => {
@@ -2174,7 +2176,6 @@ export class PositionAreaRenderer extends PositionAreaRendererBase {
       button?.dispatchEvent(new ValueEditEvent(value));
       context.recordEdit(match, value);
     };
-
     const treeElement = this.#treeElement;
     const popoverHelper = this.#stylesContainer.swatchPopoverHelper();
     const isActive =
@@ -2339,7 +2340,7 @@ export class PositionTryRenderer extends PositionTryRendererBase {
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.PositionTryMatch, context: RenderingContext): Lit.LitTemplate {
-    const content: Array<Node|Lit.LitTemplate> = [];
+    const content: Lit.LitTemplate[] = [];
     if (match.preamble.length > 0) {
       const {nodes} = Renderer.render(match.preamble, context);
       content.push(nodes);
@@ -2348,23 +2349,18 @@ export class PositionTryRenderer extends PositionTryRendererBase {
                                      this.#matchedStyles.node();
     const fallbackLabels: string[] = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
-      const isImportant = fallback.find(node => node.name === 'Important');
-      const fallbackContent = document.createElement('span');
-      if (i > 0) {
-        fallbackContent.appendChild(document.createTextNode(', '));
+      const important = fallback.find(node => node.name === 'Important');
+      const classes = classMap({
+        'inactive-value': !this.#treeElement?.inherited() && node === this.#matchedStyles.node() &&
+            i !== this.#matchedStyles.activePositionFallbackIndex(),
+      });
+      content.push(html`<span class=${classes}>${i > 0 ? ', ' : nothing}${
+          Renderer.render(fallback.filter(node => node.name !== 'Important'), context).nodes}</span>`);
+      if (important) {
+        content.push(html` ${Renderer.render(important, context).nodes}`);
       }
-      if (!this.#treeElement?.inherited() && node === this.#matchedStyles.node() &&
-          i !== this.#matchedStyles.activePositionFallbackIndex()) {
-        fallbackContent.classList.add('inactive-value');
-      }
-      Renderer.renderInto(fallback.filter(node => node.name !== 'Important'), context, fallbackContent);
       fallbackLabels.push(
           context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim());
-
-      content.push(fallbackContent);
-      if (isImportant) {
-        content.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
-      }
     }
     if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() ||
         !this.#treeElement.property.activeInStyle() || !node) {

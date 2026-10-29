@@ -2546,6 +2546,28 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
       assert.isTrue(values[2].classList.contains('inactive-value'));
     });
 
+    it('does not mark !important as inactive when the last fallback is inactive', () => {
+      sinon.stub(matchedStyles, 'activePositionFallbackIndex').returns(0);
+      sinon.stub(matchedStyles, 'positionTryRules').returns([]);
+      const stylePropertyTreeElement =
+          getTreeElement('position-try-fallbacks', '--top, flip-block, --bottom !important');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      assert.strictEqual(stylePropertyTreeElement.valueElement.innerText, '--top, flip-block, --bottom !important');
+      const spans = stylePropertyTreeElement.valueElement.querySelectorAll<HTMLSpanElement>(':scope > span');
+      assert.deepEqual(Array.from(spans, span => ({
+                                           text: span.innerText,
+                                           inactive: span.classList.contains('inactive-value'),
+                                         })),
+                       [
+                         {text: '--top', inactive: false},
+                         {text: ', flip-block', inactive: true},
+                         {text: ', --bottom', inactive: true},
+                         {text: '!important', inactive: false},
+                       ]);
+    });
+
     it('renders the position-try swatch in default and forced states', () => {
       const forcedOptionStub = sinon.stub(matchedStyles.cssModel(), 'forcedPositionTryOption').returns(undefined);
       const stylePropertyTreeElement = getTreeElement('position-try-fallbacks', '--top, --left');

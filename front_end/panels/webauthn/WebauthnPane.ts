@@ -588,14 +588,6 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
       credentials: [],
     });
     this.requestUpdate();
-    this.#model.addEventListener(
-        SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, this.#addCredential.bind(this, authenticatorId));
-    this.#model.addEventListener(
-        SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED, this.#updateCredential.bind(this, authenticatorId));
-    this.#model.addEventListener(
-        SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED, this.#updateCredential.bind(this, authenticatorId));
-    this.#model.addEventListener(
-        SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, this.#deleteCredential.bind(this, authenticatorId));
     return authenticatorId;
   }
 
@@ -662,11 +654,19 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
   modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {
     if (model.target() === model.target().outermostTarget()) {
       this.#model = model;
+      model.addEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, this.#addCredential, this);
+      model.addEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED, this.#updateCredential, this);
+      model.addEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED, this.#updateCredential, this);
+      model.addEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, this.#deleteCredential, this);
     }
   }
 
   modelRemoved(model: SDK.WebAuthnModel.WebAuthnModel): void {
     if (model.target() === model.target().outermostTarget()) {
+      model.removeEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, this.#addCredential, this);
+      model.removeEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED, this.#updateCredential, this);
+      model.removeEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED, this.#updateCredential, this);
+      model.removeEventListener(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, this.#deleteCredential, this);
       this.#model = undefined;
     }
   }
@@ -699,10 +699,10 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
     await this.#setVirtualAuthEnvEnabled(false);
   }
 
-  #addCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
+  #addCredential({
     data: event,
   }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.CredentialAddedEvent>): void {
-    const authenticator = this.#authenticators.get(authenticatorId);
+    const authenticator = this.#authenticators.get(event.authenticatorId);
     if (!authenticator) {
       return;
     }
@@ -711,12 +711,11 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
   }
 
   #updateCredential(
-      authenticatorId: Protocol.WebAuthn.AuthenticatorId,
       {
         data: event,
       }: Common.EventTarget
           .EventTargetEvent<Protocol.WebAuthn.CredentialAssertedEvent&Protocol.WebAuthn.CredentialUpdatedEvent>): void {
-    const authenticator = this.#authenticators.get(authenticatorId);
+    const authenticator = this.#authenticators.get(event.authenticatorId);
     if (!authenticator) {
       return;
     }
@@ -729,10 +728,10 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
     this.requestUpdate();
   }
 
-  #deleteCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
+  #deleteCredential({
     data: event,
   }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.CredentialDeletedEvent>): void {
-    const authenticator = this.#authenticators.get(authenticatorId);
+    const authenticator = this.#authenticators.get(event.authenticatorId);
     if (!authenticator) {
       return;
     }

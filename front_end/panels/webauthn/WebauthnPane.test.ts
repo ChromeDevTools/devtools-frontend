@@ -61,10 +61,11 @@ describeWithEnvironment('WebAuthn pane', () => {
     assert.isFalse(largeBlob.checked);
   });
 
+  let target: SDK.Target.Target;
+  let model: SDK.WebAuthnModel.WebAuthnModel;
+  let panel: WebauthnModule.WebauthnPane.WebauthnPaneImpl;
+
   const tests = (inScope: boolean) => {
-    let target: SDK.Target.Target;
-    let model: SDK.WebAuthnModel.WebAuthnModel;
-    let panel: WebauthnModule.WebauthnPane.WebauthnPaneImpl;
     beforeEach(() => {
       const tabTarget = createTarget({type: SDK.Target.Type.TAB});
       createTarget({parentTarget: tabTarget, subtype: 'prerender'});
@@ -352,7 +353,57 @@ describeWithEnvironment('WebAuthn pane', () => {
     });
   };
 
-  describe('in scope', () => tests(true));
+  describe('in scope', () => {
+    tests(true);
+
+    it('routes credential events only to the matching authenticator', async () => {
+      const authenticatorId1 = 'authenticator-1' as Protocol.WebAuthn.AuthenticatorId;
+      const authenticatorId2 = 'authenticator-2' as Protocol.WebAuthn.AuthenticatorId;
+      const addAuthenticator = sinon.stub(model, 'addAuthenticator');
+      addAuthenticator.onFirstCall().resolves(authenticatorId1);
+      addAuthenticator.onSecondCall().resolves(authenticatorId2);
+
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
+      await expectCalled(addAuthenticator);
+
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
+      sinon.assert.calledTwice(addAuthenticator);
+
+      const credential = {
+        credentialId: 'credential-1',
+        isResidentCredential: false,
+        rpId: 'talos1.org',
+        userHandle: 'morgan',
+        signCount: 1,
+        privateKey: '',
+      };
+      model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, {
+        authenticatorId: authenticatorId1,
+        credential,
+      });
+      await panel.updateComplete;
+
+      const dataGrids = panel.contentElement.querySelectorAll('devtools-data-grid tbody');
+      assert.lengthOf(dataGrids, 2);
+      assert.include(dataGrids[0].deepInnerText(), Object.values(credential).join('\n'));
+      assert.include(dataGrids[1].deepInnerText(), 'No credentials');
+    });
+
+    it('cleans up credential listeners on model removal', () => {
+      assert.isTrue(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ADDED));
+      assert.isTrue(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED));
+      assert.isTrue(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED));
+      assert.isTrue(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED));
+
+      panel.modelRemoved(model);
+      assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ADDED));
+      assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED));
+      assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED));
+      assert.isFalse(model.hasEventListeners(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED));
+    });
+  });
   describe('out of scope', () => tests(false));
 
   it('shows the placeholder', () => {

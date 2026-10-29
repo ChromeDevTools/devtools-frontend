@@ -199,6 +199,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
 
 interface DeferredViewInput {
   preventKeyboardFocus?: boolean;
+  textContent?: string;
   onClick: () => void;
 }
 
@@ -213,7 +214,7 @@ const DEFERRED_DEFAULT_VIEW: DeferredView = (input, _output, target: HTMLElement
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e: Event) => e.consume()}>
-        <slot></slot>
+        <slot>${input.textContent ?? nothing}</slot>
       </button>`, target);
   // clang-format on
 };
@@ -224,9 +225,8 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
   #styleSheetId: Protocol.DOM.StyleSheetId|undefined = undefined;
   #view: DeferredView;
 
-  constructor(
-      element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options,
-      styleSheetId?: Protocol.DOM.StyleSheetId, view: DeferredView = DEFERRED_DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options,
+              styleSheetId?: Protocol.DOM.StyleSheetId, view: DeferredView = DEFERRED_DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.element.classList.remove('vbox');
     this.#deferredNode = deferredNode;
@@ -236,9 +236,34 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
     this.performUpdate();
   }
 
+  set deferredNode(deferredNode: SDK.DOMModel.DeferredDOMNode|undefined) {
+    if (this.#deferredNode === deferredNode) {
+      return;
+    }
+    this.#deferredNode = deferredNode;
+    this.requestUpdate();
+  }
+
+  set options(options: Options|undefined) {
+    if (this.#options === options) {
+      return;
+    }
+    this.#options = options;
+    this.requestUpdate();
+  }
+
+  set styleSheetId(styleSheetId: Protocol.DOM.StyleSheetId|undefined) {
+    if (this.#styleSheetId === styleSheetId) {
+      return;
+    }
+    this.#styleSheetId = styleSheetId;
+    this.requestUpdate();
+  }
+
   override performUpdate(): void {
-    const viewInput = {
+    const viewInput: DeferredViewInput = {
       preventKeyboardFocus: this.#options?.preventKeyboardFocus,
+      textContent: this.#options?.textContent,
       onClick: () => {
         this.#deferredNode?.resolve?.(node => {
           if (node && this.#styleSheetId) {

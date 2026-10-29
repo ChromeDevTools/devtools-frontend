@@ -5,14 +5,14 @@
  */
 
 :host {
-  --list-group-padding: 16px;
+  --list-group-padding: var(--sys-size-8);
 }
 
 li {
-  border: 2px solid transparent;
+  border: var(--sys-size-2) solid transparent;
   list-style: none;
   text-overflow: ellipsis;
-  min-height: 12px;
+  min-height: var(--sys-size-6);
 }
 
 .compact {
@@ -35,12 +35,12 @@ li {
   user-select: none;
   mask-image: var(--image-file-arrow-collapse);
   background-color: var(--icon-default);
-  margin-top: -2px;
+  margin-top: calc(-1 * var(--sys-size-2));
   margin-right: 3px;
   content: "";
   text-shadow: none;
-  height: 14px;
-  width: 14px;
+  height: var(--sys-size-7);
+  width: var(--sys-size-7);
   overflow: hidden;
   flex: none;
 }
@@ -129,6 +129,6 @@ ul[role="tree"]:focus-within [role="treeitem"].selected > .arrow-and-key-wrapper
   }
 
   ul[role="tree"]:focus-within [role="treeitem"].selected {
-    outline: solid 1px ButtonText;
+    outline: solid var(--sys-size-1) ButtonText;
   }
 }

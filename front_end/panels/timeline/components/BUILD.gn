@@ -137,6 +137,7 @@ devtools_ui_module("unittests") {
     "MetricCard.test.ts",
     "NetworkRequestDetails.test.ts",
     "NetworkRequestTooltip.test.ts",
+    "NetworkTrackWidget.test.ts",
     "OriginMap.test.ts",
     "RelatedInsightChips.test.ts",
     "Sidebar.test.ts",
@@ -163,7 +164,9 @@ devtools_ui_module("unittests") {
     "../../../testing",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/legacy/components/utils:bundle",
+    "../../../ui/legacy/theme_support:bundle",
     "insights:bundle",
   ]
 }

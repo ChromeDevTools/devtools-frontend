@@ -2376,10 +2376,18 @@ async function makeTimelineRangeSummaryWidget(widgetData: AiAssistanceModel.AiAg
   };
 }
 
+const networkTrackDataProviders =
+    new WeakMap<AiAssistanceModel.AiAgent.NetworkTrackAiWidget,
+                Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider>();
+
 async function makeNetworkTrackWidget(widgetData: AiAssistanceModel.AiAgent.NetworkTrackAiWidget):
     Promise<WidgetMakerResponse|null> {
   const {parsedTrace, bounds} = widgetData.data;
-  const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+  let dataProvider = networkTrackDataProviders.get(widgetData);
+  if (!dataProvider) {
+    dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    networkTrackDataProviders.set(widgetData, dataProvider);
+  }
 
   // clang-format off
   const template = html`

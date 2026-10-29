@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -17,6 +18,7 @@ const {urlString} = Platform.DevToolsPath;
 
 describe('FileContext', () => {
   setupSettingsHooks();
+  setupRuntimeHooks();
 
   let universe: TestUniverse;
 

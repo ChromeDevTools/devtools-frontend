@@ -104,6 +104,8 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
   override searchInPath(_query: string, _progress: Common.Progress.Progress): Promise<string[]> {
     return Promise.resolve([...this.#files]);
   }
+  override setFileContent(_path: Platform.DevToolsPath.EncodedPathString, _content: string, _isBase64: boolean): void {
+  }
 }
 
 class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {

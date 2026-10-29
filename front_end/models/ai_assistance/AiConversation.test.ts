@@ -914,6 +914,7 @@ describe('AiConversation', () => {
         unreachableUrl: () => '',
         url: navigationUrl,
         securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(navigationUrl),
+        backForwardCacheDetails: {restoredFromCache: undefined, explanations: []},
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
       type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
     });
@@ -1144,6 +1145,7 @@ describe('AiConversation', () => {
       mockFrame.unreachableUrl.returns(Platform.DevToolsPath.EmptyUrlString);
       sinon.stub(mockFrame, 'url').value(newOrigin);
       mockFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(newOrigin));
+      mockFrame.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
         frame: mockFrame,
         type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION,
@@ -1194,6 +1196,7 @@ describe('AiConversation', () => {
       mockAuxFrame.unreachableUrl.returns(Platform.DevToolsPath.EmptyUrlString);
       sinon.stub(mockAuxFrame, 'url').value(auxOrigin);
       mockAuxFrame.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(auxOrigin));
+      mockAuxFrame.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
 
       // Dispatch PrimaryPageChanged on the auxiliary target's ResourceTreeModel.
       auxResourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {

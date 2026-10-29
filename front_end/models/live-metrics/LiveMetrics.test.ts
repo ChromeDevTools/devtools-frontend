@@ -10,6 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as Trace from '../../models/trace/trace.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import type * as WebVitals from '../../third_party/web-vitals/web-vitals.js';
@@ -21,6 +22,7 @@ type Milli = Trace.Types.Timing.Milli;
 
 describe('LiveMetrics', () => {
   setupSettingsHooks();
+  setupRuntimeHooks();
 
   let liveMetrics: LiveMetrics.LiveMetrics;
   let primaryTarget: SDK.Target.Target;

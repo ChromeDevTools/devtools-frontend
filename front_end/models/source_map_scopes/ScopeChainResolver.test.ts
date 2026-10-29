@@ -8,11 +8,14 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SourceMapScopes from './source_map_scopes.js';
 
 describe('ScopeChainResolver', () => {
+  setupRuntimeHooks();
+
   let universe: TestUniverse;
   let stubPluginManager: sinon.SinonStubbedInstance<Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager>;
 
@@ -29,8 +32,12 @@ describe('ScopeChainResolver', () => {
   });
 
   function createFakeCallFrame(debuggerModel: SDK.DebuggerModel.DebuggerModel,
-                               script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false})):
-      sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame> {
+                               script = sinon.createStubInstance(SDK.Script.Script, {
+                                 isWasm: false,
+                                 isContentScript: false,
+                                 target: debuggerModel.target(),
+                                 securityOrigin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+                               })): sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame> {
     const fakeFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
     fakeFrame.debuggerModel = debuggerModel;
     // @ts-expect-error readonly for test.
@@ -74,7 +81,7 @@ describe('ScopeChainResolver', () => {
       const resolver = universe.scopeChainResolver;
       const promise1 = resolver.resolveScopeChain(fakeFrame);
 
-      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap, {sourceURLs: []});
       debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached,
                                                                 {client: fakeFrame.script, sourceMap});
 
@@ -87,7 +94,7 @@ describe('ScopeChainResolver', () => {
       const resolver = universe.scopeChainResolver;
       const promise1 = resolver.resolveScopeChain(fakeFrame);
 
-      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+      const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap, {sourceURLs: []});
       debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapDetached,
                                                                 {client: fakeFrame.script, sourceMap});
 
@@ -142,12 +149,17 @@ describe('ScopeChainResolver', () => {
 
   it('dispatches SCOPE_CHAIN_INVALIDATED with the affected script', () => {
     const debuggerModel = universe.createTarget().model(SDK.DebuggerModel.DebuggerModel)!;
-    const script = sinon.createStubInstance(SDK.Script.Script);
+    const script = sinon.createStubInstance(SDK.Script.Script, {
+      isWasm: false,
+      isContentScript: false,
+      target: debuggerModel.target(),
+      securityOrigin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+    });
     const resolver = universe.scopeChainResolver;
     const listenerStub = sinon.stub();
     resolver.addEventListener(SourceMapScopes.ScopeChainResolver.Events.SCOPE_CHAIN_INVALIDATED, listenerStub);
 
-    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap, {sourceURLs: []});
     debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached,
                                                               {client: script, sourceMap});
     debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapDetached,

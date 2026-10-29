@@ -10,12 +10,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as IssuesManager from './issues_manager.js';
 
 describe('DOMIssuesManager', () => {
   setupLocaleHooks();
+  setupRuntimeHooks();
 
   let universe: TestUniverse;
   let target: SDK.Target.Target;

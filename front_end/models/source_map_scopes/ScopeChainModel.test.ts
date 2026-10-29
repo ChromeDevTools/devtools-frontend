@@ -10,11 +10,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SourceMapScopes from './source_map_scopes.js';
 
 describe('ScopeChainModel', () => {
+  setupRuntimeHooks();
+
   let universe: TestUniverse;
   let clock: sinon.SinonFakeTimers;
   let stubPluginManager: sinon.SinonStubbedInstance<Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager>;
@@ -85,7 +88,12 @@ describe('ScopeChainModel', () => {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
     const fakeFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
     fakeFrame.debuggerModel = debuggerModel;
-    const script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
+    const script = sinon.createStubInstance(SDK.Script.Script, {
+      isWasm: false,
+      isContentScript: false,
+      target,
+      securityOrigin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+    });
     // @ts-expect-error readonly for test.
     fakeFrame.script = script;
     fakeFrame.scopeChain.returns([]);
@@ -97,7 +105,7 @@ describe('ScopeChainModel', () => {
     await clock.tickAsync(10);
     sinon.assert.calledOnce(listenerStub);
 
-    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap, {sourceURLs: []});
     debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached,
                                                               {client: script, sourceMap});
     await clock.tickAsync(10);
@@ -185,7 +193,12 @@ describe('ScopeChainModel', () => {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel)!;
     const fakeFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
     fakeFrame.debuggerModel = debuggerModel;
-    const script = sinon.createStubInstance(SDK.Script.Script, {isWasm: false});
+    const script = sinon.createStubInstance(SDK.Script.Script, {
+      isWasm: false,
+      isContentScript: false,
+      target,
+      securityOrigin: SDK.SecurityOrigin.SecurityOrigin.create('http://example.com'),
+    });
     // @ts-expect-error readonly for test.
     fakeFrame.script = script;
     fakeFrame.scopeChain.returns([]);
@@ -195,7 +208,7 @@ describe('ScopeChainModel', () => {
     const chainFromFirstModel = await model1.resolveScopeChain();
     model1.dispose();
 
-    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap);
+    const sourceMap = sinon.createStubInstance(SDK.SourceMap.SourceMap, {sourceURLs: []});
     debuggerModel.sourceMapManager().dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached,
                                                               {client: script, sourceMap});
 

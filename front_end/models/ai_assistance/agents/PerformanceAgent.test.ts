@@ -22,6 +22,7 @@ import {
 import {getInsightOrError, stubInsightModel} from '../../../testing/InsightHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
@@ -86,6 +87,7 @@ async function loadTrace(context: Mocha.Context|Mocha.Suite|null, name: string,
 describe('PerformanceAgent', function() {
   setupLocaleHooks();
   setupSettingsHooks();
+  setupRuntimeHooks();
 
   const snapshotTester = new SnapshotTester(this, import.meta);
   let universe: TestUniverse;

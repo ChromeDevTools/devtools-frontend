@@ -51,21 +51,22 @@ export async function createWorkspaceProject(
 
   const uiSourceCodes = new Map<string, Workspace.UISourceCode.UISourceCode>();
 
-  const mockProject: Partial<Persistence.FileSystemWorkspaceBinding.FileSystem> = {
-    uiSourceCodes: () => Array.from(uiSourceCodes.values()),
-    id: () => baseUrl,
-    fileSystemPath: () => baseUrl,
-    uiSourceCodeForURL: (url: string) => {
-      return uiSourceCodes.get(url) || null;
-    },
-    type: () => Workspace.Workspace.projectTypes.FileSystem,
-    initialGitFolders: () => [],
-    fileSystem: () => ({
-      type: () => 'filesystem',
-    } as unknown as Persistence.PlatformFileSystem.PlatformFileSystem),
-    fileSystemBaseURL: urlString`${baseUrl}/`,
-    createFile: () => Promise.resolve(null),
-  };
+  const mockProject: Partial<Persistence.FileSystemWorkspaceBinding.FileSystem> =
+      Object.assign(Object.create(Persistence.FileSystemWorkspaceBinding.FileSystem.prototype), {
+        uiSourceCodes: () => Array.from(uiSourceCodes.values()),
+        id: () => baseUrl,
+        fileSystemPath: () => baseUrl,
+        uiSourceCodeForURL: (url: string) => {
+          return uiSourceCodes.get(url) || null;
+        },
+        type: () => Workspace.Workspace.projectTypes.FileSystem,
+        initialGitFolders: () => [],
+        fileSystem: () => ({
+          type: () => 'filesystem',
+        } as unknown as Persistence.PlatformFileSystem.PlatformFileSystem),
+        fileSystemBaseURL: urlString`${baseUrl}/`,
+        createFile: () => Promise.resolve(null),
+      });
   await networkPersistenceManager.setProject(mockProject as Workspace.Workspace.Project);
 
   for (const file of files) {
@@ -87,6 +88,12 @@ export async function createWorkspaceProject(
       name: () => file.name,
       setWorkingCopy: () => {},
       commitWorkingCopy: () => {},
+      forceLoadOnCheckContent: () => {},
+      addEventListener: () => ({} as Common.EventTarget.EventDescriptor),
+      removeEventListener: () => {},
+      isDirty: () => false,
+      hasCommits: () => false,
+      content: () => file.content,
     } as unknown as Workspace.UISourceCode.UISourceCode);
   }
 

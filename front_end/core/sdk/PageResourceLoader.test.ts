@@ -368,6 +368,7 @@ describe('PageResourceLoader', () => {
       const target = createTarget({connection, targetManager, url: 'https://example.com'});
       const frame = {
         id: '123' as Protocol.Page.FrameId,
+        isMainFrame: () => true,
         securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
       } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
@@ -547,6 +548,7 @@ describe('PageResourceLoader', () => {
       const resourceTreeModel = frameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
       sinon.stub(resourceTreeModel!, 'mainFrame').get(() => ({
                                                         id: 'main-frame-123' as Protocol.Page.FrameId,
+                                                        isMainFrame: () => true,
                                                         securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
                                                             'https://example.com'),
                                                       }));
@@ -630,6 +632,7 @@ describe('PageResourceLoader', () => {
         sinon.stub(resourceTreeModel!, 'mainFrame')
             .get(() => ({
                    id: 'main-frame-123' as Protocol.Page.FrameId,
+                   isMainFrame: () => true,
                    securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
                  }));
 
@@ -692,6 +695,7 @@ describe('PageResourceLoader', () => {
       const resourceTreeModel = mainFrameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
       sinon.stub(resourceTreeModel!, 'mainFrame').get(() => ({
                                                         id: 'main-frame-123' as Protocol.Page.FrameId,
+                                                        isMainFrame: () => true,
                                                         securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
                                                             'https://example.com'),
                                                       }));
@@ -705,6 +709,7 @@ describe('PageResourceLoader', () => {
       const subframeModel = subframeTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
       sinon.stub(subframeModel!, 'mainFrame').get(() => ({
                                                     id: 'subframe-123' as Protocol.Page.FrameId,
+                                                    isMainFrame: () => true,
                                                     securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
                                                         'https://cross-origin.com'),
                                                   }));
@@ -768,6 +773,7 @@ describe('PageResourceLoader', () => {
       const resourceTreeModel = mainFrameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
       sinon.stub(resourceTreeModel, 'mainFrame').get(() => ({
                                                        id: 'main-frame-123' as Protocol.Page.FrameId,
+                                                       isMainFrame: () => true,
                                                        securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
                                                            'https://example.com'),
                                                      }));
@@ -809,6 +815,7 @@ describe('PageResourceLoader', () => {
       const resourceTreeModel = mainFrameTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
       sinon.stub(resourceTreeModel, 'mainFrame').get(() => ({
                                                        id: 'main-frame-123' as Protocol.Page.FrameId,
+                                                       isMainFrame: () => true,
                                                        securityOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create(
                                                            'https://example.com'),
                                                      }));

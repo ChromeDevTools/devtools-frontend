@@ -2175,13 +2175,11 @@ describe('RequestConditions', () => {
     });
 
     it('correctly maps ruleIds to conditions', async () => {
-      const {universe, agent, emulateNetworkConditionsByRule} = stubAgent();
+      const {universe, emulateNetworkConditionsByRule} = stubAgent();
       const multitargetNetworkManager = universe.multitargetNetworkManager;
       const requestConditions = multitargetNetworkManager.requestConditions;
 
       const ruleId = 'mock-rule-id-1';
-      emulateNetworkConditionsByRule.resolves({ruleIds: [ruleId], getError: () => undefined});
-
       const throttlingCondition = SDK.NetworkManager.RequestCondition.createFromSetting({
         urlPattern: '*://example.com:*' as SDK.NetworkManager.URLPatternConstructorString,
         enabled: true,
@@ -2189,9 +2187,10 @@ describe('RequestConditions', () => {
       },
                                                                                         universe.settings);
       requestConditions.add(throttlingCondition);
+      emulateNetworkConditionsByRule.resolves({ruleIds: [ruleId], getError: () => undefined});
       requestConditions.conditionsEnabled = true;
 
-      await requestConditions.applyConditions(false, null, agent);
+      await requestConditions.conditionsAppliedForTest();
 
       const conditions = requestConditions.conditionsForId(ruleId);
       assert.strictEqual(conditions?.conditions, SDK.NetworkManager.Slow3GConditions);
@@ -3081,7 +3080,11 @@ describe('InterceptedRequest', () => {
           false);
       const uiSourceCode = networkProject.createUISourceCode(
           urlString`https://www.example.com/utf16.html`, Common.ResourceType.resourceTypes.Document);
-      networkProject.addUISourceCode(uiSourceCode);
+      networkProject.addUISourceCodeWithProvider(
+          uiSourceCode,
+          TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+              uiSourceCode.url(), Common.ResourceType.resourceTypes.Document, ''),
+          null, 'text/html');
 
       const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
           universe.multitargetNetworkManager, fetchAgent, request, Protocol.Network.ResourceType.Document, requestId,

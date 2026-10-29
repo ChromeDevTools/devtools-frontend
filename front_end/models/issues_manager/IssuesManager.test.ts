@@ -11,6 +11,7 @@ import {createFakeSetting} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {
   mkInspectorCspIssue,
   StubIssue,
@@ -21,6 +22,7 @@ import * as IssuesManager from '../issues_manager/issues_manager.js';
 
 describe('IssuesManager', () => {
   setupLocaleHooks();
+  setupRuntimeHooks();
 
   let universe: TestUniverse;
   let target: SDK.Target.Target;

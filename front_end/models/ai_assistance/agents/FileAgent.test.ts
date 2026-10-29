@@ -15,11 +15,14 @@ import {
   setUserAgentForTesting,
   updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as Logs from '../../logs/logs.js';
 import {AiAgent, FileAgent, FileContext} from '../ai_assistance.js';
 
 describe('FileAgent', () => {
+  setupRuntimeHooks();
+
   let universe: TestUniverse;
 
   function mockHostConfig(modelId?: string, temperature?: number) {

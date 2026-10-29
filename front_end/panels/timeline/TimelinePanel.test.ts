@@ -895,4 +895,19 @@ describe('TimelinePanel', function() {
        await timeline.loadingComplete(events, null, null);
        assert.isTrue(timeline.getFlameChart().isShowing());
      });
+
+  it('ignores unrelated window messages when launching a rehydrated session', async function() {
+    sinon.stub(window, 'open').returns(window);
+    const postMessageStub = sinon.stub(window, 'postMessage');
+
+    const traceJson = '{"enhancedTraceVersion":1}';
+    await timeline.loadFromFile(new File([traceJson], 'enhanced.json'));
+
+    window.dispatchEvent(new MessageEvent('message', {data: {type: 'UNRELATED_MESSAGE'}, source: window}));
+    sinon.assert.notCalled(postMessageStub);
+
+    window.dispatchEvent(new MessageEvent('message', {data: {type: 'REHYDRATING_WINDOW_READY'}, source: window}));
+    sinon.assert.calledOnce(postMessageStub);
+    assert.deepEqual(postMessageStub.firstCall.args[0], {type: 'REHYDRATING_TRACE_FILE', traceJson});
+  });
 });

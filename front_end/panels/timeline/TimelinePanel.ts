@@ -1761,7 +1761,6 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
   }
 
   #launchRehydratedSession(traceJson: string): void {
-    let rehydratingWindow: Window|null = null;
     let pathToLaunch: string|null = null;
     const url = new URL(window.location.href);
     const pathToEntrypoint = url.pathname.slice(0, url.pathname.lastIndexOf('/'));
@@ -1771,19 +1770,21 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
 
     // Clarifying the window the code is referring to
     const hostWindow = window;
+    const rehydratingWindow = this.isDocked() ?
+        hostWindow.open(pathToLaunch, /* target: */ '_blank', 'noopener=false,popup=false') :
+        hostWindow.open(pathToLaunch, /* target: */ undefined, 'noopener=false,popup=true');
+    if (!rehydratingWindow) {
+      return;
+    }
+
     function onMessageHandler(ev: MessageEvent): void {
-      if (url && ev.data?.type === 'REHYDRATING_WINDOW_READY') {
-        rehydratingWindow?.postMessage({type: 'REHYDRATING_TRACE_FILE', traceJson}, url.origin);
+      if (ev.source !== rehydratingWindow || ev.data?.type !== 'REHYDRATING_WINDOW_READY') {
+        return;
       }
+      rehydratingWindow?.postMessage({type: 'REHYDRATING_TRACE_FILE', traceJson}, url.origin);
       hostWindow.removeEventListener('message', onMessageHandler);
     }
     hostWindow.addEventListener('message', onMessageHandler);
-
-    if (this.isDocked()) {
-      rehydratingWindow = hostWindow.open(pathToLaunch, /* target: */ '_blank', 'noopener=false,popup=false');
-    } else {
-      rehydratingWindow = hostWindow.open(pathToLaunch, /* target: */ undefined, 'noopener=false,popup=true');
-    }
   }
 
   async loadFromURL(url: Platform.DevToolsPath.UrlString): Promise<void> {

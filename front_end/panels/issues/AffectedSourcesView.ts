@@ -8,13 +8,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import {html, render} from '../../ui/lit/lit.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 import type {IssueView} from './IssueView.js';
 
 export interface ViewInput {
-  anchors: Element[];
+  sources: Protocol.Audits.SourceCodeLocation[];
 }
 
 export type View = (input: ViewInput, _output: undefined, target: HTMLElement) => void;
@@ -22,9 +21,19 @@ export type View = (input: ViewInput, _output: undefined, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    ${input.anchors.map(anchor => html`
+    ${input.sources.map(source => html`
       <tr class="affected-resource-source">
-        <td>${anchor}</td>
+        <td>
+          ${Components.Linkifier.Linkifier.renderLinkifiedUrl(
+              source.url as Platform.DevToolsPath.UrlString,
+              {
+                columnNumber: source.columnNumber,
+                lineNumber: source.lineNumber,
+                tabStop: true,
+                showColumnNumber: false,
+                jslogContext: 'source-location',
+              })}
+        </td>
       </tr>
     `)}
   `, target);
@@ -52,38 +61,18 @@ export class AffectedSourcesView extends AffectedResourcesView {
   }
 
   #appendAffectedSources(affectedSources: Iterable<Protocol.Audits.SourceCodeLocation>): void {
-    let count = 0;
-    const anchors: Element[] = [];
-    for (const source of affectedSources) {
-      anchors.push(this.#createSourceAnchor(source));
-      count++;
-    }
-    this.#view({anchors}, undefined, this.affectedResources);
-    this.updateAffectedResourceCount(count);
+    const sources = Array.from(affectedSources);
+    this.#view({sources}, undefined, this.affectedResources);
+    this.updateAffectedResourceCount(sources.length);
   }
 
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nSources, {n: count});
   }
 
-  #createSourceAnchor({url, lineNumber, columnNumber}: Protocol.Audits.SourceCodeLocation): Element {
-    // TODO(chromium:1072331): Check feasibility of plumping through scriptId
-    // for `linkifyScriptLocation`
-    //                         to support source maps and formatted scripts.
-    const linkifierURLOptions = {columnNumber, lineNumber, tabStop: true, showColumnNumber: false};
-    // An element created with linkifyURL can subscribe to the events
-    // 'click' neither 'keydown' if that key is the 'Enter' key.
-    // Also, this element has a context menu, so we should be able to
-    // track when the user use the context menu too.
-    const anchorElement =
-        Components.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, linkifierURLOptions);
-    anchorElement.setAttribute('jslog', `${VisualLogging.link('source-location').track({click: true})}`);
-    return anchorElement;
-  }
-
   override clear(): void {
     this.requestResolver.clear();
-    this.#view({anchors: []}, undefined, this.affectedResources);
+    this.#view({sources: []}, undefined, this.affectedResources);
   }
 
   override update(): void {

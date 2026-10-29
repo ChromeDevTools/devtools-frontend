@@ -644,6 +644,82 @@ const hostsPolicy = {
   runtimeBlockedHosts: [allowedUrl, blockedUrl],
 };
 
+describe('openResource hosts policy', () => {
+  const blockedUrl = urlString`http://web.dev/script.js`;
+  const allowedUrl = urlString`http://example.com/script.js`;
+  const context = setupDevtoolsExtensionHooks({
+    hostsPolicy: {runtimeAllowedHosts: [FRAME_URL], runtimeBlockedHosts: ['http://web.dev/*']},
+  });
+  expectConsoleLogs({error: ['Extension server error: Operation failed: Permission denied']});
+  const permissionDenied = {
+    code: 'E_FAILED',
+    description: 'Operation failed: %s',
+    details: ['Permission denied'],
+    isError: true,
+  };
+
+  beforeEach(() => {
+    const target = getBackend(context).createTarget({type: SDK.Target.Type.FRAME});
+    target.setInspectedURL(FRAME_URL);
+    assert.exists(context.chrome.devtools);
+  });
+
+  function createSourceURLScript(url: Platform.DevToolsPath.UrlString, targetUrl: Platform.DevToolsPath.UrlString) {
+    const target = getBackend(context).createTarget({id: 'script-target' as Protocol.Target.TargetID});
+    target.setInspectedURL(targetUrl);
+    const script = sinon.createStubInstance(SDK.Script.Script, {target, contentURL: url});
+    script.hasSourceURL = true;
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+        Workspace.Workspace.WorkspaceImpl.instance(), 'open-resource-test', Workspace.Workspace.projectTypes.Network,
+        '', false);
+    const source = new Workspace.UISourceCode.UISourceCode(project, url, Common.ResourceType.resourceTypes.Script);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                          {scriptsForUISourceCode: [script], sourceMapURLsForUISourceCode: []}));
+    sinon.stub(Workspace.Workspace.WorkspaceImpl.instance(), 'uiSourceCodeForURL').withArgs(url).returns(source);
+    return source;
+  }
+
+  async function openResource(url: Platform.DevToolsPath.UrlString): Promise<unknown> {
+    assert.exists(context.chrome.devtools);
+    return await new Promise<unknown>(resolve => {
+      context.chrome.devtools!.panels.openResource(url, 0, undefined, (response?: unknown) => resolve(response));
+    });
+  }
+
+  it('denies blocked URLs whether or not a resource exists', async () => {
+    sinon.stub(Workspace.Workspace.WorkspaceImpl.instance(), 'uiSourceCodeForURL').returns(null);
+    const resourceLookup = sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL');
+    const networkLookup = sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requestForURL').returns(null);
+    const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+    for (const resource of [sinon.createStubInstance(SDK.Resource.Resource), null]) {
+      resourceLookup.returns(resource);
+      assert.deepEqual(await openResource(blockedUrl), permissionDenied);
+    }
+    sinon.assert.notCalled(resourceLookup);
+    sinon.assert.notCalled(networkLookup);
+    sinon.assert.notCalled(reveal);
+  });
+
+  it('opens a custom-scheme sourceURL script on an allowed target', async () => {
+    const url = urlString`webpack://app/script.js`;
+    const source = createSourceURLScript(url, FRAME_URL);
+    const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+    assert.deepEqual(await openResource(url), {code: 'OK', description: 'OK', details: []});
+    sinon.assert.calledOnceWithExactly(reveal, source.uiLocation(0, 0), false);
+  });
+
+  it('denies an allowed-looking sourceURL script on a blocked target', async () => {
+    createSourceURLScript(allowedUrl, blockedUrl);
+    const reveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+    assert.deepEqual(await openResource(allowedUrl), permissionDenied);
+    sinon.assert.notCalled(reveal);
+  });
+});
+
 function waitForFunction<T>(fn: () => T): Promise<T> {
   return new Promise<T>(r => {
     const check = () => {
@@ -2648,15 +2724,21 @@ describe('Extension Panels', () => {
    */
   it('can open a resource', async () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const url = urlString`http://example.com/script.js`;
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+        workspace, 'open-resource-test', Workspace.Workspace.projectTypes.Network, '', false);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                          {scriptsForUISourceCode: [], sourceMapURLsForUISourceCode: []}));
     const mockUiLocation = {} as Workspace.UISourceCode.UILocation;
     const mockUISourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     mockUISourceCode.uiLocation.returns(mockUiLocation);
+    mockUISourceCode.contentURL.returns(url);
+    mockUISourceCode.project.returns(project);
 
     const uiSourceCodeStub = sinon.stub(workspace, 'uiSourceCodeForURL').returns(mockUISourceCode);
     const revealRegistry = Common.Revealer.RevealerRegistry.instance();
     const revealStub = sinon.stub(revealRegistry, 'reveal').resolves();
-
-    const url = urlString`http://example.com/script.js`;
 
     // Local helper to assert that the stubs are called correctly.
     const assertOpenSuccess =

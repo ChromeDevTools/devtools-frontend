@@ -209,8 +209,8 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   private lastHoveredProfileNode!: Trace.Extras.TraceTree.Node|null;
   private textFilterInternal!: TimelineRegExp;
   private taskFilter!: Trace.Extras.TraceFilter.ExclusiveNameFilter;
-  protected startTimeInternal!: Trace.Types.Timing.Milli;
-  protected endTimeInternal!: Trace.Types.Timing.Milli;
+  protected startTimeInternal?: Trace.Types.Timing.Milli;
+  protected endTimeInternal?: Trace.Types.Timing.Milli;
   splitWidget!: UI.SplitWidget.SplitWidget;
   detailsView!: UI.Widget.Widget;
   private searchableView!: UI.SearchableView.SearchableView;
@@ -254,11 +254,23 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   set selectedEvents(selectedEvents: Trace.Types.Events.Event[]|null) {
+    if (this.#selectedEvents === selectedEvents) {
+      return;
+    }
     this.#selectedEvents = selectedEvents;
     this.refreshTree();
   }
 
   set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null) {
+    if (this.#parsedTrace === parsedTrace) {
+      return;
+    }
+    if (this.#parsedTrace !== null) {
+      // Clear bounds from the previous trace so refreshTree() does not rebuild
+      // the tree with stale bounds before the new trace's selection is set.
+      this.startTimeInternal = undefined;
+      this.endTimeInternal = undefined;
+    }
     this.#parsedTrace = parsedTrace;
     this.refreshTree();
   }
@@ -276,7 +288,7 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   get startTime(): Trace.Types.Timing.Milli {
-    return this.startTimeInternal;
+    return this.startTimeInternal ?? Trace.Types.Timing.Milli(0);
   }
 
   set endTime(endTime: Trace.Types.Timing.Milli) {
@@ -288,7 +300,7 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   get endTime(): Trace.Types.Timing.Milli {
-    return this.endTimeInternal;
+    return this.endTimeInternal ?? Trace.Types.Timing.Milli(Infinity);
   }
 
   get compactMode(): boolean {
@@ -351,6 +363,16 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     parsedTrace: Trace.TraceModel.ParsedTrace|null,
     entityMapper: Trace.EntityMapper.EntityMapper|null,
   }) {
+    if (this.#parsedTrace === model.parsedTrace && this.#selectedEvents === model.selectedEvents &&
+        this.#entityMapper === model.entityMapper) {
+      return;
+    }
+    if (this.#parsedTrace !== null && this.#parsedTrace !== model.parsedTrace) {
+      // Clear bounds from the previous trace so refreshTree() does not rebuild
+      // the tree with stale bounds before the new trace's selection is set.
+      this.startTimeInternal = undefined;
+      this.endTimeInternal = undefined;
+    }
     this.#parsedTrace = model.parsedTrace;
     this.#selectedEvents = model.selectedEvents;
     this.#entityMapper = model.entityMapper;
@@ -443,8 +465,13 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   }
 
   setRange(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void {
-    this.startTime = startTime;
-    this.endTime = endTime;
+    if (this.startTimeInternal === startTime && this.endTimeInternal === endTime) {
+      return;
+    }
+    // Update internal fields directly to prevent the startTime and endTime setters from
+    // triggering individual refreshTree() calls.
+    this.startTimeInternal = startTime;
+    this.endTimeInternal = endTime;
     this.refreshTree();
   }
 
@@ -556,7 +583,8 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
     this.#dirty = false;
     this.linkifier.reset();
     this.dataGrid.rootNode().removeChildren();
-    if (!this.#parsedTrace) {
+    // Do not build the tree until bounds are configured by an active selection.
+    if (!this.#parsedTrace || this.startTimeInternal === undefined || this.endTimeInternal === undefined) {
       this.updateDetailsForSelection();
       return;
     }

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import * as Trace from '../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -135,5 +136,23 @@ describe('Third party tree', function() {
     };
     treeView.dispatchEventToListeners(Timeline.TimelineTreeView.TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, null);
     assert.isNull(bottomUpNode);
+  });
+
+  it('does not build tree with undefined bounds when model is set before activeSelection', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
+    const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    const events = [...mapper.mappings().eventsByEntity.values()].flat().sort((a, b) => a.ts - b.ts);
+    renderElementIntoDOM(treeView);
+
+    const buildSpy = sinon.spy(treeView, 'buildTree');
+    treeView.model = {selectedEvents: events, parsedTrace, entityMapper: mapper};
+    sinon.assert.callCount(buildSpy, 0);
+
+    const sel: Timeline.TimelineSelection.TimeRangeSelection = {
+      bounds: parsedTrace.data.Meta.traceBounds,
+    };
+    treeView.activeSelection = sel;
+    sinon.assert.callCount(buildSpy, 1);
   });
 });

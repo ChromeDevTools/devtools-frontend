@@ -477,4 +477,89 @@ describe('TimelineTreeView', function() {
       ]);
     });
   });
+
+  describe('setRange and setter deduplication', function() {
+    it('invokes refreshTree and buildTree once when range changes, and does not invoke when range is identical',
+       function() {
+         const parsedTrace = syncLikeTimingsParsedTrace;
+         const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+         renderWidgetInVbox(bottomUpTreeView, {flexAuto: true});
+         const startTime1 = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+         const endTime1 = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+         const startTime2 = Trace.Types.Timing.Milli(startTime1 + 10);
+         const endTime2 = Trace.Types.Timing.Milli(endTime1 - 10);
+         const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+         bottomUpTreeView.setRange(startTime1, endTime1);
+         bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+
+         const refreshSpy = sinon.spy(bottomUpTreeView, 'refreshTree');
+         const buildSpy = sinon.spy(bottomUpTreeView, 'buildTree');
+
+         // Change both startTime and endTime in a single setRange call.
+         bottomUpTreeView.setRange(startTime2, endTime2);
+         sinon.assert.callCount(refreshSpy, 1);
+         sinon.assert.callCount(buildSpy, 1);
+
+         // Re-invoking setRange with the same bounds must be a no-op.
+         bottomUpTreeView.setRange(startTime2, endTime2);
+         sinon.assert.callCount(refreshSpy, 1);
+         sinon.assert.callCount(buildSpy, 1);
+       });
+
+    it('does not invoke refreshTree when model or setters are updated with unchanged references', function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      renderWidgetInVbox(bottomUpTreeView, {flexAuto: true});
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.max);
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      const mapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+
+      bottomUpTreeView.setRange(startTime, endTime);
+      bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: mapper};
+
+      const refreshSpy = sinon.spy(bottomUpTreeView, 'refreshTree');
+
+      // Setting model with a new object literal containing the same references must not refresh.
+      bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: mapper};
+      sinon.assert.callCount(refreshSpy, 0);
+
+      // Setting selectedEvents to the same reference must not refresh.
+      bottomUpTreeView.selectedEvents = consoleTimings;
+      sinon.assert.callCount(refreshSpy, 0);
+
+      // Setting parsedTrace to the same reference must not refresh.
+      bottomUpTreeView.parsedTrace = parsedTrace;
+      sinon.assert.callCount(refreshSpy, 0);
+    });
+
+    it('does not build tree with undefined bounds when model is set before activeSelection is set', function() {
+      const parsedTrace = syncLikeTimingsParsedTrace;
+      const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      renderWidgetInVbox(bottomUpTreeView, {flexAuto: true});
+
+      const buildSpy = sinon.spy(bottomUpTreeView, 'buildTree');
+      const consoleTimings = [...parsedTrace.data.UserTimings.consoleTimings];
+      bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: null};
+
+      // Since bounds are undefined, buildTree should not have been called.
+      sinon.assert.callCount(buildSpy, 0);
+
+      // Setting activeSelection now configures the range and builds the tree once.
+      const sel: Timeline.TimelineSelection.TimeRangeSelection = {
+        bounds: syncLikeTimingsParsedTrace.data.Meta.traceBounds,
+      };
+      bottomUpTreeView.activeSelection = sel;
+      sinon.assert.callCount(buildSpy, 1);
+
+      // Loading a new trace resets the previous trace's bounds and waits for the new trace's selection.
+      const nextTrace = userTimingsParsedTrace;
+      const nextEvents = [...nextTrace.data.UserTimings.performanceMeasures];
+      bottomUpTreeView.model = {selectedEvents: nextEvents, parsedTrace: nextTrace, entityMapper: null};
+      sinon.assert.callCount(buildSpy, 1);
+
+      bottomUpTreeView.activeSelection = {bounds: nextTrace.data.Meta.traceBounds};
+      sinon.assert.callCount(buildSpy, 2);
+    });
+  });
 });

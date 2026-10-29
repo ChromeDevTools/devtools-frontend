@@ -20,3 +20,9 @@
 crbug.com/548390264 [ linux mac win32 ] test/e2e/memory/memory.test.ts:the_memory_panel:does_not_include_backing_store_size_in_the_shallow_size_of_a_js_set [ Failure Pass ]
 
 crbug.com/579259646 [ linux mac win32 ] test/e2e/elements/inspect-element.test.ts:the_elements_panel_:selects_iframe_nodes_created_by_either_the_main_or_the_iframe_document_when_inspected_from_the_console [ Failure Pass ]
+
+crbug.com/579259397 [ linux mac win32 ] test/e2e/ai_assistance/ai_assistance.test.ts:ai_assistance:aborts_ongoing_conversation_when_previous_chat_is_opened_from_history [ Failure Pass ]
+crbug.com/579259397 [ linux mac win32 ] test/e2e/ai_assistance/ai_assistance.test.ts:ai_assistance:allows_continuing_conversation_when_navigating_across_pages_on_the_same_origin [ Failure Pass ]
+crbug.com/579259397 [ linux mac win32 ] test/e2e/ai_assistance/ai_assistance.test.ts:ai_assistance:locks_conversation_to_origin_and_blocks_input_when_selecting_an_element_in_a_cross-origin_iframe [ Failure Pass ]
+crbug.com/579259397 [ linux mac win32 ] test/e2e/ai_assistance/ai_assistance.test.ts:ai_assistance:locks_conversation_to_origin_and_blocks_input_on_cross-origin_navigation_until_new_chat [ Failure Pass ]
+crbug.com/579259397 [ linux mac win32 ] test/e2e/ai_assistance/ai_assistance.test.ts:ai_assistance:modifies_multiple_styles [ Failure Pass ]

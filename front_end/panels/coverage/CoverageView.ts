@@ -438,6 +438,7 @@ export class CoverageView extends UI.Widget.VBox<ShadowRoot> {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
+    this.#decorationManager?.dispose();
     this.#decorationManager = new CoverageDecorationManager(
         this.#model, Workspace.Workspace.WorkspaceImpl.instance(),
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
@@ -540,6 +541,7 @@ export class CoverageView extends UI.Widget.VBox<ShadowRoot> {
       }
 
       this.#model.addEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
+      this.#decorationManager?.dispose();
       this.#decorationManager = new CoverageDecorationManager(
           this.#model, Workspace.Workspace.WorkspaceImpl.instance(),
           Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),

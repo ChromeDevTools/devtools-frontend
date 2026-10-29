@@ -498,4 +498,24 @@ describeWithEnvironment('CoverageView', () => {
     view.detach();
     Coverage.CoverageView.CoverageView.removeInstance();
   });
+
+  it('disposes the previous CoverageDecorationManager when switching models on activation', async () => {
+    setupTargetAndModels();
+    const disposeSpy = sinon.spy(Coverage.CoverageDecorationManager.CoverageDecorationManager.prototype, 'dispose');
+
+    const view = Coverage.CoverageView.CoverageView.instance();
+    renderElementIntoDOM(view);
+    await view.startRecording({reload: false, jsCoveragePerBlock: false});
+    sinon.assert.notCalled(disposeSpy);
+
+    const {target: target2} = setupTargetAndModels();
+    activate(target2);
+    await RenderCoordinator.done({waitForWork: true});
+
+    sinon.assert.calledOnce(disposeSpy);
+
+    await view.stopRecording();
+    view.detach();
+    Coverage.CoverageView.CoverageView.removeInstance();
+  });
 });

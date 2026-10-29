@@ -308,6 +308,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }>;
   // Trees rendering logged DOM nodes; they follow the message visibility.
   private readonly domTreeWidgets: Elements.DOMTreeWidget.DOMTreeWidget[] = [];
+  // Stack trace previews are also root widgets and follow the message visibility.
+  private readonly stackTracePreviews: Components.JSPresentationUtils.StackTracePreviewContent[] = [];
   private readonly messageResized:
       (arg0: Common.EventTarget.EventTargetEvent<HTMLElement|UI.TreeOutline.TreeElement>) => void;
   // The wrapper that contains consoleRowWrapper and other elements in a column.
@@ -404,6 +406,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     for (const domTree of this.domTreeWidgets) {
       domTree.wasShown();
     }
+    for (const stackTracePreview of this.stackTracePreviews) {
+      stackTracePreview.wasShown();
+    }
     if (this.elementInternal && this.#teaser) {
       this.#teaser.show(this.elementInternal, this.consoleRowWrapper);
     }
@@ -417,6 +422,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.cachedHeight = this.element().offsetHeight;
     for (const domTree of this.domTreeWidgets) {
       domTree.willHide();
+    }
+    for (const stackTracePreview of this.stackTracePreviews) {
+      stackTracePreview.willHide();
     }
     if (this.#teaser) {
       const {okToRemove} = this.#teaser.abortTeaserGeneration();
@@ -771,6 +779,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     stackTracePreview.markAsRoot();
     stackTracePreview.show(stackTraceElement);
+    // The stack trace preview is a root widget, so it does not learn about the
+    // message visibility from the widget hierarchy. Follow the message instead
+    // (see wasShown/willHide) so that the preview does not stay alive through
+    // the global listeners it registers while showing.
+    this.stackTracePreviews.push(stackTracePreview);
+    if (!this.isVisibleInternal) {
+      stackTracePreview.willHide();
+    }
     UI.ARIAUtils.setLabel(
         contentElement, `${messageElement.textContent} ${i18nString(UIStrings.stackMessageCollapsed)}`);
     UI.ARIAUtils.markAsGroup(stackTraceElement);

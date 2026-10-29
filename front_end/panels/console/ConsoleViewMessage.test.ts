@@ -398,6 +398,34 @@ describeWithEnvironment('ConsoleViewMessage', () => {
       message.willHide();
     });
 
+    it('holds stack trace preview listeners only while the message is visible', () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, 'boom',
+          {type: Protocol.Runtime.ConsoleAPICalledEventType.Error});
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+      const addChangeListener = sinon.spy(ignoreListManager, 'addChangeListener');
+      const removeChangeListener = sinon.spy(ignoreListManager, 'removeChangeListener');
+      const activeIgnoreListListeners = (): number => addChangeListener.callCount - removeChangeListener.callCount;
+
+      const messageElement = message.toMessageElement();
+      assert.strictEqual(activeIgnoreListListeners(), 0);
+
+      renderElementIntoDOM(messageElement);
+      message.wasShown();
+      assert.strictEqual(activeIgnoreListListeners(), 1);
+
+      message.willHide();
+      assert.strictEqual(activeIgnoreListListeners(), 0);
+
+      message.wasShown();
+      assert.strictEqual(activeIgnoreListListeners(), 1);
+      message.willHide();
+      assert.strictEqual(activeIgnoreListListeners(), 0);
+    });
+
     it('opens the DOM node context menu and stops propagation when right-clicking a logged node', async () => {
       const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
       UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});

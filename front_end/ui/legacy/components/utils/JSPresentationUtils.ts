@@ -265,6 +265,10 @@ export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
 
   override wasShown(): void {
     super.wasShown();
+    if (this.#isShowing) {
+      return;
+    }
+    this.#isShowing = true;
     if (Root.DevToolsContext.globalInstance().has(Workspace.IgnoreListManager.IgnoreListManager)) {
       Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#updateHasNonIgnoredLinks);
     }
@@ -275,6 +279,11 @@ export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
   }
 
   override willHide(): void {
+    if (!this.#isShowing) {
+      super.willHide();
+      return;
+    }
+    this.#isShowing = false;
     if (this.#stackTrace) {
       this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
@@ -298,11 +307,13 @@ export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
       this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.#stackTrace = stackTrace;
-    if (this.#stackTrace && this.isShowing()) {
+    if (this.#stackTrace && this.#isShowing) {
       this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.requestUpdate();
   }
+
+  #isShowing = false;
 
   #onShowMoreLess(more: boolean): void {
     this.#showIgnoreListed = more;

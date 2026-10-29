@@ -48,52 +48,87 @@ export interface ViewInput {
 }
 
 export interface ViewOutput {
-  getControls?: (data: OverviewData|null) => TimelineEventOverview[];
-  resetOverview?: () => void;
+  getControls?: (parsedTrace: Trace.TraceModel.ParsedTrace|null) => TimelineEventOverview[];
 }
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 class MiniMapOverviewPane extends PerfUI.TimelineOverviewPane.TimelineOverviewPane {
-  #data: OverviewData|null = null;
+  #bounds?: {min: Trace.Types.Timing.Milli, max: Trace.Types.Timing.Milli};
+  #windowTimes?: {min: Trace.Types.Timing.Milli, max: Trace.Types.Timing.Milli};
+  #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
+  #showScreenshots = false;
+  #showMemory = false;
+  #highlightedBounds: {bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean}|null = null;
+
+  #appliedBounds?: {min: Trace.Types.Timing.Milli, max: Trace.Types.Timing.Milli};
+  #appliedWindowTimes?: {min: Trace.Types.Timing.Milli, max: Trace.Types.Timing.Milli};
+  #appliedParsedTrace: Trace.TraceModel.ParsedTrace|null = null;
+  #appliedShowScreenshots = false;
+  #appliedShowMemory = false;
+  #appliedHighlightedBounds: {bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean}|null = null;
   #controls: TimelineEventOverview[] = [];
-  #hadHighlightedBounds = false;
 
   constructor(element?: HTMLElement) {
     super(element);
     this.enableCreateBreadcrumbsButton();
   }
 
-  get data(): OverviewData|null {
-    return this.#data;
-  }
-
-  get controls(): TimelineEventOverview[] {
-    return this.#controls;
+  getControlsForTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null): TimelineEventOverview[] {
+    return parsedTrace && this.#appliedParsedTrace === parsedTrace ? this.#controls : [];
   }
 
   set bounds(bounds: {min: Trace.Types.Timing.Milli, max: Trace.Types.Timing.Milli}|undefined) {
-    if (bounds) {
-      this.setBounds(bounds.min, bounds.max);
+    if (this.#bounds === bounds) {
+      return;
     }
+    this.#bounds = bounds;
+    this.requestUpdate();
   }
 
   set windowTimes(windowTimes: {min: Trace.Types.Timing.Milli, max: Trace.Types.Timing.Milli}|undefined) {
-    if (windowTimes) {
-      this.setWindowTimes(windowTimes.min, windowTimes.max);
+    if (this.#windowTimes === windowTimes) {
+      return;
     }
+    this.#windowTimes = windowTimes;
+    this.requestUpdate();
   }
 
-  set data(data: OverviewData|null) {
-    if (this.#data === data) {
+  set parsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace|null) {
+    if (this.#parsedTrace === parsedTrace) {
       return;
     }
-    this.#data = data;
-    if (data === null) {
-      this.#controls = [];
+    this.#parsedTrace = parsedTrace;
+    this.requestUpdate();
+  }
+
+  set showScreenshots(showScreenshots: boolean) {
+    if (this.#showScreenshots === showScreenshots) {
       return;
     }
-    const {parsedTrace, settings} = data;
+    this.#showScreenshots = showScreenshots;
+    this.requestUpdate();
+  }
+
+  set showMemory(showMemory: boolean) {
+    if (this.#showMemory === showMemory) {
+      return;
+    }
+    this.#showMemory = showMemory;
+    this.requestUpdate();
+  }
+
+  set highlightedBounds(
+      highlightedBounds: {bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean}|null,
+  ) {
+    if (this.#highlightedBounds === highlightedBounds) {
+      return;
+    }
+    this.#highlightedBounds = highlightedBounds;
+    this.requestUpdate();
+  }
+
+  #applyTraceMarkers(parsedTrace: Trace.TraceModel.ParsedTrace): void {
     const markers = new Map<number, HTMLDivElement>();
     const {Meta} = parsedTrace.data;
     const navStartEvents = Meta.mainFrameNavigations;
@@ -104,42 +139,83 @@ class MiniMapOverviewPane extends PerfUI.TimelineOverviewPane.TimelineOverviewPa
     }
     this.setMarkers(markers);
     this.setNavStartTimes(navStartEvents);
+  }
 
-    const controls: TimelineEventOverview[] = [
-      new TimelineEventOverviewResponsiveness(parsedTrace),
-      new TimelineEventOverviewCPUActivity(parsedTrace),
-      new TimelineEventOverviewNetwork(parsedTrace),
-    ];
-    if (settings.showScreenshots) {
-      const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
-      if (filmStrip.frames.length) {
-        controls.push(new TimelineFilmStripOverview(filmStrip));
+  override performUpdate(): void {
+    const traceChanged = this.#parsedTrace !== this.#appliedParsedTrace;
+    const settingsChanged =
+        this.#showScreenshots !== this.#appliedShowScreenshots || this.#showMemory !== this.#appliedShowMemory;
+    if ((traceChanged || settingsChanged) && !this.#parsedTrace) {
+      this.#appliedParsedTrace = null;
+      this.#appliedShowScreenshots = this.#showScreenshots;
+      this.#appliedShowMemory = this.#showMemory;
+      this.#controls = [];
+      this.setMarkers(new Map());
+      this.setNavStartTimes([]);
+      this.setOverviewControls([]);
+      this.showingScreenshots = false;
+    }
+
+    const boundsCleared = Boolean(this.#appliedBounds && !this.#bounds);
+    if (boundsCleared) {
+      super.reset();
+      this.#appliedWindowTimes = undefined;
+      if (this.#appliedHighlightedBounds) {
+        this.clearBoundsHighlight();
+        this.#appliedHighlightedBounds = null;
       }
     }
-    if (settings.showMemory) {
-      controls.push(new TimelineEventOverviewMemory(parsedTrace));
-    }
-    this.#controls = controls;
-    this.setOverviewControls(controls);
-    this.showingScreenshots = settings.showScreenshots;
-  }
 
-  set highlightedBounds(
-      highlightedBounds: {bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean}|null,
-  ) {
-    if (highlightedBounds) {
-      this.highlightBounds(highlightedBounds.bounds, highlightedBounds.withBracket);
-      this.#hadHighlightedBounds = true;
-    } else if (this.#hadHighlightedBounds) {
-      this.clearBoundsHighlight();
-      this.#hadHighlightedBounds = false;
+    if (this.#bounds && this.#bounds !== this.#appliedBounds) {
+      this.setBounds(this.#bounds.min, this.#bounds.max);
     }
-  }
+    this.#appliedBounds = this.#bounds;
 
-  override reset(): void {
-    this.#data = null;
-    this.#controls = [];
-    super.reset();
+    if (this.#windowTimes !== this.#appliedWindowTimes) {
+      if (this.#windowTimes) {
+        this.setWindowTimes(this.#windowTimes.min, this.#windowTimes.max);
+      } else {
+        this.setWindowTimes(Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(Infinity));
+      }
+      this.#appliedWindowTimes = this.#windowTimes;
+    }
+
+    if (this.#parsedTrace && (traceChanged || settingsChanged)) {
+      this.#appliedParsedTrace = this.#parsedTrace;
+      this.#appliedShowScreenshots = this.#showScreenshots;
+      this.#appliedShowMemory = this.#showMemory;
+      if (traceChanged || boundsCleared) {
+        this.#applyTraceMarkers(this.#parsedTrace);
+      }
+      const controls: TimelineEventOverview[] = [
+        new TimelineEventOverviewResponsiveness(this.#parsedTrace),
+        new TimelineEventOverviewCPUActivity(this.#parsedTrace),
+        new TimelineEventOverviewNetwork(this.#parsedTrace),
+      ];
+      if (this.#showScreenshots) {
+        const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(this.#parsedTrace.data);
+        if (filmStrip.frames.length) {
+          controls.push(new TimelineFilmStripOverview(filmStrip));
+        }
+      }
+      if (this.#showMemory) {
+        controls.push(new TimelineEventOverviewMemory(this.#parsedTrace));
+      }
+      this.#controls = controls;
+      this.setOverviewControls(controls);
+      this.showingScreenshots = this.#showScreenshots;
+    } else if (boundsCleared && this.#parsedTrace) {
+      this.#applyTraceMarkers(this.#parsedTrace);
+    }
+
+    if (this.#highlightedBounds !== this.#appliedHighlightedBounds) {
+      if (this.#highlightedBounds) {
+        this.highlightBounds(this.#highlightedBounds.bounds, this.#highlightedBounds.withBracket);
+      } else if (this.#appliedHighlightedBounds) {
+        this.clearBoundsHighlight();
+      }
+      this.#appliedHighlightedBounds = this.#highlightedBounds;
+    }
   }
 }
 
@@ -156,12 +232,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       ${widget(MiniMapOverviewPane, {
         bounds: input.bounds,
         windowTimes: input.windowTimes,
-        data: input.data,
+        parsedTrace: input.data?.parsedTrace ?? null,
+        showScreenshots: Boolean(input.data?.settings.showScreenshots),
+        showMemory: Boolean(input.data?.settings.showMemory),
         highlightedBounds: input.highlightedBounds,
       })}
       ${widgetRef(MiniMapOverviewPane, pane => {
-        output.getControls = data => pane.data === data ? pane.controls : [];
-        output.resetOverview = () => pane.reset();
+        output.getControls = parsedTrace => pane.getControlsForTrace(parsedTrace);
       })}
       @OverviewPaneWindowChanged=${(
           event: CustomEvent<PerfUI.TimelineOverviewPane.OverviewPaneWindowChangedEvent>) => {
@@ -423,13 +500,14 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
     this.breadcrumbs = null;
     this.#initialBreadcrumb = null;
     this.#activeBreadcrumb = null;
+    this.#windowTimes = undefined;
+    this.#bounds = undefined;
     this.#highlightedBounds = null;
-    this.#viewOutput.resetOverview?.();
     this.requestUpdate();
   }
 
   getControls(): TimelineEventOverview[] {
-    return this.#viewOutput.getControls?.(this.#data) ?? [];
+    return this.#viewOutput.getControls?.(this.#data?.parsedTrace ?? null) ?? [];
   }
 
   setData(data: OverviewData|null): void {

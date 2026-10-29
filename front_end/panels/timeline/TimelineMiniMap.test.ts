@@ -168,4 +168,60 @@ describeWithEnvironment('TimelineMiniMap', function() {
     assert.isNull(clearedInput.activeBreadcrumb);
     assert.isNull(minimap.breadcrumbs);
   });
+
+  it('restores overview controls when setData is called after reset with the same data', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const minimap = renderElementIntoDOM(new Timeline.TimelineMiniMap.TimelineMiniMap());
+
+    const data = {
+      parsedTrace,
+      settings: {
+        showMemory: false,
+        showScreenshots: false,
+      },
+    };
+    minimap.setData(data);
+    await raf();
+    assert.lengthOf(minimap.getControls(), 3);
+
+    minimap.reset();
+    assert.lengthOf(minimap.getControls(), 0);
+
+    minimap.setData(data);
+    await raf();
+    assert.lengthOf(minimap.getControls(), 3);
+  });
+
+  it('clears trace state in ViewInput on reset', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+    const view = createViewFunctionStub(Timeline.TimelineMiniMap.TimelineMiniMap);
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(view);
+    await view.nextInput;
+
+    minimap.setData({
+      parsedTrace,
+      settings: {
+        showMemory: true,
+        showScreenshots: true,
+      },
+    });
+    minimap.highlightBounds(parsedTrace.data.Meta.traceBounds, true);
+    const populatedInput = await view.nextInput;
+    assert.strictEqual(populatedInput.data?.parsedTrace, parsedTrace);
+    assert.isDefined(populatedInput.bounds);
+    assert.isDefined(populatedInput.windowTimes);
+    assert.deepEqual(populatedInput.highlightedBounds, {bounds: parsedTrace.data.Meta.traceBounds, withBracket: true});
+    assert.isNotNull(populatedInput.initialBreadcrumb);
+    assert.isNotNull(populatedInput.activeBreadcrumb);
+
+    minimap.reset();
+    const resetInput = await view.nextInput;
+    assert.isNull(resetInput.data);
+    assert.isUndefined(resetInput.bounds);
+    assert.isUndefined(resetInput.windowTimes);
+    assert.isNull(resetInput.highlightedBounds);
+    assert.isNull(resetInput.initialBreadcrumb);
+    assert.isNull(resetInput.activeBreadcrumb);
+    assert.isNull(minimap.breadcrumbs);
+  });
 });

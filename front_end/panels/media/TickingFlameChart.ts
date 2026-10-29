@@ -293,8 +293,9 @@ export class TickingFlameChart extends UI.Widget.VBox {
   readonly #view: TickingFlameChartView;
   readonly #boundOnScroll = this.onScroll.bind(this);
 
-  constructor(element?: HTMLElement, view: TickingFlameChartView = DEFAULT_VIEW) {
-    super(element);
+  constructor(elementOrOptions?: HTMLElement|UI.Widget.WidgetOptions, view: TickingFlameChartView = DEFAULT_VIEW) {
+    // @ts-expect-error
+    super(elementOrOptions);
     this.#view = view;
 
     // set to update once per second _while the tab is active_

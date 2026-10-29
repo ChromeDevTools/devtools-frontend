@@ -1762,6 +1762,21 @@ describeWithEnvironment('ConsoleViewMessage', () => {
          sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(message), url, undefined);
        });
 
+    it('does not attribute the navigation to anything if the target of the message is disposed after the message was rendered',
+       () => {
+         const target = createTarget();
+         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+         assert.exists(runtimeModel);
+         createExecutionContext(runtimeModel);
+         const {message} = createConsoleViewMessageWithStubDeps(createRawMessage(runtimeModel));
+         message.toMessageElement();
+         // E.g. the iframe that the message came from navigates into another process: its target is detached
+         // without its execution contexts being destroyed, and the message is kept as it is not from the main frame.
+         target.dispose('target terminated');
+
+         sinon.assert.calledOnceWithExactly(openInNewTabFromMessage(message), url, undefined);
+       });
+
     it('renders URLs with privileged schemes logged by the page as inert text', () => {
       const target = createTarget();
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);

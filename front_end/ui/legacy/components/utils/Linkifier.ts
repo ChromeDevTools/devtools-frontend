@@ -1189,8 +1189,10 @@ export class ContentProviderContextMenuProvider implements
 /**
  * Returns the {@link OpenInNewTabInitiatorId} for a URL that came from `source`: the frame that `source` belongs
  * to, or the worker that it belongs to when there is no frame, if DevTools knows that unambiguously. Returns
- * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin. A request or
- * resource is not attributed to its frame once the frame has navigated away from the document it belongs to.
+ * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin. A request,
+ * resource or execution context is not attributed to its frame once the frame has navigated away from the
+ * document it belongs to, or once the target that `source` came from no longer tracks the frame (see
+ * {@link frameIdUnlessNavigatedSince}).
  */
 export function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|
                                         SDK.RuntimeModel.ExecutionContext|
@@ -1206,6 +1208,11 @@ export function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkReques
     return source.frameId ? frameIdUnlessNavigatedSince(source.frameId, source.loaderId, source.frame()) : undefined;
   }
   if (source instanceof SDK.RuntimeModel.ExecutionContext) {
+    if (source.target().isDisposed()) {
+      // No context events are dispatched for a target that is detached, e.g. because its frame navigated into
+      // another process, so the context lingering in its model does not mean that its document is still there.
+      return undefined;
+    }
     return source.frameId ?? workerTargetId(source.target());
   }
   if (source instanceof Workspace.UISourceCode.UISourceCode) {
@@ -1224,14 +1231,17 @@ export function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkReques
 }
 
 /**
- * Returns `frameId` unless `frame` (the frame with that id, if DevTools still knows it) has navigated since the
- * document identified by `loaderId` was in it. A frame keeps its id across navigations, so a request or resource of
- * a previous document must not be attributed to the document that the frame shows now.
+ * Returns `frameId` unless `frame`, the frame with that id as the target that the request or resource came from
+ * knows it, has navigated since the document identified by `loaderId` was in it. A frame keeps its id across
+ * navigations, so a request or resource of a previous document must not be attributed to the document that the
+ * frame shows now. A frame that navigates into another process moves to another target, which its old target
+ * only learns of by the frame being detached (`frame` is `null`) or by being disposed itself (still knowing the
+ * frame as it was): either way, the frame no longer shows the document.
  */
 function frameIdUnlessNavigatedSince(frameId: Protocol.Page.FrameId, loaderId: Protocol.Network.LoaderId|null,
                                      frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): Protocol.Page.FrameId|
     undefined {
-  if (frame && loaderId && frame.loaderId !== loaderId) {
+  if (!frame || frame.resourceTreeModel().target().isDisposed() || (loaderId && frame.loaderId !== loaderId)) {
     return undefined;
   }
   return frameId;

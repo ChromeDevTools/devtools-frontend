@@ -12,8 +12,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
+import {getMainFrame} from '../../testing/ResourceHelpers.js';
 
 import * as Network from './network.js';
 
@@ -1110,12 +1112,30 @@ describeWithEnvironment('NetworkLogView', () => {
 
     it('attributes the new tab to the frame of the request on double-click', () => {
       const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
-      const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
-      const request = createNetworkRequest({
-        url: 'https://www.example.com/',
-        resourceType: Common.ResourceType.resourceTypes.Document,
-        frameId,
+      const target = createTarget();
+      const frame = getMainFrame(target);
+      const requestId = 'REQUEST_ID' as Protocol.Network.RequestId;
+      const url = urlString`https://www.example.com/`;
+      dispatchEvent(target, 'Network.requestWillBeSent', {
+        requestId,
+        loaderId: frame.loaderId,
+        documentURL: frame.url,
+        request: {
+          url,
+          method: 'GET',
+          headers: {},
+          initialPriority: Protocol.Network.ResourcePriority.Medium,
+          referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
+        },
+        timestamp: 1,
+        wallTime: 1,
+        initiator: {type: Protocol.Network.InitiatorType.Other},
+        redirectHasExtraInfo: false,
+        type: Protocol.Network.ResourceType.Document,
+        frameId: frame.id,
       });
+      const request = target.model(SDK.NetworkManager.NetworkManager)?.requestForId(requestId);
+      assert.exists(request);
 
       const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
           {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
@@ -1123,7 +1143,7 @@ describeWithEnvironment('NetworkLogView', () => {
       networkRequestNode.renderCell(el, 'name');
       el.dispatchEvent(new MouseEvent('dblclick'));
 
-      sinon.assert.calledOnceWithExactly(openInNewTabStub, urlString`https://www.example.com/`, frameId);
+      sinon.assert.calledOnceWithExactly(openInNewTabStub, url, frame.id);
     });
   });
 

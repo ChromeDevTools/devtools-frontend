@@ -16,6 +16,7 @@ import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import {findMenuItemWithLabel} from '../../../../testing/ContextMenuHelpers.js';
 import {
+  createTarget,
   describeWithEnvironment,
 } from '../../../../testing/EnvironmentHelpers.js';
 import {dispatchEvent} from '../../../../testing/MockConnection.js';
@@ -27,7 +28,11 @@ import {
   LOADER_ID,
   MAIN_FRAME_ID,
 } from '../../../../testing/ResourceHelpers.js';
-import {navigate} from '../../../../testing/ResourceTreeHelpers.js';
+import {
+  addChildFrame,
+  getInitializedResourceTreeModel,
+  navigate,
+} from '../../../../testing/ResourceTreeHelpers.js';
 import {stubFrame} from '../../../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../../../testing/TestUniverse.js';
 import * as UI from '../../legacy.js';
@@ -38,6 +43,36 @@ const {urlString} = Platform.DevToolsPath;
 const scriptId1 = '1' as Protocol.Runtime.ScriptId;
 const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 const executionContextId = 1234 as Protocol.Runtime.ExecutionContextId;
+
+/**
+ * Has the target of `frame` report a request for `url` that the document identified by `loaderId` in `frame` made,
+ * and returns it.
+ */
+function createRequestOfFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame, url: Platform.DevToolsPath.UrlString,
+                              loaderId: Protocol.Network.LoaderId = LOADER_ID): SDK.NetworkRequest.NetworkRequest {
+  const target = frame.resourceTreeModel().target();
+  const requestId = `REQUEST_ID_${loaderId}` as Protocol.Network.RequestId;
+  dispatchEvent(target, 'Network.requestWillBeSent', {
+    requestId,
+    loaderId,
+    documentURL: frame.url,
+    request: {
+      url,
+      method: 'GET',
+      headers: {},
+      initialPriority: Protocol.Network.ResourcePriority.Medium,
+      referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
+    },
+    timestamp: 1,
+    wallTime: 1,
+    initiator: {type: Protocol.Network.InitiatorType.Other},
+    redirectHasExtraInfo: false,
+    frameId: frame.id,
+  });
+  const request = target.model(SDK.NetworkManager.NetworkManager)?.requestForId(requestId);
+  assert.exists(request);
+  return request;
+}
 
 const simpleScriptContent = `
 function foo(x) {
@@ -633,6 +668,15 @@ describeWithEnvironment('Linkifier', () => {
                                                       null, null);
     }
 
+    /** Adds a resource of the document identified by `loaderId` to `frame`. */
+    function createResourceOfFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame,
+                                   loaderId: Protocol.Network.LoaderId): SDK.Resource.Resource {
+      const resource = new SDK.Resource.Resource(frame.resourceTreeModel(), null, url, frame.url, frame.id, loaderId,
+                                                 Common.ResourceType.resourceTypes.Image, 'image/png', null, null);
+      frame.addResource(resource);
+      return resource;
+    }
+
     function createExecutionContext(target: SDK.Target.Target,
                                     frameId?: Protocol.Page.FrameId): SDK.RuntimeModel.ExecutionContext {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
@@ -642,32 +686,18 @@ describeWithEnvironment('Linkifier', () => {
     }
 
     it('is the frame of a request made by a frame', () => {
-      assert.strictEqual(openInNewTabInitiatorId(createRequest(frameId)), frameId);
+      const {target} = setUpEnvironment();
+      assert.strictEqual(openInNewTabInitiatorId(createRequestOfFrame(getMainFrame(target), url)), MAIN_FRAME_ID);
+    });
+
+    it('is undefined for a request of a frame that is unknown', () => {
+      assert.isUndefined(openInNewTabInitiatorId(createRequest(frameId)));
     });
 
     it('is not the frame of a request once the frame has navigated away from the document that made it', () => {
       const {target} = setUpEnvironment();
       const frame = getMainFrame(target);
-      const requestId = 'REQUEST_ID' as Protocol.Network.RequestId;
-      dispatchEvent(target, 'Network.requestWillBeSent', {
-        requestId,
-        loaderId: LOADER_ID,
-        documentURL: FRAME_URL,
-        request: {
-          url,
-          method: 'GET',
-          headers: {},
-          initialPriority: Protocol.Network.ResourcePriority.Medium,
-          referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
-        },
-        timestamp: 1,
-        wallTime: 1,
-        initiator: {type: Protocol.Network.InitiatorType.Other},
-        redirectHasExtraInfo: false,
-        frameId: MAIN_FRAME_ID,
-      });
-      const request = target.model(SDK.NetworkManager.NetworkManager)?.requestForId(requestId);
-      assert.exists(request);
+      const request = createRequestOfFrame(frame, url);
       assert.strictEqual(openInNewTabInitiatorId(request), MAIN_FRAME_ID);
 
       navigate(frame,
@@ -678,16 +708,60 @@ describeWithEnvironment('Linkifier', () => {
     it('is not the frame of a resource once the frame has navigated away from the document it belongs to', () => {
       const {target} = setUpEnvironment();
       const frame = getMainFrame(target);
-      const resource =
-          new SDK.Resource.Resource(frame.resourceTreeModel(), null, url, FRAME_URL, MAIN_FRAME_ID, LOADER_ID,
-                                    Common.ResourceType.resourceTypes.Image, 'image/png', null, null);
-      frame.addResource(resource);
+      const resource = createResourceOfFrame(frame, LOADER_ID);
       assert.strictEqual(openInNewTabInitiatorId(resource), MAIN_FRAME_ID);
 
       navigate(frame,
                {url: urlString`https://www.other.test/`, loaderId: 'OTHER_LOADER_ID' as Protocol.Network.LoaderId});
       assert.isUndefined(openInNewTabInitiatorId(resource));
     });
+
+    it('is not the frame of a request or resource once the frame has navigated into a target of its own', async () => {
+      const {target, backend} = setUpEnvironment();
+      const frame = await addChildFrame(target, {});
+      const request = createRequestOfFrame(frame, url);
+      const resource = createResourceOfFrame(frame, LOADER_ID);
+      assert.strictEqual(openInNewTabInitiatorId(request), frame.id);
+      assert.strictEqual(openInNewTabInitiatorId(resource), frame.id);
+
+      // The iframe navigates cross-site into a process of its own: the frame is attached to the new target and
+      // detached from the old one as swapped out, keeping its id.
+      const oopifTarget = backend.createTarget({parentTarget: target});
+      const oopifFrame = (await getInitializedResourceTreeModel(oopifTarget)).frameAttached(frame.id, MAIN_FRAME_ID);
+      assert.exists(oopifFrame);
+      navigate(oopifFrame,
+               {url: urlString`https://www.other.test/`, loaderId: 'OTHER_LOADER_ID' as Protocol.Network.LoaderId});
+      dispatchEvent(target, 'Page.frameDetached',
+                    {frameId: frame.id, reason: Protocol.Page.FrameDetachedEventReason.Swap});
+
+      assert.isUndefined(openInNewTabInitiatorId(request));
+      assert.isUndefined(openInNewTabInitiatorId(resource));
+    });
+
+    it('is not the frame of a request or resource once the frame has navigated out of its disposed target',
+       async () => {
+         const {target, backend} = setUpEnvironment();
+         await getInitializedResourceTreeModel(target);
+         const mainFrame = getMainFrame(target);
+         const oopifTarget = backend.createTarget({parentTarget: target});
+         const oopifFrame = await addChildFrame(oopifTarget, {});
+         const oopifLoaderId = 'OOPIF_LOADER_ID' as Protocol.Network.LoaderId;
+         navigate(oopifFrame, {url: urlString`https://www.other.test/`, loaderId: oopifLoaderId});
+         const request = createRequestOfFrame(oopifFrame, url, oopifLoaderId);
+         const resource = createResourceOfFrame(oopifFrame, oopifLoaderId);
+         assert.strictEqual(openInNewTabInitiatorId(request), oopifFrame.id);
+         assert.strictEqual(openInNewTabInitiatorId(resource), oopifFrame.id);
+
+         // The iframe navigates back into the process of its parent: the frame is attached to the parent's target,
+         // and its own target is detached, without its frame being detached or navigated.
+         const frame = mainFrame.resourceTreeModel().frameAttached(oopifFrame.id, mainFrame.id);
+         assert.exists(frame);
+         navigate(frame, {url: FRAME_URL, loaderId: LOADER_ID});
+         oopifTarget.dispose('target terminated');
+
+         assert.isUndefined(openInNewTabInitiatorId(request));
+         assert.isUndefined(openInNewTabInitiatorId(resource));
+       });
 
     it('is undefined for a request without a frame that was not made by a worker', () => {
       assert.isUndefined(openInNewTabInitiatorId(createRequest(null)));
@@ -696,6 +770,14 @@ describeWithEnvironment('Linkifier', () => {
     it('is the frame of an execution context of a frame', () => {
       const {target} = setUpEnvironment();
       assert.strictEqual(openInNewTabInitiatorId(createExecutionContext(target, frameId)), frameId);
+    });
+
+    it('is undefined for an execution context of a disposed target', () => {
+      const {target} = setUpEnvironment();
+      const executionContext = createExecutionContext(target, frameId);
+      // E.g. the iframe navigated into another process: its target is detached without its contexts being destroyed.
+      target.dispose('target terminated');
+      assert.isUndefined(openInNewTabInitiatorId(executionContext));
     });
 
     it('is the worker for an execution context of a worker', () => {
@@ -733,16 +815,17 @@ describeWithEnvironment('Linkifier', () => {
     });
 
     it('is derived from the request that a link reveals', async () => {
-      setUpEnvironment();
+      const {target} = setUpEnvironment();
       const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
-      const link = Components.Linkifier.Linkifier.linkifyRevealable(createRequest(frameId), url, url);
+      const request = createRequestOfFrame(getMainFrame(target), url);
+      const link = Components.Linkifier.Linkifier.linkifyRevealable(request, url, url);
       const info = Components.Linkifier.Linkifier.linkInfo(link);
       assert.exists(info);
       const action =
           Components.Linkifier.Linkifier.linkActions(info).find(action => action.jslogContext === 'open-in-new-tab');
       assert.exists(action);
       await action.handler();
-      sinon.assert.calledOnceWithExactly(stub, url, frameId);
+      sinon.assert.calledOnceWithExactly(stub, url, MAIN_FRAME_ID);
     });
 
     it('is not derived from a resource that merely has the same URL as a link', async () => {
@@ -793,16 +876,14 @@ describeWithEnvironment('ContentProviderContextMenuProvider', () => {
     const event = new MouseEvent('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const url = urlString`https://www.example.com/data.json`;
-    const frameId = 'FRAME_ID' as Protocol.Page.FrameId;
-    const request = SDK.NetworkRequest.NetworkRequest.create('REQUEST_ID' as Protocol.Network.RequestId, url, url,
-                                                             frameId, null, null);
+    const request = createRequestOfFrame(getMainFrame(createTarget()), url);
     provider.appendApplicableItems(event, contextMenu, request);
     const openInNewTabItem = findMenuItemWithLabel(contextMenu.revealSection(), 'Open in new tab');
     assert.exists(openInNewTabItem);
 
     const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
     contextMenu.invokeHandler(openInNewTabItem.id());
-    sinon.assert.calledOnceWithExactly(stub, url, frameId);
+    sinon.assert.calledOnceWithExactly(stub, url, MAIN_FRAME_ID);
   });
 });
 

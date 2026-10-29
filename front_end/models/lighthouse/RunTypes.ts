@@ -10,12 +10,20 @@ import type {ReportJSON} from './LighthouseReporterTypes.js';
 export type CategoryId = 'performance'|'accessibility'|'best-practices'|'seo'|'agentic-browsing';
 export type RunMode = 'navigation'|'timespan'|'snapshot';
 
+export const CATEGORY_SUPPORTED_MODES: Record<CategoryId, readonly RunMode[]> = {
+  performance: ['navigation', 'timespan', 'snapshot'],
+  accessibility: ['navigation', 'snapshot'],
+  'best-practices': ['navigation', 'timespan', 'snapshot'],
+  seo: ['navigation', 'snapshot'],
+  'agentic-browsing': ['navigation', 'snapshot'],
+};
+
 export interface Preset {
   setting: Common.Settings.Setting<boolean>;
   configID: CategoryId;
   title: () => Common.UIString.LocalizedString;
   description: () => Common.UIString.LocalizedString;
-  supportedModes: string[];
+  supportedModes: readonly string[];
   userMetric: Host.UserMetrics.LighthouseCategoryUsed;
 }
 export interface RuntimeSetting {

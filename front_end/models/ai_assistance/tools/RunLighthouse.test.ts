@@ -178,5 +178,19 @@ describe('RunLighthouseTool', () => {
       assertIsError(result);
       assert.strictEqual(result.error, 'Error: Failed to record new audits: Navigation timed out');
     });
+
+    it('returns error without running Lighthouse when category does not support the requested mode', async () => {
+      const recordingStub = sinon.stub().resolves({status: 'completed', report: mockReport});
+      const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
+        runLighthouse: recordingStub,
+      };
+      const result = await tool.handler(
+          {explanation: 'interaction audit', categoryId: 'agentic-browsing', mode: 'timespan'}, context);
+      assertIsError(result);
+      assert.strictEqual(
+          result.error,
+          'Error: Category "agentic-browsing" does not support "timespan" mode. Supported modes: navigation, snapshot.');
+      sinon.assert.notCalled(recordingStub);
+    });
   });
 });

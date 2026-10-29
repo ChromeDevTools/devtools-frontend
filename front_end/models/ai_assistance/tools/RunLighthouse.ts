@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type * as LHModel from '../../lighthouse/lighthouse.js';
+import * as LHModel from '../../lighthouse/lighthouse.js';
 import {LighthouseContext} from '../contexts/LighthouseContext.js';
 import type {LighthouseCategoryArg} from '../data_formatters/LighthouseFormatter.js';
 
@@ -78,6 +78,15 @@ export class RunLighthouseTool implements
   async handler(params: RunLighthouseArgs, context: BaseToolCapability&LighthouseRecordingCapability):
       Promise<ContextHandlerResult<LHModel.ReporterTypes.ReportJSON>> {
     const mode = resolveMode(params);
+    if (params.categoryId !== 'all') {
+      const supportedModes = LHModel.RunTypes.CATEGORY_SUPPORTED_MODES[params.categoryId];
+      if (!supportedModes?.includes(mode)) {
+        return {
+          error: `Error: Category "${params.categoryId}" does not support "${mode}" mode. Supported modes: ${
+              supportedModes ? supportedModes.join(', ') : 'none'}.`,
+        };
+      }
+    }
     try {
       // Passing undefined for categoryIds instructs the Lighthouse runner to audit all categories supported by the mode when isAIControlled is true.
       const result = await context.runLighthouse({

@@ -25,7 +25,8 @@ import * as PanelComponents from './components/components.js';
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 import settingsScreenStyles from './settingsScreen.css.js';
 
-const {html, render, Directives: {ref, repeat}} = Lit;
+const {html, nothing, render, Directives: {ref, repeat}} = Lit;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -90,42 +91,94 @@ function createSettingsCard(heading: Common.UIString.LocalizedString, ...content
   return card;
 }
 
-export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocationResolver {
-  private readonly tabbedLocation: UI.View.TabbedViewLocation;
+export interface SettingsScreenViewInput {
+  views: UI.View.View[];
+  selectedTabId: string;
+  focusTabHeader: boolean;
+  onTabInvoked: (eventData: {tabId: string, prevTabId?: string, isUserGesture?: boolean}) => void;
+}
+
+export type SettingsScreenView = (input: SettingsScreenViewInput, output: undefined, target: HTMLElement) => void;
+
+export const SETTINGS_SCREEN_DEFAULT_VIEW: SettingsScreenView = (
+    input: SettingsScreenViewInput,
+    _output: undefined,
+    target: HTMLElement,
+    ): void => {
+  // clang-format off
+  render(
+      html`
+        <devtools-tabbed-pane
+          vertical
+          ?focus-header=${input.focusTabHeader}
+          selected-tab=${input.selectedTabId}
+          @tabinvoked=${(event: CustomEvent<{tabId: string, prevTabId?: string, isUserGesture?: boolean}>) =>
+              input.onTabInvoked(event.detail)}>
+          <div slot="left" class="settings-window-label-element">
+            <div class="settings-window-title" role="heading" aria-level="1">
+              ${i18nString(UIStrings.settings)}
+            </div>
+          </div>
+          ${repeat(input.views, view => view.viewId(), view => {
+            const iconName = view.iconName();
+            return html`
+              <devtools-widget
+                id=${view.viewId()}
+                label=${view.title()}
+                ${widget(UI.ViewManager.ContainerWidget, {view})}>
+              </devtools-widget>
+              ${iconName
+                  ? html`<devtools-icon slot="icon-${view.viewId()}" name=${iconName}></devtools-icon>`
+                  : nothing}
+            `;
+          })}
+        </devtools-tabbed-pane>
+      `,
+      target,
+      {container: {classes: ['settings-window-main', 'vbox']}});
+  // clang-format on
+};
+
+export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocationResolver, UI.View.ViewLocation {
   private keybindsTab?: KeybindsSettingsTab;
   private reportTabOnReveal: boolean;
+  readonly #view: SettingsScreenView;
+  readonly #views: UI.View.View[] = [];
+  readonly #onTabInvokedBound = this.tabInvoked.bind(this);
+  #selectedTabId = 'preferences';
+  #focusTabHeader = false;
 
-  private constructor() {
+  constructor(view: SettingsScreenView = SETTINGS_SCREEN_DEFAULT_VIEW) {
     super({useShadowDom: true});
+    this.#view = view;
     this.registerRequiredCSS(settingsScreenStyles);
 
-    this.contentElement.classList.add('settings-window-main');
-    this.contentElement.classList.add('vbox');
-
-    const settingsLabelElement = document.createElement('div');
-    settingsLabelElement.classList.add('settings-window-label-element');
-    const settingsTitleElement =
-        UI.UIUtils.createShadowRootWithCoreStyles(settingsLabelElement, {cssFile: settingsScreenStyles})
-            .createChild('div', 'settings-window-title');
-
-    UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);
-    settingsTitleElement.textContent = i18nString(UIStrings.settings);
-
-    this.tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
-        () => SettingsScreen.revealSettingsScreen(), 'settings-view');
-    const tabbedPane = this.tabbedLocation.tabbedPane();
-    tabbedPane.headerElement().prepend(settingsLabelElement);
-    tabbedPane.makeVerticalTabLayout();
-    const keyBindsView = UI.ViewManager.ViewManager.instance().view('keybinds');
+    this.appendApplicableItems(UI.ViewManager.ViewLocationValues.SETTINGS_VIEW);
+    const keyBindsView = this.#views.find(v => v.viewId() === 'keybinds');
     if (keyBindsView) {
       void keyBindsView.widget().then(widget => {
         this.keybindsTab = widget as KeybindsSettingsTab;
       });
     }
-    tabbedPane.show(this.contentElement);
-    tabbedPane.selectTab('preferences');
-    tabbedPane.addEventListener(UI.TabbedPane.Events.TabInvoked, this.tabInvoked, this);
     this.reportTabOnReveal = false;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          views: this.#views,
+          selectedTabId: this.#selectedTabId,
+          focusTabHeader: this.#focusTabHeader,
+          onTabInvoked: this.#onTabInvokedBound,
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SettingsScreen {
@@ -169,28 +222,108 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     const {name, focusTabHeader} = options;
     const settingsScreen = SettingsScreen.revealSettingsScreen();
 
-    settingsScreen.selectTab(name || 'preferences');
-    const tabbedPane = settingsScreen.tabbedLocation.tabbedPane();
-    await tabbedPane.waitForTabElementUpdate();
-    if (focusTabHeader) {
-      tabbedPane.focusSelectedTabHeader();
-    } else {
-      tabbedPane.focus();
-    }
+    await settingsScreen.selectTab(name || 'preferences', Boolean(focusTabHeader));
   }
 
   resolveLocation(_locationName: string): UI.View.ViewLocation|null {
-    return this.tabbedLocation;
+    return this;
   }
 
-  private selectTab(name: string): void {
-    this.tabbedLocation.tabbedPane().selectTab(name, /* userGesture */ true);
+  appendApplicableItems(locationName: string): void {
+    for (const view of UI.ViewManager.ViewManager.instance().viewsForLocation(locationName)) {
+      if (!view.isTransient()) {
+        this.appendView(view);
+      }
+    }
   }
 
-  private tabInvoked(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
-    const eventData = event.data;
+  appendView(view: UI.View.View, insertBefore?: UI.View.View|null): void {
+    if (this.#views.includes(view)) {
+      return;
+    }
+    const index = insertBefore ? this.#views.indexOf(insertBefore) : -1;
+    if (index !== -1) {
+      this.#views.splice(index, 0, view);
+    } else {
+      this.#views.push(view);
+    }
+    this.requestUpdate();
+  }
+
+  async showView(view: UI.View.View, insertBefore?: UI.View.View|null, userGesture?: boolean, omitFocus?: boolean,
+                 shouldSelectTab = true): Promise<void> {
+    this.appendView(view, insertBefore);
+    if (shouldSelectTab) {
+      const prevTabId = this.#selectedTabId;
+      this.#selectedTabId = view.viewId();
+      this.#focusTabHeader = false;
+      if (userGesture && (this.reportTabOnReveal || prevTabId !== view.viewId())) {
+        this.reportTabOnReveal = false;
+        this.reportSettingsPanelShown(view.viewId());
+      }
+    }
+    this.performUpdate();
+    await view.widget();
+    if (!omitFocus) {
+      this.focus();
+    }
+  }
+
+  removeView(view: UI.View.View): void {
+    const index = this.#views.indexOf(view);
+    if (index !== -1) {
+      this.#views.splice(index, 1);
+      if (this.#selectedTabId === view.viewId()) {
+        this.#selectedTabId = this.#views[0]?.viewId() ?? 'preferences';
+      }
+      this.requestUpdate();
+    }
+  }
+
+  isViewVisible(view: UI.View.View): boolean {
+    return this.isShowing() && this.#selectedTabId === view.viewId();
+  }
+
+  widget(): UI.Widget.AnyWidget {
+    return this;
+  }
+
+  reveal(): void {
+    SettingsScreen.revealSettingsScreen();
+  }
+
+  private async selectTab(name: string, focusTabHeader = false): Promise<void> {
+    const prevTabId = this.#selectedTabId;
+    this.#selectedTabId = name;
+    this.#focusTabHeader = focusTabHeader;
+    if (this.reportTabOnReveal || prevTabId !== name) {
+      this.reportTabOnReveal = false;
+      this.reportSettingsPanelShown(name);
+    }
+    this.performUpdate();
+    const view = this.#views.find(v => v.viewId() === name);
+    if (view) {
+      await view.widget();
+    }
+    this.focus();
+    if (this.#focusTabHeader) {
+      this.#focusTabHeader = false;
+      this.requestUpdate();
+    }
+  }
+
+  private tabInvoked(eventData: {tabId: string, prevTabId?: string, isUserGesture?: boolean}): void {
+    if (this.#selectedTabId !== eventData.tabId) {
+      this.#selectedTabId = eventData.tabId;
+      this.requestUpdate();
+    }
     if (!eventData.isUserGesture) {
       return;
+    }
+
+    if (this.#focusTabHeader) {
+      this.#focusTabHeader = false;
+      this.requestUpdate();
     }
 
     const prevTabId = eventData.prevTabId;
@@ -213,7 +346,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   }
 
   private onEscapeKeyPressed(event: KeyboardEvent): void {
-    if (this.tabbedLocation.tabbedPane().selectedTabId === 'keybinds' && this.keybindsTab) {
+    if (this.#selectedTabId === 'keybinds' && this.keybindsTab) {
       this.keybindsTab.onEscapeKeyPressed(event);
     }
   }

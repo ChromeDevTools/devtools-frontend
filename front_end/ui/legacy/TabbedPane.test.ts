@@ -122,8 +122,8 @@ describeWithEnvironment('TabbedPane', () => {
 
   it('moveTab reorders the tab and dispatches TabOrderChanged', () => {
     const events: string[] = [];
-    tabbedPane.addEventListener(
-        UI.TabbedPane.Events.TabOrderChanged, (event: {data: {tabId: string}}) => events.push(event.data.tabId));
+    tabbedPane.addEventListener(UI.TabbedPane.Events.TabOrderChanged,
+                                (event: {data: {tabId: string}}) => events.push(event.data.tabId));
 
     tabbedPane.moveTab('5', 1);
 
@@ -146,8 +146,8 @@ describeWithEnvironment('TabbedPane', () => {
 
   it('moveTab is a no-op when target equals current index', () => {
     const events: string[] = [];
-    tabbedPane.addEventListener(
-        UI.TabbedPane.Events.TabOrderChanged, (event: {data: {tabId: string}}) => events.push(event.data.tabId));
+    tabbedPane.addEventListener(UI.TabbedPane.Events.TabOrderChanged,
+                                (event: {data: {tabId: string}}) => events.push(event.data.tabId));
     const originalOrder = tabbedPane.tabIds();
 
     tabbedPane.moveTab('3', 3);
@@ -218,14 +218,13 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('creates tabs from slot elements', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
         <div id="tab2" title="Tab 2">Content 2</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     assert.isNotNull(tabbedPaneElement);
@@ -276,14 +275,13 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('creates tabs with selected and disabled attributes', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1" disabled>Content 1</div>
         <div id="tab2" title="Tab 2" selected>Content 2</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     assert.isNotNull(tabbedPaneElement);
@@ -301,13 +299,12 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('creates tabs with jslogcontext', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1" jslogcontext="log1">Content 1</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     assert.isNotNull(tabbedPaneElement);
@@ -322,13 +319,12 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('updates tabs when attributes change', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
@@ -375,13 +371,12 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('updates tabs when jslogcontext attribute changes', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
@@ -399,14 +394,13 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('updates tabs when selected attribute changes', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
         <div id="tab2" title="Tab 2">Content 2</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
@@ -426,14 +420,13 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('updates tabs when disabled attribute changes', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
         <div id="tab2" title="Tab 2">Content 2</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
@@ -453,13 +446,12 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('updates tabs when children are added or removed', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
@@ -491,14 +483,13 @@ describeWithEnvironment('TabbedPaneElement', () => {
   it('supports left and right toolbars via slots', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <devtools-toolbar slot="left" id="left-toolbar"></devtools-toolbar>
         <devtools-toolbar slot="right" id="right-toolbar"></devtools-toolbar>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
 
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
@@ -522,14 +513,13 @@ describeWithEnvironment('TabbedPaneElement', () => {
     // items.
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">Content 1</div>
         <div id="tab2" title="Tab 2">Content 2</div>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
     await raf();
@@ -537,9 +527,8 @@ describeWithEnvironment('TabbedPaneElement', () => {
     const rightToolbar = widget.rightToolbar();
     // Sanity check: it's the lazy path (appended directly to header,
     // not slotted from light DOM).
-    assert.strictEqual(
-        rightToolbar.parentElement, widget.headerElement(),
-        'lazily-created right toolbar should be appended to the header element');
+    assert.strictEqual(rightToolbar.parentElement, widget.headerElement(),
+                       'lazily-created right toolbar should be appended to the header element');
 
     let updates = 0;
     const originalRequestUpdate = widget.requestUpdate.bind(widget);
@@ -565,8 +554,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
     const container = document.createElement('div');
     container.style.width = '120px';
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="A long tab title">Content 1</div>
         <div id="tab2" title="Another long tab title">Content 2</div>
@@ -575,7 +563,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
                 style="width: 24px; height: 24px;">+</button>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     const widget = UI.Widget.Widget.get(tabbedPaneElement) as UI.TabbedPane.TabbedPane;
     await doubleRaf();
@@ -599,8 +587,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
     const container = document.createElement('div');
     container.style.width = '600px';
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="Tab 1">1</div>
         <div id="tab2" title="Tab 2">2</div>
@@ -609,7 +596,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
                 style="width: 24px; height: 24px;">+</button>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
     const tabbedPaneElement = container.querySelector('devtools-tabbed-pane') as UI.TabbedPane.TabbedPaneElement;
     await doubleRaf();
 
@@ -636,8 +623,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
     const container = document.createElement('div');
     container.style.width = '120px';
     renderElementIntoDOM(container);
-    render(
-        html`
+    render(html`
       <devtools-tabbed-pane>
         <div id="tab1" title="A long tab title">1</div>
         <div id="tab2" title="Another long tab title">2</div>
@@ -646,7 +632,7 @@ describeWithEnvironment('TabbedPaneElement', () => {
                 style="width: 24px; height: 24px;">+</button>
       </devtools-tabbed-pane>
     `,
-        container);
+           container);
     const widget = UI.Widget.Widget.get(container.querySelector('devtools-tabbed-pane') as HTMLElement) as
         UI.TabbedPane.TabbedPane;
     await doubleRaf();
@@ -981,6 +967,51 @@ describeWithEnvironment('TabbedPaneElement', () => {
       sinon.assert.calledOnceWithExactly(
           onTabInvoked, sinon.match({detail: {tabId: 'tab2', prevTabId: 'tab2', isUserGesture: true}}));
       sinon.assert.notCalled(onSelect);
+    });
+
+    it('supports declarative <devtools-widget> tabs, selected-tab, and focus-header attributes', async () => {
+      class TabWidget extends UI.Widget.Widget {
+        wasShownCount = 0;
+        override wasShown(): void {
+          super.wasShown();
+          this.wasShownCount++;
+        }
+      }
+
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      const {widget} = UI.Widget;
+
+      render(html`
+        <devtools-tabbed-pane focus-header selected-tab="tab2">
+          <devtools-widget id="tab1" label="Tab 1" ${widget(TabWidget)}></devtools-widget>
+          <devtools-widget id="tab2" label="Tab 2" ${widget(TabWidget)}></devtools-widget>
+        </devtools-tabbed-pane>`,
+             container);
+
+      const element = container.querySelector('devtools-tabbed-pane')!;
+      const tabbedPane = UI.Widget.Widget.get(element) as UI.TabbedPane.TabbedPane;
+      const tab1Widget = UI.Widget.Widget.get(container.querySelector('#tab1')!) as TabWidget;
+      const tab2Widget = UI.Widget.Widget.get(container.querySelector('#tab2')!) as TabWidget;
+
+      assert.strictEqual(tabbedPane.selectedTabId, 'tab2');
+      assert.strictEqual(tab1Widget.wasShownCount, 0, 'unselected tab widget should not be shown on connect');
+      assert.strictEqual(tab2Widget.wasShownCount, 1, 'selected tab widget should be shown once');
+
+      element.focus();
+      const focusedTab = UI.DOMUtilities.deepActiveElement(document);
+      assert.exists(focusedTab);
+      assert.strictEqual(focusedTab.getAttribute('role'), 'tab');
+      assert.strictEqual(focusedTab.getAttribute('aria-label'), 'Tab 2');
+
+      // Selecting another tab via user gesture must persist after MutationObserver microtasks.
+      tabbedPane.selectTab('tab1', true);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.strictEqual(tabbedPane.selectedTabId, 'tab1');
+      assert.strictEqual(element.selectedTab, 'tab1');
+      assert.isFalse(tab1Widget.element.classList.contains('hidden'));
+      assert.isTrue(tab2Widget.element.classList.contains('hidden'));
+      assert.strictEqual(tab1Widget.wasShownCount, 1);
     });
   });
 });

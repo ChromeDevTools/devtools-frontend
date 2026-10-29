@@ -393,9 +393,8 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     throw new Error('Unresolved location: ' + location);
   }
 
-  createTabbedLocation(
-      revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean,
-      options?: TabbedLocationOptions): TabbedViewLocation {
+  createTabbedLocation(revealCallback: (() => void), location: string, restoreSelection?: boolean,
+                       allowReorder?: boolean, options?: TabbedLocationOptions): TabbedViewLocation {
     return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, options);
   }
 
@@ -421,17 +420,35 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 const widgetForView = new WeakMap<View, AnyWidget>();
 
 export class ContainerWidget extends VBox {
-  private readonly view: View;
+  #view?: View;
   private materializePromise?: Promise<void>;
 
-  constructor(view: View) {
-    super();
+  constructor(element?: HTMLElement|View, view?: View) {
+    super(element instanceof HTMLElement ? element : undefined);
     this.element.classList.add('flex-auto', 'view-container', 'overflow-auto');
-    this.view = view;
     this.element.tabIndex = -1;
     ARIAUtils.markAsTabpanel(this.element);
-    ARIAUtils.setLabel(this.element, i18nString(UIStrings.sPanel, {PH1: view.title()}));
     this.setDefaultFocusedElement(this.element);
+    if (element && !(element instanceof HTMLElement)) {
+      this.view = element;
+    } else if (view) {
+      this.view = view;
+    }
+  }
+
+  get view(): View {
+    if (!this.#view) {
+      throw new Error('ContainerWidget is missing a view');
+    }
+    return this.#view;
+  }
+
+  set view(view: View) {
+    if (this.#view === view) {
+      return;
+    }
+    this.#view = view;
+    ARIAUtils.setLabel(this.element, i18nString(UIStrings.sPanel, {PH1: view.title()}));
   }
 
   materialize(): Promise<void> {
@@ -497,9 +514,8 @@ class Location {
     }
   }
 
-  showView(
-      _view: View, _insertBefore?: View|null, _userGesture?: boolean, _omitFocus?: boolean,
-      _shouldSelectTab?: boolean): Promise<void> {
+  showView(_view: View, _insertBefore?: View|null, _userGesture?: boolean, _omitFocus?: boolean,
+           _shouldSelectTab?: boolean): Promise<void> {
     throw new Error('not implemented');
   }
 
@@ -540,9 +556,8 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   private readonly isLocationVisible: (() => boolean)|undefined;
   private readonly views = new Map<string, View>();
 
-  constructor(
-      manager: ViewManager, revealCallback: (() => void), location: string, restoreSelection?: boolean,
-      allowReorder?: boolean, options?: TabbedLocationOptions) {
+  constructor(manager: ViewManager, revealCallback: (() => void), location: string, restoreSelection?: boolean,
+              allowReorder?: boolean, options?: TabbedLocationOptions) {
     const tabbedPane = options?.tabbedPaneFactory ? options.tabbedPaneFactory() : new TabbedPane();
     if (allowReorder) {
       tabbedPane.setAllowTabReorder(true);
@@ -574,19 +589,18 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     // reserves width for the button and we avoid a reflow that snaps the
     // last tab into the overflow menu.
     if (options?.plusButton && Root.Runtime.hostConfig.devToolsPlusButton?.enabled) {
-      PlusButton.installPlusButton(
-          {
-            tabbedPane: this.#tabbedPane,
-            location: this.location,
-            // Use the local `views` map (not `manager.viewsForLocation`) so
-            // cross-location moves added via `appendView` are reflected.
-            views: () => this.views.values(),
-            manager: this.manager,
-            showView: view => {
-              this.showView(view, undefined, /* userGesture */ true).catch(err => console.error(err));
-            },
-          },
-          options.plusButton);
+      PlusButton.installPlusButton({
+        tabbedPane: this.#tabbedPane,
+        location: this.location,
+        // Use the local `views` map (not `manager.viewsForLocation`) so
+        // cross-location moves added via `appendView` are reflected.
+        views: () => this.views.values(),
+        manager: this.manager,
+        showView: view => {
+          this.showView(view, undefined, /* userGesture */ true).catch(err => console.error(err));
+        },
+      },
+                                   options.plusButton);
     }
 
     if (location) {
@@ -613,8 +627,8 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   }
 
   enableMoreTabsButton(): ToolbarMenuButton {
-    const moreTabsButton = new ToolbarMenuButton(
-        this.appendTabsToMenu.bind(this), /* isIconDropdown */ true, undefined, 'more-tabs', 'dots-vertical');
+    const moreTabsButton = new ToolbarMenuButton(this.appendTabsToMenu.bind(this), /* isIconDropdown */ true, undefined,
+                                                 'more-tabs', 'dots-vertical');
     this.#tabbedPane.leftToolbar().appendToolbarItem(moreTabsButton);
     return moreTabsButton;
   }
@@ -681,15 +695,14 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       }
 
       const isPreviewFeature = view.isPreviewFeature();
-      contextMenu.defaultSection().appendItem(
-          title, this.showView.bind(this, view, undefined, true), {isPreviewFeature, jslogContext: view.viewId()});
+      contextMenu.defaultSection().appendItem(title, this.showView.bind(this, view, undefined, true),
+                                              {isPreviewFeature, jslogContext: view.viewId()});
     }
   }
 
   private appendTab(view: View, index?: number): void {
-    this.#tabbedPane.appendTab(
-        view.viewId(), view.title(), new ContainerWidget(view), undefined, false,
-        view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
+    this.#tabbedPane.appendTab(view.viewId(), view.title(), new ContainerWidget(view), undefined, false,
+                               view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
     const iconName = view.iconName();
     if (iconName) {
       const icon = createIcon(iconName);
@@ -740,9 +753,8 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.persistTabOrder();
   }
 
-  override async showView(
-      view: View, insertBefore?: View|null, userGesture?: boolean, omitFocus?: boolean,
-      shouldSelectTab: boolean|undefined = true): Promise<void> {
+  override async showView(view: View, insertBefore?: View|null, userGesture?: boolean, omitFocus?: boolean,
+                          shouldSelectTab: boolean|undefined = true): Promise<void> {
     this.appendView(view, insertBefore);
     if (shouldSelectTab) {
       this.#tabbedPane.selectTab(view.viewId(), userGesture);

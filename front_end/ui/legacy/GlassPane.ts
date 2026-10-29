@@ -129,7 +129,7 @@ export class GlassPane {
     if (!this.isShowing()) {
       return;
     }
-    this.#widget.detach();
+    this.#widget.detach(/* overrideHideOnDetach= */ true);
     if (this.#onHideCallback) {
       this.#onHideCallback();
     }

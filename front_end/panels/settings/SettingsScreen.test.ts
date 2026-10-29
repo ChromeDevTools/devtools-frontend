@@ -68,6 +68,9 @@ describe('SettingsScreen', () => {
   }
 
   afterEach(() => {
+    while (UI.Dialog.Dialog.hasInstance()) {
+      UI.Dialog.Dialog.getInstance()?.hide();
+    }
     Settings.SettingsScreen.SettingsScreen.removeInstanceForTesting();
     UI.InspectorView.InspectorView.removeInstance();
     UI.ViewManager.ViewManager.removeInstance();
@@ -136,7 +139,44 @@ describe('SettingsScreen', () => {
 
     assert.isFalse(dialog.isShowing());
     assert.isFalse(UI.Dialog.Dialog.hasInstance());
+    assert.isNull(document.querySelector('[data-devtools-glass-pane]'));
     assert.strictEqual(UI.DOMUtilities.deepActiveElement(document), opener);
+
+    // Reopening after closing re-attaches the settings tabs cleanly.
+    await Settings.SettingsScreen.SettingsScreen.showSettingsScreen({name: 'keybinds', focusTabHeader: true});
+    const reopenedTab = UI.DOMUtilities.deepActiveElement(document);
+    assert.exists(reopenedTab);
+    assert.strictEqual(reopenedTab.getAttribute('role'), 'tab');
+    assert.strictEqual(reopenedTab.getAttribute('aria-label'), 'keybinds');
+    UI.Dialog.Dialog.getInstance()?.hide();
+  });
+
+  it('switches tabs persistently when clicking a tab header', async () => {
+    const {tabLinks} = setup();
+    await Settings.SettingsScreen.SettingsScreen.showSettingsScreen();
+
+    const settingsScreen = Settings.SettingsScreen.SettingsScreen.instance();
+    const tabbedPaneElement = settingsScreen.contentElement.querySelector('devtools-tabbed-pane');
+    assert.exists(tabbedPaneElement);
+    const tabbedPane = UI.Widget.Widget.get(tabbedPaneElement);
+    assert.exists(tabbedPane);
+    await tabbedPane.updateComplete;
+    const keybindsHeader =
+        tabbedPaneElement.shadowRoot?.querySelector<HTMLElement>('.tabbed-pane-header-tab[aria-label="keybinds"]');
+    assert.exists(keybindsHeader);
+
+    keybindsHeader.dispatchEvent(new MouseEvent('mousedown', {button: 0, bubbles: true, composed: true}));
+    await settingsScreen.updateComplete;
+    await tabbedPane.updateComplete;
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.strictEqual(tabbedPaneElement.selectedTab, 'keybinds');
+    assert.strictEqual(keybindsHeader.getAttribute('aria-selected'), 'true');
+    const keybindsWidget = settingsScreen.contentElement.querySelector('#keybinds');
+    assert.exists(keybindsWidget);
+    assert.isFalse(keybindsWidget.classList.contains('hidden'));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(tabLinks.get('keybinds')?.isConnected);
   });
 });
 

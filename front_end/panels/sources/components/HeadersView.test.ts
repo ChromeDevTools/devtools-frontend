@@ -126,10 +126,10 @@ describe('HeadersView', () => {
     project.canSetFileContent = () => true;
 
     const editorWrapper = new SourcesComponents.HeadersView.HeadersView(uiSourceCode);
+    renderElementIntoDOM(editorWrapper);
     await uiSourceCode.requestContentData();
     await RenderCoordinator.done();
     const editor = editorWrapper.getComponent();
-    renderElementIntoDOM(editor);
     assert.isNotNull(editor.shadowRoot);
     await RenderCoordinator.done();
     workspace.removeProject(project);
@@ -575,5 +575,27 @@ describe('HeadersView', () => {
     assert.isNotNull(editor.shadowRoot);
     const contextMenu = getContextMenuForElement(editor);
     assert.exists(contextMenu);
+  });
+
+  it('only listens to UISourceCode working copy events while shown', () => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const {uiSourceCode, project} = createFileSystemUISourceCode({
+      url: urlString`file:///path/to/overrides/.headers`,
+      mimeType: 'text/plain',
+      content: '[]',
+    });
+
+    const view = new SourcesComponents.HeadersView.HeadersView(uiSourceCode);
+    assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyChanged));
+    assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
+
+    renderElementIntoDOM(view);
+    assert.isTrue(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyChanged));
+    assert.isTrue(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
+
+    view.detach();
+    assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyChanged));
+    assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
+    workspace.removeProject(project);
   });
 });

@@ -3191,6 +3191,7 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
 
   static async executeRecordAndReload(): Promise<Trace.TraceModel.ParsedTrace> {
     await UI.ViewManager.ViewManager.instance().showView('timeline');
+    await SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.pageAgent().invoke_bringToFront();
     const panelInstance = TimelinePanel.instance();
 
     const result: EventTypes[Events.RECORDING_COMPLETED] = await new Promise(resolve => {

@@ -194,6 +194,7 @@ export class AiEvalStateProvider extends StateProvider {
 
   override async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number): Promise<InspectedPage> {
     const page = await context.newPage();
+    await page.bringToFront();
     return new InspectedPage(page, serverPort);
   }
 
@@ -242,6 +243,7 @@ export class AiEvalStateProvider extends StateProvider {
     let baseState: E2EState;
     try {
       baseState = await super.createState(suite);
+      await baseState.inspectedPage.bringToFront();
     } catch (error) {
       if (evalConfig) {
         this.#recordPreparationFailure(evalConfig, startTime, error);
@@ -339,6 +341,9 @@ export class AiEvalStateProvider extends StateProvider {
       }
     } finally {
       try {
+        if (state.devToolsPage) {
+          await state.devToolsPage.page.close().catch(() => {});
+        }
         if (state.inspectedPage) {
           await state.inspectedPage.page.close().catch(() => {});
         }

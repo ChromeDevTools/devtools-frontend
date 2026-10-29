@@ -125,9 +125,9 @@ export async function stopProcess(child?: childProcess.ChildProcess): Promise<vo
 
   const killPid = (signal: NodeJS.Signals) => {
     try {
-      // Negative PID sends the signal to the entire process group, ensuring
-      // child processes (shell, npm, node server) are terminated, not just
-      // the parent shell wrapper.
+      // Negative PID terminates the node server process group directly
+      // (without an intermediate shell wrapper), ensuring the server and any
+      // child processes it spawns are terminated.
       process.kill(-child.pid!, signal);
     } catch {
       // Process or process group already exited.
@@ -187,9 +187,8 @@ export async function setupAndRunEvalApp(
 
   const isVerbose = Boolean(process.env.DEBUG || process.env.VERBOSE);
 
-  const serverProcess = childProcess.spawn('node server.js', {
+  const serverProcess = childProcess.spawn('node', ['server.js'], {
     cwd: appDir,
-    shell: true,
     stdio: ['inherit', 'pipe', 'pipe'],
     detached: true,
     env: process.env,

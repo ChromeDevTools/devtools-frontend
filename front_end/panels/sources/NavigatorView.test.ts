@@ -1181,6 +1181,225 @@ describeWithEnvironment('NavigatorView', () => {
     });
   });
 
+  describe('selection and expansion tracking', () => {
+    it('marks folder as expanded and lazily populates children on expandNode', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/a.js`;
+      const url2 = urlString`http://example.com/src/b.js`;
+      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const folderTreeElement =
+          getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const folderNode = folderTreeElement.node;
+      assert.isFalse(navigatorView.isNodeExpanded(folderNode));
+      assert.isFalse(folderNode.isPopulated());
+      assert.lengthOf(folderTreeElement.children(), 0);
+
+      navigatorView.expandNode(folderNode);
+
+      assert.isTrue(navigatorView.isNodeExpanded(folderNode));
+      assert.isTrue(folderNode.isPopulated());
+      assert.lengthOf(folderTreeElement.children(), 2);
+      assert.strictEqual(folderTreeElement.children()[0].title, 'a.js');
+      assert.strictEqual(folderTreeElement.children()[1].title, 'b.js');
+
+      project.removeProject();
+    });
+
+    it('marks folder as not expanded on collapseNode', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/a.js`;
+      const url2 = urlString`http://example.com/src/b.js`;
+      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const folderTreeElement =
+          getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const folderNode = folderTreeElement.node;
+      navigatorView.expandNode(folderNode);
+      assert.isTrue(navigatorView.isNodeExpanded(folderNode));
+      assert.isTrue(folderTreeElement.expanded);
+
+      navigatorView.collapseNode(folderNode);
+
+      assert.isFalse(navigatorView.isNodeExpanded(folderNode));
+      assert.isFalse(folderTreeElement.expanded);
+
+      project.removeProject();
+    });
+
+    it('updates tracked selection on selectNode', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const node = navigatorView.revealUISourceCode(uiSourceCode);
+      assert.exists(node);
+
+      navigatorView.selectNode(node);
+
+      assert.isTrue(navigatorView.isNodeSelected(node));
+      sinon.stub(uiSourceCode, 'canRename').returns(true);
+      sinon.stub(navigatorView.scriptsTree.element, 'hasFocus').returns(true);
+      assert.isTrue(navigatorView.shouldRenameOnMouseDown(node));
+
+      project.removeProject();
+    });
+
+    it('selects file node when opening context menu on file row', async () => {
+      sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/script.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const node = navigatorView.revealUISourceCode(uiSourceCode);
+      assert.exists(node);
+      assert.isFalse(navigatorView.isNodeSelected(node));
+
+      openContextMenuOnRow(navigatorView, 'script.js');
+
+      assert.isTrue(navigatorView.isNodeSelected(node));
+
+      project.removeProject();
+    });
+
+    it('selects folder node when opening context menu on folder row', async () => {
+      sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/script.js`;
+      const {project} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const folderTreeElement =
+          getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const folderNode = folderTreeElement.node;
+      assert.isFalse(navigatorView.isNodeSelected(folderNode));
+
+      openContextMenuOnRow(navigatorView, 'src');
+
+      assert.isTrue(navigatorView.isNodeSelected(folderNode));
+
+      project.removeProject();
+    });
+
+    it('preserves expansion of unmerged parent folder when a sibling folder is added', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/components/button.js`;
+      const {project, uiSourceCode: uiSourceCode1} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+      navigatorView.revealUISourceCode(uiSourceCode1);
+
+      const mergedTreeElement =
+          getTreeElement(navigatorView, 'src/components') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      navigatorView.expandNode(mergedTreeElement.node);
+      assert.isTrue(navigatorView.isNodeExpanded(mergedTreeElement.node));
+
+      // Add a sibling folder under "src/utils/math.js".
+      const url2 = urlString`http://example.com/src/utils/math.js`;
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+      await navigatorView.updateComplete;
+
+      // "src" should now be its own unmerged row and remain expanded.
+      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      assert.isTrue(navigatorView.isNodeExpanded(srcTreeElement.node));
+      assert.isTrue(srcTreeElement.expanded);
+
+      project.removeProject();
+    });
+
+    it('updates selection to parent folder when unpopulated folder chain unmerges', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/components/button.js`;
+      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const mergedTreeElement =
+          getTreeElement(navigatorView, 'src/components') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      navigatorView.selectNode(mergedTreeElement.node);
+      assert.isTrue(navigatorView.isNodeSelected(mergedTreeElement.node));
+
+      // Add a sibling folder under "src/utils/math.js".
+      const url2 = urlString`http://example.com/src/utils/math.js`;
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+      await navigatorView.updateComplete;
+
+      // The unmerged "src" folder now takes over the tree element and receives the selection.
+      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      assert.isTrue(srcTreeElement.selected);
+      assert.isTrue(navigatorView.isNodeSelected(srcTreeElement.node));
+
+      project.removeProject();
+    });
+
+    it('updates tracked selection when setNode is called on a selected folder element', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/script.js`;
+      const url2 = urlString`http://example.com/other/script.js`;
+      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const otherTreeElement =
+          getTreeElement(navigatorView, 'other') as Sources.NavigatorView.NavigatorFolderTreeElement;
+
+      srcTreeElement.select();
+      assert.isTrue(navigatorView.isNodeSelected(srcTreeElement.node));
+
+      srcTreeElement.setNode(otherTreeElement.node);
+
+      assert.isTrue(navigatorView.isNodeSelected(otherTreeElement.node));
+
+      project.removeProject();
+    });
+
+    it('updates tracked expansion when setNode is called on an expanded folder element', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url1 = urlString`http://example.com/src/script.js`;
+      const url2 = urlString`http://example.com/other/script.js`;
+      const {project} = addResourceAndUISourceCode(url1, mainFrame, '', 'text/javascript');
+      addResourceAndUISourceCode(url2, mainFrame, '', 'text/javascript', project);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const otherTreeElement =
+          getTreeElement(navigatorView, 'other') as Sources.NavigatorView.NavigatorFolderTreeElement;
+
+      navigatorView.expandNode(srcTreeElement.node);
+      assert.isTrue(navigatorView.isNodeExpanded(srcTreeElement.node));
+      assert.isFalse(navigatorView.isNodeExpanded(otherTreeElement.node));
+
+      srcTreeElement.setNode(otherTreeElement.node);
+
+      assert.isTrue(navigatorView.isNodeExpanded(otherTreeElement.node));
+
+      project.removeProject();
+    });
+  });
+
   describe('dirty and ignore-list state', () => {
     it('prepends asterisk to title when UISourceCode is dirty and restores on reset', async () => {
       const mainFrame = await getMainFrame(target);

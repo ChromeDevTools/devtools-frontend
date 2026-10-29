@@ -253,6 +253,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   private groupByAuthored?: boolean;
   private groupByDomain?: boolean;
   private groupByFolder?: boolean;
+  private selectedNode: NavigatorTreeNode|null = null;
+  private expandedNodes = new WeakSet<NavigatorTreeNode>();
   #view: View;
 
   constructor(
@@ -273,6 +275,23 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.setDefaultFocusedElement(this.scriptsTree.element);
     this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.requestUpdate());
     this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.requestUpdate());
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementSelected, event => {
+      const treeElement = event.data as NavigatorFolderTreeElement | NavigatorSourceTreeElement;
+      this.selectedNode = treeElement.node ?? null;
+    });
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementExpanded, event => {
+      const treeElement = event.data as NavigatorFolderTreeElement | NavigatorSourceTreeElement;
+      if (treeElement.node) {
+        this.expandedNodes.add(treeElement.node);
+        treeElement.node.populate();
+      }
+    });
+    this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementCollapsed, event => {
+      const treeElement = event.data as NavigatorFolderTreeElement | NavigatorSourceTreeElement;
+      if (treeElement.node) {
+        this.expandedNodes.delete(treeElement.node);
+      }
+    });
 
     this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
     this.subfolderNodes = new Map();
@@ -481,6 +500,34 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.scriptsTree.focus();
   }
 
+  selectNode(node: NavigatorTreeNode, omitFocus?: boolean, selectedByUser?: boolean): void {
+    node.treeNode().select(omitFocus, selectedByUser);
+  }
+
+  expandNode(node: NavigatorTreeNode): void {
+    node.treeNode().expand();
+  }
+
+  collapseNode(node: NavigatorTreeNode): void {
+    node.treeNode().collapse();
+  }
+
+  isNodeExpanded(node: NavigatorTreeNode): boolean {
+    return this.expandedNodes.has(node);
+  }
+
+  isNodeSelected(node: NavigatorTreeNode): boolean {
+    return this.selectedNode === node;
+  }
+
+  setNodeSelected(node: NavigatorTreeNode): void {
+    this.selectedNode = node;
+  }
+
+  setNodeExpanded(node: NavigatorTreeNode): void {
+    this.expandedNodes.add(node);
+  }
+
   /**
    * Central place to add elements to the tree to
    * enable focus if the tree has elements
@@ -496,6 +543,9 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
    */
   removeChild(parent: UI.TreeOutline.TreeElement, child: UI.TreeOutline.TreeElement): void {
     parent.removeChild(child);
+    if (!this.scriptsTree.selectedTreeElement) {
+      this.selectedNode = null;
+    }
     if (this.scriptsTree.rootElement().childCount() === 0) {
       this.scriptsTree.setFocusable(false);
     }
@@ -669,8 +719,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   // TODO(einbinder) remove this code after crbug.com/964075 is fixed
   private selectDefaultTreeNode(): void {
     const children = this.rootNode.children();
-    if (children.length && !this.scriptsTree.selectedTreeElement) {
-      children[0].treeNode().select(true /* omitFocus */, false /* selectedByUser */);
+    if (children.length && !this.selectedNode) {
+      this.selectNode(children[0], true /* omitFocus */, false /* selectedByUser */);
     }
   }
 
@@ -801,7 +851,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     }
     frameNode.appendChild(domainNode);
     if (isAuthored && this.groupByAuthored) {
-      domainNode.treeNode().expand();
+      this.expandNode(domainNode);
     }
     return domainNode;
   }
@@ -829,7 +879,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored)
         .appendChild(frameNode);
     if (!parentFrame) {
-      frameNode.treeNode().expand();
+      this.expandNode(frameNode);
     }
     return frameNode;
   }
@@ -842,7 +892,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
             this, null, 'group:Authored', Types.Authored, i18nString(UIStrings.authored),
             i18nString(UIStrings.authoredTooltip));
         this.rootNode.appendChild(this.authoredNode);
-        this.authoredNode.treeNode().expand();
+        this.expandNode(this.authoredNode);
       }
       return this.authoredNode;
     }
@@ -924,15 +974,16 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     if (!node) {
       return null;
     }
-    if (this.scriptsTree.selectedTreeElement) {
+    if (this.selectedNode) {
       // If the tree outline is being marked as "being edited" (i.e. we're renaming a file
       // or choosing the name for a new snippet), we shall not proceed with revealing here,
       // as that will steal focus from the input widget and thus cancel editing. The
       // test/e2e/snippets/breakpoint.test.ts exercises this.
-      if (UI.UIUtils.isBeingEdited(this.scriptsTree.selectedTreeElement.treeOutline?.element)) {
+      if (UI.UIUtils.isBeingEdited(this.scriptsTree.element)) {
         return null;
       }
-      this.scriptsTree.selectedTreeElement.deselect();
+      this.selectedNode.treeNode().deselect();
+      this.selectedNode = null;
     }
     // TODO(dgozman): figure out revealing multiple.
     node.reveal(select);
@@ -945,12 +996,9 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   }
 
   #isUISourceCodeOrAnyAncestorSelected(node: NavigatorUISourceCodeTreeNode): boolean {
-    const selectedTreeElement =
-        (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | NavigatorFolderTreeElement | null);
-    const selectedNode = selectedTreeElement?.node;
     let currentNode: NavigatorTreeNode|null = node;
     while (currentNode) {
-      if (currentNode === selectedNode) {
+      if (currentNode === this.selectedNode) {
         return true;
       }
       currentNode = currentNode.parent;
@@ -1040,6 +1088,8 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
     this.scriptsTree.removeChildren();
     this.scriptsTree.setFocusable(false);
+    this.selectedNode = null;
+    this.expandedNodes = new WeakSet();
     this.uiSourceCodeNodes.clear();
     this.subfolderNodes.clear();
     this.frameNodes.clear();
@@ -1053,12 +1103,11 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   }
 
   private async renameShortcut(): Promise<boolean> {
-    const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
-    const node = selectedTreeElement?.node;
-    if (!node?.uiSourceCode()?.canRename()) {
+    if (!(this.selectedNode instanceof NavigatorUISourceCodeTreeNode) ||
+        !this.selectedNode.uiSourceCode().canRename()) {
       return false;
     }
-    this.rename(node, false);
+    this.rename(this.selectedNode, false);
     return true;
   }
 
@@ -1111,7 +1160,7 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
     if (!node.uiSourceCode().canRename() || !node.treeElement) {
       return false;
     }
-    return this.scriptsTree.selectedTreeElement === node.treeElement && this.scriptsTree.element.hasFocus() &&
+    return this.selectedNode === node && this.scriptsTree.element.hasFocus() &&
         !UI.UIUtils.isBeingEdited(this.scriptsTree.element);
   }
 
@@ -1460,10 +1509,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     return 'folder';
   }
 
-  override async onpopulate(): Promise<void> {
-    this.node.populate();
-  }
-
   override onattach(): void {
     this.collapse();
     this.node.onattach();
@@ -1488,6 +1533,12 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.node = node;
     this.updateTooltip();
     UI.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
+    if (this.selected) {
+      this.navigatorView.setNodeSelected(node);
+    }
+    if (this.expanded) {
+      this.navigatorView.setNodeExpanded(node);
+    }
   }
 
   private updateTooltip(): void {
@@ -1513,7 +1564,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     if (!this.node || !(this.node instanceof NavigatorFolderTreeNode || this.node instanceof NavigatorGroupTreeNode)) {
       return;
     }
-    this.select();
+    this.navigatorView.selectNode(this.node);
     this.navigatorView.handleFolderContextMenu(event, this.node);
   }
 
@@ -1676,7 +1727,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private handleContextMenuEvent(event: Event): void {
-    this.select();
+    this.navigatorView.selectNode(this.node);
     this.navigatorView.handleFileContextMenu(event, this.node);
   }
 }
@@ -1945,12 +1996,12 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   reveal(select?: boolean): void {
     if (this.parent) {
       this.parent.populate();
-      this.parent.treeNode().expand();
+      this.navigatorView.expandNode(this.parent);
     }
     if (this.treeElement) {
       this.treeElement.reveal(true);
       if (select) {
-        this.treeElement.select(true);
+        this.navigatorView.selectNode(this, true);
       }
     }
   }
@@ -1994,7 +2045,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         if (parent) {
           parent.removeChild(this.treeElement);
           parent.appendChild(this.treeElement);
-          this.treeElement.select();
+          this.navigatorView.selectNode(this);
         }
       }
       afterEditing(true);
@@ -2169,14 +2220,15 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         this.navigatorView.appendChild(oldTreeElement.parent, treeElement);
       }
 
+      const wasExpanded = this.navigatorView.isNodeExpanded(oldTreeElement.node);
       oldTreeElement.setNode(nodes[nodes.length - 1]);
       oldTreeElement.title = nodes.map(node => node.title).join('/');
       if (oldTreeElement.parent) {
         this.navigatorView.removeChild(oldTreeElement.parent, oldTreeElement);
       }
       this.navigatorView.appendChild(this.treeElement, oldTreeElement);
-      if (oldTreeElement.expanded) {
-        treeElement.expand();
+      if (wasExpanded) {
+        this.navigatorView.expandNode(this);
       }
       this.updateTitle();
     }
@@ -2286,9 +2338,9 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
       return;
     }
     if (isActive) {
-      this.treeElement.expand();
+      this.navigatorView.expandNode(this);
     } else {
-      this.treeElement.collapse();
+      this.navigatorView.collapseNode(this);
     }
   }
 

@@ -73,13 +73,19 @@ class NodeWorker implements Api.HostRuntime.Worker {
   }
 
   set onerror(listener: (event: unknown) => void) {
-    void this.#workerPromise.then(worker => {
-      worker.on('error', (error: Error) => {
-        if (!this.#disposed) {
-          listener({type: 'error', ...error});
-        }
-      });
-    });
+    void this.#workerPromise.then(
+        worker => {
+          worker.on('error', (error: Error) => {
+            if (!this.#disposed) {
+              listener({type: 'error', ...error, message: error.message, error});
+            }
+          });
+        },
+        (error: Error) => {
+          if (!this.#disposed) {
+            listener({type: 'error', ...error, message: error.message, error});
+          }
+        });
   }
 }
 

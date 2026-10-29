@@ -1637,6 +1637,8 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   #renderAsSubtree = false;
   #skipProto = false;
   #skipGettersAndSetters = false;
+  #observedNodes = new Set<ObjectTreeNodeBase>();
+  #wasConnectedToTemplateOrDocument = false;
   readonly #view: ObjectTreeView;
 
   constructor(element?: HTMLElement, view: ObjectTreeView = OBJECT_TREE_DEFAULT_VIEW) {
@@ -1673,6 +1675,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
       child.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
       child.addEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
       child.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+      this.#observedNodes.add(child);
       if (child.expanded) {
         await this.#populateChildrenIfNeeded(child);
       }
@@ -1748,12 +1751,23 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     if (val === this.#objectTree) {
       return;
     }
-    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#unobserveAll();
     this.#objectTree = val;
     this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
     this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
     this.requestUpdate();
+  }
+
+  #unobserveAll(): void {
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    for (const child of this.#observedNodes) {
+      child.removeEventListener(ObjectTreeNodeBase.Events.FILTER_CHANGED, this.requestUpdate, this);
+      child.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+      child.removeEventListener(ObjectTreeNodeBase.Events.VALUE_CHANGED, this.requestUpdate, this);
+      child.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
+    }
+    this.#observedNodes.clear();
   }
 
   get linkifier(): Components.Linkifier.Linkifier|undefined {
@@ -1793,15 +1807,26 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   }
 
   override async performUpdate(): Promise<void> {
+    const root = this.contentElement.getRootNode();
+    if (root instanceof Document || root instanceof DocumentFragment || root instanceof ShadowRoot) {
+      this.#wasConnectedToTemplateOrDocument = true;
+    } else if (this.#wasConnectedToTemplateOrDocument) {
+      this.#unobserveAll();
+      return;
+    }
     if (this.#objectTree?.expanded) {
       await this.#populateChildrenIfNeeded(this.#objectTree);
     }
     this.#view(this, undefined, this.contentElement);
   }
 
+  override willHide(): void {
+    super.willHide();
+    this.#unobserveAll();
+  }
+
   override onDetach(): void {
-    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
-    this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.#unobserveAll();
   }
 
   override wasShown(): void {
@@ -1810,6 +1835,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     this.#objectTree?.removeEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
     this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.CHILDREN_CHANGED, this.requestUpdate, this);
     this.#objectTree?.addEventListener(ObjectTreeNodeBase.Events.EXPANDED_CHANGED, this.requestUpdate, this);
+    this.requestUpdate();
   }
 }
 

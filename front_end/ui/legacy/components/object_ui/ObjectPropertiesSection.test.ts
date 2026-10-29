@@ -838,6 +838,58 @@ describeWithEnvironment('ObjectPropertiesSection', () => {
     assert.exists(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="foo"]'));
     assert.isNull(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="get foo"]'));
     assert.isNull(treeWidget.contentElement.querySelector('[data-object-property-name-for-test="set foo"]'));
+    treeWidget.detach();
+  });
+
+  it('removes root and child node listeners when ObjectTreeWidget is hidden or switched to another tree', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 1});
+    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    objectTree.expanded = true;
+
+    const treeWidget = new ObjectUI.ObjectPropertiesSection.ObjectTreeWidget();
+    treeWidget.objectTree = objectTree;
+    renderElementIntoDOM(treeWidget);
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    const child = objectTree.children?.properties?.[0];
+    assert.exists(child);
+    const hasWidgetListener = (node: ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase): boolean =>
+        Boolean(node.listeners?.get(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED)) &&
+        Array
+            .from(node.listeners?.get(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED) ??
+                  [])
+            .some(tuple => tuple.thisObject === treeWidget);
+
+    assert.isTrue(hasWidgetListener(objectTree));
+    assert.isTrue(hasWidgetListener(child));
+
+    const secondObject = SDK.RemoteObject.RemoteObject.fromLocalObject({bar: 2});
+    const secondObjectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(secondObject, {
+      readOnly: true,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+    secondObjectTree.expanded = true;
+    treeWidget.objectTree = secondObjectTree;
+    await UI.Widget.Widget.allUpdatesComplete;
+    await raf();
+
+    assert.isFalse(hasWidgetListener(objectTree));
+    assert.isFalse(hasWidgetListener(child));
+
+    const secondChild = secondObjectTree.children?.properties?.[0];
+    assert.exists(secondChild);
+    assert.isTrue(hasWidgetListener(secondObjectTree));
+    assert.isTrue(hasWidgetListener(secondChild));
+
+    treeWidget.setHideOnDetach();
+    treeWidget.detach();
+
+    assert.isFalse(hasWidgetListener(secondObjectTree));
+    assert.isFalse(hasWidgetListener(secondChild));
   });
 
   it('does not edit readonly values', async () => {

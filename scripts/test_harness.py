@@ -134,6 +134,12 @@ class DevToolsTestHarness(unittest.TestCase):
         ] + abs_test_files
         return self.run_test_with_rdb(cmd)
 
+    def run_node_unit_test(self, test_file):
+        abs_test_file = self._resolve_test_file(test_file)
+        return self.run_test_with_rdb([
+            os.path.join(self.gen_dir, "test/unit/run-mocha.js"), abs_test_file
+        ])
+
     def run_e2e_test(self, test_file):
         abs_test_file = self._resolve_test_file(test_file)
         return self.run_test_with_rdb([
@@ -320,6 +326,26 @@ class DevToolsTestHarness(unittest.TestCase):
             results[0].get('testId'),
             'test/harness/unit/before_each_hook_fail.test.ts:block:run')
         self.assertEqual(results[0].get('status'), 'FAIL')
+
+    def test_node_unit_errors(self):
+        results, exit_code = self.run_node_unit_test(
+            "test/harness/unit/errors.test.ts")
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(
+            len(results), 4,
+            f"Expected exactly 4 test results, got {len(results)}")
+        self.assertEqual(results[0].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_1:run_1')
+        self.assertEqual(results[0].get('status'), 'PASS')
+        self.assertEqual(results[1].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_1:run_2')
+        self.assertEqual(results[1].get('status'), 'PASS')
+        self.assertEqual(results[2].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_2:run_3')
+        self.assertEqual(results[2].get('status'), 'FAIL')
+        self.assertEqual(results[3].get('testId'),
+                         'test/harness/unit/errors.test.ts:block_2:run_4')
+        self.assertEqual(results[3].get('status'), 'PASS')
 
     def test_unit_bail(self):
         abs_test_file = self._resolve_test_file(

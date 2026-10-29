@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 
 describe('block_1', function() {
   it('run_1', () => {
@@ -16,6 +16,8 @@ describe('block_1', function() {
 });
 
 describe('block_2', () => {
+  beforeEach(async () => {});
+
   it('run_3', () => {
     assert.strictEqual(1 + 1, 3, 'Failing test');
   });

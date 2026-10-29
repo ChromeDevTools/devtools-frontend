@@ -23,9 +23,9 @@ type OmitOptions = 'reporter'|'allowUncaught'|'retries';
 
 function optionsWithDefalts(options: Options): Options {
   const withDefaults = {
-    // This should make mocha crash on uncaught errors.
-    // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
-    allowUncaught: true,
+    // Setting allowUncaught to true causes Mocha to silently abort test runs
+    // when a synchronous test fails after an async hook (crbug.com/505974404).
+    allowUncaught: false,
     retries: TestConfig.retries,
     reporter: ResultsDbReporter,
     slow: 1000,

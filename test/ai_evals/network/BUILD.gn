@@ -5,12 +5,20 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("network") {
-  sources = [ "server-error-5xx.test.ts" ]
+  sources = [
+    "network-200-data-schema-mismatch.test.ts",
+    "network-200-earlier-script-error.test.ts",
+    "network-200-hidden-css-container.test.ts",
+    "network-302-unexpected-redirect.test.ts",
+    "network-400-cookies-header-size.test.ts",
+    "network-400-invalid-parameter.test.ts",
+    "network-401-authentication-error.test.ts",
+    "network-500-server-error.test.ts",
+  ]
 
   ts_deps = [
     "..:harness_library",
     "../../e2e/helpers",
     "../helpers",
-    "../report",
   ]
 }

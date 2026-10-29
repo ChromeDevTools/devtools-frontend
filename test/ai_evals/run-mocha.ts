@@ -13,6 +13,8 @@ import {run} from '../shared/run-mocha.js';
 import {validateEvalEnvironment} from './helpers/eval-environment.js';
 import {devtoolsAiEvalTestInterface} from './mocha-interface.js';
 
+TestConfig.isAiEvalTest = true;
+
 validateEvalEnvironment({exitOnError: true});
 
 // Returns true if the provided Chrome binary path points to the "Chrome for

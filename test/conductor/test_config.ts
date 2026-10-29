@@ -53,6 +53,7 @@ interface Config {
   shardNumber: number;
   shardBias: number;
   isAiAgent: boolean;
+  isAiEvalTest: boolean;
   isLuci: boolean;
   isPerfTest: boolean;
   expectationsFile?: string;
@@ -212,6 +213,7 @@ export const TestConfig: Config = {
   shardNumber: options['shard-number'],
   shardBias: options['shard-bias'],
   isAiAgent: isAIAgent(),
+  isAiEvalTest: false,
   isLuci: process.env['LUCI_CONTEXT'] !== undefined,
   isPerfTest: false,
   expectationsFile: options['expectations-file'],

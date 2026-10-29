@@ -54,6 +54,7 @@ generated_file("test_inputs") {
 
   deps = [
     ":eval_tests",
+    "network",
     "performance",
   ]
 }

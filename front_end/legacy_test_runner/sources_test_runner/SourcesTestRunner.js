@@ -36,8 +36,9 @@ export const dumpNavigatorView = function(navigatorView, dumpIcons) {
       }
     }
     titleText += treeElement.title;
-    if (treeElement.nodeType === Sources.NavigatorView.Types.FileSystem ||
-        treeElement.nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
+    const nodeType = innerNavigatorView.nodeForTreeElement(treeElement)?.type;
+    if (nodeType === Sources.NavigatorView.Types.FileSystem ||
+        nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
       const hasMappedFiles = treeElement.listItemElement.classList.contains('has-mapped-files');
       if (!hasMappedFiles) {
         titleText += ' [dimmed]';

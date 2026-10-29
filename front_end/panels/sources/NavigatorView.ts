@@ -531,6 +531,16 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
 
   setNodeForTreeElement(treeElement: UI.TreeOutline.TreeElement, node: NavigatorTreeNode): void {
     this.treeElementNodes.set(treeElement, node);
+    if (node instanceof NavigatorFolderTreeNode || node instanceof NavigatorGroupTreeNode) {
+      node.updateTooltip(treeElement);
+      UI.ARIAUtils.setLabel(treeElement.listItemElement, `${treeElement.title}, ${node.type}`);
+    }
+    if (treeElement.selected) {
+      this.setNodeSelected(node);
+    }
+    if (treeElement.expanded) {
+      this.setNodeExpanded(node);
+    }
   }
 
   nodeForTreeElement(treeElement: UI.TreeOutline.TreeElement): NavigatorTreeNode|undefined {
@@ -1477,140 +1487,6 @@ export class NavigatorView extends NavigatorViewBase implements SDK.TargetManage
   }
 }
 
-export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
-  private readonly nodeType: string;
-  private readonly navigatorView: NavigatorView;
-  node!: NavigatorTreeNode;
-  private hovered?: boolean;
-  private isIgnoreListed?: boolean;
-
-  constructor(navigatorView: NavigatorView, type: string, title: string, expandable = true) {
-    super('', expandable, NavigatorFolderTreeElement.#contextForType(type));
-    this.listItemElement.classList.add('navigator-' + type + '-tree-item', 'navigator-folder-tree-item');
-    UI.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
-    this.nodeType = type;
-    this.title = title;
-    this.tooltip = title;
-    this.navigatorView = navigatorView;
-    this.updateIcon();
-  }
-
-  updateIcon(): void {
-    const iconType = NavigatorFolderTreeElement.#iconTypeForType(this.nodeType);
-    this.setLeadingIcons([html`<devtools-icon name=${iconType}></devtools-icon>`]);
-  }
-
-  static #iconTypeForType(type: string): string {
-    switch (type) {
-      case Types.Domain:
-        return 'cloud';
-      case Types.Frame:
-        return 'frame';
-      case Types.Worker:
-        return 'gears';
-      case Types.Authored:
-        return 'code';
-      case Types.Deployed:
-        return 'deployed';
-      case Types.AutomaticFileSystem:
-        return 'folder-asterisk';
-    }
-    return 'folder';
-  }
-
-  override onattach(): void {
-    this.collapse();
-    this.node.onattach();
-    this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
-    this.listItemElement.addEventListener('mousemove', this.mouseMove.bind(this), false);
-    this.listItemElement.addEventListener('mouseleave', this.mouseLeave.bind(this), false);
-  }
-
-  setIgnoreListed(isIgnoreListed: boolean): void {
-    if (this.isIgnoreListed !== isIgnoreListed) {
-      this.isIgnoreListed = isIgnoreListed;
-      this.listItemElement.classList.toggle('is-ignore-listed', isIgnoreListed);
-      this.updateTooltip();
-    }
-  }
-
-  setFromSourceMap(isFromSourceMap: boolean): void {
-    this.listItemElement.classList.toggle('is-from-source-map', isFromSourceMap);
-  }
-
-  setNode(node: NavigatorTreeNode): void {
-    this.navigatorView.setNodeForTreeElement(this, node);
-    this.node = node;
-    this.updateTooltip();
-    UI.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
-    if (this.selected) {
-      this.navigatorView.setNodeSelected(node);
-    }
-    if (this.expanded) {
-      this.navigatorView.setNodeExpanded(node);
-    }
-  }
-
-  private updateTooltip(): void {
-    if (this.node.tooltip) {
-      this.tooltip = this.node.tooltip;
-    } else {
-      const paths = [];
-      let currentNode: NavigatorTreeNode|null = this.node;
-      while (currentNode && !currentNode.isRoot() && currentNode.type === this.node.type) {
-        paths.push(currentNode.title);
-        currentNode = currentNode.parent;
-      }
-      paths.reverse();
-      let tooltip = paths.join('/');
-      if (this.isIgnoreListed) {
-        tooltip = i18nString(UIStrings.sIgnoreListed, {PH1: tooltip});
-      }
-      this.tooltip = tooltip;
-    }
-  }
-
-  private handleContextMenuEvent(event: Event): void {
-    if (!this.node || !(this.node instanceof NavigatorFolderTreeNode || this.node instanceof NavigatorGroupTreeNode)) {
-      return;
-    }
-    this.navigatorView.selectNode(this.node);
-    this.navigatorView.handleFolderContextMenu(event, this.node);
-  }
-
-  private mouseMove(_event: Event): void {
-    if (this.hovered || !this.node) {
-      return;
-    }
-    this.hovered = true;
-    this.navigatorView.folderHovered(this.node, true);
-  }
-
-  private mouseLeave(_event: Event): void {
-    if (!this.node) {
-      return;
-    }
-    this.hovered = false;
-    this.navigatorView.folderHovered(this.node, false);
-  }
-
-  static #contextForType(type: string): string {
-    switch (type) {
-      case Types.Domain:
-        return 'domain';
-      case Types.Frame:
-        return 'frame';
-      case Types.Worker:
-        return 'worker';
-      case Types.Authored:
-        return 'authored';
-      case Types.Deployed:
-        return 'deployed';
-    }
-    return 'folder';
-  }
-}
-
 export interface NavigatorRecursiveTreeNodeProperties {
   exclusivelySourceMapped: boolean|null;
   exclusivelyIgnored: boolean|null;
@@ -1647,6 +1523,105 @@ export class NavigatorTreeNode {
       exclusivelyContentScripts: null,
       exclusivelyThirdParty: null,
     };
+  }
+
+  updateTooltip(treeElement?: UI.TreeOutline.TreeElement): void {
+    if (!treeElement) {
+      return;
+    }
+    if (this.tooltip) {
+      treeElement.tooltip = this.tooltip;
+      return;
+    }
+    const paths = [];
+    let currentNode: NavigatorTreeNode|null = this;
+    while (currentNode && !currentNode.isRoot() && currentNode.type === this.type) {
+      paths.push(currentNode.title);
+      currentNode = currentNode.parent;
+    }
+    paths.reverse();
+    let tooltip = paths.join('/');
+    if (treeElement.listItemElement.classList.contains('is-ignore-listed') ||
+        Boolean(this.recursiveProperties.exclusivelyIgnored)) {
+      tooltip = i18nString(UIStrings.sIgnoreListed, {PH1: tooltip});
+    }
+    treeElement.tooltip = tooltip;
+  }
+
+  static #iconTypeForType(type: string): string {
+    switch (type) {
+      case Types.Domain:
+        return 'cloud';
+      case Types.Frame:
+        return 'frame';
+      case Types.Worker:
+        return 'gears';
+      case Types.Authored:
+        return 'code';
+      case Types.Deployed:
+        return 'deployed';
+      case Types.AutomaticFileSystem:
+        return 'folder-asterisk';
+    }
+    return 'folder';
+  }
+
+  static #contextForType(type: string): string {
+    switch (type) {
+      case Types.Domain:
+        return 'domain';
+      case Types.Frame:
+        return 'frame';
+      case Types.Worker:
+        return 'worker';
+      case Types.Authored:
+        return 'authored';
+      case Types.Deployed:
+        return 'deployed';
+    }
+    return 'folder';
+  }
+
+  protected createFolderTreeElement(title: string, node: NavigatorTreeNode,
+                                    expandable = true): UI.TreeOutline.TreeElement {
+    const treeElement = new UI.TreeOutline.TreeElement('', expandable, NavigatorTreeNode.#contextForType(this.type));
+    treeElement.listItemElement.classList.add('navigator-' + this.type + '-tree-item', 'navigator-folder-tree-item');
+    treeElement.title = title;
+    treeElement.tooltip = title;
+    const iconType = NavigatorTreeNode.#iconTypeForType(this.type);
+    treeElement.setLeadingIcons([html`<devtools-icon name=${iconType}></devtools-icon>`]);
+    this.navigatorView.setNodeForTreeElement(treeElement, node);
+    treeElement.onattach = () => {
+      treeElement.collapse();
+      this.navigatorView.nodeForTreeElement(treeElement)?.onattach();
+    };
+    let hovered = false;
+    treeElement.listItemElement.addEventListener('contextmenu', (event: Event) => {
+      const activeNode = this.navigatorView.nodeForTreeElement(treeElement);
+      if (!activeNode ||
+          !(activeNode instanceof NavigatorFolderTreeNode || activeNode instanceof NavigatorGroupTreeNode)) {
+        return;
+      }
+      this.navigatorView.selectNode(activeNode);
+      this.navigatorView.handleFolderContextMenu(event, activeNode);
+    }, false);
+    treeElement.listItemElement.addEventListener('mousemove', (_event: Event) => {
+      const activeNode = this.navigatorView.nodeForTreeElement(treeElement);
+      if (hovered || !activeNode) {
+        return;
+      }
+      hovered = true;
+      this.navigatorView.folderHovered(activeNode, true);
+    }, false);
+    treeElement.listItemElement.addEventListener('mouseleave', (_event: Event) => {
+      const activeNode = this.navigatorView.nodeForTreeElement(treeElement);
+      if (!activeNode) {
+        return;
+      }
+      hovered = false;
+      this.navigatorView.folderHovered(activeNode, false);
+    }, false);
+    return treeElement;
   }
 
   treeNode(): UI.TreeOutline.TreeElement {
@@ -2064,7 +2039,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   readonly folderPath: Platform.DevToolsPath.EncodedPathString;
   readonly origin: Platform.DevToolsPath.UrlString;
   override title: string;
-  treeElement!: NavigatorFolderTreeElement|null;
+  treeElement!: UI.TreeOutline.TreeElement|null;
   constructor(
       navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
       folderPath: Platform.DevToolsPath.EncodedPathString, title: string, origin: Platform.DevToolsPath.UrlString) {
@@ -2103,8 +2078,12 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
       return;
     }
 
-    this.treeElement.setFromSourceMap(this.recursiveProperties.exclusivelySourceMapped || false);
-    this.treeElement.setIgnoreListed(this.recursiveProperties.exclusivelyIgnored || false);
+    this.treeElement.listItemElement.classList.toggle('is-from-source-map',
+                                                      Boolean(this.recursiveProperties.exclusivelySourceMapped));
+    this.treeElement.listItemElement.classList.toggle('is-ignore-listed',
+                                                      Boolean(this.recursiveProperties.exclusivelyIgnored));
+    const activeNode = this.navigatorView.nodeForTreeElement(this.treeElement) ?? this;
+    activeNode.updateTooltip(this.treeElement);
 
     if (!this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
@@ -2124,14 +2103,12 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     this.treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
   }
 
-  private createTreeElement(title: string, node: NavigatorTreeNode): NavigatorFolderTreeElement {
-    const treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, title);
-    treeElement.setNode(node);
-    return treeElement;
+  private createTreeElement(title: string, node: NavigatorTreeNode): UI.TreeOutline.TreeElement {
+    return this.createFolderTreeElement(title, node);
   }
 
   override wasPopulated(): void {
-    if (this.treeElement?.node !== this) {
+    if (!this.treeElement || this.navigatorView.nodeForTreeElement(this.treeElement) !== this) {
       return;
     }
     this.addChildrenRecursive();
@@ -2164,7 +2141,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
       this.treeElement.title = this.treeElement.title + '/' + node.title;
       (node as NavigatorFolderTreeNode).treeElement = this.treeElement;
       node.updateTitle();
-      this.treeElement.setNode(node);
+      this.navigatorView.setNodeForTreeElement(this.treeElement, node);
       return;
     }
 
@@ -2196,7 +2173,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
 
       if (!this.isPopulated()) {
         this.treeElement.title = titleText;
-        this.treeElement.setNode(this);
+        this.navigatorView.setNodeForTreeElement(this.treeElement, this);
         for (let i = 0; i < nodes.length; ++i) {
           (nodes[i] as NavigatorFolderTreeNode).treeElement = null;
           nodes[i].isMerged = false;
@@ -2214,9 +2191,10 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         this.navigatorView.appendChild(oldTreeElement.parent, treeElement);
       }
 
-      const wasExpanded = this.navigatorView.isNodeExpanded(oldTreeElement.node);
-      oldTreeElement.setNode(nodes[nodes.length - 1]);
+      const oldTreeElementNode = this.navigatorView.nodeForTreeElement(oldTreeElement);
+      const wasExpanded = Boolean(oldTreeElementNode && this.navigatorView.isNodeExpanded(oldTreeElementNode));
       oldTreeElement.title = nodes.map(node => node.title).join('/');
+      this.navigatorView.setNodeForTreeElement(oldTreeElement, nodes[nodes.length - 1]);
       if (oldTreeElement.parent) {
         this.navigatorView.removeChild(oldTreeElement.parent, oldTreeElement);
       }
@@ -2244,7 +2222,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   readonly project: Workspace.Workspace.Project|null;
   override title: string;
   readonly frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
-  private treeElement?: NavigatorFolderTreeElement;
+  private treeElement?: UI.TreeOutline.TreeElement;
   constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
               title: string, tooltip?: string, frame?: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(navigatorView, id, type, tooltip);
@@ -2259,8 +2237,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
       return this.treeElement;
     }
     const expandable = !(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem);
-    this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, expandable);
-    this.treeElement.setNode(this);
+    this.treeElement = this.createFolderTreeElement(this.title, this, expandable);
     this.updateTrailingIcons();
     return this.treeElement;
   }

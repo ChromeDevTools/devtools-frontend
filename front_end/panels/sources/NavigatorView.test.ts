@@ -492,14 +492,45 @@ describeWithEnvironment('NavigatorView', () => {
     });
   });
 
-  describe('NavigatorFolderTreeElement', () => {
+  describe('folder and group tree elements', () => {
     it('renders a devtools-icon with the appropriate icon type in leading icons', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
-      const folderTreeElement = new Sources.NavigatorView.NavigatorFolderTreeElement(
-          navigatorView, Sources.NavigatorView.Types.Domain, 'example.com');
-      const icon = folderTreeElement.listItemElement.querySelector('.leading-icons devtools-icon');
+      const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
+          navigatorView, null, 'domain:example.com', Sources.NavigatorView.Types.Domain, 'example.com');
+      const treeElement = groupNode.treeNode();
+      const icon = treeElement.listItemElement.querySelector('.leading-icons devtools-icon');
       assert.exists(icon);
       assert.strictEqual(icon.getAttribute('name'), 'cloud');
+    });
+
+    it('computes joined path tooltip for nested NavigatorFolderTreeNode', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/components/button.js`;
+      const {project} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const folderTreeElement = getTreeElement(navigatorView, 'src/components');
+      assert.strictEqual(folderTreeElement.tooltip, 'src/components');
+
+      project.removeProject();
+    });
+
+    it('appends ignore-listed suffix to folder tooltip when folder is exclusively ignore-listed', async () => {
+      const mainFrame = await getMainFrame(target);
+      const url = urlString`http://example.com/src/script.js`;
+      const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+      Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
+
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      await navigatorView.updateComplete;
+
+      const folderTreeElement = getTreeElement(navigatorView, 'src');
+      assert.strictEqual(folderTreeElement.tooltip, 'src (ignore listed)');
+
+      project.removeProject();
     });
   });
 
@@ -648,19 +679,17 @@ describeWithEnvironment('NavigatorView', () => {
       project.removeProject();
     });
 
-    it('updates treeElement <-> NavigatorTreeNode association on NavigatorFolderTreeElement.setNode()', () => {
+    it('updates treeElement <-> NavigatorTreeNode association on NavigatorView.setNodeForTreeElement()', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       const node1 = new Sources.NavigatorView.NavigatorGroupTreeNode(navigatorView, null, 'group1',
                                                                      Sources.NavigatorView.Types.Frame, 'Group 1');
       const node2 = new Sources.NavigatorView.NavigatorGroupTreeNode(navigatorView, null, 'group2',
                                                                      Sources.NavigatorView.Types.Frame, 'Group 2');
-      const folderTreeElement = new Sources.NavigatorView.NavigatorFolderTreeElement(
-          navigatorView, Sources.NavigatorView.Types.Frame, 'Group');
+      const folderTreeElement = node1.treeNode();
 
-      folderTreeElement.setNode(node1);
       assert.strictEqual(navigatorView.nodeForTreeElement(folderTreeElement), node1);
 
-      folderTreeElement.setNode(node2);
+      navigatorView.setNodeForTreeElement(folderTreeElement, node2);
       assert.strictEqual(navigatorView.nodeForTreeElement(folderTreeElement), node2);
     });
   });
@@ -1221,9 +1250,9 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const folderTreeElement =
-          getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      const folderNode = folderTreeElement.node;
+      const folderTreeElement = getTreeElement(navigatorView, 'src');
+      const folderNode = navigatorView.nodeForTreeElement(folderTreeElement);
+      assert.exists(folderNode);
       assert.isFalse(navigatorView.isNodeExpanded(folderNode));
       assert.isFalse(folderNode.isPopulated());
       assert.lengthOf(folderTreeElement.children(), 0);
@@ -1249,9 +1278,9 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const folderTreeElement =
-          getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      const folderNode = folderTreeElement.node;
+      const folderTreeElement = getTreeElement(navigatorView, 'src');
+      const folderNode = navigatorView.nodeForTreeElement(folderTreeElement);
+      assert.exists(folderNode);
       navigatorView.expandNode(folderNode);
       assert.isTrue(navigatorView.isNodeExpanded(folderNode));
       assert.isTrue(folderTreeElement.expanded);
@@ -1314,9 +1343,9 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const folderTreeElement =
-          getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      const folderNode = folderTreeElement.node;
+      const folderTreeElement = getTreeElement(navigatorView, 'src');
+      const folderNode = navigatorView.nodeForTreeElement(folderTreeElement);
+      assert.exists(folderNode);
       assert.isFalse(navigatorView.isNodeSelected(folderNode));
 
       openContextMenuOnRow(navigatorView, 'src');
@@ -1335,10 +1364,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
       navigatorView.revealUISourceCode(uiSourceCode1);
 
-      const mergedTreeElement =
-          getTreeElement(navigatorView, 'src/components') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      navigatorView.expandNode(mergedTreeElement.node);
-      assert.isTrue(navigatorView.isNodeExpanded(mergedTreeElement.node));
+      const mergedTreeElement = getTreeElement(navigatorView, 'src/components');
+      const mergedNode = navigatorView.nodeForTreeElement(mergedTreeElement);
+      assert.exists(mergedNode);
+      navigatorView.expandNode(mergedNode);
+      assert.isTrue(navigatorView.isNodeExpanded(mergedNode));
 
       // Add a sibling folder under "src/utils/math.js".
       const url2 = urlString`http://example.com/src/utils/math.js`;
@@ -1346,8 +1376,10 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       // "src" should now be its own unmerged row and remain expanded.
-      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      assert.isTrue(navigatorView.isNodeExpanded(srcTreeElement.node));
+      const srcTreeElement = getTreeElement(navigatorView, 'src');
+      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
+      assert.exists(srcNode);
+      assert.isTrue(navigatorView.isNodeExpanded(srcNode));
       assert.isTrue(srcTreeElement.expanded);
 
       project.removeProject();
@@ -1361,10 +1393,11 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const mergedTreeElement =
-          getTreeElement(navigatorView, 'src/components') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      navigatorView.selectNode(mergedTreeElement.node);
-      assert.isTrue(navigatorView.isNodeSelected(mergedTreeElement.node));
+      const mergedTreeElement = getTreeElement(navigatorView, 'src/components');
+      const mergedNode = navigatorView.nodeForTreeElement(mergedTreeElement);
+      assert.exists(mergedNode);
+      navigatorView.selectNode(mergedNode);
+      assert.isTrue(navigatorView.isNodeSelected(mergedNode));
 
       // Add a sibling folder under "src/utils/math.js".
       const url2 = urlString`http://example.com/src/utils/math.js`;
@@ -1372,9 +1405,11 @@ describeWithEnvironment('NavigatorView', () => {
       await navigatorView.updateComplete;
 
       // The unmerged "src" folder now takes over the tree element and receives the selection.
-      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const srcTreeElement = getTreeElement(navigatorView, 'src');
+      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
+      assert.exists(srcNode);
       assert.isTrue(srcTreeElement.selected);
-      assert.isTrue(navigatorView.isNodeSelected(srcTreeElement.node));
+      assert.isTrue(navigatorView.isNodeSelected(srcNode));
 
       project.removeProject();
     });
@@ -1389,16 +1424,19 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      const otherTreeElement =
-          getTreeElement(navigatorView, 'other') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const srcTreeElement = getTreeElement(navigatorView, 'src');
+      const otherTreeElement = getTreeElement(navigatorView, 'other');
+      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
+      const otherNode = navigatorView.nodeForTreeElement(otherTreeElement);
+      assert.exists(srcNode);
+      assert.exists(otherNode);
 
       srcTreeElement.select();
-      assert.isTrue(navigatorView.isNodeSelected(srcTreeElement.node));
+      assert.isTrue(navigatorView.isNodeSelected(srcNode));
 
-      srcTreeElement.setNode(otherTreeElement.node);
+      navigatorView.setNodeForTreeElement(srcTreeElement, otherNode);
 
-      assert.isTrue(navigatorView.isNodeSelected(otherTreeElement.node));
+      assert.isTrue(navigatorView.isNodeSelected(otherNode));
 
       project.removeProject();
     });
@@ -1413,17 +1451,20 @@ describeWithEnvironment('NavigatorView', () => {
       const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
       await navigatorView.updateComplete;
 
-      const srcTreeElement = getTreeElement(navigatorView, 'src') as Sources.NavigatorView.NavigatorFolderTreeElement;
-      const otherTreeElement =
-          getTreeElement(navigatorView, 'other') as Sources.NavigatorView.NavigatorFolderTreeElement;
+      const srcTreeElement = getTreeElement(navigatorView, 'src');
+      const otherTreeElement = getTreeElement(navigatorView, 'other');
+      const srcNode = navigatorView.nodeForTreeElement(srcTreeElement);
+      const otherNode = navigatorView.nodeForTreeElement(otherTreeElement);
+      assert.exists(srcNode);
+      assert.exists(otherNode);
 
-      navigatorView.expandNode(srcTreeElement.node);
-      assert.isTrue(navigatorView.isNodeExpanded(srcTreeElement.node));
-      assert.isFalse(navigatorView.isNodeExpanded(otherTreeElement.node));
+      navigatorView.expandNode(srcNode);
+      assert.isTrue(navigatorView.isNodeExpanded(srcNode));
+      assert.isFalse(navigatorView.isNodeExpanded(otherNode));
 
-      srcTreeElement.setNode(otherTreeElement.node);
+      navigatorView.setNodeForTreeElement(srcTreeElement, otherNode);
 
-      assert.isTrue(navigatorView.isNodeExpanded(otherTreeElement.node));
+      assert.isTrue(navigatorView.isNodeExpanded(otherNode));
 
       project.removeProject();
     });

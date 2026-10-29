@@ -14,7 +14,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as ChangeTracker from '../../models/change_tracker/change_tracker.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {getMatchedStylesWithBlankRule, getMatchedStylesWithStylesheet} from '../../testing/StyleHelpers.js';
@@ -22,6 +22,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 
+import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
 
 describeWithEnvironment('StylesPropertySection', () => {
@@ -2429,5 +2430,69 @@ describeWithEnvironment('StylesPropertySection', () => {
         stylesSidebarPane, matchedStyles, functionRule.style, functionRule.children(), 0,
         functionRule.nameWithParameters(), true);
     assert.isNull(functionSection.element.querySelector('.new-rule-toolbar'));
+  });
+
+  it('reconciles CSSVariableValueView child widget across CSSQuery updates', async () => {
+    const cssModel = createTarget({connection}).model(SDK.CSSModel.CSSModel);
+    assert.exists(cssModel);
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
+    const origin = Protocol.CSS.StyleSheetOrigin.Regular;
+    const styleSheetId = '0' as Protocol.DOM.StyleSheetId;
+    const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 10};
+    const containerNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    containerNode.id = 2 as Protocol.DOM.NodeId;
+    containerNode.domModel.returns(cssModel.domModel());
+    sinon.stub(cssModel.domModel(), 'getContainerForNode').resolves(containerNode);
+
+    const matchedStyles = await getMatchedStylesWithStylesheet({
+      cssModel,
+      origin,
+      styleSheetId,
+      matchedPayload: [{
+        rule: {
+          containerQueries: [{text: 'style(--foo: bar)', conditionText: 'style(--foo: bar)', styleSheetId}],
+          ruleTypes: [Protocol.CSS.CSSRuleType.ContainerRule],
+          selectorList: {selectors: [{text: 'div'}], text: 'div'},
+          origin,
+          styleSheetId,
+          style: {
+            cssProperties: [{name: '--foo', value: 'bar'}, {name: 'color', value: 'red'}],
+            shorthandEntries: [],
+            range,
+          },
+        },
+        matchingSelectors: [0],
+      }],
+      connection,
+    });
+
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, matchedStyles.nodeStyles()[0], 0, null, null, null);
+    renderElementIntoDOM(section.element);
+    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const queryElement = section.element.querySelector('.css-query');
+    assert.exists(queryElement);
+    const queryWidget = UI.Widget.Widget.get(queryElement);
+    assert.exists(queryWidget);
+    assert.instanceOf(queryWidget, ElementsComponents.CSSQuery.CSSQuery);
+
+    const firstPopoverElement = queryWidget.contentElement.querySelector('devtools-tooltip .css-variable-value-view');
+    assert.exists(firstPopoverElement);
+    const firstPopover = UI.Widget.Widget.get(firstPopoverElement);
+    assert.exists(firstPopover);
+    assert.instanceOf(firstPopover, ElementsComponents.CSSVariableValueView.CSSVariableValueView);
+
+    void queryWidget.performUpdate();
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const secondPopoverElement = queryWidget.contentElement.querySelector('devtools-tooltip .css-variable-value-view');
+    assert.exists(secondPopoverElement);
+    const secondPopover = UI.Widget.Widget.get(secondPopoverElement);
+    assert.strictEqual(secondPopover, firstPopover,
+                       'Expected CSSQuery to reconcile existing CSSVariableValueView widget instance across updates');
+    assert.isTrue(firstPopover.element.isConnected);
+    assert.deepEqual(queryWidget.children(), [firstPopover]);
   });
 });

@@ -12,9 +12,10 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import cssQueryStyles from './cssQuery.css.js';
-import type {CSSVariableValueView} from './CSSVariableValueView.js';
+import {CSSVariableValueView, type RegisteredPropertyDetails} from './CSSVariableValueView.js';
 
 const {render, html} = Lit;
+const {widget} = UI.Widget;
 
 export interface CSSQueryData {
   queryPrefix: string;
@@ -22,7 +23,7 @@ export interface CSSQueryData {
   queryText: string;
   onQueryTextClick?: (event: Event) => void;
   onLinkActivate?: (resolvedVariable: string|SDK.CSSMatchedStyles.CSSValueSource) => void;
-  getPopoverContents?: (variableName: string, variableValue: string|null) => CSSVariableValueView;
+  getRegisteredPropertyDetails?: (variableName: string) => RegisteredPropertyDetails | undefined;
   jslogContext: string;
 }
 
@@ -37,7 +38,7 @@ export interface ViewInput {
   queryText: TextSection[];
   onQueryTextClick?: (event: Event) => void;
   onLinkActivate?: (resolvedVariable: string|SDK.CSSMatchedStyles.CSSValueSource) => void;
-  getPopoverContents?: (variableName: string, variableValue: string|null) => CSSVariableValueView;
+  getRegisteredPropertyDetails?: (variableName: string) => RegisteredPropertyDetails | undefined;
   jslogContext?: string;
   matchedStyles?: SDK.CSSMatchedStyles.CSSMatchedStyles;
   style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
@@ -66,7 +67,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               input.onLinkActivate(variable ? variable.declaration : variableName);
             }
           };
-          const tooltipContents = input.getPopoverContents?.(variableName, variable?.value ?? null) ?? null;
           const tooltipId = `${input.tooltipPrefix || 'css-query'}-${index}-${variableName}`;
           const tooltip = {tooltipId};
           return html`
@@ -82,7 +82,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
               variant="rich"
               jslogContext="elements.css-var"
             >
-              ${tooltipContents ? html`<devtools-widget>${tooltipContents.element}</devtools-widget>` : Lit.nothing}
+              ${widget(CSSVariableValueView, {
+                variableName,
+                value: variable?.value,
+                details: input.getRegisteredPropertyDetails?.(variableName),
+              })}
             </devtools-tooltip>
           `;
         }
@@ -112,7 +116,7 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
   #queryText: TextSection[] = [];
   #onQueryTextClick?: (event: Event) => void;
   #onLinkActivate?: (resolvedVariable: string|SDK.CSSMatchedStyles.CSSValueSource) => void;
-  #getPopoverContents?: (variableName: string, variableValue: string|null) => CSSVariableValueView;
+  #getRegisteredPropertyDetails?: (variableName: string) => RegisteredPropertyDetails | undefined;
   #jslogContext?: string;
   #matchedStyles?: SDK.CSSMatchedStyles.CSSMatchedStyles;
   #style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
@@ -131,7 +135,7 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
     this.#queryText = [{text: data.queryText, isVariable: false}];
     this.#onQueryTextClick = data.onQueryTextClick;
     this.#onLinkActivate = data.onLinkActivate;
-    this.#getPopoverContents = data.getPopoverContents;
+    this.#getRegisteredPropertyDetails = data.getRegisteredPropertyDetails;
     this.#jslogContext = data.jslogContext;
     this.performUpdate();
   }
@@ -210,7 +214,7 @@ export class CSSQuery extends UI.Widget.Widget<ShadowRoot> {
       queryText: this.#queryText,
       onQueryTextClick: this.#onQueryTextClick,
       onLinkActivate: this.#onLinkActivate,
-      getPopoverContents: this.#getPopoverContents,
+      getRegisteredPropertyDetails: this.#getRegisteredPropertyDetails,
       jslogContext: this.#jslogContext,
       matchedStyles: this.#matchedStyles,
       style: this.#style,

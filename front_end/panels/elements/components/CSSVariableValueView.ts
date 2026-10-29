@@ -118,27 +118,25 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
 export class CSSVariableValueView extends UI.Widget.Widget {
   #view: View;
-  readonly variableName: string;
+  #variableName = '';
   #value: string|undefined;
-  readonly details: RegisteredPropertyDetails|undefined;
+  #details: RegisteredPropertyDetails|undefined;
 
-  constructor(
-      {
-        variableName,
-        value,
-        details,
-      }: {
-        variableName: string,
-        value: string|undefined,
-        details?: RegisteredPropertyDetails,
-      },
-      view: View = DEFAULT_VIEW,
-  ) {
-    super();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
     this.#view = view;
-    this.variableName = variableName;
-    this.details = details;
-    this.value = value;
+  }
+
+  get variableName(): string {
+    return this.#variableName;
+  }
+
+  set variableName(variableName: string) {
+    if (this.#variableName === variableName) {
+      return;
+    }
+    this.#variableName = variableName;
+    this.requestUpdate();
   }
 
   get value(): string|undefined {
@@ -146,8 +144,23 @@ export class CSSVariableValueView extends UI.Widget.Widget {
   }
 
   set value(value: string|undefined) {
+    if (this.#value === value) {
+      return;
+    }
     this.#value = value;
-    this.performUpdate();
+    this.requestUpdate();
+  }
+
+  get details(): RegisteredPropertyDetails|undefined {
+    return this.#details;
+  }
+
+  set details(details: RegisteredPropertyDetails|undefined) {
+    if (this.#details === details) {
+      return;
+    }
+    this.#details = details;
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -157,9 +170,9 @@ export class CSSVariableValueView extends UI.Widget.Widget {
 
   override performUpdate(): void {
     this.#view({
-      variableName: this.variableName,
+      variableName: this.#variableName,
       value: this.#value,
-      details: this.details,
+      details: this.#details,
     },
                undefined, this.contentElement);
   }

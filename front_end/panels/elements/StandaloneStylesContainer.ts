@@ -13,7 +13,7 @@ import {html, render} from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import * as ElementsComponents from './components/components.js';
+import type * as ElementsComponents from './components/components.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import type {StylesContainer} from './StylesContainer.js';
@@ -288,16 +288,11 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase imp
     return this.#sections;
   }
 
-  getVariablePopoverContents(
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string,
-      computedValue: string|null): ElementsComponents.CSSVariableValueView.CSSVariableValueView {
+  getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
+      ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|undefined {
     const registration = matchedStyles.getRegisteredProperty(variableName);
-    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
-      variableName,
-      value: computedValue ?? undefined,
-      // TODO: provide a goToDefinition to jump to the StylesSidebarPane
-      details: registration ? {registration, goToDefinition: () => {}} : undefined,
-    });
+    // TODO: provide a goToDefinition to jump to the StylesSidebarPane
+    return registration ? {registration, goToDefinition: () => {}} : undefined;
   }
 
   getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string):

@@ -12,10 +12,9 @@ import * as ElementsComponents from './components.js';
 
 describeWithEnvironment('CSSVariableValueView', () => {
   it('renders right tooltip', () => {
-    const view = new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
-      variableName: '--var-name',
-      value: 'pink',
-    });
+    const view = new ElementsComponents.CSSVariableValueView.CSSVariableValueView();
+    view.variableName = '--var-name';
+    view.value = 'pink';
     renderElementIntoDOM(view);
 
     assert.strictEqual(view.contentElement.querySelector('.variable-value-popup-wrapper')!.textContent!.trim(), 'pink');

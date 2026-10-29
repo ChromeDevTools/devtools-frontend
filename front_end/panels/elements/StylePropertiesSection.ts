@@ -1106,10 +1106,10 @@ export class StylePropertiesSection {
       onLinkActivate: async(resolvedVariable: string|SDK.CSSMatchedStyles.CSSValueSource): Promise<void> => {
         handleVarDefinitionActivate(resolvedVariable, this.stylesContainer);
       },
-      getPopoverContents: (variableName: string, variableValue: string|null):
-                              ElementsComponents.CSSVariableValueView.CSSVariableValueView => {
-        return this.stylesContainer.getVariablePopoverContents(this.matchedStyles, variableName, variableValue);
-      },
+      getRegisteredPropertyDetails:
+          (variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | undefined => {
+            return this.stylesContainer.getRegisteredPropertyDetails(this.matchedStyles, variableName);
+          },
       jslogContext: 'container-query',
     };
     if (style) {

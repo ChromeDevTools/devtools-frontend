@@ -36,9 +36,8 @@ export interface StylesContainer {
   forceUpdate(): void;
   hideAllPopovers(): void;
 
-  getVariablePopoverContents(
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string,
-      computedValue: string|null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
+  getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
+      ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|undefined;
   getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
       ElementsComponents.CSSVariableValueView.CSSVariableParserError|null;
   jumpToFunctionDefinition(functionName: string, treeScopeDistance: number): void;

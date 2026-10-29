@@ -714,7 +714,7 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
     });
   }
 
-  #getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
+  getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
       ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|undefined {
     const registration = matchedStyles.getRegisteredProperty(variableName);
     const goToDefinition = (): void => this.jumpToSection(variableName, REGISTERED_PROPERTY_SECTION_NAME);
@@ -723,19 +723,10 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
 
   getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
                          variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError|null {
-    const registrationDetails = this.#getRegisteredPropertyDetails(matchedStyles, variableName);
+    const registrationDetails = this.getRegisteredPropertyDetails(matchedStyles, variableName);
     return registrationDetails ?
         new ElementsComponents.CSSVariableValueView.CSSVariableParserError(registrationDetails) :
         null;
-  }
-
-  getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string,
-                             computedValue: string|null): ElementsComponents.CSSVariableValueView.CSSVariableValueView {
-    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
-      variableName,
-      value: computedValue ?? undefined,
-      details: this.#getRegisteredPropertyDetails(matchedStyles, variableName),
-    });
   }
 
   private async fetchComputedStylesFor(nodeId: Protocol.DOM.NodeId|undefined): Promise<Map<string, string>|null> {

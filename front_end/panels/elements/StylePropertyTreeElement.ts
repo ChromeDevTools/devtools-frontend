@@ -419,8 +419,6 @@ export class VariableRenderer extends VariableRendererBase {
 
     const varCall = this.#treeElement?.getTracingTooltip(
         'var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
-    const tooltipContents =
-        this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
@@ -437,7 +435,11 @@ export class VariableRenderer extends VariableRendererBase {
         tooltipId ? html`<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
+            jslogContext=elements.css-var>${widget(ElementsComponents.CSSVariableValueView.CSSVariableValueView, {
+              variableName: match.name,
+              value: variableValue ?? undefined,
+              details: this.#stylesContainer.getRegisteredPropertyDetails(this.#matchedStyles, match.name),
+            })}</devtools-tooltip>` : nothing}`;
           // clang-format on
 
           const color = computedValue && Common.Color.parse(computedValue);
@@ -488,8 +490,6 @@ export class VariableNameRenderer extends VariableNameRendererBase {
     const onLinkActivate = (name: string): void =>
         handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
 
-    const tooltipContents =
-        this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
     const tooltip = tooltipId ? {tooltipId} : undefined;
     // clang-format off
@@ -501,7 +501,11 @@ export class VariableNameRenderer extends VariableNameRendererBase {
       }}></devtools-link-swatch>${tooltipId ? html`<devtools-tooltip
         id=${tooltipId}
         variant=rich
-        jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
+        jslogContext=elements.css-var>${widget(ElementsComponents.CSSVariableValueView.CSSVariableValueView, {
+          variableName: match.text,
+          value: variableValue ?? undefined,
+          details: this.#stylesContainer.getRegisteredPropertyDetails(this.#matchedStyles, match.text),
+        })}</devtools-tooltip>` : nothing}`;
       // clang-format on
   }
 }
@@ -2945,9 +2949,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     if (this.property.name.startsWith('--') &&
         !(this.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule)) {
-      const contents = this.#stylesContainer.getVariablePopoverContents(
-          this.matchedStyles(), this.property.name,
-          this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null);
+      const contents = new ElementsComponents.CSSVariableValueView.CSSVariableValueView();
+      contents.variableName = this.property.name;
+      contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
+      contents.details = this.#stylesContainer.getRegisteredPropertyDetails(this.matchedStyles(), this.property.name);
       const tooltipId = this.getTooltipId('custom-property-decl');
       this.nameElement.setAttribute('aria-details', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip(

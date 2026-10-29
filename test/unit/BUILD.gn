@@ -54,6 +54,8 @@ node_ts_library("mocha") {
     "run-mocha.ts",
   ]
   ts_deps = [
+    "../../front_end/core/common:bundle",
+    "../../front_end/core/host:bundle",
     "../conductor:implementation",
     "../shared",
   ]

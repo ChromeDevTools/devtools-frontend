@@ -1002,6 +1002,7 @@ export default defineConfig([
     name: 'Mocha test harness setup files',
     files: [
       'front_end/testing/test_setup.ts',
+      'test/scripts/mocha_hooks.ts',
       'test/unit/mocha-hooks.ts',
     ],
     rules: {

@@ -9659,6 +9659,6 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "ViewTimeline",
-    signatures: [["?options"]]
+    signatures: [["options"]]
   }
 ];

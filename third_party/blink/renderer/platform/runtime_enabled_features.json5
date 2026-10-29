@@ -3979,7 +3979,7 @@
     {
       // See crbug.com/40910996 crbug.com/569803503
       name: "InlineContainingBlockSkipOpaque",
-      status: "test",
+      status: "stable",
     },
     {
       name: "InlineCursorSkipNonIfc",
@@ -4060,12 +4060,13 @@
     {
       // https://chromestatus.com/feature/5152834368700416
       name: "InstallElement",
-      status: {"Android": "", "default": "test"},
-      origin_trial_feature_name: "InstallElement",
-      origin_trial_os: ["win", "mac", "linux", "chromeos"],
+      status: {
+        "Android": "",
+        "iOS": "",
+        "Fuchsia": "",
+        "default": "stable",
+      },
       public: true,
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
     },
     {
       name: "InstallOnDeviceSpeechRecognition",
@@ -5139,6 +5140,7 @@
     {
       name: "PermissionsPolicyForSharedWorkers",
       status: "experimental",
+      public: true,
     },
     {
       name: "PermissionsRequestRevoke",
@@ -5201,6 +5203,13 @@
     },
     {
       name: "PositionOutsideTabSpanCheckSiblingNode",
+      status: "stable",
+    },
+    {
+      // Kill switch for https://crbug.com/382679385 which recomputes the
+      // dimensions of an out-of-flow positioned box when computing dimensions
+      // changes its scrollbars.
+      name: "PositionTryFreezeScrollbars",
       status: "stable",
     },
     {
@@ -6722,6 +6731,10 @@
       status: "stable",
     },
     {
+      name: "SyncCrossDocumentAnimationTiming",
+      status: "stable",
+    },
+    {
       name: "SynthesizedKeyboardEventsForAccessibilityActions",
       status: "experimental",
     },
@@ -7187,6 +7200,10 @@
       },
     },
     {
+      name: "UsedPositionRelativeInsets",
+      status: "stable",
+    },
+    {
       // Android currently uses low-quality interpolation, while other platforms
       // default to medium-quality. This flag is for experimenting with changing
       // the value on Android. See: https://crbug.com/374315986.
@@ -7365,12 +7382,13 @@
     {
       // https://chromestatus.com/feature/5183481574850560
       name: "WebAppInstallation",
-      status: {"Android": "", "default": "test"},
-      origin_trial_feature_name: "WebAppInstallation",
-      origin_trial_os: ["win", "mac", "linux", "chromeos"],
+      status: {
+        "Android": "",
+        "iOS": "",
+        "Fuchsia": "",
+        "default": "stable",
+      },
       public: true,
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
     },
     {
       // This needs to be kept as a runtime flag

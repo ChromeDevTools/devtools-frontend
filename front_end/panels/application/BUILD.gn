@@ -194,6 +194,7 @@ devtools_ui_module("unittests") {
     "OpenedWindowDetailsView.test.ts",
     "OriginTrialTreeView.test.ts",
     "PreloadingTreeElement.test.ts",
+    "PrivateVerificationTokensView.test.ts",
     "ReportingApiTreeElement.test.ts",
     "ReportingApiView.test.ts",
     "ServiceWorkerCacheTreeElement.test.ts",

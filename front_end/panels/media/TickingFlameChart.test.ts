@@ -4,12 +4,14 @@
 
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
+import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as Media from './media.js';
 
@@ -34,5 +36,25 @@ describe('TickingFlameChart', () => {
     assert.strictEqual(flameChart.element.clientHeight, 400);
 
     chartWidget.detach();
+  });
+
+  it('adds a ThemeSupport listener when shown and removes it when hidden', () => {
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
+    const addSpy = sinon.spy(themeSupport, 'addEventListener');
+    const removeSpy = sinon.spy(themeSupport, 'removeEventListener');
+    const activeThemeListeners = (): number => {
+      const isThemeChange = (call: sinon.SinonSpyCall): boolean =>
+          call.args[0] === ThemeSupport.ThemeChangeEvent.eventName;
+      return addSpy.getCalls().filter(isThemeChange).length - removeSpy.getCalls().filter(isThemeChange).length;
+    };
+
+    const timeline = new Media.TickingFlameChart.TickingFlameChart(undefined, () => {});
+    assert.strictEqual(activeThemeListeners(), 0);
+
+    renderElementIntoDOM(timeline);
+    assert.strictEqual(activeThemeListeners(), 1);
+
+    timeline.detach();
+    assert.strictEqual(activeThemeListeners(), 0);
   });
 });

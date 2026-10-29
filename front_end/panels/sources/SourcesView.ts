@@ -464,10 +464,10 @@ export class SourcesView extends SourcesViewBase implements UI.SearchableView.Se
     if (wasSelected) {
       this.#currentUISourceCode = null;
       this.#visibleView = null;
+      this.#removeToolbarChangedListener();
     }
 
     // SourcesNavigator does not need to update on EditorClosed.
-    this.#removeToolbarChangedListener();
     this.#updateScriptViewToolbarItems();
 
     const data = {

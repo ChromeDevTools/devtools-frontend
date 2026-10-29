@@ -335,4 +335,40 @@ describeWithEnvironment('SourcesView', () => {
     assert.isTrue(editorClosedSpy.firstCall.args[0].data.wasSelected);
     sourcesView.detach();
   });
+
+  it('retains the toolbar listener of the active editor when a background editor is closed', async () => {
+    const {uiSourceCode: uiSourceCodeA} = createFileSystemUISourceCode({
+      url: urlString`file:///path/to/a.js`,
+      mimeType: 'application/javascript',
+    });
+    const {uiSourceCode: uiSourceCodeB} = createFileSystemUISourceCode({
+      url: urlString`file:///path/to/b.js`,
+      mimeType: 'application/javascript',
+    });
+
+    const view = createViewFunctionStub(Sources.SourcesView.SourcesView);
+    const sourcesView = new Sources.SourcesView.SourcesView(undefined, view);
+    renderElementIntoDOM(sourcesView);
+    await sourcesView.updateComplete;
+
+    const sourceFrameA = new Sources.UISourceCodeFrame.UISourceCodeFrame(uiSourceCodeA);
+    view.input.onEditorSelected({
+      currentFile: uiSourceCodeA,
+      currentView: sourceFrameA,
+      previousView: null,
+      userGesture: true,
+    });
+    await sourcesView.updateComplete;
+
+    assert.isTrue(sourceFrameA.hasEventListeners(Sources.UISourceCodeFrame.Events.TOOLBAR_ITEMS_CHANGED));
+
+    view.input.onEditorClosed(uiSourceCodeB);
+    assert.isTrue(sourceFrameA.hasEventListeners(Sources.UISourceCodeFrame.Events.TOOLBAR_ITEMS_CHANGED));
+
+    view.input.onEditorClosed(uiSourceCodeA);
+    assert.isFalse(sourceFrameA.hasEventListeners(Sources.UISourceCodeFrame.Events.TOOLBAR_ITEMS_CHANGED));
+
+    sourceFrameA.dispose();
+    sourcesView.detach();
+  });
 });

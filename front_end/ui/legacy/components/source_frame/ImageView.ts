@@ -301,18 +301,17 @@ export class ImageView extends ImageViewBase {
   }
 
   #workingCopyCommitted(): void {
-    void this.#updateContentIfNeeded().then(() => {
-      this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
-    });
+    void this.#updateContentIfNeeded(true);
   }
 
-  async #updateContentIfNeeded(): Promise<void> {
+  async #updateContentIfNeeded(notifyToolbarItemsChanged = false): Promise<void> {
     const content = await this.#contentProvider.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(content) || this.#cachedContent?.contentEqualTo(content)) {
       await this.#loadPromise;
       return;
     }
 
+    const shouldNotify = notifyToolbarItemsChanged || Boolean(this.#cachedContent);
     this.#cachedContent = content;
     this.#loadResolve?.();
     this.#loadResolve = undefined;
@@ -325,6 +324,9 @@ export class ImageView extends ImageViewBase {
       this.#dimensions = '';
       this.#aspectRatio = '';
       this.performUpdate();
+      if (shouldNotify) {
+        this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
+      }
       return;
     }
     this.#isUnavailable = false;
@@ -336,6 +338,9 @@ export class ImageView extends ImageViewBase {
     this.#size = i18n.ByteUtilities.bytesToString(size);
     this.performUpdate();
     await this.#loadPromise;
+    if (shouldNotify && this.#cachedContent === content) {
+      this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
+    }
   }
 
   #contextMenu(event: Event): void {

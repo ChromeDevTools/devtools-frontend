@@ -88,6 +88,32 @@ describeWithEnvironment('ImageView', () => {
     assert.isFalse(uiSourceCode.hasEventListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted));
   });
 
+  it('dispatches TOOLBAR_ITEMS_CHANGED when re-shown after working copy is committed while hidden', async () => {
+    const {uiSourceCode} = createContentProviderUISourceCode({
+      url: urlString`http://example.com/image.png`,
+      mimeType: 'image/png',
+      content: IMAGE_BASE64,
+    });
+    const imageView = new SourceFrame.ImageView.ImageView('image/png', uiSourceCode);
+    renderElementIntoDOM(imageView);
+    await imageView.toolbarItems();
+
+    let toolbarItemsChanged = false;
+    imageView.addEventListener(SourceFrame.ImageView.Events.TOOLBAR_ITEMS_CHANGED, () => {
+      toolbarItemsChanged = true;
+    });
+
+    imageView.detach();
+    uiSourceCode.setWorkingCopy('new-content');
+    uiSourceCode.commitWorkingCopy();
+
+    renderElementIntoDOM(imageView);
+    await imageView.toolbarItems();
+
+    assert.isTrue(toolbarItemsChanged, 'Expected TOOLBAR_ITEMS_CHANGED to be dispatched');
+    imageView.detach();
+  });
+
   it('waits for in-flight image load when toolbarItems is called concurrently with wasShown', async () => {
     const contentData = new TextUtils.ContentData.ContentData(IMAGE_BASE64, true, 'image/png');
     const contentProvider = new TextUtils.StaticContentProvider.StaticContentProvider(

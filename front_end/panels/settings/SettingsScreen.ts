@@ -1,7 +1,6 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import '../../ui/kit/kit.js';
 
@@ -12,7 +11,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
-import type {Card} from '../../ui/kit/kit.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -26,7 +24,7 @@ import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 import settingsScreenStyles from './settingsScreen.css.js';
 
 const {html, nothing, render, Directives: {ref, repeat}} = Lit;
-const {widget} = UI.Widget;
+const {widget, widgetRef} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -83,13 +81,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UI
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let settingsScreenInstance: SettingsScreen|undefined;
-
-function createSettingsCard(heading: Common.UIString.LocalizedString, ...content: HTMLElement[]): Card {
-  const card = document.createElement('devtools-card');
-  card.heading = heading;
-  card.append(...content);
-  return card;
-}
 
 export interface SettingsScreenViewInput {
   views: UI.View.View[];
@@ -356,22 +347,110 @@ interface SettingsTab {
   highlightObject(object: Object): void;
 }
 
+export interface GenericSettingsSection {
+  category: Common.Settings.SettingCategory;
+  heading: Common.UIString.LocalizedString;
+  settings: Array<Common.Settings.Setting<unknown>>;
+}
+
+export interface GenericSettingsTabViewInput {
+  sections: GenericSettingsSection[];
+  syncInfo: Host.InspectorFrontendHostAPI.SyncInformation;
+  onRestoreDefaults: () => void;
+}
+
+export interface GenericSettingsTabViewOutput {
+  highlightSetting?: (setting: Common.Settings.Setting<unknown>) => void;
+}
+
+export type GenericSettingsTabView =
+    (input: GenericSettingsTabViewInput, output: GenericSettingsTabViewOutput, target: HTMLElement) => void;
+
+export const GENERIC_SETTINGS_TAB_DEFAULT_VIEW: GenericSettingsTabView = (
+    input: GenericSettingsTabViewInput,
+    output: GenericSettingsTabViewOutput,
+    target: HTMLElement,
+    ): void => {
+  const settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
+  let syncSection: PanelComponents.SyncSection.SyncSection|undefined;
+  output.highlightSetting = (setting: Common.Settings.Setting<unknown>): void => {
+    const element = settingToControl.get(setting);
+    if (element) {
+      PanelUtils.highlightElement(element);
+    } else if (setting.name === 'receive-gdp-badges') {
+      void syncSection?.highlightReceiveBadgesSetting();
+    }
+  };
+  // clang-format off
+  render(
+      html`
+        <div class="settings-card-container-wrapper">
+          <div class="settings-multicolumn-card-container">
+            ${input.sections.map(section => html`
+              <devtools-card heading=${section.heading}>
+                ${section.category === Common.Settings.SettingCategory.ACCOUNT
+                    ? html`<devtools-widget
+                        ${widget(PanelComponents.SyncSection.SyncSection, {syncInfo: input.syncInfo})}
+                        ${widgetRef(PanelComponents.SyncSection.SyncSection, w => { syncSection = w; })}>
+                      </devtools-widget>`
+                    : html`
+                      <div ${ref(el => {
+                        if (!el) {
+                          return;
+                        }
+                        let childIndex = 0;
+                        for (const setting of section.settings) {
+                          if (setting.type() !== Common.Settings.SettingType.BOOLEAN &&
+                              setting.type() !== Common.Settings.SettingType.ENUM) {
+                            continue;
+                          }
+                          const child = el.children[childIndex++];
+                          if (child instanceof HTMLElement) {
+                            settingToControl.set(setting, child);
+                          }
+                        }
+                      })}>
+                        ${section.settings.map(setting => SettingsUI.SettingsUI.renderControlForSetting(setting))}
+                        ${section.category === Common.Settings.SettingCategory.EXTENSIONS
+                            ? Components.Linkifier.LinkHandlerSettingUI.instance().settingElement()
+                            : nothing}
+                      </div>
+                    `}
+              </devtools-card>
+            `)}
+            <devtools-button
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              .jslogContext=${'settings.restore-defaults-and-reload'}
+              @click=${input.onRestoreDefaults}>
+              ${i18nString(UIStrings.restoreDefaultsAndReload)}
+            </devtools-button>
+          </div>
+        </div>
+      `,
+      target,
+      {
+        container: {
+          classes: ['settings-tab-container'],
+          attributes: {
+            id: 'preferences-tab-content',
+            jslog: `${VisualLogging.pane('preferences')}`,
+          },
+        },
+      });
+  // clang-format on
+};
+
 export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
-  private readonly syncSection = new PanelComponents.SyncSection.SyncSection();
-  private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
-  private readonly containerElement: HTMLElement;
+  readonly #sections: GenericSettingsSection[] = [];
+  readonly #view: GenericSettingsTabView;
+  readonly #viewOutput: GenericSettingsTabViewOutput = {};
+  #syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};
   #updateSyncSectionTimerId = -1;
   #syncSectionUpdatePromise: Promise<void>|null = null;
 
-  constructor() {
-    super({jslog: `${VisualLogging.pane('preferences')}`});
-    this.element.classList.add('settings-tab-container');
-    this.element.id = 'preferences-tab-content';
-    this.containerElement =
-        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-
-    this.containerElement.classList.add('settings-multicolumn-card-container');
-    this.syncSection.markAsRoot();
+  constructor(element?: HTMLElement, view: GenericSettingsTabView = GENERIC_SETTINGS_TAB_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
 
     // AI, GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
     // AI settings are displayed in their own tab.
@@ -416,15 +495,24 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
       this.createSectionElement(sectionCategory, settingsForSection);
     }
 
-    const restoreAndReloadButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.restoreDefaultsAndReload), restoreAndReload,
-                                    {jslogContext: 'settings.restore-defaults-and-reload'});
-    this.containerElement.appendChild(restoreAndReloadButton);
+    this.requestUpdate();
+  }
 
-    function restoreAndReload(): void {
-      Common.Settings.Settings.instance().clearAll();
-      Components.Reload.reload();
-    }
+  #restoreAndReload(): void {
+    Common.Settings.Settings.instance().clearAll();
+    Components.Reload.reload();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          sections: this.#sections,
+          syncInfo: this.#syncInfo,
+          onRestoreDefaults: this.#restoreAndReload.bind(this),
+        },
+        this.#viewOutput,
+        this.contentElement,
+    );
   }
 
   static isSettingVisible(setting: SettingUIRegistration.SettingUIRegistration.RegisteredSettingUI): boolean {
@@ -434,6 +522,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(GenericSettingsTab, this);
     super.wasShown();
+    this.performUpdate();
     this.updateSyncSection();
   }
 
@@ -456,64 +545,36 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
         new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
             resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve))
             .then(syncInfo => {
-              this.syncSection.syncInfo = syncInfo;
+              this.#syncInfo = syncInfo;
+              this.requestUpdate();
               if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
                 this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
               }
             });
   }
 
-  private createExtensionSection(settings: SettingUIRegistration.SettingUIRegistration.RegisteredSettingUI[]): void {
-    const sectionName = Common.Settings.SettingCategory.EXTENSIONS;
-    const settingUI = Components.Linkifier.LinkHandlerSettingUI.instance();
-    const element = settingUI.settingElement();
-    this.createStandardSectionElement(sectionName, settings, element);
-  }
-
   private createSectionElement(category: Common.Settings.SettingCategory,
                                settings: SettingUIRegistration.SettingUIRegistration.RegisteredSettingUI[]): void {
     // Always create the EXTENSIONS section and append the link handling control.
-    if (category === Common.Settings.SettingCategory.EXTENSIONS) {
-      this.createExtensionSection(settings);
-    } else if (category === Common.Settings.SettingCategory.ACCOUNT && settings.length > 0) {
-      const syncCard = createSettingsCard(
-          Common.SettingRegistration.getLocalizedSettingsCategory(Common.SettingRegistration.SettingCategory.ACCOUNT),
-          this.syncSection.element);
-      this.containerElement.appendChild(syncCard);
-    } else if (settings.length > 0) {
-      this.createStandardSectionElement(category, settings);
+    if (category !== Common.Settings.SettingCategory.EXTENSIONS && settings.length === 0) {
+      return;
     }
-  }
-
-  private createStandardSectionElement(category: Common.Settings.SettingCategory,
-                                       settings: SettingUIRegistration.SettingUIRegistration.RegisteredSettingUI[],
-                                       content?: Element): void {
-    const uiSectionName = Common.Settings.getLocalizedSettingsCategory(category);
-    const sectionElement = document.createElement('div');
-    for (const settingRegistration of settings) {
-      const setting = Common.Settings.Settings.instance().resolve(settingRegistration.descriptor);
-      const settingControl = SettingsUI.SettingsUI.createControlForSetting(setting);
-      if (settingControl) {
-        this.settingToControl.set(setting, settingControl);
-        sectionElement.appendChild(settingControl);
-      }
-    }
-    if (content) {
-      sectionElement.appendChild(content);
-    }
-    const card = createSettingsCard(uiSectionName, sectionElement);
-    this.containerElement.appendChild(card);
+    this.#sections.push({
+      category,
+      heading: Common.Settings.getLocalizedSettingsCategory(category),
+      settings: settings.map(settingRegistration =>
+                                 Common.Settings.Settings.instance().resolve(settingRegistration.descriptor)),
+    });
   }
 
   highlightObject(setting: Object): void {
     if (setting instanceof Common.Settings.Setting) {
-      const element = this.settingToControl.get(setting);
-      if (element) {
-        PanelUtils.highlightElement(element);
-      } else if (setting.name === 'receive-gdp-badges') {
+      if (setting.name === 'receive-gdp-badges') {
         void this.#syncSectionUpdatePromise?.then(() => {
-          void this.syncSection.highlightReceiveBadgesSetting();
+          this.#viewOutput.highlightSetting?.(setting);
         });
+      } else {
+        this.#viewOutput.highlightSetting?.(setting);
       }
     }
   }
@@ -614,7 +675,15 @@ export const EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW: ExperimentsSettingsTabView =
           </div>
         </div>
       `,
-      target, {container: {attributes: {jslog: `${VisualLogging.pane('experiments')}`}}});
+      target, {
+        container: {
+          classes: ['settings-tab-container'],
+          attributes: {
+            id: 'experiments-tab-content',
+            jslog: `${VisualLogging.pane('experiments')}`,
+          },
+        },
+      });
   // clang-format on
 };
 
@@ -630,8 +699,6 @@ export class ExperimentsSettingsTab extends UI.Widget.Widget implements Settings
 
   constructor(element?: HTMLElement, view: ExperimentsSettingsTabView = EXPERIMENTS_SETTINGS_TAB_DEFAULT_VIEW) {
     super(element);
-    this.element.classList.add('settings-tab-container');
-    this.element.id = 'experiments-tab-content';
     this.#view = view;
   }
 

@@ -8,6 +8,6 @@
       "path": "../shared/tsconfig.json"
     }
   ],
-  "include": [".", "../../front_end/"],
-  "exclude": ["./resources/"]
+  "include": [".", "../../front_end/", "../../out/Default/gen/front_end/**/*.ts"],
+  "exclude": ["./resources/", "../../out/Default/gen/front_end/**/*.d.ts"]
 }

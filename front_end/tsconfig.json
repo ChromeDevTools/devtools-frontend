@@ -1,8 +1,6 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "rootDirs": [".", "../out/Default/gen/front_end"],
     "target": "ES2023",
     "noEmit": true,
     "lib": [
@@ -30,11 +28,13 @@
     ],
     "types": []
   },
+  "include": [".", "../out/Default/gen/front_end/**/*.ts"],
   "exclude": [
     "devtools_compatibility.js",
     "Images/generate-css-vars.js",
     "core/i18n/collect-ui-strings.js",
-    "core/i18n/generate-locales-js.js"
+    "core/i18n/generate-locales-js.js",
+    "../out/Default/gen/front_end/**/*.d.ts"
   ],
   "references": [{ "path": "./tsconfig.compatibility.json" }]
 }

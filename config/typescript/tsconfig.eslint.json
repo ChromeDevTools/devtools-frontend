@@ -13,8 +13,8 @@
       "webworker",
       "webworker.iterable"
     ],
-    "noEmit": true,
-    "rootDirs": ["../../front_end", "../../out/Default/gen/front_end"]
+    "composite": false,
+    "noEmit": true
   },
   "include": [
     "../../front_end/**/*.ts",

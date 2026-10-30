@@ -1,0 +1,21 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/typescript/typescript.gni")
+
+node_ts_library("elements") {
+  sources = [
+    "themes-background-transparency.test.ts",
+    "themes-chat-bubble-border-radius.test.ts",
+    "themes-dark-mode-emulation.test.ts",
+    "themes-font-weight-override.test.ts",
+    "themes-inline-span-margin.test.ts",
+    "themes-login-white-border.test.ts",
+  ]
+
+  ts_deps = [
+    "..:harness_library",
+    "../helpers",
+  ]
+}

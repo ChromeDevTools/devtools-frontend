@@ -79,6 +79,15 @@ describe('ExecuteJavaScriptTool', () => {
     assertIsResult(response);
     assert.strictEqual(response.result, '{"success": true}');
     sinon.assert.calledOnce(mockExecJs);
+    assert.strictEqual(mockExecJs.firstCall.args[0], `async function ($0, data) {
+  try {
+    console.log("hello")
+    ;
+    return data;
+  } catch (error) {
+    return error;
+  }
+}`);
   });
 
   it('returns error when execution context node is missing', async () => {

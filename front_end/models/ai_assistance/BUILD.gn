@@ -113,7 +113,6 @@ devtools_foundation_module("ai_assistance") {
     "../ai-utils:bundle",
     "../bindings:bundle",
     "../crux-manager:bundle",
-    "../formatter:bundle",
     "../lighthouse:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",

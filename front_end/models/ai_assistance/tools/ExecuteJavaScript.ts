@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
-import * as Formatter from '../../formatter/formatter.js';
 import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
 
@@ -25,7 +24,7 @@ import {
 
 const lockedString = i18n.i18n.lockedString;
 
-const MAX_FORMATTED_LINES = 40;
+const MAX_LINES = 40;
 const MAX_LINE_LENGTH = 120;
 const MAX_TOTAL_CHARACTERS = 2500;
 const MAX_LONG_LINES_REPORTED = 3;
@@ -50,16 +49,16 @@ const NETWORK_TOOLS_HINT =
     'To inspect the page\'s network requests, load the `network` skill with `learnSkills` if it is not loaded yet, then use `listNetworkRequests` and `getNetworkRequestDetails`.';
 
 /**
- * Returns one message per size limit that the formatted code exceeds. Each
- * message states the actual value, the limit, and how to fix it, so the model
- * can correct every problem in a single retry.
+ * Returns one message per size limit that the code exceeds. Each message states
+ * the actual value, the limit, and how to fix it, so the model can correct
+ * every problem in a single retry.
  */
-function describeSizeLimitViolations(formattedCode: string): string[] {
+function describeSizeLimitViolations(code: string): string[] {
   const violations: string[] = [];
-  const lines = formattedCode.split('\n');
+  const lines = code.split('\n');
 
-  if (lines.length > MAX_FORMATTED_LINES) {
-    violations.push(`- The code is ${lines.length} lines (max ${MAX_FORMATTED_LINES}). ` +
+  if (lines.length > MAX_LINES) {
+    violations.push(`- The code is ${lines.length} lines (max ${MAX_LINES}). ` +
         'Split the logic into smaller calls and return intermediate results in `data`.');
   }
 
@@ -79,8 +78,8 @@ function describeSizeLimitViolations(formattedCode: string): string[] {
     }
   }
 
-  if (formattedCode.length > MAX_TOTAL_CHARACTERS) {
-    violations.push(`- The code is ${formattedCode.length} characters (max ${MAX_TOTAL_CHARACTERS}). ` +
+  if (code.length > MAX_TOTAL_CHARACTERS) {
+    violations.push(`- The code is ${code.length} characters (max ${MAX_TOTAL_CHARACTERS}). ` +
         'Remove unneeded code or split the logic into smaller calls.');
   }
 
@@ -105,27 +104,22 @@ export class ExecuteJavaScriptTool implements
       'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
 
   /**
-   * Formats the code and checks it against the size limits. This method does
-   * not check syntax: if formatting fails, the formatter returns the original
-   * code, and running it on the page reports any SyntaxError to the model.
+   * Checks the raw AI-generated code against the size limits and returns an
+   * error message if any limit is exceeded.
+   *
+   * Validation runs directly on the unformatted input string so that line-length
+   * checks match what `PermissionPrompt` displays and avoid false rejections
+   * from formatter line collapsing.
    */
-  static async validateAndFormatCode(code: string): Promise<{formattedCode?: string, error?: string}> {
-    const formatted = await Formatter.ScriptFormatter.formatScriptContent(
-        'text/javascript',
-        code,
-        '  ',
-    );
-    const formattedCode = formatted.formattedContent;
-    const violations = describeSizeLimitViolations(formattedCode);
+  static validateCode(code: string): string|undefined {
+    const violations = describeSizeLimitViolations(code);
     if (violations.length > 0) {
-      return {
-        error: [
-          'Error: The code was not run because it exceeds size limits after formatting (indented with 2 spaces):',
-          ...violations,
-        ].join('\n'),
-      };
+      return [
+        'Error: The code was not run because it exceeds size limits:',
+        ...violations,
+      ].join('\n');
     }
-    return {formattedCode};
+    return undefined;
   }
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ExecuteJavaScriptArgs> = {
@@ -145,7 +139,11 @@ export class ExecuteJavaScriptTool implements
 * **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Variables from previous function calls are not available in subsequent calls.
-* **CRITICAL** Keep code concise (max 40 lines, 120 characters per line, and 2,500 characters). Split complex logic into multiple steps.
+* **CRITICAL** Keep code concise (max 40 lines, max 120 characters per line, and max 2,500 total characters). To stay well under 120 characters per line:
+  - Put each statement, object property, array item, and \`&&\`/\`||\` condition on its own line.
+  - Extract long CSS selectors or strings into a variable (or \`.join(', ')\` array) before calling \`querySelectorAll\`.
+  - Store intermediate DOM lookups (\`getComputedStyle\`, \`getAttribute\`) in short local variables instead of chaining them on one line.
+  - Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
 
 For example, to query DOM elements:
@@ -201,12 +199,9 @@ const data = {
 
     const isV2Architecture = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled;
     if (isV2Architecture) {
-      const validationResult = await ExecuteJavaScriptTool.validateAndFormatCode(params.code);
-      if (validationResult.error) {
-        return {error: validationResult.error};
-      }
-      if (validationResult.formattedCode) {
-        params.code = validationResult.formattedCode;
+      const validationError = ExecuteJavaScriptTool.validateCode(params.code);
+      if (validationError) {
+        return {error: validationError};
       }
     }
 

@@ -20,10 +20,12 @@ The user selected a DOM element in DevTools and asks a query about the element o
    - Geometry & layout inspection example:
      ```javascript
      const rect = $0.getBoundingClientRect();
+     const style = window.getComputedStyle($0);
+     const parentStyle = $0.parentElement ? window.getComputedStyle($0.parentElement) : null;
      const data = {
        rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},
-       computedDisplay: window.getComputedStyle($0).display,
-       parentDisplay: $0.parentElement ? window.getComputedStyle($0.parentElement).display : null,
+       computedDisplay: style.display,
+       parentDisplay: parentStyle?.display ?? null,
      };
      ```
    - Style modification example (ALWAYS use `setElementStyles`):

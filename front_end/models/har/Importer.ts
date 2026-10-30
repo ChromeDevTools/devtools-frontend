@@ -182,8 +182,14 @@ export class Importer {
         entry.response.cookies.map(this.fillCookieFromHARCookie.bind(this, SDK.Cookie.Type.RESPONSE));
     request.responseCookies = responseCookies;
 
+    const initialPriority = entry.customAsString('initialPriority');
+    // @ts-expect-error This accesses globalThis['Protocol'] where the enum is a JS object, not a TS const enum.
+    if (initialPriority && Protocol.Network.ResourcePriority.hasOwnProperty(initialPriority)) {
+      request.setInitialPriority(initialPriority as Protocol.Network.ResourcePriority);
+    }
+
     const priority = entry.customAsString('priority');
-    // @ts-expect-error This accesses the globalThis['Protocol'] where the enum is an actual JS object and not just a TS const enum.
+    // @ts-expect-error This accesses globalThis['Protocol'] where the enum is a JS object, not a TS const enum.
     if (priority && Protocol.Network.ResourcePriority.hasOwnProperty(priority)) {
       request.setPriority((priority as Protocol.Network.ResourcePriority));
     }

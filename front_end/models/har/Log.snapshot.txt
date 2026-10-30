@@ -19,6 +19,7 @@ Content:
   ],
   "entries": [
     {
+      "_initialPriority": null,
       "_initiator": null,
       "_priority": null,
       "_resourceType": "document",
@@ -133,6 +134,7 @@ Content:
       "pageref": "page_1"
     },
     {
+      "_initialPriority": null,
       "_initiator": null,
       "_priority": null,
       "_resourceType": "xhr",

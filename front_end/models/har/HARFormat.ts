@@ -168,6 +168,7 @@ export class HAREntry extends HARBase {
     // Chrome specific.
     this.custom.set('connectionId', HARBase.optionalString(data['_connectionId']));
     this.custom.set('fromCache', HARBase.optionalString(data['_fromCache']));
+    this.custom.set('initialPriority', HARBase.optionalString(data['_initialPriority']));
     this.custom.set('initiator', this.#importInitiator(data['_initiator']));
     this.custom.set('priority', HARBase.optionalString(data['_priority']));
     this.custom.set('resourceType', HARBase.optionalString(data['_resourceType']));

@@ -121,6 +121,7 @@ export class Entry {
     }
 
     const entry: EntryDTO = {
+      _initialPriority: harEntry.request.initialPriority(),
       _initiator: exportedInitiator,
       _priority: harEntry.request.priority(),
       _resourceType: harEntry.request.resourceType().name(),
@@ -507,6 +508,7 @@ export interface Response {
 export interface EntryDTO {
   _connectionId?: string;
   _fromCache?: string;
+  _initialPriority: Protocol.Network.ResourcePriority|null;
   _initiator: Protocol.Network.Initiator|null;
   _priority: Protocol.Network.ResourcePriority|null;
   _resourceType: string;

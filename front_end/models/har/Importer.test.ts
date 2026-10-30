@@ -34,6 +34,7 @@ const exampleLog = new HAR.HARFormat.HARLog({
   entries: [
     {
       _connectionId: '1',
+      _initialPriority: 'Low',
       _initiator: {
         type: 'script',
         requestId: '12',
@@ -340,6 +341,72 @@ describe('HAR Importer', () => {
   it('Parses the Chrome-specific connection ID', () => {
     for (const request of requests) {
       assert.strictEqual(request.connectionId, '1');
+    }
+  });
+
+  it('Parses the Chrome-specific initial priority', () => {
+    assert.strictEqual(requests[0].initialPriority(), Protocol.Network.ResourcePriority.Low);
+    assert.strictEqual(requests[0].priority(), Protocol.Network.ResourcePriority.High);
+  });
+
+  it('Leaves both priorities unset for an entry that has neither field', () => {
+    assert.isNull(requests[1].initialPriority());
+    assert.isNull(requests[1].priority());
+  });
+
+  it('Only accepts an initial priority that is a protocol value', () => {
+    const entry = {
+      _priority: 'High',
+      cache: {},
+      request: {
+        method: 'GET',
+        url: 'https://example.com/image.png',
+        httpVersion: 'http/1.1',
+        headers: [],
+        queryString: [],
+        cookies: [],
+        headersSize: -1,
+        bodySize: 0,
+      },
+      response: {
+        status: 200,
+        statusText: 'OK',
+        httpVersion: 'http/1.1',
+        headers: [],
+        cookies: [],
+        content: {size: 0, mimeType: 'image/png'},
+        redirectURL: '',
+        headersSize: -1,
+        bodySize: 0,
+      },
+      startedDateTime: '2020-12-14T20:36:00.000Z',
+      time: 100,
+      timings: {blocked: 0, dns: -1, ssl: -1, connect: -1, send: 0, wait: 50, receive: 50},
+    };
+
+    // 'Highest' is the label the UI shows for VeryHigh rather than a protocol value, and
+    // 'constructor' and 'hasOwnProperty' live on the enum object's prototype, not on the object.
+    const cases: Array<[unknown, Protocol.Network.ResourcePriority | null]> = [
+      ['VeryLow', Protocol.Network.ResourcePriority.VeryLow],
+      ['VeryHigh', Protocol.Network.ResourcePriority.VeryHigh],
+      ['Highest', null],
+      ['Veryhigh', null],
+      ['', null],
+      [12345, null],
+      [null, null],
+      ['constructor', null],
+      ['hasOwnProperty', null],
+      [{}, null],
+      [['Low', 'High'], null],
+    ];
+
+    for (const [initialPriority, expected] of cases) {
+      const log = new HAR.HARFormat.HARLog({...harPreamble, entries: [{...entry, _initialPriority: initialPriority}]});
+      const requests = HAR.Importer.Importer.requestsFromHARLog(log);
+
+      assert.lengthOf(requests, 1);
+      assert.strictEqual(requests[0].initialPriority(), expected, `for ${JSON.stringify(initialPriority)}`);
+      assert.strictEqual(requests[0].priority(), Protocol.Network.ResourcePriority.High);
     }
   });
 

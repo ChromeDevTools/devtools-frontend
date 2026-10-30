@@ -226,6 +226,8 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
   // clang-format off
   render(html`
+    <style>${frameworkIgnoreListSettingsTabStyles}</style>
+    <style>${settingsScreenStyles}</style>
     <div class="settings-card-container-wrapper">
       <div class="settings-card-container ignore-list-settings">
         <devtools-card .heading=${i18nString(UIStrings.frameworkIgnoreList)}>
@@ -341,7 +343,6 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
       useShadowDom: true,
     });
     this.#view = view;
-    this.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles, settingsScreenStyles);
 
     const settings = Common.Settings.Settings.instance();
     this.enabledSetting = settings.resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor);

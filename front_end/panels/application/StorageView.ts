@@ -339,6 +339,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
   // clang-format off
   render(html`
+    <style>${storageViewStyles}</style>
     <devtools-report class="clear-storage-header" .data=${{reportTitle: i18nString(UIStrings.storageTitle)}}>
       ${input.subtitle ? html`<div class="report-subtitle" slot="toolbar">${input.subtitle}</div>` : nothing}
       ${renderClearSiteData()}
@@ -383,7 +384,6 @@ export class StorageView extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
-    this.registerRequiredCSS(storageViewStyles);
     this.pieColors = storagePieColors;
 
     this.settings = new Map();

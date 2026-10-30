@@ -219,7 +219,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
-    this.registerRequiredCSS(lockIconStyles, sidebarStyles);
   }
 
   set onShowOrigin(callback: (origin: Platform.DevToolsPath.UrlString|null) => void) {

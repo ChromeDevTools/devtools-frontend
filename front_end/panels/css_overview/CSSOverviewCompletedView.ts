@@ -585,7 +585,6 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
-    this.registerRequiredCSS(cssOverviewCompletedViewStyles);
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
     this.#viewMap = new Map();
     this.#data = null;

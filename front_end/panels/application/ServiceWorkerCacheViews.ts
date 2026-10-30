@@ -110,6 +110,7 @@ export type View = (input: ViewInput, output: undefined, target: HTMLElement) =>
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
+    <style>${serviceWorkerCacheViewsStyles}</style>
     <devtools-toolbar class="data-view-toolbar" jslog=${VisualLogging.toolbar()}>
       <devtools-button
         title=${i18nString(UIStrings.refresh)}
@@ -244,7 +245,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       viewId: 'cache',
     });
     this.#view = view;
-    this.registerRequiredCSS(serviceWorkerCacheViewsStyles);
 
     this.model = model;
     this.cache = cache;

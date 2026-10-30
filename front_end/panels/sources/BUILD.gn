@@ -118,10 +118,7 @@ devtools_ui_module("sources") {
     "../utils:bundle",
     "./components:bundle",
   ]
-  deps = [
-    ":css_files",
-    "../../ui/legacy/components/object_ui:css_files",
-  ]
+  deps = [ ":css_files" ]
 }
 
 devtools_entrypoint("bundle") {

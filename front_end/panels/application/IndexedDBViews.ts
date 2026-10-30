@@ -442,6 +442,8 @@ export type IDBDataViewView = (input: IndexedDBDataViewInput, output: undefined,
 // clang-format off
 export const IDB_DATA_VIEW_DEFAULT_VIEW: IDBDataViewView = (input, _output, target) => {
   render(html`
+    <style>${indexedDBViewsStyles}</style>
+    <style>${DataGrid.dataGridStyles}</style>
     ${renderToolbar(input)}
     <div class="data-grid-container">
       ${renderDataGrid(input)}
@@ -488,8 +490,6 @@ export class IDBDataView extends UI.View.SimpleView {
       viewId: 'idb',
     });
     this.#view = view;
-    this.registerRequiredCSS(indexedDBViewsStyles);
-    this.registerRequiredCSS(DataGrid.dataGridStyles);
 
     this.model = model;
     this.databaseId = databaseId;

@@ -106,6 +106,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   Lit.render(
       html`
+      <style>${combinedDiffViewStyles}</style>
       <div class="combined-diff-view">
         ${input.singleDiffViewInputs.map(singleDiffViewInput => renderSingleDiffView(singleDiffViewInput))}
       </div>
@@ -128,7 +129,6 @@ export class CombinedDiffView extends UI.Widget.Widget {
   #viewOutput: ViewOutput = {};
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
-    this.registerRequiredCSS(combinedDiffViewStyles);
     this.#view = view;
   }
 

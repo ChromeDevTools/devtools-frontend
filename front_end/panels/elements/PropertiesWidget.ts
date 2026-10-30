@@ -85,6 +85,7 @@ type View = (input: PropertiesWidgetInput, output: undefined, target: HTMLElemen
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
+    <style>${propertiesWidgetStyles}</style>
     <div jslog=${VisualLogging.pane('element-properties').track({resize: true})}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -140,7 +141,6 @@ export class PropertiesWidget extends UI.Widget.VBox {
 
   constructor(view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
-    this.registerRequiredCSS(propertiesWidgetStyles);
 
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
     this.showAllPropertiesSetting.addChangeListener(this.onFilterChanged.bind(this));

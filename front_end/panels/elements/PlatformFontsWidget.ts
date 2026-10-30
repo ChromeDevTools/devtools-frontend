@@ -84,7 +84,6 @@ export class PlatformFontsWidget extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
-    this.registerRequiredCSS(platformFontsWidgetStyles);
   }
 
   get sharedModel(): ComputedStyle.ComputedStyleModel.ComputedStyleModel|null {

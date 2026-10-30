@@ -147,7 +147,9 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
     '4K',
   ];
   // clang-format off
-  render(input.showDeviceMode
+  render(html`
+    <style>${deviceModeViewStyles}</style>
+    ${input.showDeviceMode
     ? html`${UI.Widget.widget(DeviceModeToolbar, {model: input.model})}
     <div class=${classMap({
       'device-mode-content-clip': true,
@@ -246,7 +248,7 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
       </div>
     </div>
   `
-  : widget(() => InspectedPagePlaceholder.instance(), {minimumSize: new Geometry.Size(150, 150)}),
+  : widget(() => InspectedPagePlaceholder.instance(), {minimumSize: new Geometry.Size(150, 150)})}`,
   target, {
     container: {
       classes: ['device-mode-view'],
@@ -289,7 +291,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     this.#view = view;
 
     this.setMinimumSize(150, 150);
-    this.registerRequiredCSS(deviceModeViewStyles);
 
     this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.model.addEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.updateUI, this);

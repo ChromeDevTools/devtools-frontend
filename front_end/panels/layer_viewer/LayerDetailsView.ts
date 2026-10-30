@@ -157,7 +157,9 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: Docu
 
   if (!layer) {
     // clang-format off
-    Lit.render(html`<div class="layer-details-container">
+    Lit.render(html`
+      <style>${layerDetailsViewStyles}</style>
+      <div class="layer-details-container">
       <devtools-widget class="learn-more" ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noLayerSelected),
         text: i18nString(UIStrings.selectALayerToSeeItsDetails)})}>
@@ -220,6 +222,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: Docu
   // clang-format off
   Lit.render(
       html`
+    <style>${layerDetailsViewStyles}</style>
     <div class="layer-details-container"
          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
          data-target-id=${domNode ? domNode.domModel().target().id() : nothing}
@@ -296,7 +299,6 @@ export class LayerDetailsView extends LayerDetailsViewBase implements LayerView 
   constructor(layerViewHost: LayerViewHost, view: typeof DEFAULT_VIEW = DEFAULT_VIEW) {
     super({useShadowDom: 'pure'});
     this.view = view;
-    this.registerRequiredCSS(layerDetailsViewStyles);
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
     this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();

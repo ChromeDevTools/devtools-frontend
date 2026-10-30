@@ -126,6 +126,7 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
       html`
+      <style>${timelineSelectorStatsViewStyles}</style>
       <devtools-data-grid striped name=${i18nString(UIStrings.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -213,7 +214,6 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
 
   constructor(parsedTrace: Trace.TraceModel.ParsedTrace|null, view: View = DEFAULT_VIEW) {
     super();
-    this.registerRequiredCSS(timelineSelectorStatsViewStyles);
 
     this.#view = view;
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();

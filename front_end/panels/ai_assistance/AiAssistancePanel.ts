@@ -480,6 +480,7 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
   }
 
   Lit.render(html`
+    <style>${aiAssistancePanelStyles}</style>
     ${toolbarView(input)}
     <div class="ai-assistance-view-container">
       <devtools-split-view
@@ -638,7 +639,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }) {
     super(AiAssistancePanel.panelName);
     this.view = view;
-    this.registerRequiredCSS(aiAssistancePanelStyles);
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
     this.#aidaClient = aidaClient;

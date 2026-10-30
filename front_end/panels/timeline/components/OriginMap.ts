@@ -115,6 +115,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   }
   // clang-format off
   Lit.render(html`
+    <style>${originMapStyles}</style>
     <devtools-data-grid striped inline deletable
         @click=${(e: Event) => { e.stopPropagation(); }}
         @create=${input.onCreate}>
@@ -144,7 +145,6 @@ export class OriginMap extends UI.Widget.VBox {
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
-    this.registerRequiredCSS(originMapStyles);
     CrUXManager.CrUXManager.instance().getConfigSetting().addChangeListener(this.requestUpdate, this);
     this.requestUpdate();
   }

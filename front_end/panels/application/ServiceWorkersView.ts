@@ -272,6 +272,7 @@ type View = (input: ServiceWorkersViewInput, output: undefined, target: HTMLElem
 export const DEFAULT_VIEW: View = (input, _output, target): void => {
   // clang-format off
   render(html`
+    <style>${serviceWorkersViewStyles}</style>
     <!-- This Origin Report -->
     ${renderOriginReport(input)}
     ${renderOthersOriginView()}`,
@@ -307,7 +308,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
       useShadowDom: true,
     });
     this.#view = view;
-    this.registerRequiredCSS(serviceWorkersViewStyles);
 
     this.sections = new Map();
 

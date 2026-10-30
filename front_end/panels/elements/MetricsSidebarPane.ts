@@ -175,6 +175,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   }
   // clang-format off
   render(html`
+    <style>${metricsSidebarPaneStyles}</style>
     <div class="metrics ${!node ? 'collapsed' : ''}" @mouseover=${(e: Event) => { e.consume(); onHighlightNode(true, 'all'); }}
         @mouseleave=${(e: Event) => { e.consume(); onHighlightNode(false, 'all'); }}>
       ${previousBox}
@@ -195,7 +196,6 @@ export class MetricsSidebarPane extends ElementsSidebarPane<ShadowRoot> {
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view: View = DEFAULT_VIEW) {
     super(computedStyleModel, {useShadowDom: 'pure'});
-    this.registerRequiredCSS(metricsSidebarPaneStyles);
 
     this.originalPropertyData = null;
     this.previousPropertyDataCandidate = null;

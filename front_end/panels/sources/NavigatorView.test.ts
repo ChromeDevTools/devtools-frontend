@@ -20,6 +20,7 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {addChildFrame, createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
+import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 
@@ -1661,5 +1662,147 @@ describeWithEnvironment('NavigatorView', () => {
 
       await assertScreenshot('sources/navigator-view-authored-deployed.png');
     });
+  });
+
+  describe('presenter state computation', () => {
+    it('updates NavigatorUISourceCodeTreeNode title, tooltip, and ignore-listed state without creating a TreeElement',
+       async () => {
+         const mainFrame = await getMainFrame(target);
+         const url = urlString`http://example.com/script.js`;
+         const {project, uiSourceCode} = addResourceAndUISourceCode(url, mainFrame, '', 'text/javascript');
+
+         const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+         const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, null);
+         assert.isNull(node.treeElement);
+         assert.strictEqual(node.title, 'script.js');
+         assert.strictEqual(node.tooltip, 'http://example.com/script.js');
+
+         uiSourceCode.setWorkingCopy('modified');
+         node.updateTitle();
+         assert.strictEqual(node.title, '*script.js');
+         assert.isNull(node.treeElement);
+
+         Workspace.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiSourceCode);
+         node.updateTitle();
+         assert.isTrue(node.recursiveProperties.exclusivelyIgnored);
+         assert.strictEqual(node.tooltip, 'http://example.com/script.js (ignore listed)');
+         assert.isNull(node.treeElement);
+
+         project.removeProject();
+       });
+
+    it('computes NavigatorTreeNode.computedTooltip() for nested and ignore-listed folders without creating a TreeElement',
+       async () => {
+         const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+         const srcFolder = new Sources.NavigatorView.NavigatorFolderTreeNode(
+             navigatorView, null, 'src', Sources.NavigatorView.Types.NetworkFolder,
+             'src' as Platform.DevToolsPath.EncodedPathString, 'src', urlString``);
+         const componentsFolder = new Sources.NavigatorView.NavigatorFolderTreeNode(
+             navigatorView, null, 'components', Sources.NavigatorView.Types.NetworkFolder,
+             'src/components' as Platform.DevToolsPath.EncodedPathString, 'components', urlString``);
+         srcFolder.appendChild(componentsFolder);
+         componentsFolder.recursiveProperties.exclusivelyIgnored = true;
+
+         assert.isNull(componentsFolder.treeElement);
+         assert.strictEqual(componentsFolder.computedTooltip(), 'src/components (ignore listed)');
+       });
+
+    it('updates NavigatorFolderTreeNode hasMappedFiles presenter state in updateTitle()', async () => {
+      const {project} = createFileSystemUISourceCode({
+        url: urlString`file:///path/to/project/src/script.js`,
+        mimeType: 'text/javascript',
+        fileSystemPath: 'file:///path/to/project',
+      });
+      const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+      const folderNode = new Sources.NavigatorView.NavigatorFolderTreeNode(
+          navigatorView, project, 'src', Sources.NavigatorView.Types.FileSystemFolder,
+          'src' as Platform.DevToolsPath.EncodedPathString, 'src', urlString``);
+
+      const filePathHasBindingsStub =
+          sinon.stub(Persistence.Persistence.PersistenceImpl.instance(), 'filePathHasBindings');
+      filePathHasBindingsStub.returns(true);
+      folderNode.updateTitle();
+      assert.isTrue(folderNode.hasMappedFiles);
+
+      filePathHasBindingsStub.returns(false);
+      folderNode.updateTitle();
+      assert.isFalse(folderNode.hasMappedFiles);
+
+      workspace.removeProject(project);
+    });
+
+    it('resets exclusivelyIgnored and is-ignore-listed class on non-script UISourceCode when ignore-listing is disabled',
+       async () => {
+         const mainFrame = await getMainFrame(target);
+         const url = urlString`http://example.com/multi-files.html`;
+         const {project, uiSourceCode} = addResourceAndUISourceCode(
+             url, mainFrame, '<html></html>', 'text/html', undefined, Common.ResourceType.resourceTypes.Document);
+
+         const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+         ignoreListManager.enableIgnoreListing = true;
+
+         const patternChangePromise = new Promise<void>(resolve => {
+           const listener = () => {
+             ignoreListManager.removeChangeListener(listener);
+             resolve();
+           };
+           ignoreListManager.addChangeListener(listener);
+         });
+         ignoreListManager.ignoreListURL(url);
+         await patternChangePromise;
+
+         const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+         const node = new Sources.NavigatorView.NavigatorUISourceCodeTreeNode(navigatorView, uiSourceCode, null);
+         const treeElement = node.treeNode();
+         assert.isTrue(node.recursiveProperties.exclusivelyIgnored);
+         assert.isTrue(treeElement.listItemElement.classList.contains('is-ignore-listed'));
+
+         try {
+           ignoreListManager.enableIgnoreListing = false;
+           node.updateTitle();
+
+           assert.isNull(node.recursiveProperties.exclusivelyIgnored);
+           assert.isFalse(treeElement.listItemElement.classList.contains('is-ignore-listed'));
+         } finally {
+           ignoreListManager.enableIgnoreListing = true;
+           ignoreListManager.unIgnoreListURL(url);
+           project.removeProject();
+         }
+       });
+
+    it('auto-expands NavigatorGroupTreeNode on attach even if updateTitle was called before treeNode was created',
+       async () => {
+         const {project} = createFileSystemUISourceCode({
+           url: urlString`file:///path/to/project/src/script.js`,
+           mimeType: 'text/javascript',
+           fileSystemPath: 'file:///path/to/project',
+         });
+         const navigatorView = new Sources.NavigatorView.NavigatorView(undefined, [networkProjectManager]);
+         const groupNode = new Sources.NavigatorView.NavigatorGroupTreeNode(
+             navigatorView, project, 'file:///path/to/project', Sources.NavigatorView.Types.FileSystem, 'Project',
+             urlString``);
+
+         const filePathHasBindingsStub =
+             sinon.stub(Persistence.Persistence.PersistenceImpl.instance(), 'filePathHasBindings');
+         filePathHasBindingsStub.returns(true);
+
+         // Call updateTitle before treeNode() / attach.
+         groupNode.updateTitle();
+         assert.isTrue(groupNode.hasMappedFiles);
+         assert.isUndefined(groupNode.treeElement);
+
+         const treeElement = groupNode.treeNode();
+         assert.exists(treeElement);
+         assert.isFalse(treeElement.listItemElement.classList.contains('has-mapped-files'));
+
+         // Appending to scriptsTree root attaches treeElement and triggers onattach.
+         navigatorView.appendChild(navigatorView.scriptsTree.rootElement(), treeElement);
+
+         assert.isTrue(treeElement.listItemElement.classList.contains('has-mapped-files'));
+         assert.isTrue(treeElement.expanded);
+         assert.isTrue(navigatorView.isNodeExpanded(groupNode));
+
+         workspace.removeProject(project);
+       });
   });
 });

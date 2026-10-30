@@ -211,6 +211,113 @@ export const DEFAULT_VIEW: View = (input, _output, target): void => {
   // clang-format on
 };
 
+export function iconTypeForNodeType(type: string): string {
+  switch (type) {
+    case Types.Domain:
+      return 'cloud';
+    case Types.Frame:
+      return 'frame';
+    case Types.Worker:
+      return 'gears';
+    case Types.Authored:
+      return 'code';
+    case Types.Deployed:
+      return 'deployed';
+    case Types.AutomaticFileSystem:
+      return 'folder-asterisk';
+  }
+  return 'folder';
+}
+
+export function contextForNodeType(type: string): string {
+  switch (type) {
+    case Types.Domain:
+      return 'domain';
+    case Types.Frame:
+      return 'frame';
+    case Types.Worker:
+      return 'worker';
+    case Types.Authored:
+      return 'authored';
+    case Types.Deployed:
+      return 'deployed';
+  }
+  return 'folder';
+}
+
+export function renderFolderLeadingIcon(type: string): Lit.TemplateResult {
+  return html`<devtools-icon name=${iconTypeForNodeType(type)}></devtools-icon>`;
+}
+
+export function renderSourceTrailingIcons(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                                          onSelectSource: (uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                                                           focusSource: boolean) => void): Lit.TemplateResult[] {
+  if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
+    return [];
+  }
+  if (!uiSourceCode.contentType().isTextType() ||
+      Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
+    return [];
+  }
+  const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
+  const icon = AiAssistance.AiUtils.getIconName();
+  // clang-format off
+  return [html`<span class="ai-button-container">
+    <devtools-floating-button
+      .iconName=${icon}
+      .title=${action.title()}
+      .jslogContext=${'ask-ai'}
+      @click=${{
+        handleEvent: (ev: Event) => {
+          ev.stopPropagation();
+          onSelectSource(uiSourceCode, false);
+          void action.execute();
+        },
+        capture: true,
+      }}
+      @mousedown=${{
+        handleEvent: (ev: Event) => {
+          ev.stopPropagation();
+        },
+        capture: true,
+      }}
+    ></devtools-floating-button>
+  </span>`];
+  // clang-format on
+}
+
+export function renderGroupTrailingIcons(project: Workspace.Workspace.Project|null): Lit.TemplateResult[] {
+  if (!(project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem)) {
+    return [];
+  }
+  const {automaticFileSystem, automaticFileSystemManager} = project;
+  switch (automaticFileSystem?.state) {
+    case 'connecting': {
+      // clang-format off
+      return [html`<devtools-spinner></devtools-spinner>`];
+      // clang-format on
+    }
+    case 'disconnected': {
+      // clang-format off
+      return [html`<devtools-button
+        .data=${{
+          variant: Buttons.Button.Variant.OUTLINED,
+          size: Buttons.Button.Size.MICRO,
+          title: i18nString(UIStrings.connectFolderToWorkspace),
+          jslogContext: 'automatic-workspace-folders.connect',
+        } as Buttons.Button.ButtonData}
+        @click=${async (event: Event) => {
+          event.consume();
+          await automaticFileSystemManager.connectAutomaticFileSystem(
+              /* addIfMissing= */ true);
+        }}
+      >${i18nString(UIStrings.connect)}</devtools-button>`];
+      // clang-format on
+    }
+  }
+  return [];
+}
+
 export const enum Events {
   UI_SOURCE_CODE_ADDED = 'ui-source-code-added',
   SOURCE_SELECTED = 'source-selected',
@@ -1499,6 +1606,7 @@ export class NavigatorTreeNode {
   protected navigatorView: NavigatorView;
   type: string;
   boostOrder = false;
+  hasMappedFiles = false;
   private populated: boolean;
   isMerged: boolean;
   parent!: NavigatorTreeNode|null;
@@ -1525,13 +1633,9 @@ export class NavigatorTreeNode {
     };
   }
 
-  updateTooltip(treeElement?: UI.TreeOutline.TreeElement): void {
-    if (!treeElement) {
-      return;
-    }
+  computedTooltip(): string {
     if (this.tooltip) {
-      treeElement.tooltip = this.tooltip;
-      return;
+      return this.tooltip;
     }
     const paths = [];
     let currentNode: NavigatorTreeNode|null = this;
@@ -1541,55 +1645,31 @@ export class NavigatorTreeNode {
     }
     paths.reverse();
     let tooltip = paths.join('/');
-    if (treeElement.listItemElement.classList.contains('is-ignore-listed') ||
-        Boolean(this.recursiveProperties.exclusivelyIgnored)) {
+    if (Boolean(this.recursiveProperties.exclusivelyIgnored)) {
+      tooltip = i18nString(UIStrings.sIgnoreListed, {PH1: tooltip});
+    }
+    return tooltip;
+  }
+
+  updateTooltip(treeElement?: UI.TreeOutline.TreeElement): void {
+    if (!treeElement) {
+      return;
+    }
+    let tooltip = this.computedTooltip();
+    if (treeElement.listItemElement.classList.contains('is-ignore-listed') &&
+        !this.recursiveProperties.exclusivelyIgnored) {
       tooltip = i18nString(UIStrings.sIgnoreListed, {PH1: tooltip});
     }
     treeElement.tooltip = tooltip;
   }
 
-  static #iconTypeForType(type: string): string {
-    switch (type) {
-      case Types.Domain:
-        return 'cloud';
-      case Types.Frame:
-        return 'frame';
-      case Types.Worker:
-        return 'gears';
-      case Types.Authored:
-        return 'code';
-      case Types.Deployed:
-        return 'deployed';
-      case Types.AutomaticFileSystem:
-        return 'folder-asterisk';
-    }
-    return 'folder';
-  }
-
-  static #contextForType(type: string): string {
-    switch (type) {
-      case Types.Domain:
-        return 'domain';
-      case Types.Frame:
-        return 'frame';
-      case Types.Worker:
-        return 'worker';
-      case Types.Authored:
-        return 'authored';
-      case Types.Deployed:
-        return 'deployed';
-    }
-    return 'folder';
-  }
-
   protected createFolderTreeElement(title: string, node: NavigatorTreeNode,
                                     expandable = true): UI.TreeOutline.TreeElement {
-    const treeElement = new UI.TreeOutline.TreeElement('', expandable, NavigatorTreeNode.#contextForType(this.type));
+    const treeElement = new UI.TreeOutline.TreeElement('', expandable, contextForNodeType(this.type));
     treeElement.listItemElement.classList.add('navigator-' + this.type + '-tree-item', 'navigator-folder-tree-item');
     treeElement.title = title;
     treeElement.tooltip = title;
-    const iconType = NavigatorTreeNode.#iconTypeForType(this.type);
-    treeElement.setLeadingIcons([html`<devtools-icon name=${iconType}></devtools-icon>`]);
+    treeElement.setLeadingIcons([renderFolderLeadingIcon(this.type)]);
     this.navigatorView.setNodeForTreeElement(treeElement, node);
     treeElement.onattach = () => {
       treeElement.collapse();
@@ -1775,6 +1855,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
       this.recursiveProperties.exclusivelyContentScripts =
           uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
     }
+    this.updateTitle();
   }
 
   frame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
@@ -1800,47 +1881,14 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     UI.ARIAUtils.setLabel(this.treeElement.listItemElement, `${this.#uiSourceCode.name()}, ${this.type}`);
   }
 
-  private renderAiButton(): Lit.TemplateResult|null {
-    if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
-      return null;
-    }
-    if (!this.#uiSourceCode.contentType().isTextType() ||
-        Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.#uiSourceCode)) {
-      return null;
-    }
-    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
-    const icon = AiAssistance.AiUtils.getIconName();
-    // clang-format off
-    return html`<span class="ai-button-container">
-      <devtools-floating-button
-        .iconName=${icon}
-        .title=${action.title()}
-        .jslogContext=${'ask-ai'}
-        @click=${{
-          handleEvent: (ev: Event) => {
-            ev.stopPropagation();
-            this.navigatorView.sourceSelected(this.#uiSourceCode, false);
-            void action.execute();
-          },
-          capture: true,
-        }}
-        @mousedown=${{
-          handleEvent: (ev: Event) => {
-            ev.stopPropagation();
-          },
-          capture: true,
-        }}
-      ></devtools-floating-button>
-    </span>`;
-    // clang-format on
-  }
-
   updateTrailingIcons(): void {
     if (!this.treeElement) {
       return;
     }
-    const aiButton = this.renderAiButton();
-    this.treeElement.setTrailingIcons(aiButton ? [aiButton] : []);
+    const trailingIcons = renderSourceTrailingIcons(
+        this.#uiSourceCode,
+        (uiSourceCode, focusSource) => this.navigatorView.sourceSelected(uiSourceCode, focusSource));
+    this.treeElement.setTrailingIcons(trailingIcons);
   }
 
   override onattach(): void {
@@ -1917,28 +1965,34 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     return this.treeElement;
   }
 
+  private updateTreeElement(): void {
+    if (!this.treeElement) {
+      return;
+    }
+
+    this.treeElement.title = this.title;
+    this.updateIcon();
+    this.updateTrailingIcons();
+
+    this.treeElement.listItemElement.classList.toggle('is-ignore-listed',
+                                                      Boolean(this.recursiveProperties.exclusivelyIgnored));
+
+    this.treeElement.tooltip = this.tooltip ?? '';
+    this.updateAccessibleName();
+  }
+
   override updateTitle(ignoreIsDirty?: boolean): void {
     const isIgnoreListed =
         Workspace.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             this.#uiSourceCode);
-    if (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) {
-      this.recursiveProperties.exclusivelyIgnored = isIgnoreListed;
-    }
-
-    if (!this.treeElement) {
-      return;
-    }
+    this.recursiveProperties.exclusivelyIgnored =
+        (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) ? isIgnoreListed : null;
 
     let titleText = this.#uiSourceCode.displayName();
     if (!ignoreIsDirty && this.#uiSourceCode.isDirty()) {
       titleText = '*' + titleText;
     }
-
-    this.treeElement.title = titleText;
-    this.updateIcon();
-    this.updateTrailingIcons();
-
-    this.treeElement.listItemElement.classList.toggle('is-ignore-listed', isIgnoreListed);
+    this.title = titleText;
 
     let tooltip: string = this.#uiSourceCode.url();
     if (this.#uiSourceCode.contentType().isFromSourceMap()) {
@@ -1947,11 +2001,10 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     if (isIgnoreListed) {
       tooltip = i18nString(UIStrings.sIgnoreListed, {PH1: tooltip});
     }
-
-    this.treeElement.tooltip = tooltip;
-    this.updateAccessibleName();
+    this.tooltip = tooltip;
 
     this.updateId('UISourceCode:' + this.#uiSourceCode.canonicalScriptId());
+    this.updateTreeElement();
   }
 
   override hasChildren(): boolean {
@@ -2039,7 +2092,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   readonly folderPath: Platform.DevToolsPath.EncodedPathString;
   readonly origin: Platform.DevToolsPath.UrlString;
   override title: string;
-  treeElement!: UI.TreeOutline.TreeElement|null;
+  treeElement: UI.TreeOutline.TreeElement|null = null;
   constructor(
       navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
       folderPath: Platform.DevToolsPath.EncodedPathString, title: string, origin: Platform.DevToolsPath.UrlString) {
@@ -2059,6 +2112,39 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     return this.treeElement;
   }
 
+  private computeHasMappedFiles(): boolean {
+    if (!this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
+      return false;
+    }
+
+    const absoluteFileSystemPath = Common.ParsedURL.ParsedURL.concatenate(
+        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+            this.project.id() as Platform.DevToolsPath.UrlString),
+        '/', this.folderPath);
+    const isOverrides =
+        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
+    return isOverrides ?
+        Common.Settings.Settings.instance()
+            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
+            .get() :
+        Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
+  }
+
+  private updateTreeElement(): void {
+    if (!this.treeElement) {
+      return;
+    }
+
+    this.treeElement.listItemElement.classList.toggle('is-from-source-map',
+                                                      Boolean(this.recursiveProperties.exclusivelySourceMapped));
+    this.treeElement.listItemElement.classList.toggle('is-ignore-listed',
+                                                      Boolean(this.recursiveProperties.exclusivelyIgnored));
+    this.treeElement.listItemElement.classList.toggle('has-mapped-files', this.hasMappedFiles);
+
+    const activeNode = this.navigatorView.nodeForTreeElement(this.treeElement) ?? this;
+    activeNode.updateTooltip(this.treeElement);
+  }
+
   override updateTitle(): void {
     let propName: keyof NavigatorRecursiveTreeNodeProperties;
     for (propName in this.recursiveProperties) {
@@ -2074,33 +2160,9 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
       this.recursiveProperties[propName] = propValue;
     }
 
-    if (!this.treeElement) {
-      return;
-    }
+    this.hasMappedFiles = this.computeHasMappedFiles();
 
-    this.treeElement.listItemElement.classList.toggle('is-from-source-map',
-                                                      Boolean(this.recursiveProperties.exclusivelySourceMapped));
-    this.treeElement.listItemElement.classList.toggle('is-ignore-listed',
-                                                      Boolean(this.recursiveProperties.exclusivelyIgnored));
-    const activeNode = this.navigatorView.nodeForTreeElement(this.treeElement) ?? this;
-    activeNode.updateTooltip(this.treeElement);
-
-    if (!this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
-      return;
-    }
-
-    const absoluteFileSystemPath = Common.ParsedURL.ParsedURL.concatenate(
-        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
-            this.project.id() as Platform.DevToolsPath.UrlString),
-        '/', this.folderPath);
-    const isOverrides =
-        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
-    const hasMappedFiles = isOverrides ?
-        Common.Settings.Settings.instance()
-            .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
-            .get() :
-        Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
-    this.treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
+    this.updateTreeElement();
   }
 
   private createTreeElement(title: string, node: NavigatorTreeNode): UI.TreeOutline.TreeElement {
@@ -2222,7 +2284,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   readonly project: Workspace.Workspace.Project|null;
   override title: string;
   readonly frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
-  private treeElement?: UI.TreeOutline.TreeElement;
+  treeElement?: UI.TreeOutline.TreeElement;
   constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
               title: string, tooltip?: string, frame?: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(navigatorView, id, type, tooltip);
@@ -2242,69 +2304,46 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     return this.treeElement;
   }
 
-  private renderTrailingIcons(): Lit.TemplateResult|null {
-    if (!(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem)) {
-      return null;
-    }
-    const {automaticFileSystem, automaticFileSystemManager} = this.project;
-    switch (automaticFileSystem?.state) {
-      case 'connecting': {
-        // clang-format off
-        return html`<devtools-spinner></devtools-spinner>`;
-        // clang-format on
-      }
-      case 'disconnected': {
-        // clang-format off
-        return html`<devtools-button
-          .data=${{
-            variant: Buttons.Button.Variant.OUTLINED,
-            size: Buttons.Button.Size.MICRO,
-            title: i18nString(UIStrings.connectFolderToWorkspace),
-            jslogContext: 'automatic-workspace-folders.connect',
-          } as Buttons.Button.ButtonData}
-          @click=${async (event: Event) => {
-            event.consume();
-            await automaticFileSystemManager.connectAutomaticFileSystem(
-                /* addIfMissing= */ true);
-          }}
-        >${i18nString(UIStrings.connect)}</devtools-button>`;
-        // clang-format on
-      }
-    }
-    return null;
-  }
-
   updateTrailingIcons(): void {
     if (!this.treeElement) {
       return;
     }
-    const trailingIcon = this.renderTrailingIcons();
-    this.treeElement.setTrailingIcons(trailingIcon ? [trailingIcon] : []);
+    const trailingIcons = renderGroupTrailingIcons(this.project);
+    this.treeElement.setTrailingIcons(trailingIcons);
   }
 
   override onattach(): void {
     this.updateTitle();
   }
 
-  override updateTitle(): void {
-    this.updateTrailingIcons();
-    if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
-      return;
+  private computeHasMappedFiles(): boolean {
+    if (!this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
+      return false;
     }
     const fileSystemPath = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
         this.project.id() as Platform.DevToolsPath.UrlString);
-    const wasActive = this.treeElement.listItemElement.classList.contains('has-mapped-files');
     const isOverrides =
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
-    const isActive = isOverrides ?
+    return isOverrides ?
         Common.Settings.Settings.instance()
             .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
             .get() :
         Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
+  }
+
+  override updateTitle(): void {
+    this.hasMappedFiles = this.computeHasMappedFiles();
+
+    this.updateTrailingIcons();
+    if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
+      return;
+    }
+    const wasActive = this.treeElement.listItemElement.classList.contains('has-mapped-files');
+    const isActive = this.hasMappedFiles;
+    this.treeElement.listItemElement.classList.toggle('has-mapped-files', isActive);
     if (wasActive === isActive) {
       return;
     }
-    this.treeElement.listItemElement.classList.toggle('has-mapped-files', isActive);
     if (this.treeElement.childrenListElement.hasFocus()) {
       return;
     }

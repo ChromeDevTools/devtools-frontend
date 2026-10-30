@@ -87,6 +87,7 @@ export function ruleMatch(
       /** Matches all selectors if undefined */
       matchingSelectorsIndexes?: number[],
       nestingSelectors?: string[],
+      originTreeScopeNodeId?: Protocol.DOM.BackendNodeId,
     } = {},
     ): Protocol.CSS.RuleMatch {
   const {
@@ -95,6 +96,7 @@ export function ruleMatch(
     styleSheetId,
     matchingSelectorsIndexes,
     nestingSelectors,
+    originTreeScopeNodeId,
   } = options;
 
   const cssProperties =
@@ -109,6 +111,7 @@ export function ruleMatch(
       origin,
       style: createCSSStyle(cssProperties, range, styleSheetId),
       styleSheetId,
+      originTreeScopeNodeId,
     },
     matchingSelectors,
   };

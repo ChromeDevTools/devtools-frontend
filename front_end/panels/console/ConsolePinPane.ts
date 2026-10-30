@@ -121,7 +121,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
     this.#pinModel.stopPeriodicEvaluate();
   }
 
-  private contextMenuEventFired(event: Event): void {
+  #contextMenuEventFired(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const target = UI.UIUtils.deepElementFromEvent(event);
     if (target) {
@@ -136,13 +136,12 @@ export class ConsolePinPane extends UI.Widget.VBox {
         }
       }
     }
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.removeAllExpressions), this.removeAllPins.bind(this),
-        {jslogContext: 'remove-all-expressions'});
+    contextMenu.editSection().appendItem(i18nString(UIStrings.removeAllExpressions), this.#removeAllPins.bind(this),
+                                         {jslogContext: 'remove-all-expressions'});
     void contextMenu.show();
   }
 
-  private removeAllPins(): void {
+  #removeAllPins(): void {
     this.#pinModel.removeAll();
     this.requestUpdate();
   }
@@ -171,7 +170,7 @@ export class ConsolePinPane extends UI.Widget.VBox {
       pins: [...this.#pinModel.pins],
       focusOut: this.#focusOut,
       onRemove: (pin: ConsolePin) => this.removePin(pin),
-      onContextMenu: this.contextMenuEventFired.bind(this),
+      onContextMenu: this.#contextMenuEventFired.bind(this),
     },
                undefined, this.contentElement);
 

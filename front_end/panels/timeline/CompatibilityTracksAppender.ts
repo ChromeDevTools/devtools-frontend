@@ -244,13 +244,12 @@ export class CompatibilityTracksAppender {
     this.#addThreadAppenders();
     this.#addExtensionAppenders();
 
-    this.onThemeChange = this.onThemeChange.bind(this);
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.onThemeChange);
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
 
   reset(): void {
-    ThemeSupport.ThemeSupport.instance().removeEventListener(
-        ThemeSupport.ThemeChangeEvent.eventName, this.onThemeChange);
+    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName,
+                                                             this.#onThemeChange);
   }
 
   setFlameChartDataAndEntryData(
@@ -266,14 +265,14 @@ export class CompatibilityTracksAppender {
     return this.#flameChartData;
   }
 
-  private onThemeChange(): void {
+  #onThemeChange = (): void => {
     for (const group of this.#flameChartData.groups) {
       // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
       group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
       group.style.backgroundColor =
           ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
     }
-  }
+  };
 
   #addExtensionAppenders(): void {
     if (!TimelinePanel.extensionDataVisibilitySetting().get()) {

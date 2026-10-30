@@ -2503,18 +2503,18 @@ export class Generator {
   colorForID(id: string): string {
     let color = this.#colors.get(id);
     if (!color) {
-      color = this.generateColorForID(id);
+      color = this.#generateColorForID(id);
       this.#colors.set(id, color);
     }
     return color;
   }
 
-  private generateColorForID(id: string): string {
+  #generateColorForID(id: string): string {
     const hash = Platform.StringUtilities.hashCode(id);
-    const h = this.indexToValueInSpace(hash, this.#hueSpace);
-    const s = this.indexToValueInSpace(hash >> 8, this.#satSpace);
-    const l = this.indexToValueInSpace(hash >> 16, this.#lightnessSpace);
-    const a = this.indexToValueInSpace(hash >> 24, this.#alphaSpace);
+    const h = this.#indexToValueInSpace(hash, this.#hueSpace);
+    const s = this.#indexToValueInSpace(hash >> 8, this.#satSpace);
+    const l = this.#indexToValueInSpace(hash >> 16, this.#lightnessSpace);
+    const a = this.#indexToValueInSpace(hash >> 24, this.#alphaSpace);
     const start = `hsl(${h}deg ${s}% ${l}%`;
     if (a !== 1) {
       return `${start} / ${Math.floor(a * 100)}%)`;
@@ -2522,7 +2522,7 @@ export class Generator {
     return `${start})`;
   }
 
-  private indexToValueInSpace(index: number, space: Space): number {
+  #indexToValueInSpace(index: number, space: Space): number {
     if (typeof space === 'number') {
       return space;
     }

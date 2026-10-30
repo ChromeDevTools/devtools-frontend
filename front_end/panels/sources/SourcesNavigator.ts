@@ -172,8 +172,8 @@ export class NetworkNavigatorView extends SourcesNavigatorView {
   constructor(element?: HTMLElement, view: NetworkNavigatorViewFunc = NETWORK_NAVIGATOR_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
-    SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED,
+                                                                this.#inspectedURLChanged, this);
 
     // Record the sources tool load time after the file navigator has loaded.
     UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('sources', 'DevTools.Launch.Sources');
@@ -220,7 +220,7 @@ export class NetworkNavigatorView extends SourcesNavigatorView {
     }
   }
 
-  private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+  #inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     if (event.data !== mainTarget) {
       return;
@@ -439,12 +439,12 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
     this.#view = view;
 
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
-        Persistence.NetworkPersistenceManager.Events.PROJECT_CHANGED, this.updateProjectAndUI, this);
+        Persistence.NetworkPersistenceManager.Events.PROJECT_CHANGED, this.#updateProjectAndUI, this);
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
-        Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED, this.updateProjectAndUI, this);
+        Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED, this.#updateProjectAndUI, this);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
-    workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
+    workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddOrRemoved, this);
+    workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddOrRemoved, this);
   }
 
   static instance(opts: {
@@ -480,7 +480,7 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
                this.viewOutput, this.contentElement);
     await this.navigatorView?.updateComplete;
   }
-  private onProjectAddOrRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
+  #onProjectAddOrRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
     const project = event.data;
     if (project && project.type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
@@ -489,7 +489,7 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
     this.requestUpdate();
   }
 
-  private updateProjectAndUI(): void {
+  #updateProjectAndUI(): void {
     const navigatorView = this.navigatorView;
     if (navigatorView) {
       navigatorView.reset();

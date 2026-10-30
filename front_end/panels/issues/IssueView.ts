@@ -193,13 +193,12 @@ class AffectedMixedContentView extends AffectedResourcesView {
       cell.title = mixedContent.insecureURL;
     }
 
-    this.appendIssueDetailCell(
-        element, AffectedMixedContentView.translateStatus(mixedContent.resolutionStatus),
-        'affected-resource-mixed-content-info');
+    this.appendIssueDetailCell(element, AffectedMixedContentView.#translateStatus(mixedContent.resolutionStatus),
+                               'affected-resource-mixed-content-info');
     this.affectedResources.appendChild(element);
   }
 
-  private static translateStatus(resolutionStatus: Protocol.Audits.MixedContentResolutionStatus):
+  static #translateStatus(resolutionStatus: Protocol.Audits.MixedContentResolutionStatus):
       Platform.UIString.LocalizedString {
     switch (resolutionStatus) {
       case Protocol.Audits.MixedContentResolutionStatus.MixedContentBlocked:
@@ -241,7 +240,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue');
     this.childrenListElement.classList.add('issue-body');
-    this.childrenListElement.classList.add(IssueView.getBodyCSSClass(this.#issue.getKind()));
+    this.childrenListElement.classList.add(IssueView.#getBodyCSSClass(this.#issue.getKind()));
 
     this.affectedResources = this.#createAffectedResources();
     this.#affectedResourceViews = [
@@ -284,7 +283,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.#affectedResourceViews.forEach(view => view.setIssue(issue));
   }
 
-  private static getBodyCSSClass(issueKind: IssuesManager.Issue.IssueKind): string {
+  static #getBodyCSSClass(issueKind: IssuesManager.Issue.IssueKind): string {
     switch (issueKind) {
       case IssuesManager.Issue.IssueKind.BREAKING_CHANGE:
         return 'issue-kind-breaking-change';

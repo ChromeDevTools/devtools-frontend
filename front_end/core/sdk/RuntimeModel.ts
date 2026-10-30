@@ -41,11 +41,11 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       void this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});
     }
 
-    this.#customFormattersSetting.addChangeListener(this.customFormattersStateChanged, this);
+    this.#customFormattersSetting.addChangeListener(this.#customFormattersStateChanged, this);
   }
 
   override dispose(): void {
-    this.#customFormattersSetting.removeChangeListener(this.customFormattersStateChanged, this);
+    this.#customFormattersSetting.removeChangeListener(this.#customFormattersStateChanged, this);
   }
 
   static isSideEffectFailure(response: Protocol.Runtime.EvaluateResponse|EvaluationResult): boolean {
@@ -176,7 +176,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     void this.agent.invoke_runIfWaitingForDebugger();
   }
 
-  private customFormattersStateChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
+  #customFormattersStateChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
     void this.agent.invoke_setCustomObjectFormatterEnabled({enabled});
   }
 
@@ -258,12 +258,12 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 
     if (hints !== null && typeof hints === 'object') {
       if ('copyToClipboard' in hints && Boolean(hints.copyToClipboard)) {
-        this.copyRequested(object);
+        this.#copyRequested(object);
         return;
       }
 
       if ('queryObjects' in hints && hints.queryObjects) {
-        void this.queryObjectsRequested(object, executionContextId);
+        void this.#queryObjectsRequested(object, executionContextId);
         return;
       }
     }
@@ -301,7 +301,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.BindingCalled, event);
   }
 
-  private copyRequested(object: RemoteObject): void {
+  #copyRequested(object: RemoteObject): void {
     if (!object.objectId) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
           object.unserializableValue() || (object.value as string));
@@ -324,7 +324,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
   }
 
-  private async queryObjectsRequested(object: RemoteObject, executionContextId?: number): Promise<void> {
+  async #queryObjectsRequested(object: RemoteObject, executionContextId?: number): Promise<void> {
     const result = await this.queryObjects(object);
     object.release();
     if ('error' in result) {

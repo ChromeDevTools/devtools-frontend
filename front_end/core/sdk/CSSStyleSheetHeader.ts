@@ -107,10 +107,10 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   resourceURL(): Platform.DevToolsPath.UrlString {
-    return this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
+    return this.isViaInspector() ? this.#viaInspectorResourceURL() : this.sourceURL;
   }
 
-  private getFrameURLPath(): string {
+  #getFrameURLPath(): string {
     const model = this.#cssModel.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
@@ -133,8 +133,8 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return urlPath;
   }
 
-  private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
-    return `inspector://${this.getFrameURLPath()}inspector-stylesheet#${this.id}` as Platform.DevToolsPath.UrlString;
+  #viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
+    return `inspector://${this.#getFrameURLPath()}inspector-stylesheet#${this.id}` as Platform.DevToolsPath.UrlString;
   }
 
   lineNumberInSource(lineNumberInStyleSheet: number): number {

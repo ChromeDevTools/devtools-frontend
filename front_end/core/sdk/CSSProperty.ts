@@ -118,7 +118,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return matchers;
   }
 
-  private ensureRanges(): void {
+  #ensureRanges(): void {
     if (this.#nameRange && this.#valueRange) {
       return;
     }
@@ -153,12 +153,12 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   nameRange(): TextUtils.TextRange.TextRange|null {
-    this.ensureRanges();
+    this.#ensureRanges();
     return this.#nameRange;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
-    this.ensureRanges();
+    this.#ensureRanges();
     return this.#valueRange;
   }
 
@@ -221,7 +221,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
     const indentation = this.ownerStyle.cssText ?
-        this.detectIndentation(this.ownerStyle.cssText) :
+        this.#detectIndentation(this.ownerStyle.cssText) :
         this.ownerStyle.cssModel().target().targetManager().settings.resolve(textEditorIndentSettingDescriptor).get();
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
@@ -309,7 +309,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
   }
 
-  private detectIndentation(text: string): string {
+  #detectIndentation(text: string): string {
     const lines = text.split('\n');
     if (lines.length < 2) {
       return '';

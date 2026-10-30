@@ -168,14 +168,14 @@ export class HAREntry extends HARBase {
     // Chrome specific.
     this.custom.set('connectionId', HARBase.optionalString(data['_connectionId']));
     this.custom.set('fromCache', HARBase.optionalString(data['_fromCache']));
-    this.custom.set('initiator', this.importInitiator(data['_initiator']));
+    this.custom.set('initiator', this.#importInitiator(data['_initiator']));
     this.custom.set('priority', HARBase.optionalString(data['_priority']));
     this.custom.set('resourceType', HARBase.optionalString(data['_resourceType']));
     this.custom.set('eventSourceMessages', this.#importEventSourceMessages(data['_eventSourceMessages']));
-    this.custom.set('webSocketMessages', this.importWebSocketMessages(data['_webSocketMessages']));
+    this.custom.set('webSocketMessages', this.#importWebSocketMessages(data['_webSocketMessages']));
   }
 
-  private importInitiator(initiator: any): HARInitiator|undefined {
+  #importInitiator(initiator: any): HARInitiator|undefined {
     if (typeof initiator !== 'object') {
       return;
     }
@@ -183,7 +183,7 @@ export class HAREntry extends HARBase {
     return new HARInitiator(initiator);
   }
 
-  private importWebSocketMessages(inputMessages: any): HARWebSocketMessage[]|undefined {
+  #importWebSocketMessages(inputMessages: any): HARWebSocketMessage[]|undefined {
     if (!Array.isArray(inputMessages)) {
       return;
     }

@@ -505,7 +505,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     this.updateAffectedResourceCount(rows.length);
   }
 
-  private static getHeaderFromError(corsError: Protocol.Network.CorsError): string {
+  static #getHeaderFromError(corsError: Protocol.Network.CorsError): string {
     switch (corsError) {
       case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
         return 'Access-Control-Allow-Headers';
@@ -535,7 +535,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     return '';
   }
 
-  private static getProblemFromError(corsErrorStatus: Protocol.Network.CorsErrorStatus): string {
+  static #getProblemFromError(corsErrorStatus: Protocol.Network.CorsErrorStatus): string {
     switch (corsErrorStatus.corsError) {
       case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
       case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
@@ -565,7 +565,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
 
     const highlightHeader = {
       section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
-      name: CorsIssueDetailsView.getHeaderFromError(corsError),
+      name: CorsIssueDetailsView.#getHeaderFromError(corsError),
     };
 
     const opts = {
@@ -632,7 +632,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     let problem = '';
     if (issueCode === IssuesManager.CorsIssue.IssueCode.INVALID_HEADER_VALUES ||
         issueCode === IssuesManager.CorsIssue.IssueCode.PREFLIGHT_RESPONSE_INVALID) {
-      problem = CorsIssueDetailsView.getProblemFromError(details.corsErrorStatus);
+      problem = CorsIssueDetailsView.#getProblemFromError(details.corsErrorStatus);
     }
 
     let sourceLocation: SourceLocationData|undefined;
@@ -653,7 +653,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       request,
       isWarning: details.isWarning,
       preflight,
-      header: CorsIssueDetailsView.getHeaderFromError(corsError),
+      header: CorsIssueDetailsView.#getHeaderFromError(corsError),
       problem,
       failedParameter: details.corsErrorStatus.failedParameter ?? '',
       initiatorOrigin: details.initiatorOrigin ?? '',

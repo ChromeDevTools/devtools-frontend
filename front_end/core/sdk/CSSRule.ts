@@ -123,7 +123,7 @@ export class CSSStyleRule extends CSSRule {
       header: styleSheetHeaderForRule(cssModel, payload),
       originTreeScopeNodeId: payload.originTreeScopeNodeId,
     });
-    this.reinitializeSelectors(payload.selectorList);
+    this.#reinitializeSelectors(payload.selectorList);
     this.nestingSelectors = payload.nestingSelectors;
     this.media = payload.media ? CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
     this.containerQueries = payload.containerQueries ?
@@ -156,7 +156,7 @@ export class CSSStyleRule extends CSSRule {
     return new CSSStyleRule(cssModel, dummyPayload);
   }
 
-  private reinitializeSelectors(selectorList: Protocol.CSS.SelectorList): void {
+  #reinitializeSelectors(selectorList: Protocol.CSS.SelectorList): void {
     this.selectors = [];
     for (let i = 0; i < selectorList.selectors.length; ++i) {
       this.selectors.push(new CSSValue(selectorList.selectors[i]));
@@ -217,7 +217,7 @@ export class CSSStyleRule extends CSSRule {
     }
     const range = this.selectorRange();
     if (range?.equal(edit.oldRange)) {
-      this.reinitializeSelectors((edit.payload as Protocol.CSS.SelectorList));
+      this.#reinitializeSelectors((edit.payload as Protocol.CSS.SelectorList));
     } else {
       for (let i = 0; i < this.selectors.length; ++i) {
         this.selectors[i].rebase(edit);
@@ -355,7 +355,7 @@ export class CSSKeyframeRule extends CSSRule {
       style: payload.style,
       header: styleSheetHeaderForRule(cssModel, payload),
     });
-    this.reinitializeKey(payload.keyText);
+    this.#reinitializeKey(payload.keyText);
     this.#parentRuleName = parentRuleName;
   }
 
@@ -367,7 +367,7 @@ export class CSSKeyframeRule extends CSSRule {
     return this.#keyText;
   }
 
-  private reinitializeKey(payload: Protocol.CSS.Value): void {
+  #reinitializeKey(payload: Protocol.CSS.Value): void {
     this.#keyText = new CSSValue(payload);
   }
 
@@ -376,7 +376,7 @@ export class CSSKeyframeRule extends CSSRule {
       return;
     }
     if (edit.oldRange.equal(this.#keyText.range)) {
-      this.reinitializeKey((edit.payload as Protocol.CSS.Value));
+      this.#reinitializeKey((edit.payload as Protocol.CSS.Value));
     } else {
       this.#keyText.rebase(edit);
     }

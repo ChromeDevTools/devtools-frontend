@@ -64,7 +64,7 @@ export class VersionController {
     const currentVersion = VersionController.CURRENT_VERSION;
     const minimumVersion =
         Math.min(this.#globalVersionSetting.get(), this.#syncedVersionSetting.get(), this.#localVersionSetting.get());
-    const methodsToRun = this.methodsToRunToUpdateVersion(minimumVersion, currentVersion);
+    const methodsToRun = this.#methodsToRunToUpdateVersion(minimumVersion, currentVersion);
     console.assert(
         // @ts-expect-error
         this[`updateVersionFrom${currentVersion}To${currentVersion + 1}`] === undefined,
@@ -76,7 +76,7 @@ export class VersionController {
     this.resetToCurrent();
   }
 
-  private methodsToRunToUpdateVersion(oldVersion: number, currentVersion: number): string[] {
+  #methodsToRunToUpdateVersion(oldVersion: number, currentVersion: number): string[] {
     const result = [];
     for (let i = oldVersion; i < currentVersion; ++i) {
       result.push('updateVersionFrom' + i + 'To' + (i + 1));
@@ -85,7 +85,7 @@ export class VersionController {
   }
 
   updateVersionFrom0To1(): void {
-    this.clearBreakpointsWhenTooMany(this.#settings.createLocalSetting('breakpoints', []), 500000);
+    this.#clearBreakpointsWhenTooMany(this.#settings.createLocalSetting('breakpoints', []), 500000);
   }
 
   updateVersionFrom1To2(): void {
@@ -296,11 +296,11 @@ export class VersionController {
   }
 
   updateVersionFrom11To12(): void {
-    this.migrateSettingsFromLocalStorage();
+    this.#migrateSettingsFromLocalStorage();
   }
 
   updateVersionFrom12To13(): void {
-    this.migrateSettingsFromLocalStorage();
+    this.#migrateSettingsFromLocalStorage();
     this.#removeSetting(this.#settings.createSetting('timelineOverviewMode', ''));
   }
 
@@ -856,7 +856,7 @@ export class VersionController {
    * a setting with the new name does not yet exist.
    * ----------------------------------------------------------------------- */
 
-  private migrateSettingsFromLocalStorage(): void {
+  #migrateSettingsFromLocalStorage(): void {
     // This step migrates all the settings except for the ones below into the browser profile.
     const localSettings = new Set<string>([
       'advancedSearchConfig',
@@ -887,7 +887,7 @@ export class VersionController {
     }
   }
 
-  private clearBreakpointsWhenTooMany(breakpointsSetting: Setting<unknown[]>, maxBreakpointsCount: number): void {
+  #clearBreakpointsWhenTooMany(breakpointsSetting: Setting<unknown[]>, maxBreakpointsCount: number): void {
     // If there are too many breakpoints in a storage, it is likely due to a recent bug that caused
     // periodical breakpoints duplication leading to inspector slowness.
     if (breakpointsSetting.get().length > maxBreakpointsCount) {

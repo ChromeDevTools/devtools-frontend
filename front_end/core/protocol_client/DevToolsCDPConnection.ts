@@ -34,9 +34,9 @@ export class DevToolsCDPConnection implements CDPConnection {
   constructor(transport: ConnectionTransport) {
     this.#transport = transport;
 
-    test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
+    test.sendRawMessage = this.#sendRawMessageForTesting.bind(this);
 
-    this.#transport.setOnMessage(this.onMessage.bind(this));
+    this.#transport.setOnMessage(this.#onMessage.bind(this));
     this.#transport.setOnDisconnect(reason => {
       this.#observers.forEach(observer => observer.onDisconnect(reason));
     });
@@ -95,8 +95,7 @@ export class DevToolsCDPConnection implements CDPConnection {
     }
   }
 
-  private sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''):
-      void {
+  #sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null, sessionId = ''): void {
     void this.send(method as Command, params as CommandParams<Command>, sessionId).then(response => {
       if ('error' in response && response.error) {
         callback?.(response.error, null);
@@ -106,7 +105,7 @@ export class DevToolsCDPConnection implements CDPConnection {
     });
   }
 
-  private onMessage(message: string|Object): void {
+  #onMessage(message: string|Object): void {
     if (test.dumpProtocol) {
       test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
     }

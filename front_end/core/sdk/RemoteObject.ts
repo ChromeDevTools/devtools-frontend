@@ -773,7 +773,7 @@ export class LocalJSONObject extends RemoteObject {
     }
 
     function formatArrayItem(this: LocalJSONObject, property: RemoteObjectProperty): string {
-      return this.formatValue(property.value || null);
+      return this.#formatValue(property.value || null);
     }
 
     function formatObjectItem(this: LocalJSONObject, property: RemoteObjectProperty): string {
@@ -781,13 +781,13 @@ export class LocalJSONObject extends RemoteObject {
       if (/^\s|\s$|^$|\n/.test(name)) {
         name = '"' + name.replace(/\n/g, '\u21B5') + '"';
       }
-      return name + ': ' + this.formatValue(property.value || null);
+      return name + ': ' + this.#formatValue(property.value || null);
     }
 
     if (this.type === 'object') {
       switch (this.subtype) {
         case 'array':
-          this.#cachedDescription = this.concatenate('[', ']', formatArrayItem.bind(this));
+          this.#cachedDescription = this.#concatenate('[', ']', formatArrayItem.bind(this));
           break;
         case 'date':
           this.#cachedDescription = String(this.#value);
@@ -796,7 +796,7 @@ export class LocalJSONObject extends RemoteObject {
           this.#cachedDescription = 'null';
           break;
         default:
-          this.#cachedDescription = this.concatenate('{', '}', formatObjectItem.bind(this));
+          this.#cachedDescription = this.#concatenate('{', '}', formatObjectItem.bind(this));
       }
     } else {
       this.#cachedDescription = String(this.#value);
@@ -805,7 +805,7 @@ export class LocalJSONObject extends RemoteObject {
     return this.#cachedDescription;
   }
 
-  private formatValue(value: RemoteObject|null): string {
+  #formatValue(value: RemoteObject|null): string {
     if (!value) {
       return 'undefined';
     }
@@ -816,11 +816,11 @@ export class LocalJSONObject extends RemoteObject {
     return description;
   }
 
-  private concatenate(prefix: string, suffix: string, formatProperty: (arg0: RemoteObjectProperty) => string): string {
+  #concatenate(prefix: string, suffix: string, formatProperty: (arg0: RemoteObjectProperty) => string): string {
     const previewChars = 100;
 
     let buffer = prefix;
-    const children = this.children();
+    const children = this.#children();
     for (let i = 0; i < children.length; ++i) {
       const itemDescription = formatProperty(children[i]);
       if (buffer.length + itemDescription.length > previewChars) {
@@ -874,7 +874,7 @@ export class LocalJSONObject extends RemoteObject {
       return String(index) === name && index < 4294967295;
     }
 
-    let properties = this.children();
+    let properties = this.#children();
     if (nonIndexedPropertiesOnly) {
       properties = properties.filter(property => !isArrayIndex(property.name));
     }
@@ -890,7 +890,7 @@ export class LocalJSONObject extends RemoteObject {
     return await this.getOwnProperties(generatePreview, nonIndexedPropertiesOnly);
   }
 
-  private children(): RemoteObjectProperty[] {
+  #children(): RemoteObjectProperty[] {
     if (!this.hasChildren) {
       return [];
     }

@@ -84,7 +84,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         filters: this.filtersWithoutTextFilter(),
         startTime: this.startTime,
         endTime: this.endTime,
-        eventGroupIdCallback: this.groupingFunction.bind(this),
+        eventGroupIdCallback: this.#groupingFunction.bind(this),
       });
     }
 
@@ -98,7 +98,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       filters: [filter],
       startTime: this.startTime,
       endTime: this.endTime,
-      eventGroupIdCallback: this.groupingFunction.bind(this),
+      eventGroupIdCallback: this.#groupingFunction.bind(this),
       calculateTransferSize: true,
       // Ensure we group by 3P alongside eventID for correct 3P grouping.
       forceGroupIdCallback: true,
@@ -113,7 +113,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return;
   }
 
-  private groupingFunction(event: Trace.Types.Events.Event): string {
+  #groupingFunction(event: Trace.Types.Events.Event): string {
     const entity = this.entityMapper()?.entityForEvent(event);
     if (!entity) {
       return '';
@@ -153,9 +153,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return;
   }
 
-  private compareTransferSize(
-      a: DataGrid.SortableDataGrid.SortableDataGridNode<TimelineTreeView.GridNode>,
-      b: DataGrid.SortableDataGrid.SortableDataGridNode<TimelineTreeView.GridNode>): number {
+  #compareTransferSize(a: DataGrid.SortableDataGrid.SortableDataGridNode<TimelineTreeView.GridNode>,
+                       b: DataGrid.SortableDataGrid.SortableDataGridNode<TimelineTreeView.GridNode>): number {
     const nodeA = a as TimelineTreeView.TreeGridNode;
     const nodeB = b as TimelineTreeView.TreeGridNode;
     const transferA = nodeA.profileNode.transferSize ?? 0;
@@ -174,7 +173,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
           b: DataGrid.SortableDataGrid.SortableDataGridNode<TimelineTreeView.GridNode>) => number)|null;
     switch (columnId) {
       case 'transfer-size':
-        sortFunction = this.compareTransferSize.bind(this);
+        sortFunction = this.#compareTransferSize.bind(this);
         break;
       default:
         sortFunction = super.getSortingFunction(columnId);

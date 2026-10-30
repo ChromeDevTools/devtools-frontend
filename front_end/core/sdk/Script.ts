@@ -150,7 +150,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return this.debuggerModel.target();
   }
 
-  private static trimSourceURLComment(source: string): string {
+  static #trimSourceURLComment(source: string): string {
     let sourceURLIndex = source.lastIndexOf('//# sourceURL=');
     if (sourceURLIndex === -1) {
       sourceURLIndex = source.lastIndexOf('//@ sourceURL=');
@@ -201,7 +201,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return Common.ResourceType.resourceTypes.Script;
   }
 
-  private async loadTextContent(): Promise<TextUtils.ContentData.ContentData> {
+  async #loadTextContent(): Promise<TextUtils.ContentData.ContentData> {
     const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({scriptId: this.scriptId});
     if (result.getError()) {
       throw new Error(result.getError());
@@ -214,12 +214,12 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     if (this.hasSourceURL && Common.ParsedURL.schemeIs(this.sourceURL, 'snippet:')) {
       // TODO(crbug.com/1330846): Find a better way to establish the snippet automapping binding then adding
       // a sourceURL comment before evaluation and removing it here.
-      content = Script.trimSourceURLComment(content);
+      content = Script.#trimSourceURLComment(content);
     }
     return new TextUtils.ContentData.ContentData(content, /* isBase64 */ false, 'text/javascript');
   }
 
-  private async loadWasmContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
+  async #loadWasmContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (!this.isWasm()) {
       throw new Error('Not a wasm script');
     }
@@ -229,7 +229,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     if (result.getError()) {
       // Fall through to text content loading if v8-based disassembly fails. This is to ensure backwards compatibility with
       // older v8 versions.
-      const contentData = await this.loadTextContent();
+      const contentData = await this.#loadTextContent();
       return await disassembleWasm(contentData.base64);
     }
 
@@ -316,7 +316,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       return {error: i18nString(UIStrings.scriptRemovedOrDeleted)};
     }
     try {
-      return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
+      return this.isWasm() ? await this.#loadWasmContent() : await this.#loadTextContent();
     } catch {
       // TODO(bmeurer): Propagate errors as exceptions / rejections.
       return {error: i18nString(UIStrings.unableToFetchScriptSource)};

@@ -96,7 +96,7 @@ export class KeyboardShortcut {
       keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
     }
     modifiers = modifiers || Modifiers.None.value;
-    return KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    return KeyboardShortcut.#makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   static makeKeyFromEvent(keyboardEvent: KeyboardEvent): number {
@@ -117,7 +117,7 @@ export class KeyboardShortcut {
     // Use either a real or a synthetic keyCode (for events originating from extensions).
     // @ts-expect-error ExtensionServer.js installs '__keyCode' on some events.
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    return KeyboardShortcut.#makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   // This checks if a "control equivalent" key is pressed. For non-mac platforms this means checking
@@ -166,12 +166,12 @@ export class KeyboardShortcut {
 
   static shortcutToString(key: string|Key, modifiers?: number): string {
     if (typeof key !== 'string' && KeyboardShortcut.isModifier(key.code)) {
-      return KeyboardShortcut.modifiersToString(modifiers);
+      return KeyboardShortcut.#modifiersToString(modifiers);
     }
-    return KeyboardShortcut.modifiersToString(modifiers) + KeyboardShortcut.keyName(key);
+    return KeyboardShortcut.#modifiersToString(modifiers) + KeyboardShortcut.#keyName(key);
   }
 
-  private static keyName(key: string|Key): string {
+  static #keyName(key: string|Key): string {
     if (typeof key === 'string') {
       return key.toUpperCase();
     }
@@ -181,7 +181,7 @@ export class KeyboardShortcut {
     return key.name[Host.Platform.platform()] || key.name.other || '';
   }
 
-  private static makeKeyFromCodeAndModifiers(keyCode: number, modifiers: number|null): number {
+  static #makeKeyFromCodeAndModifiers(keyCode: number, modifiers: number|null): number {
     return (keyCode & 255) | ((modifiers || 0) << 8);
   }
 
@@ -198,7 +198,7 @@ export class KeyboardShortcut {
         keyCode === Keys.Meta.code;
   }
 
-  private static modifiersToString(modifiers: number|undefined): string {
+  static #modifiersToString(modifiers: number|undefined): string {
     const isMac = Host.Platform.isMac();
     const m = Modifiers;
     const modifierNames = new Map([

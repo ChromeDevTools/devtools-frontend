@@ -150,13 +150,13 @@ export class ContextMenuProvider implements
     if (uiSourceCode && networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode)) {
       if (!uiSourceCode.contentType().isFromSourceMap()) {
         disabled = false;
-        handler = this.handleOverrideContent.bind(this, uiSourceCode, contentProvider);
+        handler = this.#handleOverrideContent.bind(this, uiSourceCode, contentProvider);
       } else {
         // show redirect dialog for source mapped file
-        const deployedUiSourceCode = this.getDeployedUiSourceCode(uiSourceCode);
+        const deployedUiSourceCode = this.#getDeployedUiSourceCode(uiSourceCode);
         if (deployedUiSourceCode) {
           disabled = false;
-          handler = this.redirectOverrideToDeployedUiSourceCode.bind(this, deployedUiSourceCode, uiSourceCode);
+          handler = this.#redirectOverrideToDeployedUiSourceCode.bind(this, deployedUiSourceCode, uiSourceCode);
         }
       }
     }
@@ -171,9 +171,8 @@ export class ContextMenuProvider implements
     }
   }
 
-  private async handleOverrideContent(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode,
-      contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<void> {
+  async #handleOverrideContent(uiSourceCode: Workspace.UISourceCode.UISourceCode,
+                               contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<void> {
     const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
     if (isSuccess) {
@@ -202,9 +201,9 @@ export class ContextMenuProvider implements
     }
   }
 
-  private async redirectOverrideToDeployedUiSourceCode(
-      deployedUiSourceCode: Workspace.UISourceCode.UISourceCode,
-      originalUiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  async #redirectOverrideToDeployedUiSourceCode(deployedUiSourceCode: Workspace.UISourceCode.UISourceCode,
+                                                originalUiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSourceMappedWarning);
     const deployedUrl = deployedUiSourceCode.url();
     const deployedName = Bindings.ResourceUtils.displayNameForURL(deployedUrl);
@@ -219,12 +218,12 @@ export class ContextMenuProvider implements
 
     if (shouldJumpToDeployedFile) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuRedirectToDeployed);
-      await this.handleOverrideContent(deployedUiSourceCode, deployedUiSourceCode);
+      await this.#handleOverrideContent(deployedUiSourceCode, deployedUiSourceCode);
     }
   }
 
-  private getDeployedUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      Workspace.UISourceCode.UISourceCode|null {
+  #getDeployedUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UISourceCode
+      |null {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
 
     for (const deployedScript of debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)) {

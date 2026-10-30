@@ -89,10 +89,30 @@ export interface ReportJSON {
   isImported?: boolean;
 }
 
-export type DetailsJSON =|TableDetailsJSON|OpportunityDetailsJSON|ListDetailsJSON|FilmstripDetailsJSON|
-    ScreenshotDetailsJSON|DebugDataDetailsJSON;
+export type DetailsJSON =|TableDetailsJSON|OpportunityDetailsJSON|ListDetailsJSON|ChecklistDetailsJSON|
+    FilmstripDetailsJSON|ScreenshotDetailsJSON|DebugDataDetailsJSON;
 
-export type ListItemValueJSON = DetailsJSON|NodeDetailsJSON;
+export interface ChecklistItemJSON {
+  label: string;
+  value: boolean;
+}
+
+export interface ChecklistDetailsJSON {
+  type: 'checklist';
+  items: Record<string, ChecklistItemJSON>;
+}
+
+export interface TextValueJSON {
+  type: 'text';
+  value: string;
+}
+
+export interface UrlValueJSON {
+  type: 'url';
+  value: string;
+}
+
+export type ListItemValueJSON = DetailsJSON|NodeDetailsJSON|TextValueJSON|UrlValueJSON;
 
 export type ListItemJSON = ListSectionDetailsJSON|ListItemValueJSON;
 
@@ -137,7 +157,8 @@ export interface TableHeadingJSON {
  * Represents the possible values found in an 'item' object
  * based on the 'valueType' specified in headings.
  */
-export type TableItemValue =|string|number|NodeDetailsJSON|SourceLocationDetailsJSON|Platform.DevToolsPath.UrlString;
+export type TableItemValue =
+    |string|number|NodeDetailsJSON|SourceLocationDetailsJSON|TextValueJSON|UrlValueJSON|Platform.DevToolsPath.UrlString;
 
 export interface OpportunityDetailsJSON {
   type: 'opportunity';

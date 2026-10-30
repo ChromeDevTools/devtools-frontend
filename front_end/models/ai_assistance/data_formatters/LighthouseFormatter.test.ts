@@ -780,4 +780,70 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(listReport, 'performance');
     snapshotTester.assert(this, output);
   });
+
+  it('formats checklist details and wrapped text/url values', function() {
+    const checklistReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.4,
+          auditRefs: [{id: 'lcp-discovery-insight', score: 0.4, weight: 1}],
+        },
+      },
+      audits: {
+        'lcp-discovery-insight': {
+          id: 'lcp-discovery-insight',
+          title: 'LCP request discovery',
+          description: 'Optimize LCP by making the LCP image discoverable from the HTML immediately.',
+          score: 0.4,
+          details: {
+            type: 'list',
+            items: [
+              {
+                type: 'checklist',
+                items: {
+                  priorityHinted: {label: 'fetchpriority=high should be applied', value: false},
+                  requestDiscoverable: {label: 'Request is discoverable in initial document', value: true},
+                  eagerlyLoaded: {label: 'lazy load not applied', value: true},
+                },
+              },
+              {
+                type: 'list-section',
+                title: 'LCP Resource',
+                value: {
+                  type: 'url',
+                  value: 'https://example.com/hero.jpg',
+                },
+              },
+              {
+                type: 'list-section',
+                title: 'Note',
+                value: {
+                  type: 'text',
+                  value: 'Add fetchpriority="high" to the image element.',
+                },
+              },
+              {
+                type: 'table',
+                headings: [
+                  {key: 'resource', label: 'Resource', valueType: 'url'},
+                  {key: 'advice', label: 'Advice', valueType: 'text'},
+                ],
+                items: [
+                  {
+                    resource: {type: 'url', value: 'https://example.com/hero.jpg'},
+                    advice: {type: 'text', value: 'Preload this image'},
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(checklistReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
 });

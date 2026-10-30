@@ -290,6 +290,10 @@ export class LighthouseFormatter {
       }
       case 'list':
         return this.#formatList(details);
+      case 'checklist':
+        return Object.values(details.items)
+            .map(item => `- ${this.#toSingleLine(item.label)}: ${item.value ? 'Passed' : 'Failed'}`)
+            .join('\n');
       default:
         return '';
     }
@@ -332,6 +336,9 @@ export class LighthouseFormatter {
               return `- **${label}**: ${this.#toSingleLine(v)}`;
             })
             .join('\n');
+      case 'text':
+      case 'url':
+        return this.#toSingleLine(value.value);
       default:
         return this.#formatDetails(value);
     }
@@ -412,6 +419,9 @@ export class LighthouseFormatter {
       switch (value.type) {
         case 'node':
           return this.#formatNodeFields(value);
+        case 'text':
+        case 'url':
+          return [{value: this.#formatValue(value.value, valueType)}];
         case 'source-location': {
           const parts = [];
           if (value.url) {

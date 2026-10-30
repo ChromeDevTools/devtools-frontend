@@ -253,3 +253,26 @@ The following audits in this category have a score below 90 and may need attenti
     - **Element path**: 1,HTML,1,BODY,0,MAIN,0,H1
     - **Element explanation**: Fix any of the following: Element is delayed by render-blocking script
 === end content
+
+Title: LighthouseFormatter formats checklist details and wrapped text/url values
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **LCP request discovery**: 40
+  * Optimize LCP by making the LCP image discoverable from the HTML immediately.
+
+    - fetchpriority=high should be applied: Failed
+    - Request is discoverable in initial document: Passed
+    - lazy load not applied: Passed
+
+    **LCP Resource**
+    https://example.com/hero.jpg
+
+    **Note**
+    Add fetchpriority="high" to the image element.
+
+    - Item:
+      * **Resource**: https://example.com/hero.jpg
+      * **Advice**: Preload this image
+=== end content

@@ -728,4 +728,56 @@ describe('LighthouseFormatter', function() {
     ].join('\n\n');
     snapshotTester.assert(this, output);
   });
+
+  it('formats list details with list-section, table, and node items', function() {
+    const listReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.3,
+          auditRefs: [{id: 'lcp-breakdown-insight', score: 0.3, weight: 1}],
+        },
+      },
+      audits: {
+        'lcp-breakdown-insight': {
+          id: 'lcp-breakdown-insight',
+          title: 'LCP breakdown',
+          description: 'Each subpath has specific improvement strategies.',
+          score: 0.3,
+          details: {
+            type: 'list',
+            items: [
+              {
+                type: 'table',
+                headings: [
+                  {key: 'subpart', label: 'Subpart', valueType: 'text'},
+                  {key: 'duration', label: 'Duration', valueType: 'ms'},
+                ],
+                items: [
+                  {subpart: 'Time to first byte', duration: 120},
+                  {subpart: 'Element render delay', duration: 480},
+                ],
+              },
+              {
+                type: 'list-section',
+                title: 'LCP Element',
+                description: 'The largest contentful paint element on the page.',
+                value: {
+                  type: 'node',
+                  nodeLabel: 'Hero Heading',
+                  selector: 'main > h1.hero',
+                  path: '1,HTML,1,BODY,0,MAIN,0,H1',
+                  explanation: 'Fix any of the following:\n  Element is delayed by render-blocking script',
+                },
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(listReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
 });

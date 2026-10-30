@@ -217,7 +217,7 @@ export class LighthouseFormatter {
       const formattedDetails = this.#formatDetails(audit.details);
       if (formattedDetails) {
         lines.push('');
-        lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
+        lines.push(formattedDetails.split('\n').map(l => l ? `    ${l}` : '').join('\n'));
       }
     }
     return lines;
@@ -288,9 +288,72 @@ export class LighthouseFormatter {
         lines.push(this.#formatTable(details.headings, details.items));
         return lines.join('\n');
       }
+      case 'list':
+        return this.#formatList(details);
       default:
         return '';
     }
+  }
+
+  #formatList(details: LHModel.ReporterTypes.ListDetailsJSON): string {
+    const itemStrings: string[] = [];
+    for (const item of details.items) {
+      if (item.type === 'list-section') {
+        const sectionLines: string[] = [];
+        if (item.title) {
+          sectionLines.push(`**${this.#toSingleLine(item.title)}**`);
+        }
+        if (item.description) {
+          sectionLines.push(this.#toSingleLine(item.description));
+        }
+        const formattedValue = this.#formatListValue(item.value);
+        if (formattedValue) {
+          sectionLines.push(formattedValue);
+        }
+        if (sectionLines.length > 0) {
+          itemStrings.push(sectionLines.join('\n'));
+        }
+      } else {
+        const formattedItem = this.#formatListValue(item);
+        if (formattedItem) {
+          itemStrings.push(formattedItem);
+        }
+      }
+    }
+    return itemStrings.join('\n\n');
+  }
+
+  #formatListValue(value: LHModel.ReporterTypes.ListItemValueJSON): string {
+    switch (value.type) {
+      case 'node':
+        return this.#formatNodeFields(value)
+            .map(({labelSuffix, value: v}) => {
+              const label = labelSuffix ? `Element ${labelSuffix}` : 'Element';
+              return `- **${label}**: ${this.#toSingleLine(v)}`;
+            })
+            .join('\n');
+      default:
+        return this.#formatDetails(value);
+    }
+  }
+
+  #formatNodeFields(value: LHModel.ReporterTypes.NodeDetailsJSON): Array<{
+    value: string,
+    labelSuffix?: string,
+  }> {
+    const results = [];
+    const label = value.nodeLabel || value.selector || value.snippet || '(node)';
+    results.push({value: label});
+    if (value.selector && value.selector !== label) {
+      results.push({labelSuffix: 'selector', value: value.selector});
+    }
+    if (value.path) {
+      results.push({labelSuffix: 'path', value: value.path});
+    }
+    if (value.explanation) {
+      results.push({labelSuffix: 'explanation', value: this.#joinExplanationLines(value.explanation)});
+    }
+    return results;
   }
 
   #formatTable(headings: LHModel.ReporterTypes.TableHeadingJSON[], items: LHModel.ReporterTypes.TableItem[]): string {
@@ -347,21 +410,8 @@ export class LighthouseFormatter {
     }
     if (typeof value === 'object' && 'type' in value) {
       switch (value.type) {
-        case 'node': {
-          const results = [];
-          const label = value.nodeLabel || value.selector || value.snippet || '(node)';
-          results.push({value: label});
-          if (value.selector && value.selector !== label) {
-            results.push({labelSuffix: 'selector', value: value.selector});
-          }
-          if (value.path) {
-            results.push({labelSuffix: 'path', value: value.path});
-          }
-          if (value.explanation) {
-            results.push({labelSuffix: 'explanation', value: this.#joinExplanationLines(value.explanation)});
-          }
-          return results;
-        }
+        case 'node':
+          return this.#formatNodeFields(value);
         case 'source-location': {
           const parts = [];
           if (value.url) {

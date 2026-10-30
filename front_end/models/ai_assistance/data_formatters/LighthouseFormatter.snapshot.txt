@@ -219,7 +219,6 @@ The following audits in this category errored:
   * An audit that threw an error during execution.
   * Error: Audit execution timed out
 === end content
-
 Title: LighthouseFormatter excludes hidden audits
 Content:
 ## Failing audits
@@ -230,4 +229,27 @@ Content:
 # Audits for Performance
 
 All audits in this category passed (score >= 90).
+=== end content
+
+Title: LighthouseFormatter formats list details with list-section, table, and node items
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **LCP breakdown**: 30
+  * Each subpath has specific improvement strategies.
+
+    - Item:
+      * **Subpart**: Time to first byte
+      * **Duration**: 120 ms
+    - Item:
+      * **Subpart**: Element render delay
+      * **Duration**: 480 ms
+
+    **LCP Element**
+    The largest contentful paint element on the page.
+    - **Element**: Hero Heading
+    - **Element selector**: main > h1.hero
+    - **Element path**: 1,HTML,1,BODY,0,MAIN,0,H1
+    - **Element explanation**: Fix any of the following: Element is delayed by render-blocking script
 === end content

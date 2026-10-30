@@ -89,8 +89,24 @@ export interface ReportJSON {
   isImported?: boolean;
 }
 
-export type DetailsJSON =
-    |TableDetailsJSON|OpportunityDetailsJSON|FilmstripDetailsJSON|ScreenshotDetailsJSON|DebugDataDetailsJSON;
+export type DetailsJSON =|TableDetailsJSON|OpportunityDetailsJSON|ListDetailsJSON|FilmstripDetailsJSON|
+    ScreenshotDetailsJSON|DebugDataDetailsJSON;
+
+export type ListItemValueJSON = DetailsJSON|NodeDetailsJSON;
+
+export type ListItemJSON = ListSectionDetailsJSON|ListItemValueJSON;
+
+export interface ListDetailsJSON {
+  type: 'list';
+  items: ListItemJSON[];
+}
+
+export interface ListSectionDetailsJSON {
+  type: 'list-section';
+  title?: string;
+  description?: string;
+  value: ListItemValueJSON;
+}
 
 export interface SubItemsJSON {
   type: 'subitems';

@@ -139,13 +139,13 @@ circle.animation-keyframe-point:active {
   flex: 0 0 var(--timeline-controls-width);
   position: relative;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   padding-right: var(--sys-size-5);
 }
 
 .animation-timeline-current-time {
   flex: 0 0 auto;
-  line-height: var(--sys-size-12);
   margin-right: 5px;
 }
 

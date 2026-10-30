@@ -12,15 +12,18 @@ copy_to_gen("extensions") {
     "test_panel.html",
     "wasm_module.html",
   ]
+
+  deps = [
+    ":extension_wasm_modules",
+    ":extension_wasm_modules_sources",
+  ]
 }
 
-if (!build_with_chromium) {
-  wasm_module("extension_wasm_modules") {
-    sources = [
-      "can_access_wasm_data.wat",
-      "global_variable.wat",
-      "stepping.wat",
-      "unreachable.wat",
-    ]
-  }
+wasm_module("extension_wasm_modules") {
+  sources = [
+    "can_access_wasm_data.wat",
+    "global_variable.wat",
+    "stepping.wat",
+    "unreachable.wat",
+  ]
 }

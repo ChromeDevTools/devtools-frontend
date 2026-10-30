@@ -436,7 +436,6 @@ hooks = [
   {
     'name': 'emscripten',
     'pattern': '.',
-    'condition': 'build_with_chromium == False',
     'action': ['vpython3', 'scripts/deps/download_emscripten.py', Var('emscripten_tag'), 'third_party/emscripten-releases'],
   },
   {

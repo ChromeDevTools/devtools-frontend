@@ -20,3 +20,7 @@
 crbug.com/548390264 [ linux mac win32 ] test/e2e/memory/memory.test.ts:the_memory_panel:does_not_include_backing_store_size_in_the_shallow_size_of_a_js_set [ Failure Pass ]
 
 crbug.com/579773252 [ linux mac win32 ] test/e2e/emulation/custom-devices.test.ts:custom_devices:can_add_and_then_edit_a_custom_device_with_ua-ch_emulation [ Failure Pass ]
+
+crbug.com/579806317 [ linux mac win32 ] test/e2e/emulation/media-query-inspector.test.ts:media_query_inspector:lists_all_the_media_queries [ Failure Pass ]
+
+crbug.com/579800143 [ linux mac win32 ] test/e2e/elements/computed-pane-properties.test.ts:the_computed_pane:can_display_the_css_properties_of_the_selected_element [ Failure Pass ]

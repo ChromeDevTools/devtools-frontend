@@ -3303,9 +3303,7 @@ export const generatedProperties: CSSProperty[] = [
    "content-block-size",
    "content-inline-size"
   ],
-  "name": "frame-sizing",
-  "runtime_flag": "ResponsiveIframes",
-  "runtime_flag_status": "stable"
+  "name": "frame-sizing"
  },
  {
   "longhands": [

@@ -33,7 +33,7 @@ export class ElementsTreeExpandButton extends UI.Widget.Widget {
     #clickHandler = () => { };
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['elements-tree-expand-button'] });
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
     }
     set clickHandler(clickHandler) {

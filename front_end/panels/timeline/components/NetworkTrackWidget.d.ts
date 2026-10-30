@@ -14,7 +14,9 @@ export interface NetworkTrackWidgetData {
     dataProvider: NetworkDataProvider;
 }
 export interface ViewInput {
-    flameChart: PerfUI.FlameChart.FlameChart;
+    dataProvider: NetworkDataProvider;
+    delegate: PerfUI.FlameChart.FlameChartDelegate;
+    windowTimes: Trace.Types.Timing.TraceWindowMilli;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

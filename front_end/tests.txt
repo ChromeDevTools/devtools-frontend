@@ -529,6 +529,7 @@ panels/emulation/DeviceModeView.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
+panels/issues/AffectedDescendantsWithinSelectElementView.test.js
 panels/issues/AffectedLazyLoadImagesView.test.js
 panels/issues/AffectedMetadataAllowedSitesView.test.js
 panels/issues/AffectedSelectivePermissionsInterventionView.test.js
@@ -558,6 +559,7 @@ panels/media/MainView.test.js
 panels/media/PlayerListView.test.js
 panels/media/PlayerMessagesView.test.js
 panels/media/PlayerPropertiesView.test.js
+panels/media/TickingFlameChart.test.js
 panels/media/TickingFlameChartHelpers.test.js
 panels/mobile_throttling/CPUThrottlingSelector.test.js
 panels/mobile_throttling/NetworkThrottlingSelector.test.js
@@ -781,7 +783,7 @@ ui/components/markdown_view/CodeBlock.test.js
 ui/components/markdown_view/MarkdownImage.test.js
 ui/components/markdown_view/MarkdownPlaceholderLitRenderer.test.js
 ui/components/markdown_view/MarkdownView.test.js
-ui/components/menus/SelectMenu.test.js
+ui/components/menus/Menu.test.js
 ui/components/node_text/NodeText.test.js
 ui/components/panel_feedback/FeedbackButton.test.js
 ui/components/panel_feedback/PanelFeedback.test.js

@@ -943,8 +943,8 @@ export class StylePropertiesSection {
             onLinkActivate: async (resolvedVariable) => {
                 handleVarDefinitionActivate(resolvedVariable, this.stylesContainer);
             },
-            getPopoverContents: (variableName, variableValue) => {
-                return this.stylesContainer.getVariablePopoverContents(this.matchedStyles, variableName, variableValue);
+            getRegisteredPropertyDetails: (variableName) => {
+                return this.stylesContainer.getRegisteredPropertyDetails(this.matchedStyles, variableName);
             },
             jslogContext: 'container-query',
         };

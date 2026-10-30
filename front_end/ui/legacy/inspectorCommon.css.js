@@ -311,7 +311,7 @@ input[type='range']::-webkit-slider-thumb,
   width: var(--sys-size-6);
   height: var(--sys-size-6);
   margin-top: -5px;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   background-color: var(--sys-color-primary);
 }
 
@@ -527,7 +527,7 @@ dt-icon-label {
   content: var(--image-file-empty);
   width: var(--sys-size-4);
   height: var(--sys-size-4);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   outline: var(--sys-size-1) solid var(--icon-gap-default);
   left: 9px;
   position: absolute;
@@ -924,7 +924,7 @@ devtools-toolbar {
     height: 4.5px;
     border: var(--sys-size-2) solid
       var(--override-toolbar-background-color, --sys-color-cdt-base-container);
-    border-radius: 50%;
+    border-radius: var(--sys-shape-corner-full);
     right: 0;
   }
 

@@ -13,7 +13,7 @@ const UIStrings = {
     showComments: 'Show comments',
     /**
      * @description Button text for the comments status bar pill when the AI agent has responded to some
-     * comments. Clicking it opens the Comments panel.
+     * comments and the user has not seen these responses yet. Clicking it opens the Comments panel.
      * @example {2} PH1
      */
     showCommentsWithCount: 'Show comments ({PH1})',
@@ -32,8 +32,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         ?disabled=${input.disabled}
         @click=${input.onPillClick}
         jslog=${VisualLogging.action('comments-status-bar-pill').track({ click: true })}>
-        ${input.respondedCount > 0 ?
-        i18nString(UIStrings.showCommentsWithCount, { PH1: input.respondedCount }) :
+        ${input.unseenResponseCount > 0 ?
+        i18nString(UIStrings.showCommentsWithCount, { PH1: input.unseenResponseCount }) :
         i18nString(UIStrings.showComments)}
       </button>
     `}
@@ -69,7 +69,7 @@ export class CommentsStatusBarPill extends UI.Widget.Widget {
             [];
         const viewInput = {
             threads,
-            respondedCount: threads.filter(thread => thread.status === 'RESOLVED').length,
+            unseenResponseCount: threads.filter(thread => thread.status === 'RESOLVED' && !thread.responseSeen).length,
             onPillClick: this.#handlePillClick,
         };
         this.#view(viewInput, undefined, this.contentElement);

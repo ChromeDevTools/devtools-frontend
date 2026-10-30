@@ -1,7 +1,6 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -21,10 +20,9 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     requestsSet;
     span;
     lastBoundary;
-    constructor() {
-        super();
+    constructor(element) {
+        super(element, { classes: ['network-overview'] });
         this.selectedFilmStripTime = -1;
-        this.element.classList.add('network-overview');
         this.numBands = 1;
         this.highlightedRequest = null;
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this, { scoped: true });

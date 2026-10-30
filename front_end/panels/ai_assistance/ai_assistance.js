@@ -5879,6 +5879,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -6761,7 +6762,7 @@ var chatInput_css_default = `/*
       content: var(--image-file-empty);
       width: var(--sys-size-4);
       height: var(--sys-size-4);
-      border-radius: 50%;
+      border-radius: var(--sys-shape-corner-full);
       outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
       left: 11px;
       position: absolute;
@@ -8413,14 +8414,14 @@ import * as AiAssistanceModel6 from "../../models/ai_assistance/ai_assistance.js
 import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as Lit9 from "../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
-var { html: html9 } = Lit9;
+var { html: html9, Directives: { ref: ref4 } } = Lit9;
 var lockedString5 = i18n11.i18n.lockedString;
 var RELEVANT_DATA_TOOLTIP_ID = "relevant-data-link-permission-prompt";
 var UIStringsNotTranslate4 = {
   /**
    * @description Button text in the permission prompt that skips the tool call.
    */
-  skipToolCall: "Skip",
+  skipToolCall: "No",
   /**
    * @description Button text in the permission prompt that allows the tool call once.
    */
@@ -8428,7 +8429,7 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Button text in the permission prompt that allows the tool call now and in the future.
    */
-  allowAlways: "Yes, always allow",
+  allowAlways: "Yes, and always allow",
   /**
    * @description Fallback title of the permission prompt when the tool has no title.
    */
@@ -8463,6 +8464,9 @@ function renderChangePermissionsInSettings() {
       @click=${openAllowedToolsSettings}
     >${lockedString5(UIStringsNotTranslate4.settings)}</button>${lockedString5(UIStringsNotTranslate4.atAnyTime)}`;
 }
+function focusOnFirstRender(element) {
+  queueMicrotask(() => element?.focus());
+}
 function renderPermissionPrompt(step, disclaimerText) {
   if (step.state.type !== "needs_approval") {
     return Lit9.nothing;
@@ -8489,7 +8493,7 @@ function renderPermissionPrompt(step, disclaimerText) {
     jslog=${VisualLogging6.section("side-effect-confirmation")}>
     <div class="permission-prompt-header">
       <devtools-icon name="lock"></devtools-icon>
-      <h3 class="permission-prompt-title">${title}</h3>
+      <h2 class="permission-prompt-title">${title}</h2>
     </div>
     ${description}
     ${code}
@@ -8500,6 +8504,7 @@ function renderPermissionPrompt(step, disclaimerText) {
     jslogContext: "decline-execute-code"
   }}
         @click=${() => dialog3.onAnswer(AiAssistanceModel6.Tool.PermissionDecision.REJECT)}
+        ${ref4(focusOnFirstRender)}
       >${lockedString5(UIStringsNotTranslate4.skipToolCall)}</devtools-button>
       ${allowAlwaysButton}
       <devtools-button
@@ -8519,7 +8524,7 @@ function renderPermissionPrompt(step, disclaimerText) {
 
 // ../../front_end/panels/ai_assistance/components/ChatView.ts
 var {
-  ref: ref4,
+  ref: ref5,
   repeat,
   classMap
 } = Directives6;
@@ -8558,11 +8563,11 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       <style>${chatView_css_default}</style>
       <style>${permissionPrompt_css_default}</style>
       <div class=${chatUiClasses}>
-        <main @scroll=${input.handleScroll} ${ref4((element) => {
+        <main @scroll=${input.handleScroll} ${ref5((element) => {
     output.mainElement = element;
   })}>
           ${input.messages.length > 0 ? html10`
-            <div class="messages-container" ${ref4(input.handleMessageContainerRef)}>
+            <div class="messages-container" ${ref5(input.handleMessageContainerRef)}>
               ${repeat(input.messages, (message) => message.id, (message, index) => {
     const prevMessage = index > 0 ? input.messages[index - 1] : null;
     const prompt = message.entity === "model" /* MODEL */ && prevMessage?.entity === "user" /* USER */ ? prevMessage.text : "";
@@ -8639,7 +8644,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     onNewConversation: input.onNewConversation,
     onContextRemoved: input.onContextRemoved,
     onContextAdd: input.onContextAdd
-  })} ${ref4((element) => {
+  })} ${ref5((element) => {
     output.input = element;
   })}></devtools-widget>`}
         </main>
@@ -11434,7 +11439,11 @@ async function handleExternalAIRequest(options) {
     conversation.setContext(resolvedContext);
   }
   for (const prompt of options.prompts) {
-    await Array.fromAsync(conversation.run(prompt));
+    for await (const item of conversation.run(prompt)) {
+      if (item.type === AiAssistanceModel9.AiAgent.ResponseType.SIDE_EFFECT && typeof item.confirm === "function") {
+        item.confirm(AiAssistanceModel9.Tool.PermissionDecision.ALLOW_ONCE);
+      }
+    }
   }
   const logsRaw = localStorage.getItem("aiAssistanceStructuredLog");
   return logsRaw ? JSON.parse(logsRaw) : [];

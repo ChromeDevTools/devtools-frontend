@@ -305,7 +305,7 @@ export default `/*
       content: var(--image-file-empty);
       width: var(--sys-size-4);
       height: var(--sys-size-4);
-      border-radius: 50%;
+      border-radius: var(--sys-shape-corner-full);
       outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
       left: 11px;
       position: absolute;

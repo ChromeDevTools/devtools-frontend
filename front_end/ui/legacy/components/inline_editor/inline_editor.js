@@ -1507,7 +1507,7 @@ var cssAngleEditor_css_default = `/*
   left: -0.35em;
   width: 1em;
   height: 1em;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   cursor: pointer;
   box-shadow: 0 0 5px var(--box-shadow-outline-color);
 }
@@ -1805,7 +1805,7 @@ var cssAngleSwatch_css_default = `/*
   width: 1em;
   height: 1em;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   overflow: hidden;
   cursor: pointer;
   background-color: var(--sys-color-neutral-container);

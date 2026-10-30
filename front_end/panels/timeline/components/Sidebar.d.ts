@@ -36,9 +36,26 @@ export declare const enum SidebarTabs {
 }
 export declare const DEFAULT_SIDEBAR_TAB: SidebarTabs;
 export declare const DEFAULT_SIDEBAR_WIDTH_PX = 240;
+export interface ViewInput {
+    parsedTrace: Trace.TraceModel.ParsedTrace | null;
+    activeInsight: ActiveInsight | null;
+    annotations: Trace.Types.File.Annotation[];
+    annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>;
+    annotationsBadge: string | null;
+    insightsTabEnabled: boolean;
+    selectedTabId: SidebarTabs;
+    onTabSelected: (tabId: SidebarTabs) => void;
+}
+export interface ViewOutput {
+    highlightActiveInsight?: () => void;
+    setActiveInsightSet?: (insightSetKey: string) => void;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class SidebarWidget extends UI.Widget.VBox {
     #private;
-    constructor();
+    constructor(view?: View);
+    performUpdate(): void;
     wasShown(): void;
     willHide(): void;
     setAnnotations(updatedAnnotations: Trace.Types.File.Annotation[], annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void;

@@ -81,8 +81,8 @@ export declare class StylesSidebarPane extends StylesSidebarPaneBase implements 
     setFilter(regex: RegExp | null): void;
     refreshUpdate(editedSection: StylePropertiesSection, editedTreeElement?: StylePropertyTreeElement, force?: boolean): void;
     performUpdate(signal?: AbortSignal): Promise<void>;
+    getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | undefined;
     getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
-    getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
     private fetchComputedStylesFor;
     private fetchComputedStyleExtraFieldsFor;
     onResize(): void;

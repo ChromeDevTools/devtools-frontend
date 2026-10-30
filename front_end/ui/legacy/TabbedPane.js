@@ -1542,9 +1542,23 @@ const tabSuffixElements = new WeakMap();
  * before and after the title in the header of that tab.
  */
 export class TabbedPaneElement extends WidgetElement {
+    static observedAttributes = ['vertical'];
     #closeableTabs = false;
     #allowTabReorder = false;
     #automaticReorder = false;
+    #vertical = false;
+    get vertical() {
+        return this.#vertical;
+    }
+    set vertical(vertical) {
+        if (this.#vertical === vertical) {
+            return;
+        }
+        this.#vertical = vertical;
+        if (vertical) {
+            this.getWidget()?.makeVerticalTabLayout();
+        }
+    }
     set closeableTabs(closeable) {
         this.#closeableTabs = closeable;
         this.getWidget()?.setCloseableTabs(closeable);
@@ -1573,6 +1587,7 @@ export class TabbedPaneElement extends WidgetElement {
     #placeholderElement;
     #headerJslog;
     #managedTabIds = new Set();
+    #tabBadges = new Map();
     set placeholder(element) {
         this.#placeholderElement = element;
         this.getWidget()?.setPlaceholderElement(element);
@@ -1586,6 +1601,9 @@ export class TabbedPaneElement extends WidgetElement {
         super();
         registerWidgetConfig(this, widgetConfig(element => {
             const widget = new TabbedPane(element);
+            if (this.#vertical) {
+                widget.makeVerticalTabLayout();
+            }
             widget.setCloseableTabs(this.#closeableTabs);
             widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
             if (this.#delegate) {
@@ -1598,6 +1616,15 @@ export class TabbedPaneElement extends WidgetElement {
             if (slot) {
                 slot.addEventListener('slotchange', () => this.#syncTabs());
             }
+            widget.addEventListener(Events.TabInvoked, event => {
+                this.dispatchEvent(new CustomEvent('tabinvoked', {
+                    detail: {
+                        tabId: event.data.tabId,
+                        prevTabId: event.data.prevTabId,
+                        isUserGesture: event.data.isUserGesture,
+                    },
+                }));
+            });
             widget.addEventListener(Events.TabSelected, event => {
                 const nodes = this.#getTabNodes(widget);
                 for (const child of nodes) {
@@ -1608,7 +1635,13 @@ export class TabbedPaneElement extends WidgetElement {
                         child.removeAttribute('selected');
                     }
                 }
-                this.dispatchEvent(new CustomEvent('select', { detail: { tabId: widget.selectedTabId, isUserGesture: event.data?.isUserGesture } }));
+                this.dispatchEvent(new CustomEvent('select', {
+                    detail: {
+                        tabId: widget.selectedTabId,
+                        prevTabId: event.data?.prevTabId,
+                        isUserGesture: event.data?.isUserGesture,
+                    },
+                }));
             });
             widget.addEventListener(Events.TabClosed, event => {
                 this.dispatchEvent(new CustomEvent('close', { detail: { tabId: event.data.tabId, isUserGesture: event.data.isUserGesture } }));
@@ -1622,6 +1655,11 @@ export class TabbedPaneElement extends WidgetElement {
             this.#syncTabs(widget);
             return widget;
         }));
+    }
+    attributeChangedCallback(name, _oldValue, newValue) {
+        if (name === 'vertical') {
+            this.vertical = newValue !== null;
+        }
     }
     disconnectedCallback() {
         super.disconnectedCallback();
@@ -1644,6 +1682,7 @@ export class TabbedPaneElement extends WidgetElement {
                     'label',
                     'title',
                     'tab-tooltip',
+                    'badge',
                     'jslogcontext',
                     'selected',
                     'disabled',
@@ -1668,6 +1707,7 @@ export class TabbedPaneElement extends WidgetElement {
             const id = child.id;
             const title = child.getAttribute('label') || child.getAttribute('title') || '';
             const tabTooltip = child.getAttribute('tab-tooltip') ?? undefined;
+            const badge = child.getAttribute('badge');
             const jslogContext = child.getAttribute('jslogcontext') || undefined;
             const selected = child.hasAttribute('selected');
             const enabled = !child.hasAttribute('disabled');
@@ -1682,6 +1722,7 @@ export class TabbedPaneElement extends WidgetElement {
                 title,
                 view,
                 tabTooltip,
+                badge,
                 jslogContext,
                 selected,
                 enabled,
@@ -1692,6 +1733,7 @@ export class TabbedPaneElement extends WidgetElement {
         for (const id of this.#managedTabIds) {
             if (!newIds.has(id)) {
                 widget.closeTab(id);
+                this.#tabBadges.delete(id);
             }
         }
         this.#managedTabIds = newIds;
@@ -1717,6 +1759,11 @@ export class TabbedPaneElement extends WidgetElement {
             }
             else {
                 widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable, tab.previewFeature, index, tab.jslogContext);
+            }
+            const badge = tab.badge ?? null;
+            if (this.#tabBadges.get(tab.id) !== badge && (badge !== null || this.#tabBadges.has(tab.id))) {
+                this.#tabBadges.set(tab.id, badge);
+                widget.setBadge(tab.id, badge);
             }
             if (tab.enabled !== undefined) {
                 widget.setTabEnabled(tab.id, tab.enabled);

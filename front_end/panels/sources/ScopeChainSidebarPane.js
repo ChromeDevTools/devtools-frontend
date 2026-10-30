@@ -113,7 +113,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString(UIStrings.loading) : i18nString(UIStrings.notPaused)}</div>`}
     `, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.section('sources.scope-chain')}` } } });
 };
 function scopeTitle(scope) {
     let title = scope.typeName();
@@ -157,7 +157,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     #view;
     constructor(target, view = DEFAULT_VIEW) {
         super(target, {
-            jslog: `${VisualLogging.section('sources.scope-chain')}`,
             useShadowDom: true,
         });
         this.#linkifier = new Components.Linkifier.Linkifier();

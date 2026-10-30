@@ -62,6 +62,9 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
                 throw new Error('Unable to create AutomaticFileSystemManager: ' +
                     'inspectorFrontendHost, and projectSettingsModel must be provided');
             }
+            if (Root.DevToolsContext.globalInstance().has(AutomaticFileSystemManager)) {
+                Root.DevToolsContext.globalInstance().get(AutomaticFileSystemManager).dispose();
+            }
             Root.DevToolsContext.globalInstance().set(AutomaticFileSystemManager, new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel));
         }
         return Root.DevToolsContext.globalInstance().get(AutomaticFileSystemManager);

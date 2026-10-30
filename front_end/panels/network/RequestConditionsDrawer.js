@@ -175,7 +175,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
     `}
     `, 
     // clang-format on
-    target, { container: { classes: (!input.enabled && input.conditions.length > 0) ? ['blocking-disabled'] : [] } });
+    target, {
+        container: {
+            classes: (!input.enabled && input.conditions.length > 0) ? ['blocking-disabled'] : [],
+            attributes: { jslog: `${VisualLogging.panel('network.blocked-urls').track({ resize: true })}` },
+        },
+    });
 };
 function renderItem({ condition, editing, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, onCommit, onCancel, onBeginEdit, validator, lookUpRequestCount, }) {
     const { enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL } = condition;
@@ -366,7 +371,6 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
     #editingCondition;
     constructor(target, view = DEFAULT_VIEW) {
         super(target, {
-            jslog: `${VisualLogging.panel('network.blocked-urls').track({ resize: true })}`,
             useShadowDom: true,
         });
         this.#view = view;

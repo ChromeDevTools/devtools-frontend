@@ -187,9 +187,6 @@
       "path": "../../ui/components/linkifier/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../ui/components/menus/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../ui/geometry/bundle-tsconfig.ref.json"
     },
     {

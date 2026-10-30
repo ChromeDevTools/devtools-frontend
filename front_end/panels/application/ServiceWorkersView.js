@@ -256,7 +256,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             classes: [
                 'service-worker-list',
                 (input.sections.length > 0 ? 'service-worker-has-current' : 'service-worker-list-empty'),
-            ],
+            ], attributes: { jslog: `${VisualLogging.pane('service-workers')}` },
         },
     });
     // clang-format on
@@ -274,7 +274,6 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     #view;
     constructor(view = DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.pane('service-workers')}`,
             useShadowDom: true,
         });
         this.#view = view;

@@ -69,13 +69,20 @@ var NodeWorker = class {
     });
   }
   set onerror(listener) {
-    void this.#workerPromise.then((worker) => {
-      worker.on("error", (error) => {
+    void this.#workerPromise.then(
+      (worker) => {
+        worker.on("error", (error) => {
+          if (!this.#disposed) {
+            listener({ type: "error", ...error, message: error.message, error });
+          }
+        });
+      },
+      (error) => {
         if (!this.#disposed) {
-          listener({ type: "error", ...error });
+          listener({ type: "error", ...error, message: error.message, error });
         }
-      });
-    });
+      }
+    );
   }
 };
 var NodeCacheEntry = class {

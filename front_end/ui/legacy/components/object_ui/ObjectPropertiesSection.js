@@ -1360,6 +1360,8 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
     #renderAsSubtree = false;
     #skipProto = false;
     #skipGettersAndSetters = false;
+    #observedNodes = new Set();
+    #wasConnectedToTemplateOrDocument = false;
     #view;
     constructor(element, view = OBJECT_TREE_DEFAULT_VIEW) {
         super(element);
@@ -1391,6 +1393,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
             child.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
             child.addEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.requestUpdate, this);
             child.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+            this.#observedNodes.add(child);
             if (child.expanded) {
                 await this.#populateChildrenIfNeeded(child);
             }
@@ -1458,12 +1461,22 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
         if (val === this.#objectTree) {
             return;
         }
-        this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
-        this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        this.#unobserveAll();
         this.#objectTree = val;
         this.#objectTree?.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
         this.#objectTree?.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
         this.requestUpdate();
+    }
+    #unobserveAll() {
+        this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        for (const child of this.#observedNodes) {
+            child.removeEventListener("filter-changed" /* ObjectTreeNodeBase.Events.FILTER_CHANGED */, this.requestUpdate, this);
+            child.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+            child.removeEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.requestUpdate, this);
+            child.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+        }
+        this.#observedNodes.clear();
     }
     get linkifier() {
         return this.#linkifier;
@@ -1496,14 +1509,25 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
         this.requestUpdate();
     }
     async performUpdate() {
+        const root = this.contentElement.getRootNode();
+        if (root instanceof Document || root instanceof DocumentFragment || root instanceof ShadowRoot) {
+            this.#wasConnectedToTemplateOrDocument = true;
+        }
+        else if (this.#wasConnectedToTemplateOrDocument) {
+            this.#unobserveAll();
+            return;
+        }
         if (this.#objectTree?.expanded) {
             await this.#populateChildrenIfNeeded(this.#objectTree);
         }
         this.#view(this, undefined, this.contentElement);
     }
+    willHide() {
+        super.willHide();
+        this.#unobserveAll();
+    }
     onDetach() {
-        this.#objectTree?.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
-        this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        this.#unobserveAll();
     }
     wasShown() {
         super.wasShown();
@@ -1511,6 +1535,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
         this.#objectTree?.removeEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
         this.#objectTree?.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
         this.#objectTree?.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+        this.requestUpdate();
     }
 }
 export function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
@@ -1788,7 +1813,9 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
         this.#removePropertyListeners();
         this.#property = property;
         this.#search = property.search;
-        this.#addPropertyListeners();
+        if (this.isShowing()) {
+            this.#addPropertyListeners();
+        }
         this.requestUpdate();
     }
     #addPropertyListeners() {
@@ -1803,6 +1830,10 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
         this.#property?.removeEventListener("filter-changed" /* ObjectTreeNodeBase.Events.FILTER_CHANGED */, this.requestUpdate, this);
         this.#search?.removeEventListener("SearchChanged" /* UI.TreeOutline.TreeSearch.Events.SEARCH_CHANGED */, this.requestUpdate, this);
     }
+    willHide() {
+        super.willHide();
+        this.#removePropertyListeners();
+    }
     onDetach() {
         this.#removePropertyListeners();
     }
@@ -1810,6 +1841,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
         super.wasShown();
         this.#removePropertyListeners();
         this.#addPropertyListeners();
+        this.requestUpdate();
     }
     get expanded() {
         return this.#expanded;

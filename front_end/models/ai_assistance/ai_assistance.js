@@ -360,7 +360,7 @@ var LighthouseFormatter = class {
     const lines = [];
     lines.push(`# Audits for ${category.title}`);
     if (category.description) {
-      lines.push(`${category.description.replace(/\n/g, " ")}`);
+      lines.push(this.#toSingleLine(category.description));
     }
     lines.push("");
     const failingAudits = this.#findFailingAudits(report, category);
@@ -370,21 +370,34 @@ var LighthouseFormatter = class {
     }
     lines.push("The following audits in this category have a score below 90 and may need attention:");
     for (const audit of failingAudits) {
-      let line = `- **${audit.title}**: ${this.#formatScore(audit.score)}`;
-      if (audit.displayValue) {
-        line += ` (${audit.displayValue})`;
-      }
-      lines.push(line);
-      lines.push(`  * ${audit.description.replace(/\n/g, " ")}`);
-      if (audit.details) {
-        const formattedDetails = this.#formatDetails(audit.details);
-        if (formattedDetails) {
-          lines.push("");
-          lines.push(formattedDetails.split("\n").map((l) => `    ${l}`).join("\n"));
-        }
-      }
+      lines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
     }
     return lines.join("\n");
+  }
+  #formatAudit(audit, score) {
+    const lines = [];
+    let line = `- **${audit.title}**: ${score}`;
+    if (audit.displayValue) {
+      line += ` (${audit.displayValue})`;
+    }
+    lines.push(line);
+    lines.push(`  * ${this.#toSingleLine(audit.description)}`);
+    if (audit.explanation) {
+      lines.push(`  * Explanation: ${this.#joinExplanationLines(audit.explanation)}`);
+    }
+    if (audit.warnings) {
+      for (const warning of audit.warnings) {
+        lines.push(`  * Warning: ${this.#toSingleLine(warning)}`);
+      }
+    }
+    if (audit.details) {
+      const formattedDetails = this.#formatDetails(audit.details);
+      if (formattedDetails) {
+        lines.push("");
+        lines.push(formattedDetails.split("\n").map((l) => `    ${l}`).join("\n"));
+      }
+    }
+    return lines;
   }
   /**
    * Returns the audits in a category that scored below 90, in the category's order.
@@ -445,7 +458,7 @@ var LighthouseFormatter = class {
         for (const { labelSuffix, value: v } of formattedValues) {
           const baseLabel = heading.label || heading.key;
           const label = labelSuffix ? `${baseLabel} ${labelSuffix}` : baseLabel;
-          itemLines.push(`  * **${label}**: ${v}`);
+          itemLines.push(`  * **${label}**: ${this.#toSingleLine(v)}`);
         }
         const subItems = item.subItems;
         if (subItems && typeof subItems === "object" && "type" in subItems && subItems.type === "subitems" && heading.subItemsHeading) {
@@ -456,7 +469,7 @@ var LighthouseFormatter = class {
             }
             const formattedSubValues = this.#formatTableValues(subValue, heading.subItemsHeading.valueType);
             for (const { value: v } of formattedSubValues) {
-              itemLines.push(`    * ${v}`);
+              itemLines.push(`    * ${this.#toSingleLine(v)}`);
             }
           }
         }
@@ -488,7 +501,7 @@ var LighthouseFormatter = class {
             results.push({ labelSuffix: "path", value: value.path });
           }
           if (value.explanation) {
-            results.push({ labelSuffix: "explanation", value: value.explanation.replace(/\n/g, " ") });
+            results.push({ labelSuffix: "explanation", value: this.#joinExplanationLines(value.explanation) });
           }
           return results;
         }
@@ -497,10 +510,10 @@ var LighthouseFormatter = class {
           if (value.url) {
             parts.push(value.url);
           }
-          if (value.line) {
-            parts.push(String(value.line));
+          if (typeof value.line === "number") {
+            parts.push(String(value.line + 1));
           }
-          if (value.column) {
+          if (typeof value.column === "number") {
             parts.push(String(value.column));
           }
           return [{ value: parts.join(":") }];
@@ -508,6 +521,25 @@ var LighthouseFormatter = class {
       }
     }
     return [];
+  }
+  #toSingleLine(text) {
+    return text.replace(/[^\S\n]*\n\s*/g, " ");
+  }
+  /**
+   * Joins lines of an explanation onto a single line. Lines that follow a
+   * non-colon line are separated with "; " so that list items (such as axe's
+   * "Fix any of the following:\n  Item 1\n  Item 2") remain distinct.
+   */
+  #joinExplanationLines(text) {
+    const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+    let result = "";
+    for (const line of lines) {
+      if (result) {
+        result += result.endsWith(":") ? " " : "; ";
+      }
+      result += line;
+    }
+    return result;
   }
   #formatValue(value, valueType) {
     if (typeof value === "string") {
@@ -2803,6 +2835,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -7933,6 +7966,11 @@ var GetLighthouseAuditsTool = class {
       return { error: "Error: Active context is not a Lighthouse report." };
     }
     const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
+    if (params.categoryId === "all" && audits.length > MAX_FUNCTION_RESULT_BYTE_LENGTH) {
+      return {
+        error: 'The Lighthouse audits output for "all" is too large to fit in the context window. Request a single category instead.'
+      };
+    }
     return {
       result: { audits }
     };
@@ -9323,8 +9361,10 @@ __export(AiAgent_exports, {
   MAX_STEPS: () => MAX_STEPS,
   MultimodalInputType: () => MultimodalInputType,
   ResponseType: () => ResponseType,
+  SUGGEST_FOLLOW_UPS_FUNCTION_NAME: () => SUGGEST_FOLLOW_UPS_FUNCTION_NAME,
   aidaErrorToErrorType: () => aidaErrorToErrorType,
-  sanitizeSuggestions: () => sanitizeSuggestions
+  sanitizeSuggestions: () => sanitizeSuggestions,
+  sanitizeSuggestionsList: () => sanitizeSuggestionsList
 });
 import * as Host23 from "../../core/host/host.js";
 import * as Root4 from "../../core/root/root.js";
@@ -9332,6 +9372,7 @@ import * as SDK19 from "../../core/sdk/sdk.js";
 import * as AiUtils4 from "../ai-utils/ai-utils.js";
 var { debugLog: debugLog2, isStructuredLogEnabled } = AiUtils4.Debug;
 var MAX_SUGGESTION_LENGTH = 200;
+var SUGGEST_FOLLOW_UPS_FUNCTION_NAME = "suggestFollowUps";
 var ResponseType = /* @__PURE__ */ ((ResponseType2) => {
   ResponseType2["CONTEXT"] = "context";
   ResponseType2["TITLE"] = "title";
@@ -9591,20 +9632,14 @@ var AiAgent = class {
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed.startsWith("SUGGESTIONS:")) {
-        try {
-          suggestions = sanitizeSuggestions(trimmed.substring("SUGGESTIONS:".length).trim());
-        } catch {
-        }
+        suggestions = sanitizeSuggestions(trimmed.substring("SUGGESTIONS:".length).trim());
       } else {
         answerLines.push(line);
       }
     }
     if (!suggestions && answerLines.at(-1)?.includes("SUGGESTIONS:")) {
       const [answer, suggestionsText] = answerLines[answerLines.length - 1].split("SUGGESTIONS:", 2);
-      try {
-        suggestions = sanitizeSuggestions(suggestionsText.trim());
-      } catch {
-      }
+      suggestions = sanitizeSuggestions(suggestionsText.trim());
       answerLines[answerLines.length - 1] = answer;
     }
     const response = {
@@ -9718,35 +9753,14 @@ var AiAgent = class {
         break;
       }
       this.#history.push(request.current_message);
+      const hasOtherFunctionCalls = Boolean(functionCalls?.some((call) => call.name !== SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
+      if (!functionCalls || !hasOtherFunctionCalls) {
+        yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId);
+        break;
+      }
       if (textResponse) {
         const parsedResponse = this.parseTextResponse(textResponse);
-        if (!("answer" in parsedResponse)) {
-          throw new Error("Expected a completed response to have an answer");
-        }
-        if (!functionCalls) {
-          debugLog2(`[AiAgent] Step ${i + 1}: Model returned text response:`, parsedResponse.answer);
-          this.#history.push({
-            parts: [{
-              text: parsedResponse.answer
-            }],
-            role: Host23.AidaClient.Role.MODEL
-          });
-        }
-        Host23.userMetrics.actionTaken(Host23.UserMetrics.Action.AiAssistanceAnswerReceived);
-        yield await this.finalizeAnswer({
-          type: "answer" /* ANSWER */,
-          text: parsedResponse.answer,
-          suggestions: parsedResponse.suggestions,
-          complete: true,
-          rpcId
-        });
-        if (!functionCalls) {
-          break;
-        }
-      }
-      if (!functionCalls) {
-        yield this.#createErrorResponse("unknown" /* UNKNOWN */);
-        break;
+        yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId);
       }
       debugLog2(`[AiAgent] Step ${i + 1}: Model requested function calls:`, functionCalls);
       const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options);
@@ -9772,6 +9786,47 @@ var AiAgent = class {
     return;
   }
   /**
+   * Handles the final model response of a run when no further tool calls need
+   * to execute.
+   *
+   * - If `textResponse` is empty, yields an `UNKNOWN` error.
+   * - Otherwise, records the answer as a `MODEL` turn in `#history` (excluding
+   *   `suggestFollowUps`) and yields a completed `ANSWER` with follow-up
+   *   suggestions.
+   */
+  async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId) {
+    if (!textResponse) {
+      yield this.#createErrorResponse("unknown" /* UNKNOWN */);
+      return;
+    }
+    const lastSuggestCall = functionCalls?.findLast((call) => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
+    const followUpSuggestions = sanitizeSuggestionsList(lastSuggestCall?.args?.suggestions);
+    const parsedResponse = this.parseTextResponse(textResponse);
+    debugLog2(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+    this.#history.push({
+      parts: [{
+        text: parsedResponse.answer
+      }],
+      role: Host23.AidaClient.Role.MODEL
+    });
+    const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
+    yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
+  }
+  /**
+   * Records the `AiAssistanceAnswerReceived` user metric and builds a
+   * completed `ANSWER` response through `finalizeAnswer()`.
+   */
+  async #createCompletedAnswer(text, rpcId, suggestions) {
+    Host23.userMetrics.actionTaken(Host23.UserMetrics.Action.AiAssistanceAnswerReceived);
+    return await this.finalizeAnswer({
+      type: "answer" /* ANSWER */,
+      text,
+      suggestions,
+      complete: true,
+      rpcId
+    });
+  }
+  /**
    * Runs every function call in one model response, one after another, in the
    * order the model returned them.
    *
@@ -9791,6 +9846,17 @@ var AiAgent = class {
     const functionResponses = [];
     try {
       for (const [index, functionCall] of functionCalls.entries()) {
+        if (functionCall.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME) {
+          functionResponses.push({
+            functionResponse: {
+              name: functionCall.name,
+              response: {
+                result: "Ignored: call suggestFollowUps only in the final response after all other tool calls complete."
+              }
+            }
+          });
+          continue;
+        }
         const allowedOriginResult = this.#allowedOrigin?.();
         if (allowedOriginResult && "blocked" in allowedOriginResult) {
           throw new CrossOriginError();
@@ -10062,8 +10128,7 @@ var AiAgent = class {
     };
   }
 };
-function sanitizeSuggestions(suggestions) {
-  const parsed = JSON.parse(suggestions);
+function sanitizeSuggestionsList(parsed) {
   if (!Array.isArray(parsed)) {
     return void 0;
   }
@@ -10082,6 +10147,13 @@ function sanitizeSuggestions(suggestions) {
     return void 0;
   }
   return sanitized;
+}
+function sanitizeSuggestions(suggestions) {
+  try {
+    return sanitizeSuggestionsList(JSON.parse(suggestions));
+  } catch {
+    return void 0;
+  }
 }
 function aidaErrorToErrorType(err) {
   if (err instanceof Host23.AidaClient.AidaAbortError) {
@@ -10793,6 +10865,7 @@ __export(RunLighthouse_exports, {
   RunLighthouseTool: () => RunLighthouseTool
 });
 import * as Host26 from "../../core/host/host.js";
+import * as LHModel from "../lighthouse/lighthouse.js";
 
 // ../../front_end/models/ai_assistance/contexts/LighthouseContext.ts
 var LighthouseContext_exports = {};
@@ -10885,6 +10958,9 @@ ${formatter.audits(this.#lh, "accessibility")}`;
 };
 
 // ../../front_end/models/ai_assistance/tools/RunLighthouse.ts
+function resolveMode(params) {
+  return params.mode ?? (params.categoryId === "agentic-browsing" ? "navigation" : "snapshot");
+}
 var RunLighthouseTool = class {
   name = "runLighthouse" /* RUN_LIGHTHOUSE */;
   permissionPrompt = "never" /* NEVER */;
@@ -10907,21 +10983,30 @@ var RunLighthouseTool = class {
       },
       mode: {
         type: Host26.AidaClient.ParametersTypes.STRING,
-        description: 'Lighthouse execution mode: "navigation", "snapshot", "timespan". Use "navigation" for initial full audits unless the user requested otherwise or in-page changes are being evaluated. Defaults to "snapshot".',
-        nullable: true
+        description: 'Lighthouse execution mode: "navigation", "snapshot", or "timespan". Use "navigation" to reload the page and run all audits (including page-load metrics and WebMCP gatherers); note that reloading resets unsaved in-page DOM or CSS modifications. Use "snapshot" to audit the current DOM state without reloading (preserving live edits, though navigation-only audits such as WebMCP are skipped). Use "timespan" to audit user interactions (supported only by "performance" and "best-practices").',
+        nullable: false
       }
     },
-    required: ["explanation", "categoryId"]
+    required: ["explanation", "categoryId", "mode"]
   };
   displayInfoFromArgs(params) {
+    const mode = resolveMode(params);
     return {
-      title: `Running Lighthouse audits: ${params.categoryId} (${params.mode ?? "snapshot"})`,
+      title: `Running Lighthouse audits: ${params.categoryId} (${mode})`,
       thought: params.explanation,
-      action: `runLighthouse('${params.categoryId}', '${params.mode ?? "snapshot"}')`
+      action: `runLighthouse('${params.categoryId}', '${mode}')`
     };
   }
   async handler(params, context) {
-    const mode = params.mode ?? "snapshot";
+    const mode = resolveMode(params);
+    if (params.categoryId !== "all") {
+      const supportedModes = LHModel.RunTypes.CATEGORY_SUPPORTED_MODES[params.categoryId];
+      if (!supportedModes?.includes(mode)) {
+        return {
+          error: `Error: Category "${params.categoryId}" does not support "${mode}" mode. Supported modes: ${supportedModes ? supportedModes.join(", ") : "none"}.`
+        };
+      }
+    }
     try {
       const result = await context.runLighthouse({
         mode,
@@ -14550,9 +14635,8 @@ If the user asks a question that requires an investigation or debugging, use thi
   - Example: "**Suggestion**: [Suggestion]" or "**Suggestions**:" followed by a bulleted list.
 
 # Follow-up Suggestions
-* Output a list of suggested follow-up queries or actions for the user at the very end of your response.
-* The format MUST be SUGGESTIONS: ["suggestion 1", "suggestion 2"] on its own single line.
-* Ensure suggestions are relevant, concise, and helpful next steps for the user.
+* At the end of your response, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.
+* Do not write follow-up suggestions as text in your response.
 
 # Constraints
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
@@ -14569,7 +14653,7 @@ function removeDirectiveFromLastLine(lines, textBeforeDirective) {
 }
 function parseSuggestionsArray(array) {
   try {
-    return { suggestions: sanitizeSuggestions(array) };
+    return { suggestions: sanitizeSuggestionsList(JSON.parse(array)) };
   } catch {
     return null;
   }
@@ -14694,6 +14778,27 @@ var AiAgent2 = class extends AiAgent {
           loadedSkills: loadedSkills.length > 0 ? loadedSkills : void 0
         };
       }
+    });
+    this.#declaredTools.add(SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
+    this.declareFunction(SUGGEST_FOLLOW_UPS_FUNCTION_NAME, {
+      description: "Provides suggested follow-up queries or actions for the user at the end of the response.",
+      parameters: {
+        type: Host35.AidaClient.ParametersTypes.OBJECT,
+        description: "Parameters for follow-up suggestions",
+        properties: {
+          suggestions: {
+            type: Host35.AidaClient.ParametersTypes.ARRAY,
+            items: {
+              type: Host35.AidaClient.ParametersTypes.STRING,
+              description: "A concise follow-up query or action (under 60 characters)."
+            },
+            description: "1 to 3 concise follow-up queries or actions relevant to the response."
+          }
+        },
+        required: ["suggestions"]
+      },
+      // Never called: AiAgent#run() and AiAgent#runFunctionCalls() intercept suggestFollowUps directly.
+      handler: async () => ({ result: "Suggestions recorded." })
     });
   }
   async enhanceQuery(query, selected = null, _multimodalInputType) {

@@ -70,7 +70,7 @@ export class LighthouseFormatter {
         const lines = [];
         lines.push(`# Audits for ${category.title}`);
         if (category.description) {
-            lines.push(`${category.description.replace(/\n/g, ' ')}`);
+            lines.push(this.#toSingleLine(category.description));
         }
         lines.push('');
         const failingAudits = this.#findFailingAudits(report, category);
@@ -80,21 +80,34 @@ export class LighthouseFormatter {
         }
         lines.push('The following audits in this category have a score below 90 and may need attention:');
         for (const audit of failingAudits) {
-            let line = `- **${audit.title}**: ${this.#formatScore(audit.score)}`;
-            if (audit.displayValue) {
-                line += ` (${audit.displayValue})`;
-            }
-            lines.push(line);
-            lines.push(`  * ${audit.description.replace(/\n/g, ' ')}`);
-            if (audit.details) {
-                const formattedDetails = this.#formatDetails(audit.details);
-                if (formattedDetails) {
-                    lines.push('');
-                    lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
-                }
-            }
+            lines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
         }
         return lines.join('\n');
+    }
+    #formatAudit(audit, score) {
+        const lines = [];
+        let line = `- **${audit.title}**: ${score}`;
+        if (audit.displayValue) {
+            line += ` (${audit.displayValue})`;
+        }
+        lines.push(line);
+        lines.push(`  * ${this.#toSingleLine(audit.description)}`);
+        if (audit.explanation) {
+            lines.push(`  * Explanation: ${this.#joinExplanationLines(audit.explanation)}`);
+        }
+        if (audit.warnings) {
+            for (const warning of audit.warnings) {
+                lines.push(`  * Warning: ${this.#toSingleLine(warning)}`);
+            }
+        }
+        if (audit.details) {
+            const formattedDetails = this.#formatDetails(audit.details);
+            if (formattedDetails) {
+                lines.push('');
+                lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
+            }
+        }
+        return lines;
     }
     /**
      * Returns the audits in a category that scored below 90, in the category's order.
@@ -158,7 +171,7 @@ export class LighthouseFormatter {
                 for (const { labelSuffix, value: v } of formattedValues) {
                     const baseLabel = heading.label || heading.key;
                     const label = labelSuffix ? `${baseLabel} ${labelSuffix}` : baseLabel;
-                    itemLines.push(`  * **${label}**: ${v}`);
+                    itemLines.push(`  * **${label}**: ${this.#toSingleLine(v)}`);
                 }
                 const subItems = item.subItems;
                 // subItems can technically be a string (TableItemValue), but we
@@ -176,7 +189,7 @@ export class LighthouseFormatter {
                         }
                         const formattedSubValues = this.#formatTableValues(subValue, heading.subItemsHeading.valueType);
                         for (const { value: v } of formattedSubValues) {
-                            itemLines.push(`    * ${v}`);
+                            itemLines.push(`    * ${this.#toSingleLine(v)}`);
                         }
                     }
                 }
@@ -208,7 +221,7 @@ export class LighthouseFormatter {
                         results.push({ labelSuffix: 'path', value: value.path });
                     }
                     if (value.explanation) {
-                        results.push({ labelSuffix: 'explanation', value: value.explanation.replace(/\n/g, ' ') });
+                        results.push({ labelSuffix: 'explanation', value: this.#joinExplanationLines(value.explanation) });
                     }
                     return results;
                 }
@@ -217,10 +230,11 @@ export class LighthouseFormatter {
                     if (value.url) {
                         parts.push(value.url);
                     }
-                    if (value.line) {
-                        parts.push(String(value.line));
+                    // SourceLocationDetailsJSON.line is 0-based; the Lighthouse report displays 1-based line numbers.
+                    if (typeof value.line === 'number') {
+                        parts.push(String(value.line + 1));
                     }
-                    if (value.column) {
+                    if (typeof value.column === 'number') {
                         parts.push(String(value.column));
                     }
                     return [{ value: parts.join(':') }];
@@ -228,6 +242,25 @@ export class LighthouseFormatter {
             }
         }
         return [];
+    }
+    #toSingleLine(text) {
+        return text.replace(/[^\S\n]*\n\s*/g, ' ');
+    }
+    /**
+     * Joins lines of an explanation onto a single line. Lines that follow a
+     * non-colon line are separated with "; " so that list items (such as axe's
+     * "Fix any of the following:\n  Item 1\n  Item 2") remain distinct.
+     */
+    #joinExplanationLines(text) {
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        let result = '';
+        for (const line of lines) {
+            if (result) {
+                result += result.endsWith(':') ? ' ' : '; ';
+            }
+            result += line;
+        }
+        return result;
     }
     #formatValue(value, valueType) {
         if (typeof value === 'string') {

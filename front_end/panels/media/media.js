@@ -104,7 +104,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
       </devtools-data-grid>
     `,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging.pane("events")}` } } }
   );
 };
 var PlayerEventsView = class extends UI.Widget.VBox {
@@ -112,7 +113,7 @@ var PlayerEventsView = class extends UI.Widget.VBox {
   #view;
   #parsedEvents = [];
   constructor(view = DEFAULT_VIEW) {
-    super({ jslog: `${VisualLogging.pane("events")}` });
+    super();
     this.#view = view;
     this.firstEventTime = 0;
     this.requestUpdate();
@@ -164,7 +165,7 @@ __export(MainView_exports, {
 import * as i18n15 from "../../core/i18n/i18n.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
-import { html as html6, render as render6 } from "../../ui/lit/lit.js";
+import { Directives as Directives5, html as html6, render as render6 } from "../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/media/MediaModel.ts
@@ -510,9 +511,45 @@ var Event = class {
     return this.#live;
   }
 };
+var FlameChartWidget = class extends PerfUI.FlameChart.FlameChart {
+  #onScroll;
+  constructor(element) {
+    super(
+      new TickingFlameChartDataProvider(new Bounds(0, 1e3, 3e4, 1e3), () => {
+      }),
+      new TickingFlameChartDelegate(),
+      {},
+      element
+    );
+    this.disableRangeSelection();
+    this.bindCanvasEvent("wheel", (e) => {
+      const wheelEvent = e;
+      const scrollTickCount = Math.round(wheelEvent.deltaY / 50);
+      const scrollPositionRatio = wheelEvent.offsetX / wheelEvent.srcElement.clientWidth;
+      this.#onScroll?.(scrollTickCount, scrollPositionRatio);
+    });
+  }
+  set provider(provider) {
+    this.setDataProvider(provider);
+  }
+  set chartDelegate(delegate) {
+    this.setDelegate(delegate);
+  }
+  set onScroll(onScroll) {
+    this.#onScroll = onScroll;
+  }
+};
 var DEFAULT_VIEW2 = (input, _output, target) => {
   render2(html2`
-    <devtools-widget class="flex-auto vbox" ${UI2.Widget.widget(() => input.chart)}></devtools-widget>
+    <devtools-widget
+      class="flex-auto vbox"
+      ${UI2.Widget.widget(FlameChartWidget, {
+    provider: input.dataProvider,
+    chartDelegate: input.delegate,
+    windowTimes: { min: input.windowTimes.low, max: input.windowTimes.high, animate: true },
+    onScroll: input.onScroll
+  })}
+    ></devtools-widget>
   `, target);
 };
 var TickingFlameChart = class extends UI2.Widget.VBox {
@@ -524,10 +561,9 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
   bounds;
   dataProvider;
   delegate;
-  chartGroupExpansionSetting;
-  chart;
   stoppedPermanently;
   #view;
+  #boundOnScroll = this.onScroll.bind(this);
   constructor(element, view = DEFAULT_VIEW2) {
     super(element);
     this.#view = view;
@@ -539,18 +575,19 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
     this.bounds = new Bounds(0, 1e3, 3e4, 1e3);
     this.dataProvider = new TickingFlameChartDataProvider(this.bounds, this.updateMaxTime.bind(this));
     this.delegate = new TickingFlameChartDelegate();
-    this.chartGroupExpansionSetting = Common.Settings.Settings.instance().createSetting("media-flame-chart-group-expansion", {});
-    this.chart = // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
-    new PerfUI.FlameChart.FlameChart(this.dataProvider, this.delegate, this.chartGroupExpansionSetting);
-    this.chart.disableRangeSelection();
-    this.chart.bindCanvasEvent("wheel", (e) => {
-      this.onScroll(e);
-    });
     this.performUpdate();
   }
   performUpdate() {
-    this.#view({ chart: this.chart }, void 0, this.contentElement);
+    this.#view(
+      {
+        dataProvider: this.dataProvider,
+        delegate: this.delegate,
+        windowTimes: { low: this.bounds.low, high: this.bounds.high },
+        onScroll: this.#boundOnScroll
+      },
+      void 0,
+      this.contentElement
+    );
   }
   /**
    * Add a marker with |properties| at |time|.
@@ -582,9 +619,7 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
       this.updateRender();
     }
   }
-  onScroll(e) {
-    const scrollTickCount = Math.round(e.deltaY / 50);
-    const scrollPositionRatio = e.offsetX / e.srcElement.clientWidth;
+  onScroll(scrollTickCount, scrollPositionRatio) {
     if (scrollTickCount > 0) {
       this.bounds.zoomOut(scrollTickCount, scrollPositionRatio);
     } else {
@@ -641,8 +676,7 @@ var TickingFlameChart = class extends UI2.Widget.VBox {
       this.bounds.addMax(duration);
     }
     this.dataProvider.updateMaxTime(this.bounds);
-    this.chart.setWindowTimes(this.bounds.low, this.bounds.high, true);
-    this.chart.scheduleUpdate();
+    this.performUpdate();
   }
 };
 var TickingFlameChartDelegate = class {
@@ -2004,8 +2038,11 @@ var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
   propertyView;
   messageView;
   timelineView;
-  constructor() {
-    super();
+  #processedEventsCount = 0;
+  #processedMessagesCount = 0;
+  #processedErrorsCount = 0;
+  constructor(element) {
+    super(element);
     this.eventView = new PlayerEventsView();
     this.propertyView = new PlayerPropertiesView();
     this.messageView = new PlayerMessagesView();
@@ -2034,6 +2071,23 @@ var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
       this.timelineView,
       i18nString6(UIStrings6.playerTimeline)
     );
+  }
+  set playerData(data) {
+    for (const [name, value] of data.properties) {
+      this.onProperty({ name, value });
+    }
+    for (let i = this.#processedEventsCount; i < data.events.length; i++) {
+      this.onEvent(data.events[i]);
+    }
+    this.#processedEventsCount = data.events.length;
+    for (let i = this.#processedMessagesCount; i < data.messages.length; i++) {
+      this.onMessage(data.messages[i]);
+    }
+    this.#processedMessagesCount = data.messages.length;
+    for (let i = this.#processedErrorsCount; i < data.errors.length; i++) {
+      this.onError(data.errors[i]);
+    }
+    this.#processedErrorsCount = data.errors.length;
   }
   onProperty(property) {
     this.propertyView.onProperty(property);
@@ -2224,21 +2278,72 @@ var PlayerListView = class extends UI6.Widget.VBox {
   playerEntriesWithHostnameFrameTitle;
   mainContainer;
   currentlySelectedPlayerID;
-  constructor(mainContainer, view = DEFAULT_VIEW4) {
-    super({ useShadowDom: true });
+  #processedEventCounts = /* @__PURE__ */ new Map();
+  #onSelectPlayer;
+  #onHidePlayer;
+  #onHideOtherPlayers;
+  #onSavePlayerInfo;
+  #boundSelectPlayer = this.selectPlayer.bind(this);
+  #boundRightClickPlayer = this.rightClickPlayer.bind(this);
+  constructor(mainContainerOrElement, view = DEFAULT_VIEW4) {
+    const element = mainContainerOrElement instanceof HTMLElement ? mainContainerOrElement : void 0;
+    super(element, { useShadowDom: true });
     this.#view = view;
+    this.setMinimumSize(100, 25);
     this.playerStatuses = /* @__PURE__ */ new Map();
     this.playerEntriesWithHostnameFrameTitle = /* @__PURE__ */ new Set();
-    this.mainContainer = mainContainer;
+    if (mainContainerOrElement && !(mainContainerOrElement instanceof HTMLElement)) {
+      this.mainContainer = mainContainerOrElement;
+    }
     this.currentlySelectedPlayerID = null;
     this.requestUpdate();
+  }
+  set players(players) {
+    for (const playerID of Array.from(this.playerStatuses.keys())) {
+      if (!players.has(playerID)) {
+        this.deletePlayer(playerID);
+        this.#processedEventCounts.delete(playerID);
+      }
+    }
+    for (const [playerID, data] of players) {
+      if (!this.playerStatuses.has(playerID)) {
+        this.addMediaElementItem(playerID);
+      }
+      for (const [name, value] of data.properties) {
+        this.onProperty(playerID, { name, value });
+      }
+      const prevCount = this.#processedEventCounts.get(playerID) ?? 0;
+      for (let i = prevCount; i < data.events.length; i++) {
+        this.onEvent(playerID, data.events[i]);
+      }
+      this.#processedEventCounts.set(playerID, data.events.length);
+    }
+  }
+  set selectedPlayerID(playerID) {
+    if (this.currentlySelectedPlayerID === playerID) {
+      return;
+    }
+    this.currentlySelectedPlayerID = playerID;
+    this.requestUpdate();
+  }
+  set onSelectPlayer(callback) {
+    this.#onSelectPlayer = callback;
+  }
+  set onHidePlayer(callback) {
+    this.#onHidePlayer = callback;
+  }
+  set onHideOtherPlayers(callback) {
+    this.#onHideOtherPlayers = callback;
+  }
+  set onSavePlayerInfo(callback) {
+    this.#onSavePlayerInfo = callback;
   }
   performUpdate() {
     const input = {
       players: Array.from(this.playerStatuses.values()),
       selectedPlayerID: this.currentlySelectedPlayerID,
-      onPlayerClick: this.selectPlayer.bind(this),
-      onPlayerContextMenu: this.rightClickPlayer.bind(this)
+      onPlayerClick: this.#boundSelectPlayer,
+      onPlayerContextMenu: this.#boundRightClickPlayer
     };
     this.#view(input, void 0, this.contentElement);
   }
@@ -2248,27 +2353,25 @@ var PlayerListView = class extends UI6.Widget.VBox {
     }
   }
   selectPlayer(playerID) {
-    this.mainContainer.renderMainPanel(playerID);
+    this.mainContainer?.renderMainPanel(playerID);
+    this.#onSelectPlayer?.(playerID);
     this.currentlySelectedPlayerID = playerID;
     this.requestUpdate();
   }
   rightClickPlayer(playerID, event) {
     const contextMenu = new UI6.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(
-      i18nString7(UIStrings7.hidePlayer),
-      this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID),
-      { jslogContext: "hide-player" }
-    );
-    contextMenu.headerSection().appendItem(
-      i18nString7(UIStrings7.hideAllOthers),
-      this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID),
-      { jslogContext: "hide-all-others" }
-    );
-    contextMenu.headerSection().appendItem(
-      i18nString7(UIStrings7.savePlayerInfo),
-      this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID),
-      { jslogContext: "save-player-info" }
-    );
+    contextMenu.headerSection().appendItem(i18nString7(UIStrings7.hidePlayer), () => {
+      this.mainContainer?.markPlayerForDeletion(playerID);
+      this.#onHidePlayer?.(playerID);
+    }, { jslogContext: "hide-player" });
+    contextMenu.headerSection().appendItem(i18nString7(UIStrings7.hideAllOthers), () => {
+      this.mainContainer?.markOtherPlayersForDeletion(playerID);
+      this.#onHideOtherPlayers?.(playerID);
+    }, { jslogContext: "hide-all-others" });
+    contextMenu.headerSection().appendItem(i18nString7(UIStrings7.savePlayerInfo), () => {
+      this.mainContainer?.exportPlayerData(playerID);
+      this.#onSavePlayerInfo?.(playerID);
+    }, { jslogContext: "save-player-info" });
     void contextMenu.show();
   }
   setMediaElementFrameTitle(playerID, frameTitle, isHostname) {
@@ -2377,28 +2480,35 @@ var PlayerListView = class extends UI6.Widget.VBox {
 };
 
 // ../../front_end/panels/media/MainView.ts
+var { repeat: repeat2 } = Directives5;
 var { widget: widget3 } = UI7.Widget;
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  const placeholderHeader = input.hasPlayers ? i18nString8(UIStrings8.noPlayerDetailsSelected) : i18nString8(UIStrings8.noMediaPlayer);
-  const placeholderText = input.hasPlayers ? i18nString8(UIStrings8.selectToViewDetails) : i18nString8(UIStrings8.mediaPlayerDescription);
+  const hasPlayers = input.players.size > 0;
+  const activePlayerData = input.activePlayerId ? input.players.get(input.activePlayerId) : void 0;
+  const placeholderHeader = hasPlayers ? i18nString8(UIStrings8.noPlayerDetailsSelected) : i18nString8(UIStrings8.noMediaPlayer);
+  const placeholderText = hasPlayers ? i18nString8(UIStrings8.selectToViewDetails) : i18nString8(UIStrings8.mediaPlayerDescription);
   render6(html6`
     <devtools-split-view direction="column"
                          name="media-panel-split-view-state"
                          sidebar-initial-size="200"
-                         show=${input.hasPlayers ? "both" : "main"}>
+                         show=${hasPlayers ? "both" : "main"}>
       <devtools-widget slot="sidebar"
                        class="panel-sidebar"
                        jslog=${VisualLogging6.pane("sidebar").track({ resize: true })}
-                       ${widget3(UI7.Widget.VBox)}>
-        <devtools-widget ${widget3(UI7.Widget.WrapperWidget, {
-    widget: input.sidebar
-  })}></devtools-widget>
+                       ${widget3(PlayerListView, {
+    players: input.players,
+    selectedPlayerID: input.activePlayerId,
+    onSelectPlayer: input.onPlayerSelected,
+    onHidePlayer: input.onHidePlayer,
+    onHideOtherPlayers: input.onHideOtherPlayers,
+    onSavePlayerInfo: input.onSavePlayerInfo
+  })}>
       </devtools-widget>
-      ${input.activePanel ? html6`
-        <devtools-widget slot="main" ${widget3(UI7.Widget.WrapperWidget, {
-    widget: input.activePanel
+      ${activePlayerData && input.activePlayerId ? repeat2([input.activePlayerId], (id) => id, () => html6`
+        <devtools-widget slot="main" ${widget3(PlayerDetailView, {
+    playerData: activePlayerData
   })}></devtools-widget>
-      ` : html6`
+      `) : html6`
         <devtools-widget slot="main" ${widget3(UI7.EmptyWidget.EmptyWidget, {
     header: placeholderHeader,
     text: placeholderText,
@@ -2508,10 +2618,9 @@ var PlayerDataDownloadManager = class {
   }
 };
 var MainView = class extends UI7.Panel.Panel {
-  detailPanels;
   deletedPlayers;
   downloadStore;
-  sidebar;
+  #playerData;
   #playerIdsToPlayers;
   #domNodeIdsToPlayerIds;
   #activePlayerId = null;
@@ -2519,10 +2628,14 @@ var MainView = class extends UI7.Panel.Panel {
   #initialPlayersLoadedPromise;
   #initialPlayersLoadedPromiseResolve = () => {
   };
+  #boundRenderMainPanel = this.renderMainPanel.bind(this);
+  #boundMarkPlayerForDeletion = this.markPlayerForDeletion.bind(this);
+  #boundMarkOtherPlayersForDeletion = this.markOtherPlayersForDeletion.bind(this);
+  #boundExportPlayerData = this.exportPlayerData.bind(this);
   constructor(downloadStore = new PlayerDataDownloadManager(), view = DEFAULT_VIEW5) {
     super("media");
     this.#view = view;
-    this.detailPanels = /* @__PURE__ */ new Map();
+    this.#playerData = /* @__PURE__ */ new Map();
     this.#playerIdsToPlayers = /* @__PURE__ */ new Map();
     this.#domNodeIdsToPlayerIds = /* @__PURE__ */ new Map();
     this.#initialPlayersLoadedPromise = new Promise((resolve) => {
@@ -2530,25 +2643,22 @@ var MainView = class extends UI7.Panel.Panel {
     });
     this.deletedPlayers = /* @__PURE__ */ new Set();
     this.downloadStore = downloadStore;
-    this.sidebar = new PlayerListView(this);
-    this.sidebar.setMinimumSize(100, 25);
     this.requestUpdate();
     SDK2.TargetManager.TargetManager.instance().observeModels(MediaModel, this, { scoped: true });
   }
   performUpdate() {
-    const activePanel = this.#activePlayerId ? this.detailPanels.get(this.#activePlayerId) : void 0;
-    this.#view(
-      {
-        sidebar: this.sidebar,
-        activePanel,
-        hasPlayers: this.detailPanels.size > 0
-      },
-      void 0,
-      this.contentElement
-    );
+    const input = {
+      players: new Map(this.#playerData),
+      activePlayerId: this.#activePlayerId,
+      onPlayerSelected: this.#boundRenderMainPanel,
+      onHidePlayer: this.#boundMarkPlayerForDeletion,
+      onHideOtherPlayers: this.#boundMarkOtherPlayersForDeletion,
+      onSavePlayerInfo: this.#boundExportPlayerData
+    };
+    this.#view(input, void 0, this.contentElement);
   }
   renderMainPanel(playerID) {
-    if (!this.detailPanels.has(playerID) || this.#activePlayerId === playerID) {
+    if (!this.#playerData.has(playerID) || this.#activePlayerId === playerID) {
       return;
     }
     this.#activePlayerId = playerID;
@@ -2610,39 +2720,55 @@ var MainView = class extends UI7.Panel.Panel {
     }
   }
   shouldPropagate(playerID) {
-    return !this.deletedPlayers.has(playerID) && this.detailPanels.has(playerID);
+    return !this.deletedPlayers.has(playerID) && this.#playerData.has(playerID);
   }
   onProperty(playerID, property) {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onProperty(playerID, property);
     this.downloadStore.onProperty(playerID, property);
-    this.detailPanels.get(playerID)?.onProperty(property);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.properties.set(property.name, property.value);
+      this.#playerData.set(playerID, { ...data });
+      this.requestUpdate();
+    }
   }
   onError(playerID, error) {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onError(playerID, error);
     this.downloadStore.onError(playerID, error);
-    this.detailPanels.get(playerID)?.onError(error);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.errors.push(error);
+      this.#playerData.set(playerID, { ...data });
+      this.requestUpdate();
+    }
   }
   onMessage(playerID, message) {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onMessage(playerID, message);
     this.downloadStore.onMessage(playerID, message);
-    this.detailPanels.get(playerID)?.onMessage(message);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.messages.push(message);
+      this.#playerData.set(playerID, { ...data });
+      this.requestUpdate();
+    }
   }
   onEvent(playerID, event) {
     if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this.sidebar.onEvent(playerID, event);
     this.downloadStore.onEvent(playerID, event);
-    this.detailPanels.get(playerID)?.onEvent(event);
+    const data = this.#playerData.get(playerID);
+    if (data) {
+      data.events.push(event);
+      this.#playerData.set(playerID, { ...data });
+      this.requestUpdate();
+    }
   }
   selectPlayerByDOMNodeId(domNodeId) {
     const playerId = this.#domNodeIdsToPlayerIds.get(domNodeId);
@@ -2651,7 +2777,7 @@ var MainView = class extends UI7.Panel.Panel {
     }
     const player = this.#playerIdsToPlayers.get(playerId);
     if (player) {
-      this.sidebar.selectPlayerById(player.playerId);
+      this.renderMainPanel(player.playerId);
     }
   }
   waitForInitialPlayers() {
@@ -2663,23 +2789,24 @@ var MainView = class extends UI7.Panel.Panel {
     if (player.domNodeId) {
       this.#domNodeIdsToPlayerIds.set(player.domNodeId, player.playerId);
     }
-    this.sidebar.addMediaElementItem(player.playerId);
-    this.detailPanels.set(player.playerId, new PlayerDetailView());
+    this.#playerData.set(player.playerId, {
+      properties: /* @__PURE__ */ new Map(),
+      messages: [],
+      events: [],
+      errors: []
+    });
     this.downloadStore.addPlayer(player.playerId);
-    if (this.detailPanels.size === 1) {
-      this.requestUpdate();
-    }
+    this.requestUpdate();
     this.#initialPlayersLoadedPromiseResolve();
   }
   markPlayerForDeletion(playerID) {
     this.deletedPlayers.add(playerID);
-    this.detailPanels.delete(playerID);
+    this.#playerData.delete(playerID);
     const player = this.#playerIdsToPlayers.get(playerID);
     if (player?.domNodeId) {
       this.#domNodeIdsToPlayerIds.delete(player.domNodeId);
     }
     this.#playerIdsToPlayers.delete(playerID);
-    this.sidebar.deletePlayer(playerID);
     this.downloadStore.deletePlayer(playerID);
     if (this.#activePlayerId === playerID) {
       this.#activePlayerId = null;
@@ -2687,7 +2814,7 @@ var MainView = class extends UI7.Panel.Panel {
     this.requestUpdate();
   }
   markOtherPlayersForDeletion(playerID) {
-    for (const keyID of this.detailPanels.keys()) {
+    for (const keyID of this.#playerData.keys()) {
       if (keyID !== playerID) {
         this.markPlayerForDeletion(keyID);
       }

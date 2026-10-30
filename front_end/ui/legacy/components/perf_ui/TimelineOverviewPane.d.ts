@@ -20,7 +20,7 @@ export declare class TimelineOverviewPane extends TimelineOverviewPaneBase {
     private windowEndTime;
     private muteOnWindowChanged;
     private hasPointer;
-    constructor(prefix: string);
+    constructor(prefixOrElement?: string | HTMLElement);
     enableCreateBreadcrumbsButton(): void;
     private onMouseDown;
     private onMouseCancel;
@@ -82,7 +82,8 @@ export interface TimelineOverview {
 export declare class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOverview {
     #private;
     private canvas;
-    constructor();
+    constructor(options?: UI.Widget.WidgetOptions);
+    constructor(element?: HTMLElement, options?: UI.Widget.WidgetOptions);
     width(): number;
     height(): number;
     context(): CanvasRenderingContext2D;

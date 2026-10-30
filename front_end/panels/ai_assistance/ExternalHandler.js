@@ -50,7 +50,11 @@ export async function handleExternalAIRequest(options) {
         conversation.setContext(resolvedContext);
     }
     for (const prompt of options.prompts) {
-        await Array.fromAsync(conversation.run(prompt));
+        for await (const item of conversation.run(prompt)) {
+            if (item.type === "side-effect" /* AiAssistanceModel.AiAgent.ResponseType.SIDE_EFFECT */ && typeof item.confirm === 'function') {
+                item.confirm("allow-once" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ONCE */);
+            }
+        }
     }
     const logsRaw = localStorage.getItem('aiAssistanceStructuredLog');
     return logsRaw ? JSON.parse(logsRaw) : [];

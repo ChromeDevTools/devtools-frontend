@@ -63,14 +63,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       </devtools-data-grid>
     `, 
     // clang-format on
-    target);
+    target, { container: { attributes: { jslog: `${VisualLogging.pane('events')}` } } });
 };
 export class PlayerEventsView extends UI.Widget.VBox {
     firstEventTime;
     #view;
     #parsedEvents = [];
     constructor(view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('events')}` });
+        super();
         this.#view = view;
         this.firstEventTime = 0;
         this.requestUpdate();

@@ -3794,6 +3794,9 @@ var UserMetrics = class {
       50
     );
   }
+  commentQueued(count) {
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.CommentQueued", count, 1, 100, 50);
+  }
   commentSharedWithAgent(count) {
     InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.CommentSharedWithAgent", count, 1, 100, 50);
   }

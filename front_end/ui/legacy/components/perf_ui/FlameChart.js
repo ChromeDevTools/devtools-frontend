@@ -257,8 +257,8 @@ export class FlameChart extends FlameChartBase {
         styleHeight: 0,
     };
     #boundOnThemeChanged = this.#onThemeChanged.bind(this);
-    constructor(dataProvider, flameChartDelegate, optionalConfig = {}) {
-        super({ useShadowDom: true });
+    constructor(dataProvider, flameChartDelegate, optionalConfig = {}, element) {
+        super(element, { useShadowDom: true });
         this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
         this.#subtitleFont = `${SUBTITLE_FONT_SIZE_AND_STYLE} ${getFontFamilyForCanvas()}`;
         this.registerRequiredCSS(flameChartStyles);
@@ -402,6 +402,18 @@ export class FlameChart extends FlameChartBase {
     }
     disableRangeSelection() {
         this.chartViewport.disableRangeSelection();
+    }
+    setDataProvider(dataProvider) {
+        if (this.dataProvider === dataProvider) {
+            return;
+        }
+        this.dataProvider = dataProvider;
+        this.reset();
+        this.chartViewport.setWindowTimes(dataProvider.minimumBoundary(), dataProvider.minimumBoundary() + dataProvider.totalTime());
+        this.scheduleUpdate();
+    }
+    setDelegate(flameChartDelegate) {
+        this.flameChartDelegate = flameChartDelegate;
     }
     #shouldDimEvent(entryIndex) {
         if (this.dimIndices) {
@@ -631,6 +643,18 @@ export class FlameChart extends FlameChartBase {
     setWindowTimes(startTime, endTime, animate) {
         this.chartViewport.setWindowTimes(startTime, endTime, animate);
         this.updateHighlight();
+    }
+    get windowTimes() {
+        return {
+            min: this.minimumBoundary(),
+            max: this.maximumBoundary(),
+        };
+    }
+    set windowTimes(windowTimes) {
+        this.setWindowTimes(windowTimes.min, windowTimes.max, windowTimes.animate);
+    }
+    performUpdate() {
+        this.update();
     }
     /**
      * Handle the mouse move event. The handle priority will be:
@@ -3373,7 +3397,8 @@ export class FlameChart extends FlameChartBase {
         this.groupOffsets = new Uint32Array(groups.length + 1);
         let currentOffset = this.rulerEnabled ? RulerHeight + 2 : 2;
         // The root is always visible, so just simply set the |parentGroupIsVisible| to visible.
-        currentOffset = this.#traverseGroupTreeAndUpdateLevelPositionsForTheGroup(this.#groupTreeRoot, currentOffset, /* parentGroupIsVisible= */ true);
+        currentOffset = this.#traverseGroupTreeAndUpdateLevelPositionsForTheGroup(this.#groupTreeRoot, currentOffset, 
+        /* parentGroupIsVisible= */ true);
         // Set the final offset to the last element of |groupOffsets| and
         // |visibleLevelOffsets|. This number represent the end of last group and
         // level.

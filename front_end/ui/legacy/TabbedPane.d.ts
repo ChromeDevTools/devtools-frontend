@@ -10,6 +10,7 @@ export interface TabInfo {
     title: string;
     view: AnyWidget;
     tabTooltip?: string;
+    badge?: string | null;
     isCloseable?: boolean;
     previewFeature?: boolean;
     index?: number;
@@ -249,6 +250,9 @@ export interface TabbedPaneTabDelegate {
  */
 export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     #private;
+    static readonly observedAttributes: string[];
+    get vertical(): boolean;
+    set vertical(vertical: boolean);
     set closeableTabs(closeable: boolean);
     set allowTabReorder(allow: boolean);
     set automaticReorder(automatic: boolean);
@@ -257,6 +261,12 @@ export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     set placeholder(element: Element | LitTemplate);
     set headerJslog(jslog: string);
     constructor();
+    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
     disconnectedCallback(): void;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'devtools-tabbed-pane': TabbedPaneElement;
+    }
 }
 export {};

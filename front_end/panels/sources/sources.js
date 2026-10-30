@@ -599,7 +599,12 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     `,
     // clang-format on
     target,
-    { container: { attributes: { tabindex: -1 } } }
+    {
+      container: {
+        attributes: { tabindex: -1, jslog: `${VisualLogging2.dialog("edit-breakpoint")}` },
+        classes: ["sources-edit-breakpoint-dialog"]
+      }
+    }
   );
 };
 var BreakpointEditDialog = class extends UI3.Widget.Widget {
@@ -618,10 +623,8 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
   #state;
   constructor(target, view = DEFAULT_VIEW2) {
     super(target, {
-      jslog: `${VisualLogging2.dialog("edit-breakpoint")}`,
-      useShadowDom: true,
-      delegatesFocus: true,
-      classes: ["sources-edit-breakpoint-dialog"]
+      useShadowDom: "pure",
+      delegatesFocus: true
     });
     this.#view = view;
   }
@@ -4596,6 +4599,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -5708,13 +5712,13 @@ __export(NavigatorView_exports, {
   NavigatorFolderTreeNode: () => NavigatorFolderTreeNode,
   NavigatorGroupTreeNode: () => NavigatorGroupTreeNode,
   NavigatorRootTreeNode: () => NavigatorRootTreeNode,
-  NavigatorSourceTreeElement: () => NavigatorSourceTreeElement,
   NavigatorTreeNode: () => NavigatorTreeNode,
   NavigatorUISourceCodeTreeNode: () => NavigatorUISourceCodeTreeNode,
   NavigatorView: () => NavigatorView,
   Types: () => Types
 });
 import "../../ui/components/spinners/spinners.js";
+import "../../ui/kit/kit.js";
 import * as Common7 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
@@ -5726,7 +5730,6 @@ import * as Bindings3 from "../../models/bindings/bindings.js";
 import * as Persistence3 from "../../models/persistence/persistence.js";
 import * as Workspace5 from "../../models/workspace/workspace.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
-import { createIcon } from "../../ui/kit/kit.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
 import * as SettingsUI2 from "../../ui/settings/settings.js";
@@ -6441,6 +6444,9 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   groupByAuthored;
   groupByDomain;
   groupByFolder;
+  selectedNode = null;
+  expandedNodes = /* @__PURE__ */ new WeakSet();
+  treeElementNodes = /* @__PURE__ */ new WeakMap();
   #view;
   constructor(element, [networkProjectManager] = [Bindings3.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
@@ -6448,11 +6454,28 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     this.scriptsTree = new UI7.TreeOutline.TreeOutlineInShadow(UI7.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.scriptsTree.registerRequiredCSS(navigatorTree_css_default);
     this.scriptsTree.setHideOverflow(true);
-    this.scriptsTree.setComparator(_NavigatorView.treeElementsCompare);
+    this.scriptsTree.setComparator(this.treeElementsCompare.bind(this));
     this.scriptsTree.setFocusable(false);
     this.setDefaultFocusedElement(this.scriptsTree.element);
     this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementAttached, () => this.requestUpdate());
     this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementsDetached, () => this.requestUpdate());
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementSelected, (event) => {
+      const node = this.nodeForTreeElement(event.data);
+      this.selectedNode = node ?? null;
+    });
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementExpanded, (event) => {
+      const node = this.nodeForTreeElement(event.data);
+      if (node) {
+        this.expandedNodes.add(node);
+        node.populate();
+      }
+    });
+    this.scriptsTree.addEventListener(UI7.TreeOutline.Events.ElementCollapsed, (event) => {
+      const node = this.nodeForTreeElement(event.data);
+      if (node) {
+        this.expandedNodes.delete(node);
+      }
+    });
     this.uiSourceCodeNodes = new Platform5.MapUtilities.Multimap();
     this.subfolderNodes = /* @__PURE__ */ new Map();
     this.rootNode = new NavigatorRootTreeNode(this);
@@ -6582,9 +6605,9 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
       { jslogContext: path ? "search-in-folder" : "search-in-all-files" }
     );
   }
-  static treeElementsCompare(treeElement1, treeElement2) {
-    const node1 = treeElement1.node;
-    const node2 = treeElement2.node;
+  treeElementsCompare(treeElement1, treeElement2) {
+    const node1 = this.nodeForTreeElement(treeElement1);
+    const node2 = this.nodeForTreeElement(treeElement2);
     if (node1 && node2) {
       const order = _NavigatorView.compareNodes(node1, node2);
       if (order !== 0) {
@@ -6655,6 +6678,33 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   focus() {
     this.scriptsTree.focus();
   }
+  selectNode(node, omitFocus, selectedByUser) {
+    node.treeNode().select(omitFocus, selectedByUser);
+  }
+  expandNode(node) {
+    node.treeNode().expand();
+  }
+  collapseNode(node) {
+    node.treeNode().collapse();
+  }
+  isNodeExpanded(node) {
+    return this.expandedNodes.has(node);
+  }
+  isNodeSelected(node) {
+    return this.selectedNode === node;
+  }
+  setNodeSelected(node) {
+    this.selectedNode = node;
+  }
+  setNodeExpanded(node) {
+    this.expandedNodes.add(node);
+  }
+  setNodeForTreeElement(treeElement, node) {
+    this.treeElementNodes.set(treeElement, node);
+  }
+  nodeForTreeElement(treeElement) {
+    return this.treeElementNodes.get(treeElement);
+  }
   /**
    * Central place to add elements to the tree to
    * enable focus if the tree has elements
@@ -6669,6 +6719,9 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
    */
   removeChild(parent, child) {
     parent.removeChild(child);
+    if (!this.scriptsTree.selectedTreeElement) {
+      this.selectedNode = null;
+    }
     if (this.scriptsTree.rootElement().childCount() === 0) {
       this.scriptsTree.setFocusable(false);
     }
@@ -6819,8 +6872,9 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
   // TODO(einbinder) remove this code after crbug.com/964075 is fixed
   selectDefaultTreeNode() {
     const children = this.rootNode.children();
-    if (children.length && !this.scriptsTree.selectedTreeElement) {
-      children[0].treeNode().select(
+    if (children.length && !this.selectedNode) {
+      this.selectNode(
+        children[0],
         true,
         false
         /* selectedByUser */
@@ -6938,7 +6992,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     frameNode.appendChild(domainNode);
     if (isAuthored && this.groupByAuthored) {
-      domainNode.treeNode().expand();
+      this.expandNode(domainNode);
     }
     return domainNode;
   }
@@ -6966,7 +7020,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored).appendChild(frameNode);
     if (!parentFrame) {
-      frameNode.treeNode().expand();
+      this.expandNode(frameNode);
     }
     return frameNode;
   }
@@ -6982,7 +7036,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
           i18nString5(UIStrings6.authoredTooltip)
         );
         this.rootNode.appendChild(this.authoredNode);
-        this.authoredNode.treeNode().expand();
+        this.expandNode(this.authoredNode);
       }
       return this.authoredNode;
     }
@@ -7056,11 +7110,12 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (!node) {
       return null;
     }
-    if (this.scriptsTree.selectedTreeElement) {
-      if (UI7.UIUtils.isBeingEdited(this.scriptsTree.selectedTreeElement.treeOutline?.element)) {
+    if (this.selectedNode) {
+      if (UI7.UIUtils.isBeingEdited(this.scriptsTree.element)) {
         return null;
       }
-      this.scriptsTree.selectedTreeElement.deselect();
+      this.selectedNode.treeNode().deselect();
+      this.selectedNode = null;
     }
     node.reveal(select);
     return node;
@@ -7070,11 +7125,9 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     void Common7.Revealer.reveal(uiSourceCode, !focusSource);
   }
   #isUISourceCodeOrAnyAncestorSelected(node) {
-    const selectedTreeElement = this.scriptsTree.selectedTreeElement;
-    const selectedNode = selectedTreeElement?.node;
     let currentNode = node;
     while (currentNode) {
-      if (currentNode === selectedNode) {
+      if (currentNode === this.selectedNode) {
         return true;
       }
       currentNode = currentNode.parent;
@@ -7157,6 +7210,8 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
     this.scriptsTree.removeChildren();
     this.scriptsTree.setFocusable(false);
+    this.selectedNode = null;
+    this.expandedNodes = /* @__PURE__ */ new WeakSet();
     this.uiSourceCodeNodes.clear();
     this.subfolderNodes.clear();
     this.frameNodes.clear();
@@ -7168,12 +7223,10 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     }
   }
   async renameShortcut() {
-    const selectedTreeElement = this.scriptsTree.selectedTreeElement;
-    const node = selectedTreeElement?.node;
-    if (!node?.uiSourceCode()?.canRename()) {
+    if (!(this.selectedNode instanceof NavigatorUISourceCodeTreeNode) || !this.selectedNode.uiSourceCode().canRename()) {
       return false;
     }
-    this.rename(node, false);
+    this.rename(this.selectedNode, false);
     return true;
   }
   handleContextMenuCreate(project, path, uiSourceCode) {
@@ -7224,7 +7277,7 @@ var NavigatorView = class _NavigatorView extends NavigatorViewBase {
     if (!node.uiSourceCode().canRename() || !node.treeElement) {
       return false;
     }
-    return this.scriptsTree.selectedTreeElement === node.treeElement && this.scriptsTree.element.hasFocus() && !UI7.UIUtils.isBeingEdited(this.scriptsTree.element);
+    return this.selectedNode === node && this.scriptsTree.element.hasFocus() && !UI7.UIUtils.isBeingEdited(this.scriptsTree.element);
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
@@ -7531,25 +7584,28 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.T
     this.title = title;
     this.tooltip = title;
     this.navigatorView = navigatorView;
-    let iconType = "folder";
-    if (type === Types.Domain) {
-      iconType = "cloud";
-    } else if (type === Types.Frame) {
-      iconType = "frame";
-    } else if (type === Types.Worker) {
-      iconType = "gears";
-    } else if (type === Types.Authored) {
-      iconType = "code";
-    } else if (type === Types.Deployed) {
-      iconType = "deployed";
-    } else if (type === Types.AutomaticFileSystem) {
-      iconType = "folder-asterisk";
-    }
-    const icon = createIcon(iconType);
-    this.setLeadingIcons([icon]);
+    this.updateIcon();
   }
-  async onpopulate() {
-    this.node.populate();
+  updateIcon() {
+    const iconType = _NavigatorFolderTreeElement.#iconTypeForType(this.nodeType);
+    this.setLeadingIcons([html6`<devtools-icon name=${iconType}></devtools-icon>`]);
+  }
+  static #iconTypeForType(type) {
+    switch (type) {
+      case Types.Domain:
+        return "cloud";
+      case Types.Frame:
+        return "frame";
+      case Types.Worker:
+        return "gears";
+      case Types.Authored:
+        return "code";
+      case Types.Deployed:
+        return "deployed";
+      case Types.AutomaticFileSystem:
+        return "folder-asterisk";
+    }
+    return "folder";
   }
   onattach() {
     this.collapse();
@@ -7569,9 +7625,16 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.T
     this.listItemElement.classList.toggle("is-from-source-map", isFromSourceMap);
   }
   setNode(node) {
+    this.navigatorView.setNodeForTreeElement(this, node);
     this.node = node;
     this.updateTooltip();
     UI7.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
+    if (this.selected) {
+      this.navigatorView.setNodeSelected(node);
+    }
+    if (this.expanded) {
+      this.navigatorView.setNodeExpanded(node);
+    }
   }
   updateTooltip() {
     if (this.node.tooltip) {
@@ -7595,7 +7658,7 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.T
     if (!this.node || !(this.node instanceof NavigatorFolderTreeNode || this.node instanceof NavigatorGroupTreeNode)) {
       return;
     }
-    this.select();
+    this.navigatorView.selectNode(this.node);
     this.navigatorView.handleFolderContextMenu(event, this.node);
   }
   mouseMove(_event) {
@@ -7626,120 +7689,6 @@ var NavigatorFolderTreeElement = class _NavigatorFolderTreeElement extends UI7.T
         return "deployed";
     }
     return "folder";
-  }
-};
-var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
-  nodeType;
-  node;
-  navigatorView;
-  constructor(navigatorView, uiSourceCode, title, node) {
-    super("", false, uiSourceCode.contentType().name());
-    this.nodeType = Types.File;
-    this.node = node;
-    this.title = title;
-    this.listItemElement.classList.add(
-      "navigator-" + uiSourceCode.contentType().name() + "-tree-item",
-      "navigator-file-tree-item"
-    );
-    this.tooltip = uiSourceCode.url();
-    UI7.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
-    window.dispatchEvent(new CustomEvent(
-      "source-tree-file-added",
-      { bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName() }
-    ));
-    this.navigatorView = navigatorView;
-    this.updateIcon();
-    this.titleElement.setAttribute("jslog", `${VisualLogging5.value("title").track({ change: true })}`);
-  }
-  updateIcon() {
-    const icon = PanelUtils.getIconForSourceFile(this.node.uiSourceCode());
-    this.setLeadingIcons([icon]);
-  }
-  updateAccessibleName() {
-    UI7.ARIAUtils.setLabel(this.listItemElement, `${this.node.uiSourceCode().name()}, ${this.nodeType}`);
-  }
-  renderAiButton() {
-    if (!UI7.ActionRegistry.ActionRegistry.instance().hasAction("drjones.sources-floating-button")) {
-      return null;
-    }
-    const uiSourceCode = this.node.uiSourceCode();
-    if (!uiSourceCode.contentType().isTextType() || Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
-      return null;
-    }
-    const action3 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
-    const icon = AiAssistance.AiUtils.getIconName();
-    return html6`<span class="ai-button-container">
-      <devtools-floating-button
-        .iconName=${icon}
-        .title=${action3.title()}
-        .jslogContext=${"ask-ai"}
-        @click=${{
-      handleEvent: (ev) => {
-        ev.stopPropagation();
-        this.navigatorView.sourceSelected(uiSourceCode, false);
-        void action3.execute();
-      },
-      capture: true
-    }}
-        @mousedown=${{
-      handleEvent: (ev) => {
-        ev.stopPropagation();
-      },
-      capture: true
-    }}
-      ></devtools-floating-button>
-    </span>`;
-  }
-  updateTrailingIcons() {
-    const aiButton = this.renderAiButton();
-    this.setTrailingIcons(aiButton ? [aiButton] : []);
-  }
-  get uiSourceCode() {
-    return this.node.uiSourceCode();
-  }
-  onattach() {
-    this.listItemElement.draggable = true;
-    this.listItemElement.addEventListener("click", this.onclick.bind(this), false);
-    this.listItemElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
-    this.listItemElement.addEventListener("dragstart", this.ondragstart.bind(this), false);
-    this.updateTrailingIcons();
-  }
-  selectOnMouseDown(event) {
-    if (event.which !== 1 || !this.navigatorView.shouldRenameOnMouseDown(this.node)) {
-      super.selectOnMouseDown(event);
-      return;
-    }
-    window.setTimeout(() => {
-      if (this.navigatorView.shouldRenameOnMouseDown(this.node)) {
-        this.navigatorView.rename(this.node, false);
-      }
-    }, 300);
-  }
-  ondragstart(event) {
-    this.navigatorView.fileDragStarted(this.node, event);
-  }
-  onspace() {
-    this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
-    return true;
-  }
-  onclick(_event) {
-    this.navigatorView.sourceSelected(this.node.uiSourceCode(), false);
-  }
-  ondblclick(event) {
-    const middleClick = event.button === 1;
-    this.navigatorView.sourceSelected(this.node.uiSourceCode(), !middleClick);
-    return false;
-  }
-  onenter() {
-    this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
-    return true;
-  }
-  ondelete() {
-    return true;
-  }
-  handleContextMenuEvent(event) {
-    this.select();
-    this.navigatorView.handleFileContextMenu(event, this.node);
   }
 };
 var NavigatorTreeNode = class {
@@ -7899,11 +7848,117 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   uiSourceCode() {
     return this.#uiSourceCode;
   }
+  updateIcon() {
+    if (!this.treeElement) {
+      return;
+    }
+    const icon = PanelUtils.getIconForSourceFile(this.#uiSourceCode);
+    this.treeElement.setLeadingIcons([icon]);
+  }
+  updateAccessibleName() {
+    if (!this.treeElement) {
+      return;
+    }
+    UI7.ARIAUtils.setLabel(this.treeElement.listItemElement, `${this.#uiSourceCode.name()}, ${this.type}`);
+  }
+  renderAiButton() {
+    if (!UI7.ActionRegistry.ActionRegistry.instance().hasAction("drjones.sources-floating-button")) {
+      return null;
+    }
+    if (!this.#uiSourceCode.contentType().isTextType() || Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.#uiSourceCode)) {
+      return null;
+    }
+    const action3 = UI7.ActionRegistry.ActionRegistry.instance().getAction("drjones.sources-floating-button");
+    const icon = AiAssistance.AiUtils.getIconName();
+    return html6`<span class="ai-button-container">
+      <devtools-floating-button
+        .iconName=${icon}
+        .title=${action3.title()}
+        .jslogContext=${"ask-ai"}
+        @click=${{
+      handleEvent: (ev) => {
+        ev.stopPropagation();
+        this.navigatorView.sourceSelected(this.#uiSourceCode, false);
+        void action3.execute();
+      },
+      capture: true
+    }}
+        @mousedown=${{
+      handleEvent: (ev) => {
+        ev.stopPropagation();
+      },
+      capture: true
+    }}
+      ></devtools-floating-button>
+    </span>`;
+  }
+  updateTrailingIcons() {
+    if (!this.treeElement) {
+      return;
+    }
+    const aiButton = this.renderAiButton();
+    this.treeElement.setTrailingIcons(aiButton ? [aiButton] : []);
+  }
+  onattach() {
+    this.updateTrailingIcons();
+  }
   treeNode() {
     if (this.treeElement) {
       return this.treeElement;
     }
-    this.treeElement = new NavigatorSourceTreeElement(this.navigatorView, this.#uiSourceCode, "", this);
+    this.treeElement = new UI7.TreeOutline.TreeElement("", false, this.#uiSourceCode.contentType().name());
+    this.treeElement.listItemElement.classList.add(
+      "navigator-" + this.#uiSourceCode.contentType().name() + "-tree-item",
+      "navigator-file-tree-item"
+    );
+    this.treeElement.listItemElement.draggable = true;
+    this.treeElement.titleElement.setAttribute("jslog", `${VisualLogging5.value("title").track({
+      change: true
+    })}`);
+    this.navigatorView.setNodeForTreeElement(this.treeElement, this);
+    const treeElement = this.treeElement;
+    treeElement.selectOnMouseDown = (event) => {
+      if (event.which !== 1 || !this.navigatorView.shouldRenameOnMouseDown(this)) {
+        UI7.TreeOutline.TreeElement.prototype.selectOnMouseDown.call(treeElement, event);
+        return;
+      }
+      window.setTimeout(() => {
+        if (this.navigatorView.shouldRenameOnMouseDown(this)) {
+          this.navigatorView.rename(this, false);
+        }
+      }, 300);
+    };
+    treeElement.onspace = () => {
+      this.navigatorView.sourceSelected(this.#uiSourceCode, true);
+      return true;
+    };
+    treeElement.ondblclick = (event) => {
+      const middleClick = event.button === 1;
+      this.navigatorView.sourceSelected(this.#uiSourceCode, !middleClick);
+      return false;
+    };
+    treeElement.onenter = () => {
+      this.navigatorView.sourceSelected(this.#uiSourceCode, true);
+      return true;
+    };
+    treeElement.ondelete = () => true;
+    treeElement.onattach = () => {
+      this.onattach();
+    };
+    treeElement.listItemElement.addEventListener("click", () => {
+      this.navigatorView.sourceSelected(this.#uiSourceCode, false);
+    }, false);
+    treeElement.listItemElement.addEventListener("contextmenu", (event) => {
+      this.navigatorView.selectNode(this);
+      this.navigatorView.handleFileContextMenu(event, this);
+    }, false);
+    treeElement.listItemElement.addEventListener("dragstart", (event) => {
+      this.navigatorView.fileDragStarted(this, event);
+    }, false);
+    window.dispatchEvent(new CustomEvent(
+      "source-tree-file-added",
+      { bubbles: true, cancelable: true, detail: this.#uiSourceCode.fullDisplayName() }
+    ));
     this.updateTitle();
     const updateTitleBound = this.updateTitle.bind(this, void 0);
     this.eventListeners = [
@@ -7928,8 +7983,8 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       titleText = "*" + titleText;
     }
     this.treeElement.title = titleText;
-    this.treeElement.updateIcon();
-    this.treeElement.updateTrailingIcons();
+    this.updateIcon();
+    this.updateTrailingIcons();
     this.treeElement.listItemElement.classList.toggle("is-ignore-listed", isIgnoreListed);
     let tooltip = this.#uiSourceCode.url();
     if (this.#uiSourceCode.contentType().isFromSourceMap()) {
@@ -7939,7 +7994,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       tooltip = i18nString5(UIStrings6.sIgnoreListed, { PH1: tooltip });
     }
     this.treeElement.tooltip = tooltip;
-    this.treeElement.updateAccessibleName();
+    this.updateAccessibleName();
     this.updateId("UISourceCode:" + this.#uiSourceCode.canonicalScriptId());
   }
   hasChildren() {
@@ -7951,12 +8006,12 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
   reveal(select) {
     if (this.parent) {
       this.parent.populate();
-      this.parent.treeNode().expand();
+      this.navigatorView.expandNode(this.parent);
     }
     if (this.treeElement) {
       this.treeElement.reveal(true);
       if (select) {
-        this.treeElement.select(true);
+        this.navigatorView.selectNode(this, true);
       }
     }
   }
@@ -7992,7 +8047,7 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
         if (parent) {
           parent.removeChild(this.treeElement);
           parent.appendChild(this.treeElement);
-          this.treeElement.select();
+          this.navigatorView.selectNode(this);
         }
       }
       afterEditing(true);
@@ -8144,14 +8199,15 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
       if (oldTreeElement.parent) {
         this.navigatorView.appendChild(oldTreeElement.parent, treeElement);
       }
+      const wasExpanded = this.navigatorView.isNodeExpanded(oldTreeElement.node);
       oldTreeElement.setNode(nodes[nodes.length - 1]);
       oldTreeElement.title = nodes.map((node2) => node2.title).join("/");
       if (oldTreeElement.parent) {
         this.navigatorView.removeChild(oldTreeElement.parent, oldTreeElement);
       }
       this.navigatorView.appendChild(this.treeElement, oldTreeElement);
-      if (oldTreeElement.expanded) {
-        treeElement.expand();
+      if (wasExpanded) {
+        this.navigatorView.expandNode(this);
       }
       this.updateTitle();
     }
@@ -8186,43 +8242,50 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
     const expandable = !(this.project instanceof Persistence3.AutomaticFileSystemWorkspaceBinding.FileSystem);
     this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, expandable);
     this.treeElement.setNode(this);
-    if (this.project instanceof Persistence3.AutomaticFileSystemWorkspaceBinding.FileSystem) {
-      const { automaticFileSystem, automaticFileSystemManager } = this.project;
-      switch (automaticFileSystem?.state) {
-        case "connecting": {
-          this.treeElement.setTrailingIcons([
-            html6`<devtools-spinner></devtools-spinner>`
-          ]);
-          break;
-        }
-        case "disconnected": {
-          this.treeElement.setTrailingIcons([
-            html6`<devtools-button
-              .data=${{
-              variant: Buttons2.Button.Variant.OUTLINED,
-              size: Buttons2.Button.Size.MICRO,
-              title: i18nString5(UIStrings6.connectFolderToWorkspace),
-              jslogContext: "automatic-workspace-folders.connect"
-            }}
-              @click=${async (event) => {
-              event.consume();
-              await automaticFileSystemManager.connectAutomaticFileSystem(
-                /* addIfMissing= */
-                true
-              );
-            }}
-            >${i18nString5(UIStrings6.connect)}</devtools-button>`
-          ]);
-          break;
-        }
+    this.updateTrailingIcons();
+    return this.treeElement;
+  }
+  renderTrailingIcons() {
+    if (!(this.project instanceof Persistence3.AutomaticFileSystemWorkspaceBinding.FileSystem)) {
+      return null;
+    }
+    const { automaticFileSystem, automaticFileSystemManager } = this.project;
+    switch (automaticFileSystem?.state) {
+      case "connecting": {
+        return html6`<devtools-spinner></devtools-spinner>`;
+      }
+      case "disconnected": {
+        return html6`<devtools-button
+          .data=${{
+          variant: Buttons2.Button.Variant.OUTLINED,
+          size: Buttons2.Button.Size.MICRO,
+          title: i18nString5(UIStrings6.connectFolderToWorkspace),
+          jslogContext: "automatic-workspace-folders.connect"
+        }}
+          @click=${async (event) => {
+          event.consume();
+          await automaticFileSystemManager.connectAutomaticFileSystem(
+            /* addIfMissing= */
+            true
+          );
+        }}
+        >${i18nString5(UIStrings6.connect)}</devtools-button>`;
       }
     }
-    return this.treeElement;
+    return null;
+  }
+  updateTrailingIcons() {
+    if (!this.treeElement) {
+      return;
+    }
+    const trailingIcon = this.renderTrailingIcons();
+    this.treeElement.setTrailingIcons(trailingIcon ? [trailingIcon] : []);
   }
   onattach() {
     this.updateTitle();
   }
   updateTitle() {
+    this.updateTrailingIcons();
     if (!this.treeElement || !this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
@@ -8240,9 +8303,9 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
       return;
     }
     if (isActive) {
-      this.treeElement.expand();
+      this.navigatorView.expandNode(this);
     } else {
-      this.treeElement.collapse();
+      this.navigatorView.collapseNode(this);
     }
   }
   setTitle(title) {
@@ -9626,7 +9689,7 @@ import * as Bindings5 from "../../models/bindings/bindings.js";
 import * as Workspace12 from "../../models/workspace/workspace.js";
 import * as CodeMirror3 from "../../third_party/codemirror.next/codemirror.next.js";
 import * as Geometry from "../../ui/geometry/geometry.js";
-import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import { createIcon } from "../../ui/kit/kit.js";
 import * as ColorPicker from "../../ui/legacy/components/color_picker/color_picker.js";
 import * as InlineEditor from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
@@ -9790,7 +9853,7 @@ var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
   toDOM(view) {
     const container = document.createElement("span");
     const bezierText = container.createChild("span");
-    const icon = createIcon2("bezier-curve-filled", "bezier-swatch-icon");
+    const icon = createIcon("bezier-curve-filled", "bezier-swatch-icon");
     icon.setAttribute("jslog", `${VisualLogging7.showStyleEditor("bezier")}`);
     bezierText.append(this.text);
     UI10.Tooltip.Tooltip.install(icon, i18nString8(UIStrings9.openCubicBezierEditor));
@@ -10877,6 +10940,7 @@ var DebuggerPlugin = class extends Plugin {
       }
     };
     dialog4.markAsExternallyManaged();
+    dialog4.performUpdate();
     const decorationFragment = document.createDocumentFragment();
     renderBreakpointEditDialogHost({ dialog: dialog4 }, void 0, decorationFragment);
     const decorationElement = decorationFragment.firstElementChild;
@@ -14623,7 +14687,8 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     </div>`, target, {
     container: {
       attributes: {
-        id: "sources-panel-sources-view"
+        id: "sources-panel-sources-view",
+        jslog: `${VisualLogging10.pane("editor").track({ keydown: "Escape" })}`
       }
     }
   });
@@ -14656,7 +14721,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
   #onEditorSelected = this.#editorSelected.bind(this);
   #onEditorClosed = this.#editorClosed.bind(this);
   constructor(element, view = DEFAULT_VIEW7) {
-    super(element, { jslog: `${VisualLogging10.pane("editor").track({ keydown: "Escape" })}` });
+    super(element);
     this.#view = view;
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
     const workspace = Workspace21.Workspace.WorkspaceImpl.instance();
@@ -14843,8 +14908,8 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     if (wasSelected) {
       this.#currentUISourceCode = null;
       this.#visibleView = null;
+      this.#removeToolbarChangedListener();
     }
-    this.#removeToolbarChangedListener();
     this.#updateScriptViewToolbarItems();
     const data = {
       uiSourceCode,
@@ -16602,14 +16667,14 @@ var QUICK_SOURCE_DEFAULT_VIEW = (input, _output, target) => {
     <div class="sources-view-wrapper vbox flex-auto">
       ${input.sourcesView ? widget5(UI17.Widget.WrapperWidget, { widget: input.sourcesView }) : nothing10}
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging12.panel("sources.quick").track({ resize: true })}` } } });
 };
 var QuickSourceView = class _QuickSourceView extends UI17.Widget.VBox {
   #sourcesView;
   #view;
   #showInWrapper = false;
   constructor(view = QUICK_SOURCE_DEFAULT_VIEW) {
-    super({ jslog: `${VisualLogging12.panel("sources.quick").track({ resize: true })}` });
+    super();
     this.#view = view;
     this.#sourcesView = SourcesPanel.instance().sourcesView();
     this.performUpdate();
@@ -16721,6 +16786,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
   scheduledForUpdateItems = /* @__PURE__ */ new Set();
   muteActivateItem;
   #stackTrace = null;
+  #flavorChangeId = 0;
   constructor() {
     super({
       jslog: `${VisualLogging13.section("sources.callstack")}`,
@@ -16791,6 +16857,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     return callstackSidebarPaneInstance;
   }
   async flavorChanged(details) {
+    const flavorChangeId = ++this.#flavorChangeId;
     this.showIgnoreListed = false;
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
@@ -16800,7 +16867,11 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       this.requestUpdate();
     }
     if (details) {
-      this.#stackTrace = await Bindings10.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, details.debuggerModel.target());
+      const stackTrace = await Bindings10.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, details.debuggerModel.target());
+      if (flavorChangeId !== this.#flavorChangeId) {
+        return;
+      }
+      this.#stackTrace = stackTrace;
       this.#stackTrace.addEventListener(StackTrace5.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.requestUpdate();
@@ -18513,7 +18584,8 @@ var DEFAULT_VIEW10 = (input, output, target) => {
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
     `,
     // clang-format on
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging14.section("sources.scope-chain")}` } } }
   );
 };
 function scopeTitle(scope) {
@@ -18556,7 +18628,6 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
   #view;
   constructor(target, view = DEFAULT_VIEW10) {
     super(target, {
-      jslog: `${VisualLogging14.section("sources.scope-chain")}`,
       useShadowDom: true
     });
     this.#linkifier = new Components3.Linkifier.Linkifier();

@@ -42,11 +42,17 @@ var FileManager = class _FileManager extends Common.ObjectWrapper.ObjectWrapper 
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!Root.DevToolsContext.globalInstance().has(_FileManager) || forceNew) {
+      if (Root.DevToolsContext.globalInstance().has(_FileManager)) {
+        Root.DevToolsContext.globalInstance().get(_FileManager).dispose();
+      }
       Root.DevToolsContext.globalInstance().set(_FileManager, new _FileManager());
     }
     return Root.DevToolsContext.globalInstance().get(_FileManager);
   }
   static removeInstance() {
+    if (Root.DevToolsContext.globalInstance().has(_FileManager)) {
+      Root.DevToolsContext.globalInstance().get(_FileManager).dispose();
+    }
     Root.DevToolsContext.globalInstance().delete(_FileManager);
   }
   /**

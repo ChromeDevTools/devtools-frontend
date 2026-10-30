@@ -1,4 +1,5 @@
 import '../../ui/components/spinners/spinners.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -54,6 +55,9 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private groupByAuthored?;
     private groupByDomain?;
     private groupByFolder?;
+    private selectedNode;
+    private expandedNodes;
+    private readonly treeElementNodes;
     constructor(element?: HTMLElement, [networkProjectManager]?: UI.Widget.WidgetDependencies<typeof NavigatorView>, view?: View);
     wasShown(): void;
     get enableAuthoredGrouping(): boolean;
@@ -63,10 +67,19 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     private static nodeOrder;
     static compareNodes(node1: NavigatorTreeNode, node2: NavigatorTreeNode): number;
     static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void;
-    private static treeElementsCompare;
+    private treeElementsCompare;
     performUpdate(): void;
     private onBindingChanged;
     focus(): void;
+    selectNode(node: NavigatorTreeNode, omitFocus?: boolean, selectedByUser?: boolean): void;
+    expandNode(node: NavigatorTreeNode): void;
+    collapseNode(node: NavigatorTreeNode): void;
+    isNodeExpanded(node: NavigatorTreeNode): boolean;
+    isNodeSelected(node: NavigatorTreeNode): boolean;
+    setNodeSelected(node: NavigatorTreeNode): void;
+    setNodeExpanded(node: NavigatorTreeNode): void;
+    setNodeForTreeElement(treeElement: UI.TreeOutline.TreeElement, node: NavigatorTreeNode): void;
+    nodeForTreeElement(treeElement: UI.TreeOutline.TreeElement): NavigatorTreeNode | undefined;
     /**
      * Central place to add elements to the tree to
      * enable focus if the tree has elements
@@ -140,7 +153,7 @@ export declare class NavigatorFolderTreeElement extends UI.TreeOutline.TreeEleme
     private hovered?;
     private isIgnoreListed?;
     constructor(navigatorView: NavigatorView, type: string, title: string, expandable?: boolean);
-    onpopulate(): Promise<void>;
+    updateIcon(): void;
     onattach(): void;
     setIgnoreListed(isIgnoreListed: boolean): void;
     setFromSourceMap(isFromSourceMap: boolean): void;
@@ -149,26 +162,6 @@ export declare class NavigatorFolderTreeElement extends UI.TreeOutline.TreeEleme
     private handleContextMenuEvent;
     private mouseMove;
     private mouseLeave;
-}
-export declare class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
-    readonly nodeType: string;
-    readonly node: NavigatorUISourceCodeTreeNode;
-    private readonly navigatorView;
-    constructor(navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, title: string, node: NavigatorUISourceCodeTreeNode);
-    updateIcon(): void;
-    updateAccessibleName(): void;
-    private renderAiButton;
-    updateTrailingIcons(): void;
-    get uiSourceCode(): Workspace.UISourceCode.UISourceCode;
-    onattach(): void;
-    selectOnMouseDown(event: MouseEvent): void;
-    private ondragstart;
-    onspace(): boolean;
-    private onclick;
-    ondblclick(event: Event): boolean;
-    onenter(): boolean;
-    ondelete(): boolean;
-    private handleContextMenuEvent;
 }
 export interface NavigatorRecursiveTreeNodeProperties {
     exclusivelySourceMapped: boolean | null;
@@ -218,11 +211,16 @@ export declare class NavigatorRootTreeNode extends NavigatorTreeNode {
 }
 export declare class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     #private;
-    treeElement: NavigatorSourceTreeElement | null;
+    treeElement: UI.TreeOutline.TreeElement | null;
     private eventListeners;
     constructor(navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, frame: SDK.ResourceTreeModel.ResourceTreeFrame | null);
     frame(): SDK.ResourceTreeModel.ResourceTreeFrame | null;
     uiSourceCode(): Workspace.UISourceCode.UISourceCode;
+    updateIcon(): void;
+    updateAccessibleName(): void;
+    private renderAiButton;
+    updateTrailingIcons(): void;
+    onattach(): void;
     treeNode(): UI.TreeOutline.TreeElement;
     updateTitle(ignoreIsDirty?: boolean): void;
     hasChildren(): boolean;
@@ -253,6 +251,8 @@ export declare class NavigatorGroupTreeNode extends NavigatorTreeNode {
     private treeElement?;
     constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project | null, id: string, type: string, title: string, tooltip?: string, frame?: SDK.ResourceTreeModel.ResourceTreeFrame);
     treeNode(): UI.TreeOutline.TreeElement;
+    private renderTrailingIcons;
+    updateTrailingIcons(): void;
     onattach(): void;
     updateTitle(): void;
     setTitle(title: string): void;

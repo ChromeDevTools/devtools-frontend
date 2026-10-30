@@ -18,6 +18,7 @@
     "../../../../../../front_end/panels/media/PlayerListView.test.ts",
     "../../../../../../front_end/panels/media/PlayerMessagesView.test.ts",
     "../../../../../../front_end/panels/media/PlayerPropertiesView.test.ts",
+    "../../../../../../front_end/panels/media/TickingFlameChart.test.ts",
     "../../../../../../front_end/panels/media/TickingFlameChartHelpers.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -48,6 +49,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.ref.json"
     }
   ]
 }

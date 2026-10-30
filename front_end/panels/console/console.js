@@ -2666,6 +2666,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4387,7 +4388,7 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
   --width: var(--sys-size-11);
 
   align-items: center;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   border: none;
   /* todo: extract to global styles and make it work with dark mode. */
   box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
@@ -4657,7 +4658,11 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       ${error.cause ? renderError2(error.cause, true) : Lit2.nothing}
     `;
   };
-  render2(html2`<span class="symbolized-error-widget">${renderError2(input.error, false)}</span>`, target);
+  render2(
+    html2`<span class="symbolized-error-widget">${renderError2(input.error, false)}</span>`,
+    target,
+    { container: { classes: ["symbolized-error-widget-host"] } }
+  );
 };
 var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
   #error;
@@ -4665,7 +4670,7 @@ var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
   #ignoreListManager;
   constructor(element, view = DEFAULT_VIEW2) {
     const host = element || document.createElement("span");
-    super(host, { classes: ["symbolized-error-widget-host"] });
+    super(host);
     this.#view = view;
   }
   get linkElements() {
@@ -11480,7 +11485,10 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       style="color: var(--icon-action)"
       class=${classMap({ "console-prompt-icon": true, medium: true, "console-prompt-incomplete": input.isIncomplete })}
     ></devtools-icon>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging7.textField("console-prompt").track({
+    change: true,
+    keydown: "Enter|ArrowUp|ArrowDown|PageUp"
+  })}` } } });
 };
 var ConsolePrompt = class extends ConsolePromptBase {
   #view;
@@ -11526,12 +11534,7 @@ var ConsolePrompt = class extends ConsolePromptBase {
     this.editor?.dispatch({ effects });
   }
   constructor(aiCodeCompletionConfig, view = DEFAULT_VIEW6) {
-    super({
-      jslog: `${VisualLogging7.textField("console-prompt").track({
-        change: true,
-        keydown: "Enter|ArrowUp|ArrowDown|PageUp"
-      })}`
-    });
+    super();
     this.#view = view;
     this.addCompletionsFromHistory = true;
     this.#history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(
@@ -11584,7 +11587,7 @@ var ConsolePrompt = class extends ConsolePromptBase {
   performUpdate() {
     this.#view(
       {
-        editorState: this.#editorState,
+        editorState: this.editor?.state ?? this.#editorState,
         eagerEvalEnabled: this.eagerEvalSetting.get(),
         preview: this.#preview,
         isIncomplete: this.#isIncomplete,

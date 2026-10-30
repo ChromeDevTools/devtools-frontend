@@ -6,8 +6,8 @@ interface ViewInput {
     text: string;
     link?: Platform.DevToolsPath.UrlString | null;
 }
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-export declare class EmptyWidget extends VBox {
+type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
+export declare class EmptyWidget extends VBox<ShadowRoot> {
     #private;
     constructor(headerOrElement: string | HTMLElement, text?: string, element?: HTMLElement, view?: View);
     set link(link: Platform.DevToolsPath.UrlString | undefined | null);

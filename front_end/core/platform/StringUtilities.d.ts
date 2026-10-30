@@ -116,11 +116,16 @@ export declare const concatBase64: (lhs: string, rhs: string) => string;
  *    the value with a single quote (`'`) tells spreadsheet apps to treat the
  *    cell as literal text (and they hide the leading `'` when displaying it).
  *    - Example without commas: `=SUM(A1:A2)` -> `'=SUM(A1:A2)`
- * 2. RFC 4180 structural CSV quoting:
- *    If the cell also contains commas (`,`), double quotes (`"`), or newlines,
- *    it is wrapped in `"..."` (with inner `"` doubled to `""`) so CSV parsers
- *    do not split the cell across columns or rows.
+ * 2. Structural CSV quoting (RFC 4180, extended):
+ *    If the cell also contains commas (`,`), semicolons (`;`), tabs, double
+ *    quotes (`"`), or newlines, it is wrapped in `"..."` (with inner `"`
+ *    doubled to `""`) so CSV parsers do not split the cell across columns or
+ *    rows. `;` and tab are included because spreadsheet apps can use them as
+ *    the column separator (for example, Excel in many locales uses `;`).
+ *    Without quotes, `x;=1+1` would split into a new cell that starts with
+ *    `=` and skips the `'` prefix from step 1.
  *    - Example with commas: `=SUM(1,2)` -> `"'=SUM(1,2)"`
+ *    - Example with a semicolon: `x;=1+1` -> `"x;=1+1"`
  *    - Example starting with a literal quote: `"=SUM(1,2)"` -> `"""=SUM(1,2)"""`
  *      (not treated as a formula since the first character is `"`, not `=`).
  */

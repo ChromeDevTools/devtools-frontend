@@ -7,9 +7,9 @@ export declare class RequestPreviewView extends UI.Widget.VBox {
     constructor(request?: SDK.NetworkRequest.NetworkRequest | HTMLElement, element?: HTMLElement);
     get request(): SDK.NetworkRequest.NetworkRequest;
     set request(request: SDK.NetworkRequest.NetworkRequest);
-    showPreview(): Promise<UI.Widget.Widget>;
+    showPreview(): Promise<UI.Widget.AnyWidget>;
     wasShown(): void;
     private doShowPreview;
     private htmlPreview;
-    createPreview(): Promise<UI.Widget.Widget>;
+    createPreview(): Promise<UI.Widget.AnyWidget>;
 }

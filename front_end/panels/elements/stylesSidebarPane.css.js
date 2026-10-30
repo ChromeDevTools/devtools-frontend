@@ -385,7 +385,7 @@ export default `/**
       flex: none;
       width: var(--sys-size-3);
       height: var(--sys-size-3);
-      border-radius: 50%;
+      border-radius: var(--sys-shape-corner-full);
       background-color: currentcolor;
       /* Aligns the bullet's center with the disclosure triangle above. */
       margin-left: var(--sys-size-2);

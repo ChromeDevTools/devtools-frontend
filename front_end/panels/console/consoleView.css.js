@@ -553,7 +553,7 @@ export default `/* Copyright 2021 The Chromium Authors
   --width: var(--sys-size-11);
 
   align-items: center;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   border: none;
   /* todo: extract to global styles and make it work with dark mode. */
   box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */

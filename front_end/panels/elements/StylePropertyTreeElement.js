@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
-/* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -18,6 +17,7 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper, } from './ColorSwatchPopoverIcon.js';
@@ -29,7 +29,7 @@ import { BinOpRenderer, EditableContent, Renderer, rendererBase, RenderingContex
 import { StyleEditorWidget } from './StyleEditorWidget.js';
 import { getCssDeclarationAsJavascriptProperty } from './StylePropertyUtils.js';
 import { CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME } from './StylesSidebarPane.js';
-const { html, nothing, render, Directives: { classMap, ref, until } } = Lit;
+const { classMap, ref, until } = Directives;
 const { ifExpanded } = Tooltips.Tooltip;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
@@ -338,7 +338,6 @@ export class VariableRenderer extends VariableRendererBase {
         }
         const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
         const varCall = this.#treeElement?.getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
-        const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
         const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;
         // clang-format off
@@ -352,7 +351,11 @@ export class VariableRenderer extends VariableRendererBase {
         }}></devtools-link-swatch>${renderedFallback ? html `, ${renderedFallback.nodes}` : nothing})</span>${tooltipId ? html `<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
+            jslogContext=elements.css-var>${widget(ElementsComponents.CSSVariableValueView.CSSVariableValueView, {
+            variableName: match.name,
+            value: variableValue ?? undefined,
+            details: this.#stylesContainer.getRegisteredPropertyDetails(this.#matchedStyles, match.name),
+        })}</devtools-tooltip>` : nothing}`;
         // clang-format on
         const color = computedValue && Common.Color.parse(computedValue);
         if (!color) {
@@ -390,7 +393,6 @@ export class VariableNameRenderer extends VariableNameRendererBase {
         const { declaration, value: variableValue } = match.resolveVariable() ?? {};
         const isDefined = variableValue !== undefined;
         const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-        const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
         const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;
         // clang-format off
@@ -402,7 +404,11 @@ export class VariableNameRenderer extends VariableNameRendererBase {
         }}></devtools-link-swatch>${tooltipId ? html `<devtools-tooltip
         id=${tooltipId}
         variant=rich
-        jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing}`;
+        jslogContext=elements.css-var>${widget(ElementsComponents.CSSVariableValueView.CSSVariableValueView, {
+            variableName: match.text,
+            value: variableValue ?? undefined,
+            details: this.#stylesContainer.getRegisteredPropertyDetails(this.#matchedStyles, match.text),
+        })}</devtools-tooltip>` : nothing}`;
         // clang-format on
     }
 }
@@ -1307,7 +1313,7 @@ class ShadowWidget extends UI.Widget.Widget {
     #popoverHelper;
     constructor(element, view = SHADOW_WIDGET_DEFAULT_VIEW) {
         super(element);
-        this.element.classList.remove('vbox', 'flex-auto', 'widget');
+        this.element.classList.remove('widget');
         this.#view = view;
     }
     set model(model) {
@@ -1633,13 +1639,10 @@ const AnchorFunctionRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.An
 export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
     // clang-format on
     #stylesContainer;
-    static async decorateAnchorForAnchorLink(stylesContainer, container, { identifier, needsSpace }) {
-        if (identifier) {
-            render(html `${identifier}`, container, { host: container });
-        }
+    static async decorateAnchorForAnchorLink(stylesContainer, { identifier, needsSpace }) {
         const anchorNode = await stylesContainer.node()?.getAnchorBySpecifier(identifier) ?? undefined;
         if (!identifier && !anchorNode) {
-            return;
+            return nothing;
         }
         const onLinkActivate = () => {
             if (!anchorNode) {
@@ -1658,62 +1661,49 @@ export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
             SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         };
         if (identifier) {
-            render(
             // clang-format off
-            html `<devtools-link-swatch
-                @mouseenter=${onMouseEnter}
-                @mouseleave=${onMouseLeave}
-                .data=${{
+            return html `<devtools-link-swatch
+        @mouseenter=${onMouseEnter}
+        @mouseleave=${onMouseLeave}
+        .data=${{
                 text: identifier,
-                tooltip: anchorNode ? undefined :
-                    { title: i18nString(UIStrings.sIsNotDefined, { PH1: identifier }) },
+                tooltip: anchorNode ? undefined : { title: i18nString(UIStrings.sIsNotDefined, { PH1: identifier }) },
                 isDefined: Boolean(anchorNode),
                 jslogContext: 'anchor-link',
                 onLinkActivate,
             }}
-                ></devtools-link-swatch>${needsSpace ? ' ' : ''}`, 
-            // clang-format on
-            container, { host: container });
-        }
-        else {
-            // clang-format off
-            render(html `<devtools-icon
-                   role='button'
-                   title=${i18nString(UIStrings.jumpToAnchorNode)}
-                   class='icon-link'
-                   name='open-externally'
-                   jslog=${VisualLogging.action('jump-to-anchor-node').track({ click: true })}
-                   @mouseenter=${onMouseEnter}
-                   @mouseleave=${onMouseLeave}
-                   @mousedown=${(ev) => ev.stopPropagation()}
-                   @click=${handleIconClick}
-                  ></devtools-icon>${needsSpace ? ' ' : ''}`, container, { host: container });
+      ></devtools-link-swatch>${needsSpace ? ' ' : nothing}`;
             // clang-format on
         }
+        // clang-format off
+        return html `<devtools-icon
+      role='button'
+      title=${i18nString(UIStrings.jumpToAnchorNode)}
+      class='icon-link'
+      name='open-externally'
+      jslog=${VisualLogging.action('jump-to-anchor-node').track({ click: true })}
+      @mouseenter=${onMouseEnter}
+      @mouseleave=${onMouseLeave}
+      @mousedown=${(ev) => ev.stopPropagation()}
+      @click=${handleIconClick}
+    ></devtools-icon>${needsSpace ? ' ' : nothing}`;
+        // clang-format on
     }
     constructor(stylesContainer) {
         super();
         this.#stylesContainer = stylesContainer;
     }
     render(match, context) {
-        const content = document.createElement('span');
         if (match.node.name === 'VariableName') {
             // Link an anchor double-dashed ident to its matching anchor element.
-            void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, { identifier: match.text });
+            return html `<span>${until(AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, { identifier: match.text }), match.text)}</span>`;
         }
-        else {
-            // The matcher passes a 'CallExpression' node with a functionName
-            // ('anchor' or 'anchor-size') if the arguments need to have an implicit
-            // anchor link swatch rendered.
-            content.appendChild(document.createTextNode(`${match.functionName}(`));
-            const swatchContainer = document.createElement('span');
-            content.appendChild(swatchContainer);
-            const args = ASTUtils.children(match.node.getChild('ArgList'));
-            const remainingArgs = args.splice(1);
-            void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, swatchContainer, { needsSpace: remainingArgs.length > 1 });
-            Renderer.renderInto(remainingArgs, context, content);
-        }
-        return [content];
+        // The matcher passes a 'CallExpression' node with a functionName
+        // ('anchor' or 'anchor-size') if the arguments need to have an implicit
+        // anchor link swatch rendered.
+        const args = ASTUtils.children(match.node.getChild('ArgList'));
+        const remainingArgs = args.splice(1);
+        return html `<span>${match.functionName}(${until(AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, { needsSpace: remainingArgs.length > 1 }))}${Renderer.render(remainingArgs, context).nodes}</span>`;
     }
 }
 const PositionAnchorRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.PositionAnchorMatch);
@@ -1726,9 +1716,7 @@ export class PositionAnchorRenderer extends PositionAnchorRendererBase {
         this.#stylesContainer = stylesContainer;
     }
     render(match) {
-        const content = document.createElement('span');
-        void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, { identifier: match.text });
-        return [content];
+        return html `<span>${until(AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, { identifier: match.text }), match.text)}</span>`;
     }
 }
 const PositionAreaRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.PositionAreaMatch);
@@ -1941,21 +1929,16 @@ export class PositionTryRenderer extends PositionTryRendererBase {
             this.#matchedStyles.node();
         const fallbackLabels = [];
         for (const [i, fallback] of match.fallbacks.entries()) {
-            const isImportant = fallback.find(node => node.name === 'Important');
-            const fallbackContent = document.createElement('span');
-            if (i > 0) {
-                fallbackContent.appendChild(document.createTextNode(', '));
+            const important = fallback.find(node => node.name === 'Important');
+            const classes = classMap({
+                'inactive-value': !this.#treeElement?.inherited() && node === this.#matchedStyles.node() &&
+                    i !== this.#matchedStyles.activePositionFallbackIndex(),
+            });
+            content.push(html `<span class=${classes}>${i > 0 ? ', ' : nothing}${Renderer.render(fallback.filter(node => node.name !== 'Important'), context).nodes}</span>`);
+            if (important) {
+                content.push(html ` ${Renderer.render(important, context).nodes}`);
             }
-            if (!this.#treeElement?.inherited() && node === this.#matchedStyles.node() &&
-                i !== this.#matchedStyles.activePositionFallbackIndex()) {
-                fallbackContent.classList.add('inactive-value');
-            }
-            Renderer.renderInto(fallback.filter(node => node.name !== 'Important'), context, fallbackContent);
             fallbackLabels.push(context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim());
-            content.push(fallbackContent);
-            if (isImportant) {
-                content.push(document.createTextNode(' '), Renderer.render(isImportant, context).nodes);
-            }
         }
         if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() ||
             !this.#treeElement.property.activeInStyle() || !node) {
@@ -2452,7 +2435,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.listItemElement.appendChild(this.nameElement);
         if (this.property.name.startsWith('--') &&
             !(this.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule)) {
-            const contents = this.#stylesContainer.getVariablePopoverContents(this.matchedStyles(), this.property.name, this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null);
+            const contents = new ElementsComponents.CSSVariableValueView.CSSVariableValueView();
+            contents.variableName = this.property.name;
+            contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
+            contents.details = this.#stylesContainer.getRegisteredPropertyDetails(this.matchedStyles(), this.property.name);
             const tooltipId = this.getTooltipId('custom-property-decl');
             this.nameElement.setAttribute('aria-details', tooltipId);
             const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: this.nameElement, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var' });

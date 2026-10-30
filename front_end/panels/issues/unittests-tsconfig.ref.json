@@ -13,6 +13,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "../../../../../../front_end/panels/issues/AffectedDescendantsWithinSelectElementView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedLazyLoadImagesView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedMetadataAllowedSitesView.test.ts",
     "../../../../../../front_end/panels/issues/AffectedSelectivePermissionsInterventionView.test.ts",

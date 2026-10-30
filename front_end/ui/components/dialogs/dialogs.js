@@ -1252,10 +1252,6 @@ var typeToAllowDialog_css_default = `/*
     flex-direction: row-reverse;
     justify-content: flex-start;
   }
-
-  .button button {
-    min-width: var(--sys-size-19);
-  }
 }
 
 /*# sourceURL=${import.meta.resolve("./typeToAllowDialog.css")} */`;
@@ -1302,14 +1298,12 @@ var DEFAULT_VIEW = (input, _output, target) => {
       >
       <div class="button">
         <devtools-button
-          class="text-button"
           .variant=${Buttons4.Button.Variant.PRIMARY}
           .jslogContext=${"confirm"}
           .disabled=${input.allowDisabled}
           @click=${input.onAllow}
         >${i18nString4(UIStrings4.allow)}</devtools-button>
         <devtools-button
-          class="text-button"
           .variant=${Buttons4.Button.Variant.OUTLINED}
           .jslogContext=${"cancel"}
           @click=${input.onCancel}

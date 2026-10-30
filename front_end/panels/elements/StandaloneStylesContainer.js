@@ -9,7 +9,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { html, render } from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as ElementsComponents from './components/components.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 import { WebCustomData } from './WebCustomData.js';
@@ -220,14 +219,10 @@ export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
     allSections() {
         return this.#sections;
     }
-    getVariablePopoverContents(matchedStyles, variableName, computedValue) {
+    getRegisteredPropertyDetails(matchedStyles, variableName) {
         const registration = matchedStyles.getRegisteredProperty(variableName);
-        return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
-            variableName,
-            value: computedValue ?? undefined,
-            // TODO: provide a goToDefinition to jump to the StylesSidebarPane
-            details: registration ? { registration, goToDefinition: () => { } } : undefined,
-        });
+        // TODO: provide a goToDefinition to jump to the StylesSidebarPane
+        return registration ? { registration, goToDefinition: () => { } } : undefined;
     }
     getVariableParserError(_matchedStyles, _variableName) {
         return null;

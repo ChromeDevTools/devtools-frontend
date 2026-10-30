@@ -43,7 +43,7 @@ export async function createWorkspaceProject(baseUrl, files) {
         }),
     };
     const uiSourceCodes = new Map();
-    const mockProject = {
+    const mockProject = Object.assign(Object.create(Persistence.FileSystemWorkspaceBinding.FileSystem.prototype), {
         uiSourceCodes: () => Array.from(uiSourceCodes.values()),
         id: () => baseUrl,
         fileSystemPath: () => baseUrl,
@@ -57,7 +57,7 @@ export async function createWorkspaceProject(baseUrl, files) {
         }),
         fileSystemBaseURL: urlString `${baseUrl}/`,
         createFile: () => Promise.resolve(null),
-    };
+    });
     await networkPersistenceManager.setProject(mockProject);
     for (const file of files) {
         const initialEncodedPath = file.path.concat(file.name);
@@ -74,6 +74,12 @@ export async function createWorkspaceProject(baseUrl, files) {
             name: () => file.name,
             setWorkingCopy: () => { },
             commitWorkingCopy: () => { },
+            forceLoadOnCheckContent: () => { },
+            addEventListener: () => ({}),
+            removeEventListener: () => { },
+            isDirty: () => false,
+            hasCommits: () => false,
+            content: () => file.content,
         });
     }
     await networkPersistenceManager.setProject(mockProject);

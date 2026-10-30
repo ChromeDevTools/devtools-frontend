@@ -2301,6 +2301,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4015,7 +4016,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   ) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}
-    </devtools-report>`}`, target);
+    </devtools-report>`}`, target, { container: { attributes: { jslog: `${VisualLogging.pane("manifest")}` } } });
 };
 var AppManifestViewBase = Common2.ObjectWrapper.eventMixin(
   UI2.Widget.VBox
@@ -4037,7 +4038,6 @@ var AppManifestView = class extends AppManifestViewBase {
   output = { scrollToSection: /* @__PURE__ */ new Map(), focusOnSection: /* @__PURE__ */ new Map() };
   constructor(view = DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging.pane("manifest")}`,
       useShadowDom: true
     });
     this.view = view;
@@ -8131,7 +8131,7 @@ var IDB_DATABASE_VIEW_DEFAULT_VIEW = (input, _output, target) => {
         </devtools-report-section>
       ` : nothing4}
     </devtools-report>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging4.pane("indexeddb-data")}` } } });
 };
 var IDBDatabaseView = class extends UI9.Widget.VBox {
   #model;
@@ -8140,7 +8140,7 @@ var IDBDatabaseView = class extends UI9.Widget.VBox {
   #storageBucket = null;
   #view;
   constructor(model, database, element, view = IDB_DATABASE_VIEW_DEFAULT_VIEW) {
-    super(element, { useShadowDom: true, jslog: `${VisualLogging4.pane("indexeddb-data")}` });
+    super(element, { useShadowDom: true });
     this.#view = view;
     this.#model = model;
     if (database) {
@@ -8341,7 +8341,12 @@ var IDB_DATA_VIEW_DEFAULT_VIEW = (input, _output, target) => {
       ${renderDataGrid(input)}
     </div>
     ${renderSummaryBar(input)}
-  `, target, { container: { classes: ["indexed-db-data-view", "storage-view"] } });
+  `, target, {
+    container: {
+      classes: ["indexed-db-data-view", "storage-view"],
+      attributes: { jslog: `${VisualLogging4.pane("indexed-db-data-view")}` }
+    }
+  });
 };
 var IDBDataView = class extends UI9.View.SimpleView {
   model;
@@ -8368,8 +8373,7 @@ var IDBDataView = class extends UI9.View.SimpleView {
   constructor(model, databaseId, objectStore, index, refreshObjectStoreCallback, view = IDB_DATA_VIEW_DEFAULT_VIEW) {
     super({
       title: i18nString8(UIStrings8.idb),
-      viewId: "idb",
-      jslog: `${VisualLogging4.pane("indexed-db-data-view")}`
+      viewId: "idb"
     });
     this.#view = view;
     this.registerRequiredCSS(indexedDBViews_css_default);
@@ -9021,7 +9025,8 @@ var emptyWidget_css_default = `/*
   flex: auto;
 }
 
-.empty-view-scroller {
+.empty-view-scroller,
+:host(.empty-view-scroller) {
   overflow: auto;
 }
 
@@ -9515,7 +9520,12 @@ var ATTEMPT_DEFAULT_VIEW = (input, output, target) => {
         </devtools-split-view>
       `,
     target,
-    { container: { classes: input.isEmpty ? ["empty"] : [] } }
+    {
+      container: {
+        classes: input.isEmpty ? ["empty"] : [],
+        attributes: { jslog: `${VisualLogging5.pane("preloading-speculations")}` }
+      }
+    }
   );
 };
 var PreloadingAttemptView = class extends UI11.Widget.VBox {
@@ -9552,7 +9562,6 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
   };
   constructor(model, view = ATTEMPT_DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging5.pane("preloading-speculations")}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -9670,7 +9679,8 @@ var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
         ${widget5(PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar, input.warnings)}
         ${widget5(PreloadingComponents.UsedPreloadingView.UsedPreloadingView, { data: input.usedPreloading })}
       `,
-    target
+    target,
+    { container: { attributes: { jslog: `${VisualLogging5.pane("speculative-loads")}` } } }
   );
 };
 var PreloadingSummaryView = class extends UI11.Widget.VBox {
@@ -9683,7 +9693,6 @@ var PreloadingSummaryView = class extends UI11.Widget.VBox {
   };
   constructor(model, view = SUMMARY_DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging5.pane("speculative-loads")}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -10080,11 +10089,6 @@ var privateVerificationTokensView_css_default = `/*
   overflow: hidden;
 }
 
-.empty-state {
-  padding: var(--sys-size-6);
-  color: var(--sys-color-on-surface-subtle);
-}
-
 /*# sourceURL=${import.meta.resolve("./privateVerificationTokensView.css")} */`;
 
 // ../../front_end/panels/application/PrivateVerificationTokensView.ts
@@ -10101,7 +10105,7 @@ var DEFAULT_VIEW5 = (_input, _output, target) => {
     <style>${privateVerificationTokensView_css_default}</style>
     <style>${UI12.inspectorCommonStyles}</style>
     <div class="pvt-view" jslog=${VisualLogging6.pane("private-verification-tokens")}>
-      <div class="empty-state">${i18nString12(UIStrings12.noPrivateVerificationTokens)}</div>
+      ${UI12.Widget.widget(UI12.EmptyWidget.EmptyWidget, { header: i18nString12(UIStrings12.noPrivateVerificationTokens) })}
     </div>
   `, target);
 };
@@ -10110,6 +10114,9 @@ var PrivateVerificationTokensView = class extends UI12.Widget.VBox {
   constructor(element, view = DEFAULT_VIEW5) {
     super(element, { useShadowDom: true });
     this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
     this.requestUpdate();
   }
   performUpdate() {
@@ -10901,7 +10908,12 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         <span>${input.entryPathFilter ? i18nString16(UIStrings16.matchingEntriesS, { PH1: String(input.returnCount) }) : i18nString16(UIStrings16.totalEntriesS, { PH1: String(input.returnCount) })}</span>
       </div>
     ` : nothing6}
-  `, target, { container: { classes: ["service-worker-cache-data-view", "storage-view"] } });
+  `, target, {
+    container: {
+      classes: ["service-worker-cache-data-view", "storage-view"],
+      attributes: { jslog: `${VisualLogging9.pane("cache-storage-data")}` }
+    }
+  });
 };
 var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
   #view;
@@ -10919,8 +10931,7 @@ var ServiceWorkerCacheView = class extends UI16.View.SimpleView {
   constructor(model, cache, view = DEFAULT_VIEW8) {
     super({
       title: i18nString16(UIStrings16.cache),
-      viewId: "cache",
-      jslog: `${VisualLogging9.pane("cache-storage-data")}`
+      viewId: "cache"
     });
     this.#view = view;
     this.registerRequiredCSS(serviceWorkerCacheViews_css_default);
@@ -12269,7 +12280,8 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
         classes: [
           "service-worker-list",
           input.sections.length > 0 ? "service-worker-has-current" : "service-worker-list-empty"
-        ]
+        ],
+        attributes: { jslog: `${VisualLogging11.pane("service-workers")}` }
       }
     }
   );
@@ -12287,7 +12299,6 @@ var ServiceWorkersView = class extends UI19.Widget.VBox {
   #view;
   constructor(view = DEFAULT_VIEW10) {
     super({
-      jslog: `${VisualLogging11.pane("service-workers")}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -14802,7 +14813,7 @@ import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents11 from "./components/components.js";
 var STORAGE_FLOATING_BUTTON_ACTION_ID = "ai-assistance.storage-floating-button";
 var { ARIAUtils: ARIAUtils7 } = UI23;
-var { EmptyWidget: EmptyWidget9 } = UI23.EmptyWidget;
+var { EmptyWidget: EmptyWidget10 } = UI23.EmptyWidget;
 var { VBox, widget: widget11 } = UI23.Widget;
 var { Size: Size3 } = Geometry3;
 var { repeat: repeat2, ifDefined } = LitDirectives;
@@ -14926,7 +14937,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.#classes = classes;
     this.#view = view;
     this.performUpdate();
-    this.#preview = new EmptyWidget9(i18nString24(UIStrings24.noPreviewSelected), i18nString24(UIStrings24.selectAValueToPreview));
+    this.#preview = new EmptyWidget10(i18nString24(UIStrings24.noPreviewSelected), i18nString24(UIStrings24.selectAValueToPreview));
     this.#previewValue = null;
     this.showPreview(null, null);
   }
@@ -15101,7 +15112,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
       this.#preview.detach();
     }
     if (!preview) {
-      preview = new EmptyWidget9(i18nString24(UIStrings24.noPreviewSelected), i18nString24(UIStrings24.selectAValueToPreview));
+      preview = new EmptyWidget10(i18nString24(UIStrings24.noPreviewSelected), i18nString24(UIStrings24.selectAValueToPreview));
     }
     this.#previewValue = value;
     this.#preview = preview;
@@ -16217,7 +16228,7 @@ var DEFAULT_VIEW14 = (input, output, target) => {
       ${renderClearSiteData()}
       <devtools-report-divider></devtools-report-divider>
       ${renderUsage()}
-    </devtools-report>`, target);
+    </devtools-report>`, target, { container: { attributes: { jslog: `${VisualLogging19.pane("clear-storage")}` } } });
 };
 var StorageView = class _StorageView extends UI27.Widget.VBox {
   #view;
@@ -16247,7 +16258,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.onIncludeThirdPartyCookiesSettingChanged(event.data);
   };
   constructor(element, view = DEFAULT_VIEW14) {
-    super(element, { useShadowDom: true, jslog: `${VisualLogging19.pane("clear-storage")}` });
+    super(element, { useShadowDom: true });
     this.#view = view;
     this.registerRequiredCSS(storageView_css_default);
     this.pieColors = storagePieColors;
@@ -18861,7 +18872,7 @@ var UIStrings31 = {
    */
   resourceDescription: "On this page you can view the frame\u2019s resources",
   /**
-   * @description Label for the Private Verification Tokens tree element in the Application panel sidebar.
+   * @description Tree item label in the Application panel sidebar for private verification tokens, a Privacy Sandbox API that allows sites to convey limited, privacy-preserving information across origins (https://github.com/explainers-by-googlers/private-verification-tokens).
    */
   privateVerificationTokens: "Private verification tokens"
 };
@@ -18983,9 +18994,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       i18nString31(UIStrings31.localStorageDescription),
       "local-storage"
     );
-    this.localStorageListTreeElement.setLink(
-      "https://developer.chrome.com/docs/devtools/storage/localstorage/"
-    );
+    this.localStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/localstorage/");
     const localStorageIcon = createIcon10("table");
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
     storageTreeElement.appendChild(this.localStorageListTreeElement);
@@ -18996,9 +19005,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       i18nString31(UIStrings31.sessionStorageDescription),
       "session-storage"
     );
-    this.sessionStorageListTreeElement.setLink(
-      "https://developer.chrome.com/docs/devtools/storage/sessionstorage/"
-    );
+    this.sessionStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/sessionstorage/");
     const sessionStorageIcon = createIcon10("table");
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
@@ -19016,9 +19023,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
     this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
     storageTreeElement.appendChild(this.extensionStorageListTreeElement);
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
-    this.indexedDBListTreeElement.setLink(
-      "https://developer.chrome.com/docs/devtools/storage/indexeddb/"
-    );
+    this.indexedDBListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/indexeddb/");
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(
       panel,
@@ -19027,9 +19032,7 @@ var ApplicationPanelSidebar = class extends UI32.Widget.VBox {
       i18nString31(UIStrings31.cookiesDescription),
       "cookies"
     );
-    this.cookieListTreeElement.setLink(
-      "https://developer.chrome.com/docs/devtools/storage/cookies/"
-    );
+    this.cookieListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/cookies/");
     const cookieIcon = createIcon10("cookie");
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);

@@ -24,15 +24,13 @@ export type View = (input: ViewInput, output: undefined, target: HTMLElement) =>
 export declare const DEFAULT_VIEW: View;
 export declare class CSSVariableValueView extends UI.Widget.Widget {
     #private;
-    readonly variableName: string;
-    readonly details: RegisteredPropertyDetails | undefined;
-    constructor({ variableName, value, details, }: {
-        variableName: string;
-        value: string | undefined;
-        details?: RegisteredPropertyDetails;
-    }, view?: View);
+    constructor(element?: HTMLElement, view?: View);
+    get variableName(): string;
+    set variableName(variableName: string);
     get value(): string | undefined;
     set value(value: string | undefined);
+    get details(): RegisteredPropertyDetails | undefined;
+    set details(details: RegisteredPropertyDetails | undefined);
     wasShown(): void;
     performUpdate(): void;
 }

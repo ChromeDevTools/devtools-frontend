@@ -2618,6 +2618,7 @@ export var Preload;
         PrerenderFinalStatus["PrerenderHostReused"] = "PrerenderHostReused";
         PrerenderFinalStatus["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
         PrerenderFinalStatus["CrossDocumentRestart"] = "CrossDocumentRestart";
+        PrerenderFinalStatus["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
     })(PrerenderFinalStatus = Preload.PrerenderFinalStatus || (Preload.PrerenderFinalStatus = {}));
     /**
      * Preloading status values, see also PreloadingTriggeringOutcome. This

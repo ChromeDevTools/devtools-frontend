@@ -416,7 +416,12 @@ const ATTEMPT_DEFAULT_VIEW = (input, output, target) => {
     })}
           </div>
         </devtools-split-view>
-      `, target, { container: { classes: input.isEmpty ? ['empty'] : [] } });
+      `, target, {
+        container: {
+            classes: input.isEmpty ? ['empty'] : [],
+            attributes: { jslog: `${VisualLogging.pane('preloading-speculations')}` },
+        },
+    });
     // clang-format on
 };
 export class PreloadingAttemptView extends UI.Widget.VBox {
@@ -453,7 +458,6 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     };
     constructor(model, view = ATTEMPT_DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.pane('preloading-speculations')}`,
             useShadowDom: true,
         });
         this.#view = view;
@@ -554,7 +558,7 @@ const SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
     render(html `
         ${widget(PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar, input.warnings)}
         ${widget(PreloadingComponents.UsedPreloadingView.UsedPreloadingView, { data: input.usedPreloading })}
-      `, target);
+      `, target, { container: { attributes: { jslog: `${VisualLogging.pane('speculative-loads')}` } } });
     // clang-format on
 };
 export class PreloadingSummaryView extends UI.Widget.VBox {
@@ -567,7 +571,6 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
     };
     constructor(model, view = SUMMARY_DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.pane('speculative-loads')}`,
             useShadowDom: true,
         });
         this.#view = view;

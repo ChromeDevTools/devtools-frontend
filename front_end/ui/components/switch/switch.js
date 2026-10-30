@@ -42,7 +42,7 @@ input {
   width: 100%;
   height: 100%;
   background-color: var(--sys-color-surface-variant);
-  border: 1px solid var(--sys-color-outline);
+  border: var(--sys-size-1) solid var(--sys-color-outline);
   border-radius: var(--sys-shape-corner-full);
   transition: background-color 80ms linear;
 }
@@ -53,7 +53,7 @@ input {
   height: var(--sys-size-5);
   width: var(--sys-size-5);
   border-radius: var(--sys-shape-corner-full);
-  top: calc(50% - 4px);
+  top: calc(50% - var(--sys-size-3));
   left: 3px;
   background-color: var(--sys-color-outline);
   transition:
@@ -66,21 +66,21 @@ input {
 }
 
 input:focus-visible + .slider {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
 }
 
 input:checked {
   & + .slider {
     background-color: var(--sys-color-primary);
-    border: 1px solid var(--sys-color-primary);
+    border: var(--sys-size-1) solid var(--sys-color-primary);
   }
 
   & + .slider::before {
     left: 11px;
     height: var(--sys-size-6);
     width: var(--sys-size-6);
-    top: calc(50% - 6px);
+    top: calc(50% - var(--sys-size-4));
     background-color: var(--sys-color-on-primary);
   }
 }

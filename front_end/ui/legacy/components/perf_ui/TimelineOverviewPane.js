@@ -30,8 +30,9 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     hasPointer = false;
     #dimHighlightSVG;
     #boundOnThemeChanged = this.#onThemeChanged.bind(this);
-    constructor(prefix) {
-        super();
+    constructor(prefixOrElement = 'timeline') {
+        super(prefixOrElement instanceof HTMLElement ? prefixOrElement : undefined);
+        const prefix = typeof prefixOrElement === 'string' ? prefixOrElement : 'timeline';
         this.element.id = prefix + '-overview-pane';
         this.overviewCalculator = new TimelineOverviewCalculator();
         this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
@@ -369,8 +370,13 @@ export class TimelineOverviewBase extends UI.Widget.VBox {
     #calculator;
     canvas;
     #context;
-    constructor() {
-        super();
+    constructor(elementOrOptions, options) {
+        if (elementOrOptions instanceof HTMLElement) {
+            super(elementOrOptions, options);
+        }
+        else {
+            super(elementOrOptions ?? options);
+        }
         this.#calculator = null;
         this.canvas = this.element.createChild('canvas', 'fill');
         this.#context = this.canvas.getContext('2d');

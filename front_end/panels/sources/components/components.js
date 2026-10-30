@@ -192,7 +192,7 @@ var HEADERS_VIEW_DEFAULT_VIEW = (input, output, target) => {
     }
   })}
     ></devtools-sources-headers-view>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.pane("headers-view")}` } } });
 };
 var HeadersView = class extends UI.View.SimpleView {
   #headersViewComponent;
@@ -202,8 +202,7 @@ var HeadersView = class extends UI.View.SimpleView {
   constructor(uiSourceCode, view = HEADERS_VIEW_DEFAULT_VIEW) {
     super({
       title: i18n.i18n.lockedString("HeadersView"),
-      viewId: "headers-view",
-      jslog: `${VisualLogging.pane("headers-view")}`
+      viewId: "headers-view"
     });
     this.#view = view;
     this.#uiSourceCode = uiSourceCode;

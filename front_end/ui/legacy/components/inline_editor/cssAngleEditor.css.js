@@ -86,7 +86,7 @@ export default `/*
   left: -0.35em;
   width: 1em;
   height: 1em;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   cursor: pointer;
   box-shadow: 0 0 5px var(--box-shadow-outline-color);
 }

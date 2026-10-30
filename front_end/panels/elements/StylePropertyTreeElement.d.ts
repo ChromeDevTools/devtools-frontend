@@ -5,6 +5,7 @@ import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.n
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import * as ElementsComponents from './components/components.js';
 import { type CSSControlMap, type MatchRenderer, type RendererBase, RenderingContext } from './PropertyRenderer.js';
 import type { ActiveAiSuggestionProperty, StylePropertiesSection } from './StylePropertiesSection.js';
@@ -192,18 +193,18 @@ export declare class CustomFunctionRenderer extends BaseFunctionRenderer {
 declare const AnchorFunctionRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.AnchorFunctionMatch>;
 export declare class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
     #private;
-    static decorateAnchorForAnchorLink(stylesContainer: StylesContainer, container: HTMLElement, { identifier, needsSpace }: {
+    static decorateAnchorForAnchorLink(stylesContainer: StylesContainer, { identifier, needsSpace }: {
         identifier?: string;
         needsSpace?: boolean;
-    }): Promise<void>;
+    }): Promise<LitTemplate>;
     constructor(stylesContainer: StylesContainer);
-    render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): LitTemplate;
 }
 declare const PositionAnchorRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionAnchorMatch>;
 export declare class PositionAnchorRenderer extends PositionAnchorRendererBase {
     #private;
     constructor(stylesContainer: StylesContainer);
-    render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): LitTemplate;
 }
 declare const PositionAreaRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.PositionAreaMatch>;
 export declare class PositionAreaRenderer extends PositionAreaRendererBase {

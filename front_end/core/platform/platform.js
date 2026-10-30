@@ -1177,7 +1177,7 @@ var escapeCsvCell = function(value) {
     escaped = escaped.replace(/"/g, '""');
     return `"${escaped}"`;
   }
-  if (escaped.includes(",") || escaped.includes("\n") || escaped.includes("\r")) {
+  if (/[,;\t\r\n]/.test(escaped)) {
     return `"${escaped}"`;
   }
   return escaped;

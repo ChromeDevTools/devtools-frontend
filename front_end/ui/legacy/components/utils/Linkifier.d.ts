@@ -118,8 +118,10 @@ export declare class ContentProviderContextMenuProvider implements UI.ContextMen
 /**
  * Returns the {@link OpenInNewTabInitiatorId} for a URL that came from `source`: the frame that `source` belongs
  * to, or the worker that it belongs to when there is no frame, if DevTools knows that unambiguously. Returns
- * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin. A request or
- * resource is not attributed to its frame once the frame has navigated away from the document it belongs to.
+ * `undefined` otherwise, in which case the browser attributes the navigation to an opaque origin. A request,
+ * resource or execution context is not attributed to its frame once the frame has navigated away from the
+ * document it belongs to, or once the target that `source` came from no longer tracks the frame (see
+ * {@link frameIdUnlessNavigatedSince}).
  */
 export declare function openInNewTabInitiatorId(source: SDK.NetworkRequest.NetworkRequest | SDK.Resource.Resource | SDK.RuntimeModel.ExecutionContext | Workspace.UISourceCode.UISourceCode): OpenInNewTabInitiatorId | undefined;
 interface LinkInfo {

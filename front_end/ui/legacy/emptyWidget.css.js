@@ -15,7 +15,8 @@ export default `/*
   flex: auto;
 }
 
-.empty-view-scroller {
+.empty-view-scroller,
+:host(.empty-view-scroller) {
   overflow: auto;
 }
 

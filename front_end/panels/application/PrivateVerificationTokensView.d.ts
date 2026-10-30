@@ -5,6 +5,7 @@ export declare const DEFAULT_VIEW: View;
 export declare class PrivateVerificationTokensView extends UI.Widget.VBox {
     #private;
     constructor(element?: HTMLElement, view?: View);
+    wasShown(): void;
     performUpdate(): void;
 }
 export {};

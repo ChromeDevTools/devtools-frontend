@@ -4460,7 +4460,7 @@ var TextEditor = class extends HTMLElement {
     return this.#pendingState;
   }
   set state(state) {
-    if (this.#pendingState === state) {
+    if ((this.#activeEditor ? this.#activeEditor.state : this.#pendingState) === state) {
       return;
     }
     this.#pendingState = state;

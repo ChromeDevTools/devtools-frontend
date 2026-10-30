@@ -16256,7 +16256,8 @@ export declare namespace Preload {
         BrowsingDataRemoved = "BrowsingDataRemoved",
         PrerenderHostReused = "PrerenderHostReused",
         FormSubmitWhenPrerendering = "FormSubmitWhenPrerendering",
-        CrossDocumentRestart = "CrossDocumentRestart"
+        CrossDocumentRestart = "CrossDocumentRestart",
+        PrefetchFailedCrossOriginSubframe = "PrefetchFailedCrossOriginSubframe"
     }
     /**
      * Preloading status values, see also PreloadingTriggeringOutcome. This

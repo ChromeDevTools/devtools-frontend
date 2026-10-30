@@ -3055,14 +3055,14 @@ var Widget = class _Widget {
     }
     this.#shadowRoot = this.element.shadowRoot;
     if (options?.useShadowDom && !this.#shadowRoot) {
-      this.element.classList.add("vbox");
-      this.element.classList.add("flex-auto");
       this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
         delegatesFocus: options?.delegatesFocus
       });
       if (options.useShadowDom === "pure") {
         this.#contentElement = this.#shadowRoot;
       } else {
+        this.element.classList.add("vbox");
+        this.element.classList.add("flex-auto");
         const div = document.createElement("div");
         this.#shadowRoot.appendChild(div);
         this.#contentElement = div;
@@ -3676,7 +3676,6 @@ var HBox = class extends Widget {
     if (this.contentElement instanceof HTMLElement) {
       this.contentElement.classList.add("hbox");
     } else {
-      this.element.classList.remove("vbox");
       this.element.classList.add("hbox");
     }
   }
@@ -4902,6 +4901,12 @@ var tabbedPane_css_default = `/*
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-content {
   padding-top: var(--sys-size-10);
   overflow-x: hidden;
+
+  slot::slotted(.widget) {
+    /* '!important' in order to overwrite the slotted widget's 'overflow-auto' class.
+    This prevents the focus-ring of selectable elements from being cut off. */
+    overflow: visible !important; /* stylelint-disable-line declaration-no-important */
+  }
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-contents {
@@ -6570,9 +6575,23 @@ var TabbedPaneTab = class {
 var tabIcons = /* @__PURE__ */ new WeakMap();
 var tabSuffixElements = /* @__PURE__ */ new WeakMap();
 var TabbedPaneElement = class extends WidgetElement {
+  static observedAttributes = ["vertical"];
   #closeableTabs = false;
   #allowTabReorder = false;
   #automaticReorder = false;
+  #vertical = false;
+  get vertical() {
+    return this.#vertical;
+  }
+  set vertical(vertical) {
+    if (this.#vertical === vertical) {
+      return;
+    }
+    this.#vertical = vertical;
+    if (vertical) {
+      this.getWidget()?.makeVerticalTabLayout();
+    }
+  }
   set closeableTabs(closeable) {
     this.#closeableTabs = closeable;
     this.getWidget()?.setCloseableTabs(closeable);
@@ -6601,6 +6620,7 @@ var TabbedPaneElement = class extends WidgetElement {
   #placeholderElement;
   #headerJslog;
   #managedTabIds = /* @__PURE__ */ new Set();
+  #tabBadges = /* @__PURE__ */ new Map();
   set placeholder(element) {
     this.#placeholderElement = element;
     this.getWidget()?.setPlaceholderElement(element);
@@ -6616,6 +6636,9 @@ var TabbedPaneElement = class extends WidgetElement {
       this,
       widgetConfig((element) => {
         const widget2 = new TabbedPane(element);
+        if (this.#vertical) {
+          widget2.makeVerticalTabLayout();
+        }
         widget2.setCloseableTabs(this.#closeableTabs);
         widget2.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
         if (this.#delegate) {
@@ -6628,6 +6651,15 @@ var TabbedPaneElement = class extends WidgetElement {
         if (slot) {
           slot.addEventListener("slotchange", () => this.#syncTabs());
         }
+        widget2.addEventListener("TabInvoked" /* TabInvoked */, (event) => {
+          this.dispatchEvent(new CustomEvent("tabinvoked", {
+            detail: {
+              tabId: event.data.tabId,
+              prevTabId: event.data.prevTabId,
+              isUserGesture: event.data.isUserGesture
+            }
+          }));
+        });
         widget2.addEventListener("TabSelected" /* TabSelected */, (event) => {
           const nodes = this.#getTabNodes(widget2);
           for (const child of nodes) {
@@ -6637,10 +6669,13 @@ var TabbedPaneElement = class extends WidgetElement {
               child.removeAttribute("selected");
             }
           }
-          this.dispatchEvent(new CustomEvent(
-            "select",
-            { detail: { tabId: widget2.selectedTabId, isUserGesture: event.data?.isUserGesture } }
-          ));
+          this.dispatchEvent(new CustomEvent("select", {
+            detail: {
+              tabId: widget2.selectedTabId,
+              prevTabId: event.data?.prevTabId,
+              isUserGesture: event.data?.isUserGesture
+            }
+          }));
         });
         widget2.addEventListener("TabClosed" /* TabClosed */, (event) => {
           this.dispatchEvent(
@@ -6659,6 +6694,11 @@ var TabbedPaneElement = class extends WidgetElement {
         return widget2;
       })
     );
+  }
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (name === "vertical") {
+      this.vertical = newValue !== null;
+    }
   }
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -6681,6 +6721,7 @@ var TabbedPaneElement = class extends WidgetElement {
           "label",
           "title",
           "tab-tooltip",
+          "badge",
           "jslogcontext",
           "selected",
           "disabled",
@@ -6703,6 +6744,7 @@ var TabbedPaneElement = class extends WidgetElement {
       const id2 = child.id;
       const title = child.getAttribute("label") || child.getAttribute("title") || "";
       const tabTooltip = child.getAttribute("tab-tooltip") ?? void 0;
+      const badge2 = child.getAttribute("badge");
       const jslogContext = child.getAttribute("jslogcontext") || void 0;
       const selected = child.hasAttribute("selected");
       const enabled = !child.hasAttribute("disabled");
@@ -6717,6 +6759,7 @@ var TabbedPaneElement = class extends WidgetElement {
         title,
         view,
         tabTooltip,
+        badge: badge2,
         jslogContext,
         selected,
         enabled,
@@ -6727,6 +6770,7 @@ var TabbedPaneElement = class extends WidgetElement {
     for (const id2 of this.#managedTabIds) {
       if (!newIds.has(id2)) {
         widget2.closeTab(id2);
+        this.#tabBadges.delete(id2);
       }
     }
     this.#managedTabIds = newIds;
@@ -6762,6 +6806,11 @@ var TabbedPaneElement = class extends WidgetElement {
           index,
           tab.jslogContext
         );
+      }
+      const badge2 = tab.badge ?? null;
+      if (this.#tabBadges.get(tab.id) !== badge2 && (badge2 !== null || this.#tabBadges.has(tab.id))) {
+        this.#tabBadges.set(tab.id, badge2);
+        widget2.setBadge(tab.id, badge2);
       }
       if (tab.enabled !== void 0) {
         widget2.setTabEnabled(tab.id, tab.enabled);
@@ -14944,7 +14993,7 @@ input[type='range']::-webkit-slider-thumb,
   width: var(--sys-size-6);
   height: var(--sys-size-6);
   margin-top: -5px;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   background-color: var(--sys-color-primary);
 }
 
@@ -15160,7 +15209,7 @@ dt-icon-label {
   content: var(--image-file-empty);
   width: var(--sys-size-4);
   height: var(--sys-size-4);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   outline: var(--sys-size-1) solid var(--icon-gap-default);
   left: 9px;
   position: absolute;
@@ -15557,7 +15606,7 @@ devtools-toolbar {
     height: 4.5px;
     border: var(--sys-size-2) solid
       var(--override-toolbar-background-color, --sys-color-cdt-base-container);
-    border-radius: 50%;
+    border-radius: var(--sys-shape-corner-full);
     right: 0;
   }
 
@@ -17773,9 +17822,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     }
     template.values = template.values.map(patchValue);
     function isLitTemplate(value) {
-      return Boolean(
-        typeof value === "object" && value && "_$litType$" in value && "strings" in value && "values" in value && value["_$litType$"] === 1
-      );
+      return Boolean(typeof value === "object" && value && "_$litType$" in value && "strings" in value && "values" in value && value["_$litType$"] === 1);
     }
     function isCallable(value) {
       return typeof value === "function" && Object.getOwnPropertyDescriptor(value, "prototype")?.writable !== false;
@@ -19120,7 +19167,8 @@ var emptyWidget_css_default = `/*
   flex: auto;
 }
 
-.empty-view-scroller {
+.empty-view-scroller,
+:host(.empty-view-scroller) {
   overflow: auto;
 }
 
@@ -19146,7 +19194,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
         ${input.link ? html6`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
       <slot></slot>
-    </div>`, target, { container: { classes: ["empty-view-scroller"] } });
+    </div>`, target, { container: { classes: ["empty-widget-container", "empty-view-scroller"] } });
 };
 var EmptyWidget = class extends VBox {
   #header;
@@ -19158,7 +19206,7 @@ var EmptyWidget = class extends VBox {
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
     }
-    super(element, { useShadowDom: true, classes: ["empty-widget-container"] });
+    super(element, { useShadowDom: "pure" });
     this.#header = header;
     this.#text = text;
     this.#link = void 0;

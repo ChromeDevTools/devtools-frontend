@@ -19,6 +19,8 @@ export interface ViewInput {
     commentText: string;
     /** Whether Cmd (Mac) or Ctrl (other platforms) is currently held, switching submit to "queue". */
     isQueueModifierPressed: boolean;
+    /** True when the element the thread is anchored to has been removed. */
+    elementRemoved: boolean;
     textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
     status: CommentManager.CommentManager.CommentThreadStatus;
     /** Whether the thread has been taken by the agent. */
@@ -50,6 +52,11 @@ export declare class CommentThreadWidget extends UI.Widget.Widget {
     set comments(comments: CommentManager.CommentManager.Comment[]);
     set status(commentStatus: CommentManager.CommentManager.CommentThreadStatus);
     set transmitted(transmitted: boolean);
+    /**
+     * When true, shows a banner indicating that the element the thread is anchored to has been removed.
+     */
+    set elementRemoved(elementRemoved: boolean);
+    get elementRemoved(): boolean;
     performUpdate(): void;
 }
 export declare function computeCommentTitle(anchor: CommentManager.CommentManager.CommentAnchorSignature): Promise<Title>;

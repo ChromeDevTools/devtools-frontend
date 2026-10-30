@@ -177,10 +177,42 @@ export class Event {
         return this.#live;
     }
 }
+class FlameChartWidget extends PerfUI.FlameChart.FlameChart {
+    #onScroll;
+    constructor(element) {
+        super(new TickingFlameChartDataProvider(new Bounds(0, 1000, 30000, 1000), () => { }), new TickingFlameChartDelegate(), {}, element);
+        this.disableRangeSelection();
+        this.bindCanvasEvent('wheel', e => {
+            const wheelEvent = e;
+            // TODO: is this a good divisor? does it account for high precision scroll wheels?
+            // low precision scroll wheels?
+            const scrollTickCount = Math.round(wheelEvent.deltaY / 50);
+            const scrollPositionRatio = wheelEvent.offsetX / wheelEvent.srcElement.clientWidth;
+            this.#onScroll?.(scrollTickCount, scrollPositionRatio);
+        });
+    }
+    set provider(provider) {
+        this.setDataProvider(provider);
+    }
+    set chartDelegate(delegate) {
+        this.setDelegate(delegate);
+    }
+    set onScroll(onScroll) {
+        this.#onScroll = onScroll;
+    }
+}
 export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
-    <devtools-widget class="flex-auto vbox" ${UI.Widget.widget(() => input.chart)}></devtools-widget>
+    <devtools-widget
+      class="flex-auto vbox"
+      ${UI.Widget.widget(FlameChartWidget, {
+        provider: input.dataProvider,
+        chartDelegate: input.delegate,
+        windowTimes: { min: input.windowTimes.low, max: input.windowTimes.high, animate: true },
+        onScroll: input.onScroll,
+    })}
+    ></devtools-widget>
   `, target);
     // clang-format on
 };
@@ -193,10 +225,9 @@ export class TickingFlameChart extends UI.Widget.VBox {
     bounds;
     dataProvider;
     delegate;
-    chartGroupExpansionSetting;
-    chart;
     stoppedPermanently;
     #view;
+    #boundOnScroll = this.onScroll.bind(this);
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
         this.#view = view;
@@ -213,24 +244,15 @@ export class TickingFlameChart extends UI.Widget.VBox {
         this.dataProvider = new TickingFlameChartDataProvider(this.bounds, this.updateMaxTime.bind(this));
         // Delegate doesn't do much for now.
         this.delegate = new TickingFlameChartDelegate();
-        // Chart settings.
-        this.chartGroupExpansionSetting =
-            Common.Settings.Settings.instance().createSetting('media-flame-chart-group-expansion', {});
-        // Create the chart.
-        this.chart =
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
-            new PerfUI.FlameChart.FlameChart(this.dataProvider, this.delegate, this.chartGroupExpansionSetting);
-        // TODO: needs to have support in the delegate for supporting this.
-        this.chart.disableRangeSelection();
-        // Scrolling should change the current bounds, and repaint the chart.
-        this.chart.bindCanvasEvent('wheel', e => {
-            this.onScroll(e);
-        });
         this.performUpdate();
     }
     performUpdate() {
-        this.#view({ chart: this.chart }, undefined, this.contentElement);
+        this.#view({
+            dataProvider: this.dataProvider,
+            delegate: this.delegate,
+            windowTimes: { low: this.bounds.low, high: this.bounds.high },
+            onScroll: this.#boundOnScroll,
+        }, undefined, this.contentElement);
     }
     /**
      * Add a marker with |properties| at |time|.
@@ -265,11 +287,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
             this.updateRender();
         }
     }
-    onScroll(e) {
-        // TODO: is this a good divisor? does it account for high precision scroll wheels?
-        // low precision scroll wheels?
-        const scrollTickCount = Math.round(e.deltaY / 50);
-        const scrollPositionRatio = e.offsetX / e.srcElement.clientWidth;
+    onScroll(scrollTickCount, scrollPositionRatio) {
         if (scrollTickCount > 0) {
             this.bounds.zoomOut(scrollTickCount, scrollPositionRatio);
         }
@@ -328,8 +346,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
             this.bounds.addMax(duration);
         }
         this.dataProvider.updateMaxTime(this.bounds);
-        this.chart.setWindowTimes(this.bounds.low, this.bounds.high, true);
-        this.chart.scheduleUpdate();
+        this.performUpdate();
     }
 }
 /**

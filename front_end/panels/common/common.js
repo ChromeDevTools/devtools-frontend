@@ -2470,14 +2470,20 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     sidebar.setPage(resourcePath);
     return void 0;
   }
-  onOpenResource(message) {
+  onOpenResource(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.OpenResource) {
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.OpenResource}`);
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
+      if (!this.extensionAllowedOnContentProvider(uiSourceCode, port)) {
+        return this.status.E_FAILED("Permission denied");
+      }
       void Common5.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();
+    }
+    if (!this.extensionAllowedOnURL(message.url, port)) {
+      return this.status.E_FAILED("Permission denied");
     }
     const resource = Bindings.ResourceUtils.resourceForURL(message.url);
     if (resource) {
@@ -4111,6 +4117,29 @@ var commentThreadWidget_css_default = `/*
     cursor: pointer;
   }
 
+  .element-removed-banner {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    gap: var(--sys-size-3);
+    /* Bleed past the widget padding so the banner spans the full width and sits flush with the bottom edge. */
+    margin: var(--sys-size-4) calc(-1 * var(--sys-size-8)) calc(-1 * var(--sys-size-8));
+    padding: var(--sys-size-5) var(--sys-size-8);
+    border-radius: 0 0 var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
+    background: var(--sys-color-tonal-container);
+    font-family: var(--default-font-family);
+    font-size: var(--sys-typescale-body5-size);
+    line-height: var(--sys-size-8);
+    color: var(--sys-color-on-tonal-container);
+  }
+
+  .element-removed-icon {
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    flex-shrink: 0;
+    color: var(--sys-color-on-tonal-container);
+  }
+
   .selected-item devtools-widget,
   .selected-item-text {
     display: block;
@@ -4168,7 +4197,12 @@ var UIStrings7 = {
   /**
    * @description aria-label for the comment text area.
    */
-  commentInputAriaLabel: "Comment input"
+  commentInputAriaLabel: "Comment input",
+  /**
+   * @description Banner text shown at the bottom of a comment thread when the element the comment was
+   * attached to has been removed and can no longer be found.
+   */
+  elementNoLongerAvailable: "The element is no longer available"
 };
 var UIStringsNotTranslate2 = {
   /**
@@ -4325,6 +4359,12 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           </div>
         `)}</div>
       `}
+
+      ${input.elementRemoved ? html8`
+        <div class="element-removed-banner" role="status">
+          <span>${i18nString7(UIStrings7.elementNoLongerAvailable)}</span>
+        </div>
+      ` : Lit3.nothing}
     </div>
   `, target);
 };
@@ -4335,6 +4375,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
   #status = "DRAFT";
   #transmitted = false;
   #isQueueModifierPressed = false;
+  #elementRemoved = false;
   #textAreaRef = createRef();
   #view;
   #isEditing = false;
@@ -4372,6 +4413,19 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
     }
     this.#transmitted = transmitted;
     this.requestUpdate();
+  }
+  /**
+   * When true, shows a banner indicating that the element the thread is anchored to has been removed.
+   */
+  set elementRemoved(elementRemoved) {
+    if (this.#elementRemoved === elementRemoved) {
+      return;
+    }
+    this.#elementRemoved = elementRemoved;
+    this.requestUpdate();
+  }
+  get elementRemoved() {
+    return this.#elementRemoved;
   }
   #onSetEditMode = (value) => {
     const commentText = this.#comments.find((c) => c.author === "DEVELOPER")?.text;
@@ -4422,6 +4476,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
       comments: this.#comments,
       commentText: this.#commentText,
       isQueueModifierPressed: this.#isQueueModifierPressed,
+      elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,
       status: this.#status,
       transmitted: this.#transmitted,
@@ -4467,8 +4522,10 @@ __export(CommentsOverlayWidget_exports, {
   ActionDelegate: () => ActionDelegate,
   ButtonProvider: () => ButtonProvider,
   CommentsOverlayWidget: () => CommentsOverlayWidget,
+  ContextMenuProvider: () => ContextMenuProvider,
   ThreadRevealer: () => ThreadRevealer
 });
+import * as i18n19 from "../../core/i18n/i18n.js";
 import * as Root3 from "../../core/root/root.js";
 import * as CommentManager from "../../models/comment_manager/comment_manager.js";
 import * as Comments from "../../ui/comments/comments.js";
@@ -4562,6 +4619,14 @@ var commentsOverlay_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./commentsOverlay.css")} */`;
 
 // ../../front_end/panels/common/CommentsOverlayWidget.ts
+var UIStrings8 = {
+  /**
+   * @description Context menu item that creates a comment anchored to the right-clicked part of the DevTools UI.
+   */
+  addComment: "Add comment"
+};
+var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsOverlayWidget.ts", UIStrings8);
+var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
 var {
   html: html9,
   render: render8,
@@ -4643,7 +4708,8 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
         onDeleteQueuedComment: input.onDeleteQueuedComment,
         onQueueComment: input.onQueueComment,
         onSaveEdit: input.onSaveEdit,
-        onStartEdit: input.onStartEdit
+        onStartEdit: input.onStartEdit,
+        elementRemoved: item2.thread.isOrphaned
       })}
             </div>
           `;
@@ -4679,7 +4745,17 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
         document.documentElement.removeEventListener("keydown", this.#onKeyDown);
         document.documentElement.removeEventListener("click", this.#onClickOutside, { capture: true });
       }
+      this.#markActiveThreadResponseSeen();
     }
+  }
+  /**
+   * The open thread shows the agent response, so the developer has seen it.
+   */
+  #markActiveThreadResponseSeen() {
+    if (!this.#activeThreadId) {
+      return;
+    }
+    this.#commentManager.getCommentThread(this.#activeThreadId)?.markResponseSeen();
   }
   constructor(element, [commentManager], view = DEFAULT_VIEW7) {
     super(element, { useShadowDom: false });
@@ -4805,6 +4881,7 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
   }
   #onStateChanged() {
     this.#syncActiveThreadFromManager();
+    this.#markActiveThreadResponseSeen();
     this.requestUpdate();
   }
   #trySynchronousRender() {
@@ -4974,6 +5051,14 @@ var CommentsOverlayWidget = class extends UI10.Widget.Widget {
     this.#fallbackPosition = fallbackPosition ?? null;
     this.requestUpdate();
   }
+  /**
+   * Opens a draft comment anchored to `element`. Comment mode must already be
+   * active.
+   * @returns whether a draft comment was created.
+   */
+  addCommentAt(element, coordinates) {
+    return this.#commentOverlayManager.handleElementClick(element, coordinates);
+  }
 };
 var widgetInstance = null;
 function getOrCreateOverlayWidget(commentManager) {
@@ -5002,6 +5087,41 @@ var ThreadRevealer = class {
     overlay.openThread(thread.id, position);
   }
 };
+function revealCommentsDrawerView(enteringCommentMode) {
+  const viewManager = UI10.ViewManager.ViewManager.instance();
+  if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
+    return;
+  }
+  if (enteringCommentMode) {
+    if (!UI10.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
+      return;
+    }
+    void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then((location) => {
+      return location?.showView(
+        viewManager.view(COMMENTS_VIEW_ID),
+        void 0,
+        false,
+        /* omitFocus */
+        true,
+        /* shouldSelectTab */
+        false
+      );
+    });
+    return;
+  }
+  void viewManager.showView(
+    COMMENTS_VIEW_ID,
+    /* userGesture */
+    true
+  );
+}
+function setCommentModeByUser(commentManager, active) {
+  getOrCreateOverlayWidget(commentManager);
+  if (commentManager.isCommentMode() !== active) {
+    commentManager.setCommentMode(active);
+    revealCommentsDrawerView(active);
+  }
+}
 var ActionDelegate = class {
   #commentManager;
   constructor(commentManager) {
@@ -5014,55 +5134,34 @@ var ActionDelegate = class {
       if (!this.#commentManager.isAgentAttached()) {
         return false;
       }
-      getOrCreateOverlayWidget(this.#commentManager);
-      const enteringCommentMode = !this.#commentManager.isCommentMode();
-      this.#commentManager.setCommentMode(enteringCommentMode);
-      this.#revealCommentsView(enteringCommentMode);
+      setCommentModeByUser(this.#commentManager, !this.#commentManager.isCommentMode());
       return true;
     }
     return false;
-  }
-  /**
-   * When entering comment mode with the drawer open, add the Comments tab to
-   * the drawer without selecting it or moving focus away from the page being
-   * commented on. When leaving comment mode, always open the drawer on the
-   * Comments tab, as checking the responses is the likely next step.
-   */
-  #revealCommentsView(enteringCommentMode) {
-    const viewManager = UI10.ViewManager.ViewManager.instance();
-    if (!viewManager.hasView(COMMENTS_VIEW_ID)) {
-      return;
-    }
-    if (enteringCommentMode) {
-      if (!UI10.InspectorView.InspectorView.maybeGetInspectorViewInstance()?.drawerVisible()) {
-        return;
-      }
-      void viewManager.resolveLocation(viewManager.locationNameForViewId(COMMENTS_VIEW_ID)).then((location) => {
-        return location?.showView(
-          viewManager.view(COMMENTS_VIEW_ID),
-          /* insertBefore */
-          void 0,
-          /* userGesture */
-          false,
-          /* omitFocus */
-          true,
-          /* shouldSelectTab */
-          false
-        );
-      });
-      return;
-    }
-    void viewManager.showView(
-      COMMENTS_VIEW_ID,
-      /* userGesture */
-      true
-    );
   }
   static resetForTest() {
     if (widgetInstance) {
       widgetInstance.detach();
       widgetInstance = null;
     }
+  }
+};
+var menusWithAddComment = /* @__PURE__ */ new WeakSet();
+var ContextMenuProvider = class {
+  appendApplicableItems(event, contextMenu, target) {
+    if (menusWithAddComment.has(contextMenu) || !Root3.Runtime.hostConfig.devToolsComments?.enabled || !(target instanceof HTMLElement) || !(event instanceof MouseEvent)) {
+      return;
+    }
+    const commentManager = UI10.Widget.lookupUniverseForElement(target)?.commentManager;
+    const coordinates = { clientX: event.clientX, clientY: event.clientY };
+    if (!commentManager?.isAgentAttached() || !Comments.CommentAnchorResolver.resolveCommentAnchorElement(target, coordinates)) {
+      return;
+    }
+    menusWithAddComment.add(contextMenu);
+    contextMenu.annotationSection().appendItem(i18nString8(UIStrings8.addComment), () => {
+      setCommentModeByUser(commentManager, true);
+      getOrCreateOverlayWidget(commentManager).addCommentAt(target, coordinates);
+    }, { jslogContext: "add-comment" });
   }
 };
 var ButtonProvider = class {
@@ -5095,25 +5194,25 @@ __export(CommentsStatusBarPill_exports, {
   CommentsStatusBarPill: () => CommentsStatusBarPill,
   DEFAULT_VIEW: () => DEFAULT_VIEW8
 });
-import * as i18n19 from "../../core/i18n/i18n.js";
+import * as i18n21 from "../../core/i18n/i18n.js";
 import * as CommentManager3 from "../../models/comment_manager/comment_manager.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
 import * as Lit5 from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description Button text for the comments status bar pill. Clicking it opens the Comments panel.
    */
   showComments: "Show comments",
   /**
    * @description Button text for the comments status bar pill when the AI agent has responded to some
-   * comments. Clicking it opens the Comments panel.
+   * comments and the user has not seen these responses yet. Clicking it opens the Comments panel.
    * @example {2} PH1
    */
   showCommentsWithCount: "Show comments ({PH1})"
 };
-var str_8 = i18n19.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings8);
-var i18nString8 = i18n19.i18n.getLocalizedString.bind(void 0, str_8);
+var str_9 = i18n21.i18n.registerUIStrings("panels/common/CommentsStatusBarPill.ts", UIStrings9);
+var i18nString9 = i18n21.i18n.getLocalizedString.bind(void 0, str_9);
 var { html: html10, render: render9 } = Lit5;
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const tooltip = input.threads.flatMap((thread) => thread.comments.map((comment) => comment.text)).join("\n");
@@ -5125,7 +5224,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         ?disabled=${input.disabled}
         @click=${input.onPillClick}
         jslog=${VisualLogging5.action("comments-status-bar-pill").track({ click: true })}>
-        ${input.respondedCount > 0 ? i18nString8(UIStrings8.showCommentsWithCount, { PH1: input.respondedCount }) : i18nString8(UIStrings8.showComments)}
+        ${input.unseenResponseCount > 0 ? i18nString9(UIStrings9.showCommentsWithCount, { PH1: input.unseenResponseCount }) : i18nString9(UIStrings9.showComments)}
       </button>
     `}
   `, target);
@@ -5173,7 +5272,7 @@ var CommentsStatusBarPill = class extends UI11.Widget.Widget {
     const threads = this.#commentManager.isAgentAttached() ? this.#commentManager.getCommentThreads().filter((thread) => thread.status !== "DRAFT") : [];
     const viewInput = {
       threads,
-      respondedCount: threads.filter((thread) => thread.status === "RESOLVED").length,
+      unseenResponseCount: threads.filter((thread) => thread.status === "RESOLVED" && !thread.responseSeen).length,
       onPillClick: this.#handlePillClick
     };
     this.#view(viewInput, void 0, this.contentElement);

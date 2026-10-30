@@ -5,7 +5,7 @@ import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiUtils from '../ai-utils/ai-utils.js';
-import { AiAgent, sanitizeSuggestions, } from './agents/AiAgent.js';
+import { AiAgent, sanitizeSuggestionsList, SUGGEST_FOLLOW_UPS_FUNCTION_NAME, } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
 import { DOMNodeContext } from './contexts/DOMNodeContext.js';
@@ -47,9 +47,8 @@ If the user asks a question that requires an investigation or debugging, use thi
   - Example: "**Suggestion**: [Suggestion]" or "**Suggestions**:" followed by a bulleted list.
 
 # Follow-up Suggestions
-* Output a list of suggested follow-up queries or actions for the user at the very end of your response.
-* The format MUST be SUGGESTIONS: ["suggestion 1", "suggestion 2"] on its own single line.
-* Ensure suggestions are relevant, concise, and helpful next steps for the user.
+* At the end of your response, call the \`suggestFollowUps\` function to provide 1 to 3 relevant, concise follow-up queries or actions for the user.
+* Do not write follow-up suggestions as text in your response.
 
 # Constraints
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
@@ -105,7 +104,7 @@ function removeDirectiveFromLastLine(lines, textBeforeDirective) {
  */
 function parseSuggestionsArray(array) {
     try {
-        return { suggestions: sanitizeSuggestions(array) };
+        return { suggestions: sanitizeSuggestionsList(JSON.parse(array)) };
     }
     catch {
         // Invalid JSON: the caller decides whether the line is still a directive.
@@ -259,6 +258,27 @@ export class AiAgent2 extends AiAgent {
                     loadedSkills: loadedSkills.length > 0 ? loadedSkills : undefined,
                 };
             },
+        });
+        this.#declaredTools.add(SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
+        this.declareFunction(SUGGEST_FOLLOW_UPS_FUNCTION_NAME, {
+            description: 'Provides suggested follow-up queries or actions for the user at the end of the response.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: 'Parameters for follow-up suggestions',
+                properties: {
+                    suggestions: {
+                        type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
+                        items: {
+                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                            description: 'A concise follow-up query or action (under 60 characters).',
+                        },
+                        description: '1 to 3 concise follow-up queries or actions relevant to the response.',
+                    },
+                },
+                required: ['suggestions'],
+            },
+            // Never called: AiAgent#run() and AiAgent#runFunctionCalls() intercept suggestFollowUps directly.
+            handler: async () => ({ result: 'Suggestions recorded.' }),
         });
     }
     async enhanceQuery(query, selected = null, 

@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 const UIStrings = {
@@ -620,7 +621,7 @@ export function getPresets() {
                 configID: 'performance',
                 title: i18nLazyString(UIStrings.performance),
                 description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
-                supportedModes: ['navigation', 'timespan', 'snapshot'],
+                supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES.performance,
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE,
             },
             {
@@ -628,7 +629,7 @@ export function getPresets() {
                 configID: 'accessibility',
                 title: i18nLazyString(UIStrings.accessibility),
                 description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
-                supportedModes: ['navigation', 'snapshot'],
+                supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES.accessibility,
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY,
             },
             {
@@ -636,7 +637,7 @@ export function getPresets() {
                 configID: 'best-practices',
                 title: i18nLazyString(UIStrings.bestPractices),
                 description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
-                supportedModes: ['navigation', 'timespan', 'snapshot'],
+                supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES['best-practices'],
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES,
             },
             {
@@ -644,7 +645,7 @@ export function getPresets() {
                 configID: 'seo',
                 title: i18nLazyString(UIStrings.seo),
                 description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
-                supportedModes: ['navigation', 'snapshot'],
+                supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES.seo,
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO,
             },
             {
@@ -652,7 +653,7 @@ export function getPresets() {
                 configID: 'agentic-browsing',
                 title: i18nLazyString(UIStrings.agenticBrowsing),
                 description: i18nLazyString(UIStrings.agenticBrowsingDescription),
-                supportedModes: ['navigation', 'snapshot'],
+                supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES['agentic-browsing'],
                 userMetric: Host.UserMetrics.LighthouseCategoryUsed.AGENTIC_BROWSING,
             },
         ];

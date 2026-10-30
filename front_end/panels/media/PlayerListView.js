@@ -76,22 +76,73 @@ export class PlayerListView extends UI.Widget.VBox {
     playerEntriesWithHostnameFrameTitle;
     mainContainer;
     currentlySelectedPlayerID;
-    constructor(mainContainer, view = DEFAULT_VIEW) {
-        super({ useShadowDom: true });
+    #processedEventCounts = new Map();
+    #onSelectPlayer;
+    #onHidePlayer;
+    #onHideOtherPlayers;
+    #onSavePlayerInfo;
+    #boundSelectPlayer = this.selectPlayer.bind(this);
+    #boundRightClickPlayer = this.rightClickPlayer.bind(this);
+    constructor(mainContainerOrElement, view = DEFAULT_VIEW) {
+        const element = mainContainerOrElement instanceof HTMLElement ? mainContainerOrElement : undefined;
+        super(element, { useShadowDom: true });
         this.#view = view;
+        this.setMinimumSize(100, 25);
         this.playerStatuses = new Map();
         this.playerEntriesWithHostnameFrameTitle = new Set();
         // Container where new panels can be added based on clicks.
-        this.mainContainer = mainContainer;
+        if (mainContainerOrElement && !(mainContainerOrElement instanceof HTMLElement)) {
+            this.mainContainer = mainContainerOrElement;
+        }
         this.currentlySelectedPlayerID = null;
         this.requestUpdate();
+    }
+    set players(players) {
+        for (const playerID of Array.from(this.playerStatuses.keys())) {
+            if (!players.has(playerID)) {
+                this.deletePlayer(playerID);
+                this.#processedEventCounts.delete(playerID);
+            }
+        }
+        for (const [playerID, data] of players) {
+            if (!this.playerStatuses.has(playerID)) {
+                this.addMediaElementItem(playerID);
+            }
+            for (const [name, value] of data.properties) {
+                this.onProperty(playerID, { name, value });
+            }
+            const prevCount = this.#processedEventCounts.get(playerID) ?? 0;
+            for (let i = prevCount; i < data.events.length; i++) {
+                this.onEvent(playerID, data.events[i]);
+            }
+            this.#processedEventCounts.set(playerID, data.events.length);
+        }
+    }
+    set selectedPlayerID(playerID) {
+        if (this.currentlySelectedPlayerID === playerID) {
+            return;
+        }
+        this.currentlySelectedPlayerID = playerID;
+        this.requestUpdate();
+    }
+    set onSelectPlayer(callback) {
+        this.#onSelectPlayer = callback;
+    }
+    set onHidePlayer(callback) {
+        this.#onHidePlayer = callback;
+    }
+    set onHideOtherPlayers(callback) {
+        this.#onHideOtherPlayers = callback;
+    }
+    set onSavePlayerInfo(callback) {
+        this.#onSavePlayerInfo = callback;
     }
     performUpdate() {
         const input = {
             players: Array.from(this.playerStatuses.values()),
             selectedPlayerID: this.currentlySelectedPlayerID,
-            onPlayerClick: this.selectPlayer.bind(this),
-            onPlayerContextMenu: this.rightClickPlayer.bind(this),
+            onPlayerClick: this.#boundSelectPlayer,
+            onPlayerContextMenu: this.#boundRightClickPlayer,
         };
         this.#view(input, undefined, this.contentElement);
     }
@@ -101,15 +152,25 @@ export class PlayerListView extends UI.Widget.VBox {
         }
     }
     selectPlayer(playerID) {
-        this.mainContainer.renderMainPanel(playerID);
+        this.mainContainer?.renderMainPanel(playerID);
+        this.#onSelectPlayer?.(playerID);
         this.currentlySelectedPlayerID = playerID;
         this.requestUpdate();
     }
     rightClickPlayer(playerID, event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        contextMenu.headerSection().appendItem(i18nString(UIStrings.hidePlayer), this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID), { jslogContext: 'hide-player' });
-        contextMenu.headerSection().appendItem(i18nString(UIStrings.hideAllOthers), this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID), { jslogContext: 'hide-all-others' });
-        contextMenu.headerSection().appendItem(i18nString(UIStrings.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID), { jslogContext: 'save-player-info' });
+        contextMenu.headerSection().appendItem(i18nString(UIStrings.hidePlayer), () => {
+            this.mainContainer?.markPlayerForDeletion(playerID);
+            this.#onHidePlayer?.(playerID);
+        }, { jslogContext: 'hide-player' });
+        contextMenu.headerSection().appendItem(i18nString(UIStrings.hideAllOthers), () => {
+            this.mainContainer?.markOtherPlayersForDeletion(playerID);
+            this.#onHideOtherPlayers?.(playerID);
+        }, { jslogContext: 'hide-all-others' });
+        contextMenu.headerSection().appendItem(i18nString(UIStrings.savePlayerInfo), () => {
+            this.mainContainer?.exportPlayerData(playerID);
+            this.#onSavePlayerInfo?.(playerID);
+        }, { jslogContext: 'save-player-info' });
         void contextMenu.show();
     }
     setMediaElementFrameTitle(playerID, frameTitle, isHostname) {

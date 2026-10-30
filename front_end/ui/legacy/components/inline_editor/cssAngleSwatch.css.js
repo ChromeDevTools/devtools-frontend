@@ -16,7 +16,7 @@ export default `/*
   width: 1em;
   height: 1em;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   overflow: hidden;
   cursor: pointer;
   background-color: var(--sys-color-neutral-container);

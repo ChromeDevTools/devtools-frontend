@@ -6,7 +6,7 @@ export declare class DOMStorageItemsView extends KeyValueStorageItemsView {
     private domStorage;
     private eventListeners;
     constructor(domStorage: SDK.DOMStorageModel.DOMStorage);
-    protected createPreview(key: string, value: string): Promise<UI.Widget.Widget | null>;
+    protected createPreview(key: string, value: string): Promise<UI.Widget.AnyWidget | null>;
     setStorage(domStorage: SDK.DOMStorageModel.DOMStorage): void;
     private domStorageItemsCleared;
     itemsCleared(): void;

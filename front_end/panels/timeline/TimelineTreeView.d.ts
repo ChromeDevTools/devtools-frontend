@@ -19,8 +19,8 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     private lastHoveredProfileNode;
     private textFilterInternal;
     private taskFilter;
-    protected startTimeInternal: Trace.Types.Timing.Milli;
-    protected endTimeInternal: Trace.Types.Timing.Milli;
+    protected startTimeInternal?: Trace.Types.Timing.Milli;
+    protected endTimeInternal?: Trace.Types.Timing.Milli;
     splitWidget: UI.SplitWidget.SplitWidget;
     detailsView: UI.Widget.Widget;
     private searchableView;

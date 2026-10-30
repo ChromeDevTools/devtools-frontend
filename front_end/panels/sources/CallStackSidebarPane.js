@@ -110,6 +110,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     scheduledForUpdateItems = new Set();
     muteActivateItem;
     #stackTrace = null;
+    #flavorChangeId = 0;
     constructor() {
         super({
             jslog: `${VisualLogging.section('sources.callstack')}`,
@@ -182,6 +183,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         return callstackSidebarPaneInstance;
     }
     async flavorChanged(details) {
+        const flavorChangeId = ++this.#flavorChangeId;
         this.showIgnoreListed = false;
         this.ignoreListCheckboxElement.checked = false;
         this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
@@ -191,8 +193,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
             this.requestUpdate(); // In case creating the stack trace takes a while, we render an empty view first.
         }
         if (details) {
-            this.#stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+            const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                 .createStackTraceFromDebuggerPaused(details, details.debuggerModel.target());
+            if (flavorChangeId !== this.#flavorChangeId) {
+                return;
+            }
+            this.#stackTrace = stackTrace;
             this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
         }
         this.requestUpdate();

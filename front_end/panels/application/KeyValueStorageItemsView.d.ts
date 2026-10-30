@@ -2,7 +2,6 @@ import '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ApplicationComponents from './components/components.js';
 import { StorageItemsToolbar } from './StorageItemsToolbar.js';
-type Widget = UI.Widget.Widget;
 export interface ViewInput {
     items: Array<{
         key: string;
@@ -10,7 +9,7 @@ export interface ViewInput {
     }>;
     selectedKey: string | null;
     editable: boolean;
-    preview: Widget;
+    preview: UI.Widget.AnyWidget;
     onSelect: (item: {
         key: string;
         value: string;
@@ -71,7 +70,7 @@ export declare abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     }>): void;
     deleteSelectedItem(): void;
     protected isEditAllowed(_columnIdentifier: string, _oldText: string, _newText: string): boolean;
-    showPreview(preview: Widget | null, value: string | null): void;
+    showPreview(preview: UI.Widget.AnyWidget | null, value: string | null): void;
     protected set jslog(jslog: string | undefined);
     protected get jslog(): string | undefined;
     set editable(editable: boolean);
@@ -82,6 +81,6 @@ export declare abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     } | null): void;
     protected abstract setItem(key: string, value: string): void;
     protected abstract removeItem(key: string): void;
-    protected abstract createPreview(key: string, value: string): Promise<Widget | null>;
+    protected abstract createPreview(key: string, value: string): Promise<UI.Widget.AnyWidget | null>;
 }
 export {};

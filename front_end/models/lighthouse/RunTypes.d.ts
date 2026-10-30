@@ -4,12 +4,13 @@ import type * as Platform from '../../core/platform/platform.js';
 import type { ReportJSON } from './LighthouseReporterTypes.js';
 export type CategoryId = 'performance' | 'accessibility' | 'best-practices' | 'seo' | 'agentic-browsing';
 export type RunMode = 'navigation' | 'timespan' | 'snapshot';
+export declare const CATEGORY_SUPPORTED_MODES: Record<CategoryId, readonly RunMode[]>;
 export interface Preset {
     setting: Common.Settings.Setting<boolean>;
     configID: CategoryId;
     title: () => Common.UIString.LocalizedString;
     description: () => Common.UIString.LocalizedString;
-    supportedModes: string[];
+    supportedModes: readonly string[];
     userMetric: Host.UserMetrics.LighthouseCategoryUsed;
 }
 export interface RuntimeSetting {

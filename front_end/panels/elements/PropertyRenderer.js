@@ -487,7 +487,7 @@ export class EditableContent extends UI.Widget.Widget {
     #view;
     constructor(element, view = EDITABLE_CONTENT_DEFAULT_VIEW) {
         super(element, { useShadowDom: 'pure' });
-        this.element.classList.remove('vbox', 'flex-auto', 'widget');
+        this.element.classList.remove('widget');
         this.#view = view;
         // Render synchronously so that `<slot name="icon">` is in the DOM before synchronous callers dispatch edits.
         this.performUpdate();

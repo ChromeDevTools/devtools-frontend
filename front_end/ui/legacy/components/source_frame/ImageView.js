@@ -132,7 +132,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         container: {
             classes: ['image-view'],
             attributes: {
-                tabindex: '-1',
+                tabindex: '-1', jslog: `${VisualLogging.pane('image-view')}`,
             },
         },
     });
@@ -163,7 +163,6 @@ export class ImageView extends ImageViewBase {
         super(element, {
             title: i18nString(UIStrings.image),
             viewId: 'image',
-            jslog: `${VisualLogging.pane('image-view')}`,
         });
         this.#view = view;
         this.#url = contentProvider.contentURL();
@@ -171,7 +170,6 @@ export class ImageView extends ImageViewBase {
         this.#contentProvider = contentProvider;
         this.#uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
         if (this.#uiSourceCode) {
-            this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#workingCopyCommitted, this);
             new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere), this.#handleDrop.bind(this));
         }
         this.#mimeType = mimeType;
@@ -237,8 +235,13 @@ export class ImageView extends ImageViewBase {
     }
     wasShown() {
         super.wasShown();
+        this.#uiSourceCode?.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#workingCopyCommitted, this);
         this.requestUpdate();
         void this.#updateContentIfNeeded();
+    }
+    willHide() {
+        super.willHide();
+        this.#uiSourceCode?.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#workingCopyCommitted, this);
     }
     disposeView() {
         if (this.#uiSourceCode) {

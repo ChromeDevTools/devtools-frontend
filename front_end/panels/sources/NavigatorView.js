@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import '../../ui/components/spinners/spinners.js';
+import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -14,7 +15,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as SettingsUI from '../../ui/settings/settings.js';
@@ -220,6 +220,9 @@ export class NavigatorView extends NavigatorViewBase {
     groupByAuthored;
     groupByDomain;
     groupByFolder;
+    selectedNode = null;
+    expandedNodes = new WeakSet();
+    treeElementNodes = new WeakMap();
     #view;
     constructor(element, [networkProjectManager] = [Bindings.NetworkProject.NetworkProjectManager.instance()], view = DEFAULT_VIEW) {
         super(element, { useShadowDom: true });
@@ -227,11 +230,28 @@ export class NavigatorView extends NavigatorViewBase {
         this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow("NavigationTree" /* UI.TreeOutline.TreeVariant.NAVIGATION_TREE */);
         this.scriptsTree.registerRequiredCSS(navigatorTreeStyles);
         this.scriptsTree.setHideOverflow(true);
-        this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
+        this.scriptsTree.setComparator(this.treeElementsCompare.bind(this));
         this.scriptsTree.setFocusable(false);
         this.setDefaultFocusedElement(this.scriptsTree.element);
         this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => this.requestUpdate());
         this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => this.requestUpdate());
+        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementSelected, event => {
+            const node = this.nodeForTreeElement(event.data);
+            this.selectedNode = node ?? null;
+        });
+        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementExpanded, event => {
+            const node = this.nodeForTreeElement(event.data);
+            if (node) {
+                this.expandedNodes.add(node);
+                node.populate();
+            }
+        });
+        this.scriptsTree.addEventListener(UI.TreeOutline.Events.ElementCollapsed, event => {
+            const node = this.nodeForTreeElement(event.data);
+            if (node) {
+                this.expandedNodes.delete(node);
+            }
+        });
         this.uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
         this.subfolderNodes = new Map();
         this.rootNode = new NavigatorRootTreeNode(this);
@@ -333,9 +353,9 @@ export class NavigatorView extends NavigatorViewBase {
         const searchSources = new SearchSources(path && `file:${path}`);
         contextMenu.viewSection().appendItem(searchLabel, () => Common.Revealer.reveal(searchSources), { jslogContext: path ? 'search-in-folder' : 'search-in-all-files' });
     }
-    static treeElementsCompare(treeElement1, treeElement2) {
-        const node1 = treeElement1.node;
-        const node2 = treeElement2.node;
+    treeElementsCompare(treeElement1, treeElement2) {
+        const node1 = this.nodeForTreeElement(treeElement1);
+        const node2 = this.nodeForTreeElement(treeElement2);
         if (node1 && node2) {
             const order = NavigatorView.compareNodes(node1, node2);
             if (order !== 0) {
@@ -398,6 +418,33 @@ export class NavigatorView extends NavigatorViewBase {
     focus() {
         this.scriptsTree.focus();
     }
+    selectNode(node, omitFocus, selectedByUser) {
+        node.treeNode().select(omitFocus, selectedByUser);
+    }
+    expandNode(node) {
+        node.treeNode().expand();
+    }
+    collapseNode(node) {
+        node.treeNode().collapse();
+    }
+    isNodeExpanded(node) {
+        return this.expandedNodes.has(node);
+    }
+    isNodeSelected(node) {
+        return this.selectedNode === node;
+    }
+    setNodeSelected(node) {
+        this.selectedNode = node;
+    }
+    setNodeExpanded(node) {
+        this.expandedNodes.add(node);
+    }
+    setNodeForTreeElement(treeElement, node) {
+        this.treeElementNodes.set(treeElement, node);
+    }
+    nodeForTreeElement(treeElement) {
+        return this.treeElementNodes.get(treeElement);
+    }
     /**
      * Central place to add elements to the tree to
      * enable focus if the tree has elements
@@ -412,6 +459,9 @@ export class NavigatorView extends NavigatorViewBase {
      */
     removeChild(parent, child) {
         parent.removeChild(child);
+        if (!this.scriptsTree.selectedTreeElement) {
+            this.selectedNode = null;
+        }
         if (this.scriptsTree.rootElement().childCount() === 0) {
             this.scriptsTree.setFocusable(false);
         }
@@ -554,8 +604,8 @@ export class NavigatorView extends NavigatorViewBase {
     // TODO(einbinder) remove this code after crbug.com/964075 is fixed
     selectDefaultTreeNode() {
         const children = this.rootNode.children();
-        if (children.length && !this.scriptsTree.selectedTreeElement) {
-            children[0].treeNode().select(true /* omitFocus */, false /* selectedByUser */);
+        if (children.length && !this.selectedNode) {
+            this.selectNode(children[0], true /* omitFocus */, false /* selectedByUser */);
         }
     }
     computeUniqueFileSystemProjectNames() {
@@ -659,7 +709,7 @@ export class NavigatorView extends NavigatorViewBase {
         }
         frameNode.appendChild(domainNode);
         if (isAuthored && this.groupByAuthored) {
-            domainNode.treeNode().expand();
+            this.expandNode(domainNode);
         }
         return domainNode;
     }
@@ -680,7 +730,7 @@ export class NavigatorView extends NavigatorViewBase {
         this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored)
             .appendChild(frameNode);
         if (!parentFrame) {
-            frameNode.treeNode().expand();
+            this.expandNode(frameNode);
         }
         return frameNode;
     }
@@ -689,7 +739,7 @@ export class NavigatorView extends NavigatorViewBase {
             if (!this.authoredNode) {
                 this.authoredNode = new NavigatorGroupTreeNode(this, null, 'group:Authored', Types.Authored, i18nString(UIStrings.authored), i18nString(UIStrings.authoredTooltip));
                 this.rootNode.appendChild(this.authoredNode);
-                this.authoredNode.treeNode().expand();
+                this.expandNode(this.authoredNode);
             }
             return this.authoredNode;
         }
@@ -752,15 +802,16 @@ export class NavigatorView extends NavigatorViewBase {
         if (!node) {
             return null;
         }
-        if (this.scriptsTree.selectedTreeElement) {
+        if (this.selectedNode) {
             // If the tree outline is being marked as "being edited" (i.e. we're renaming a file
             // or choosing the name for a new snippet), we shall not proceed with revealing here,
             // as that will steal focus from the input widget and thus cancel editing. The
             // test/e2e/snippets/breakpoint.test.ts exercises this.
-            if (UI.UIUtils.isBeingEdited(this.scriptsTree.selectedTreeElement.treeOutline?.element)) {
+            if (UI.UIUtils.isBeingEdited(this.scriptsTree.element)) {
                 return null;
             }
-            this.scriptsTree.selectedTreeElement.deselect();
+            this.selectedNode.treeNode().deselect();
+            this.selectedNode = null;
         }
         // TODO(dgozman): figure out revealing multiple.
         node.reveal(select);
@@ -771,11 +822,9 @@ export class NavigatorView extends NavigatorViewBase {
         void Common.Revealer.reveal(uiSourceCode, !focusSource);
     }
     #isUISourceCodeOrAnyAncestorSelected(node) {
-        const selectedTreeElement = this.scriptsTree.selectedTreeElement;
-        const selectedNode = selectedTreeElement?.node;
         let currentNode = node;
         while (currentNode) {
-            if (currentNode === selectedNode) {
+            if (currentNode === this.selectedNode) {
                 return true;
             }
             currentNode = currentNode.parent;
@@ -856,6 +905,8 @@ export class NavigatorView extends NavigatorViewBase {
         }
         this.scriptsTree.removeChildren();
         this.scriptsTree.setFocusable(false);
+        this.selectedNode = null;
+        this.expandedNodes = new WeakSet();
         this.uiSourceCodeNodes.clear();
         this.subfolderNodes.clear();
         this.frameNodes.clear();
@@ -868,12 +919,11 @@ export class NavigatorView extends NavigatorViewBase {
         }
     }
     async renameShortcut() {
-        const selectedTreeElement = this.scriptsTree.selectedTreeElement;
-        const node = selectedTreeElement?.node;
-        if (!node?.uiSourceCode()?.canRename()) {
+        if (!(this.selectedNode instanceof NavigatorUISourceCodeTreeNode) ||
+            !this.selectedNode.uiSourceCode().canRename()) {
             return false;
         }
-        this.rename(node, false);
+        this.rename(this.selectedNode, false);
         return true;
     }
     handleContextMenuCreate(project, path, uiSourceCode) {
@@ -912,7 +962,7 @@ export class NavigatorView extends NavigatorViewBase {
         if (!node.uiSourceCode().canRename() || !node.treeElement) {
             return false;
         }
-        return this.scriptsTree.selectedTreeElement === node.treeElement && this.scriptsTree.element.hasFocus() &&
+        return this.selectedNode === node && this.scriptsTree.element.hasFocus() &&
             !UI.UIUtils.isBeingEdited(this.scriptsTree.element);
     }
     handleFileContextMenu(event, node) {
@@ -1176,30 +1226,28 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
         this.title = title;
         this.tooltip = title;
         this.navigatorView = navigatorView;
-        let iconType = 'folder';
-        if (type === Types.Domain) {
-            iconType = 'cloud';
-        }
-        else if (type === Types.Frame) {
-            iconType = 'frame';
-        }
-        else if (type === Types.Worker) {
-            iconType = 'gears';
-        }
-        else if (type === Types.Authored) {
-            iconType = 'code';
-        }
-        else if (type === Types.Deployed) {
-            iconType = 'deployed';
-        }
-        else if (type === Types.AutomaticFileSystem) {
-            iconType = 'folder-asterisk';
-        }
-        const icon = createIcon(iconType);
-        this.setLeadingIcons([icon]);
+        this.updateIcon();
     }
-    async onpopulate() {
-        this.node.populate();
+    updateIcon() {
+        const iconType = NavigatorFolderTreeElement.#iconTypeForType(this.nodeType);
+        this.setLeadingIcons([html `<devtools-icon name=${iconType}></devtools-icon>`]);
+    }
+    static #iconTypeForType(type) {
+        switch (type) {
+            case Types.Domain:
+                return 'cloud';
+            case Types.Frame:
+                return 'frame';
+            case Types.Worker:
+                return 'gears';
+            case Types.Authored:
+                return 'code';
+            case Types.Deployed:
+                return 'deployed';
+            case Types.AutomaticFileSystem:
+                return 'folder-asterisk';
+        }
+        return 'folder';
     }
     onattach() {
         this.collapse();
@@ -1219,9 +1267,16 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
         this.listItemElement.classList.toggle('is-from-source-map', isFromSourceMap);
     }
     setNode(node) {
+        this.navigatorView.setNodeForTreeElement(this, node);
         this.node = node;
         this.updateTooltip();
         UI.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
+        if (this.selected) {
+            this.navigatorView.setNodeSelected(node);
+        }
+        if (this.expanded) {
+            this.navigatorView.setNodeExpanded(node);
+        }
     }
     updateTooltip() {
         if (this.node.tooltip) {
@@ -1246,7 +1301,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
         if (!this.node || !(this.node instanceof NavigatorFolderTreeNode || this.node instanceof NavigatorGroupTreeNode)) {
             return;
         }
-        this.select();
+        this.navigatorView.selectNode(this.node);
         this.navigatorView.handleFolderContextMenu(event, this.node);
     }
     mouseMove(_event) {
@@ -1277,117 +1332,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
                 return 'deployed';
         }
         return 'folder';
-    }
-}
-export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
-    nodeType;
-    node;
-    navigatorView;
-    constructor(navigatorView, uiSourceCode, title, node) {
-        super('', false, uiSourceCode.contentType().name());
-        this.nodeType = Types.File;
-        this.node = node;
-        this.title = title;
-        this.listItemElement.classList.add('navigator-' + uiSourceCode.contentType().name() + '-tree-item', 'navigator-file-tree-item');
-        this.tooltip = uiSourceCode.url();
-        UI.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
-        window.dispatchEvent(new CustomEvent('source-tree-file-added', { bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName() }));
-        this.navigatorView = navigatorView;
-        this.updateIcon();
-        this.titleElement.setAttribute('jslog', `${VisualLogging.value('title').track({ change: true })}`);
-    }
-    updateIcon() {
-        const icon = PanelUtils.getIconForSourceFile(this.node.uiSourceCode());
-        this.setLeadingIcons([icon]);
-    }
-    updateAccessibleName() {
-        UI.ARIAUtils.setLabel(this.listItemElement, `${this.node.uiSourceCode().name()}, ${this.nodeType}`);
-    }
-    renderAiButton() {
-        if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
-            return null;
-        }
-        const uiSourceCode = this.node.uiSourceCode();
-        if (!uiSourceCode.contentType().isTextType() ||
-            Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
-            return null;
-        }
-        const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
-        const icon = AiAssistance.AiUtils.getIconName();
-        // clang-format off
-        return html `<span class="ai-button-container">
-      <devtools-floating-button
-        .iconName=${icon}
-        .title=${action.title()}
-        .jslogContext=${'ask-ai'}
-        @click=${{
-            handleEvent: (ev) => {
-                ev.stopPropagation();
-                this.navigatorView.sourceSelected(uiSourceCode, false);
-                void action.execute();
-            },
-            capture: true,
-        }}
-        @mousedown=${{
-            handleEvent: (ev) => {
-                ev.stopPropagation();
-            },
-            capture: true,
-        }}
-      ></devtools-floating-button>
-    </span>`;
-        // clang-format on
-    }
-    updateTrailingIcons() {
-        const aiButton = this.renderAiButton();
-        this.setTrailingIcons(aiButton ? [aiButton] : []);
-    }
-    get uiSourceCode() {
-        return this.node.uiSourceCode();
-    }
-    onattach() {
-        this.listItemElement.draggable = true;
-        this.listItemElement.addEventListener('click', this.onclick.bind(this), false);
-        this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
-        this.listItemElement.addEventListener('dragstart', this.ondragstart.bind(this), false);
-        this.updateTrailingIcons();
-    }
-    selectOnMouseDown(event) {
-        if (event.which !== 1 || !this.navigatorView.shouldRenameOnMouseDown(this.node)) {
-            super.selectOnMouseDown(event);
-            return;
-        }
-        window.setTimeout(() => {
-            if (this.navigatorView.shouldRenameOnMouseDown(this.node)) {
-                this.navigatorView.rename(this.node, false);
-            }
-        }, 300);
-    }
-    ondragstart(event) {
-        this.navigatorView.fileDragStarted(this.node, event);
-    }
-    onspace() {
-        this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
-        return true;
-    }
-    onclick(_event) {
-        this.navigatorView.sourceSelected(this.node.uiSourceCode(), false);
-    }
-    ondblclick(event) {
-        const middleClick = event.button === 1;
-        this.navigatorView.sourceSelected(this.node.uiSourceCode(), !middleClick);
-        return false;
-    }
-    onenter() {
-        this.navigatorView.sourceSelected(this.node.uiSourceCode(), true);
-        return true;
-    }
-    ondelete() {
-        return true;
-    }
-    handleContextMenuEvent(event) {
-        this.select();
-        this.navigatorView.handleFileContextMenu(event, this.node);
     }
 }
 export class NavigatorTreeNode {
@@ -1549,11 +1493,114 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     uiSourceCode() {
         return this.#uiSourceCode;
     }
+    updateIcon() {
+        if (!this.treeElement) {
+            return;
+        }
+        const icon = PanelUtils.getIconForSourceFile(this.#uiSourceCode);
+        this.treeElement.setLeadingIcons([icon]);
+    }
+    updateAccessibleName() {
+        if (!this.treeElement) {
+            return;
+        }
+        UI.ARIAUtils.setLabel(this.treeElement.listItemElement, `${this.#uiSourceCode.name()}, ${this.type}`);
+    }
+    renderAiButton() {
+        if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
+            return null;
+        }
+        if (!this.#uiSourceCode.contentType().isTextType() ||
+            Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.#uiSourceCode)) {
+            return null;
+        }
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
+        const icon = AiAssistance.AiUtils.getIconName();
+        // clang-format off
+        return html `<span class="ai-button-container">
+      <devtools-floating-button
+        .iconName=${icon}
+        .title=${action.title()}
+        .jslogContext=${'ask-ai'}
+        @click=${{
+            handleEvent: (ev) => {
+                ev.stopPropagation();
+                this.navigatorView.sourceSelected(this.#uiSourceCode, false);
+                void action.execute();
+            },
+            capture: true,
+        }}
+        @mousedown=${{
+            handleEvent: (ev) => {
+                ev.stopPropagation();
+            },
+            capture: true,
+        }}
+      ></devtools-floating-button>
+    </span>`;
+        // clang-format on
+    }
+    updateTrailingIcons() {
+        if (!this.treeElement) {
+            return;
+        }
+        const aiButton = this.renderAiButton();
+        this.treeElement.setTrailingIcons(aiButton ? [aiButton] : []);
+    }
+    onattach() {
+        this.updateTrailingIcons();
+    }
     treeNode() {
         if (this.treeElement) {
             return this.treeElement;
         }
-        this.treeElement = new NavigatorSourceTreeElement(this.navigatorView, this.#uiSourceCode, '', this);
+        this.treeElement = new UI.TreeOutline.TreeElement('', false, this.#uiSourceCode.contentType().name());
+        this.treeElement.listItemElement.classList.add('navigator-' + this.#uiSourceCode.contentType().name() + '-tree-item', 'navigator-file-tree-item');
+        this.treeElement.listItemElement.draggable = true;
+        this.treeElement.titleElement.setAttribute('jslog', `${VisualLogging.value('title').track({
+            change: true,
+        })}`);
+        this.navigatorView.setNodeForTreeElement(this.treeElement, this);
+        const treeElement = this.treeElement;
+        treeElement.selectOnMouseDown = (event) => {
+            if (event.which !== 1 || !this.navigatorView.shouldRenameOnMouseDown(this)) {
+                UI.TreeOutline.TreeElement.prototype.selectOnMouseDown.call(treeElement, event);
+                return;
+            }
+            window.setTimeout(() => {
+                if (this.navigatorView.shouldRenameOnMouseDown(this)) {
+                    this.navigatorView.rename(this, false);
+                }
+            }, 300);
+        };
+        treeElement.onspace = () => {
+            this.navigatorView.sourceSelected(this.#uiSourceCode, true);
+            return true;
+        };
+        treeElement.ondblclick = (event) => {
+            const middleClick = event.button === 1;
+            this.navigatorView.sourceSelected(this.#uiSourceCode, !middleClick);
+            return false;
+        };
+        treeElement.onenter = () => {
+            this.navigatorView.sourceSelected(this.#uiSourceCode, true);
+            return true;
+        };
+        treeElement.ondelete = () => true;
+        treeElement.onattach = () => {
+            this.onattach();
+        };
+        treeElement.listItemElement.addEventListener('click', () => {
+            this.navigatorView.sourceSelected(this.#uiSourceCode, false);
+        }, false);
+        treeElement.listItemElement.addEventListener('contextmenu', (event) => {
+            this.navigatorView.selectNode(this);
+            this.navigatorView.handleFileContextMenu(event, this);
+        }, false);
+        treeElement.listItemElement.addEventListener('dragstart', (event) => {
+            this.navigatorView.fileDragStarted(this, event);
+        }, false);
+        window.dispatchEvent(new CustomEvent('source-tree-file-added', { bubbles: true, cancelable: true, detail: this.#uiSourceCode.fullDisplayName() }));
         this.updateTitle();
         const updateTitleBound = this.updateTitle.bind(this, undefined);
         this.eventListeners = [
@@ -1576,8 +1623,8 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
             titleText = '*' + titleText;
         }
         this.treeElement.title = titleText;
-        this.treeElement.updateIcon();
-        this.treeElement.updateTrailingIcons();
+        this.updateIcon();
+        this.updateTrailingIcons();
         this.treeElement.listItemElement.classList.toggle('is-ignore-listed', isIgnoreListed);
         let tooltip = this.#uiSourceCode.url();
         if (this.#uiSourceCode.contentType().isFromSourceMap()) {
@@ -1587,7 +1634,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
             tooltip = i18nString(UIStrings.sIgnoreListed, { PH1: tooltip });
         }
         this.treeElement.tooltip = tooltip;
-        this.treeElement.updateAccessibleName();
+        this.updateAccessibleName();
         this.updateId('UISourceCode:' + this.#uiSourceCode.canonicalScriptId());
     }
     hasChildren() {
@@ -1599,12 +1646,12 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     reveal(select) {
         if (this.parent) {
             this.parent.populate();
-            this.parent.treeNode().expand();
+            this.navigatorView.expandNode(this.parent);
         }
         if (this.treeElement) {
             this.treeElement.reveal(true);
             if (select) {
-                this.treeElement.select(true);
+                this.navigatorView.selectNode(this, true);
             }
         }
     }
@@ -1642,7 +1689,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
                 if (parent) {
                     parent.removeChild(this.treeElement);
                     parent.appendChild(this.treeElement);
-                    this.treeElement.select();
+                    this.navigatorView.selectNode(this);
                 }
             }
             afterEditing(true);
@@ -1791,14 +1838,15 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
             if (oldTreeElement.parent) {
                 this.navigatorView.appendChild(oldTreeElement.parent, treeElement);
             }
+            const wasExpanded = this.navigatorView.isNodeExpanded(oldTreeElement.node);
             oldTreeElement.setNode(nodes[nodes.length - 1]);
             oldTreeElement.title = nodes.map(node => node.title).join('/');
             if (oldTreeElement.parent) {
                 this.navigatorView.removeChild(oldTreeElement.parent, oldTreeElement);
             }
             this.navigatorView.appendChild(this.treeElement, oldTreeElement);
-            if (oldTreeElement.expanded) {
-                treeElement.expand();
+            if (wasExpanded) {
+                this.navigatorView.expandNode(this);
             }
             this.updateTitle();
         }
@@ -1833,45 +1881,52 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
         const expandable = !(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem);
         this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, expandable);
         this.treeElement.setNode(this);
-        if (this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem) {
-            const { automaticFileSystem, automaticFileSystemManager } = this.project;
-            switch (automaticFileSystem?.state) {
-                case 'connecting': {
-                    // clang-format off
-                    this.treeElement.setTrailingIcons([
-                        html `<devtools-spinner></devtools-spinner>`,
-                    ]);
-                    // clang-format on
-                    break;
-                }
-                case 'disconnected': {
-                    // clang-format off
-                    this.treeElement.setTrailingIcons([
-                        html `<devtools-button
-              .data=${{
-                            variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
-                            size: "MICRO" /* Buttons.Button.Size.MICRO */,
-                            title: i18nString(UIStrings.connectFolderToWorkspace),
-                            jslogContext: 'automatic-workspace-folders.connect',
-                        }}
-              @click=${async (event) => {
-                            event.consume();
-                            await automaticFileSystemManager.connectAutomaticFileSystem(
-                            /* addIfMissing= */ true);
-                        }}
-            >${i18nString(UIStrings.connect)}</devtools-button>`,
-                    ]);
-                    // clang-format on
-                    break;
-                }
+        this.updateTrailingIcons();
+        return this.treeElement;
+    }
+    renderTrailingIcons() {
+        if (!(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem)) {
+            return null;
+        }
+        const { automaticFileSystem, automaticFileSystemManager } = this.project;
+        switch (automaticFileSystem?.state) {
+            case 'connecting': {
+                // clang-format off
+                return html `<devtools-spinner></devtools-spinner>`;
+                // clang-format on
+            }
+            case 'disconnected': {
+                // clang-format off
+                return html `<devtools-button
+          .data=${{
+                    variant: "outlined" /* Buttons.Button.Variant.OUTLINED */,
+                    size: "MICRO" /* Buttons.Button.Size.MICRO */,
+                    title: i18nString(UIStrings.connectFolderToWorkspace),
+                    jslogContext: 'automatic-workspace-folders.connect',
+                }}
+          @click=${async (event) => {
+                    event.consume();
+                    await automaticFileSystemManager.connectAutomaticFileSystem(
+                    /* addIfMissing= */ true);
+                }}
+        >${i18nString(UIStrings.connect)}</devtools-button>`;
+                // clang-format on
             }
         }
-        return this.treeElement;
+        return null;
+    }
+    updateTrailingIcons() {
+        if (!this.treeElement) {
+            return;
+        }
+        const trailingIcon = this.renderTrailingIcons();
+        this.treeElement.setTrailingIcons(trailingIcon ? [trailingIcon] : []);
     }
     onattach() {
         this.updateTitle();
     }
     updateTitle() {
+        this.updateTrailingIcons();
         if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
             return;
         }
@@ -1891,10 +1946,10 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
             return;
         }
         if (isActive) {
-            this.treeElement.expand();
+            this.navigatorView.expandNode(this);
         }
         else {
-            this.treeElement.collapse();
+            this.navigatorView.collapseNode(this);
         }
     }
     setTitle(title) {

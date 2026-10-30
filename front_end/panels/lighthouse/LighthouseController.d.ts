@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
+import * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import type { LighthouseRun as LighthouseRunType, ProtocolService } from './LighthouseProtocolService.js';
 export declare class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
     #private;

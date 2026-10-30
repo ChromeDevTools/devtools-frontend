@@ -365,7 +365,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       </div>
       <span class="hidden" aria-hidden="false">;</span>
     </div>
-  `, target);
+  `, target, { container: { classes: ["computed-style-property"] } });
 };
 var ComputedStyleProperty = class extends UI2.Widget.Widget {
   #inherited = false;
@@ -374,7 +374,7 @@ var ComputedStyleProperty = class extends UI2.Widget.Widget {
   };
   #view;
   constructor(element, view = DEFAULT_VIEW2) {
-    super(element, { useShadowDom: true, classes: ["computed-style-property"] });
+    super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
   wasShown() {
@@ -1371,13 +1371,13 @@ function findGridItemIcon(text, parentComputedStyles) {
 var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
   CSSQuery: () => CSSQuery,
-  DEFAULT_VIEW: () => DEFAULT_VIEW5
+  DEFAULT_VIEW: () => DEFAULT_VIEW6
 });
 import "../../../ui/components/tooltips/tooltips.js";
 import "../../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as SDK2 from "../../../core/sdk/sdk.js";
-import * as UI6 from "../../../ui/legacy/legacy.js";
-import * as Lit from "../../../ui/lit/lit.js";
+import * as UI7 from "../../../ui/legacy/legacy.js";
+import * as Lit2 from "../../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/cssQuery.css.js
@@ -1406,172 +1406,17 @@ var cssQuery_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cssQuery.css")} */`;
 
-// ../../front_end/panels/elements/components/CSSQuery.ts
-var { render: render6, html: html6 } = Lit;
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  const queryClasses = Lit.Directives.classMap({
-    query: true,
-    editable: Boolean(input.onQueryTextClick)
-  });
-  const queryText = html6`
-    <span class="query-text" @click=${input.onQueryTextClick}>${input.queryText.map((section, index) => {
-    if (section.isVariable && input.matchedStyles && input.style && input.onLinkActivate) {
-      const variableName = section.text;
-      const variable = input.matchedStyles.computeCSSVariable(input.style, variableName, input.containerNode);
-      const isDefined = variable !== null && variable.value !== void 0;
-      const onLinkActivate = () => {
-        if (input.onLinkActivate) {
-          input.onLinkActivate(variable ? variable.declaration : variableName);
-        }
-      };
-      const tooltipContents = input.getPopoverContents?.(variableName, variable?.value ?? null) ?? null;
-      const tooltipId = `${input.tooltipPrefix || "css-query"}-${index}-${variableName}`;
-      const tooltip = { tooltipId };
-      return html6`
-            <devtools-link-swatch class="css-var-link" .data=${{
-        tooltip,
-        text: variableName,
-        isDefined,
-        onLinkActivate
-      }}>
-            </devtools-link-swatch>
-            <devtools-tooltip
-              id=${tooltipId}
-              variant="rich"
-              jslogContext="elements.css-var"
-            >
-              ${tooltipContents ? html6`<devtools-widget>${tooltipContents.element}</devtools-widget>` : Lit.nothing}
-            </devtools-tooltip>
-          `;
-    }
-    return html6`${section.text}`;
-  })}</span>
-  `;
-  render6(
-    html6`
-      <style>${cssQuery_css_default}</style>
-      <style>${UI6.inspectorCommonStyles}</style>
-      <div class=${queryClasses} jslog=${VisualLogging3.cssRuleHeader(input.jslogContext).track({ click: true, change: true })}>
-        <slot name="indent"></slot>
-        ${input.queryPrefix ? html6`<span>${input.queryPrefix + " "}</span>` : Lit.nothing}
-        ${input.queryName ? html6`<span>${input.queryName + " "}</span>` : Lit.nothing}
-        ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
-      </div>`,
-    target
-  );
-};
-var CSSQuery = class extends UI6.Widget.Widget {
-  #view;
-  #queryPrefix = "";
-  #queryName;
-  #queryText = [];
-  #onQueryTextClick;
-  #onLinkActivate;
-  #getPopoverContents;
-  #jslogContext;
-  #matchedStyles;
-  #style;
-  #containerNode;
-  #tooltipPrefix = "";
-  constructor(element, view = DEFAULT_VIEW5) {
-    super(element, { useShadowDom: true, classes: ["css-query"] });
-    this.element.classList.remove("vbox", "flex-auto");
-    this.#view = view;
-  }
-  set data(data) {
-    this.#queryPrefix = data.queryPrefix;
-    this.#queryName = data.queryName;
-    this.#queryText = [{ text: data.queryText, isVariable: false }];
-    this.#onQueryTextClick = data.onQueryTextClick;
-    this.#onLinkActivate = data.onLinkActivate;
-    this.#getPopoverContents = data.getPopoverContents;
-    this.#jslogContext = data.jslogContext;
-    this.performUpdate();
-  }
-  wasShown() {
-    super.wasShown();
-    this.performUpdate();
-  }
-  parseStyleQueries(matchedStyles, style, containerNode, tooltipPrefix) {
-    this.#matchedStyles = matchedStyles;
-    this.#style = style;
-    this.#containerNode = containerNode;
-    this.#tooltipPrefix = tooltipPrefix;
-    const queryText = this.#queryText[0]?.text;
-    if (!queryText) {
-      return;
-    }
-    const prefix = "if(";
-    const suffix = ": 1)";
-    const ast = SDK2.CSSPropertyParser.tokenizeDeclaration("--query", prefix + queryText + suffix);
-    if (!ast) {
-      return;
-    }
-    const matcher = new SDK2.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style);
-    const matchedResult = SDK2.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
-    const matchedNodes = SDK2.CSSPropertyParser.TreeSearch.findAll(ast, (node) => {
-      return matchedResult.getMatch(node) instanceof SDK2.CSSPropertyParserMatchers.VariableNameMatch;
-    });
-    matchedNodes.sort((a, b) => a.from - b.from);
-    const sections = [];
-    const valueOffset = ast.rule.indexOf(ast.propertyValue) + prefix.length;
-    let lastOffset = 0;
-    for (const node of matchedNodes) {
-      const start = node.from - valueOffset;
-      const end = node.to - valueOffset;
-      if (start > lastOffset) {
-        sections.push({
-          text: queryText.substring(lastOffset, start),
-          isVariable: false
-        });
-      }
-      sections.push({
-        text: queryText.substring(start, end),
-        isVariable: true
-      });
-      lastOffset = end;
-    }
-    if (lastOffset < queryText.length) {
-      sections.push({
-        text: queryText.substring(lastOffset),
-        isVariable: false
-      });
-    }
-    this.#queryText = sections;
-    this.performUpdate();
-  }
-  performUpdate() {
-    this.#view(
-      {
-        queryPrefix: this.#queryPrefix,
-        queryName: this.#queryName,
-        queryText: this.#queryText,
-        onQueryTextClick: this.#onQueryTextClick,
-        onLinkActivate: this.#onLinkActivate,
-        getPopoverContents: this.#getPopoverContents,
-        jslogContext: this.#jslogContext,
-        matchedStyles: this.#matchedStyles,
-        style: this.#style,
-        containerNode: this.#containerNode,
-        tooltipPrefix: this.#tooltipPrefix
-      },
-      void 0,
-      this.contentElement
-    );
-  }
-};
-
 // ../../front_end/panels/elements/components/CSSVariableValueView.ts
 var CSSVariableValueView_exports = {};
 __export(CSSVariableValueView_exports, {
   CSSVariableParserError: () => CSSVariableParserError,
   CSSVariableValueView: () => CSSVariableValueView,
   DEFAULT_PARSER_ERROR_VIEW: () => DEFAULT_PARSER_ERROR_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW6
+  DEFAULT_VIEW: () => DEFAULT_VIEW5
 });
 import * as i18n7 from "../../../core/i18n/i18n.js";
-import * as UI7 from "../../../ui/legacy/legacy.js";
-import * as Lit2 from "../../../ui/lit/lit.js";
+import * as UI6 from "../../../ui/legacy/legacy.js";
+import * as Lit from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/cssVariableValueView.css.js
 var cssVariableValueView_css_default = `/*
@@ -1647,19 +1492,19 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/elements/components/CSSVariableValueView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var i18nTemplate2 = Lit2.i18nTemplate.bind(void 0, str_4);
-var { render: render7, html: html7 } = Lit2;
+var i18nTemplate2 = Lit.i18nTemplate.bind(void 0, str_4);
+var { render: render6, html: html6 } = Lit;
 function getLinkSection(details) {
-  return html7`<div class="registered-property-links">
+  return html6`<div class="registered-property-links">
             <span role="button" @click=${details?.goToDefinition} class="clickable underlined unbreakable-text">
               ${i18nString4(UIStrings4.registeredPropertyLinkTitle)}
             </span>
           </div>`;
 }
 var DEFAULT_PARSER_ERROR_VIEW = (input, _output, target) => {
-  const type = html7`<span class="monospace css-property">${input.details.registration.syntax()}</span>`;
-  render7(
-    html7`
+  const type = html6`<span class="monospace css-property">${input.details.registration.syntax()}</span>`;
+  render6(
+    html6`
     <style>${cssVariableValueView_css_default}</style>
     <div class="variable-value-popup-wrapper">
       ${i18nTemplate2(UIStrings4.invalidPropertyValue, { type })}
@@ -1669,7 +1514,7 @@ var DEFAULT_PARSER_ERROR_VIEW = (input, _output, target) => {
     { container: { classes: ["css-variable-parser-error"] } }
   );
 };
-var CSSVariableParserError = class extends UI7.Widget.Widget {
+var CSSVariableParserError = class extends UI6.Widget.Widget {
   #view;
   #details;
   constructor(details, view = DEFAULT_PARSER_ERROR_VIEW) {
@@ -1686,21 +1531,21 @@ var CSSVariableParserError = class extends UI7.Widget.Widget {
     this.#view({ details: this.#details }, void 0, this.contentElement);
   }
 };
-var DEFAULT_VIEW6 = (input, _output, target) => {
+var DEFAULT_VIEW5 = (input, _output, target) => {
   const initialValue = input.details?.registration.initialValue();
-  const registrationView = input.details ? html7`
+  const registrationView = input.details ? html6`
       <hr class=divider />
       <div class=registered-property-popup-wrapper>
         <div class="monospace">
           <div><span class="css-property">syntax:</span> ${input.details.registration.syntax()}</div>
           <div><span class="css-property">inherits:</span> ${input.details.registration.inherits()}</div>
-          ${initialValue ? html7`<div><span class="css-property">initial-value:</span> ${initialValue}</div>` : ""}
+          ${initialValue ? html6`<div><span class="css-property">initial-value:</span> ${initialValue}</div>` : ""}
         </div>
         ${getLinkSection(input.details)}
       </div>` : "";
   const valueText = input.value ?? i18nString4(UIStrings4.sIsNotDefined, { PH1: input.variableName });
-  render7(
-    html7`<style>${cssVariableValueView_css_default}</style>
+  render6(
+    html6`<style>${cssVariableValueView_css_default}</style>
            <div class="variable-value-popup-wrapper">
              ${valueText}
            </div>
@@ -1710,28 +1555,44 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     { container: { classes: ["css-variable-value-view"] } }
   );
 };
-var CSSVariableValueView = class extends UI7.Widget.Widget {
+var CSSVariableValueView = class extends UI6.Widget.Widget {
   #view;
-  variableName;
+  #variableName = "";
   #value;
-  details;
-  constructor({
-    variableName,
-    value,
-    details
-  }, view = DEFAULT_VIEW6) {
-    super();
+  #details;
+  constructor(element, view = DEFAULT_VIEW5) {
+    super(element);
     this.#view = view;
-    this.variableName = variableName;
-    this.details = details;
-    this.value = value;
+  }
+  get variableName() {
+    return this.#variableName;
+  }
+  set variableName(variableName) {
+    if (this.#variableName === variableName) {
+      return;
+    }
+    this.#variableName = variableName;
+    this.requestUpdate();
   }
   get value() {
     return this.#value;
   }
   set value(value) {
+    if (this.#value === value) {
+      return;
+    }
     this.#value = value;
-    this.performUpdate();
+    this.requestUpdate();
+  }
+  get details() {
+    return this.#details;
+  }
+  set details(details) {
+    if (this.#details === details) {
+      return;
+    }
+    this.#details = details;
+    this.requestUpdate();
   }
   wasShown() {
     super.wasShown();
@@ -1740,9 +1601,168 @@ var CSSVariableValueView = class extends UI7.Widget.Widget {
   performUpdate() {
     this.#view(
       {
-        variableName: this.variableName,
+        variableName: this.#variableName,
         value: this.#value,
-        details: this.details
+        details: this.#details
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+};
+
+// ../../front_end/panels/elements/components/CSSQuery.ts
+var { render: render7, html: html7 } = Lit2;
+var { widget } = UI7.Widget;
+var DEFAULT_VIEW6 = (input, _output, target) => {
+  const queryClasses = Lit2.Directives.classMap({
+    query: true,
+    editable: Boolean(input.onQueryTextClick)
+  });
+  const queryText = html7`
+    <span class="query-text" @click=${input.onQueryTextClick}>${input.queryText.map((section, index) => {
+    if (section.isVariable && input.matchedStyles && input.style && input.onLinkActivate) {
+      const variableName = section.text;
+      const variable = input.matchedStyles.computeCSSVariable(input.style, variableName, input.containerNode);
+      const isDefined = variable !== null && variable.value !== void 0;
+      const onLinkActivate = () => {
+        if (input.onLinkActivate) {
+          input.onLinkActivate(variable ? variable.declaration : variableName);
+        }
+      };
+      const tooltipId = `${input.tooltipPrefix || "css-query"}-${index}-${variableName}`;
+      const tooltip = { tooltipId };
+      return html7`
+            <devtools-link-swatch class="css-var-link" .data=${{
+        tooltip,
+        text: variableName,
+        isDefined,
+        onLinkActivate
+      }}>
+            </devtools-link-swatch>
+            <devtools-tooltip
+              id=${tooltipId}
+              variant="rich"
+              jslogContext="elements.css-var"
+            >
+              ${widget(CSSVariableValueView, {
+        variableName,
+        value: variable?.value,
+        details: input.getRegisteredPropertyDetails?.(variableName)
+      })}
+            </devtools-tooltip>
+          `;
+    }
+    return html7`${section.text}`;
+  })}</span>
+  `;
+  render7(
+    html7`
+      <style>${cssQuery_css_default}</style>
+      <style>${UI7.inspectorCommonStyles}</style>
+      <div class=${queryClasses} jslog=${VisualLogging3.cssRuleHeader(input.jslogContext).track({ click: true, change: true })}>
+        <slot name="indent"></slot>
+        ${input.queryPrefix ? html7`<span>${input.queryPrefix + " "}</span>` : Lit2.nothing}
+        ${input.queryName ? html7`<span>${input.queryName + " "}</span>` : Lit2.nothing}
+        ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
+      </div>`,
+    target,
+    { container: { classes: ["css-query"] } }
+  );
+};
+var CSSQuery = class extends UI7.Widget.Widget {
+  #view;
+  #queryPrefix = "";
+  #queryName;
+  #queryText = [];
+  #onQueryTextClick;
+  #onLinkActivate;
+  #getRegisteredPropertyDetails;
+  #jslogContext;
+  #matchedStyles;
+  #style;
+  #containerNode;
+  #tooltipPrefix = "";
+  constructor(element, view = DEFAULT_VIEW6) {
+    super(element, { useShadowDom: "pure" });
+    this.#view = view;
+  }
+  set data(data) {
+    this.#queryPrefix = data.queryPrefix;
+    this.#queryName = data.queryName;
+    this.#queryText = [{ text: data.queryText, isVariable: false }];
+    this.#onQueryTextClick = data.onQueryTextClick;
+    this.#onLinkActivate = data.onLinkActivate;
+    this.#getRegisteredPropertyDetails = data.getRegisteredPropertyDetails;
+    this.#jslogContext = data.jslogContext;
+    this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.performUpdate();
+  }
+  parseStyleQueries(matchedStyles, style, containerNode, tooltipPrefix) {
+    this.#matchedStyles = matchedStyles;
+    this.#style = style;
+    this.#containerNode = containerNode;
+    this.#tooltipPrefix = tooltipPrefix;
+    const queryText = this.#queryText[0]?.text;
+    if (!queryText) {
+      return;
+    }
+    const prefix = "if(";
+    const suffix = ": 1)";
+    const ast = SDK2.CSSPropertyParser.tokenizeDeclaration("--query", prefix + queryText + suffix);
+    if (!ast) {
+      return;
+    }
+    const matcher = new SDK2.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style);
+    const matchedResult = SDK2.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
+    const matchedNodes = SDK2.CSSPropertyParser.TreeSearch.findAll(ast, (node) => {
+      return matchedResult.getMatch(node) instanceof SDK2.CSSPropertyParserMatchers.VariableNameMatch;
+    });
+    matchedNodes.sort((a, b) => a.from - b.from);
+    const sections = [];
+    const valueOffset = ast.rule.indexOf(ast.propertyValue) + prefix.length;
+    let lastOffset = 0;
+    for (const node of matchedNodes) {
+      const start = node.from - valueOffset;
+      const end = node.to - valueOffset;
+      if (start > lastOffset) {
+        sections.push({
+          text: queryText.substring(lastOffset, start),
+          isVariable: false
+        });
+      }
+      sections.push({
+        text: queryText.substring(start, end),
+        isVariable: true
+      });
+      lastOffset = end;
+    }
+    if (lastOffset < queryText.length) {
+      sections.push({
+        text: queryText.substring(lastOffset),
+        isVariable: false
+      });
+    }
+    this.#queryText = sections;
+    this.performUpdate();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        queryPrefix: this.#queryPrefix,
+        queryName: this.#queryName,
+        queryText: this.#queryText,
+        onQueryTextClick: this.#onQueryTextClick,
+        onLinkActivate: this.#onLinkActivate,
+        getRegisteredPropertyDetails: this.#getRegisteredPropertyDetails,
+        jslogContext: this.#jslogContext,
+        matchedStyles: this.#matchedStyles,
+        style: this.#style,
+        containerNode: this.#containerNode,
+        tooltipPrefix: this.#tooltipPrefix
       },
       void 0,
       this.contentElement
@@ -2218,6 +2238,7 @@ var elementsTreeExpandButton_css_default = `/*
 
 .expand-button {
   display: inline-flex;
+  vertical-align: middle;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
@@ -2286,7 +2307,7 @@ var ElementsTreeExpandButton = class extends UI8.Widget.Widget {
   };
   #view;
   constructor(element, view = DEFAULT_VIEW7) {
-    super(element, { useShadowDom: true, classes: ["elements-tree-expand-button"] });
+    super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
   set clickHandler(clickHandler) {

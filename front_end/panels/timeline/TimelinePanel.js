@@ -2674,6 +2674,7 @@ export class TimelinePanel extends TimelinePanelBase {
     }
     static async executeRecordAndReload() {
         await UI.ViewManager.ViewManager.instance().showView('timeline');
+        await SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.pageAgent().invoke_bringToFront();
         const panelInstance = TimelinePanel.instance();
         const result = await new Promise(resolve => {
             function listener(e) {

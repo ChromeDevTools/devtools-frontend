@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
+import { MAX_FUNCTION_RESULT_BYTE_LENGTH, } from './Tool.js';
 export class GetLighthouseAuditsTool {
     name = "getLighthouseAudits" /* ToolName.GET_LIGHTHOUSE_AUDITS */;
     permissionPrompt = "never" /* PermissionPrompt.NEVER */;
@@ -32,6 +33,13 @@ export class GetLighthouseAuditsTool {
             return { error: 'Error: Active context is not a Lighthouse report.' };
         }
         const audits = new LighthouseFormatter().formatReport(report, params.categoryId);
+        // Reject oversized "all" requests so the agent narrows its query to a single category.
+        // Single-category requests bypass this limit so the agent is not left without a narrower query to make.
+        if (params.categoryId === 'all' && audits.length > MAX_FUNCTION_RESULT_BYTE_LENGTH) {
+            return {
+                error: 'The Lighthouse audits output for "all" is too large to fit in the context window. Request a single category instead.',
+            };
+        }
         return {
             result: { audits },
         };

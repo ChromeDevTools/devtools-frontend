@@ -12,6 +12,34 @@ export interface OverviewData {
         showMemory: boolean;
     };
 }
+export interface ViewInput {
+    data: OverviewData | null;
+    initialBreadcrumb: Trace.Types.File.Breadcrumb | null;
+    activeBreadcrumb: Trace.Types.File.Breadcrumb | null;
+    onBreadcrumbActivated: (breadcrumb: Trace.Types.File.Breadcrumb, childBreadcrumbsRemoved: boolean) => void;
+    windowTimes?: {
+        min: Trace.Types.Timing.Milli;
+        max: Trace.Types.Timing.Milli;
+    };
+    bounds?: {
+        min: Trace.Types.Timing.Milli;
+        max: Trace.Types.Timing.Milli;
+    };
+    highlightedBounds: {
+        bounds: Trace.Types.Timing.TraceWindowMicro;
+        withBracket: boolean;
+    } | null;
+    onOverviewWindowChanged: (event: PerfUI.TimelineOverviewPane.OverviewPaneWindowChangedEvent) => void;
+    onOverviewBreadcrumbAdded: (event: PerfUI.TimelineOverviewPane.OverviewPaneBreadcrumbAddedEvent) => void;
+    onOverviewMouseMove: (event: PerfUI.TimelineOverviewPane.OverviewPaneMouseMoveEvent) => void;
+    onOverviewMouseLeave: () => void;
+}
+export interface ViewOutput {
+    getControls?: (data: OverviewData | null) => TimelineEventOverview[];
+    resetOverview?: () => void;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 /**
  * This component wraps the generic PerfUI Overview component and configures it
  * specifically for the Performance Panel, including injecting the CSS we use
@@ -25,7 +53,8 @@ declare const TimelineMiniMapBase: Common.ObjectWrapper.EventMixin<PerfUI.Timeli
 export declare class TimelineMiniMap extends TimelineMiniMapBase {
     #private;
     breadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs | null;
-    constructor();
+    constructor(view?: View);
+    performUpdate(): void;
     addBreadcrumb({ startTime, endTime }: PerfUI.TimelineOverviewPane.OverviewPaneBreadcrumbAddedEvent): void;
     highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicro, withBracket?: boolean): void;
     clearBoundsHighlight(): void;

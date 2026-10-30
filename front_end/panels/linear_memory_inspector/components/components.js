@@ -74,7 +74,7 @@ var linearMemoryHighlightChipList_css_default = `/*
 
 .delete-highlight-button:hover {
   background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .jump-to-highlight-button {
@@ -94,7 +94,7 @@ var linearMemoryHighlightChipList_css_default = `/*
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .source-code {

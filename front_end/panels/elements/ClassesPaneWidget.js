@@ -66,7 +66,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
               jslog=${VisualLogging.toggle('element-class').track({ change: true })}
               @click=${(event) => input.onClick(item.className, event.target.checked)}>${item.className}</devtools-checkbox>`)}
       </div>
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('elements-classes')}` } } });
     // clang-format on
 };
 export class ClassesPaneWidget extends UI.Widget.Widget {
@@ -79,7 +79,6 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     #previousTarget;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, {
-            jslog: `${VisualLogging.pane('elements-classes')}`,
             useShadowDom: true,
         });
         this.#view = view;

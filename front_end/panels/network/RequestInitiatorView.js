@@ -45,6 +45,7 @@ function trimUrl(url) {
     return url.substring(0, halfMaxLength) + '…' + url.substring(url.length - halfMaxLength);
 }
 export const DEFAULT_VIEW = (input, _output, target) => {
+    const renderOptions = { container: { attributes: { jslog: `${VisualLogging.pane('initiator').track({ resize: true })}` } } };
     const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
     if (!hasInitiatorData) {
         // clang-format off
@@ -53,7 +54,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString(UIStrings.noInitiator)}
       </div>
-    `, target);
+    `, target, renderOptions);
         // clang-format on
         return;
     }
@@ -177,14 +178,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           </ul>` : nothing}
       `}></devtools-tree>
     </div>
-  `, target);
+  `, target, renderOptions);
     // clang-format on
 };
 export class RequestInitiatorView extends UI.Widget.VBox {
     #request;
     #view;
     constructor(request, view = DEFAULT_VIEW) {
-        super({ jslog: `${VisualLogging.pane('initiator').track({ resize: true })}` });
+        super();
         this.#request = request;
         this.#view = view;
     }

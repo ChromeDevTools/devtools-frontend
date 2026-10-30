@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../core/common/common.js';
+import * as i18n from '../core/i18n/i18n.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Trace from '../models/trace/trace.js';
 import * as TraceBounds from '../services/trace_bounds/trace_bounds.js';
@@ -112,6 +113,10 @@ export class TraceLoader {
      * @param options Trace engine loader options.
      */
     static async traceEngine(context, name, options = {}) {
+        // Ensure a DevToolsLocale instance exists (e.g. via setupLocaleHooks() or
+        // describeWithEnvironment) before checking the cache or parsing a trace,
+        // as trace insights localize strings during parsing.
+        i18n.DevToolsLocale.DevToolsLocale.instance();
         const { config = Trace.Types.Configuration.defaults(), withModificationsManager = false, } = options;
         let timelineModule;
         if (withModificationsManager) {
@@ -173,6 +178,7 @@ export class TraceLoader {
             .resetWithNewBounds(parsedTrace.data.Meta.traceBounds);
     }
     static async executeTraceEngineOnFileContents(contents, emulateFreshRecording = false, traceEngineConfig) {
+        i18n.DevToolsLocale.DevToolsLocale.instance();
         const events = 'traceEvents' in contents ? contents.traceEvents : contents;
         const metadata = 'metadata' in contents ? contents.metadata : {};
         return await new Promise((resolve, reject) => {

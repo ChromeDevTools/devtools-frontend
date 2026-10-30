@@ -55,8 +55,11 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
     propertyView;
     messageView;
     timelineView;
-    constructor() {
-        super();
+    #processedEventsCount = 0;
+    #processedMessagesCount = 0;
+    #processedErrorsCount = 0;
+    constructor(element) {
+        super(element);
         this.eventView = new PlayerEventsView();
         this.propertyView = new PlayerPropertiesView();
         this.messageView = new PlayerMessagesView();
@@ -65,6 +68,23 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
         this.appendTab("events" /* PlayerDetailViewTabs.EVENTS */, i18nString(UIStrings.events), this.eventView, i18nString(UIStrings.playerEvents));
         this.appendTab("messages" /* PlayerDetailViewTabs.MESSAGES */, i18nString(UIStrings.messages), this.messageView, i18nString(UIStrings.playerMessages));
         this.appendTab("timeline" /* PlayerDetailViewTabs.TIMELINE */, i18nString(UIStrings.timeline), this.timelineView, i18nString(UIStrings.playerTimeline));
+    }
+    set playerData(data) {
+        for (const [name, value] of data.properties) {
+            this.onProperty({ name, value });
+        }
+        for (let i = this.#processedEventsCount; i < data.events.length; i++) {
+            this.onEvent(data.events[i]);
+        }
+        this.#processedEventsCount = data.events.length;
+        for (let i = this.#processedMessagesCount; i < data.messages.length; i++) {
+            this.onMessage(data.messages[i]);
+        }
+        this.#processedMessagesCount = data.messages.length;
+        for (let i = this.#processedErrorsCount; i < data.errors.length; i++) {
+            this.onError(data.errors[i]);
+        }
+        this.#processedErrorsCount = data.errors.length;
     }
     onProperty(property) {
         this.propertyView.onProperty(property);

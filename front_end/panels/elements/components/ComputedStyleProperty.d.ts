@@ -4,9 +4,9 @@ export interface ViewInput {
     traceable: boolean;
     onNavigateToSource: () => void;
 }
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class ComputedStyleProperty extends UI.Widget.Widget {
+export declare class ComputedStyleProperty extends UI.Widget.Widget<ShadowRoot> {
     #private;
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;

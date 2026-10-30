@@ -46,6 +46,9 @@
       "path": "../../../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../../../testing/testing-tsconfig.ref.json"
     },
     {

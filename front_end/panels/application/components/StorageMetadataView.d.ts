@@ -19,9 +19,9 @@ export interface ViewInput {
     showBucketControls: boolean;
     onDeleteBucket: () => void;
 }
-export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: undefined, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class StorageMetadataView extends UI.Widget.Widget {
+export declare class StorageMetadataView extends UI.Widget.Widget<ShadowRoot> {
     #private;
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;

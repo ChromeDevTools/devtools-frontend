@@ -196,17 +196,18 @@ var BreadcrumbsUI = class extends UI.Widget.Widget {
     super.wasShown();
     this.requestUpdate();
   }
-  #activateBreadcrumb(breadcrumb) {
+  #activateBreadcrumb(breadcrumb, removeChildBreadcrumbs = false) {
     this.#activeBreadcrumb = breadcrumb;
-    this.onBreadcrumbActivated?.(breadcrumb, false);
+    this.onBreadcrumbActivated?.(breadcrumb, removeChildBreadcrumbs);
+    this.requestUpdate();
   }
   #onContextMenu(event, breadcrumb) {
     const menu = new UI.ContextMenu.ContextMenu(event);
     menu.defaultSection().appendItem(i18nString(UIStrings.activateBreadcrumb), () => {
-      this.onBreadcrumbActivated?.(breadcrumb, false);
+      this.#activateBreadcrumb(breadcrumb);
     });
     menu.defaultSection().appendItem(i18nString(UIStrings.removeChildBreadcrumbs), () => {
-      this.onBreadcrumbActivated?.(breadcrumb, true);
+      this.#activateBreadcrumb(breadcrumb, true);
     });
     void menu.show();
   }
@@ -2749,6 +2750,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -5542,8 +5544,8 @@ var DEFAULT_VIEW4 = (input, output, target) => {
 var InteractionBreakdown = class _InteractionBreakdown extends UI7.Widget.Widget {
   static createWidgetElement(entry) {
     const widgetElement = document.createElement("devtools-widget");
-    const widget8 = new _InteractionBreakdown(widgetElement);
-    widget8.entry = entry;
+    const widget9 = new _InteractionBreakdown(widgetElement);
+    widget9.entry = entry;
     return widgetElement;
   }
   #view;
@@ -9572,13 +9574,18 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
   render14(
     html14`
       <style>${networkTrackWidget_css_default}</style>
-      <devtools-widget class="container" ${widget4(UI13.Widget.WrapperWidget, { widget: input.flameChart })}></devtools-widget>
+      <devtools-widget
+        class="container"
+        ${widget4(
+      (element) => new PerfUI2.FlameChart.FlameChart(input.dataProvider, input.delegate, void 0, element),
+      { windowTimes: input.windowTimes }
+    )}
+      ></devtools-widget>
     `,
     target
   );
 };
 var NetworkTrackWidget = class extends UI13.Widget.Widget {
-  #flameChart = null;
   #dataProvider = null;
   #parsedTrace = null;
   #bounds = null;
@@ -9596,9 +9603,6 @@ var NetworkTrackWidget = class extends UI13.Widget.Widget {
     if (this.#dataProvider === dataProvider && this.#parsedTrace === parsedTrace && this.#bounds === data.bounds) {
       return;
     }
-    if (dataProvider !== this.#dataProvider) {
-      this.#flameChart = null;
-    }
     this.#dataProvider = dataProvider;
     this.#parsedTrace = parsedTrace;
     this.#bounds = data.bounds;
@@ -9607,9 +9611,6 @@ var NetworkTrackWidget = class extends UI13.Widget.Widget {
   performUpdate() {
     if (!this.#parsedTrace || !this.#dataProvider || !this.#bounds) {
       return;
-    }
-    if (!this.#flameChart) {
-      this.#flameChart = new PerfUI2.FlameChart.FlameChart(this.#dataProvider, this);
     }
     const entityMapper = Trace9.EntityMapper.EntityMapper.getOrCreate(this.#parsedTrace);
     this.#dataProvider.preparePopoverElement = () => null;
@@ -9622,9 +9623,15 @@ var NetworkTrackWidget = class extends UI13.Widget.Widget {
       range: Trace9.Types.Timing.Micro(this.#bounds.range)
     });
     this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
-    this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-    this.#view({ flameChart: this.#flameChart }, void 0, this.contentElement);
-    this.#flameChart.update();
+    this.#view(
+      {
+        dataProvider: this.#dataProvider,
+        delegate: this,
+        windowTimes: bounds
+      },
+      void 0,
+      this.contentElement
+    );
   }
   windowChanged(_windowStartTime, _windowEndTime, _animate) {
   }
@@ -9820,6 +9827,7 @@ __export(Sidebar_exports, {
   AnnotationHoverOut: () => AnnotationHoverOut,
   DEFAULT_SIDEBAR_TAB: () => DEFAULT_SIDEBAR_TAB,
   DEFAULT_SIDEBAR_WIDTH_PX: () => DEFAULT_SIDEBAR_WIDTH_PX,
+  DEFAULT_VIEW: () => DEFAULT_VIEW15,
   HoverAnnotation: () => HoverAnnotation,
   RemoveAnnotation: () => RemoveAnnotation,
   RevealAnnotation: () => RevealAnnotation,
@@ -9827,7 +9835,9 @@ __export(Sidebar_exports, {
   SidebarWidget: () => SidebarWidget
 });
 import * as Common6 from "../../../core/common/common.js";
+import * as i18n37 from "../../../core/i18n/i18n.js";
 import * as UI18 from "../../../ui/legacy/legacy.js";
+import { Directives as Directives12, html as html19, render as render19 } from "../../../ui/lit/lit.js";
 import * as Insights9 from "./insights/insights.js";
 
 // ../../front_end/panels/timeline/components/SidebarAnnotationsTab.ts
@@ -10028,30 +10038,47 @@ var UIStrings17 = {
 };
 var str_17 = i18n33.i18n.registerUIStrings("panels/timeline/components/SidebarAnnotationsTab.ts", UIStrings17);
 var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
-var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
+var SidebarAnnotationsTab = class _SidebarAnnotationsTab extends UI15.Widget.Widget {
+  #rawAnnotations = [];
   #annotations = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
   #annotationEntryToColorMap = /* @__PURE__ */ new Map();
   #annotationsHiddenSetting;
   #view;
-  constructor(view = DEFAULT_VIEW12) {
-    super();
-    this.#view = view;
+  constructor(element, view = DEFAULT_VIEW12) {
+    super(element instanceof HTMLElement ? element : void 0);
+    this.#view = typeof element === "function" ? element : view;
     this.#annotationsHiddenSetting = Common5.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
   }
   deduplicatedAnnotations() {
     return this.#annotations;
   }
+  set annotations(annotations) {
+    if (this.#rawAnnotations === annotations) {
+      return;
+    }
+    this.#rawAnnotations = annotations;
+    this.#annotations = _SidebarAnnotationsTab.processAnnotationsList(annotations);
+    this.requestUpdate();
+  }
+  set annotationEntryToColorMap(annotationEntryToColorMap) {
+    if (this.#annotationEntryToColorMap === annotationEntryToColorMap) {
+      return;
+    }
+    this.#annotationEntryToColorMap = annotationEntryToColorMap;
+    this.requestUpdate();
+  }
   setData(data) {
-    this.#annotations = this.#processAnnotationsList(data.annotations);
+    this.#rawAnnotations = data.annotations;
+    this.#annotations = _SidebarAnnotationsTab.processAnnotationsList(data.annotations);
     this.#annotationEntryToColorMap = data.annotationEntryToColorMap;
     this.requestUpdate();
   }
-  #processAnnotationsList(annotations) {
+  static processAnnotationsList(annotations) {
     const entriesWithNotStartedAnnotation = /* @__PURE__ */ new Set();
     const processedAnnotations = annotations.filter((annotation) => {
-      if (this.#isAnnotationCreationStarted(annotation)) {
+      if (_SidebarAnnotationsTab.#isAnnotationCreationStarted(annotation)) {
         return true;
       }
       if (annotation.type === "ENTRIES_LINK" || annotation.type === "ENTRY_LABEL") {
@@ -10064,11 +10091,11 @@ var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
       return true;
     });
     processedAnnotations.sort(
-      (firstAnnotation, secondAnnotation) => this.#getAnnotationTimestamp(firstAnnotation) - this.#getAnnotationTimestamp(secondAnnotation)
+      (firstAnnotation, secondAnnotation) => _SidebarAnnotationsTab.#getAnnotationTimestamp(firstAnnotation) - _SidebarAnnotationsTab.#getAnnotationTimestamp(secondAnnotation)
     );
     return processedAnnotations;
   }
-  #getAnnotationTimestamp(annotation) {
+  static #getAnnotationTimestamp(annotation) {
     switch (annotation.type) {
       case "ENTRY_LABEL": {
         return annotation.entry.ts;
@@ -10084,7 +10111,7 @@ var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
       }
     }
   }
-  #isAnnotationCreationStarted(annotation) {
+  static #isAnnotationCreationStarted(annotation) {
     switch (annotation.type) {
       case "ENTRY_LABEL": {
         return annotation.label.length > 0;
@@ -10754,6 +10781,9 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI17.Widget.Widget {
     this.requestUpdate();
   }
   setActiveInsightSet(insightSetKey) {
+    if (this.#selectedInsightSet?.id === insightSetKey) {
+      return;
+    }
     if (this.#parsedTrace?.insights) {
       const insightSet = this.#parsedTrace.insights.get(insightSetKey);
       if (insightSet) {
@@ -10808,6 +10838,20 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI17.Widget.Widget {
 };
 
 // ../../front_end/panels/timeline/components/Sidebar.ts
+var { ifDefined: ifDefined3 } = Directives12;
+var { widget: widget7, widgetRef: widgetRef2 } = UI18.Widget;
+var UIStrings19 = {
+  /**
+   * @description Title of the Insights tab in the Performance panel sidebar.
+   */
+  insights: "Insights",
+  /**
+   * @description Title of the Annotations tab in the Performance panel sidebar.
+   */
+  annotations: "Annotations"
+};
+var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/Sidebar.ts", UIStrings19);
+var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var RemoveAnnotation = class _RemoveAnnotation extends Event {
   constructor(removedAnnotation) {
     super(_RemoveAnnotation.eventName, { bubbles: true, composed: true });
@@ -10846,10 +10890,67 @@ var SidebarTabs = /* @__PURE__ */ ((SidebarTabs2) => {
 var DEFAULT_SIDEBAR_TAB = "insights" /* INSIGHTS */;
 var DEFAULT_SIDEBAR_WIDTH_PX = 240;
 var MIN_SIDEBAR_WIDTH_PX = 170;
+var DEFAULT_VIEW15 = (input, output, target) => {
+  render19(html19`
+    <devtools-tabbed-pane
+      @select=${(event) => {
+    if (event.detail.isUserGesture) {
+      input.onTabSelected(event.detail.tabId);
+    }
+  }}>
+      <devtools-widget
+        id=${"insights" /* INSIGHTS */}
+        label=${i18nString18(UIStrings19.insights)}
+        jslogcontext="timeline.insights-tab"
+        class="sidebar-insights"
+        ?selected=${input.selectedTabId === "insights" /* INSIGHTS */}
+        ?disabled=${!input.insightsTabEnabled}
+        ${widget7(SidebarInsightsTab, {
+    parsedTrace: input.parsedTrace,
+    activeInsight: input.activeInsight
+  })}
+        ${widgetRef2(SidebarInsightsTab, (insightsTab) => {
+    output.highlightActiveInsight = () => {
+      void insightsTab.updateComplete.then(() => {
+        insightsTab.highlightActiveInsight();
+      });
+    };
+    output.setActiveInsightSet = (insightSetKey) => {
+      insightsTab.setActiveInsightSet(insightSetKey);
+    };
+  })}>
+      </devtools-widget>
+      <devtools-widget
+        id=${"annotations" /* ANNOTATIONS */}
+        label=${i18nString18(UIStrings19.annotations)}
+        badge=${ifDefined3(input.annotationsBadge ?? void 0)}
+        jslogcontext="timeline.annotations-tab"
+        class="sidebar-annotations"
+        ?selected=${input.selectedTabId === "annotations" /* ANNOTATIONS */}
+        ${widget7(SidebarAnnotationsTab, {
+    annotations: input.annotations,
+    annotationEntryToColorMap: input.annotationEntryToColorMap
+  })}>
+      </devtools-widget>
+    </devtools-tabbed-pane>
+  `, target);
+};
 var SidebarWidget = class extends UI18.Widget.VBox {
-  #tabbedPane = new UI18.TabbedPane.TabbedPane();
-  #insightsView = new InsightsView();
-  #annotationsView = new AnnotationsView();
+  #view;
+  #viewOutput = {};
+  #parsedTrace = null;
+  #activeInsight = null;
+  #annotations = [];
+  #annotationEntryToColorMap = /* @__PURE__ */ new Map();
+  #annotationsBadge = null;
+  #selectedTabId = DEFAULT_SIDEBAR_TAB;
+  #onTabSelectedBound = (tabId) => {
+    if (this.#selectedTabId === tabId) {
+      return;
+    }
+    this.#selectedTabId = tabId;
+    this.requestUpdate();
+  };
   /**
    * If the user has an Insight open and then they collapse the sidebar, we
    * deactivate that Insight to avoid it showing overlays etc - as the user has
@@ -10864,38 +10965,33 @@ var SidebarWidget = class extends UI18.Widget.VBox {
    * closed).
    */
   #hasOpenedOnce = Common6.Settings.Settings.instance().createSetting("timeline-sidebar-opened-at-least-once", false);
-  constructor() {
+  constructor(view = DEFAULT_VIEW15) {
     super();
+    this.#view = view;
     this.setMinimumSize(MIN_SIDEBAR_WIDTH_PX, 0);
-    this.#tabbedPane.appendTab(
-      "insights" /* INSIGHTS */,
-      "Insights",
-      this.#insightsView,
-      void 0,
-      void 0,
-      false,
-      false,
-      0,
-      "timeline.insights-tab"
+  }
+  #hasInsights() {
+    return Boolean(this.#parsedTrace?.insights && this.#parsedTrace.insights.size > 0);
+  }
+  performUpdate() {
+    this.#view(
+      {
+        parsedTrace: this.#parsedTrace,
+        activeInsight: this.#activeInsight,
+        annotations: this.#annotations,
+        annotationEntryToColorMap: this.#annotationEntryToColorMap,
+        annotationsBadge: this.#annotationsBadge,
+        insightsTabEnabled: this.#hasInsights(),
+        selectedTabId: this.#selectedTabId,
+        onTabSelected: this.#onTabSelectedBound
+      },
+      this.#viewOutput,
+      this.contentElement
     );
-    this.#tabbedPane.appendTab(
-      "annotations" /* ANNOTATIONS */,
-      "Annotations",
-      this.#annotationsView,
-      void 0,
-      void 0,
-      false,
-      false,
-      1,
-      "timeline.annotations-tab"
-    );
-    this.#tabbedPane.selectTab("insights" /* INSIGHTS */);
   }
   wasShown() {
     super.wasShown();
     this.#hasOpenedOnce.set(true);
-    this.#tabbedPane.show(this.element);
-    this.#updateAnnotationsCountBadge();
     if (this.#insightToRestoreOnOpen) {
       this.element.dispatchEvent(new Insights9.SidebarInsight.InsightActivated(
         this.#insightToRestoreOnOpen.model,
@@ -10903,44 +10999,62 @@ var SidebarWidget = class extends UI18.Widget.VBox {
       ));
       this.#insightToRestoreOnOpen = null;
     }
-    if (this.#tabbedPane.selectedTabId === "insights" /* INSIGHTS */ && this.#tabbedPane.tabIsDisabled("insights" /* INSIGHTS */)) {
-      this.#tabbedPane.selectTab("annotations" /* ANNOTATIONS */);
+    if (this.#selectedTabId === "insights" /* INSIGHTS */ && !this.#hasInsights()) {
+      this.#selectedTabId = "annotations" /* ANNOTATIONS */;
     }
+    this.requestUpdate();
   }
   willHide() {
     super.willHide();
-    const currentlyActiveInsight = this.#insightsView.getActiveInsight();
+    const currentlyActiveInsight = this.#activeInsight;
     this.#insightToRestoreOnOpen = currentlyActiveInsight;
     if (currentlyActiveInsight) {
       this.element.dispatchEvent(new Insights9.SidebarInsight.InsightDeactivated());
     }
   }
   setAnnotations(updatedAnnotations, annotationEntryToColorMap) {
-    this.#annotationsView.setAnnotations(updatedAnnotations, annotationEntryToColorMap);
-    this.#updateAnnotationsCountBadge();
-  }
-  #updateAnnotationsCountBadge() {
-    const annotations = this.#annotationsView.deduplicatedAnnotations();
-    this.#tabbedPane.setBadge("annotations", annotations.length > 0 ? annotations.length.toString() : null);
+    if (this.#annotations === updatedAnnotations && this.#annotationEntryToColorMap === annotationEntryToColorMap) {
+      return;
+    }
+    this.#annotations = updatedAnnotations;
+    this.#annotationEntryToColorMap = annotationEntryToColorMap;
+    const deduplicatedAnnotations = SidebarAnnotationsTab.processAnnotationsList(updatedAnnotations);
+    this.#annotationsBadge = deduplicatedAnnotations.length > 0 ? deduplicatedAnnotations.length.toString() : null;
+    this.requestUpdate();
   }
   setParsedTrace(parsedTrace) {
-    this.#insightsView.setParsedTrace(parsedTrace);
-    this.#tabbedPane.setTabEnabled(
-      "insights" /* INSIGHTS */,
-      Boolean(parsedTrace?.insights && parsedTrace.insights.size > 0)
-    );
+    if (this.#parsedTrace === parsedTrace) {
+      return;
+    }
+    this.#parsedTrace = parsedTrace;
+    this.requestUpdate();
   }
   setActiveInsight(activeInsight, opts) {
-    this.#insightsView.setActiveInsight(activeInsight, opts);
-    if (activeInsight) {
-      this.#tabbedPane.selectTab("insights" /* INSIGHTS */);
+    const tabChanged = Boolean(activeInsight && this.#selectedTabId !== "insights" /* INSIGHTS */);
+    if (this.#activeInsight !== activeInsight || tabChanged) {
+      this.#activeInsight = activeInsight;
+      if (activeInsight) {
+        this.#selectedTabId = "insights" /* INSIGHTS */;
+      }
+      this.requestUpdate();
+    }
+    if (opts.highlight && activeInsight) {
+      void this.updateComplete.then(() => {
+        this.#viewOutput.highlightActiveInsight?.();
+      });
     }
   }
   openInsightsTab() {
-    this.#tabbedPane.selectTab("insights" /* INSIGHTS */);
+    if (this.#selectedTabId === "insights" /* INSIGHTS */) {
+      return;
+    }
+    this.#selectedTabId = "insights" /* INSIGHTS */;
+    this.requestUpdate();
   }
   setActiveInsightSet(insightSetKey) {
-    this.#insightsView.setActiveInsightSet(insightSetKey);
+    void this.updateComplete.then(() => {
+      this.#viewOutput.setActiveInsightSet?.(insightSetKey);
+    });
   }
   /**
    * True if the sidebar has been visible at least one time. This is persisted
@@ -10951,56 +11065,6 @@ var SidebarWidget = class extends UI18.Widget.VBox {
    */
   sidebarHasBeenOpened() {
     return this.#hasOpenedOnce.get();
-  }
-};
-var InsightsView = class extends UI18.Widget.VBox {
-  #component = SidebarInsightsTab.createWidgetElement();
-  constructor() {
-    super();
-    this.element.classList.add("sidebar-insights");
-    this.#getWidget().show(this.element);
-  }
-  #getWidget() {
-    return UI18.Widget.Widget.get(this.#component);
-  }
-  setParsedTrace(parsedTrace) {
-    const widget8 = this.#getWidget();
-    widget8.parsedTrace = parsedTrace;
-  }
-  getActiveInsight() {
-    return this.#getWidget().activeInsight;
-  }
-  setActiveInsight(active, opts) {
-    const widget8 = this.#getWidget();
-    widget8.activeInsight = active;
-    if (opts.highlight && active) {
-      void widget8.updateComplete.then(() => {
-        void widget8.highlightActiveInsight();
-      });
-    }
-  }
-  setActiveInsightSet(insightSetKey) {
-    this.#getWidget().setActiveInsightSet(insightSetKey);
-  }
-};
-var AnnotationsView = class extends UI18.Widget.VBox {
-  #component = new SidebarAnnotationsTab();
-  constructor() {
-    super();
-    this.element.classList.add("sidebar-annotations");
-    this.#component.show(this.element);
-  }
-  setAnnotations(annotations, annotationEntryToColorMap) {
-    this.#component.setData({ annotations, annotationEntryToColorMap });
-  }
-  /**
-   * The component "de-duplicates" annotations to ensure implementation details
-   * about how we create pending annotations don't leak into the UI. We expose
-   * these here because we use this count to show the number of annotations in
-   * the small adorner in the sidebar tab.
-   */
-  deduplicatedAnnotations() {
-    return this.#component.deduplicatedAnnotations();
   }
 };
 
@@ -11068,7 +11132,7 @@ __export(TimelineSummary_exports, {
   CATEGORY_SUMMARY_DEFAULT_VIEW: () => CATEGORY_SUMMARY_DEFAULT_VIEW,
   CategorySummary: () => CategorySummary
 });
-import * as i18n37 from "../../../core/i18n/i18n.js";
+import * as i18n39 from "../../../core/i18n/i18n.js";
 import * as Platform9 from "../../../core/platform/platform.js";
 import * as Buttons9 from "../../../ui/components/buttons/buttons.js";
 import * as UI19 from "../../../ui/legacy/legacy.js";
@@ -11156,8 +11220,8 @@ var timelineSummary_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineSummary.css")} */`;
 
 // ../../front_end/panels/timeline/components/TimelineSummary.ts
-var { render: render19, html: html19 } = Lit17;
-var UIStrings19 = {
+var { render: render20, html: html20 } = Lit17;
+var UIStrings20 = {
   /**
    * @description Label for total duration in the summary view of the Performance panel.
    */
@@ -11169,27 +11233,27 @@ var UIStrings19 = {
    */
   rangeSS: "Range:  {PH1} \u2013 {PH2}"
 };
-var str_19 = i18n37.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings19);
-var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings20);
+var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
   const summaryClasses = Lit17.Directives.classMap({
     "timeline-summary": true,
     "is-in-ai-widget": Boolean(input.isInAIWidget)
   });
-  render19(html19`
+  render20(html20`
         <style>${timelineSummary_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI19.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons9.textButtonStyles} }</style>
         <div class=${summaryClasses} jslog=${VisualLogging10.section("timeline-summary")}>
-            <div class="summary-range">${i18nString18(UIStrings19.rangeSS, { PH1: i18n37.TimeUtilities.millisToString(input.rangeStart), PH2: i18n37.TimeUtilities.millisToString(input.rangeEnd) })}</div>
+            <div class="summary-range">${i18nString19(UIStrings20.rangeSS, { PH1: i18n39.TimeUtilities.millisToString(input.rangeStart), PH2: i18n39.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map((category) => {
-    return html19`
+    return html20`
                         <div class="category-row" jslog=${VisualLogging10.item(category.name || Platform9.StringUtilities.toKebabCase(category.title))}>
                         <div class="category-swatch" style="background-color: ${category.color};"></div>
                         <div class="category-name">${category.title}</div>
                         <div class="category-value" jslog=${VisualLogging10.value()}>
-                            ${i18n37.TimeUtilities.preciseMillisToString(category.value)}
+                            ${i18n39.TimeUtilities.preciseMillisToString(category.value)}
                             <div class="background-bar-container">
                                 <div class="background-bar" style='width: ${(category.value * 100 / input.total).toFixed(1)}%;'></div>
                             </div>
@@ -11198,9 +11262,9 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
   })}
                 <div class="category-row" jslog=${VisualLogging10.item("total")}>
                     <div class="category-swatch"></div>
-                    <div class="category-name">${i18nString18(UIStrings19.total)}</div>
+                    <div class="category-name">${i18nString19(UIStrings20.total)}</div>
                     <div class="category-value" jslog=${VisualLogging10.value()}>
-                        ${i18n37.TimeUtilities.preciseMillisToString(input.total)}
+                        ${i18n39.TimeUtilities.preciseMillisToString(input.total)}
                         <div class="background-bar-container">
                             <div class="background-bar"></div>
                         </div>
@@ -11245,13 +11309,13 @@ var CategorySummary = class extends UI19.Widget.Widget {
 };
 
 // ../../front_end/panels/timeline/components/TimelineRangeSummaryView.ts
-var { render: render20, html: html20 } = Lit18;
-var { widget: widget7 } = UI20.Widget;
+var { render: render21, html: html21 } = Lit18;
+var { widget: widget8 } = UI20.Widget;
 var categoryBreakdownCache = /* @__PURE__ */ new WeakMap();
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   const { parsedTrace, events, startTime, endTime } = input;
   if (!events || !parsedTrace) {
-    render20(html20`<div class="timeline-details-range-summary"></div>`, target);
+    render21(html21`<div class="timeline-details-range-summary"></div>`, target);
     return;
   }
   const minBoundsMilli = Trace13.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
@@ -11275,11 +11339,11 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     categories.push({ value: value2, color: category.getCSSValue(), title: category.title, name: category.name });
   }
   categories.sort((a, b) => b.value - a.value);
-  render20(html20`
+  render21(html21`
     <style>${timelineRangeSummaryView_css_default}</style>
     <div class="timeline-details-range-summary">
       <devtools-widget class="timeline-summary"
-        ${widget7(CategorySummary, {
+        ${widget8(CategorySummary, {
     data: {
       rangeStart: startOffset,
       rangeEnd: endOffset,

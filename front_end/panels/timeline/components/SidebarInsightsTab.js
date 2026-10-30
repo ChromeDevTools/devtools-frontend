@@ -150,6 +150,9 @@ export class SidebarInsightsTab extends UI.Widget.Widget {
         this.requestUpdate();
     }
     setActiveInsightSet(insightSetKey) {
+        if (this.#selectedInsightSet?.id === insightSetKey) {
+            return;
+        }
         if (this.#parsedTrace?.insights) {
             const insightSet = this.#parsedTrace.insights.get(insightSetKey);
             if (insightSet) {

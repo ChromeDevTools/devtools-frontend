@@ -58,7 +58,13 @@ export declare class Event {
     get live(): boolean;
 }
 export interface TickingFlameChartViewInput {
-    chart: PerfUI.FlameChart.FlameChart;
+    dataProvider: PerfUI.FlameChart.FlameChartDataProvider;
+    delegate: PerfUI.FlameChart.FlameChartDelegate;
+    windowTimes: {
+        low: number;
+        high: number;
+    };
+    onScroll: (scrollTickCount: number, scrollPositionRatio: number) => void;
 }
 export type TickingFlameChartView = (input: TickingFlameChartViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: TickingFlameChartView;
@@ -71,8 +77,6 @@ export declare class TickingFlameChart extends UI.Widget.VBox {
     private readonly bounds;
     private readonly dataProvider;
     private readonly delegate;
-    private readonly chartGroupExpansionSetting;
-    private readonly chart;
     private stoppedPermanently?;
     constructor(element?: HTMLElement, view?: TickingFlameChartView);
     performUpdate(): void;

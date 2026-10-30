@@ -64,9 +64,13 @@ class NodeWorker {
         void this.#workerPromise.then(worker => {
             worker.on('error', (error) => {
                 if (!this.#disposed) {
-                    listener({ type: 'error', ...error });
+                    listener({ type: 'error', ...error, message: error.message, error });
                 }
             });
+        }, (error) => {
+            if (!this.#disposed) {
+                listener({ type: 'error', ...error, message: error.message, error });
+            }
         });
     }
 }

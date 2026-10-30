@@ -601,23 +601,16 @@ export class StylesSidebarPane extends StylesSidebarPaneBase {
             }
         });
     }
-    #getRegisteredPropertyDetails(matchedStyles, variableName) {
+    getRegisteredPropertyDetails(matchedStyles, variableName) {
         const registration = matchedStyles.getRegisteredProperty(variableName);
         const goToDefinition = () => this.jumpToSection(variableName, REGISTERED_PROPERTY_SECTION_NAME);
         return registration ? { registration, goToDefinition } : undefined;
     }
     getVariableParserError(matchedStyles, variableName) {
-        const registrationDetails = this.#getRegisteredPropertyDetails(matchedStyles, variableName);
+        const registrationDetails = this.getRegisteredPropertyDetails(matchedStyles, variableName);
         return registrationDetails ?
             new ElementsComponents.CSSVariableValueView.CSSVariableParserError(registrationDetails) :
             null;
-    }
-    getVariablePopoverContents(matchedStyles, variableName, computedValue) {
-        return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
-            variableName,
-            value: computedValue ?? undefined,
-            details: this.#getRegisteredPropertyDetails(matchedStyles, variableName),
-        });
     }
     async fetchComputedStylesFor(nodeId) {
         const node = this.node();

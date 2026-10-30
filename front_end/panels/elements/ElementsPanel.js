@@ -911,6 +911,7 @@ export class ElementsPanel extends UI.Panel.Panel {
                 if (!this.stylesWidget.hasMatchedStyles) {
                     this.metricsWidget.hideWidget();
                 }
+                this.stylesWidget.removeEventListener("StylesUpdateCompleted" /* StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
                 this.stylesWidget.addEventListener("StylesUpdateCompleted" /* StylesSidebarPaneEvents.STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
             }
         };

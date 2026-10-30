@@ -20,9 +20,9 @@ interface ViewInput {
 interface ViewOutput {
     editor: TextEditor.TextEditor.TextEditor | undefined;
 }
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
-export declare class BreakpointEditDialog extends UI.Widget.Widget {
+export declare class BreakpointEditDialog extends UI.Widget.Widget<ShadowRoot> {
     #private;
     constructor(target?: HTMLElement, view?: View);
     get editorLineNumber(): number;

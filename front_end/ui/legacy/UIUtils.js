@@ -1907,8 +1907,8 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
         }
         template.values = template.values.map(patchValue);
         function isLitTemplate(value) {
-            return Boolean(typeof value === 'object' && value && '_$litType$' in value && 'strings' in value && 'values' in value &&
-                value['_$litType$'] === 1);
+            return Boolean(typeof value === 'object' && value && '_$litType$' in value && 'strings' in value &&
+                'values' in value && value['_$litType$'] === 1);
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         function isCallable(value) {

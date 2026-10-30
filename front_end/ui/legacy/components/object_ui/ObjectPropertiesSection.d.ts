@@ -190,6 +190,7 @@ export declare class ObjectTreeWidget extends UI.Widget.Widget {
     get renderAsSubtree(): boolean;
     set renderAsSubtree(val: boolean);
     performUpdate(): Promise<void>;
+    willHide(): void;
     onDetach(): void;
     wasShown(): void;
 }
@@ -231,6 +232,7 @@ export declare class ObjectPropertyWidget extends UI.Widget.Widget {
     constructor(target?: HTMLElement, view?: ObjectPropertyView);
     get property(): ObjectTreeNode | undefined;
     set property(property: ObjectTreeNode);
+    willHide(): void;
     onDetach(): void;
     wasShown(): void;
     get expanded(): boolean;

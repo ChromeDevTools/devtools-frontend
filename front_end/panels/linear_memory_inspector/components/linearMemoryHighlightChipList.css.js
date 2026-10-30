@@ -61,7 +61,7 @@ export default `/*
 
 .delete-highlight-button:hover {
   background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .jump-to-highlight-button {
@@ -81,7 +81,7 @@ export default `/*
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .source-code {

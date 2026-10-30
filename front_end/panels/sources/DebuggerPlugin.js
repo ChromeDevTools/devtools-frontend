@@ -772,6 +772,7 @@ export class DebuggerPlugin extends Plugin {
             }
         };
         dialog.markAsExternallyManaged();
+        dialog.performUpdate();
         const decorationFragment = document.createDocumentFragment();
         renderBreakpointEditDialogHost({ dialog }, undefined, decorationFragment);
         const decorationElement = decorationFragment.firstElementChild;

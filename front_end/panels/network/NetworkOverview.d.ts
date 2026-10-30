@@ -13,7 +13,7 @@ export declare class NetworkOverview extends PerfUI.TimelineOverviewPane.Timelin
     private requestsSet;
     private span;
     private lastBoundary?;
-    constructor();
+    constructor(element?: HTMLElement);
     setHighlightedRequest(request: SDK.NetworkRequest.NetworkRequest | null): void;
     selectFilmStripFrame(time: number): void;
     clearFilmStripFrame(): void;

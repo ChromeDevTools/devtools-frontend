@@ -57,6 +57,11 @@ const UIStrings = {
      * @description aria-label for the comment text area.
      */
     commentInputAriaLabel: 'Comment input',
+    /**
+     * @description Banner text shown at the bottom of a comment thread when the element the comment was
+     * attached to has been removed and can no longer be found.
+     */
+    elementNoLongerAvailable: 'The element is no longer available',
 };
 const UIStringsNotTranslate = {
     /**
@@ -216,6 +221,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           </div>
         `)}</div>
       `}
+
+      ${input.elementRemoved ? html `
+        <div class="element-removed-banner" role="status">
+          <span>${i18nString(UIStrings.elementNoLongerAvailable)}</span>
+        </div>
+      ` : Lit.nothing}
     </div>
   `, target);
     // clang-format on
@@ -227,6 +238,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
     #status = 'DRAFT';
     #transmitted = false;
     #isQueueModifierPressed = false;
+    #elementRemoved = false;
     #textAreaRef = createRef();
     #view;
     #isEditing = false;
@@ -264,6 +276,19 @@ export class CommentThreadWidget extends UI.Widget.Widget {
         }
         this.#transmitted = transmitted;
         this.requestUpdate();
+    }
+    /**
+     * When true, shows a banner indicating that the element the thread is anchored to has been removed.
+     */
+    set elementRemoved(elementRemoved) {
+        if (this.#elementRemoved === elementRemoved) {
+            return;
+        }
+        this.#elementRemoved = elementRemoved;
+        this.requestUpdate();
+    }
+    get elementRemoved() {
+        return this.#elementRemoved;
     }
     #onSetEditMode = (value) => {
         const commentText = this.#comments.find(c => c.author === 'DEVELOPER')?.text;
@@ -314,6 +339,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
             comments: this.#comments,
             commentText: this.#commentText,
             isQueueModifierPressed: this.#isQueueModifierPressed,
+            elementRemoved: this.#elementRemoved,
             textAreaRef: this.#textAreaRef,
             status: this.#status,
             transmitted: this.#transmitted,

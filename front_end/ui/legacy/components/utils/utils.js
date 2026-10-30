@@ -1442,6 +1442,9 @@ function openInNewTabInitiatorId(source) {
     return source.frameId ? frameIdUnlessNavigatedSince(source.frameId, source.loaderId, source.frame()) : void 0;
   }
   if (source instanceof SDK2.RuntimeModel.ExecutionContext) {
+    if (source.target().isDisposed()) {
+      return void 0;
+    }
     return source.frameId ?? workerTargetId(source.target());
   }
   if (source instanceof Workspace.UISourceCode.UISourceCode) {
@@ -1457,7 +1460,7 @@ function openInNewTabInitiatorId(source) {
   return void 0;
 }
 function frameIdUnlessNavigatedSince(frameId, loaderId, frame) {
-  if (frame && loaderId && frame.loaderId !== loaderId) {
+  if (!frame || frame.resourceTreeModel().target().isDisposed() || loaderId && frame.loaderId !== loaderId) {
     return void 0;
   }
   return frameId;

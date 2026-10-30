@@ -867,7 +867,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       ${windowControlsData && output ? renderWindowControlsSection(windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}
-    </devtools-report>`}`, target);
+    </devtools-report>`}`, target, { container: { attributes: { jslog: `${VisualLogging.pane('manifest')}` } } });
     // clang-format on
 };
 const AppManifestViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
@@ -888,7 +888,6 @@ export class AppManifestView extends AppManifestViewBase {
     output = { scrollToSection: new Map(), focusOnSection: new Map() };
     constructor(view = DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.pane('manifest')}`,
             useShadowDom: true,
         });
         this.view = view;

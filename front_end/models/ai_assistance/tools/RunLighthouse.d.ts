@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import type * as LHModel from '../../lighthouse/lighthouse.js';
+import * as LHModel from '../../lighthouse/lighthouse.js';
 import type { LighthouseCategoryArg } from '../data_formatters/LighthouseFormatter.js';
 import { type BaseToolCapability, type ContextHandlerResult, type ContextTool, type LighthouseRecordingCapability, PermissionPrompt, type ToolArgs, ToolName } from './Tool.js';
 export interface RunLighthouseArgs extends ToolArgs {

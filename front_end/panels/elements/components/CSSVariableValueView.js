@@ -83,22 +83,42 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 };
 export class CSSVariableValueView extends UI.Widget.Widget {
     #view;
-    variableName;
+    #variableName = '';
     #value;
-    details;
-    constructor({ variableName, value, details, }, view = DEFAULT_VIEW) {
-        super();
+    #details;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
         this.#view = view;
-        this.variableName = variableName;
-        this.details = details;
-        this.value = value;
+    }
+    get variableName() {
+        return this.#variableName;
+    }
+    set variableName(variableName) {
+        if (this.#variableName === variableName) {
+            return;
+        }
+        this.#variableName = variableName;
+        this.requestUpdate();
     }
     get value() {
         return this.#value;
     }
     set value(value) {
+        if (this.#value === value) {
+            return;
+        }
         this.#value = value;
-        this.performUpdate();
+        this.requestUpdate();
+    }
+    get details() {
+        return this.#details;
+    }
+    set details(details) {
+        if (this.#details === details) {
+            return;
+        }
+        this.#details = details;
+        this.requestUpdate();
     }
     wasShown() {
         super.wasShown();
@@ -106,9 +126,9 @@ export class CSSVariableValueView extends UI.Widget.Widget {
     }
     performUpdate() {
         this.#view({
-            variableName: this.variableName,
+            variableName: this.#variableName,
             value: this.#value,
-            details: this.details,
+            details: this.#details,
         }, undefined, this.contentElement);
     }
 }

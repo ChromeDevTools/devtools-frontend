@@ -144,7 +144,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     </div>`, target, {
         container: {
             attributes: {
-                id: 'sources-panel-sources-view',
+                id: 'sources-panel-sources-view', jslog: `${VisualLogging.pane('editor').track({ keydown: 'Escape' })}`,
             },
         },
     });
@@ -176,7 +176,7 @@ export class SourcesView extends SourcesViewBase {
     #onEditorSelected = this.#editorSelected.bind(this);
     #onEditorClosed = this.#editorClosed.bind(this);
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { jslog: `${VisualLogging.pane('editor').track({ keydown: 'Escape' })}` });
+        super(element);
         this.#view = view;
         this.setMinimumAndPreferredSizes(88, 52, 150, 100);
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -370,9 +370,9 @@ export class SourcesView extends SourcesViewBase {
         if (wasSelected) {
             this.#currentUISourceCode = null;
             this.#visibleView = null;
+            this.#removeToolbarChangedListener();
         }
         // SourcesNavigator does not need to update on EditorClosed.
-        this.#removeToolbarChangedListener();
         this.#updateScriptViewToolbarItems();
         const data = {
             uiSourceCode,

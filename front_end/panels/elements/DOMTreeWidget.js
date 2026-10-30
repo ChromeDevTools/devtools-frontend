@@ -125,7 +125,6 @@ function isBeingEditedAsHTML(state, node) {
 }
 function getVisibleChildren(node, { showComments }) {
     const children = [];
-    children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
     const contentDocument = node.contentDocument();
     if (contentDocument) {
         children.push(contentDocument);
@@ -147,6 +146,7 @@ function getVisibleChildren(node, { showComments }) {
     if (beforePseudo) {
         children.push(beforePseudo);
     }
+    children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
     children.push(...node.carouselPseudoElements());
     if (node.childNodeCount()) {
         const nodeChildren = node.children();

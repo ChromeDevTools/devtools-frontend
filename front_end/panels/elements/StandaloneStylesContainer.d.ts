@@ -5,7 +5,7 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ElementsComponents from './components/components.js';
+import type * as ElementsComponents from './components/components.js';
 import { StylePropertiesSection } from './StylePropertiesSection.js';
 import type { StylePropertyTreeElement } from './StylePropertyTreeElement.js';
 import type { StylesContainer } from './StylesContainer.js';
@@ -49,7 +49,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     forceUpdate(): void;
     hideAllPopovers(): void;
     allSections(): StylePropertiesSection[];
-    getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
+    getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails | undefined;
     getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
     jumpToFunctionDefinition(_functionName: string, _treeScopeDistance: number): void;
     continueEditingElement(_sectionIndex: number, _propertyIndex: number): void;

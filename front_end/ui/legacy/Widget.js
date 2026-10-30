@@ -449,8 +449,6 @@ export class Widget {
         }
         this.#shadowRoot = this.element.shadowRoot;
         if (options?.useShadowDom && !this.#shadowRoot) {
-            this.element.classList.add('vbox');
-            this.element.classList.add('flex-auto');
             this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
                 delegatesFocus: options?.delegatesFocus,
             });
@@ -458,6 +456,8 @@ export class Widget {
                 this.#contentElement = this.#shadowRoot;
             }
             else {
+                this.element.classList.add('vbox');
+                this.element.classList.add('flex-auto');
                 const div = document.createElement('div');
                 this.#shadowRoot.appendChild(div);
                 this.#contentElement = div;
@@ -1099,7 +1099,6 @@ export class HBox extends Widget {
             this.contentElement.classList.add('hbox');
         }
         else {
-            this.element.classList.remove('vbox');
             this.element.classList.add('hbox');
         }
     }

@@ -3084,6 +3084,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -6429,8 +6430,9 @@ function renderStorageMetadataReportContent(storageKey, storageBucket, showOnlyB
     ${storageBucket ? renderStorageBucketInfo(storageBucket, showOnlyBucket) : nothing6}`;
 }
 var DEFAULT_VIEW10 = (input, _output, target) => {
+  const renderOptions = { container: { classes: ["storage-metadata-view"] } };
   if (!input.storageKey) {
-    render10(nothing6, target);
+    render10(nothing6, target, renderOptions);
     return;
   }
   render10(html10`
@@ -6446,7 +6448,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
             ${i18nString9(UIStrings10.deleteBucket)}
           </devtools-button>
         </devtools-report-section>` : nothing6}
-    </devtools-report>`, target);
+    </devtools-report>`, target, renderOptions);
 };
 var StorageMetadataView = class extends UI10.Widget.Widget {
   #storageBucketsModel;
@@ -6455,8 +6457,7 @@ var StorageMetadataView = class extends UI10.Widget.Widget {
   #showOnlyBucket = false;
   #view;
   constructor(element, view = DEFAULT_VIEW10) {
-    super(element, { useShadowDom: true, classes: ["storage-metadata-view"] });
-    this.element.classList.remove("vbox", "flex-auto");
+    super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
   wasShown() {

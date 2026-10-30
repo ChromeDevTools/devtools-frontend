@@ -23,7 +23,7 @@ export declare class ExtensionStorageItemsView extends KeyValueStorageItemsView 
     parseValue(input: string): unknown;
     protected removeItem(key: string): void;
     protected setItem(key: string, value: string): void;
-    protected createPreview(key: string, value: string): Promise<UI.Widget.Widget | null>;
+    protected createPreview(key: string, value: string): Promise<UI.Widget.AnyWidget | null>;
     setStorage(extensionStorage: ExtensionStorage): void;
     deleteSelectedItem(): void;
     refreshItems(): void;

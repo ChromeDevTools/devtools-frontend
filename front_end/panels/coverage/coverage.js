@@ -1906,9 +1906,7 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
       return;
     }
     const { reload, jsCoveragePerBlock } = { reload: false, jsCoveragePerBlock: false, ...options };
-    if (!this.#model || reload) {
-      this.#model = mainTarget.model(CoverageModel);
-    }
+    this.#setModel(mainTarget.model(CoverageModel));
     if (!this.#model) {
       return;
     }
@@ -1922,7 +1920,6 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     }
     this.#selectCoverageType(Boolean(jsCoveragePerBlock));
     this.#model.addEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
-    this.#model.addEventListener("SourceMapResolved" /* SourceMapResolved */, this.#updateListView, this);
     const resourceTreeModel = mainTarget.model(SDK2.ResourceTreeModel.ResourceTreeModel);
     SDK2.TargetManager.TargetManager.instance().addModelListener(
       SDK2.ResourceTreeModel.ResourceTreeModel,
@@ -1947,6 +1944,18 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
       resourceTreeModel.reloadPage();
     } else {
       void this.#model.startPolling();
+    }
+  }
+  #setModel(model) {
+    if (this.#model === model) {
+      return;
+    }
+    if (this.#model) {
+      this.#model.removeEventListener("SourceMapResolved" /* SourceMapResolved */, this.#updateListView, this);
+    }
+    this.#model = model;
+    if (this.#model) {
+      this.#model.addEventListener("SourceMapResolved" /* SourceMapResolved */, this.#updateListView, this);
     }
   }
   #onCoverageDataReceived(event) {
@@ -1999,7 +2008,10 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
         await this.#model.stop();
         this.#model.removeEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
       }
-      this.#model = coverageModel;
+      this.#setModel(coverageModel);
+      if (!this.#model) {
+        return;
+      }
       const success = await this.#model.start(this.isBlockCoverageSelected());
       if (!success) {
         return;

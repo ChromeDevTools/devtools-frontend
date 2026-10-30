@@ -341,6 +341,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "add-button",
   "add-cnd-breakpoint",
   "add-color",
+  "add-comment",
   "add-content-scripts-to-ignorelist",
   "add-count",
   "add-custom-device",

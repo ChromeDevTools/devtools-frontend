@@ -21,11 +21,17 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
         if (!Root.DevToolsContext.globalInstance().has(FileManager) || forceNew) {
+            if (Root.DevToolsContext.globalInstance().has(FileManager)) {
+                Root.DevToolsContext.globalInstance().get(FileManager).dispose();
+            }
             Root.DevToolsContext.globalInstance().set(FileManager, new FileManager());
         }
         return Root.DevToolsContext.globalInstance().get(FileManager);
     }
     static removeInstance() {
+        if (Root.DevToolsContext.globalInstance().has(FileManager)) {
+            Root.DevToolsContext.globalInstance().get(FileManager).dispose();
+        }
         Root.DevToolsContext.globalInstance().delete(FileManager);
     }
     /**

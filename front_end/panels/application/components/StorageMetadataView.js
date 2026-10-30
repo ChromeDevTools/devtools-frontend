@@ -207,8 +207,9 @@ export function renderStorageMetadataReportContent(storageKey, storageBucket, sh
     // clang-format on
 }
 export const DEFAULT_VIEW = (input, _output, target) => {
+    const renderOptions = { container: { classes: ['storage-metadata-view'] } };
     if (!input.storageKey) {
-        render(nothing, target);
+        render(nothing, target, renderOptions);
         return;
     }
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -226,7 +227,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
             ${i18nString(UIStrings.deleteBucket)}
           </devtools-button>
         </devtools-report-section>` : nothing}
-    </devtools-report>`, target);
+    </devtools-report>`, target, renderOptions);
     // clang-format on
 };
 export class StorageMetadataView extends UI.Widget.Widget {
@@ -236,8 +237,7 @@ export class StorageMetadataView extends UI.Widget.Widget {
     #showOnlyBucket = false;
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['storage-metadata-view'] });
-        this.element.classList.remove('vbox', 'flex-auto');
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
     }
     wasShown() {

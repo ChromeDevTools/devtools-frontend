@@ -161,7 +161,7 @@ export const IDB_DATABASE_VIEW_DEFAULT_VIEW = (input, _output, target) => {
         </devtools-report-section>
       ` : nothing}
     </devtools-report>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.pane('indexeddb-data')}` } } });
     // clang-format on
 };
 export class IDBDatabaseView extends UI.Widget.VBox {
@@ -171,7 +171,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     #storageBucket = null;
     #view;
     constructor(model, database, element, view = IDB_DATABASE_VIEW_DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, jslog: `${VisualLogging.pane('indexeddb-data')}` });
+        super(element, { useShadowDom: true });
         this.#view = view;
         this.#model = model;
         if (database) {
@@ -376,7 +376,12 @@ export const IDB_DATA_VIEW_DEFAULT_VIEW = (input, _output, target) => {
       ${renderDataGrid(input)}
     </div>
     ${renderSummaryBar(input)}
-  `, target, { container: { classes: ['indexed-db-data-view', 'storage-view'] } });
+  `, target, {
+        container: {
+            classes: ['indexed-db-data-view', 'storage-view'],
+            attributes: { jslog: `${VisualLogging.pane('indexed-db-data-view')}` },
+        },
+    });
 };
 // clang-format on
 export class IDBDataView extends UI.View.SimpleView {
@@ -405,7 +410,6 @@ export class IDBDataView extends UI.View.SimpleView {
         super({
             title: i18nString(UIStrings.idb),
             viewId: 'idb',
-            jslog: `${VisualLogging.pane('indexed-db-data-view')}`,
         });
         this.#view = view;
         this.registerRequiredCSS(indexedDBViewsStyles);

@@ -477,7 +477,7 @@ var entryLabelOverlay_css_default = `/*
   position: absolute;
   right: 0;
   top: -5px;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   padding: 0;
   border: none;
   background: var(--sys-color-inverse-surface);

@@ -2106,7 +2106,18 @@ export class TimelineDetailsContentHelper {
         stackTraceElement.classList.add('timeline-details-view-row', 'timeline-details-stack-values');
         stackTraceElement.setAttribute('jslog', `${VisualLogging.item('detail-row')}`);
         callFrameContents.markAsRoot();
+        callFrameContents.markAsExternallyManaged();
         callFrameContents.show(stackTraceElement);
+        callFrameContents.willHide();
+        const tracker = document.createElement('devtools-widget');
+        tracker.style.display = 'none';
+        tracker.onConnect = () => {
+            callFrameContents.wasShown();
+        };
+        tracker.onDisconnect = () => {
+            callFrameContents.willHide();
+        };
+        stackTraceElement.appendChild(tracker);
         return stackTraceElement;
     }
 }

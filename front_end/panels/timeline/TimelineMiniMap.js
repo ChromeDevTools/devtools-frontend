@@ -1,17 +1,136 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import * as TimelineComponents from './components/components.js';
 import { ModificationsManager } from './ModificationsManager.js';
 import { TimelineEventOverviewCPUActivity, TimelineEventOverviewMemory, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, TimelineFilmStripOverview, } from './TimelineEventOverview.js';
 import miniMapStyles from './timelineMiniMap.css.js';
 import { TimelineUIUtils } from './TimelineUIUtils.js';
+const { widget, widgetRef } = UI.Widget;
+class MiniMapOverviewPane extends PerfUI.TimelineOverviewPane.TimelineOverviewPane {
+    #data = null;
+    #controls = [];
+    #hadHighlightedBounds = false;
+    constructor(element) {
+        super(element);
+        this.enableCreateBreadcrumbsButton();
+    }
+    get data() {
+        return this.#data;
+    }
+    get controls() {
+        return this.#controls;
+    }
+    set bounds(bounds) {
+        if (bounds) {
+            this.setBounds(bounds.min, bounds.max);
+        }
+    }
+    set windowTimes(windowTimes) {
+        if (windowTimes) {
+            this.setWindowTimes(windowTimes.min, windowTimes.max);
+        }
+    }
+    set data(data) {
+        if (this.#data === data) {
+            return;
+        }
+        this.#data = data;
+        if (data === null) {
+            this.#controls = [];
+            return;
+        }
+        const { parsedTrace, settings } = data;
+        const markers = new Map();
+        const { Meta } = parsedTrace.data;
+        const navStartEvents = Meta.mainFrameNavigations;
+        const minTimeInMilliseconds = Trace.Helpers.Timing.microToMilli(Meta.traceBounds.min);
+        for (const event of navStartEvents) {
+            const { startTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
+            markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
+        }
+        this.setMarkers(markers);
+        this.setNavStartTimes(navStartEvents);
+        const controls = [
+            new TimelineEventOverviewResponsiveness(parsedTrace),
+            new TimelineEventOverviewCPUActivity(parsedTrace),
+            new TimelineEventOverviewNetwork(parsedTrace),
+        ];
+        if (settings.showScreenshots) {
+            const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(parsedTrace.data);
+            if (filmStrip.frames.length) {
+                controls.push(new TimelineFilmStripOverview(filmStrip));
+            }
+        }
+        if (settings.showMemory) {
+            controls.push(new TimelineEventOverviewMemory(parsedTrace));
+        }
+        this.#controls = controls;
+        this.setOverviewControls(controls);
+        this.showingScreenshots = settings.showScreenshots;
+    }
+    set highlightedBounds(highlightedBounds) {
+        if (highlightedBounds) {
+            this.highlightBounds(highlightedBounds.bounds, highlightedBounds.withBracket);
+            this.#hadHighlightedBounds = true;
+        }
+        else if (this.#hadHighlightedBounds) {
+            this.clearBoundsHighlight();
+            this.#hadHighlightedBounds = false;
+        }
+    }
+    reset() {
+        this.#data = null;
+        this.#controls = [];
+        super.reset();
+    }
+}
+export const DEFAULT_VIEW = (input, output, target) => {
+    // clang-format off
+    render(html `
+    <style>${miniMapStyles}</style>
+    ${widget(TimelineComponents.BreadcrumbsUI.BreadcrumbsUI, {
+        initialBreadcrumb: input.initialBreadcrumb,
+        activeBreadcrumb: input.activeBreadcrumb,
+        onBreadcrumbActivated: input.onBreadcrumbActivated,
+    })}
+    <devtools-widget
+      ${widget(MiniMapOverviewPane, {
+        bounds: input.bounds,
+        windowTimes: input.windowTimes,
+        data: input.data,
+        highlightedBounds: input.highlightedBounds,
+    })}
+      ${widgetRef(MiniMapOverviewPane, pane => {
+        output.getControls = data => pane.data === data ? pane.controls : [];
+        output.resetOverview = () => pane.reset();
+    })}
+      @OverviewPaneWindowChanged=${(event) => {
+        input.onOverviewWindowChanged(event.detail);
+    }}
+      @OverviewPaneBreadcrumbAdded=${(event) => {
+        input.onOverviewBreadcrumbAdded(event.detail);
+    }}
+      @OverviewPaneMouseMove=${(event) => {
+        input.onOverviewMouseMove(event.detail);
+    }}
+      @OverviewPaneMouseLeave=${() => {
+        input.onOverviewMouseLeave();
+    }}>
+    </devtools-widget>
+  `, target, {
+        container: {
+            classes: ['timeline-minimap', ...(input.data ? [] : ['no-trace-active'])],
+        },
+    });
+    // clang-format on
+};
 /**
  * This component wraps the generic PerfUI Overview component and configures it
  * specifically for the Performance Panel, including injecting the CSS we use
@@ -23,47 +142,59 @@ import { TimelineUIUtils } from './TimelineUIUtils.js';
  */
 const TimelineMiniMapBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
 export class TimelineMiniMap extends TimelineMiniMapBase {
-    #overviewComponent = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('timeline');
-    #controls = [];
     breadcrumbs = null;
-    #breadcrumbsUI;
+    #initialBreadcrumb = null;
+    #activeBreadcrumb = null;
     #data = null;
+    #windowTimes;
+    #bounds;
+    #highlightedBounds = null;
+    #view;
+    #viewOutput = {};
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
-    constructor() {
+    #onBreadcrumbActivatedBound = (breadcrumb, childBreadcrumbsRemoved) => {
+        this.#activateBreadcrumb(breadcrumb, { removeChildBreadcrumbs: childBreadcrumbsRemoved, updateVisibleWindow: true });
+    };
+    #onOverviewWindowChangedBound = (event) => {
+        this.#onOverviewPanelWindowChanged(event);
+    };
+    #onOverviewBreadcrumbAddedBound = (event) => {
+        this.addBreadcrumb(event);
+    };
+    #onOverviewMouseMoveBound = (event) => {
+        this.dispatchEventToListeners("OverviewPaneMouseMove" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_MOVE */, event);
+    };
+    #onOverviewMouseLeaveBound = () => {
+        this.dispatchEventToListeners("OverviewPaneMouseLeave" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE */);
+    };
+    constructor(view = DEFAULT_VIEW) {
         super();
-        this.registerRequiredCSS(miniMapStyles);
-        this.element.classList.add('timeline-minimap', 'no-trace-active');
-        this.#breadcrumbsUI = new TimelineComponents.BreadcrumbsUI.BreadcrumbsUI();
-        this.#breadcrumbsUI.show(this.element);
-        this.#overviewComponent.show(this.element);
-        this.#overviewComponent.addEventListener("OverviewPaneWindowChanged" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED */, event => {
-            this.#onOverviewPanelWindowChanged(event);
-        });
-        this.#overviewComponent.addEventListener("OverviewPaneBreadcrumbAdded" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_BREADCRUMB_ADDED */, event => {
-            this.addBreadcrumb(event.data);
-        });
-        // We want to add/remove an overlay for these two events, and the overlay system is controlled by
-        // `TimelineFlameChartView`, so we need to dispatch them up to the `TimelinePanel` level to call
-        // `TimelineFlameChartView` -> `addOverlay()/removeOverlay()`.
-        this.#overviewComponent.addEventListener("OverviewPaneMouseMove" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_MOVE */, event => {
-            this.dispatchEventToListeners("OverviewPaneMouseMove" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_MOVE */, event.data);
-        });
-        this.#overviewComponent.addEventListener("OverviewPaneMouseLeave" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE */, () => {
-            this.dispatchEventToListeners("OverviewPaneMouseLeave" /* PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE */);
-        });
-        this.#breadcrumbsUI.onBreadcrumbActivated = (breadcrumb, childBreadcrumbsRemoved) => {
-            this.#activateBreadcrumb(breadcrumb, { removeChildBreadcrumbs: childBreadcrumbsRemoved, updateVisibleWindow: true });
-        };
-        this.#overviewComponent.enableCreateBreadcrumbsButton();
+        this.#view = view;
         TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
         // Set the initial bounds for the overview. Otherwise if we mount & there
         // is not an immediate RESET event, then we don't render correctly.
         const state = TraceBounds.TraceBounds.BoundsManager.instance().state();
         if (state) {
             const { timelineTraceWindow, minimapTraceBounds } = state.milli;
-            this.#overviewComponent.setWindowTimes(timelineTraceWindow.min, timelineTraceWindow.max);
-            this.#overviewComponent.setBounds(minimapTraceBounds.min, minimapTraceBounds.max);
+            this.#windowTimes = { min: timelineTraceWindow.min, max: timelineTraceWindow.max };
+            this.#bounds = { min: minimapTraceBounds.min, max: minimapTraceBounds.max };
         }
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            data: this.#data,
+            initialBreadcrumb: this.#initialBreadcrumb,
+            activeBreadcrumb: this.#activeBreadcrumb,
+            onBreadcrumbActivated: this.#onBreadcrumbActivatedBound,
+            windowTimes: this.#windowTimes,
+            bounds: this.#bounds,
+            highlightedBounds: this.#highlightedBounds,
+            onOverviewWindowChanged: this.#onOverviewWindowChangedBound,
+            onOverviewBreadcrumbAdded: this.#onOverviewBreadcrumbAddedBound,
+            onOverviewMouseMove: this.#onOverviewMouseMoveBound,
+            onOverviewMouseLeave: this.#onOverviewMouseLeaveBound,
+        }, this.#viewOutput, this.contentElement);
     }
     #onOverviewPanelWindowChanged(event) {
         const parsedTrace = this.#data?.parsedTrace;
@@ -74,15 +205,18 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
         if (!traceBoundsState) {
             return;
         }
-        const left = (event.data.startTime > 0) ? event.data.startTime : traceBoundsState.milli.minimapTraceBounds.min;
-        const right = Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.minimapTraceBounds.max;
+        const left = (event.startTime > 0) ? event.startTime : traceBoundsState.milli.minimapTraceBounds.min;
+        const right = Number.isFinite(event.endTime) ? event.endTime : traceBoundsState.milli.minimapTraceBounds.max;
         TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace.Helpers.Timing.traceWindowFromMilliSeconds(Trace.Types.Timing.Milli(left), Trace.Types.Timing.Milli(right)), {
             shouldAnimate: false,
         });
     }
     #onTraceBoundsChange(event) {
         if (event.updateType === 'RESET' || event.updateType === 'VISIBLE_WINDOW') {
-            this.#overviewComponent.setWindowTimes(event.state.milli.timelineTraceWindow.min, event.state.milli.timelineTraceWindow.max);
+            this.#windowTimes = {
+                min: event.state.milli.timelineTraceWindow.min,
+                max: event.state.milli.timelineTraceWindow.max,
+            };
             // If the visible window has changed because we are revealing a certain
             // time period to the user, we need to ensure that this new time
             // period fits within the current minimap bounds. If it doesn't, we
@@ -99,8 +233,12 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
             }
         }
         if (event.updateType === 'RESET' || event.updateType === 'MINIMAP_BOUNDS') {
-            this.#overviewComponent.setBounds(event.state.milli.minimapTraceBounds.min, event.state.milli.minimapTraceBounds.max);
+            this.#bounds = {
+                min: event.state.milli.minimapTraceBounds.min,
+                max: event.state.milli.minimapTraceBounds.max,
+            };
         }
+        this.requestUpdate();
     }
     #updateMiniMapBoundsToFitNewWindow(newWindow) {
         if (!this.breadcrumbs) {
@@ -151,14 +289,20 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
         };
         const newVisibleTraceWindow = Trace.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
         const addedBreadcrumb = this.breadcrumbs.add(newVisibleTraceWindow);
-        this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
-        this.#breadcrumbsUI.activeBreadcrumb = addedBreadcrumb;
+        this.#initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+        this.#activeBreadcrumb = addedBreadcrumb;
+        this.requestUpdate();
     }
     highlightBounds(bounds, withBracket = false) {
-        this.#overviewComponent.highlightBounds(bounds, withBracket);
+        this.#highlightedBounds = { bounds, withBracket };
+        this.requestUpdate();
     }
     clearBoundsHighlight() {
-        this.#overviewComponent.clearBoundsHighlight();
+        if (this.#highlightedBounds === null) {
+            return;
+        }
+        this.#highlightedBounds = null;
+        this.requestUpdate();
     }
     /**
      * Activates a given breadcrumb.
@@ -170,75 +314,57 @@ export class TimelineMiniMap extends TimelineMiniMapBase {
             return;
         }
         this.breadcrumbs.setActiveBreadcrumb(breadcrumb, options);
-        // Only the initial breadcrumb is passed in because breadcrumbs are stored in a linked list and breadcrumbsUI component iterates through them
-        this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
-        this.#breadcrumbsUI.activeBreadcrumb = breadcrumb;
+        // Only the initial breadcrumb is passed in because breadcrumbs are stored in a linked list and breadcrumbsUI component iterates through them
+        this.#initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+        this.#activeBreadcrumb = breadcrumb;
+        this.requestUpdate();
     }
     reset() {
         this.#data = null;
-        this.#overviewComponent.reset();
-    }
-    #setMarkers(parsedTrace) {
-        const markers = new Map();
-        const { Meta } = parsedTrace.data;
-        // Only add markers for navigation start times.
-        const navStartEvents = Meta.mainFrameNavigations;
-        const minTimeInMilliseconds = Trace.Helpers.Timing.microToMilli(Meta.traceBounds.min);
-        for (const event of navStartEvents) {
-            const { startTime } = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
-            markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
-        }
-        this.#overviewComponent.setMarkers(markers);
-    }
-    #setNavigationStartEvents(parsedTrace) {
-        this.#overviewComponent.setNavStartTimes(parsedTrace.data.Meta.mainFrameNavigations);
+        this.breadcrumbs = null;
+        this.#initialBreadcrumb = null;
+        this.#activeBreadcrumb = null;
+        this.#highlightedBounds = null;
+        this.#viewOutput.resetOverview?.();
+        this.requestUpdate();
     }
     getControls() {
-        return this.#controls;
+        return this.#viewOutput.getControls?.(this.#data) ?? [];
     }
     setData(data) {
-        this.element.classList.toggle('no-trace-active', data === null);
         if (data === null) {
+            if (this.#data === null && this.breadcrumbs === null) {
+                return;
+            }
             this.#data = null;
-            this.#controls = [];
+            this.breadcrumbs = null;
+            this.#initialBreadcrumb = null;
+            this.#activeBreadcrumb = null;
+            this.requestUpdate();
             return;
         }
         if (this.#data?.parsedTrace === data.parsedTrace) {
             return;
         }
         this.#data = data;
-        this.#controls = [];
-        this.#setMarkers(data.parsedTrace);
-        this.#setNavigationStartEvents(data.parsedTrace);
-        this.#controls.push(new TimelineEventOverviewResponsiveness(data.parsedTrace));
-        this.#controls.push(new TimelineEventOverviewCPUActivity(data.parsedTrace));
-        this.#controls.push(new TimelineEventOverviewNetwork(data.parsedTrace));
-        if (data.settings.showScreenshots) {
-            const filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
-            if (filmStrip.frames.length) {
-                this.#controls.push(new TimelineFilmStripOverview(filmStrip));
-            }
-        }
-        if (data.settings.showMemory) {
-            this.#controls.push(new TimelineEventOverviewMemory(data.parsedTrace));
-        }
-        this.#overviewComponent.setOverviewControls(this.#controls);
-        this.#overviewComponent.showingScreenshots = data.settings.showScreenshots;
         this.#setInitialBreadcrumb();
+        this.requestUpdate();
     }
     #setInitialBreadcrumb() {
         // Set the initial breadcrumb that ModificationsManager created from the initial full window
         // or loaded from the file.
         this.breadcrumbs = ModificationsManager.activeManager()?.getTimelineBreadcrumbs() ?? null;
         if (!this.breadcrumbs) {
+            this.#initialBreadcrumb = null;
+            this.#activeBreadcrumb = null;
             return;
         }
         let lastBreadcrumb = this.breadcrumbs.initialBreadcrumb;
         while (lastBreadcrumb.child !== null) {
             lastBreadcrumb = lastBreadcrumb.child;
         }
-        this.#breadcrumbsUI.initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
-        this.#breadcrumbsUI.activeBreadcrumb = lastBreadcrumb;
+        this.#initialBreadcrumb = this.breadcrumbs.initialBreadcrumb;
+        this.#activeBreadcrumb = lastBreadcrumb;
     }
 }
 //# sourceMappingURL=TimelineMiniMap.js.map

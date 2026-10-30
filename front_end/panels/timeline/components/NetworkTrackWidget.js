@@ -12,12 +12,14 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format off
     render(html `
       <style>${networkTrackWidgetStyles}</style>
-      <devtools-widget class="container" ${widget(UI.Widget.WrapperWidget, { widget: input.flameChart })}></devtools-widget>
+      <devtools-widget
+        class="container"
+        ${widget((element) => new PerfUI.FlameChart.FlameChart(input.dataProvider, input.delegate, undefined, element), { windowTimes: input.windowTimes })}
+      ></devtools-widget>
     `, target);
     // clang-format on
 };
 export class NetworkTrackWidget extends UI.Widget.Widget {
-    #flameChart = null;
     #dataProvider = null;
     #parsedTrace = null;
     #bounds = null;
@@ -35,9 +37,6 @@ export class NetworkTrackWidget extends UI.Widget.Widget {
         if (this.#dataProvider === dataProvider && this.#parsedTrace === parsedTrace && this.#bounds === data.bounds) {
             return;
         }
-        if (dataProvider !== this.#dataProvider) {
-            this.#flameChart = null;
-        }
         this.#dataProvider = dataProvider;
         this.#parsedTrace = parsedTrace;
         this.#bounds = data.bounds;
@@ -46,9 +45,6 @@ export class NetworkTrackWidget extends UI.Widget.Widget {
     performUpdate() {
         if (!this.#parsedTrace || !this.#dataProvider || !this.#bounds) {
             return;
-        }
-        if (!this.#flameChart) {
-            this.#flameChart = new PerfUI.FlameChart.FlameChart(this.#dataProvider, this);
         }
         const entityMapper = Trace.EntityMapper.EntityMapper.getOrCreate(this.#parsedTrace);
         // Override preparePopoverElement to always return null, preventing any hover tooltips
@@ -66,9 +62,11 @@ export class NetworkTrackWidget extends UI.Widget.Widget {
             range: Trace.Types.Timing.Micro(this.#bounds.range),
         });
         this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
-        this.#flameChart.setWindowTimes(bounds.min, bounds.max);
-        this.#view({ flameChart: this.#flameChart }, undefined, this.contentElement);
-        this.#flameChart.update();
+        this.#view({
+            dataProvider: this.#dataProvider,
+            delegate: this,
+            windowTimes: bounds,
+        }, undefined, this.contentElement);
     }
     windowChanged(_windowStartTime, _windowEndTime, _animate) {
     }

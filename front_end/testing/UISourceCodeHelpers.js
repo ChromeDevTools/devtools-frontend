@@ -61,6 +61,8 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
     searchInPath(_query, _progress) {
         return Promise.resolve([...this.#files]);
     }
+    setFileContent(_path, _content, _isBase64) {
+    }
 }
 class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {
     #content;

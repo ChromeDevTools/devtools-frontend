@@ -8020,6 +8020,10 @@ var NativeFunctions = [
     signatures: [["type", "eventInitDict"]]
   },
   {
+    name: "DeviceBoundSessionRegistrationObserver",
+    signatures: [["callback", "?options"]]
+  },
+  {
     name: "DeviceMotionEvent",
     signatures: [["type", "?eventInitDict"]]
   },
@@ -9653,7 +9657,7 @@ var NativeFunctions = [
   },
   {
     name: "ViewTimeline",
-    signatures: [["?options"]]
+    signatures: [["options"]]
   }
 ];
 

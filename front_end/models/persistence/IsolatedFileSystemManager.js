@@ -93,12 +93,18 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const console = opts.console ?? Common.Console.Console.instance();
         if (!Root.DevToolsContext.globalInstance().has(IsolatedFileSystemManager) || forceNew) {
+            if (Root.DevToolsContext.globalInstance().has(IsolatedFileSystemManager)) {
+                Root.DevToolsContext.globalInstance().get(IsolatedFileSystemManager).dispose();
+            }
             const instance = new IsolatedFileSystemManager(settings, console);
             Root.DevToolsContext.globalInstance().set(IsolatedFileSystemManager, instance);
         }
         return Root.DevToolsContext.globalInstance().get(IsolatedFileSystemManager);
     }
     static removeInstance() {
+        if (Root.DevToolsContext.globalInstance().has(IsolatedFileSystemManager)) {
+            Root.DevToolsContext.globalInstance().get(IsolatedFileSystemManager).dispose();
+        }
         Root.DevToolsContext.globalInstance().delete(IsolatedFileSystemManager);
     }
     requestFileSystems() {

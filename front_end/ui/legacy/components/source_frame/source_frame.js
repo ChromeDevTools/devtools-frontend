@@ -1617,7 +1617,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         <div class="toolbar-text">${input.mimeType}</div>
       </devtools-toolbar>
     ` : nothing3}
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging2.pane("font-view")}` } } });
   output.measureDimensions = () => {
     if (!dummyEl) {
       return { width: 0, height: 0 };
@@ -1639,8 +1639,7 @@ var FontView = class extends UI4.View.SimpleView {
   constructor(mimeType, contentProvider, element, view = DEFAULT_VIEW3) {
     super(element, {
       title: i18nString3(UIStrings3.font),
-      viewId: "font",
-      jslog: `${VisualLogging2.pane("font-view")}`
+      viewId: "font"
     });
     this.#view = view;
     this.url = contentProvider.contentURL();
@@ -1893,7 +1892,8 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
     container: {
       classes: ["image-view"],
       attributes: {
-        tabindex: "-1"
+        tabindex: "-1",
+        jslog: `${VisualLogging3.pane("image-view")}`
       }
     }
   });
@@ -1924,8 +1924,7 @@ var ImageView = class extends ImageViewBase {
   constructor(mimeType, contentProvider, element, view = DEFAULT_VIEW4) {
     super(element, {
       title: i18nString4(UIStrings4.image),
-      viewId: "image",
-      jslog: `${VisualLogging3.pane("image-view")}`
+      viewId: "image"
     });
     this.#view = view;
     this.#url = contentProvider.contentURL();
@@ -1933,11 +1932,6 @@ var ImageView = class extends ImageViewBase {
     this.#contentProvider = contentProvider;
     this.#uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
     if (this.#uiSourceCode) {
-      this.#uiSourceCode.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted,
-        this.#workingCopyCommitted,
-        this
-      );
       new UI5.DropTarget.DropTarget(
         this.element,
         [UI5.DropTarget.Type.ImageFile, UI5.DropTarget.Type.URI],
@@ -2012,8 +2006,21 @@ var ImageView = class extends ImageViewBase {
   }
   wasShown() {
     super.wasShown();
+    this.#uiSourceCode?.addEventListener(
+      Workspace.UISourceCode.Events.WorkingCopyCommitted,
+      this.#workingCopyCommitted,
+      this
+    );
     this.requestUpdate();
     void this.#updateContentIfNeeded();
+  }
+  willHide() {
+    super.willHide();
+    this.#uiSourceCode?.removeEventListener(
+      Workspace.UISourceCode.Events.WorkingCopyCommitted,
+      this.#workingCopyCommitted,
+      this
+    );
   }
   disposeView() {
     if (this.#uiSourceCode) {

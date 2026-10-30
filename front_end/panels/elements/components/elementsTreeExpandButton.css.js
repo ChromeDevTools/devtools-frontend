@@ -22,6 +22,7 @@ export default `/*
 
 .expand-button {
   display: inline-flex;
+  vertical-align: middle;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;

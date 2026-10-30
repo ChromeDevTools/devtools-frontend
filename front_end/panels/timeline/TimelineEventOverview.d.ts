@@ -1,7 +1,21 @@
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+interface OverviewStripViewOutput {
+    backgroundCanvas?: HTMLCanvasElement;
+}
 export declare abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
-    constructor(id: string, title: string | null);
+    #private;
+    protected readonly title: string | null;
+    constructor(id: string, title: string | null, options?: {
+        jslog?: string;
+        hasBackgroundCanvas?: boolean;
+        heapSizeText?: string;
+    }, output?: OverviewStripViewOutput);
+    protected renderStrip(options?: {
+        jslog?: string;
+        hasBackgroundCanvas?: boolean;
+        heapSizeText?: string;
+    }, output?: OverviewStripViewOutput): void;
     renderBar(begin: number, end: number, position: number, height: number, color: string): void;
 }
 export declare class TimelineEventOverviewNetwork extends TimelineEventOverview {
@@ -38,7 +52,6 @@ export declare class TimelineFilmStripOverview extends TimelineEventOverview {
 }
 export declare class TimelineEventOverviewMemory extends TimelineEventOverview {
     #private;
-    private heapSizeLabel;
     constructor(parsedTrace: Trace.TraceModel.ParsedTrace);
     resetHeapSizeLabels(): void;
     update(start?: Trace.Types.Timing.Milli, end?: Trace.Types.Timing.Milli): void;
@@ -52,3 +65,4 @@ export declare class Quantizer {
     constructor(startTime: number, quantDuration: number, callback: (arg0: number[]) => void);
     appendInterval(time: number, group: number): void;
 }
+export {};

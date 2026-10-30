@@ -123,7 +123,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         </div>`;
         // clang-format on
     }
-    render(template, target);
+    render(template, target, { container: { classes: ['flex-none'] } });
 };
 export class PreloadingDisabledInfobar extends UI.Widget.VBox {
     #view;
@@ -133,7 +133,7 @@ export class PreloadingDisabledInfobar extends UI.Widget.VBox {
     #disabledByHoldbackPrefetchSpeculationRules = false;
     #disabledByHoldbackPrerenderSpeculationRules = false;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['flex-none'] });
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
     }
     get disabledByPreference() {

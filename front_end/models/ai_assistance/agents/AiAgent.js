@@ -8,6 +8,7 @@ import * as AiUtils from '../../ai-utils/ai-utils.js';
 import { dispatchAiAssistanceDoneEvent } from '../DOMHelpers.js';
 const { debugLog, isStructuredLogEnabled } = AiUtils.Debug;
 const MAX_SUGGESTION_LENGTH = 200;
+export const SUGGEST_FOLLOW_UPS_FUNCTION_NAME = 'suggestFollowUps';
 /**
  * The types of event in the response stream that `AiConversation#run()`
  * yields to the AI assistance panel. The same events, minus a few, are saved
@@ -42,7 +43,8 @@ const MAX_SUGGESTION_LENGTH = 200;
  * ## Events for one tool call
  *
  * `AiAgent#callFunction()` yields these. All events for one call carry the
- * same `callId`.
+ * same `callId`. The `suggestFollowUps` function never yields tool call UI
+ * events (`TITLE`, `THOUGHT`, `ACTION`).
  *
  * ```
  * TITLE?, THOUGHT?              from the tool's displayInfoFromArgs()
@@ -66,7 +68,11 @@ const MAX_SUGGESTION_LENGTH = 200;
  * every function call in a response as one `MODEL` turn. The next request
  * carries one `functionResponse` per call, in the same order. A denied call
  * gets a response that says it did not run. After a context change, each call
- * that did not run gets a "Not executed" response.
+ * that did not run gets a "Not executed" response. In the final response,
+ * `suggestFollowUps` is not recorded in the history. When called prematurely
+ * alongside other tools, its suggestions are ignored and it receives a
+ * `functionResponse` instructing the model to call `suggestFollowUps` only in
+ * the final response.
  *
  * ## Saved history
  *
@@ -369,11 +375,7 @@ export class AiAgent {
         for (const line of lines) {
             const trimmed = line.trim();
             if (trimmed.startsWith('SUGGESTIONS:')) {
-                try {
-                    suggestions = sanitizeSuggestions(trimmed.substring('SUGGESTIONS:'.length).trim());
-                }
-                catch {
-                }
+                suggestions = sanitizeSuggestions(trimmed.substring('SUGGESTIONS:'.length).trim());
             }
             else {
                 answerLines.push(line);
@@ -383,11 +385,7 @@ export class AiAgent {
         // the case where the suggestions are part of the last line of the answer.
         if (!suggestions && answerLines.at(-1)?.includes('SUGGESTIONS:')) {
             const [answer, suggestionsText] = answerLines[answerLines.length - 1].split('SUGGESTIONS:', 2);
-            try {
-                suggestions = sanitizeSuggestions(suggestionsText.trim());
-            }
-            catch {
-            }
+            suggestions = sanitizeSuggestions(suggestionsText.trim());
             answerLines[answerLines.length - 1] = answer;
         }
         const response = {
@@ -507,35 +505,16 @@ export class AiAgent {
                 break;
             }
             this.#history.push(request.current_message);
+            // If the model calls other tools alongside suggestFollowUps, the investigation is still in progress,
+            // so premature suggestions are discarded until the concluding turn.
+            const hasOtherFunctionCalls = Boolean(functionCalls?.some(call => call.name !== SUGGEST_FOLLOW_UPS_FUNCTION_NAME));
+            if (!functionCalls || !hasOtherFunctionCalls) {
+                yield* this.#handleFinalResponse(i, textResponse, functionCalls, rpcId);
+                break;
+            }
             if (textResponse) {
                 const parsedResponse = this.parseTextResponse(textResponse);
-                if (!('answer' in parsedResponse)) {
-                    throw new Error('Expected a completed response to have an answer');
-                }
-                if (!functionCalls) {
-                    debugLog(`[AiAgent] Step ${i + 1}: Model returned text response:`, parsedResponse.answer);
-                    this.#history.push({
-                        parts: [{
-                                text: parsedResponse.answer,
-                            }],
-                        role: Host.AidaClient.Role.MODEL,
-                    });
-                }
-                Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
-                yield await this.finalizeAnswer({
-                    type: "answer" /* ResponseType.ANSWER */,
-                    text: parsedResponse.answer,
-                    suggestions: parsedResponse.suggestions,
-                    complete: true,
-                    rpcId,
-                });
-                if (!functionCalls) {
-                    break;
-                }
-            }
-            if (!functionCalls) {
-                yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
-                break;
+                yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId);
             }
             debugLog(`[AiAgent] Step ${i + 1}: Model requested function calls:`, functionCalls);
             const outcome = yield* this.#runFunctionCalls(functionCalls, textResponse, options);
@@ -564,6 +543,51 @@ export class AiAgent {
         return;
     }
     /**
+     * Handles the final model response of a run when no further tool calls need
+     * to execute.
+     *
+     * - If `textResponse` is empty, yields an `UNKNOWN` error.
+     * - Otherwise, records the answer as a `MODEL` turn in `#history` (excluding
+     *   `suggestFollowUps`) and yields a completed `ANSWER` with follow-up
+     *   suggestions.
+     */
+    async *#handleFinalResponse(stepIndex, textResponse, functionCalls, rpcId) {
+        if (!textResponse) {
+            yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
+            return;
+        }
+        const lastSuggestCall = functionCalls?.findLast(call => call.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME);
+        const followUpSuggestions = sanitizeSuggestionsList(lastSuggestCall?.args?.suggestions);
+        const parsedResponse = this.parseTextResponse(textResponse);
+        debugLog(`[AiAgent] Step ${stepIndex + 1}: Model returned text response:`, parsedResponse.answer);
+        this.#history.push({
+            parts: [{
+                    text: parsedResponse.answer,
+                }],
+            role: Host.AidaClient.Role.MODEL,
+        });
+        // Fall back to text-parsed `SUGGESTIONS:` while server-side preambles still
+        // emit text directives.
+        // TODO(b/568697679): Remove `parsedResponse.suggestions` fallback once
+        // `suggestFollowUps` is deployed and the server-side preamble is updated.
+        const suggestions = followUpSuggestions ?? parsedResponse.suggestions;
+        yield await this.#createCompletedAnswer(parsedResponse.answer, rpcId, suggestions);
+    }
+    /**
+     * Records the `AiAssistanceAnswerReceived` user metric and builds a
+     * completed `ANSWER` response through `finalizeAnswer()`.
+     */
+    async #createCompletedAnswer(text, rpcId, suggestions) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
+        return await this.finalizeAnswer({
+            type: "answer" /* ResponseType.ANSWER */,
+            text,
+            suggestions,
+            complete: true,
+            rpcId,
+        });
+    }
+    /**
      * Runs every function call in one model response, one after another, in the
      * order the model returned them.
      *
@@ -584,6 +608,17 @@ export class AiAgent {
         const functionResponses = [];
         try {
             for (const [index, functionCall] of functionCalls.entries()) {
+                if (functionCall.name === SUGGEST_FOLLOW_UPS_FUNCTION_NAME) {
+                    functionResponses.push({
+                        functionResponse: {
+                            name: functionCall.name,
+                            response: {
+                                result: 'Ignored: call suggestFollowUps only in the final response after all other tool calls complete.',
+                            },
+                        },
+                    });
+                    continue;
+                }
                 const allowedOriginResult = this.#allowedOrigin?.();
                 if (allowedOriginResult && 'blocked' in allowedOriginResult) {
                     // Stop if the page navigated before the origin was locked.
@@ -876,13 +911,16 @@ export class AiAgent {
     }
 }
 /**
- * Parses `suggestions` as a JSON array and returns its non-empty string items,
- * with whitespace collapsed and each item truncated to `MAX_SUGGESTION_LENGTH`.
- * Returns `undefined` if the value is not an array or no items remain.
- * Throws if `suggestions` is not valid JSON.
+ * Validates and sanitizes raw follow-up suggestions from the model (either
+ * `args.suggestions` from a `suggestFollowUps` tool call or a `JSON.parse`d
+ * `SUGGESTIONS:` text directive).
+ *
+ * Expects `parsed` to be a `string[]`, but accepts `unknown` because model
+ * output is untrusted. Returns non-empty string items with whitespace
+ * collapsed and each item truncated to `MAX_SUGGESTION_LENGTH`, or
+ * `undefined` if `parsed` is not an array or no valid items remain.
  */
-export function sanitizeSuggestions(suggestions) {
-    const parsed = JSON.parse(suggestions);
+export function sanitizeSuggestionsList(parsed) {
     if (!Array.isArray(parsed)) {
         return undefined;
     }
@@ -902,6 +940,23 @@ export function sanitizeSuggestions(suggestions) {
         return undefined;
     }
     return sanitized;
+}
+/**
+ * Parses `suggestions` as a JSON array and returns its non-empty string items,
+ * with whitespace collapsed and each item truncated to `MAX_SUGGESTION_LENGTH`.
+ * Returns `undefined` if `suggestions` is not valid JSON, not an array, or no
+ * items remain.
+ *
+ * TODO(b/568697679): Remove this JSON-string wrapper and consolidate into a
+ * single function once legacy `SUGGESTIONS:` text parsing is removed.
+ */
+export function sanitizeSuggestions(suggestions) {
+    try {
+        return sanitizeSuggestionsList(JSON.parse(suggestions));
+    }
+    catch {
+        return undefined;
+    }
 }
 /**
  * Maps AIDA-specific client error instances to user-facing ErrorType enums.

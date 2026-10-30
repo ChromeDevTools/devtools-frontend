@@ -690,14 +690,20 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         sidebar.setPage(resourcePath);
         return undefined;
     }
-    onOpenResource(message) {
+    onOpenResource(message, port) {
         if (message.command !== "openResource" /* Extensions.ExtensionAPI.PrivateAPI.Commands.OpenResource */) {
             return this.status.E_BADARG('command', `expected ${"openResource" /* Extensions.ExtensionAPI.PrivateAPI.Commands.OpenResource */}`);
         }
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
         if (uiSourceCode) {
+            if (!this.extensionAllowedOnContentProvider(uiSourceCode, port)) {
+                return this.status.E_FAILED('Permission denied');
+            }
             void Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
             return this.status.OK();
+        }
+        if (!this.extensionAllowedOnURL(message.url, port)) {
+            return this.status.E_FAILED('Permission denied');
         }
         const resource = Bindings.ResourceUtils.resourceForURL(message.url);
         if (resource) {

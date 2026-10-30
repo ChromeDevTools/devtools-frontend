@@ -17,6 +17,16 @@ var LighthouseReportGenerator = class {
 
 // ../../front_end/models/lighthouse/RunTypes.ts
 var RunTypes_exports = {};
+__export(RunTypes_exports, {
+  CATEGORY_SUPPORTED_MODES: () => CATEGORY_SUPPORTED_MODES
+});
+var CATEGORY_SUPPORTED_MODES = {
+  performance: ["navigation", "timespan", "snapshot"],
+  accessibility: ["navigation", "snapshot"],
+  "best-practices": ["navigation", "timespan", "snapshot"],
+  seo: ["navigation", "snapshot"],
+  "agentic-browsing": ["navigation", "snapshot"]
+};
 export {
   LighthouseReporterTypes_exports as ReporterTypes,
   RunTypes_exports as RunTypes

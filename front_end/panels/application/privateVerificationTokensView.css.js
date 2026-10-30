@@ -24,9 +24,4 @@ export default `/*
   overflow: hidden;
 }
 
-.empty-state {
-  padding: var(--sys-size-6);
-  color: var(--sys-color-on-surface-subtle);
-}
-
 /*# sourceURL=${import.meta.resolve('./privateVerificationTokensView.css')} */`;

@@ -6,8 +6,6 @@
   "files": [
     "menu.css.js",
     "menuGroup.css.js",
-    "menuItem.css.js",
-    "selectMenu.css.js",
-    "selectMenuButton.css.js"
+    "menuItem.css.js"
   ]
 }

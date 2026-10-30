@@ -42,7 +42,7 @@ export default `/*
     content: var(--image-file-empty);
     width: 35%;
     height: 35%;
-    border-radius: 50%;
+    border-radius: var(--sys-shape-corner-full);
     outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
     top: 60%;
     left: 55%;

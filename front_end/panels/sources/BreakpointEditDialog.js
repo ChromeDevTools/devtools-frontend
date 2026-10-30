@@ -120,7 +120,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
     </div>
     `, 
     // clang-format on
-    target, { container: { attributes: { tabindex: -1 } } });
+    target, {
+        container: {
+            attributes: { tabindex: -1, jslog: `${VisualLogging.dialog('edit-breakpoint')}` },
+            classes: ['sources-edit-breakpoint-dialog'],
+        },
+    });
 };
 export class BreakpointEditDialog extends UI.Widget.Widget {
     #view;
@@ -135,10 +140,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     #state;
     constructor(target, view = DEFAULT_VIEW) {
         super(target, {
-            jslog: `${VisualLogging.dialog('edit-breakpoint')}`,
-            useShadowDom: true,
+            useShadowDom: 'pure',
             delegatesFocus: true,
-            classes: ['sources-edit-breakpoint-dialog'],
         });
         this.#view = view;
     }

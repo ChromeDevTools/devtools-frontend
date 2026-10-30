@@ -27,12 +27,12 @@ var surveyLink_css_default = `/*
 }
 
 .link {
-  padding: var(--issue-link-padding, 4px 0 0 0);
+  padding: var(--issue-link-padding, var(--sys-size-3) 0 0 0);
   text-decoration: var(--issue-link-text-decoration, underline);
   cursor: pointer;
-  font-size: var(--issue-link-font-size, 14px);
+  font-size: var(--issue-link-font-size, var(--sys-typescale-body2-size));
   color: var(--sys-color-primary);
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   border: none;
   background: none;
   font-family: inherit;

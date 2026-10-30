@@ -2282,6 +2282,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3572,7 +3573,7 @@ __export(StyleEditorWidget_exports, {
 import "../../ui/kit/kit.js";
 import * as Elements2 from "../../models/elements/elements.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
-import { Directives, html as html8, render as render5 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html8, render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
@@ -3627,6 +3628,7 @@ import * as ColorPicker from "../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import * as Lit5 from "../../ui/lit/lit.js";
+import { Directives, html as html7, nothing as nothing2, render as render4 } from "../../ui/lit/lit.js";
 import * as SettingsUI from "../../ui/settings/settings.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents2 from "./components/components.js";
@@ -5008,7 +5010,7 @@ function escapeAsSingleQuotedJsString(text) {
 }
 
 // ../../front_end/panels/elements/StylePropertyTreeElement.ts
-var { html: html7, nothing: nothing2, render: render4, Directives: { classMap: classMap2, ref: ref3, until } } = Lit5;
+var { classMap: classMap2, ref: ref3, until } = Directives;
 var { ifExpanded } = Tooltips.Tooltip;
 var ASTUtils = SDK4.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents2.StylePropertyEditor.FlexboxEditor;
@@ -5337,7 +5339,6 @@ var VariableRenderer = class extends VariableRendererBase {
       this.#computedStyleExtraFields,
       context
     );
-    const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
     const varSwatch = html7`<span
@@ -5350,7 +5351,11 @@ var VariableRenderer = class extends VariableRendererBase {
     }}></devtools-link-swatch>${renderedFallback ? html7`, ${renderedFallback.nodes}` : nothing2})</span>${tooltipId ? html7`<devtools-tooltip
             id=${tooltipId}
             variant=rich
-            jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing2}`;
+            jslogContext=elements.css-var>${widget2(ElementsComponents2.CSSVariableValueView.CSSVariableValueView, {
+      variableName: match.name,
+      value: variableValue ?? void 0,
+      details: this.#stylesContainer.getRegisteredPropertyDetails(this.#matchedStyles, match.name)
+    })}</devtools-tooltip>` : nothing2}`;
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
       return varSwatch;
@@ -5386,7 +5391,6 @@ var VariableNameRenderer = class extends VariableNameRendererBase {
     const { declaration, value: variableValue } = match.resolveVariable() ?? {};
     const isDefined = variableValue !== void 0;
     const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-    const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
     return html7`<devtools-link-swatch class=css-var-link .data=${{
@@ -5397,7 +5401,11 @@ var VariableNameRenderer = class extends VariableNameRendererBase {
     }}></devtools-link-swatch>${tooltipId ? html7`<devtools-tooltip
         id=${tooltipId}
         variant=rich
-        jslogContext=elements.css-var><devtools-widget>${tooltipContents.element}</devtools-widget></devtools-tooltip>` : nothing2}`;
+        jslogContext=elements.css-var>${widget2(ElementsComponents2.CSSVariableValueView.CSSVariableValueView, {
+      variableName: match.text,
+      value: variableValue ?? void 0,
+      details: this.#stylesContainer.getRegisteredPropertyDetails(this.#matchedStyles, match.text)
+    })}</devtools-tooltip>` : nothing2}`;
   }
 };
 var AttributeRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.AttributeMatch);
@@ -6289,7 +6297,7 @@ var ShadowWidget = class extends UI7.Widget.Widget {
   #popoverHelper;
   constructor(element, view = SHADOW_WIDGET_DEFAULT_VIEW) {
     super(element);
-    this.element.classList.remove("vbox", "flex-auto", "widget");
+    this.element.classList.remove("widget");
     this.#view = view;
   }
   set model(model) {
@@ -6623,13 +6631,10 @@ var AnchorFunctionRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.Anc
 var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends AnchorFunctionRendererBase {
   // clang-format on
   #stylesContainer;
-  static async decorateAnchorForAnchorLink(stylesContainer, container, { identifier, needsSpace }) {
-    if (identifier) {
-      render4(html7`${identifier}`, container, { host: container });
-    }
+  static async decorateAnchorForAnchorLink(stylesContainer, { identifier, needsSpace }) {
     const anchorNode = await stylesContainer.node()?.getAnchorBySpecifier(identifier) ?? void 0;
     if (!identifier && !anchorNode) {
-      return;
+      return nothing2;
     }
     const onLinkActivate = () => {
       if (!anchorNode) {
@@ -6648,59 +6653,47 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends AnchorFunctio
       SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK4.TargetManager.TargetManager.instance());
     };
     if (identifier) {
-      render4(
-        // clang-format off
-        html7`<devtools-link-swatch
-                @mouseenter=${onMouseEnter}
-                @mouseleave=${onMouseLeave}
-                .data=${{
-          text: identifier,
-          tooltip: anchorNode ? void 0 : { title: i18nString4(UIStrings4.sIsNotDefined, { PH1: identifier }) },
-          isDefined: Boolean(anchorNode),
-          jslogContext: "anchor-link",
-          onLinkActivate
-        }}
-                ></devtools-link-swatch>${needsSpace ? " " : ""}`,
-        // clang-format on
-        container,
-        { host: container }
-      );
-    } else {
-      render4(html7`<devtools-icon
-                   role='button'
-                   title=${i18nString4(UIStrings4.jumpToAnchorNode)}
-                   class='icon-link'
-                   name='open-externally'
-                   jslog=${VisualLogging3.action("jump-to-anchor-node").track({ click: true })}
-                   @mouseenter=${onMouseEnter}
-                   @mouseleave=${onMouseLeave}
-                   @mousedown=${(ev) => ev.stopPropagation()}
-                   @click=${handleIconClick}
-                  ></devtools-icon>${needsSpace ? " " : ""}`, container, { host: container });
+      return html7`<devtools-link-swatch
+        @mouseenter=${onMouseEnter}
+        @mouseleave=${onMouseLeave}
+        .data=${{
+        text: identifier,
+        tooltip: anchorNode ? void 0 : { title: i18nString4(UIStrings4.sIsNotDefined, { PH1: identifier }) },
+        isDefined: Boolean(anchorNode),
+        jslogContext: "anchor-link",
+        onLinkActivate
+      }}
+      ></devtools-link-swatch>${needsSpace ? " " : nothing2}`;
     }
+    return html7`<devtools-icon
+      role='button'
+      title=${i18nString4(UIStrings4.jumpToAnchorNode)}
+      class='icon-link'
+      name='open-externally'
+      jslog=${VisualLogging3.action("jump-to-anchor-node").track({ click: true })}
+      @mouseenter=${onMouseEnter}
+      @mouseleave=${onMouseLeave}
+      @mousedown=${(ev) => ev.stopPropagation()}
+      @click=${handleIconClick}
+    ></devtools-icon>${needsSpace ? " " : nothing2}`;
   }
   constructor(stylesContainer) {
     super();
     this.#stylesContainer = stylesContainer;
   }
   render(match, context) {
-    const content = document.createElement("span");
     if (match.node.name === "VariableName") {
-      void _AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, { identifier: match.text });
-    } else {
-      content.appendChild(document.createTextNode(`${match.functionName}(`));
-      const swatchContainer = document.createElement("span");
-      content.appendChild(swatchContainer);
-      const args = ASTUtils.children(match.node.getChild("ArgList"));
-      const remainingArgs = args.splice(1);
-      void _AnchorFunctionRenderer.decorateAnchorForAnchorLink(
-        this.#stylesContainer,
-        swatchContainer,
-        { needsSpace: remainingArgs.length > 1 }
-      );
-      Renderer.renderInto(remainingArgs, context, content);
+      return html7`<span>${until(
+        _AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, { identifier: match.text }),
+        match.text
+      )}</span>`;
     }
-    return [content];
+    const args = ASTUtils.children(match.node.getChild("ArgList"));
+    const remainingArgs = args.splice(1);
+    return html7`<span>${match.functionName}(${until(_AnchorFunctionRenderer.decorateAnchorForAnchorLink(
+      this.#stylesContainer,
+      { needsSpace: remainingArgs.length > 1 }
+    ))}${Renderer.render(remainingArgs, context).nodes}</span>`;
   }
 };
 var PositionAnchorRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.PositionAnchorMatch);
@@ -6712,9 +6705,10 @@ var PositionAnchorRenderer = class extends PositionAnchorRendererBase {
     this.#stylesContainer = stylesContainer;
   }
   render(match) {
-    const content = document.createElement("span");
-    void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, content, { identifier: match.text });
-    return [content];
+    return html7`<span>${until(
+      AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, { identifier: match.text }),
+      match.text
+    )}</span>`;
   }
 };
 var PositionAreaRendererBase = rendererBase(SDK4.CSSPropertyParserMatchers.PositionAreaMatch);
@@ -6920,22 +6914,17 @@ var PositionTryRenderer = class extends PositionTryRendererBase {
     const node = this.#treeElement ? this.#matchedStyles.nodeForStyle(this.#treeElement.property.ownerStyle) : this.#matchedStyles.node();
     const fallbackLabels = [];
     for (const [i, fallback] of match.fallbacks.entries()) {
-      const isImportant = fallback.find((node2) => node2.name === "Important");
-      const fallbackContent = document.createElement("span");
-      if (i > 0) {
-        fallbackContent.appendChild(document.createTextNode(", "));
+      const important = fallback.find((node2) => node2.name === "Important");
+      const classes = classMap2({
+        "inactive-value": !this.#treeElement?.inherited() && node === this.#matchedStyles.node() && i !== this.#matchedStyles.activePositionFallbackIndex()
+      });
+      content.push(html7`<span class=${classes}>${i > 0 ? ", " : nothing2}${Renderer.render(fallback.filter((node2) => node2.name !== "Important"), context).nodes}</span>`);
+      if (important) {
+        content.push(html7` ${Renderer.render(important, context).nodes}`);
       }
-      if (!this.#treeElement?.inherited() && node === this.#matchedStyles.node() && i !== this.#matchedStyles.activePositionFallbackIndex()) {
-        fallbackContent.classList.add("inactive-value");
-      }
-      Renderer.renderInto(fallback.filter((node2) => node2.name !== "Important"), context, fallbackContent);
       fallbackLabels.push(
         context.matchedResult.getComputedTextRange(fallback[0], fallback[fallback.length - 1]).trim()
       );
-      content.push(fallbackContent);
-      if (isImportant) {
-        content.push(document.createTextNode(" "), Renderer.render(isImportant, context).nodes);
-      }
     }
     if (!this.#treeElement || this.#treeElement.overloaded() || this.#treeElement.inherited() || !this.#treeElement.property.activeInStyle() || !node) {
       return html7`${content}`;
@@ -7449,11 +7438,10 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     );
     this.listItemElement.appendChild(this.nameElement);
     if (this.property.name.startsWith("--") && !(this.property.ownerStyle.parentRule instanceof SDK4.CSSRule.CSSFunctionRule)) {
-      const contents = this.#stylesContainer.getVariablePopoverContents(
-        this.matchedStyles(),
-        this.property.name,
-        this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null
-      );
+      const contents = new ElementsComponents2.CSSVariableValueView.CSSVariableValueView();
+      contents.variableName = this.property.name;
+      contents.value = this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value;
+      contents.details = this.#stylesContainer.getRegisteredPropertyDetails(this.matchedStyles(), this.property.name);
       const tooltipId = this.getTooltipId("custom-property-decl");
       this.nameElement.setAttribute("aria-details", tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip(
@@ -8536,7 +8524,7 @@ var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
 };
 
 // ../../front_end/panels/elements/StyleEditorWidget.ts
-var { ref: ref4 } = Directives;
+var { ref: ref4 } = Directives2;
 var instance = null;
 var DEFAULT_VIEW3 = (input, _output, target) => {
   input.editor.data = {
@@ -9735,8 +9723,8 @@ var StylePropertiesSection = class _StylePropertiesSection {
       onLinkActivate: async (resolvedVariable) => {
         handleVarDefinitionActivate(resolvedVariable, this.stylesContainer);
       },
-      getPopoverContents: (variableName, variableValue) => {
-        return this.stylesContainer.getVariablePopoverContents(this.matchedStyles, variableName, variableValue);
+      getRegisteredPropertyDetails: (variableName) => {
+        return this.stylesContainer.getRegisteredPropertyDetails(this.matchedStyles, variableName);
       },
       jslogContext: "container-query"
     };
@@ -11568,7 +11556,7 @@ var stylesSidebarPane_css_default = `/**
       flex: none;
       width: var(--sys-size-3);
       height: var(--sys-size-3);
-      border-radius: 50%;
+      border-radius: var(--sys-shape-corner-full);
       background-color: currentcolor;
       /* Aligns the bullet's center with the disclosure triangle above. */
       margin-left: var(--sys-size-2);
@@ -12171,21 +12159,14 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       }
     });
   }
-  #getRegisteredPropertyDetails(matchedStyles, variableName) {
+  getRegisteredPropertyDetails(matchedStyles, variableName) {
     const registration = matchedStyles.getRegisteredProperty(variableName);
     const goToDefinition = () => this.jumpToSection(variableName, REGISTERED_PROPERTY_SECTION_NAME);
     return registration ? { registration, goToDefinition } : void 0;
   }
   getVariableParserError(matchedStyles, variableName) {
-    const registrationDetails = this.#getRegisteredPropertyDetails(matchedStyles, variableName);
+    const registrationDetails = this.getRegisteredPropertyDetails(matchedStyles, variableName);
     return registrationDetails ? new ElementsComponents4.CSSVariableValueView.CSSVariableParserError(registrationDetails) : null;
-  }
-  getVariablePopoverContents(matchedStyles, variableName, computedValue) {
-    return new ElementsComponents4.CSSVariableValueView.CSSVariableValueView({
-      variableName,
-      value: computedValue ?? void 0,
-      details: this.#getRegisteredPropertyDetails(matchedStyles, variableName)
-    });
   }
   async fetchComputedStylesFor(nodeId) {
     const node = this.node();
@@ -14490,7 +14471,7 @@ var EditableContent = class extends UI11.Widget.Widget {
   #view;
   constructor(element, view = EDITABLE_CONTENT_DEFAULT_VIEW) {
     super(element, { useShadowDom: "pure" });
-    this.element.classList.remove("vbox", "flex-auto", "widget");
+    this.element.classList.remove("widget");
     this.#view = view;
     this.performUpdate();
   }
@@ -20755,7 +20736,6 @@ function isBeingEditedAsHTML(state, node) {
 }
 function getVisibleChildren(node, { showComments }) {
   const children = [];
-  children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
   const contentDocument = node.contentDocument();
   if (contentDocument) {
     children.push(contentDocument);
@@ -20777,6 +20757,7 @@ function getVisibleChildren(node, { showComments }) {
   if (beforePseudo) {
     children.push(beforePseudo);
   }
+  children.push(...DOMTreeElementWidget.visibleShadowRoots(node));
   children.push(...node.carouselPseudoElements());
   if (node.childNodeCount()) {
     const nodeChildren = node.children();
@@ -23785,7 +23766,7 @@ import * as Common13 from "../../core/common/common.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html18, nothing as nothing8, render as render15 } from "../../ui/lit/lit.js";
+import { Directives as Directives3, html as html18, nothing as nothing8, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -23942,7 +23923,7 @@ visible. */
 /*# sourceURL=${import.meta.resolve("./metricsSidebarPane.css")} */`;
 
 // ../../front_end/panels/elements/MetricsSidebarPane.ts
-var { live } = Directives2;
+var { live } = Directives3;
 var DEFAULT_VIEW9 = (input, output, target) => {
   const { style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing } = input;
   function createBoxPartElement(style2, name, side, suffix) {
@@ -25404,6 +25385,7 @@ ${node.simpleSelector()} {}`, false);
         if (!this.stylesWidget.hasMatchedStyles) {
           this.metricsWidget.hideWidget();
         }
+        this.stylesWidget.removeEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
         this.stylesWidget.addEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
       }
     };
@@ -26403,7 +26385,7 @@ import * as i18n44 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html22, render as render19 } from "../../ui/lit/lit.js";
+import { Directives as Directives4, html as html22, render as render19 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/classesPaneWidget.css.js
@@ -26477,7 +26459,7 @@ var UIStrings22 = {
 };
 var str_22 = i18n44.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings22);
 var i18nString21 = i18n44.i18n.getLocalizedString.bind(void 0, str_22);
-var { ref: ref7, repeat: repeat3 } = Directives3;
+var { ref: ref7, repeat: repeat3 } = Directives4;
 var DEFAULT_VIEW13 = (input, output, target) => {
   const onKeyDown = (event) => {
     if (event.key === Platform12.KeyboardUtilities.ENTER_KEY && !event.isComposing) {
@@ -26505,7 +26487,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
               jslog=${VisualLogging18.toggle("element-class").track({ change: true })}
               @click=${(event) => input.onClick(item2.className, event.target.checked)}>${item2.className}</devtools-checkbox>`)}
       </div>
-    </div>`, target);
+    </div>`, target, { container: { attributes: { jslog: `${VisualLogging18.pane("elements-classes")}` } } });
 };
 var ClassesPaneWidget = class extends UI26.Widget.Widget {
   #view;
@@ -26517,7 +26499,6 @@ var ClassesPaneWidget = class extends UI26.Widget.Widget {
   #previousTarget;
   constructor(element, view = DEFAULT_VIEW13) {
     super(element, {
-      jslog: `${VisualLogging18.pane("elements-classes")}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -26804,7 +26785,6 @@ import * as UI27 from "../../ui/legacy/legacy.js";
 import { html as html23, render as render20 } from "../../ui/lit/lit.js";
 import * as SettingsUI10 from "../../ui/settings/settings.js";
 import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
-import * as ElementsComponents9 from "./components/components.js";
 var DEFAULT_VIEW14 = (input, _output, target) => {
   render20(
     html23`
@@ -27031,15 +27011,10 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   allSections() {
     return this.#sections;
   }
-  getVariablePopoverContents(matchedStyles, variableName, computedValue) {
+  getRegisteredPropertyDetails(matchedStyles, variableName) {
     const registration = matchedStyles.getRegisteredProperty(variableName);
-    return new ElementsComponents9.CSSVariableValueView.CSSVariableValueView({
-      variableName,
-      value: computedValue ?? void 0,
-      // TODO: provide a goToDefinition to jump to the StylesSidebarPane
-      details: registration ? { registration, goToDefinition: () => {
-      } } : void 0
-    });
+    return registration ? { registration, goToDefinition: () => {
+    } } : void 0;
   }
   getVariableParserError(_matchedStyles, _variableName) {
     return null;

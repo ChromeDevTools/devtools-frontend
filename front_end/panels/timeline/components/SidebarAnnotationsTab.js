@@ -83,27 +83,44 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SidebarAnnotationsTab extends UI.Widget.Widget {
+    #rawAnnotations = [];
     #annotations = [];
     // A map with annotated entries and the colours that are used to display them in the FlameChart.
     // We need this map to display the entries in the sidebar with the same colours.
     #annotationEntryToColorMap = new Map();
     #annotationsHiddenSetting;
     #view;
-    constructor(view = DEFAULT_VIEW) {
-        super();
-        this.#view = view;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element instanceof HTMLElement ? element : undefined);
+        this.#view = typeof element === 'function' ? element : view;
         this.#annotationsHiddenSetting =
             Common.Settings.Settings.instance().resolve(SettingsUI.TimelineSettings.annotationsHiddenSettingDescriptor);
     }
     deduplicatedAnnotations() {
         return this.#annotations;
     }
+    set annotations(annotations) {
+        if (this.#rawAnnotations === annotations) {
+            return;
+        }
+        this.#rawAnnotations = annotations;
+        this.#annotations = SidebarAnnotationsTab.processAnnotationsList(annotations);
+        this.requestUpdate();
+    }
+    set annotationEntryToColorMap(annotationEntryToColorMap) {
+        if (this.#annotationEntryToColorMap === annotationEntryToColorMap) {
+            return;
+        }
+        this.#annotationEntryToColorMap = annotationEntryToColorMap;
+        this.requestUpdate();
+    }
     setData(data) {
-        this.#annotations = this.#processAnnotationsList(data.annotations);
+        this.#rawAnnotations = data.annotations;
+        this.#annotations = SidebarAnnotationsTab.processAnnotationsList(data.annotations);
         this.#annotationEntryToColorMap = data.annotationEntryToColorMap;
         this.requestUpdate();
     }
-    #processAnnotationsList(annotations) {
+    static processAnnotationsList(annotations) {
         // When an entry is double-clicked, we create two annotations (a label and an entries connection) for the user to choose from.
         // The one not selected is deleted when the user makes their selection.
         // To avoid excessive activity in the sidebar (adding and removing annotations), only show one 'not started' annotation associated with an entry.
@@ -112,7 +129,7 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
         // set. This allows us to filter out any subsequent not started annotations for the same entry.
         const entriesWithNotStartedAnnotation = new Set();
         const processedAnnotations = annotations.filter(annotation => {
-            if (this.#isAnnotationCreationStarted(annotation)) {
+            if (SidebarAnnotationsTab.#isAnnotationCreationStarted(annotation)) {
                 return true;
             }
             if (annotation.type === 'ENTRIES_LINK' || annotation.type === 'ENTRY_LABEL') {
@@ -125,10 +142,11 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
             return true;
         });
         // Sort annotations by timestamp.
-        processedAnnotations.sort((firstAnnotation, secondAnnotation) => this.#getAnnotationTimestamp(firstAnnotation) - this.#getAnnotationTimestamp(secondAnnotation));
+        processedAnnotations.sort((firstAnnotation, secondAnnotation) => SidebarAnnotationsTab.#getAnnotationTimestamp(firstAnnotation) -
+            SidebarAnnotationsTab.#getAnnotationTimestamp(secondAnnotation));
         return processedAnnotations;
     }
-    #getAnnotationTimestamp(annotation) {
+    static #getAnnotationTimestamp(annotation) {
         switch (annotation.type) {
             case 'ENTRY_LABEL': {
                 return annotation.entry.ts;
@@ -144,7 +162,7 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
             }
         }
     }
-    #isAnnotationCreationStarted(annotation) {
+    static #isAnnotationCreationStarted(annotation) {
         // Consider the annotation not started if:
         // ENTRY_LABEL - label is empty
         // ENTRIES_LINK - the connection annotation does not have the 'to' entry

@@ -44,17 +44,18 @@ export class BreadcrumbsUI extends UI.Widget.Widget {
         super.wasShown();
         this.requestUpdate();
     }
-    #activateBreadcrumb(breadcrumb) {
+    #activateBreadcrumb(breadcrumb, removeChildBreadcrumbs = false) {
         this.#activeBreadcrumb = breadcrumb;
-        this.onBreadcrumbActivated?.(breadcrumb, false);
+        this.onBreadcrumbActivated?.(breadcrumb, removeChildBreadcrumbs);
+        this.requestUpdate();
     }
     #onContextMenu(event, breadcrumb) {
         const menu = new UI.ContextMenu.ContextMenu(event);
         menu.defaultSection().appendItem(i18nString(UIStrings.activateBreadcrumb), () => {
-            this.onBreadcrumbActivated?.(breadcrumb, false);
+            this.#activateBreadcrumb(breadcrumb);
         });
         menu.defaultSection().appendItem(i18nString(UIStrings.removeChildBreadcrumbs), () => {
-            this.onBreadcrumbActivated?.(breadcrumb, true);
+            this.#activateBreadcrumb(breadcrumb, true);
         });
         void menu.show();
     }

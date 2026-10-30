@@ -89,7 +89,7 @@ export type DrawOverride = (context: CanvasRenderingContext2D, x: number, y: num
 declare const FlameChartBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class FlameChart extends FlameChartBase implements NetworkTimeCalculator.Calculator, ChartViewportDelegate {
     #private;
-    private readonly flameChartDelegate;
+    private flameChartDelegate;
     private chartViewport;
     private dataProvider;
     private candyStripePattern;
@@ -145,7 +145,7 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     private dimIndices?;
     /** When true, all undimmed entries are outlined. When an array, only those indices are outlined (if not dimmed). */
     private dimShouldOutlineUndimmedEntries;
-    constructor(dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate, optionalConfig?: OptionalFlameChartConfig);
+    constructor(dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate, optionalConfig?: OptionalFlameChartConfig, element?: HTMLElement);
     wasShown(): void;
     willHide(): void;
     canvasBoundingClientRect(): DOMRect | null;
@@ -165,6 +165,8 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     enableRuler(enable: boolean): void;
     alwaysShowVerticalScroll(): void;
     disableRangeSelection(): void;
+    setDataProvider(dataProvider: FlameChartDataProvider): void;
+    setDelegate(flameChartDelegate: FlameChartDelegate): void;
     enableDimming(entryIndices: number[], inclusive: boolean, outline: boolean | number[]): void;
     disableDimming(): void;
     isDimming(): boolean;
@@ -188,6 +190,17 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     revealEntryVertically(entryIndex: number): void;
     revealEntry(entryIndex: number): void;
     setWindowTimes(startTime: number, endTime: number, animate?: boolean): void;
+    get windowTimes(): {
+        min: number;
+        max: number;
+        animate?: boolean;
+    };
+    set windowTimes(windowTimes: {
+        min: number;
+        max: number;
+        animate?: boolean;
+    });
+    performUpdate(): void;
     /**
      * Handle the mouse move event. The handle priority will be:
      *   1. Track configuration icons -> show tooltip for the icons

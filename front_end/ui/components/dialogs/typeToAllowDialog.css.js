@@ -45,10 +45,6 @@ export default `/*
     flex-direction: row-reverse;
     justify-content: flex-start;
   }
-
-  .button button {
-    min-width: var(--sys-size-19);
-  }
 }
 
 /*# sourceURL=${import.meta.resolve('./typeToAllowDialog.css')} */`;

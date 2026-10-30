@@ -88,6 +88,11 @@ export declare class CommentThread extends Common.ObjectWrapper.ObjectWrapper<Ev
     readonly isGeneratedComment: boolean;
     comments: Comment[];
     status: CommentThreadStatus;
+    /**
+     * False until the developer has opened the thread since the agent last
+     * responded. Only meaningful for RESOLVED threads.
+     */
+    responseSeen: boolean;
     constructor(options: CommentThreadOptions);
     get isOrphaned(): boolean;
     setOrphaned(isOrphaned: boolean): void;
@@ -103,6 +108,10 @@ export declare class CommentThread extends Common.ObjectWrapper.ObjectWrapper<Ev
     editComment(text: string): void;
     sendToAgent(text?: string, author?: 'DEVELOPER' | 'AGENT'): void;
     resolve(replyText?: string): void;
+    /**
+     * Marks the agent response of a RESOLVED thread as seen by the developer.
+     */
+    markResponseSeen(): void;
 }
 export declare class RevealableThread {
     readonly thread: CommentThread;

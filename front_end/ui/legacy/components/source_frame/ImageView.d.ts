@@ -34,6 +34,7 @@ export declare class ImageView extends ImageViewBase {
     performUpdate(): void;
     toolbarItems(): Promise<TemplateResult>;
     wasShown(): void;
+    willHide(): void;
     disposeView(): void;
 }
 export {};

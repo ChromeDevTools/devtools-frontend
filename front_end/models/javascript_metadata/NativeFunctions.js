@@ -8013,6 +8013,10 @@ export const NativeFunctions = [
         signatures: [["type", "eventInitDict"]]
     },
     {
+        name: "DeviceBoundSessionRegistrationObserver",
+        signatures: [["callback", "?options"]]
+    },
+    {
         name: "DeviceMotionEvent",
         signatures: [["type", "?eventInitDict"]]
     },
@@ -9646,7 +9650,7 @@ export const NativeFunctions = [
     },
     {
         name: "ViewTimeline",
-        signatures: [["?options"]]
+        signatures: [["options"]]
     }
 ];
 //# sourceMappingURL=NativeFunctions.js.map

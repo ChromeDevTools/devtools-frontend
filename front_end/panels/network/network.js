@@ -571,7 +571,12 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     `,
     // clang-format on
     target,
-    { container: { classes: !input.enabled && input.conditions.length > 0 ? ["blocking-disabled"] : [] } }
+    {
+      container: {
+        classes: !input.enabled && input.conditions.length > 0 ? ["blocking-disabled"] : [],
+        attributes: { jslog: `${VisualLogging2.panel("network.blocked-urls").track({ resize: true })}` }
+      }
+    }
   );
 };
 function renderItem({
@@ -790,7 +795,6 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
   #editingCondition;
   constructor(target, view = DEFAULT_VIEW2) {
     super(target, {
-      jslog: `${VisualLogging2.panel("network.blocked-urls").track({ resize: true })}`,
       useShadowDom: true
     });
     this.#view = view;
@@ -3291,6 +3295,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4136,7 +4141,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         `}>
       </devtools-data-grid>
     </div>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging4.pane("event-stream").track({ resize: true })}` } } });
 };
 var EventSourceMessagesView = class extends UI4.Widget.VBox {
   request;
@@ -4144,7 +4149,7 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
   filterRegex = null;
   #view;
   constructor(request, view = DEFAULT_VIEW4) {
-    super({ jslog: `${VisualLogging4.pane("event-stream").track({ resize: true })}` });
+    super();
     this.#view = view;
     this.request = request;
     this.messageFilterSetting = Common3.Settings.Settings.instance().createSetting("network-event-source-message-filter", "");
@@ -4530,7 +4535,12 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     ${renderNetworkThrottlingSection()}
     <div class="panel-section-separator"></div>
     ${renderUserAgentSection(input, output)}
-  `, target, { container: { classes: ["network-config"] } });
+  `, target, {
+    container: {
+      classes: ["network-config"],
+      attributes: { jslog: `${VisualLogging5.panel("network-conditions").track({ resize: true })}` }
+    }
+  });
 };
 var networkConfigViewInstance;
 var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
@@ -4549,7 +4559,6 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   #statusText = "";
   constructor(view = DEFAULT_VIEW5) {
     super({
-      jslog: `${VisualLogging5.panel("network-conditions").track({ resize: true })}`,
       useShadowDom: true
     });
     this.registerRequiredCSS(networkConfigView_css_default);
@@ -7808,7 +7817,7 @@ var networkLogView_css_default = `/*
     content: var(--image-file-empty);
     width: 35%;
     height: 35%;
-    border-radius: 50%;
+    border-radius: var(--sys-shape-corner-full);
     outline: var(--sys-size-1) solid var(--icon-gap-focus-selected);
     top: 60%;
     left: 55%;
@@ -7968,7 +7977,7 @@ td.time-column {
   content: var(--image-file-empty);
   width: var(--sys-size-4);
   height: var(--sys-size-4);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
   left: var(--sys-size-5);
   position: absolute;
@@ -8258,10 +8267,9 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
   requestsSet;
   span;
   lastBoundary;
-  constructor() {
-    super();
+  constructor(element) {
+    super(element, { classes: ["network-overview"] });
     this.selectedFilmStripTime = -1;
-    this.element.classList.add("network-overview");
     this.numBands = 1;
     this.highlightedRequest = null;
     SDK8.TargetManager.TargetManager.instance().addModelListener(
@@ -10126,6 +10134,7 @@ function trimUrl(url) {
   return url.substring(0, halfMaxLength) + "\u2026" + url.substring(url.length - halfMaxLength);
 }
 var DEFAULT_VIEW8 = (input, _output, target) => {
+  const renderOptions = { container: { attributes: { jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` } } };
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
     render9(html8`
@@ -10133,7 +10142,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString10(UIStrings11.noInitiator)}
       </div>
-    `, target);
+    `, target, renderOptions);
     return;
   }
   const renderStackTraceSection = () => {
@@ -10244,13 +10253,13 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           </ul>` : nothing6}
       `}></devtools-tree>
     </div>
-  `, target);
+  `, target, renderOptions);
 };
 var RequestInitiatorView = class extends UI12.Widget.VBox {
   #request;
   #view;
   constructor(request, view = DEFAULT_VIEW8) {
-    super({ jslog: `${VisualLogging8.pane("initiator").track({ resize: true })}` });
+    super();
     this.#request = request;
     this.#view = view;
   }

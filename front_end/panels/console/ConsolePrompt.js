@@ -75,7 +75,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
       style="color: var(--icon-action)"
       class=${classMap({ 'console-prompt-icon': true, medium: true, 'console-prompt-incomplete': input.isIncomplete })}
     ></devtools-icon>
-  `, target);
+  `, target, { container: { attributes: { jslog: `${VisualLogging.textField('console-prompt').track({
+                    change: true,
+                    keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
+                })}` } } });
     // clang-format on
 };
 export class ConsolePrompt extends ConsolePromptBase {
@@ -123,12 +126,7 @@ export class ConsolePrompt extends ConsolePromptBase {
         this.editor?.dispatch({ effects });
     }
     constructor(aiCodeCompletionConfig, view = DEFAULT_VIEW) {
-        super({
-            jslog: `${VisualLogging.textField('console-prompt').track({
-                change: true,
-                keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
-            })}`,
-        });
+        super();
         this.#view = view;
         this.addCompletionsFromHistory = true;
         this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(Common.Settings.Settings.instance().createLocalSetting('console-history', []));
@@ -178,7 +176,7 @@ export class ConsolePrompt extends ConsolePromptBase {
     }
     performUpdate() {
         this.#view({
-            editorState: this.#editorState,
+            editorState: this.editor?.state ?? this.#editorState,
             eagerEvalEnabled: this.eagerEvalSetting.get(),
             preview: this.#preview,
             isIncomplete: this.#isIncomplete,

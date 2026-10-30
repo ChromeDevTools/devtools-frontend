@@ -235,10 +235,22 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         return this.#selectedEvents || [];
     }
     set selectedEvents(selectedEvents) {
+        if (this.#selectedEvents === selectedEvents) {
+            return;
+        }
         this.#selectedEvents = selectedEvents;
         this.refreshTree();
     }
     set parsedTrace(parsedTrace) {
+        if (this.#parsedTrace === parsedTrace) {
+            return;
+        }
+        if (this.#parsedTrace !== null) {
+            // Clear bounds from the previous trace so refreshTree() does not rebuild
+            // the tree with stale bounds before the new trace's selection is set.
+            this.startTimeInternal = undefined;
+            this.endTimeInternal = undefined;
+        }
         this.#parsedTrace = parsedTrace;
         this.refreshTree();
     }
@@ -253,7 +265,7 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         this.refreshTree();
     }
     get startTime() {
-        return this.startTimeInternal;
+        return this.startTimeInternal ?? Trace.Types.Timing.Milli(0);
     }
     set endTime(endTime) {
         if (this.endTimeInternal === endTime) {
@@ -263,7 +275,7 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         this.refreshTree();
     }
     get endTime() {
-        return this.endTimeInternal;
+        return this.endTimeInternal ?? Trace.Types.Timing.Milli(Infinity);
     }
     get compactMode() {
         return this.#compactMode;
@@ -312,6 +324,16 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         this.searchableView = searchableView;
     }
     set model(model) {
+        if (this.#parsedTrace === model.parsedTrace && this.#selectedEvents === model.selectedEvents &&
+            this.#entityMapper === model.entityMapper) {
+            return;
+        }
+        if (this.#parsedTrace !== null && this.#parsedTrace !== model.parsedTrace) {
+            // Clear bounds from the previous trace so refreshTree() does not rebuild
+            // the tree with stale bounds before the new trace's selection is set.
+            this.startTimeInternal = undefined;
+            this.endTimeInternal = undefined;
+        }
         this.#parsedTrace = model.parsedTrace;
         this.#selectedEvents = model.selectedEvents;
         this.#entityMapper = model.entityMapper;
@@ -387,8 +409,13 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         this.setRange(timingMilli.min, timingMilli.max);
     }
     setRange(startTime, endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        if (this.startTimeInternal === startTime && this.endTimeInternal === endTime) {
+            return;
+        }
+        // Update internal fields directly to prevent the startTime and endTime setters from
+        // triggering individual refreshTree() calls.
+        this.startTimeInternal = startTime;
+        this.endTimeInternal = endTime;
         this.refreshTree();
     }
     highlightEventInTree(event) {
@@ -485,7 +512,8 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         this.#dirty = false;
         this.linkifier.reset();
         this.dataGrid.rootNode().removeChildren();
-        if (!this.#parsedTrace) {
+        // Do not build the tree until bounds are configured by an active selection.
+        if (!this.#parsedTrace || this.startTimeInternal === undefined || this.endTimeInternal === undefined) {
             this.updateDetailsForSelection();
             return;
         }
@@ -670,10 +698,12 @@ export class TimelineTreeView extends TimelineTreeViewBase {
         }
         this.detailsView.detachChildWidgets();
         this.lastSelectedNodeInternal = selectedNode;
+        // Clear placeholder via Lit before calling showDetailsForNode so that
+        // subclasses can either render details declaratively into the same
+        // container without corrupting Lit's part tree, or synchronously attach
+        // child widgets without having them removed.
+        renderDetailsPlaceholder({ showPlaceholder: false }, undefined, this.detailsView.element);
         if (selectedNode && this.showDetailsForNode(selectedNode)) {
-            // Clear placeholder via Lit so that subclasses can render details
-            // declaratively into the same container without corrupting Lit's part tree.
-            renderDetailsPlaceholder({ showPlaceholder: false }, undefined, this.detailsView.element);
             return;
         }
         renderDetailsPlaceholder({ showPlaceholder: true }, undefined, this.detailsView.element);
@@ -1015,6 +1045,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
             this.#builtGroupBy = this.groupBySetting.get();
         }
         super.refreshTree(forceRefresh);
+        if (this.element.parentElement || forceRefresh) {
+            this.updateDetailsForSelection();
+        }
     }
     wasShown() {
         super.wasShown();

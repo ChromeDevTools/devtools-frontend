@@ -2,8 +2,8 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 import * as UI from '../../ui/legacy/legacy.js';
 export interface ViewInput {
     threads: CommentManager.CommentManager.CommentThread[];
-    /** Number of threads that the agent has responded to. */
-    respondedCount: number;
+    /** Number of threads with an agent response that the user has not seen yet. */
+    unseenResponseCount: number;
     onPillClick: () => void;
     disabled?: boolean;
 }

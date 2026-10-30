@@ -2503,6 +2503,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -3073,6 +3074,7 @@ var Runtime;
 
 // ../../front_end/panels/lighthouse/LighthouseController.ts
 import * as EmulationModel from "../../models/emulation/emulation.js";
+import * as LighthouseModel from "../../models/lighthouse/lighthouse.js";
 import * as UI from "../../ui/legacy/legacy.js";
 import * as Emulation2 from "../emulation/emulation.js";
 var UIStrings = {
@@ -3672,7 +3674,7 @@ function getPresets() {
         configID: "performance",
         title: i18nLazyString(UIStrings.performance),
         description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
-        supportedModes: ["navigation", "timespan", "snapshot"],
+        supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES.performance,
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE
       },
       {
@@ -3680,7 +3682,7 @@ function getPresets() {
         configID: "accessibility",
         title: i18nLazyString(UIStrings.accessibility),
         description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
-        supportedModes: ["navigation", "snapshot"],
+        supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES.accessibility,
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY
       },
       {
@@ -3688,7 +3690,7 @@ function getPresets() {
         configID: "best-practices",
         title: i18nLazyString(UIStrings.bestPractices),
         description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
-        supportedModes: ["navigation", "timespan", "snapshot"],
+        supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES["best-practices"],
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES
       },
       {
@@ -3696,7 +3698,7 @@ function getPresets() {
         configID: "seo",
         title: i18nLazyString(UIStrings.seo),
         description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
-        supportedModes: ["navigation", "snapshot"],
+        supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES.seo,
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO
       },
       {
@@ -3704,7 +3706,7 @@ function getPresets() {
         configID: "agentic-browsing",
         title: i18nLazyString(UIStrings.agenticBrowsing),
         description: i18nLazyString(UIStrings.agenticBrowsingDescription),
-        supportedModes: ["navigation", "snapshot"],
+        supportedModes: LighthouseModel.RunTypes.CATEGORY_SUPPORTED_MODES["agentic-browsing"],
         userMetric: Host.UserMetrics.LighthouseCategoryUsed.AGENTIC_BROWSING
       }
     ];

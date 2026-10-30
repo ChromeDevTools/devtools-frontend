@@ -63,7 +63,8 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     domStorage;
     eventListeners;
     constructor(domStorage) {
-        super(i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined, /* metadataView=*/ undefined, 
+        super(i18nString(UIStrings.domStorageItems), 'dom-storage', true, /* view=*/ undefined, 
+        /* metadataView=*/ undefined, 
         /* jslog=*/ undefined, ['storage-view', 'table']);
         this.domStorage = domStorage;
         if (domStorage.storageKey) {

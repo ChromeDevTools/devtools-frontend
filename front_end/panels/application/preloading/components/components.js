@@ -2304,6 +2304,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus2;
   ((PreloadingStatus3) => {
@@ -4343,7 +4344,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           </devtools-button-dialog>
         </div>`;
   }
-  render3(template, target);
+  render3(template, target, { container: { classes: ["flex-none"] } });
 };
 var PreloadingDisabledInfobar = class extends UI3.Widget.VBox {
   #view;
@@ -4353,7 +4354,7 @@ var PreloadingDisabledInfobar = class extends UI3.Widget.VBox {
   #disabledByHoldbackPrefetchSpeculationRules = false;
   #disabledByHoldbackPrerenderSpeculationRules = false;
   constructor(element, view = DEFAULT_VIEW3) {
-    super(element, { useShadowDom: true, classes: ["flex-none"] });
+    super(element, { useShadowDom: "pure" });
     this.#view = view;
   }
   get disabledByPreference() {

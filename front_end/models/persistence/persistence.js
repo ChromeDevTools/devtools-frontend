@@ -896,12 +896,18 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     const settings = opts.settings ?? Common3.Settings.Settings.instance();
     const console2 = opts.console ?? Common3.Console.Console.instance();
     if (!Root.DevToolsContext.globalInstance().has(_IsolatedFileSystemManager) || forceNew) {
+      if (Root.DevToolsContext.globalInstance().has(_IsolatedFileSystemManager)) {
+        Root.DevToolsContext.globalInstance().get(_IsolatedFileSystemManager).dispose();
+      }
       const instance = new _IsolatedFileSystemManager(settings, console2);
       Root.DevToolsContext.globalInstance().set(_IsolatedFileSystemManager, instance);
     }
     return Root.DevToolsContext.globalInstance().get(_IsolatedFileSystemManager);
   }
   static removeInstance() {
+    if (Root.DevToolsContext.globalInstance().has(_IsolatedFileSystemManager)) {
+      Root.DevToolsContext.globalInstance().get(_IsolatedFileSystemManager).dispose();
+    }
     Root.DevToolsContext.globalInstance().delete(_IsolatedFileSystemManager);
   }
   requestFileSystems() {
@@ -2272,6 +2278,9 @@ var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Commo
         throw new Error(
           "Unable to create AutomaticFileSystemManager: inspectorFrontendHost, and projectSettingsModel must be provided"
         );
+      }
+      if (Root3.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager)) {
+        Root3.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager).dispose();
       }
       Root3.DevToolsContext.globalInstance().set(
         _AutomaticFileSystemManager,
@@ -4903,6 +4912,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {

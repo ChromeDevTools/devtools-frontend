@@ -27,7 +27,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       </div>
       <span class="hidden" aria-hidden="false">;</span>
     </div>
-  `, target);
+  `, target, { container: { classes: ['computed-style-property'] } });
     // clang-format on
 };
 export class ComputedStyleProperty extends UI.Widget.Widget {
@@ -36,7 +36,7 @@ export class ComputedStyleProperty extends UI.Widget.Widget {
     #onNavigateToSource = () => { };
     #view;
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['computed-style-property'] });
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
     }
     wasShown() {

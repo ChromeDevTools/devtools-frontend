@@ -180,7 +180,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
     ${renderNetworkThrottlingSection()}
     <div class="panel-section-separator"></div>
     ${renderUserAgentSection(input, output)}
-  `, target, { container: { classes: ['network-config'] } });
+  `, target, {
+        container: {
+            classes: ['network-config'],
+            attributes: { jslog: `${VisualLogging.panel('network-conditions').track({ resize: true })}` },
+        },
+    });
 };
 // clang-format on
 let networkConfigViewInstance;
@@ -197,7 +202,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
     #statusText = '';
     constructor(view = DEFAULT_VIEW) {
         super({
-            jslog: `${VisualLogging.panel('network-conditions').track({ resize: true })}`,
             useShadowDom: true,
         });
         this.registerRequiredCSS(networkConfigViewStyles);

@@ -715,8 +715,8 @@ var FlameChart = class extends FlameChartBase {
     styleHeight: 0
   };
   #boundOnThemeChanged = this.#onThemeChanged.bind(this);
-  constructor(dataProvider, flameChartDelegate, optionalConfig = {}) {
-    super({ useShadowDom: true });
+  constructor(dataProvider, flameChartDelegate, optionalConfig = {}, element) {
+    super(element, { useShadowDom: true });
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     this.#subtitleFont = `${SUBTITLE_FONT_SIZE_AND_STYLE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChart_css_default);
@@ -861,6 +861,21 @@ var FlameChart = class extends FlameChartBase {
   }
   disableRangeSelection() {
     this.chartViewport.disableRangeSelection();
+  }
+  setDataProvider(dataProvider) {
+    if (this.dataProvider === dataProvider) {
+      return;
+    }
+    this.dataProvider = dataProvider;
+    this.reset();
+    this.chartViewport.setWindowTimes(
+      dataProvider.minimumBoundary(),
+      dataProvider.minimumBoundary() + dataProvider.totalTime()
+    );
+    this.scheduleUpdate();
+  }
+  setDelegate(flameChartDelegate) {
+    this.flameChartDelegate = flameChartDelegate;
   }
   #shouldDimEvent(entryIndex) {
     if (this.dimIndices) {
@@ -1089,6 +1104,18 @@ var FlameChart = class extends FlameChartBase {
   setWindowTimes(startTime, endTime, animate) {
     this.chartViewport.setWindowTimes(startTime, endTime, animate);
     this.updateHighlight();
+  }
+  get windowTimes() {
+    return {
+      min: this.minimumBoundary(),
+      max: this.maximumBoundary()
+    };
+  }
+  set windowTimes(windowTimes) {
+    this.setWindowTimes(windowTimes.min, windowTimes.max, windowTimes.animate);
+  }
+  performUpdate() {
+    this.update();
   }
   /**
    * Handle the mouse move event. The handle priority will be:
@@ -3175,9 +3202,7 @@ var FlameChart = class extends FlameChartBase {
   }
   drawCircleAroundCollapseArrow(entryIndex, context, timelineData) {
     const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);
-    if (!decorationsForEvent?.find(
-      (decoration) => decoration.type === "HIDDEN_DESCENDANTS_ARROW" /* HIDDEN_DESCENDANTS_ARROW */
-    )) {
+    if (!decorationsForEvent?.find((decoration) => decoration.type === "HIDDEN_DESCENDANTS_ARROW" /* HIDDEN_DESCENDANTS_ARROW */)) {
       return {};
     }
     const { entryStartTimes, entryLevels } = timelineData;
@@ -3425,9 +3450,7 @@ var FlameChart = class extends FlameChartBase {
         treeNode.endLevel = groups.length ? groups[0].startLevel : maxStackDepth;
       } else {
         if (!groups[index]) {
-          console.warn(
-            "The |groups| is changed. Please make sure the flamechart is reset after data change in the data provider"
-          );
+          console.warn("The |groups| is changed. Please make sure the flamechart is reset after data change in the data provider");
           return;
         }
         treeNode.startLevel = groups[index].startLevel;
@@ -3464,9 +3487,7 @@ var FlameChart = class extends FlameChartBase {
       return currentOffset;
     }
     if (groupNode.index >= groups.length) {
-      console.warn(
-        "The data from the group tree is outdated. Please make sure the flamechart is reset after data change in the data provider"
-      );
+      console.warn("The data from the group tree is outdated. Please make sure the flamechart is reset after data change in the data provider");
       return currentOffset;
     }
     if (groupNode.index >= 0) {
@@ -3485,9 +3506,7 @@ var FlameChart = class extends FlameChartBase {
     const thisGroupLevelsAreVisible = thisGroupIsVisible && parentGroupIsVisible;
     for (let level = groupNode.startLevel; level < groupNode.endLevel; level++) {
       if (level >= this.dataProvider.maxStackDepth()) {
-        console.warn(
-          "The data from the group tree is outdated. Please make sure the flamechart is reset after data change in the data provider"
-        );
+        console.warn("The data from the group tree is outdated. Please make sure the flamechart is reset after data change in the data provider");
         return currentOffset;
       }
       const isFirstOnLevel = level === groupNode.startLevel;
@@ -7373,6 +7392,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -9225,8 +9245,9 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
   hasPointer = false;
   #dimHighlightSVG;
   #boundOnThemeChanged = this.#onThemeChanged.bind(this);
-  constructor(prefix) {
-    super();
+  constructor(prefixOrElement = "timeline") {
+    super(prefixOrElement instanceof HTMLElement ? prefixOrElement : void 0);
+    const prefix = typeof prefixOrElement === "string" ? prefixOrElement : "timeline";
     this.element.id = prefix + "-overview-pane";
     this.overviewCalculator = new TimelineOverviewCalculator();
     this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
@@ -9556,8 +9577,12 @@ var TimelineOverviewBase = class extends UI6.Widget.VBox {
   #calculator;
   canvas;
   #context;
-  constructor() {
-    super();
+  constructor(elementOrOptions, options) {
+    if (elementOrOptions instanceof HTMLElement) {
+      super(elementOrOptions, options);
+    } else {
+      super(elementOrOptions ?? options);
+    }
     this.#calculator = null;
     this.canvas = this.element.createChild("canvas", "fill");
     this.#context = this.canvas.getContext("2d");

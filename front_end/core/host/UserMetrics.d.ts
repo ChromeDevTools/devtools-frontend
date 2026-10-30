@@ -45,6 +45,7 @@ export declare class UserMetrics {
     changeSharedWithAgent(count: number): void;
     commentCreated(count: number): void;
     commentResolved(resolver: CommentResolver, count: number): void;
+    commentQueued(count: number): void;
     commentSharedWithAgent(count: number): void;
     commentSize(characters: number): void;
 }

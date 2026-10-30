@@ -2427,6 +2427,7 @@ var Preload;
     PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
     PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
     PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+    PrerenderFinalStatus2["PrefetchFailedCrossOriginSubframe"] = "PrefetchFailedCrossOriginSubframe";
   })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
   let PreloadingStatus;
   ((PreloadingStatus2) => {
@@ -4841,6 +4842,8 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
   #renderAsSubtree = false;
   #skipProto = false;
   #skipGettersAndSetters = false;
+  #observedNodes = /* @__PURE__ */ new Set();
+  #wasConnectedToTemplateOrDocument = false;
   #view;
   constructor(element, view = OBJECT_TREE_DEFAULT_VIEW) {
     super(element);
@@ -4872,6 +4875,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
       child.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
       child.addEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
       child.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+      this.#observedNodes.add(child);
       if (child.expanded) {
         await this.#populateChildrenIfNeeded(child);
       }
@@ -4940,12 +4944,22 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     if (val === this.#objectTree) {
       return;
     }
-    this.#objectTree?.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
-    this.#objectTree?.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+    this.#unobserveAll();
     this.#objectTree = val;
     this.#objectTree?.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
     this.#objectTree?.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
     this.requestUpdate();
+  }
+  #unobserveAll() {
+    this.#objectTree?.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+    this.#objectTree?.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+    for (const child of this.#observedNodes) {
+      child.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
+      child.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+      child.removeEventListener("value-changed" /* VALUE_CHANGED */, this.requestUpdate, this);
+      child.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
+    }
+    this.#observedNodes.clear();
   }
   get linkifier() {
     return this.#linkifier;
@@ -4978,14 +4992,24 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     this.requestUpdate();
   }
   async performUpdate() {
+    const root = this.contentElement.getRootNode();
+    if (root instanceof Document || root instanceof DocumentFragment || root instanceof ShadowRoot) {
+      this.#wasConnectedToTemplateOrDocument = true;
+    } else if (this.#wasConnectedToTemplateOrDocument) {
+      this.#unobserveAll();
+      return;
+    }
     if (this.#objectTree?.expanded) {
       await this.#populateChildrenIfNeeded(this.#objectTree);
     }
     this.#view(this, void 0, this.contentElement);
   }
+  willHide() {
+    super.willHide();
+    this.#unobserveAll();
+  }
   onDetach() {
-    this.#objectTree?.removeEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
-    this.#objectTree?.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+    this.#unobserveAll();
   }
   wasShown() {
     super.wasShown();
@@ -4993,6 +5017,7 @@ var ObjectTreeWidget = class extends UI2.Widget.Widget {
     this.#objectTree?.removeEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
     this.#objectTree?.addEventListener("children-changed" /* CHILDREN_CHANGED */, this.requestUpdate, this);
     this.#objectTree?.addEventListener("expanded-changed" /* EXPANDED_CHANGED */, this.requestUpdate, this);
+    this.requestUpdate();
   }
 };
 function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
@@ -5284,7 +5309,9 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     this.#removePropertyListeners();
     this.#property = property;
     this.#search = property.search;
-    this.#addPropertyListeners();
+    if (this.isShowing()) {
+      this.#addPropertyListeners();
+    }
     this.requestUpdate();
   }
   #addPropertyListeners() {
@@ -5299,6 +5326,10 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     this.#property?.removeEventListener("filter-changed" /* FILTER_CHANGED */, this.requestUpdate, this);
     this.#search?.removeEventListener(UI2.TreeOutline.TreeSearch.Events.SEARCH_CHANGED, this.requestUpdate, this);
   }
+  willHide() {
+    super.willHide();
+    this.#removePropertyListeners();
+  }
   onDetach() {
     this.#removePropertyListeners();
   }
@@ -5306,6 +5337,7 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
     super.wasShown();
     this.#removePropertyListeners();
     this.#addPropertyListeners();
+    this.requestUpdate();
   }
   get expanded() {
     return this.#expanded;

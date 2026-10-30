@@ -6746,6 +6746,9 @@
   "panels/common/BadgeNotification.ts | viewProfile": {
     "message": "View profile"
   },
+  "panels/common/CommentsOverlayWidget.ts | addComment": {
+    "message": "Add comment"
+  },
   "panels/common/CommentsStatusBarPill.ts | showComments": {
     "message": "Show comments"
   },
@@ -6757,6 +6760,9 @@
   },
   "panels/common/CommentThreadWidget.ts | deleteQueuedComment": {
     "message": "Delete queued comment"
+  },
+  "panels/common/CommentThreadWidget.ts | elementNoLongerAvailable": {
+    "message": "The element is no longer available"
   },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Queue comment"
@@ -8936,8 +8942,8 @@
   "panels/issues/AffectedBlockedByResponseView.ts | requestC": {
     "message": "Request"
   },
-  "panels/issues/AffectedCookiesView.ts | domain": {
-    "message": "Domain"
+  "panels/issues/AffectedCookiesView.ts | domainAndPath": {
+    "message": "Domain & path"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
     "message": "Show network requests that include this Set-Cookie header in the Network panel"
@@ -8951,14 +8957,14 @@
   "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
     "message": "{n, plural, =1 {1 raw Set-Cookie header} other {# raw Set-Cookie headers}}"
   },
-  "panels/issues/AffectedCookiesView.ts | path": {
-    "message": "Path"
-  },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
     "message": "Disallowed descendant"
   },
   "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
-    "message": "{n, plural, =1 { descendant} other { descendants}}"
+    "message": "{n, plural, =1 {# descendant} other {# descendants}}"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | unavailable": {
+    "message": "Unavailable"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "Blocked"
@@ -8995,6 +9001,9 @@
   },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
     "message": "{n, plural, =1 { document} other { documents}}"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | unavailable": {
+    "message": "Unavailable"
   },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
@@ -13158,7 +13167,7 @@
     "message": "Enter a valid action type"
   },
   "panels/recorder/StepView.ts | addBreakpoint": {
-    "message": "Add breakpoint"
+    "message": "Add breakpoint for {title}"
   },
   "panels/recorder/StepView.ts | addStepAfter": {
     "message": "Add step after"
@@ -13211,11 +13220,14 @@
   "panels/recorder/StepView.ts | navigateStepTitle": {
     "message": "Navigate"
   },
+  "panels/recorder/StepView.ts | noTitle": {
+    "message": "(No title)"
+  },
   "panels/recorder/StepView.ts | openStepActions": {
-    "message": "Open step actions"
+    "message": "Open step actions for {title}"
   },
   "panels/recorder/StepView.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
+    "message": "Remove breakpoint for {title}"
   },
   "panels/recorder/StepView.ts | removeStep": {
     "message": "Remove step"
@@ -16480,6 +16492,12 @@
   },
   "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
     "message": "Insight: {PH1}"
+  },
+  "panels/timeline/components/Sidebar.ts | annotations": {
+    "message": "Annotations"
+  },
+  "panels/timeline/components/Sidebar.ts | insights": {
+    "message": "Insights"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Annotate a trace for yourself and others"

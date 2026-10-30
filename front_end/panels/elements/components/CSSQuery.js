@@ -8,7 +8,9 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import cssQueryStyles from './cssQuery.css.js';
+import { CSSVariableValueView } from './CSSVariableValueView.js';
 const { render, html } = Lit;
+const { widget } = UI.Widget;
 export const DEFAULT_VIEW = (input, _output, target) => {
     const queryClasses = Lit.Directives.classMap({
         query: true,
@@ -26,7 +28,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     input.onLinkActivate(variable ? variable.declaration : variableName);
                 }
             };
-            const tooltipContents = input.getPopoverContents?.(variableName, variable?.value ?? null) ?? null;
             const tooltipId = `${input.tooltipPrefix || 'css-query'}-${index}-${variableName}`;
             const tooltip = { tooltipId };
             return html `
@@ -42,7 +43,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               variant="rich"
               jslogContext="elements.css-var"
             >
-              ${tooltipContents ? html `<devtools-widget>${tooltipContents.element}</devtools-widget>` : Lit.nothing}
+              ${widget(CSSVariableValueView, {
+                variableName,
+                value: variable?.value,
+                details: input.getRegisteredPropertyDetails?.(variableName),
+            })}
             </devtools-tooltip>
           `;
         }
@@ -57,7 +62,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         ${input.queryPrefix ? html `<span>${input.queryPrefix + ' '}</span>` : Lit.nothing}
         ${input.queryName ? html `<span>${input.queryName + ' '}</span>` : Lit.nothing}
         ${queryText}<slot></slot> <span class="sidebar-pane-open-brace">{</span>
-      </div>`, target);
+      </div>`, target, { container: { classes: ['css-query'] } });
     // clang-format on
 };
 export class CSSQuery extends UI.Widget.Widget {
@@ -67,15 +72,14 @@ export class CSSQuery extends UI.Widget.Widget {
     #queryText = [];
     #onQueryTextClick;
     #onLinkActivate;
-    #getPopoverContents;
+    #getRegisteredPropertyDetails;
     #jslogContext;
     #matchedStyles;
     #style;
     #containerNode;
     #tooltipPrefix = '';
     constructor(element, view = DEFAULT_VIEW) {
-        super(element, { useShadowDom: true, classes: ['css-query'] });
-        this.element.classList.remove('vbox', 'flex-auto');
+        super(element, { useShadowDom: 'pure' });
         this.#view = view;
     }
     set data(data) {
@@ -84,7 +88,7 @@ export class CSSQuery extends UI.Widget.Widget {
         this.#queryText = [{ text: data.queryText, isVariable: false }];
         this.#onQueryTextClick = data.onQueryTextClick;
         this.#onLinkActivate = data.onLinkActivate;
-        this.#getPopoverContents = data.getPopoverContents;
+        this.#getRegisteredPropertyDetails = data.getRegisteredPropertyDetails;
         this.#jslogContext = data.jslogContext;
         this.performUpdate();
     }
@@ -147,7 +151,7 @@ export class CSSQuery extends UI.Widget.Widget {
             queryText: this.#queryText,
             onQueryTextClick: this.#onQueryTextClick,
             onLinkActivate: this.#onLinkActivate,
-            getPopoverContents: this.#getPopoverContents,
+            getRegisteredPropertyDetails: this.#getRegisteredPropertyDetails,
             jslogContext: this.#jslogContext,
             matchedStyles: this.#matchedStyles,
             style: this.#style,

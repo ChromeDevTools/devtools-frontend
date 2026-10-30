@@ -9,6 +9,7 @@ node_ts_library("accessibility") {
     "a11y-aria-hidden-focus.test.ts",
     "a11y-button-name.test.ts",
     "a11y-color-contrast.test.ts",
+    "a11y-devtools-features.test.ts",
     "a11y-form-label.test.ts",
     "a11y-heading-order.test.ts",
     "a11y-image-alt.test.ts",

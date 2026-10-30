@@ -18,3 +18,5 @@
 
 # 2026 Oct 29 gardener shift
 crbug.com/548390264 [ linux mac win32 ] test/e2e/memory/memory.test.ts:the_memory_panel:does_not_include_backing_store_size_in_the_shallow_size_of_a_js_set [ Failure Pass ]
+
+crbug.com/579773252 [ linux mac win32 ] test/e2e/emulation/custom-devices.test.ts:custom_devices:can_add_and_then_edit_a_custom_device_with_ua-ch_emulation [ Failure Pass ]

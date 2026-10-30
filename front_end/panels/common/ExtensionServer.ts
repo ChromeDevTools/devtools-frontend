@@ -699,6 +699,20 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return origin;
   }
 
+  static extensionIdFromOrigin(extensionOrigin: Platform.DevToolsPath.UrlString): string {
+    const url = Common.ParsedURL.ParsedURL.fromString(extensionOrigin);
+    if (url?.scheme === 'chrome-extension' && url.host) {
+      return url.host;
+    }
+    // Fallback for tests and extensions with malformed or sandboxed origins
+    const sanitized = Platform.StringUtilities.sanitizeIdentifier(extensionOrigin);
+    return sanitized || 'unknown';
+  }
+
+  private getExtensionId(port: MessagePort): string {
+    return ExtensionServer.extensionIdFromOrigin(this.getExtensionOrigin(port));
+  }
+
   private onCreatePanel(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage, port: MessagePort):
       Record {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.CreatePanel) {
@@ -782,13 +796,15 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onCreateSidebarPane(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage): Record {
+  private onCreateSidebarPane(message: Extensions.ExtensionAPI.PrivateAPI.ExtensionServerRequestMessage,
+                              port: MessagePort): Record {
     if (message.command !== Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane) {
       return this.status.E_BADARG(
           'command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane}`);
     }
     const id = message.id;
-    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n.i18n.lockedString(message.title), id);
+    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n.i18n.lockedString(message.title), id,
+                                             this.getExtensionId(port));
     this.#sidebarPanes.push(sidebar);
     this.clientObjects.set(id, sidebar);
     this.dispatchEventToListeners(Events.SidebarPaneAdded, sidebar);

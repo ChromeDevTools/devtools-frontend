@@ -196,6 +196,41 @@ describe('StringUtilities', () => {
     });
   });
 
+  describe('sanitizeIdentifier', () => {
+    const {sanitizeIdentifier} = Platform.StringUtilities;
+
+    it('lowercases and replaces spaces, punctuation, and special characters with single dashes', () => {
+      assert.strictEqual(sanitizeIdentifier('Custom Panel 1!'), 'custom-panel-1');
+      assert.strictEqual(sanitizeIdentifier('My App: View (Experimental)'), 'my-app-view-experimental');
+      assert.strictEqual(sanitizeIdentifier('hello.world@domain'), 'hello-world-domain');
+    });
+
+    it('collapses consecutive non-alphanumeric characters into a single dash', () => {
+      assert.strictEqual(sanitizeIdentifier('foo   bar'), 'foo-bar');
+      assert.strictEqual(sanitizeIdentifier('a...b___c'), 'a-b-c');
+      assert.strictEqual(sanitizeIdentifier('kebab---case'), 'kebab-case');
+    });
+
+    it('strips leading and trailing dashes and non-alphanumeric characters', () => {
+      assert.strictEqual(sanitizeIdentifier('---leading-and-trailing---'), 'leading-and-trailing');
+      assert.strictEqual(sanitizeIdentifier('!hello world!'), 'hello-world');
+      assert.strictEqual(sanitizeIdentifier('...test...'), 'test');
+    });
+
+    it('returns an empty string when the input contains only non-alphanumeric characters or is empty', () => {
+      assert.strictEqual(sanitizeIdentifier(''), '');
+      assert.strictEqual(sanitizeIdentifier('侧边栏'), '');
+      assert.strictEqual(sanitizeIdentifier('!@#$%-^&*'), '');
+      assert.strictEqual(sanitizeIdentifier('    '), '');
+      assert.strictEqual(sanitizeIdentifier('---'), '');
+    });
+
+    it('preserves already valid kebab-case or alphanumeric identifiers', () => {
+      assert.strictEqual(sanitizeIdentifier('my-extension-panel'), 'my-extension-panel');
+      assert.strictEqual(sanitizeIdentifier('simpleidentifier123'), 'simpleidentifier123');
+    });
+  });
+
   describe('toTitleCase', () => {
     it('converts a string to title case', () => {
       const output = Platform.StringUtilities.toTitleCase('foo bar baz');

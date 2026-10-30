@@ -2823,6 +2823,70 @@ describe('Extension Panels', () => {
     assertHasSidebarWithTitle('SidebarCallback');
   });
 
+  it('creates a sidebar pane with viewId decoupled from title', async () => {
+    await context.chrome.devtools!.panels.elements.createSidebarPane('Console');
+    const extensionServer = PanelCommon.ExtensionServer.ExtensionServer.instance();
+    const sidebarPanes = extensionServer.sidebarPanes();
+    const pane = sidebarPanes.find(p => p.title() === 'Console');
+    assert.exists(pane);
+    assert.notStrictEqual(pane.viewId(), 'console');
+    assert.match(pane.viewId(), /^extension-sidebar-[a-z0-9-]+-elements-[a-z0-9]+$/);
+    assert.isTrue(Platform.StringUtilities.isExtendedKebabCase(pane.viewId()));
+  });
+
+  it('extracts extensionId from origin or falls back to sanitized origin or unknown', () => {
+    assert.strictEqual(PanelCommon.ExtensionServer.ExtensionServer.extensionIdFromOrigin(
+                           urlString`chrome-extension://abcdefghijklmnop`),
+                       'abcdefghijklmnop');
+    assert.strictEqual(
+        PanelCommon.ExtensionServer.ExtensionServer.extensionIdFromOrigin(urlString`http://localhost:9876`),
+        'http-localhost-9876');
+    assert.strictEqual(PanelCommon.ExtensionServer.ExtensionServer.extensionIdFromOrigin(urlString`://`), 'unknown');
+  });
+
+  it('creates a sidebar pane with extensionId in viewId for chrome-extension origin', async () => {
+    const server = PanelCommon.ExtensionServer.ExtensionServer.instance();
+    const extensionOrigin = urlString`chrome-extension://my-extension-id`;
+    const extensionDescriptor = {
+      startPage: `${extensionOrigin}/blank.html`,
+      name: 'MyExtension',
+      exposeExperimentalAPIs: true,
+      allowFileAccess: false,
+    };
+    server.addExtension(extensionDescriptor);
+
+    const channel = new MessageChannel();
+    (server as unknown as {
+      registerExtension: (origin: Platform.DevToolsPath.UrlString, port: MessagePort) => void,
+    }).registerExtension(extensionOrigin, channel.port1);
+
+    const responsePromise = new Promise<{
+      command: string,
+      connectId: number,
+      result: PanelCommon.ExtensionServer.Record,
+    }>(resolve => {
+      channel.port2.onmessage = (event: MessageEvent<{
+        command: string,
+        connectId: number,
+        result: PanelCommon.ExtensionServer.Record,
+      }>) => resolve(event.data);
+    });
+    channel.port2.postMessage({
+      command: Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane,
+      panel: 'elements',
+      title: 'My Sidebar',
+      id: 'sidebar-1',
+      requestId: 1,
+    });
+
+    await responsePromise;
+
+    const sidebarPanes = server.sidebarPanes();
+    const pane = sidebarPanes.find(p => p.title() === 'My Sidebar');
+    assert.exists(pane);
+    assert.strictEqual(pane.viewId(), 'extension-sidebar-my-extension-id-elements-4t2ysc');
+  });
+
   /**
    * Verifies that the `ExtensionSidebarPane`'s `setObject` method successfully
    * evaluates and sets objects using various API overloads.

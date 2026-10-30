@@ -108,16 +108,25 @@ export class ExtensionButton {
   }
 }
 
+// Generates stable hash-based id usable as (part of) viewId for any unicode string.
+const hashIdentifier = (id: string): Lowercase<string> =>
+    Platform.StringUtilities.hashCode(id).toString(36) as Lowercase<string>;
+
+// Produces a stable identifier usable as (part of) viewId by either sanitizing it or hashing.
+const cleanIdentifier = (id: string): Lowercase<string> =>
+    Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
+
 export class ExtensionSidebarPane extends UI.View.SimpleView {
   readonly #panelName: string;
   private server: ExtensionServer;
   #id: string;
   private extensionView?: ExtensionView;
   private objectPropertiesView?: ExtensionNotifierView;
-  constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string) {
-    // For backwards compatibility we use the Kebab case version of the `title`
-    // as `viewId` for sidebar panes created by extensions.
-    const viewId = Platform.StringUtilities.toKebabCase(title);
+  constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string,
+              extensionId = 'extension') {
+    const viewId =
+        `extension-sidebar-${cleanIdentifier(extensionId)}-${cleanIdentifier(panelName)}-${hashIdentifier(title)}` as
+        Lowercase<string>;
     super({title, viewId});
     this.element.classList.add('fill');
     this.#panelName = panelName;

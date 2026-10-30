@@ -276,3 +276,18 @@ The following audits in this category have a score below 90 and may need attenti
       * **Resource**: https://example.com/hero.jpg
       * **Advice**: Preload this image
 === end content
+
+Title: LighthouseFormatter formats network-tree details inside a list section
+Content:
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **Network dependency tree**: 0
+  * Avoid chaining critical requests.
+
+    Maximum critical path latency: 650 ms
+    - https://example.com/ (200 ms, 4.1 kB) (longest chain)
+      - https://example.com/styles.css (450 ms, 8.2 kB) (longest chain)
+        - https://example.com/font.woff2 (650 ms, 16.4 kB) (longest chain)
+      - https://example.com/app.js (400 ms, 2 kB)
+=== end content

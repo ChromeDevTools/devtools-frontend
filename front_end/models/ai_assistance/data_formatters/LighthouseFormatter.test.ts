@@ -846,4 +846,69 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(checklistReport, 'performance');
     snapshotTester.assert(this, output);
   });
+
+  it('formats network-tree details inside a list section', function() {
+    const networkTreeReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0,
+          auditRefs: [{id: 'network-dependency-tree-insight', score: 0, weight: 1}],
+        },
+      },
+      audits: {
+        'network-dependency-tree-insight': {
+          id: 'network-dependency-tree-insight',
+          title: 'Network dependency tree',
+          description: 'Avoid chaining critical requests.',
+          score: 0,
+          details: {
+            type: 'list',
+            items: [
+              {
+                type: 'list-section',
+                value: {
+                  type: 'network-tree',
+                  longestChain: {duration: 650},
+                  chains: {
+                    root: {
+                      url: 'https://example.com/',
+                      navStartToEndTime: 200,
+                      transferSize: 4096,
+                      isLongest: true,
+                      children: {
+                        css: {
+                          url: 'https://example.com/styles.css',
+                          navStartToEndTime: 450,
+                          transferSize: 8192,
+                          isLongest: true,
+                          children: {
+                            font: {
+                              url: 'https://example.com/font.woff2',
+                              navStartToEndTime: 650,
+                              transferSize: 16384,
+                              isLongest: true,
+                            },
+                          },
+                        },
+                        js: {
+                          url: 'https://example.com/app.js',
+                          navStartToEndTime: 400,
+                          transferSize: 2048,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(networkTreeReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
 });

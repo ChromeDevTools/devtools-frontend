@@ -294,9 +294,34 @@ export class LighthouseFormatter {
         return Object.values(details.items)
             .map(item => `- ${this.#toSingleLine(item.label)}: ${item.value ? 'Passed' : 'Failed'}`)
             .join('\n');
+      case 'network-tree':
+        return this.#formatNetworkTree(details);
       default:
         return '';
     }
+  }
+
+  #formatNetworkTree(details: LHModel.ReporterTypes.NetworkTreeDetailsJSON): string {
+    if (Object.keys(details.chains).length === 0) {
+      return '';
+    }
+    const lines = [`Maximum critical path latency: ${millis(details.longestChain.duration)}`];
+    lines.push(...this.#formatNetworkTreeNodes(details.chains, 0));
+    return lines.join('\n');
+  }
+
+  #formatNetworkTreeNodes(nodes: Record<string, LHModel.ReporterTypes.NetworkTreeNodeJSON>, depth: number): string[] {
+    const lines: string[] = [];
+    const indent = '  '.repeat(depth);
+    for (const node of Object.values(nodes)) {
+      const longestSuffix = node.isLongest ? ' (longest chain)' : '';
+      lines.push(
+          `${indent}- ${node.url} (${millis(node.navStartToEndTime)}, ${bytes(node.transferSize)})${longestSuffix}`);
+      if (node.children) {
+        lines.push(...this.#formatNetworkTreeNodes(node.children, depth + 1));
+      }
+    }
+    return lines;
   }
 
   #formatList(details: LHModel.ReporterTypes.ListDetailsJSON): string {

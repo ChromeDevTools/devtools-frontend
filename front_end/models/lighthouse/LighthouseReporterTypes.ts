@@ -90,7 +90,23 @@ export interface ReportJSON {
 }
 
 export type DetailsJSON =|TableDetailsJSON|OpportunityDetailsJSON|ListDetailsJSON|ChecklistDetailsJSON|
-    FilmstripDetailsJSON|ScreenshotDetailsJSON|DebugDataDetailsJSON;
+    NetworkTreeDetailsJSON|FilmstripDetailsJSON|ScreenshotDetailsJSON|DebugDataDetailsJSON;
+
+export interface NetworkTreeNodeJSON {
+  url: string;
+  navStartToEndTime: number;
+  transferSize: number;
+  isLongest?: boolean;
+  children?: Record<string, NetworkTreeNodeJSON>;
+}
+
+export interface NetworkTreeDetailsJSON {
+  type: 'network-tree';
+  chains: Record<string, NetworkTreeNodeJSON>;
+  longestChain: {
+    duration: number,
+  };
+}
 
 export interface ChecklistItemJSON {
   label: string;

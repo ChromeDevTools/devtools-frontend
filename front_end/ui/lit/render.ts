@@ -5,14 +5,11 @@
 
 import * as Lit from '../../third_party/lit/lit.js';
 
-import {InterceptBindingDirective} from './Directives.js';
-
 export interface RenderOptions extends Lit.RenderOptions {
   container?: {
     attributes?: Record<string, string|null|boolean|undefined|{toString(): string}>,
     classes?: string[],
     listeners?: Record<string, EventListenerOrEventListenerObject>,
-    interceptedListeners?: Record<string, EventListenerOrEventListenerObject>,
   };
 }
 
@@ -114,10 +111,6 @@ export function render(template: unknown, container: HTMLElement|DocumentFragmen
       host.removeEventListener(name, entry.wrapper);
       listenersMap.delete(name);
     }
-  }
-
-  if (host instanceof Element) {
-    InterceptBindingDirective.registerListeners(host, options?.container?.interceptedListeners);
   }
 
   renderOptions.set(container, options);

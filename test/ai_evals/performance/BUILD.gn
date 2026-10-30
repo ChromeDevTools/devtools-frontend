@@ -11,6 +11,12 @@ node_ts_library("performance") {
     "cls-layout-animations.test.ts",
     "cls-unsized-image.test.ts",
     "cls-webfont-loading.test.ts",
+    "lcp-good-cwv-check.test.ts",
+    "lcp-high-ttfb.test.ts",
+    "lcp-load-delay-low-priority.test.ts",
+    "lcp-load-delay-request-chain.test.ts",
+    "lcp-load-duration-large-font.test.ts",
+    "lcp-load-duration-large-image.test.ts",
   ]
 
   ts_deps = [

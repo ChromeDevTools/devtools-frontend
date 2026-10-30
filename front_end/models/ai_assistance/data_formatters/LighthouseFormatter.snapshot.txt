@@ -8,6 +8,14 @@ Lighthouse Version: 12.0.0
 ## Category Scores
 - Performance: 80
 - Accessibility: 100
+
+## Failing audits
+
+### Performance (categoryId: "performance")
+- First Audit: 80
+
+### Accessibility (categoryId: "accessibility")
+- No failing audits.
 === end content
 
 Title: LighthouseFormatter generates audits for a category
@@ -134,17 +142,6 @@ The following audits in this category have a score below 90 and may need attenti
       * **Est Savings**: 16.9 kB
 === end content
 
-Title: LighthouseFormatter lists failing audits grouped by category with the category ID
-Content:
-## Failing audits
-
-### Performance (categoryId: "performance")
-- First Audit: 80
-
-### Accessibility (categoryId: "accessibility")
-- No failing audits.
-=== end content
-
 Title: LighthouseFormatter formats 0-based source locations as 1-based
 Content:
 # Audits for Accessibility
@@ -198,10 +195,26 @@ Mode: navigation
 ## Category Scores
 - Performance: 80
 - Agentic Browsing: 1/2 audits passed
+
+## Failing audits
+
+### Performance (categoryId: "performance")
+- First Audit: 80
+
+### Agentic Browsing (categoryId: "agentic-browsing")
+- llms.txt is valid: 0
 === end content
 
 Title: LighthouseFormatter surfaces errored audits
 Content:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2025-01-01T00:00:00.000Z
+Lighthouse Version: 12.0.0
+
+## Category Scores
+- Performance: 50
+
 ## Failing audits
 
 ### Performance (categoryId: "performance")
@@ -221,6 +234,14 @@ The following audits in this category errored:
 === end content
 Title: LighthouseFormatter excludes hidden audits
 Content:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2025-01-01T00:00:00.000Z
+Lighthouse Version: 12.0.0
+
+## Category Scores
+- Performance: 100
+
 ## Failing audits
 
 ### Performance (categoryId: "performance")
@@ -290,4 +311,63 @@ The following audits in this category have a score below 90 and may need attenti
       - https://example.com/styles.css (450 ms, 8.2 kB) (longest chain)
         - https://example.com/font.woff2 (650 ms, 16.4 kB) (longest chain)
       - https://example.com/app.js (400 ms, 2 kB)
+=== end content
+
+Title: LighthouseFormatter surfaces non-hidden informative audits with details
+Content:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2025-01-01T00:00:00.000Z
+Lighthouse Version: 12.0.0
+
+## Category Scores
+- Agentic Browsing: 0/0 audits passed
+- Performance: 80
+
+## Failing audits
+
+### Agentic Browsing (categoryId: "agentic-browsing")
+- No audits scored below 90, but these informative audits report findings:
+  - Informative Audit With Score 1
+
+### Performance (categoryId: "performance")
+- First Audit: 80
+- Informative audits:
+  - Minimize main-thread work
+
+# Audits for Agentic Browsing
+
+Informative audits:
+- **Informative Audit With Score 1**: informative (1 item found)
+  * Informative audit whose score is 1.
+
+    - Item:
+      * **Name**: exampleItem
+
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **First Audit**: 80 (1.2s)
+  * Description of first audit
+
+Informative audits:
+- **Minimize main-thread work**: informative (2.5 s)
+  * Consider reducing the time spent parsing, compiling and executing JS.
+
+    - Item:
+      * **Category**: Script Evaluation
+      * **Time Spent**: 1,800 ms
+=== end content
+
+Title: LighthouseFormatter filters webmcp-registered-tools table columns to tool and description
+Content:
+# Audits for Agentic Browsing
+
+Informative audits:
+- **Registered WebMCP tools**: informative (1 tool registered)
+  * Lists WebMCP tools registered on the page.
+
+    - Item:
+      * **Tool Name**: searchProducts
+      * **Description**: Searches the product catalog by keyword.
 === end content

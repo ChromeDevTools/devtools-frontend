@@ -84,12 +84,6 @@ describe('LighthouseFormatter', function() {
     assert.include(output, '# Audits for Accessibility');
   });
 
-  it('lists failing audits grouped by category with the category ID', function() {
-    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
-    const output = formatter.failingAuditsSummary(report);
-    snapshotTester.assert(this, output);
-  });
-
   it('excludes audits without a score from the failing audits list', function() {
     const unscoredReport = {
       ...report,
@@ -111,7 +105,7 @@ describe('LighthouseFormatter', function() {
       },
     } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
-    const output = formatter.failingAuditsSummary(unscoredReport);
+    const output = formatter.summary(unscoredReport);
     assert.notInclude(output, 'Informative Audit');
     assert.include(output, '### Performance (categoryId: "performance")\n- No failing audits.');
   });
@@ -683,7 +677,7 @@ describe('LighthouseFormatter', function() {
     } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = [
-      formatter.failingAuditsSummary(erroredReport),
+      formatter.summary(erroredReport),
       formatter.audits(erroredReport, 'performance'),
     ].join('\n\n');
     snapshotTester.assert(this, output);
@@ -723,7 +717,7 @@ describe('LighthouseFormatter', function() {
     } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = [
-      formatter.failingAuditsSummary(hiddenReport),
+      formatter.summary(hiddenReport),
       formatter.audits(hiddenReport, 'performance'),
     ].join('\n\n');
     snapshotTester.assert(this, output);
@@ -909,6 +903,144 @@ describe('LighthouseFormatter', function() {
     } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(networkTreeReport, 'performance');
+    snapshotTester.assert(this, output);
+  });
+
+  it('surfaces non-hidden informative audits with details', function() {
+    const informativeReport = {
+      ...report,
+      categories: {
+        'agentic-browsing': {
+          title: 'Agentic Browsing',
+          score: null,
+          categoryScoreDisplayMode: 'fraction',
+          auditRefs: [
+            {id: 'informative-with-score-one', weight: 0},
+            {id: 'hidden-informative-audit', weight: 0, group: 'hidden'},
+            {id: 'empty-informative-audit', weight: 0},
+          ],
+        },
+        performance: {
+          title: 'Performance',
+          score: 0.8,
+          auditRefs: [
+            {id: 'first-audit', score: 0.8, weight: 1},
+            {id: 'mainthread-work-breakdown', weight: 0},
+          ],
+        },
+      },
+      audits: {
+        ...report.audits,
+        'informative-with-score-one': {
+          id: 'informative-with-score-one',
+          title: 'Informative Audit With Score 1',
+          description: 'Informative audit whose score is 1.',
+          score: 1,
+          scoreDisplayMode: 'informative',
+          displayValue: '1 item found',
+          details: {
+            type: 'table',
+            headings: [
+              {key: 'name', label: 'Name', valueType: 'text'},
+            ],
+            items: [
+              {name: 'exampleItem'},
+            ],
+          },
+        },
+        'hidden-informative-audit': {
+          id: 'hidden-informative-audit',
+          title: 'Hidden Informative Audit',
+          description: 'Should not appear because ref.group is hidden.',
+          score: null,
+          scoreDisplayMode: 'informative',
+          details: {
+            type: 'table',
+            headings: [{key: 'name', label: 'Name', valueType: 'text'}],
+            items: [{name: 'secret'}],
+          },
+        },
+        'empty-informative-audit': {
+          id: 'empty-informative-audit',
+          title: 'Empty Informative Audit',
+          description: 'Should not appear because details is undefined.',
+          score: null,
+          scoreDisplayMode: 'informative',
+        },
+        'mainthread-work-breakdown': {
+          id: 'mainthread-work-breakdown',
+          title: 'Minimize main-thread work',
+          description: 'Consider reducing the time spent parsing, compiling and executing JS.',
+          score: null,
+          scoreDisplayMode: 'informative',
+          displayValue: '2.5 s',
+          details: {
+            type: 'table',
+            headings: [
+              {key: 'groupLabel', label: 'Category', valueType: 'text'},
+              {key: 'duration', label: 'Time Spent', valueType: 'ms'},
+            ],
+            items: [
+              {groupLabel: 'Script Evaluation', duration: 1800},
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = [
+      formatter.summary(informativeReport),
+      formatter.audits(informativeReport, 'agentic-browsing'),
+      formatter.audits(informativeReport, 'performance'),
+    ].join('\n\n');
+    snapshotTester.assert(this, output);
+  });
+
+  it('filters webmcp-registered-tools table columns to tool and description', function() {
+    const webmcpReport = {
+      ...report,
+      categories: {
+        'agentic-browsing': {
+          title: 'Agentic Browsing',
+          score: null,
+          categoryScoreDisplayMode: 'fraction',
+          auditRefs: [
+            {id: 'webmcp-registered-tools', weight: 0},
+          ],
+        },
+      },
+      audits: {
+        'webmcp-registered-tools': {
+          id: 'webmcp-registered-tools',
+          title: 'Registered WebMCP tools',
+          description: 'Lists WebMCP tools registered on the page.',
+          score: 1,
+          scoreDisplayMode: 'informative',
+          displayValue: '1 tool registered',
+          details: {
+            type: 'table',
+            headings: [
+              {key: 'tool', label: 'Tool Name', valueType: 'text'},
+              {key: 'description', label: 'Description', valueType: 'text'},
+              {key: 'inputSchema', label: 'Input Schema', valueType: 'code'},
+              {key: 'source', label: 'Source', valueType: 'source-location'},
+              {key: 'element', label: 'Form Element', valueType: 'node'},
+            ],
+            items: [
+              {
+                tool: 'searchProducts',
+                description: 'Searches the product catalog by keyword.',
+                inputSchema: '{\n  "type": "object"\n}',
+                source: {type: 'source-location', url: 'https://example.com/mcp.js', line: 9, column: 2},
+                element: {type: 'node', nodeLabel: 'form#search'},
+              },
+            ],
+          },
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.audits(webmcpReport, 'agentic-browsing');
     snapshotTester.assert(this, output);
   });
 });

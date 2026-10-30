@@ -6,6 +6,14 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("elements") {
   sources = [
+    "extraction-background-image-url.test.ts",
+    "extraction-border-radius-padding.test.ts",
+    "extraction-font-and-color.test.ts",
+    "extraction-main-computed-styles.test.ts",
+    "extraction-page-animations.test.ts",
+    "extraction-parent-computed-styles.test.ts",
+    "extraction-site-color-palette.test.ts",
+    "extraction-text-size-spacing.test.ts",
     "themes-background-transparency.test.ts",
     "themes-chat-bubble-border-radius.test.ts",
     "themes-dark-mode-emulation.test.ts",

@@ -50,10 +50,20 @@ describe('DevTools AI Smoke Test', () => {
   it('finds and sets NETWORK_REQUEST context and verifies getMatchingFlavorContext',
      async ({devToolsPage, inspectedPage}) => {
        await navigateToNetworkTab(devToolsPage, inspectedPage, 'headers-and-payload.html');
-       await findAndSetContext(devToolsPage, {
-         type: 'NETWORK_REQUEST',
-         contextIdentifier: 'headers-and-payload.html',
-       });
+       const logEntries: string[] = [];
+       await findAndSetContext(
+           devToolsPage,
+           {
+             type: 'NETWORK_REQUEST',
+             contextIdentifier: 'headers-and-payload.html',
+           },
+           text => logEntries.push(text),
+       );
+       assert.deepEqual(logEntries, [
+         'Looking for request: headers-and-payload.html',
+         'Filtering requests',
+         'Selecting request',
+       ]);
 
        const matchingContextInfo = await devToolsPage.evaluate(async () => {
          const path = './panels/ai_assistance/ai_assistance.js';

@@ -59,10 +59,11 @@ export class EvalTaskHandle {
   readonly label: string;
   readonly evals: ItEval[];
   readonly isConfigured: boolean;
-  readonly startTime: number = performance.now();
   readonly trajectoryBuilder: TrajectoryBuilder;
   readonly #devToolsPage: DevToolsPage;
   readonly #logger: EvalLogger;
+  // Total time spent executing prompts, reported as the task duration.
+  #executionSeconds = 0;
   hasFailed = false;
   failureError?: string;
 
@@ -81,16 +82,40 @@ export class EvalTaskHandle {
     this.evals.push(config);
   }
 
+  /**
+   * Time spent in `executePrompt` in seconds, rounded to two decimal places.
+   */
+  get durationSeconds(): number {
+    return Number(this.#executionSeconds.toFixed(2));
+  }
+
+  /**
+   * Records a line in the task log (`agent_logs/agent.log`).
+   */
+  log(text: string): void {
+    this.#logger.taskLog(this.taskId, text);
+  }
+
   async executePrompt(options: ExecutePromptOptions): Promise<Step[]> {
-    this.#logger.taskLog(this.taskId, `Executing prompt: ${JSON.stringify(options.prompts)}`);
-    const steps = (await this.#devToolsPage.evaluate(async (opts: ExecutePromptOptions) => {
-                    const path = './panels/ai_assistance/ai_assistance.js';
-                    const AiAssistance = await import(path);
-                    return await AiAssistance.ExternalHandler.handleExternalAIRequest(opts);
-                  }, options)) as Step[];
-    assert.isNotEmpty(steps, 'Expected non-empty interaction steps from handleExternalAIRequest.');
-    this.trajectoryBuilder.addSteps(steps);
-    return steps;
+    for (const prompt of options.prompts) {
+      this.log(`Executing query: "${prompt}" for task: ${this.taskId}`);
+      this.log(`[Info]: Running the user prompt "${prompt}" (This step might take a long time)`);
+    }
+    const executionStartTime = performance.now();
+    try {
+      const steps = (await this.#devToolsPage.evaluate(async (opts: ExecutePromptOptions) => {
+                      const path = './panels/ai_assistance/ai_assistance.js';
+                      const AiAssistance = await import(path);
+                      return await AiAssistance.ExternalHandler.handleExternalAIRequest(opts);
+                    }, options)) as Step[];
+      assert.isNotEmpty(steps, 'Expected non-empty interaction steps from handleExternalAIRequest.');
+      this.trajectoryBuilder.addSteps(steps);
+      return steps;
+    } finally {
+      const executionSeconds = (performance.now() - executionStartTime) / 1000;
+      this.#executionSeconds += executionSeconds;
+      this.log(`Finished (${executionSeconds.toFixed(2)}s)`);
+    }
   }
 }
 
@@ -116,6 +141,7 @@ export class AiEvalStateProvider extends StateProvider {
   // Target types of all registered eval tests. Suites are registered while the test files
   // are loaded, i.e. before `startEvalRun` is called from the global setup.
   #evalTypes = new Set<string>();
+  #navigationListeners = new WeakMap<puppeteer.Page, (frame: puppeteer.Frame) => void>();
 
   override registerSuiteSettings(suite: Mocha.Suite, suiteSettings: AiEvalSuiteSettings): void {
     super.registerSuiteSettings(suite, suiteSettings);
@@ -208,16 +234,17 @@ export class AiEvalStateProvider extends StateProvider {
     return undefined;
   }
 
-  #recordPreparationFailure(evalConfig: AiEvalConfig, startTime: number, error: unknown): void {
+  #recordPreparationFailure(evalConfig: AiEvalConfig, error: unknown): void {
     const normalizedError = error instanceof Error ? error : new Error(String(error));
     const errorMessage = this.#logger.formatError(normalizedError);
-    this.#logger.taskError(evalConfig.taskId, errorMessage);
+    this.#logger.taskError(evalConfig.taskId, `Preparation failed.\n${errorMessage}`);
     handleTaskFailure({
       runId: this.#runId,
       taskId: evalConfig.taskId,
       target: evalConfig.type ?? DEFAULT_EVAL_TYPE,
       phase: 'Preparation',
-      durationSeconds: Number(((performance.now() - startTime) / 1000).toFixed(2)),
+      // No prompt was executed yet.
+      durationSeconds: 0,
       logger: this.#logger,
       taskStatuses: this.#taskStatuses,
       errorMessage,
@@ -225,20 +252,18 @@ export class AiEvalStateProvider extends StateProvider {
   }
 
   override async prepareSuite(suite: Mocha.Suite): Promise<void> {
-    const startTime = performance.now();
     try {
       await super.prepareSuite(suite);
     } catch (error) {
       const evalConfig = this.#resolveEvalConfig(suite);
       if (evalConfig) {
-        this.#recordPreparationFailure(evalConfig, startTime, error);
+        this.#recordPreparationFailure(evalConfig, error);
       }
       throw error;
     }
   }
 
   override async createState(suite: Mocha.Suite): Promise<AiEvalState> {
-    const startTime = performance.now();
     const evalConfig = this.#resolveEvalConfig(suite);
     let baseState: E2EState;
     try {
@@ -246,7 +271,7 @@ export class AiEvalStateProvider extends StateProvider {
       await baseState.inspectedPage.bringToFront();
     } catch (error) {
       if (evalConfig) {
-        this.#recordPreparationFailure(evalConfig, startTime, error);
+        this.#recordPreparationFailure(evalConfig, error);
       }
       throw error;
     }
@@ -256,8 +281,15 @@ export class AiEvalStateProvider extends StateProvider {
         this.#logger,
         Boolean(evalConfig),
     );
-    if (evalConfig) {
-      this.#logger.taskLog(evalConfig.taskId, `Prepared task ${evalConfig.taskId}`);
+    if (evalTask.isConfigured) {
+      evalTask.log(`Prepared task ${evalTask.taskId}`);
+      const onFrameNavigated = (frame: puppeteer.Frame): void => {
+        if (frame === baseState.inspectedPage.page.mainFrame() && frame.url() !== 'about:blank') {
+          evalTask.log(`Navigated to ${frame.url()}`);
+        }
+      };
+      this.#navigationListeners.set(baseState.inspectedPage.page, onFrameNavigated);
+      baseState.inspectedPage.page.on('framenavigated', onFrameNavigated);
     }
     return {...baseState, evalTask};
   }
@@ -267,7 +299,7 @@ export class AiEvalStateProvider extends StateProvider {
     if (evalTask?.isConfigured) {
       evalTask.hasFailed = true;
       evalTask.failureError = this.#logger.formatError(error);
-      this.#logger.taskError(evalTask.taskId, evalTask.failureError);
+      this.#logger.taskError(evalTask.taskId, `There is an error, skipping it.\n${evalTask.failureError}`);
     }
     return await super.onTestError(state, error);
   }
@@ -276,7 +308,7 @@ export class AiEvalStateProvider extends StateProvider {
     const evalTask = (state as Partial<AiEvalState>).evalTask;
     try {
       if (evalTask?.isConfigured) {
-        const durationSeconds = Number(((performance.now() - evalTask.startTime) / 1000).toFixed(2));
+        const durationSeconds = evalTask.durationSeconds;
         if (evalTask.hasFailed && !evalTask.trajectoryBuilder.hasSteps()) {
           handleTaskFailure({
             runId: this.#runId,
@@ -345,6 +377,11 @@ export class AiEvalStateProvider extends StateProvider {
           await state.devToolsPage.page.close().catch(() => {});
         }
         if (state.inspectedPage) {
+          const onFrameNavigated = this.#navigationListeners.get(state.inspectedPage.page);
+          if (onFrameNavigated) {
+            state.inspectedPage.page.off('framenavigated', onFrameNavigated);
+            this.#navigationListeners.delete(state.inspectedPage.page);
+          }
           await state.inspectedPage.page.close().catch(() => {});
         }
       } catch {

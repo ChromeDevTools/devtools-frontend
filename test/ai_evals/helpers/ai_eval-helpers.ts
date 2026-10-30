@@ -233,24 +233,30 @@ export async function setupAndRunEvalApp(
 export async function selectNetworkRequest(
     devToolsPage: DevToolsPage,
     requestName: string,
+    log: (text: string) => void = () => {},
     ): Promise<void> {
   await openNetworkTab(devToolsPage);
+  log(`Looking for request: ${requestName}`);
+  log('Filtering requests');
   await clearTextFilter(devToolsPage);
   await setTextFilter(devToolsPage, requestName);
+  log('Selecting request');
   await selectRequestByName(devToolsPage, requestName);
 }
 
 /**
  * Finds and selects the specified context in DevTools so that it is set
  * as the active flavor (e.g. in UI.Context.Context) for AI evaluation.
+ * Setup steps are reported through `log` (e.g. `evalTask.log`).
  */
 export async function findAndSetContext(
     devToolsPage: DevToolsPage,
     context: AiAssistanceContext,
+    log: (text: string) => void = () => {},
     ): Promise<void> {
   switch (context.type) {
     case 'NETWORK_REQUEST': {
-      await selectNetworkRequest(devToolsPage, context.contextIdentifier);
+      await selectNetworkRequest(devToolsPage, context.contextIdentifier, log);
       break;
     }
     default: {

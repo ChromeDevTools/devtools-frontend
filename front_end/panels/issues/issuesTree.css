@@ -305,7 +305,6 @@ ul > li.plain-enum::before {
 
 .affected-resource-element {
   font-size: var(--sys-typescale-body4-size);
-  line-height: 18px;
   color: var(--sys-color-primary);
   border: 0;
   border-collapse: collapse;

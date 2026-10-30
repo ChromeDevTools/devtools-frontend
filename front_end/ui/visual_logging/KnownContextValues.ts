@@ -963,6 +963,7 @@ export const knownContextValues: Set<string> = new Set([
   'command-input',
   'comment-thread',
   'comments',
+  'comments-add-comment',
   'comments-drawer',
   'comments-input',
   'comments-see-response',

@@ -94,12 +94,53 @@
     background-color: var(--sys-color-state-ripple-neutral-on-subtle);
   }
 
-  .comments-list {
+  /* Queued and sent threads share a single scroll area below the toolbar. */
+  .comments-scroll-container {
+    /* Offset parent for the sections, so their offsetTop is their scroll position. */
+    position: relative;
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
+  }
+
+  /*
+   * Only as tall as its content, so the footer follows the last queued row
+   * when the queue fits in the panel.
+   */
+  .comments-queued-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comments-list {
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  /* Extra space between the Send to Agent footer and the sent comments separator. */
+  .comments-sent-section {
+    margin-top: var(--sys-size-11);
+    /*
+     * At least as tall as the panel, so the sent comments can always be
+     * scrolled to the top of the drawer, even when the content above and the
+     * sent list itself are short.
+     */
+    min-height: 100%;
+  }
+
+  /*
+   * Looks like a pane header, but only visually separates the queued comments
+   * (with their footer) from the comments already sent to the agent.
+   */
+  .comments-sent-separator {
+    padding: var(--sys-size-3) var(--sys-size-5);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+    background-color: var(--sys-color-surface1);
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body4-size);
+    line-height: var(--sys-typescale-body4-line-height);
   }
 
   .comment-thread-item {
@@ -221,20 +262,56 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    color: var(--sys-color-on-surface-subtle);
-    font-size: var(--sys-typescale-body3-size);
-    padding: var(--sys-size-13);
+    /* Fills the panel when there are no comments at all. */
+    flex: 1;
+    padding: var(--sys-size-13) var(--sys-size-8);
     text-align: center;
   }
 
+  .comments-empty-state-title {
+    margin-bottom: var(--sys-size-4);
+    color: var(--sys-color-on-surface);
+    font-size: var(--sys-typescale-headline5-size);
+    line-height: var(--sys-typescale-headline5-line-height);
+    font-weight: var(--ref-typeface-weight-medium);
+  }
+
+  .comments-empty-state-description {
+    max-width: var(--sys-size-29);
+    color: var(--sys-color-on-surface-subtle);
+    font-size: var(--sys-typescale-body3-size);
+    line-height: var(--sys-typescale-body3-line-height);
+    text-wrap: balance;
+  }
+
+  .comments-empty-state-icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    vertical-align: text-bottom;
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .comments-empty-state-link {
+    margin-top: var(--sys-size-3);
+  }
+
+  /*
+   * Sticks to the bottom of the panel while the queued rows overflow it, and
+   * scrolls up with the end of the queued section once the sent rows are reached.
+   */
   .comments-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: var(--sys-size-5);
+    /* Overlap the last queued row's bottom border so only a single divider is shown. */
+    margin-top: calc(-1 * var(--sys-size-1));
     padding: var(--sys-size-5) var(--sys-size-8);
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    background-color: var(--sys-color-cdt-base-container);
     flex-shrink: 0;
   }
 
@@ -263,12 +340,5 @@
   .send-agent-button:hover {
     background-color: var(--sys-color-primary-bright);
     box-shadow: var(--sys-elevation-level1);
-  }
-
-  .send-agent-button:disabled {
-    background-color: var(--sys-color-state-disabled-container);
-    color: var(--sys-color-state-disabled);
-    cursor: default;
-    box-shadow: none;
   }
 }

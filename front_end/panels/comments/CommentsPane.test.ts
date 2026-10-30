@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {it} from 'mocha';
+import {describe, it} from 'mocha';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
@@ -11,6 +11,7 @@ import * as CommentManager from '../../models/comment_manager/comment_manager.js
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Comments from './comments.js';
 
@@ -18,14 +19,23 @@ const {CommentsPane} = Comments;
 const {DEFAULT_VIEW} = CommentsPane;
 
 describeWithEnvironment('CommentsPane', () => {
+  /** Stubs for the functions the view hands to the widget. */
+  function createViewOutput() {
+    return {
+      scrollToSection: sinon.stub<[Comments.CommentsPane.Tab, {animate: boolean}], boolean>().returns(false),
+      sectionAtTop: sinon.stub<[], Comments.CommentsPane.Tab>().returns('queued'),
+    };
+  }
+
   async function createWidget(
       commentManager = new CommentManager.CommentManager.CommentManager(),
+      viewOutput = createViewOutput(),
   ) {
-    const view = createViewFunctionStub(CommentsPane.CommentsPane);
+    const view = createViewFunctionStub(CommentsPane.CommentsPane, viewOutput);
     const widget = new CommentsPane.CommentsPane(undefined, [commentManager], view);
     widget.wasShown();
     await view.nextInput;
-    return {view, widget, commentManager};
+    return {view, widget, commentManager, viewOutput};
   }
 
   function seedThreads(commentManager: CommentManager.CommentManager.CommentManager) {
@@ -56,15 +66,23 @@ describeWithEnvironment('CommentsPane', () => {
     return [t1, t2, t3];
   }
 
-  it('initializes with empty threads list if no threads exist', async () => {
+  it('does not list draft threads', async () => {
     const {view, commentManager} = await createWidget();
 
-    assert.strictEqual(view.input.activeTab, 'queued');
-    assert.lengthOf(view.input.threads, 0);
-    assert.lengthOf(commentManager.getCommentThreads(), 0);
+    // A thread without saved text stays a draft.
+    const draft =
+        commentManager.createCommentThread({vePath: 'Panel: elements > div.draft', textSignature: 'div.draft'});
+    const [, sent, resolved] = seedThreads(commentManager);
+    sent.sendToAgent();
+    resolved.resolve('Done');
+    const updatedInput = await view.nextInput;
+
+    assert.strictEqual(draft.status, 'DRAFT');
+    const listedIds = [...updatedInput.queuedThreads, ...updatedInput.sentThreads].map(item => item.thread.id);
+    assert.notInclude(listedIds, draft.id);
   });
 
-  it('deletes a comment thread when delete button is clicked', async () => {
+  it('deletes a comment thread', async () => {
     const commentManager = new CommentManager.CommentManager.CommentManager();
     const [t1] = seedThreads(commentManager);
     const {view} = await createWidget(commentManager);
@@ -72,49 +90,20 @@ describeWithEnvironment('CommentsPane', () => {
     view.input.onDeleteThread(t1.id);
     const updatedInput = await view.nextInput;
 
-    assert.lengthOf(updatedInput.threads, 2);
+    assert.lengthOf(updatedInput.queuedThreads, 2);
     assert.isUndefined(commentManager.getCommentThread(t1.id));
   });
 
-  it('clears all comments when clear button is clicked', async () => {
+  it('clears all comments', async () => {
     const commentManager = new CommentManager.CommentManager.CommentManager();
     seedThreads(commentManager);
     const {view} = await createWidget(commentManager);
 
-    assert.lengthOf(view.input.threads, 3);
     view.input.onClearAll();
     const updatedInput = await view.nextInput;
 
-    assert.lengthOf(updatedInput.threads, 0);
+    assert.lengthOf(updatedInput.queuedThreads, 0);
     assert.lengthOf(commentManager.getCommentThreads(), 0);
-  });
-
-  it('does not display draft comment threads in the drawer', async () => {
-    const {view, commentManager} = await createWidget();
-
-    // Create a draft thread (such as created by ChangeTracker)
-    commentManager.createCommentThread(
-        {
-          vePath: 'Panel: elements > Tree: elements > TreeItem',
-          textSignature: 'div.deleted',
-          node: {backendNodeId: 101, targetId: 'main'},
-        },
-    );
-
-    // Create an active thread
-    const activeThread = commentManager.createCommentThread(
-        {
-          vePath: 'Panel: elements > Tree: elements > TreeItem',
-          textSignature: 'div.active',
-          node: {backendNodeId: 102, targetId: 'main'},
-        },
-        'Active comment',
-    );
-    activeThread.save();
-
-    const updatedInput = await view.nextInput;
-    assert.lengthOf(updatedInput.threads, 1);
-    assert.strictEqual(updatedInput.threads[0].thread.id, activeThread.id);
   });
 
   it('reveals the comment thread when clicked', async () => {
@@ -132,66 +121,213 @@ describeWithEnvironment('CommentsPane', () => {
     );
   });
 
-  it('sends all active threads to agent when send to agent button is clicked', async () => {
-    const commentManager = new CommentManager.CommentManager.CommentManager();
-    const [t1, t2] = seedThreads(commentManager);
-    const {view} = await createWidget(commentManager);
+  describe('tabs', () => {
+    it('selects the clicked tab and scrolls to its section', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      const [, t2] = seedThreads(commentManager);
+      t2.sendToAgent();
+      const {view, viewOutput} = await createWidget(commentManager);
+      assert.strictEqual(view.input.activeTab, 'queued');
 
-    assert.strictEqual(t1.status, 'ACTIVE');
-    assert.strictEqual(t2.status, 'ACTIVE');
+      view.input.onTabClick('sent');
+      assert.strictEqual((await view.nextInput).activeTab, 'sent');
+      sinon.assert.calledWith(viewOutput.scrollToSection, 'sent', {animate: true});
 
-    view.input.onSendToAgent();
-    const updatedInput = await view.nextInput;
+      view.input.onTabClick('queued');
+      assert.strictEqual((await view.nextInput).activeTab, 'queued');
+      sinon.assert.calledWith(viewOutput.scrollToSection, 'queued', {animate: true});
+    });
 
-    assert.strictEqual(t1.status, 'SENT_TO_AGENT');
-    assert.strictEqual(t2.status, 'SENT_TO_AGENT');
-    assert.lengthOf(updatedInput.threads, 0);
+    it('highlights the section that has reached the top while scrolling', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      const [, t2] = seedThreads(commentManager);
+      t2.sendToAgent();
+      const {view, viewOutput} = await createWidget(commentManager);
+
+      viewOutput.sectionAtTop.returns('sent');
+      view.input.onScroll();
+      assert.strictEqual((await view.nextInput).activeTab, 'sent');
+
+      viewOutput.sectionAtTop.returns('queued');
+      view.input.onScroll();
+      assert.strictEqual((await view.nextInput).activeTab, 'queued');
+    });
+
+    it('keeps the clicked tab highlighted until its smooth scroll ends', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      const [, t2] = seedThreads(commentManager);
+      t2.sendToAgent();
+      const {view, widget, viewOutput} = await createWidget(commentManager);
+      viewOutput.scrollToSection.returns(true);
+
+      view.input.onTabClick('sent');
+      assert.strictEqual((await view.nextInput).activeTab, 'sent');
+
+      // On the way down, the queued section is still at the top.
+      view.input.onScroll();
+      await widget.updateComplete;
+      assert.strictEqual(view.input.activeTab, 'sent');
+
+      // The user stopped the scroll before the sent section reached the top.
+      view.input.onScrollEnd();
+      assert.strictEqual((await view.nextInput).activeTab, 'queued');
+    });
+
+    it('keeps Queued highlighted when there are no sent comments', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      seedThreads(commentManager);
+      const {view} = await createWidget(commentManager);
+
+      view.input.onTabClick('sent');
+
+      assert.strictEqual((await view.nextInput).activeTab, 'queued');
+    });
+
+    it('goes back to Queued when the sent comments are cleared', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      commentManager.createCommentThread({vePath: 'Panel: elements > div.sent'}, 'Sent').save();
+      commentManager.sendQueuedThreads();
+      const {view} = await createWidget(commentManager);
+      assert.strictEqual(view.input.activeTab, 'sent');
+
+      view.input.onClearAll();
+
+      assert.strictEqual((await view.nextInput).activeTab, 'queued');
+    });
   });
 
-  it('filters threads between Queued and Sent tabs', async () => {
-    const commentManager = new CommentManager.CommentManager.CommentManager();
-    const [t1, t2, t3] = seedThreads(commentManager);
-    t2.sendToAgent();
-    t3.resolve('Done');
+  describe('showing the sent comments when nothing is queued', () => {
+    it('opens on Sent with the sent comments at the top', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      commentManager.createCommentThread({vePath: 'Panel: elements > div.sent'}, 'Sent').save();
+      commentManager.sendQueuedThreads();
 
-    const {view} = await createWidget(commentManager);
+      const {view, viewOutput} = await createWidget(commentManager);
 
-    assert.strictEqual(view.input.activeTab, 'queued');
-    assert.deepEqual(view.input.threads.map(item => item.thread.id), [t1.id]);
+      assert.strictEqual(view.input.activeTab, 'sent');
+      sinon.assert.calledOnceWithExactly(viewOutput.scrollToSection, 'sent', {animate: false});
+    });
 
-    view.input.onTabSelect('sent');
-    const sentInput = await view.nextInput;
+    it('switches to Sent when the queued comments are sent while the drawer is open', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      const threads = seedThreads(commentManager);
+      const {view, viewOutput} = await createWidget(commentManager);
+      assert.strictEqual(view.input.activeTab, 'queued');
+      sinon.assert.notCalled(viewOutput.scrollToSection);
 
-    assert.strictEqual(sentInput.activeTab, 'sent');
-    assert.deepEqual(sentInput.threads.map(item => item.thread.id), [t2.id, t3.id]);
+      view.input.onSendToAgent();
+      const updatedInput = await view.nextInput;
 
-    sentInput.onTabSelect('queued');
-    const queuedInput = await view.nextInput;
+      assert.isTrue(threads.every(thread => thread.status === 'SENT_TO_AGENT'));
+      assert.lengthOf(updatedInput.queuedThreads, 0);
+      assert.lengthOf(updatedInput.sentThreads, 3);
+      assert.strictEqual(updatedInput.activeTab, 'sent');
+      sinon.assert.calledOnceWithExactly(viewOutput.scrollToSection, 'sent', {animate: false});
+    });
 
-    assert.strictEqual(queuedInput.activeTab, 'queued');
-    assert.deepEqual(queuedInput.threads.map(item => item.thread.id), [t1.id]);
+    it('does not move the list again on later updates', async () => {
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      const thread = commentManager.createCommentThread({vePath: 'Panel: elements > div.sent'}, 'Sent');
+      thread.save();
+      thread.sendToAgent();
+      const {view, viewOutput} = await createWidget(commentManager);
+
+      view.input.onTabClick('queued');
+      await view.nextInput;
+      viewOutput.scrollToSection.resetHistory();
+      thread.resolve('Done');
+      const updatedInput = await view.nextInput;
+
+      assert.strictEqual(updatedInput.activeTab, 'queued');
+      sinon.assert.notCalled(viewOutput.scrollToSection);
+    });
   });
 
-  it('updates the sent tab when the agent takes the sent threads', async () => {
+  it('keeps the list scroll position when the drawer is hidden and shown again', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    const scrollContainer = document.createElement('div');
+    scrollContainer.style.height = '10px';
+    scrollContainer.style.overflow = 'auto';
+    const content = document.createElement('div');
+    content.style.height = '100px';
+    scrollContainer.append(content);
+    container.append(scrollContainer);
+    const viewOutput = {...createViewOutput(), scrollContainer};
+    const view = createViewFunctionStub(CommentsPane.CommentsPane, viewOutput);
+    const widget = new CommentsPane.CommentsPane(undefined, [new CommentManager.CommentManager.CommentManager()], view);
+    widget.markAsRoot();
+    widget.show(container);
+    try {
+      await view.nextInput;
+      scrollContainer.scrollTop = 42;
+
+      widget.hideWidget();
+      // The browser resets the scroll position while the drawer is hidden.
+      scrollContainer.scrollTop = 0;
+      widget.show(container);
+
+      assert.strictEqual(scrollContainer.scrollTop, 42);
+    } finally {
+      widget.detach();
+    }
+  });
+
+  describe('Add a comment', () => {
+    function stubToggleCommentModeAction() {
+      const execute = sinon.stub().resolves(true);
+      const registry = UI.ActionRegistry.ActionRegistry.instance();
+      sinon.stub(registry, 'hasAction').withArgs('comments.toggle-comment-mode').returns(true);
+      sinon.stub(registry, 'getAction')
+          .withArgs('comments.toggle-comment-mode')
+          .returns({execute} as unknown as UI.ActionRegistration.Action);
+      return execute;
+    }
+
+    it('turns on comment mode when it is off', async () => {
+      const execute = stubToggleCommentModeAction();
+      const {view} = await createWidget();
+
+      view.input.onAddComment();
+
+      sinon.assert.calledOnce(execute);
+    });
+
+    it('does not toggle comment mode off when it is already on', async () => {
+      const execute = stubToggleCommentModeAction();
+      const commentManager = new CommentManager.CommentManager.CommentManager();
+      commentManager.setAgentAttached(true);
+      commentManager.setCommentMode(true);
+      const {view} = await createWidget(commentManager);
+
+      view.input.onAddComment();
+
+      sinon.assert.notCalled(execute);
+    });
+  });
+
+  it('updates the sent comments when the agent takes them', async () => {
     const commentManager = new CommentManager.CommentManager.CommentManager();
     const [t1] = seedThreads(commentManager);
     t1.sendToAgent();
 
     const {view} = await createWidget(commentManager);
-    view.input.onTabSelect('sent');
-    const sentInput = await view.nextInput;
-    assert.deepEqual(sentInput.threads.map(item => item.thread.id), [t1.id]);
-    assert.isFalse(sentInput.threads[0].thread.transmitted);
+    const sentIds = view.input.sentThreads.map(item => item.thread.id);
+    assert.include(sentIds, t1.id);
+    assert.isFalse(t1.transmitted);
 
     commentManager.takeComments();
     const takenInput = await view.nextInput;
-    assert.deepEqual(takenInput.threads.map(item => item.thread.id), [t1.id]);
-    assert.isTrue(takenInput.threads[0].thread.transmitted);
+    assert.deepEqual(takenInput.sentThreads.map(item => item.thread.id), sentIds);
+    assert.isTrue(t1.transmitted);
   });
 });
 
 describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
-  function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> = {}): HTMLElement {
+  function renderView(
+      inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> = {},
+      output: Comments.CommentsPane.ViewOutput = {},
+      ): HTMLElement {
     const target = document.createElement('div');
     target.style.width = '360px';
     target.style.height = '480px';
@@ -199,26 +335,26 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
     DEFAULT_VIEW(
         {
           activeTab: 'queued',
-          threads: [],
-          onTabSelect: () => {},
+          queuedThreads: [],
+          sentThreads: [],
+          onTabClick: () => {},
+          onScroll: () => {},
+          onScrollEnd: () => {},
           onClearAll: () => {},
           onThreadClick: () => {},
           onDeleteThread: () => {},
           onSendToAgent: () => {},
+          onAddComment: () => {},
           ...inputOverrides,
         },
-        undefined,
+        output,
         target,
     );
 
     return target;
   }
 
-  function createMockThread(
-      selectorText: string,
-      commentText: string,
-      options: Partial<Comments.CommentsPane.ThreadViewData> = {},
-      ): Comments.CommentsPane.ThreadViewData {
+  function createMockThread(selectorText: string, commentText: string): Comments.CommentsPane.ThreadViewData {
     const thread = new CommentManager.CommentThread.CommentThread({
       anchor: {
         vePath: `Panel: elements > ${selectorText}`,
@@ -227,75 +363,134 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
       comments: [{author: 'DEVELOPER', text: commentText, timestamp: 0}],
     });
     thread.status = 'ACTIVE';
-    return {
-      thread,
-      title: {text: selectorText},
-      commentText,
-      ...options,
-    };
+    return {thread, title: {text: selectorText}, commentText};
   }
 
-  it('renders the empty state', async () => {
-    const target = renderView({threads: []});
-    renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comments_pane_empty.png');
-  });
+  function createQueuedThreads(count: number): Comments.CommentsPane.ThreadViewData[] {
+    return Array.from({length: count}, (_, i) => createMockThread(`div.queued-${i}`, `Queued comment ${i}`));
+  }
 
-  it('renders comments list with various thread states', async () => {
-    const threads: Comments.CommentsPane.ThreadViewData[] = [
-      createMockThread(
-          'a.o-text-cta--small',
-          'Left align this button with H2 and use the primary pink colour for the button.',
-          ),
-      createMockThread(
-          'div.c-scrolling-list',
-          'Remove the animation from H1.',
-          ),
-      createMockThread(
-          'span.sub-header',
-          'Updated font weight.',
-          ),
-    ];
-
-    const target = renderView({threads});
-    renderElementIntoDOM(target, {includeCommonStyles: true});
-    await assertScreenshot('comments/comments_pane_list.png');
-  });
-
-  it('renders comments list in the sent tab', async () => {
+  /** One thread in each sent state: sent, taken by the agent ("Working") and resolved. */
+  function createSentThreads(): Comments.CommentsPane.ThreadViewData[] {
     const sentThread = createMockThread(
         'a.cta',
         'Left align this button with H2 and use the primary pink colour for the button.',
     );
     sentThread.thread.sendToAgent();
-    const workingThread = createMockThread(
-        'img.hero',
-        'Add an animation to the hero image.',
-    );
+    const workingThread = createMockThread('img.hero', 'Add an animation to the hero image.');
     workingThread.thread.sendToAgent();
     workingThread.thread.markTransmitted();
-    const resolvedThread = createMockThread(
-        'div.list',
-        'Remove the animation from H1.',
-    );
+    const resolvedThread = createMockThread('div.list', 'Remove the animation from H1.');
     resolvedThread.thread.resolve('Done');
+    return [sentThread, workingThread, resolvedThread];
+  }
 
+  async function assertViewScreenshot(target: HTMLElement, goldenPath: string): Promise<void> {
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    // Stop the "Working" spinners so the screenshots are stable.
+    for (const spinner of target.querySelectorAll('devtools-spinner')) {
+      spinner.active = false;
+    }
+    await assertScreenshot(goldenPath);
+  }
+
+  describe('screenshots', () => {
+    it('renders the empty state', async () => {
+      await assertViewScreenshot(renderView(), 'comments/comments_pane_empty.png');
+    });
+
+    it('renders queued comments with the Send to Agent footer right after them', async () => {
+      await assertViewScreenshot(renderView({queuedThreads: createQueuedThreads(3)}),
+                                 'comments/comments_pane_list.png');
+    });
+
+    it('renders the "No queued comments" note above the sent comments', async () => {
+      await assertViewScreenshot(renderView({activeTab: 'sent', sentThreads: createSentThreads()}),
+                                 'comments/comments_pane_sent.png');
+    });
+
+    it('renders queued and sent comments separated by the "Sent comments" bar', async () => {
+      await assertViewScreenshot(renderView({queuedThreads: createQueuedThreads(2), sentThreads: createSentThreads()}),
+                                 'comments/comments_pane_queued_and_sent.png');
+    });
+
+    it('renders the Send to Agent footer stuck to the bottom when the queued comments overflow', async () => {
+      await assertViewScreenshot(renderView({queuedThreads: createQueuedThreads(15), sentThreads: createSentThreads()}),
+                                 'comments/comments_pane_queued_overflow.png');
+    });
+  });
+
+  it('highlights the current section and forwards tab clicks and scroll events', () => {
+    const onTabClick = sinon.spy();
+    const onScroll = sinon.spy();
+    const onScrollEnd = sinon.spy();
+    const output: Comments.CommentsPane.ViewOutput = {};
     const target = renderView({
       activeTab: 'sent',
-      threads: [sentThread, workingThread, resolvedThread],
-    });
+      queuedThreads: createQueuedThreads(1),
+      sentThreads: createSentThreads(),
+      onTabClick,
+      onScroll,
+      onScrollEnd,
+    },
+                              output);
+    renderElementIntoDOM(target);
+    const [queuedTab, sentTab] = target.querySelectorAll<HTMLElement>('.tab-button');
+
+    assert.isFalse(queuedTab.classList.contains('active'));
+    assert.strictEqual(queuedTab.getAttribute('aria-current'), 'false');
+    assert.isTrue(sentTab.classList.contains('active'));
+    assert.strictEqual(sentTab.getAttribute('aria-current'), 'location');
+
+    sentTab.click();
+    queuedTab.click();
+    output.scrollContainer?.dispatchEvent(new Event('scroll'));
+    output.scrollContainer?.dispatchEvent(new Event('scrollend'));
+
+    assert.deepEqual(onTabClick.args.map(args => args[0]), ['sent', 'queued']);
+    sinon.assert.calledOnce(onScroll);
+    sinon.assert.calledOnce(onScrollEnd);
+  });
+
+  it('scrolls to a section and reports the section at the top', () => {
+    const output: Comments.CommentsPane.ViewOutput = {};
+    const target = renderView({queuedThreads: createQueuedThreads(15), sentThreads: createSentThreads()}, output);
     renderElementIntoDOM(target, {includeCommonStyles: true});
-    const spinner = target.querySelector('devtools-spinner');
-    assert.isNotNull(spinner);
-    spinner.active = false;
-    await assertScreenshot('comments/comments_pane_sent.png');
+    assert.strictEqual(output.sectionAtTop?.(), 'queued');
+
+    assert.isFalse(output.scrollToSection?.('sent', {animate: false}));
+    assert.strictEqual(output.sectionAtTop?.(), 'sent');
+
+    output.scrollToSection?.('queued', {animate: false});
+    assert.strictEqual(output.scrollContainer?.scrollTop, 0);
+    assert.strictEqual(output.sectionAtTop?.(), 'queued');
+  });
+
+  it('has no Sent section to scroll to without sent comments', () => {
+    const output: Comments.CommentsPane.ViewOutput = {};
+    const target = renderView({queuedThreads: createQueuedThreads(15)}, output);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+
+    assert.isFalse(output.scrollToSection?.('sent', {animate: true}));
+    assert.strictEqual(output.scrollContainer?.scrollTop, 0);
+    assert.strictEqual(output.sectionAtTop?.(), 'queued');
+  });
+
+  it('calls onAddComment when the Add a comment link is clicked', () => {
+    const onAddComment = sinon.spy();
+    const target = renderView({onAddComment});
+    renderElementIntoDOM(target);
+
+    target.querySelector<HTMLElement>('.comments-empty-state-link')?.click();
+
+    sinon.assert.calledOnce(onAddComment);
   });
 
   it('shows "Sent" for a sent thread until the agent takes it, then "Working"', () => {
     const threadData = createMockThread('a.cta', 'Test comment');
     threadData.thread.sendToAgent();
 
-    let target = renderView({activeTab: 'sent', threads: [threadData]});
+    let target = renderView({sentThreads: [threadData]});
     let item = target.querySelector('.comment-thread-item');
     assert.isNotNull(item);
     assert.isNotNull(item.querySelector('.thread-status-sent'));
@@ -303,7 +498,7 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
     assert.isNull(item.querySelector('devtools-spinner'));
 
     threadData.thread.markTransmitted();
-    target = renderView({activeTab: 'sent', threads: [threadData]});
+    target = renderView({sentThreads: [threadData]});
     item = target.querySelector('.comment-thread-item');
     assert.isNotNull(item);
     assert.isNull(item.querySelector('.thread-status-sent'));
@@ -312,13 +507,8 @@ describeWithEnvironment('CommentsPane DEFAULT_VIEW', () => {
 
   it('does not trigger thread selection when pressing Enter or Space on the delete button', () => {
     const onThreadClick = sinon.spy();
-
-    const mockThreadData = createMockThread('a.button', 'Test comment');
-    const target = renderView({
-      threads: [mockThreadData],
-      onThreadClick,
-    });
-
+    const [mockThreadData] = createQueuedThreads(1);
+    const target = renderView({queuedThreads: [mockThreadData], onThreadClick});
     renderElementIntoDOM(target);
     const deleteButton = target.querySelector('.comment-thread-item devtools-button') as HTMLElement;
     assert.isNotNull(deleteButton);

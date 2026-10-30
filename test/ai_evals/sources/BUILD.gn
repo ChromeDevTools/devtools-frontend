@@ -1,0 +1,22 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/typescript/typescript.gni")
+
+node_ts_library("sources") {
+  sources = [
+    "sources-canvas-signature-locator.test.ts",
+    "sources-chart-lookback-config.test.ts",
+    "sources-firebase-carrier-search.test.ts",
+    "sources-input-safety-audit.test.ts",
+    "sources-script-explanation-perf.test.ts",
+    "sources-third-party-consent-locator.test.ts",
+  ]
+
+  ts_deps = [
+    "..:harness_library",
+    "../helpers",
+    "../report",
+  ]
+}

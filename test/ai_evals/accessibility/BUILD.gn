@@ -8,13 +8,16 @@ node_ts_library("accessibility") {
   sources = [
     "a11y-aria-hidden-focus.test.ts",
     "a11y-button-name.test.ts",
+    "a11y-color-contrast.test.ts",
     "a11y-form-label.test.ts",
     "a11y-heading-order.test.ts",
     "a11y-image-alt.test.ts",
+    "a11y-link-in-text-block.test.ts",
   ]
 
   ts_deps = [
     "..:harness_library",
+    "../../e2e/helpers",
     "../helpers",
   ]
 }

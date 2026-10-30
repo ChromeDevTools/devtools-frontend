@@ -320,12 +320,12 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
   }
 
   nodesUpdated({nodes}: Protocol.Accessibility.NodesUpdatedEvent): void {
-    this.createNodesFromPayload(nodes);
+    this.#createNodesFromPayload(nodes);
     this.dispatchEventToListeners(Events.TREE_UPDATED, {});
     return;
   }
 
-  private createNodesFromPayload(payloadNodes: Protocol.Accessibility.AXNode[]): AccessibilityNode[] {
+  #createNodesFromPayload(payloadNodes: Protocol.Accessibility.AXNode[]): AccessibilityNode[] {
     const accessibilityNodes = payloadNodes.map(node => {
       const sdkNode = new AccessibilityNode(this, node);
       return sdkNode;
@@ -345,7 +345,7 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
     if (!node) {
       return;
     }
-    return this.createNodesFromPayload([node])[0];
+    return this.#createNodesFromPayload([node])[0];
   }
 
   async requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId, frameId?: Protocol.Page.FrameId):
@@ -366,7 +366,7 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
       this.#pendingChildRequests.set(nodeId, request);
       const result = await request;
       if (!result.getError()) {
-        this.createNodesFromPayload(result.nodes);
+        this.#createNodesFromPayload(result.nodes);
         this.#pendingChildRequests.delete(nodeId);
       }
     }
@@ -389,7 +389,7 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
     if (!nodes) {
       return null;
     }
-    const ancestors = this.createNodesFromPayload(nodes);
+    const ancestors = this.#createNodesFromPayload(nodes);
 
     return ancestors;
   }

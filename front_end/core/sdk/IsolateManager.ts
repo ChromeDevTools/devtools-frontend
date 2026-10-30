@@ -45,7 +45,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       throw new Error('Observer can only be registered once');
     }
     if (!this.#observers.size) {
-      void this.poll();
+      void this.#poll();
     }
     this.#observers.add(observer);
     for (const isolate of this.#isolates.values()) {
@@ -117,7 +117,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#isolates.values();
   }
 
-  private async poll(): Promise<void> {
+  async #poll(): Promise<void> {
     const pollId = this.#pollId;
     while (pollId === this.#pollId) {
       await Promise.all(Array.from(this.isolates(), isolate => isolate.update()));

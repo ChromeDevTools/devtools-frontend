@@ -170,7 +170,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     if (this.#pendingContentData) {
       return await this.#pendingContentData;
     }
-    this.#pendingContentData = this.innerRequestContent().then(contentData => {
+    this.#pendingContentData = this.#innerRequestContent().then(contentData => {
       // If an error happended we don't set `this.#contentData` so future `requestContentData` will
       // attempt again to hit the backend for this Resource.
       if (!TextUtils.ContentData.ContentData.isError(contentData)) {
@@ -208,7 +208,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     image.src = imageSrc ?? '';  // Empty the image if we cannot generate a preview URL
   }
 
-  private async innerRequestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
+  async #innerRequestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.request) {
       // The `contentData` promise only resolves once the request is done.
       return await this.request.requestContentData();

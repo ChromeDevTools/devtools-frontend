@@ -67,7 +67,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     }
   }
 
-  private static getBaseUrl(target: Target|null): Platform.DevToolsPath.UrlString {
+  static #getBaseUrl(target: Target|null): Platform.DevToolsPath.UrlString {
     while (target && target.type() !== Type.FRAME) {
       target = target.parentTarget();
     }
@@ -76,7 +76,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
   static resolveRelativeSourceURL(target: Target|null, url: Platform.DevToolsPath.UrlString):
       Platform.DevToolsPath.UrlString {
-    url = Common.ParsedURL.ParsedURL.completeURL(SourceMapManager.getBaseUrl(target), url) ?? url;
+    url = Common.ParsedURL.ParsedURL.completeURL(SourceMapManager.#getBaseUrl(target), url) ?? url;
     return url;
   }
 

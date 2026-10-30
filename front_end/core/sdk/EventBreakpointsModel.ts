@@ -90,38 +90,38 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
   // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager: TargetManager = TargetManager.instance()) {
     this.#targetManager = targetManager;
-    this.createInstrumentationBreakpoints(Category.AUCTION_WORKLET, [
+    this.#createInstrumentationBreakpoints(Category.AUCTION_WORKLET, [
       InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START,
       InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START,
       InstrumentationNames.BEFORE_SELLER_WORKLET_SCORING_START,
       InstrumentationNames.BEFORE_SELLER_WORKLET_REPORTING_START,
     ]);
-    this.createInstrumentationBreakpoints(Category.ANIMATION, [
+    this.#createInstrumentationBreakpoints(Category.ANIMATION, [
       InstrumentationNames.REQUEST_ANIMATION_FRAME,
       InstrumentationNames.CANCEL_ANIMATION_FRAME,
       InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK,
     ]);
-    this.createInstrumentationBreakpoints(Category.CANVAS, [
+    this.#createInstrumentationBreakpoints(Category.CANVAS, [
       InstrumentationNames.CANVAS_CONTEXT_CREATED,
       InstrumentationNames.WEBGL_ERROR_FIRED,
       InstrumentationNames.WEBGL_WARNING_FIRED,
     ]);
-    this.createInstrumentationBreakpoints(Category.GEOLOCATION, [
+    this.#createInstrumentationBreakpoints(Category.GEOLOCATION, [
       InstrumentationNames.GEOLOCATION_GET_CURRENT_POSITION,
       InstrumentationNames.GEOLOCATION_WATCH_POSITION,
     ]);
-    this.createInstrumentationBreakpoints(Category.NOTIFICATION, [
+    this.#createInstrumentationBreakpoints(Category.NOTIFICATION, [
       InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION,
     ]);
-    this.createInstrumentationBreakpoints(Category.PARSE, [
+    this.#createInstrumentationBreakpoints(Category.PARSE, [
       InstrumentationNames.ELEMENT_SET_INNER_HTML,
       InstrumentationNames.DOCUMENT_WRITE,
     ]);
-    this.createInstrumentationBreakpoints(Category.SCRIPT, [
+    this.#createInstrumentationBreakpoints(Category.SCRIPT, [
       InstrumentationNames.SCRIPT_FIRST_STATEMENT,
       InstrumentationNames.SCRIPT_BLOCKED_BY_CSP,
     ]);
-    this.createInstrumentationBreakpoints(Category.TIMER, [
+    this.#createInstrumentationBreakpoints(Category.TIMER, [
       InstrumentationNames.SET_TIMEOUT,
       InstrumentationNames.CLEAR_TIMEOUT,
       InstrumentationNames.SET_TIMEOUT_CALLBACK,
@@ -129,10 +129,10 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
       InstrumentationNames.CLEAR_INTERVAL,
       InstrumentationNames.SET_INTERVAL_CALLBACK,
     ]);
-    this.createInstrumentationBreakpoints(Category.WINDOW, [
+    this.#createInstrumentationBreakpoints(Category.WINDOW, [
       InstrumentationNames.DOM_WINDOW_CLOSE,
     ]);
-    this.createInstrumentationBreakpoints(Category.WEB_AUDIO, [
+    this.#createInstrumentationBreakpoints(Category.WEB_AUDIO, [
       InstrumentationNames.AUDIO_CONTEXT_CREATED,
       InstrumentationNames.AUDIO_CONTEXT_CLOSED,
       InstrumentationNames.AUDIO_CONTEXT_RESUMED,
@@ -160,7 +160,7 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     Root.DevToolsContext.globalInstance().delete(EventBreakpointsManager);
   }
 
-  private createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
+  #createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
     for (const instrumentationName of instrumentationNames) {
       this.#eventListenerBreakpoints.push(
           new EventListenerBreakpoint(category, instrumentationName, this.#targetManager));

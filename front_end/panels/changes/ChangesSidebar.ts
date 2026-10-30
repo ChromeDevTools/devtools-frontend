@@ -85,7 +85,7 @@ export class ChangesSidebar extends ChangesSidebarBase {
       this.#workspaceDiff.modifiedUISourceCodes().forEach(this.#removeUISourceCode.bind(this));
       this.#workspaceDiff.removeEventListener(
           WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED,
-          this.uiSourceCodeModifiedStatusChanged,
+          this.#uiSourceCodeModifiedStatusChanged,
           this,
       );
     }
@@ -93,7 +93,7 @@ export class ChangesSidebar extends ChangesSidebarBase {
     this.#workspaceDiff.modifiedUISourceCodes().forEach(this.#addUISourceCode.bind(this));
     this.#workspaceDiff.addEventListener(
         WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED,
-        this.uiSourceCodeModifiedStatusChanged,
+        this.#uiSourceCodeModifiedStatusChanged,
         this,
     );
     this.requestUpdate();
@@ -174,7 +174,7 @@ export class ChangesSidebar extends ChangesSidebarBase {
     this.requestUpdate();
   }
 
-  private uiSourceCodeModifiedStatusChanged(
+  #uiSourceCodeModifiedStatusChanged(
       event: Common.EventTarget.EventTargetEvent<WorkspaceDiff.WorkspaceDiff.ModifiedStatusChangedEvent>,
       ): void {
     const {isModified, uiSourceCode} = event.data;

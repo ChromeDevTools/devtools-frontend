@@ -52,7 +52,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
       title = i18nString(UIStrings.profileD, {PH1: this.#nextAnonymousConsoleProfileNumber++});
       this.#anonymousConsoleProfileIdToTitle.set(id, title);
     }
-    const eventData = this.createEventDataFrom(id, location, title);
+    const eventData = this.#createEventDataFrom(id, location, title);
     this.dispatchEventToListeners(Events.CONSOLE_PROFILE_STARTED, eventData);
   }
 
@@ -61,11 +61,11 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
       title = this.#anonymousConsoleProfileIdToTitle.get(id);
       this.#anonymousConsoleProfileIdToTitle.delete(id);
     }
-    const eventData = new ProfileFinishedData(this.createEventDataFrom(id, location, title), profile);
+    const eventData = new ProfileFinishedData(this.#createEventDataFrom(id, location, title), profile);
     this.dispatchEventToListeners(Events.CONSOLE_PROFILE_FINISHED, eventData);
   }
 
-  private createEventDataFrom(id: string, scriptLocation: Protocol.Debugger.Location, title?: string): EventData {
+  #createEventDataFrom(id: string, scriptLocation: Protocol.Debugger.Location, title?: string): EventData {
     const debuggerLocation = Location.fromPayload(this.#debuggerModel, scriptLocation);
     const globalId = this.target().id() + '.' + id;
     return {

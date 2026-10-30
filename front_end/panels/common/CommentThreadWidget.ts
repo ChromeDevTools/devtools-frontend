@@ -5,6 +5,7 @@
 import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -65,6 +66,12 @@ const UIStrings = {
    */
   commentInputAriaLabel: 'Comment input',
   /**
+   * @description Placeholder text for the comment text area, explaining the keyboard shortcut that queues a comment
+   * (saves it locally so it is sent to the agent together with the next comment).
+   * @example {Ctrl} PH1
+   */
+  queueCommentsPlaceholder: '{PH1} + \u21b5 to queue comments',
+  /**
    * @description Banner text shown at the bottom of a comment thread when the element the comment was
    * attached to has been removed and can no longer be found.
    */
@@ -95,6 +102,8 @@ export interface ViewInput {
   title: Title;
   comments: CommentManager.CommentManager.Comment[];
   commentText: string;
+  /** Placeholder for the comment text area, including the platform-specific queue shortcut. */
+  placeholder: string;
   /** Whether Cmd (Mac) or Ctrl (other platforms) is currently held, switching submit to "queue". */
   isQueueModifierPressed: boolean;
   /** True when the element the thread is anchored to has been removed. */
@@ -226,6 +235,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             input.onQueueModifierChange(UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
           @blur=${() => input.onQueueModifierChange(false)}
           jslog=${VisualLogging.textField('comments-input').track({keydown: 'Enter'})}
+          placeholder=${input.placeholder}
         ></textarea>
         <div class="footer">
           <devtools-icon
@@ -414,6 +424,7 @@ export class CommentThreadWidget extends UI.Widget.Widget {
       title: this.title,
       comments: this.#comments,
       commentText: this.#commentText,
+      placeholder: i18nString(UIStrings.queueCommentsPlaceholder, {PH1: Host.Platform.isMac() ? '⌘' : 'Ctrl'}),
       isQueueModifierPressed: this.#isQueueModifierPressed,
       elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,

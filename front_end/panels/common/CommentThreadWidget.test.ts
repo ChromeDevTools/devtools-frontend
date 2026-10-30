@@ -37,6 +37,7 @@ function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> 
         status: 'SENT_TO_AGENT',
         transmitted: false,
         commentText: '',
+        placeholder: 'Ctrl + \u21b5 to queue comments',
         isEditing: false,
         isQueueModifierPressed: false,
         elementRemoved: false,

@@ -31,6 +31,7 @@ devtools_ui_module("mobile_throttling") {
     "../../core/sdk:bundle",
     "../../models/crux-manager:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/lists:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

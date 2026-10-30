@@ -1,22 +1,26 @@
 // Copyright 2017 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/components/lists/lists.js';
 import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import {type Card, createIcon} from '../../ui/kit/kit.js';
+import type * as Lists from '../../ui/components/lists/lists.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 
 import {CalibrationController} from './CalibrationController.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
 import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
+
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -152,6 +156,14 @@ const UIStrings = {
    */
   cancel: 'Cancel',
   /**
+   * @description Button text to save changes when editing a custom profile in the throttling settings tab.
+   */
+  save: 'Save',
+  /**
+   * @description Button text to add a new custom profile in the throttling settings tab.
+   */
+  add: 'Add',
+  /**
    * @description Text to use to indicate that a CPU calibration has not been run yet.
    */
   needsCalibration: 'Needs calibration',
@@ -220,125 +232,146 @@ function createComputePressurePromise(): Promise<{state: string}> {
   });
 }
 
-export class CPUThrottlingCard {
-  element: Card;
+export interface CPUThrottlingCardViewInput {
+  state: 'cta'|'prompting'|'calibrating';
+  hasCalibrated: boolean;
+  lowResultText: string;
+  lowNotCalibrated: boolean;
+  midResultText: string;
+  midNotCalibrated: boolean;
+  warnings: string[];
+  progressWorked: number;
+  onCalibrateClick: () => void;
+  onCancelClick: () => void;
+}
 
-  private readonly setting: Common.Settings.Setting<PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling>;
+export type CPUThrottlingCardView = (input: CPUThrottlingCardViewInput, output: undefined, target: HTMLElement) => void;
+
+export const CPU_THROTTLING_CARD_DEFAULT_VIEW: CPUThrottlingCardView = (input, _output, target) => {
+  const renderTextWithIcon = (text: string, icon: string): LitTemplate => html`
+    <div class="text-with-icon">
+      <devtools-icon name=${icon}></devtools-icon>
+      ${text}
+    </div>
+  `;
+
+  const showCalibrateButton = input.state === 'cta' || input.state === 'prompting';
+  const calibrateButtonText = input.state === 'prompting' ?
+      i18nString(UIStrings.continue) :
+      (input.hasCalibrated ? i18nString(UIStrings.recalibrate) : i18nString(UIStrings.calibrate));
+  const showCancelButton = input.state === 'prompting' || input.state === 'calibrating';
+  const showTextContainer = (input.state === 'cta' && !input.hasCalibrated) || input.state === 'prompting';
+  const showProgress = input.state === 'calibrating';
+
+  // clang-format off
+  render(
+      html`
+        <devtools-card heading=${i18nString(UIStrings.cpuThrottlingPresets)}>
+          <span>${i18nString(UIStrings.cpuCalibrationDescription)}</span>
+          <div class="cpu-preset-section">
+            ${i18nString(UIStrings.calibratedLowTierMobile)}
+            <div class=${Directives.classMap({
+              'cpu-preset-result': true,
+              'not-calibrated': input.lowNotCalibrated,
+            })}>
+              ${input.lowResultText}
+            </div>
+          </div>
+          <div class="cpu-preset-section">
+            ${i18nString(UIStrings.calibratedMidTierMobile)}
+            <div class=${Directives.classMap({
+              'cpu-preset-result': true,
+              'not-calibrated': input.midNotCalibrated,
+            })}>
+              ${input.midResultText}
+            </div>
+          </div>
+          <div class="cpu-preset-section cpu-preset-calibrate">
+            <div class="button-container">
+              <devtools-button
+                class="calibrate-button"
+                style=${showCalibrateButton ? '' : 'display: none'}
+                .variant=${Buttons.Button.Variant.PRIMARY}
+                .jslogContext=${'throttling.calibrate'}
+                @click=${input.onCalibrateClick}>
+                ${calibrateButtonText}
+              </devtools-button>
+              <devtools-button
+                class="cancel-button"
+                style=${showCancelButton ? '' : 'display: none'}
+                .variant=${Buttons.Button.Variant.OUTLINED}
+                .jslogContext=${'throttling.calibrate-cancel'}
+                @click=${input.onCancelClick}>
+                ${i18nString(UIStrings.cancel)}
+              </devtools-button>
+            </div>
+            <div
+              class="text-container"
+              style=${showTextContainer ? '' : 'display: none'}>
+              ${input.state === 'cta' && !input.hasCalibrated
+                  ? renderTextWithIcon(i18nString(UIStrings.calibrationCTA), 'info')
+                  : nothing}
+              ${input.state === 'prompting' ? html`
+                ${input.warnings.map(warning => renderTextWithIcon(warning, 'warning'))}
+                ${renderTextWithIcon(i18nString(UIStrings.calibrationConfirmationPrompt), 'info')}
+              ` : nothing}
+            </div>
+            <devtools-progress
+              no-stop-button
+              style=${showProgress ? '' : 'display: none'}
+              .worked=${input.progressWorked}
+              .totalWork=${1}>
+            </devtools-progress>
+          </div>
+        </devtools-card>
+      `,
+      target);
+  // clang-format on
+};
+
+export class CPUThrottlingCard extends UI.Widget.Widget {
+  #setting?: Common.Settings.Setting<PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling>;
   private computePressurePromise?: ReturnType<typeof createComputePressurePromise>;
   private controller?: CalibrationController;
-
-  // UI stuff.
-  private lowTierMobileDeviceEl: HTMLElement;
-  private midTierMobileDeviceEl: HTMLElement;
-  private calibrateEl: HTMLElement;
-  private textEl: HTMLElement;
-  private calibrateButton: Buttons.Button.Button;
-  private cancelButton: Buttons.Button.Button;
-  private progress: UI.ProgressIndicator.ProgressIndicator;
   private state: 'cta'|'prompting'|'calibrating' = 'cta';
   private warnings: string[] = [];
+  readonly #view: CPUThrottlingCardView;
+  #progressWorked = 0;
 
-  constructor(settings: Common.Settings.Settings) {
-    this.setting = settings.createSetting<PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling>(
-        'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
-
-    this.element = document.createElement('devtools-card');
-    this.element.heading = i18nString(UIStrings.cpuThrottlingPresets);
-
-    const descriptionEl = this.element.createChild('span');
-    descriptionEl.textContent = i18nString(UIStrings.cpuCalibrationDescription);
-
-    this.lowTierMobileDeviceEl = this.element.createChild('div', 'cpu-preset-section');
-    this.lowTierMobileDeviceEl.append(i18nString(UIStrings.calibratedLowTierMobile));
-    this.lowTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
-
-    this.midTierMobileDeviceEl = this.element.createChild('div', 'cpu-preset-section');
-    this.midTierMobileDeviceEl.append(i18nString(UIStrings.calibratedMidTierMobile));
-    this.midTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
-
-    this.calibrateEl = this.element.createChild('div', 'cpu-preset-section cpu-preset-calibrate');
-
-    const buttonContainerEl = this.calibrateEl.createChild('div', 'button-container');
-
-    this.calibrateButton = new Buttons.Button.Button();
-    this.calibrateButton.classList.add('calibrate-button');
-    this.calibrateButton.data = {
-      variant: Buttons.Button.Variant.PRIMARY,
-      jslogContext: 'throttling.calibrate',
-    };
-    this.calibrateButton.addEventListener('click', () => this.calibrateButtonClicked());
-    buttonContainerEl.append(this.calibrateButton);
-
-    this.cancelButton = new Buttons.Button.Button();
-    this.cancelButton.classList.add('cancel-button');
-    this.cancelButton.data = {
-      variant: Buttons.Button.Variant.OUTLINED,
-      jslogContext: 'throttling.calibrate-cancel',
-    };
-    this.cancelButton.textContent = i18nString(UIStrings.cancel);
-    this.cancelButton.addEventListener('click', () => this.cancelButtonClicked());
-    buttonContainerEl.append(this.cancelButton);
-
-    this.textEl = this.calibrateEl.createChild('div', 'text-container');
-
-    this.progress = this.calibrateEl.createChild('devtools-progress');
-    this.progress.setAttribute('no-stop-button', '');
-
-    this.updateState();
+  constructor(element?: HTMLElement, view: CPUThrottlingCardView = CPU_THROTTLING_CARD_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.performUpdate();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
+    super.wasShown();
     this.computePressurePromise = createComputePressurePromise();
     this.state = 'cta';
-    this.updateState();
+    this.performUpdate();
   }
 
-  willHide(): void {
+  override willHide(): void {
+    super.willHide();
     this.computePressurePromise = undefined;
     if (this.controller) {
       this.controller.abort();
     }
   }
 
-  private updateState(): void {
+  override performUpdate(): void {
+    if (!this.#setting && Common.Settings.Settings.hasInstance()) {
+      this.#setting =
+          Common.Settings.Settings.instance().createSetting<PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling>(
+              'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
+    }
+
     if (this.state !== 'calibrating') {
       this.controller = undefined;
     }
 
-    const result = this.setting.get();
-    const hasCalibrated = result.low || result.mid;
-
-    this.calibrateButton.style.display = 'none';
-    this.textEl.style.display = 'none';
-    this.cancelButton.style.display = 'none';
-    this.progress.style.display = 'none';
-
-    if (this.state === 'cta') {
-      this.calibrateButton.style.display = '';
-      this.calibrateButton.textContent =
-          hasCalibrated ? i18nString(UIStrings.recalibrate) : i18nString(UIStrings.calibrate);
-
-      if (!hasCalibrated) {
-        this.textEl.style.display = '';
-        this.textEl.textContent = '';
-        this.textEl.append(this.createTextWithIcon(i18nString(UIStrings.calibrationCTA), 'info'));
-      }
-    } else if (this.state === 'prompting') {
-      this.calibrateButton.style.display = '';
-      this.calibrateButton.textContent = i18nString(UIStrings.continue);
-
-      this.cancelButton.style.display = '';
-
-      this.textEl.style.display = '';
-      this.textEl.textContent = '';
-      for (const warning of this.warnings) {
-        this.textEl.append(this.createTextWithIcon(warning, 'warning'));
-      }
-      this.textEl.append(this.createTextWithIcon(i18nString(UIStrings.calibrationConfirmationPrompt), 'info'));
-    } else if (this.state === 'calibrating') {
-      this.cancelButton.style.display = '';
-      this.progress.style.display = '';
-    }
+    const result = this.#setting?.get() ?? {};
+    const hasCalibrated = Boolean(result.low || result.mid);
 
     const resultToString = (result: number|PanelsCommon.CPUThrottlingOption.CalibrationError|undefined): string => {
       if (result === undefined) {
@@ -358,26 +391,24 @@ export class CPUThrottlingCard {
       return i18nString(UIStrings.dSlowdown, {PH1: result.toFixed(1)});
     };
 
-    const setPresetResult = (element: HTMLElement|null,
-                             result: number|PanelsCommon.CPUThrottlingOption.CalibrationError|undefined): void => {
-      if (!element) {
-        throw new Error('expected HTMLElement');
-      }
-
-      element.textContent = resultToString(result);
-      element.classList.toggle('not-calibrated', result === undefined);
-    };
-
-    setPresetResult(this.lowTierMobileDeviceEl.querySelector('.cpu-preset-result'), result.low);
-    setPresetResult(this.midTierMobileDeviceEl.querySelector('.cpu-preset-result'), result.mid);
-  }
-
-  private createTextWithIcon(text: string, icon: string): HTMLElement {
-    const el = document.createElement('div');
-    el.classList.add('text-with-icon');
-    el.append(createIcon(icon));
-    el.append(text);
-    return el;
+    this.#view(
+        {
+          state: this.state,
+          hasCalibrated,
+          lowResultText: resultToString(result.low),
+          lowNotCalibrated: result.low === undefined,
+          midResultText: resultToString(result.mid),
+          midNotCalibrated: result.mid === undefined,
+          warnings: this.warnings,
+          progressWorked: this.#progressWorked,
+          onCalibrateClick: () => {
+            void this.calibrateButtonClicked();
+          },
+          onCancelClick: () => this.cancelButtonClicked(),
+        },
+        undefined,
+        this.element,
+    );
   }
 
   private async getCalibrationWarnings(): Promise<string[]> {
@@ -405,10 +436,10 @@ export class CPUThrottlingCard {
     if (this.state === 'cta') {
       this.warnings = await this.getCalibrationWarnings();
       this.state = 'prompting';
-      this.updateState();
+      this.requestUpdate();
     } else if (this.state === 'prompting') {
       this.state = 'calibrating';
-      this.updateState();
+      this.requestUpdate();
       void this.runCalibration();
     }
   }
@@ -418,13 +449,13 @@ export class CPUThrottlingCard {
       this.controller.abort();
     } else {
       this.state = 'cta';
-      this.updateState();
+      this.requestUpdate();
     }
   }
 
   private async runCalibration(): Promise<void> {
-    this.progress.worked = 0;
-    this.progress.totalWork = 1;
+    this.#progressWorked = 0;
+    this.requestUpdate();
 
     this.controller = new CalibrationController();
 
@@ -435,7 +466,8 @@ export class CPUThrottlingCard {
       }
 
       for await (const result of this.controller.iterator()) {
-        this.progress.worked = result.progress;
+        this.#progressWorked = result.progress;
+        this.requestUpdate();
       }
     } catch (e) {
       console.error(e);
@@ -444,15 +476,16 @@ export class CPUThrottlingCard {
     }
 
     const result = this.controller.result();
-    if (result && (result.low || result.mid)) {
-      this.setting.set(result);
+    if (result && (result.low || result.mid) && this.#setting) {
+      this.#setting.set(result);
       // Let the user bask in the glory of a 100% progress bar, for a bit.
-      this.progress.worked = 1;
+      this.#progressWorked = 1;
+      this.requestUpdate();
       await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     this.state = 'cta';
-    this.updateState();
+    this.requestUpdate();
   }
 }
 
@@ -464,15 +497,312 @@ function extractCustomSettingIndex(key: SDK.NetworkManager.UserDefinedThrottling
   return 0;
 }
 
-export class ThrottlingSettingsTab extends UI.Widget.VBox implements
-    UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
-  /** List of default network throttling presets (read-only in UI) */
-  private readonly presetsList: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
-  /** List of custom user-defined network throttling profiles */
-  private readonly customList: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
+function retrieveOptionsTitle(conditions: SDK.NetworkManager.Conditions): string {
+  // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
+  return typeof conditions.title === 'function' ? conditions.title() : conditions.title;
+}
+
+export interface EditorValues {
+  title: string;
+  download: string;
+  upload: string;
+  latency: string;
+  packetLoss: string;
+  packetQueueLength: string;
+  packetReordering: boolean;
+}
+
+export type EditorFieldName = keyof EditorValues;
+
+export interface ViewInput {
+  presets: SDK.NetworkManager.Conditions[];
+  customConditions: SDK.NetworkManager.Conditions[];
+  editingIndex: number|null;
+  editingValues: EditorValues;
+  validationErrors: Partial<Record<EditorFieldName, Common.UIString.LocalizedString>>;
+  showValidationErrors: boolean;
+  onAddCustomProfile: () => void;
+  onBeginEdit: (index: number) => void;
+  onRemoveCustomProfile: (index: number) => void;
+  onEditorInput: <K extends EditorFieldName>(field: K, value: EditorValues[K]) => void;
+  onCommitEdit: () => void;
+  onCancelEdit: () => void;
+}
+
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+function renderHeaderRow(): LitTemplate {
+  const profileName = i18nString(UIStrings.profileName);
+  const columns = [
+    i18nString(UIStrings.download),
+    i18nString(UIStrings.upload),
+    i18nString(UIStrings.latency),
+    i18nString(UIStrings.packetLoss),
+    i18nString(UIStrings.packetQueueLength),
+    i18nString(UIStrings.packetReordering),
+  ];
+  // clang-format off
+  return html`
+    <div class="conditions-list-item conditions-list-header">
+      <div class="conditions-list-text conditions-list-title" title=${profileName}>
+        <div class="conditions-list-title-text">${profileName}</div>
+      </div>
+      ${columns.map(column => html`
+        <div class="conditions-list-separator"></div>
+        <div class="conditions-list-text" title=${column}>${column}</div>
+      `)}
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderConditionsItem(conditions: SDK.NetworkManager.Conditions): LitTemplate {
+  const title = retrieveOptionsTitle(conditions);
+  const downloadText = throughputText(conditions.download);
+  const uploadText = throughputText(conditions.upload);
+  const latencyText = i18nString(UIStrings.dms, {PH1: conditions.latency});
+  const packetLossText = percentText(conditions.packetLoss ?? 0);
+  const packetQueueLengthText = String(conditions.packetQueueLength ?? 0);
+  const packetReorderingText = conditions.packetReordering ? i18nString(UIStrings.on) : i18nString(UIStrings.off);
+  // clang-format off
+  return html`
+    <div class="conditions-list-item">
+      <div class="conditions-list-text conditions-list-title" title=${title}>
+        <div class="conditions-list-title-text">${title}</div>
+      </div>
+      <div class="conditions-list-separator"></div>
+      <div class="conditions-list-text">${downloadText}</div>
+      <div class="conditions-list-separator"></div>
+      <div class="conditions-list-text">${uploadText}</div>
+      <div class="conditions-list-separator"></div>
+      <div class="conditions-list-text">${latencyText}</div>
+      <div class="conditions-list-separator"></div>
+      <div class="conditions-list-text">${packetLossText}</div>
+      <div class="conditions-list-separator"></div>
+      <div class="conditions-list-text">${packetQueueLengthText}</div>
+      <div class="conditions-list-separator"></div>
+      <div class="conditions-list-text">${packetReorderingText}</div>
+    </div>
+  `;
+  // clang-format on
+}
+
+interface TextFieldDefinition {
+  name: Exclude<EditorFieldName, 'packetReordering'>;
+  labelText: Common.UIString.LocalizedString;
+  placeholder: string;
+  isOptional: boolean;
+}
+
+function renderEditor(input: ViewInput): LitTemplate {
+  const isNew = input.editingIndex === input.customConditions.length;
+  const optionalStr = i18nString(UIStrings.optional);
+  const textFields: TextFieldDefinition[] = [
+    {
+      name: 'title',
+      labelText: i18nString(UIStrings.profileName),
+      placeholder: '',
+      isOptional: false,
+    },
+    {
+      name: 'download',
+      labelText: i18nString(UIStrings.download),
+      placeholder: i18n.i18n.lockedString('kbit/s'),
+      isOptional: true,
+    },
+    {
+      name: 'upload',
+      labelText: i18nString(UIStrings.upload),
+      placeholder: i18n.i18n.lockedString('kbit/s'),
+      isOptional: true,
+    },
+    {
+      name: 'latency',
+      labelText: i18nString(UIStrings.latency),
+      placeholder: i18n.i18n.lockedString('ms'),
+      isOptional: true,
+    },
+    {
+      name: 'packetLoss',
+      labelText: i18nString(UIStrings.packetLoss),
+      placeholder: i18n.i18n.lockedString('percent'),
+      isOptional: true,
+    },
+    {
+      name: 'packetQueueLength',
+      labelText: i18nString(UIStrings.packetQueueLength),
+      placeholder: i18nString(UIStrings.packet),
+      isOptional: true,
+    },
+  ];
+  const errorMessages = Object.values(input.validationErrors).filter(Boolean);
+  const hasErrors = errorMessages.length > 0;
+
+  // clang-format off
+  return html`
+    <div
+        class="editor-container"
+        jslog=${VisualLogging.pane('editor').track({resize: true})}
+        @keydown=${(e: KeyboardEvent) => {
+          if (Platform.KeyboardUtilities.isEscKey(e)) {
+            e.consume(true);
+            input.onCancelEdit();
+          }
+        }}>
+      <div
+          class="editor-content"
+          @keydown=${(e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+              e.consume(true);
+              input.onCommitEdit();
+            }
+          }}>
+        <div class="settings-container">
+          ${textFields.map((field, index) => {
+            const isInvalid = input.showValidationErrors && Boolean(input.validationErrors[field.name]);
+            return html`
+              <div class="setting">
+                <div>${field.labelText}</div>
+                <div>
+                  <input
+                      class=${Directives.classMap({
+                        'harmony-input': true,
+                        input: true,
+                        'error-input': isInvalid,
+                      })}
+                      type="text"
+                      ?autofocus=${index === 0}
+                      placeholder=${field.placeholder}
+                      aria-label=${field.labelText}
+                      aria-description=${optionalStr}
+                      aria-invalid=${isInvalid ? 'true' : 'false'}
+                      .value=${Directives.live(input.editingValues[field.name])}
+                      jslog=${VisualLogging.textField().track({change: true, keydown: 'Enter'}).context(field.name)}
+                      @input=${(e: Event) => input.onEditorInput(field.name, (e.target as HTMLInputElement).value)}>
+                  <div style=${field.isOptional ? '' : 'visibility: hidden'}>
+                    ${optionalStr}
+                  </div>
+                </div>
+              </div>
+            `;
+          })}
+          <div class="setting">
+            <div>${i18nString(UIStrings.packetReordering)}</div>
+            <div>
+              <devtools-checkbox
+                  class="input"
+                  aria-label=${i18nString(UIStrings.packetReordering)}
+                  aria-description=${optionalStr}
+                  .checked=${input.editingValues.packetReordering}
+                  .jslogContext=${'packetReordering'}
+                  @change=${(e: Event) => input.onEditorInput('packetReordering', (e.target as UI.UIUtils.CheckboxLabel).checked)}>
+              </devtools-checkbox>
+              <div style="visibility: hidden">
+                ${optionalStr}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="editor-buttons">
+        <devtools-button
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            .jslogContext=${'cancel'}
+            jslog=${VisualLogging.action('cancel').track({click: true})}
+            @click=${input.onCancelEdit}>
+          ${i18nString(UIStrings.cancel)}
+        </devtools-button>
+        <devtools-button
+            .variant=${Buttons.Button.Variant.PRIMARY}
+            .jslogContext=${'commit'}
+            .disabled=${hasErrors}
+            @click=${input.onCommitEdit}>
+          ${isNew ? i18nString(UIStrings.add) : i18nString(UIStrings.save)}
+        </devtools-button>
+      </div>
+      <div class="list-widget-input-validation-error" role="alert" aria-live="polite">
+        ${input.showValidationErrors && hasErrors
+            ? errorMessages.map((msg, i) => html`${i > 0 ? html`<br>` : nothing}${msg}`)
+            : nothing}
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const editingIndex = input.editingIndex;
+  const customBefore = editingIndex !== null ? input.customConditions.slice(0, editingIndex) : input.customConditions;
+  const customAfter = editingIndex !== null ? input.customConditions.slice(editingIndex + 1) : [];
+
+  // clang-format off
+  render(
+      html`
+        <div class="settings-card-container-wrapper">
+          <div class="settings-card-container throttling-conditions-settings">
+            ${widget(CPUThrottlingCard)}
+            <devtools-card heading=${i18nString(UIStrings.defaultProfiles)}>
+              <div>
+                ${renderHeaderRow()}
+                <devtools-list class="conditions-list">
+                  ${input.presets.map(preset => renderConditionsItem(preset))}
+                </devtools-list>
+              </div>
+            </devtools-card>
+            <devtools-card heading=${i18nString(UIStrings.customProfiles)}>
+              <div>
+                ${renderHeaderRow()}
+                ${customBefore.length > 0 ? html`
+                  <devtools-list
+                      class="conditions-list"
+                      editable
+                      deletable
+                      @edit=${(e: Lists.List.ItemEditEvent) => input.onBeginEdit(e.detail.index)}
+                      @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemoveCustomProfile(e.detail.index)}>
+                    ${customBefore.map(item => renderConditionsItem(item))}
+                  </devtools-list>
+                ` : nothing}
+                ${editingIndex !== null ? renderEditor(input) : nothing}
+                ${editingIndex !== null && customAfter.length > 0 ? html`
+                  <devtools-list
+                      class="conditions-list"
+                      editable
+                      deletable
+                      @edit=${(e: Lists.List.ItemEditEvent) => input.onBeginEdit(editingIndex + 1 + e.detail.index)}
+                      @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemoveCustomProfile(editingIndex + 1 + e.detail.index)}>
+                    ${customAfter.map(item => renderConditionsItem(item))}
+                  </devtools-list>
+                ` : nothing}
+                <devtools-button
+                  class="add-conditions-button"
+                  .variant=${Buttons.Button.Variant.OUTLINED}
+                  .iconName=${'plus'}
+                  .jslogContext=${'network.add-conditions'}
+                  @click=${input.onAddCustomProfile}>
+                  ${i18nString(UIStrings.addCustomProfile)}
+                </devtools-button>
+              </div>
+            </devtools-card>
+          </div>
+        </div>
+      `,
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('throttling-conditions')}`}}});
+  // clang-format on
+};
+
+const EMPTY_EDITOR_VALUES: EditorValues = {
+  title: '',
+  download: '',
+  upload: '',
+  latency: '',
+  packetLoss: '',
+  packetQueueLength: '',
+  packetReordering: false,
+};
+
+export class ThrottlingSettingsTab extends UI.Widget.VBox {
   private readonly customUserConditions: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
-  private editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
-  private cpuThrottlingCard: CPUThrottlingCard;
+  readonly #view: View;
   /**
    * We store how many custom conditions the user has defined when we load up
    * DevTools. This is because when the user creates a new one, we need to
@@ -481,46 +811,20 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
    * profile; we always use this counter which is only ever incremented.
    */
   #customUserConditionsCount: number;
+  #editingIndex: number|null = null;
+  #editingConditions: SDK.NetworkManager.Conditions|null = null;
+  #editingValues: EditorValues = {...EMPTY_EDITOR_VALUES};
+  #showValidationErrors = false;
 
-  constructor(settings: Common.Settings.Settings) {
+  constructor(settings: Common.Settings.Settings, view: View = DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging.pane('throttling-conditions')}`,
       useShadowDom: true,
     });
+    this.#view = view;
     this.registerRequiredCSS(throttlingSettingsTabStyles);
 
-    const settingsContent =
-        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-    settingsContent.classList.add('settings-card-container', 'throttling-conditions-settings');
-
-    this.cpuThrottlingCard = new CPUThrottlingCard(settings);
-    settingsContent.append(this.cpuThrottlingCard.element);
-
-    const addButton = new Buttons.Button.Button();
-    addButton.classList.add('add-conditions-button');
-    addButton.data = {
-      variant: Buttons.Button.Variant.OUTLINED,
-      iconName: 'plus',
-      jslogContext: 'network.add-conditions',
-    };
-    addButton.textContent = i18nString(UIStrings.addCustomProfile);
-    addButton.addEventListener('click', () => this.addButtonClicked());
-
-    this.presetsList = new UI.ListWidget.ListWidget(this);
-    this.presetsList.setHeader(createHeaderRow());
-    createProfilesCard(i18nString(UIStrings.defaultProfiles), this.presetsList, settingsContent);
-    const presets = ThrottlingPresets.networkPresets;
-    for (let i = 0; i < presets.length; ++i) {
-      this.presetsList.appendItem(presets[i], false);
-    }
-
-    this.customList = new UI.ListWidget.ListWidget(this);
-    this.customList.setHeader(createHeaderRow());
-    const customContainer = createProfilesCard(i18nString(UIStrings.customProfiles), this.customList, settingsContent);
-    customContainer.appendChild(addButton);
-
     this.customUserConditions = SDK.NetworkManager.customUserNetworkConditionsSetting(settings);
-    this.customUserConditions.addChangeListener(this.conditionsUpdated, this);
+    this.customUserConditions.addChangeListener(this.#conditionsUpdated, this);
 
     const customConditions = this.customUserConditions.get();
     // We need to parse out the current max condition key index. If the last
@@ -539,31 +843,53 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     } else {
       this.#customUserConditionsCount = 0;
     }
+
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    const customConditions = this.customUserConditions.get();
+    const validationErrors = this.#editingIndex !== null ? this.#validateEditorValues(this.#editingValues) : {};
+
+    this.#view(
+        {
+          presets: ThrottlingPresets.networkPresets,
+          customConditions,
+          editingIndex: this.#editingIndex,
+          editingValues: this.#editingValues,
+          validationErrors,
+          showValidationErrors: this.#showValidationErrors,
+          onAddCustomProfile: () => this.#addButtonClicked(),
+          onBeginEdit: this.#beginEdit.bind(this),
+          onRemoveCustomProfile: this.#removeCustomProfile.bind(this),
+          onEditorInput: this.#onEditorInput.bind(this),
+          onCommitEdit: this.#commitEdit.bind(this),
+          onCancelEdit: this.#cancelEdit.bind(this),
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.cpuThrottlingCard.wasShown();
-    this.conditionsUpdated();
+    this.#conditionsUpdated();
+    this.performUpdate();
   }
 
-  override willHide(): void {
-    super.willHide();
-    this.cpuThrottlingCard.willHide();
+  #conditionsUpdated(): void {
+    this.#editingIndex = null;
+    this.#editingConditions = null;
+    this.#editingValues = {...EMPTY_EDITOR_VALUES};
+    this.#showValidationErrors = false;
+    this.requestUpdate();
   }
 
-  private conditionsUpdated(): void {
-    this.customList.clear();
-
-    const conditions = this.customUserConditions.get();
-    for (let i = 0; i < conditions.length; ++i) {
-      this.customList.appendItem(conditions[i], true);
-    }
-  }
-
-  private addButtonClicked(): void {
+  #addButtonClicked(): void {
     this.#customUserConditionsCount++;
-    this.customList.addNewItem(this.customList.items.length, {
+    const customConditions = this.customUserConditions.get();
+    this.#editingIndex = customConditions.length;
+    this.#editingConditions = {
       key: `USER_CUSTOM_SETTING_${this.#customUserConditionsCount}`,
       title: () => '',
       download: -1,
@@ -571,280 +897,143 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
       latency: 0,
       packetLoss: 0,
       packetReordering: false,
-    });
+    };
+    this.#editingValues = {...EMPTY_EDITOR_VALUES};
+    this.#showValidationErrors = false;
+    this.requestUpdate();
   }
 
-  renderItem(conditions: SDK.NetworkManager.Conditions, _editable: boolean): Element {
-    const element = document.createElement('div');
-    element.classList.add('conditions-list-item');
-    const title = element.createChild('div', 'conditions-list-text conditions-list-title');
-    const titleText = title.createChild('div', 'conditions-list-title-text');
-    const castedTitle = this.retrieveOptionsTitle(conditions);
-    titleText.textContent = castedTitle;
-    UI.Tooltip.Tooltip.install(title, castedTitle);
-    element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.download);
-    element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.upload);
-    element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent =
-        i18nString(UIStrings.dms, {PH1: conditions.latency});
-    element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = percentText(conditions.packetLoss ?? 0);
-    element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = String(conditions.packetQueueLength ?? 0);
-    element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent =
-        conditions.packetReordering ? i18nString(UIStrings.on) : i18nString(UIStrings.off);
-
-    return element;
+  #beginEdit(index: number): void {
+    const customConditions = this.customUserConditions.get();
+    const conditions = customConditions[index];
+    if (!conditions) {
+      return;
+    }
+    this.#editingIndex = index;
+    this.#editingConditions = conditions;
+    this.#editingValues = {
+      title: retrieveOptionsTitle(conditions),
+      download: conditions.download <= 0 ? '' : String(conditions.download / (1000 / 8)),
+      upload: conditions.upload <= 0 ? '' : String(conditions.upload / (1000 / 8)),
+      latency: conditions.latency ? String(conditions.latency) : '',
+      packetLoss: conditions.packetLoss ? String(conditions.packetLoss) : '',
+      packetQueueLength: conditions.packetQueueLength ? String(conditions.packetQueueLength) : '',
+      packetReordering: conditions.packetReordering ?? false,
+    };
+    this.#showValidationErrors = false;
+    this.requestUpdate();
   }
 
-  removeItemRequested(_item: SDK.NetworkManager.Conditions, index: number): void {
-    const list = this.customUserConditions.get();
+  #onEditorInput<K extends EditorFieldName>(field: K, value: EditorValues[K]): void {
+    this.#editingValues = {
+      ...this.#editingValues,
+      [field]: value,
+    };
+    this.#showValidationErrors = true;
+    this.requestUpdate();
+  }
+
+  #cancelEdit(): void {
+    this.#editingIndex = null;
+    this.#editingConditions = null;
+    this.#editingValues = {...EMPTY_EDITOR_VALUES};
+    this.#showValidationErrors = false;
+    this.requestUpdate();
+  }
+
+  #commitEdit(): void {
+    if (this.#editingIndex === null || !this.#editingConditions) {
+      return;
+    }
+    const validationErrors = this.#validateEditorValues(this.#editingValues);
+    if (Object.keys(validationErrors).length > 0) {
+      this.#showValidationErrors = true;
+      this.requestUpdate();
+      return;
+    }
+
+    const conditions = this.#editingConditions;
+    conditions.title = this.#editingValues.title.trim();
+    const download = this.#editingValues.download.trim();
+    conditions.download = download ? parseInt(download, 10) * (1000 / 8) : -1;
+    const upload = this.#editingValues.upload.trim();
+    conditions.upload = upload ? parseInt(upload, 10) * (1000 / 8) : -1;
+    const latency = this.#editingValues.latency.trim();
+    conditions.latency = latency ? parseInt(latency, 10) : 0;
+    const packetLoss = this.#editingValues.packetLoss.trim();
+    conditions.packetLoss = packetLoss ? parseFloat(packetLoss) : 0;
+    const packetQueueLength = this.#editingValues.packetQueueLength.trim();
+    conditions.packetQueueLength = packetQueueLength ? parseFloat(packetQueueLength) : 0;
+    conditions.packetReordering = this.#editingValues.packetReordering;
+
+    const list = [...this.customUserConditions.get()];
+    if (this.#editingIndex === list.length) {
+      list.push(conditions);
+    }
+
+    this.#editingIndex = null;
+    this.#editingConditions = null;
+    this.#editingValues = {...EMPTY_EDITOR_VALUES};
+    this.#showValidationErrors = false;
+    this.customUserConditions.set(list);
+  }
+
+  #removeCustomProfile(index: number): void {
+    const list = [...this.customUserConditions.get()];
     list.splice(index, 1);
     this.customUserConditions.set(list);
   }
 
-  retrieveOptionsTitle(conditions: SDK.NetworkManager.Conditions): string {
-    // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
-    const castedTitle = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
-    return castedTitle;
-  }
+  #validateEditorValues(values: EditorValues): Partial<Record<EditorFieldName, Common.UIString.LocalizedString>> {
+    const errors: Partial<Record<EditorFieldName, Common.UIString.LocalizedString>> = {};
 
-  commitEdit(
-      conditions: SDK.NetworkManager.Conditions, editor: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>,
-      isNew: boolean): void {
-    conditions.title = editor.control('title').value.trim();
-    const download = editor.control('download').value.trim();
-    conditions.download = download ? parseInt(download, 10) * (1000 / 8) : -1;
-    const upload = editor.control('upload').value.trim();
-    conditions.upload = upload ? parseInt(upload, 10) * (1000 / 8) : -1;
-    const latency = editor.control('latency').value.trim();
-    conditions.latency = latency ? parseInt(latency, 10) : 0;
-    const packetLoss = editor.control('packetLoss').value.trim();
-    conditions.packetLoss = packetLoss ? parseFloat(packetLoss) : 0;
-    const packetQueueLength = editor.control('packetQueueLength').value.trim();
-    conditions.packetQueueLength = packetQueueLength ? parseFloat(packetQueueLength) : 0;
-    const packetReordering = (editor.control('packetReordering') as HTMLInputElement).checked;
-    conditions.packetReordering = packetReordering;
-
-    const list = this.customUserConditions.get();
-    if (isNew) {
-      list.push(conditions);
+    const maxLength = 49;
+    const title = values.title.trim();
+    if (title.length === 0 || title.length > maxLength) {
+      errors.title = i18nString(UIStrings.profileNameCharactersLengthMust, {PH1: maxLength});
     }
 
-    this.customUserConditions.set(list);
-  }
-
-  beginEdit(conditions: SDK.NetworkManager.Conditions): UI.ListWidget.Editor<SDK.NetworkManager.Conditions> {
-    const editor = this.createEditor();
-    editor.control('title').value = this.retrieveOptionsTitle(conditions);
-    editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1000 / 8));
-    editor.control('upload').value = conditions.upload <= 0 ? '' : String(conditions.upload / (1000 / 8));
-    editor.control('latency').value = conditions.latency ? String(conditions.latency) : '';
-    editor.control('packetLoss').value = conditions.packetLoss ? String(conditions.packetLoss) : '';
-    editor.control('packetQueueLength').value =
-        conditions.packetQueueLength ? String(conditions.packetQueueLength) : '';
-    (editor.control('packetReordering') as HTMLInputElement).checked = conditions.packetReordering ?? false;
-    return editor;
-  }
-
-  private createEditor(): UI.ListWidget.Editor<SDK.NetworkManager.Conditions> {
-    if (this.editor) {
-      return this.editor;
+    const minThroughput = 0;
+    const maxThroughput = 10000000;
+    const download = values.download.trim();
+    const parsedDownload = Number(download);
+    if (Number.isNaN(parsedDownload) || parsedDownload < minThroughput || parsedDownload > maxThroughput) {
+      errors.download = i18nString(UIStrings.sMustBeANumberBetweenSkbsToSkbs,
+                                   {PH1: i18nString(UIStrings.download), PH2: minThroughput, PH3: maxThroughput});
     }
 
-    // Define the settings configuration
-    const settings = [
-      {
-        name: 'title',
-        labelText: i18nString(UIStrings.profileName),
-        inputType: 'text',
-        placeholder: '',
-        validator: titleValidator,
-        isOptional: false,
-      },
-      {
-        name: 'download',
-        labelText: i18nString(UIStrings.download),
-        inputType: 'text',
-        placeholder: i18n.i18n.lockedString('kbit/s'),
-        validator: throughputValidator,
-      },
-      {
-        name: 'upload',
-        labelText: i18nString(UIStrings.upload),
-        inputType: 'text',
-        placeholder: i18n.i18n.lockedString('kbit/s'),
-        validator: throughputValidator,
-      },
-      {
-        name: 'latency',
-        labelText: i18nString(UIStrings.latency),
-        inputType: 'text',
-        placeholder: i18n.i18n.lockedString('ms'),
-        validator: latencyValidator,
-      },
-      {
-        name: 'packetLoss',
-        labelText: i18nString(UIStrings.packetLoss),
-        inputType: 'text',
-        placeholder: i18n.i18n.lockedString('percent'),
-        validator: packetLossValidator,
-      },
-      {
-        name: 'packetQueueLength',
-        labelText: i18nString(UIStrings.packetQueueLength),
-        inputType: 'text',
-        placeholder: i18nString(UIStrings.packet),
-        validator: packetQueueLengthValidator,
-      },
-      {
-        name: 'packetReordering',
-        labelText: i18nString(UIStrings.packetReordering),
-        inputType: 'checkbox',
-        placeholder: '',
-        validator: packetReorderingValidator,
-        isOptional: false,
-      },
-    ];
-
-    const editor = new UI.ListWidget.Editor<SDK.NetworkManager.Conditions>();
-    this.editor = editor;
-    const content = editor.contentElement();
-
-    const settingsContainer = content.createChild('div', 'settings-container');
-
-    const createSettingField = (
-        name: string,
-        labelText: Common.UIString.LocalizedString,
-        inputType: string,
-        placeholder: Common.UIString.LocalizedString|string,
-        validator: (item: SDK.NetworkManager.Conditions, index: number, input: UI.ListWidget.EditorControl) =>
-            UI.ListWidget.ValidatorResult,
-        isOptional = true,
-        ): void => {
-      const settingElement = settingsContainer.createChild('div', 'setting');
-      // Create title element
-      const titleContainer = settingElement.createChild('div');
-      titleContainer.textContent = labelText;
-      // Create input element
-      const inputElement = settingElement.createChild('div');
-      const input = editor.createInput(name, inputType, placeholder, validator);
-      input.classList.add('input');
-      UI.ARIAUtils.setLabel(input, labelText);
-      inputElement.appendChild(input);
-
-      const optionalTextElement = inputElement.createChild('div');
-      const optionalStr = i18nString(UIStrings.optional);
-      optionalTextElement.textContent = optionalStr;
-      UI.ARIAUtils.setDescription(input, optionalStr);
-      if (!isOptional) {
-        optionalTextElement.style.visibility = 'hidden';
-      }
-    };
-
-    // Iterate over settings and create components
-    settings.forEach(setting => {
-      createSettingField(
-          setting.name, setting.labelText, setting.inputType, setting.placeholder, setting.validator,
-          setting.isOptional);
-    });
-
-    return editor;
-
-    function titleValidator(_item: SDK.NetworkManager.Conditions, _index: number, input: UI.ListWidget.EditorControl):
-        UI.ListWidget.ValidatorResult {
-      const maxLength = 49;
-      const value = input.value.trim();
-      const valid = value.length > 0 && value.length <= maxLength;
-      if (!valid) {
-        const errorMessage = i18nString(UIStrings.profileNameCharactersLengthMust, {PH1: maxLength});
-        return {valid, errorMessage};
-      }
-      return {
-        valid,
-      };
+    const upload = values.upload.trim();
+    const parsedUpload = Number(upload);
+    if (Number.isNaN(parsedUpload) || parsedUpload < minThroughput || parsedUpload > maxThroughput) {
+      errors.upload = i18nString(UIStrings.sMustBeANumberBetweenSkbsToSkbs,
+                                 {PH1: i18nString(UIStrings.upload), PH2: minThroughput, PH3: maxThroughput});
     }
 
-    function throughputValidator(
-        _item: SDK.NetworkManager.Conditions, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      const minThroughput = 0;
-      const maxThroughput = 10000000;
-      const value = input.value.trim();
-      const parsedValue = Number(value);
-      const throughput = input.getAttribute('aria-label');
-      const valid = !Number.isNaN(parsedValue) && parsedValue >= minThroughput && parsedValue <= maxThroughput;
-      if (!valid) {
-        const errorMessage = i18nString(
-            UIStrings.sMustBeANumberBetweenSkbsToSkbs,
-            {PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput});
-        return {valid, errorMessage};
-      }
-      return {
-        valid,
-      };
+    const minLatency = 0;
+    const maxLatency = 1000000;
+    const latency = values.latency.trim();
+    const parsedLatency = Number(latency);
+    if (!Number.isInteger(parsedLatency) || parsedLatency < minLatency || parsedLatency > maxLatency) {
+      errors.latency = i18nString(UIStrings.latencyMustBeAnIntegerBetweenSms, {PH1: minLatency, PH2: maxLatency});
     }
 
-    function latencyValidator(_item: SDK.NetworkManager.Conditions, _index: number, input: UI.ListWidget.EditorControl):
-        UI.ListWidget.ValidatorResult {
-      const minLatency = 0;
-      const maxLatency = 1000000;
-      const value = input.value.trim();
-      const parsedValue = Number(value);
-      const valid = Number.isInteger(parsedValue) && parsedValue >= minLatency && parsedValue <= maxLatency;
-      if (!valid) {
-        const errorMessage = i18nString(UIStrings.latencyMustBeAnIntegerBetweenSms, {PH1: minLatency, PH2: maxLatency});
-        return {valid, errorMessage};
-      }
-      return {
-        valid,
-      };
+    const minPacketLoss = 0;
+    const maxPacketLoss = 100;
+    const packetLoss = values.packetLoss.trim();
+    const parsedPacketLoss = Number(packetLoss);
+    if (Number.isNaN(parsedPacketLoss) || parsedPacketLoss < minPacketLoss || parsedPacketLoss > maxPacketLoss) {
+      errors.packetLoss =
+          i18nString(UIStrings.packetLossMustBeAnIntegerBetweenSpct, {PH1: minPacketLoss, PH2: maxPacketLoss});
     }
 
-    function packetLossValidator(
-        _item: SDK.NetworkManager.Conditions, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      const minPacketLoss = 0;
-      const maxPacketLoss = 100;
-      const value = input.value.trim();
-      const parsedValue = Number(value);
-      const valid = parsedValue >= minPacketLoss && parsedValue <= maxPacketLoss;
-      if (!valid) {
-        const errorMessage =
-            i18nString(UIStrings.packetLossMustBeAnIntegerBetweenSpct, {PH1: minPacketLoss, PH2: maxPacketLoss});
-        return {valid, errorMessage};
-      }
-      return {
-        valid,
-      };
+    const minPacketQueueLength = 0;
+    const packetQueueLength = values.packetQueueLength.trim();
+    const parsedPacketQueueLength = Number(packetQueueLength);
+    if (Number.isNaN(parsedPacketQueueLength) || parsedPacketQueueLength < minPacketQueueLength) {
+      errors.packetQueueLength = i18nString(UIStrings.packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero);
     }
 
-    function packetQueueLengthValidator(
-        _item: SDK.NetworkManager.Conditions, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      const minPacketQueueLength = 0;
-      const value = input.value.trim();
-      const parsedValue = Number(value);
-      const valid = parsedValue >= minPacketQueueLength;
-      if (!valid) {
-        const errorMessage = i18nString(UIStrings.packetQueueLengthMustBeAnIntegerGreaterOrEqualToZero);
-        return {valid, errorMessage};
-      }
-      return {
-        valid,
-      };
-    }
-
-    function packetReorderingValidator(
-        _item: SDK.NetworkManager.Conditions, _index: number,
-        _input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return {
-        valid: true,
-      };
-    }
+    return errors;
   }
 }
 
@@ -870,42 +1059,4 @@ function percentText(percent: number): string {
     return '';
   }
   return String(percent) + '%';
-}
-
-function createProfilesCard(heading: string, list: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>,
-                            parent: Element): HTMLElement {
-  const card = parent.createChild('devtools-card');
-  card.heading = heading;
-  const container = card.createChild('div');
-  list.element.classList.add('conditions-list');
-  list.registerRequiredCSS(throttlingSettingsTabStyles);
-  list.show(container);
-  return container;
-}
-
-function appendHeaderColumn(element: Element, text: string): void {
-  element.createChild('div', 'conditions-list-separator');
-  const column = element.createChild('div', 'conditions-list-text');
-  column.textContent = text;
-  UI.Tooltip.Tooltip.install(column, text);
-}
-
-function createHeaderRow(): Element {
-  const element = document.createElement('div');
-  element.classList.add('conditions-list-item', 'conditions-list-header');
-
-  const title = element.createChild('div', 'conditions-list-text conditions-list-title');
-  const titleText = title.createChild('div', 'conditions-list-title-text');
-  const profileName = i18nString(UIStrings.profileName);
-  titleText.textContent = profileName;
-  UI.Tooltip.Tooltip.install(title, profileName);
-
-  appendHeaderColumn(element, i18nString(UIStrings.download));
-  appendHeaderColumn(element, i18nString(UIStrings.upload));
-  appendHeaderColumn(element, i18nString(UIStrings.latency));
-  appendHeaderColumn(element, i18nString(UIStrings.packetLoss));
-  appendHeaderColumn(element, i18nString(UIStrings.packetQueueLength));
-  appendHeaderColumn(element, i18nString(UIStrings.packetReordering));
-
-  return element;
 }

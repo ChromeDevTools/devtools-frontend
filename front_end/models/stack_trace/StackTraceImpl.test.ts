@@ -11,8 +11,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {protocolCallFrame, stringifyFragment} from '../../testing/StackTraceHelpers.js';
 import * as Workspace from '../workspace/workspace.js';
 
-// TODO(crbug.com/444191656): Expose a `testing` bundle.
-// eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 const {urlString} = Platform.DevToolsPath;

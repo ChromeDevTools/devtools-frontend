@@ -8,7 +8,6 @@ import {describe, it} from 'mocha';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-// eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
 
 const {urlString} = Platform.DevToolsPath;

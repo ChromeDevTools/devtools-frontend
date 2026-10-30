@@ -17,7 +17,6 @@ import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHe
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 
 import * as Bindings from './bindings.js';

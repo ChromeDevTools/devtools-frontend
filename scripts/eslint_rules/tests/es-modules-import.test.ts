@@ -143,6 +143,16 @@ new RuleTester().run('es-modules-import', rule, {
       code: 'import * as Elements from \'./elements.js\';',
       filename: 'front_end/panels/elements/StylesSidebarPane.test.ts',
     },
+    {
+      name: 'allows importing the _impl entrypoint in same-namespace test files',
+      code: 'import * as StackTraceImpl from \'./stack_trace_impl.js\';',
+      filename: 'front_end/models/stack_trace/Trie.test.ts',
+    },
+    {
+      name: 'allows importing the _impl entrypoint from another namespace',
+      code: 'import * as StackTraceImpl from \'../stack_trace/stack_trace_impl.js\';',
+      filename: 'front_end/models/bindings/CompilerScriptMapping.ts',
+    },
     // Tests are allowed to import from front_end
     {
       name: 'allows test file importing from front_end ui',

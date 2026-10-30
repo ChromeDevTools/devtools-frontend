@@ -63,10 +63,16 @@ function isSideEffectImportSpecifier(
   return specifiers.length === 0;
 }
 
+/**
+ * Module entrypoints are named after their directory. Besides the main
+ * entrypoint (`foo/foo.ts`), a module can have a testing entrypoint
+ * (`foo/foo-testing.ts`) and an implementation entrypoint (`foo/foo_impl.ts`)
+ * with restricted GN visibility.
+ */
 function isModuleEntrypoint(fileName: string): boolean {
   const fileNameWithoutExtension = path.basename(fileName).replace(path.extname(fileName), '');
   const directoryName = path.basename(path.dirname(fileName));
-  return (directoryName === fileNameWithoutExtension || `${directoryName}-testing` === fileNameWithoutExtension);
+  return [directoryName, `${directoryName}-testing`, `${directoryName}_impl`].includes(fileNameWithoutExtension);
 }
 
 function computeTopLevelFolder(fileName: string): string {

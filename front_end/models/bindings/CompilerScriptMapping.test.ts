@@ -18,7 +18,6 @@ import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Formatter from '../formatter/formatter.js';
 import type * as StackTrace from '../stack_trace/stack_trace.js';
-// eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
 import * as Workspace from '../workspace/workspace.js';
 

@@ -126,6 +126,22 @@ describeWithEnvironment('PermissionPrompt', () => {
   });
 
   it('keeps the focus where it was on the next render', async () => {
+    const step = createStep();
+    const target = document.createElement('div');
+    renderElementIntoDOM(target);
+    renderPrompt(step, target);
+    await Promise.resolve();
+
+    const [, yesButton] = getButtons(target);
+    yesButton.focus();
+    assert.strictEqual(document.activeElement, yesButton);
+
+    renderPrompt(step, target);
+    await Promise.resolve();
+    assert.strictEqual(document.activeElement, yesButton);
+  });
+
+  it('focuses the "No" button when a new prompt replaces the previous one', async () => {
     const target = document.createElement('div');
     renderElementIntoDOM(target);
     renderPrompt(createStep(), target);
@@ -135,9 +151,10 @@ describeWithEnvironment('PermissionPrompt', () => {
     yesButton.focus();
     assert.strictEqual(document.activeElement, yesButton);
 
-    renderPrompt(createStep({description: 'Updated description'}), target);
+    renderPrompt(createStep({description: 'The AI wants to read localStorage on https://example.com.'}), target);
     await Promise.resolve();
-    assert.strictEqual(document.activeElement, yesButton);
+    const [noButton] = getButtons(target);
+    assert.strictEqual(document.activeElement, noButton);
   });
 
   it('renders the data disclaimer', () => {

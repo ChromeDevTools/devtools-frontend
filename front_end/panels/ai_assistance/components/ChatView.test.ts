@@ -172,6 +172,73 @@ describeWithEnvironment('ChatView', () => {
       await raf();
       await assertScreenshot('ai_assistance/chat_view_permission_prompt.png');
     });
+
+    it('focuses the "No" button when one permission prompt replaces another in a single render', async () => {
+      const stepA: AiAssistancePanel.ChatMessage.Step = {
+        state: {
+          type: 'needs_approval',
+          sideEffectDialog: {
+            description: 'The AI wants to read the cookie "session" on https://example.com.',
+            permissionTitle: 'Allow reading cookie values?',
+            permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE,
+            onAnswer: () => {},
+          },
+        },
+        title: 'Reading cookie values and metadata',
+        action: 'getCookieValues({cookieNames: ["session"]})',
+      };
+      const stepB: AiAssistancePanel.ChatMessage.Step = {
+        state: {
+          type: 'needs_approval',
+          sideEffectDialog: {
+            description: 'The AI wants to read localStorage on https://example.com.',
+            permissionTitle: 'Allow reading localStorage values?',
+            permissionPrompt: AiAssistanceModel.Tool.PermissionPrompt.ALLOW_ONCE,
+            onAnswer: () => {},
+          },
+        },
+        title: 'Reading localStorage values and metadata',
+        action: 'getStorageValues({storageType: "local"})',
+      };
+
+      const chat = new AiAssistancePanel.ChatView(getProp({
+        messages: [
+          userMessage,
+          {
+            entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+            id: '2',
+            parts: [{type: 'step', step: stepA}],
+          },
+        ],
+      }));
+      renderElementIntoDOM(chat);
+      await Promise.resolve();
+
+      const [noButtonA, yesButtonA] =
+          Array.from(chat.shadowRoot!.querySelectorAll<HTMLElement>('.permission-prompt devtools-button'));
+      assert.strictEqual(chat.shadowRoot!.activeElement, noButtonA);
+
+      yesButtonA.focus();
+      assert.strictEqual(chat.shadowRoot!.activeElement, yesButtonA);
+
+      // Prompt A is answered and prompt B appears before the next render.
+      stepA.state = {type: 'completed'};
+      chat.props = getProp({
+        messages: [
+          userMessage,
+          {
+            entity: AiAssistancePanel.ChatMessage.ChatMessageEntity.MODEL,
+            id: '2',
+            parts: [{type: 'step', step: stepA}, {type: 'step', step: stepB}],
+          },
+        ],
+      });
+      await Promise.resolve();
+
+      const [noButtonB] =
+          Array.from(chat.shadowRoot!.querySelectorAll<HTMLElement>('.permission-prompt devtools-button'));
+      assert.strictEqual(chat.shadowRoot!.activeElement, noButtonB);
+    });
   });
 
   describe('Caching', () => {

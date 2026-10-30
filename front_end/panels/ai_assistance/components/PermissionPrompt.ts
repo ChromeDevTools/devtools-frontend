@@ -15,7 +15,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type {Step} from './ChatMessage.js';
 import {renderRelevantDataDisclaimer} from './RelevantDataDisclaimer.js';
 
-const {html, Directives: {ref}} = Lit;
+const {html, Directives: {ref, repeat}} = Lit;
 const lockedString = i18n.i18n.lockedString;
 
 const RELEVANT_DATA_TOOLTIP_ID = 'relevant-data-link-permission-prompt';
@@ -125,8 +125,11 @@ export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.
     >${lockedString(UIStringsNotTranslate.allowAlways)}</devtools-button>` :
       Lit.nothing;
 
+  // Key the prompt by its step so that a new prompt always gets new DOM and
+  // `focusOnFirstRender` runs again when one prompt replaces another in a
+  // single render.
   // clang-format off
-  return html`
+  return html`${repeat([step], step => step, () => html`
   <div class="permission-prompt"
     jslog=${VisualLogging.section('side-effect-confirmation')}>
     <div class="permission-prompt-header">
@@ -157,6 +160,6 @@ export function renderPermissionPrompt(step: Step, disclaimerText: string): Lit.
       ${renderRelevantDataDisclaimer(RELEVANT_DATA_TOOLTIP_ID, disclaimerText)}.
       ${renderChangePermissionsInSettings()}.
     </div>
-  </div>`;
+  </div>`)}`;
   // clang-format on
 }

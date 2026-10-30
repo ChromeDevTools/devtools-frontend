@@ -52,11 +52,11 @@ class BezierCurveUI {
     this.#curve = UI.UIUtils.createSVGChild(container, 'svg', 'bezier-curve');
     this.#onBezierChange = onBezierChange;
 
-    UI.UIUtils.installDragHandle(
-        this.#curve, this.dragStart.bind(this), this.dragMove.bind(this), this.dragEnd.bind(this), 'default');
+    UI.UIUtils.installDragHandle(this.#curve, this.#dragStart.bind(this), this.#dragMove.bind(this),
+                                 this.#dragEnd.bind(this), 'default');
   }
 
-  private dragStart(event: MouseEvent): boolean {
+  #dragStart(event: MouseEvent): boolean {
     this.#mouseDownPosition = new Geometry.Point(event.x, event.y);
     const ui = this.#curveUI;
     this.#controlPosition = new Geometry.Point(
@@ -74,7 +74,7 @@ class BezierCurveUI {
     return true;
   }
 
-  private updateControlPosition(mouseX: number, mouseY: number): void {
+  #updateControlPosition(mouseX: number, mouseY: number): void {
     if (this.#mouseDownPosition === undefined || this.#controlPosition === undefined ||
         this.#selectedPoint === undefined) {
       return;
@@ -86,13 +86,13 @@ class BezierCurveUI {
     this.#bezier.controlPoints[this.#selectedPoint] = newPosition;
   }
 
-  private dragMove(event: MouseEvent): void {
-    this.updateControlPosition(event.x, event.y);
+  #dragMove(event: MouseEvent): void {
+    this.#updateControlPosition(event.x, event.y);
     this.#onBezierChange(this.#bezier);
   }
 
-  private dragEnd(event: MouseEvent): void {
-    this.updateControlPosition(event.x, event.y);
+  #dragEnd(event: MouseEvent): void {
+    this.#updateControlPosition(event.x, event.y);
     this.#onBezierChange(this.#bezier);
   }
 

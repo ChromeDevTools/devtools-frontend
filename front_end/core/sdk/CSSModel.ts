@@ -129,12 +129,12 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.#styleLoader = new ComputedStyleLoader(this);
     this.#resourceTreeModel = target.model(ResourceTreeModel);
     if (this.#resourceTreeModel) {
-      this.#resourceTreeModel.addEventListener(
-          ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+      this.#resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged,
+                                               this);
     }
     target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
-      void this.enable();
+      void this.#enable();
     }
 
     const settings = this.target().targetManager().settings;
@@ -243,7 +243,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       styleSheetId: Protocol.DOM.StyleSheetId, range: TextUtils.TextRange.TextRange, text: string,
       majorChange: boolean): Promise<boolean> {
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
 
       const {styles} =
           await this.agent.invoke_setStyleTexts({edits: [{styleSheetId, range: range.serializeToObject(), text}]});
@@ -266,7 +266,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {selectorList} = await this.agent.invoke_setRuleSelector({styleSheetId, range, selector: text});
 
       if (!selectorList) {
@@ -287,7 +287,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {propertyName} =
           await this.agent.invoke_setPropertyRulePropertyName({styleSheetId, range, propertyName: text});
 
@@ -309,7 +309,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {keyText} = await this.agent.invoke_setKeyframeKey({styleSheetId, range, keyText: text});
 
       if (!keyText) {
@@ -365,7 +365,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     return this.#isEnabled;
   }
 
-  private async enable(): Promise<void> {
+  async #enable(): Promise<void> {
     await this.agent.invoke_enable();
     this.#isEnabled = true;
     if (this.#isRuleUsageTrackingEnabled) {
@@ -431,14 +431,14 @@ export class CSSModel extends SDKModel<EventTypes> {
 
   async getComputedStyle(nodeId: Protocol.DOM.NodeId): Promise<Map<string, string>|null> {
     if (!this.isEnabled()) {
-      await this.enable();
+      await this.#enable();
     }
     return await this.#styleLoader.computedStylePromise(nodeId);
   }
 
   async getComputedStyleExtraFields(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.ComputedStyleExtraFields> {
     if (!this.isEnabled()) {
-      await this.enable();
+      await this.#enable();
     }
     return await this.#styleLoader.extraFieldsPromise(nodeId);
   }
@@ -594,7 +594,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {media} = await this.agent.invoke_setMediaText({styleSheetId, range, text: newMediaText});
 
       if (!media) {
@@ -616,7 +616,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {containerQuery} =
           await this.agent.invoke_setContainerQueryText({styleSheetId, range, text: newContainerQueryText});
 
@@ -639,7 +639,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {containerQuery} = await this.agent.invoke_setContainerQueryConditionText(
           {styleSheetId, range, text: newContainerQueryConditionText});
 
@@ -662,7 +662,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {supports} = await this.agent.invoke_setSupportsText({styleSheetId, range, text: newSupportsText});
 
       if (!supports) {
@@ -684,7 +684,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {navigation} = await this.agent.invoke_setNavigationText({styleSheetId, range, text: newNavigationText});
 
       if (!navigation) {
@@ -706,7 +706,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {scope} = await this.agent.invoke_setScopeText({styleSheetId, range, text: newScopeText});
 
       if (!scope) {
@@ -725,7 +725,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   async addRule(styleSheetId: Protocol.DOM.StyleSheetId, ruleText: string, ruleLocation: TextUtils.TextRange.TextRange):
       Promise<CSSStyleRule|null> {
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const {rule} = await this.agent.invoke_addRule({styleSheetId, ruleText, location: ruleLocation});
 
       if (!rule) {
@@ -801,7 +801,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.StyleSheetChanged, {styleSheetId, edit});
   }
 
-  private ensureOriginalStyleSheetText(styleSheetId: Protocol.DOM.StyleSheetId): Promise<string|null> {
+  #ensureOriginalStyleSheetText(styleSheetId: Protocol.DOM.StyleSheetId): Promise<string|null> {
     const header = this.styleSheetHeaderForId(styleSheetId);
     if (!header) {
       return Promise.resolve(null);
@@ -810,16 +810,16 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (!promise) {
       promise = this.getStyleSheetText(header.id);
       this.#originalStyleSheetText.set(header, promise);
-      this.originalContentRequestedForTest(header);
+      this.#originalContentRequestedForTest(header);
     }
     return promise;
   }
 
-  private originalContentRequestedForTest(_header: CSSStyleSheetHeader): void {
+  #originalContentRequestedForTest(_header: CSSStyleSheetHeader): void {
   }
 
   originalStyleSheetText(header: CSSStyleSheetHeader): Promise<string|null> {
-    return this.ensureOriginalStyleSheetText(header.id);
+    return this.#ensureOriginalStyleSheetText(header.id);
   }
 
   getAllStyleSheetHeaders(): Iterable<CSSStyleSheetHeader> {
@@ -917,7 +917,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       newText += '\n/*# sourceURL=' + header.sourceURL + ' */';
     }
 
-    await this.ensureOriginalStyleSheetText(styleSheetId);
+    await this.#ensureOriginalStyleSheetText(styleSheetId);
     const response = await this.agent.invoke_setStyleSheetText({styleSheetId: header.id, text: newText});
     const sourceMapURL = response.sourceMapURL as Platform.DevToolsPath.UrlString;
 
@@ -941,7 +941,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     return text && CSSModel.trimSourceURL(text);
   }
 
-  private async onPrimaryPageChanged(
+  async #onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>):
       Promise<void> {
     // If the main frame was restored from the back-forward cache, the order of CDP
@@ -954,12 +954,12 @@ export class CSSModel extends SDKModel<EventTypes> {
       await this.suspendModel();
       await this.resumeModel();
     } else if (event.data.type !== PrimaryPageChangeType.ACTIVATION) {
-      this.resetStyleSheets();
-      this.resetFontFaces();
+      this.#resetStyleSheets();
+      this.#resetFontFaces();
     }
   }
 
-  private resetStyleSheets(): void {
+  #resetStyleSheets(): void {
     const headers = [...this.#styleSheetIdToHeader.values()];
     this.#styleSheetIdsForURL.clear();
     this.#styleSheetIdToHeader.clear();
@@ -969,19 +969,19 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  private resetFontFaces(): void {
+  #resetFontFaces(): void {
     this.#fontFaces.clear();
   }
 
   override async suspendModel(): Promise<void> {
     this.#isEnabled = false;
     await this.agent.invoke_disable();
-    this.resetStyleSheets();
-    this.resetFontFaces();
+    this.#resetStyleSheets();
+    this.#resetFontFaces();
   }
 
   override async resumeModel(): Promise<void> {
-    return await this.enable();
+    return await this.#enable();
   }
 
   setEffectivePropertyValueForNode(nodeId: Protocol.DOM.NodeId, propertyName: string, value: string): void {
@@ -1021,7 +1021,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     void this.agent.invoke_trackComputedStyleUpdates({propertiesToTrack});
     this.#isCSSPropertyTrackingEnabled = true;
     this.#cssPropertyTracker = cssPropertyTracker;
-    void this.pollComputedStyleUpdates();
+    void this.#pollComputedStyleUpdates();
   }
 
   // Since we only support one tracker at a time, this call effectively disables
@@ -1033,7 +1033,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     void this.agent.invoke_trackComputedStyleUpdates({propertiesToTrack: []});
   }
 
-  private async pollComputedStyleUpdates(): Promise<void> {
+  async #pollComputedStyleUpdates(): Promise<void> {
     if (this.#isTrackingRequestPending) {
       return;
     }
@@ -1055,7 +1055,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
 
     if (this.#isCSSPropertyTrackingEnabled) {
-      void this.#stylePollingThrottler.schedule(this.pollComputedStyleUpdates.bind(this));
+      void this.#stylePollingThrottler.schedule(this.#pollComputedStyleUpdates.bind(this));
     }
   }
 

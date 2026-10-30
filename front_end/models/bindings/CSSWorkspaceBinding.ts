@@ -59,7 +59,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
     return this.#modelToInfo;
   }
 
-  private getCSSModelInfo(cssModel: SDK.CSSModel.CSSModel): ModelInfo {
+  #getCSSModelInfo(cssModel: SDK.CSSModel.CSSModel): ModelInfo {
     return this.#modelToInfo.get(cssModel) as ModelInfo;
   }
 
@@ -68,7 +68,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   modelRemoved(cssModel: SDK.CSSModel.CSSModel): void {
-    this.getCSSModelInfo(cssModel).dispose();
+    this.#getCSSModelInfo(cssModel).dispose();
     this.#modelToInfo.delete(cssModel);
   }
 
@@ -80,7 +80,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
     await Promise.all(this.#liveLocationPromises);
   }
 
-  private recordLiveLocationChange(promise: Promise<unknown>): void {
+  #recordLiveLocationChange(promise: Promise<unknown>): void {
     void promise.then(() => {
       this.#liveLocationPromises.delete(promise);
     });
@@ -88,8 +88,8 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   async updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void> {
-    const updatePromise = this.getCSSModelInfo(header.cssModel()).updateLocations(header);
-    this.recordLiveLocationChange(updatePromise);
+    const updatePromise = this.#getCSSModelInfo(header.cssModel()).updateLocations(header);
+    this.#recordLiveLocationChange(updatePromise);
     await updatePromise;
   }
 
@@ -97,8 +97,8 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
       rawLocation: SDK.CSSModel.CSSLocation, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>,
       locationPool: LiveLocationPool): Promise<LiveLocation> {
     const locationPromise =
-        this.getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
-    this.recordLiveLocationChange(locationPromise);
+        this.#getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
+    this.#recordLiveLocationChange(locationPromise);
     return locationPromise;
   }
 
@@ -133,7 +133,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
-    return this.getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
+    return this.#getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
   }
 
   uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
@@ -167,18 +167,16 @@ export class ModelInfo {
       cssModel: SDK.CSSModel.CSSModel, resourceMapping: ResourceMapping, cssWorkspaceBinding: CSSWorkspaceBinding) {
     this.#cssWorkspaceBinding = cssWorkspaceBinding;
     this.#eventListeners = [
-      cssModel.addEventListener(
-          SDK.CSSModel.Events.StyleSheetAdded,
-          event => {
-            void this.styleSheetAdded(event);
-          },
-          this),
-      cssModel.addEventListener(
-          SDK.CSSModel.Events.StyleSheetRemoved,
-          event => {
-            void this.styleSheetRemoved(event);
-          },
-          this),
+      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded,
+                                event => {
+                                  void this.#styleSheetAdded(event);
+                                },
+                                this),
+      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved,
+                                event => {
+                                  void this.#styleSheetRemoved(event);
+                                },
+                                this),
     ];
 
     this.#resourceMapping = resourceMapping;
@@ -227,8 +225,8 @@ export class ModelInfo {
     return Promise.all(promises);
   }
 
-  private async styleSheetAdded(
-      event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): Promise<void> {
+  async #styleSheetAdded(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
+      Promise<void> {
     const header = event.data;
     if (!header.sourceURL) {
       return;
@@ -244,8 +242,8 @@ export class ModelInfo {
     this.#unboundLocations.deleteAll(header.sourceURL);
   }
 
-  private async styleSheetRemoved(
-      event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): Promise<void> {
+  async #styleSheetRemoved(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
+      Promise<void> {
     const header = event.data;
     const promises = [];
     for (const location of this.#locations.get(header)) {

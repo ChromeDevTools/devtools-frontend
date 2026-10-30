@@ -221,21 +221,21 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
 
     this.#view = view;
 
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOM_BREAKPOINT_ADDED, this.breakpointAdded,
-        this);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOM_BREAKPOINT_TOGGLED,
-        this.breakpointToggled, this);
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMDebuggerModel.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOM_BREAKPOINTS_REMOVED,
-        this.breakpointsRemoved, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMDebuggerModel.DOMDebuggerModel,
+                                                                SDK.DOMDebuggerModel.Events.DOM_BREAKPOINT_ADDED,
+                                                                this.#breakpointAdded, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMDebuggerModel.DOMDebuggerModel,
+                                                                SDK.DOMDebuggerModel.Events.DOM_BREAKPOINT_TOGGLED,
+                                                                this.#breakpointToggled, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMDebuggerModel.DOMDebuggerModel,
+                                                                SDK.DOMDebuggerModel.Events.DOM_BREAKPOINTS_REMOVED,
+                                                                this.#breakpointsRemoved, this);
 
     for (const domDebuggerModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.DOMDebuggerModel.DOMDebuggerModel)) {
       domDebuggerModel.retrieveDOMBreakpoints();
       for (const breakpoint of domDebuggerModel.domBreakpoints()) {
-        this.addBreakpoint(breakpoint);
+        this.#addBreakpoint(breakpoint);
       }
     }
 
@@ -257,22 +257,22 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
                                            isHighlighted: breakpoint === this.#highlightedBreakpoint,
                                            isFocused: breakpoint === this.#focusedBreakpoint,
                                          })),
-      onBreakpointClick: this.onBreakpointClick.bind(this),
-      onBreakpointCheckboxClick: this.onBreakpointCheckboxClick.bind(this),
-      onBreakpointContextMenu: this.onBreakpointContextMenu.bind(this),
-      onBreakpointKeyDown: this.onBreakpointKeyDown.bind(this),
+      onBreakpointClick: this.#onBreakpointClick.bind(this),
+      onBreakpointCheckboxClick: this.#onBreakpointCheckboxClick.bind(this),
+      onBreakpointContextMenu: this.#onBreakpointContextMenu.bind(this),
+      onBreakpointKeyDown: this.#onBreakpointKeyDown.bind(this),
     };
     this.#view(input, undefined, this.contentElement);
   }
 
-  private onBreakpointClick(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint): void {
+  #onBreakpointClick(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint): void {
     this.focusedBreakpoint = breakpoint;
   }
 
-  private onBreakpointKeyDown(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint, event: Event): void {
+  #onBreakpointKeyDown(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint, event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     if (keyboardEvent.key === ' ') {
-      this.onBreakpointCheckboxClick(breakpoint);
+      this.#onBreakpointCheckboxClick(breakpoint);
       keyboardEvent.consume(true);
     } else if (keyboardEvent.key === 'ArrowUp' || keyboardEvent.key === 'ArrowDown') {
       const index = this.#breakpoints.indexOf(breakpoint);
@@ -288,15 +288,15 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     }
   }
 
-  private breakpointAdded(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint>): void {
-    this.addBreakpoint(event.data);
+  #breakpointAdded(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint>): void {
+    this.#addBreakpoint(event.data);
   }
 
-  private breakpointToggled(_event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint>): void {
+  #breakpointToggled(_event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint>): void {
     this.requestUpdate();
   }
 
-  private breakpointsRemoved(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint[]>): void {
+  #breakpointsRemoved(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint[]>): void {
     const breakpoints = event.data;
     for (const breakpoint of breakpoints) {
       const index = this.#breakpoints.indexOf(breakpoint);
@@ -308,7 +308,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     this.requestUpdate();
   }
 
-  private addBreakpoint(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint): void {
+  #addBreakpoint(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint): void {
     if (this.#breakpoints.includes(breakpoint)) {
       return;
     }
@@ -326,7 +326,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     this.requestUpdate();
   }
 
-  private onBreakpointContextMenu(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint, event: Event): void {
+  #onBreakpointContextMenu(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint, event: Event): void {
     this.focusedBreakpoint = breakpoint;
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
@@ -341,7 +341,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     void contextMenu.show();
   }
 
-  private onBreakpointCheckboxClick(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint): void {
+  #onBreakpointCheckboxClick(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint): void {
     this.focusedBreakpoint = breakpoint;
     breakpoint.domDebuggerModel.toggleDOMBreakpoint(breakpoint, !breakpoint.enabled);
   }

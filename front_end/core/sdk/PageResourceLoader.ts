@@ -225,7 +225,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return {loading: loadingCount, resources: this.getScopedResourcesLoaded().size};
   }
 
-  private async acquireLoadSlot(target: Target|null): Promise<void> {
+  async #acquireLoadSlot(target: Target|null): Promise<void> {
     this.#currentlyLoading++;
     if (target) {
       const currentCount = this.#currentlyLoadingPerTarget.get(target.id()) || 0;
@@ -242,7 +242,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     }
   }
 
-  private releaseLoadSlot(target: Target|null): void {
+  #releaseLoadSlot(target: Target|null): void {
     this.#currentlyLoading--;
     if (target) {
       const currentCount = this.#currentlyLoadingPerTarget.get(target.id());
@@ -318,8 +318,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     this.dispatchEventToListeners(Events.UPDATE);
     const startTime = performance.now();
     try {
-      await this.acquireLoadSlot(effectiveInitiator.target);
-      const resultPromise = this.dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
+      await this.#acquireLoadSlot(effectiveInitiator.target);
+      const resultPromise = this.#dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
       const result = await resultPromise;
       pageResource.errorMessage = result.errorDescription.message;
       pageResource.success = result.success;
@@ -338,7 +338,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       throw e;
     } finally {
       pageResource.duration = performance.now() - startTime;
-      this.releaseLoadSlot(effectiveInitiator.target);
+      this.#releaseLoadSlot(effectiveInitiator.target);
       this.dispatchEventToListeners(Events.UPDATE);
     }
   }
@@ -435,8 +435,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return mainFrame.securityOrigin().isSameOriginWith(SecurityOrigin.create(initiator.initiatorUrl));
   }
 
-  private async dispatchLoad(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator,
-                             isBinary: boolean, hasExplicitTarget: boolean): Promise<{
+  async #dispatchLoad(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator, isBinary: boolean,
+                      hasExplicitTarget: boolean): Promise<{
     success: boolean,
     content: string|Uint8Array<ArrayBuffer>,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,
@@ -455,7 +455,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     const eligibleForLoadFromTarget =
         Boolean(loadThroughTarget && parsedURL && parsedURL.scheme !== 'file' && parsedURL.scheme !== 'data' &&
                 parsedURL.scheme !== 'devtools' && initiator.target);
-    Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
+    Host.userMetrics.developerResourceScheme(this.#getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget && initiator.target) {
       // Default to enforcing CSP for http(s) resources (fail-closed). Only relax
       // if the isolation-status query positively confirms no connect-src/default-src
@@ -489,7 +489,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
       try {
         Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
-        const result = await this.loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
+        const result = await this.#loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
         return result;
       } catch (e) {
         if (e instanceof Error) {
@@ -526,7 +526,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       }
     }
 
-    const result = await this.loadFromHostBindings(url);
+    const result = await this.#loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
     }
@@ -538,8 +538,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return result;
   }
 
-  private getDeveloperResourceScheme(parsedURL: Common.ParsedURL.ParsedURL|null):
-      Host.UserMetrics.DeveloperResourceScheme {
+  #getDeveloperResourceScheme(parsedURL: Common.ParsedURL.ParsedURL|null): Host.UserMetrics.DeveloperResourceScheme {
     if (!parsedURL || parsedURL.scheme === '') {
       return Host.UserMetrics.DeveloperResourceScheme.UKNOWN;
     }
@@ -561,9 +560,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return Host.UserMetrics.DeveloperResourceScheme.OTHER;
   }
 
-  private async loadFromTarget(
-      target: Target, frameId: Protocol.Page.FrameId|null, url: Platform.DevToolsPath.UrlString,
-      isBinary: boolean): Promise<{
+  async #loadFromTarget(target: Target, frameId: Protocol.Page.FrameId|null, url: Platform.DevToolsPath.UrlString,
+                        isBinary: boolean): Promise<{
     success: boolean,
     content: string|Uint8Array<ArrayBuffer>,
     errorDescription: {
@@ -600,7 +598,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     }
   }
 
-  private async loadFromHostBindings(url: Platform.DevToolsPath.UrlString): Promise<{
+  async #loadFromHostBindings(url: Platform.DevToolsPath.UrlString): Promise<{
     success: boolean,
     content: string,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,

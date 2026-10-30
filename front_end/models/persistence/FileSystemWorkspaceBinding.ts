@@ -21,11 +21,12 @@ export class FileSystemWorkspaceBinding {
     this.isolatedFileSystemManager = isolatedFileSystemManager;
     this.#workspace = workspace;
     this.#eventListeners = [
-      this.isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this.onFileSystemAdded, this),
-      this.isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this.onFileSystemRemoved, this),
-      this.isolatedFileSystemManager.addEventListener(Events.FileSystemFilesChanged, this.fileSystemFilesChanged, this),
+      this.isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this.#onFileSystemAdded, this),
+      this.isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this.#onFileSystemRemoved, this),
+      this.isolatedFileSystemManager.addEventListener(Events.FileSystemFilesChanged, this.#fileSystemFilesChanged,
+                                                      this),
     ];
-    void this.isolatedFileSystemManager.waitForFileSystems().then(this.onFileSystemsLoaded.bind(this));
+    void this.isolatedFileSystemManager.waitForFileSystems().then(this.#onFileSystemsLoaded.bind(this));
   }
 
   static projectId(fileSystemPath: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
@@ -64,23 +65,23 @@ export class FileSystemWorkspaceBinding {
     return projectId;
   }
 
-  private onFileSystemsLoaded(fileSystems: IsolatedFileSystem[]): void {
+  #onFileSystemsLoaded(fileSystems: IsolatedFileSystem[]): void {
     for (const fileSystem of fileSystems) {
-      this.addFileSystem(fileSystem);
+      this.#addFileSystem(fileSystem);
     }
   }
 
-  private onFileSystemAdded(event: Common.EventTarget.EventTargetEvent<PlatformFileSystem>): void {
+  #onFileSystemAdded(event: Common.EventTarget.EventTargetEvent<PlatformFileSystem>): void {
     const fileSystem = event.data;
-    this.addFileSystem(fileSystem);
+    this.#addFileSystem(fileSystem);
   }
 
-  private addFileSystem(fileSystem: PlatformFileSystem): void {
+  #addFileSystem(fileSystem: PlatformFileSystem): void {
     const boundFileSystem = new FileSystem(this, fileSystem, this.#workspace);
     this.#boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
-  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<PlatformFileSystem>): void {
+  #onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<PlatformFileSystem>): void {
     const fileSystem = event.data;
     const boundFileSystem = this.#boundFileSystems.get(fileSystem.path());
     if (boundFileSystem) {
@@ -89,7 +90,7 @@ export class FileSystemWorkspaceBinding {
     this.#boundFileSystems.delete(fileSystem.path());
   }
 
-  private fileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent<FilesChangedData>): void {
+  #fileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent<FilesChangedData>): void {
     const paths = event.data;
     for (const fileSystemPath of paths.changed.keysArray()) {
       const fileSystem = this.#boundFileSystems.get(fileSystemPath);
@@ -171,8 +172,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
         folder => Common.ParsedURL.ParsedURL.concatenate(this.#fileSystemPath, '/', folder));
   }
 
-  private filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      Platform.DevToolsPath.EncodedPathString {
+  #filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.EncodedPathString {
     return Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(uiSourceCode.url(), this.#fileSystemPath.length);
   }
 
@@ -186,7 +186,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     if (metadata) {
       return metadata;
     }
-    const relativePath = this.filePathForUISourceCode(uiSourceCode);
+    const relativePath = this.#filePathForUISourceCode(uiSourceCode);
     const promise = this.#fileSystem.getMetadata(relativePath).then(onMetadata);
     sourceCodeToMetadataMap.set(uiSourceCode, promise);
     return promise;
@@ -201,12 +201,12 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   requestFileBlob(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Blob|null> {
-    return this.#fileSystem.requestFileBlob(this.filePathForUISourceCode(uiSourceCode));
+    return this.#fileSystem.requestFileBlob(this.#filePathForUISourceCode(uiSourceCode));
   }
 
   requestFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<TextUtils.ContentData.ContentDataOrError> {
-    const filePath = this.filePathForUISourceCode(uiSourceCode);
+    const filePath = this.#filePathForUISourceCode(uiSourceCode);
     return this.#fileSystem.requestFileContent(filePath);
   }
 
@@ -216,7 +216,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 
   async setFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode, newContent: string, isBase64: boolean):
       Promise<void> {
-    const filePath = this.filePathForUISourceCode(uiSourceCode);
+    const filePath = this.#filePathForUISourceCode(uiSourceCode);
     this.#fileSystem.setFileContent(filePath, newContent, isBase64);
   }
 
@@ -239,7 +239,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       return;
     }
 
-    let filePath = this.filePathForUISourceCode(uiSourceCode);
+    let filePath = this.#filePathForUISourceCode(uiSourceCode);
     this.#fileSystem.renameFile(filePath, newName, innerCallback.bind(this));
 
     function innerCallback(this: FileSystem, success: boolean, newName?: string): void {
@@ -262,7 +262,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   async searchInFileContent(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, query: string, caseSensitive: boolean,
       isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    const filePath = this.filePathForUISourceCode(uiSourceCode);
+    const filePath = this.#filePathForUISourceCode(uiSourceCode);
     const content = await this.#fileSystem.requestFileContent(filePath);
     return TextUtils.TextUtils.performSearchInContentData(content, query, caseSensitive, isRegex);
   }
@@ -315,7 +315,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     function reportFileChunk(this: FileSystem, from: number): void {
       const to = Math.min(from + chunkSize, filePaths.length);
       for (let i = from; i < to; ++i) {
-        this.addFile(filePaths[i]);
+        this.#addFile(filePaths[i]);
       }
       if (to < filePaths.length) {
         globalThis.setTimeout(reportFileChunk.bind(this, to), 100);
@@ -359,13 +359,13 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     if (!filePath) {
       return null;
     }
-    const uiSourceCode = this.addFile(filePath, content, isBase64);
+    const uiSourceCode = this.#addFile(filePath, content, isBase64);
     this.#creatingFilesGuard.delete(guardFileName);
     return uiSourceCode;
   }
 
   override deleteFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const relativePath = this.filePathForUISourceCode(uiSourceCode);
+    const relativePath = this.#filePathForUISourceCode(uiSourceCode);
     void this.#fileSystem.deleteFile(relativePath).then(success => {
       if (success) {
         this.removeUISourceCode(uiSourceCode.url());
@@ -381,8 +381,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     this.#fileSystemWorkspaceBinding.isolatedFileSystemManager.removeFileSystem(this.#fileSystem);
   }
 
-  private addFile(filePath: Platform.DevToolsPath.EncodedPathString, content?: string, isBase64?: boolean):
-      Workspace.UISourceCode.UISourceCode {
+  #addFile(filePath: Platform.DevToolsPath.EncodedPathString, content?: string,
+           isBase64?: boolean): Workspace.UISourceCode.UISourceCode {
     const contentType = this.#fileSystem.contentType(filePath);
     const uiSourceCode =
         this.createUISourceCode(Common.ParsedURL.ParsedURL.concatenate(this.fileSystemBaseURL, filePath), contentType);

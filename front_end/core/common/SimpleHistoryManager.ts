@@ -24,15 +24,15 @@ export class SimpleHistoryManager {
     this.#historyDepth = historyDepth;
   }
 
-  private readOnlyLock(): void {
+  #readOnlyLock(): void {
     ++this.#coalescingReadonly;
   }
 
-  private releaseReadOnlyLock(): void {
+  #releaseReadOnlyLock(): void {
     --this.#coalescingReadonly;
   }
 
-  private getPreviousValidIndex(): number {
+  #getPreviousValidIndex(): number {
     if (this.empty()) {
       return -1;
     }
@@ -48,7 +48,7 @@ export class SimpleHistoryManager {
     return revealIndex;
   }
 
-  private getNextValidIndex(): number {
+  #getNextValidIndex(): number {
     let revealIndex = this.#activeEntryIndex + 1;
 
     while (revealIndex < this.#entries.length && !this.#entries[revealIndex].valid()) {
@@ -61,7 +61,7 @@ export class SimpleHistoryManager {
     return revealIndex;
   }
 
-  private readOnly(): boolean {
+  #readOnly(): boolean {
     return Boolean(this.#coalescingReadonly);
   }
 
@@ -74,7 +74,7 @@ export class SimpleHistoryManager {
   }
 
   push(entry: HistoryEntry): void {
-    if (this.readOnly()) {
+    if (this.#readOnly()) {
       return;
     }
     if (!this.empty()) {
@@ -88,36 +88,36 @@ export class SimpleHistoryManager {
   }
 
   canRollback(): boolean {
-    return this.getPreviousValidIndex() >= 0;
+    return this.#getPreviousValidIndex() >= 0;
   }
 
   canRollover(): boolean {
-    return this.getNextValidIndex() >= 0;
+    return this.#getNextValidIndex() >= 0;
   }
 
   rollback(): boolean {
-    const revealIndex = this.getPreviousValidIndex();
+    const revealIndex = this.#getPreviousValidIndex();
     if (revealIndex === -1) {
       return false;
     }
-    this.readOnlyLock();
+    this.#readOnlyLock();
     this.#activeEntryIndex = revealIndex;
     this.#entries[revealIndex].reveal();
-    this.releaseReadOnlyLock();
+    this.#releaseReadOnlyLock();
 
     return true;
   }
 
   rollover(): boolean {
-    const revealIndex = this.getNextValidIndex();
+    const revealIndex = this.#getNextValidIndex();
     if (revealIndex === -1) {
       return false;
     }
 
-    this.readOnlyLock();
+    this.#readOnlyLock();
     this.#activeEntryIndex = revealIndex;
     this.#entries[revealIndex].reveal();
-    this.releaseReadOnlyLock();
+    this.#releaseReadOnlyLock();
 
     return true;
   }

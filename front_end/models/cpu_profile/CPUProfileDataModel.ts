@@ -88,12 +88,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       this.profileEndTime = profile.endTime * 1000;
       // @ts-expect-error Legacy types
       this.timestamps = profile.timestamps;
-      this.compatibilityConversionHeadToNodes(profile);
+      this.#compatibilityConversionHeadToNodes(profile);
     } else {
       // Current format encodes timestamps as deltas. Start/stop times are in microseconds.
       this.profileStartTime = profile.startTime / 1000;
       this.profileEndTime = profile.endTime / 1000;
-      this.timestamps = this.convertTimeDeltas(profile);
+      this.timestamps = this.#convertTimeDeltas(profile);
     }
     this.traceIds = profile.traceIds;
     this.samples = profile.samples;
@@ -101,17 +101,17 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     this.lines = profile.lines;
     this.columns = profile.columns;
     this.totalHitCount = 0;
-    this.profileHead = this.translateProfileTree(profile.nodes);
+    this.profileHead = this.#translateProfileTree(profile.nodes);
     this.initialize(this.profileHead);
-    this.extractMetaNodes();
+    this.#extractMetaNodes();
     if (this.samples?.length) {
-      this.sortSamples();
-      this.normalizeTimestamps();
-      this.fixMissingSamples();
+      this.#sortSamples();
+      this.#normalizeTimestamps();
+      this.#fixMissingSamples();
     }
   }
 
-  private compatibilityConversionHeadToNodes(profile: Protocol.Profiler.Profile): void {
+  #compatibilityConversionHeadToNodes(profile: Protocol.Profiler.Profile): void {
     // @ts-expect-error Legacy types
     if (!profile.head || profile.nodes) {
       return;
@@ -135,7 +135,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * like the ones contained in traces have timeDeltas instead of
    * timestamps.
    */
-  private convertTimeDeltas(profile: Protocol.Profiler.Profile): number[] {
+  #convertTimeDeltas(profile: Protocol.Profiler.Profile): number[] {
     if (!profile.timeDeltas) {
       return [];
     }
@@ -157,7 +157,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * This function supports legacy and new definitions of the CDP Profiler.Profile
    * type.
    */
-  private translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
+  #translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
     function buildChildrenFromParents(nodes: Protocol.Profiler.ProfileNode[]): void {
       if (nodes[0].children) {
         return;
@@ -255,7 +255,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * Sorts the samples array using the timestamps array (there is a one
    * to one matching by index between the two).
    */
-  private sortSamples(): void {
+  #sortSamples(): void {
     if (!this.timestamps || !this.samples) {
       return;
     }
@@ -279,7 +279,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * Fills in timestamps and/or time deltas from legacy profiles where
    * they could be missing.
    */
-  private normalizeTimestamps(): void {
+  #normalizeTimestamps(): void {
     if (!this.samples) {
       return;
     }
@@ -316,7 +316,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * Some nodes do not refer to JS samples but to V8 system tasks, AKA
    * "meta" nodes. This function extracts those nodes from the profile.
    */
-  private extractMetaNodes(): void {
+  #extractMetaNodes(): void {
     const topLevelNodes = this.profileHead.children;
     for (let i = 0; i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode); i++) {
       const node = topLevelNodes[i];
@@ -330,7 +330,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
-  private fixMissingSamples(): void {
+  #fixMissingSamples(): void {
     // Sometimes the V8 sampler is not able to parse the JS stack and returns
     // a (program) sample instead. The issue leads to call frames being split
     // apart when they shouldn't.

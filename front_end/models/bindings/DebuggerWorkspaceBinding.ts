@@ -101,8 +101,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     Root.DevToolsContext.globalInstance().delete(DebuggerWorkspaceBinding);
   }
 
-  private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
-      Promise<SDK.DebuggerModel.LocationRange[]> {
+  async #computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode,
+                               callFrame: SDK.DebuggerModel.CallFrame): Promise<SDK.DebuggerModel.LocationRange[]> {
     function contained(location: SDK.DebuggerModel.Location, range: SDK.DebuggerModel.LocationRange): boolean {
       const {start, end} = range;
       if (start.scriptId !== location.scriptId) {
@@ -158,9 +158,9 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return ranges;
   }
 
-  private async computeAutoStep(mode: SDK.DebuggerModel.StepMode, callFrames: readonly SDK.DebuggerModel.CallFrame[]):
-      Promise<SDK.DebuggerModel.AutoStep> {
-    const ranges = await this.computeAutoStepRanges(mode, callFrames[0]);
+  async #computeAutoStep(mode: SDK.DebuggerModel.StepMode,
+                         callFrames: readonly SDK.DebuggerModel.CallFrame[]): Promise<SDK.DebuggerModel.AutoStep> {
+    const ranges = await this.#computeAutoStepRanges(mode, callFrames[0]);
     if (mode === SDK.DebuggerModel.StepMode.STEP_OUT && ranges.length > 0) {
       // Step out of an inlined function by stepping over its body.
       return {command: SDK.DebuggerModel.StepMode.STEP_OVER, ranges};
@@ -173,9 +173,9 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    debuggerModel.setBeforePausedCallback(this.shouldPause.bind(this));
+    debuggerModel.setBeforePausedCallback(this.#shouldPause.bind(this));
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
-    debuggerModel.setComputeAutoStepCallback(this.computeAutoStep.bind(this));
+    debuggerModel.setComputeAutoStepCallback(this.#computeAutoStep.bind(this));
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -195,7 +195,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     await Promise.all(this.#liveLocationPromises);
   }
 
-  private recordLiveLocationChange(promise: Promise<unknown>): void {
+  #recordLiveLocationChange(promise: Promise<unknown>): void {
     void promise.then(() => {
       this.#liveLocationPromises.delete(promise);
     });
@@ -207,14 +207,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
                                         .model(StackTraceImpl.StackTraceModel.StackTraceModel)
                                         ?.scriptInfoChanged(script, this.#translateRawFrames.bind(this));
     if (stackTraceUpdatePromise) {
-      this.recordLiveLocationChange(stackTraceUpdatePromise);
+      this.#recordLiveLocationChange(stackTraceUpdatePromise);
     }
 
     const updatePromises = [stackTraceUpdatePromise];
     const modelData = this.#debuggerModelToData.get(script.debuggerModel);
     if (modelData) {
       const updatePromise = modelData.updateLocations(script);
-      this.recordLiveLocationChange(updatePromise);
+      this.#recordLiveLocationChange(updatePromise);
       updatePromises.push(updatePromise);
     }
 
@@ -226,7 +226,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const model =
         target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
     const stackTracePromise = model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
-    this.recordLiveLocationChange(stackTracePromise);
+    this.#recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
 
@@ -236,7 +236,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const model =
         target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
     const stackTracePromise = model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
-    this.recordLiveLocationChange(stackTracePromise);
+    this.#recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
 
@@ -247,7 +247,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
         target.model(StackTraceImpl.StackTraceModel.StackTraceModel) as StackTraceImpl.StackTraceModel.StackTraceModel;
     const stackTracePromise =
         model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
-    this.recordLiveLocationChange(stackTracePromise);
+    this.#recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
 
@@ -311,7 +311,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       return null;
     }
     const liveLocationPromise = modelData.createLiveLocation(rawLocation, updateDelegate, locationPool);
-    this.recordLiveLocationChange(liveLocationPromise);
+    this.#recordLiveLocationChange(liveLocationPromise);
     return await liveLocationPromise;
   }
 
@@ -321,7 +321,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     console.assert(rawLocations.length > 0);
     const locationPromise =
         StackTraceTopFrameLocation.createStackTraceTopFrameLocation(rawLocations, this, updateDelegate, locationPool);
-    this.recordLiveLocationChange(locationPromise);
+    this.#recordLiveLocationChange(locationPromise);
     return await locationPromise;
   }
 
@@ -523,8 +523,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   /** @returns null to present the pause, or the step to issue instead. */
-  private async shouldPause(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
-                            context: SDK.DebuggerModel.StepContext|null): Promise<SDK.DebuggerModel.AutoStep|null> {
+  async #shouldPause(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
+                     context: SDK.DebuggerModel.StepContext|null): Promise<SDK.DebuggerModel.AutoStep|null> {
     const {callFrames} = debuggerPausedDetails;
     const [frame] = callFrames;
     if (!frame) {
@@ -533,9 +533,9 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     if (frame.script.isWasm()) {
       return await this.#shouldPauseInWasm(debuggerPausedDetails, context) ?
           null :
-          await this.computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, callFrames);
+          await this.#computeAutoStep(SDK.DebuggerModel.StepMode.STEP_OVER, callFrames);
     }
-    return await SourceMapStepping.nextAutoStep(debuggerPausedDetails, context, this.computeAutoStep.bind(this));
+    return await SourceMapStepping.nextAutoStep(debuggerPausedDetails, context, this.#computeAutoStep.bind(this));
   }
 
   async #shouldPauseInWasm(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
@@ -780,9 +780,9 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
       locationPool: LiveLocationPool): Promise<StackTraceTopFrameLocation> {
     const location = new StackTraceTopFrameLocation(updateDelegate, locationPool);
     const locationsPromises = rawLocations.map(
-        rawLocation => binding.createLiveLocation(rawLocation, location.scheduleUpdate.bind(location), locationPool));
+        rawLocation => binding.createLiveLocation(rawLocation, location.#scheduleUpdate.bind(location), locationPool));
     location.#locations = ((await Promise.all(locationsPromises)).filter(l => !!l));
-    await location.updateLocation();
+    await location.#updateLocation();
     return location;
   }
 
@@ -801,17 +801,17 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     this.#current = null;
   }
 
-  private async scheduleUpdate(): Promise<void> {
+  async #scheduleUpdate(): Promise<void> {
     if (this.#updateScheduled) {
       return;
     }
     this.#updateScheduled = true;
     queueMicrotask(() => {
-      void this.updateLocation();
+      void this.#updateLocation();
     });
   }
 
-  private async updateLocation(): Promise<void> {
+  async #updateLocation(): Promise<void> {
     this.#updateScheduled = false;
     if (!this.#locations || this.#locations.length === 0) {
       return;

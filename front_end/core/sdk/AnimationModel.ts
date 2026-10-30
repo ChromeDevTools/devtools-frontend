@@ -217,16 +217,16 @@ export class AnimationModel extends SDKModel<EventTypes> {
     }
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);
-    resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.reset, this);
+    resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#reset, this);
 
     this.#flushPendingAnimations = Common.Debouncer.debounce(() => {
       while (this.#pendingAnimations.size) {
-        this.matchExistingGroups(this.createGroupFromPendingAnimations());
+        this.#matchExistingGroups(this.#createGroupFromPendingAnimations());
       }
     }, 100);
   }
 
-  private reset(): void {
+  #reset(): void {
     this.#animationsById.clear();
     this.animationGroups.clear();
     this.#pendingAnimations.clear();
@@ -299,7 +299,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
     this.#flushPendingAnimations();
   }
 
-  private matchExistingGroups(incomingGroup: AnimationGroup): boolean {
+  #matchExistingGroups(incomingGroup: AnimationGroup): boolean {
     let matchedGroup: AnimationGroup|null = null;
     for (const group of this.animationGroups.values()) {
       if (group.matches(incomingGroup)) {
@@ -324,7 +324,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
     return Boolean(matchedGroup);
   }
 
-  private createGroupFromPendingAnimations(): AnimationGroup {
+  #createGroupFromPendingAnimations(): AnimationGroup {
     console.assert(this.#pendingAnimations.size > 0);
     const firstAnimationId = this.#pendingAnimations.values().next().value as string;
     this.#pendingAnimations.delete(firstAnimationId);
@@ -362,7 +362,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
   }
 
   override async suspendModel(): Promise<void> {
-    await this.agent.invoke_disable().then(() => this.reset());
+    await this.agent.invoke_disable().then(() => this.#reset());
   }
 
   override async resumeModel(): Promise<void> {
@@ -429,8 +429,7 @@ export class AnimationImpl {
   // from the scroll container and ends at `endOffset`px of the scroll container.
   // This takes a percentage of the timeline range and returns the absolute
   // pixels values as a scroll offset of the scroll container.
-  private percentageToPixels(percentage: number, viewOrScrollTimeline: Protocol.Animation.ViewOrScrollTimeline):
-      number {
+  #percentageToPixels(percentage: number, viewOrScrollTimeline: Protocol.Animation.ViewOrScrollTimeline): number {
     const {startOffset, endOffset} = viewOrScrollTimeline;
     if (startOffset === undefined || endOffset === undefined) {
       // We don't expect this situation to occur since after an animation is started
@@ -472,9 +471,8 @@ export class AnimationImpl {
   startTime(): number {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(
-                 this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime,
-                 viewOrScrollTimeline) +
+      return this.#percentageToPixels(this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime,
+                                      viewOrScrollTimeline) +
           (this.viewOrScrollTimeline()?.startOffset ?? 0);
     }
 
@@ -486,7 +484,7 @@ export class AnimationImpl {
   iterationDuration(): number {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(this.source().duration(), viewOrScrollTimeline);
+      return this.#percentageToPixels(this.source().duration(), viewOrScrollTimeline);
     }
 
     return this.source().duration();
@@ -523,7 +521,7 @@ export class AnimationImpl {
   currentTime(): number {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(this.#payload.currentTime, viewOrScrollTimeline);
+      return this.#percentageToPixels(this.#payload.currentTime, viewOrScrollTimeline);
     }
 
     return this.#payload.currentTime;
@@ -564,14 +562,14 @@ export class AnimationImpl {
       if (!node) {
         throw new Error('Unable to find node');
       }
-      this.updateNodeStyle(duration, delay, node);
+      this.#updateNodeStyle(duration, delay, node);
     });
     this.#source.durationInternal = duration;
     this.#source.delayInternal = delay;
     void this.#animationModel.agent.invoke_setTiming({animationId: this.id(), duration, delay});
   }
 
-  private updateNodeStyle(duration: number, delay: number, node: DOMNode): void {
+  #updateNodeStyle(duration: number, delay: number, node: DOMNode): void {
     let animationPrefix;
     if (this.type() === Protocol.Animation.AnimationType.CSSTransition) {
       animationPrefix = 'transition-';
@@ -765,10 +763,10 @@ export class AnimationGroup {
 
   release(): void {
     this.#animationModel.animationGroups.delete(this.id());
-    this.#animationModel.releaseAnimations(this.animationIds());
+    this.#animationModel.releaseAnimations(this.#animationIds());
   }
 
-  private animationIds(): string[] {
+  #animationIds(): string[] {
     function extractId(animation: AnimationImpl): string {
       return animation.id();
     }
@@ -854,7 +852,7 @@ export class AnimationGroup {
       return;
     }
     this.#paused = paused;
-    void this.#animationModel.agent.invoke_setPaused({animations: this.animationIds(), paused});
+    void this.#animationModel.agent.invoke_setPaused({animations: this.#animationIds(), paused});
   }
 
   currentTimePromise(): Promise<number> {
@@ -907,7 +905,7 @@ export class AnimationGroup {
   }
 
   rebaseTo(group: AnimationGroup): void {
-    this.#animationModel.releaseAnimations(this.animationIds());
+    this.#animationModel.releaseAnimations(this.#animationIds());
     this.#animations = group.#animations;
     this.#scrollNode = undefined;
   }

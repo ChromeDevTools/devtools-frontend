@@ -188,9 +188,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.setSuffixElement(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT, statusDot);
     }
 
-    void this.maybeAppendPayloadPanel();
+    void this.#maybeAppendPayloadPanel();
 
-    this.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
+    this.addEventListener(UI.TabbedPane.Events.TabSelected, this.#tabSelected, this);
 
     if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
@@ -261,13 +261,14 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   override wasShown(): void {
     super.wasShown();
-    this.#request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
-    this.#request.addEventListener(
-        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookieResponsePanels, this);
-    this.#request.addEventListener(
-        SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
-    this.maybeAppendCookieResponsePanels();
-    this.maybeShowErrorIconInTrustTokenTabHeader();
+    this.#request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#requestHeadersChanged,
+                                   this);
+    this.#request.addEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+                                   this.#maybeAppendCookieResponsePanels, this);
+    this.#request.addEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED,
+                                   this.#maybeShowErrorIconInTrustTokenTabHeader, this);
+    this.#maybeAppendCookieResponsePanels();
+    this.#maybeShowErrorIconInTrustTokenTabHeader();
 
     // Only select the initial tab the first time the view is shown after construction.
     // When the view is re-shown (without re-constructing) users or revealers might have changed
@@ -282,25 +283,25 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   override willHide(): void {
     super.willHide();
-    this.#request.removeEventListener(
-        SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
-    this.#request.removeEventListener(
-        SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookieResponsePanels, this);
-    this.#request.removeEventListener(
-        SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
+    this.#request.removeEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#requestHeadersChanged,
+                                      this);
+    this.#request.removeEventListener(SDK.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+                                      this.#maybeAppendCookieResponsePanels, this);
+    this.#request.removeEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED,
+                                      this.#maybeShowErrorIconInTrustTokenTabHeader, this);
   }
 
-  private async requestHeadersChanged(): Promise<void> {
-    this.maybeAppendCookiesPanel();
-    void this.maybeAppendPayloadPanel();
+  async #requestHeadersChanged(): Promise<void> {
+    this.#maybeAppendCookiesPanel();
+    void this.#maybeAppendPayloadPanel();
   }
 
-  private maybeAppendCookieResponsePanels(): void {
-    this.maybeAppendCookiesPanel();
-    this.maybeAppendDeviceBoundSessionsPanel();
+  #maybeAppendCookieResponsePanels(): void {
+    this.#maybeAppendCookiesPanel();
+    this.#maybeAppendDeviceBoundSessionsPanel();
   }
 
-  private maybeAppendCookiesPanel(): void {
+  #maybeAppendCookiesPanel(): void {
     const cookiesPresent = this.#request.hasRequestCookies() || this.#request.responseCookies.length > 0;
     console.assert(cookiesPresent || !this.#cookiesView, 'Cookies were introduced in headers and then removed!');
     if (cookiesPresent && !this.#cookiesView) {
@@ -318,7 +319,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private maybeAppendDeviceBoundSessionsPanel(): void {
+  #maybeAppendDeviceBoundSessionsPanel(): void {
     const deviceBoundSessionsPresent = this.#request.getDeviceBoundSessionUsages().length > 0;
     if (deviceBoundSessionsPresent && !this.#deviceBoundSessionsView) {
       this.#deviceBoundSessionsView = new RequestDeviceBoundSessionsView(this.#request);
@@ -329,7 +330,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private async maybeAppendPayloadPanel(): Promise<void> {
+  async #maybeAppendPayloadPanel(): Promise<void> {
     if (this.hasTab('payload')) {
       return;
     }
@@ -343,7 +344,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private maybeShowErrorIconInTrustTokenTabHeader(): void {
+  #maybeShowErrorIconInTrustTokenTabHeader(): void {
     const trustTokenResult = this.#request.trustTokenOperationDoneEvent();
     if (trustTokenResult &&
         !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
@@ -366,7 +367,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
+  #tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
     if (!event.data.isUserGesture) {
       return;
     }

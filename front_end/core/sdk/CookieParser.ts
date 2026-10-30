@@ -78,24 +78,24 @@ export class CookieParser {
   }
 
   parseSetCookie(setCookieHeader: string|undefined): Cookie[]|null {
-    if (!this.initialize(setCookieHeader)) {
+    if (!this.#initialize(setCookieHeader)) {
       return null;
     }
-    for (let kv = this.extractKeyValue(); kv; kv = this.extractKeyValue()) {
+    for (let kv = this.#extractKeyValue(); kv; kv = this.#extractKeyValue()) {
       if (this.#lastCookie) {
         this.#lastCookie.addAttribute(this.getCookieAttribute(kv.key), kv.value);
       } else {
-        this.addCookie(kv, Type.RESPONSE);
+        this.#addCookie(kv, Type.RESPONSE);
       }
-      if (this.advanceAndCheckCookieDelimiter()) {
-        this.flushCookie();
+      if (this.#advanceAndCheckCookieDelimiter()) {
+        this.#flushCookie();
       }
     }
-    this.flushCookie();
+    this.#flushCookie();
     return this.#cookies;
   }
 
-  private initialize(headerValue: string|undefined): boolean {
+  #initialize(headerValue: string|undefined): boolean {
     this.#input = headerValue;
 
     if (typeof headerValue !== 'string') {
@@ -109,7 +109,7 @@ export class CookieParser {
     return true;
   }
 
-  private flushCookie(): void {
+  #flushCookie(): void {
     if (this.#lastCookie) {
       // if we have a last cookie we know that these valeus all exist, hence the typecasts
       this.#lastCookie.setSize(
@@ -120,7 +120,7 @@ export class CookieParser {
     this.#lastCookieLine = '';
   }
 
-  private extractKeyValue(): KeyValue|null {
+  #extractKeyValue(): KeyValue|null {
     if (!this.#input || !this.#input.length) {
       return null;
     }
@@ -142,7 +142,7 @@ export class CookieParser {
     return result;
   }
 
-  private advanceAndCheckCookieDelimiter(): boolean {
+  #advanceAndCheckCookieDelimiter(): boolean {
     if (!this.#input) {
       return false;
     }
@@ -156,7 +156,7 @@ export class CookieParser {
     return match[0].match('\n') !== null;
   }
 
-  private addCookie(keyValue: KeyValue, type: Type): void {
+  #addCookie(keyValue: KeyValue, type: Type): void {
     if (this.#lastCookie) {
       this.#lastCookie.setSize(keyValue.position - (this.#lastCookiePosition as number));
     }

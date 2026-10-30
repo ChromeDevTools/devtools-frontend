@@ -56,13 +56,13 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   modelAdded(resourceTreeModel: ResourceTreeModel): void {
-    const addListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameAdded, this.frameAdded, this);
+    const addListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameAdded, this.#frameAdded, this);
     const detachListener =
-        resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameDetached, this.frameDetached, this);
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameDetached, this.#frameDetached, this);
     const navigatedListener =
-        resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameNavigated, this.frameNavigated, this);
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameNavigated, this.#frameNavigated, this);
     const resourceAddedListener =
-        resourceTreeModel.addEventListener(ResourceTreeModelEvents.ResourceAdded, this.resourceAdded, this);
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.ResourceAdded, this.#resourceAdded, this);
     this.#eventListeners.set(
         resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
     this.#framesForTarget.set(resourceTreeModel.target().id(), new Set());
@@ -80,13 +80,13 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     const frameSet = this.#framesForTarget.get(resourceTreeModel.target().id());
     if (frameSet) {
       for (const frameId of frameSet) {
-        this.decreaseOrRemoveFrame(frameId);
+        this.#decreaseOrRemoveFrame(frameId);
       }
     }
     this.#framesForTarget.delete(resourceTreeModel.target().id());
   }
 
-  private frameAdded(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+  #frameAdded(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     const frame = event.data;
     const frameData = this.#frames.get(frame.id);
     // If the frame is already in the map, increase its count, otherwise add it to the map.
@@ -108,7 +108,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       this.#frames.set(frame.id, {frame, count: 1});
       this.#transferringFramesDataCache.delete(frame.id);
     }
-    this.resetOutermostFrame();
+    this.#resetOutermostFrame();
 
     // Add the frameId to the the targetId's set of frameIds.
     const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
@@ -117,13 +117,13 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     this.dispatchEventToListeners(Events.FRAME_ADDED_TO_TARGET, {frame});
-    this.resolveAwaitedFrame(frame);
+    this.#resolveAwaitedFrame(frame);
   }
 
-  private frameDetached(event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, isSwap: boolean}>): void {
+  #frameDetached(event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, isSwap: boolean}>): void {
     const {frame, isSwap} = event.data;
     // Decrease the frame's count or remove it entirely from the map.
-    this.decreaseOrRemoveFrame(frame.id);
+    this.#decreaseOrRemoveFrame(frame.id);
 
     // If the transferring frame's detached event is received before its frame
     // added event in the new target, we persist some attributes of the frame here
@@ -144,7 +144,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
   }
 
-  private frameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+  #frameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     const frame = event.data;
     this.dispatchEventToListeners(Events.FRAME_NAVIGATED, {frame});
     if (frame.isOutermostFrame()) {
@@ -152,16 +152,16 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
   }
 
-  private resourceAdded(event: Common.EventTarget.EventTargetEvent<Resource>): void {
+  #resourceAdded(event: Common.EventTarget.EventTargetEvent<Resource>): void {
     this.dispatchEventToListeners(Events.RESOURCE_ADDED, {resource: event.data});
   }
 
-  private decreaseOrRemoveFrame(frameId: Protocol.Page.FrameId): void {
+  #decreaseOrRemoveFrame(frameId: Protocol.Page.FrameId): void {
     const frameData = this.#frames.get(frameId);
     if (frameData) {
       if (frameData.count === 1) {
         this.#frames.delete(frameId);
-        this.resetOutermostFrame();
+        this.#resetOutermostFrame();
         this.dispatchEventToListeners(Events.FRAME_REMOVED, {frameId});
       } else {
         frameData.count--;
@@ -174,7 +174,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
    *
    * Important: This method needs to be called everytime `#frames` is updated.
    */
-  private resetOutermostFrame(): void {
+  #resetOutermostFrame(): void {
     const outermostFrames = this.getAllFrames().filter(frame => frame.isOutermostFrame());
     this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
   }
@@ -217,7 +217,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     });
   }
 
-  private resolveAwaitedFrame(frame: ResourceTreeFrame): void {
+  #resolveAwaitedFrame(frame: ResourceTreeFrame): void {
     const waiting = this.#awaitedFrames.get(frame.id);
     if (!waiting) {
       return;

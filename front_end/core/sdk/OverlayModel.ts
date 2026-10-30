@@ -124,14 +124,14 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
       settings.resolve(disablePausedStateOverlaySettingDescriptor)
-          .addChangeListener(this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(
-          DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(
-          DebuggerModelEvents.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
+          .addChangeListener(this.#updatePausedInDebuggerMessage, this);
+      this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerPaused, this.#updatePausedInDebuggerMessage,
+                                           this);
+      this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerResumed, this.#updatePausedInDebuggerMessage,
+                                           this);
       // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
-      this.#debuggerModel.addEventListener(
-          DebuggerModelEvents.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
+      this.#debuggerModel.addEventListener(DebuggerModelEvents.GlobalObjectCleared, this.#updatePausedInDebuggerMessage,
+                                           this);
     }
 
     this.#defaultHighlighter = new DefaultHighlighter(this);
@@ -146,7 +146,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();
-      void this.wireAgentToSettings();
+      void this.#wireAgentToSettings();
     }
 
     this.#persistentHighlighter = new OverlayPersistentHighlighter(this, settings, {
@@ -204,7 +204,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
   static hideDOMNodeHighlight(targetManager: TargetManager): void {
     for (const overlayModel of targetManager.models(OverlayModel)) {
-      overlayModel.delayedHideHighlight(0);
+      overlayModel.#delayedHideHighlight(0);
     }
   }
 
@@ -244,7 +244,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     return this.overlayAgent.invoke_hideHighlight();
   }
 
-  private async wireAgentToSettings(): Promise<void> {
+  async #wireAgentToSettings(): Promise<void> {
     this.#registeredListeners = [
       this.#showPaintRectsSetting.addChangeListener(
           () => this.overlayAgent.invoke_setShowPaintRects({result: this.#showPaintRectsSetting.get()})),
@@ -281,7 +281,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       void this.overlayAgent.invoke_setShowScrollBottleneckRects({show: true});
     }
     if (this.#debuggerModel && this.#debuggerModel.isPaused()) {
-      this.updatePausedInDebuggerMessage();
+      this.#updatePausedInDebuggerMessage();
     }
     await this.overlayAgent.invoke_setShowViewportSizeOnResize({show: this.#showViewportSizeOnResize});
     this.#persistentHighlighter?.resetOverlay();
@@ -293,7 +293,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   }
 
   override async resumeModel(): Promise<void> {
-    await Promise.all([this.overlayAgent.invoke_enable(), this.wireAgentToSettings()]);
+    await Promise.all([this.overlayAgent.invoke_enable(), this.#wireAgentToSettings()]);
   }
 
   setShowViewportSizeOnResize(show: boolean): void {
@@ -308,7 +308,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     void this.overlayAgent.invoke_setShowViewportSizeOnResize({show});
   }
 
-  private updatePausedInDebuggerMessage(): void {
+  #updatePausedInDebuggerMessage(): void {
     if (this.target().suspended()) {
       return;
     }
@@ -329,7 +329,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     await this.#domModel.requestDocument();
     this.#inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
     this.dispatchEventToListeners(Events.INSPECT_MODE_WILL_BE_TOGGLED, this);
-    void this.#highlighter.setInspectMode(mode, this.buildHighlightConfig('all', showDetailedTooltip));
+    void this.#highlighter.setInspectMode(mode, this.#buildHighlightConfig('all', showDetailedTooltip));
   }
 
   inspectModeEnabled(): boolean {
@@ -345,7 +345,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     clearTimeout(this.#hideHighlightTimeout);
     this.#hideHighlightTimeout = undefined;
 
-    const highlightConfig = this.buildHighlightConfig(mode);
+    const highlightConfig = this.#buildHighlightConfig(mode);
     if (typeof showInfo !== 'undefined') {
       highlightConfig.showInfo = showInfo;
     }
@@ -354,7 +354,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
   highlightInOverlayForTwoSeconds(data: HighlightData): void {
     this.highlightInOverlay(data);
-    this.delayedHideHighlight(2000);
+    this.#delayedHideHighlight(2000);
   }
 
   highlightGridInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -495,7 +495,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#sourceOrderModeActive = isActive;
   }
 
-  private delayedHideHighlight(delay: number): void {
+  #delayedHideHighlight(delay: number): void {
     clearTimeout(this.#hideHighlightTimeout);
     this.#hideHighlightTimeout = globalThis.setTimeout(
         () => this.highlightInOverlay({clear: true}),
@@ -570,8 +570,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.setShowViewportSizeOnResize(!show);
   }
 
-  private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
-      Protocol.Overlay.HighlightConfig {
+  #buildHighlightConfig(mode: string|undefined = 'all',
+                        showDetailedToolip: boolean|undefined = false): Protocol.Overlay.HighlightConfig {
     const settings = this.target().targetManager().settings;
     const showRulers = settings.resolve(showMetricsRulersSettingDescriptor).get();
     const highlightConfig: Protocol.Overlay.HighlightConfig = {

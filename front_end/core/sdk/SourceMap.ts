@@ -184,7 +184,7 @@ export class SourceMap {
         this.#console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
       }
     }
-    this.eachSection(this.parseSources.bind(this));
+    this.#eachSection(this.#parseSources.bind(this));
   }
 
   provenance(): SourceMapProvenance {
@@ -313,7 +313,7 @@ export class SourceMap {
         mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
 
     // Now try to find the corresponding token in the original code.
-    const reverseMappings = this.reversedMappings(sourceURL);
+    const reverseMappings = this.#reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;
     const endReverseIndex = Platform.ArrayUtilities.upperBound(
@@ -337,7 +337,7 @@ export class SourceMap {
   sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
       SourceMapEntry|null {
     const mappings = this.mappings();
-    const reverseMappings = this.reversedMappings(sourceURL);
+    const reverseMappings = this.#reversedMappings(sourceURL);
     const first = Platform.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
     const last = Platform.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
     if (first >= reverseMappings.length || mappings[reverseMappings[first]].sourceLineNumber !== lineNumber) {
@@ -357,10 +357,9 @@ export class SourceMap {
     }
   }
 
-  private findReverseIndices(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
-      number[] {
+  #findReverseIndices(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): number[] {
     const mappings = this.mappings();
-    const reverseMappings = this.reversedMappings(sourceURL);
+    const reverseMappings = this.#reversedMappings(sourceURL);
     const endIndex = Platform.ArrayUtilities.upperBound(
         reverseMappings, undefined,
         (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber);
@@ -380,7 +379,7 @@ export class SourceMap {
       sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number,
       filterContiguous = false): SourceMapEntry[] {
     const mappings = this.mappings();
-    let indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+    let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
     if (filterContiguous) {
       indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
     }
@@ -390,7 +389,7 @@ export class SourceMap {
   findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
       TextUtils.TextRange.TextRange[] {
     const mappings = this.mappings();
-    const indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+    const indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
     const ranges: TextUtils.TextRange.TextRange[] = [];
 
     for (let i = 0; i < indices.length; ++i) {
@@ -440,7 +439,7 @@ export class SourceMap {
     return SourceMapScopesInfo.createFromAst(this, scopeTree, text);
   }
 
-  private reversedMappings(sourceURL: Platform.DevToolsPath.UrlString): number[] {
+  #reversedMappings(sourceURL: Platform.DevToolsPath.UrlString): number[] {
     this.#ensureSourceMapProcessed();
     return this.#sourceInfoByURL.get(sourceURL)?.reverseMappings ?? [];
   }
@@ -449,7 +448,7 @@ export class SourceMap {
     if (this.#mappings === null) {
       this.#mappings = [];
       try {
-        this.eachSection(this.parseMap.bind(this));
+        this.#eachSection(this.#parseMap.bind(this));
         if (!this.hasScopeInfo()) {
           this.#scopesFallbackPromise = this.#buildScopesFallback().then(info => {
             this.#scopesInfo = info;
@@ -503,7 +502,7 @@ export class SourceMap {
     }
   }
 
-  private eachSection(callback: (arg0: SourceMapV3Object, arg1: number, arg2: number, arg3: number) => void): void {
+  #eachSection(callback: (arg0: SourceMapV3Object, arg1: number, arg2: number, arg3: number) => void): void {
     if (!this.#json) {
       return;
     }
@@ -520,7 +519,7 @@ export class SourceMap {
     }
   }
 
-  private parseSources(sourceMap: SourceMapV3Object): void {
+  #parseSources(sourceMap: SourceMapV3Object): void {
     const sourceRoot = sourceMap.sourceRoot ?? '';
     const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
@@ -553,8 +552,7 @@ export class SourceMap {
     }
   }
 
-  private parseMap(map: SourceMapV3Object, baseSourceIndex: number, baseLineNumber: number, baseColumnNumber: number):
-      void {
+  #parseMap(map: SourceMapV3Object, baseSourceIndex: number, baseLineNumber: number, baseColumnNumber: number): void {
     let sourceIndex = baseSourceIndex;
     let lineNumber = baseLineNumber;
     let columnNumber = baseColumnNumber;
@@ -596,7 +594,7 @@ export class SourceMap {
       }
 
       columnNumber += tokenIter.nextVLQ();
-      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
+      if (!tokenIter.hasNext() || this.#isSeparator(tokenIter.peek())) {
         pushEntry(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
@@ -609,7 +607,7 @@ export class SourceMap {
       sourceLineNumber += tokenIter.nextVLQ();
       sourceColumnNumber += tokenIter.nextVLQ();
 
-      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
+      if (!tokenIter.hasNext() || this.#isSeparator(tokenIter.peek())) {
         pushEntry(
             new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
@@ -632,7 +630,7 @@ export class SourceMap {
       this.#scopesInfo.addOriginalScopes(scopes.length ? scopes : new Array(map.sources.length).fill(null));
       this.#scopesInfo.addGeneratedRanges(ranges);
     } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
-      const originalScopes = this.parseBloombergScopes(map);
+      const originalScopes = this.#parseBloombergScopes(map);
       this.#scopesInfo.addOriginalScopes(originalScopes);
     } else {
       // Keep the OriginalScope[] tree array consistent with sources.
@@ -678,7 +676,7 @@ export class SourceMap {
     }
   }
 
-  private parseBloombergScopes(map: SourceMapV3Object): Array<ScopesCodec.OriginalScope[]|null> {
+  #parseBloombergScopes(map: SourceMapV3Object): Array<ScopesCodec.OriginalScope[]|null> {
     const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
     if (!scopeList) {
       throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');
@@ -696,7 +694,7 @@ export class SourceMap {
     });
   }
 
-  private isSeparator(char: string): boolean {
+  #isSeparator(char: string): boolean {
     return char === ',' || char === ';';
   }
 
@@ -713,7 +711,7 @@ export class SourceMap {
    */
   reverseMapTextRanges(url: Platform.DevToolsPath.UrlString, textRange: TextUtils.TextRange.TextRange):
       TextUtils.TextRange.TextRange[] {
-    const reverseMappings = this.reversedMappings(url);
+    const reverseMappings = this.#reversedMappings(url);
     const mappings = this.mappings();
     if (reverseMappings.length === 0) {
       return [];

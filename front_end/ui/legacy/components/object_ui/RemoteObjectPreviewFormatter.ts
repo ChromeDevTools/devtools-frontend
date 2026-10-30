@@ -35,8 +35,7 @@ interface PropertyPreviewValue {
 }
 
 export class RemoteObjectPreviewFormatter {
-  private static objectPropertyComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview):
-      number {
+  static #objectPropertyComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview): number {
     return sortValue(a) - sortValue(b);
 
     function sortValue(property: Protocol.Runtime.PropertyPreview): number {
@@ -89,10 +88,9 @@ export class RemoteObjectPreviewFormatter {
       }
     }
 
-    const items = Array.from(
-        preview.entries         ? this.renderEntries(preview) :
-            isArrayOrTypedArray ? this.renderArrayProperties(preview) :
-                                  this.renderObjectProperties(preview, includeNullOrUndefined));
+    const items = Array.from(preview.entries         ? this.#renderEntries(preview) :
+                                 isArrayOrTypedArray ? this.#renderArrayProperties(preview) :
+                                                       this.#renderObjectProperties(preview, includeNullOrUndefined));
 
     // clang-format off
     const renderName = (name: string): LitTemplate  => html`<span class=name>${
@@ -125,11 +123,11 @@ export class RemoteObjectPreviewFormatter {
     ${isArrayOrTypedArray ? ']' : '}'}</span>`;
   }
 
-  private *
-      renderObjectProperties(preview: Protocol.Runtime.ObjectPreview, includeNullOrUndefined: boolean):
+  *
+      #renderObjectProperties(preview: Protocol.Runtime.ObjectPreview, includeNullOrUndefined: boolean):
           Generator<PropertyPreviewValue> {
     const properties = preview.properties.filter(p => p.type !== 'accessor')
-                           .sort(RemoteObjectPreviewFormatter.objectPropertyComparator);
+                           .sort(RemoteObjectPreviewFormatter.#objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const name = property.name;
@@ -162,11 +160,11 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  private * renderArrayProperties(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
+  * #renderArrayProperties(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
     const arrayLength = SDK.RemoteObject.RemoteObject.arrayLength(preview);
     const indexProperties = preview.properties.filter(p => toArrayIndex(p.name) !== -1).sort(arrayEntryComparator);
     const otherProperties = preview.properties.filter(p => toArrayIndex(p.name) === -1)
-                                .sort(RemoteObjectPreviewFormatter.objectPropertyComparator);
+                                .sort(RemoteObjectPreviewFormatter.#objectPropertyComparator);
 
     function arrayEntryComparator(a: Protocol.Runtime.PropertyPreview, b: Protocol.Runtime.PropertyPreview): number {
       return toArrayIndex(a.name) - toArrayIndex(b.name);
@@ -216,7 +214,7 @@ export class RemoteObjectPreviewFormatter {
     }
   }
 
-  private * renderEntries(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
+  * #renderEntries(preview: Protocol.Runtime.ObjectPreview): Generator<PropertyPreviewValue> {
     for (const entry of preview.entries ?? []) {
       yield {entry};
     }

@@ -49,17 +49,18 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     this.#scriptToUISourceCode = new Map();
     const runtimeModel = debuggerModel.runtimeModel();
     this.#eventListeners = [
-      this.debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.ParsedScriptSource, event => this.addScript(event.data), this),
-      this.debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
-      runtimeModel.addEventListener(
-          SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.executionContextDestroyed, this),
-      runtimeModel.target().targetManager().addEventListener(
-          SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this),
+      this.debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource,
+                                          event => this.#addScript(event.data), this),
+      this.debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared,
+                                          this),
+      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.#executionContextDestroyed,
+                                    this),
+      runtimeModel.target().targetManager().addEventListener(SDK.TargetManager.Events.INSPECTED_URL_CHANGED,
+                                                             this.#inspectedURLChanged, this),
     ];
   }
 
-  private project(script: SDK.Script.Script): ContentProviderBasedProject {
+  #project(script: SDK.Script.Script): ContentProviderBasedProject {
     const prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
     const projectId = prefix + this.debuggerModel.target().id() + ':' + script.frameId;
     let project = this.#projects.get(projectId);
@@ -132,7 +133,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return [{start, end}];
   }
 
-  private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+  #inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     for (let target: SDK.Target.Target|null = this.debuggerModel.target(); target !== event.data;
          target = target.parentTarget()) {
       if (target === null) {
@@ -146,9 +147,9 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     const scripts = Array.from(this.#scriptToUISourceCode)
                         .filter(([script, uiSourceCode]) => this.#resolvedSourceURLChanged(script, uiSourceCode))
                         .map(([script]) => script);
-    this.removeScripts(scripts);
+    this.#removeScripts(scripts);
     for (const script of scripts) {
-      this.addScript(script);
+      this.#addScript(script);
     }
   }
 
@@ -215,7 +216,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return new Workspace.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
 
-  private addScript(script: SDK.Script.Script): void {
+  #addScript(script: SDK.Script.Script): void {
     if (script.isBreakpointCondition) {
       return;
     }
@@ -238,7 +239,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
 
       // Don't let a synthetic source evict the `UISourceCode` of a script that was
       // actually fetched from the network under the same URL.
-      const previousUISourceCode = this.project(script).uiSourceCodeForURL(url);
+      const previousUISourceCode = this.#project(script).uiSourceCodeForURL(url);
       if (previousUISourceCode && !NetworkProject.isSourceURLSynthesized(previousUISourceCode)) {
         return;
       }
@@ -258,12 +259,12 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     }
 
     // Remove previous UISourceCode, if any
-    const project = this.project(script);
+    const project = this.#project(script);
     const oldUISourceCode = project.uiSourceCodeForURL(url);
     if (oldUISourceCode) {
       const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
       if (oldScriptFile?.script) {
-        this.removeScripts([oldScriptFile.script]);
+        this.#removeScripts([oldScriptFile.script]);
       }
     }
 
@@ -323,7 +324,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;
   }
 
-  private removeScripts(scripts: SDK.Script.Script[]): void {
+  #removeScripts(scripts: SDK.Script.Script[]): void {
     const uiSourceCodesByProject =
         new Platform.MapUtilities.Multimap<ContentProviderBasedProject, Workspace.UISourceCode.UISourceCode>();
     for (const script of scripts) {
@@ -359,24 +360,23 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     }
   }
 
-  private executionContextDestroyed(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>):
-      void {
+  #executionContextDestroyed(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>): void {
     const executionContext = event.data;
-    this.removeScripts(this.debuggerModel.scriptsForExecutionContext(executionContext));
+    this.#removeScripts(this.debuggerModel.scriptsForExecutionContext(executionContext));
   }
 
-  private globalObjectCleared(): void {
+  #globalObjectCleared(): void {
     const scripts = Array.from(this.#scriptToUISourceCode.keys());
-    this.removeScripts(scripts);
+    this.#removeScripts(scripts);
   }
 
   resetForTest(): void {
-    this.globalObjectCleared();
+    this.#globalObjectCleared();
   }
 
   dispose(): void {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
-    this.globalObjectCleared();
+    this.#globalObjectCleared();
   }
 }
 

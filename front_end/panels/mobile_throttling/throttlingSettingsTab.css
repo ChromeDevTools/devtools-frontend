@@ -138,7 +138,7 @@
 .cpu-preset-calibrate .text-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 .text-with-icon {

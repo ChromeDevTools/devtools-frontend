@@ -5,23 +5,23 @@
  */
 
 @scope to (devtools-widget > *) {
-  .image-view {
+  :scope {
     overflow: auto;
   }
 
-  .image-view > .image {
+  :scope > .image {
     flex: 1;
     overflow: auto;
     padding: var(--sys-size-9) var(--sys-size-9) 10px;
     text-align: center;
   }
 
-  .image-view > devtools-toolbar {
+  :scope > devtools-toolbar {
     border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-surface1);
   }
 
-  .image-view img.resource-image-view {
+  img.resource-image-view {
     max-width: 100%;
     max-height: 1000px;
     background-image: var(--image-file-checker);

@@ -60,11 +60,11 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   #goToLineStrings: string[] = [];
 
   override selectItem(_itemIndex: number|null, promptValue: string): void {
-    const sourceFrame = this.currentSourceFrame();
+    const sourceFrame = this.#currentSourceFrame();
     if (!sourceFrame) {
       return;
     }
-    const position = this.parsePosition(promptValue);
+    const position = this.#parsePosition(promptValue);
     if (!position) {
       return;
     }
@@ -92,8 +92,8 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 
   override queryChanged(query: string): void {
     this.#goToLineStrings = [];
-    const position = this.parsePosition(query);
-    const sourceFrame = this.currentSourceFrame();
+    const position = this.#parsePosition(query);
+    const sourceFrame = this.#currentSourceFrame();
     if (!position) {
       if (!sourceFrame) {
         this.#goToLineStrings.push(i18nString(UIStrings.typeANumberToGoToThatLine));
@@ -130,17 +130,17 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   override notFoundText(_query: string): string {
-    if (!this.currentSourceFrame()) {
+    if (!this.#currentSourceFrame()) {
       return i18nString(UIStrings.noFileSelected);
     }
     return i18nString(UIStrings.noResultsFound);
   }
 
-  private parsePosition(query: string): {
+  #parsePosition(query: string): {
     line: number,
     column: number,
   }|null {
-    const sourceFrame = this.currentSourceFrame();
+    const sourceFrame = this.#currentSourceFrame();
     if (sourceFrame?.wasmDisassembly) {
       const parts = query.match(/0x([0-9a-fA-F]+)/);
       if (!parts?.[0] || parts[0].length !== query.length) {
@@ -163,7 +163,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return {line: Math.max(line | 0, 1), column: Math.max(column | 0, 1)};
   }
 
-  private currentSourceFrame(): UISourceCodeFrame|null {
+  #currentSourceFrame(): UISourceCodeFrame|null {
     const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
     if (!sourcesView) {
       return null;

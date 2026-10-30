@@ -30,7 +30,7 @@ export class SlowCSSSelector extends
     return true;
   }
 
-  private async toSourceFileLocation(cssModel: SDK.CSSModel.CSSModel, selector: Trace.Types.Events.SelectorTiming):
+  async #toSourceFileLocation(cssModel: SDK.CSSModel.CSSModel, selector: Trace.Types.Events.SelectorTiming):
       Promise<Linkifier.Linkifier.LinkifierData[]|undefined> {
     if (!cssModel) {
       return undefined;
@@ -65,9 +65,8 @@ export class SlowCSSSelector extends
     return locations;
   }
 
-  private async getSelectorLinks(
-      cssModel: SDK.CSSModel.CSSModel|null|undefined,
-      selector: Trace.Types.Events.SelectorTiming): Promise<Lit.LitTemplate> {
+  async #getSelectorLinks(cssModel: SDK.CSSModel.CSSModel|null|undefined,
+                          selector: Trace.Types.Events.SelectorTiming): Promise<Lit.LitTemplate> {
     if (!cssModel) {
       return Lit.nothing;
     }
@@ -76,7 +75,7 @@ export class SlowCSSSelector extends
       return Lit.nothing;
     }
 
-    const locations = await this.toSourceFileLocation(cssModel, selector);
+    const locations = await this.#toSourceFileLocation(cssModel, selector);
     if (!locations) {
       return Lit.nothing;
     }
@@ -131,7 +130,7 @@ export class SlowCSSSelector extends
               insight: this,
               headers: [`${i18nString(UIStrings.topSelectorElapsedTime)}: ${time(Trace.Types.Timing.Micro(selector['elapsed (us)']))}`],
               rows: [{
-                values: [html`${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`]}],
+                values: [html`${selector.selector} ${Lit.Directives.until(this.#getSelectorLinks(cssModel, selector))}`]}],
             }})}
         </div>
       `);
@@ -148,7 +147,7 @@ export class SlowCSSSelector extends
               insight: this,
               headers: [`${i18nString(UIStrings.topSelectorMatchAttempt)}: ${selector['match_attempts']}`],
               rows: [{
-                  values: [html`${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string],
+                  values: [html`${selector.selector} ${Lit.Directives.until(this.#getSelectorLinks(cssModel, selector))}` as unknown as string],
               }],
             }})}
         </div>

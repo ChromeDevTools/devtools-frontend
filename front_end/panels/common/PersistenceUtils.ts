@@ -84,11 +84,11 @@ export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components
     implements Components.Linkifier.LinkDecorator {
   constructor(persistence: Persistence.Persistence.PersistenceImpl) {
     super();
-    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
-    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.#bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.#bindingChanged, this);
   }
 
-  private bindingChanged(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>): void {
+  #bindingChanged(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>): void {
     const binding = event.data;
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED, binding.network);
   }

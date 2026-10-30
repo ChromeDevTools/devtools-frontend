@@ -39,14 +39,14 @@ export class LinkSwatch extends HTMLElement {
       data.onLinkActivate(linkText);
       event.consume(true);
     };
-    this.render(data);
+    this.#render(data);
   }
 
   get linkElement(): HTMLElement|undefined {
     return this.#linkElement;
   }
 
-  private render(data: LinkSwatchRenderData): void {
+  #render(data: LinkSwatchRenderData): void {
     const {isDefined, text, jslogContext, tooltip} = data;
     const classes = classMap({
       'link-style': true,

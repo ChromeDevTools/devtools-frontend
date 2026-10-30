@@ -110,7 +110,7 @@ export class PerformanceProfilePlugin extends Plugin {
     return uiSourceCode.contentType().hasScripts();
   }
 
-  private getLineMap(): Workspace.UISourceCode.LineColumnProfileMap|undefined {
+  #getLineMap(): Workspace.UISourceCode.LineColumnProfileMap|undefined {
     const uiSourceCodeProfileMap =
         this.uiSourceCode.getDecorationData(Workspace.UISourceCode.DecoratorType.PERFORMANCE);
     if (!uiSourceCodeProfileMap) {
@@ -124,7 +124,7 @@ export class PerformanceProfilePlugin extends Plugin {
   }
 
   override editorExtension(): CodeMirror.Extension {
-    const map = this.getLineMap();
+    const map = this.#getLineMap();
     return this.compartment.of(
         !map ? [] : [this.field.init(state => markersFromProfileData(map, state)), this.gutter, theme]);
   }
@@ -132,7 +132,7 @@ export class PerformanceProfilePlugin extends Plugin {
   override decorationChanged(type: Workspace.UISourceCode.DecoratorType,
                              editor: TextEditor.TextEditor.TextEditor): void {
     const installed = Boolean(editor.state.field(this.field, false));
-    const map = this.getLineMap();
+    const map = this.#getLineMap();
     if (!map) {
       if (installed) {
         editor.dispatch({effects: this.compartment.reconfigure([])});

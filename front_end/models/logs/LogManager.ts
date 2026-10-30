@@ -46,7 +46,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
 
   modelAdded(logModel: SDK.LogModel.LogModel): void {
     const eventListeners = [];
-    eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.ENTRY_ADDED, this.logEntryAdded, this));
+    eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.ENTRY_ADDED, this.#logEntryAdded, this));
     modelToEventListeners.set(logModel, eventListeners);
   }
 
@@ -57,7 +57,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
     }
   }
 
-  private logEntryAdded(event: Common.EventTarget.EventTargetEvent<SDK.LogModel.EntryAddedEvent>): void {
+  #logEntryAdded(event: Common.EventTarget.EventTargetEvent<SDK.LogModel.EntryAddedEvent>): void {
     const {logModel, entry} = event.data;
     const target = logModel.target();
     const details = {

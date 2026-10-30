@@ -71,7 +71,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
     this.#selectedModel = currentTarget?.model(SDK.DebuggerModel.DebuggerModel) ?? null;
 
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.targetFlavorChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.#targetFlavorChanged, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
@@ -140,7 +140,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     this.requestUpdate();
   }
 
-  private targetFlavorChanged({data: target}: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+  #targetFlavorChanged({data: target}: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     this.#selectedModel = target.model(SDK.DebuggerModel.DebuggerModel);
     this.requestUpdate();
   }

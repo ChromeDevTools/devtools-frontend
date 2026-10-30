@@ -58,11 +58,11 @@ export class ProfileTreeModel {
 
   initialize(root: ProfileNode): void {
     this.root = root;
-    this.assignDepthsAndParents();
-    this.total = this.calculateTotals(this.root);
+    this.#assignDepthsAndParents();
+    this.total = this.#calculateTotals(this.root);
   }
 
-  private assignDepthsAndParents(): void {
+  #assignDepthsAndParents(): void {
     const root = this.root;
     root.depth = -1;
     root.parent = null;
@@ -83,7 +83,7 @@ export class ProfileTreeModel {
     }
   }
 
-  private calculateTotals(root: ProfileNode): number {
+  #calculateTotals(root: ProfileNode): number {
     const nodesToTraverse = [root];
     const dfsList = [];
     while (nodesToTraverse.length) {

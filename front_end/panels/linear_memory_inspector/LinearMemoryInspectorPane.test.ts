@@ -38,9 +38,16 @@ class Uint8Wrapper implements LinearMemoryInspector.LinearMemoryInspectorControl
 }
 
 describeWithEnvironment('LinearMemoryInspectorPane', () => {
-  it('creates placeholder element for empty state', () => {
+  it('renders placeholder element for empty state', async () => {
     const instance = new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane();
-    const placeholder = instance.createPlaceholder();
+    renderElementIntoDOM(instance);
+    await UI.Widget.Widget.allUpdatesComplete;
+
+    const tabbedPane =
+        instance.contentElement.querySelector<UI.TabbedPane.TabbedPaneElement>('devtools-tabbed-pane')?.getWidget();
+    assert.exists(tabbedPane);
+    const placeholder = tabbedPane.contentElement.querySelector('.empty-state');
+    assert.instanceOf(placeholder, HTMLElement);
 
     const header = placeholder.querySelector('.empty-state-header');
     assert.instanceOf(header, HTMLElement);
@@ -57,7 +64,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
 
     const arrayWrapper = new Uint8Wrapper(createArray());
     instance.create('script-id', 'Test Title', arrayWrapper, 10);
-    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
     const tabbedPane = instance.contentElement.querySelector('.tabbed-pane');
     assert.exists(tabbedPane);
@@ -72,11 +79,11 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     const arrayWrapper = new Uint8Wrapper(createArray());
     const tabId = 'script-id';
     instance.create(tabId, 'Test Title', arrayWrapper, 10);
-    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
     instance.reveal(tabId, 20);
     instance.refreshView(tabId);
-    await UI.Widget.Widget.allUpdatesComplete;
+    await doubleRaf();
 
     const viewer = instance.contentElement.querySelector('.viewer-widget');
     assert.instanceOf(viewer, HTMLElement);
@@ -95,6 +102,124 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     instance.close(tabId);
     const closedTabId = await closedPromise;
     assert.strictEqual(closedTabId, tabId);
+  });
+
+  it('populates view input when creating a tab', async () => {
+    const view = createViewFunctionStub(
+        LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane,
+    );
+    const instance = new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane(
+        undefined,
+        view,
+    );
+    renderElementIntoDOM(instance);
+    const initialInput = await view.nextInput;
+    assert.deepEqual(initialInput.tabs, []);
+    assert.isUndefined(initialInput.selectedTabId);
+
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    instance.create('tab-1', 'Tab 1', arrayWrapper, 10);
+    const createdInput = await view.nextInput;
+    assert.deepEqual(createdInput.tabs, [
+      {
+        tabId: 'tab-1',
+        title: 'Tab 1',
+        memoryWrapper: arrayWrapper,
+        address: 10,
+        refreshSequence: 0,
+      },
+    ]);
+    assert.strictEqual(createdInput.selectedTabId, 'tab-1');
+  });
+
+  it('updates view input when revealing a tab', async () => {
+    const view = createViewFunctionStub(
+        LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane,
+    );
+    const instance = new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane(
+        undefined,
+        view,
+    );
+    renderElementIntoDOM(instance);
+    await view.nextInput;
+
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    instance.create('tab-1', 'Tab 1', arrayWrapper, 10);
+    await view.nextInput;
+
+    instance.reveal('tab-1', 25);
+    const revealedInput = await view.nextInput;
+    assert.strictEqual(revealedInput.tabs[0].address, 25);
+    assert.strictEqual(revealedInput.tabs[0].refreshSequence, 1);
+  });
+
+  it('updates tab address via onAddressChanged callback', async () => {
+    const view = createViewFunctionStub(
+        LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane,
+    );
+    const instance = new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane(
+        undefined,
+        view,
+    );
+    renderElementIntoDOM(instance);
+    await view.nextInput;
+
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    instance.create('tab-1', 'Tab 1', arrayWrapper, 10);
+    const createdInput = await view.nextInput;
+
+    createdInput.onAddressChanged('tab-1', 42);
+    const addressChangedInput = await view.nextInput;
+    assert.strictEqual(addressChangedInput.tabs[0].address, 42);
+  });
+
+  it('selects tab via onTabSelected callback', async () => {
+    const view = createViewFunctionStub(
+        LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane,
+    );
+    const instance = new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane(
+        undefined,
+        view,
+    );
+    renderElementIntoDOM(instance);
+    await view.nextInput;
+
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    instance.create('tab-1', 'Tab 1', arrayWrapper, 0);
+    await view.nextInput;
+    instance.create('tab-2', 'Tab 2', arrayWrapper, 10);
+    const twoTabsInput = await view.nextInput;
+    assert.strictEqual(twoTabsInput.selectedTabId, 'tab-2');
+
+    twoTabsInput.onTabSelected('tab-1');
+    const selectedInput = await view.nextInput;
+    assert.strictEqual(selectedInput.selectedTabId, 'tab-1');
+  });
+
+  it('closes tab via onTabClosed callback', async () => {
+    const view = createViewFunctionStub(
+        LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane,
+    );
+    const instance = new LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane(
+        undefined,
+        view,
+    );
+    renderElementIntoDOM(instance);
+    await view.nextInput;
+
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    instance.create('tab-1', 'Tab 1', arrayWrapper, 0);
+    await view.nextInput;
+    instance.create('tab-2', 'Tab 2', arrayWrapper, 10);
+    const twoTabsInput = await view.nextInput;
+
+    const closedPromise = instance.once(LinearMemoryInspector.LinearMemoryInspectorPane.Events.VIEW_CLOSED);
+    twoTabsInput.onTabClosed('tab-2');
+    const [closedTabId, afterCloseInput] = await Promise.all([closedPromise, view.nextInput]);
+    assert.strictEqual(closedTabId, 'tab-2');
+    assert.lengthOf(afterCloseInput.tabs, 1);
+    assert.strictEqual(afterCloseInput.tabs[0].tabId, 'tab-1');
+    assert.strictEqual(afterCloseInput.selectedTabId, 'tab-1');
   });
 
   it('throws when creating or revealing a tab with an out-of-bounds address', () => {

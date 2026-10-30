@@ -42,6 +42,7 @@ devtools_ui_module("settings") {
     "../../models/workspace:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",
+    "../../ui/components/lists:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/helpers:bundle",
     "../../ui/i18n:bundle",

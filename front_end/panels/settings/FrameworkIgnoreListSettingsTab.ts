@@ -1,21 +1,25 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../ui/components/lists/lists.js';
 import '../../ui/kit/kit.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import type * as Lists from '../../ui/components/lists/lists.js';
 import * as UIHelpers from '../../ui/helpers/helpers.js';
-import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.js';
 import settingsScreenStyles from './settingsScreen.css.js';
+
+const {bindToSetting} = UI.UIUtils;
 
 const UIStrings = {
   /**
@@ -89,240 +93,414 @@ const UIStrings = {
    * @description Text that is usually a hyperlink to more documentation.
    */
   learnMore: 'Learn more',
+  /**
+   * @description Button text to save changes when editing an item in Framework Ignore List settings tab.
+   */
+  save: 'Save',
+  /**
+   * @description Button text to add a new item in Framework Ignore List settings tab.
+   */
+  add: 'Add',
+  /**
+   * @description Button text to cancel editing an item in Framework Ignore List settings tab.
+   */
+  cancel: 'Cancel',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/FrameworkIgnoreListSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
-    UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem> {
-  private readonly list: UI.ListWidget.ListWidget<Common.Settings.RegExpSettingItem>;
-  private readonly setting: Common.Settings.RegExpSetting;
-  private editor?: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>;
+export interface ViewInput {
+  enabledSetting: Common.Settings.Setting<boolean>;
+  skipContentScriptsSetting: Common.Settings.Setting<boolean>;
+  automaticallyIgnoreListSetting: Common.Settings.Setting<boolean>;
+  skipAnonymousScriptsSetting: Common.Settings.Setting<boolean>;
+  enabled: boolean;
+  patterns: Common.Settings.RegExpSettingItem[];
+  editingIndex: number|null;
+  editingValue: string;
+  validationError: Common.UIString.LocalizedString|null;
+  showValidationError: boolean;
+  onLearnMoreClick: () => void;
+  onAddPatternClick: () => void;
+  onTogglePattern: (index: number, checked: boolean) => void;
+  onBeginEdit: (index: number) => void;
+  onRemovePattern: (index: number) => void;
+  onEditorInput: (value: string) => void;
+  onCommitEdit: () => void;
+  onCancelEdit: () => void;
+}
 
-  constructor() {
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+
+function renderRuleItem(item: Common.Settings.RegExpSettingItem, index: number, enabled: boolean,
+                        onTogglePattern: (index: number, checked: boolean) => void): LitTemplate {
+  const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern});
+  // clang-format off
+  return html`
+    <div class="ignore-list-item">
+      <devtools-checkbox
+          .checked=${!item.disabled}
+          .disabled=${!enabled}
+          title=${helpText}
+          aria-label=${helpText}
+          jslogcontext="settings.ignore-list-pattern"
+          @change=${(e: Event) => onTogglePattern(index, (e.target as UI.UIUtils.CheckboxLabel).checked)}>
+        ${item.pattern}
+      </devtools-checkbox>
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderEditor(input: ViewInput): LitTemplate {
+  const isNew = input.editingIndex === input.patterns.length;
+  const isInvalid = input.showValidationError && input.validationError !== null;
+  // clang-format off
+  return html`
+    <div
+        class="editor-container"
+        jslog=${VisualLogging.pane('editor').track({resize: true})}
+        @keydown=${(e: KeyboardEvent) => {
+          if (Platform.KeyboardUtilities.isEscKey(e)) {
+            e.consume(true);
+            input.onCancelEdit();
+          }
+        }}>
+      <div
+          class="editor-content"
+          @keydown=${(e: KeyboardEvent) => {
+            if (e.key === 'Enter' && !e.isComposing) {
+              e.consume(true);
+              input.onCommitEdit();
+            }
+          }}>
+        <div class="ignore-list-edit-row">
+          <div class="ignore-list-pattern">${i18nString(UIStrings.pattern)}</div>
+        </div>
+        <div class="ignore-list-edit-row">
+          <div class="ignore-list-pattern">
+            <input
+                class=${Directives.classMap({
+                  'harmony-input': true,
+                  'error-input': isInvalid,
+                })}
+                type="text"
+                autofocus
+                placeholder="/framework\\.js$"
+                aria-label=${i18nString(UIStrings.pattern)}
+                aria-invalid=${isInvalid ? 'true' : 'false'}
+                .value=${Directives.live(input.editingValue)}
+                jslog=${VisualLogging.textField().track({change: true, keydown: 'Enter'}).context('pattern')}
+                @input=${(e: Event) => input.onEditorInput((e.target as HTMLInputElement).value)}>
+          </div>
+        </div>
+      </div>
+      <div class="editor-buttons">
+        <devtools-button
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            .jslogContext=${'cancel'}
+            jslog=${VisualLogging.action('cancel').track({click: true})}
+            @click=${input.onCancelEdit}>
+          ${i18nString(UIStrings.cancel)}
+        </devtools-button>
+        <devtools-button
+            .variant=${Buttons.Button.Variant.PRIMARY}
+            .jslogContext=${'commit'}
+            .disabled=${input.validationError !== null}
+            @click=${input.onCommitEdit}>
+          ${isNew ? i18nString(UIStrings.add) : i18nString(UIStrings.save)}
+        </devtools-button>
+      </div>
+      <div class="list-widget-input-validation-error" role="alert" aria-live="polite">
+        ${isInvalid && input.validationError ? input.validationError : nothing}
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const editingIndex = input.editingIndex;
+  const patternsBefore = editingIndex !== null ? input.patterns.slice(0, editingIndex) : input.patterns;
+  const patternsAfter = editingIndex !== null ? input.patterns.slice(editingIndex + 1) : [];
+
+  // clang-format off
+  render(html`
+    <div class="settings-card-container-wrapper">
+      <div class="settings-card-container ignore-list-settings">
+        <devtools-card .heading=${i18nString(UIStrings.frameworkIgnoreList)}>
+          <span>${i18nString(UIStrings.ignoreListingDescription)}</span>
+          <div class="enable-ignore-listing" title=${i18nString(UIStrings.enableIgnoreListingTooltip)}>
+            <devtools-checkbox
+                name=${i18nString(UIStrings.ignoreListing)}
+                title=${i18nString(UIStrings.ignoreListing)}
+                ${bindToSetting(input.enabledSetting)}>
+              ${i18nString(UIStrings.ignoreListing)}
+            </devtools-checkbox>
+          </div>
+        </devtools-card>
+        <devtools-card class="ignore-list-options" .heading=${i18nString(UIStrings.generalExclusionRules)}>
+          <div class="ignore-list-option-group general-exclusion-group" role="group">
+            <div class="ignore-list-option">
+              <devtools-checkbox
+                  name=${i18nString(UIStrings.ignoreListContentScripts)}
+                  title=${i18nString(UIStrings.ignoreListContentScripts)}
+                  ?disabled=${!input.enabled}
+                  ${bindToSetting(input.skipContentScriptsSetting)}>
+                ${i18nString(UIStrings.ignoreListContentScripts)}
+              </devtools-checkbox>
+            </div>
+            <div class="ignore-list-option">
+              <devtools-checkbox
+                  name=${i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts)}
+                  title=${i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts)}
+                  ?disabled=${!input.enabled}
+                  ${bindToSetting(input.automaticallyIgnoreListSetting)}>
+                ${i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts)}
+              </devtools-checkbox>
+              <devtools-button
+                  .iconName=${'help'}
+                  .variant=${Buttons.Button.Variant.ICON}
+                  .size=${Buttons.Button.Size.SMALL}
+                  .jslogContext=${'learn-more'}
+                  .title=${i18nString(UIStrings.learnMore)}
+                  .disabled=${!input.enabled}
+                  @click=${input.onLearnMoreClick}>
+              </devtools-button>
+            </div>
+            <div class="ignore-list-option">
+              <devtools-checkbox
+                  name=${i18nString(UIStrings.ignoreListAnonymousScripts)}
+                  title=${i18nString(UIStrings.ignoreListAnonymousScripts)}
+                  ?disabled=${!input.enabled}
+                  ${bindToSetting(input.skipAnonymousScriptsSetting)}>
+                ${i18nString(UIStrings.ignoreListAnonymousScripts)}
+              </devtools-checkbox>
+            </div>
+          </div>
+        </devtools-card>
+        <devtools-card class="ignore-list-options" .heading=${i18nString(UIStrings.customExclusionRules)}>
+          <div class="ignore-list-option-group custom-exclusion-group" role="group">
+            ${patternsBefore.length > 0 ? html`
+              <devtools-list
+                  class="ignore-list"
+                  .editable=${input.enabled}
+                  .deletable=${input.enabled}
+                  @edit=${(e: Lists.List.ItemEditEvent) => input.onBeginEdit(e.detail.index)}
+                  @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemovePattern(e.detail.index)}>
+                ${Directives.repeat(
+                    patternsBefore,
+                    item => item.pattern,
+                    (item, index) => renderRuleItem(item, index, input.enabled, input.onTogglePattern))}
+              </devtools-list>
+            ` : nothing}
+            ${editingIndex !== null ? renderEditor(input) : nothing}
+            ${editingIndex !== null && patternsAfter.length > 0 ? html`
+              <devtools-list
+                  class="ignore-list"
+                  .editable=${input.enabled}
+                  .deletable=${input.enabled}
+                  @edit=${(e: Lists.List.ItemEditEvent) => input.onBeginEdit(editingIndex + 1 + e.detail.index)}
+                  @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemovePattern(editingIndex + 1 + e.detail.index)}>
+                ${Directives.repeat(
+                    patternsAfter,
+                    item => item.pattern,
+                    (item, index) => renderRuleItem(item, editingIndex + 1 + index, input.enabled, input.onTogglePattern))}
+              </devtools-list>
+            ` : nothing}
+            <devtools-button
+                class="add-button"
+                .variant=${Buttons.Button.Variant.OUTLINED}
+                .jslogContext=${'settings.add-ignore-list-pattern'}
+                aria-label=${i18nString(UIStrings.addFilenamePattern)}
+                .disabled=${!input.enabled}
+                @click=${input.onAddPatternClick}>
+              ${i18nString(UIStrings.addPattern)}
+            </devtools-button>
+          </div>
+        </devtools-card>
+      </div>
+    </div>
+  `, target, {container: {attributes: {jslog: `${VisualLogging.pane('blackbox')}`}}});
+  // clang-format on
+};
+
+export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
+  private readonly setting: Common.Settings.RegExpSetting;
+  private readonly enabledSetting: Common.Settings.Setting<boolean>;
+  private readonly skipContentScriptsSetting: Common.Settings.Setting<boolean>;
+  private readonly automaticallyIgnoreListSetting: Common.Settings.Setting<boolean>;
+  private readonly skipAnonymousScriptsSetting: Common.Settings.Setting<boolean>;
+  readonly #view: View;
+  #editingIndex: number|null = null;
+  #editingValue = '';
+  #showValidationError = false;
+
+  constructor(view: View = DEFAULT_VIEW) {
     super({
-      jslog: `${VisualLogging.pane('blackbox')}`,
       useShadowDom: true,
     });
+    this.#view = view;
     this.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles, settingsScreenStyles);
 
-    const settingsContent =
-        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-    settingsContent.classList.add('settings-card-container', 'ignore-list-settings');
+    const settings = Common.Settings.Settings.instance();
+    this.enabledSetting = settings.resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor);
+    this.skipContentScriptsSetting = settings.resolve(Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor);
+    this.automaticallyIgnoreListSetting =
+        settings.resolve(Workspace.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor);
+    this.skipAnonymousScriptsSetting =
+        settings.resolve(Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor);
 
-    const ignoreListingDescription = document.createElement('span');
-    ignoreListingDescription.textContent = i18nString(UIStrings.ignoreListingDescription);
-    const enabledSetting =
-        Common.Settings.Settings.instance().resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor);
-    const enableIgnoreListing = this.contentElement.createChild('div', 'enable-ignore-listing');
-    enableIgnoreListing.appendChild(
-        SettingsUI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.ignoreListing), enabledSetting));
-    UI.Tooltip.Tooltip.install(enableIgnoreListing, i18nString(UIStrings.enableIgnoreListingTooltip));
+    this.setting = settings.resolve(Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as
+        Common.Settings.RegExpSetting;
+    this.setting.addChangeListener(this.#settingUpdated, this);
 
-    const enableIgnoreListingCard = settingsContent.createChild('devtools-card');
-    enableIgnoreListingCard.heading = i18nString(UIStrings.frameworkIgnoreList);
-    enableIgnoreListingCard.append(ignoreListingDescription, enableIgnoreListing);
+    this.enabledSetting.addChangeListener(this.#settingUpdated, this);
+    this.performUpdate();
+  }
 
-    const generalExclusionGroup = this.createSettingGroup();
-    generalExclusionGroup.classList.add('general-exclusion-group');
-    const ignoreListContentScripts = generalExclusionGroup.createChild('div', 'ignore-list-option')
-                                         .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
-                                             i18nString(UIStrings.ignoreListContentScripts),
-                                             Common.Settings.Settings.instance().resolve(
-                                                 Workspace.IgnoreListManager.skipContentScriptsSettingDescriptor)));
+  override performUpdate(): void {
+    const patterns = this.setting.getAsArray();
+    const validationError =
+        this.#editingIndex !== null ? this.#validatePattern(this.#editingValue, this.#editingIndex) : null;
 
-    const automaticallyIgnoreListContainer = generalExclusionGroup.createChild('div', 'ignore-list-option');
-    const automaticallyIgnoreList =
-        automaticallyIgnoreListContainer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
-            i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
-            Common.Settings.Settings.instance().resolve(
-                Workspace.IgnoreListManager.automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor)));
-
-    const automaticallyIgnoreLinkButton = new Buttons.Button.Button();
-    automaticallyIgnoreLinkButton.data = {
-      iconName: 'help',
-      variant: Buttons.Button.Variant.ICON,
-      size: Buttons.Button.Size.SMALL,
-      jslogContext: 'learn-more',
-      title: i18nString(UIStrings.learnMore),
-    };
-    automaticallyIgnoreLinkButton.addEventListener(
-        'click',
-        () => UIHelpers.openInNewTab(
-            'https://developer.chrome.com/docs/devtools/settings/ignore-list/#skip-third-party'));
-    automaticallyIgnoreListContainer.appendChild(automaticallyIgnoreLinkButton);
-
-    const ignoreListAnonymousScripts = generalExclusionGroup.createChild('div', 'ignore-list-option')
-                                           .appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
-                                               i18nString(UIStrings.ignoreListAnonymousScripts),
-                                               Common.Settings.Settings.instance().resolve(
-                                                   Workspace.IgnoreListManager.skipAnonymousScriptsSettingDescriptor)));
-
-    const generalExclusionGroupCard = settingsContent.createChild('devtools-card', 'ignore-list-options');
-    generalExclusionGroupCard.heading = i18nString(UIStrings.generalExclusionRules);
-    generalExclusionGroupCard.append(generalExclusionGroup);
-
-    const customExclusionGroup = this.createSettingGroup();
-    customExclusionGroup.classList.add('custom-exclusion-group');
-    const customExclusionGroupCard = settingsContent.createChild('devtools-card', 'ignore-list-options');
-    customExclusionGroupCard.heading = i18nString(UIStrings.customExclusionRules);
-    customExclusionGroupCard.append(customExclusionGroup);
-
-    this.list = new UI.ListWidget.ListWidget(this);
-    this.list.element.classList.add('ignore-list');
-    this.list.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles);
-
-    const placeholder = document.createElement('div');
-    placeholder.classList.add('ignore-list-empty');
-    this.list.setEmptyPlaceholder(placeholder);
-    this.list.show(customExclusionGroup);
-    const addPatternButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this),
-        {className: 'add-button', jslogContext: 'settings.add-ignore-list-pattern'});
-    UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
-    customExclusionGroup.appendChild(addPatternButton);
-    this.setting =
-        Common.Settings.Settings.instance().resolve(
-            Workspace.IgnoreListManager.skipStackFramesPatternSettingDescriptor) as Common.Settings.RegExpSetting;
-    this.setting.addChangeListener(this.settingUpdated, this);
-
-    const enabledChanged = (): void => {
-      const enabled = enabledSetting.get();
-      ignoreListContentScripts.disabled = !enabled;
-      automaticallyIgnoreList.disabled = !enabled;
-      automaticallyIgnoreLinkButton.disabled = !enabled;
-      ignoreListAnonymousScripts.disabled = !enabled;
-      addPatternButton.disabled = !enabled;
-      this.settingUpdated();
-    };
-
-    enabledSetting.addChangeListener(enabledChanged);
-    enabledChanged();
+    this.#view(
+        {
+          enabledSetting: this.enabledSetting,
+          skipContentScriptsSetting: this.skipContentScriptsSetting,
+          automaticallyIgnoreListSetting: this.automaticallyIgnoreListSetting,
+          skipAnonymousScriptsSetting: this.skipAnonymousScriptsSetting,
+          enabled: this.enabledSetting.get(),
+          patterns,
+          editingIndex: this.#editingIndex,
+          editingValue: this.#editingValue,
+          validationError,
+          showValidationError: this.#showValidationError,
+          onLearnMoreClick: () => {
+            UIHelpers.openInNewTab('https://developer.chrome.com/docs/devtools/settings/ignore-list/#skip-third-party');
+          },
+          onAddPatternClick: this.#addButtonClicked.bind(this),
+          onTogglePattern: this.#togglePattern.bind(this),
+          onBeginEdit: this.#beginEdit.bind(this),
+          onRemovePattern: this.#removePattern.bind(this),
+          onEditorInput: this.#onEditorInput.bind(this),
+          onCommitEdit: this.#commitEdit.bind(this),
+          onCancelEdit: this.#cancelEdit.bind(this),
+        },
+        undefined,
+        this.contentElement,
+    );
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.settingUpdated();
+    this.#cancelEdit();
   }
 
-  private settingUpdated(): void {
-    const editable = Common.Settings.Settings.instance()
-                         .resolve(Workspace.IgnoreListManager.enableIgnoreListingSettingDescriptor)
-                         .get();
-    this.list.clear();
+  #settingUpdated(): void {
+    this.#editingIndex = null;
+    this.#editingValue = '';
+    this.#showValidationError = false;
+    this.performUpdate();
+  }
+
+  #addButtonClicked(): void {
+    this.#editingIndex = this.setting.getAsArray().length;
+    this.#editingValue = '';
+    this.#showValidationError = false;
+    this.performUpdate();
+  }
+
+  #beginEdit(index: number): void {
     const patterns = this.setting.getAsArray();
-    for (let i = 0; i < patterns.length; ++i) {
-      this.list.appendItem(patterns[i], editable);
+    if (index < 0 || index >= patterns.length) {
+      return;
+    }
+    this.#editingIndex = index;
+    this.#editingValue = patterns[index].pattern;
+    this.#showValidationError = false;
+    this.performUpdate();
+  }
+
+  #onEditorInput(value: string): void {
+    this.#editingValue = value;
+    this.#showValidationError = true;
+    this.performUpdate();
+  }
+
+  #cancelEdit(): void {
+    this.#editingIndex = null;
+    this.#editingValue = '';
+    this.#showValidationError = false;
+    this.performUpdate();
+  }
+
+  #commitEdit(): void {
+    if (this.#editingIndex === null) {
+      return;
+    }
+    const validationError = this.#validatePattern(this.#editingValue, this.#editingIndex);
+    if (validationError !== null) {
+      this.#showValidationError = true;
+      this.performUpdate();
+      return;
+    }
+
+    const pattern = this.#editingValue.trim();
+    const list = this.setting.getAsArray();
+    if (this.#editingIndex === list.length) {
+      list.push({pattern, disabled: false});
+    } else if (list[this.#editingIndex]) {
+      list[this.#editingIndex].pattern = pattern;
+    }
+    this.#editingIndex = null;
+    this.#editingValue = '';
+    this.#showValidationError = false;
+    this.setting.setAsArray(list);
+  }
+
+  #togglePattern(index: number, checked: boolean): void {
+    const patterns = this.setting.getAsArray();
+    const item = patterns[index];
+    if (!item) {
+      return;
+    }
+    const disabled = !checked;
+    if (item.disabled !== disabled) {
+      item.disabled = disabled;
+      item.disabledForUrl = undefined;
+      this.setting.setAsArray(patterns);
     }
   }
 
-  private addButtonClicked(): void {
-    this.list.addNewItem(this.setting.getAsArray().length, {pattern: '', disabled: false});
-  }
-
-  private createSettingGroup(): HTMLElement {
-    const group = document.createElement('div');
-    group.classList.add('ignore-list-option-group');
-    UI.ARIAUtils.markAsGroup(group);
-    return group;
-  }
-
-  renderItem(item: Common.Settings.RegExpSettingItem, editable: boolean): Element {
-    const element = document.createElement('div');
-
-    const listSetting = this.setting;
-
-    const checkbox =
-        UI.UIUtils.CheckboxLabel.createWithStringLiteral(item.pattern, !item.disabled, 'settings.ignore-list-pattern');
-    const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern});
-    UI.Tooltip.Tooltip.install(checkbox, helpText);
-    checkbox.ariaLabel = helpText;
-    checkbox.addEventListener('change', inputChanged, false);
-    checkbox.disabled = !editable;
-    element.appendChild(checkbox);
-    element.classList.add('ignore-list-item');
-
-    return element;
-
-    function inputChanged(): void {
-      const disabled = !checkbox.checked;
-      if (item.disabled !== disabled) {
-        item.disabled = disabled;
-        item.disabledForUrl = undefined;
-        // Send changed event
-        listSetting.setAsArray(listSetting.getAsArray());
-      }
-    }
-  }
-
-  removeItemRequested(_item: Common.Settings.RegExpSettingItem, index: number): void {
+  #removePattern(index: number): void {
     const patterns = this.setting.getAsArray();
     patterns.splice(index, 1);
     this.setting.setAsArray(patterns);
   }
 
-  commitEdit(
-      item: Common.Settings.RegExpSettingItem, editor: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>,
-      isNew: boolean): void {
-    item.pattern = editor.control('pattern').value.trim();
+  #validatePattern(value: string, index: number): Common.UIString.LocalizedString|null {
+    const pattern = value.trim();
+    const patterns = this.setting.getAsArray();
 
-    const list = this.setting.getAsArray();
-    if (isNew) {
-      list.push(item);
-    }
-    this.setting.setAsArray(list);
-  }
-
-  beginEdit(item: Common.Settings.RegExpSettingItem): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
-    const editor = this.createEditor();
-    editor.control('pattern').value = item.pattern;
-    return editor;
-  }
-
-  private createEditor(): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
-    if (this.editor) {
-      return this.editor;
+    if (!pattern.length) {
+      return i18nString(UIStrings.patternCannotBeEmpty);
     }
 
-    const editor = new UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>();
-    this.editor = editor;
-    const content = editor.contentElement();
-
-    const titles = content.createChild('div', 'ignore-list-edit-row');
-    titles.createChild('div', 'ignore-list-pattern').textContent = i18nString(UIStrings.pattern);
-
-    const fields = content.createChild('div', 'ignore-list-edit-row');
-    const pattern = editor.createInput('pattern', 'text', '/framework\\.js$', patternValidator.bind(this));
-    UI.ARIAUtils.setLabel(pattern, i18nString(UIStrings.pattern));
-    fields.createChild('div', 'ignore-list-pattern').appendChild(pattern);
-
-    return editor;
-
-    function patternValidator(
-        this: FrameworkIgnoreListSettingsTab, _item: Common.Settings.RegExpSettingItem, index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      const pattern = input.value.trim();
-      const patterns = this.setting.getAsArray();
-
-      if (!pattern.length) {
-        return {valid: false, errorMessage: i18nString(UIStrings.patternCannotBeEmpty)};
+    for (let i = 0; i < patterns.length; ++i) {
+      if (i !== index && patterns[i].pattern === pattern) {
+        return i18nString(UIStrings.patternAlreadyExists);
       }
-
-      for (let i = 0; i < patterns.length; ++i) {
-        if (i !== index && patterns[i].pattern === pattern) {
-          return {valid: false, errorMessage: i18nString(UIStrings.patternAlreadyExists)};
-        }
-      }
-
-      let regex;
-      try {
-        regex = new RegExp(pattern);
-      } catch {
-      }
-      if (!regex) {
-        return {valid: false, errorMessage: i18nString(UIStrings.patternMustBeAValidRegular)};
-      }
-      return {valid: true};
     }
+
+    let regex;
+    try {
+      regex = new RegExp(pattern);
+    } catch {
+    }
+    if (!regex) {
+      return i18nString(UIStrings.patternMustBeAValidRegular);
+    }
+    return null;
   }
 }

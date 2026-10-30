@@ -77,18 +77,47 @@
   text-align: inherit;
 }
 
-.list:has(.ignore-list-empty),
-.list:has(.ignore-list-edit-row),
-.list:has(.ignore-list-item) {
-  border: none;
-}
-
-.editor-container:has(.ignore-list-edit-row) {
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: none;
   background: var(--sys-color-surface1);
   border-radius: 10px;
+  overflow: hidden;
 }
 
-.ignore-list.list-editing ~ .add-button {
+.editor-content {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.editor-content input {
+  margin-right: 10px;
+}
+
+.editor-content input.error-input {
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+.editor-buttons {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
+  gap: var(--sys-size-6);
+}
+
+.list-widget-input-validation-error {
+  color: var(--sys-color-error);
+  margin: 0 5px;
+}
+
+.editor-container ~ .add-button {
   display: none;
 }
 

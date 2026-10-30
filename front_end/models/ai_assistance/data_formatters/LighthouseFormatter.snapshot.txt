@@ -186,3 +186,16 @@ The following audits in this category have a score below 90 and may need attenti
   * Warning: First warning message
   * Warning: Second warning spanning two lines
 === end content
+
+Title: LighthouseFormatter includes gatherMode and fraction-scored categories in summary
+Content:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2025-01-01T00:00:00.000Z
+Lighthouse Version: 12.0.0
+Mode: navigation
+
+## Category Scores
+- Performance: 80
+- Agentic Browsing: 1/2 audits passed
+=== end content

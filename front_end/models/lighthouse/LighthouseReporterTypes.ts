@@ -46,6 +46,7 @@ export interface CategoryJSON {
   title: string;
   id: string;
   score: number|null;
+  categoryScoreDisplayMode?: 'fraction';
   description?: string;
   manualDescription: string;
   auditRefs: AuditJSON[];

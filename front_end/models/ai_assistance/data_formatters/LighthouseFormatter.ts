@@ -6,6 +6,11 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
 
 import {bytes, millis} from './UnitFormatters.js';
 
+// Mirrors `Util.PASS_THRESHOLD` in `front_end/third_party/lighthouse/report/bundle.js`
+// (defined in Lighthouse's `report/renderer/util.js`). The pre-built report bundle does
+// not export `Util`, so this threshold is defined locally.
+const PASS_THRESHOLD = 0.9;
+
 /**
  * Category argument for Lighthouse tools, accepting a specific category ID or `'all'`
  * to target a full report across all standard categories.
@@ -26,13 +31,78 @@ export class LighthouseFormatter {
     lines.push(`URL: ${report.finalDisplayedUrl}`);
     lines.push(`Fetch Time: ${report.fetchTime}`);
     lines.push(`Lighthouse Version: ${report.lighthouseVersion}`);
+    if (report.gatherMode) {
+      lines.push(`Mode: ${report.gatherMode}`);
+    }
     lines.push('');
     lines.push('## Category Scores');
     for (const category of Object.values(report.categories)) {
-      const score = category.score !== null ? Math.round(category.score * 100) : 'n/a';
-      lines.push(`- ${category.title}: ${score}`);
+      lines.push(`- ${category.title}: ${this.#formatCategoryScore(report, category)}`);
     }
     return lines.join('\n');
+  }
+
+  #formatCategoryScore(report: LHModel.ReporterTypes.ReportJSON, category: LHModel.ReporterTypes.CategoryJSON): string
+      |number {
+    if (this.#shouldDisplayAsFraction(report, category)) {
+      const {numPassed, numPassableAudits} = this.#calculateCategoryFraction(report, category);
+      return `${numPassed}/${numPassableAudits} audits passed`;
+    }
+    return category.score !== null ? Math.round(category.score * 100) : 'n/a';
+  }
+
+  /**
+   * Mirrors `Util.shouldDisplayAsFraction` in the Lighthouse report renderer (`bundle.js`).
+   */
+  #shouldDisplayAsFraction(report: LHModel.ReporterTypes.ReportJSON,
+                           category: LHModel.ReporterTypes.CategoryJSON): boolean {
+    return report.gatherMode === 'timespan' || report.gatherMode === 'snapshot' ||
+        category.categoryScoreDisplayMode === 'fraction';
+  }
+
+  /**
+   * Mirrors `Util.calculateCategoryFraction` in the Lighthouse report renderer (`bundle.js`).
+   */
+  #calculateCategoryFraction(report: LHModel.ReporterTypes.ReportJSON, category: LHModel.ReporterTypes.CategoryJSON): {
+    numPassed: number,
+    numPassableAudits: number,
+  } {
+    let numPassableAudits = 0;
+    let numPassed = 0;
+    for (const ref of category.auditRefs) {
+      const audit = report.audits[ref.id];
+      if (!audit) {
+        continue;
+      }
+      const auditPassed = this.#showAsPassed(audit);
+      if (ref.group === 'hidden' || audit.scoreDisplayMode === 'manual' || audit.scoreDisplayMode === 'notApplicable' ||
+          audit.scoreDisplayMode === 'informative') {
+        continue;
+      }
+      numPassableAudits += 1;
+      if (auditPassed) {
+        numPassed += 1;
+      }
+    }
+    return {numPassed, numPassableAudits};
+  }
+
+  /**
+   * Mirrors `Util.showAsPassed` in the Lighthouse report renderer (`bundle.js`).
+   */
+  #showAsPassed(audit: LHModel.ReporterTypes.AuditResultJSON): boolean {
+    switch (audit.scoreDisplayMode) {
+      case 'manual':
+      case 'notApplicable':
+        return true;
+      case 'error':
+      case 'informative':
+        return false;
+      case 'numeric':
+      case 'binary':
+      default:
+        return Number(audit.score) >= PASS_THRESHOLD;
+    }
   }
 
   /**
@@ -139,7 +209,7 @@ export class LighthouseFormatter {
       Array<LHModel.ReporterTypes.AuditResultJSON&{score: number}> {
     return category.auditRefs.map(ref => report.audits[ref.id])
         .filter((audit): audit is LHModel.ReporterTypes.AuditResultJSON&{score: number} =>
-                    Boolean(audit) && audit.score !== null && audit.score < 0.9);
+                    Boolean(audit) && audit.score !== null && audit.score < PASS_THRESHOLD);
   }
 
   #formatScore(score: number): number {

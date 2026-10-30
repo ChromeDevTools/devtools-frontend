@@ -588,4 +588,71 @@ describe('LighthouseFormatter', function() {
     const output = formatter.audits(explanationWarningsReport, 'agentic-browsing');
     snapshotTester.assert(this, output);
   });
+
+  it('includes gatherMode and fraction-scored categories in summary', function() {
+    const fractionReport = {
+      ...report,
+      gatherMode: 'navigation',
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.8,
+          auditRefs: [{id: 'first-audit', score: 0.8, weight: 1}],
+        },
+        'agentic-browsing': {
+          title: 'Agentic Browsing',
+          score: null,
+          categoryScoreDisplayMode: 'fraction',
+          auditRefs: [
+            {id: 'llms-txt', weight: 0},
+            {id: 'agents-md', weight: 0},
+            {id: 'webmcp-registered-tools', weight: 0},
+            {id: 'hidden-audit', weight: 0, group: 'hidden'},
+            {id: 'na-audit', weight: 0},
+          ],
+        },
+      },
+      audits: {
+        ...report.audits,
+        'llms-txt': {
+          id: 'llms-txt',
+          title: 'llms.txt is valid',
+          description: 'Description',
+          score: 0,
+          scoreDisplayMode: 'binary',
+        },
+        'agents-md': {
+          id: 'agents-md',
+          title: 'AGENTS.md is valid',
+          description: 'Description',
+          score: 1,
+          scoreDisplayMode: 'binary',
+        },
+        'webmcp-registered-tools': {
+          id: 'webmcp-registered-tools',
+          title: 'Registered WebMCP tools',
+          description: 'Description',
+          score: 1,
+          scoreDisplayMode: 'informative',
+        },
+        'hidden-audit': {
+          id: 'hidden-audit',
+          title: 'Hidden audit',
+          description: 'Description',
+          score: 0,
+          scoreDisplayMode: 'binary',
+        },
+        'na-audit': {
+          id: 'na-audit',
+          title: 'Not applicable audit',
+          description: 'Description',
+          score: null,
+          scoreDisplayMode: 'notApplicable',
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = formatter.summary(fractionReport);
+    snapshotTester.assert(this, output);
+  });
 });

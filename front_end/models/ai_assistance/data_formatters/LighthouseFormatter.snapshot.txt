@@ -199,3 +199,35 @@ Mode: navigation
 - Performance: 80
 - Agentic Browsing: 1/2 audits passed
 === end content
+
+Title: LighthouseFormatter surfaces errored audits
+Content:
+## Failing audits
+
+### Performance (categoryId: "performance")
+- First Audit: 80
+- Errored Audit: Error (Audit execution timed out)
+
+# Audits for Performance
+
+The following audits in this category have a score below 90 and may need attention:
+- **First Audit**: 80 (1.2s)
+  * Description of first audit
+
+The following audits in this category errored:
+- **Errored Audit**: Error
+  * An audit that threw an error during execution.
+  * Error: Audit execution timed out
+=== end content
+
+Title: LighthouseFormatter excludes hidden audits
+Content:
+## Failing audits
+
+### Performance (categoryId: "performance")
+- No failing audits.
+
+# Audits for Performance
+
+All audits in this category passed (score >= 90).
+=== end content

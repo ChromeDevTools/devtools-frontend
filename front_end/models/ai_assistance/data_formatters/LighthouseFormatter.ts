@@ -117,12 +117,17 @@ export class LighthouseFormatter {
       lines.push('');
       lines.push(`### ${category.title} (categoryId: "${categoryId}")`);
       const failingAudits = this.#findFailingAudits(report, category);
-      if (failingAudits.length === 0) {
+      const erroredAudits = this.#findErroredAudits(report, category);
+      if (failingAudits.length === 0 && erroredAudits.length === 0) {
         lines.push('- No failing audits.');
         continue;
       }
       for (const audit of failingAudits) {
         lines.push(`- ${audit.title}: ${this.#formatScore(audit.score)}`);
+      }
+      for (const audit of erroredAudits) {
+        const errorSuffix = audit.errorMessage ? ` (${this.#toSingleLine(audit.errorMessage)})` : '';
+        lines.push(`- ${audit.title}: Error${errorSuffix}`);
       }
     }
     return lines.join('\n');
@@ -160,17 +165,32 @@ export class LighthouseFormatter {
     lines.push('');
 
     const failingAudits = this.#findFailingAudits(report, category);
+    const erroredAudits = this.#findErroredAudits(report, category);
 
-    if (failingAudits.length === 0) {
+    if (failingAudits.length === 0 && erroredAudits.length === 0) {
       lines.push('All audits in this category passed (score >= 90).');
       return lines.join('\n');
     }
 
-    lines.push('The following audits in this category have a score below 90 and may need attention:');
-    for (const audit of failingAudits) {
-      lines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
+    const sections: string[] = [];
+
+    if (failingAudits.length > 0) {
+      const sectionLines = ['The following audits in this category have a score below 90 and may need attention:'];
+      for (const audit of failingAudits) {
+        sectionLines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
+      }
+      sections.push(sectionLines.join('\n'));
     }
 
+    if (erroredAudits.length > 0) {
+      const sectionLines = ['The following audits in this category errored:'];
+      for (const audit of erroredAudits) {
+        sectionLines.push(...this.#formatAudit(audit, 'Error'));
+      }
+      sections.push(sectionLines.join('\n'));
+    }
+
+    lines.push(sections.join('\n\n'));
     return lines.join('\n');
   }
 
@@ -182,6 +202,9 @@ export class LighthouseFormatter {
     }
     lines.push(line);
     lines.push(`  * ${this.#toSingleLine(audit.description)}`);
+    if (audit.scoreDisplayMode === 'error' && audit.errorMessage) {
+      lines.push(`  * Error: ${this.#toSingleLine(audit.errorMessage)}`);
+    }
     if (audit.explanation) {
       lines.push(`  * Explanation: ${this.#joinExplanationLines(audit.explanation)}`);
     }
@@ -201,15 +224,28 @@ export class LighthouseFormatter {
   }
 
   /**
-   * Returns the audits in a category that scored below 90, in the category's order.
+   * Returns the non-hidden audits in a category that scored below 90, in the category's order.
    * Audits without a score (such as informative or manual audits) cannot fail, so they
    * are excluded.
    */
   #findFailingAudits(report: LHModel.ReporterTypes.ReportJSON, category: LHModel.ReporterTypes.CategoryJSON):
       Array<LHModel.ReporterTypes.AuditResultJSON&{score: number}> {
-    return category.auditRefs.map(ref => report.audits[ref.id])
-        .filter((audit): audit is LHModel.ReporterTypes.AuditResultJSON&{score: number} =>
-                    Boolean(audit) && audit.score !== null && audit.score < PASS_THRESHOLD);
+    return category.auditRefs.filter(ref => ref.group !== 'hidden')
+        .map(ref => report.audits[ref.id])
+        .filter((audit): audit is LHModel.ReporterTypes.AuditResultJSON&{score: number} => Boolean(audit) &&
+                    audit.scoreDisplayMode !== 'error' && audit.score !== null && audit.score < PASS_THRESHOLD);
+  }
+
+  /**
+   * Returns the non-hidden audits in a category that failed with an execution error
+   * (`scoreDisplayMode === 'error'`), in the category's order.
+   */
+  #findErroredAudits(report: LHModel.ReporterTypes.ReportJSON,
+                     category: LHModel.ReporterTypes.CategoryJSON): LHModel.ReporterTypes.AuditResultJSON[] {
+    return category.auditRefs.filter(ref => ref.group !== 'hidden')
+        .map(ref => report.audits[ref.id])
+        .filter((audit): audit is LHModel.ReporterTypes.AuditResultJSON =>
+                    Boolean(audit) && audit.scoreDisplayMode === 'error');
   }
 
   #formatScore(score: number): number {

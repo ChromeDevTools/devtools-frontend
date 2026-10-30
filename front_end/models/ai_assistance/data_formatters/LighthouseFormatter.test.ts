@@ -655,4 +655,77 @@ describe('LighthouseFormatter', function() {
     const output = formatter.summary(fractionReport);
     snapshotTester.assert(this, output);
   });
+
+  it('surfaces errored audits', function() {
+    const erroredReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 0.5,
+          auditRefs: [
+            {id: 'first-audit', score: 0.8, weight: 1},
+            {id: 'errored-audit', score: null, weight: 1},
+          ],
+        },
+      },
+      audits: {
+        ...report.audits,
+        'errored-audit': {
+          id: 'errored-audit',
+          title: 'Errored Audit',
+          description: 'An audit that threw an error during execution.',
+          score: null,
+          scoreDisplayMode: 'error',
+          errorMessage: 'Audit execution timed out',
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = [
+      formatter.failingAuditsSummary(erroredReport),
+      formatter.audits(erroredReport, 'performance'),
+    ].join('\n\n');
+    snapshotTester.assert(this, output);
+  });
+
+  it('excludes hidden audits', function() {
+    const hiddenReport = {
+      ...report,
+      categories: {
+        performance: {
+          title: 'Performance',
+          score: 1,
+          auditRefs: [
+            {id: 'hidden-failing-audit', score: 0, weight: 0, group: 'hidden'},
+            {id: 'hidden-errored-audit', score: null, weight: 0, group: 'hidden'},
+          ],
+        },
+      },
+      audits: {
+        ...report.audits,
+        'hidden-failing-audit': {
+          id: 'hidden-failing-audit',
+          title: 'Hidden Failing Audit',
+          description: 'Internal metric audit',
+          score: 0,
+          scoreDisplayMode: 'numeric',
+        },
+        'hidden-errored-audit': {
+          id: 'hidden-errored-audit',
+          title: 'Hidden Errored Audit',
+          description: 'Internal errored audit',
+          score: null,
+          scoreDisplayMode: 'error',
+          errorMessage: 'Internal failure',
+        },
+      },
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
+    const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
+    const output = [
+      formatter.failingAuditsSummary(hiddenReport),
+      formatter.audits(hiddenReport, 'performance'),
+    ].join('\n\n');
+    snapshotTester.assert(this, output);
+  });
 });

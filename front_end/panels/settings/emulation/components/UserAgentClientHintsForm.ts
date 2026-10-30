@@ -476,8 +476,11 @@ export class UserAgentClientHintsForm extends UserAgentClientHintsFormBase {
     }
   };
 
-  validate = (): UI.ListWidget.ValidatorResult => {
-    for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
+  static validateMetaData(metaData?: Protocol.Emulation.UserAgentMetadata): UI.ListWidget.ValidatorResult {
+    if (!metaData) {
+      return {valid: true};
+    }
+    for (const [metaDataKey, metaDataValue] of Object.entries(metaData)) {
       if (metaDataKey === 'brands' || metaDataKey === 'fullVersionList') {
         // for structured fields, check each individual brand/version
         const brandList = metaDataValue as Protocol.Emulation.UserAgentBrandVersion[] | undefined;
@@ -518,6 +521,10 @@ export class UserAgentClientHintsForm extends UserAgentClientHintsFormBase {
       }
     }
     return {valid: true};
+  }
+
+  validate = (): UI.ListWidget.ValidatorResult => {
+    return UserAgentClientHintsForm.validateMetaData(this.#metaData);
   };
 
   override performUpdate(): void {

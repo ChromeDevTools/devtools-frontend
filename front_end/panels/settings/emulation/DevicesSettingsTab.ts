@@ -1,19 +1,27 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
+import '../../../ui/components/lists/lists.js';
 import '../../../ui/kit/kit.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
-import type * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as Input from '../../../ui/components/input/input.js';
+import type * as Lists from '../../../ui/components/lists/lists.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as EmulationComponents from './components/components.js';
 import devicesSettingsTabStyles from './devicesSettingsTab.css.js';
+
+const {classMap, ifDefined, live, ref} = Directives;
+const {widget} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -208,6 +216,18 @@ const UIStrings = {
    * @description Error message shown when a circular display cutout is outside its cutout bounds.
    */
   circleMustFitCutoutBounds: 'Circle must fit within the cutout bounds',
+  /**
+   * @description Button text to cancel editing a custom device in the Devices settings tab.
+   */
+  cancel: 'Cancel',
+  /**
+   * @description Button text to save changes when editing a custom device in the Devices settings tab.
+   */
+  save: 'Save',
+  /**
+   * @description Button text to add a new custom device in the Devices settings tab.
+   */
+  add: 'Add',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -230,146 +250,622 @@ function parseOptionalNonNegativeInteger(value: string): number|null {
 
 const NO_CUSTOM_CUTOUT = 'none';
 
-type DeviceEditorValidator = (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
-                              input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult;
+export type EditorFieldName =
+    |'title'|'width'|'height'|'scale'|'user-agent'|'ua-type'|'safe-area-left'|'safe-area-top'|'safe-area-right'|
+    'safe-area-bottom'|'landscape-safe-area-left'|'landscape-safe-area-top'|'landscape-safe-area-right'|
+    'landscape-safe-area-bottom'|'cutout-shape'|'cutout-x'|'cutout-y'|'cutout-width'|'cutout-height'|
+    'cutout-border-radius'|'cutout-upper-radius'|'cutout-lower-radius'|'cutout-cx'|'cutout-cy'|'cutout-radius';
 
-interface CutoutFieldValidators {
-  shape: DeviceEditorValidator;
-  x: DeviceEditorValidator;
-  y: DeviceEditorValidator;
-  width: DeviceEditorValidator;
-  height: DeviceEditorValidator;
-  pillRadius: DeviceEditorValidator;
-  notchUpperRadius: DeviceEditorValidator;
-  notchLowerRadius: DeviceEditorValidator;
-  circleCenterX: DeviceEditorValidator;
-  circleCenterY: DeviceEditorValidator;
-  circleRadius: DeviceEditorValidator;
+export type EditorValues = Record<EditorFieldName, string>;
+
+const EMPTY_EDITOR_VALUES: EditorValues = {
+  title: '',
+  width: '',
+  height: '',
+  scale: '',
+  'user-agent': '',
+  'ua-type': EmulationModel.DeviceModeModel.UA.MOBILE,
+  'safe-area-left': '',
+  'safe-area-top': '',
+  'safe-area-right': '',
+  'safe-area-bottom': '',
+  'landscape-safe-area-left': '',
+  'landscape-safe-area-top': '',
+  'landscape-safe-area-right': '',
+  'landscape-safe-area-bottom': '',
+  'cutout-shape': NO_CUSTOM_CUTOUT,
+  'cutout-x': '',
+  'cutout-y': '',
+  'cutout-width': '',
+  'cutout-height': '',
+  'cutout-border-radius': '',
+  'cutout-upper-radius': '',
+  'cutout-lower-radius': '',
+  'cutout-cx': '',
+  'cutout-cy': '',
+  'cutout-radius': '',
+};
+
+export interface DeviceGroupViewInput {
+  title: string;
+  hidden: boolean;
+  devices: EmulationModel.EmulatedDevices.EmulatedDevice[];
 }
 
-export class DevicesSettingsTab extends UI.Widget.VBox implements
-    UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
-  containerElement: HTMLElement;
-  private readonly addCustomButton: Buttons.Button.Button;
-  private readonly ariaSuccessMessageElement: HTMLElement;
-  readonly #customDeviceList: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
-  readonly #defaultDeviceLists = new Map<EmulationModel.EmulatedDevices.Category, {
-    container: HTMLElement,
-    list: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>,
-  }>();
-  private muteUpdate: boolean;
-  private emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
-  private editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
-  readonly #userAgentClientHintsForm = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
+export interface EditorStateViewInput {
+  index: number;
+  isNew: boolean;
+  values: EditorValues;
+  showSafeAreaAndCutout: boolean;
+  clientHintsValue: EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData;
+  invalidFields: ReadonlySet<EditorFieldName>;
+  isClientHintsInvalid: boolean;
+  errorMessages: readonly string[];
+  hasErrors: boolean;
+  showValidationErrors: boolean;
+}
 
-  constructor() {
-    super({jslog: `${VisualLogging.pane('devices')}`});
-    this.registerRequiredCSS(devicesSettingsTabStyles);
+export interface ViewInput {
+  customDevices: EmulationModel.EmulatedDevices.EmulatedDevice[];
+  defaultDeviceGroups: DeviceGroupViewInput[];
+  editorState: EditorStateViewInput|null;
+  successMessage: string;
+  onAddCustomDevice: () => void;
+  onToggleDevice: (device: EmulationModel.EmulatedDevices.EmulatedDevice, custom: boolean, show: boolean) => void;
+  onBeginEdit: (index: number) => void;
+  onRemoveDevice: (index: number) => void;
+  onEditorInput: (field: EditorFieldName, value: string) => void;
+  onClientHintsChange: (metaData: Protocol.Emulation.UserAgentMetadata) => void;
+  onCommitEdit: () => void;
+  onCancelEdit: () => void;
+}
 
-    this.containerElement =
-        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-    this.containerElement.classList.add('settings-card-container', 'ignore-list-settings');
+export interface ViewOutput {
+  focusAddCustomButton?: () => void;
+  focusDeviceNameField?: () => void;
+}
 
-    this.muteUpdate = false;
-    this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
-    this.emulatedDevicesList.addEventListener(
-        EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED, this.devicesUpdated, this);
-    this.emulatedDevicesList.addEventListener(
-        EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED, this.devicesUpdated, this);
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-    this.ariaSuccessMessageElement = this.contentElement.createChild('div', 'device-success-message');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this.ariaSuccessMessageElement, false);
+interface DeviceItemViewInput {
+  title: string;
+  checked: boolean;
+  onToggle: (checked: boolean) => void;
+}
 
-    this.addCustomButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this), {jslogContext: 'add-custom-device'});
-    this.addCustomButton.id = 'custom-device-add-button';
+function renderDeviceItem(input: DeviceItemViewInput): LitTemplate {
+  // clang-format off
+  return html`
+    <label class="devices-list-item" tabindex="-1">
+      <input
+        class="devices-list-checkbox"
+        type="checkbox"
+        .checked=${live(input.checked)}
+        jslog=${VisualLogging.toggle().track({click: true})}
+        @click=${(event: Event) => {
+          const checkbox = event.currentTarget as HTMLInputElement;
+          input.onToggle(checkbox.checked);
+          event.consume();
+        }}
+      />
+      <span class="device-name">${input.title}</span>
+    </label>
+  `;
+  // clang-format on
+}
 
-    const customSettings = document.createElement('div');
-    customSettings.classList.add('device-card-content');
-    customSettings.appendChild(this.ariaSuccessMessageElement);
-    const deviceList = customSettings.createChild('div');
-    customSettings.appendChild(this.addCustomButton);
+function renderEditorInput(
+    editorState: EditorStateViewInput,
+    onEditorInput: (field: EditorFieldName, value: string) => void,
+    output: ViewOutput,
+    name: EditorFieldName,
+    placeholder: string,
+    options?: {id?: string, fixedWidth?: boolean, hidden?: boolean},
+    ): LitTemplate {
+  const isInvalid = editorState.showValidationErrors && editorState.invalidFields.has(name);
+  // clang-format off
+  return html`
+    <input
+      id=${ifDefined(options?.id)}
+      name=${name}
+      class=${classMap({
+        'harmony-input': true,
+        'device-edit-fixed': Boolean(options?.fixedWidth),
+        'error-input': isInvalid,
+      })}
+      type="text"
+      placeholder=${placeholder}
+      aria-label=${placeholder}
+      aria-invalid=${ifDefined(isInvalid ? 'true' : undefined)}
+      ?hidden=${Boolean(options?.hidden)}
+      .value=${editorState.values[name]}
+      jslog=${VisualLogging.textField().track({change: true, keydown: 'Enter'}).context(name)}
+      @input=${(e: Event) => onEditorInput(name, (e.target as HTMLInputElement).value)}
+      ${options?.id === 'custom-device-name-field' ? ref(el => {
+        if (el instanceof HTMLInputElement) {
+          output.focusDeviceNameField = () => el.focus();
+        } else {
+          output.focusDeviceNameField = undefined;
+        }
+      }) : nothing}
+    />
+  `;
+  // clang-format on
+}
 
-    const customDevicesCard = this.containerElement.createChild('devtools-card');
-    customDevicesCard.heading = i18nString(UIStrings.customDevices);
-    customDevicesCard.append(customSettings);
+function renderSafeAreaGroup(
+    editorState: EditorStateViewInput,
+    onEditorInput: (field: EditorFieldName, value: string) => void,
+    output: ViewOutput,
+    headingId: string,
+    title: string,
+    prefix: ''|'landscape-',
+    ): LitTemplate {
+  // clang-format off
+  return html`
+    <div class="devices-edit-safe-area-group" role="group" aria-labelledby=${headingId}>
+      <b id=${headingId}>${title}</b>
+      <div class="hbox">
+        ${renderEditorInput(editorState, onEditorInput, output, `${prefix}safe-area-left`, i18nString(UIStrings.safeAreaLeft))}
+        ${renderEditorInput(editorState, onEditorInput, output, `${prefix}safe-area-top`, i18nString(UIStrings.safeAreaTop))}
+        ${renderEditorInput(editorState, onEditorInput, output, `${prefix}safe-area-right`, i18nString(UIStrings.safeAreaRight))}
+        ${renderEditorInput(editorState, onEditorInput, output, `${prefix}safe-area-bottom`, i18nString(UIStrings.safeAreaBottom))}
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
 
-    this.#customDeviceList = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
-    this.#customDeviceList.registerRequiredCSS(devicesSettingsTabStyles);
-    this.#customDeviceList.element.classList.add('devices-list');
-    this.#customDeviceList.show(deviceList);
+function renderCutoutFields(
+    editorState: EditorStateViewInput,
+    onEditorInput: (field: EditorFieldName, value: string) => void,
+    output: ViewOutput,
+    ): LitTemplate {
+  const headingId = 'cutout-heading';
+  const shape = editorState.values['cutout-shape'];
+  const noCutout = shape === NO_CUSTOM_CUTOUT;
+  const isPill = shape === EmulationModel.EmulatedDevices.CutoutShape.PILL;
+  const isNotch = shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH;
+  const isCircle = shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE;
+  const rectRowHidden = noCutout;
+  const radiusRowHidden = noCutout || !(isPill || isNotch || isCircle);
+  const shapeOptions = [
+    {value: NO_CUSTOM_CUTOUT, label: i18nString(UIStrings.noDisplayCutout)},
+    {value: EmulationModel.EmulatedDevices.CutoutShape.PILL, label: i18nString(UIStrings.pillDisplayCutout)},
+    {value: EmulationModel.EmulatedDevices.CutoutShape.NOTCH, label: i18nString(UIStrings.notchDisplayCutout)},
+    {value: EmulationModel.EmulatedDevices.CutoutShape.CIRCLE, label: i18nString(UIStrings.circleDisplayCutout)},
+    {value: EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE, label: i18nString(UIStrings.rectangleDisplayCutout)},
+  ];
+  // clang-format off
+  return html`
+    <div class="devices-edit-fields devices-edit-cutout-fields" role="group" aria-labelledby=${headingId}>
+      <b id=${headingId}>${i18nString(UIStrings.displayCutout)}</b>
+      <div class="hbox">
+        <select
+          name="cutout-shape"
+          title=${i18nString(UIStrings.displayCutout)}
+          aria-label=${i18nString(UIStrings.displayCutout)}
+          .value=${shape}
+          jslog=${VisualLogging.dropDown().track({change: true}).context('cutout-shape')}
+          @input=${(e: Event) => onEditorInput('cutout-shape', (e.target as HTMLSelectElement).value)}
+          @change=${(e: Event) => onEditorInput('cutout-shape', (e.target as HTMLSelectElement).value)}>
+          ${shapeOptions.map(option => html`
+            <option
+              value=${option.value}
+              .selected=${shape === option.value}
+              jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option.value)).track({click: true})}>
+              ${option.label}
+            </option>
+          `)}
+        </select>
+      </div>
+      <div class="hbox devices-edit-cutout-rect-row" ?hidden=${rectRowHidden}>
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-x', i18nString(UIStrings.cutoutX))}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-y', i18nString(UIStrings.cutoutY))}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-width', i18nString(UIStrings.cutoutWidth))}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-height', i18nString(UIStrings.cutoutHeight))}
+      </div>
+      <div class="hbox devices-edit-cutout-radius-row" ?hidden=${radiusRowHidden}>
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-border-radius', i18nString(UIStrings.cutoutBorderRadius), {hidden: !isPill})}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-upper-radius', i18nString(UIStrings.cutoutUpperRadius), {hidden: !isNotch})}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-lower-radius', i18nString(UIStrings.cutoutLowerRadius), {hidden: !isNotch})}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-cx', i18nString(UIStrings.cutoutCenterX), {hidden: !isCircle})}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-cy', i18nString(UIStrings.cutoutCenterY), {hidden: !isCircle})}
+        ${renderEditorInput(editorState, onEditorInput, output, 'cutout-radius', i18nString(UIStrings.cutoutRadius), {hidden: !isCircle})}
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
 
-    const defaultDevicesCard = this.containerElement.createChild('devtools-card');
-    defaultDevicesCard.heading = i18nString(UIStrings.defaultDevices);
+const EMPTY_EDITOR_STATE: EditorStateViewInput = {
+  index: 0,
+  isNew: false,
+  values: EMPTY_EDITOR_VALUES,
+  showSafeAreaAndCutout: false,
+  clientHintsValue: {},
+  invalidFields: new Set(),
+  isClientHintsInvalid: false,
+  errorMessages: [],
+  hasErrors: false,
+  showValidationErrors: false,
+};
+
+function renderEditor(input: ViewInput, output: ViewOutput): LitTemplate {
+  const editorState = input.editorState ?? EMPTY_EDITOR_STATE;
+  const uaTypeOptions = [
+    EmulationModel.DeviceModeModel.UA.MOBILE,
+    EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH,
+    EmulationModel.DeviceModeModel.UA.DESKTOP,
+    EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH,
+  ];
+  const uaType = editorState.values['ua-type'];
+
+  // clang-format off
+  return html`
+    <div
+      class="editor-container"
+      ?hidden=${!input.editorState}
+      jslog=${VisualLogging.pane('editor').track({resize: true})}
+      @keydown=${(e: KeyboardEvent) => {
+        if (Platform.KeyboardUtilities.isEscKey(e)) {
+          e.consume(true);
+          input.onCancelEdit();
+        }
+      }}>
+      <div
+        class="editor-content"
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.key === 'Enter' && !e.isComposing && !(e.target instanceof HTMLSelectElement)) {
+            e.consume(true);
+            if (!editorState.hasErrors) {
+              input.onCommitEdit();
+            }
+          }
+        }}>
+        <div class="devices-edit-fields">
+          <b>${i18nString(UIStrings.device)}</b>
+          <div class="hbox">
+            ${renderEditorInput(editorState, input.onEditorInput, output, 'title', i18nString(UIStrings.deviceName), {
+              id: 'custom-device-name-field',
+            })}
+          </div>
+          <div class="hbox">
+            ${renderEditorInput(editorState, input.onEditorInput, output, 'width', i18nString(UIStrings.width))}
+            ${renderEditorInput(editorState, input.onEditorInput, output, 'height', i18nString(UIStrings.height))}
+            ${renderEditorInput(editorState, input.onEditorInput, output, 'scale', i18nString(UIStrings.devicePixelRatio), {
+              fixedWidth: true,
+            })}
+          </div>
+          ${editorState.showSafeAreaAndCutout ? html`
+            ${renderSafeAreaGroup(editorState, input.onEditorInput, output, 'portrait-safe-area-heading', i18nString(UIStrings.portraitSafeArea), '')}
+            ${renderSafeAreaGroup(editorState, input.onEditorInput, output, 'landscape-safe-area-heading', i18nString(UIStrings.landscapeSafeArea), 'landscape-')}
+          ` : nothing}
+        </div>
+        ${editorState.showSafeAreaAndCutout
+            ? renderCutoutFields(editorState, input.onEditorInput, output)
+            : nothing}
+        <div class="devices-edit-fields">
+          <b>${i18nString(UIStrings.userAgentString)}</b>
+          <div class="hbox">
+            ${renderEditorInput(editorState, input.onEditorInput, output, 'user-agent', i18nString(UIStrings.userAgentString))}
+            <select
+              name="ua-type"
+              class="device-edit-fixed"
+              title=${i18nString(UIStrings.userAgentType)}
+              aria-label=${i18nString(UIStrings.userAgentType)}
+              .value=${uaType}
+              jslog=${VisualLogging.dropDown().track({change: true}).context('ua-type')}
+              @input=${(e: Event) => input.onEditorInput('ua-type', (e.target as HTMLSelectElement).value)}
+              @change=${(e: Event) => input.onEditorInput('ua-type', (e.target as HTMLSelectElement).value)}>
+              ${uaTypeOptions.map(option => html`
+                <option
+                  value=${option}
+                  .selected=${uaType === option}
+                  jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(option)).track({click: true})}>
+                  ${option}
+                </option>
+              `)}
+            </select>
+          </div>
+        </div>
+        <devtools-widget
+          class=${classMap({
+            'error-input': editorState.showValidationErrors && editorState.isClientHintsInvalid,
+          })}
+          aria-invalid=${ifDefined(editorState.showValidationErrors && editorState.isClientHintsInvalid ? 'true' : undefined)}
+          ${widget(EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm, {
+            value: editorState.clientHintsValue,
+          })}
+          @clienthintschange=${(e: CustomEvent<Protocol.Emulation.UserAgentMetadata>) => input.onClientHintsChange(e.detail)}>
+        </devtools-widget>
+      </div>
+      <div class="editor-buttons">
+        <devtools-button
+          .variant=${Buttons.Button.Variant.OUTLINED}
+          .jslogContext=${'cancel'}
+          jslog=${VisualLogging.action('cancel').track({click: true})}
+          @click=${input.onCancelEdit}>
+          ${i18nString(UIStrings.cancel)}
+        </devtools-button>
+        <devtools-button
+          .variant=${Buttons.Button.Variant.PRIMARY}
+          .jslogContext=${'commit'}
+          .disabled=${editorState.hasErrors}
+          @click=${() => {
+            if (!editorState.hasErrors) {
+              input.onCommitEdit();
+            }
+          }}>
+          ${editorState.isNew ? i18nString(UIStrings.add) : i18nString(UIStrings.save)}
+        </devtools-button>
+      </div>
+      <div class="list-widget-input-validation-error" role="alert" aria-live="polite">
+        ${editorState.showValidationErrors && editorState.errorMessages.length > 0
+            ? html`<span>${editorState.errorMessages.map((msg, i) => html`${i > 0 ? html`<br>` : nothing}${msg}`)}</span>`
+            : nothing}
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  const editingIndex = input.editorState?.index ?? null;
+  const customBefore = editingIndex !== null ? input.customDevices.slice(0, editingIndex) : input.customDevices;
+  const customAfter = editingIndex !== null ? input.customDevices.slice(editingIndex + 1) : [];
+
+  // clang-format off
+  render(html`
+    <style>${Input.checkboxStyles}</style>
+    <style>${devicesSettingsTabStyles}</style>
+    <div class="settings-card-container-wrapper">
+      <div class="settings-card-container ignore-list-settings">
+        <devtools-card heading=${i18nString(UIStrings.customDevices)}>
+          <div class="device-card-content">
+            <div
+              class="device-success-message"
+              aria-live="polite"
+              aria-atomic="false"
+              aria-label=${input.successMessage}
+            ></div>
+            <div>
+              ${customBefore.length > 0 ? html`
+                <devtools-list
+                  class="devices-list"
+                  .editable=${true}
+                  .deletable=${true}
+                  @edit=${(e: Lists.List.ItemEditEvent) => input.onBeginEdit(e.detail.index)}
+                  @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemoveDevice(e.detail.index)}>
+                  ${customBefore.map(device => renderDeviceItem({
+                    title: device.title,
+                    checked: device.show(),
+                    onToggle: checked => input.onToggleDevice(device, true, checked),
+                  }))}
+                </devtools-list>
+              ` : nothing}
+              ${renderEditor(input, output)}
+              ${editingIndex !== null && customAfter.length > 0 ? html`
+                <devtools-list
+                  class="devices-list"
+                  .editable=${true}
+                  .deletable=${true}
+                  @edit=${(e: Lists.List.ItemEditEvent) => input.onBeginEdit(editingIndex + 1 + e.detail.index)}
+                  @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemoveDevice(editingIndex + 1 + e.detail.index)}>
+                  ${customAfter.map(device => renderDeviceItem({
+                    title: device.title,
+                    checked: device.show(),
+                    onToggle: checked => input.onToggleDevice(device, true, checked),
+                  }))}
+                </devtools-list>
+              ` : nothing}
+            </div>
+            <devtools-button
+              id="custom-device-add-button"
+              ?hidden=${Boolean(input.editorState)}
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              .jslogContext=${'add-custom-device'}
+              @click=${input.onAddCustomDevice}
+              ${ref(el => {
+                if (el instanceof HTMLElement) {
+                  output.focusAddCustomButton = () => {
+                    el.scrollIntoViewIfNeeded();
+                    el.focus();
+                  };
+                } else {
+                  output.focusAddCustomButton = undefined;
+                }
+              })}
+            >${i18nString(UIStrings.addCustomDevice)}</devtools-button>
+          </div>
+        </devtools-card>
+        <devtools-card heading=${i18nString(UIStrings.defaultDevices)}>
+          ${input.defaultDeviceGroups.map(group => html`
+            <div class="device-group-container" ?hidden=${group.hidden}>
+              <div class="device-group-title">${group.title}</div>
+              <devtools-list class="devices-list device-card-content" .disableListItemFocus=${true}>
+                ${group.devices.map(device => renderDeviceItem({
+                  title: device.title,
+                  checked: device.show(),
+                  onToggle: checked => input.onToggleDevice(device, false, checked),
+                }))}
+              </devtools-list>
+            </div>
+          `)}
+        </devtools-card>
+      </div>
+    </div>
+  `, target, {
+    container: {
+      attributes: {
+        jslog: `${VisualLogging.pane('devices')}`,
+      },
+    },
+  });
+  // clang-format on
+};
+
+const FIELD_LABELS: Partial<Record<EditorFieldName, () => string>> = {
+  'safe-area-left': () => i18nString(UIStrings.safeAreaLeft),
+  'safe-area-top': () => i18nString(UIStrings.safeAreaTop),
+  'safe-area-right': () => i18nString(UIStrings.safeAreaRight),
+  'safe-area-bottom': () => i18nString(UIStrings.safeAreaBottom),
+  'landscape-safe-area-left': () => i18nString(UIStrings.safeAreaLeft),
+  'landscape-safe-area-top': () => i18nString(UIStrings.safeAreaTop),
+  'landscape-safe-area-right': () => i18nString(UIStrings.safeAreaRight),
+  'landscape-safe-area-bottom': () => i18nString(UIStrings.safeAreaBottom),
+  'cutout-x': () => i18nString(UIStrings.cutoutX),
+  'cutout-y': () => i18nString(UIStrings.cutoutY),
+  'cutout-width': () => i18nString(UIStrings.cutoutWidth),
+  'cutout-height': () => i18nString(UIStrings.cutoutHeight),
+  'cutout-border-radius': () => i18nString(UIStrings.cutoutBorderRadius),
+  'cutout-upper-radius': () => i18nString(UIStrings.cutoutUpperRadius),
+  'cutout-lower-radius': () => i18nString(UIStrings.cutoutLowerRadius),
+  'cutout-cx': () => i18nString(UIStrings.cutoutCenterX),
+  'cutout-cy': () => i18nString(UIStrings.cutoutCenterY),
+  'cutout-radius': () => i18nString(UIStrings.cutoutRadius),
+};
+
+export class DevicesSettingsTab extends UI.Widget.VBox {
+  readonly #view: View;
+  readonly #viewOutput: ViewOutput = {};
+  #successMessage = '';
+  #customDevices: EmulationModel.EmulatedDevices.EmulatedDevice[] = [];
+  readonly #defaultDeviceLists = new Map<EmulationModel.EmulatedDevices.Category, DeviceGroupViewInput>();
+  #muteUpdate = false;
+  readonly #emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
+  #editingDevice: EmulationModel.EmulatedDevices.EmulatedDevice|null = null;
+  #editingIndex: number|null = null;
+  #isNewDevice = false;
+  #editorValues: EditorValues = {...EMPTY_EDITOR_VALUES};
+  #clientHintsValue: EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsFormData = {};
+  #clientHintsMetaData?: Protocol.Emulation.UserAgentMetadata;
+  #showValidationErrors = false;
+
+  readonly #onAddCustomDeviceBound = this.#addCustomDevice.bind(this);
+  readonly #onToggleDeviceBound = this.#onToggleDevice.bind(this);
+  readonly #onBeginEditBound = this.#onBeginEditByIndex.bind(this);
+  readonly #onRemoveDeviceBound = this.#onRemoveDevice.bind(this);
+  readonly #onEditorInputBound = this.#onEditorInput.bind(this);
+  readonly #onClientHintsChangeBound = this.#onClientHintsChange.bind(this);
+  readonly #onCommitEditBound = this.commitEdit.bind(this);
+  readonly #onCancelEditBound = this.#cancelEdit.bind(this);
+
+  constructor(view: View = DEFAULT_VIEW) {
+    super();
+    this.#view = view;
+
+    this.#emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
 
     for (const category of EmulationModel.EmulatedDevices.CATEGORY_ORDER) {
-      const groupContainer = document.createElement('div');
-      groupContainer.classList.add('device-group-container');
-
-      const groupTitle = groupContainer.createChild('div', 'device-group-title');
-      groupTitle.textContent = EmulationModel.EmulatedDevices.getCategoryTitle(category);
-
-      defaultDevicesCard.append(groupContainer);
-
-      const listWidget = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
-      listWidget.registerRequiredCSS(devicesSettingsTabStyles);
-      listWidget.element.classList.add('devices-list', 'device-card-content');
-      listWidget.show(groupContainer);
-
-      this.#defaultDeviceLists.set(category, {container: groupContainer, list: listWidget});
+      this.#defaultDeviceLists.set(category, {
+        title: EmulationModel.EmulatedDevices.getCategoryTitle(category),
+        hidden: false,
+        devices: [],
+      });
     }
+    this.#devicesUpdated();
+  }
+
+  override performUpdate(): void {
+    let editorState: EditorStateViewInput|null = null;
+    if (this.#editingDevice !== null && this.#editingIndex !== null) {
+      const showSafeAreaAndCutout = Boolean(Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled);
+      const validation = this.#validateEditor(showSafeAreaAndCutout);
+      editorState = {
+        index: this.#editingIndex,
+        isNew: this.#isNewDevice,
+        values: this.#editorValues,
+        showSafeAreaAndCutout,
+        clientHintsValue: this.#clientHintsValue,
+        invalidFields: validation.invalidFields,
+        isClientHintsInvalid: validation.isClientHintsInvalid,
+        errorMessages: validation.errorMessages,
+        hasErrors: validation.hasErrors,
+        showValidationErrors: this.#showValidationErrors,
+      };
+    }
+
+    const viewInput: ViewInput = {
+      customDevices: this.#customDevices,
+      defaultDeviceGroups: [...this.#defaultDeviceLists.values()],
+      editorState,
+      successMessage: this.#successMessage,
+      onAddCustomDevice: this.#onAddCustomDeviceBound,
+      onToggleDevice: this.#onToggleDeviceBound,
+      onBeginEdit: this.#onBeginEditBound,
+      onRemoveDevice: this.#onRemoveDeviceBound,
+      onEditorInput: this.#onEditorInputBound,
+      onClientHintsChange: this.#onClientHintsChangeBound,
+      onCommitEdit: this.#onCommitEditBound,
+      onCancelEdit: this.#onCancelEditBound,
+    };
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.devicesUpdated();
+    this.#emulatedDevicesList.addEventListener(EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED,
+                                               this.#devicesUpdated, this);
+    this.#emulatedDevicesList.addEventListener(EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED,
+                                               this.#devicesUpdated, this);
+    this.#devicesUpdated();
   }
 
-  private devicesUpdated(): void {
-    if (this.muteUpdate) {
+  override willHide(): void {
+    super.willHide();
+    this.#emulatedDevicesList.removeEventListener(EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED,
+                                                  this.#devicesUpdated, this);
+    this.#emulatedDevicesList.removeEventListener(EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED,
+                                                  this.#devicesUpdated, this);
+  }
+
+  #devicesUpdated(): void {
+    if (this.#muteUpdate) {
       return;
     }
 
-    for (const {list} of this.#defaultDeviceLists.values()) {
-      list.clear();
-    }
-    this.#customDeviceList.clear();
+    this.#customDevices = this.#emulatedDevicesList.custom().slice();
+    this.#cancelEdit();
 
-    const customDevices = this.emulatedDevicesList.custom().slice();
-    for (let i = 0; i < customDevices.length; ++i) {
-      this.#customDeviceList.appendItem(customDevices[i], true);
+    for (const group of this.#defaultDeviceLists.values()) {
+      group.devices = [];
     }
 
-    const standardDevices = this.emulatedDevicesList.standard().slice();
+    const standardDevices = this.#emulatedDevicesList.standard().slice();
     standardDevices.sort(EmulationModel.EmulatedDevices.EmulatedDevice.deviceComparator);
 
-    const categoryItemCounts = new Map<EmulationModel.EmulatedDevices.Category, number>();
     for (const device of standardDevices) {
       const cat = EmulationModel.EmulatedDevices.deviceCategory(device);
       const group = this.#defaultDeviceLists.get(cat);
       if (group) {
-        group.list.appendItem(device, false);
-        categoryItemCounts.set(cat, (categoryItemCounts.get(cat) || 0) + 1);
+        group.devices.push(device);
       }
     }
 
-    for (const [cat, group] of this.#defaultDeviceLists.entries()) {
-      const count = categoryItemCounts.get(cat) || 0;
-      group.container.style.display = count > 0 ? '' : 'none';
+    for (const group of this.#defaultDeviceLists.values()) {
+      group.hidden = group.devices.length === 0;
     }
+    this.performUpdate();
   }
 
-  private muteAndSaveDeviceList(custom: boolean): void {
-    this.muteUpdate = true;
+  #muteAndSaveDeviceList(custom: boolean): void {
+    this.#muteUpdate = true;
     if (custom) {
-      this.emulatedDevicesList.saveCustomDevices();
+      this.#emulatedDevicesList.saveCustomDevices();
     } else {
-      this.emulatedDevicesList.saveStandardDevices();
+      this.#emulatedDevicesList.saveStandardDevices();
     }
-    this.muteUpdate = false;
+    this.#muteUpdate = false;
   }
 
-  private addCustomDevice(): void {
+  #onToggleDevice(device: EmulationModel.EmulatedDevices.EmulatedDevice, custom: boolean, show: boolean): void {
+    device.setShow(show);
+    this.#muteAndSaveDeviceList(custom);
+    this.performUpdate();
+  }
+
+  #addCustomDevice(): void {
     const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
     device.deviceScaleFactor = 0;
     device.horizontal.width = 700;
@@ -377,75 +873,149 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     device.vertical.width = 400;
     device.vertical.height = 700;
     device.userAgent = navigator.userAgent;
-    this.#customDeviceList.addNewItem(this.emulatedDevicesList.custom().length, device);
+    this.beginEdit(device, this.#customDevices.length, true);
   }
 
-  private toNumericInputValue(value: number): string {
-    return value ? String(value) : '';
-  }
-
-  private verticalMode(device: EmulationModel.EmulatedDevices.EmulatedDevice): EmulationModel.EmulatedDevices.Mode
-      |null {
-    return device.modes.find(mode => mode.orientation === EmulationModel.EmulatedDevices.Vertical) || null;
-  }
-
-  private horizontalMode(device: EmulationModel.EmulatedDevices.EmulatedDevice): EmulationModel.EmulatedDevices.Mode
-      |null {
-    return device.modes.find(mode => mode.orientation === EmulationModel.EmulatedDevices.Horizontal) || null;
-  }
-
-  private editorIntegerValue(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
-                             controlName: string): number {
-    return parseOptionalNonNegativeInteger(editor.control(controlName).value) ?? 0;
-  }
-
-  renderItem(device: EmulationModel.EmulatedDevices.EmulatedDevice, editable: boolean): Element {
-    const label = document.createElement('label');
-    label.classList.add('devices-list-item');
-    const checkbox = label.createChild('input', 'devices-list-checkbox');
-    checkbox.type = 'checkbox';
-    checkbox.checked = device.show();
-    checkbox.addEventListener('click', onItemClicked.bind(this), false);
-    checkbox.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
-    const span = document.createElement('span');
-    span.classList.add('device-name');
-    span.appendChild(document.createTextNode(device.title));
-    label.appendChild(span);
-    return label;
-
-    function onItemClicked(this: DevicesSettingsTab, event: Event): void {
-      const show = checkbox.checked;
-      device.setShow(show);
-      this.muteAndSaveDeviceList(editable);
-      event.consume();
+  #onBeginEditByIndex(index: number): void {
+    const device = this.#customDevices[index];
+    if (device) {
+      this.beginEdit(device, index, false);
     }
   }
 
-  removeItemRequested(item: EmulationModel.EmulatedDevices.EmulatedDevice): void {
-    this.emulatedDevicesList.removeCustomDevice(item);
+  #onRemoveDevice(index: number): void {
+    const device = this.#customDevices[index];
+    if (device) {
+      this.#emulatedDevicesList.removeCustomDevice(device);
+    }
   }
 
-  commitEdit(
-      device: EmulationModel.EmulatedDevices.EmulatedDevice,
-      editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>, isNew: boolean): void {
-    device.title = editor.control('title').value.trim();
-    device.vertical.width = editor.control('width').value ? parseInt(editor.control('width').value, 10) : 0;
-    device.vertical.height = editor.control('height').value ? parseInt(editor.control('height').value, 10) : 0;
+  #cancelEdit(): void {
+    if (this.#editingDevice === null && this.#editingIndex === null) {
+      return;
+    }
+    this.#editingDevice = null;
+    this.#editingIndex = null;
+    this.#isNewDevice = false;
+    this.#editorValues = {...EMPTY_EDITOR_VALUES};
+    this.#clientHintsMetaData = undefined;
+    this.#clientHintsValue = {};
+    this.#showValidationErrors = false;
+    this.performUpdate();
+  }
+
+  #onEditorInput(field: EditorFieldName, value: string): void {
+    if (this.#editorValues[field] === value && this.#showValidationErrors) {
+      return;
+    }
+    this.#editorValues[field] = value;
+    this.#showValidationErrors = true;
+    this.performUpdate();
+  }
+
+  #onClientHintsChange(metaData: Protocol.Emulation.UserAgentMetadata): void {
+    this.#clientHintsMetaData = metaData;
+    this.#showValidationErrors = true;
+    this.performUpdate();
+  }
+
+  #toNumericInputValue(value: number): string {
+    return value ? String(value) : '';
+  }
+
+  #verticalMode(device: EmulationModel.EmulatedDevices.EmulatedDevice): EmulationModel.EmulatedDevices.Mode|null {
+    return device.modes.find(mode => mode.orientation === EmulationModel.EmulatedDevices.Vertical) || null;
+  }
+
+  #horizontalMode(device: EmulationModel.EmulatedDevices.EmulatedDevice): EmulationModel.EmulatedDevices.Mode|null {
+    return device.modes.find(mode => mode.orientation === EmulationModel.EmulatedDevices.Horizontal) || null;
+  }
+
+  #editorIntegerValue(controlName: EditorFieldName): number {
+    return parseOptionalNonNegativeInteger(this.#editorValues[controlName]) ?? 0;
+  }
+
+  beginEdit(device: EmulationModel.EmulatedDevices.EmulatedDevice, index = 0, isNew = false): void {
+    this.#editingDevice = device;
+    this.#editingIndex = index;
+    this.#isNewDevice = isNew;
+    this.#showValidationErrors = false;
+
+    let uaType: string;
+    if (device.mobile()) {
+      uaType =
+          device.touch() ? EmulationModel.DeviceModeModel.UA.MOBILE : EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH;
+    } else {
+      uaType =
+          device.touch() ? EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH : EmulationModel.DeviceModeModel.UA.DESKTOP;
+    }
+
+    const safeAreaInsets = this.#verticalMode(device)?.safeAreaInsets;
+    const landscapeSafeAreaInsets = this.#horizontalMode(device)?.safeAreaInsets;
+    const cutout = this.#verticalMode(device)?.cutout;
+
+    this.#editorValues = {
+      title: device.title,
+      width: this.#toNumericInputValue(device.vertical.width),
+      height: this.#toNumericInputValue(device.vertical.height),
+      scale: this.#toNumericInputValue(device.deviceScaleFactor),
+      'user-agent': device.userAgent,
+      'ua-type': uaType,
+      'safe-area-left': this.#toNumericInputValue(safeAreaInsets?.left || 0),
+      'safe-area-top': this.#toNumericInputValue(safeAreaInsets?.top || 0),
+      'safe-area-right': this.#toNumericInputValue(safeAreaInsets?.right || 0),
+      'safe-area-bottom': this.#toNumericInputValue(safeAreaInsets?.bottom || 0),
+      'landscape-safe-area-left': this.#toNumericInputValue(landscapeSafeAreaInsets?.left || 0),
+      'landscape-safe-area-top': this.#toNumericInputValue(landscapeSafeAreaInsets?.top || 0),
+      'landscape-safe-area-right': this.#toNumericInputValue(landscapeSafeAreaInsets?.right || 0),
+      'landscape-safe-area-bottom': this.#toNumericInputValue(landscapeSafeAreaInsets?.bottom || 0),
+      'cutout-shape': cutout?.shape || NO_CUSTOM_CUTOUT,
+      'cutout-x': String(cutout?.x ?? ''),
+      'cutout-y': String(cutout?.y ?? ''),
+      'cutout-width': String(cutout?.width ?? ''),
+      'cutout-height': String(cutout?.height ?? ''),
+      'cutout-border-radius':
+          String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.PILL ? cutout.borderRadius : ''),
+      'cutout-upper-radius':
+          String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.upperRadius : ''),
+      'cutout-lower-radius':
+          String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.lowerRadius : ''),
+      'cutout-cx': String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.cx : ''),
+      'cutout-cy': String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.cy : ''),
+      'cutout-radius': String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.radius : ''),
+    };
+
+    this.#clientHintsMetaData = device.userAgentMetadata || undefined;
+    this.#clientHintsValue = {metaData: this.#clientHintsMetaData};
+    this.performUpdate();
+    this.#viewOutput.focusDeviceNameField?.();
+  }
+
+  commitEdit(): void {
+    const device = this.#editingDevice;
+    if (!device) {
+      return;
+    }
+    const isNew = this.#isNewDevice;
+
+    device.title = this.#editorValues.title.trim();
+    device.vertical.width = this.#editorValues.width ? parseInt(this.#editorValues.width, 10) : 0;
+    device.vertical.height = this.#editorValues.height ? parseInt(this.#editorValues.height, 10) : 0;
     device.horizontal.width = device.vertical.height;
     device.horizontal.height = device.vertical.width;
-    device.deviceScaleFactor = editor.control('scale').value ? parseFloat(editor.control('scale').value) : 0;
-    device.userAgent = editor.control('user-agent').value;
+    device.deviceScaleFactor = this.#editorValues.scale ? parseFloat(this.#editorValues.scale) : 0;
+    device.userAgent = this.#editorValues['user-agent'];
     device.modes = [];
     const verticalMode: EmulationModel.EmulatedDevices.Mode = {
       title: '',
       orientation: EmulationModel.EmulatedDevices.Vertical,
     };
     if (Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
-      const safeAreaInsets = this.safeAreaInsetsFromEditor(editor);
+      const safeAreaInsets = this.#safeAreaInsetsFromValues('');
       if (safeAreaInsets) {
         verticalMode.safeAreaInsets = safeAreaInsets;
       }
-      const cutout = this.cutoutFromEditor(editor);
+      const cutout = this.#cutoutFromValues();
       if (cutout) {
         verticalMode.cutout = cutout;
       }
@@ -456,14 +1026,14 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       orientation: EmulationModel.EmulatedDevices.Horizontal,
     };
     if (Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
-      const landscapeSafeAreaInsets = this.safeAreaInsetsFromEditor(editor, 'landscape-');
+      const landscapeSafeAreaInsets = this.#safeAreaInsetsFromValues('landscape-');
       if (landscapeSafeAreaInsets) {
         horizontalMode.safeAreaInsets = landscapeSafeAreaInsets;
       }
     }
     device.modes.push(horizontalMode);
     device.capabilities = [];
-    const uaType = editor.control('ua-type').value;
+    const uaType = this.#editorValues['ua-type'];
     if (uaType === EmulationModel.DeviceModeModel.UA.MOBILE ||
         uaType === EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH) {
       device.capabilities.push(EmulationModel.EmulatedDevices.Capability.MOBILE);
@@ -472,7 +1042,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         uaType === EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH) {
       device.capabilities.push(EmulationModel.EmulatedDevices.Capability.TOUCH);
     }
-    const userAgentControlValue = this.#userAgentClientHintsForm.value.metaData;
+    const userAgentControlValue = this.#clientHintsMetaData;
     const hasUserAgentOverride = device.userAgent.trim().length > 0;
     device.userAgentMetadata = null;
     if (hasUserAgentOverride && userAgentControlValue) {
@@ -483,84 +1053,65 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
              uaType === EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH),
       };
     }
+
+    this.#editingDevice = null;
+    this.#editingIndex = null;
+    this.#isNewDevice = false;
+    this.#editorValues = {...EMPTY_EDITOR_VALUES};
+    this.#clientHintsMetaData = undefined;
+    this.#clientHintsValue = {};
+    this.#showValidationErrors = false;
+
     if (isNew) {
-      this.emulatedDevicesList.addCustomDevice(device);
+      this.#emulatedDevicesList.addCustomDevice(device);
     } else {
-      this.emulatedDevicesList.saveCustomDevices();
+      this.#emulatedDevicesList.saveCustomDevices();
     }
-    this.addCustomButton.scrollIntoViewIfNeeded();
-    this.addCustomButton.focus();
-    this.ariaSuccessMessageElement.setAttribute(
-        'aria-label', i18nString(UIStrings.deviceAddedOrUpdated, {PH1: device.title}));
+    this.#successMessage = i18nString(UIStrings.deviceAddedOrUpdated, {PH1: device.title});
+    this.performUpdate();
+    this.#viewOutput.focusAddCustomButton?.();
   }
 
-  beginEdit(device: EmulationModel.EmulatedDevices.EmulatedDevice):
-      UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
-    const editor = this.createEditor();
-    editor.control('title').value = device.title;
-    editor.control('width').value = this.toNumericInputValue(device.vertical.width);
-    editor.control('height').value = this.toNumericInputValue(device.vertical.height);
-    editor.control('scale').value = this.toNumericInputValue(device.deviceScaleFactor);
-    editor.control('user-agent').value = device.userAgent;
-    if (Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
-      this.populateSafeAreaEditor(editor, device);
-      this.populateCutoutEditor(editor, device);
-    }
-    let uaType;
-    if (device.mobile()) {
-      uaType =
-          device.touch() ? EmulationModel.DeviceModeModel.UA.MOBILE : EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH;
-    } else {
-      uaType =
-          device.touch() ? EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH : EmulationModel.DeviceModeModel.UA.DESKTOP;
-    }
-    editor.control('ua-type').value = uaType;
-    this.#userAgentClientHintsForm.value = {metaData: device.userAgentMetadata || undefined};
-    return editor;
-  }
-
-  private safeAreaInsetsFromEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
-                                   controlPrefix = ''): EmulationModel.DeviceModeModel.Insets|null {
-    const left = this.editorIntegerValue(editor, `${controlPrefix}safe-area-left`);
-    const top = this.editorIntegerValue(editor, `${controlPrefix}safe-area-top`);
-    const right = this.editorIntegerValue(editor, `${controlPrefix}safe-area-right`);
-    const bottom = this.editorIntegerValue(editor, `${controlPrefix}safe-area-bottom`);
+  #safeAreaInsetsFromValues(controlPrefix: ''|'landscape-'): EmulationModel.DeviceModeModel.Insets|null {
+    const left = this.#editorIntegerValue(`${controlPrefix}safe-area-left`);
+    const top = this.#editorIntegerValue(`${controlPrefix}safe-area-top`);
+    const right = this.#editorIntegerValue(`${controlPrefix}safe-area-right`);
+    const bottom = this.#editorIntegerValue(`${controlPrefix}safe-area-bottom`);
     if (!left && !top && !right && !bottom) {
       return null;
     }
     return new EmulationModel.DeviceModeModel.Insets(left, top, right, bottom);
   }
 
-  private cutoutFromEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>):
-      EmulationModel.EmulatedDevices.Cutout|null {
-    const shape = editor.control('cutout-shape').value;
+  #cutoutFromValues(): EmulationModel.EmulatedDevices.Cutout|null {
+    const shape = this.#editorValues['cutout-shape'];
     const baseCutout = {
-      x: this.editorIntegerValue(editor, 'cutout-x'),
-      y: this.editorIntegerValue(editor, 'cutout-y'),
-      width: this.editorIntegerValue(editor, 'cutout-width'),
-      height: this.editorIntegerValue(editor, 'cutout-height'),
+      x: this.#editorIntegerValue('cutout-x'),
+      y: this.#editorIntegerValue('cutout-y'),
+      width: this.#editorIntegerValue('cutout-width'),
+      height: this.#editorIntegerValue('cutout-height'),
     };
     switch (shape) {
       case EmulationModel.EmulatedDevices.CutoutShape.PILL:
         return {
           shape,
           ...baseCutout,
-          borderRadius: this.editorIntegerValue(editor, 'cutout-border-radius'),
+          borderRadius: this.#editorIntegerValue('cutout-border-radius'),
         };
       case EmulationModel.EmulatedDevices.CutoutShape.NOTCH:
         return {
           shape,
           ...baseCutout,
-          upperRadius: this.editorIntegerValue(editor, 'cutout-upper-radius'),
-          lowerRadius: this.editorIntegerValue(editor, 'cutout-lower-radius'),
+          upperRadius: this.#editorIntegerValue('cutout-upper-radius'),
+          lowerRadius: this.#editorIntegerValue('cutout-lower-radius'),
         };
       case EmulationModel.EmulatedDevices.CutoutShape.CIRCLE:
         return {
           shape,
           ...baseCutout,
-          cx: this.editorIntegerValue(editor, 'cutout-cx'),
-          cy: this.editorIntegerValue(editor, 'cutout-cy'),
-          radius: this.editorIntegerValue(editor, 'cutout-radius'),
+          cx: this.#editorIntegerValue('cutout-cx'),
+          cy: this.#editorIntegerValue('cutout-cy'),
+          radius: this.#editorIntegerValue('cutout-radius'),
         };
       case EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE:
         return {shape, ...baseCutout};
@@ -569,211 +1120,68 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     }
   }
 
-  private populateSafeAreaEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
-                                 device: EmulationModel.EmulatedDevices.EmulatedDevice): void {
-    const safeAreaInsets = this.verticalMode(device)?.safeAreaInsets;
-    editor.control('safe-area-left').value = this.toNumericInputValue(safeAreaInsets?.left || 0);
-    editor.control('safe-area-top').value = this.toNumericInputValue(safeAreaInsets?.top || 0);
-    editor.control('safe-area-right').value = this.toNumericInputValue(safeAreaInsets?.right || 0);
-    editor.control('safe-area-bottom').value = this.toNumericInputValue(safeAreaInsets?.bottom || 0);
+  #validateEditor(showSafeAreaAndCutout: boolean): {
+    invalidFields: Set<EditorFieldName>,
+    isClientHintsInvalid: boolean,
+    errorMessages: string[],
+    hasErrors: boolean,
+  } {
+    const invalidFields = new Set<EditorFieldName>();
+    const errorMessages: string[] = [];
+    let hasErrors = false;
 
-    const landscapeSafeAreaInsets = this.horizontalMode(device)?.safeAreaInsets;
-    editor.control('landscape-safe-area-left').value = this.toNumericInputValue(landscapeSafeAreaInsets?.left || 0);
-    editor.control('landscape-safe-area-top').value = this.toNumericInputValue(landscapeSafeAreaInsets?.top || 0);
-    editor.control('landscape-safe-area-right').value = this.toNumericInputValue(landscapeSafeAreaInsets?.right || 0);
-    editor.control('landscape-safe-area-bottom').value = this.toNumericInputValue(landscapeSafeAreaInsets?.bottom || 0);
-  }
-
-  private populateCutoutEditor(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
-                               device: EmulationModel.EmulatedDevices.EmulatedDevice): void {
-    const cutout = this.verticalMode(device)?.cutout;
-    editor.control('cutout-shape').value = cutout?.shape || NO_CUSTOM_CUTOUT;
-    editor.control('cutout-x').value = String(cutout?.x ?? '');
-    editor.control('cutout-y').value = String(cutout?.y ?? '');
-    editor.control('cutout-width').value = String(cutout?.width ?? '');
-    editor.control('cutout-height').value = String(cutout?.height ?? '');
-    editor.control('cutout-border-radius').value =
-        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.PILL ? cutout.borderRadius : '');
-    editor.control('cutout-upper-radius').value =
-        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.upperRadius : '');
-    editor.control('cutout-lower-radius').value =
-        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH ? cutout.lowerRadius : '');
-    editor.control('cutout-cx').value =
-        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.cx : '');
-    editor.control('cutout-cy').value =
-        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.cy : '');
-    editor.control('cutout-radius').value =
-        String(cutout?.shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE ? cutout.radius : '');
-    this.updateCutoutFieldsVisibility(editor);
-  }
-
-  private updateCutoutFieldsVisibility(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>):
-      void {
-    const shape = editor.control('cutout-shape').value;
-    const noCutout = shape === NO_CUSTOM_CUTOUT;
-    const isPill = shape === EmulationModel.EmulatedDevices.CutoutShape.PILL;
-    const isNotch = shape === EmulationModel.EmulatedDevices.CutoutShape.NOTCH;
-    const isCircle = shape === EmulationModel.EmulatedDevices.CutoutShape.CIRCLE;
-    const content = editor.contentElement();
-    const rectRow = content.querySelector<HTMLElement>('.devices-edit-cutout-rect-row');
-    const radiusRow = content.querySelector<HTMLElement>('.devices-edit-cutout-radius-row');
-    if (rectRow) {
-      rectRow.hidden = noCutout;
-    }
-    if (radiusRow) {
-      radiusRow.hidden = noCutout || !(isPill || isNotch || isCircle);
-    }
-    (editor.control('cutout-border-radius') as HTMLElement).hidden = !isPill;
-    (editor.control('cutout-upper-radius') as HTMLElement).hidden = !isNotch;
-    (editor.control('cutout-lower-radius') as HTMLElement).hidden = !isNotch;
-    (editor.control('cutout-cx') as HTMLElement).hidden = !isCircle;
-    (editor.control('cutout-cy') as HTMLElement).hidden = !isCircle;
-    (editor.control('cutout-radius') as HTMLElement).hidden = !isCircle;
-  }
-
-  private createEditor(): UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
-    if (this.editor) {
-      return this.editor;
-    }
-
-    const editor = new UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>();
-    this.editor = editor;
-    const content = editor.contentElement();
-
-    const deviceFields = content.createChild('div', 'devices-edit-fields');
-    UI.UIUtils.createTextChild(deviceFields.createChild('b'), i18nString(UIStrings.device));
-    const deviceNameField = editor.createInput('title', 'text', i18nString(UIStrings.deviceName), titleValidator);
-    deviceFields.createChild('div', 'hbox').appendChild(deviceNameField);
-    deviceNameField.id = 'custom-device-name-field';
-    const screen = deviceFields.createChild('div', 'hbox');
-    screen.appendChild(editor.createInput('width', 'text', i18nString(UIStrings.width), widthValidator));
-    screen.appendChild(editor.createInput('height', 'text', i18nString(UIStrings.height), heightValidator));
-    const dpr = editor.createInput('scale', 'text', i18nString(UIStrings.devicePixelRatio), scaleValidator);
-    dpr.classList.add('device-edit-fixed');
-    screen.appendChild(dpr);
-
-    if (Root.Runtime.hostConfig.devToolsMobileSafeAreaEmulation?.enabled) {
-      this.appendSafeAreaFields(editor, deviceFields, i18nString(UIStrings.portraitSafeArea), '',
-                                portraitSafeAreaValidator);
-      this.appendSafeAreaFields(editor, deviceFields, i18nString(UIStrings.landscapeSafeArea), 'landscape-',
-                                landscapeSafeAreaValidator);
-      this.appendCutoutFields(editor, content, {
-        shape: cutoutShapeValidator,
-        x: cutoutXValidator,
-        y: cutoutYValidator,
-        width: cutoutWidthValidator,
-        height: cutoutHeightValidator,
-        pillRadius: cutoutPillRadiusValidator,
-        notchUpperRadius: cutoutNotchUpperRadiusValidator,
-        notchLowerRadius: cutoutNotchLowerRadiusValidator,
-        circleCenterX: cutoutCircleCenterXValidator,
-        circleCenterY: cutoutCircleCenterYValidator,
-        circleRadius: cutoutCircleRadiusValidator,
-      });
-    }
-
-    const uaStringFields = content.createChild('div', 'devices-edit-fields');
-    UI.UIUtils.createTextChild(uaStringFields.createChild('b'), i18nString(UIStrings.userAgentString));
-
-    const ua = uaStringFields.createChild('div', 'hbox');
-    ua.appendChild(editor.createInput('user-agent', 'text', i18nString(UIStrings.userAgentString), userAgentValidator));
-    const uaTypeOptions = [
-      EmulationModel.DeviceModeModel.UA.MOBILE,
-      EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH,
-      EmulationModel.DeviceModeModel.UA.DESKTOP,
-      EmulationModel.DeviceModeModel.UA.DESKTOP_TOUCH,
-    ];
-    const uaType = editor.createSelect('ua-type', uaTypeOptions, () => {
-      return {valid: true};
-    }, i18nString(UIStrings.userAgentType));
-    uaType.classList.add('device-edit-fixed');
-    ua.appendChild(uaType);
-
-    const uaMetadata = this.#userAgentClientHintsForm;
-    uaMetadata.value = {};
-    uaMetadata.addEventListener(EmulationComponents.UserAgentClientHintsForm.Events.CLIENT_HINTS_CHANGE,
-                                () => editor.requestValidation());
-    // The editor content is not in the DOM yet, so show the form as a root widget.
-    uaMetadata.show(content, undefined, /* suppressOrphanWidgetError= */ true);
-    editor.addCustomControl(uaMetadata.element, () => uaMetadata.validate());
-
-    return editor;
-
-    function userAgentValidator(
-        _item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      if (input.value.trim().length > 0) {
-        return {valid: true};
+    const recordResult = (field: EditorFieldName, result: UI.ListWidget.ValidatorResult): void => {
+      if (!result.valid) {
+        hasErrors = true;
+        invalidFields.add(field);
+        if (result.errorMessage) {
+          errorMessages.push(result.errorMessage);
+        }
       }
+    };
 
-      return {valid: false, errorMessage: i18nString(UIStrings.userAgentStringCannotBeEmpty)};
-    }
-
-    function titleValidator(
-        _item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      let valid = false;
-      let errorMessage;
-
-      const value = input.value.trim();
-      if (value.length >= EmulationModel.DeviceModeModel.MaxDeviceNameLength) {
-        errorMessage =
-            i18nString(UIStrings.deviceNameMustBeLessThanS, {PH1: EmulationModel.DeviceModeModel.MaxDeviceNameLength});
-      } else if (value.length === 0) {
-        errorMessage = i18nString(UIStrings.deviceNameCannotBeEmpty);
-      } else {
-        valid = true;
-      }
-
-      return {valid, errorMessage};
-    }
-
-    function widthValidator(
-        _item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return EmulationModel.DeviceModeModel.DeviceModeModel.widthValidator(input.value);
-    }
-
-    function heightValidator(
-        _item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return EmulationModel.DeviceModeModel.DeviceModeModel.heightValidator(input.value);
-    }
-
-    function scaleValidator(
-        _item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return EmulationModel.DeviceModeModel.DeviceModeModel.scaleValidator(input.value);
-    }
-
-    function nonNegativeIntegerValue(controlName: string): number|null {
-      return parseOptionalNonNegativeInteger(editor.control(controlName).value);
-    }
-
-    function positiveIntegerValue(controlName: string): number|null {
+    const values = this.#editorValues;
+    const nonNegativeIntegerValue = (controlName: EditorFieldName): number|null =>
+        parseOptionalNonNegativeInteger(values[controlName]);
+    const positiveIntegerValue = (controlName: EditorFieldName): number|null => {
       const value = nonNegativeIntegerValue(controlName);
       return value && value > 0 ? value : null;
-    }
-
-    function requiredIntegerValue(controlName: string): number|null {
-      const value = editor.control(controlName).value.trim();
+    };
+    const requiredIntegerValue = (controlName: EditorFieldName): number|null => {
+      const value = values[controlName].trim();
       return value ? parseOptionalNonNegativeInteger(value) : null;
-    }
+    };
+    const controlLabel = (field: EditorFieldName): string => FIELD_LABELS[field]?.() ?? '';
 
-    function controlLabel(input: UI.ListWidget.EditorControl): string {
-      return input.getAttribute('aria-label') || input.getAttribute('placeholder') || '';
-    }
+    const validateTitle = (): UI.ListWidget.ValidatorResult => {
+      const value = values.title.trim();
+      if (value.length >= EmulationModel.DeviceModeModel.MaxDeviceNameLength) {
+        return {
+          valid: false,
+          errorMessage: i18nString(UIStrings.deviceNameMustBeLessThanS,
+                                   {PH1: EmulationModel.DeviceModeModel.MaxDeviceNameLength}),
+        };
+      }
+      if (value.length === 0) {
+        return {valid: false, errorMessage: i18nString(UIStrings.deviceNameCannotBeEmpty)};
+      }
+      return {valid: true};
+    };
 
-    function safeAreaValidator(controlPrefix: string, orientationLabel: string, widthControlName: string,
-                               heightControlName: string,
-                               input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      const ownValue = parseOptionalNonNegativeInteger(input.value);
+    const validateSafeArea = (
+                                 controlPrefix: ''|'landscape-',
+                                 orientationLabel: string,
+                                 widthControlName: EditorFieldName,
+                                 heightControlName: EditorFieldName,
+                                 field: EditorFieldName,
+                                 ): UI.ListWidget.ValidatorResult => {
+      const ownValue = parseOptionalNonNegativeInteger(values[field]);
       if (ownValue === null) {
         return {
           valid: false,
           errorMessage: i18nString(UIStrings.safeAreaValueMustBeInRange, {
             PH1: orientationLabel,
-            PH2: input.getAttribute('aria-label') || input.getAttribute('placeholder') || '',
+            PH2: controlLabel(field),
             PH3: EmulationModel.DeviceModeModel.MaxDeviceSize,
           }),
         };
@@ -785,41 +1193,31 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       const bottom = nonNegativeIntegerValue(`${controlPrefix}safe-area-bottom`);
       const width = positiveIntegerValue(widthControlName);
       const height = positiveIntegerValue(heightControlName);
-      if (input === editor.control(`${controlPrefix}safe-area-right`) && left !== null && right !== null &&
-          width !== null && left + right > width) {
+      if (field === `${controlPrefix}safe-area-right` && left !== null && right !== null && width !== null &&
+          left + right > width) {
         return {
           valid: false,
           errorMessage: i18nString(UIStrings.safeAreaHorizontalInsetsExceedWidth, {PH1: orientationLabel}),
         };
       }
-      if (input === editor.control(`${controlPrefix}safe-area-bottom`) && top !== null && bottom !== null &&
-          height !== null && top + bottom > height) {
+      if (field === `${controlPrefix}safe-area-bottom` && top !== null && bottom !== null && height !== null &&
+          top + bottom > height) {
         return {
           valid: false,
           errorMessage: i18nString(UIStrings.safeAreaVerticalInsetsExceedHeight, {PH1: orientationLabel}),
         };
       }
       return {valid: true};
-    }
+    };
 
-    function portraitSafeAreaValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                       input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return safeAreaValidator('', i18nString(UIStrings.portraitSafeArea), 'width', 'height', input);
-    }
+    const isCutoutFieldActive = (shape?: EmulationModel.EmulatedDevices.CutoutShape): boolean => {
+      const selectedShape = values['cutout-shape'];
+      return selectedShape !== NO_CUSTOM_CUTOUT && (shape === undefined || selectedShape === shape);
+    };
 
-    function landscapeSafeAreaValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return safeAreaValidator('landscape-', i18nString(UIStrings.landscapeSafeArea), 'height', 'width', input);
-    }
-
-    function cutoutShapeValidator(): UI.ListWidget.ValidatorResult {
-      return {valid: true};
-    }
-
-    function cutoutValueValidator(input: UI.ListWidget.EditorControl,
-                                  mustBePositive = false): UI.ListWidget.ValidatorResult {
-      const label = controlLabel(input);
-      const value = input.value.trim();
+    const validateCutoutValue = (field: EditorFieldName, mustBePositive = false): UI.ListWidget.ValidatorResult => {
+      const label = controlLabel(field);
+      const value = values[field].trim();
       if (!value) {
         return {valid: false, errorMessage: i18nString(UIStrings.cutoutFieldRequired, {PH1: label})};
       }
@@ -837,187 +1235,135 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         return {valid: false, errorMessage: i18nString(UIStrings.cutoutValueMustBePositiveInteger, {PH1: label})};
       }
       return {valid: true};
-    }
+    };
 
-    function isCutoutFieldActive(shape?: EmulationModel.EmulatedDevices.CutoutShape): boolean {
-      const selectedShape = editor.control('cutout-shape').value;
-      return selectedShape !== NO_CUSTOM_CUTOUT && (shape === undefined || selectedShape === shape);
-    }
+    recordResult('title', validateTitle());
+    recordResult('width', EmulationModel.DeviceModeModel.DeviceModeModel.widthValidator(values.width));
+    recordResult('height', EmulationModel.DeviceModeModel.DeviceModeModel.heightValidator(values.height));
+    recordResult('scale', EmulationModel.DeviceModeModel.DeviceModeModel.scaleValidator(values.scale));
 
-    function cutoutXValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                              input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive() ? cutoutValueValidator(input) : {valid: true};
-    }
+    if (showSafeAreaAndCutout) {
+      const portraitLabel = i18nString(UIStrings.portraitSafeArea);
+      for (const field of ['safe-area-left', 'safe-area-top', 'safe-area-right', 'safe-area-bottom'] as const) {
+        recordResult(field, validateSafeArea('', portraitLabel, 'width', 'height', field));
+      }
 
-    function cutoutYValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                              input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive() ? cutoutValueValidator(input) : {valid: true};
-    }
+      const landscapeLabel = i18nString(UIStrings.landscapeSafeArea);
+      for (const field of ['landscape-safe-area-left',
+                           'landscape-safe-area-top',
+                           'landscape-safe-area-right',
+                           'landscape-safe-area-bottom',
+      ] as const) {
+        recordResult(field, validateSafeArea('landscape-', landscapeLabel, 'height', 'width', field));
+      }
 
-    function cutoutWidthValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                  input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      recordResult('cutout-shape', {valid: true});
+      recordResult('cutout-x', isCutoutFieldActive() ? validateCutoutValue('cutout-x') : {valid: true});
+      recordResult('cutout-y', isCutoutFieldActive() ? validateCutoutValue('cutout-y') : {valid: true});
+
       if (!isCutoutFieldActive()) {
-        return {valid: true};
-      }
-      const validation = cutoutValueValidator(input, true);
-      if (!validation.valid) {
-        return validation;
+        recordResult('cutout-width', {valid: true});
+      } else {
+        const widthValidation = validateCutoutValue('cutout-width', true);
+        if (!widthValidation.valid) {
+          recordResult('cutout-width', widthValidation);
+        } else {
+          const cutoutX = requiredIntegerValue('cutout-x');
+          const cutoutWidth = positiveIntegerValue('cutout-width');
+          const width = positiveIntegerValue('width');
+          if (width !== null && cutoutX !== null && cutoutWidth !== null && cutoutX + cutoutWidth > width) {
+            recordResult('cutout-width',
+                         {valid: false, errorMessage: i18nString(UIStrings.cutoutXAndWidthExceedDeviceWidth)});
+          } else {
+            recordResult('cutout-width', {valid: true});
+          }
+        }
       }
 
-      const cutoutX = requiredIntegerValue('cutout-x');
-      const cutoutWidth = positiveIntegerValue('cutout-width');
-      const width = positiveIntegerValue('width');
-      if (width !== null && cutoutX !== null && cutoutWidth !== null && cutoutX + cutoutWidth > width) {
-        return {valid: false, errorMessage: i18nString(UIStrings.cutoutXAndWidthExceedDeviceWidth)};
-      }
-      return {valid: true};
-    }
-
-    function cutoutHeightValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                   input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       if (!isCutoutFieldActive()) {
-        return {valid: true};
+        recordResult('cutout-height', {valid: true});
+      } else {
+        const heightValidation = validateCutoutValue('cutout-height', true);
+        if (!heightValidation.valid) {
+          recordResult('cutout-height', heightValidation);
+        } else {
+          const cutoutY = requiredIntegerValue('cutout-y');
+          const cutoutHeight = positiveIntegerValue('cutout-height');
+          const height = positiveIntegerValue('height');
+          if (height !== null && cutoutY !== null && cutoutHeight !== null && cutoutY + cutoutHeight > height) {
+            recordResult('cutout-height',
+                         {valid: false, errorMessage: i18nString(UIStrings.cutoutYAndHeightExceedDeviceHeight)});
+          } else {
+            recordResult('cutout-height', {valid: true});
+          }
+        }
       }
-      const validation = cutoutValueValidator(input, true);
-      if (!validation.valid) {
-        return validation;
-      }
 
-      const cutoutY = requiredIntegerValue('cutout-y');
-      const cutoutHeight = positiveIntegerValue('cutout-height');
-      const height = positiveIntegerValue('height');
-      if (height !== null && cutoutY !== null && cutoutHeight !== null && cutoutY + cutoutHeight > height) {
-        return {valid: false, errorMessage: i18nString(UIStrings.cutoutYAndHeightExceedDeviceHeight)};
-      }
-      return {valid: true};
-    }
+      recordResult('cutout-border-radius',
+                   isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.PILL) ?
+                       validateCutoutValue('cutout-border-radius') :
+                       {valid: true});
+      recordResult('cutout-upper-radius',
+                   isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.NOTCH) ?
+                       validateCutoutValue('cutout-upper-radius') :
+                       {valid: true});
+      recordResult('cutout-lower-radius',
+                   isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.NOTCH) ?
+                       validateCutoutValue('cutout-lower-radius') :
+                       {valid: true});
+      recordResult('cutout-cx',
+                   isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE) ?
+                       validateCutoutValue('cutout-cx') :
+                       {valid: true});
+      recordResult('cutout-cy',
+                   isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE) ?
+                       validateCutoutValue('cutout-cy') :
+                       {valid: true});
 
-    function cutoutPillRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                       input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.PILL) ? cutoutValueValidator(input) :
-                                                                                    {valid: true};
-    }
-
-    function cutoutNotchUpperRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                             input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.NOTCH) ? cutoutValueValidator(input) :
-                                                                                     {valid: true};
-    }
-
-    function cutoutNotchLowerRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                             input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.NOTCH) ? cutoutValueValidator(input) :
-                                                                                     {valid: true};
-    }
-
-    function cutoutCircleCenterXValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                          input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE) ? cutoutValueValidator(input) :
-                                                                                      {valid: true};
-    }
-
-    function cutoutCircleCenterYValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                          input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      return isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE) ? cutoutValueValidator(input) :
-                                                                                      {valid: true};
-    }
-
-    function cutoutCircleRadiusValidator(_item: EmulationModel.EmulatedDevices.EmulatedDevice, _index: number,
-                                         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       if (!isCutoutFieldActive(EmulationModel.EmulatedDevices.CutoutShape.CIRCLE)) {
-        return {valid: true};
+        recordResult('cutout-radius', {valid: true});
+      } else {
+        const radiusValidation = validateCutoutValue('cutout-radius', true);
+        if (!radiusValidation.valid) {
+          recordResult('cutout-radius', radiusValidation);
+        } else {
+          const cutoutX = requiredIntegerValue('cutout-x');
+          const cutoutY = requiredIntegerValue('cutout-y');
+          const cutoutWidth = positiveIntegerValue('cutout-width');
+          const cutoutHeight = positiveIntegerValue('cutout-height');
+          const centerX = requiredIntegerValue('cutout-cx');
+          const centerY = requiredIntegerValue('cutout-cy');
+          const radius = positiveIntegerValue('cutout-radius');
+          if (cutoutX !== null && cutoutY !== null && cutoutWidth !== null && cutoutHeight !== null &&
+              centerX !== null && centerY !== null && radius !== null &&
+              (centerX - radius < cutoutX || centerX + radius > cutoutX + cutoutWidth || centerY - radius < cutoutY ||
+               centerY + radius > cutoutY + cutoutHeight)) {
+            recordResult('cutout-radius',
+                         {valid: false, errorMessage: i18nString(UIStrings.circleMustFitCutoutBounds)});
+          } else {
+            recordResult('cutout-radius', {valid: true});
+          }
+        }
       }
-      const validation = cutoutValueValidator(input, true);
-      if (!validation.valid) {
-        return validation;
-      }
-
-      const cutoutX = requiredIntegerValue('cutout-x');
-      const cutoutY = requiredIntegerValue('cutout-y');
-      const cutoutWidth = positiveIntegerValue('cutout-width');
-      const cutoutHeight = positiveIntegerValue('cutout-height');
-      const centerX = requiredIntegerValue('cutout-cx');
-      const centerY = requiredIntegerValue('cutout-cy');
-      const radius = positiveIntegerValue('cutout-radius');
-      if (cutoutX !== null && cutoutY !== null && cutoutWidth !== null && cutoutHeight !== null && centerX !== null &&
-          centerY !== null && radius !== null &&
-          (centerX - radius < cutoutX || centerX + radius > cutoutX + cutoutWidth || centerY - radius < cutoutY ||
-           centerY + radius > cutoutY + cutoutHeight)) {
-        return {valid: false, errorMessage: i18nString(UIStrings.circleMustFitCutoutBounds)};
-      }
-      return {valid: true};
     }
-  }
 
-  private appendSafeAreaFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
-                               deviceFields: HTMLElement, title: string, controlPrefix: string,
-                               safeAreaValidator:
-                                   (item: EmulationModel.EmulatedDevices.EmulatedDevice, index: number,
-                                    input: UI.ListWidget.EditorControl) => UI.ListWidget.ValidatorResult): void {
-    const safeAreaGroup = deviceFields.createChild('div', 'devices-edit-safe-area-group');
-    UI.ARIAUtils.markAsGroup(safeAreaGroup);
-    const heading = safeAreaGroup.createChild('b');
-    heading.id = UI.ARIAUtils.nextId('safe-area-heading-');
-    UI.UIUtils.createTextChild(heading, title);
-    safeAreaGroup.setAttribute('aria-labelledby', heading.id);
-    const safeAreaRow = safeAreaGroup.createChild('div', 'hbox');
-    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-left`, 'text',
-                                               i18nString(UIStrings.safeAreaLeft), safeAreaValidator));
-    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-top`, 'text',
-                                               i18nString(UIStrings.safeAreaTop), safeAreaValidator));
-    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-right`, 'text',
-                                               i18nString(UIStrings.safeAreaRight), safeAreaValidator));
-    safeAreaRow.appendChild(editor.createInput(`${controlPrefix}safe-area-bottom`, 'text',
-                                               i18nString(UIStrings.safeAreaBottom), safeAreaValidator));
-  }
+    recordResult('user-agent',
+                 values['user-agent'].trim().length > 0 ?
+                     {valid: true} :
+                     {valid: false, errorMessage: i18nString(UIStrings.userAgentStringCannotBeEmpty)});
+    recordResult('ua-type', {valid: true});
 
-  private appendCutoutFields(editor: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>,
-                             content: Element, validators: CutoutFieldValidators): void {
-    const cutoutFields = content.createChild('div', 'devices-edit-fields');
-    cutoutFields.classList.add('devices-edit-cutout-fields');
-    UI.ARIAUtils.markAsGroup(cutoutFields);
-    const heading = cutoutFields.createChild('b');
-    heading.id = UI.ARIAUtils.nextId('cutout-heading-');
-    UI.UIUtils.createTextChild(heading, i18nString(UIStrings.displayCutout));
-    cutoutFields.setAttribute('aria-labelledby', heading.id);
-    const shapeOptions = [
-      NO_CUSTOM_CUTOUT,
-      EmulationModel.EmulatedDevices.CutoutShape.PILL,
-      EmulationModel.EmulatedDevices.CutoutShape.NOTCH,
-      EmulationModel.EmulatedDevices.CutoutShape.CIRCLE,
-      EmulationModel.EmulatedDevices.CutoutShape.RECTANGLE,
-    ];
-    const shapeControl =
-        editor.createSelect('cutout-shape', shapeOptions, validators.shape, i18nString(UIStrings.displayCutout));
-    shapeControl.options[0].textContent = i18nString(UIStrings.noDisplayCutout);
-    shapeControl.options[1].textContent = i18nString(UIStrings.pillDisplayCutout);
-    shapeControl.options[2].textContent = i18nString(UIStrings.notchDisplayCutout);
-    shapeControl.options[3].textContent = i18nString(UIStrings.circleDisplayCutout);
-    shapeControl.options[4].textContent = i18nString(UIStrings.rectangleDisplayCutout);
-    cutoutFields.createChild('div', 'hbox').appendChild(shapeControl);
-    shapeControl.addEventListener('input', () => this.updateCutoutFieldsVisibility(editor), false);
+    let isClientHintsInvalid = false;
+    const clientHintsResult = EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm.validateMetaData(
+        this.#clientHintsMetaData);
+    if (!clientHintsResult.valid) {
+      hasErrors = true;
+      isClientHintsInvalid = true;
+      if (clientHintsResult.errorMessage) {
+        errorMessages.push(clientHintsResult.errorMessage);
+      }
+    }
 
-    const rectRow = cutoutFields.createChild('div', 'hbox devices-edit-cutout-rect-row');
-    rectRow.appendChild(editor.createInput('cutout-x', 'text', i18nString(UIStrings.cutoutX), validators.x));
-    rectRow.appendChild(editor.createInput('cutout-y', 'text', i18nString(UIStrings.cutoutY), validators.y));
-    rectRow.appendChild(
-        editor.createInput('cutout-width', 'text', i18nString(UIStrings.cutoutWidth), validators.width));
-    rectRow.appendChild(
-        editor.createInput('cutout-height', 'text', i18nString(UIStrings.cutoutHeight), validators.height));
-
-    const radiusRow = cutoutFields.createChild('div', 'hbox devices-edit-cutout-radius-row');
-    radiusRow.appendChild(editor.createInput('cutout-border-radius', 'text', i18nString(UIStrings.cutoutBorderRadius),
-                                             validators.pillRadius));
-    radiusRow.appendChild(editor.createInput('cutout-upper-radius', 'text', i18nString(UIStrings.cutoutUpperRadius),
-                                             validators.notchUpperRadius));
-    radiusRow.appendChild(editor.createInput('cutout-lower-radius', 'text', i18nString(UIStrings.cutoutLowerRadius),
-                                             validators.notchLowerRadius));
-    radiusRow.appendChild(
-        editor.createInput('cutout-cx', 'text', i18nString(UIStrings.cutoutCenterX), validators.circleCenterX));
-    radiusRow.appendChild(
-        editor.createInput('cutout-cy', 'text', i18nString(UIStrings.cutoutCenterY), validators.circleCenterY));
-    radiusRow.appendChild(
-        editor.createInput('cutout-radius', 'text', i18nString(UIStrings.cutoutRadius), validators.circleRadius));
-    this.updateCutoutFieldsVisibility(editor);
+    return {invalidFields, isClientHintsInvalid, errorMessages, hasErrors};
   }
 }

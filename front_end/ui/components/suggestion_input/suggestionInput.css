@@ -57,11 +57,11 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
   min-height: 1em;
-  min-width: 150px;
+  min-width: var(--sys-size-23);
   overflow: hidden auto;
   position: relative;
   z-index: 100;
-  max-height: 350px;
+  max-height: var(--sys-size-32);
 }
 
 .suggestions > li {

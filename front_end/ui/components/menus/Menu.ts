@@ -143,7 +143,7 @@ export class Menu extends HTMLElement {
   connectedCallback(): void {
     void RenderCoordinator.write(() => {
       this.style.setProperty('--selected-item-check', `url(${selectedItemCheckmark})`);
-      this.style.setProperty('--menu-checkmark-width', this.#props.showSelectedItem ? '26px' : '0px');
+      this.style.setProperty('--menu-checkmark-width', this.#props.showSelectedItem ? 'var(--sys-size-8)' : '0px');
       this.style.setProperty('--menu-checkmark-height', this.#props.showSelectedItem ? '12px' : '0px');
       const dividerLine = this.showDivider ? '1px var(--divider-line) solid' : 'none';
       this.style.setProperty('--override-divider-line', dividerLine);

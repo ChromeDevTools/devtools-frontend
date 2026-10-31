@@ -42,7 +42,7 @@
   display: inline-block;
   mask-repeat: no-repeat;
   mask-position: center;
-  width: calc(var(--menu-checkmark-width) - 10px);
+  width: var(--menu-checkmark-width);
   height: var(--menu-checkmark-height);
   mask-image: var(--selected-item-check);
   background: var(--sys-color-token-subtle);

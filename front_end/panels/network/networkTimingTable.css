@@ -237,7 +237,7 @@ tr.synthetic {
 .network-timing-bar.ssl,
 .network-timing-bar.connecting,
 .network-timing-bar.blocking {
-  height: 10px;
+  height: var(--sys-size-5);
   margin: auto;
 }
 

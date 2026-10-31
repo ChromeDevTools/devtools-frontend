@@ -33,7 +33,7 @@
 .item {
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
+  padding-left: var(--sys-size-5);
 }
 
 .condition,

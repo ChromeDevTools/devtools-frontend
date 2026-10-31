@@ -89,7 +89,7 @@
 
 .overlay-type-CANDY_STRIPED_TIME_RANGE {
   --red-stripe-width: var(--sys-size-2);
-  --white-stripe-width: 7px;
+  --white-stripe-width: var(--sys-size-4);
 
   background-image:
     repeating-linear-gradient(

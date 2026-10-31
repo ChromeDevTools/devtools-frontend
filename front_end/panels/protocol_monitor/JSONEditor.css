@@ -22,7 +22,8 @@
 }
 
 .warning-icon {
-  margin-left: -18px;
+  /* -18px: shift left by the 14px small icon (--sys-size-7) plus its 4px right margin (--sys-size-3). */
+  margin-left: calc(-1 * (var(--sys-size-7) + var(--sys-size-3)));
   margin-right: var(--sys-size-3);
 }
 

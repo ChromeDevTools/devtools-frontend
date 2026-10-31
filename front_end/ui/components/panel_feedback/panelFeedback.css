@@ -24,10 +24,10 @@ h2 {
   font-size: var(--sys-typescale-body3-size);
   line-height: var(--sys-typescale-body3-line-height);
   letter-spacing: 0.01em;
-  margin: 9px 0 var(--sys-size-7);
+  margin: var(--sys-size-5) 0 var(--sys-size-7);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--sys-size-3);
   font-weight: normal;
 }
 

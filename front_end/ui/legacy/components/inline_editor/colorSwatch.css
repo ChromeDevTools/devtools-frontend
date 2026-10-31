@@ -19,13 +19,12 @@
   display: inline-block;
   user-select: none;
   background-image: var(--image-file-checker);
-  line-height: 10px;
 }
 
 .color-swatch-inner {
   width: 100%;
   height: 100%;
-  display: inline-block;
+  display: block;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   box-sizing: border-box;
   cursor: pointer;

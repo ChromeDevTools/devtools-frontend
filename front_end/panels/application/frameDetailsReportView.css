@@ -46,11 +46,6 @@ devtools-button.help-button {
   position: relative;
 }
 
-button.text-link {
-  padding-left: var(--sys-size-2);
-  height: 26px;
-}
-
 .inline-button {
   padding-left: 1ex;
 }

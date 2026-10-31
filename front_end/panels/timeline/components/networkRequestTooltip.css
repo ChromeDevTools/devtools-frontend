@@ -10,8 +10,8 @@
   }
 
   .url {
-    margin-left: 15px;
-    margin-right: 5px;
+    margin-left: var(--sys-size-7);
+    margin-right: var(--sys-size-3);
   }
 
   .url--host {

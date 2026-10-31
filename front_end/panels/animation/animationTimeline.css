@@ -146,7 +146,7 @@ circle.animation-keyframe-point:active {
 
 .animation-timeline-current-time {
   flex: 0 0 auto;
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .animation-grid-header {

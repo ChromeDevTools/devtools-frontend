@@ -99,7 +99,7 @@
 }
 
 .environment-recs {
-  margin: 9px 0;
+  margin: var(--sys-size-5) 0;
 }
 
 .environment-recs > summary {

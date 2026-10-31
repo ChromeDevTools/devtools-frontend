@@ -202,7 +202,7 @@
   display: flex;
   flex-direction: column;
   margin: var(--sys-size-3);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
 
   /* Console ANSI color */
   --console-color-black: #000;

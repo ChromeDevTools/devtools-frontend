@@ -47,14 +47,6 @@ devtools-report-value {
   flex-shrink: 0;
 }
 
-.report-line {
-  grid-column-start: span 2;
-  display: flex;
-  align-items: center;
-  margin: 0 30px;
-  line-height: 26px;
-}
-
 .report-key {
   color: var(--sys-color-token-subtle);
   min-width: auto;

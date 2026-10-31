@@ -260,12 +260,12 @@ input::placeholder {
 
 /* Radio inputs */
 input[type='radio'] {
-  height: 17px;
-  width: 17px;
-  min-width: 17px;
+  height: var(--sys-size-8);
+  width: var(--sys-size-8);
+  min-width: var(--sys-size-8);
   border-radius: var(--sys-shape-corner-small);
   vertical-align: sub;
-  margin: 0 5px 5px 0;
+  margin: 0 var(--sys-size-4) var(--sys-size-4) 0;
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
 

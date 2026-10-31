@@ -88,7 +88,7 @@
 
 .security-origin-view .sct-details .details-table .details-table-row:last-child td:last-child {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-  padding-bottom: 10px;
+  padding-bottom: var(--sys-size-5);
 }
 
 .security-origin-view .sct-details .details-table:last-child .details-table-row:last-child td:last-child {

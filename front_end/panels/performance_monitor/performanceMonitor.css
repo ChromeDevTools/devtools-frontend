@@ -74,7 +74,7 @@
 }
 
 .perfmon-indicator-value {
-  flex: 0 0 55px;
+  flex: 0 0 var(--sys-size-17);
   text-align: right;
   overflow: visible;
   align-self: center;

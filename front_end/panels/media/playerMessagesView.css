@@ -77,7 +77,7 @@
 }
 
 .status-error-field-label {
-  padding-right: 10px;
+  padding-right: var(--sys-size-5);
   color: var(--sys-color-token-subtle);
 }
 

@@ -368,7 +368,7 @@
   }
 
   details h3 {
-    font-size: 10px;
+    font-size: var(--sys-typescale-body5-size);
     font-weight: var(--ref-typeface-weight-medium);
     text-transform: uppercase;
     color: var(--sys-color-on-surface-subtle);

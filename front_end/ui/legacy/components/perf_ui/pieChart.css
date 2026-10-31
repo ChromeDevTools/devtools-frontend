@@ -34,7 +34,6 @@
 
 .pie-chart-total {
   margin: auto;
-  padding: var(--sys-size-2) 5px;
   pointer-events: auto;
 }
 

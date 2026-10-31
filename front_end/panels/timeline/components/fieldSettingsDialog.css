@@ -110,7 +110,7 @@ devtools-link {
 }
 
 .divider {
-  margin: 10px 0;
+  margin: var(--sys-size-5) 0;
   border: none;
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }

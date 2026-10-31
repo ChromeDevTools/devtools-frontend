@@ -128,11 +128,11 @@
   bottom: 0;
 
   &.overlap-1 {
-    bottom: 55px;
+    bottom: var(--sys-size-17);
   }
 
   &.overlap-2 {
-    bottom: 105px;
+    bottom: var(--sys-size-20);
   }
 }
 

@@ -62,13 +62,6 @@
   cy: var(--sys-size-5);
 }
 
-.is-start-of-group:not(:first-of-type) .circle-icon {
-  r: 7px;
-  fill: var(--sys-color-cdt-base-container);
-  stroke: var(--sys-color-primary);
-  stroke-width: var(--sys-size-2);
-}
-
 .step.is-success .circle-icon {
   fill: var(--sys-color-primary);
   stroke: var(--sys-color-primary);

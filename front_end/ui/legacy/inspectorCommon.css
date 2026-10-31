@@ -613,7 +613,9 @@ button.link:focus-visible {
 .data-grid-data-grid-node button.link:focus-visible {
   border-radius: var(--sys-shape-corner-extra-small);
   padding: 0;
-  margin-top: 3px;
+  /* 4px focus ring clearance (--sys-size-3: 2px outline + 2px outline-offset)
+     minus 1px data-grid cell top padding (--sys-size-1) = 3px. */
+  margin-top: calc(var(--sys-size-3) - var(--sys-size-1));
 }
 
 @media (forced-colors: active) {

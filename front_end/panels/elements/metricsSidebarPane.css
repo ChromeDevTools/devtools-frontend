@@ -99,8 +99,8 @@
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px;
-  margin: 3px;
+  padding: var(--sys-size-2);
+  margin: var(--sys-size-2);
   min-width: var(--sys-size-19);
   overflow: visible;
 }

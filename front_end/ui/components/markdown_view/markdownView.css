@@ -57,10 +57,6 @@ devtools-code-block.animating {
   padding-inline-start: var(--sys-size-8);
 }
 
-.message ul ul {
-  padding-inline-start: 19px;
-}
-
 .message li {
   margin-top: var(--sys-size-5);
   display: list-item;

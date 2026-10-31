@@ -78,5 +78,5 @@
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
   margin: 0;
-  padding: var(--sys-size-5) 9px;
+  padding: var(--sys-size-5);
 }

@@ -669,7 +669,7 @@ button.link:focus-visible {
 }
 
 .adorner-container devtools-adorner {
-  margin-left: 3px;
+  margin-left: var(--sys-size-2);
 }
 
 :host-context(.theme-with-dark-background) devtools-adorner {

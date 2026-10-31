@@ -62,7 +62,7 @@
 }
 
 .timeline-minimap #timeline-overview-responsiveness {
-  flex-basis: 5px;
+  flex-basis: var(--sys-size-4);
   margin-top: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 

@@ -100,10 +100,6 @@
   margin-left: 126px;
 }
 
-.security-origin-view .sct-toggle {
-  margin-left: 145px;
-  padding-top: 5px;
-}
 
 .security-origin-view .details-table .empty-san {
   color: var(--sys-color-state-disabled);

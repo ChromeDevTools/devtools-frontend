@@ -63,10 +63,6 @@
   cursor: pointer;
 }
 
-.button:focus-visible {
-  outline: auto 5px -webkit-focus-ring-color;
-}
-
 .button devtools-icon {
   color: var(--icon-default);
 }

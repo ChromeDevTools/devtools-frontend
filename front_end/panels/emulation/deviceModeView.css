@@ -235,7 +235,6 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeVertical);
   margin-bottom: calc(-1 * var(--sys-size-2));
-  width: 26px;
   height: var(--sys-size-4);
 }
 

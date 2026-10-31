@@ -222,7 +222,6 @@ devtools-toolbar.device-mode-toolbar-options {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeHorizontal);
   width: var(--sys-size-4);
-  height: 26px;
 }
 
 .device-mode-left-resizer > div {

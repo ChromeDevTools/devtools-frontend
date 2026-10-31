@@ -30,7 +30,7 @@
 }
 
 .service-worker-version:not(:last-child) {
-  margin-bottom: 7px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .service-worker-version-string {

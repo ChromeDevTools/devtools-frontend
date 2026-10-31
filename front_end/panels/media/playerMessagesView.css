@@ -47,7 +47,7 @@
 }
 
 .media-message-warning {
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-surface-yellow);
   color: var(--sys-color-on-surface-yellow);
 }

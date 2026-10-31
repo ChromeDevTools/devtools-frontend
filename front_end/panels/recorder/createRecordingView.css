@@ -30,14 +30,14 @@ h1 {
   font-weight: 500;
   font-size: var(--sys-typescale-body5-size);
   line-height: var(--sys-typescale-body5-line-height);
-  letter-spacing: 0.8px;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--sys-color-secondary);
   margin-bottom: var(--sys-size-5);
   margin-top: var(--sys-size-13);
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--sys-size-3);
 }
 
 .footer {

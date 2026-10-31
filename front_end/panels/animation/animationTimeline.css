@@ -387,7 +387,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview:focus-visible {
-  outline: -webkit-focus-ring-color auto 5px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 }
 
 .animation-buffer-preview.selected .preview-icon {

@@ -27,7 +27,8 @@
 
 .media-messages-level-dropdown-checkbox {
   float: left;
-  width: 18px;
+  /* 16px checkmark slot (--sys-size-8) plus 2px left padding (--sys-size-2) under border-box sizing. */
+  width: calc(var(--sys-size-8) + var(--sys-size-2));
   height: 100%;
   padding-left: var(--sys-size-2);
 }

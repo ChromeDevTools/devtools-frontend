@@ -19,7 +19,7 @@
 
 .network-config-title {
   margin-right: var(--sys-size-8);
-  width: 130px;
+  width: var(--sys-size-21);
 }
 
 .network-config-fields {

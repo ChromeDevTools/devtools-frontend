@@ -59,10 +59,10 @@
 
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
   display: block;
-  left: 3px;
-  right: 3px;
+  left: var(--sys-size-2);
+  right: var(--sys-size-2);
   background-color: var(--sys-color-state-hover-on-subtle);
-  border-radius: 5px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {

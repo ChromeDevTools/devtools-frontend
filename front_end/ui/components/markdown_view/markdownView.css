@@ -96,7 +96,7 @@ devtools-code-block.animating {
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-color: var(--code-background-color, var(--sys-color-surface4));
   border-radius: var(--sys-size-2);
-  padding: var(--sys-size-1) 3px;
+  padding: var(--sys-size-1) var(--sys-size-3);
 }
 
 devtools-code-block {

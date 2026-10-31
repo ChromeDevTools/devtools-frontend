@@ -19,7 +19,6 @@ export declare class VersionController {
      * IMPORTANT: All migrations must be idempotent since they might be applied multiple times.
      */
     updateVersion(): void;
-    private methodsToRunToUpdateVersion;
     updateVersionFrom0To1(): void;
     updateVersionFrom1To2(): void;
     updateVersionFrom2To3(): void;
@@ -80,6 +79,4 @@ export declare class VersionController {
     updateVersionFrom44To45(): void;
     updateVersionFrom45To46(): void;
     updateVersionFrom46To47(): void;
-    private migrateSettingsFromLocalStorage;
-    private clearBreakpointsWhenTooMany;
 }

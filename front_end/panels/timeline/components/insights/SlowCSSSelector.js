@@ -19,7 +19,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
     hasAskAiSupport() {
         return true;
     }
-    async toSourceFileLocation(cssModel, selector) {
+    async #toSourceFileLocation(cssModel, selector) {
         if (!cssModel) {
             return undefined;
         }
@@ -49,14 +49,14 @@ export class SlowCSSSelector extends BaseInsightComponent {
         });
         return locations;
     }
-    async getSelectorLinks(cssModel, selector) {
+    async #getSelectorLinks(cssModel, selector) {
         if (!cssModel) {
             return Lit.nothing;
         }
         if (!selector.style_sheet_id) {
             return Lit.nothing;
         }
-        const locations = await this.toSourceFileLocation(cssModel, selector);
+        const locations = await this.#toSourceFileLocation(cssModel, selector);
         if (!locations) {
             return Lit.nothing;
         }
@@ -104,7 +104,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                     insight: this,
                     headers: [`${i18nString(UIStrings.topSelectorElapsedTime)}: ${time(Trace.Types.Timing.Micro(selector['elapsed (us)']))}`],
                     rows: [{
-                            values: [html `${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
+                            values: [html `${selector.selector} ${Lit.Directives.until(this.#getSelectorLinks(cssModel, selector))}`]
                         }],
                 }
             })}
@@ -122,7 +122,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                     insight: this,
                     headers: [`${i18nString(UIStrings.topSelectorMatchAttempt)}: ${selector['match_attempts']}`],
                     rows: [{
-                            values: [html `${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`],
+                            values: [html `${selector.selector} ${Lit.Directives.until(this.#getSelectorLinks(cssModel, selector))}`],
                         }],
                 }
             })}

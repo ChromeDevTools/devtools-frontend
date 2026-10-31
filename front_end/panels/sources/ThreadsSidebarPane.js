@@ -46,7 +46,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
         this.#view = view;
         const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
         this.#selectedModel = currentTarget?.model(SDK.DebuggerModel.DebuggerModel) ?? null;
-        UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.targetFlavorChanged, this);
+        UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.#targetFlavorChanged, this);
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
     }
     static shouldBeShown() {
@@ -98,7 +98,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
         SDK.TargetManager.TargetManager.instance().removeEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.#targetNameChanged);
         this.requestUpdate();
     }
-    targetFlavorChanged({ data: target }) {
+    #targetFlavorChanged({ data: target }) {
         this.#selectedModel = target.model(SDK.DebuggerModel.DebuggerModel);
         this.requestUpdate();
     }

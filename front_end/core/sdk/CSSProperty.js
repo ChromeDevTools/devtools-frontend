@@ -83,7 +83,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
         matchers.push(new CSSWideKeywordMatcher(this, matchedStyles), new ImportantMatcher());
         return matchers;
     }
-    ensureRanges() {
+    #ensureRanges() {
         if (this.#nameRange && this.#valueRange) {
             return;
         }
@@ -112,11 +112,11 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     nameRange() {
-        this.ensureRanges();
+        this.#ensureRanges();
         return this.#nameRange;
     }
     valueRange() {
-        this.ensureRanges();
+        this.#ensureRanges();
         return this.#valueRange;
     }
     rebase(edit) {
@@ -167,7 +167,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
         }
         const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
         const indentation = this.ownerStyle.cssText ?
-            this.detectIndentation(this.ownerStyle.cssText) :
+            this.#detectIndentation(this.ownerStyle.cssText) :
             this.ownerStyle.cssModel().target().targetManager().settings.resolve(textEditorIndentSettingDescriptor).get();
         const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
         const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
@@ -250,7 +250,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
             return cssMetadata().isCSSPropertyName(propertyName);
         }
     }
-    detectIndentation(text) {
+    #detectIndentation(text) {
         const lines = text.split('\n');
         if (lines.length < 2) {
             return '';

@@ -4948,6 +4948,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   selectableChildren;
   // Trees rendering logged DOM nodes; they follow the message visibility.
   domTreeWidgets = [];
+  // Stack trace previews are also root widgets and follow the message visibility.
+  stackTracePreviews = [];
   messageResized;
   // The wrapper that contains consoleRowWrapper and other elements in a column.
   elementInternal;
@@ -5034,6 +5036,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     for (const domTree of this.domTreeWidgets) {
       domTree.wasShown();
     }
+    for (const stackTracePreview of this.stackTracePreviews) {
+      stackTracePreview.wasShown();
+    }
     if (this.elementInternal && this.#teaser) {
       this.#teaser.show(this.elementInternal, this.consoleRowWrapper);
     }
@@ -5045,6 +5050,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     this.cachedHeight = this.element().offsetHeight;
     for (const domTree of this.domTreeWidgets) {
       domTree.willHide();
+    }
+    for (const stackTracePreview of this.stackTracePreviews) {
+      stackTracePreview.willHide();
     }
     if (this.#teaser) {
       const { okToRemove } = this.#teaser.abortTeaserGeneration();
@@ -5373,6 +5381,10 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     stackTracePreview.markAsRoot();
     stackTracePreview.show(stackTraceElement);
+    this.stackTracePreviews.push(stackTracePreview);
+    if (!this.isVisibleInternal) {
+      stackTracePreview.willHide();
+    }
     UI3.ARIAUtils.setLabel(
       contentElement,
       `${messageElement.textContent} ${i18nString2(UIStrings2.stackMessageCollapsed)}`
@@ -7892,7 +7904,7 @@ var ConsolePinPane = class extends UI6.Widget.VBox {
     super.willHide();
     this.#pinModel.stopPeriodicEvaluate();
   }
-  contextMenuEventFired(event) {
+  #contextMenuEventFired(event) {
     const contextMenu = new UI6.ContextMenu.ContextMenu(event);
     const target = UI6.UIUtils.deepElementFromEvent(event);
     if (target) {
@@ -7911,12 +7923,12 @@ var ConsolePinPane = class extends UI6.Widget.VBox {
     }
     contextMenu.editSection().appendItem(
       i18nString3(UIStrings3.removeAllExpressions),
-      this.removeAllPins.bind(this),
+      this.#removeAllPins.bind(this),
       { jslogContext: "remove-all-expressions" }
     );
     void contextMenu.show();
   }
-  removeAllPins() {
+  #removeAllPins() {
     this.#pinModel.removeAll();
     this.requestUpdate();
   }
@@ -7942,7 +7954,7 @@ var ConsolePinPane = class extends UI6.Widget.VBox {
         pins: [...this.#pinModel.pins],
         focusOut: this.#focusOut,
         onRemove: (pin) => this.removePin(pin),
-        onContextMenu: this.contextMenuEventFired.bind(this)
+        onContextMenu: this.#contextMenuEventFired.bind(this)
       },
       void 0,
       this.contentElement

@@ -15,8 +15,6 @@ export declare class ConsolePinPane extends UI.Widget.VBox {
     #private;
     constructor(focusOut: () => void, view?: (input: PaneViewInput, _output: undefined, target: HTMLElement) => void);
     willHide(): void;
-    private contextMenuEventFired;
-    private removeAllPins;
     removePin(pin: ConsolePin): void;
     addPin(expression: string, userGesture?: boolean): void;
     wasShown(): void;

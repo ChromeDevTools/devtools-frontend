@@ -35,14 +35,14 @@ export class CSSWorkspaceBinding {
     get modelToInfo() {
         return this.#modelToInfo;
     }
-    getCSSModelInfo(cssModel) {
+    #getCSSModelInfo(cssModel) {
         return this.#modelToInfo.get(cssModel);
     }
     modelAdded(cssModel) {
         this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping, this));
     }
     modelRemoved(cssModel) {
-        this.getCSSModelInfo(cssModel).dispose();
+        this.#getCSSModelInfo(cssModel).dispose();
         this.#modelToInfo.delete(cssModel);
     }
     /**
@@ -52,20 +52,20 @@ export class CSSWorkspaceBinding {
     async pendingLiveLocationChangesPromise() {
         await Promise.all(this.#liveLocationPromises);
     }
-    recordLiveLocationChange(promise) {
+    #recordLiveLocationChange(promise) {
         void promise.then(() => {
             this.#liveLocationPromises.delete(promise);
         });
         this.#liveLocationPromises.add(promise);
     }
     async updateLocations(header) {
-        const updatePromise = this.getCSSModelInfo(header.cssModel()).updateLocations(header);
-        this.recordLiveLocationChange(updatePromise);
+        const updatePromise = this.#getCSSModelInfo(header.cssModel()).updateLocations(header);
+        this.#recordLiveLocationChange(updatePromise);
         await updatePromise;
     }
     createLiveLocation(rawLocation, updateDelegate, locationPool) {
-        const locationPromise = this.getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
-        this.recordLiveLocationChange(locationPromise);
+        const locationPromise = this.#getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
+        this.#recordLiveLocationChange(locationPromise);
         return locationPromise;
     }
     propertyRawLocation(cssProperty, forName) {
@@ -93,7 +93,7 @@ export class CSSWorkspaceBinding {
         return this.rawLocationToUILocation(rawLocation);
     }
     rawLocationToUILocation(rawLocation) {
-        return this.getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
+        return this.#getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
     }
     uiLocationToRawLocations(uiLocation) {
         const rawLocations = [];
@@ -118,10 +118,10 @@ export class ModelInfo {
         this.#cssWorkspaceBinding = cssWorkspaceBinding;
         this.#eventListeners = [
             cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, event => {
-                void this.styleSheetAdded(event);
+                void this.#styleSheetAdded(event);
             }, this),
             cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, event => {
-                void this.styleSheetRemoved(event);
+                void this.#styleSheetRemoved(event);
             }, this),
         ];
         this.#resourceMapping = resourceMapping;
@@ -164,7 +164,7 @@ export class ModelInfo {
         }
         return Promise.all(promises);
     }
-    async styleSheetAdded(event) {
+    async #styleSheetAdded(event) {
         const header = event.data;
         if (!header.sourceURL) {
             return;
@@ -178,7 +178,7 @@ export class ModelInfo {
         await Promise.all(promises);
         this.#unboundLocations.deleteAll(header.sourceURL);
     }
-    async styleSheetRemoved(event) {
+    async #styleSheetRemoved(event) {
         const header = event.data;
         const promises = [];
         for (const location of this.#locations.get(header)) {

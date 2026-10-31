@@ -6496,7 +6496,7 @@ var timelineStatusDialog_css_default = `/*
 
 .timeline-status-dialog .progress .indicator-container {
   display: inline-block;
-  width: 200px;
+  width: var(--sys-size-25);
   height: var(--sys-size-5);
   background-color: var(--sys-color-surface5);
 }
@@ -6668,7 +6668,7 @@ var StatusDialog = class extends UI3.Widget.VBox {
     this.#onButtonClickCallback = onButtonClickCallback;
   }
   finish() {
-    this.stopTimer();
+    this.#stopTimer();
     this.#hideStopButton = true;
     this.requestUpdate();
   }
@@ -6701,7 +6701,7 @@ var StatusDialog = class extends UI3.Widget.VBox {
   }
   remove() {
     this.element.parentNode?.classList.remove("opaque", "tinted");
-    this.stopTimer();
+    this.#stopTimer();
     this.detach();
   }
   showPane(parent, mode = "opaque") {
@@ -6729,7 +6729,7 @@ var StatusDialog = class extends UI3.Widget.VBox {
     this.#timeUpdateTimer = window.setInterval(this.#updateTimerTick.bind(this), 100);
     this.#updateTimerTick();
   }
-  stopTimer() {
+  #stopTimer() {
     if (!this.#timeUpdateTimer) {
       return;
     }
@@ -15331,13 +15331,13 @@ var TimelineTreeView = class _TimelineTreeView extends TimelineTreeViewBase {
   }
   /**
    * Refreshes the tree. By default, it will only do this
-   * if the tree is mounted into the DOM - as in the UI we
+   * if the tree view is currently showing - as in the UI we
    * have multiple trees and we only want to refresh the
    * active one. Pass `true` into this function to force a
    * refresh regardless.
    */
   refreshTree(forceRefresh = false) {
-    if (!this.element.parentElement && !forceRefresh) {
+    if (!this.isShowing() && !forceRefresh) {
       this.#dirty = true;
       return;
     }
@@ -15851,7 +15851,7 @@ var AggregatedTimelineTreeView = class _AggregatedTimelineTreeView extends Timel
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
   }
   refreshTree(forceRefresh = false) {
-    if (this.element.parentElement || forceRefresh) {
+    if (this.isShowing() || forceRefresh) {
       this.#builtGroupBy = this.groupBySetting.get();
     }
     super.refreshTree(forceRefresh);
@@ -16627,7 +16627,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
         filters: this.filtersWithoutTextFilter(),
         startTime: this.startTime,
         endTime: this.endTime,
-        eventGroupIdCallback: this.groupingFunction.bind(this)
+        eventGroupIdCallback: this.#groupingFunction.bind(this)
       });
     }
     const filter = new Trace28.Extras.TraceFilter.VisibleEventsFilter(Trace28.Styles.visibleTypes());
@@ -16636,7 +16636,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
       filters: [filter],
       startTime: this.startTime,
       endTime: this.endTime,
-      eventGroupIdCallback: this.groupingFunction.bind(this),
+      eventGroupIdCallback: this.#groupingFunction.bind(this),
       calculateTransferSize: true,
       // Ensure we group by 3P alongside eventID for correct 3P grouping.
       forceGroupIdCallback: true
@@ -16649,7 +16649,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
   selectProfileNode() {
     return;
   }
-  groupingFunction(event) {
+  #groupingFunction(event) {
     const entity = this.entityMapper()?.entityForEvent(event);
     if (!entity) {
       return "";
@@ -16688,7 +16688,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
   populateToolbar() {
     return;
   }
-  compareTransferSize(a, b) {
+  #compareTransferSize(a, b) {
     const nodeA = a;
     const nodeB = b;
     const transferA = nodeA.profileNode.transferSize ?? 0;
@@ -16703,7 +16703,7 @@ var ThirdPartyTreeViewWidget = class extends TimelineTreeView {
     let sortFunction;
     switch (columnId) {
       case "transfer-size":
-        sortFunction = this.compareTransferSize.bind(this);
+        sortFunction = this.#compareTransferSize.bind(this);
         break;
       default:
         sortFunction = super.getSortingFunction(columnId);
@@ -17919,7 +17919,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
     };
     this.#view(viewInput, void 0, this.contentElement);
   }
-  getDescendentNodeCount(node) {
+  #getDescendentNodeCount(node) {
     if (!node) {
       return 0;
     }
@@ -17927,12 +17927,12 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
     const childNodes = node.children();
     if (childNodes) {
       for (const childNode of childNodes) {
-        numberOfDescendentNode += this.getDescendentNodeCount(childNode);
+        numberOfDescendentNode += this.#getDescendentNodeCount(childNode);
       }
     }
     return numberOfDescendentNode;
   }
-  async updateInvalidationCount(events) {
+  async #updateInvalidationCount(events) {
     if (!this.#parsedTrace) {
       return;
     }
@@ -17982,7 +17982,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
         }
         for (const node of nodes.nodeList) {
           if (nodes.subtree) {
-            timing.invalidation_count += this.getDescendentNodeCount(node);
+            timing.invalidation_count += this.#getDescendentNodeCount(node);
           } else {
             timing.invalidation_count += 1;
           }
@@ -17990,7 +17990,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
       }
     }
   }
-  async aggregateEvents(events) {
+  async #aggregateEvents(events) {
     if (!this.#parsedTrace) {
       return;
     }
@@ -18012,7 +18012,7 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
       }
     }
     this.#lastStatsSourceEventOrEvents = events;
-    await this.updateInvalidationCount(events);
+    await this.#updateInvalidationCount(events);
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       const selectorStats = event ? this.#parsedTrace.data.SelectorStats.dataForRecalcStyleEvent.get(event) : void 0;
@@ -18057,17 +18057,17 @@ var TimelineSelectorStatsView = class extends UI14.Widget.VBox {
       [SelectorTimingsKey.StyleSheetId]: "n/a",
       [SelectorTimingsKey.InvalidationCount]: sums[SelectorTimingsKey.InvalidationCount]
     });
-    this.#timings = await this.processSelectorTimings(timings);
+    this.#timings = await this.#processSelectorTimings(timings);
   }
   setAggregatedEvents(events) {
     if (!this.#parsedTrace) {
       return;
     }
-    void this.aggregateEvents(events).then(() => {
+    void this.#aggregateEvents(events).then(() => {
       this.requestUpdate();
     });
   }
-  async processSelectorTimings(timings) {
+  async #processSelectorTimings(timings) {
     async function toSourceFileLocation(cssModel2, styleSheetId, selectorText, selectorLocations) {
       if (!cssModel2) {
         return void 0;
@@ -18155,6 +18155,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
   tabbedPane;
   defaultDetailsWidget;
   #summaryContent = new SummaryView();
+  #summaryContentNeedsUpdate = false;
   rangeDetailViews;
   #selectedEvents;
   lazyPaintProfilerView;
@@ -18356,8 +18357,13 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     }
     if (data.parsedTrace) {
       this.#summaryContent.filmStrip = Trace31.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
-      this.#entityMapper = new Trace31.EntityMapper.EntityMapper(data.parsedTrace);
+      this.#entityMapper = data.entityMapper ?? new Trace31.EntityMapper.EntityMapper(data.parsedTrace);
+    } else {
+      this.#summaryContent.filmStrip = null;
+      this.#entityMapper = null;
     }
+    this.#summaryContent.selectedEvent = null;
+    this.#summaryContent.selectedRange = null;
     this.#selectedEvents = data.selectedEvents;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
@@ -18368,17 +18374,19 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
       view.model = {
         selectedEvents: data.selectedEvents,
         parsedTrace: data.parsedTrace,
-        entityMapper: data.entityMapper
+        entityMapper: this.#entityMapper
       };
     }
-    this.#summaryContent.requestUpdate();
+    if (!this.#parsedTrace || !this.#selectedEvents || !TraceBounds13.TraceBounds.BoundsManager.instance().state()) {
+      void this.updateSummaryPane();
+    }
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
     await this.setSelection(null);
   }
   /**
-   * Updates the UI shown in the Summary tab, and updates the UI to select the
-   * summary tab.
+   * Updates the UI shown in the Summary tab. If the summary tab is not
+   * currently selected, the update is deferred until the tab becomes active.
    */
   async updateSummaryPane() {
     const allTabs = this.tabbedPane.otherTabs("details" /* Details */);
@@ -18387,6 +18395,11 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
         this.tabbedPane.closeTab(allTabs[i]);
       }
     }
+    if (this.tabbedPane.selectedTabId !== "details" /* Details */) {
+      this.#summaryContentNeedsUpdate = true;
+      return;
+    }
+    this.#summaryContentNeedsUpdate = false;
     this.#summaryContent.requestUpdate();
     await this.#summaryContent.updateComplete;
   }
@@ -18493,6 +18506,10 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends TimelineDetailsPane
     this.updateContents();
   }
   tabSelected(event) {
+    if (event.data.tabId === "details" /* Details */ && this.#summaryContentNeedsUpdate) {
+      this.#summaryContentNeedsUpdate = false;
+      this.#summaryContent.requestUpdate();
+    }
     if (!event.data.isUserGesture) {
       return;
     }
@@ -19306,7 +19323,7 @@ var TimelineFlameChartNetworkDataProvider = class {
    * event C and will include the socket event A.
    * */
   forceDrawableLevel(levelIndex) {
-    return this.#networkTrackAppender?.webSocketIdToLevel.has(levelIndex) || false;
+    return this.#networkTrackAppender?.webSocketIdToLevel.values().some((l) => l === levelIndex) ?? false;
   }
   preparePopoverElement(index) {
     const event = this.#events[index];
@@ -22772,13 +22789,12 @@ var CompatibilityTracksAppender = class {
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
     this.#addThreadAppenders();
     this.#addExtensionAppenders();
-    this.onThemeChange = this.onThemeChange.bind(this);
-    ThemeSupport25.ThemeSupport.instance().addEventListener(ThemeSupport25.ThemeChangeEvent.eventName, this.onThemeChange);
+    ThemeSupport25.ThemeSupport.instance().addEventListener(ThemeSupport25.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
   reset() {
     ThemeSupport25.ThemeSupport.instance().removeEventListener(
       ThemeSupport25.ThemeChangeEvent.eventName,
-      this.onThemeChange
+      this.#onThemeChange
     );
   }
   setFlameChartDataAndEntryData(flameChartData, entryData, legacyEntryTypeByLevel) {
@@ -22790,12 +22806,12 @@ var CompatibilityTracksAppender = class {
   getFlameChartTimelineData() {
     return this.#flameChartData;
   }
-  onThemeChange() {
+  #onThemeChange = () => {
     for (const group of this.#flameChartData.groups) {
       group.style.color = ThemeSupport25.ThemeSupport.instance().getComputedValue("--sys-color-on-surface");
       group.style.backgroundColor = ThemeSupport25.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container");
     }
-  }
+  };
   #addExtensionAppenders() {
     if (!TimelinePanel.extensionDataVisibilitySetting().get()) {
       return;

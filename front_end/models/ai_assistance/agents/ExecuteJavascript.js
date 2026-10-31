@@ -127,11 +127,11 @@ export class JavascriptExecutor {
         }
     }
     async generateObservation(action, { throwOnSideEffect, }) {
-        const functionDeclaration = `async function ($0) {
+        const functionDeclaration = `async function ($0, data) {
   try {
     ${action}
     ;
-    return ((typeof data !== "undefined") ? data : undefined);
+    return data;
   } catch (error) {
     return error;
   }

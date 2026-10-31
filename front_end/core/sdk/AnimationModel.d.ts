@@ -43,14 +43,11 @@ export declare class AnimationModel extends SDKModel<EventTypes> {
     readonly animationGroups: Map<string, AnimationGroup>;
     playbackRate: number;
     constructor(target: Target);
-    private reset;
     devicePixelRatio(): Promise<number>;
     getAnimationGroupForAnimation(name: string, nodeId: Protocol.DOM.NodeId): Promise<AnimationGroup | null>;
     animationCanceled(id: string): void;
     animationUpdated(payload: Protocol.Animation.Animation): Promise<void>;
     animationStarted(payload: Protocol.Animation.Animation): Promise<void>;
-    private matchExistingGroups;
-    private createGroupFromPendingAnimations;
     setPlaybackRate(playbackRate: number): void;
     releaseAnimations(animations: string[]): void;
     suspendModel(): Promise<void>;
@@ -71,7 +68,6 @@ export declare class AnimationImpl {
     private constructor();
     static parsePayload(animationModel: AnimationModel, payload: Protocol.Animation.Animation): Promise<AnimationImpl>;
     setPayload(payload: Protocol.Animation.Animation): Promise<void>;
-    private percentageToPixels;
     viewOrScrollTimeline(): Protocol.Animation.ViewOrScrollTimeline | undefined;
     id(): string;
     name(): string;
@@ -88,7 +84,6 @@ export declare class AnimationImpl {
     overlaps(animation: AnimationImpl): boolean;
     delayOrStartTime(): number;
     setTiming(duration: number, delay: number): void;
-    private updateNodeStyle;
     remoteObjectPromise(): Promise<RemoteObject | null>;
     cssId(): string;
 }
@@ -133,7 +128,6 @@ export declare class AnimationGroup {
     id(): string;
     animations(): AnimationImpl[];
     release(): void;
-    private animationIds;
     startTime(): number;
     groupDuration(): number;
     finiteDuration(): number;

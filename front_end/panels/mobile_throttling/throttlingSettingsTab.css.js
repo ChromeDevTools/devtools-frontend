@@ -159,4 +159,47 @@ export default `/*
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: none;
+  background: var(--sys-color-surface3);
+  overflow: hidden;
+}
+
+.editor-content {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.editor-content input {
+  margin-right: 10px;
+}
+
+.editor-content input.error-input {
+  background-color: var(--sys-color-cdt-base-container);
+}
+
+.editor-buttons {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px;
+  gap: var(--sys-size-6);
+}
+
+.list-widget-input-validation-error {
+  color: var(--sys-color-error);
+  margin: 0 5px;
+}
+
+.editor-container ~ .add-conditions-button {
+  display: none;
+}
+
 /*# sourceURL=${import.meta.resolve('./throttlingSettingsTab.css')} */`;

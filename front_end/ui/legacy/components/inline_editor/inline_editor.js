@@ -236,15 +236,15 @@ var BezierUI = class {
   curveHeight() {
     return this.height - this.radius * 2 - this.marginTop * 2;
   }
-  drawLine(parentElement, className, x1, y1, x2, y2) {
+  #drawLine(parentElement, className, x1, y1, x2, y2) {
     const line = UI.UIUtils.createSVGChild(parentElement, "line", className);
     line.setAttribute("x1", String(x1 + this.radius));
     line.setAttribute("y1", String(y1 + this.radius + this.marginTop));
     line.setAttribute("x2", String(x2 + this.radius));
     line.setAttribute("y2", String(y2 + this.radius + this.marginTop));
   }
-  drawControlPoints(parentElement, startX, startY, controlX, controlY) {
-    this.drawLine(parentElement, "bezier-control-line", startX, startY, controlX, controlY);
+  #drawControlPoints(parentElement, startX, startY, controlX, controlY) {
+    this.#drawLine(parentElement, "bezier-control-line", startX, startY, controlX, controlY);
     const circle = UI.UIUtils.createSVGChild(parentElement, "circle", "bezier-control-circle");
     circle.setAttribute("jslog", `${VisualLogging.controlPoint("bezier.control-circle").track({ drag: true })}`);
     circle.setAttribute("cx", String(controlX + this.radius));
@@ -262,7 +262,7 @@ var BezierUI = class {
     svg.removeChildren();
     const group = UI.UIUtils.createSVGChild(svg, "g");
     if (this.shouldDrawLine) {
-      this.drawLine(group, "linear-line", 0, height, width, 0);
+      this.#drawLine(group, "linear-line", 0, height, width, 0);
     }
     const curve = UI.UIUtils.createSVGChild(group, "path", "bezier-path");
     const curvePoints = [
@@ -280,14 +280,14 @@ var BezierUI = class {
       "d",
       "M" + this.radius + "," + (height + this.radius + this.marginTop) + " C" + curvePoints.join(" ")
     );
-    this.drawControlPoints(
+    this.#drawControlPoints(
       group,
       0,
       height,
       bezier.controlPoints[0].x * width,
       (1 - bezier.controlPoints[0].y) * height
     );
-    this.drawControlPoints(
+    this.#drawControlPoints(
       group,
       width,
       0,
@@ -329,13 +329,13 @@ var BezierCurveUI = class {
     this.#onBezierChange = onBezierChange;
     UI2.UIUtils.installDragHandle(
       this.#curve,
-      this.dragStart.bind(this),
-      this.dragMove.bind(this),
-      this.dragEnd.bind(this),
+      this.#dragStart.bind(this),
+      this.#dragMove.bind(this),
+      this.#dragEnd.bind(this),
       "default"
     );
   }
-  dragStart(event) {
+  #dragStart(event) {
     this.#mouseDownPosition = new Geometry3.Point(event.x, event.y);
     const ui = this.#curveUI;
     this.#controlPosition = new Geometry3.Point(
@@ -349,7 +349,7 @@ var BezierCurveUI = class {
     event.consume(true);
     return true;
   }
-  updateControlPosition(mouseX, mouseY) {
+  #updateControlPosition(mouseX, mouseY) {
     if (this.#mouseDownPosition === void 0 || this.#controlPosition === void 0 || this.#selectedPoint === void 0) {
       return;
     }
@@ -361,12 +361,12 @@ var BezierCurveUI = class {
     );
     this.#bezier.controlPoints[this.#selectedPoint] = newPosition;
   }
-  dragMove(event) {
-    this.updateControlPosition(event.x, event.y);
+  #dragMove(event) {
+    this.#updateControlPosition(event.x, event.y);
     this.#onBezierChange(this.#bezier);
   }
-  dragEnd(event) {
-    this.updateControlPosition(event.x, event.y);
+  #dragEnd(event) {
+    this.#updateControlPosition(event.x, event.y);
     this.#onBezierChange(this.#bezier);
   }
   setBezier(bezier) {
@@ -2721,12 +2721,12 @@ var LinkSwatch = class extends HTMLElement {
       data.onLinkActivate(linkText);
       event.consume(true);
     };
-    this.render(data);
+    this.#render(data);
   }
   get linkElement() {
     return this.#linkElement;
   }
-  render(data) {
+  #render(data) {
     const { isDefined, text, jslogContext, tooltip } = data;
     const classes = classMap({
       "link-style": true,

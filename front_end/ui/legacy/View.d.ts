@@ -55,10 +55,11 @@ export declare class SimpleView<ContentTypeT extends HTMLElement | DocumentFragm
 export interface ViewLocation {
     appendApplicableItems(locationName: string): void;
     appendView(view: View, insertBefore?: View | null): void;
-    showView(view: View, insertBefore?: View | null, userGesture?: boolean): Promise<void>;
+    showView(view: View, insertBefore?: View | null, userGesture?: boolean, omitFocus?: boolean, shouldSelectTab?: boolean): Promise<void>;
     removeView(view: View): void;
     isViewVisible(view: View): boolean;
     widget(): AnyWidget;
+    reveal?(): void;
 }
 export interface TabbedViewLocation extends ViewLocation {
     tabbedPane(): TabbedPane;

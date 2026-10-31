@@ -11,9 +11,9 @@ import { ForwardedShortcut, ShortcutRegistry } from './ShortcutRegistry.js';
  **/
 export class ForwardedInputEventHandler {
     constructor() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.#onKeyEventUnhandled, this);
     }
-    async onKeyEventUnhandled(event) {
+    async #onKeyEventUnhandled(event) {
         const { type, key, keyCode, modifiers } = event.data;
         if (type !== 'keydown') {
             return;

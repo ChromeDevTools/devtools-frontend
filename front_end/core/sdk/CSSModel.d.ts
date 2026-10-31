@@ -55,7 +55,6 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     getMediaQueries(): Promise<CSSMedia[]>;
     getRootLayer(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.CSSLayerData>;
     isEnabled(): boolean;
-    private enable;
     getAnimatedStylesForNode(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.GetAnimatedStylesForNodeResponse | null>;
     getMatchedStyles(nodeId: Protocol.DOM.NodeId): Promise<CSSMatchedStyles | null>;
     getClassNames(styleSheetId: Protocol.DOM.StyleSheetId): Promise<string[]>;
@@ -88,8 +87,6 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     styleSheetHeaderForId(id: Protocol.DOM.StyleSheetId): CSSStyleSheetHeader | null;
     styleSheetHeaders(): CSSStyleSheetHeader[];
     fireStyleSheetChanged(styleSheetId: Protocol.DOM.StyleSheetId, edit?: Edit): void;
-    private ensureOriginalStyleSheetText;
-    private originalContentRequestedForTest;
     originalStyleSheetText(header: CSSStyleSheetHeader): Promise<string | null>;
     getAllStyleSheetHeaders(): Iterable<CSSStyleSheetHeader>;
     computedStyleUpdated(nodeId: Protocol.DOM.NodeId): void;
@@ -98,9 +95,6 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     getStyleSheetIdsForURL(url: Platform.DevToolsPath.UrlString): Protocol.DOM.StyleSheetId[];
     setStyleSheetText(styleSheetId: Protocol.DOM.StyleSheetId, newText: string, majorChange: boolean): Promise<string | null>;
     getStyleSheetText(styleSheetId: Protocol.DOM.StyleSheetId): Promise<string | null>;
-    private onPrimaryPageChanged;
-    private resetStyleSheets;
-    private resetFontFaces;
     suspendModel(): Promise<void>;
     resumeModel(): Promise<void>;
     setEffectivePropertyValueForNode(nodeId: Protocol.DOM.NodeId, propertyName: string, value: string): void;
@@ -109,7 +103,6 @@ export declare class CSSModel extends SDKModel<EventTypes> {
     createCSSPropertyTracker(propertiesToTrack: Protocol.CSS.CSSComputedStyleProperty[]): CSSPropertyTracker;
     enableCSSPropertyTracker(cssPropertyTracker: CSSPropertyTracker): void;
     disableCSSPropertyTracker(): void;
-    private pollComputedStyleUpdates;
     dispose(): void;
     getAgent(): ProtocolProxyApi.CSSApi;
 }

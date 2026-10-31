@@ -34,7 +34,7 @@ export default `/*
       background-color: var(--sys-color-surface2);
       border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
       overflow: hidden;
-      padding: var(--sys-size-2) 5px;
+      padding: var(--sys-size-2) var(--sys-size-3);
       text-overflow: ellipsis;
       white-space: nowrap;
       font: var(--sys-typescale-body4-medium);

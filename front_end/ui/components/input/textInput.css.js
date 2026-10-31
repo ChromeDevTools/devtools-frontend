@@ -17,7 +17,7 @@ export default `/*
   letter-spacing: 0.015em;
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   color: var(--sys-color-on-surface);
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-cdt-base-container);
   font-family: inherit;
   font-size: inherit;

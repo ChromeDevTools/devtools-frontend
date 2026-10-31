@@ -15,11 +15,6 @@ export declare class FileSystemWorkspaceBinding {
     static fileSystemSupportsAutomapping(project: Workspace.Workspace.Project): boolean;
     static completeURL(project: Workspace.Workspace.Project, relativePath: string): Platform.DevToolsPath.UrlString;
     static fileSystemPath(projectId: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString;
-    private onFileSystemsLoaded;
-    private onFileSystemAdded;
-    private addFileSystem;
-    private onFileSystemRemoved;
-    private fileSystemFilesChanged;
     dispose(): void;
 }
 export declare class FileSystem extends Workspace.Workspace.ProjectStore {
@@ -30,7 +25,6 @@ export declare class FileSystem extends Workspace.Workspace.ProjectStore {
     fileSystem(): PlatformFileSystem;
     mimeType(uiSourceCode: Workspace.UISourceCode.UISourceCode): string;
     initialGitFolders(): Platform.DevToolsPath.UrlString[];
-    private filePathForUISourceCode;
     isServiceProject(): boolean;
     requestMetadata(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Workspace.UISourceCode.UISourceCodeMetadata | null>;
     requestFileBlob(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Blob | null>;
@@ -51,7 +45,6 @@ export declare class FileSystem extends Workspace.Workspace.ProjectStore {
     deleteFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
     deleteDirectoryRecursively(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean>;
     remove(): void;
-    private addFile;
     fileChanged(path: Platform.DevToolsPath.UrlString): void;
     tooltipForURL(url: Platform.DevToolsPath.UrlString): string;
     dispose(): void;

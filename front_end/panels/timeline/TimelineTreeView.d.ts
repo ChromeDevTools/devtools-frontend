@@ -77,7 +77,7 @@ export declare class TimelineTreeView extends TimelineTreeViewBase implements UI
     selectProfileNode(treeNode: Trace.Extras.TraceTree.Node, suppressSelectedEvent: boolean): void;
     /**
      * Refreshes the tree. By default, it will only do this
-     * if the tree is mounted into the DOM - as in the UI we
+     * if the tree view is currently showing - as in the UI we
      * have multiple trees and we only want to refresh the
      * active one. Pass `true` into this function to force a
      * refresh regardless.

@@ -1,50 +1,67 @@
+import '../../ui/components/lists/lists.js';
 import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import { type Card } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
-export declare class CPUThrottlingCard {
-    element: Card;
-    private readonly setting;
+export interface CPUThrottlingCardViewInput {
+    state: 'cta' | 'prompting' | 'calibrating';
+    hasCalibrated: boolean;
+    lowResultText: string;
+    lowNotCalibrated: boolean;
+    midResultText: string;
+    midNotCalibrated: boolean;
+    warnings: string[];
+    progressWorked: number;
+    onCalibrateClick: () => void;
+    onCancelClick: () => void;
+}
+export type CPUThrottlingCardView = (input: CPUThrottlingCardViewInput, output: undefined, target: HTMLElement) => void;
+export declare const CPU_THROTTLING_CARD_DEFAULT_VIEW: CPUThrottlingCardView;
+export declare class CPUThrottlingCard extends UI.Widget.Widget {
+    #private;
     private computePressurePromise?;
     private controller?;
-    private lowTierMobileDeviceEl;
-    private midTierMobileDeviceEl;
-    private calibrateEl;
-    private textEl;
-    private calibrateButton;
-    private cancelButton;
-    private progress;
     private state;
     private warnings;
-    constructor(settings: Common.Settings.Settings);
+    constructor(element?: HTMLElement, view?: CPUThrottlingCardView);
     wasShown(): void;
     willHide(): void;
-    private updateState;
-    private createTextWithIcon;
+    performUpdate(): void;
     private getCalibrationWarnings;
     private calibrateButtonClicked;
     private cancelButtonClicked;
     private runCalibration;
 }
-export declare class ThrottlingSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
+export interface EditorValues {
+    title: string;
+    download: string;
+    upload: string;
+    latency: string;
+    packetLoss: string;
+    packetQueueLength: string;
+    packetReordering: boolean;
+}
+export type EditorFieldName = keyof EditorValues;
+export interface ViewInput {
+    presets: SDK.NetworkManager.Conditions[];
+    customConditions: SDK.NetworkManager.Conditions[];
+    editingIndex: number | null;
+    editingValues: EditorValues;
+    validationErrors: Partial<Record<EditorFieldName, Common.UIString.LocalizedString>>;
+    showValidationErrors: boolean;
+    onAddCustomProfile: () => void;
+    onBeginEdit: (index: number) => void;
+    onRemoveCustomProfile: (index: number) => void;
+    onEditorInput: <K extends EditorFieldName>(field: K, value: EditorValues[K]) => void;
+    onCommitEdit: () => void;
+    onCancelEdit: () => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class ThrottlingSettingsTab extends UI.Widget.VBox {
     #private;
-    /** List of default network throttling presets (read-only in UI) */
-    private readonly presetsList;
-    /** List of custom user-defined network throttling profiles */
-    private readonly customList;
     private readonly customUserConditions;
-    private editor?;
-    private cpuThrottlingCard;
-    constructor(settings: Common.Settings.Settings);
+    constructor(settings: Common.Settings.Settings, view?: View);
+    performUpdate(): void;
     wasShown(): void;
-    willHide(): void;
-    private conditionsUpdated;
-    private addButtonClicked;
-    renderItem(conditions: SDK.NetworkManager.Conditions, _editable: boolean): Element;
-    removeItemRequested(_item: SDK.NetworkManager.Conditions, index: number): void;
-    retrieveOptionsTitle(conditions: SDK.NetworkManager.Conditions): string;
-    commitEdit(conditions: SDK.NetworkManager.Conditions, editor: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>, isNew: boolean): void;
-    beginEdit(conditions: SDK.NetworkManager.Conditions): UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
-    private createEditor;
 }

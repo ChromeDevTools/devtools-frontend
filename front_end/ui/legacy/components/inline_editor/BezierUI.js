@@ -39,15 +39,15 @@ export class BezierUI {
     curveHeight() {
         return this.height - this.radius * 2 - this.marginTop * 2;
     }
-    drawLine(parentElement, className, x1, y1, x2, y2) {
+    #drawLine(parentElement, className, x1, y1, x2, y2) {
         const line = UI.UIUtils.createSVGChild(parentElement, 'line', className);
         line.setAttribute('x1', String(x1 + this.radius));
         line.setAttribute('y1', String(y1 + this.radius + this.marginTop));
         line.setAttribute('x2', String(x2 + this.radius));
         line.setAttribute('y2', String(y2 + this.radius + this.marginTop));
     }
-    drawControlPoints(parentElement, startX, startY, controlX, controlY) {
-        this.drawLine(parentElement, 'bezier-control-line', startX, startY, controlX, controlY);
+    #drawControlPoints(parentElement, startX, startY, controlX, controlY) {
+        this.#drawLine(parentElement, 'bezier-control-line', startX, startY, controlX, controlY);
         const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
         circle.setAttribute('jslog', `${VisualLogging.controlPoint('bezier.control-circle').track({ drag: true })}`);
         circle.setAttribute('cx', String(controlX + this.radius));
@@ -65,7 +65,7 @@ export class BezierUI {
         svg.removeChildren();
         const group = UI.UIUtils.createSVGChild(svg, 'g');
         if (this.shouldDrawLine) {
-            this.drawLine(group, 'linear-line', 0, height, width, 0);
+            this.#drawLine(group, 'linear-line', 0, height, width, 0);
         }
         const curve = UI.UIUtils.createSVGChild(group, 'path', 'bezier-path');
         const curvePoints = [
@@ -74,8 +74,8 @@ export class BezierUI {
             new Geometry.Point(width + this.radius, this.marginTop + this.radius),
         ];
         curve.setAttribute('d', 'M' + this.radius + ',' + (height + this.radius + this.marginTop) + ' C' + curvePoints.join(' '));
-        this.drawControlPoints(group, 0, height, bezier.controlPoints[0].x * width, (1 - bezier.controlPoints[0].y) * height);
-        this.drawControlPoints(group, width, 0, bezier.controlPoints[1].x * width, (1 - bezier.controlPoints[1].y) * height);
+        this.#drawControlPoints(group, 0, height, bezier.controlPoints[0].x * width, (1 - bezier.controlPoints[0].y) * height);
+        this.#drawControlPoints(group, width, 0, bezier.controlPoints[1].x * width, (1 - bezier.controlPoints[1].y) * height);
     }
 }
 export const Height = 26;

@@ -87,9 +87,11 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
     viewsForLocation(location: string): View[];
 }
 export declare class ContainerWidget extends VBox {
-    private readonly view;
+    #private;
     private materializePromise?;
-    constructor(view: View);
+    constructor(element?: HTMLElement | View, view?: View);
+    get view(): View;
+    set view(view: View);
     materialize(): Promise<void>;
     wasShown(): void;
     private wasShownForTest;

@@ -1,6 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+var _a;
 /*
  * Copyright (C) 2008 Apple Inc. All Rights Reserved.
  *
@@ -119,7 +120,7 @@ export class Script {
     target() {
         return this.debuggerModel.target();
     }
-    static trimSourceURLComment(source) {
+    static #trimSourceURLComment(source) {
         let sourceURLIndex = source.lastIndexOf('//# sourceURL=');
         if (sourceURLIndex === -1) {
             sourceURLIndex = source.lastIndexOf('//@ sourceURL=');
@@ -161,7 +162,7 @@ export class Script {
     contentType() {
         return Common.ResourceType.resourceTypes.Script;
     }
-    async loadTextContent() {
+    async #loadTextContent() {
         const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({ scriptId: this.scriptId });
         if (result.getError()) {
             throw new Error(result.getError());
@@ -174,11 +175,11 @@ export class Script {
         if (this.hasSourceURL && Common.ParsedURL.schemeIs(this.sourceURL, 'snippet:')) {
             // TODO(crbug.com/1330846): Find a better way to establish the snippet automapping binding then adding
             // a sourceURL comment before evaluation and removing it here.
-            content = Script.trimSourceURLComment(content);
+            content = _a.#trimSourceURLComment(content);
         }
         return new TextUtils.ContentData.ContentData(content, /* isBase64 */ false, 'text/javascript');
     }
-    async loadWasmContent() {
+    async #loadWasmContent() {
         if (!this.isWasm()) {
             throw new Error('Not a wasm script');
         }
@@ -186,7 +187,7 @@ export class Script {
         if (result.getError()) {
             // Fall through to text content loading if v8-based disassembly fails. This is to ensure backwards compatibility with
             // older v8 versions.
-            const contentData = await this.loadTextContent();
+            const contentData = await this.#loadTextContent();
             return await disassembleWasm(contentData.base64);
         }
         const { streamId, functionBodyOffsets, chunk: { lines, bytecodeOffsets } } = result;
@@ -268,7 +269,7 @@ export class Script {
             return { error: i18nString(UIStrings.scriptRemovedOrDeleted) };
         }
         try {
-            return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
+            return this.isWasm() ? await this.#loadWasmContent() : await this.#loadTextContent();
         }
         catch {
             // TODO(bmeurer): Propagate errors as exceptions / rejections.
@@ -364,6 +365,7 @@ export class Script {
         return { lineNumber, columnNumber };
     }
 }
+_a = Script;
 const frameIdSymbol = Symbol('frameid');
 function frameIdForScript(script) {
     const executionContext = script.executionContext();

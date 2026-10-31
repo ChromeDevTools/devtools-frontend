@@ -326,7 +326,7 @@ export class TimelineFlameChartNetworkDataProvider {
      * event C and will include the socket event A.
      * */
     forceDrawableLevel(levelIndex) {
-        return this.#networkTrackAppender?.webSocketIdToLevel.has(levelIndex) || false;
+        return this.#networkTrackAppender?.webSocketIdToLevel.values().some(l => l === levelIndex) ?? false;
     }
     preparePopoverElement(index) {
         const event = this.#events[index];

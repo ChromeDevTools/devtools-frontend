@@ -29,8 +29,7 @@ export declare class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
     extraProperties(): SDK.RemoteObject.RemoteObjectProperty[];
 }
 export declare class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
-    private readonly extensionObject;
-    private readonly plugin;
+    #private;
     readonly callFrame: SDK.DebuggerModel.CallFrame;
     constructor(callFrame: SDK.DebuggerModel.CallFrame, extensionObject: Chrome.DevTools.RemoteObject, plugin: DebuggerLanguagePlugin);
     get linearMemoryAddress(): number | undefined;
@@ -57,28 +56,14 @@ export declare class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject
 export type StopId = bigint;
 export declare class DebuggerLanguagePluginManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
     #private;
-    private readonly callFrameByStopId;
-    private readonly stopIdByCallFrame;
-    private nextStopId;
     constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: DebuggerWorkspaceBinding, console: Common.Console.Console);
-    private evaluateOnCallFrame;
     stopIdForCallFrame(callFrame: SDK.DebuggerModel.CallFrame): StopId;
     callFrameForStopId(stopId: StopId): SDK.DebuggerModel.CallFrame | undefined;
     modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
-    private globalObjectCleared;
     addPlugin(plugin: DebuggerLanguagePlugin): void;
     removePlugin(plugin: DebuggerLanguagePlugin): void;
     hasPluginForScript(script: SDK.Script.Script): boolean;
-    /**
-     * Returns the responsible language #plugin and the raw module ID for a script.
-     *
-     * This ensures that the `addRawModule` call finishes first such that the
-     * caller can immediately issue calls to the returned #plugin without the
-     * risk of racing with the `addRawModule` call. The returned #plugin will be
-     * set to undefined to indicate that there's no #plugin for the script.
-     */
-    private rawModuleIdAndPluginForScript;
     uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString, script?: SDK.Script.Script): Workspace.UISourceCode.UISourceCode | null;
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UILocation | null>;
     uiLocationToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber?: number | undefined): Promise<Array<{
@@ -96,8 +81,6 @@ export declare class DebuggerLanguagePluginManager implements SDK.TargetManager.
     translateRawFrame(frame: StackTraceImpl.Trie.RawFrame, target: SDK.Target.Target): Promise<StackTraceImpl.StackTraceModel.TranslatedRawFrame | null>;
     scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[];
     setDebugInfoURL(script: SDK.Script.Script, externalURL: Platform.DevToolsPath.UrlString): void;
-    private parsedScriptSource;
-    private debuggerResumed;
     getSourcesForScript(script: SDK.Script.Script): Promise<Platform.DevToolsPath.UrlString[] | {
         missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[];
     } | undefined>;

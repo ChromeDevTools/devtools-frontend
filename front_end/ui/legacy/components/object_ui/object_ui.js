@@ -3017,7 +3017,7 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
-  static objectPropertyComparator(a, b) {
+  static #objectPropertyComparator(a, b) {
     return sortValue(a) - sortValue(b);
     function sortValue(property) {
       if (property.name === "[[PromiseState]]" /* PROMISE_STATE */) {
@@ -3063,9 +3063,7 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
         objectDescription = hideDescription ? "" : description;
       }
     }
-    const items = Array.from(
-      preview.entries ? this.renderEntries(preview) : isArrayOrTypedArray ? this.renderArrayProperties(preview) : this.renderObjectProperties(preview, includeNullOrUndefined)
-    );
+    const items = Array.from(preview.entries ? this.#renderEntries(preview) : isArrayOrTypedArray ? this.#renderArrayProperties(preview) : this.#renderObjectProperties(preview, includeNullOrUndefined));
     const renderName = (name) => html`<span class=name>${/^\s|\s$|^$|\n/.test(name) ? '"' + name.replace(/\n/g, "\u21B5") + '"' : name}</span>`;
     const renderPlaceholder = (placeholder) => html`<span class=object-value-undefined>${placeholder}</span>`;
     const renderValue = (value) => this.renderPropertyPreview(value.type, value.subtype, value.name, value.value);
@@ -3075,8 +3073,8 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
     return html`${objectDescription.length > 0 ? html`<span class=object-description>${objectDescription + "\xA0"}</span>` : nothing}<span class=object-properties-preview>${isArrayOrTypedArray ? "[" : "{"}${repeat(items, renderItem)}${preview.overflow ? html`<span>${items.length > 0 ? ",\xA0\u2026" : "\u2026"}</span>` : ""}
     ${isArrayOrTypedArray ? "]" : "}"}</span>`;
   }
-  *renderObjectProperties(preview, includeNullOrUndefined) {
-    const properties = preview.properties.filter((p) => p.type !== "accessor").sort(_RemoteObjectPreviewFormatter.objectPropertyComparator);
+  *#renderObjectProperties(preview, includeNullOrUndefined) {
+    const properties = preview.properties.filter((p) => p.type !== "accessor").sort(_RemoteObjectPreviewFormatter.#objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const name = property.name;
@@ -3104,10 +3102,10 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
       }
     }
   }
-  *renderArrayProperties(preview) {
+  *#renderArrayProperties(preview) {
     const arrayLength = SDK.RemoteObject.RemoteObject.arrayLength(preview);
     const indexProperties = preview.properties.filter((p) => toArrayIndex(p.name) !== -1).sort(arrayEntryComparator);
-    const otherProperties = preview.properties.filter((p) => toArrayIndex(p.name) === -1).sort(_RemoteObjectPreviewFormatter.objectPropertyComparator);
+    const otherProperties = preview.properties.filter((p) => toArrayIndex(p.name) === -1).sort(_RemoteObjectPreviewFormatter.#objectPropertyComparator);
     function arrayEntryComparator(a, b) {
       return toArrayIndex(a.name) - toArrayIndex(b.name);
     }
@@ -3141,7 +3139,7 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
       yield { name: property.name, value: property };
     }
   }
-  *renderEntries(preview) {
+  *#renderEntries(preview) {
     for (const entry of preview.entries ?? []) {
       yield { entry };
     }

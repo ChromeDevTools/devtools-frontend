@@ -6,7 +6,5 @@ export declare class SlowCSSSelector extends BaseInsightComponent<Trace.Insights
     #private;
     internalName: string;
     protected hasAskAiSupport(): boolean;
-    private toSourceFileLocation;
-    private getSelectorLinks;
     renderContent(): Lit.LitTemplate;
 }

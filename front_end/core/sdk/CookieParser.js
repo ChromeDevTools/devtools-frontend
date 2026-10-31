@@ -68,24 +68,24 @@ export class CookieParser {
         return this.#cookies;
     }
     parseSetCookie(setCookieHeader) {
-        if (!this.initialize(setCookieHeader)) {
+        if (!this.#initialize(setCookieHeader)) {
             return null;
         }
-        for (let kv = this.extractKeyValue(); kv; kv = this.extractKeyValue()) {
+        for (let kv = this.#extractKeyValue(); kv; kv = this.#extractKeyValue()) {
             if (this.#lastCookie) {
                 this.#lastCookie.addAttribute(this.getCookieAttribute(kv.key), kv.value);
             }
             else {
-                this.addCookie(kv, 1 /* Type.RESPONSE */);
+                this.#addCookie(kv, 1 /* Type.RESPONSE */);
             }
-            if (this.advanceAndCheckCookieDelimiter()) {
-                this.flushCookie();
+            if (this.#advanceAndCheckCookieDelimiter()) {
+                this.#flushCookie();
             }
         }
-        this.flushCookie();
+        this.#flushCookie();
         return this.#cookies;
     }
-    initialize(headerValue) {
+    #initialize(headerValue) {
         this.#input = headerValue;
         if (typeof headerValue !== 'string') {
             return false;
@@ -96,7 +96,7 @@ export class CookieParser {
         this.#originalInputLength = this.#input.length;
         return true;
     }
-    flushCookie() {
+    #flushCookie() {
         if (this.#lastCookie) {
             // if we have a last cookie we know that these valeus all exist, hence the typecasts
             this.#lastCookie.setSize(this.#originalInputLength - this.#input.length - this.#lastCookiePosition);
@@ -105,7 +105,7 @@ export class CookieParser {
         this.#lastCookie = null;
         this.#lastCookieLine = '';
     }
-    extractKeyValue() {
+    #extractKeyValue() {
         if (!this.#input || !this.#input.length) {
             return null;
         }
@@ -124,7 +124,7 @@ export class CookieParser {
         this.#input = this.#input.slice(keyValueMatch[0].length);
         return result;
     }
-    advanceAndCheckCookieDelimiter() {
+    #advanceAndCheckCookieDelimiter() {
         if (!this.#input) {
             return false;
         }
@@ -136,7 +136,7 @@ export class CookieParser {
         this.#input = this.#input.slice(match[0].length);
         return match[0].match('\n') !== null;
     }
-    addCookie(keyValue, type) {
+    #addCookie(keyValue, type) {
         if (this.#lastCookie) {
             this.#lastCookie.setSize(keyValue.position - this.#lastCookiePosition);
         }

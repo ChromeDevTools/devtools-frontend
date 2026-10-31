@@ -423,14 +423,14 @@ export class ParsedURL {
         }
         return ParsedURL.substring(url, 0, wasmFunctionIndex);
     }
-    static beginsWithWindowsDriveLetter(url) {
+    static #beginsWithWindowsDriveLetter(url) {
         return /^[A-Za-z]:/.test(url);
     }
-    static beginsWithScheme(url) {
+    static #beginsWithScheme(url) {
         return /^[A-Za-z][A-Za-z0-9+.-]*:/.test(url);
     }
     static isRelativeURL(url) {
-        return !this.beginsWithScheme(url) || this.beginsWithWindowsDriveLetter(url);
+        return !this.#beginsWithScheme(url) || this.#beginsWithWindowsDriveLetter(url);
     }
     get displayName() {
         if (this.#displayName) {

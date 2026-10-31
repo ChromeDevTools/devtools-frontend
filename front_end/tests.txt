@@ -572,6 +572,7 @@ panels/network/NetworkConfigView.test.js
 panels/network/NetworkDataGridNode.test.js
 panels/network/NetworkItemView.test.js
 panels/network/NetworkLogView.test.js
+panels/network/NetworkManageCustomHeadersView.test.js
 panels/network/NetworkOverview.test.js
 panels/network/NetworkPanel.test.js
 panels/network/NetworkSearchScope.test.js

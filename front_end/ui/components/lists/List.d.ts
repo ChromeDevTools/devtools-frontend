@@ -18,7 +18,7 @@ export declare class List extends HTMLElement {
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     connectedCallback(): void;
     disconnectedCallback(): void;
-    createSlottedListItem(index: number): TemplateResult;
+    createSlottedListItem(index: number, item?: HTMLElement): TemplateResult;
 }
 declare global {
     interface HTMLElementTagNameMap {

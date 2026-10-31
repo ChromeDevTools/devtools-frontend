@@ -77,6 +77,8 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private onUnsubscribe;
     private onAddRequestHeaders;
     private getExtensionOrigin;
+    static extensionIdFromOrigin(extensionOrigin: Platform.DevToolsPath.UrlString): string;
+    private getExtensionId;
     private onCreatePanel;
     private onShowPanel;
     private onCreateToolbarButton;

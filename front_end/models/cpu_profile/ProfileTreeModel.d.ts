@@ -20,10 +20,9 @@ export declare class ProfileNode {
     setOriginalFunctionName(name: string | null): void;
 }
 export declare class ProfileTreeModel {
+    #private;
     root: ProfileNode;
     total: number;
     maxDepth: number;
     initialize(root: ProfileNode): void;
-    private assignDepthsAndParents;
-    private calculateTotals;
 }

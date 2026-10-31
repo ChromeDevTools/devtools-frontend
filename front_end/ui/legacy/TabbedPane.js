@@ -193,7 +193,19 @@ export class TabbedPane extends TabbedPaneBase {
     setCloseableTabs(closeableTabs) {
         this.closeableTabs = closeableTabs;
     }
+    #focusHeader = false;
+    get focusHeader() {
+        return this.#focusHeader;
+    }
+    set focusHeader(focusHeader) {
+        this.#focusHeader = focusHeader;
+    }
     focus() {
+        if (this.#focusHeader) {
+            this.performUpdate();
+            this.focusSelectedTabHeader();
+            return;
+        }
         if (this.visibleView) {
             this.visibleView.focus();
         }
@@ -235,7 +247,7 @@ export class TabbedPane extends TabbedPaneBase {
             this.#tabs.push(tab);
         }
         this.tabsHistory.push(tab);
-        if (this.tabsHistory[0] === tab && this.isShowing()) {
+        if (this.tabsHistory[0] === tab && this.isShowing() && this.autoSelectFirstItemOnShow) {
             this.selectTab(tab.id, userGesture);
         }
         this.requestUpdate();
@@ -1542,11 +1554,13 @@ const tabSuffixElements = new WeakMap();
  * before and after the title in the header of that tab.
  */
 export class TabbedPaneElement extends WidgetElement {
-    static observedAttributes = ['vertical'];
+    static observedAttributes = ['vertical', 'focus-header', 'selected-tab'];
     #closeableTabs = false;
     #allowTabReorder = false;
     #automaticReorder = false;
     #vertical = false;
+    #focusHeader = false;
+    #selectedTab;
     get vertical() {
         return this.#vertical;
     }
@@ -1558,6 +1572,35 @@ export class TabbedPaneElement extends WidgetElement {
         if (vertical) {
             this.getWidget()?.makeVerticalTabLayout();
         }
+    }
+    get focusHeader() {
+        return this.#focusHeader;
+    }
+    set focusHeader(focusHeader) {
+        this.#focusHeader = focusHeader;
+        const widget = this.getWidget();
+        if (widget) {
+            widget.focusHeader = focusHeader;
+        }
+    }
+    get selectedTab() {
+        return this.getWidget()?.selectedTabId ?? this.#selectedTab ?? null;
+    }
+    set selectedTab(tabId) {
+        this.#selectedTab = tabId ?? undefined;
+        const widget = this.getWidget();
+        if (widget && tabId) {
+            this.#updateTabs(widget);
+            widget.selectTab(tabId);
+        }
+    }
+    controlsChildWidget(child) {
+        return child.id !== '' && !child.hasAttribute('slot') && !child.classList.contains('tabbed-pane-header') &&
+            !child.classList.contains('tabbed-pane-content');
+    }
+    focus() {
+        this.#updateTabs();
+        super.focus();
     }
     set closeableTabs(closeable) {
         this.#closeableTabs = closeable;
@@ -1588,6 +1631,7 @@ export class TabbedPaneElement extends WidgetElement {
     #headerJslog;
     #managedTabIds = new Set();
     #tabBadges = new Map();
+    #updatingTabs = false;
     set placeholder(element) {
         this.#placeholderElement = element;
         this.getWidget()?.setPlaceholderElement(element);
@@ -1604,6 +1648,7 @@ export class TabbedPaneElement extends WidgetElement {
             if (this.#vertical) {
                 widget.makeVerticalTabLayout();
             }
+            widget.focusHeader = this.#focusHeader;
             widget.setCloseableTabs(this.#closeableTabs);
             widget.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
             if (this.#delegate) {
@@ -1626,13 +1671,14 @@ export class TabbedPaneElement extends WidgetElement {
                 }));
             });
             widget.addEventListener(Events.TabSelected, event => {
+                if (!this.#updatingTabs && this.#selectedTab !== undefined && widget.selectedTabId !== null) {
+                    this.#selectedTab = widget.selectedTabId;
+                }
                 const nodes = this.#getTabNodes(widget);
                 for (const child of nodes) {
-                    if (child.id === widget.selectedTabId) {
-                        child.setAttribute('selected', '');
-                    }
-                    else {
-                        child.removeAttribute('selected');
+                    const isSelected = child.id === widget.selectedTabId;
+                    if (isSelected !== child.hasAttribute('selected')) {
+                        child.toggleAttribute('selected', isSelected);
                     }
                 }
                 this.dispatchEvent(new CustomEvent('select', {
@@ -1660,6 +1706,16 @@ export class TabbedPaneElement extends WidgetElement {
         if (name === 'vertical') {
             this.vertical = newValue !== null;
         }
+        else if (name === 'focus-header') {
+            this.focusHeader = newValue !== null;
+        }
+        else if (name === 'selected-tab') {
+            this.selectedTab = newValue;
+        }
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.#syncTabs();
     }
     disconnectedCallback() {
         super.disconnectedCallback();
@@ -1698,80 +1754,91 @@ export class TabbedPaneElement extends WidgetElement {
             !c.classList.contains('tabbed-pane-content'));
     }
     #updateTabs(widget = this.getWidget()) {
-        if (!widget) {
+        if (!widget || this.#updatingTabs) {
             return;
         }
-        const tabs = [];
-        const nodes = this.#getTabNodes(widget);
-        for (const child of nodes) {
-            const id = child.id;
-            const title = child.getAttribute('label') || child.getAttribute('title') || '';
-            const tabTooltip = child.getAttribute('tab-tooltip') ?? undefined;
-            const badge = child.getAttribute('badge');
-            const jslogContext = child.getAttribute('jslogcontext') || undefined;
-            const selected = child.hasAttribute('selected');
-            const enabled = !child.hasAttribute('disabled');
-            const isCloseable = child.hasAttribute('closeable') ? true : (child.hasAttribute('uncloseable') ? false : undefined);
-            const view = Widget.getOrCreateWidget(child);
-            view.setHideOnDetach();
-            if (widget.selectedTabId !== id) {
-                child.classList.add('hidden');
+        this.#updatingTabs = true;
+        try {
+            const tabs = [];
+            const nodes = this.#getTabNodes(widget);
+            for (const child of nodes) {
+                const id = child.id;
+                const title = child.getAttribute('label') || child.getAttribute('title') || '';
+                const tabTooltip = child.getAttribute('tab-tooltip') ?? undefined;
+                const badge = child.getAttribute('badge');
+                const jslogContext = child.getAttribute('jslogcontext') || undefined;
+                const selected = this.#selectedTab !== undefined ? id === this.#selectedTab : child.hasAttribute('selected');
+                const enabled = !child.hasAttribute('disabled');
+                const isCloseable = child.hasAttribute('closeable') ? true : (child.hasAttribute('uncloseable') ? false : undefined);
+                const view = Widget.getOrCreateWidget(child);
+                view.setHideOnDetach();
+                if (widget.selectedTabId !== id) {
+                    child.classList.add('hidden');
+                }
+                tabs.push({
+                    id,
+                    title,
+                    view,
+                    tabTooltip,
+                    badge,
+                    jslogContext,
+                    selected,
+                    enabled,
+                    isCloseable,
+                });
             }
-            tabs.push({
-                id,
-                title,
-                view,
-                tabTooltip,
-                badge,
-                jslogContext,
-                selected,
-                enabled,
-                isCloseable,
-            });
+            const newIds = new Set(tabs.map(tab => tab.id));
+            for (const id of this.#managedTabIds) {
+                if (!newIds.has(id)) {
+                    widget.closeTab(id);
+                    this.#tabBadges.delete(id);
+                }
+            }
+            this.#managedTabIds = newIds;
+            const autoSelect = widget.autoSelectFirstItemOnShow;
+            if (tabs.some(tab => tab.selected)) {
+                widget.setAutoSelectFirstItemOnShow(false);
+            }
+            let index = 0;
+            for (const tab of tabs) {
+                const existingTab = widget.tabsById.get(tab.id);
+                if (existingTab) {
+                    widget.changeTabView(tab.id, tab.view);
+                    widget.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
+                    if (tab.jslogContext !== undefined) {
+                        existingTab.jslogContext = tab.jslogContext;
+                    }
+                    if (tab.isCloseable !== undefined) {
+                        existingTab.closeable = tab.isCloseable;
+                    }
+                    if (tab.previewFeature !== undefined) {
+                        existingTab.previewFeature = tab.previewFeature;
+                    }
+                    const currentIndex = widget.tabIndex(tab.id);
+                    if (currentIndex !== index) {
+                        widget.insertBefore(existingTab, index);
+                    }
+                }
+                else {
+                    widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable, tab.previewFeature, index, tab.jslogContext);
+                }
+                const badge = tab.badge ?? null;
+                if (this.#tabBadges.get(tab.id) !== badge && (badge !== null || this.#tabBadges.has(tab.id))) {
+                    this.#tabBadges.set(tab.id, badge);
+                    widget.setBadge(tab.id, badge);
+                }
+                if (tab.enabled !== undefined) {
+                    widget.setTabEnabled(tab.id, tab.enabled);
+                }
+                if (tab.selected) {
+                    widget.selectTab(tab.id);
+                }
+                ++index;
+            }
+            widget.setAutoSelectFirstItemOnShow(autoSelect);
         }
-        const newIds = new Set(tabs.map(tab => tab.id));
-        for (const id of this.#managedTabIds) {
-            if (!newIds.has(id)) {
-                widget.closeTab(id);
-                this.#tabBadges.delete(id);
-            }
-        }
-        this.#managedTabIds = newIds;
-        let index = 0;
-        for (const tab of tabs) {
-            const existingTab = widget.tabsById.get(tab.id);
-            if (existingTab) {
-                widget.changeTabView(tab.id, tab.view);
-                widget.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
-                if (tab.jslogContext !== undefined) {
-                    existingTab.jslogContext = tab.jslogContext;
-                }
-                if (tab.isCloseable !== undefined) {
-                    existingTab.closeable = tab.isCloseable;
-                }
-                if (tab.previewFeature !== undefined) {
-                    existingTab.previewFeature = tab.previewFeature;
-                }
-                const currentIndex = widget.tabIndex(tab.id);
-                if (currentIndex !== index) {
-                    widget.insertBefore(existingTab, index);
-                }
-            }
-            else {
-                widget.appendTab(tab.id, tab.title, tab.view, tab.tabTooltip, /* userGesture=*/ false, tab.isCloseable, tab.previewFeature, index, tab.jslogContext);
-            }
-            const badge = tab.badge ?? null;
-            if (this.#tabBadges.get(tab.id) !== badge && (badge !== null || this.#tabBadges.has(tab.id))) {
-                this.#tabBadges.set(tab.id, badge);
-                widget.setBadge(tab.id, badge);
-            }
-            if (tab.enabled !== undefined) {
-                widget.setTabEnabled(tab.id, tab.enabled);
-            }
-            if (tab.selected) {
-                widget.selectTab(tab.id);
-            }
-            ++index;
+        finally {
+            this.#updatingTabs = false;
         }
     }
 }

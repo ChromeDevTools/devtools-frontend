@@ -28,9 +28,6 @@
     },
     {
       "path": "../../../testing/testing-tsconfig.ref.json"
-    },
-    {
-      "path": "../../../ui/legacy/bundle-tsconfig.ref.json"
     }
   ]
 }

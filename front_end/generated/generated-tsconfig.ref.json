@@ -13,7 +13,6 @@
     "skipLibCheck": true
   },
   "files": [
-    "../../../../../front_end/generated/ARIAProperties.ts",
     "../../../../../front_end/generated/Deprecation.ts",
     "../../../../../front_end/generated/InspectorBackendCommands.ts",
     "../../../../../front_end/generated/SupportedCSSProperties.ts",

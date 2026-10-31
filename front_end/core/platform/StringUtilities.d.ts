@@ -48,6 +48,12 @@ export declare const stripLineBreaks: (inputStr: string) => string;
  * @returns `true` if the `inputStr` follows the extended Kebab Case convention.
  */
 export declare const isExtendedKebabCase: (inputStr: string) => boolean;
+/**
+ * Replaces any sequence of non-alphanumeric characters with a single dash, strips leading and
+ * trailing dashes, and converts letters to lowercase, leaving a kebab-case identifier usable as viewId.
+ * If the input contains only non-alphanumeric characters, returns a falsy empty string.
+ */
+export declare const sanitizeIdentifier: (id: string) => Lowercase<string>;
 export declare const toTitleCase: (inputStr: string) => string;
 export declare const removeURLFragment: (inputStr: string) => string;
 export declare const regexSpecialCharacters: () => string;

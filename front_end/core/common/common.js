@@ -2815,24 +2815,24 @@ var Generator = class {
   colorForID(id) {
     let color = this.#colors.get(id);
     if (!color) {
-      color = this.generateColorForID(id);
+      color = this.#generateColorForID(id);
       this.#colors.set(id, color);
     }
     return color;
   }
-  generateColorForID(id) {
+  #generateColorForID(id) {
     const hash = Platform.StringUtilities.hashCode(id);
-    const h = this.indexToValueInSpace(hash, this.#hueSpace);
-    const s = this.indexToValueInSpace(hash >> 8, this.#satSpace);
-    const l = this.indexToValueInSpace(hash >> 16, this.#lightnessSpace);
-    const a = this.indexToValueInSpace(hash >> 24, this.#alphaSpace);
+    const h = this.#indexToValueInSpace(hash, this.#hueSpace);
+    const s = this.#indexToValueInSpace(hash >> 8, this.#satSpace);
+    const l = this.#indexToValueInSpace(hash >> 16, this.#lightnessSpace);
+    const a = this.#indexToValueInSpace(hash >> 24, this.#alphaSpace);
     const start = `hsl(${h}deg ${s}% ${l}%`;
     if (a !== 1) {
       return `${start} / ${Math.floor(a * 100)}%)`;
     }
     return `${start})`;
   }
-  indexToValueInSpace(index, space) {
+  #indexToValueInSpace(index, space) {
     if (typeof space === "number") {
       return space;
     }
@@ -3792,14 +3792,14 @@ var ParsedURL = class _ParsedURL {
     }
     return _ParsedURL.substring(url, 0, wasmFunctionIndex);
   }
-  static beginsWithWindowsDriveLetter(url) {
+  static #beginsWithWindowsDriveLetter(url) {
     return /^[A-Za-z]:/.test(url);
   }
-  static beginsWithScheme(url) {
+  static #beginsWithScheme(url) {
     return /^[A-Za-z][A-Za-z0-9+.-]*:/.test(url);
   }
   static isRelativeURL(url) {
-    return !this.beginsWithScheme(url) || this.beginsWithWindowsDriveLetter(url);
+    return !this.#beginsWithScheme(url) || this.#beginsWithWindowsDriveLetter(url);
   }
   get displayName() {
     if (this.#displayName) {
@@ -4042,7 +4042,7 @@ var ResolverBase = class {
   async waitFor(id) {
     const obj = this.getForId(id);
     if (!obj) {
-      return await this.getOrCreatePromise(id);
+      return await this.#getOrCreatePromise(id);
     }
     return obj;
   }
@@ -4056,7 +4056,7 @@ var ResolverBase = class {
     if (!obj) {
       const swallowTheError = () => {
       };
-      void this.getOrCreatePromise(id).catch(swallowTheError).then((obj2) => {
+      void this.#getOrCreatePromise(id).catch(swallowTheError).then((obj2) => {
         if (obj2) {
           callback(obj2);
         }
@@ -4075,7 +4075,7 @@ var ResolverBase = class {
     }
     this.#unresolvedIds.clear();
   }
-  getOrCreatePromise(id) {
+  #getOrCreatePromise(id) {
     const promiseInfo = this.#unresolvedIds.get(id);
     if (promiseInfo) {
       return promiseInfo.promise;
@@ -4660,7 +4660,7 @@ var SegmentedRange = class {
     let merged = null;
     if (startIndex > 0) {
       const precedingSegment = this.#segments[startIndex - 1];
-      merged = this.tryMerge(precedingSegment, newSegment);
+      merged = this.#tryMerge(precedingSegment, newSegment);
       if (merged) {
         --startIndex;
         newSegment = merged;
@@ -4679,7 +4679,7 @@ var SegmentedRange = class {
       ++endIndex;
     }
     if (endIndex < this.#segments.length) {
-      merged = this.tryMerge(newSegment, this.#segments[endIndex]);
+      merged = this.#tryMerge(newSegment, this.#segments[endIndex]);
       if (merged) {
         endIndex++;
         newSegment = merged;
@@ -4692,7 +4692,7 @@ var SegmentedRange = class {
   segments() {
     return this.#segments;
   }
-  tryMerge(first, second) {
+  #tryMerge(first, second) {
     const merged = this.#mergeCallback && this.#mergeCallback(first, second);
     if (!merged) {
       return null;
@@ -4999,7 +4999,7 @@ var VersionController = class _VersionController {
   updateVersion() {
     const currentVersion = _VersionController.CURRENT_VERSION;
     const minimumVersion = Math.min(this.#globalVersionSetting.get(), this.#syncedVersionSetting.get(), this.#localVersionSetting.get());
-    const methodsToRun = this.methodsToRunToUpdateVersion(minimumVersion, currentVersion);
+    const methodsToRun = this.#methodsToRunToUpdateVersion(minimumVersion, currentVersion);
     console.assert(
       // @ts-expect-error
       this[`updateVersionFrom${currentVersion}To${currentVersion + 1}`] === void 0,
@@ -5010,7 +5010,7 @@ var VersionController = class _VersionController {
     }
     this.resetToCurrent();
   }
-  methodsToRunToUpdateVersion(oldVersion, currentVersion) {
+  #methodsToRunToUpdateVersion(oldVersion, currentVersion) {
     const result = [];
     for (let i = oldVersion; i < currentVersion; ++i) {
       result.push("updateVersionFrom" + i + "To" + (i + 1));
@@ -5018,7 +5018,7 @@ var VersionController = class _VersionController {
     return result;
   }
   updateVersionFrom0To1() {
-    this.clearBreakpointsWhenTooMany(this.#settings.createLocalSetting("breakpoints", []), 5e5);
+    this.#clearBreakpointsWhenTooMany(this.#settings.createLocalSetting("breakpoints", []), 5e5);
   }
   updateVersionFrom1To2() {
     this.#settings.createSetting("previouslyViewedFiles", []).set([]);
@@ -5196,10 +5196,10 @@ var VersionController = class _VersionController {
     this.#removeSetting(oldSetting);
   }
   updateVersionFrom11To12() {
-    this.migrateSettingsFromLocalStorage();
+    this.#migrateSettingsFromLocalStorage();
   }
   updateVersionFrom12To13() {
-    this.migrateSettingsFromLocalStorage();
+    this.#migrateSettingsFromLocalStorage();
     this.#removeSetting(this.#settings.createSetting("timelineOverviewMode", ""));
   }
   updateVersionFrom13To14() {
@@ -5607,7 +5607,7 @@ var VersionController = class _VersionController {
    * multiple times! E.g. when renaming a setting one has to check that the
    * a setting with the new name does not yet exist.
    * ----------------------------------------------------------------------- */
-  migrateSettingsFromLocalStorage() {
+  #migrateSettingsFromLocalStorage() {
     const localSettings = /* @__PURE__ */ new Set([
       "advancedSearchConfig",
       "breakpoints",
@@ -5635,7 +5635,7 @@ var VersionController = class _VersionController {
       this.#settings.globalStorage.set(key, value);
     }
   }
-  clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {
+  #clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {
     if (breakpointsSetting.get().length > maxBreakpointsCount) {
       breakpointsSetting.set([]);
     }
@@ -6159,13 +6159,13 @@ var SimpleHistoryManager = class {
     this.#coalescingReadonly = 0;
     this.#historyDepth = historyDepth;
   }
-  readOnlyLock() {
+  #readOnlyLock() {
     ++this.#coalescingReadonly;
   }
-  releaseReadOnlyLock() {
+  #releaseReadOnlyLock() {
     --this.#coalescingReadonly;
   }
-  getPreviousValidIndex() {
+  #getPreviousValidIndex() {
     if (this.empty()) {
       return -1;
     }
@@ -6178,7 +6178,7 @@ var SimpleHistoryManager = class {
     }
     return revealIndex;
   }
-  getNextValidIndex() {
+  #getNextValidIndex() {
     let revealIndex = this.#activeEntryIndex + 1;
     while (revealIndex < this.#entries.length && !this.#entries[revealIndex].valid()) {
       ++revealIndex;
@@ -6188,7 +6188,7 @@ var SimpleHistoryManager = class {
     }
     return revealIndex;
   }
-  readOnly() {
+  #readOnly() {
     return Boolean(this.#coalescingReadonly);
   }
   empty() {
@@ -6198,7 +6198,7 @@ var SimpleHistoryManager = class {
     return this.empty() ? null : this.#entries[this.#activeEntryIndex];
   }
   push(entry) {
-    if (this.readOnly()) {
+    if (this.#readOnly()) {
       return;
     }
     if (!this.empty()) {
@@ -6211,31 +6211,31 @@ var SimpleHistoryManager = class {
     this.#activeEntryIndex = this.#entries.length - 1;
   }
   canRollback() {
-    return this.getPreviousValidIndex() >= 0;
+    return this.#getPreviousValidIndex() >= 0;
   }
   canRollover() {
-    return this.getNextValidIndex() >= 0;
+    return this.#getNextValidIndex() >= 0;
   }
   rollback() {
-    const revealIndex = this.getPreviousValidIndex();
+    const revealIndex = this.#getPreviousValidIndex();
     if (revealIndex === -1) {
       return false;
     }
-    this.readOnlyLock();
+    this.#readOnlyLock();
     this.#activeEntryIndex = revealIndex;
     this.#entries[revealIndex].reveal();
-    this.releaseReadOnlyLock();
+    this.#releaseReadOnlyLock();
     return true;
   }
   rollover() {
-    const revealIndex = this.getNextValidIndex();
+    const revealIndex = this.#getNextValidIndex();
     if (revealIndex === -1) {
       return false;
     }
-    this.readOnlyLock();
+    this.#readOnlyLock();
     this.#activeEntryIndex = revealIndex;
     this.#entries[revealIndex].reveal();
-    this.releaseReadOnlyLock();
+    this.#releaseReadOnlyLock();
     return true;
   }
 };
@@ -6406,17 +6406,17 @@ var Trie = class _Trie {
       }
     }
     const results = [];
-    this.dfs(node, prefix, results);
+    this.#dfs(node, prefix, results);
     return results;
   }
-  dfs(node, prefix, results) {
+  #dfs(node, prefix, results) {
     if (this.#isWord[node]) {
       results.push(prefix);
     }
     const edges = this.#edges[node];
     for (const [edge, node2] of edges) {
       const newPrefix = this.#traitImpl.append(prefix, edge);
-      this.dfs(node2, newPrefix, results);
+      this.#dfs(node2, newPrefix, results);
     }
   }
   longestPrefix(word, fullWordOnly) {

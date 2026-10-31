@@ -201,12 +201,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
     static encodeEncodedPathToLocalPathParts(encodedPath) {
         const encodedParts = [];
+        // The empty path has extra slashes in the URL. Encoding them in the next filename lets /foo//bar.js map to foo/%2Fbar.js and is different from /foo/bar.js.
+        let pendingSlashes = '';
         for (const pathPart of this.#fileNamePartsFromEncodedPath(encodedPath)) {
             if (!pathPart) {
+                pendingSlashes += '/';
                 continue;
             }
             // encodeURI() escapes all the unsafe filename characters except '/' and '*'
-            let encodedName = encodeURI(pathPart).replace(/[\/\*]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
+            let encodedName = encodeURI(pendingSlashes + pathPart)
+                .replace(/[\/\*]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
+            pendingSlashes = '';
             if (encodedName === '..') {
                 encodedName = '%2E%2E';
             }
@@ -231,7 +236,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         return encodedParts;
     }
     static #fileNamePartsFromEncodedPath(encodedPath) {
-        encodedPath = Common.ParsedURL.ParsedURL.urlWithoutHash(encodedPath);
+        encodedPath = Common.ParsedURL.ParsedURL.urlWithoutHash(encodedPath).replace(/^file:\/\/\//, 'file:/');
         const queryIndex = encodedPath.indexOf('?');
         if (queryIndex === -1) {
             return encodedPath.split('/');

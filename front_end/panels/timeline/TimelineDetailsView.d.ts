@@ -37,8 +37,8 @@ export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
         entityMapper: Trace.EntityMapper.EntityMapper | null;
     }): Promise<void>;
     /**
-     * Updates the UI shown in the Summary tab, and updates the UI to select the
-     * summary tab.
+     * Updates the UI shown in the Summary tab. If the summary tab is not
+     * currently selected, the update is deferred until the tab becomes active.
      */
     private updateSummaryPane;
     private updateContents;

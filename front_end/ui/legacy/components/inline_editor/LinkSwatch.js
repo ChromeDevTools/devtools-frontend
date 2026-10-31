@@ -24,12 +24,12 @@ export class LinkSwatch extends HTMLElement {
             data.onLinkActivate(linkText);
             event.consume(true);
         };
-        this.render(data);
+        this.#render(data);
     }
     get linkElement() {
         return this.#linkElement;
     }
-    render(data) {
+    #render(data) {
         const { isDefined, text, jslogContext, tooltip } = data;
         const classes = classMap({
             'link-style': true,

@@ -76,6 +76,7 @@ export declare class UserAgentClientHintsForm extends UserAgentClientHintsFormBa
     set disabled(disableForm: boolean);
     get disabled(): boolean;
     wasShown(): void;
+    static validateMetaData(metaData?: Protocol.Emulation.UserAgentMetadata): UI.ListWidget.ValidatorResult;
     validate: () => UI.ListWidget.ValidatorResult;
     performUpdate(): void;
 }

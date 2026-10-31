@@ -10,8 +10,8 @@ export class DevToolsCDPConnection {
     #observers = new Set();
     constructor(transport) {
         this.#transport = transport;
-        test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
-        this.#transport.setOnMessage(this.onMessage.bind(this));
+        test.sendRawMessage = this.#sendRawMessageForTesting.bind(this);
+        this.#transport.setOnMessage(this.#onMessage.bind(this));
         this.#transport.setOnDisconnect(reason => {
             this.#observers.forEach(observer => observer.onDisconnect(reason));
         });
@@ -60,7 +60,7 @@ export class DevToolsCDPConnection {
             });
         }
     }
-    sendRawMessageForTesting(method, params, callback, sessionId = '') {
+    #sendRawMessageForTesting(method, params, callback, sessionId = '') {
         void this.send(method, params, sessionId).then(response => {
             if ('error' in response && response.error) {
                 callback?.(response.error, null);
@@ -70,7 +70,7 @@ export class DevToolsCDPConnection {
             }
         });
     }
-    onMessage(message) {
+    #onMessage(message) {
         if (test.dumpProtocol) {
             test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
         }

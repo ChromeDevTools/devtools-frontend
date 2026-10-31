@@ -322,16 +322,33 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
 }
 const widgetForView = new WeakMap();
 export class ContainerWidget extends VBox {
-    view;
+    #view;
     materializePromise;
-    constructor(view) {
-        super();
+    constructor(element, view) {
+        super(element instanceof HTMLElement ? element : undefined);
         this.element.classList.add('flex-auto', 'view-container', 'overflow-auto');
-        this.view = view;
         this.element.tabIndex = -1;
         ARIAUtils.markAsTabpanel(this.element);
-        ARIAUtils.setLabel(this.element, i18nString(UIStrings.sPanel, { PH1: view.title() }));
         this.setDefaultFocusedElement(this.element);
+        if (element && !(element instanceof HTMLElement)) {
+            this.view = element;
+        }
+        else if (view) {
+            this.view = view;
+        }
+    }
+    get view() {
+        if (!this.#view) {
+            throw new Error('ContainerWidget is missing a view');
+        }
+        return this.#view;
+    }
+    set view(view) {
+        if (this.#view === view) {
+            return;
+        }
+        this.#view = view;
+        ARIAUtils.setLabel(this.element, i18nString(UIStrings.sPanel, { PH1: view.title() }));
     }
     materialize() {
         if (this.materializePromise) {

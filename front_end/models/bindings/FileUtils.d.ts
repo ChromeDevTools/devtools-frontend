@@ -17,9 +17,6 @@ export declare class ChunkedFileReader implements ChunkedReader {
     fileSize(): number;
     fileName(): string;
     error(): DOMException | null;
-    private decodeChunkBuffer;
-    private finishRead;
-    private loadChunk;
 }
 export declare class FileOutputStream implements Common.StringOutputStream.OutputStream {
     #private;
@@ -27,5 +24,4 @@ export declare class FileOutputStream implements Common.StringOutputStream.Outpu
     open(fileName: Platform.DevToolsPath.RawPathString | Platform.DevToolsPath.UrlString): Promise<boolean>;
     write(data: string): Promise<void>;
     close(): Promise<void>;
-    private onAppendDone;
 }

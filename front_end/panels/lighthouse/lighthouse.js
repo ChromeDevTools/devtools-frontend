@@ -4706,7 +4706,7 @@ var lighthouseStartView_css_default = `/*
   color: #ff8c00; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
-  padding-left: 10px;
+  padding-left: var(--sys-size-5);
   padding-top: 10px;
 }
 

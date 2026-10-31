@@ -97,7 +97,7 @@ export class CSSStyleRule extends CSSRule {
             header: styleSheetHeaderForRule(cssModel, payload),
             originTreeScopeNodeId: payload.originTreeScopeNodeId,
         });
-        this.reinitializeSelectors(payload.selectorList);
+        this.#reinitializeSelectors(payload.selectorList);
         this.nestingSelectors = payload.nestingSelectors;
         this.media = payload.media ? CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
         this.containerQueries = payload.containerQueries ?
@@ -128,7 +128,7 @@ export class CSSStyleRule extends CSSRule {
         };
         return new CSSStyleRule(cssModel, dummyPayload);
     }
-    reinitializeSelectors(selectorList) {
+    #reinitializeSelectors(selectorList) {
         this.selectors = [];
         for (let i = 0; i < selectorList.selectors.length; ++i) {
             this.selectors.push(new CSSValue(selectorList.selectors[i]));
@@ -181,7 +181,7 @@ export class CSSStyleRule extends CSSRule {
         }
         const range = this.selectorRange();
         if (range?.equal(edit.oldRange)) {
-            this.reinitializeSelectors(edit.payload);
+            this.#reinitializeSelectors(edit.payload);
         }
         else {
             for (let i = 0; i < this.selectors.length; ++i) {
@@ -299,7 +299,7 @@ export class CSSKeyframeRule extends CSSRule {
             style: payload.style,
             header: styleSheetHeaderForRule(cssModel, payload),
         });
-        this.reinitializeKey(payload.keyText);
+        this.#reinitializeKey(payload.keyText);
         this.#parentRuleName = parentRuleName;
     }
     parentRuleName() {
@@ -308,7 +308,7 @@ export class CSSKeyframeRule extends CSSRule {
     key() {
         return this.#keyText;
     }
-    reinitializeKey(payload) {
+    #reinitializeKey(payload) {
         this.#keyText = new CSSValue(payload);
     }
     rebase(edit) {
@@ -316,7 +316,7 @@ export class CSSKeyframeRule extends CSSRule {
             return;
         }
         if (edit.oldRange.equal(this.#keyText.range)) {
-            this.reinitializeKey(edit.payload);
+            this.#reinitializeKey(edit.payload);
         }
         else {
             this.#keyText.rebase(edit);

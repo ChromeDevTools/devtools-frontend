@@ -597,6 +597,7 @@ __export(StringUtilities_exports, {
   replaceLast: () => replaceLast,
   reverse: () => reverse,
   safeEscapeUnicode: () => safeEscapeUnicode,
+  sanitizeIdentifier: () => sanitizeIdentifier,
   sprintf: () => sprintf,
   stringifyWithPrecision: () => stringifyWithPrecision,
   stripLineBreaks: () => stripLineBreaks,
@@ -856,6 +857,9 @@ var stripLineBreaks = (inputStr) => {
 var EXTENDED_KEBAB_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$/;
 var isExtendedKebabCase = (inputStr) => {
   return EXTENDED_KEBAB_CASE_REGEXP.test(inputStr);
+};
+var sanitizeIdentifier = (id) => {
+  return id.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 };
 var toTitleCase = (inputStr) => {
   return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);

@@ -22,6 +22,5 @@ export declare class RequestTimingView extends UI.Widget.VBox {
     set calculator(calculator: NetworkTimeCalculator.NetworkTimeCalculator);
     wasShown(): void;
     willHide(): void;
-    private boundaryChanged;
 }
 export {};

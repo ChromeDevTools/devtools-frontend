@@ -53,14 +53,14 @@ export class PresentationConsoleMessageManager {
     #sourceFrameMessageManager;
     constructor(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding) {
         this.#sourceFrameMessageManager = new PresentationSourceFrameMessageManager(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
-        targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, event => this.consoleMessageAdded(event.data));
-        SDK.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
+        targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, event => this.#consoleMessageAdded(event.data));
+        SDK.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.#consoleMessageAdded, this);
         targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
     }
     enable() {
         this.#sourceFrameMessageManager.enable();
     }
-    consoleMessageAdded(consoleMessage) {
+    #consoleMessageAdded(consoleMessage) {
         const runtimeModel = consoleMessage.runtimeModel();
         if (!consoleMessage.isErrorOrWarning() || !consoleMessage.runtimeModel() ||
             consoleMessage.source === "violation" /* Protocol.Log.LogEntrySource.Violation */ || !runtimeModel) {

@@ -4,7 +4,6 @@ export declare class CSSMetadata {
     constructor(properties: CSSPropertyDefinition[], aliasesFor: Map<string, string>);
     static isCSSWideKeyword(a: string): a is CSSWideKeyword;
     static isPositionTryOrderKeyword(a: string): a is PositionTryOrderKeyword;
-    private static sortPrefixesAndCSSWideKeywordsToEnd;
     allProperties(): string[];
     aliasesFor(): Map<string, string>;
     nameValuePresets(includeSVG?: boolean): string[];
@@ -27,7 +26,6 @@ export declare class CSSMetadata {
     canonicalPropertyName(name: string): string;
     isCSSPropertyName(propertyName: string): boolean;
     isPropertyInherited(propertyName: string): boolean;
-    private specificPropertyValues;
     getPropertyValues(propertyName: string): string[];
     propertyUsageWeight(property: string): number;
     getValuePreset(key: string, value: string): {

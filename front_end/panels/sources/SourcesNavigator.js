@@ -143,7 +143,7 @@ export class NetworkNavigatorView extends SourcesNavigatorView {
     constructor(element, view = NETWORK_NAVIGATOR_DEFAULT_VIEW) {
         super(element);
         this.#view = view;
-        SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
+        SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.#inspectedURLChanged, this);
         // Record the sources tool load time after the file navigator has loaded.
         UI.UIUserMetrics.UIUserMetrics.instance().panelLoaded('sources', 'DevTools.Launch.Sources');
         SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
@@ -180,7 +180,7 @@ export class NetworkNavigatorView extends SourcesNavigatorView {
             }
         }
     }
-    inspectedURLChanged(event) {
+    #inspectedURLChanged(event) {
         const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
         if (event.data !== mainTarget) {
             return;
@@ -353,11 +353,11 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
     constructor(element, view = OVERRIDES_NAVIGATOR_DEFAULT_VIEW) {
         super(element);
         this.#view = view;
-        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("ProjectChanged" /* Persistence.NetworkPersistenceManager.Events.PROJECT_CHANGED */, this.updateProjectAndUI, this);
-        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("LocalOverridesProjectUpdated" /* Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED */, this.updateProjectAndUI, this);
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("ProjectChanged" /* Persistence.NetworkPersistenceManager.Events.PROJECT_CHANGED */, this.#updateProjectAndUI, this);
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("LocalOverridesProjectUpdated" /* Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED */, this.#updateProjectAndUI, this);
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-        workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
-        workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
+        workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddOrRemoved, this);
+        workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddOrRemoved, this);
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
@@ -387,7 +387,7 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
         }, this.viewOutput, this.contentElement);
         await this.navigatorView?.updateComplete;
     }
-    onProjectAddOrRemoved(event) {
+    #onProjectAddOrRemoved(event) {
         const project = event.data;
         if (project && project.type() === Workspace.Workspace.projectTypes.FileSystem &&
             Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
@@ -395,7 +395,7 @@ export class OverridesNavigatorView extends SourcesNavigatorView {
         }
         this.requestUpdate();
     }
-    updateProjectAndUI() {
+    #updateProjectAndUI() {
         const navigatorView = this.navigatorView;
         if (navigatorView) {
             navigatorView.reset();

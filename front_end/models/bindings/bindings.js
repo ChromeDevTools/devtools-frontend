@@ -1525,14 +1525,14 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
   get modelToInfo() {
     return this.#modelToInfo;
   }
-  getCSSModelInfo(cssModel) {
+  #getCSSModelInfo(cssModel) {
     return this.#modelToInfo.get(cssModel);
   }
   modelAdded(cssModel) {
     this.#modelToInfo.set(cssModel, new ModelInfo(cssModel, this.#resourceMapping, this));
   }
   modelRemoved(cssModel) {
-    this.getCSSModelInfo(cssModel).dispose();
+    this.#getCSSModelInfo(cssModel).dispose();
     this.#modelToInfo.delete(cssModel);
   }
   /**
@@ -1542,20 +1542,20 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
   async pendingLiveLocationChangesPromise() {
     await Promise.all(this.#liveLocationPromises);
   }
-  recordLiveLocationChange(promise) {
+  #recordLiveLocationChange(promise) {
     void promise.then(() => {
       this.#liveLocationPromises.delete(promise);
     });
     this.#liveLocationPromises.add(promise);
   }
   async updateLocations(header) {
-    const updatePromise = this.getCSSModelInfo(header.cssModel()).updateLocations(header);
-    this.recordLiveLocationChange(updatePromise);
+    const updatePromise = this.#getCSSModelInfo(header.cssModel()).updateLocations(header);
+    this.#recordLiveLocationChange(updatePromise);
     await updatePromise;
   }
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    const locationPromise = this.getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
-    this.recordLiveLocationChange(locationPromise);
+    const locationPromise = this.#getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
+    this.#recordLiveLocationChange(locationPromise);
     return locationPromise;
   }
   propertyRawLocation(cssProperty, forName) {
@@ -1587,7 +1587,7 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
     return this.rawLocationToUILocation(rawLocation);
   }
   rawLocationToUILocation(rawLocation) {
-    return this.getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
+    return this.#getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
   }
   uiLocationToRawLocations(uiLocation) {
     const rawLocations = [];
@@ -1614,14 +1614,14 @@ var ModelInfo = class {
       cssModel.addEventListener(
         SDK6.CSSModel.Events.StyleSheetAdded,
         (event) => {
-          void this.styleSheetAdded(event);
+          void this.#styleSheetAdded(event);
         },
         this
       ),
       cssModel.addEventListener(
         SDK6.CSSModel.Events.StyleSheetRemoved,
         (event) => {
-          void this.styleSheetRemoved(event);
+          void this.#styleSheetRemoved(event);
         },
         this
       )
@@ -1663,7 +1663,7 @@ var ModelInfo = class {
     }
     return Promise.all(promises);
   }
-  async styleSheetAdded(event) {
+  async #styleSheetAdded(event) {
     const header = event.data;
     if (!header.sourceURL) {
       return;
@@ -1677,7 +1677,7 @@ var ModelInfo = class {
     await Promise.all(promises);
     this.#unboundLocations.deleteAll(header.sourceURL);
   }
-  async styleSheetRemoved(event) {
+  async #styleSheetRemoved(event) {
     const header = event.data;
     const promises = [];
     for (const location of this.#locations.get(header)) {
@@ -4835,55 +4835,55 @@ var SourceScope = class {
   }
 };
 var ExtensionRemoteObject = class extends SDK7.RemoteObject.RemoteObject {
-  extensionObject;
-  plugin;
+  #extensionObject;
+  #plugin;
   callFrame;
   constructor(callFrame, extensionObject, plugin) {
     super();
-    this.extensionObject = extensionObject;
-    this.plugin = plugin;
+    this.#extensionObject = extensionObject;
+    this.#plugin = plugin;
     this.callFrame = callFrame;
   }
   get linearMemoryAddress() {
-    return this.extensionObject.linearMemoryAddress;
+    return this.#extensionObject.linearMemoryAddress;
   }
   get linearMemorySize() {
-    return this.extensionObject.linearMemorySize;
+    return this.#extensionObject.linearMemorySize;
   }
   get objectId() {
-    return this.extensionObject.objectId;
+    return this.#extensionObject.objectId;
   }
   get type() {
-    if (this.extensionObject.type === "array" || this.extensionObject.type === "null") {
+    if (this.#extensionObject.type === "array" || this.#extensionObject.type === "null") {
       return "object";
     }
-    return this.extensionObject.type;
+    return this.#extensionObject.type;
   }
   get subtype() {
-    if (this.extensionObject.type === "array" || this.extensionObject.type === "null") {
-      return this.extensionObject.type;
+    if (this.#extensionObject.type === "array" || this.#extensionObject.type === "null") {
+      return this.#extensionObject.type;
     }
     return void 0;
   }
   get value() {
-    return this.extensionObject.value;
+    return this.#extensionObject.value;
   }
   unserializableValue() {
     return void 0;
   }
   get description() {
-    return this.extensionObject.description;
+    return this.#extensionObject.description;
   }
   set description(_description) {
   }
   get hasChildren() {
-    return this.extensionObject.hasChildren;
+    return this.#extensionObject.hasChildren;
   }
   get preview() {
     return void 0;
   }
   get className() {
-    return this.extensionObject.className ?? null;
+    return this.#extensionObject.className ?? null;
   }
   arrayLength() {
     return 0;
@@ -4895,25 +4895,25 @@ var ExtensionRemoteObject = class extends SDK7.RemoteObject.RemoteObject {
     return this.getAllProperties(false, _generatePreview, _nonIndexedPropertiesOnly);
   }
   async getAllProperties(_accessorPropertiesOnly, _generatePreview, _nonIndexedPropertiesOnly) {
-    const { objectId } = this.extensionObject;
+    const { objectId } = this.#extensionObject;
     if (objectId) {
-      assertNotNullOrUndefined(this.plugin.getProperties);
-      const extensionObjectProperties = await this.plugin.getProperties(objectId);
-      const properties = await Promise.all(extensionObjectProperties.map(
-        async (p) => new SDK7.RemoteObject.RemoteObjectProperty(
+      assertNotNullOrUndefined(this.#plugin.getProperties);
+      const extensionObjectProperties = await this.#plugin.getProperties(objectId);
+      const properties = await Promise.all(
+        extensionObjectProperties.map(async (p) => new SDK7.RemoteObject.RemoteObjectProperty(
           p.name,
-          await wrapRemoteObject(this.callFrame, p.value, this.plugin)
-        )
-      ));
+          await wrapRemoteObject(this.callFrame, p.value, this.#plugin)
+        ))
+      );
       return { properties, internalProperties: null };
     }
     return { properties: null, internalProperties: null };
   }
   release() {
-    const { objectId } = this.extensionObject;
+    const { objectId } = this.#extensionObject;
     if (objectId) {
-      assertNotNullOrUndefined(this.plugin.releaseObject);
-      void this.plugin.releaseObject(objectId);
+      assertNotNullOrUndefined(this.#plugin.releaseObject);
+      void this.#plugin.releaseObject(objectId);
     }
   }
   debuggerModel() {
@@ -4923,7 +4923,7 @@ var ExtensionRemoteObject = class extends SDK7.RemoteObject.RemoteObject {
     return this.callFrame.debuggerModel.runtimeModel();
   }
   isLinearMemoryInspectable() {
-    return this.extensionObject.linearMemoryAddress !== void 0;
+    return this.#extensionObject.linearMemoryAddress !== void 0;
   }
 };
 var DebuggerLanguagePluginManager = class {
@@ -4933,9 +4933,9 @@ var DebuggerLanguagePluginManager = class {
   #plugins;
   #debuggerModelToData;
   #rawModuleHandles;
-  callFrameByStopId = /* @__PURE__ */ new Map();
-  stopIdByCallFrame = /* @__PURE__ */ new Map();
-  nextStopId = 0n;
+  #callFrameByStopId = /* @__PURE__ */ new Map();
+  #stopIdByCallFrame = /* @__PURE__ */ new Map();
+  #nextStopId = 0n;
   constructor(targetManager, workspace, debuggerWorkspaceBinding, console2) {
     this.#workspace = workspace;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
@@ -4945,10 +4945,10 @@ var DebuggerLanguagePluginManager = class {
     targetManager.observeModels(SDK7.DebuggerModel.DebuggerModel, this);
     this.#rawModuleHandles = /* @__PURE__ */ new Map();
   }
-  async evaluateOnCallFrame(callFrame, options) {
+  async #evaluateOnCallFrame(callFrame, options) {
     const { script } = callFrame;
     const { expression, returnByValue, throwOnSideEffect } = options;
-    const { plugin } = await this.rawModuleIdAndPluginForScript(script);
+    const { plugin } = await this.#rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -4979,29 +4979,29 @@ var DebuggerLanguagePluginManager = class {
     }
   }
   stopIdForCallFrame(callFrame) {
-    let stopId = this.stopIdByCallFrame.get(callFrame);
+    let stopId = this.#stopIdByCallFrame.get(callFrame);
     if (stopId !== void 0) {
       return stopId;
     }
-    stopId = this.nextStopId++;
-    this.stopIdByCallFrame.set(callFrame, stopId);
-    this.callFrameByStopId.set(stopId, callFrame);
+    stopId = this.#nextStopId++;
+    this.#stopIdByCallFrame.set(callFrame, stopId);
+    this.#callFrameByStopId.set(stopId, callFrame);
     return stopId;
   }
   callFrameForStopId(stopId) {
-    return this.callFrameByStopId.get(stopId);
+    return this.#callFrameByStopId.get(stopId);
   }
   modelAdded(debuggerModel) {
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this.#workspace));
-    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
-    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
-    debuggerModel.setEvaluateOnCallFrameCallback(this.evaluateOnCallFrame.bind(this));
+    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared, this);
+    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.ParsedScriptSource, this.#parsedScriptSource, this);
+    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.DebuggerResumed, this.#debuggerResumed, this);
+    debuggerModel.setEvaluateOnCallFrameCallback(this.#evaluateOnCallFrame.bind(this));
   }
   modelRemoved(debuggerModel) {
-    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
-    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
+    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared, this);
+    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.ParsedScriptSource, this.#parsedScriptSource, this);
+    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.DebuggerResumed, this.#debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(null);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
@@ -5024,7 +5024,7 @@ var DebuggerLanguagePluginManager = class {
       }
     });
   }
-  globalObjectCleared(event) {
+  #globalObjectCleared(event) {
     const debuggerModel = event.data;
     this.modelRemoved(debuggerModel);
     this.modelAdded(debuggerModel);
@@ -5036,7 +5036,7 @@ var DebuggerLanguagePluginManager = class {
         if (this.hasPluginForScript(script)) {
           continue;
         }
-        this.parsedScriptSource({ data: script });
+        this.#parsedScriptSource({ data: script });
       }
     }
   }
@@ -5053,7 +5053,7 @@ var DebuggerLanguagePluginManager = class {
     for (const script of scripts) {
       const modelData = this.#debuggerModelToData.get(script.debuggerModel);
       modelData.removeScript(script);
-      this.parsedScriptSource({ data: script });
+      this.#parsedScriptSource({ data: script });
       if (!this.hasPluginForScript(script)) {
         void this.#debuggerWorkspaceBinding.updateLocations(script);
       }
@@ -5072,7 +5072,7 @@ var DebuggerLanguagePluginManager = class {
    * risk of racing with the `addRawModule` call. The returned #plugin will be
    * set to undefined to indicate that there's no #plugin for the script.
    */
-  async rawModuleIdAndPluginForScript(script) {
+  async #rawModuleIdAndPluginForScript(script) {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
     if (rawModuleHandle) {
@@ -5095,7 +5095,7 @@ var DebuggerLanguagePluginManager = class {
     if (!script) {
       return null;
     }
-    const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+    const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -5284,10 +5284,10 @@ var DebuggerLanguagePluginManager = class {
       return;
     }
     script.debugSymbols = { type: Debugger.DebugSymbolsType.ExternalDWARF, externalURL };
-    this.parsedScriptSource({ data: script });
+    this.#parsedScriptSource({ data: script });
     void script.debuggerModel.setDebugInfoURL(script, externalURL);
   }
-  parsedScriptSource(event) {
+  #parsedScriptSource(event) {
     const script = event.data;
     if (!script.sourceURL) {
       return;
@@ -5359,13 +5359,13 @@ var DebuggerLanguagePluginManager = class {
       return;
     }
   }
-  debuggerResumed(event) {
-    const resumedFrames = Array.from(this.callFrameByStopId.values()).filter((callFrame) => callFrame.debuggerModel === event.data);
+  #debuggerResumed(event) {
+    const resumedFrames = Array.from(this.#callFrameByStopId.values()).filter((callFrame) => callFrame.debuggerModel === event.data);
     for (const callFrame of resumedFrames) {
-      const stopId = this.stopIdByCallFrame.get(callFrame);
+      const stopId = this.#stopIdByCallFrame.get(callFrame);
       assertNotNullOrUndefined(stopId);
-      this.stopIdByCallFrame.delete(callFrame);
-      this.callFrameByStopId.delete(stopId);
+      this.#stopIdByCallFrame.delete(callFrame);
+      this.#callFrameByStopId.delete(stopId);
     }
   }
   getSourcesForScript(script) {
@@ -5378,7 +5378,7 @@ var DebuggerLanguagePluginManager = class {
   }
   async resolveScopeChain(callFrame) {
     const script = callFrame.script;
-    const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+    const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -5415,7 +5415,7 @@ var DebuggerLanguagePluginManager = class {
     }
   }
   async getFunctionInfo(script, location) {
-    const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+    const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -5445,7 +5445,7 @@ var DebuggerLanguagePluginManager = class {
     if (!script) {
       return [];
     }
-    const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+    const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return [];
     }
@@ -5483,7 +5483,7 @@ var DebuggerLanguagePluginManager = class {
     if (!script) {
       return [];
     }
-    const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+    const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return [];
     }
@@ -5517,7 +5517,7 @@ var DebuggerLanguagePluginManager = class {
     }
   }
   async getMappedLines(uiSourceCode) {
-    const rawModuleIds = await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map((s) => this.rawModuleIdAndPluginForScript(s)));
+    const rawModuleIds = await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map((s) => this.#rawModuleIdAndPluginForScript(s)));
     let mappedLines = null;
     for (const { rawModuleId, plugin } of rawModuleIds) {
       if (!plugin) {
@@ -5665,11 +5665,11 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
     );
     NetworkProject.setTargetForProject(this.#project, debuggerModel.target());
     this.#eventListeners = [
-      debuggerModel.addEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
-      debuggerModel.addEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
+      debuggerModel.addEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared, this),
+      debuggerModel.addEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.#parsedScriptSource, this),
       debuggerModel.addEventListener(
         SDK8.DebuggerModel.Events.DiscardedAnonymousScriptSource,
-        this.discardedScriptSource,
+        this.#discardedScriptSource,
         this
       )
     ];
@@ -5727,7 +5727,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
     const end = script.debuggerModel.createRawLocation(script, endLine, endColumn);
     return [{ start, end }];
   }
-  parsedScriptSource(event) {
+  #parsedScriptSource(event) {
     const script = event.data;
     const url = _DefaultScriptMapping.createV8ScriptURL(script);
     const uiSourceCode = this.#project.createUISourceCode(url, Common8.ResourceType.resourceTypes.Script);
@@ -5740,7 +5740,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
     this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, mimeType);
     void this.#debuggerWorkspaceBinding.updateLocations(script);
   }
-  discardedScriptSource(event) {
+  #discardedScriptSource(event) {
     const script = event.data;
     const uiSourceCode = this.#scriptToUISourceCode.get(script);
     if (uiSourceCode === void 0) {
@@ -5750,7 +5750,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
     this.#uiSourceCodeToScript.delete(uiSourceCode);
     this.#project.removeUISourceCode(uiSourceCode.url());
   }
-  globalObjectCleared() {
+  #globalObjectCleared() {
     this.#scriptToUISourceCode.clear();
     this.#uiSourceCodeToScript.clear();
     this.#project.reset();
@@ -5758,7 +5758,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   dispose() {
     defaultScriptMappings.delete(this);
     Common8.EventTarget.removeEventListeners(this.#eventListeners);
-    this.globalObjectCleared();
+    this.#globalObjectCleared();
     this.#project.dispose();
   }
 };
@@ -5803,23 +5803,27 @@ var ResourceScriptMapping = class {
     this.#eventListeners = [
       this.debuggerModel.addEventListener(
         SDK9.DebuggerModel.Events.ParsedScriptSource,
-        (event) => this.addScript(event.data),
+        (event) => this.#addScript(event.data),
         this
       ),
-      this.debuggerModel.addEventListener(SDK9.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
+      this.debuggerModel.addEventListener(
+        SDK9.DebuggerModel.Events.GlobalObjectCleared,
+        this.#globalObjectCleared,
+        this
+      ),
       runtimeModel.addEventListener(
         SDK9.RuntimeModel.Events.ExecutionContextDestroyed,
-        this.executionContextDestroyed,
+        this.#executionContextDestroyed,
         this
       ),
       runtimeModel.target().targetManager().addEventListener(
         SDK9.TargetManager.Events.INSPECTED_URL_CHANGED,
-        this.inspectedURLChanged,
+        this.#inspectedURLChanged,
         this
       )
     ];
   }
-  project(script) {
+  #project(script) {
     const prefix = script.isContentScript() ? "js:extensions:" : "js::";
     const projectId = prefix + this.debuggerModel.target().id() + ":" + script.frameId;
     let project = this.#projects.get(projectId);
@@ -5884,16 +5888,16 @@ var ResourceScriptMapping = class {
     const end = this.debuggerModel.createRawLocation(script, endLine, endColumn);
     return [{ start, end }];
   }
-  inspectedURLChanged(event) {
+  #inspectedURLChanged(event) {
     for (let target = this.debuggerModel.target(); target !== event.data; target = target.parentTarget()) {
       if (target === null) {
         return;
       }
     }
     const scripts = Array.from(this.#scriptToUISourceCode).filter(([script, uiSourceCode]) => this.#resolvedSourceURLChanged(script, uiSourceCode)).map(([script]) => script);
-    this.removeScripts(scripts);
+    this.#removeScripts(scripts);
     for (const script of scripts) {
-      this.addScript(script);
+      this.#addScript(script);
     }
   }
   /**
@@ -5949,7 +5953,7 @@ var ResourceScriptMapping = class {
     );
     return new Workspace15.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
-  addScript(script) {
+  #addScript(script) {
     if (script.isBreakpointCondition) {
       return;
     }
@@ -5962,7 +5966,7 @@ var ResourceScriptMapping = class {
       if (!this.#isTrustworthySourceURL(script, url)) {
         return;
       }
-      const previousUISourceCode = this.project(script).uiSourceCodeForURL(url);
+      const previousUISourceCode = this.#project(script).uiSourceCodeForURL(url);
       if (previousUISourceCode && !NetworkProject.isSourceURLSynthesized(previousUISourceCode)) {
         return;
       }
@@ -5977,12 +5981,12 @@ var ResourceScriptMapping = class {
         }
       }
     }
-    const project = this.project(script);
+    const project = this.#project(script);
     const oldUISourceCode = project.uiSourceCodeForURL(url);
     if (oldUISourceCode) {
       const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
       if (oldScriptFile?.script) {
-        this.removeScripts([oldScriptFile.script]);
+        this.#removeScripts([oldScriptFile.script]);
       }
     }
     const originalContentProvider = script.originalContentProvider();
@@ -6032,7 +6036,7 @@ var ResourceScriptMapping = class {
   scriptFile(uiSourceCode) {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;
   }
-  removeScripts(scripts) {
+  #removeScripts(scripts) {
     const uiSourceCodesByProject = new Platform5.MapUtilities.Multimap();
     for (const script of scripts) {
       const uiSourceCode = this.#scriptToUISourceCode.get(script);
@@ -6061,20 +6065,20 @@ var ResourceScriptMapping = class {
       }
     }
   }
-  executionContextDestroyed(event) {
+  #executionContextDestroyed(event) {
     const executionContext = event.data;
-    this.removeScripts(this.debuggerModel.scriptsForExecutionContext(executionContext));
+    this.#removeScripts(this.debuggerModel.scriptsForExecutionContext(executionContext));
   }
-  globalObjectCleared() {
+  #globalObjectCleared() {
     const scripts = Array.from(this.#scriptToUISourceCode.keys());
-    this.removeScripts(scripts);
+    this.#removeScripts(scripts);
   }
   resetForTest() {
-    this.globalObjectCleared();
+    this.#globalObjectCleared();
   }
   dispose() {
     Common9.EventTarget.removeEventListeners(this.#eventListeners);
-    this.globalObjectCleared();
+    this.#globalObjectCleared();
   }
 };
 var ResourceScriptFile = class {
@@ -6403,7 +6407,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   static removeInstance() {
     Root4.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
   }
-  async computeAutoStepRanges(mode, callFrame) {
+  async #computeAutoStepRanges(mode, callFrame) {
     function contained(location, range) {
       const { start, end } = range;
       if (start.scriptId !== location.scriptId) {
@@ -6454,8 +6458,8 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     }
     return ranges;
   }
-  async computeAutoStep(mode, callFrames) {
-    const ranges = await this.computeAutoStepRanges(mode, callFrames[0]);
+  async #computeAutoStep(mode, callFrames) {
+    const ranges = await this.#computeAutoStepRanges(mode, callFrames[0]);
     if (mode === SDK12.DebuggerModel.StepMode.STEP_OUT && ranges.length > 0) {
       return { command: SDK12.DebuggerModel.StepMode.STEP_OVER, ranges };
     }
@@ -6465,9 +6469,9 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     return { command: mode, ranges };
   }
   modelAdded(debuggerModel) {
-    debuggerModel.setBeforePausedCallback(this.shouldPause.bind(this));
+    debuggerModel.setBeforePausedCallback(this.#shouldPause.bind(this));
     this.#debuggerModelToData.set(debuggerModel, new ModelData2(debuggerModel, this));
-    debuggerModel.setComputeAutoStepCallback(this.computeAutoStep.bind(this));
+    debuggerModel.setComputeAutoStepCallback(this.#computeAutoStep.bind(this));
   }
   modelRemoved(debuggerModel) {
     debuggerModel.setComputeAutoStepCallback(null);
@@ -6484,7 +6488,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   async pendingLiveLocationChangesPromise() {
     await Promise.all(this.#liveLocationPromises);
   }
-  recordLiveLocationChange(promise) {
+  #recordLiveLocationChange(promise) {
     void promise.then(() => {
       this.#liveLocationPromises.delete(promise);
     });
@@ -6493,13 +6497,13 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   async updateLocations(script) {
     const stackTraceUpdatePromise = script.target().model(StackTraceImpl3.StackTraceModel.StackTraceModel)?.scriptInfoChanged(script, this.#translateRawFrames.bind(this));
     if (stackTraceUpdatePromise) {
-      this.recordLiveLocationChange(stackTraceUpdatePromise);
+      this.#recordLiveLocationChange(stackTraceUpdatePromise);
     }
     const updatePromises = [stackTraceUpdatePromise];
     const modelData = this.#debuggerModelToData.get(script.debuggerModel);
     if (modelData) {
       const updatePromise = modelData.updateLocations(script);
-      this.recordLiveLocationChange(updatePromise);
+      this.#recordLiveLocationChange(updatePromise);
       updatePromises.push(updatePromise);
     }
     await Promise.all(updatePromises);
@@ -6507,19 +6511,19 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   async createStackTraceFromProtocolRuntime(stackTrace, target) {
     const model = target.model(StackTraceImpl3.StackTraceModel.StackTraceModel);
     const stackTracePromise = model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
-    this.recordLiveLocationChange(stackTracePromise);
+    this.#recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
   async createStackTraceFromDebuggerPaused(pausedDetails, target) {
     const model = target.model(StackTraceImpl3.StackTraceModel.StackTraceModel);
     const stackTracePromise = model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
-    this.recordLiveLocationChange(stackTracePromise);
+    this.#recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
   async createStackTraceFromErrorStackLikeString(target, stack, exceptionDetails) {
     const model = target.model(StackTraceImpl3.StackTraceModel.StackTraceModel);
     const stackTracePromise = model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
-    this.recordLiveLocationChange(stackTracePromise);
+    this.#recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
   async createSymbolizedError(remoteObject, exceptionDetails) {
@@ -6577,13 +6581,13 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       return null;
     }
     const liveLocationPromise = modelData.createLiveLocation(rawLocation, updateDelegate, locationPool);
-    this.recordLiveLocationChange(liveLocationPromise);
+    this.#recordLiveLocationChange(liveLocationPromise);
     return await liveLocationPromise;
   }
   async createStackTraceTopFrameLiveLocation(rawLocations, updateDelegate, locationPool) {
     console.assert(rawLocations.length > 0);
     const locationPromise = StackTraceTopFrameLocation.createStackTraceTopFrameLocation(rawLocations, this, updateDelegate, locationPool);
-    this.recordLiveLocationChange(locationPromise);
+    this.#recordLiveLocationChange(locationPromise);
     return await locationPromise;
   }
   async rawLocationToUILocation(rawLocation) {
@@ -6751,16 +6755,16 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     }
   }
   /** @returns null to present the pause, or the step to issue instead. */
-  async shouldPause(debuggerPausedDetails, context) {
+  async #shouldPause(debuggerPausedDetails, context) {
     const { callFrames } = debuggerPausedDetails;
     const [frame] = callFrames;
     if (!frame) {
       return { command: SDK12.DebuggerModel.StepMode.STEP_INTO, ranges: [] };
     }
     if (frame.script.isWasm()) {
-      return await this.#shouldPauseInWasm(debuggerPausedDetails, context) ? null : await this.computeAutoStep(SDK12.DebuggerModel.StepMode.STEP_OVER, callFrames);
+      return await this.#shouldPauseInWasm(debuggerPausedDetails, context) ? null : await this.#computeAutoStep(SDK12.DebuggerModel.StepMode.STEP_OVER, callFrames);
     }
-    return await nextAutoStep(debuggerPausedDetails, context, this.computeAutoStep.bind(this));
+    return await nextAutoStep(debuggerPausedDetails, context, this.#computeAutoStep.bind(this));
   }
   async #shouldPauseInWasm(debuggerPausedDetails, context) {
     const autoSteppingContext = context?.mode === SDK12.DebuggerModel.StepMode.STEP_OVER ? context.callFrames[0]?.functionLocation() : null;
@@ -6933,10 +6937,10 @@ var StackTraceTopFrameLocation = class _StackTraceTopFrameLocation extends LiveL
   static async createStackTraceTopFrameLocation(rawLocations, binding, updateDelegate, locationPool) {
     const location = new _StackTraceTopFrameLocation(updateDelegate, locationPool);
     const locationsPromises = rawLocations.map(
-      (rawLocation) => binding.createLiveLocation(rawLocation, location.scheduleUpdate.bind(location), locationPool)
+      (rawLocation) => binding.createLiveLocation(rawLocation, location.#scheduleUpdate.bind(location), locationPool)
     );
     location.#locations = (await Promise.all(locationsPromises)).filter((l) => !!l);
-    await location.updateLocation();
+    await location.#updateLocation();
     return location;
   }
   async uiLocation() {
@@ -6952,16 +6956,16 @@ var StackTraceTopFrameLocation = class _StackTraceTopFrameLocation extends LiveL
     this.#locations = null;
     this.#current = null;
   }
-  async scheduleUpdate() {
+  async #scheduleUpdate() {
     if (this.#updateScheduled) {
       return;
     }
     this.#updateScheduled = true;
     queueMicrotask(() => {
-      void this.updateLocation();
+      void this.#updateLocation();
     });
   }
-  async updateLocation() {
+  async #updateLocation() {
     this.#updateScheduled = false;
     if (!this.#locations || this.#locations.length === 0) {
       return;
@@ -7019,7 +7023,7 @@ var ChunkedFileReader = class {
       this.#streamReader = stream.getReader();
     }
     this.#output = output;
-    void this.loadChunk();
+    void this.#loadChunk();
     return await new Promise((resolve) => {
       this.#transferFinished = resolve;
     });
@@ -7042,7 +7046,7 @@ var ChunkedFileReader = class {
   error() {
     return this.#error;
   }
-  async decodeChunkBuffer(buffer, endOfFile) {
+  async #decodeChunkBuffer(buffer, endOfFile) {
     if (!this.#output) {
       return;
     }
@@ -7055,12 +7059,12 @@ var ChunkedFileReader = class {
       this.#chunkTransferredCallback(this);
     }
     if (endOfFile) {
-      void this.finishRead();
+      void this.#finishRead();
       return;
     }
-    void this.loadChunk();
+    void this.#loadChunk();
   }
-  async finishRead() {
+  async #finishRead() {
     if (!this.#output) {
       return;
     }
@@ -7068,7 +7072,7 @@ var ChunkedFileReader = class {
     await this.#output.close();
     this.#transferFinished(!this.#error);
   }
-  async loadChunk() {
+  async #loadChunk() {
     if (!this.#output || !this.#file) {
       return;
     }
@@ -7076,9 +7080,9 @@ var ChunkedFileReader = class {
       const { value, done } = await this.#streamReader.read();
       if (done || !value) {
         await this.#output.write("", true);
-        return await this.finishRead();
+        return await this.#finishRead();
       }
-      void this.decodeChunkBuffer(value.buffer, false);
+      void this.#decodeChunkBuffer(value.buffer, false);
       return;
     }
     const chunkStart = this.#loadedSize;
@@ -7091,7 +7095,7 @@ var ChunkedFileReader = class {
       }
       this.#loadedSize += buffer.byteLength;
       const endOfFile = this.#loadedSize === this.#fileSize;
-      void this.decodeChunkBuffer(buffer, endOfFile);
+      void this.#decodeChunkBuffer(buffer, endOfFile);
     } catch (error) {
       this.#error = error;
       this.#transferFinished(false);
@@ -7118,7 +7122,7 @@ var FileOutputStream = class {
       true
     );
     if (saveResponse) {
-      this.#fileManager.addEventListener(Workspace19.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);
+      this.#fileManager.addEventListener(Workspace19.FileManager.Events.APPENDED_TO_URL, this.#onAppendDone, this);
     }
     return Boolean(saveResponse);
   }
@@ -7133,10 +7137,10 @@ var FileOutputStream = class {
     if (this.#writeCallbacks.length) {
       return;
     }
-    this.#fileManager.removeEventListener(Workspace19.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);
+    this.#fileManager.removeEventListener(Workspace19.FileManager.Events.APPENDED_TO_URL, this.#onAppendDone, this);
     this.#fileManager.close(this.#fileName);
   }
-  onAppendDone(event) {
+  #onAppendDone(event) {
     if (event.data !== this.#fileName) {
       return;
     }
@@ -7150,7 +7154,7 @@ var FileOutputStream = class {
     if (!this.#closed) {
       return;
     }
-    this.#fileManager.removeEventListener(Workspace19.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);
+    this.#fileManager.removeEventListener(Workspace19.FileManager.Events.APPENDED_TO_URL, this.#onAppendDone, this);
     this.#fileManager.close(this.#fileName);
   }
 };
@@ -7224,9 +7228,9 @@ var PresentationConsoleMessageManager = class {
     targetManager.addModelListener(
       SDK13.ConsoleModel.ConsoleModel,
       SDK13.ConsoleModel.Events.MessageAdded,
-      (event) => this.consoleMessageAdded(event.data)
+      (event) => this.#consoleMessageAdded(event.data)
     );
-    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
+    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.#consoleMessageAdded, this);
     targetManager.addModelListener(
       SDK13.ConsoleModel.ConsoleModel,
       SDK13.ConsoleModel.Events.ConsoleCleared,
@@ -7236,7 +7240,7 @@ var PresentationConsoleMessageManager = class {
   enable() {
     this.#sourceFrameMessageManager.enable();
   }
-  consoleMessageAdded(consoleMessage) {
+  #consoleMessageAdded(consoleMessage) {
     const runtimeModel = consoleMessage.runtimeModel();
     if (!consoleMessage.isErrorOrWarning() || !consoleMessage.runtimeModel() || consoleMessage.source === Log.LogEntrySource.Violation || !runtimeModel) {
       return;

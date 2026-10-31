@@ -70,11 +70,9 @@ export declare class OverlayModel extends SDKModel<EventTypes> implements Protoc
     getDOMModel(): DOMModel;
     highlightRect({ x, y, width, height, color, outlineColor }: HighlightRect): Promise<Protocol.ProtocolResponseWithError>;
     clearHighlight(): Promise<Protocol.ProtocolResponseWithError>;
-    private wireAgentToSettings;
     suspendModel(): Promise<void>;
     resumeModel(): Promise<void>;
     setShowViewportSizeOnResize(show: boolean): void;
-    private updatePausedInDebuggerMessage;
     setHighlighter(highlighter: Highlighter | null): void;
     setInspectMode(mode: Protocol.Overlay.InspectMode, showDetailedTooltip?: boolean | undefined): Promise<void>;
     inspectModeEnabled(): boolean;
@@ -99,7 +97,6 @@ export declare class OverlayModel extends SDKModel<EventTypes> implements Protoc
     setColorOfFlexInPersistentOverlay(nodeId: Protocol.DOM.NodeId, colorStr: string): void;
     hideSourceOrderInOverlay(): void;
     setSourceOrderActive(isActive: boolean): void;
-    private delayedHideHighlight;
     highlightFrame(frameId: Protocol.Page.FrameId): void;
     showHingeForDualScreen(hinge: Hinge | null): void;
     showDisplayCutout(cutout: DisplayCutout | null): void;
@@ -107,7 +104,6 @@ export declare class OverlayModel extends SDKModel<EventTypes> implements Protoc
     setWindowControlsThemeColor(themeColor: string): void;
     getWindowControlsConfig(): Protocol.Overlay.WindowControlsOverlayConfig;
     toggleWindowControlsToolbar(show: boolean): Promise<void>;
-    private buildHighlightConfig;
     nodeHighlightRequested({ nodeId }: Protocol.Overlay.NodeHighlightRequestedEvent): void;
     static setInspectNodeHandler(handler: (arg0: DOMNode) => Promise<void>): void;
     inspectNodeRequested({ backendNodeId }: Protocol.Overlay.InspectNodeRequestedEvent): void;

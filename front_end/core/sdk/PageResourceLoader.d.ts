@@ -86,8 +86,6 @@ export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapp
         loading: number;
         resources: number;
     };
-    private acquireLoadSlot;
-    private releaseLoadSlot;
     static makeExtensionKey(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): string;
     static makeKey(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): string;
     resourceLoadedThroughExtension(pageResource: PageResource): void;
@@ -97,10 +95,6 @@ export declare class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapp
     loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator, isBinary?: false): Promise<{
         content: string;
     }>;
-    private dispatchLoad;
-    private getDeveloperResourceScheme;
-    private loadFromTarget;
-    private loadFromHostBindings;
     getLoadThroughTargetSetting(): Common.Settings.Setting<boolean>;
 }
 export declare const enum Events {

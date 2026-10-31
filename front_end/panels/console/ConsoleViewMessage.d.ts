@@ -20,6 +20,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private consoleGroupInternal;
     private selectableChildren;
     private readonly domTreeWidgets;
+    private readonly stackTracePreviews;
     private readonly messageResized;
     protected elementInternal: HTMLElement | null;
     protected consoleRowWrapper: HTMLElement | null;

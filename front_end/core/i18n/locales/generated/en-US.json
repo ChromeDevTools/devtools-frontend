@@ -6683,17 +6683,26 @@
   "panels/comments/comments-meta.ts | showComments": {
     "message": "Show Comments"
   },
+  "panels/comments/CommentsPane.ts | addComment": {
+    "message": "Add a comment"
+  },
   "panels/comments/CommentsPane.ts | clearComments": {
     "message": "Clear all comments"
+  },
+  "panels/comments/CommentsPane.ts | commentModeIcon": {
+    "message": "Comment mode"
   },
   "panels/comments/CommentsPane.ts | deleteComment": {
     "message": "Delete comment"
   },
-  "panels/comments/CommentsPane.ts | noQueuedComments": {
-    "message": "No queued comments. Add comments on elements in DevTools to send to your AI coding agent."
+  "panels/comments/CommentsPane.ts | emptyStateDescription": {
+    "message": "Use {PH1} to select an element and send tasks, questions, and context to your coding agent"
   },
-  "panels/comments/CommentsPane.ts | noSentComments": {
-    "message": "No sent comments. Send comments to your AI coding agent to see them here."
+  "panels/comments/CommentsPane.ts | noComments": {
+    "message": "No comments"
+  },
+  "panels/comments/CommentsPane.ts | noQueuedComments": {
+    "message": "No queued comments"
   },
   "panels/comments/CommentsPane.ts | queued": {
     "message": "Queued"
@@ -6712,6 +6721,9 @@
   },
   "panels/comments/CommentsPane.ts | sentCheckmark": {
     "message": "Sent checkmark"
+  },
+  "panels/comments/CommentsPane.ts | sentComments": {
+    "message": "Sent comments"
   },
   "panels/comments/CommentsPane.ts | sentStatus": {
     "message": "Sent"
@@ -6766,6 +6778,9 @@
   },
   "panels/common/CommentThreadWidget.ts | queueComment": {
     "message": "Queue comment"
+  },
+  "panels/common/CommentThreadWidget.ts | queueCommentsPlaceholder": {
+    "message": "{PH1} + ↵ to queue comments"
   },
   "panels/common/CommentThreadWidget.ts | response": {
     "message": "Response:"
@@ -9011,6 +9026,9 @@
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n, plural, =1 {# element} other {# elements}}"
   },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "Unavailable"
+  },
   "panels/issues/AffectedHeavyAdView.ts | cpuPeakLimit": {
     "message": "CPU peak limit"
   },
@@ -10271,6 +10289,9 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
     "message": "Slow 3G & {PH1}x CPU slowdown"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | add": {
+    "message": "Add"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "Add profile"
   },
@@ -10375,6 +10396,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | recalibrate": {
     "message": "Recalibrate"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | save": {
+    "message": "Save"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} must be a number between {PH2} kbit/s to {PH3} kbit/s inclusive"
@@ -11482,6 +11506,12 @@
   },
   "panels/network/NetworkManageCustomHeadersView.ts | addCustomHeader": {
     "message": "Add custom header…"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerAlreadyExists": {
+    "message": "Header already exists"
+  },
+  "panels/network/NetworkManageCustomHeadersView.ts | headerCannotBeEmpty": {
+    "message": "Header name can’t be empty"
   },
   "panels/network/NetworkManageCustomHeadersView.ts | headerName": {
     "message": "Header name"
@@ -14324,8 +14354,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
     "message": "User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | add": {
+    "message": "Add"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Add custom device"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | cancel": {
+    "message": "Cancel"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | circleDisplayCutout": {
     "message": "Circle"
@@ -14447,6 +14483,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | safeAreaVerticalInsetsExceedHeight": {
     "message": "{PH1}: Top and bottom insets mustn’t exceed the device height"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | save": {
+    "message": "Save"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "User agent string"
   },
@@ -14465,6 +14504,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Show Devices"
   },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | add": {
+    "message": "Add"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Add a regular expression rule for the script’s URL"
   },
@@ -14473,6 +14515,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Known third-party scripts from source maps"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | cancel": {
+    "message": "Cancel"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Custom exclusion rules"
@@ -14515,6 +14560,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Rule must be a valid regular expression"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | save": {
+    "message": "Save"
   },
   "panels/settings/KeybindsSettingsTab.ts | addAShortcut": {
     "message": "Add a shortcut"
@@ -14737,6 +14785,9 @@
   },
   "panels/sources/BreakpointsView.ts | checked": {
     "message": "checked"
+  },
+  "panels/sources/BreakpointsView.ts | collapseAll": {
+    "message": "Collapse all"
   },
   "panels/sources/BreakpointsView.ts | conditionCode": {
     "message": "Condition: {PH1}"

@@ -45,7 +45,7 @@ export default `/*
 
 .blocked-url-count {
   flex: none;
-  padding-right: 9px;
+  padding-right: var(--sys-size-5);
 }
 
 .blocked-url-checkbox {

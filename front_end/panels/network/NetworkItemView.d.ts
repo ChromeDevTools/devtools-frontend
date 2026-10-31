@@ -9,13 +9,6 @@ export declare class NetworkItemView extends UI.TabbedPane.TabbedPane {
     constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTimeCalculator, initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs);
     wasShown(): void;
     willHide(): void;
-    private requestHeadersChanged;
-    private maybeAppendCookieResponsePanels;
-    private maybeAppendCookiesPanel;
-    private maybeAppendDeviceBoundSessionsPanel;
-    private maybeAppendPayloadPanel;
-    private maybeShowErrorIconInTrustTokenTabHeader;
-    private tabSelected;
     request(): SDK.NetworkRequest.NetworkRequest;
     revealResponseBody(position: SourceFrame.SourceFrame.RevealPosition): Promise<void>;
     revealHeader(section: NetworkForward.UIRequestLocation.UIHeaderSection, header: string | undefined): void;

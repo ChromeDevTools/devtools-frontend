@@ -1543,10 +1543,10 @@ var InspectorFrontendHostInstance;
 var InspectorFrontendAPIImpl = class {
   constructor() {
     for (const descriptor of EventDescriptors) {
-      this[descriptor[0]] = this.dispatch.bind(this, descriptor[0], descriptor[1], descriptor[2]);
+      this[descriptor[0]] = this.#dispatch.bind(this, descriptor[0], descriptor[1], descriptor[2]);
     }
   }
-  dispatch(name, signature, _runOnceLoaded, ...params) {
+  #dispatch(name, signature, _runOnceLoaded, ...params) {
     if (signature.length < 2) {
       try {
         InspectorFrontendHostInstance.events.dispatchEventToListeners(name, params[0]);

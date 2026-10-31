@@ -86,7 +86,7 @@ export class PerformanceProfilePlugin extends Plugin {
     static accepts(uiSourceCode) {
         return uiSourceCode.contentType().hasScripts();
     }
-    getLineMap() {
+    #getLineMap() {
         const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData("performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */);
         if (!uiSourceCodeProfileMap) {
             return undefined;
@@ -97,12 +97,12 @@ export class PerformanceProfilePlugin extends Plugin {
         });
     }
     editorExtension() {
-        const map = this.getLineMap();
+        const map = this.#getLineMap();
         return this.compartment.of(!map ? [] : [this.field.init(state => markersFromProfileData(map, state)), this.gutter, theme]);
     }
     decorationChanged(type, editor) {
         const installed = Boolean(editor.state.field(this.field, false));
-        const map = this.getLineMap();
+        const map = this.#getLineMap();
         if (!map) {
             if (installed) {
                 editor.dispatch({ effects: this.compartment.reconfigure([]) });

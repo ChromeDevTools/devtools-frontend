@@ -621,7 +621,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     set calculator(calculator) {
         this.#calculator = calculator;
         if (this.isShowing()) {
-            this.#calculator.addEventListener("BoundariesChanged" /* NetworkTimeCalculator.Events.BOUNDARIES_CHANGED */, this.boundaryChanged, this);
+            this.#calculator.addEventListener("BoundariesChanged" /* NetworkTimeCalculator.Events.BOUNDARIES_CHANGED */, this.#boundaryChanged, this);
             this.requestUpdate();
         }
     }
@@ -629,16 +629,16 @@ export class RequestTimingView extends UI.Widget.VBox {
         super.wasShown();
         this.#request?.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
         this.#request?.addEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.requestUpdate, this);
-        this.#calculator?.addEventListener("BoundariesChanged" /* NetworkTimeCalculator.Events.BOUNDARIES_CHANGED */, this.boundaryChanged, this);
+        this.#calculator?.addEventListener("BoundariesChanged" /* NetworkTimeCalculator.Events.BOUNDARIES_CHANGED */, this.#boundaryChanged, this);
         this.requestUpdate();
     }
     willHide() {
         super.willHide();
         this.#request?.removeEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
         this.#request?.removeEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.requestUpdate, this);
-        this.#calculator?.removeEventListener("BoundariesChanged" /* NetworkTimeCalculator.Events.BOUNDARIES_CHANGED */, this.boundaryChanged, this);
+        this.#calculator?.removeEventListener("BoundariesChanged" /* NetworkTimeCalculator.Events.BOUNDARIES_CHANGED */, this.#boundaryChanged, this);
     }
-    boundaryChanged() {
+    #boundaryChanged() {
         const minimumBoundary = this.calculator.minimumBoundary();
         if (minimumBoundary !== this.#lastMinimumBoundary) {
             this.#lastMinimumBoundary = minimumBoundary;

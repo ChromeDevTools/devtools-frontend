@@ -38,7 +38,7 @@ export default `/*
 
 .timeline-status-dialog .progress .indicator-container {
   display: inline-block;
-  width: 200px;
+  width: var(--sys-size-25);
   height: var(--sys-size-5);
   background-color: var(--sys-color-surface5);
 }

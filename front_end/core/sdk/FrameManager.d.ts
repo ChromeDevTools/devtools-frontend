@@ -18,17 +18,6 @@ export declare class FrameManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     static removeInstance(): void;
     modelAdded(resourceTreeModel: ResourceTreeModel): void;
     modelRemoved(resourceTreeModel: ResourceTreeModel): void;
-    private frameAdded;
-    private frameDetached;
-    private frameNavigated;
-    private resourceAdded;
-    private decreaseOrRemoveFrame;
-    /**
-     * Looks for the outermost frame in `#frames` and sets `#outermostFrame` accordingly.
-     *
-     * Important: This method needs to be called everytime `#frames` is updated.
-     */
-    private resetOutermostFrame;
     /**
      * Returns the ResourceTreeFrame with a given frameId.
      * When a frame is being detached a new ResourceTreeFrame but with the same
@@ -40,7 +29,6 @@ export declare class FrameManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     getAllFrames(): ResourceTreeFrame[];
     getOutermostFrame(): ResourceTreeFrame | null;
     getOrWaitForFrame(frameId: Protocol.Page.FrameId, notInTarget?: Target): Promise<ResourceTreeFrame>;
-    private resolveAwaitedFrame;
 }
 export declare const enum Events {
     FRAME_ADDED_TO_TARGET = "FrameAddedToTarget",

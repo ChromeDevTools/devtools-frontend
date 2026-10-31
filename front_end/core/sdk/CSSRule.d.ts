@@ -41,6 +41,7 @@ declare class CSSValue {
     rebase(edit: Edit): void;
 }
 export declare class CSSStyleRule extends CSSRule {
+    #private;
     selectors: CSSValue[];
     nestingSelectors?: string[];
     media: CSSMedia[];
@@ -54,7 +55,6 @@ export declare class CSSStyleRule extends CSSRule {
     wasUsed: boolean;
     constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean);
     static createDummyRule(cssModel: CSSModel, selectorText: string): CSSStyleRule;
-    private reinitializeSelectors;
     setSelectorText(newSelector: string): Promise<boolean>;
     selectorText(): string;
     selectorRange(): TextUtils.TextRange.TextRange | null;
@@ -90,7 +90,6 @@ export declare class CSSKeyframeRule extends CSSRule {
     constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframeRule, parentRuleName: string);
     parentRuleName(): string;
     key(): CSSValue;
-    private reinitializeKey;
     rebase(edit: Edit): void;
     isKeyframeRule(): boolean;
     setKeyText(newKeyText: string): Promise<boolean>;

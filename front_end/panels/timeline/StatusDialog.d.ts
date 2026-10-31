@@ -39,7 +39,6 @@ export declare class StatusDialog extends UI.Widget.VBox<ShadowRoot> {
     updateStatus(text: string): void;
     updateProgressBar(activity: string, percent: number): void;
     startTimer(): void;
-    private stopTimer;
     performUpdate(): void;
     wasShown(): void;
 }

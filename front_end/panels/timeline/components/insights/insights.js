@@ -2704,7 +2704,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
   hasAskAiSupport() {
     return true;
   }
-  async toSourceFileLocation(cssModel, selector) {
+  async #toSourceFileLocation(cssModel, selector) {
     if (!cssModel) {
       return void 0;
     }
@@ -2735,14 +2735,14 @@ var SlowCSSSelector = class extends BaseInsightComponent {
     });
     return locations;
   }
-  async getSelectorLinks(cssModel, selector) {
+  async #getSelectorLinks(cssModel, selector) {
     if (!cssModel) {
       return Lit24.nothing;
     }
     if (!selector.style_sheet_id) {
       return Lit24.nothing;
     }
-    const locations = await this.toSourceFileLocation(cssModel, selector);
+    const locations = await this.#toSourceFileLocation(cssModel, selector);
     if (!locations) {
       return Lit24.nothing;
     }
@@ -2787,7 +2787,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorElapsedTime)}: ${time(Trace17.Types.Timing.Micro(selector["elapsed (us)"]))}`],
           rows: [{
-            values: [html24`${selector.selector} ${Lit24.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
+            values: [html24`${selector.selector} ${Lit24.Directives.until(this.#getSelectorLinks(cssModel, selector))}`]
           }]
         }
       })}
@@ -2803,7 +2803,7 @@ var SlowCSSSelector = class extends BaseInsightComponent {
           insight: this,
           headers: [`${i18nString18(UIStrings18.topSelectorMatchAttempt)}: ${selector["match_attempts"]}`],
           rows: [{
-            values: [html24`${selector.selector} ${Lit24.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
+            values: [html24`${selector.selector} ${Lit24.Directives.until(this.#getSelectorLinks(cssModel, selector))}`]
           }]
         }
       })}

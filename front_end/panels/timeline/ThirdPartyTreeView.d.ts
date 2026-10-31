@@ -17,10 +17,8 @@ export declare class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineT
      * Third party tree view doesn't require the select feature, as this expands the node.
      */
     selectProfileNode(): void;
-    private groupingFunction;
     populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void;
     populateToolbar(): void;
-    private compareTransferSize;
     sortingChanged(): void;
     onHover(node: Trace.Extras.TraceTree.Node | null): void;
     onClick(node: Trace.Extras.TraceTree.Node | null): void;

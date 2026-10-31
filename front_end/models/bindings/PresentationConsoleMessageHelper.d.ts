@@ -25,7 +25,6 @@ export declare class PresentationConsoleMessageManager {
     #private;
     constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: DebuggerWorkspaceBinding, cssWorkspaceBinding: CSSWorkspaceBinding);
     enable(): void;
-    private consoleMessageAdded;
 }
 export declare class PresentationSourceFrameMessageHelper {
     #private;

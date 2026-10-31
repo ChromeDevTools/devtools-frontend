@@ -3481,11 +3481,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     );
     return null;
   }
-  const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
   const mapper = Trace2.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
-  thirdPartyTree.model = { selectedEvents: events, parsedTrace, entityMapper: mapper };
-  thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
-  thirdPartyTree.refreshTree(true);
   const template = html5`
     <devtools-widget
       ${widget(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
@@ -3499,9 +3495,9 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         maxRows: 10,
         isInAIWidget: true,
         model: {
-          selectedEvents: thirdPartyTree.selectedEvents ?? null,
+          selectedEvents: events,
           parsedTrace,
-          entityMapper: thirdPartyTree.entityMapper()
+          entityMapper: mapper
         },
         activeSelection: { bounds },
         onBottomUpButtonClicked: (node) => {
@@ -8414,7 +8410,7 @@ import * as AiAssistanceModel6 from "../../models/ai_assistance/ai_assistance.js
 import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as Lit9 from "../../ui/lit/lit.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
-var { html: html9, Directives: { ref: ref4 } } = Lit9;
+var { html: html9, Directives: { ref: ref4, repeat } } = Lit9;
 var lockedString5 = i18n11.i18n.lockedString;
 var RELEVANT_DATA_TOOLTIP_ID = "relevant-data-link-permission-prompt";
 var UIStringsNotTranslate4 = {
@@ -8488,7 +8484,7 @@ function renderPermissionPrompt(step, disclaimerText) {
   }}
       @click=${() => dialog3.onAnswer(AiAssistanceModel6.Tool.PermissionDecision.ALLOW_ALWAYS)}
     >${lockedString5(UIStringsNotTranslate4.allowAlways)}</devtools-button>` : Lit9.nothing;
-  return html9`
+  return html9`${repeat([step], (step2) => step2, () => html9`
   <div class="permission-prompt"
     jslog=${VisualLogging6.section("side-effect-confirmation")}>
     <div class="permission-prompt-header">
@@ -8519,13 +8515,13 @@ function renderPermissionPrompt(step, disclaimerText) {
       ${renderRelevantDataDisclaimer(RELEVANT_DATA_TOOLTIP_ID, disclaimerText)}.
       ${renderChangePermissionsInSettings()}.
     </div>
-  </div>`;
+  </div>`)}`;
 }
 
 // ../../front_end/panels/ai_assistance/components/ChatView.ts
 var {
   ref: ref5,
-  repeat,
+  repeat: repeat2,
   classMap
 } = Directives6;
 var { widget: widget3 } = UI6.Widget;
@@ -8568,7 +8564,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
   })}>
           ${input.messages.length > 0 ? html10`
             <div class="messages-container" ${ref5(input.handleMessageContainerRef)}>
-              ${repeat(input.messages, (message) => message.id, (message, index) => {
+              ${repeat2(input.messages, (message) => message.id, (message, index) => {
     const prevMessage = index > 0 ? input.messages[index - 1] : null;
     const prompt = message.entity === "model" /* MODEL */ && prevMessage?.entity === "user" /* USER */ ? prevMessage.text : "";
     return widget3(ChatMessage, {

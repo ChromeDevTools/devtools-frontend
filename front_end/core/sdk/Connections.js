@@ -27,8 +27,8 @@ export class MainConnection {
     #eventListeners;
     constructor() {
         this.#eventListeners = [
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this),
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.DispatchMessage, this.#dispatchMessage, this),
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.#dispatchMessageChunk, this),
         ];
     }
     setOnMessage(onMessage) {
@@ -42,12 +42,12 @@ export class MainConnection {
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
         }
     }
-    dispatchMessage(event) {
+    #dispatchMessage(event) {
         if (this.onMessage) {
             this.onMessage.call(null, event.data);
         }
     }
-    dispatchMessageChunk(event) {
+    #dispatchMessageChunk(event) {
         const { messageChunk, messageSize } = event.data;
         if (messageSize) {
             this.#messageBuffer = '';
@@ -79,14 +79,14 @@ export class WebSocketTransport {
     #messages = [];
     constructor(url, onWebSocketDisconnect) {
         this.#socket = new WebSocket(url);
-        this.#socket.onerror = this.onError.bind(this);
-        this.#socket.onopen = this.onOpen.bind(this);
+        this.#socket.onerror = this.#onError.bind(this);
+        this.#socket.onopen = this.#onOpen.bind(this);
         this.#socket.onmessage = (messageEvent) => {
             if (this.onMessage) {
                 this.onMessage.call(null, messageEvent.data);
             }
         };
-        this.#socket.onclose = this.onClose.bind(this);
+        this.#socket.onclose = this.#onClose.bind(this);
         this.#onWebSocketDisconnect = onWebSocketDisconnect;
     }
     setOnMessage(onMessage) {
@@ -95,7 +95,7 @@ export class WebSocketTransport {
     setOnDisconnect(onDisconnect) {
         this.#onDisconnect = onDisconnect;
     }
-    onError() {
+    #onError() {
         if (this.#onWebSocketDisconnect) {
             this.#onWebSocketDisconnect.call(null, i18nString(UIStrings.websocketConnectionFailed));
         }
@@ -103,9 +103,9 @@ export class WebSocketTransport {
             // This is called if error occurred while connecting.
             this.#onDisconnect.call(null, 'connection failed');
         }
-        this.close();
+        this.#close();
     }
-    onOpen() {
+    #onOpen() {
         this.#connected = true;
         if (this.#socket) {
             this.#socket.onerror = console.error;
@@ -115,16 +115,16 @@ export class WebSocketTransport {
         }
         this.#messages = [];
     }
-    onClose() {
+    #onClose() {
         if (this.#onWebSocketDisconnect) {
             this.#onWebSocketDisconnect.call(null, i18nString(UIStrings.websocketDisconnected));
         }
         if (this.#onDisconnect) {
             this.#onDisconnect.call(null, 'websocket closed');
         }
-        this.close();
+        this.#close();
     }
-    close(callback) {
+    #close(callback) {
         if (this.#socket) {
             this.#socket.onerror = null;
             this.#socket.onopen = null;
@@ -145,7 +145,7 @@ export class WebSocketTransport {
     }
     disconnect() {
         return new Promise(fulfill => {
-            this.close(() => {
+            this.#close(() => {
                 if (this.#onDisconnect) {
                     this.#onDisconnect.call(null, 'force disconnect');
                 }
@@ -164,9 +164,9 @@ export class StubTransport {
         this.#onDisconnect = onDisconnect;
     }
     sendRawMessage(message) {
-        globalThis.setTimeout(this.respondWithError.bind(this, message), 0);
+        globalThis.setTimeout(this.#respondWithError.bind(this, message), 0);
     }
-    respondWithError(message) {
+    #respondWithError(message) {
         const messageObject = JSON.parse(message);
         const error = {
             message: 'This is a stub connection, can\'t dispatch message.',

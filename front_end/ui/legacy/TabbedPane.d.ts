@@ -27,7 +27,7 @@ export declare class TabbedPane extends TabbedPaneBase {
     private readonly tabsHistory;
     tabsById: Map<string, TabbedPaneTab>;
     private currentTabLocked;
-    private autoSelectFirstItemOnShow;
+    autoSelectFirstItemOnShow: boolean;
     private triggerDropDownTimeout;
     private dropDownButton;
     private currentDevicePixelRatio;
@@ -57,6 +57,8 @@ export declare class TabbedPane extends TabbedPaneBase {
     setShrinkableTabs(shrinkableTabs: boolean): void;
     makeVerticalTabLayout(): void;
     setCloseableTabs(closeableTabs: boolean): void;
+    get focusHeader(): boolean;
+    set focusHeader(focusHeader: boolean);
     focus(): void;
     focusSelectedTabHeader(): void;
     headerElement(): Element;
@@ -253,6 +255,12 @@ export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     static readonly observedAttributes: string[];
     get vertical(): boolean;
     set vertical(vertical: boolean);
+    get focusHeader(): boolean;
+    set focusHeader(focusHeader: boolean);
+    get selectedTab(): string | null;
+    set selectedTab(tabId: string | null);
+    controlsChildWidget(child: HTMLElement): boolean;
+    focus(): void;
     set closeableTabs(closeable: boolean);
     set allowTabReorder(allow: boolean);
     set automaticReorder(automatic: boolean);
@@ -262,6 +270,7 @@ export declare class TabbedPaneElement extends WidgetElement<TabbedPane> {
     set headerJslog(jslog: string);
     constructor();
     attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
+    connectedCallback(): void;
     disconnectedCallback(): void;
 }
 declare global {

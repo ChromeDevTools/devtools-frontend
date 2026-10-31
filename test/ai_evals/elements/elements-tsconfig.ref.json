@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/ai_evals/elements",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/ai_evals/elements/extraction-background-image-url.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-border-radius-padding.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-font-and-color.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-main-computed-styles.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-page-animations.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-parent-computed-styles.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-site-color-palette.test.ts",
+    "../../../../../../test/ai_evals/elements/extraction-text-size-spacing.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-horizontal-scrollbar.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-positioning-center-element.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-positioning-reorder-section.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-positioning-rotate-image.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-scroll-body-overflow-hidden.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-scroll-container-height.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-scroll-invisible-overlay.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-scroll-js-prevent-default.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-visibility-css-hidden.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-visibility-not-in-dom.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-visibility-offscreen.test.ts",
+    "../../../../../../test/ai_evals/elements/layout-visibility-zindex-covered.test.ts",
+    "../../../../../../test/ai_evals/elements/themes-background-transparency.test.ts",
+    "../../../../../../test/ai_evals/elements/themes-chat-bubble-border-radius.test.ts",
+    "../../../../../../test/ai_evals/elements/themes-dark-mode-emulation.test.ts",
+    "../../../../../../test/ai_evals/elements/themes-font-weight-override.test.ts",
+    "../../../../../../test/ai_evals/elements/themes-inline-span-margin.test.ts",
+    "../../../../../../test/ai_evals/elements/themes-login-white-border.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../harness_library-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    }
+  ]
+}

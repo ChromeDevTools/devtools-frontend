@@ -8,18 +8,12 @@ export declare class ResourceScriptMapping implements DebuggerSourceMapping {
     readonly debuggerModel: SDK.DebuggerModel.DebuggerModel;
     readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
     constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: DebuggerWorkspaceBinding);
-    private project;
     uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode | null;
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation | null;
     uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number): SDK.DebuggerModel.Location[];
     uiLocationRangeToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, { startLine, startColumn, endLine, endColumn }: TextUtils.TextRange.TextRange): SDK.DebuggerModel.LocationRange[] | null;
-    private inspectedURLChanged;
     functionBoundsAtRawLocation(rawLocation: SDK.DebuggerModel.Location): Promise<Workspace.UISourceCode.UIFunctionBounds | null>;
-    private addScript;
     scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): ResourceScriptFile | null;
-    private removeScripts;
-    private executionContextDestroyed;
-    private globalObjectCleared;
     resetForTest(): void;
     dispose(): void;
 }

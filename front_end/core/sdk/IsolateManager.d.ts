@@ -14,7 +14,6 @@ export declare class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<E
     modelRemoved(model: RuntimeModel): void;
     isolateByModel(model: RuntimeModel): Isolate | null;
     isolates(): Iterable<Isolate>;
-    private poll;
 }
 export interface Observer {
     isolateAdded(isolate: Isolate): void;

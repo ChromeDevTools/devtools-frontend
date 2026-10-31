@@ -125,7 +125,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         }
         return { loading: loadingCount, resources: this.getScopedResourcesLoaded().size };
     }
-    async acquireLoadSlot(target) {
+    async #acquireLoadSlot(target) {
         this.#currentlyLoading++;
         if (target) {
             const currentCount = this.#currentlyLoadingPerTarget.get(target.id()) || 0;
@@ -137,7 +137,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             await waitForCapacity;
         }
     }
-    releaseLoadSlot(target) {
+    #releaseLoadSlot(target) {
         this.#currentlyLoading--;
         if (target) {
             const currentCount = this.#currentlyLoadingPerTarget.get(target.id());
@@ -200,8 +200,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         this.dispatchEventToListeners("Update" /* Events.UPDATE */);
         const startTime = performance.now();
         try {
-            await this.acquireLoadSlot(effectiveInitiator.target);
-            const resultPromise = this.dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
+            await this.#acquireLoadSlot(effectiveInitiator.target);
+            const resultPromise = this.#dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
             const result = await resultPromise;
             pageResource.errorMessage = result.errorDescription.message;
             pageResource.success = result.success;
@@ -222,7 +222,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         }
         finally {
             pageResource.duration = performance.now() - startTime;
-            this.releaseLoadSlot(effectiveInitiator.target);
+            this.#releaseLoadSlot(effectiveInitiator.target);
             this.dispatchEventToListeners("Update" /* Events.UPDATE */);
         }
     }
@@ -298,7 +298,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         // to ensure cross-origin detached frame requests are not loaded under mainFrame.id.
         return mainFrame.securityOrigin().isSameOriginWith(SecurityOrigin.create(initiator.initiatorUrl));
     }
-    async dispatchLoad(url, initiator, isBinary, hasExplicitTarget) {
+    async #dispatchLoad(url, initiator, isBinary, hasExplicitTarget) {
         if (isExtensionInitiator(initiator)) {
             throw new Error('Invalid initiator');
         }
@@ -311,7 +311,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         const loadThroughTarget = this.getLoadThroughTargetSetting().get();
         const eligibleForLoadFromTarget = Boolean(loadThroughTarget && parsedURL && parsedURL.scheme !== 'file' && parsedURL.scheme !== 'data' &&
             parsedURL.scheme !== 'devtools' && initiator.target);
-        Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
+        Host.userMetrics.developerResourceScheme(this.#getDeveloperResourceScheme(parsedURL));
         if (eligibleForLoadFromTarget && initiator.target) {
             // Default to enforcing CSP for http(s) resources (fail-closed). Only relax
             // if the isolation-status query positively confirms no connect-src/default-src
@@ -344,7 +344,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             }
             try {
                 Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
-                const result = await this.loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
+                const result = await this.#loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
                 return result;
             }
             catch (e) {
@@ -382,7 +382,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
                 };
             }
         }
-        const result = await this.loadFromHostBindings(url);
+        const result = await this.#loadFromHostBindings(url);
         if (eligibleForLoadFromTarget && !result.success) {
             Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
         }
@@ -393,7 +393,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         }
         return result;
     }
-    getDeveloperResourceScheme(parsedURL) {
+    #getDeveloperResourceScheme(parsedURL) {
         if (!parsedURL || parsedURL.scheme === '') {
             return Host.UserMetrics.DeveloperResourceScheme.UKNOWN;
         }
@@ -414,7 +414,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         }
         return Host.UserMetrics.DeveloperResourceScheme.OTHER;
     }
-    async loadFromTarget(target, frameId, url, isBinary) {
+    async #loadFromTarget(target, frameId, url, isBinary) {
         const networkManager = target.model(NetworkManager);
         const ioModel = target.model(IOModel);
         const disableCache = this.#settings.resolve(cacheDisabledSettingDescriptor).get();
@@ -441,7 +441,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
             }
         }
     }
-    async loadFromHostBindings(url) {
+    async #loadFromHostBindings(url) {
         const headers = {};
         const currentUserAgent = this.#userAgentProvider.currentUserAgent();
         if (currentUserAgent) {

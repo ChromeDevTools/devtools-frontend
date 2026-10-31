@@ -1,5 +1,6 @@
 import type * as Settings from '../settings/settings.js';
 export declare class KeyboardShortcut {
+    #private;
     descriptors: Descriptor[];
     action: string;
     type: Type;
@@ -26,14 +27,11 @@ export declare class KeyboardShortcut {
     static makeDescriptor(key: string | Key, modifiers?: number): Descriptor;
     static makeDescriptorFromBindingShortcut(shortcut: string): Descriptor;
     static shortcutToString(key: string | Key, modifiers?: number): string;
-    private static keyName;
-    private static makeKeyFromCodeAndModifiers;
     static keyCodeAndModifiersFromKey(key: number): {
         keyCode: number;
         modifiers: number;
     };
     static isModifier(key: number): boolean;
-    private static modifiersToString;
     static keyCodeToKey(keyCode: number): Key | undefined;
     static modifierValueToModifier(modifierValue: number): Modifier | undefined;
 }

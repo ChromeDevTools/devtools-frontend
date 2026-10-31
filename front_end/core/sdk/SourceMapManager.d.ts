@@ -11,7 +11,6 @@ export declare class SourceMapManager<T extends FrameAssociated> extends Common.
     constructor(target: Target, factory?: SourceMapFactory<T>);
     isLazyLoadEnabled(): boolean;
     setEnabled(isEnabled: boolean): void;
-    private static getBaseUrl;
     static resolveRelativeSourceURL(target: Target | null, url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString;
     sourceMapForClient(client: T): SourceMap | undefined;
     sourceMapForClientPromise(client: T): Promise<SourceMap | undefined>;

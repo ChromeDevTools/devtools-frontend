@@ -602,19 +602,19 @@ export class LocalJSONObject extends RemoteObject {
             return this.#cachedDescription;
         }
         function formatArrayItem(property) {
-            return this.formatValue(property.value || null);
+            return this.#formatValue(property.value || null);
         }
         function formatObjectItem(property) {
             let name = property.name;
             if (/^\s|\s$|^$|\n/.test(name)) {
                 name = '"' + name.replace(/\n/g, '\u21B5') + '"';
             }
-            return name + ': ' + this.formatValue(property.value || null);
+            return name + ': ' + this.#formatValue(property.value || null);
         }
         if (this.type === 'object') {
             switch (this.subtype) {
                 case 'array':
-                    this.#cachedDescription = this.concatenate('[', ']', formatArrayItem.bind(this));
+                    this.#cachedDescription = this.#concatenate('[', ']', formatArrayItem.bind(this));
                     break;
                 case 'date':
                     this.#cachedDescription = String(this.#value);
@@ -623,7 +623,7 @@ export class LocalJSONObject extends RemoteObject {
                     this.#cachedDescription = 'null';
                     break;
                 default:
-                    this.#cachedDescription = this.concatenate('{', '}', formatObjectItem.bind(this));
+                    this.#cachedDescription = this.#concatenate('{', '}', formatObjectItem.bind(this));
             }
         }
         else {
@@ -631,7 +631,7 @@ export class LocalJSONObject extends RemoteObject {
         }
         return this.#cachedDescription;
     }
-    formatValue(value) {
+    #formatValue(value) {
         if (!value) {
             return 'undefined';
         }
@@ -641,10 +641,10 @@ export class LocalJSONObject extends RemoteObject {
         }
         return description;
     }
-    concatenate(prefix, suffix, formatProperty) {
+    #concatenate(prefix, suffix, formatProperty) {
         const previewChars = 100;
         let buffer = prefix;
-        const children = this.children();
+        const children = this.#children();
         for (let i = 0; i < children.length; ++i) {
             const itemDescription = formatProperty(children[i]);
             if (buffer.length + itemDescription.length > previewChars) {
@@ -688,7 +688,7 @@ export class LocalJSONObject extends RemoteObject {
             const index = Number(name) >>> 0;
             return String(index) === name && index < 4294967295;
         }
-        let properties = this.children();
+        let properties = this.#children();
         if (nonIndexedPropertiesOnly) {
             properties = properties.filter(property => !isArrayIndex(property.name));
         }
@@ -700,7 +700,7 @@ export class LocalJSONObject extends RemoteObject {
         }
         return await this.getOwnProperties(generatePreview, nonIndexedPropertiesOnly);
     }
-    children() {
+    #children() {
         if (!this.hasChildren) {
             return [];
         }

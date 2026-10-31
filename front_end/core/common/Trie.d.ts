@@ -17,7 +17,6 @@ export declare class Trie<T extends ArrayLike<ElementType<T>>> {
     remove(word: T): boolean;
     has(word: T): boolean;
     words(prefix?: T): T[];
-    private dfs;
     longestPrefix(word: T, fullWordOnly: boolean): T;
     clear(): void;
 }

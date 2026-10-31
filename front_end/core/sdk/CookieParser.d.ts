@@ -6,9 +6,4 @@ export declare class CookieParser {
     getCookieAttribute(header: string | undefined): Attribute | null;
     cookies(): Cookie[];
     parseSetCookie(setCookieHeader: string | undefined): Cookie[] | null;
-    private initialize;
-    private flushCookie;
-    private extractKeyValue;
-    private advanceAndCheckCookieDelimiter;
-    private addCookie;
 }

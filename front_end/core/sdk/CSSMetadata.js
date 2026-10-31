@@ -49,7 +49,7 @@ export class CSSMetadata {
                 }
             }
         }
-        this.#values.sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
+        this.#values.sort(CSSMetadata.#sortPrefixesAndCSSWideKeywordsToEnd);
         this.#valuesSet = new Set(this.#values);
         // Reads in auto-generated property names and #values from blink/public/renderer/core/css/css_properties.json5
         // treats _generatedPropertyValues as basis
@@ -109,7 +109,7 @@ export class CSSMetadata {
             this.#propertyValues.set(propertyName, [...values]);
         }
         for (const name of this.#valuesSet) {
-            const values = this.specificPropertyValues(name)
+            const values = this.#specificPropertyValues(name)
                 .filter(value => {
                 // Filter out values which are just the function name (e.g. 'url', 'radial-gradient', etc.)
                 // The 'preset' is the full function (e.g. 'url(||)').
@@ -122,7 +122,7 @@ export class CSSMetadata {
                 }
                 return true;
             })
-                .sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
+                .sort(CSSMetadata.#sortPrefixesAndCSSWideKeywordsToEnd);
             const presets = values.map(value => `${name}: ${value}`);
             if (!this.isSVGProperty(name)) {
                 this.#nameValuePresets.push(...presets);
@@ -136,7 +136,7 @@ export class CSSMetadata {
     static isPositionTryOrderKeyword(a) {
         return PositionTryOrderKeywords.includes(a);
     }
-    static sortPrefixesAndCSSWideKeywordsToEnd(a, b) {
+    static #sortPrefixesAndCSSWideKeywordsToEnd(a, b) {
         const aIsCSSWideKeyword = CSSMetadata.isCSSWideKeyword(a);
         const bIsCSSWideKeyword = CSSMetadata.isCSSWideKeyword(b);
         if (aIsCSSWideKeyword && !bIsCSSWideKeyword) {
@@ -263,7 +263,7 @@ export class CSSMetadata {
         return propertyName.startsWith('--') || this.#inherited.has(this.canonicalPropertyName(propertyName)) ||
             this.#inherited.has(propertyName);
     }
-    specificPropertyValues(propertyName) {
+    #specificPropertyValues(propertyName) {
         const unprefixedName = propertyName.replace(/^-webkit-/, '');
         const propertyValues = this.#propertyValues;
         // #propertyValues acts like cache; missing properties are added with possible common keywords
@@ -277,14 +277,14 @@ export class CSSMetadata {
     getPropertyValues(propertyName) {
         propertyName = propertyName.toLowerCase();
         // Add CSS-wide keywords to all properties.
-        const acceptedKeywords = [...this.specificPropertyValues(propertyName), ...CSSWideKeywords];
+        const acceptedKeywords = [...this.#specificPropertyValues(propertyName), ...CSSWideKeywords];
         if (this.isColorAwareProperty(propertyName)) {
             acceptedKeywords.push('currentColor');
             for (const color of Common.Color.Nicknames.keys()) {
                 acceptedKeywords.push(color);
             }
         }
-        return acceptedKeywords.sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
+        return acceptedKeywords.sort(CSSMetadata.#sortPrefixesAndCSSWideKeywordsToEnd);
     }
     propertyUsageWeight(property) {
         return Weight.get(property) || Weight.get(this.canonicalPropertyName(property)) || 0;

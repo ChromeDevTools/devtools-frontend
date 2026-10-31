@@ -299,6 +299,14 @@ const EXTENDED_KEBAB_CASE_REGEXP = /^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[
 export const isExtendedKebabCase = (inputStr) => {
     return EXTENDED_KEBAB_CASE_REGEXP.test(inputStr);
 };
+/**
+ * Replaces any sequence of non-alphanumeric characters with a single dash, strips leading and
+ * trailing dashes, and converts letters to lowercase, leaving a kebab-case identifier usable as viewId.
+ * If the input contains only non-alphanumeric characters, returns a falsy empty string.
+ */
+export const sanitizeIdentifier = (id) => {
+    return id.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+};
 export const toTitleCase = (inputStr) => {
     return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);
 };

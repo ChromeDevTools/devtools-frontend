@@ -13,9 +13,9 @@ export class IssuesModel extends SDKModel {
     #enabled = false;
     constructor(target) {
         super(target);
-        void this.ensureEnabled();
+        void this.#ensureEnabled();
     }
-    async ensureEnabled() {
+    async #ensureEnabled() {
         if (this.#enabled) {
             return;
         }

@@ -68,7 +68,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
                 filters: this.filtersWithoutTextFilter(),
                 startTime: this.startTime,
                 endTime: this.endTime,
-                eventGroupIdCallback: this.groupingFunction.bind(this),
+                eventGroupIdCallback: this.#groupingFunction.bind(this),
             });
         }
         // visibleTypes() includes ResourceReceivedData / ResourceReceiveResponse / ResourceFinish for
@@ -80,7 +80,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
             filters: [filter],
             startTime: this.startTime,
             endTime: this.endTime,
-            eventGroupIdCallback: this.groupingFunction.bind(this),
+            eventGroupIdCallback: this.#groupingFunction.bind(this),
             calculateTransferSize: true,
             // Ensure we group by 3P alongside eventID for correct 3P grouping.
             forceGroupIdCallback: true,
@@ -93,7 +93,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     selectProfileNode() {
         return;
     }
-    groupingFunction(event) {
+    #groupingFunction(event) {
         const entity = this.entityMapper()?.entityForEvent(event);
         if (!entity) {
             return '';
@@ -126,7 +126,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     populateToolbar() {
         return;
     }
-    compareTransferSize(a, b) {
+    #compareTransferSize(a, b) {
         const nodeA = a;
         const nodeB = b;
         const transferA = nodeA.profileNode.transferSize ?? 0;
@@ -141,7 +141,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         let sortFunction;
         switch (columnId) {
             case 'transfer-size':
-                sortFunction = this.compareTransferSize.bind(this);
+                sortFunction = this.#compareTransferSize.bind(this);
                 break;
             default:
                 sortFunction = super.getSortingFunction(columnId);

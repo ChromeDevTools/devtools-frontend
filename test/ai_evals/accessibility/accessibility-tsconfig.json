@@ -1,0 +1,73 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../test/ai_evals/accessibility",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "node",
+      "undici-types"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../test/ai_evals/accessibility/a11y-aria-hidden-focus.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-button-name.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-color-contrast.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-form-label.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-heading-order.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-image-alt.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-link-in-text-block.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../harness_library-tsconfig.ref.json"
+    },
+    {
+      "path": "../../e2e/helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    }
+  ]
+}

@@ -1695,6 +1695,10 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
   };
   wasShown() {
     super.wasShown();
+    if (this.#isShowing) {
+      return;
+    }
+    this.#isShowing = true;
     if (Root.DevToolsContext.globalInstance().has(Workspace3.IgnoreListManager.IgnoreListManager)) {
       Workspace3.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#updateHasNonIgnoredLinks);
     }
@@ -1704,6 +1708,11 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
     this.requestUpdate();
   }
   willHide() {
+    if (!this.#isShowing) {
+      super.willHide();
+      return;
+    }
+    this.#isShowing = false;
     if (this.#stackTrace) {
       this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
@@ -1724,11 +1733,12 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
       this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.#stackTrace = stackTrace;
-    if (this.#stackTrace && this.isShowing()) {
+    if (this.#stackTrace && this.#isShowing) {
       this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.requestUpdate();
   }
+  #isShowing = false;
   #onShowMoreLess(more) {
     this.#showIgnoreListed = more;
     this.requestUpdate();

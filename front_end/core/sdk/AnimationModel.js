@@ -166,14 +166,14 @@ export class AnimationModel extends SDKModel {
             void this.agent.invoke_enable();
         }
         const resourceTreeModel = target.model(ResourceTreeModel);
-        resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.reset, this);
+        resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#reset, this);
         this.#flushPendingAnimations = Common.Debouncer.debounce(() => {
             while (this.#pendingAnimations.size) {
-                this.matchExistingGroups(this.createGroupFromPendingAnimations());
+                this.#matchExistingGroups(this.#createGroupFromPendingAnimations());
             }
         }, 100);
     }
-    reset() {
+    #reset() {
         this.#animationsById.clear();
         this.animationGroups.clear();
         this.#pendingAnimations.clear();
@@ -235,7 +235,7 @@ export class AnimationModel extends SDKModel {
         }
         this.#flushPendingAnimations();
     }
-    matchExistingGroups(incomingGroup) {
+    #matchExistingGroups(incomingGroup) {
         let matchedGroup = null;
         for (const group of this.animationGroups.values()) {
             if (group.matches(incomingGroup)) {
@@ -258,7 +258,7 @@ export class AnimationModel extends SDKModel {
         }
         return Boolean(matchedGroup);
     }
-    createGroupFromPendingAnimations() {
+    #createGroupFromPendingAnimations() {
         console.assert(this.#pendingAnimations.size > 0);
         const firstAnimationId = this.#pendingAnimations.values().next().value;
         this.#pendingAnimations.delete(firstAnimationId);
@@ -290,7 +290,7 @@ export class AnimationModel extends SDKModel {
         void this.agent.invoke_releaseAnimations({ animations });
     }
     async suspendModel() {
-        await this.agent.invoke_disable().then(() => this.reset());
+        await this.agent.invoke_disable().then(() => this.#reset());
     }
     async resumeModel() {
         await this.agent.invoke_enable();
@@ -341,7 +341,7 @@ export class AnimationImpl {
     // from the scroll container and ends at `endOffset`px of the scroll container.
     // This takes a percentage of the timeline range and returns the absolute
     // pixels values as a scroll offset of the scroll container.
-    percentageToPixels(percentage, viewOrScrollTimeline) {
+    #percentageToPixels(percentage, viewOrScrollTimeline) {
         const { startOffset, endOffset } = viewOrScrollTimeline;
         if (startOffset === undefined || endOffset === undefined) {
             // We don't expect this situation to occur since after an animation is started
@@ -375,7 +375,7 @@ export class AnimationImpl {
     startTime() {
         const viewOrScrollTimeline = this.viewOrScrollTimeline();
         if (viewOrScrollTimeline) {
-            return this.percentageToPixels(this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime, viewOrScrollTimeline) +
+            return this.#percentageToPixels(this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime, viewOrScrollTimeline) +
                 (this.viewOrScrollTimeline()?.startOffset ?? 0);
         }
         return this.#payload.startTime;
@@ -385,7 +385,7 @@ export class AnimationImpl {
     iterationDuration() {
         const viewOrScrollTimeline = this.viewOrScrollTimeline();
         if (viewOrScrollTimeline) {
-            return this.percentageToPixels(this.source().duration(), viewOrScrollTimeline);
+            return this.#percentageToPixels(this.source().duration(), viewOrScrollTimeline);
         }
         return this.source().duration();
     }
@@ -415,7 +415,7 @@ export class AnimationImpl {
     currentTime() {
         const viewOrScrollTimeline = this.viewOrScrollTimeline();
         if (viewOrScrollTimeline) {
-            return this.percentageToPixels(this.#payload.currentTime, viewOrScrollTimeline);
+            return this.#percentageToPixels(this.#payload.currentTime, viewOrScrollTimeline);
         }
         return this.#payload.currentTime;
     }
@@ -448,13 +448,13 @@ export class AnimationImpl {
             if (!node) {
                 throw new Error('Unable to find node');
             }
-            this.updateNodeStyle(duration, delay, node);
+            this.#updateNodeStyle(duration, delay, node);
         });
         this.#source.durationInternal = duration;
         this.#source.delayInternal = delay;
         void this.#animationModel.agent.invoke_setTiming({ animationId: this.id(), duration, delay });
     }
-    updateNodeStyle(duration, delay, node) {
+    #updateNodeStyle(duration, delay, node) {
         let animationPrefix;
         if (this.type() === "CSSTransition" /* Protocol.Animation.AnimationType.CSSTransition */) {
             animationPrefix = 'transition-';
@@ -615,9 +615,9 @@ export class AnimationGroup {
     }
     release() {
         this.#animationModel.animationGroups.delete(this.id());
-        this.#animationModel.releaseAnimations(this.animationIds());
+        this.#animationModel.releaseAnimations(this.#animationIds());
     }
-    animationIds() {
+    #animationIds() {
         function extractId(animation) {
             return animation.id();
         }
@@ -689,7 +689,7 @@ export class AnimationGroup {
             return;
         }
         this.#paused = paused;
-        void this.#animationModel.agent.invoke_setPaused({ animations: this.animationIds(), paused });
+        void this.#animationModel.agent.invoke_setPaused({ animations: this.#animationIds(), paused });
     }
     currentTimePromise() {
         let longestAnim = null;
@@ -733,7 +733,7 @@ export class AnimationGroup {
         this.#animations.push(...animations);
     }
     rebaseTo(group) {
-        this.#animationModel.releaseAnimations(this.animationIds());
+        this.#animationModel.releaseAnimations(this.#animationIds());
         this.#animations = group.#animations;
         this.#scrollNode = undefined;
     }

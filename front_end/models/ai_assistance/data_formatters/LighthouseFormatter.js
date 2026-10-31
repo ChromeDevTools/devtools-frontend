@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { bytes, millis } from './UnitFormatters.js';
+// Mirrors `Util.PASS_THRESHOLD` in `front_end/third_party/lighthouse/report/bundle.js`
+// (defined in Lighthouse's `report/renderer/util.js`). The pre-built report bundle does
+// not export `Util`, so this threshold is defined locally.
+const PASS_THRESHOLD = 0.9;
 /**
  * A formatter that takes a raw Lighthouse report JSON and creates a markdown
  * summary for an AI Agent.
@@ -16,13 +20,69 @@ export class LighthouseFormatter {
         lines.push(`URL: ${report.finalDisplayedUrl}`);
         lines.push(`Fetch Time: ${report.fetchTime}`);
         lines.push(`Lighthouse Version: ${report.lighthouseVersion}`);
+        if (report.gatherMode) {
+            lines.push(`Mode: ${report.gatherMode}`);
+        }
         lines.push('');
         lines.push('## Category Scores');
         for (const category of Object.values(report.categories)) {
-            const score = category.score !== null ? Math.round(category.score * 100) : 'n/a';
-            lines.push(`- ${category.title}: ${score}`);
+            lines.push(`- ${category.title}: ${this.#formatCategoryScore(report, category)}`);
         }
         return lines.join('\n');
+    }
+    #formatCategoryScore(report, category) {
+        if (this.#shouldDisplayAsFraction(report, category)) {
+            const { numPassed, numPassableAudits } = this.#calculateCategoryFraction(report, category);
+            return `${numPassed}/${numPassableAudits} audits passed`;
+        }
+        return category.score !== null ? Math.round(category.score * 100) : 'n/a';
+    }
+    /**
+     * Mirrors `Util.shouldDisplayAsFraction` in the Lighthouse report renderer (`bundle.js`).
+     */
+    #shouldDisplayAsFraction(report, category) {
+        return report.gatherMode === 'timespan' || report.gatherMode === 'snapshot' ||
+            category.categoryScoreDisplayMode === 'fraction';
+    }
+    /**
+     * Mirrors `Util.calculateCategoryFraction` in the Lighthouse report renderer (`bundle.js`).
+     */
+    #calculateCategoryFraction(report, category) {
+        let numPassableAudits = 0;
+        let numPassed = 0;
+        for (const ref of category.auditRefs) {
+            const audit = report.audits[ref.id];
+            if (!audit) {
+                continue;
+            }
+            const auditPassed = this.#showAsPassed(audit);
+            if (ref.group === 'hidden' || audit.scoreDisplayMode === 'manual' || audit.scoreDisplayMode === 'notApplicable' ||
+                audit.scoreDisplayMode === 'informative') {
+                continue;
+            }
+            numPassableAudits += 1;
+            if (auditPassed) {
+                numPassed += 1;
+            }
+        }
+        return { numPassed, numPassableAudits };
+    }
+    /**
+     * Mirrors `Util.showAsPassed` in the Lighthouse report renderer (`bundle.js`).
+     */
+    #showAsPassed(audit) {
+        switch (audit.scoreDisplayMode) {
+            case 'manual':
+            case 'notApplicable':
+                return true;
+            case 'error':
+            case 'informative':
+                return false;
+            case 'numeric':
+            case 'binary':
+            default:
+                return Number(audit.score) >= PASS_THRESHOLD;
+        }
     }
     /**
      * Returns the title and score of every failing audit (score < 90), grouped by category.
@@ -36,12 +96,17 @@ export class LighthouseFormatter {
             lines.push('');
             lines.push(`### ${category.title} (categoryId: "${categoryId}")`);
             const failingAudits = this.#findFailingAudits(report, category);
-            if (failingAudits.length === 0) {
+            const erroredAudits = this.#findErroredAudits(report, category);
+            if (failingAudits.length === 0 && erroredAudits.length === 0) {
                 lines.push('- No failing audits.');
                 continue;
             }
             for (const audit of failingAudits) {
                 lines.push(`- ${audit.title}: ${this.#formatScore(audit.score)}`);
+            }
+            for (const audit of erroredAudits) {
+                const errorSuffix = audit.errorMessage ? ` (${this.#toSingleLine(audit.errorMessage)})` : '';
+                lines.push(`- ${audit.title}: Error${errorSuffix}`);
             }
         }
         return lines.join('\n');
@@ -74,14 +139,27 @@ export class LighthouseFormatter {
         }
         lines.push('');
         const failingAudits = this.#findFailingAudits(report, category);
-        if (failingAudits.length === 0) {
+        const erroredAudits = this.#findErroredAudits(report, category);
+        if (failingAudits.length === 0 && erroredAudits.length === 0) {
             lines.push('All audits in this category passed (score >= 90).');
             return lines.join('\n');
         }
-        lines.push('The following audits in this category have a score below 90 and may need attention:');
-        for (const audit of failingAudits) {
-            lines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
+        const sections = [];
+        if (failingAudits.length > 0) {
+            const sectionLines = ['The following audits in this category have a score below 90 and may need attention:'];
+            for (const audit of failingAudits) {
+                sectionLines.push(...this.#formatAudit(audit, this.#formatScore(audit.score)));
+            }
+            sections.push(sectionLines.join('\n'));
         }
+        if (erroredAudits.length > 0) {
+            const sectionLines = ['The following audits in this category errored:'];
+            for (const audit of erroredAudits) {
+                sectionLines.push(...this.#formatAudit(audit, 'Error'));
+            }
+            sections.push(sectionLines.join('\n'));
+        }
+        lines.push(sections.join('\n\n'));
         return lines.join('\n');
     }
     #formatAudit(audit, score) {
@@ -92,6 +170,9 @@ export class LighthouseFormatter {
         }
         lines.push(line);
         lines.push(`  * ${this.#toSingleLine(audit.description)}`);
+        if (audit.scoreDisplayMode === 'error' && audit.errorMessage) {
+            lines.push(`  * Error: ${this.#toSingleLine(audit.errorMessage)}`);
+        }
         if (audit.explanation) {
             lines.push(`  * Explanation: ${this.#joinExplanationLines(audit.explanation)}`);
         }
@@ -104,19 +185,30 @@ export class LighthouseFormatter {
             const formattedDetails = this.#formatDetails(audit.details);
             if (formattedDetails) {
                 lines.push('');
-                lines.push(formattedDetails.split('\n').map(l => `    ${l}`).join('\n'));
+                lines.push(formattedDetails.split('\n').map(l => l ? `    ${l}` : '').join('\n'));
             }
         }
         return lines;
     }
     /**
-     * Returns the audits in a category that scored below 90, in the category's order.
+     * Returns the non-hidden audits in a category that scored below 90, in the category's order.
      * Audits without a score (such as informative or manual audits) cannot fail, so they
      * are excluded.
      */
     #findFailingAudits(report, category) {
-        return category.auditRefs.map(ref => report.audits[ref.id])
-            .filter((audit) => Boolean(audit) && audit.score !== null && audit.score < 0.9);
+        return category.auditRefs.filter(ref => ref.group !== 'hidden')
+            .map(ref => report.audits[ref.id])
+            .filter((audit) => Boolean(audit) &&
+            audit.scoreDisplayMode !== 'error' && audit.score !== null && audit.score < PASS_THRESHOLD);
+    }
+    /**
+     * Returns the non-hidden audits in a category that failed with an execution error
+     * (`scoreDisplayMode === 'error'`), in the category's order.
+     */
+    #findErroredAudits(report, category) {
+        return category.auditRefs.filter(ref => ref.group !== 'hidden')
+            .map(ref => report.audits[ref.id])
+            .filter((audit) => Boolean(audit) && audit.scoreDisplayMode === 'error');
     }
     #formatScore(score) {
         return Math.round(score * 100);
@@ -157,9 +249,96 @@ export class LighthouseFormatter {
                 lines.push(this.#formatTable(details.headings, details.items));
                 return lines.join('\n');
             }
+            case 'list':
+                return this.#formatList(details);
+            case 'checklist':
+                return Object.values(details.items)
+                    .map(item => `- ${this.#toSingleLine(item.label)}: ${item.value ? 'Passed' : 'Failed'}`)
+                    .join('\n');
+            case 'network-tree':
+                return this.#formatNetworkTree(details);
             default:
                 return '';
         }
+    }
+    #formatNetworkTree(details) {
+        if (Object.keys(details.chains).length === 0) {
+            return '';
+        }
+        const lines = [`Maximum critical path latency: ${millis(details.longestChain.duration)}`];
+        lines.push(...this.#formatNetworkTreeNodes(details.chains, 0));
+        return lines.join('\n');
+    }
+    #formatNetworkTreeNodes(nodes, depth) {
+        const lines = [];
+        const indent = '  '.repeat(depth);
+        for (const node of Object.values(nodes)) {
+            const longestSuffix = node.isLongest ? ' (longest chain)' : '';
+            lines.push(`${indent}- ${node.url} (${millis(node.navStartToEndTime)}, ${bytes(node.transferSize)})${longestSuffix}`);
+            if (node.children) {
+                lines.push(...this.#formatNetworkTreeNodes(node.children, depth + 1));
+            }
+        }
+        return lines;
+    }
+    #formatList(details) {
+        const itemStrings = [];
+        for (const item of details.items) {
+            if (item.type === 'list-section') {
+                const sectionLines = [];
+                if (item.title) {
+                    sectionLines.push(`**${this.#toSingleLine(item.title)}**`);
+                }
+                if (item.description) {
+                    sectionLines.push(this.#toSingleLine(item.description));
+                }
+                const formattedValue = this.#formatListValue(item.value);
+                if (formattedValue) {
+                    sectionLines.push(formattedValue);
+                }
+                if (sectionLines.length > 0) {
+                    itemStrings.push(sectionLines.join('\n'));
+                }
+            }
+            else {
+                const formattedItem = this.#formatListValue(item);
+                if (formattedItem) {
+                    itemStrings.push(formattedItem);
+                }
+            }
+        }
+        return itemStrings.join('\n\n');
+    }
+    #formatListValue(value) {
+        switch (value.type) {
+            case 'node':
+                return this.#formatNodeFields(value)
+                    .map(({ labelSuffix, value: v }) => {
+                    const label = labelSuffix ? `Element ${labelSuffix}` : 'Element';
+                    return `- **${label}**: ${this.#toSingleLine(v)}`;
+                })
+                    .join('\n');
+            case 'text':
+            case 'url':
+                return this.#toSingleLine(value.value);
+            default:
+                return this.#formatDetails(value);
+        }
+    }
+    #formatNodeFields(value) {
+        const results = [];
+        const label = value.nodeLabel || value.selector || value.snippet || '(node)';
+        results.push({ value: label });
+        if (value.selector && value.selector !== label) {
+            results.push({ labelSuffix: 'selector', value: value.selector });
+        }
+        if (value.path) {
+            results.push({ labelSuffix: 'path', value: value.path });
+        }
+        if (value.explanation) {
+            results.push({ labelSuffix: 'explanation', value: this.#joinExplanationLines(value.explanation) });
+        }
+        return results;
     }
     #formatTable(headings, items) {
         const lines = [];
@@ -210,21 +389,11 @@ export class LighthouseFormatter {
         }
         if (typeof value === 'object' && 'type' in value) {
             switch (value.type) {
-                case 'node': {
-                    const results = [];
-                    const label = value.nodeLabel || value.selector || value.snippet || '(node)';
-                    results.push({ value: label });
-                    if (value.selector && value.selector !== label) {
-                        results.push({ labelSuffix: 'selector', value: value.selector });
-                    }
-                    if (value.path) {
-                        results.push({ labelSuffix: 'path', value: value.path });
-                    }
-                    if (value.explanation) {
-                        results.push({ labelSuffix: 'explanation', value: this.#joinExplanationLines(value.explanation) });
-                    }
-                    return results;
-                }
+                case 'node':
+                    return this.#formatNodeFields(value);
+                case 'text':
+                case 'url':
+                    return [{ value: this.#formatValue(value.value, valueType) }];
                 case 'source-location': {
                     const parts = [];
                     if (value.url) {

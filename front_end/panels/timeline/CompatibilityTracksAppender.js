@@ -148,11 +148,10 @@ export class CompatibilityTracksAppender {
         this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
         this.#addThreadAppenders();
         this.#addExtensionAppenders();
-        this.onThemeChange = this.onThemeChange.bind(this);
-        ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.onThemeChange);
+        ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
     }
     reset() {
-        ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.onThemeChange);
+        ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
     }
     setFlameChartDataAndEntryData(flameChartData, entryData, legacyEntryTypeByLevel) {
         this.#trackForGroup.clear();
@@ -163,14 +162,14 @@ export class CompatibilityTracksAppender {
     getFlameChartTimelineData() {
         return this.#flameChartData;
     }
-    onThemeChange() {
+    #onThemeChange = () => {
         for (const group of this.#flameChartData.groups) {
             // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
             group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
             group.style.backgroundColor =
                 ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
         }
-    }
+    };
     #addExtensionAppenders() {
         if (!TimelinePanel.extensionDataVisibilitySetting().get()) {
             return;

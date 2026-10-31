@@ -30,7 +30,6 @@ export declare class NetworkNavigatorView extends SourcesNavigatorView {
     performUpdate(): Promise<void>;
     acceptProject(project: Workspace.Workspace.Project): boolean;
     onScopeChange(): void;
-    private inspectedURLChanged;
     uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
 }
 export interface FilesNavigatorViewInput {
@@ -67,8 +66,6 @@ export declare class OverridesNavigatorView extends SourcesNavigatorView {
         forceNew: boolean | null;
     }): OverridesNavigatorView;
     performUpdate(): Promise<void>;
-    private onProjectAddOrRemoved;
-    private updateProjectAndUI;
     static setupNewWorkspace(): Promise<void>;
     sourceSelected(): void;
     acceptProject(project: Workspace.Workspace.Project): boolean;

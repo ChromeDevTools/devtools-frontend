@@ -122,7 +122,6 @@ export declare class CompatibilityTracksAppender {
     reset(): void;
     setFlameChartDataAndEntryData(flameChartData: PerfUI.FlameChart.FlameChartTimelineData, entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[]): void;
     getFlameChartTimelineData(): PerfUI.FlameChart.FlameChartTimelineData;
-    private onThemeChange;
     timingsTrackAppender(): TimingsTrackAppender;
     animationsTrackAppender(): AnimationsTrackAppender;
     interactionsTrackAppender(): InteractionsTrackAppender;

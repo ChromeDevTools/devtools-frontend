@@ -111,7 +111,7 @@ export class Resource {
         if (this.#pendingContentData) {
             return await this.#pendingContentData;
         }
-        this.#pendingContentData = this.innerRequestContent().then(contentData => {
+        this.#pendingContentData = this.#innerRequestContent().then(contentData => {
             // If an error happended we don't set `this.#contentData` so future `requestContentData` will
             // attempt again to hit the backend for this Resource.
             if (!TextUtils.ContentData.ContentData.isError(contentData)) {
@@ -143,7 +143,7 @@ export class Resource {
         const imageSrc = contentData.asImagePreviewUrl();
         image.src = imageSrc ?? ''; // Empty the image if we cannot generate a preview URL
     }
-    async innerRequestContent() {
+    async #innerRequestContent() {
         if (this.request) {
             // The `contentData` promise only resolves once the request is done.
             return await this.request.requestContentData();

@@ -17,6 +17,8 @@ export interface ViewInput {
     title: Title;
     comments: CommentManager.CommentManager.Comment[];
     commentText: string;
+    /** Placeholder for the comment text area, including the platform-specific queue shortcut. */
+    placeholder: string;
     /** Whether Cmd (Mac) or Ctrl (other platforms) is currently held, switching submit to "queue". */
     isQueueModifierPressed: boolean;
     /** True when the element the thread is anchored to has been removed. */

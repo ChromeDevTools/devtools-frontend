@@ -3387,7 +3387,7 @@ var LogManager = class _LogManager {
   }
   modelAdded(logModel) {
     const eventListeners = [];
-    eventListeners.push(logModel.addEventListener(SDK2.LogModel.Events.ENTRY_ADDED, this.logEntryAdded, this));
+    eventListeners.push(logModel.addEventListener(SDK2.LogModel.Events.ENTRY_ADDED, this.#logEntryAdded, this));
     modelToEventListeners.set(logModel, eventListeners);
   }
   modelRemoved(logModel) {
@@ -3396,7 +3396,7 @@ var LogManager = class _LogManager {
       Common2.EventTarget.removeEventListeners(eventListeners);
     }
   }
-  logEntryAdded(event) {
+  #logEntryAdded(event) {
     const { logModel, entry } = event.data;
     const target = logModel.target();
     const details = {

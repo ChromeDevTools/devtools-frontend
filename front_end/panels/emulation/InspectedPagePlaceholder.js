@@ -25,7 +25,7 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     clearMinimumSize() {
         this.setMinimumSize(1, 1);
     }
-    dipPageRect() {
+    #dipPageRect() {
         const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
         const rect = this.element.getBoundingClientRect();
         const bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
@@ -42,7 +42,7 @@ export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
         if (!this.element.isConnected) {
             return;
         }
-        const rect = this.dipPageRect();
+        const rect = this.#dipPageRect();
         const bounds = {
             x: Math.round(rect.x),
             y: Math.round(rect.y),

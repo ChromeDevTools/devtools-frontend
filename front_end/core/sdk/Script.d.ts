@@ -49,7 +49,6 @@ export declare class Script implements TextUtils.ContentProvider.ContentProvider
      */
     securityOrigin(): SecurityOrigin;
     target(): Target;
-    private static trimSourceURLComment;
     isContentScript(): boolean;
     codeOffset(): number | null;
     isJavaScript(): boolean;
@@ -58,8 +57,6 @@ export declare class Script implements TextUtils.ContentProvider.ContentProvider
     executionContext(): ExecutionContext | null;
     contentURL(): Platform.DevToolsPath.UrlString;
     contentType(): Common.ResourceType.ResourceType;
-    private loadTextContent;
-    private loadWasmContent;
     requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError>;
     getWasmBytecode(): Promise<ArrayBuffer>;
     originalContentProvider(): TextUtils.ContentProvider.ContentProvider;

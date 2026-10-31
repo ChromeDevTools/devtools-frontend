@@ -65,6 +65,7 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
     tabbedPane;
     defaultDetailsWidget;
     #summaryContent = new SummaryView();
+    #summaryContentNeedsUpdate = false;
     rangeDetailViews;
     #selectedEvents;
     lazyPaintProfilerView;
@@ -276,8 +277,14 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         }
         if (data.parsedTrace) {
             this.#summaryContent.filmStrip = Trace.Extras.FilmStrip.fromHandlerData(data.parsedTrace.data);
-            this.#entityMapper = new Trace.EntityMapper.EntityMapper(data.parsedTrace);
+            this.#entityMapper = data.entityMapper ?? new Trace.EntityMapper.EntityMapper(data.parsedTrace);
         }
+        else {
+            this.#summaryContent.filmStrip = null;
+            this.#entityMapper = null;
+        }
+        this.#summaryContent.selectedEvent = null;
+        this.#summaryContent.selectedRange = null;
         this.#selectedEvents = data.selectedEvents;
         this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
         this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
@@ -288,17 +295,21 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
             view.model = {
                 selectedEvents: data.selectedEvents,
                 parsedTrace: data.parsedTrace,
-                entityMapper: data.entityMapper,
+                entityMapper: this.#entityMapper,
             };
         }
-        this.#summaryContent.requestUpdate();
+        // `setSelection(null)` short-circuits without updating the summary pane when any
+        // of these dependencies are missing, so trigger the update directly.
+        if (!this.#parsedTrace || !this.#selectedEvents || !TraceBounds.TraceBounds.BoundsManager.instance().state()) {
+            void this.updateSummaryPane();
+        }
         this.lazyPaintProfilerView = null;
         this.lazyLayersView = null;
         await this.setSelection(null);
     }
     /**
-     * Updates the UI shown in the Summary tab, and updates the UI to select the
-     * summary tab.
+     * Updates the UI shown in the Summary tab. If the summary tab is not
+     * currently selected, the update is deferred until the tab becomes active.
      */
     async updateSummaryPane() {
         const allTabs = this.tabbedPane.otherTabs(Tab.Details);
@@ -307,6 +318,11 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
                 this.tabbedPane.closeTab(allTabs[i]);
             }
         }
+        if (this.tabbedPane.selectedTabId !== Tab.Details) {
+            this.#summaryContentNeedsUpdate = true;
+            return;
+        }
+        this.#summaryContentNeedsUpdate = false;
         this.#summaryContent.requestUpdate();
         await this.#summaryContent.updateComplete;
     }
@@ -416,6 +432,10 @@ export class TimelineDetailsPane extends TimelineDetailsPaneBase {
         this.updateContents();
     }
     tabSelected(event) {
+        if (event.data.tabId === Tab.Details && this.#summaryContentNeedsUpdate) {
+            this.#summaryContentNeedsUpdate = false;
+            this.#summaryContent.requestUpdate();
+        }
         if (!event.data.isUserGesture) {
             return;
         }

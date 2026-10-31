@@ -7,6 +7,7 @@ interface Params {
     shouldDrawLine: boolean;
 }
 export declare class BezierUI {
+    #private;
     width: number;
     height: number;
     marginTop: number;
@@ -16,8 +17,6 @@ export declare class BezierUI {
     static drawVelocityChart(bezier: Geometry.CubicBezier, path: Element, width: number): void;
     curveWidth(): number;
     curveHeight(): number;
-    private drawLine;
-    private drawControlPoints;
     drawCurve(bezier: Geometry.CubicBezier | null, svg: Element): void;
 }
 export declare const Height = 26;

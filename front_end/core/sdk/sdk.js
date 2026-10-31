@@ -6187,9 +6187,7 @@ var generatedProperties = [
       "content-block-size",
       "content-inline-size"
     ],
-    "name": "frame-sizing",
-    "runtime_flag": "ResponsiveIframes",
-    "runtime_flag_status": "stable"
+    "name": "frame-sizing"
   },
   {
     "longhands": [
@@ -12767,7 +12765,7 @@ var CSSMetadata = class _CSSMetadata {
         }
       }
     }
-    this.#values.sort(_CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
+    this.#values.sort(_CSSMetadata.#sortPrefixesAndCSSWideKeywordsToEnd);
     this.#valuesSet = new Set(this.#values);
     const propertyValueSets = /* @__PURE__ */ new Map();
     for (const [propertyName, basisValueObj] of Object.entries(generatedPropertyValues)) {
@@ -12818,7 +12816,7 @@ var CSSMetadata = class _CSSMetadata {
       this.#propertyValues.set(propertyName, [...values]);
     }
     for (const name of this.#valuesSet) {
-      const values = this.specificPropertyValues(name).filter((value) => {
+      const values = this.#specificPropertyValues(name).filter((value) => {
         const preset = valuePresets.get(name)?.get(value);
         if (preset && preset !== value) {
           return false;
@@ -12827,7 +12825,7 @@ var CSSMetadata = class _CSSMetadata {
           return false;
         }
         return true;
-      }).sort(_CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
+      }).sort(_CSSMetadata.#sortPrefixesAndCSSWideKeywordsToEnd);
       const presets = values.map((value) => `${name}: ${value}`);
       if (!this.isSVGProperty(name)) {
         this.#nameValuePresets.push(...presets);
@@ -12841,7 +12839,7 @@ var CSSMetadata = class _CSSMetadata {
   static isPositionTryOrderKeyword(a) {
     return PositionTryOrderKeywords.includes(a);
   }
-  static sortPrefixesAndCSSWideKeywordsToEnd(a, b) {
+  static #sortPrefixesAndCSSWideKeywordsToEnd(a, b) {
     const aIsCSSWideKeyword = _CSSMetadata.isCSSWideKeyword(a);
     const bIsCSSWideKeyword = _CSSMetadata.isCSSWideKeyword(b);
     if (aIsCSSWideKeyword && !bIsCSSWideKeyword) {
@@ -12959,7 +12957,7 @@ var CSSMetadata = class _CSSMetadata {
     propertyName = propertyName.toLowerCase();
     return propertyName.startsWith("--") || this.#inherited.has(this.canonicalPropertyName(propertyName)) || this.#inherited.has(propertyName);
   }
-  specificPropertyValues(propertyName) {
+  #specificPropertyValues(propertyName) {
     const unprefixedName = propertyName.replace(/^-webkit-/, "");
     const propertyValues = this.#propertyValues;
     let keywords = propertyValues.get(propertyName) || propertyValues.get(unprefixedName);
@@ -12971,14 +12969,14 @@ var CSSMetadata = class _CSSMetadata {
   }
   getPropertyValues(propertyName) {
     propertyName = propertyName.toLowerCase();
-    const acceptedKeywords = [...this.specificPropertyValues(propertyName), ...CSSWideKeywords];
+    const acceptedKeywords = [...this.#specificPropertyValues(propertyName), ...CSSWideKeywords];
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push("currentColor");
       for (const color of Common2.Color.Nicknames.keys()) {
         acceptedKeywords.push(color);
       }
     }
-    return acceptedKeywords.sort(_CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
+    return acceptedKeywords.sort(_CSSMetadata.#sortPrefixesAndCSSWideKeywordsToEnd);
   }
   propertyUsageWeight(property) {
     return Weight.get(property) || Weight.get(this.canonicalPropertyName(property)) || 0;
@@ -15471,19 +15469,19 @@ var LocalJSONObject = class extends RemoteObject {
       return this.#cachedDescription;
     }
     function formatArrayItem(property) {
-      return this.formatValue(property.value || null);
+      return this.#formatValue(property.value || null);
     }
     function formatObjectItem(property) {
       let name = property.name;
       if (/^\s|\s$|^$|\n/.test(name)) {
         name = '"' + name.replace(/\n/g, "\u21B5") + '"';
       }
-      return name + ": " + this.formatValue(property.value || null);
+      return name + ": " + this.#formatValue(property.value || null);
     }
     if (this.type === "object") {
       switch (this.subtype) {
         case "array":
-          this.#cachedDescription = this.concatenate("[", "]", formatArrayItem.bind(this));
+          this.#cachedDescription = this.#concatenate("[", "]", formatArrayItem.bind(this));
           break;
         case "date":
           this.#cachedDescription = String(this.#value);
@@ -15492,14 +15490,14 @@ var LocalJSONObject = class extends RemoteObject {
           this.#cachedDescription = "null";
           break;
         default:
-          this.#cachedDescription = this.concatenate("{", "}", formatObjectItem.bind(this));
+          this.#cachedDescription = this.#concatenate("{", "}", formatObjectItem.bind(this));
       }
     } else {
       this.#cachedDescription = String(this.#value);
     }
     return this.#cachedDescription;
   }
-  formatValue(value) {
+  #formatValue(value) {
     if (!value) {
       return "undefined";
     }
@@ -15509,10 +15507,10 @@ var LocalJSONObject = class extends RemoteObject {
     }
     return description;
   }
-  concatenate(prefix, suffix, formatProperty) {
+  #concatenate(prefix, suffix, formatProperty) {
     const previewChars = 100;
     let buffer = prefix;
-    const children = this.children();
+    const children = this.#children();
     for (let i = 0; i < children.length; ++i) {
       const itemDescription = formatProperty(children[i]);
       if (buffer.length + itemDescription.length > previewChars) {
@@ -15556,7 +15554,7 @@ var LocalJSONObject = class extends RemoteObject {
       const index = Number(name) >>> 0;
       return String(index) === name && index < 4294967295;
     }
-    let properties = this.children();
+    let properties = this.#children();
     if (nonIndexedPropertiesOnly) {
       properties = properties.filter((property) => !isArrayIndex(property.name));
     }
@@ -15568,7 +15566,7 @@ var LocalJSONObject = class extends RemoteObject {
     }
     return await this.getOwnProperties(generatePreview, nonIndexedPropertiesOnly);
   }
-  children() {
+  #children() {
     if (!this.hasChildren) {
       return [];
     }
@@ -16345,7 +16343,7 @@ var CPUProfilerModel = class extends SDKModel {
       title = i18nString(UIStrings.profileD, { PH1: this.#nextAnonymousConsoleProfileNumber++ });
       this.#anonymousConsoleProfileIdToTitle.set(id, title);
     }
-    const eventData = this.createEventDataFrom(id, location, title);
+    const eventData = this.#createEventDataFrom(id, location, title);
     this.dispatchEventToListeners("ConsoleProfileStarted" /* CONSOLE_PROFILE_STARTED */, eventData);
   }
   consoleProfileFinished({ id, location, profile, title }) {
@@ -16353,10 +16351,10 @@ var CPUProfilerModel = class extends SDKModel {
       title = this.#anonymousConsoleProfileIdToTitle.get(id);
       this.#anonymousConsoleProfileIdToTitle.delete(id);
     }
-    const eventData = new ProfileFinishedData(this.createEventDataFrom(id, location, title), profile);
+    const eventData = new ProfileFinishedData(this.#createEventDataFrom(id, location, title), profile);
     this.dispatchEventToListeners("ConsoleProfileFinished" /* CONSOLE_PROFILE_FINISHED */, eventData);
   }
-  createEventDataFrom(id, scriptLocation, title) {
+  #createEventDataFrom(id, scriptLocation, title) {
     const debuggerLocation = Location.fromPayload(this.#debuggerModel, scriptLocation);
     const globalId = this.target().id() + "." + id;
     return {
@@ -18917,7 +18915,7 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
     matchers.push(new CSSWideKeywordMatcher(this, matchedStyles), new ImportantMatcher());
     return matchers;
   }
-  ensureRanges() {
+  #ensureRanges() {
     if (this.#nameRange && this.#valueRange) {
       return;
     }
@@ -18946,11 +18944,11 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
     }
   }
   nameRange() {
-    this.ensureRanges();
+    this.#ensureRanges();
     return this.#nameRange;
   }
   valueRange() {
-    this.ensureRanges();
+    this.#ensureRanges();
     return this.#valueRange;
   }
   rebase(edit) {
@@ -19000,7 +18998,7 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
       return true;
     }
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
-    const indentation = this.ownerStyle.cssText ? this.detectIndentation(this.ownerStyle.cssText) : this.ownerStyle.cssModel().target().targetManager().settings.resolve(textEditorIndentSettingDescriptor).get();
+    const indentation = this.ownerStyle.cssText ? this.#detectIndentation(this.ownerStyle.cssText) : this.ownerStyle.cssModel().target().targetManager().settings.resolve(textEditorIndentSettingDescriptor).get();
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : "";
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || "");
     const newStyleText = text.replaceRange(range, Platform3.StringUtilities.sprintf(";%s;", propertyText));
@@ -19072,7 +19070,7 @@ var CSSProperty = class _CSSProperty extends Common6.ObjectWrapper.ObjectWrapper
       return cssMetadata().isCSSPropertyName(propertyName2);
     }
   }
-  detectIndentation(text) {
+  #detectIndentation(text) {
     const lines = text.split("\n");
     if (lines.length < 2) {
       return "";
@@ -19934,7 +19932,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
       header: styleSheetHeaderForRule(cssModel, payload),
       originTreeScopeNodeId: payload.originTreeScopeNodeId
     });
-    this.reinitializeSelectors(payload.selectorList);
+    this.#reinitializeSelectors(payload.selectorList);
     this.nestingSelectors = payload.nestingSelectors;
     this.media = payload.media ? CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
     this.containerQueries = payload.containerQueries ? CSSContainerQuery.parseContainerQueriesPayload(cssModel, payload.containerQueries) : [];
@@ -19962,7 +19960,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     };
     return new _CSSStyleRule(cssModel, dummyPayload);
   }
-  reinitializeSelectors(selectorList) {
+  #reinitializeSelectors(selectorList) {
     this.selectors = [];
     for (let i = 0; i < selectorList.selectors.length; ++i) {
       this.selectors.push(new CSSValue(selectorList.selectors[i]));
@@ -20018,7 +20016,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     }
     const range = this.selectorRange();
     if (range?.equal(edit.oldRange)) {
-      this.reinitializeSelectors(edit.payload);
+      this.#reinitializeSelectors(edit.payload);
     } else {
       for (let i = 0; i < this.selectors.length; ++i) {
         this.selectors[i].rebase(edit);
@@ -20133,7 +20131,7 @@ var CSSKeyframeRule = class extends CSSRule {
       style: payload.style,
       header: styleSheetHeaderForRule(cssModel, payload)
     });
-    this.reinitializeKey(payload.keyText);
+    this.#reinitializeKey(payload.keyText);
     this.#parentRuleName = parentRuleName;
   }
   parentRuleName() {
@@ -20142,7 +20140,7 @@ var CSSKeyframeRule = class extends CSSRule {
   key() {
     return this.#keyText;
   }
-  reinitializeKey(payload) {
+  #reinitializeKey(payload) {
     this.#keyText = new CSSValue(payload);
   }
   rebase(edit) {
@@ -20150,7 +20148,7 @@ var CSSKeyframeRule = class extends CSSRule {
       return;
     }
     if (edit.oldRange.equal(this.#keyText.range)) {
-      this.reinitializeKey(edit.payload);
+      this.#reinitializeKey(edit.payload);
     } else {
       this.#keyText.rebase(edit);
     }
@@ -20457,12 +20455,18 @@ function queryMatches(style) {
   }
   return true;
 }
-function treeScopeDistance(node, property) {
-  if (!property.ownerStyle.parentRule && property.ownerStyle.type !== "Inline" /* Inline */) {
-    return -1;
+function originatingElement(node) {
+  let current = node;
+  while (current.pseudoType() && current.parentNode) {
+    current = current.parentNode;
   }
-  const root = node.getTreeRoot();
-  const nodeId = property.ownerStyle.parentRule?.treeScope ?? root?.backendNodeId();
+  return current;
+}
+function treeScopeNodeId(node, property) {
+  return property.ownerStyle.type === "Inline" /* Inline */ ? node.getTreeRoot()?.backendNodeId() : property.ownerStyle.parentRule?.treeScope;
+}
+function treeScopeDistance(node, property) {
+  const nodeId = treeScopeNodeId(node, property);
   if (nodeId === void 0) {
     return -1;
   }
@@ -21293,11 +21297,12 @@ var NodeCascade = class {
     }
   }
   #needsCascadeContextStep() {
-    if (!this.#node.isInShadowTree() && !this.#node.shadowRoots()?.length) {
+    const node = originatingElement(this.#node);
+    if (!node.isInShadowTree() && !node.shadowRoots()?.length && !node.hasAssignedSlot()) {
       return false;
     }
-    if (this.#node.ancestorShadowRoot()?.shadowRootType() === "user-agent") {
-      const pseudoElement = this.#node.getAttribute("pseudo");
+    if (node.ancestorShadowRoot()?.shadowRootType() === "user-agent") {
+      const pseudoElement = node.getAttribute("pseudo");
       return !pseudoElement?.startsWith("-webkit-") && !pseudoElement?.startsWith("-internal-");
     }
     return true;
@@ -21306,8 +21311,13 @@ var NodeCascade = class {
     if (activeProperty.important !== propertyWithHigherSpecificity.important) {
       return activeProperty.important;
     }
+    const node = originatingElement(this.#node);
     if (!activeProperty.important) {
-      return this.#needsCascadeContextStep() && treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity);
+      if (propertyWithHigherSpecificity.ownerStyle.type !== "Inline" /* Inline */ || !this.#needsCascadeContextStep()) {
+        return false;
+      }
+      const inlineDistance = treeScopeDistance(node, propertyWithHigherSpecificity);
+      return inlineDistance >= 0 && treeScopeDistance(node, activeProperty) > inlineDistance;
     }
     const activeIsUA = Boolean(activeProperty.ownerStyle.parentRule?.isUserAgent());
     const higherSpecIsUA = Boolean(propertyWithHigherSpecificity.ownerStyle.parentRule?.isUserAgent());
@@ -21315,10 +21325,14 @@ var NodeCascade = class {
       return activeIsUA;
     }
     if (this.#needsCascadeContextStep()) {
-      const activeDistance = treeScopeDistance(this.#node, activeProperty);
-      const higherSpecDistance = treeScopeDistance(this.#node, propertyWithHigherSpecificity);
-      if (activeDistance !== higherSpecDistance) {
-        return activeDistance < higherSpecDistance;
+      const activeScope = treeScopeNodeId(node, activeProperty);
+      const higherSpecScope = treeScopeNodeId(node, propertyWithHigherSpecificity);
+      if (activeScope !== void 0 && higherSpecScope !== void 0 && activeScope !== higherSpecScope) {
+        if (propertyWithHigherSpecificity.ownerStyle.type !== "Inline" /* Inline */) {
+          return true;
+        }
+        const inlineDistance = treeScopeDistance(node, propertyWithHigherSpecificity);
+        return inlineDistance >= 0 && treeScopeDistance(node, activeProperty) < inlineDistance;
       }
     }
     const activeRule = activeProperty.ownerStyle.parentRule;
@@ -21979,9 +21993,9 @@ var CSSStyleSheetHeader = class {
     return this.isConstructed && this.sourceURL.length === 0;
   }
   resourceURL() {
-    return this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
+    return this.isViaInspector() ? this.#viaInspectorResourceURL() : this.sourceURL;
   }
-  getFrameURLPath() {
+  #getFrameURLPath() {
     const model = this.#cssModel.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
@@ -22003,8 +22017,8 @@ var CSSStyleSheetHeader = class {
     }
     return urlPath;
   }
-  viaInspectorResourceURL() {
-    return `inspector://${this.getFrameURLPath()}inspector-stylesheet#${this.id}`;
+  #viaInspectorResourceURL() {
+    return `inspector://${this.#getFrameURLPath()}inspector-stylesheet#${this.id}`;
   }
   lineNumberInSource(lineNumberInStyleSheet) {
     return this.startLine + lineNumberInStyleSheet;
@@ -23185,7 +23199,7 @@ var SourceMap = class _SourceMap {
         this.#console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
       }
     }
-    this.eachSection(this.parseSources.bind(this));
+    this.#eachSection(this.#parseSources.bind(this));
   }
   provenance() {
     return this.#provenance;
@@ -23294,7 +23308,7 @@ var SourceMap = class _SourceMap {
       endLine,
       endColumn
     );
-    const reverseMappings = this.reversedMappings(sourceURL);
+    const reverseMappings = this.#reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;
     const endReverseIndex = Platform7.ArrayUtilities.upperBound(
@@ -23312,7 +23326,7 @@ var SourceMap = class _SourceMap {
   }
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const reverseMappings = this.reversedMappings(sourceURL);
+    const reverseMappings = this.#reversedMappings(sourceURL);
     const first = Platform7.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
     const last = Platform7.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
     if (first >= reverseMappings.length || mappings[reverseMappings[first]].sourceLineNumber !== lineNumber) {
@@ -23332,9 +23346,9 @@ var SourceMap = class _SourceMap {
       return lineNumber2 - mappings[i].sourceLineNumber;
     }
   }
-  findReverseIndices(sourceURL, lineNumber, columnNumber) {
+  #findReverseIndices(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const reverseMappings = this.reversedMappings(sourceURL);
+    const reverseMappings = this.#reversedMappings(sourceURL);
     const endIndex = Platform7.ArrayUtilities.upperBound(
       reverseMappings,
       void 0,
@@ -23348,7 +23362,7 @@ var SourceMap = class _SourceMap {
   }
   findReverseEntries(sourceURL, lineNumber, columnNumber, filterContiguous = false) {
     const mappings = this.mappings();
-    let indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+    let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
     if (filterContiguous) {
       indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
     }
@@ -23356,7 +23370,7 @@ var SourceMap = class _SourceMap {
   }
   findReverseRanges(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+    const indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
     const ranges = [];
     for (let i = 0; i < indices.length; ++i) {
       const startIndex = indices[i];
@@ -23390,7 +23404,7 @@ var SourceMap = class _SourceMap {
     const { scopeTree, text } = scopeTreeAndText;
     return SourceMapScopesInfo.createFromAst(this, scopeTree, text);
   }
-  reversedMappings(sourceURL) {
+  #reversedMappings(sourceURL) {
     this.#ensureSourceMapProcessed();
     return this.#sourceInfoByURL.get(sourceURL)?.reverseMappings ?? [];
   }
@@ -23398,7 +23412,7 @@ var SourceMap = class _SourceMap {
     if (this.#mappings === null) {
       this.#mappings = [];
       try {
-        this.eachSection(this.parseMap.bind(this));
+        this.#eachSection(this.#parseMap.bind(this));
         if (!this.hasScopeInfo()) {
           this.#scopesFallbackPromise = this.#buildScopesFallback().then((info) => {
             this.#scopesInfo = info;
@@ -23443,7 +23457,7 @@ var SourceMap = class _SourceMap {
       return a.sourceLineNumber - b.sourceLineNumber || a.sourceColumnNumber - b.sourceColumnNumber || a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
     }
   }
-  eachSection(callback) {
+  #eachSection(callback) {
     if (!this.#json) {
       return;
     }
@@ -23459,7 +23473,7 @@ var SourceMap = class _SourceMap {
       callback(this.#json, 0, 0, 0);
     }
   }
-  parseSources(sourceMap) {
+  #parseSources(sourceMap) {
     const sourceRoot = sourceMap.sourceRoot ?? "";
     const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
@@ -23485,7 +23499,7 @@ var SourceMap = class _SourceMap {
       }
     }
   }
-  parseMap(map, baseSourceIndex, baseLineNumber, baseColumnNumber) {
+  #parseMap(map, baseSourceIndex, baseLineNumber, baseColumnNumber) {
     let sourceIndex = baseSourceIndex;
     let lineNumber = baseLineNumber;
     let columnNumber = baseColumnNumber;
@@ -23521,7 +23535,7 @@ var SourceMap = class _SourceMap {
         }
       }
       columnNumber += tokenIter.nextVLQ();
-      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
+      if (!tokenIter.hasNext() || this.#isSeparator(tokenIter.peek())) {
         pushEntry(new SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
@@ -23532,7 +23546,7 @@ var SourceMap = class _SourceMap {
       }
       sourceLineNumber += tokenIter.nextVLQ();
       sourceColumnNumber += tokenIter.nextVLQ();
-      if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
+      if (!tokenIter.hasNext() || this.#isSeparator(tokenIter.peek())) {
         pushEntry(
           new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber)
         );
@@ -23561,7 +23575,7 @@ var SourceMap = class _SourceMap {
       this.#scopesInfo.addOriginalScopes(scopes.length ? scopes : new Array(map.sources.length).fill(null));
       this.#scopesInfo.addGeneratedRanges(ranges);
     } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
-      const originalScopes = this.parseBloombergScopes(map);
+      const originalScopes = this.#parseBloombergScopes(map);
       this.#scopesInfo.addOriginalScopes(originalScopes);
     } else {
       this.#scopesInfo.addOriginalScopes(new Array(map.sources.length).fill(null));
@@ -23602,7 +23616,7 @@ var SourceMap = class _SourceMap {
       }
     }
   }
-  parseBloombergScopes(map) {
+  #parseBloombergScopes(map) {
     const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
     if (!scopeList) {
       throw new Error("Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field");
@@ -23618,7 +23632,7 @@ var SourceMap = class _SourceMap {
       return buildOriginalScopes(ranges);
     });
   }
-  isSeparator(char) {
+  #isSeparator(char) {
     return char === "," || char === ";";
   }
   /**
@@ -23633,7 +23647,7 @@ var SourceMap = class _SourceMap {
    *          if the {@link url} does not identify an entity in this source map.
    */
   reverseMapTextRanges(url, textRange) {
-    const reverseMappings = this.reversedMappings(url);
+    const reverseMappings = this.#reversedMappings(url);
     const mappings = this.mappings();
     if (reverseMappings.length === 0) {
       return [];
@@ -24027,10 +24041,10 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     Root.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
-    const addListener = resourceTreeModel.addEventListener("FrameAdded" /* FrameAdded */, this.frameAdded, this);
-    const detachListener = resourceTreeModel.addEventListener("FrameDetached" /* FrameDetached */, this.frameDetached, this);
-    const navigatedListener = resourceTreeModel.addEventListener("FrameNavigated" /* FrameNavigated */, this.frameNavigated, this);
-    const resourceAddedListener = resourceTreeModel.addEventListener("ResourceAdded" /* ResourceAdded */, this.resourceAdded, this);
+    const addListener = resourceTreeModel.addEventListener("FrameAdded" /* FrameAdded */, this.#frameAdded, this);
+    const detachListener = resourceTreeModel.addEventListener("FrameDetached" /* FrameDetached */, this.#frameDetached, this);
+    const navigatedListener = resourceTreeModel.addEventListener("FrameNavigated" /* FrameNavigated */, this.#frameNavigated, this);
+    const resourceAddedListener = resourceTreeModel.addEventListener("ResourceAdded" /* ResourceAdded */, this.#resourceAdded, this);
     this.#eventListeners.set(
       resourceTreeModel,
       [addListener, detachListener, navigatedListener, resourceAddedListener]
@@ -24045,12 +24059,12 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     const frameSet = this.#framesForTarget.get(resourceTreeModel.target().id());
     if (frameSet) {
       for (const frameId of frameSet) {
-        this.decreaseOrRemoveFrame(frameId);
+        this.#decreaseOrRemoveFrame(frameId);
       }
     }
     this.#framesForTarget.delete(resourceTreeModel.target().id());
   }
-  frameAdded(event) {
+  #frameAdded(event) {
     const frame = event.data;
     const frameData = this.#frames.get(frame.id);
     if (frameData) {
@@ -24067,17 +24081,17 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
       this.#frames.set(frame.id, { frame, count: 1 });
       this.#transferringFramesDataCache.delete(frame.id);
     }
-    this.resetOutermostFrame();
+    this.#resetOutermostFrame();
     const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
     if (frameSet) {
       frameSet.add(frame.id);
     }
     this.dispatchEventToListeners("FrameAddedToTarget" /* FRAME_ADDED_TO_TARGET */, { frame });
-    this.resolveAwaitedFrame(frame);
+    this.#resolveAwaitedFrame(frame);
   }
-  frameDetached(event) {
+  #frameDetached(event) {
     const { frame, isSwap } = event.data;
-    this.decreaseOrRemoveFrame(frame.id);
+    this.#decreaseOrRemoveFrame(frame.id);
     if (isSwap && !this.#frames.get(frame.id)) {
       const traceData = frame.getCreationStackTraceData();
       const cachedFrameAttributes = {
@@ -24091,22 +24105,22 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
       frameSet.delete(frame.id);
     }
   }
-  frameNavigated(event) {
+  #frameNavigated(event) {
     const frame = event.data;
     this.dispatchEventToListeners("FrameNavigated" /* FRAME_NAVIGATED */, { frame });
     if (frame.isOutermostFrame()) {
       this.dispatchEventToListeners("OutermostFrameNavigated" /* OUTERMOST_FRAME_NAVIGATED */, { frame });
     }
   }
-  resourceAdded(event) {
+  #resourceAdded(event) {
     this.dispatchEventToListeners("ResourceAdded" /* RESOURCE_ADDED */, { resource: event.data });
   }
-  decreaseOrRemoveFrame(frameId) {
+  #decreaseOrRemoveFrame(frameId) {
     const frameData = this.#frames.get(frameId);
     if (frameData) {
       if (frameData.count === 1) {
         this.#frames.delete(frameId);
-        this.resetOutermostFrame();
+        this.#resetOutermostFrame();
         this.dispatchEventToListeners("FrameRemoved" /* FRAME_REMOVED */, { frameId });
       } else {
         frameData.count--;
@@ -24118,7 +24132,7 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
    *
    * Important: This method needs to be called everytime `#frames` is updated.
    */
-  resetOutermostFrame() {
+  #resetOutermostFrame() {
     const outermostFrames = this.getAllFrames().filter((frame) => frame.isOutermostFrame());
     this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
   }
@@ -24156,7 +24170,7 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
       }
     });
   }
-  resolveAwaitedFrame(frame) {
+  #resolveAwaitedFrame(frame) {
     const waiting = this.#awaitedFrames.get(frame.id);
     if (!waiting) {
       return;
@@ -24371,7 +24385,7 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
       }
     }
   }
-  modelRemoved(modelClass, model, inScope) {
+  #modelRemoved(modelClass, model, inScope) {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
       if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelRemoved(model);
@@ -24489,7 +24503,7 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     for (const modelClass of target.models().keys()) {
       const model = target.models().get(modelClass);
       assertNotNullOrUndefined2(model);
-      this.modelRemoved(modelClass, model, inScope);
+      this.#modelRemoved(modelClass, model, inScope);
     }
     for (const observer of [...this.#observers]) {
       if (!this.#scopedObservers.has(observer) || inScope) {
@@ -24780,7 +24794,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     }
     return { loading: loadingCount, resources: this.getScopedResourcesLoaded().size };
   }
-  async acquireLoadSlot(target) {
+  async #acquireLoadSlot(target) {
     this.#currentlyLoading++;
     if (target) {
       const currentCount = this.#currentlyLoadingPerTarget.get(target.id()) || 0;
@@ -24796,7 +24810,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       await waitForCapacity;
     }
   }
-  releaseLoadSlot(target) {
+  #releaseLoadSlot(target) {
     this.#currentlyLoading--;
     if (target) {
       const currentCount = this.#currentlyLoadingPerTarget.get(target.id());
@@ -24856,8 +24870,8 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     this.dispatchEventToListeners("Update" /* UPDATE */);
     const startTime = performance.now();
     try {
-      await this.acquireLoadSlot(effectiveInitiator.target);
-      const resultPromise = this.dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
+      await this.#acquireLoadSlot(effectiveInitiator.target);
+      const resultPromise = this.#dispatchLoad(url, effectiveInitiator, isBinary, hasExplicitTarget);
       const result = await resultPromise;
       pageResource.errorMessage = result.errorDescription.message;
       pageResource.success = result.success;
@@ -24876,7 +24890,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       throw e;
     } finally {
       pageResource.duration = performance.now() - startTime;
-      this.releaseLoadSlot(effectiveInitiator.target);
+      this.#releaseLoadSlot(effectiveInitiator.target);
       this.dispatchEventToListeners("Update" /* UPDATE */);
     }
   }
@@ -24929,7 +24943,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     }
     return mainFrame.securityOrigin().isSameOriginWith(SecurityOrigin.create(initiator.initiatorUrl));
   }
-  async dispatchLoad(url, initiator, isBinary, hasExplicitTarget) {
+  async #dispatchLoad(url, initiator, isBinary, hasExplicitTarget) {
     if (isExtensionInitiator(initiator)) {
       throw new Error("Invalid initiator");
     }
@@ -24941,7 +24955,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     const isHttp = Boolean(parsedURL && (parsedURL.scheme === "http" || parsedURL.scheme === "https"));
     const loadThroughTarget = this.getLoadThroughTargetSetting().get();
     const eligibleForLoadFromTarget = Boolean(loadThroughTarget && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target);
-    Host3.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
+    Host3.userMetrics.developerResourceScheme(this.#getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget && initiator.target) {
       let mustEnforceCSP = isHttp;
       const { frameTarget, frameId, initiatorFrameId, usedFallbackMainFrame } = this.#resolveFrameTarget(initiator);
@@ -24967,7 +24981,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       }
       try {
         Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET);
-        const result2 = await this.loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
+        const result2 = await this.#loadFromTarget(frameTarget ?? initiator.target, frameId, url, isBinary);
         return result2;
       } catch (e) {
         if (e instanceof Error) {
@@ -24999,7 +25013,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
         };
       }
     }
-    const result = await this.loadFromHostBindings(url);
+    const result = await this.#loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
       Host3.userMetrics.developerResourceLoaded(Host3.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE);
     }
@@ -25008,7 +25022,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     }
     return result;
   }
-  getDeveloperResourceScheme(parsedURL) {
+  #getDeveloperResourceScheme(parsedURL) {
     if (!parsedURL || parsedURL.scheme === "") {
       return Host3.UserMetrics.DeveloperResourceScheme.UKNOWN;
     }
@@ -25027,7 +25041,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     }
     return Host3.UserMetrics.DeveloperResourceScheme.OTHER;
   }
-  async loadFromTarget(target, frameId, url, isBinary) {
+  async #loadFromTarget(target, frameId, url, isBinary) {
     const networkManager = target.model(NetworkManager);
     const ioModel = target.model(IOModel);
     const disableCache = this.#settings.resolve(cacheDisabledSettingDescriptor).get();
@@ -25054,7 +25068,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       }
     }
   }
-  async loadFromHostBindings(url) {
+  async #loadFromHostBindings(url) {
     const headers = {};
     const currentUserAgent = this.#userAgentProvider.currentUserAgent();
     if (currentUserAgent) {
@@ -25202,14 +25216,14 @@ var SourceMapManager = class _SourceMapManager extends Common13.ObjectWrapper.Ob
       this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL, provenance);
     }
   }
-  static getBaseUrl(target) {
+  static #getBaseUrl(target) {
     while (target && target.type() !== "frame" /* FRAME */) {
       target = target.parentTarget();
     }
     return target?.inspectedURL() ?? Platform10.DevToolsPath.EmptyUrlString;
   }
   static resolveRelativeSourceURL(target, url) {
-    url = Common13.ParsedURL.ParsedURL.completeURL(_SourceMapManager.getBaseUrl(target), url) ?? url;
+    url = Common13.ParsedURL.ParsedURL.completeURL(_SourceMapManager.#getBaseUrl(target), url) ?? url;
     return url;
   }
   sourceMapForClient(client) {
@@ -25474,13 +25488,13 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (this.#resourceTreeModel) {
       this.#resourceTreeModel.addEventListener(
         "PrimaryPageChanged" /* PrimaryPageChanged */,
-        this.onPrimaryPageChanged,
+        this.#onPrimaryPageChanged,
         this
       );
     }
     target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
-      void this.enable();
+      void this.#enable();
     }
     const settings = this.target().targetManager().settings;
     this.#sourceMapManager.setEnabled(settings.resolve(cssSourceMapsEnabledSettingDescriptor).get());
@@ -25573,7 +25587,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   }
   async setStyleText(styleSheetId, range, text, majorChange) {
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { styles } = await this.agent.invoke_setStyleTexts({ edits: [{ styleSheetId, range: range.serializeToObject(), text }] });
       if (styles?.length !== 1) {
         return false;
@@ -25590,7 +25604,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setSelectorText(styleSheetId, range, text) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { selectorList } = await this.agent.invoke_setRuleSelector({ styleSheetId, range, selector: text });
       if (!selectorList) {
         return false;
@@ -25607,7 +25621,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setPropertyRulePropertyName(styleSheetId, range, text) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { propertyName } = await this.agent.invoke_setPropertyRulePropertyName({ styleSheetId, range, propertyName: text });
       if (!propertyName) {
         return false;
@@ -25624,7 +25638,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setKeyframeKey(styleSheetId, range, text) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { keyText } = await this.agent.invoke_setKeyframeKey({ styleSheetId, range, keyText: text });
       if (!keyText) {
         return false;
@@ -25668,7 +25682,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   isEnabled() {
     return this.#isEnabled;
   }
-  async enable() {
+  async #enable() {
     await this.agent.invoke_enable();
     this.#isEnabled = true;
     if (this.#isRuleUsageTrackingEnabled) {
@@ -25725,13 +25739,13 @@ var CSSModel = class _CSSModel extends SDKModel {
   }
   async getComputedStyle(nodeId) {
     if (!this.isEnabled()) {
-      await this.enable();
+      await this.#enable();
     }
     return await this.#styleLoader.computedStylePromise(nodeId);
   }
   async getComputedStyleExtraFields(nodeId) {
     if (!this.isEnabled()) {
-      await this.enable();
+      await this.#enable();
     }
     return await this.#styleLoader.extraFieldsPromise(nodeId);
   }
@@ -25860,7 +25874,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setMediaText(styleSheetId, range, newMediaText) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { media } = await this.agent.invoke_setMediaText({ styleSheetId, range, text: newMediaText });
       if (!media) {
         return false;
@@ -25877,7 +25891,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setContainerQueryText(styleSheetId, range, newContainerQueryText) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryText({ styleSheetId, range, text: newContainerQueryText });
       if (!containerQuery) {
         return false;
@@ -25894,7 +25908,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setContainerQueryConditionText(styleSheetId, range, newContainerQueryConditionText) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText(
         { styleSheetId, range, text: newContainerQueryConditionText }
       );
@@ -25913,7 +25927,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setSupportsText(styleSheetId, range, newSupportsText) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { supports } = await this.agent.invoke_setSupportsText({ styleSheetId, range, text: newSupportsText });
       if (!supports) {
         return false;
@@ -25930,7 +25944,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setNavigationText(styleSheetId, range, newNavigationText) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { navigation } = await this.agent.invoke_setNavigationText({ styleSheetId, range, text: newNavigationText });
       if (!navigation) {
         return false;
@@ -25947,7 +25961,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   async setScopeText(styleSheetId, range, newScopeText) {
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.StyleRuleEdited);
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { scope } = await this.agent.invoke_setScopeText({ styleSheetId, range, text: newScopeText });
       if (!scope) {
         return false;
@@ -25963,7 +25977,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   }
   async addRule(styleSheetId, ruleText, ruleLocation) {
     try {
-      await this.ensureOriginalStyleSheetText(styleSheetId);
+      await this.#ensureOriginalStyleSheetText(styleSheetId);
       const { rule } = await this.agent.invoke_addRule({ styleSheetId, ruleText, location: ruleLocation });
       if (!rule) {
         return null;
@@ -26026,7 +26040,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   fireStyleSheetChanged(styleSheetId, edit) {
     this.dispatchEventToListeners("StyleSheetChanged" /* StyleSheetChanged */, { styleSheetId, edit });
   }
-  ensureOriginalStyleSheetText(styleSheetId) {
+  #ensureOriginalStyleSheetText(styleSheetId) {
     const header = this.styleSheetHeaderForId(styleSheetId);
     if (!header) {
       return Promise.resolve(null);
@@ -26035,14 +26049,14 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!promise) {
       promise = this.getStyleSheetText(header.id);
       this.#originalStyleSheetText.set(header, promise);
-      this.originalContentRequestedForTest(header);
+      this.#originalContentRequestedForTest(header);
     }
     return promise;
   }
-  originalContentRequestedForTest(_header) {
+  #originalContentRequestedForTest(_header) {
   }
   originalStyleSheetText(header) {
-    return this.ensureOriginalStyleSheetText(header.id);
+    return this.#ensureOriginalStyleSheetText(header.id);
   }
   getAllStyleSheetHeaders() {
     return this.#styleSheetIdToHeader.values();
@@ -26133,7 +26147,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (header.hasSourceURL) {
       newText += "\n/*# sourceURL=" + header.sourceURL + " */";
     }
-    await this.ensureOriginalStyleSheetText(styleSheetId);
+    await this.#ensureOriginalStyleSheetText(styleSheetId);
     const response = await this.agent.invoke_setStyleSheetText({ styleSheetId: header.id, text: newText });
     const sourceMapURL = response.sourceMapURL;
     this.#sourceMapManager.detachSourceMap(header);
@@ -26154,16 +26168,16 @@ var CSSModel = class _CSSModel extends SDKModel {
     const { text } = response;
     return text && _CSSModel.trimSourceURL(text);
   }
-  async onPrimaryPageChanged(event) {
+  async #onPrimaryPageChanged(event) {
     if (event.data.frame.backForwardCacheDetails.restoredFromCache) {
       await this.suspendModel();
       await this.resumeModel();
     } else if (event.data.type !== "Activation" /* ACTIVATION */) {
-      this.resetStyleSheets();
-      this.resetFontFaces();
+      this.#resetStyleSheets();
+      this.#resetFontFaces();
     }
   }
-  resetStyleSheets() {
+  #resetStyleSheets() {
     const headers = [...this.#styleSheetIdToHeader.values()];
     this.#styleSheetIdsForURL.clear();
     this.#styleSheetIdToHeader.clear();
@@ -26172,17 +26186,17 @@ var CSSModel = class _CSSModel extends SDKModel {
       this.dispatchEventToListeners("StyleSheetRemoved" /* StyleSheetRemoved */, header);
     }
   }
-  resetFontFaces() {
+  #resetFontFaces() {
     this.#fontFaces.clear();
   }
   async suspendModel() {
     this.#isEnabled = false;
     await this.agent.invoke_disable();
-    this.resetStyleSheets();
-    this.resetFontFaces();
+    this.#resetStyleSheets();
+    this.#resetFontFaces();
   }
   async resumeModel() {
-    return await this.enable();
+    return await this.#enable();
   }
   setEffectivePropertyValueForNode(nodeId, propertyName, value) {
     void this.agent.invoke_setEffectivePropertyValueForNode({ nodeId, propertyName, value });
@@ -26217,7 +26231,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     void this.agent.invoke_trackComputedStyleUpdates({ propertiesToTrack });
     this.#isCSSPropertyTrackingEnabled = true;
     this.#cssPropertyTracker = cssPropertyTracker;
-    void this.pollComputedStyleUpdates();
+    void this.#pollComputedStyleUpdates();
   }
   // Since we only support one tracker at a time, this call effectively disables
   // style tracking.
@@ -26226,7 +26240,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     this.#cssPropertyTracker = null;
     void this.agent.invoke_trackComputedStyleUpdates({ propertiesToTrack: [] });
   }
-  async pollComputedStyleUpdates() {
+  async #pollComputedStyleUpdates() {
     if (this.#isTrackingRequestPending) {
       return;
     }
@@ -26245,7 +26259,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       }
     }
     if (this.#isCSSPropertyTrackingEnabled) {
-      void this.#stylePollingThrottler.schedule(this.pollComputedStyleUpdates.bind(this));
+      void this.#stylePollingThrottler.schedule(this.#pollComputedStyleUpdates.bind(this));
     }
   }
   dispose() {
@@ -26878,20 +26892,20 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     const settings = this.target().targetManager().settings;
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
-      settings.resolve(disablePausedStateOverlaySettingDescriptor).addChangeListener(this.updatePausedInDebuggerMessage, this);
+      settings.resolve(disablePausedStateOverlaySettingDescriptor).addChangeListener(this.#updatePausedInDebuggerMessage, this);
       this.#debuggerModel.addEventListener(
         "DebuggerPaused" /* DebuggerPaused */,
-        this.updatePausedInDebuggerMessage,
+        this.#updatePausedInDebuggerMessage,
         this
       );
       this.#debuggerModel.addEventListener(
         "DebuggerResumed" /* DebuggerResumed */,
-        this.updatePausedInDebuggerMessage,
+        this.#updatePausedInDebuggerMessage,
         this
       );
       this.#debuggerModel.addEventListener(
         "GlobalObjectCleared" /* GlobalObjectCleared */,
-        this.updatePausedInDebuggerMessage,
+        this.#updatePausedInDebuggerMessage,
         this
       );
     }
@@ -26905,7 +26919,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#showScrollBottleneckRectsSetting = settings.resolve(showScrollBottleneckRectsSettingDescriptor);
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();
-      void this.wireAgentToSettings();
+      void this.#wireAgentToSettings();
     }
     this.#persistentHighlighter = new OverlayPersistentHighlighter(this, settings, {
       onGridOverlayStateChanged: ({ nodeId, enabled }) => {
@@ -26960,7 +26974,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   }
   static hideDOMNodeHighlight(targetManager) {
     for (const overlayModel of targetManager.models(_OverlayModel)) {
-      overlayModel.delayedHideHighlight(0);
+      overlayModel.#delayedHideHighlight(0);
     }
   }
   static async muteHighlight(targetManager) {
@@ -26992,7 +27006,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   clearHighlight() {
     return this.overlayAgent.invoke_hideHighlight();
   }
-  async wireAgentToSettings() {
+  async #wireAgentToSettings() {
     this.#registeredListeners = [
       this.#showPaintRectsSetting.addChangeListener(
         () => this.overlayAgent.invoke_setShowPaintRects({ result: this.#showPaintRectsSetting.get() })
@@ -27034,7 +27048,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       void this.overlayAgent.invoke_setShowScrollBottleneckRects({ show: true });
     }
     if (this.#debuggerModel && this.#debuggerModel.isPaused()) {
-      this.updatePausedInDebuggerMessage();
+      this.#updatePausedInDebuggerMessage();
     }
     await this.overlayAgent.invoke_setShowViewportSizeOnResize({ show: this.#showViewportSizeOnResize });
     this.#persistentHighlighter?.resetOverlay();
@@ -27044,7 +27058,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     await this.overlayAgent.invoke_disable();
   }
   async resumeModel() {
-    await Promise.all([this.overlayAgent.invoke_enable(), this.wireAgentToSettings()]);
+    await Promise.all([this.overlayAgent.invoke_enable(), this.#wireAgentToSettings()]);
   }
   setShowViewportSizeOnResize(show) {
     if (this.#showViewportSizeOnResize === show) {
@@ -27056,7 +27070,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     }
     void this.overlayAgent.invoke_setShowViewportSizeOnResize({ show });
   }
-  updatePausedInDebuggerMessage() {
+  #updatePausedInDebuggerMessage() {
     if (this.target().suspended()) {
       return;
     }
@@ -27071,7 +27085,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     await this.#domModel.requestDocument();
     this.#inspectModeEnabled = mode !== Overlay.InspectMode.None;
     this.dispatchEventToListeners("InspectModeWillBeToggled" /* INSPECT_MODE_WILL_BE_TOGGLED */, this);
-    void this.#highlighter.setInspectMode(mode, this.buildHighlightConfig("all", showDetailedTooltip));
+    void this.#highlighter.setInspectMode(mode, this.#buildHighlightConfig("all", showDetailedTooltip));
   }
   inspectModeEnabled() {
     return this.#inspectModeEnabled;
@@ -27082,7 +27096,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     }
     clearTimeout(this.#hideHighlightTimeout);
     this.#hideHighlightTimeout = void 0;
-    const highlightConfig = this.buildHighlightConfig(mode);
+    const highlightConfig = this.#buildHighlightConfig(mode);
     if (typeof showInfo !== "undefined") {
       highlightConfig.showInfo = showInfo;
     }
@@ -27090,7 +27104,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   }
   highlightInOverlayForTwoSeconds(data) {
     this.highlightInOverlay(data);
-    this.delayedHideHighlight(2e3);
+    this.#delayedHideHighlight(2e3);
   }
   highlightGridInPersistentOverlay(nodeId) {
     if (!this.#persistentHighlighter) {
@@ -27211,7 +27225,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   setSourceOrderActive(isActive) {
     this.#sourceOrderModeActive = isActive;
   }
-  delayedHideHighlight(delay) {
+  #delayedHideHighlight(delay) {
     clearTimeout(this.#hideHighlightTimeout);
     this.#hideHighlightTimeout = globalThis.setTimeout(
       () => this.highlightInOverlay({ clear: true }),
@@ -27274,7 +27288,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     await Promise.all([setWindowControlsOverlayOperation, toggleStylesheetOperation]);
     this.setShowViewportSizeOnResize(!show);
   }
-  buildHighlightConfig(mode = "all", showDetailedToolip = false) {
+  #buildHighlightConfig(mode = "all", showDetailedToolip = false) {
     const settings = this.target().targetManager().settings;
     const showRulers = settings.resolve(showMetricsRulersSettingDescriptor).get();
     const highlightConfig = {
@@ -27753,7 +27767,7 @@ var EmulationModel = class extends SDKModel {
     this.#overlayModel = target.model(OverlayModel);
     if (this.#overlayModel) {
       this.#overlayModel.addEventListener("InspectModeWillBeToggled" /* INSPECT_MODE_WILL_BE_TOGGLED */, () => {
-        void this.updateTouch();
+        void this.#updateTouch();
       }, this);
     }
     const settings = this.target().targetManager().settings;
@@ -27813,67 +27827,67 @@ var EmulationModel = class extends SDKModel {
     ]);
     this.#settingListeners.push(mediaTypeSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("type", mediaTypeSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeatureColorGamutSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("color-gamut", mediaFeatureColorGamutSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeaturePrefersColorSchemeSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("prefers-color-scheme", mediaFeaturePrefersColorSchemeSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeatureForcedColorsSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("forced-colors", mediaFeatureForcedColorsSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeaturePrefersContrastSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("prefers-contrast", mediaFeaturePrefersContrastSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeaturePrefersReducedDataSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("prefers-reduced-data", mediaFeaturePrefersReducedDataSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
       this.#mediaConfiguration.set("prefers-reduced-motion", mediaFeaturePrefersReducedMotionSetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
     this.#settingListeners.push(mediaFeaturePrefersReducedTransparencySetting.addChangeListener(() => {
       this.#mediaConfiguration.set("prefers-reduced-transparency", mediaFeaturePrefersReducedTransparencySetting.get());
-      void this.updateCssMedia();
+      void this.#updateCssMedia();
     }));
-    void this.updateCssMedia();
+    void this.#updateCssMedia();
     const autoDarkModeSetting = settings.resolve(emulateAutoDarkModeSettingDescriptor);
     this.#settingListeners.push(autoDarkModeSetting.addChangeListener(() => {
       const enabled = autoDarkModeSetting.get();
       mediaFeaturePrefersColorSchemeSetting.set(enabled ? "dark" : "");
-      void this.emulateAutoDarkMode(enabled);
+      void this.#emulateAutoDarkMode(enabled);
     }));
     if (autoDarkModeSetting.get()) {
       mediaFeaturePrefersColorSchemeSetting.set("dark");
-      void this.emulateAutoDarkMode(true);
+      void this.#emulateAutoDarkMode(true);
     }
     const visionDeficiencySetting = settings.resolve(emulatedVisionDeficiencySettingDescriptor);
     this.#settingListeners.push(
-      visionDeficiencySetting.addChangeListener(() => this.emulateVisionDeficiency(visionDeficiencySetting.get()))
+      visionDeficiencySetting.addChangeListener(() => this.#emulateVisionDeficiency(visionDeficiencySetting.get()))
     );
     if (visionDeficiencySetting.get()) {
-      void this.emulateVisionDeficiency(visionDeficiencySetting.get());
+      void this.#emulateVisionDeficiency(visionDeficiencySetting.get());
     }
     const osTextScaleSetting = settings.resolve(emulatedOSTextScaleSettingDescriptor);
     this.#settingListeners.push(osTextScaleSetting.addChangeListener(() => {
-      void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || void 0);
+      void this.#emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || void 0);
     }));
     if (osTextScaleSetting.get()) {
-      void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || void 0);
+      void this.#emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || void 0);
     }
     const localFontsDisabledSetting = settings.resolve(localFontsDisabledSettingDescriptor);
-    this.#settingListeners.push(
-      localFontsDisabledSetting.addChangeListener(() => this.setLocalFontsDisabled(localFontsDisabledSetting.get()))
-    );
+    this.#settingListeners.push(localFontsDisabledSetting.addChangeListener(
+      () => this.#setLocalFontsDisabled(localFontsDisabledSetting.get())
+    ));
     if (localFontsDisabledSetting.get()) {
-      this.setLocalFontsDisabled(localFontsDisabledSetting.get());
+      this.#setLocalFontsDisabled(localFontsDisabledSetting.get());
     }
     const avifFormatDisabledSetting = settings.resolve(avifFormatDisabledSettingDescriptor);
     const jpegXlFormatDisabledSetting = settings.resolve(jpegXlFormatDisabledSettingDescriptor);
@@ -27889,7 +27903,7 @@ var EmulationModel = class extends SDKModel {
       if (webpFormatDisabledSetting.get()) {
         types.push(Emulation.DisabledImageType.Webp);
       }
-      this.setDisabledImageTypes(types);
+      this.#setDisabledImageTypes(types);
     };
     this.#settingListeners.push(avifFormatDisabledSetting.addChangeListener(updateDisabledImageFormats));
     this.#settingListeners.push(jpegXlFormatDisabledSetting.addChangeListener(updateDisabledImageFormats));
@@ -28016,32 +28030,32 @@ var EmulationModel = class extends SDKModel {
   async clearIdleOverride() {
     await this.#emulationAgent.invoke_clearIdleOverride();
   }
-  async emulateCSSMedia(type, features) {
+  async #emulateCSSMedia(type, features) {
     await this.#emulationAgent.invoke_setEmulatedMedia({ media: type, features });
     if (this.#cssModel) {
       this.#cssModel.mediaQueryResultChanged();
     }
   }
-  async emulateAutoDarkMode(enabled) {
+  async #emulateAutoDarkMode(enabled) {
     if (enabled) {
       this.#mediaConfiguration.set("prefers-color-scheme", "dark");
-      await this.updateCssMedia();
+      await this.#updateCssMedia();
     }
     await this.#emulationAgent.invoke_setAutoDarkModeOverride({ enabled: enabled || void 0 });
   }
-  async emulateVisionDeficiency(type) {
+  async #emulateVisionDeficiency(type) {
     await this.#emulationAgent.invoke_setEmulatedVisionDeficiency({ type });
   }
-  async emulateOSTextScale(scale) {
+  async #emulateOSTextScale(scale) {
     await this.#emulationAgent.invoke_setEmulatedOSTextScale({ scale: scale || void 0 });
   }
-  setLocalFontsDisabled(disabled) {
+  #setLocalFontsDisabled(disabled) {
     if (!this.#cssModel) {
       return;
     }
     void this.#cssModel.setLocalFontsEnabled(!disabled);
   }
-  setDisabledImageTypes(imageTypes) {
+  #setDisabledImageTypes(imageTypes) {
     void this.#emulationAgent.invoke_setDisabledImageTypes({ imageTypes });
   }
   async setDataSaverOverride(dataSaverOverride) {
@@ -28063,13 +28077,13 @@ var EmulationModel = class extends SDKModel {
   async emulateTouch(enabled, mobile) {
     this.#touchEnabled = enabled && this.#touchEmulationAllowed;
     this.#touchMobile = mobile && this.#touchEmulationAllowed;
-    await this.updateTouch();
+    await this.#updateTouch();
   }
   async overrideEmulateTouch(enabled) {
     this.#customTouchEnabled = enabled && this.#touchEmulationAllowed;
-    await this.updateTouch();
+    await this.#updateTouch();
   }
-  async updateTouch() {
+  async #updateTouch() {
     let configuration = {
       enabled: this.#touchEnabled,
       configuration: this.#touchMobile ? Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile : Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Desktop
@@ -28098,7 +28112,7 @@ var EmulationModel = class extends SDKModel {
       { enabled: configuration.enabled, configuration: configuration.configuration }
     );
   }
-  async updateCssMedia() {
+  async #updateCssMedia() {
     const type = this.#mediaConfiguration.get("type") ?? "";
     const features = [
       {
@@ -28130,7 +28144,7 @@ var EmulationModel = class extends SDKModel {
         value: this.#mediaConfiguration.get("prefers-reduced-transparency") ?? ""
       }
     ];
-    return await this.emulateCSSMedia(type, features);
+    return await this.#emulateCSSMedia(type, features);
   }
   // ProtocolProxyApi.EmulationDispatcher implementation
   virtualTimeBudgetExpired() {
@@ -28619,32 +28633,32 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     this.#console = target.targetManager().getConsole();
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
-      this.initTarget(target);
+      this.#initTarget(target);
       return;
     }
     const eventListener = resourceTreeModel.addEventListener("CachedResourcesLoaded" /* CachedResourcesLoaded */, () => {
       Common20.EventTarget.removeEventListeners([eventListener]);
-      this.initTarget(target);
+      this.#initTarget(target);
     });
   }
-  initTarget(target) {
+  #initTarget(target) {
     const eventListeners = [];
     const cpuProfilerModel = target.model(CPUProfilerModel);
     if (cpuProfilerModel) {
       eventListeners.push(cpuProfilerModel.addEventListener(
         "ConsoleProfileStarted" /* CONSOLE_PROFILE_STARTED */,
-        this.consoleProfileStarted.bind(this, cpuProfilerModel)
+        this.#consoleProfileStarted.bind(this, cpuProfilerModel)
       ));
       eventListeners.push(cpuProfilerModel.addEventListener(
         "ConsoleProfileFinished" /* CONSOLE_PROFILE_FINISHED */,
-        this.consoleProfileFinished.bind(this, cpuProfilerModel)
+        this.#consoleProfileFinished.bind(this, cpuProfilerModel)
       ));
     }
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (resourceTreeModel && target.parentTarget()?.type() !== "frame" /* FRAME */) {
       eventListeners.push(resourceTreeModel.addEventListener(
         "PrimaryPageChanged" /* PrimaryPageChanged */,
-        this.primaryPageChanged,
+        this.#primaryPageChanged,
         this
       ));
     }
@@ -28652,26 +28666,26 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     if (runtimeModel) {
       eventListeners.push(runtimeModel.addEventListener(
         "ExceptionThrown" /* ExceptionThrown */,
-        this.exceptionThrown.bind(this, runtimeModel)
+        this.#exceptionThrown.bind(this, runtimeModel)
       ));
       eventListeners.push(runtimeModel.addEventListener(
         "ExceptionRevoked" /* ExceptionRevoked */,
-        this.exceptionRevoked.bind(this, runtimeModel)
+        this.#exceptionRevoked.bind(this, runtimeModel)
       ));
       eventListeners.push(runtimeModel.addEventListener(
         "ConsoleAPICalled" /* ConsoleAPICalled */,
-        this.consoleAPICalled.bind(this, runtimeModel)
+        this.#consoleAPICalled.bind(this, runtimeModel)
       ));
       if (target.parentTarget()?.type() !== "frame" /* FRAME */) {
         eventListeners.push(runtimeModel.debuggerModel().addEventListener(
           "GlobalObjectCleared" /* GlobalObjectCleared */,
-          this.clearIfNecessary,
+          this.#clearIfNecessary,
           this
         ));
       }
       eventListeners.push(runtimeModel.addEventListener(
         "QueryObjectRequested" /* QueryObjectRequested */,
-        this.queryObjectRequested.bind(this, runtimeModel)
+        this.#queryObjectRequested.bind(this, runtimeModel)
       ));
     }
     this.#targetListeners.set(target, eventListeners);
@@ -28727,7 +28741,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   addMessage(msg) {
     msg.setPageLoadSequenceNumber(this.#pageLoadSequenceNumber);
     if (msg.source === Common20.Console.FrontendMessageSource.ConsoleAPI && msg.type === Runtime.ConsoleAPICalledEventType.Clear) {
-      this.clearIfNecessary();
+      this.#clearIfNecessary();
     }
     this.#messages.push(msg);
     this.#messagesByTimestamp.set(msg.timestamp, msg);
@@ -28741,10 +28755,10 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       }
       modelMap.set(exceptionId, msg);
     }
-    this.incrementErrorWarningCount(msg);
+    this.#incrementErrorWarningCount(msg);
     this.dispatchEventToListeners("MessageAdded" /* MessageAdded */, msg);
   }
-  exceptionThrown(runtimeModel, event) {
+  #exceptionThrown(runtimeModel, event) {
     const exceptionWithTimestamp = event.data;
     const affectedResources = extractExceptionMetaData(exceptionWithTimestamp.details.exceptionMetaData);
     const consoleMessage = ConsoleMessage.fromException(
@@ -28758,7 +28772,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
     this.addMessage(consoleMessage);
   }
-  exceptionRevoked(runtimeModel, event) {
+  #exceptionRevoked(runtimeModel, event) {
     const exceptionId = event.data;
     const modelMap = this.#messageByExceptionId.get(runtimeModel);
     const exceptionMessage = modelMap ? modelMap.get(exceptionId) : null;
@@ -28769,7 +28783,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     exceptionMessage.level = Log.LogEntryLevel.Verbose;
     this.dispatchEventToListeners("MessageUpdated" /* MessageUpdated */, exceptionMessage);
   }
-  consoleAPICalled(runtimeModel, event) {
+  #consoleAPICalled(runtimeModel, event) {
     const call = event.data;
     let level = Log.LogEntryLevel.Info;
     if (call.type === Runtime.ConsoleAPICalledEventType.Debug) {
@@ -28809,7 +28823,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
     this.addMessage(consoleMessage);
   }
-  queryObjectRequested(runtimeModel, event) {
+  #queryObjectRequested(runtimeModel, event) {
     const { objects, executionContextId } = event.data;
     const details = {
       type: "queryObjectResult" /* QueryObjectResult */,
@@ -28825,14 +28839,14 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     );
     this.addMessage(consoleMessage);
   }
-  clearIfNecessary() {
+  #clearIfNecessary() {
     const settings = this.target().targetManager().settings;
     if (!settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
-      this.clear();
+      this.#clear();
     }
     ++this.#pageLoadSequenceNumber;
   }
-  primaryPageChanged(event) {
+  #primaryPageChanged(event) {
     const settings = this.target().targetManager().settings;
     if (settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
       const { frame } = event.data;
@@ -28843,25 +28857,25 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       }
     }
   }
-  consoleProfileStarted(cpuProfilerModel, event) {
+  #consoleProfileStarted(cpuProfilerModel, event) {
     const { data } = event;
-    this.addConsoleProfileMessage(
+    this.#addConsoleProfileMessage(
       cpuProfilerModel,
       Runtime.ConsoleAPICalledEventType.Profile,
       data.scriptLocation,
       i18nString6(UIStrings6.profileSStarted, { PH1: data.title })
     );
   }
-  consoleProfileFinished(cpuProfilerModel, event) {
+  #consoleProfileFinished(cpuProfilerModel, event) {
     const { data } = event;
-    this.addConsoleProfileMessage(
+    this.#addConsoleProfileMessage(
       cpuProfilerModel,
       Runtime.ConsoleAPICalledEventType.ProfileEnd,
       data.scriptLocation,
       i18nString6(UIStrings6.profileSFinished, { PH1: data.title })
     );
   }
-  addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
+  #addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
     const script = scriptLocation.script();
     const callFrames = [{
       functionName: "",
@@ -28878,7 +28892,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       { type, stackTrace: { callFrames } }
     ));
   }
-  incrementErrorWarningCount(msg) {
+  #incrementErrorWarningCount(msg) {
     if (msg.source === Log.LogEntrySource.Violation) {
       this.#violations++;
       return;
@@ -28912,11 +28926,11 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       runtimeModel.discardConsoleEntries();
       runtimeModel.releaseObjectGroup("live-expression");
     }
-    for (const target of targetManager.targets()) {
-      target.model(_ConsoleModel)?.clear();
+    for (const consoleModel of targetManager.models(_ConsoleModel)) {
+      consoleModel.#clear();
     }
   }
-  clear() {
+  #clear() {
     this.#messages = [];
     this.#messagesByTimestamp.clear();
     this.#messageByExceptionId.clear();
@@ -31464,7 +31478,7 @@ var Resource = class {
     if (this.#pendingContentData) {
       return await this.#pendingContentData;
     }
-    this.#pendingContentData = this.innerRequestContent().then((contentData) => {
+    this.#pendingContentData = this.#innerRequestContent().then((contentData) => {
       if (!TextUtils17.ContentData.ContentData.isError(contentData)) {
         this.#contentData = contentData;
       }
@@ -31496,7 +31510,7 @@ var Resource = class {
     const imageSrc = contentData.asImagePreviewUrl();
     image.src = imageSrc ?? "";
   }
-  async innerRequestContent() {
+  async #innerRequestContent() {
     if (this.request) {
       return await this.request.requestContentData();
     }
@@ -32808,7 +32822,7 @@ var Script = class _Script {
   target() {
     return this.debuggerModel.target();
   }
-  static trimSourceURLComment(source) {
+  static #trimSourceURLComment(source) {
     let sourceURLIndex = source.lastIndexOf("//# sourceURL=");
     if (sourceURLIndex === -1) {
       sourceURLIndex = source.lastIndexOf("//@ sourceURL=");
@@ -32850,7 +32864,7 @@ var Script = class _Script {
   contentType() {
     return Common25.ResourceType.resourceTypes.Script;
   }
-  async loadTextContent() {
+  async #loadTextContent() {
     const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({ scriptId: this.scriptId });
     if (result.getError()) {
       throw new Error(result.getError());
@@ -32866,7 +32880,7 @@ var Script = class _Script {
     }
     let content = scriptSource || "";
     if (this.hasSourceURL && Common25.ParsedURL.schemeIs(this.sourceURL, "snippet:")) {
-      content = _Script.trimSourceURLComment(content);
+      content = _Script.#trimSourceURLComment(content);
     }
     return new TextUtils19.ContentData.ContentData(
       content,
@@ -32875,13 +32889,13 @@ var Script = class _Script {
       "text/javascript"
     );
   }
-  async loadWasmContent() {
+  async #loadWasmContent() {
     if (!this.isWasm()) {
       throw new Error("Not a wasm script");
     }
     const result = await this.debuggerModel.target().debuggerAgent().invoke_disassembleWasmModule({ scriptId: this.scriptId });
     if (result.getError()) {
-      const contentData = await this.loadTextContent();
+      const contentData = await this.#loadTextContent();
       return await disassembleWasm(contentData.base64);
     }
     const { streamId, functionBodyOffsets, chunk: { lines, bytecodeOffsets } } = result;
@@ -32959,7 +32973,7 @@ var Script = class _Script {
       return { error: i18nString7(UIStrings7.scriptRemovedOrDeleted) };
     }
     try {
-      return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
+      return this.isWasm() ? await this.#loadWasmContent() : await this.#loadTextContent();
     } catch {
       return { error: i18nString7(UIStrings7.unableToFetchScriptSource) };
     }
@@ -34591,10 +34605,10 @@ var RuntimeModel = class extends SDKModel {
     if (this.#customFormattersSetting.get()) {
       void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
     }
-    this.#customFormattersSetting.addChangeListener(this.customFormattersStateChanged, this);
+    this.#customFormattersSetting.addChangeListener(this.#customFormattersStateChanged, this);
   }
   dispose() {
-    this.#customFormattersSetting.removeChangeListener(this.customFormattersStateChanged, this);
+    this.#customFormattersSetting.removeChangeListener(this.#customFormattersStateChanged, this);
   }
   static isSideEffectFailure(response) {
     const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
@@ -34727,7 +34741,7 @@ var RuntimeModel = class extends SDKModel {
   runIfWaitingForDebugger() {
     void this.agent.invoke_runIfWaitingForDebugger();
   }
-  customFormattersStateChanged({ data: enabled }) {
+  #customFormattersStateChanged({ data: enabled }) {
     void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled });
   }
   async compileScript(expression, sourceURL, persistScript, executionContextId) {
@@ -34788,11 +34802,11 @@ var RuntimeModel = class extends SDKModel {
     const object = this.createRemoteObject(payload);
     if (hints !== null && typeof hints === "object") {
       if ("copyToClipboard" in hints && Boolean(hints.copyToClipboard)) {
-        this.copyRequested(object);
+        this.#copyRequested(object);
         return;
       }
       if ("queryObjects" in hints && hints.queryObjects) {
-        void this.queryObjectsRequested(object, executionContextId);
+        void this.#queryObjectsRequested(object, executionContextId);
         return;
       }
     }
@@ -34823,7 +34837,7 @@ var RuntimeModel = class extends SDKModel {
   bindingCalled(event) {
     this.dispatchEventToListeners("BindingCalled" /* BindingCalled */, event);
   }
-  copyRequested(object) {
+  #copyRequested(object) {
     if (!object.objectId) {
       Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
         object.unserializableValue() || object.value
@@ -34840,7 +34854,7 @@ var RuntimeModel = class extends SDKModel {
       Host6.InspectorFrontendHost.InspectorFrontendHostInstance
     ));
   }
-  async queryObjectsRequested(object, executionContextId) {
+  async #queryObjectsRequested(object, executionContextId) {
     const result = await this.queryObjects(object);
     object.release();
     if ("error" in result) {
@@ -37781,23 +37795,23 @@ var CookieParser = class _CookieParser {
     return this.#cookies;
   }
   parseSetCookie(setCookieHeader) {
-    if (!this.initialize(setCookieHeader)) {
+    if (!this.#initialize(setCookieHeader)) {
       return null;
     }
-    for (let kv = this.extractKeyValue(); kv; kv = this.extractKeyValue()) {
+    for (let kv = this.#extractKeyValue(); kv; kv = this.#extractKeyValue()) {
       if (this.#lastCookie) {
         this.#lastCookie.addAttribute(this.getCookieAttribute(kv.key), kv.value);
       } else {
-        this.addCookie(kv, 1 /* RESPONSE */);
+        this.#addCookie(kv, 1 /* RESPONSE */);
       }
-      if (this.advanceAndCheckCookieDelimiter()) {
-        this.flushCookie();
+      if (this.#advanceAndCheckCookieDelimiter()) {
+        this.#flushCookie();
       }
     }
-    this.flushCookie();
+    this.#flushCookie();
     return this.#cookies;
   }
-  initialize(headerValue) {
+  #initialize(headerValue) {
     this.#input = headerValue;
     if (typeof headerValue !== "string") {
       return false;
@@ -37808,7 +37822,7 @@ var CookieParser = class _CookieParser {
     this.#originalInputLength = this.#input.length;
     return true;
   }
-  flushCookie() {
+  #flushCookie() {
     if (this.#lastCookie) {
       this.#lastCookie.setSize(
         this.#originalInputLength - this.#input.length - this.#lastCookiePosition
@@ -37818,7 +37832,7 @@ var CookieParser = class _CookieParser {
     this.#lastCookie = null;
     this.#lastCookieLine = "";
   }
-  extractKeyValue() {
+  #extractKeyValue() {
     if (!this.#input || !this.#input.length) {
       return null;
     }
@@ -37836,7 +37850,7 @@ var CookieParser = class _CookieParser {
     this.#input = this.#input.slice(keyValueMatch[0].length);
     return result;
   }
-  advanceAndCheckCookieDelimiter() {
+  #advanceAndCheckCookieDelimiter() {
     if (!this.#input) {
       return false;
     }
@@ -37848,7 +37862,7 @@ var CookieParser = class _CookieParser {
     this.#input = this.#input.slice(match[0].length);
     return match[0].match("\n") !== null;
   }
-  addCookie(keyValue, type) {
+  #addCookie(keyValue, type) {
     if (this.#lastCookie) {
       this.#lastCookie.setSize(keyValue.position - this.#lastCookiePosition);
     }
@@ -40379,11 +40393,11 @@ var AccessibilityModel = class extends SDKModel {
     this.dispatchEventToListeners("TreeUpdated" /* TREE_UPDATED */, { root: this.#root });
   }
   nodesUpdated({ nodes }) {
-    this.createNodesFromPayload(nodes);
+    this.#createNodesFromPayload(nodes);
     this.dispatchEventToListeners("TreeUpdated" /* TREE_UPDATED */, {});
     return;
   }
-  createNodesFromPayload(payloadNodes) {
+  #createNodesFromPayload(payloadNodes) {
     const accessibilityNodes = payloadNodes.map((node) => {
       const sdkNode = new AccessibilityNode(this, node);
       return sdkNode;
@@ -40401,7 +40415,7 @@ var AccessibilityModel = class extends SDKModel {
     if (!node) {
       return;
     }
-    return this.createNodesFromPayload([node])[0];
+    return this.#createNodesFromPayload([node])[0];
   }
   async requestAXChildren(nodeId, frameId) {
     const parent = this.#axIdToAXNode.get(nodeId);
@@ -40419,7 +40433,7 @@ var AccessibilityModel = class extends SDKModel {
       this.#pendingChildRequests.set(nodeId, request2);
       const result = await request2;
       if (!result.getError()) {
-        this.createNodesFromPayload(result.nodes);
+        this.#createNodesFromPayload(result.nodes);
         this.#pendingChildRequests.delete(nodeId);
       }
     }
@@ -40440,7 +40454,7 @@ var AccessibilityModel = class extends SDKModel {
     if (!nodes) {
       return null;
     }
-    const ancestors = this.createNodesFromPayload(nodes);
+    const ancestors = this.#createNodesFromPayload(nodes);
     return ancestors;
   }
   axNodeForId(axId) {
@@ -40681,14 +40695,14 @@ var AnimationModel = class extends SDKModel {
       void this.agent.invoke_enable();
     }
     const resourceTreeModel = target.model(ResourceTreeModel);
-    resourceTreeModel.addEventListener("PrimaryPageChanged" /* PrimaryPageChanged */, this.reset, this);
+    resourceTreeModel.addEventListener("PrimaryPageChanged" /* PrimaryPageChanged */, this.#reset, this);
     this.#flushPendingAnimations = Common32.Debouncer.debounce(() => {
       while (this.#pendingAnimations.size) {
-        this.matchExistingGroups(this.createGroupFromPendingAnimations());
+        this.#matchExistingGroups(this.#createGroupFromPendingAnimations());
       }
     }, 100);
   }
-  reset() {
+  #reset() {
     this.#animationsById.clear();
     this.animationGroups.clear();
     this.#pendingAnimations.clear();
@@ -40747,7 +40761,7 @@ var AnimationModel = class extends SDKModel {
     }
     this.#flushPendingAnimations();
   }
-  matchExistingGroups(incomingGroup) {
+  #matchExistingGroups(incomingGroup) {
     let matchedGroup = null;
     for (const group of this.animationGroups.values()) {
       if (group.matches(incomingGroup)) {
@@ -40769,7 +40783,7 @@ var AnimationModel = class extends SDKModel {
     }
     return Boolean(matchedGroup);
   }
-  createGroupFromPendingAnimations() {
+  #createGroupFromPendingAnimations() {
     console.assert(this.#pendingAnimations.size > 0);
     const firstAnimationId = this.#pendingAnimations.values().next().value;
     this.#pendingAnimations.delete(firstAnimationId);
@@ -40799,7 +40813,7 @@ var AnimationModel = class extends SDKModel {
     void this.agent.invoke_releaseAnimations({ animations });
   }
   async suspendModel() {
-    await this.agent.invoke_disable().then(() => this.reset());
+    await this.agent.invoke_disable().then(() => this.#reset());
   }
   async resumeModel() {
     await this.agent.invoke_enable();
@@ -40848,7 +40862,7 @@ var AnimationImpl = class _AnimationImpl {
   // from the scroll container and ends at `endOffset`px of the scroll container.
   // This takes a percentage of the timeline range and returns the absolute
   // pixels values as a scroll offset of the scroll container.
-  percentageToPixels(percentage, viewOrScrollTimeline) {
+  #percentageToPixels(percentage, viewOrScrollTimeline) {
     const { startOffset, endOffset } = viewOrScrollTimeline;
     if (startOffset === void 0 || endOffset === void 0) {
       throw new Error("startOffset or endOffset does not exist in viewOrScrollTimeline");
@@ -40878,7 +40892,7 @@ var AnimationImpl = class _AnimationImpl {
   startTime() {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(
+      return this.#percentageToPixels(
         this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime,
         viewOrScrollTimeline
       ) + (this.viewOrScrollTimeline()?.startOffset ?? 0);
@@ -40890,7 +40904,7 @@ var AnimationImpl = class _AnimationImpl {
   iterationDuration() {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(this.source().duration(), viewOrScrollTimeline);
+      return this.#percentageToPixels(this.source().duration(), viewOrScrollTimeline);
     }
     return this.source().duration();
   }
@@ -40919,7 +40933,7 @@ var AnimationImpl = class _AnimationImpl {
   currentTime() {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(this.#payload.currentTime, viewOrScrollTimeline);
+      return this.#percentageToPixels(this.#payload.currentTime, viewOrScrollTimeline);
     }
     return this.#payload.currentTime;
   }
@@ -40951,13 +40965,13 @@ var AnimationImpl = class _AnimationImpl {
       if (!node) {
         throw new Error("Unable to find node");
       }
-      this.updateNodeStyle(duration, delay, node);
+      this.#updateNodeStyle(duration, delay, node);
     });
     this.#source.durationInternal = duration;
     this.#source.delayInternal = delay;
     void this.#animationModel.agent.invoke_setTiming({ animationId: this.id(), duration, delay });
   }
-  updateNodeStyle(duration, delay, node) {
+  #updateNodeStyle(duration, delay, node) {
     let animationPrefix;
     if (this.type() === Animation.AnimationType.CSSTransition) {
       animationPrefix = "transition-";
@@ -41120,9 +41134,9 @@ var AnimationGroup = class {
   }
   release() {
     this.#animationModel.animationGroups.delete(this.id());
-    this.#animationModel.releaseAnimations(this.animationIds());
+    this.#animationModel.releaseAnimations(this.#animationIds());
   }
-  animationIds() {
+  #animationIds() {
     function extractId(animation) {
       return animation.id();
     }
@@ -41192,7 +41206,7 @@ var AnimationGroup = class {
       return;
     }
     this.#paused = paused;
-    void this.#animationModel.agent.invoke_setPaused({ animations: this.animationIds(), paused });
+    void this.#animationModel.agent.invoke_setPaused({ animations: this.#animationIds(), paused });
   }
   currentTimePromise() {
     let longestAnim = null;
@@ -41233,7 +41247,7 @@ var AnimationGroup = class {
     this.#animations.push(...animations);
   }
   rebaseTo(group) {
-    this.#animationModel.releaseAnimations(this.animationIds());
+    this.#animationModel.releaseAnimations(this.#animationIds());
     this.#animations = group.#animations;
     this.#scrollNode = void 0;
   }
@@ -42616,12 +42630,12 @@ var MainConnection = class {
     this.#eventListeners = [
       Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host10.InspectorFrontendHostAPI.Events.DispatchMessage,
-        this.dispatchMessage,
+        this.#dispatchMessage,
         this
       ),
       Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host10.InspectorFrontendHostAPI.Events.DispatchMessageChunk,
-        this.dispatchMessageChunk,
+        this.#dispatchMessageChunk,
         this
       )
     ];
@@ -42637,12 +42651,12 @@ var MainConnection = class {
       Host10.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
     }
   }
-  dispatchMessage(event) {
+  #dispatchMessage(event) {
     if (this.onMessage) {
       this.onMessage.call(null, event.data);
     }
   }
-  dispatchMessageChunk(event) {
+  #dispatchMessageChunk(event) {
     const { messageChunk, messageSize } = event.data;
     if (messageSize) {
       this.#messageBuffer = "";
@@ -42674,14 +42688,14 @@ var WebSocketTransport = class {
   #messages = [];
   constructor(url, onWebSocketDisconnect) {
     this.#socket = new WebSocket(url);
-    this.#socket.onerror = this.onError.bind(this);
-    this.#socket.onopen = this.onOpen.bind(this);
+    this.#socket.onerror = this.#onError.bind(this);
+    this.#socket.onopen = this.#onOpen.bind(this);
     this.#socket.onmessage = (messageEvent) => {
       if (this.onMessage) {
         this.onMessage.call(null, messageEvent.data);
       }
     };
-    this.#socket.onclose = this.onClose.bind(this);
+    this.#socket.onclose = this.#onClose.bind(this);
     this.#onWebSocketDisconnect = onWebSocketDisconnect;
   }
   setOnMessage(onMessage) {
@@ -42690,16 +42704,16 @@ var WebSocketTransport = class {
   setOnDisconnect(onDisconnect) {
     this.#onDisconnect = onDisconnect;
   }
-  onError() {
+  #onError() {
     if (this.#onWebSocketDisconnect) {
       this.#onWebSocketDisconnect.call(null, i18nString15(UIStrings15.websocketConnectionFailed));
     }
     if (this.#onDisconnect) {
       this.#onDisconnect.call(null, "connection failed");
     }
-    this.close();
+    this.#close();
   }
-  onOpen() {
+  #onOpen() {
     this.#connected = true;
     if (this.#socket) {
       this.#socket.onerror = console.error;
@@ -42709,16 +42723,16 @@ var WebSocketTransport = class {
     }
     this.#messages = [];
   }
-  onClose() {
+  #onClose() {
     if (this.#onWebSocketDisconnect) {
       this.#onWebSocketDisconnect.call(null, i18nString15(UIStrings15.websocketDisconnected));
     }
     if (this.#onDisconnect) {
       this.#onDisconnect.call(null, "websocket closed");
     }
-    this.close();
+    this.#close();
   }
-  close(callback) {
+  #close(callback) {
     if (this.#socket) {
       this.#socket.onerror = null;
       this.#socket.onopen = null;
@@ -42738,7 +42752,7 @@ var WebSocketTransport = class {
   }
   disconnect() {
     return new Promise((fulfill) => {
-      this.close(() => {
+      this.#close(() => {
         if (this.#onDisconnect) {
           this.#onDisconnect.call(null, "force disconnect");
         }
@@ -42757,9 +42771,9 @@ var StubTransport = class {
     this.#onDisconnect = onDisconnect;
   }
   sendRawMessage(message) {
-    globalThis.setTimeout(this.respondWithError.bind(this, message), 0);
+    globalThis.setTimeout(this.#respondWithError.bind(this, message), 0);
   }
-  respondWithError(message) {
+  #respondWithError(message) {
     const messageObject = JSON.parse(message);
     const error = {
       message: "This is a stub connection, can't dispatch message.",
@@ -44082,38 +44096,38 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager = TargetManager.instance()) {
     this.#targetManager = targetManager;
-    this.createInstrumentationBreakpoints("auction-worklet" /* AUCTION_WORKLET */, [
+    this.#createInstrumentationBreakpoints("auction-worklet" /* AUCTION_WORKLET */, [
       "beforeBidderWorkletBiddingStart" /* BEFORE_BIDDER_WORKLET_BIDDING_START */,
       "beforeBidderWorkletReportingStart" /* BEFORE_BIDDER_WORKLET_REPORTING_START */,
       "beforeSellerWorkletScoringStart" /* BEFORE_SELLER_WORKLET_SCORING_START */,
       "beforeSellerWorkletReportingStart" /* BEFORE_SELLER_WORKLET_REPORTING_START */
     ]);
-    this.createInstrumentationBreakpoints("animation" /* ANIMATION */, [
+    this.#createInstrumentationBreakpoints("animation" /* ANIMATION */, [
       "requestAnimationFrame" /* REQUEST_ANIMATION_FRAME */,
       "cancelAnimationFrame" /* CANCEL_ANIMATION_FRAME */,
       "requestAnimationFrame.callback" /* REQUEST_ANIMATION_FRAME_CALLBACK */
     ]);
-    this.createInstrumentationBreakpoints("canvas" /* CANVAS */, [
+    this.#createInstrumentationBreakpoints("canvas" /* CANVAS */, [
       "canvasContextCreated" /* CANVAS_CONTEXT_CREATED */,
       "webglErrorFired" /* WEBGL_ERROR_FIRED */,
       "webglWarningFired" /* WEBGL_WARNING_FIRED */
     ]);
-    this.createInstrumentationBreakpoints("geolocation" /* GEOLOCATION */, [
+    this.#createInstrumentationBreakpoints("geolocation" /* GEOLOCATION */, [
       "Geolocation.getCurrentPosition" /* GEOLOCATION_GET_CURRENT_POSITION */,
       "Geolocation.watchPosition" /* GEOLOCATION_WATCH_POSITION */
     ]);
-    this.createInstrumentationBreakpoints("notification" /* NOTIFICATION */, [
+    this.#createInstrumentationBreakpoints("notification" /* NOTIFICATION */, [
       "Notification.requestPermission" /* NOTIFICATION_REQUEST_PERMISSION */
     ]);
-    this.createInstrumentationBreakpoints("parse" /* PARSE */, [
+    this.#createInstrumentationBreakpoints("parse" /* PARSE */, [
       "Element.setInnerHTML" /* ELEMENT_SET_INNER_HTML */,
       "Document.write" /* DOCUMENT_WRITE */
     ]);
-    this.createInstrumentationBreakpoints("script" /* SCRIPT */, [
+    this.#createInstrumentationBreakpoints("script" /* SCRIPT */, [
       "scriptFirstStatement" /* SCRIPT_FIRST_STATEMENT */,
       "scriptBlockedByCSP" /* SCRIPT_BLOCKED_BY_CSP */
     ]);
-    this.createInstrumentationBreakpoints("timer" /* TIMER */, [
+    this.#createInstrumentationBreakpoints("timer" /* TIMER */, [
       "setTimeout" /* SET_TIMEOUT */,
       "clearTimeout" /* CLEAR_TIMEOUT */,
       "setTimeout.callback" /* SET_TIMEOUT_CALLBACK */,
@@ -44121,10 +44135,10 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
       "clearInterval" /* CLEAR_INTERVAL */,
       "setInterval.callback" /* SET_INTERVAL_CALLBACK */
     ]);
-    this.createInstrumentationBreakpoints("window" /* WINDOW */, [
+    this.#createInstrumentationBreakpoints("window" /* WINDOW */, [
       "DOMWindow.close" /* DOM_WINDOW_CLOSE */
     ]);
-    this.createInstrumentationBreakpoints("web-audio" /* WEB_AUDIO */, [
+    this.#createInstrumentationBreakpoints("web-audio" /* WEB_AUDIO */, [
       "audioContextCreated" /* AUDIO_CONTEXT_CREATED */,
       "audioContextClosed" /* AUDIO_CONTEXT_CLOSED */,
       "audioContextResumed" /* AUDIO_CONTEXT_RESUMED */,
@@ -44146,7 +44160,7 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   static removeInstance() {
     Root13.DevToolsContext.globalInstance().delete(_EventBreakpointsManager);
   }
-  createInstrumentationBreakpoints(category, instrumentationNames) {
+  #createInstrumentationBreakpoints(category, instrumentationNames) {
     for (const instrumentationName of instrumentationNames) {
       this.#eventListenerBreakpoints.push(
         new EventListenerBreakpoint(category, instrumentationName, this.#targetManager)
@@ -44216,7 +44230,7 @@ var IsolateManager = class _IsolateManager extends Common40.ObjectWrapper.Object
       throw new Error("Observer can only be registered once");
     }
     if (!this.#observers.size) {
-      void this.poll();
+      void this.#poll();
     }
     this.#observers.add(observer);
     for (const isolate of this.#isolates.values()) {
@@ -44281,7 +44295,7 @@ var IsolateManager = class _IsolateManager extends Common40.ObjectWrapper.Object
   isolates() {
     return this.#isolates.values();
   }
-  async poll() {
+  async #poll() {
     const pollId = this.#pollId;
     while (pollId === this.#pollId) {
       await Promise.all(Array.from(this.isolates(), (isolate) => isolate.update()));
@@ -44408,9 +44422,9 @@ var IssuesModel = class extends SDKModel {
   #enabled = false;
   constructor(target) {
     super(target);
-    void this.ensureEnabled();
+    void this.#ensureEnabled();
   }
-  async ensureEnabled() {
+  async #ensureEnabled() {
     if (this.#enabled) {
       return;
     }

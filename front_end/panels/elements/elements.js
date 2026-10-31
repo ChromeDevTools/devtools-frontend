@@ -6556,26 +6556,28 @@ var BaseFunctionRenderer = class extends BaseFunctionRendererBase {
     this.#treeElement = treeElement;
     this.#propertyName = propertyName;
   }
-  #renderFunction(match, renderedArgs, context, activeArgs) {
-    return html7`${this.#treeElement?.getTracingTooltip(
-      match.func,
-      match.node,
-      this.#matchedStyles,
-      this.#computedStyles,
-      this.#computedStyleExtraFields,
-      context
-    ) ?? match.func}(${renderedArgs.map((arg, idx) => {
+  #renderArgs(renderedArgs, activeArgs) {
+    return html7`${renderedArgs.map((arg, idx) => {
       const classes = classMap2({ "inactive-value": activeArgs?.[idx] === false });
       return html7`${idx === 0 ? nothing2 : ", "}<span class=${classes}>${arg}</span>`;
-    })})`;
+    })}`;
   }
   render(match, context) {
     const childTracingContexts = context.tracing?.evaluation(match.args, { match, context });
     const renderedArgs = match.args.map(
       (arg, idx) => Renderer.render(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context).nodes
     );
-    const template = this.#renderFunction(match, renderedArgs, context);
+    const func = this.#treeElement?.getTracingTooltip(
+      match.func,
+      match.node,
+      this.#matchedStyles,
+      this.#computedStyles,
+      this.#computedStyleExtraFields,
+      context
+    ) ?? match.func;
+    const args = this.#renderArgs(renderedArgs);
     if (childTracingContexts) {
+      const template = html7`${func}(${args})`;
       const evaluation = context.tracing?.applyEvaluation(
         childTracingContexts,
         () => ({ template, asyncEvalCallback: () => this.applyEvaluation(match, context) })
@@ -6584,9 +6586,9 @@ var BaseFunctionRenderer = class extends BaseFunctionRendererBase {
         return html7`<span>${evaluation}</span>`;
       }
     } else if (match instanceof SDK4.CSSPropertyParserMatchers.MathFunctionMatch && !match.isArithmeticFunctionCall()) {
-      return html7`<span>${until(this.applyMathFunction(renderedArgs, match, context), template)}</span>`;
+      return html7`<span>${func}(${until(this.applyMathFunction(renderedArgs, match, context), args)})</span>`;
     }
-    return html7`<span>${template}</span>`;
+    return html7`<span>${func}(${args})</span>`;
   }
   async applyEvaluation(match, context) {
     const value5 = context.matchedResult.getComputedText(match.node, (match2) => {
@@ -6611,14 +6613,9 @@ var BaseFunctionRenderer = class extends BaseFunctionRendererBase {
     const evaledArgs = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, ...values);
     const functionResult = evaledArgs?.shift();
     if (context.signal?.aborted || !evaledArgs || !functionResult) {
-      return this.#renderFunction(match, renderedArgs, context);
+      return this.#renderArgs(renderedArgs);
     }
-    return this.#renderFunction(
-      match,
-      renderedArgs,
-      context,
-      evaledArgs.map((evaledArg) => evaledArg === functionResult)
-    );
+    return this.#renderArgs(renderedArgs, evaledArgs.map((evaledArg) => evaledArg === functionResult));
   }
 };
 var MathFunctionRenderer = class extends BaseFunctionRenderer {

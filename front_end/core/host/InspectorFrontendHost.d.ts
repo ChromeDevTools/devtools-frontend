@@ -6,8 +6,8 @@ declare global {
     var InspectorFrontendAPI: InspectorFrontendAPIImpl;
 }
 declare class InspectorFrontendAPIImpl {
+    #private;
     constructor();
-    private dispatch;
     streamWrite(id: number, chunk: string): void;
 }
 /**

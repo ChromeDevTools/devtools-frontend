@@ -9,6 +9,4 @@ export declare class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Prov
     rewriteQuery(_query: string): string;
     queryChanged(query: string): void;
     notFoundText(_query: string): string;
-    private parsePosition;
-    private currentSourceFrame;
 }

@@ -47,7 +47,14 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../test/ai_evals/network/server-error-5xx.test.ts",
+    "../../../../../../test/ai_evals/network/network-200-data-schema-mismatch.test.ts",
+    "../../../../../../test/ai_evals/network/network-200-earlier-script-error.test.ts",
+    "../../../../../../test/ai_evals/network/network-200-hidden-css-container.test.ts",
+    "../../../../../../test/ai_evals/network/network-302-unexpected-redirect.test.ts",
+    "../../../../../../test/ai_evals/network/network-400-cookies-header-size.test.ts",
+    "../../../../../../test/ai_evals/network/network-400-invalid-parameter.test.ts",
+    "../../../../../../test/ai_evals/network/network-401-authentication-error.test.ts",
+    "../../../../../../test/ai_evals/network/network-500-server-error.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -62,9 +69,6 @@
     },
     {
       "path": "../helpers/helpers-tsconfig.ref.json"
-    },
-    {
-      "path": "../report/report-tsconfig.ref.json"
     }
   ]
 }

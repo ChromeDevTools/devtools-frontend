@@ -32,6 +32,7 @@ export declare function ruleMatch(selectorOrList: string | Protocol.CSS.Selector
     /** Matches all selectors if undefined */
     matchingSelectorsIndexes?: number[];
     nestingSelectors?: string[];
+    originTreeScopeNodeId?: Protocol.DOM.BackendNodeId;
 }): Protocol.CSS.RuleMatch;
 export declare function getMatchedStylesWithProperties(payload: {
     cssModel: SDK.CSSModel.CSSModel;

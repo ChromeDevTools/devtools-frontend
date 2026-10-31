@@ -11,7 +11,6 @@ export declare class CPUProfilerModel extends SDKModel<EventTypes> implements Pr
     debuggerModel(): DebuggerModel;
     consoleProfileStarted({ id, location, title }: Protocol.Profiler.ConsoleProfileStartedEvent): void;
     consoleProfileFinished({ id, location, profile, title }: Protocol.Profiler.ConsoleProfileFinishedEvent): void;
-    private createEventDataFrom;
     startRecording(): Promise<unknown>;
     stopRecording(): Promise<Protocol.Profiler.Profile | null>;
     startPreciseCoverage(jsCoveragePerBlock: boolean, preciseCoverageDeltaUpdateCallback: ((arg0: number, arg2: Protocol.Profiler.ScriptCoverage[]) => Promise<void>) | null): Promise<unknown>;

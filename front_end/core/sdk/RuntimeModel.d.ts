@@ -34,7 +34,6 @@ export declare class RuntimeModel extends SDKModel<EventTypes> {
     releaseObjectGroup(objectGroup: string): void;
     releaseEvaluationResult(result: EvaluationResult): void;
     runIfWaitingForDebugger(): void;
-    private customFormattersStateChanged;
     compileScript(expression: string, sourceURL: string, persistScript: boolean, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<CompileScriptResult | null>;
     runScript(scriptId: Protocol.Runtime.ScriptId, executionContextId: Protocol.Runtime.ExecutionContextId, objectGroup?: string, silent?: boolean, includeCommandLineAPI?: boolean, returnByValue?: boolean, generatePreview?: boolean, awaitPromise?: boolean): Promise<EvaluationResult>;
     queryObjects(prototype: RemoteObject): Promise<QueryObjectResult>;
@@ -49,8 +48,6 @@ export declare class RuntimeModel extends SDKModel<EventTypes> {
     addBinding(event: Protocol.Runtime.AddBindingRequest): Promise<Protocol.ProtocolResponseWithError>;
     removeBinding(request: Protocol.Runtime.RemoveBindingRequest): Promise<Protocol.ProtocolResponseWithError>;
     bindingCalled(event: Protocol.Runtime.BindingCalledEvent): void;
-    private copyRequested;
-    private queryObjectsRequested;
     static simpleTextFromException(exceptionDetails: Protocol.Runtime.ExceptionDetails): string;
     exceptionThrown(timestamp: number, exceptionDetails: Protocol.Runtime.ExceptionDetails): void;
     exceptionRevoked(exceptionId: number): void;

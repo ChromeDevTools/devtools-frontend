@@ -32,7 +32,7 @@ export class SegmentedRange {
         if (startIndex > 0) {
             // 2. Try mering the preceding segment
             const precedingSegment = this.#segments[startIndex - 1];
-            merged = this.tryMerge(precedingSegment, newSegment);
+            merged = this.#tryMerge(precedingSegment, newSegment);
             if (merged) {
                 --startIndex;
                 newSegment = merged;
@@ -52,7 +52,7 @@ export class SegmentedRange {
         }
         // 4. Merge or adjust the succeeding segment if it overlaps.
         if (endIndex < this.#segments.length) {
-            merged = this.tryMerge(newSegment, this.#segments[endIndex]);
+            merged = this.#tryMerge(newSegment, this.#segments[endIndex]);
             if (merged) {
                 endIndex++;
                 newSegment = merged;
@@ -66,7 +66,7 @@ export class SegmentedRange {
     segments() {
         return this.#segments;
     }
-    tryMerge(first, second) {
+    #tryMerge(first, second) {
         const merged = this.#mergeCallback && this.#mergeCallback(first, second);
         if (!merged) {
             return null;

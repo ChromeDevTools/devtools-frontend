@@ -29,7 +29,7 @@ export class LogManager {
     }
     modelAdded(logModel) {
         const eventListeners = [];
-        eventListeners.push(logModel.addEventListener("EntryAdded" /* SDK.LogModel.Events.ENTRY_ADDED */, this.logEntryAdded, this));
+        eventListeners.push(logModel.addEventListener("EntryAdded" /* SDK.LogModel.Events.ENTRY_ADDED */, this.#logEntryAdded, this));
         modelToEventListeners.set(logModel, eventListeners);
     }
     modelRemoved(logModel) {
@@ -38,7 +38,7 @@ export class LogManager {
             Common.EventTarget.removeEventListeners(eventListeners);
         }
     }
-    logEntryAdded(event) {
+    #logEntryAdded(event) {
         const { logModel, entry } = event.data;
         const target = logModel.target();
         const details = {

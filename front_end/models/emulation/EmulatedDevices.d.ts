@@ -25,7 +25,6 @@ export declare class EmulatedDevice {
     getSpanPartner(mode: Mode): Mode | undefined;
     getRotationPartner(mode: Mode): Mode | null;
     toJSON(): any;
-    private orientationToJSON;
     orientationByName(name: string): Orientation;
     show(): boolean;
     setShow(show: boolean): void;
@@ -63,8 +62,6 @@ export declare class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrap
     #private;
     constructor(settings: Common.Settings.Settings);
     static instance(): EmulatedDevicesList;
-    private updateStandardDevices;
-    private listFromJSONV1;
     static rawEmulatedDevicesForTest(): ReadonlyArray<{
         'user-agent': string;
     } & Record<string, any>>;
@@ -75,7 +72,6 @@ export declare class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrap
     removeCustomDevice(device: EmulatedDevice): void;
     saveCustomDevices(): void;
     saveStandardDevices(): void;
-    private copyShowValues;
 }
 export declare const enum Events {
     CUSTOM_DEVICES_UPDATED = "CustomDevicesUpdated",

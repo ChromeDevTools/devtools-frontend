@@ -2064,24 +2064,24 @@ export class Generator {
     colorForID(id) {
         let color = this.#colors.get(id);
         if (!color) {
-            color = this.generateColorForID(id);
+            color = this.#generateColorForID(id);
             this.#colors.set(id, color);
         }
         return color;
     }
-    generateColorForID(id) {
+    #generateColorForID(id) {
         const hash = Platform.StringUtilities.hashCode(id);
-        const h = this.indexToValueInSpace(hash, this.#hueSpace);
-        const s = this.indexToValueInSpace(hash >> 8, this.#satSpace);
-        const l = this.indexToValueInSpace(hash >> 16, this.#lightnessSpace);
-        const a = this.indexToValueInSpace(hash >> 24, this.#alphaSpace);
+        const h = this.#indexToValueInSpace(hash, this.#hueSpace);
+        const s = this.#indexToValueInSpace(hash >> 8, this.#satSpace);
+        const l = this.#indexToValueInSpace(hash >> 16, this.#lightnessSpace);
+        const a = this.#indexToValueInSpace(hash >> 24, this.#alphaSpace);
         const start = `hsl(${h}deg ${s}% ${l}%`;
         if (a !== 1) {
             return `${start} / ${Math.floor(a * 100)}%)`;
         }
         return `${start})`;
     }
-    indexToValueInSpace(index, space) {
+    #indexToValueInSpace(index, space) {
         if (typeof space === 'number') {
             return space;
         }

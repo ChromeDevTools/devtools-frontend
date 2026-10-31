@@ -57,8 +57,6 @@ export declare class HAREntry extends HARBase {
     connection: string | undefined;
     comment: string | undefined;
     constructor(data: any);
-    private importInitiator;
-    private importWebSocketMessages;
 }
 declare class HARRequest extends HARBase {
     method: string;

@@ -24,6 +24,5 @@ export declare abstract class ResolverBase<Id, T> {
      * Aborts all waiting and rejects all unresolved promises.
      */
     clear(): void;
-    private getOrCreatePromise;
     protected onResolve(id: Id, t: T): void;
 }

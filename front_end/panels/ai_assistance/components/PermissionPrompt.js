@@ -10,7 +10,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import { renderRelevantDataDisclaimer } from './RelevantDataDisclaimer.js';
-const { html, Directives: { ref } } = Lit;
+const { html, Directives: { ref, repeat } } = Lit;
 const lockedString = i18n.i18n.lockedString;
 const RELEVANT_DATA_TOOLTIP_ID = 'relevant-data-link-permission-prompt';
 const UIStringsNotTranslate = {
@@ -108,8 +108,11 @@ export function renderPermissionPrompt(step, disclaimerText) {
       @click=${() => dialog.onAnswer("allow-always" /* AiAssistanceModel.Tool.PermissionDecision.ALLOW_ALWAYS */)}
     >${lockedString(UIStringsNotTranslate.allowAlways)}</devtools-button>` :
         Lit.nothing;
+    // Key the prompt by its step so that a new prompt always gets new DOM and
+    // `focusOnFirstRender` runs again when one prompt replaces another in a
+    // single render.
     // clang-format off
-    return html `
+    return html `${repeat([step], step => step, () => html `
   <div class="permission-prompt"
     jslog=${VisualLogging.section('side-effect-confirmation')}>
     <div class="permission-prompt-header">
@@ -140,7 +143,7 @@ export function renderPermissionPrompt(step, disclaimerText) {
       ${renderRelevantDataDisclaimer(RELEVANT_DATA_TOOLTIP_ID, disclaimerText)}.
       ${renderChangePermissionsInSettings()}.
     </div>
-  </div>`;
+  </div>`)}`;
     // clang-format on
 }
 //# sourceMappingURL=PermissionPrompt.js.map

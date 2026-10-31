@@ -78,38 +78,38 @@ export class EventBreakpointsManager {
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     constructor(targetManager = TargetManager.instance()) {
         this.#targetManager = targetManager;
-        this.createInstrumentationBreakpoints("auction-worklet" /* Category.AUCTION_WORKLET */, [
+        this.#createInstrumentationBreakpoints("auction-worklet" /* Category.AUCTION_WORKLET */, [
             "beforeBidderWorkletBiddingStart" /* InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START */,
             "beforeBidderWorkletReportingStart" /* InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START */,
             "beforeSellerWorkletScoringStart" /* InstrumentationNames.BEFORE_SELLER_WORKLET_SCORING_START */,
             "beforeSellerWorkletReportingStart" /* InstrumentationNames.BEFORE_SELLER_WORKLET_REPORTING_START */,
         ]);
-        this.createInstrumentationBreakpoints("animation" /* Category.ANIMATION */, [
+        this.#createInstrumentationBreakpoints("animation" /* Category.ANIMATION */, [
             "requestAnimationFrame" /* InstrumentationNames.REQUEST_ANIMATION_FRAME */,
             "cancelAnimationFrame" /* InstrumentationNames.CANCEL_ANIMATION_FRAME */,
             "requestAnimationFrame.callback" /* InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK */,
         ]);
-        this.createInstrumentationBreakpoints("canvas" /* Category.CANVAS */, [
+        this.#createInstrumentationBreakpoints("canvas" /* Category.CANVAS */, [
             "canvasContextCreated" /* InstrumentationNames.CANVAS_CONTEXT_CREATED */,
             "webglErrorFired" /* InstrumentationNames.WEBGL_ERROR_FIRED */,
             "webglWarningFired" /* InstrumentationNames.WEBGL_WARNING_FIRED */,
         ]);
-        this.createInstrumentationBreakpoints("geolocation" /* Category.GEOLOCATION */, [
+        this.#createInstrumentationBreakpoints("geolocation" /* Category.GEOLOCATION */, [
             "Geolocation.getCurrentPosition" /* InstrumentationNames.GEOLOCATION_GET_CURRENT_POSITION */,
             "Geolocation.watchPosition" /* InstrumentationNames.GEOLOCATION_WATCH_POSITION */,
         ]);
-        this.createInstrumentationBreakpoints("notification" /* Category.NOTIFICATION */, [
+        this.#createInstrumentationBreakpoints("notification" /* Category.NOTIFICATION */, [
             "Notification.requestPermission" /* InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION */,
         ]);
-        this.createInstrumentationBreakpoints("parse" /* Category.PARSE */, [
+        this.#createInstrumentationBreakpoints("parse" /* Category.PARSE */, [
             "Element.setInnerHTML" /* InstrumentationNames.ELEMENT_SET_INNER_HTML */,
             "Document.write" /* InstrumentationNames.DOCUMENT_WRITE */,
         ]);
-        this.createInstrumentationBreakpoints("script" /* Category.SCRIPT */, [
+        this.#createInstrumentationBreakpoints("script" /* Category.SCRIPT */, [
             "scriptFirstStatement" /* InstrumentationNames.SCRIPT_FIRST_STATEMENT */,
             "scriptBlockedByCSP" /* InstrumentationNames.SCRIPT_BLOCKED_BY_CSP */,
         ]);
-        this.createInstrumentationBreakpoints("timer" /* Category.TIMER */, [
+        this.#createInstrumentationBreakpoints("timer" /* Category.TIMER */, [
             "setTimeout" /* InstrumentationNames.SET_TIMEOUT */,
             "clearTimeout" /* InstrumentationNames.CLEAR_TIMEOUT */,
             "setTimeout.callback" /* InstrumentationNames.SET_TIMEOUT_CALLBACK */,
@@ -117,10 +117,10 @@ export class EventBreakpointsManager {
             "clearInterval" /* InstrumentationNames.CLEAR_INTERVAL */,
             "setInterval.callback" /* InstrumentationNames.SET_INTERVAL_CALLBACK */,
         ]);
-        this.createInstrumentationBreakpoints("window" /* Category.WINDOW */, [
+        this.#createInstrumentationBreakpoints("window" /* Category.WINDOW */, [
             "DOMWindow.close" /* InstrumentationNames.DOM_WINDOW_CLOSE */,
         ]);
-        this.createInstrumentationBreakpoints("web-audio" /* Category.WEB_AUDIO */, [
+        this.#createInstrumentationBreakpoints("web-audio" /* Category.WEB_AUDIO */, [
             "audioContextCreated" /* InstrumentationNames.AUDIO_CONTEXT_CREATED */,
             "audioContextClosed" /* InstrumentationNames.AUDIO_CONTEXT_CLOSED */,
             "audioContextResumed" /* InstrumentationNames.AUDIO_CONTEXT_RESUMED */,
@@ -140,7 +140,7 @@ export class EventBreakpointsManager {
     static removeInstance() {
         Root.DevToolsContext.globalInstance().delete(EventBreakpointsManager);
     }
-    createInstrumentationBreakpoints(category, instrumentationNames) {
+    #createInstrumentationBreakpoints(category, instrumentationNames) {
         for (const instrumentationName of instrumentationNames) {
             this.#eventListenerBreakpoints.push(new EventListenerBreakpoint(category, instrumentationName, this.#targetManager));
         }

@@ -168,12 +168,19 @@ function queryMatches(style) {
     }
     return true;
 }
-function treeScopeDistance(node, property) {
-    if (!property.ownerStyle.parentRule && property.ownerStyle.type !== Type.Inline) {
-        return -1;
+function originatingElement(node) {
+    let current = node;
+    while (current.pseudoType() && current.parentNode) {
+        current = current.parentNode;
     }
-    const root = node.getTreeRoot();
-    const nodeId = property.ownerStyle.parentRule?.treeScope ?? root?.backendNodeId();
+    return current;
+}
+function treeScopeNodeId(node, property) {
+    return property.ownerStyle.type === Type.Inline ? node.getTreeRoot()?.backendNodeId() :
+        property.ownerStyle.parentRule?.treeScope;
+}
+function treeScopeDistance(node, property) {
+    const nodeId = treeScopeNodeId(node, property);
     if (nodeId === undefined) {
         return -1;
     }
@@ -952,13 +959,14 @@ class NodeCascade {
         }
     }
     #needsCascadeContextStep() {
-        if (!this.#node.isInShadowTree() && !this.#node.shadowRoots()?.length) {
+        const node = originatingElement(this.#node);
+        if (!node.isInShadowTree() && !node.shadowRoots()?.length && !node.hasAssignedSlot()) {
             return false;
         }
-        if (this.#node.ancestorShadowRoot()?.shadowRootType() === 'user-agent') {
+        if (node.ancestorShadowRoot()?.shadowRootType() === 'user-agent') {
             // In UA shadow dom, only standards-track pseudo elements override style attributes. -webkit-* and -internal-*
             // pseudos are still exempt from that to retain legacy behavior.
-            const pseudoElement = this.#node.getAttribute('pseudo');
+            const pseudoElement = node.getAttribute('pseudo');
             return !pseudoElement?.startsWith('-webkit-') && !pseudoElement?.startsWith('-internal-');
         }
         return true;
@@ -967,9 +975,13 @@ class NodeCascade {
         if (activeProperty.important !== propertyWithHigherSpecificity.important) {
             return activeProperty.important;
         }
+        const node = originatingElement(this.#node);
         if (!activeProperty.important) {
-            return this.#needsCascadeContextStep() &&
-                treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity);
+            if (propertyWithHigherSpecificity.ownerStyle.type !== Type.Inline || !this.#needsCascadeContextStep()) {
+                return false;
+            }
+            const inlineDistance = treeScopeDistance(node, propertyWithHigherSpecificity);
+            return inlineDistance >= 0 && treeScopeDistance(node, activeProperty) > inlineDistance;
         }
         // TODO(crbug.com/40225557): Distinguish user-origin from author-origin injected stylesheets in CDP.
         const activeIsUA = Boolean(activeProperty.ownerStyle.parentRule?.isUserAgent());
@@ -978,10 +990,14 @@ class NodeCascade {
             return activeIsUA;
         }
         if (this.#needsCascadeContextStep()) {
-            const activeDistance = treeScopeDistance(this.#node, activeProperty);
-            const higherSpecDistance = treeScopeDistance(this.#node, propertyWithHigherSpecificity);
-            if (activeDistance !== higherSpecDistance) {
-                return activeDistance < higherSpecDistance;
+            const activeScope = treeScopeNodeId(node, activeProperty);
+            const higherSpecScope = treeScopeNodeId(node, propertyWithHigherSpecificity);
+            if (activeScope !== undefined && higherSpecScope !== undefined && activeScope !== higherSpecScope) {
+                if (propertyWithHigherSpecificity.ownerStyle.type !== Type.Inline) {
+                    return true;
+                }
+                const inlineDistance = treeScopeDistance(node, propertyWithHigherSpecificity);
+                return inlineDistance >= 0 && treeScopeDistance(node, activeProperty) < inlineDistance;
             }
         }
         const activeRule = activeProperty.ownerStyle.parentRule;

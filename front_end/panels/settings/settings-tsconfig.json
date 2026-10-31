@@ -89,6 +89,9 @@
       "path": "../../ui/components/input/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/components/switch/bundle-tsconfig.ref.json"
     },
     {

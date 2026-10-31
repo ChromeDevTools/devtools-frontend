@@ -493,18 +493,17 @@ export class TimelineTreeView extends TimelineTreeViewBase {
     }
     /**
      * Refreshes the tree. By default, it will only do this
-     * if the tree is mounted into the DOM - as in the UI we
+     * if the tree view is currently showing - as in the UI we
      * have multiple trees and we only want to refresh the
      * active one. Pass `true` into this function to force a
      * refresh regardless.
      */
     refreshTree(forceRefresh = false) {
-        if (!this.element.parentElement && !forceRefresh) {
+        if (!this.isShowing() && !forceRefresh) {
             // This function can be called in different views (Bottom-Up and
             // Call Tree) by the same single event whenever the group-by
             // dropdown changes value. Thus, we bail out whenever the view is
-            // not visible, which we know if the related element is detached
-            // from the document.
+            // not visible to avoid useless work.
             // Mark dirty so that the refresh is deferred until shown.
             this.#dirty = true;
             return;
@@ -1041,7 +1040,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         this.stackView.addEventListener("SelectionChanged" /* TimelineStackView.Events.SELECTION_CHANGED */, this.onStackViewSelectionChanged, this);
     }
     refreshTree(forceRefresh = false) {
-        if (this.element.parentElement || forceRefresh) {
+        if (this.isShowing() || forceRefresh) {
             this.#builtGroupBy = this.groupBySetting.get();
         }
         super.refreshTree(forceRefresh);

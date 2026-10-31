@@ -243,55 +243,55 @@ export class SourceScope {
     }
 }
 export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
-    extensionObject;
-    plugin;
+    #extensionObject;
+    #plugin;
     callFrame;
     constructor(callFrame, extensionObject, plugin) {
         super();
-        this.extensionObject = extensionObject;
-        this.plugin = plugin;
+        this.#extensionObject = extensionObject;
+        this.#plugin = plugin;
         this.callFrame = callFrame;
     }
     get linearMemoryAddress() {
-        return this.extensionObject.linearMemoryAddress;
+        return this.#extensionObject.linearMemoryAddress;
     }
     get linearMemorySize() {
-        return this.extensionObject.linearMemorySize;
+        return this.#extensionObject.linearMemorySize;
     }
     get objectId() {
-        return this.extensionObject.objectId;
+        return this.#extensionObject.objectId;
     }
     get type() {
-        if (this.extensionObject.type === 'array' || this.extensionObject.type === 'null') {
+        if (this.#extensionObject.type === 'array' || this.#extensionObject.type === 'null') {
             return 'object';
         }
-        return this.extensionObject.type;
+        return this.#extensionObject.type;
     }
     get subtype() {
-        if (this.extensionObject.type === 'array' || this.extensionObject.type === 'null') {
-            return this.extensionObject.type;
+        if (this.#extensionObject.type === 'array' || this.#extensionObject.type === 'null') {
+            return this.#extensionObject.type;
         }
         return undefined;
     }
     get value() {
-        return this.extensionObject.value;
+        return this.#extensionObject.value;
     }
     unserializableValue() {
         return undefined;
     }
     get description() {
-        return this.extensionObject.description;
+        return this.#extensionObject.description;
     }
     set description(_description) {
     }
     get hasChildren() {
-        return this.extensionObject.hasChildren;
+        return this.#extensionObject.hasChildren;
     }
     get preview() {
         return undefined;
     }
     get className() {
-        return this.extensionObject.className ?? null;
+        return this.#extensionObject.className ?? null;
     }
     arrayLength() {
         return 0;
@@ -303,20 +303,20 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
         return this.getAllProperties(false, _generatePreview, _nonIndexedPropertiesOnly);
     }
     async getAllProperties(_accessorPropertiesOnly, _generatePreview, _nonIndexedPropertiesOnly) {
-        const { objectId } = this.extensionObject;
+        const { objectId } = this.#extensionObject;
         if (objectId) {
-            assertNotNullOrUndefined(this.plugin.getProperties);
-            const extensionObjectProperties = await this.plugin.getProperties(objectId);
-            const properties = await Promise.all(extensionObjectProperties.map(async (p) => new SDK.RemoteObject.RemoteObjectProperty(p.name, await wrapRemoteObject(this.callFrame, p.value, this.plugin))));
+            assertNotNullOrUndefined(this.#plugin.getProperties);
+            const extensionObjectProperties = await this.#plugin.getProperties(objectId);
+            const properties = await Promise.all(extensionObjectProperties.map(async (p) => new SDK.RemoteObject.RemoteObjectProperty(p.name, await wrapRemoteObject(this.callFrame, p.value, this.#plugin))));
             return { properties, internalProperties: null };
         }
         return { properties: null, internalProperties: null };
     }
     release() {
-        const { objectId } = this.extensionObject;
+        const { objectId } = this.#extensionObject;
         if (objectId) {
-            assertNotNullOrUndefined(this.plugin.releaseObject);
-            void this.plugin.releaseObject(objectId);
+            assertNotNullOrUndefined(this.#plugin.releaseObject);
+            void this.#plugin.releaseObject(objectId);
         }
     }
     debuggerModel() {
@@ -326,7 +326,7 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
         return this.callFrame.debuggerModel.runtimeModel();
     }
     isLinearMemoryInspectable() {
-        return this.extensionObject.linearMemoryAddress !== undefined;
+        return this.#extensionObject.linearMemoryAddress !== undefined;
     }
 }
 export class DebuggerLanguagePluginManager {
@@ -336,9 +336,9 @@ export class DebuggerLanguagePluginManager {
     #plugins;
     #debuggerModelToData;
     #rawModuleHandles;
-    callFrameByStopId = new Map();
-    stopIdByCallFrame = new Map();
-    nextStopId = 0n;
+    #callFrameByStopId = new Map();
+    #stopIdByCallFrame = new Map();
+    #nextStopId = 0n;
     constructor(targetManager, workspace, debuggerWorkspaceBinding, console) {
         this.#workspace = workspace;
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
@@ -348,10 +348,10 @@ export class DebuggerLanguagePluginManager {
         targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
         this.#rawModuleHandles = new Map();
     }
-    async evaluateOnCallFrame(callFrame, options) {
+    async #evaluateOnCallFrame(callFrame, options) {
         const { script } = callFrame;
         const { expression, returnByValue, throwOnSideEffect } = options;
-        const { plugin } = await this.rawModuleIdAndPluginForScript(script);
+        const { plugin } = await this.#rawModuleIdAndPluginForScript(script);
         if (!plugin) {
             return null;
         }
@@ -383,29 +383,29 @@ export class DebuggerLanguagePluginManager {
         }
     }
     stopIdForCallFrame(callFrame) {
-        let stopId = this.stopIdByCallFrame.get(callFrame);
+        let stopId = this.#stopIdByCallFrame.get(callFrame);
         if (stopId !== undefined) {
             return stopId;
         }
-        stopId = this.nextStopId++;
-        this.stopIdByCallFrame.set(callFrame, stopId);
-        this.callFrameByStopId.set(stopId, callFrame);
+        stopId = this.#nextStopId++;
+        this.#stopIdByCallFrame.set(callFrame, stopId);
+        this.#callFrameByStopId.set(stopId, callFrame);
         return stopId;
     }
     callFrameForStopId(stopId) {
-        return this.callFrameByStopId.get(stopId);
+        return this.#callFrameByStopId.get(stopId);
     }
     modelAdded(debuggerModel) {
         this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this.#workspace));
-        debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-        debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
-        debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
-        debuggerModel.setEvaluateOnCallFrameCallback(this.evaluateOnCallFrame.bind(this));
+        debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared, this);
+        debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.#parsedScriptSource, this);
+        debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#debuggerResumed, this);
+        debuggerModel.setEvaluateOnCallFrameCallback(this.#evaluateOnCallFrame.bind(this));
     }
     modelRemoved(debuggerModel) {
-        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
-        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
+        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared, this);
+        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.#parsedScriptSource, this);
+        debuggerModel.removeEventListener(SDK.DebuggerModel.Events.DebuggerResumed, this.#debuggerResumed, this);
         debuggerModel.setEvaluateOnCallFrameCallback(null);
         const modelData = this.#debuggerModelToData.get(debuggerModel);
         if (modelData) {
@@ -426,7 +426,7 @@ export class DebuggerLanguagePluginManager {
             }
         });
     }
-    globalObjectCleared(event) {
+    #globalObjectCleared(event) {
         const debuggerModel = event.data;
         this.modelRemoved(debuggerModel);
         this.modelAdded(debuggerModel);
@@ -438,7 +438,7 @@ export class DebuggerLanguagePluginManager {
                 if (this.hasPluginForScript(script)) {
                     continue;
                 }
-                this.parsedScriptSource({ data: script });
+                this.#parsedScriptSource({ data: script });
             }
         }
     }
@@ -461,7 +461,7 @@ export class DebuggerLanguagePluginManager {
             // unregister/register and we might already have the
             // new instance of the #plugin added before we remove
             // the previous instance.
-            this.parsedScriptSource({ data: script });
+            this.#parsedScriptSource({ data: script });
             if (!this.hasPluginForScript(script)) {
                 void this.#debuggerWorkspaceBinding.updateLocations(script);
             }
@@ -480,7 +480,7 @@ export class DebuggerLanguagePluginManager {
      * risk of racing with the `addRawModule` call. The returned #plugin will be
      * set to undefined to indicate that there's no #plugin for the script.
      */
-    async rawModuleIdAndPluginForScript(script) {
+    async #rawModuleIdAndPluginForScript(script) {
         const rawModuleId = rawModuleIdForScript(script);
         const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
         if (rawModuleHandle) {
@@ -503,7 +503,7 @@ export class DebuggerLanguagePluginManager {
         if (!script) {
             return null;
         }
-        const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+        const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
         if (!plugin) {
             return null;
         }
@@ -660,10 +660,10 @@ export class DebuggerLanguagePluginManager {
             return;
         }
         script.debugSymbols = { type: "ExternalDWARF" /* Protocol.Debugger.DebugSymbolsType.ExternalDWARF */, externalURL };
-        this.parsedScriptSource({ data: script });
+        this.#parsedScriptSource({ data: script });
         void script.debuggerModel.setDebugInfoURL(script, externalURL);
     }
-    parsedScriptSource(event) {
+    #parsedScriptSource(event) {
         const script = event.data;
         if (!script.sourceURL) {
             return;
@@ -742,13 +742,13 @@ export class DebuggerLanguagePluginManager {
             return;
         }
     }
-    debuggerResumed(event) {
-        const resumedFrames = Array.from(this.callFrameByStopId.values()).filter(callFrame => callFrame.debuggerModel === event.data);
+    #debuggerResumed(event) {
+        const resumedFrames = Array.from(this.#callFrameByStopId.values()).filter(callFrame => callFrame.debuggerModel === event.data);
         for (const callFrame of resumedFrames) {
-            const stopId = this.stopIdByCallFrame.get(callFrame);
+            const stopId = this.#stopIdByCallFrame.get(callFrame);
             assertNotNullOrUndefined(stopId);
-            this.stopIdByCallFrame.delete(callFrame);
-            this.callFrameByStopId.delete(stopId);
+            this.#stopIdByCallFrame.delete(callFrame);
+            this.#callFrameByStopId.delete(stopId);
         }
     }
     getSourcesForScript(script) {
@@ -761,7 +761,7 @@ export class DebuggerLanguagePluginManager {
     }
     async resolveScopeChain(callFrame) {
         const script = callFrame.script;
-        const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+        const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
         if (!plugin) {
             return null;
         }
@@ -795,7 +795,7 @@ export class DebuggerLanguagePluginManager {
         }
     }
     async getFunctionInfo(script, location) {
-        const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+        const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
         if (!plugin) {
             return null;
         }
@@ -826,7 +826,7 @@ export class DebuggerLanguagePluginManager {
         if (!script) {
             return [];
         }
-        const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+        const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
         if (!plugin) {
             return [];
         }
@@ -855,7 +855,7 @@ export class DebuggerLanguagePluginManager {
         if (!script) {
             return [];
         }
-        const { rawModuleId, plugin } = await this.rawModuleIdAndPluginForScript(script);
+        const { rawModuleId, plugin } = await this.#rawModuleIdAndPluginForScript(script);
         if (!plugin) {
             return [];
         }
@@ -880,7 +880,7 @@ export class DebuggerLanguagePluginManager {
         }
     }
     async getMappedLines(uiSourceCode) {
-        const rawModuleIds = await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map(s => this.rawModuleIdAndPluginForScript(s)));
+        const rawModuleIds = await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map(s => this.#rawModuleIdAndPluginForScript(s)));
         let mappedLines = null;
         for (const { rawModuleId, plugin } of rawModuleIds) {
             if (!plugin) {

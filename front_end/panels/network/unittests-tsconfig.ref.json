@@ -20,6 +20,7 @@
     "../../../../../../front_end/panels/network/NetworkDataGridNode.test.ts",
     "../../../../../../front_end/panels/network/NetworkItemView.test.ts",
     "../../../../../../front_end/panels/network/NetworkLogView.test.ts",
+    "../../../../../../front_end/panels/network/NetworkManageCustomHeadersView.test.ts",
     "../../../../../../front_end/panels/network/NetworkOverview.test.ts",
     "../../../../../../front_end/panels/network/NetworkPanel.test.ts",
     "../../../../../../front_end/panels/network/NetworkSearchScope.test.ts",
@@ -87,6 +88,9 @@
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/components/render_coordinator/bundle-tsconfig.ref.json"

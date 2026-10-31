@@ -19,6 +19,5 @@ export declare class ThreadsSidebarPane extends UI.Widget.VBox implements SDK.Ta
     performUpdate(): void;
     modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
-    private targetFlavorChanged;
 }
 export {};

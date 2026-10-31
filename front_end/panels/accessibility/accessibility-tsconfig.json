@@ -82,6 +82,9 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
+      "path": "../../generated/aria_properties-tsconfig.ref.json"
+    },
+    {
       "path": "../../models/bindings/bundle-tsconfig.ref.json"
     },
     {

@@ -370,6 +370,7 @@ export class CoverageView extends UI.Widget.VBox {
         this.#model.addEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
         const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+        this.#decorationManager?.dispose();
         this.#decorationManager = new CoverageDecorationManager(this.#model, Workspace.Workspace.WorkspaceImpl.instance(), Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
         this.#toggleRecordAction.setToggled(true);
         this.#clearAction.setEnabled(false);
@@ -454,6 +455,7 @@ export class CoverageView extends UI.Widget.VBox {
                 return;
             }
             this.#model.addEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
+            this.#decorationManager?.dispose();
             this.#decorationManager = new CoverageDecorationManager(this.#model, Workspace.Workspace.WorkspaceImpl.instance(), Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
         }
         if (event.data.type === "Activation" /* SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION */) {

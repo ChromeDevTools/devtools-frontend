@@ -1927,6 +1927,7 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
       this.#onPrimaryPageChanged,
       this
     );
+    this.#decorationManager?.dispose();
     this.#decorationManager = new CoverageDecorationManager(
       this.#model,
       Workspace7.Workspace.WorkspaceImpl.instance(),
@@ -2017,6 +2018,7 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
         return;
       }
       this.#model.addEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
+      this.#decorationManager?.dispose();
       this.#decorationManager = new CoverageDecorationManager(
         this.#model,
         Workspace7.Workspace.WorkspaceImpl.instance(),

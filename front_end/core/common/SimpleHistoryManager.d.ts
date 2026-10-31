@@ -5,11 +5,6 @@ export interface HistoryEntry {
 export declare class SimpleHistoryManager {
     #private;
     constructor(historyDepth: number);
-    private readOnlyLock;
-    private releaseReadOnlyLock;
-    private getPreviousValidIndex;
-    private getNextValidIndex;
-    private readOnly;
     empty(): boolean;
     active(): HistoryEntry | null;
     push(entry: HistoryEntry): void;

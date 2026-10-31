@@ -11426,7 +11426,7 @@ var serviceWorkersView_css_default = `/*
 
 .service-worker-version-stack-bar {
   position: absolute;
-  top: 10px;
+  top: var(--sys-size-6);
   bottom: var(--sys-size-9);
   left: var(--sys-size-3);
   content: "";

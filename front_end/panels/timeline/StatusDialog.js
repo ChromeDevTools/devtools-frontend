@@ -125,7 +125,7 @@ export class StatusDialog extends UI.Widget.VBox {
         this.#onButtonClickCallback = onButtonClickCallback;
     }
     finish() {
-        this.stopTimer();
+        this.#stopTimer();
         this.#hideStopButton = true;
         this.requestUpdate();
     }
@@ -149,7 +149,7 @@ export class StatusDialog extends UI.Widget.VBox {
     }
     remove() {
         this.element.parentNode?.classList.remove('opaque', 'tinted');
-        this.stopTimer();
+        this.#stopTimer();
         this.detach();
     }
     showPane(parent, mode = 'opaque') {
@@ -177,7 +177,7 @@ export class StatusDialog extends UI.Widget.VBox {
         this.#timeUpdateTimer = window.setInterval(this.#updateTimerTick.bind(this), 100);
         this.#updateTimerTick();
     }
-    stopTimer() {
+    #stopTimer() {
         if (!this.#timeUpdateTimer) {
             return;
         }

@@ -416,7 +416,7 @@ var ADD_BRAND_BUTTON_IDS = {
   fullVersionList: "add-fvl-brand-button"
 };
 var UserAgentClientHintsFormBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
-var UserAgentClientHintsForm = class extends UserAgentClientHintsFormBase {
+var UserAgentClientHintsForm = class _UserAgentClientHintsForm extends UserAgentClientHintsFormBase {
   #view;
   #viewOutput = {};
   #isFormOpened = false;
@@ -563,8 +563,11 @@ var UserAgentClientHintsForm = class extends UserAgentClientHintsFormBase {
       this.requestUpdate();
     }
   };
-  validate = () => {
-    for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
+  static validateMetaData(metaData) {
+    if (!metaData) {
+      return { valid: true };
+    }
+    for (const [metaDataKey, metaDataValue] of Object.entries(metaData)) {
       if (metaDataKey === "brands" || metaDataKey === "fullVersionList") {
         const brandList = metaDataValue;
         const isBrandValid = (brandList ?? []).every(({ brand, version }) => {
@@ -611,6 +614,9 @@ var UserAgentClientHintsForm = class extends UserAgentClientHintsFormBase {
       }
     }
     return { valid: true };
+  }
+  validate = () => {
+    return _UserAgentClientHintsForm.validateMetaData(this.#metaData);
   };
   performUpdate() {
     const input = {

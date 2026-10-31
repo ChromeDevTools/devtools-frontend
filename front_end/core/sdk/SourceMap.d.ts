@@ -122,16 +122,9 @@ export declare class SourceMap {
         sourceURL: Platform.DevToolsPath.UrlString;
     } | null;
     sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): SourceMapEntry | null;
-    private findReverseIndices;
     findReverseEntries(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number, filterContiguous?: boolean): SourceMapEntry[];
     findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): TextUtils.TextRange.TextRange[];
     mappings(): SourceMapEntry[];
-    private reversedMappings;
-    private eachSection;
-    private parseSources;
-    private parseMap;
-    private parseBloombergScopes;
-    private isSeparator;
     /**
      * Finds all the reverse mappings that intersect with the given `textRange` within the
      * source entity identified by the `url`. If the `url` does not have any reverse mappings

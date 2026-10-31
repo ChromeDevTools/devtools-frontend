@@ -562,6 +562,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return origin;
     }
+    static extensionIdFromOrigin(extensionOrigin) {
+        const url = Common.ParsedURL.ParsedURL.fromString(extensionOrigin);
+        if (url?.scheme === 'chrome-extension' && url.host) {
+            return url.host;
+        }
+        // Fallback for tests and extensions with malformed or sandboxed origins
+        const sanitized = Platform.StringUtilities.sanitizeIdentifier(extensionOrigin);
+        return sanitized || 'unknown';
+    }
+    getExtensionId(port) {
+        return ExtensionServer.extensionIdFromOrigin(this.getExtensionOrigin(port));
+    }
     onCreatePanel(message, port) {
         if (message.command !== "createPanel" /* Extensions.ExtensionAPI.PrivateAPI.Commands.CreatePanel */) {
             return this.status.E_BADARG('command', `expected ${"createPanel" /* Extensions.ExtensionAPI.PrivateAPI.Commands.CreatePanel */}`);
@@ -630,12 +642,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         button.update(resourcePath, message.tooltip, message.disabled);
         return this.status.OK();
     }
-    onCreateSidebarPane(message) {
+    onCreateSidebarPane(message, port) {
         if (message.command !== "createSidebarPane" /* Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane */) {
             return this.status.E_BADARG('command', `expected ${"createSidebarPane" /* Extensions.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane */}`);
         }
         const id = message.id;
-        const sidebar = new ExtensionSidebarPane(this, message.panel, i18n.i18n.lockedString(message.title), id);
+        const sidebar = new ExtensionSidebarPane(this, message.panel, i18n.i18n.lockedString(message.title), id, this.getExtensionId(port));
         this.#sidebarPanes.push(sidebar);
         this.clientObjects.set(id, sidebar);
         this.dispatchEventToListeners("SidebarPaneAdded" /* Events.SidebarPaneAdded */, sidebar);

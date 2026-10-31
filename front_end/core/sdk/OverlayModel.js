@@ -56,11 +56,11 @@ export class OverlayModel extends SDKModel {
         this.#debuggerModel = target.model(DebuggerModel);
         if (this.#debuggerModel) {
             settings.resolve(disablePausedStateOverlaySettingDescriptor)
-                .addChangeListener(this.updatePausedInDebuggerMessage, this);
-            this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
-            this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
+                .addChangeListener(this.#updatePausedInDebuggerMessage, this);
+            this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerPaused, this.#updatePausedInDebuggerMessage, this);
+            this.#debuggerModel.addEventListener(DebuggerModelEvents.DebuggerResumed, this.#updatePausedInDebuggerMessage, this);
             // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
-            this.#debuggerModel.addEventListener(DebuggerModelEvents.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
+            this.#debuggerModel.addEventListener(DebuggerModelEvents.GlobalObjectCleared, this.#updatePausedInDebuggerMessage, this);
         }
         this.#defaultHighlighter = new DefaultHighlighter(this);
         this.#highlighter = this.#defaultHighlighter;
@@ -72,7 +72,7 @@ export class OverlayModel extends SDKModel {
         this.#showScrollBottleneckRectsSetting = settings.resolve(showScrollBottleneckRectsSettingDescriptor);
         if (!target.suspended()) {
             void this.overlayAgent.invoke_enable();
-            void this.wireAgentToSettings();
+            void this.#wireAgentToSettings();
         }
         this.#persistentHighlighter = new OverlayPersistentHighlighter(this, settings, {
             onGridOverlayStateChanged: ({ nodeId, enabled }) => {
@@ -119,7 +119,7 @@ export class OverlayModel extends SDKModel {
     }
     static hideDOMNodeHighlight(targetManager) {
         for (const overlayModel of targetManager.models(OverlayModel)) {
-            overlayModel.delayedHideHighlight(0);
+            overlayModel.#delayedHideHighlight(0);
         }
     }
     static async muteHighlight(targetManager) {
@@ -149,7 +149,7 @@ export class OverlayModel extends SDKModel {
     clearHighlight() {
         return this.overlayAgent.invoke_hideHighlight();
     }
-    async wireAgentToSettings() {
+    async #wireAgentToSettings() {
         this.#registeredListeners = [
             this.#showPaintRectsSetting.addChangeListener(() => this.overlayAgent.invoke_setShowPaintRects({ result: this.#showPaintRectsSetting.get() })),
             this.#showLayoutShiftRegionsSetting.addChangeListener(() => this.overlayAgent.invoke_setShowLayoutShiftRegions({ result: this.#showLayoutShiftRegionsSetting.get() })),
@@ -177,7 +177,7 @@ export class OverlayModel extends SDKModel {
             void this.overlayAgent.invoke_setShowScrollBottleneckRects({ show: true });
         }
         if (this.#debuggerModel && this.#debuggerModel.isPaused()) {
-            this.updatePausedInDebuggerMessage();
+            this.#updatePausedInDebuggerMessage();
         }
         await this.overlayAgent.invoke_setShowViewportSizeOnResize({ show: this.#showViewportSizeOnResize });
         this.#persistentHighlighter?.resetOverlay();
@@ -187,7 +187,7 @@ export class OverlayModel extends SDKModel {
         await this.overlayAgent.invoke_disable();
     }
     async resumeModel() {
-        await Promise.all([this.overlayAgent.invoke_enable(), this.wireAgentToSettings()]);
+        await Promise.all([this.overlayAgent.invoke_enable(), this.#wireAgentToSettings()]);
     }
     setShowViewportSizeOnResize(show) {
         if (this.#showViewportSizeOnResize === show) {
@@ -199,7 +199,7 @@ export class OverlayModel extends SDKModel {
         }
         void this.overlayAgent.invoke_setShowViewportSizeOnResize({ show });
     }
-    updatePausedInDebuggerMessage() {
+    #updatePausedInDebuggerMessage() {
         if (this.target().suspended()) {
             return;
         }
@@ -217,7 +217,7 @@ export class OverlayModel extends SDKModel {
         await this.#domModel.requestDocument();
         this.#inspectModeEnabled = mode !== "none" /* Protocol.Overlay.InspectMode.None */;
         this.dispatchEventToListeners("InspectModeWillBeToggled" /* Events.INSPECT_MODE_WILL_BE_TOGGLED */, this);
-        void this.#highlighter.setInspectMode(mode, this.buildHighlightConfig('all', showDetailedTooltip));
+        void this.#highlighter.setInspectMode(mode, this.#buildHighlightConfig('all', showDetailedTooltip));
     }
     inspectModeEnabled() {
         return this.#inspectModeEnabled;
@@ -230,7 +230,7 @@ export class OverlayModel extends SDKModel {
         }
         clearTimeout(this.#hideHighlightTimeout);
         this.#hideHighlightTimeout = undefined;
-        const highlightConfig = this.buildHighlightConfig(mode);
+        const highlightConfig = this.#buildHighlightConfig(mode);
         if (typeof showInfo !== 'undefined') {
             highlightConfig.showInfo = showInfo;
         }
@@ -238,7 +238,7 @@ export class OverlayModel extends SDKModel {
     }
     highlightInOverlayForTwoSeconds(data) {
         this.highlightInOverlay(data);
-        this.delayedHideHighlight(2000);
+        this.#delayedHideHighlight(2000);
     }
     highlightGridInPersistentOverlay(nodeId) {
         if (!this.#persistentHighlighter) {
@@ -359,7 +359,7 @@ export class OverlayModel extends SDKModel {
     setSourceOrderActive(isActive) {
         this.#sourceOrderModeActive = isActive;
     }
-    delayedHideHighlight(delay) {
+    #delayedHideHighlight(delay) {
         clearTimeout(this.#hideHighlightTimeout);
         this.#hideHighlightTimeout = globalThis.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
     }
@@ -423,7 +423,7 @@ export class OverlayModel extends SDKModel {
         await Promise.all([setWindowControlsOverlayOperation, toggleStylesheetOperation]);
         this.setShowViewportSizeOnResize(!show);
     }
-    buildHighlightConfig(mode = 'all', showDetailedToolip = false) {
+    #buildHighlightConfig(mode = 'all', showDetailedToolip = false) {
         const settings = this.target().targetManager().settings;
         const showRulers = settings.resolve(showMetricsRulersSettingDescriptor).get();
         const highlightConfig = {

@@ -98,7 +98,7 @@ export class SourceMap {
                 this.#console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
             }
         }
-        this.eachSection(this.parseSources.bind(this));
+        this.#eachSection(this.#parseSources.bind(this));
     }
     provenance() {
         return this.#provenance;
@@ -203,7 +203,7 @@ export class SourceMap {
         const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
         const range = new TextUtils.TextRange.TextRange(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
         // Now try to find the corresponding token in the original code.
-        const reverseMappings = this.reversedMappings(sourceURL);
+        const reverseMappings = this.#reversedMappings(sourceURL);
         const startSourceLine = mappings[startIndex].sourceLineNumber;
         const startSourceColumn = mappings[startIndex].sourceColumnNumber;
         const endReverseIndex = Platform.ArrayUtilities.upperBound(reverseMappings, undefined, (_, i) => startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber);
@@ -221,7 +221,7 @@ export class SourceMap {
     }
     sourceLineMapping(sourceURL, lineNumber, columnNumber) {
         const mappings = this.mappings();
-        const reverseMappings = this.reversedMappings(sourceURL);
+        const reverseMappings = this.#reversedMappings(sourceURL);
         const first = Platform.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
         const last = Platform.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
         if (first >= reverseMappings.length || mappings[reverseMappings[first]].sourceLineNumber !== lineNumber) {
@@ -238,9 +238,9 @@ export class SourceMap {
             return lineNumber - mappings[i].sourceLineNumber;
         }
     }
-    findReverseIndices(sourceURL, lineNumber, columnNumber) {
+    #findReverseIndices(sourceURL, lineNumber, columnNumber) {
         const mappings = this.mappings();
-        const reverseMappings = this.reversedMappings(sourceURL);
+        const reverseMappings = this.#reversedMappings(sourceURL);
         const endIndex = Platform.ArrayUtilities.upperBound(reverseMappings, undefined, (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber);
         let startIndex = endIndex;
         while (startIndex > 0 &&
@@ -254,7 +254,7 @@ export class SourceMap {
     }
     findReverseEntries(sourceURL, lineNumber, columnNumber, filterContiguous = false) {
         const mappings = this.mappings();
-        let indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+        let indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
         if (filterContiguous) {
             indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
         }
@@ -262,7 +262,7 @@ export class SourceMap {
     }
     findReverseRanges(sourceURL, lineNumber, columnNumber) {
         const mappings = this.mappings();
-        const indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+        const indices = this.#findReverseIndices(sourceURL, lineNumber, columnNumber);
         const ranges = [];
         for (let i = 0; i < indices.length; ++i) {
             const startIndex = indices[i];
@@ -304,7 +304,7 @@ export class SourceMap {
         const { scopeTree, text } = scopeTreeAndText;
         return SourceMapScopesInfo.createFromAst(this, scopeTree, text);
     }
-    reversedMappings(sourceURL) {
+    #reversedMappings(sourceURL) {
         this.#ensureSourceMapProcessed();
         return this.#sourceInfoByURL.get(sourceURL)?.reverseMappings ?? [];
     }
@@ -312,7 +312,7 @@ export class SourceMap {
         if (this.#mappings === null) {
             this.#mappings = [];
             try {
-                this.eachSection(this.parseMap.bind(this));
+                this.#eachSection(this.#parseMap.bind(this));
                 if (!this.hasScopeInfo()) {
                     this.#scopesFallbackPromise = this.#buildScopesFallback().then(info => {
                         this.#scopesInfo = info;
@@ -360,7 +360,7 @@ export class SourceMap {
                 a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
         }
     }
-    eachSection(callback) {
+    #eachSection(callback) {
         if (!this.#json) {
             return;
         }
@@ -377,7 +377,7 @@ export class SourceMap {
             callback(this.#json, 0, 0, 0);
         }
     }
-    parseSources(sourceMap) {
+    #parseSources(sourceMap) {
         const sourceRoot = sourceMap.sourceRoot ?? '';
         const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
         for (let i = 0; i < sourceMap.sources.length; ++i) {
@@ -409,7 +409,7 @@ export class SourceMap {
             }
         }
     }
-    parseMap(map, baseSourceIndex, baseLineNumber, baseColumnNumber) {
+    #parseMap(map, baseSourceIndex, baseLineNumber, baseColumnNumber) {
         let sourceIndex = baseSourceIndex;
         let lineNumber = baseLineNumber;
         let columnNumber = baseColumnNumber;
@@ -449,7 +449,7 @@ export class SourceMap {
                 }
             }
             columnNumber += tokenIter.nextVLQ();
-            if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
+            if (!tokenIter.hasNext() || this.#isSeparator(tokenIter.peek())) {
                 pushEntry(new SourceMapEntry(lineNumber, columnNumber));
                 continue;
             }
@@ -460,7 +460,7 @@ export class SourceMap {
             }
             sourceLineNumber += tokenIter.nextVLQ();
             sourceColumnNumber += tokenIter.nextVLQ();
-            if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
+            if (!tokenIter.hasNext() || this.#isSeparator(tokenIter.peek())) {
                 pushEntry(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber));
                 continue;
             }
@@ -477,7 +477,7 @@ export class SourceMap {
             this.#scopesInfo.addGeneratedRanges(ranges);
         }
         else if (map.x_com_bloomberg_sourcesFunctionMappings) {
-            const originalScopes = this.parseBloombergScopes(map);
+            const originalScopes = this.#parseBloombergScopes(map);
             this.#scopesInfo.addOriginalScopes(originalScopes);
         }
         else {
@@ -522,7 +522,7 @@ export class SourceMap {
             }
         }
     }
-    parseBloombergScopes(map) {
+    #parseBloombergScopes(map) {
         const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
         if (!scopeList) {
             throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');
@@ -539,7 +539,7 @@ export class SourceMap {
             return buildOriginalScopes(ranges);
         });
     }
-    isSeparator(char) {
+    #isSeparator(char) {
         return char === ',' || char === ';';
     }
     /**
@@ -554,7 +554,7 @@ export class SourceMap {
      *          if the {@link url} does not identify an entity in this source map.
      */
     reverseMapTextRanges(url, textRange) {
-        const reverseMappings = this.reversedMappings(url);
+        const reverseMappings = this.#reversedMappings(url);
         const mappings = this.mappings();
         if (reverseMappings.length === 0) {
             return [];

@@ -13,7 +13,6 @@ export declare class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelOb
     }): CSSWorkspaceBinding;
     static removeInstance(): void;
     get modelToInfo(): Map<SDK.CSSModel.CSSModel, ModelInfo>;
-    private getCSSModelInfo;
     modelAdded(cssModel: SDK.CSSModel.CSSModel): void;
     modelRemoved(cssModel: SDK.CSSModel.CSSModel): void;
     /**
@@ -21,7 +20,6 @@ export declare class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelOb
      * pending LiveLocations are processed.
      */
     pendingLiveLocationChangesPromise(): Promise<void>;
-    private recordLiveLocationChange;
     updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void>;
     createLiveLocation(rawLocation: SDK.CSSModel.CSSLocation, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool): Promise<LiveLocation>;
     propertyRawLocation(cssProperty: SDK.CSSProperty.CSSProperty, forName: boolean): SDK.CSSModel.CSSLocation | null;
@@ -41,8 +39,6 @@ export declare class ModelInfo {
     createLiveLocation(rawLocation: SDK.CSSModel.CSSLocation, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool): Promise<LiveLocation>;
     disposeLocation(location: LiveLocation): void;
     updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void[]>;
-    private styleSheetAdded;
-    private styleSheetRemoved;
     addSourceMap(sourceUrl: Platform.DevToolsPath.UrlString, sourceMapUrl: Platform.DevToolsPath.UrlString): void;
     rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation | null;
     uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[];

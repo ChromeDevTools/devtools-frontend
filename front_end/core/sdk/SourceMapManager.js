@@ -51,14 +51,14 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
             this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL, provenance);
         }
     }
-    static getBaseUrl(target) {
+    static #getBaseUrl(target) {
         while (target && target.type() !== Type.FRAME) {
             target = target.parentTarget();
         }
         return target?.inspectedURL() ?? Platform.DevToolsPath.EmptyUrlString;
     }
     static resolveRelativeSourceURL(target, url) {
-        url = Common.ParsedURL.ParsedURL.completeURL(SourceMapManager.getBaseUrl(target), url) ?? url;
+        url = Common.ParsedURL.ParsedURL.completeURL(SourceMapManager.#getBaseUrl(target), url) ?? url;
         return url;
     }
     sourceMapForClient(client) {

@@ -10,5 +10,4 @@ export declare class SegmentedRange<T> {
     constructor(mergeCallback?: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T> | null));
     append(newSegment: Segment<T>): void;
     segments(): Array<Segment<T>>;
-    private tryMerge;
 }

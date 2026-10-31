@@ -74,8 +74,6 @@ export declare class ParsedURL {
         columnNumber?: number;
     };
     static removeWasmFunctionInfoFromURL(url: string): Platform.DevToolsPath.UrlString;
-    private static beginsWithWindowsDriveLetter;
-    private static beginsWithScheme;
     static isRelativeURL(url: string): boolean;
     get displayName(): string;
     dataURLDisplayName(): string;

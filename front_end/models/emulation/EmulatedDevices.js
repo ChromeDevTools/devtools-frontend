@@ -309,14 +309,14 @@ export class EmulatedDevice {
         json['capabilities'] = this.capabilities;
         json['screen'] = {
             'device-pixel-ratio': this.deviceScaleFactor,
-            vertical: this.orientationToJSON(this.vertical),
-            horizontal: this.orientationToJSON(this.horizontal),
+            vertical: this.#orientationToJSON(this.vertical),
+            horizontal: this.#orientationToJSON(this.horizontal),
             'vertical-spanned': undefined,
             'horizontal-spanned': undefined,
         };
         if (this.isDualScreen || this.isFoldableScreen) {
-            json['screen']['vertical-spanned'] = this.orientationToJSON(this.verticalSpanned);
-            json['screen']['horizontal-spanned'] = this.orientationToJSON(this.horizontalSpanned);
+            json['screen']['vertical-spanned'] = this.#orientationToJSON(this.verticalSpanned);
+            json['screen']['horizontal-spanned'] = this.#orientationToJSON(this.horizontalSpanned);
         }
         json['modes'] = [];
         for (let i = 0; i < this.modes.length; ++i) {
@@ -366,7 +366,7 @@ export class EmulatedDevice {
         }
         return json;
     }
-    orientationToJSON(orientation) {
+    #orientationToJSON(orientation) {
         const json = {};
         json['width'] = orientation.width;
         json['height'] = orientation.height;
@@ -502,11 +502,11 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
         super();
         this.#standardSetting = settings.createSetting('standard-emulated-device-list', []);
         this.#standard = new Set();
-        this.listFromJSONV1(this.#standardSetting.get(), this.#standard);
-        this.updateStandardDevices();
+        this.#listFromJSONV1(this.#standardSetting.get(), this.#standard);
+        this.#updateStandardDevices();
         this.#customSetting = settings.createSetting('custom-emulated-device-list', []);
         this.#custom = new Set();
-        if (!this.listFromJSONV1(this.#customSetting.get(), this.#custom)) {
+        if (!this.#listFromJSONV1(this.#customSetting.get(), this.#custom)) {
             this.saveCustomDevices();
         }
     }
@@ -518,7 +518,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
         }
         return Root.DevToolsContext.globalInstance().get(EmulatedDevicesList);
     }
-    updateStandardDevices() {
+    #updateStandardDevices() {
         const devices = new Set();
         for (const emulatedDevice of emulatedDevices) {
             const device = EmulatedDevice.fromJSONV1(emulatedDevice);
@@ -526,11 +526,11 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
                 devices.add(device);
             }
         }
-        this.copyShowValues(this.#standard, devices);
+        this.#copyShowValues(this.#standard, devices);
         this.#standard = devices;
         this.saveStandardDevices();
     }
-    listFromJSONV1(jsonArray, result) {
+    #listFromJSONV1(jsonArray, result) {
         if (!Array.isArray(jsonArray)) {
             return false;
         }
@@ -588,7 +588,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
         this.#standardSetting.set(json);
         this.dispatchEventToListeners("StandardDevicesUpdated" /* Events.STANDARD_DEVICES_UPDATED */);
     }
-    copyShowValues(from, to) {
+    #copyShowValues(from, to) {
         const fromDeviceById = new Map();
         for (const device of from) {
             fromDeviceById.set(device.title, device);

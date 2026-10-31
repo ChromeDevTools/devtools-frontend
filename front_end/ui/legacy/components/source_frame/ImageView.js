@@ -249,16 +249,15 @@ export class ImageView extends ImageViewBase {
         }
     }
     #workingCopyCommitted() {
-        void this.#updateContentIfNeeded().then(() => {
-            this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
-        });
+        void this.#updateContentIfNeeded(true);
     }
-    async #updateContentIfNeeded() {
+    async #updateContentIfNeeded(notifyToolbarItemsChanged = false) {
         const content = await this.#contentProvider.requestContentData();
         if (TextUtils.ContentData.ContentData.isError(content) || this.#cachedContent?.contentEqualTo(content)) {
             await this.#loadPromise;
             return;
         }
+        const shouldNotify = notifyToolbarItemsChanged || Boolean(this.#cachedContent);
         this.#cachedContent = content;
         this.#loadResolve?.();
         this.#loadResolve = undefined;
@@ -271,6 +270,9 @@ export class ImageView extends ImageViewBase {
             this.#dimensions = '';
             this.#aspectRatio = '';
             this.performUpdate();
+            if (shouldNotify) {
+                this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
+            }
             return;
         }
         this.#isUnavailable = false;
@@ -282,6 +284,9 @@ export class ImageView extends ImageViewBase {
         this.#size = i18n.ByteUtilities.bytesToString(size);
         this.performUpdate();
         await this.#loadPromise;
+        if (shouldNotify && this.#cachedContent === content) {
+            this.dispatchEventToListeners("ToolbarItemsChanged" /* Events.TOOLBAR_ITEMS_CHANGED */);
+        }
     }
     #contextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);

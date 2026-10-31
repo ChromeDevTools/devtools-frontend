@@ -103,11 +103,11 @@ export class CSSModel extends SDKModel {
         this.#styleLoader = new ComputedStyleLoader(this);
         this.#resourceTreeModel = target.model(ResourceTreeModel);
         if (this.#resourceTreeModel) {
-            this.#resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+            this.#resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
         }
         target.registerCSSDispatcher(new CSSDispatcher(this));
         if (!target.suspended()) {
-            void this.enable();
+            void this.#enable();
         }
         const settings = this.target().targetManager().settings;
         this.#sourceMapManager.setEnabled(settings.resolve(cssSourceMapsEnabledSettingDescriptor).get());
@@ -195,7 +195,7 @@ export class CSSModel extends SDKModel {
     }
     async setStyleText(styleSheetId, range, text, majorChange) {
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { styles } = await this.agent.invoke_setStyleTexts({ edits: [{ styleSheetId, range: range.serializeToObject(), text }] });
             if (styles?.length !== 1) {
                 return false;
@@ -213,7 +213,7 @@ export class CSSModel extends SDKModel {
     async setSelectorText(styleSheetId, range, text) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { selectorList } = await this.agent.invoke_setRuleSelector({ styleSheetId, range, selector: text });
             if (!selectorList) {
                 return false;
@@ -231,7 +231,7 @@ export class CSSModel extends SDKModel {
     async setPropertyRulePropertyName(styleSheetId, range, text) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { propertyName } = await this.agent.invoke_setPropertyRulePropertyName({ styleSheetId, range, propertyName: text });
             if (!propertyName) {
                 return false;
@@ -249,7 +249,7 @@ export class CSSModel extends SDKModel {
     async setKeyframeKey(styleSheetId, range, text) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { keyText } = await this.agent.invoke_setKeyframeKey({ styleSheetId, range, keyText: text });
             if (!keyText) {
                 return false;
@@ -294,7 +294,7 @@ export class CSSModel extends SDKModel {
     isEnabled() {
         return this.#isEnabled;
     }
-    async enable() {
+    async #enable() {
         await this.agent.invoke_enable();
         this.#isEnabled = true;
         if (this.#isRuleUsageTrackingEnabled) {
@@ -351,13 +351,13 @@ export class CSSModel extends SDKModel {
     }
     async getComputedStyle(nodeId) {
         if (!this.isEnabled()) {
-            await this.enable();
+            await this.#enable();
         }
         return await this.#styleLoader.computedStylePromise(nodeId);
     }
     async getComputedStyleExtraFields(nodeId) {
         if (!this.isEnabled()) {
-            await this.enable();
+            await this.#enable();
         }
         return await this.#styleLoader.extraFieldsPromise(nodeId);
     }
@@ -493,7 +493,7 @@ export class CSSModel extends SDKModel {
     async setMediaText(styleSheetId, range, newMediaText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { media } = await this.agent.invoke_setMediaText({ styleSheetId, range, text: newMediaText });
             if (!media) {
                 return false;
@@ -511,7 +511,7 @@ export class CSSModel extends SDKModel {
     async setContainerQueryText(styleSheetId, range, newContainerQueryText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { containerQuery } = await this.agent.invoke_setContainerQueryText({ styleSheetId, range, text: newContainerQueryText });
             if (!containerQuery) {
                 return false;
@@ -529,7 +529,7 @@ export class CSSModel extends SDKModel {
     async setContainerQueryConditionText(styleSheetId, range, newContainerQueryConditionText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText({ styleSheetId, range, text: newContainerQueryConditionText });
             if (!containerQuery) {
                 return false;
@@ -547,7 +547,7 @@ export class CSSModel extends SDKModel {
     async setSupportsText(styleSheetId, range, newSupportsText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { supports } = await this.agent.invoke_setSupportsText({ styleSheetId, range, text: newSupportsText });
             if (!supports) {
                 return false;
@@ -565,7 +565,7 @@ export class CSSModel extends SDKModel {
     async setNavigationText(styleSheetId, range, newNavigationText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { navigation } = await this.agent.invoke_setNavigationText({ styleSheetId, range, text: newNavigationText });
             if (!navigation) {
                 return false;
@@ -583,7 +583,7 @@ export class CSSModel extends SDKModel {
     async setScopeText(styleSheetId, range, newScopeText) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { scope } = await this.agent.invoke_setScopeText({ styleSheetId, range, text: newScopeText });
             if (!scope) {
                 return false;
@@ -600,7 +600,7 @@ export class CSSModel extends SDKModel {
     }
     async addRule(styleSheetId, ruleText, ruleLocation) {
         try {
-            await this.ensureOriginalStyleSheetText(styleSheetId);
+            await this.#ensureOriginalStyleSheetText(styleSheetId);
             const { rule } = await this.agent.invoke_addRule({ styleSheetId, ruleText, location: ruleLocation });
             if (!rule) {
                 return null;
@@ -666,7 +666,7 @@ export class CSSModel extends SDKModel {
     fireStyleSheetChanged(styleSheetId, edit) {
         this.dispatchEventToListeners(Events.StyleSheetChanged, { styleSheetId, edit });
     }
-    ensureOriginalStyleSheetText(styleSheetId) {
+    #ensureOriginalStyleSheetText(styleSheetId) {
         const header = this.styleSheetHeaderForId(styleSheetId);
         if (!header) {
             return Promise.resolve(null);
@@ -675,14 +675,14 @@ export class CSSModel extends SDKModel {
         if (!promise) {
             promise = this.getStyleSheetText(header.id);
             this.#originalStyleSheetText.set(header, promise);
-            this.originalContentRequestedForTest(header);
+            this.#originalContentRequestedForTest(header);
         }
         return promise;
     }
-    originalContentRequestedForTest(_header) {
+    #originalContentRequestedForTest(_header) {
     }
     originalStyleSheetText(header) {
-        return this.ensureOriginalStyleSheetText(header.id);
+        return this.#ensureOriginalStyleSheetText(header.id);
     }
     getAllStyleSheetHeaders() {
         return this.#styleSheetIdToHeader.values();
@@ -769,7 +769,7 @@ export class CSSModel extends SDKModel {
         if (header.hasSourceURL) {
             newText += '\n/*# sourceURL=' + header.sourceURL + ' */';
         }
-        await this.ensureOriginalStyleSheetText(styleSheetId);
+        await this.#ensureOriginalStyleSheetText(styleSheetId);
         const response = await this.agent.invoke_setStyleSheetText({ styleSheetId: header.id, text: newText });
         const sourceMapURL = response.sourceMapURL;
         this.#sourceMapManager.detachSourceMap(header);
@@ -790,7 +790,7 @@ export class CSSModel extends SDKModel {
         const { text } = response;
         return text && CSSModel.trimSourceURL(text);
     }
-    async onPrimaryPageChanged(event) {
+    async #onPrimaryPageChanged(event) {
         // If the main frame was restored from the back-forward cache, the order of CDP
         // is different from the regular navigations. In this case, events about CSS
         // stylesheet has already been received and they are mixed with the previous page
@@ -802,11 +802,11 @@ export class CSSModel extends SDKModel {
             await this.resumeModel();
         }
         else if (event.data.type !== "Activation" /* PrimaryPageChangeType.ACTIVATION */) {
-            this.resetStyleSheets();
-            this.resetFontFaces();
+            this.#resetStyleSheets();
+            this.#resetFontFaces();
         }
     }
-    resetStyleSheets() {
+    #resetStyleSheets() {
         const headers = [...this.#styleSheetIdToHeader.values()];
         this.#styleSheetIdsForURL.clear();
         this.#styleSheetIdToHeader.clear();
@@ -815,17 +815,17 @@ export class CSSModel extends SDKModel {
             this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
         }
     }
-    resetFontFaces() {
+    #resetFontFaces() {
         this.#fontFaces.clear();
     }
     async suspendModel() {
         this.#isEnabled = false;
         await this.agent.invoke_disable();
-        this.resetStyleSheets();
-        this.resetFontFaces();
+        this.#resetStyleSheets();
+        this.#resetFontFaces();
     }
     async resumeModel() {
-        return await this.enable();
+        return await this.#enable();
     }
     setEffectivePropertyValueForNode(nodeId, propertyName, value) {
         void this.agent.invoke_setEffectivePropertyValueForNode({ nodeId, propertyName, value });
@@ -861,7 +861,7 @@ export class CSSModel extends SDKModel {
         void this.agent.invoke_trackComputedStyleUpdates({ propertiesToTrack });
         this.#isCSSPropertyTrackingEnabled = true;
         this.#cssPropertyTracker = cssPropertyTracker;
-        void this.pollComputedStyleUpdates();
+        void this.#pollComputedStyleUpdates();
     }
     // Since we only support one tracker at a time, this call effectively disables
     // style tracking.
@@ -871,7 +871,7 @@ export class CSSModel extends SDKModel {
         // Sending an empty list to the backend signals the close of style tracking
         void this.agent.invoke_trackComputedStyleUpdates({ propertiesToTrack: [] });
     }
-    async pollComputedStyleUpdates() {
+    async #pollComputedStyleUpdates() {
         if (this.#isTrackingRequestPending) {
             return;
         }
@@ -887,7 +887,7 @@ export class CSSModel extends SDKModel {
             }
         }
         if (this.#isCSSPropertyTrackingEnabled) {
-            void this.#stylePollingThrottler.schedule(this.pollComputedStyleUpdates.bind(this));
+            void this.#stylePollingThrottler.schedule(this.#pollComputedStyleUpdates.bind(this));
         }
     }
     dispose() {

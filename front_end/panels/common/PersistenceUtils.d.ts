@@ -9,7 +9,7 @@ export declare class PersistenceUtils {
     static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): LitTemplate | null;
 }
 export declare class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components.Linkifier.LinkDecorator.EventTypes> implements Components.Linkifier.LinkDecorator {
+    #private;
     constructor(persistence: Persistence.Persistence.PersistenceImpl);
-    private bindingChanged;
     linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): LitTemplate | null;
 }

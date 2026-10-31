@@ -39,13 +39,19 @@ export class ItemRemoveEvent extends CustomEvent {
 export class List extends HTMLElement {
     static observedAttributes = ['editable', 'deletable', 'disable-li-focus'];
     #observer;
+    #itemObserver;
     #editable = false;
     #deletable = false;
     #disableListItemFocus;
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-        this.#observer = new MutationObserver(this.#render.bind(this));
+        this.#observer = new MutationObserver(() => {
+            this.#render();
+        });
+        this.#itemObserver = new MutationObserver(() => {
+            this.#render();
+        });
     }
     set editable(isEditable) {
         if (this.#editable === isEditable) {
@@ -86,18 +92,22 @@ export class List extends HTMLElement {
     }
     disconnectedCallback() {
         this.#observer.disconnect();
+        this.#itemObserver.disconnect();
     }
-    createSlottedListItem(index) {
+    createSlottedListItem(index, item) {
+        const isEditable = item?.hasAttribute('editable') ? item.getAttribute('editable') !== 'false' : this.#editable;
+        const isDeletable = item?.hasAttribute('deletable') ? item.getAttribute('deletable') !== 'false' : this.#deletable;
         return html `
     <li
       role='listitem'
       tabindex=${this.#disableListItemFocus ? '-1' : '0'}
-      @keydown=${this.#deletable ? this.#dispatchRemoveOnDelete.bind(this, index) : nothing}>
+      @keydown=${isDeletable ? this.#dispatchRemoveOnDelete.bind(this, index) : nothing}>
     <slot name='slot-${index}'></slot>
+    ${isEditable || isDeletable ? html `
     <div class='controls-container'>
               <div class='controls-gradient'></div>
               <div class='controls-buttons'>
-                ${this.#editable ? html `
+                ${isEditable ? html `
             <devtools-button
               title=${i18nString(UIStrings.edit)}
               aria-label=${i18nString(UIStrings.edit)}
@@ -108,7 +118,7 @@ export class List extends HTMLElement {
             ></devtools-button>
           ` :
             nothing}
-                ${this.#deletable ? html `
+                ${isDeletable ? html `
             <devtools-button
               title=${i18nString(UIStrings.remove)}
               aria-label=${i18nString(UIStrings.remove)}
@@ -120,13 +130,16 @@ export class List extends HTMLElement {
           ` :
             nothing}
               </div>
-            </div>
+            </div>` :
+            nothing}
             </li>`;
     }
     #render() {
         if (this.shadowRoot) {
+            this.#itemObserver.disconnect();
             const items = [...this.children];
             const listData = items.map((item, index) => {
+                this.#itemObserver.observe(item, { attributes: true, attributeFilter: ['editable', 'deletable'] });
                 const slotName = `slot-${index}`;
                 if (item.getAttribute('slot') !== slotName) {
                     item.setAttribute('slot', slotName);
@@ -136,7 +149,7 @@ export class List extends HTMLElement {
             render(html `
     <style>${listStyles}</style>
     <ul role='list'>
-    ${Directives.repeat(listData, data => data.item, data => this.createSlottedListItem(data.index))}
+    ${Directives.repeat(listData, data => data.item, data => this.createSlottedListItem(data.index, data.item))}
     </ul>
   `, this.shadowRoot);
         }
@@ -145,8 +158,7 @@ export class List extends HTMLElement {
         this.dispatchEvent(new ItemRemoveEvent({ index }));
     }
     #dispatchRemoveOnDelete(index, event) {
-        if (!this.#deletable || event.target !== event.currentTarget ||
-            (event.key !== 'Delete' && event.key !== 'Backspace')) {
+        if (event.target !== event.currentTarget || (event.key !== 'Delete' && event.key !== 'Backspace')) {
             return;
         }
         event.preventDefault();

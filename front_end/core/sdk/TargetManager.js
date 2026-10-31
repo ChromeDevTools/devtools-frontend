@@ -197,7 +197,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
             }
         }
     }
-    modelRemoved(modelClass, model, inScope) {
+    #modelRemoved(modelClass, model, inScope) {
         for (const observer of this.#modelObservers.get(modelClass).values()) {
             if (!this.#scopedObservers.has(observer) || inScope) {
                 observer.modelRemoved(model);
@@ -309,7 +309,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
         for (const modelClass of target.models().keys()) {
             const model = target.models().get(modelClass);
             assertNotNullOrUndefined(model);
-            this.modelRemoved(modelClass, model, inScope);
+            this.#modelRemoved(modelClass, model, inScope);
         }
         // Iterate over a copy. #observers might be modified during iteration.
         for (const observer of [...this.#observers]) {

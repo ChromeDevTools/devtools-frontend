@@ -37,7 +37,6 @@ export declare class RequestPayloadView extends UI.Widget.VBox {
     get refreshFormDataPromiseForTest(): Promise<void>;
     wasShown(): void;
     willHide(): void;
-    private addEntryContextMenuHandler;
     performUpdate(): void;
     static decodeParameter(value: string, decodeParameters: boolean): {
         value: string;

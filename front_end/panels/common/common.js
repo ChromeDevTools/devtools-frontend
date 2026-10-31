@@ -1534,14 +1534,16 @@ var ExtensionButton = class {
     return this.#toolbarButton;
   }
 };
+var hashIdentifier = (id) => Platform.StringUtilities.hashCode(id).toString(36);
+var cleanIdentifier = (id) => Platform.StringUtilities.sanitizeIdentifier(id) || hashIdentifier(id);
 var ExtensionSidebarPane = class extends UI6.View.SimpleView {
   #panelName;
   server;
   #id;
   extensionView;
   objectPropertiesView;
-  constructor(server, panelName, title, id) {
-    const viewId = Platform.StringUtilities.toKebabCase(title);
+  constructor(server, panelName, title, id, extensionId = "extension") {
+    const viewId = `extension-sidebar-${cleanIdentifier(extensionId)}-${cleanIdentifier(panelName)}-${hashIdentifier(title)}`;
     super({ title, viewId });
     this.element.classList.add("fill");
     this.#panelName = panelName;
@@ -2328,6 +2330,17 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     return origin;
   }
+  static extensionIdFromOrigin(extensionOrigin) {
+    const url = Common5.ParsedURL.ParsedURL.fromString(extensionOrigin);
+    if (url?.scheme === "chrome-extension" && url.host) {
+      return url.host;
+    }
+    const sanitized = Platform2.StringUtilities.sanitizeIdentifier(extensionOrigin);
+    return sanitized || "unknown";
+  }
+  getExtensionId(port) {
+    return _ExtensionServer.extensionIdFromOrigin(this.getExtensionOrigin(port));
+  }
   onCreatePanel(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.CreatePanel) {
       return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.CreatePanel}`);
@@ -2401,7 +2414,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     button.update(resourcePath, message.tooltip, message.disabled);
     return this.status.OK();
   }
-  onCreateSidebarPane(message) {
+  onCreateSidebarPane(message, port) {
     if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane) {
       return this.status.E_BADARG(
         "command",
@@ -2409,7 +2422,13 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       );
     }
     const id = message.id;
-    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n11.i18n.lockedString(message.title), id);
+    const sidebar = new ExtensionSidebarPane(
+      this,
+      message.panel,
+      i18n11.i18n.lockedString(message.title),
+      id,
+      this.getExtensionId(port)
+    );
     this.#sidebarPanes.push(sidebar);
     this.clientObjects.set(id, sidebar);
     this.dispatchEventToListeners("SidebarPaneAdded" /* SidebarPaneAdded */, sidebar);
@@ -3616,10 +3635,10 @@ var PersistenceUtils = class _PersistenceUtils {
 var LinkDecorator = class extends Common6.ObjectWrapper.ObjectWrapper {
   constructor(persistence) {
     super();
-    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
-    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.#bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.#bindingChanged, this);
   }
-  bindingChanged(event) {
+  #bindingChanged(event) {
     const binding = event.data;
     this.dispatchEventToListeners(Components2.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED, binding.network);
   }
@@ -3845,7 +3864,7 @@ var DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
-        <slot></slot>
+        <slot>${input.textContent ?? nothing3}</slot>
       </button>`, target);
 };
 var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
@@ -3862,9 +3881,31 @@ var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
     this.#view = view;
     this.performUpdate();
   }
+  set deferredNode(deferredNode) {
+    if (this.#deferredNode === deferredNode) {
+      return;
+    }
+    this.#deferredNode = deferredNode;
+    this.requestUpdate();
+  }
+  set options(options) {
+    if (this.#options === options) {
+      return;
+    }
+    this.#options = options;
+    this.requestUpdate();
+  }
+  set styleSheetId(styleSheetId) {
+    if (this.#styleSheetId === styleSheetId) {
+      return;
+    }
+    this.#styleSheetId = styleSheetId;
+    this.requestUpdate();
+  }
   performUpdate() {
     const viewInput = {
       preventKeyboardFocus: this.#options?.preventKeyboardFocus,
+      textContent: this.#options?.textContent,
       onClick: () => {
         this.#deferredNode?.resolve?.((node) => {
           if (node && this.#styleSheetId) {
@@ -3913,6 +3954,7 @@ __export(CommentThreadWidget_exports, {
 });
 import "../../ui/components/spinners/spinners.js";
 import "../../ui/components/tooltips/tooltips.js";
+import * as Host6 from "../../core/host/host.js";
 import * as i18n17 from "../../core/i18n/i18n.js";
 import * as SDK5 from "../../core/sdk/sdk.js";
 import * as Buttons4 from "../../ui/components/buttons/buttons.js";
@@ -4199,6 +4241,12 @@ var UIStrings7 = {
    */
   commentInputAriaLabel: "Comment input",
   /**
+   * @description Placeholder text for the comment text area, explaining the keyboard shortcut that queues a comment
+   * (saves it locally so it is sent to the agent together with the next comment).
+   * @example {Ctrl} PH1
+   */
+  queueCommentsPlaceholder: "{PH1} + \u21B5 to queue comments",
+  /**
    * @description Banner text shown at the bottom of a comment thread when the element the comment was
    * attached to has been removed and can no longer be found.
    */
@@ -4308,6 +4356,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
           @keyup=${(event) => input.onQueueModifierChange(UI9.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event))}
           @blur=${() => input.onQueueModifierChange(false)}
           jslog=${VisualLogging4.textField("comments-input").track({ keydown: "Enter" })}
+          placeholder=${input.placeholder}
         ></textarea>
         <div class="footer">
           <devtools-icon
@@ -4475,6 +4524,7 @@ var CommentThreadWidget = class extends UI9.Widget.Widget {
       title: this.title,
       comments: this.#comments,
       commentText: this.#commentText,
+      placeholder: i18nString7(UIStrings7.queueCommentsPlaceholder, { PH1: Host6.Platform.isMac() ? "\u2318" : "Ctrl" }),
       isQueueModifierPressed: this.#isQueueModifierPressed,
       elementRemoved: this.#elementRemoved,
       textAreaRef: this.#textAreaRef,

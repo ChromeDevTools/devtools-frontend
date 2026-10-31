@@ -98,6 +98,7 @@ export class ExecuteJavaScriptTool {
 
 * To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
 * $0 refers to the currently selected DOM node (or document body if none selected).
+* **CRITICAL** Do not call \`console\` methods (e.g., \`console.log\`, \`console.warn\`, \`console.error\`) by default when returning data via \`data\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Variables from previous function calls are not available in subsequent calls.
 * **CRITICAL** Keep code concise (max 40 lines, 120 characters per line, and 2,500 characters). Split complex logic into multiple steps.

@@ -15,7 +15,6 @@ export declare class LinkSwatch extends HTMLElement {
     connectedCallback(): void;
     set data(data: LinkSwatchRenderData);
     get linkElement(): HTMLElement | undefined;
-    private render;
 }
 declare global {
     interface HTMLElementTagNameMap {

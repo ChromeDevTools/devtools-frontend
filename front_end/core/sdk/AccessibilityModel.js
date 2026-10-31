@@ -266,11 +266,11 @@ export class AccessibilityModel extends SDKModel {
         this.dispatchEventToListeners("TreeUpdated" /* Events.TREE_UPDATED */, { root: this.#root });
     }
     nodesUpdated({ nodes }) {
-        this.createNodesFromPayload(nodes);
+        this.#createNodesFromPayload(nodes);
         this.dispatchEventToListeners("TreeUpdated" /* Events.TREE_UPDATED */, {});
         return;
     }
-    createNodesFromPayload(payloadNodes) {
+    #createNodesFromPayload(payloadNodes) {
         const accessibilityNodes = payloadNodes.map(node => {
             const sdkNode = new AccessibilityNode(this, node);
             return sdkNode;
@@ -288,7 +288,7 @@ export class AccessibilityModel extends SDKModel {
         if (!node) {
             return;
         }
-        return this.createNodesFromPayload([node])[0];
+        return this.#createNodesFromPayload([node])[0];
     }
     async requestAXChildren(nodeId, frameId) {
         const parent = this.#axIdToAXNode.get(nodeId);
@@ -307,7 +307,7 @@ export class AccessibilityModel extends SDKModel {
             this.#pendingChildRequests.set(nodeId, request);
             const result = await request;
             if (!result.getError()) {
-                this.createNodesFromPayload(result.nodes);
+                this.#createNodesFromPayload(result.nodes);
                 this.#pendingChildRequests.delete(nodeId);
             }
         }
@@ -329,7 +329,7 @@ export class AccessibilityModel extends SDKModel {
         if (!nodes) {
             return null;
         }
-        const ancestors = this.createNodesFromPayload(nodes);
+        const ancestors = this.#createNodesFromPayload(nodes);
         return ancestors;
     }
     axNodeForId(axId) {

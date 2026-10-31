@@ -11,7 +11,6 @@ import { type Target } from './Target.js';
 export declare class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyApi.AuditsDispatcher {
     #private;
     constructor(target: Target);
-    private ensureEnabled;
     issueAdded(issueAddedEvent: Protocol.Audits.IssueAddedEvent): void;
     dispose(): void;
     getTargetIfNotDisposed(): Target | null;

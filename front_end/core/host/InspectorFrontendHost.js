@@ -12,10 +12,10 @@ class InspectorFrontendAPIImpl {
     constructor() {
         for (const descriptor of EventDescriptors) {
             // @ts-expect-error Dispatcher magic
-            this[descriptor[0]] = this.dispatch.bind(this, descriptor[0], descriptor[1], descriptor[2]);
+            this[descriptor[0]] = this.#dispatch.bind(this, descriptor[0], descriptor[1], descriptor[2]);
         }
     }
-    dispatch(name, signature, _runOnceLoaded, ...params) {
+    #dispatch(name, signature, _runOnceLoaded, ...params) {
         // Single argument methods get dispatched with the param.
         if (signature.length < 2) {
             try {

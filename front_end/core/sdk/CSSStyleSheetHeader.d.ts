@@ -34,8 +34,6 @@ export declare class CSSStyleSheetHeader implements TextUtils.ContentProvider.Co
     isAnonymousInlineStyleSheet(): boolean;
     isConstructedByNew(): boolean;
     resourceURL(): Platform.DevToolsPath.UrlString;
-    private getFrameURLPath;
-    private viaInspectorResourceURL;
     lineNumberInSource(lineNumberInStyleSheet: number): number;
     columnNumberInSource(lineNumberInStyleSheet: number, columnNumberInStyleSheet: number): number | undefined;
     /**

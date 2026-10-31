@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 export declare const Types: {
     Authored: string;
     AutomaticFileSystem: string;
@@ -25,6 +26,11 @@ export interface ViewInput {
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
+export declare function iconTypeForNodeType(type: string): string;
+export declare function contextForNodeType(type: string): string;
+export declare function renderFolderLeadingIcon(type: string): Lit.TemplateResult;
+export declare function renderSourceTrailingIcons(uiSourceCode: Workspace.UISourceCode.UISourceCode, onSelectSource: (uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean) => void): Lit.TemplateResult[];
+export declare function renderGroupTrailingIcons(project: Workspace.Workspace.Project | null): Lit.TemplateResult[];
 export declare const enum Events {
     UI_SOURCE_CODE_ADDED = "ui-source-code-added",
     SOURCE_SELECTED = "source-selected"
@@ -145,24 +151,6 @@ export declare class NavigatorView extends NavigatorViewBase implements SDK.Targ
     targetRemoved(target: SDK.Target.Target): void;
     private targetNameChanged;
 }
-export declare class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
-    #private;
-    private readonly nodeType;
-    private readonly navigatorView;
-    node: NavigatorTreeNode;
-    private hovered?;
-    private isIgnoreListed?;
-    constructor(navigatorView: NavigatorView, type: string, title: string, expandable?: boolean);
-    updateIcon(): void;
-    onattach(): void;
-    setIgnoreListed(isIgnoreListed: boolean): void;
-    setFromSourceMap(isFromSourceMap: boolean): void;
-    setNode(node: NavigatorTreeNode): void;
-    private updateTooltip;
-    private handleContextMenuEvent;
-    private mouseMove;
-    private mouseLeave;
-}
 export interface NavigatorRecursiveTreeNodeProperties {
     exclusivelySourceMapped: boolean | null;
     exclusivelyIgnored: boolean | null;
@@ -175,6 +163,7 @@ export declare class NavigatorTreeNode {
     protected navigatorView: NavigatorView;
     type: string;
     boostOrder: boolean;
+    hasMappedFiles: boolean;
     private populated;
     isMerged: boolean;
     parent: NavigatorTreeNode | null;
@@ -182,6 +171,9 @@ export declare class NavigatorTreeNode {
     tooltip?: string;
     recursiveProperties: NavigatorRecursiveTreeNodeProperties;
     constructor(navigatorView: NavigatorView, id: string, type: string, tooltip?: string);
+    computedTooltip(): string;
+    updateTooltip(treeElement?: UI.TreeOutline.TreeElement): void;
+    protected createFolderTreeElement(title: string, node: NavigatorTreeNode, expandable?: boolean): UI.TreeOutline.TreeElement;
     treeNode(): UI.TreeOutline.TreeElement;
     dispose(): void;
     updateTitle(): void;
@@ -218,10 +210,10 @@ export declare class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     uiSourceCode(): Workspace.UISourceCode.UISourceCode;
     updateIcon(): void;
     updateAccessibleName(): void;
-    private renderAiButton;
     updateTrailingIcons(): void;
     onattach(): void;
     treeNode(): UI.TreeOutline.TreeElement;
+    private updateTreeElement;
     updateTitle(ignoreIsDirty?: boolean): void;
     hasChildren(): boolean;
     dispose(): void;
@@ -233,9 +225,11 @@ export declare class NavigatorFolderTreeNode extends NavigatorTreeNode {
     readonly folderPath: Platform.DevToolsPath.EncodedPathString;
     readonly origin: Platform.DevToolsPath.UrlString;
     title: string;
-    treeElement: NavigatorFolderTreeElement | null;
+    treeElement: UI.TreeOutline.TreeElement | null;
     constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project | null, id: string, type: string, folderPath: Platform.DevToolsPath.EncodedPathString, title: string, origin: Platform.DevToolsPath.UrlString);
     treeNode(): UI.TreeOutline.TreeElement;
+    private computeHasMappedFiles;
+    private updateTreeElement;
     updateTitle(): void;
     private createTreeElement;
     wasPopulated(): void;
@@ -248,12 +242,12 @@ export declare class NavigatorGroupTreeNode extends NavigatorTreeNode {
     readonly project: Workspace.Workspace.Project | null;
     title: string;
     readonly frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
-    private treeElement?;
+    treeElement?: UI.TreeOutline.TreeElement;
     constructor(navigatorView: NavigatorView, project: Workspace.Workspace.Project | null, id: string, type: string, title: string, tooltip?: string, frame?: SDK.ResourceTreeModel.ResourceTreeFrame);
     treeNode(): UI.TreeOutline.TreeElement;
-    private renderTrailingIcons;
     updateTrailingIcons(): void;
     onattach(): void;
+    private computeHasMappedFiles;
     updateTitle(): void;
     setTitle(title: string): void;
 }

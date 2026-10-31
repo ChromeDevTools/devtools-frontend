@@ -25,10 +25,10 @@ export class RuntimeModel extends SDKModel {
         if (this.#customFormattersSetting.get()) {
             void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
         }
-        this.#customFormattersSetting.addChangeListener(this.customFormattersStateChanged, this);
+        this.#customFormattersSetting.addChangeListener(this.#customFormattersStateChanged, this);
     }
     dispose() {
-        this.#customFormattersSetting.removeChangeListener(this.customFormattersStateChanged, this);
+        this.#customFormattersSetting.removeChangeListener(this.#customFormattersStateChanged, this);
     }
     static isSideEffectFailure(response) {
         const exceptionDetails = 'exceptionDetails' in response && response.exceptionDetails;
@@ -131,7 +131,7 @@ export class RuntimeModel extends SDKModel {
     runIfWaitingForDebugger() {
         void this.agent.invoke_runIfWaitingForDebugger();
     }
-    customFormattersStateChanged({ data: enabled }) {
+    #customFormattersStateChanged({ data: enabled }) {
         void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled });
     }
     async compileScript(expression, sourceURL, persistScript, executionContextId) {
@@ -192,11 +192,11 @@ export class RuntimeModel extends SDKModel {
         const object = this.createRemoteObject(payload);
         if (hints !== null && typeof hints === 'object') {
             if ('copyToClipboard' in hints && Boolean(hints.copyToClipboard)) {
-                this.copyRequested(object);
+                this.#copyRequested(object);
                 return;
             }
             if ('queryObjects' in hints && hints.queryObjects) {
-                void this.queryObjectsRequested(object, executionContextId);
+                void this.#queryObjectsRequested(object, executionContextId);
                 return;
             }
         }
@@ -227,7 +227,7 @@ export class RuntimeModel extends SDKModel {
     bindingCalled(event) {
         this.dispatchEventToListeners(Events.BindingCalled, event);
     }
-    copyRequested(object) {
+    #copyRequested(object) {
         if (!object.objectId) {
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
             return;
@@ -246,7 +246,7 @@ export class RuntimeModel extends SDKModel {
             }])
             .then(Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance));
     }
-    async queryObjectsRequested(object, executionContextId) {
+    async #queryObjectsRequested(object, executionContextId) {
         const result = await this.queryObjects(object);
         object.release();
         if ('error' in result) {

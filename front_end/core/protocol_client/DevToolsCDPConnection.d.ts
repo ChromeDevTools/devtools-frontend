@@ -11,6 +11,4 @@ export declare class DevToolsCDPConnection implements CDPConnection {
         error: CDPError;
     }>;
     resolvePendingCalls(sessionId: string): void;
-    private sendRawMessageForTesting;
-    private onMessage;
 }

@@ -72,10 +72,10 @@ export class PersistenceUtils {
 export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper {
     constructor(persistence) {
         super();
-        persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.bindingChanged, this);
-        persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.bindingChanged, this);
+        persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this.#bindingChanged, this);
+        persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this.#bindingChanged, this);
     }
-    bindingChanged(event) {
+    #bindingChanged(event) {
         const binding = event.data;
         this.dispatchEventToListeners("LinkIconChanged" /* Components.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED */, binding.network);
     }

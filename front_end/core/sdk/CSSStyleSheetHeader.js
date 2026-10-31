@@ -91,9 +91,9 @@ export class CSSStyleSheetHeader {
         return this.isConstructed && this.sourceURL.length === 0;
     }
     resourceURL() {
-        return this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
+        return this.isViaInspector() ? this.#viaInspectorResourceURL() : this.sourceURL;
     }
-    getFrameURLPath() {
+    #getFrameURLPath() {
         const model = this.#cssModel.target().model(ResourceTreeModel);
         console.assert(Boolean(model));
         if (!model) {
@@ -115,8 +115,8 @@ export class CSSStyleSheetHeader {
         }
         return urlPath;
     }
-    viaInspectorResourceURL() {
-        return `inspector://${this.getFrameURLPath()}inspector-stylesheet#${this.id}`;
+    #viaInspectorResourceURL() {
+        return `inspector://${this.#getFrameURLPath()}inspector-stylesheet#${this.id}`;
     }
     lineNumberInSource(lineNumberInStyleSheet) {
         return this.startLine + lineNumberInStyleSheet;

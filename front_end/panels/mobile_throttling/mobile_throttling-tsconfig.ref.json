@@ -48,6 +48,9 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../ui/components/lists/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../ui/kit/bundle-tsconfig.ref.json"
     },
     {

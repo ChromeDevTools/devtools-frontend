@@ -242,7 +242,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         };
         this.#view(viewInput, undefined, this.contentElement);
     }
-    getDescendentNodeCount(node) {
+    #getDescendentNodeCount(node) {
         if (!node) {
             return 0;
         }
@@ -251,12 +251,12 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         const childNodes = node.children();
         if (childNodes) {
             for (const childNode of childNodes) {
-                numberOfDescendentNode += this.getDescendentNodeCount(childNode);
+                numberOfDescendentNode += this.#getDescendentNodeCount(childNode);
             }
         }
         return numberOfDescendentNode;
     }
-    async updateInvalidationCount(events) {
+    async #updateInvalidationCount(events) {
         if (!this.#parsedTrace) {
             return;
         }
@@ -309,7 +309,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
                 for (const node of nodes.nodeList) {
                     if (nodes.subtree) {
                         // TODO: this count is live and might have changed since the trace event.
-                        timing.invalidation_count += this.getDescendentNodeCount(node);
+                        timing.invalidation_count += this.#getDescendentNodeCount(node);
                     }
                     else {
                         timing.invalidation_count += 1;
@@ -318,7 +318,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             }
         }
     }
-    async aggregateEvents(events) {
+    async #aggregateEvents(events) {
         if (!this.#parsedTrace) {
             return;
         }
@@ -348,7 +348,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             }
         }
         this.#lastStatsSourceEventOrEvents = events;
-        await this.updateInvalidationCount(events);
+        await this.#updateInvalidationCount(events);
         for (let i = 0; i < events.length; i++) {
             const event = events[i];
             const selectorStats = event ? this.#parsedTrace.data.SelectorStats.dataForRecalcStyleEvent.get(event) : undefined;
@@ -397,17 +397,17 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             [SelectorTimingsKey.StyleSheetId]: 'n/a',
             [SelectorTimingsKey.InvalidationCount]: sums[SelectorTimingsKey.InvalidationCount],
         });
-        this.#timings = await this.processSelectorTimings(timings);
+        this.#timings = await this.#processSelectorTimings(timings);
     }
     setAggregatedEvents(events) {
         if (!this.#parsedTrace) {
             return;
         }
-        void this.aggregateEvents(events).then(() => {
+        void this.#aggregateEvents(events).then(() => {
             this.requestUpdate();
         });
     }
-    async processSelectorTimings(timings) {
+    async #processSelectorTimings(timings) {
         async function toSourceFileLocation(cssModel, styleSheetId, selectorText, selectorLocations) {
             if (!cssModel) {
                 return undefined;

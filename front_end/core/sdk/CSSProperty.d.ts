@@ -27,7 +27,6 @@ export declare class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<Even
     static parsePayload(ownerStyle: CSSStyleDeclaration, index: number, payload: Protocol.CSS.CSSProperty): CSSProperty;
     parseExpression(expression: string, matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string> | null): BottomUpTreeMatching | null;
     parseValue(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string> | null): BottomUpTreeMatching | null;
-    private ensureRanges;
     nameRange(): TextUtils.TextRange.TextRange | null;
     valueRange(): TextUtils.TextRange.TextRange | null;
     rebase(edit: Edit): void;
@@ -36,7 +35,6 @@ export declare class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<Even
     activeInStyle(): boolean;
     setText(propertyText: string, majorChange: boolean, overwrite?: boolean): Promise<boolean>;
     static formatStyle(styleText: string, indentation: string, endIndentation: string): Promise<string>;
-    private detectIndentation;
     setValue(newValue: string, majorChange: boolean, overwrite: boolean, userCallback?: ((arg0: boolean) => void)): void;
     setLocalValue(value: string): void;
     setDisabled(disabled: boolean): Promise<boolean>;

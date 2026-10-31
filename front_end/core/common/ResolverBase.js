@@ -16,7 +16,7 @@ export class ResolverBase {
     async waitFor(id) {
         const obj = this.getForId(id);
         if (!obj) {
-            return await this.getOrCreatePromise(id);
+            return await this.#getOrCreatePromise(id);
         }
         return obj;
     }
@@ -29,7 +29,7 @@ export class ResolverBase {
         const obj = this.getForId(id);
         if (!obj) {
             const swallowTheError = () => { };
-            void this.getOrCreatePromise(id).catch(swallowTheError).then(obj => {
+            void this.#getOrCreatePromise(id).catch(swallowTheError).then(obj => {
                 if (obj) {
                     callback(obj);
                 }
@@ -48,7 +48,7 @@ export class ResolverBase {
         }
         this.#unresolvedIds.clear();
     }
-    getOrCreatePromise(id) {
+    #getOrCreatePromise(id) {
         const promiseInfo = this.#unresolvedIds.get(id);
         if (promiseInfo) {
             return promiseInfo.promise;

@@ -30,7 +30,7 @@ export declare class ExtensionSidebarPane extends UI.View.SimpleView {
     private server;
     private extensionView?;
     private objectPropertiesView?;
-    constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string);
+    constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string, extensionId?: string);
     id(): string;
     panelName(): string;
     setObject(object: Object, title: string | undefined, callback: (arg0?: (string | null) | undefined) => void): void;

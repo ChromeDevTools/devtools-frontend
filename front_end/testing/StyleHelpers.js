@@ -43,7 +43,7 @@ function getSimpleList(selector) {
     };
 }
 export function ruleMatch(selectorOrList, properties, options = {}) {
-    const { range, origin = "regular" /* Protocol.CSS.StyleSheetOrigin.Regular */, styleSheetId, matchingSelectorsIndexes, nestingSelectors, } = options;
+    const { range, origin = "regular" /* Protocol.CSS.StyleSheetOrigin.Regular */, styleSheetId, matchingSelectorsIndexes, nestingSelectors, originTreeScopeNodeId, } = options;
     const cssProperties = Array.isArray(properties) ? properties : Object.keys(properties).map(name => ({ name, value: properties[name] }));
     const selectorList = typeof selectorOrList === 'string' ? getSimpleList(selectorOrList) : selectorOrList;
     const matchingSelectors = matchingSelectorsIndexes ?? selectorList.selectors.map((_, index) => index);
@@ -54,6 +54,7 @@ export function ruleMatch(selectorOrList, properties, options = {}) {
             origin,
             style: createCSSStyle(cssProperties, range, styleSheetId),
             styleSheetId,
+            originTreeScopeNodeId,
         },
         matchingSelectors,
     };

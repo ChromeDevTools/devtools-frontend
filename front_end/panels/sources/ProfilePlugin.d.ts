@@ -11,7 +11,6 @@ export declare class PerformanceProfilePlugin extends Plugin {
     compartment: CodeMirror.Compartment;
     constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, transformer: SourceFrame.SourceFrame.Transformer);
     static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean;
-    private getLineMap;
     editorExtension(): CodeMirror.Extension;
     decorationChanged(type: Workspace.UISourceCode.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void;
 }

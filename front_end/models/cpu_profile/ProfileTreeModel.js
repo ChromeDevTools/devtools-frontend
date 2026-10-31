@@ -46,10 +46,10 @@ export class ProfileTreeModel {
     maxDepth;
     initialize(root) {
         this.root = root;
-        this.assignDepthsAndParents();
-        this.total = this.calculateTotals(this.root);
+        this.#assignDepthsAndParents();
+        this.total = this.#calculateTotals(this.root);
     }
-    assignDepthsAndParents() {
+    #assignDepthsAndParents() {
         const root = this.root;
         root.depth = -1;
         root.parent = null;
@@ -69,7 +69,7 @@ export class ProfileTreeModel {
             }
         }
     }
-    calculateTotals(root) {
+    #calculateTotals(root) {
         const nodesToTraverse = [root];
         const dfsList = [];
         while (nodesToTraverse.length) {

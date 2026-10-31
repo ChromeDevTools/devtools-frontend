@@ -351,7 +351,5 @@ export declare class Generator {
     constructor(hueSpace?: Space, satSpace?: Space, lightnessSpace?: Space, alphaSpace?: Space);
     setColorForID(id: string, color: string): void;
     colorForID(id: string): string;
-    private generateColorForID;
-    private indexToValueInSpace;
 }
 export {};

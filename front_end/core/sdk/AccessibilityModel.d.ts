@@ -60,7 +60,6 @@ export declare class AccessibilityModel extends SDKModel<EventTypes> implements 
     requestPartialAXTree(node: DOMNode): Promise<void>;
     loadComplete({ root }: Protocol.Accessibility.LoadCompleteEvent): void;
     nodesUpdated({ nodes }: Protocol.Accessibility.NodesUpdatedEvent): void;
-    private createNodesFromPayload;
     requestRootNode(frameId?: Protocol.Page.FrameId): Promise<AccessibilityNode | undefined>;
     requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId, frameId?: Protocol.Page.FrameId): Promise<AccessibilityNode[]>;
     requestAndLoadSubTreeToNode(node: DOMNode): Promise<AccessibilityNode[] | null>;

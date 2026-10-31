@@ -26,7 +26,7 @@ export default `/*
 .filtered-list-widget-hint {
   color: var(--sys-color-on-surface-subtle);
   font-size: var(--sys-typescale-body4-size);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body4-line-height);
 }
 
 devtools-text-prompt {

@@ -158,7 +158,7 @@ const DEFERRED_DEFAULT_VIEW = (input, _output, target) => {
           tabindex=${input.preventKeyboardFocus ? -1 : 0}
           @click=${input.onClick}
           @mousedown=${(e) => e.consume()}>
-        <slot></slot>
+        <slot>${input.textContent ?? nothing}</slot>
       </button>`, target);
     // clang-format on
 };
@@ -176,9 +176,31 @@ export class DeferredDOMNodeLink extends UI.Widget.Widget {
         this.#view = view;
         this.performUpdate();
     }
+    set deferredNode(deferredNode) {
+        if (this.#deferredNode === deferredNode) {
+            return;
+        }
+        this.#deferredNode = deferredNode;
+        this.requestUpdate();
+    }
+    set options(options) {
+        if (this.#options === options) {
+            return;
+        }
+        this.#options = options;
+        this.requestUpdate();
+    }
+    set styleSheetId(styleSheetId) {
+        if (this.#styleSheetId === styleSheetId) {
+            return;
+        }
+        this.#styleSheetId = styleSheetId;
+        this.requestUpdate();
+    }
     performUpdate() {
         const viewInput = {
             preventKeyboardFocus: this.#options?.preventKeyboardFocus,
+            textContent: this.#options?.textContent,
             onClick: () => {
                 this.#deferredNode?.resolve?.(node => {
                     if (node && this.#styleSheetId) {

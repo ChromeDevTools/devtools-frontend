@@ -36,7 +36,7 @@ export class ChunkedFileReader {
             this.#streamReader = stream.getReader();
         }
         this.#output = output;
-        void this.loadChunk();
+        void this.#loadChunk();
         return await new Promise(resolve => {
             this.#transferFinished = resolve;
         });
@@ -59,7 +59,7 @@ export class ChunkedFileReader {
     error() {
         return this.#error;
     }
-    async decodeChunkBuffer(buffer, endOfFile) {
+    async #decodeChunkBuffer(buffer, endOfFile) {
         if (!this.#output) {
             return;
         }
@@ -72,12 +72,12 @@ export class ChunkedFileReader {
             this.#chunkTransferredCallback(this);
         }
         if (endOfFile) {
-            void this.finishRead();
+            void this.#finishRead();
             return;
         }
-        void this.loadChunk();
+        void this.#loadChunk();
     }
-    async finishRead() {
+    async #finishRead() {
         if (!this.#output) {
             return;
         }
@@ -85,7 +85,7 @@ export class ChunkedFileReader {
         await this.#output.close();
         this.#transferFinished(!this.#error);
     }
-    async loadChunk() {
+    async #loadChunk() {
         if (!this.#output || !this.#file) {
             return;
         }
@@ -94,9 +94,9 @@ export class ChunkedFileReader {
             if (done || !value) {
                 // Write empty string to inform of file end
                 await this.#output.write('', true);
-                return await this.finishRead();
+                return await this.#finishRead();
             }
-            void this.decodeChunkBuffer(value.buffer, false);
+            void this.#decodeChunkBuffer(value.buffer, false);
             return;
         }
         const chunkStart = this.#loadedSize;
@@ -109,7 +109,7 @@ export class ChunkedFileReader {
             }
             this.#loadedSize += buffer.byteLength;
             const endOfFile = this.#loadedSize === this.#fileSize;
-            void this.decodeChunkBuffer(buffer, endOfFile);
+            void this.#decodeChunkBuffer(buffer, endOfFile);
         }
         catch (error) {
             this.#error = error;
@@ -133,7 +133,7 @@ export class FileOutputStream {
         const saveResponse = await this.#fileManager.save(this.#fileName, TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA, 
         /* forceSaveAs=*/ true);
         if (saveResponse) {
-            this.#fileManager.addEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
+            this.#fileManager.addEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.#onAppendDone, this);
         }
         return Boolean(saveResponse);
     }
@@ -148,10 +148,10 @@ export class FileOutputStream {
         if (this.#writeCallbacks.length) {
             return;
         }
-        this.#fileManager.removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
+        this.#fileManager.removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.#onAppendDone, this);
         this.#fileManager.close(this.#fileName);
     }
-    onAppendDone(event) {
+    #onAppendDone(event) {
         if (event.data !== this.#fileName) {
             return;
         }
@@ -165,7 +165,7 @@ export class FileOutputStream {
         if (!this.#closed) {
             return;
         }
-        this.#fileManager.removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
+        this.#fileManager.removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.#onAppendDone, this);
         this.#fileManager.close(this.#fileName);
     }
 }

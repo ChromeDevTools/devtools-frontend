@@ -30,7 +30,6 @@ export declare class Resource implements TextUtils.ContentProvider.ContentProvid
     populateImageSource(image: {
         src: string;
     }): Promise<void>;
-    private innerRequestContent;
     frame(): ResourceTreeFrame | null;
     statusCode(): number;
 }

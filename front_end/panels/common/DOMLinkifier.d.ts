@@ -35,12 +35,16 @@ export declare class DOMNodeLink extends UI.Widget.Widget {
 }
 interface DeferredViewInput {
     preventKeyboardFocus?: boolean;
+    textContent?: string;
     onClick: () => void;
 }
 type DeferredView = (input: DeferredViewInput, output: undefined, target: HTMLElement) => void;
 export declare class DeferredDOMNodeLink extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options, styleSheetId?: Protocol.DOM.StyleSheetId, view?: DeferredView);
+    set deferredNode(deferredNode: SDK.DOMModel.DeferredDOMNode | undefined);
+    set options(options: Options | undefined);
+    set styleSheetId(styleSheetId: Protocol.DOM.StyleSheetId | undefined);
     performUpdate(): void;
 }
 export declare class Linkifier {

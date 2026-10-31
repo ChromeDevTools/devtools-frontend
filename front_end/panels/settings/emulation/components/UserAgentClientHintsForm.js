@@ -387,8 +387,11 @@ export class UserAgentClientHintsForm extends UserAgentClientHintsFormBase {
             this.requestUpdate();
         }
     };
-    validate = () => {
-        for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
+    static validateMetaData(metaData) {
+        if (!metaData) {
+            return { valid: true };
+        }
+        for (const [metaDataKey, metaDataValue] of Object.entries(metaData)) {
             if (metaDataKey === 'brands' || metaDataKey === 'fullVersionList') {
                 // for structured fields, check each individual brand/version
                 const brandList = metaDataValue;
@@ -427,6 +430,9 @@ export class UserAgentClientHintsForm extends UserAgentClientHintsFormBase {
             }
         }
         return { valid: true };
+    }
+    validate = () => {
+        return UserAgentClientHintsForm.validateMetaData(this.#metaData);
     };
     performUpdate() {
         const input = {

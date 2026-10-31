@@ -35,6 +35,7 @@ export declare class WidgetElement<WidgetT extends AnyWidget> extends HTMLElemen
     onDisconnect?: () => void;
     onConnect?: () => void;
     getWidget(): WidgetT | undefined;
+    controlsChildWidget(_child: HTMLElement): boolean;
     connectedCallback(): void;
     disconnectedCallback(): void;
     appendChild<T extends Node>(child: T): T;

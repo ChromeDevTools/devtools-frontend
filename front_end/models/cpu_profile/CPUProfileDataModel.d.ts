@@ -34,39 +34,6 @@ export declare class CPUProfileDataModel extends ProfileTreeModel {
     programNode?: ProfileNode;
     idleNode?: ProfileNode;
     constructor(profile: ExtendedProfile);
-    private compatibilityConversionHeadToNodes;
-    /**
-     * Calculate timestamps using timeDeltas. Some CPU profile formats,
-     * like the ones contained in traces have timeDeltas instead of
-     * timestamps.
-     */
-    private convertTimeDeltas;
-    /**
-     * Creates a Tree of CPUProfileNodes using the Protocol.Profiler.ProfileNodes.
-     * As the tree is built, samples of native code (prefixed with "native ") are
-     * filtered out. Samples of filtered nodes are replaced with the parent of the
-     * node being filtered.
-     *
-     * This function supports legacy and new definitions of the CDP Profiler.Profile
-     * type.
-     */
-    private translateProfileTree;
-    /**
-     * Sorts the samples array using the timestamps array (there is a one
-     * to one matching by index between the two).
-     */
-    private sortSamples;
-    /**
-     * Fills in timestamps and/or time deltas from legacy profiles where
-     * they could be missing.
-     */
-    private normalizeTimestamps;
-    /**
-     * Some nodes do not refer to JS samples but to V8 system tasks, AKA
-     * "meta" nodes. This function extracts those nodes from the profile.
-     */
-    private extractMetaNodes;
-    private fixMissingSamples;
     /**
      * Traverses the call tree derived from the samples calling back when a call is opened
      * and when it's closed

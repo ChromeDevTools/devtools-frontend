@@ -9,5 +9,4 @@ export declare class LogManager implements SDK.TargetManager.SDKModelObserver<SD
     static removeInstance(): void;
     modelAdded(logModel: SDK.LogModel.LogModel): void;
     modelRemoved(logModel: SDK.LogModel.LogModel): void;
-    private logEntryAdded;
 }

@@ -1,25 +1,30 @@
+import '../../ui/components/lists/lists.js';
+import '../../ui/legacy/legacy.js';
+import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
-interface CustomHeader {
+export interface CustomHeaderItem {
     header: string;
+    editable: boolean;
+    isNew?: boolean;
 }
-export declare class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI.ListWidget.Delegate<CustomHeader> {
-    private readonly list;
-    private readonly columnConfigs;
-    private addHeaderColumnCallback;
-    private changeHeaderColumnCallback;
-    private readonly removeHeaderColumnCallback;
-    private editor?;
+export interface ViewInput {
+    items: CustomHeaderItem[];
+    editingHeader: string | null;
+    onAddClick: () => void;
+    onBeginEdit: (header: string) => void;
+    onRemove: (header: string) => void;
+    onCommitEdit: (newHeader: string) => void;
+    onCancelEdit: () => void;
+    validateHeader: (itemHeader: string, newHeader: string) => Common.UIString.LocalizedString | null;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare class NetworkManageCustomHeadersView extends UI.Widget.VBox {
+    #private;
     constructor(columnData: Array<{
         title: string;
         editable: boolean;
-    }>, addHeaderColumnCallback: (arg0: string) => boolean, changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean, removeHeaderColumnCallback: (arg0: string) => boolean);
+    }>, addHeaderColumnCallback: (arg0: string) => boolean, changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean, removeHeaderColumnCallback: (arg0: string) => boolean, view?: View);
+    performUpdate(): void;
     wasShown(): void;
-    private headersUpdated;
-    private addButtonClicked;
-    renderItem(item: CustomHeader, _editable: boolean): Element;
-    removeItemRequested(item: CustomHeader, _index: number): void;
-    commitEdit(item: CustomHeader, editor: UI.ListWidget.Editor<CustomHeader>, isNew: boolean): void;
-    beginEdit(item: CustomHeader): UI.ListWidget.Editor<CustomHeader>;
-    private createEditor;
 }
-export {};

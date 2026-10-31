@@ -935,7 +935,7 @@ var KeyboardShortcut = class _KeyboardShortcut {
       keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
     }
     modifiers = modifiers || Modifiers.None.value;
-    return _KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    return _KeyboardShortcut.#makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
   static makeKeyFromEvent(keyboardEvent) {
     let modifiers = Modifiers.None.value;
@@ -952,7 +952,7 @@ var KeyboardShortcut = class _KeyboardShortcut {
       modifiers |= Modifiers.Meta.value;
     }
     const keyCode = keyboardEvent.keyCode || keyboardEvent["__keyCode"];
-    return _KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    return _KeyboardShortcut.#makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
   // This checks if a "control equivalent" key is pressed. For non-mac platforms this means checking
   // if control is pressed but not meta. On mac, we instead check if meta is pressed but not control.
@@ -995,11 +995,11 @@ var KeyboardShortcut = class _KeyboardShortcut {
   }
   static shortcutToString(key, modifiers) {
     if (typeof key !== "string" && _KeyboardShortcut.isModifier(key.code)) {
-      return _KeyboardShortcut.modifiersToString(modifiers);
+      return _KeyboardShortcut.#modifiersToString(modifiers);
     }
-    return _KeyboardShortcut.modifiersToString(modifiers) + _KeyboardShortcut.keyName(key);
+    return _KeyboardShortcut.#modifiersToString(modifiers) + _KeyboardShortcut.#keyName(key);
   }
-  static keyName(key) {
+  static #keyName(key) {
     if (typeof key === "string") {
       return key.toUpperCase();
     }
@@ -1008,7 +1008,7 @@ var KeyboardShortcut = class _KeyboardShortcut {
     }
     return key.name[Host.Platform.platform()] || key.name.other || "";
   }
-  static makeKeyFromCodeAndModifiers(keyCode, modifiers) {
+  static #makeKeyFromCodeAndModifiers(keyCode, modifiers) {
     return keyCode & 255 | (modifiers || 0) << 8;
   }
   static keyCodeAndModifiersFromKey(key) {
@@ -1018,7 +1018,7 @@ var KeyboardShortcut = class _KeyboardShortcut {
     const { keyCode } = _KeyboardShortcut.keyCodeAndModifiersFromKey(key);
     return keyCode === Keys.Shift.code || keyCode === Keys.Ctrl.code || keyCode === Keys.Alt.code || keyCode === Keys.Meta.code;
   }
-  static modifiersToString(modifiers) {
+  static #modifiersToString(modifiers) {
     const isMac = Host.Platform.isMac();
     const m = Modifiers;
     const modifierNames = /* @__PURE__ */ new Map([
@@ -2827,6 +2827,9 @@ function setUpLifecycleTracking(element) {
     element.appendChild(tracker);
   }
   tracker.onDisconnect = () => {
+    if (element.parentElement instanceof WidgetElement && element.parentElement.controlsChildWidget(element)) {
+      return;
+    }
     const widget2 = Widget.get(element);
     if (widget2) {
       widget2.setHideOnDetach();
@@ -2845,7 +2848,7 @@ function setUpLifecycleTracking(element) {
     const parent = element.parentNode instanceof DocumentFragment ? element.parentNode : element.parentElementOrShadowHost();
     if (!parent) {
       widget2.markAsRoot();
-    } else {
+    } else if (!(parent instanceof WidgetElement && parent.controlsChildWidget(element))) {
       widget2.show(
         parent,
         void 0,
@@ -2861,6 +2864,9 @@ var WidgetElement = class extends HTMLElement {
   #disconnectTimeout;
   getWidget() {
     return Widget.get(this);
+  }
+  controlsChildWidget(_child) {
+    return false;
   }
   connectedCallback() {
     if (this.#disconnectTimeout) {
@@ -2881,28 +2887,38 @@ var WidgetElement = class extends HTMLElement {
     }
   }
   appendChild(child) {
-    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
-    if (widget2) {
-      widget2.show(
-        this,
-        void 0,
-        /* suppressOrphanWidgetError= */
-        true
-      );
-      return child;
+    if (child instanceof HTMLElement) {
+      const widget2 = Widget.get(child);
+      if (widget2) {
+        if (this.controlsChildWidget(child)) {
+          return originalAppendChild.call(this, child);
+        }
+        widget2.show(
+          this,
+          void 0,
+          /* suppressOrphanWidgetError= */
+          true
+        );
+        return child;
+      }
     }
     return super.appendChild(child);
   }
   insertBefore(child, referenceChild) {
-    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
-    if (widget2) {
-      widget2.show(
-        this,
-        referenceChild,
-        /* suppressOrphanWidgetError= */
-        true
-      );
-      return child;
+    if (child instanceof HTMLElement) {
+      const widget2 = Widget.get(child);
+      if (widget2) {
+        if (this.controlsChildWidget(child)) {
+          return originalInsertBefore.call(this, child, referenceChild);
+        }
+        widget2.show(
+          this,
+          referenceChild,
+          /* suppressOrphanWidgetError= */
+          true
+        );
+        return child;
+      }
     }
     return super.insertBefore(child, referenceChild);
   }
@@ -3353,6 +3369,10 @@ var Widget = class _Widget {
   }
   detach(overrideHideOnDetach) {
     if (!this.#parentWidget && !this.#isRoot) {
+      if (overrideHideOnDetach && this.element.parentElement) {
+        decrementWidgetCounter(this.element.parentElement, this.element);
+        originalRemoveChild.call(this.element.parentElement, this.element);
+      }
       return;
     }
     cancelUpdate(this);
@@ -5283,7 +5303,19 @@ var TabbedPane = class extends TabbedPaneBase {
   setCloseableTabs(closeableTabs) {
     this.closeableTabs = closeableTabs;
   }
+  #focusHeader = false;
+  get focusHeader() {
+    return this.#focusHeader;
+  }
+  set focusHeader(focusHeader) {
+    this.#focusHeader = focusHeader;
+  }
   focus() {
+    if (this.#focusHeader) {
+      this.performUpdate();
+      this.focusSelectedTabHeader();
+      return;
+    }
     if (this.visibleView) {
       this.visibleView.focus();
     } else {
@@ -5326,7 +5358,7 @@ var TabbedPane = class extends TabbedPaneBase {
       this.#tabs.push(tab);
     }
     this.tabsHistory.push(tab);
-    if (this.tabsHistory[0] === tab && this.isShowing()) {
+    if (this.tabsHistory[0] === tab && this.isShowing() && this.autoSelectFirstItemOnShow) {
       this.selectTab(tab.id, userGesture);
     }
     this.requestUpdate();
@@ -6575,11 +6607,13 @@ var TabbedPaneTab = class {
 var tabIcons = /* @__PURE__ */ new WeakMap();
 var tabSuffixElements = /* @__PURE__ */ new WeakMap();
 var TabbedPaneElement = class extends WidgetElement {
-  static observedAttributes = ["vertical"];
+  static observedAttributes = ["vertical", "focus-header", "selected-tab"];
   #closeableTabs = false;
   #allowTabReorder = false;
   #automaticReorder = false;
   #vertical = false;
+  #focusHeader = false;
+  #selectedTab;
   get vertical() {
     return this.#vertical;
   }
@@ -6591,6 +6625,34 @@ var TabbedPaneElement = class extends WidgetElement {
     if (vertical) {
       this.getWidget()?.makeVerticalTabLayout();
     }
+  }
+  get focusHeader() {
+    return this.#focusHeader;
+  }
+  set focusHeader(focusHeader) {
+    this.#focusHeader = focusHeader;
+    const widget2 = this.getWidget();
+    if (widget2) {
+      widget2.focusHeader = focusHeader;
+    }
+  }
+  get selectedTab() {
+    return this.getWidget()?.selectedTabId ?? this.#selectedTab ?? null;
+  }
+  set selectedTab(tabId) {
+    this.#selectedTab = tabId ?? void 0;
+    const widget2 = this.getWidget();
+    if (widget2 && tabId) {
+      this.#updateTabs(widget2);
+      widget2.selectTab(tabId);
+    }
+  }
+  controlsChildWidget(child) {
+    return child.id !== "" && !child.hasAttribute("slot") && !child.classList.contains("tabbed-pane-header") && !child.classList.contains("tabbed-pane-content");
+  }
+  focus() {
+    this.#updateTabs();
+    super.focus();
   }
   set closeableTabs(closeable) {
     this.#closeableTabs = closeable;
@@ -6621,6 +6683,7 @@ var TabbedPaneElement = class extends WidgetElement {
   #headerJslog;
   #managedTabIds = /* @__PURE__ */ new Set();
   #tabBadges = /* @__PURE__ */ new Map();
+  #updatingTabs = false;
   set placeholder(element) {
     this.#placeholderElement = element;
     this.getWidget()?.setPlaceholderElement(element);
@@ -6639,6 +6702,7 @@ var TabbedPaneElement = class extends WidgetElement {
         if (this.#vertical) {
           widget2.makeVerticalTabLayout();
         }
+        widget2.focusHeader = this.#focusHeader;
         widget2.setCloseableTabs(this.#closeableTabs);
         widget2.setAllowTabReorder(this.#allowTabReorder, this.#automaticReorder);
         if (this.#delegate) {
@@ -6661,12 +6725,14 @@ var TabbedPaneElement = class extends WidgetElement {
           }));
         });
         widget2.addEventListener("TabSelected" /* TabSelected */, (event) => {
+          if (!this.#updatingTabs && this.#selectedTab !== void 0 && widget2.selectedTabId !== null) {
+            this.#selectedTab = widget2.selectedTabId;
+          }
           const nodes = this.#getTabNodes(widget2);
           for (const child of nodes) {
-            if (child.id === widget2.selectedTabId) {
-              child.setAttribute("selected", "");
-            } else {
-              child.removeAttribute("selected");
+            const isSelected = child.id === widget2.selectedTabId;
+            if (isSelected !== child.hasAttribute("selected")) {
+              child.toggleAttribute("selected", isSelected);
             }
           }
           this.dispatchEvent(new CustomEvent("select", {
@@ -6698,7 +6764,15 @@ var TabbedPaneElement = class extends WidgetElement {
   attributeChangedCallback(name, _oldValue, newValue) {
     if (name === "vertical") {
       this.vertical = newValue !== null;
+    } else if (name === "focus-header") {
+      this.focusHeader = newValue !== null;
+    } else if (name === "selected-tab") {
+      this.selectedTab = newValue;
     }
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    this.#syncTabs();
   }
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -6735,90 +6809,100 @@ var TabbedPaneElement = class extends WidgetElement {
     return Array.from(widget2.element.children).filter((c) => c.id !== "" && !c.hasAttribute("slot") && !c.classList.contains("tabbed-pane-header") && !c.classList.contains("tabbed-pane-content"));
   }
   #updateTabs(widget2 = this.getWidget()) {
-    if (!widget2) {
+    if (!widget2 || this.#updatingTabs) {
       return;
     }
-    const tabs = [];
-    const nodes = this.#getTabNodes(widget2);
-    for (const child of nodes) {
-      const id2 = child.id;
-      const title = child.getAttribute("label") || child.getAttribute("title") || "";
-      const tabTooltip = child.getAttribute("tab-tooltip") ?? void 0;
-      const badge2 = child.getAttribute("badge");
-      const jslogContext = child.getAttribute("jslogcontext") || void 0;
-      const selected = child.hasAttribute("selected");
-      const enabled = !child.hasAttribute("disabled");
-      const isCloseable = child.hasAttribute("closeable") ? true : child.hasAttribute("uncloseable") ? false : void 0;
-      const view = Widget.getOrCreateWidget(child);
-      view.setHideOnDetach();
-      if (widget2.selectedTabId !== id2) {
-        child.classList.add("hidden");
-      }
-      tabs.push({
-        id: id2,
-        title,
-        view,
-        tabTooltip,
-        badge: badge2,
-        jslogContext,
-        selected,
-        enabled,
-        isCloseable
-      });
-    }
-    const newIds = new Set(tabs.map((tab) => tab.id));
-    for (const id2 of this.#managedTabIds) {
-      if (!newIds.has(id2)) {
-        widget2.closeTab(id2);
-        this.#tabBadges.delete(id2);
-      }
-    }
-    this.#managedTabIds = newIds;
-    let index = 0;
-    for (const tab of tabs) {
-      const existingTab = widget2.tabsById.get(tab.id);
-      if (existingTab) {
-        widget2.changeTabView(tab.id, tab.view);
-        widget2.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
-        if (tab.jslogContext !== void 0) {
-          existingTab.jslogContext = tab.jslogContext;
+    this.#updatingTabs = true;
+    try {
+      const tabs = [];
+      const nodes = this.#getTabNodes(widget2);
+      for (const child of nodes) {
+        const id2 = child.id;
+        const title = child.getAttribute("label") || child.getAttribute("title") || "";
+        const tabTooltip = child.getAttribute("tab-tooltip") ?? void 0;
+        const badge2 = child.getAttribute("badge");
+        const jslogContext = child.getAttribute("jslogcontext") || void 0;
+        const selected = this.#selectedTab !== void 0 ? id2 === this.#selectedTab : child.hasAttribute("selected");
+        const enabled = !child.hasAttribute("disabled");
+        const isCloseable = child.hasAttribute("closeable") ? true : child.hasAttribute("uncloseable") ? false : void 0;
+        const view = Widget.getOrCreateWidget(child);
+        view.setHideOnDetach();
+        if (widget2.selectedTabId !== id2) {
+          child.classList.add("hidden");
         }
-        if (tab.isCloseable !== void 0) {
-          existingTab.closeable = tab.isCloseable;
+        tabs.push({
+          id: id2,
+          title,
+          view,
+          tabTooltip,
+          badge: badge2,
+          jslogContext,
+          selected,
+          enabled,
+          isCloseable
+        });
+      }
+      const newIds = new Set(tabs.map((tab) => tab.id));
+      for (const id2 of this.#managedTabIds) {
+        if (!newIds.has(id2)) {
+          widget2.closeTab(id2);
+          this.#tabBadges.delete(id2);
         }
-        if (tab.previewFeature !== void 0) {
-          existingTab.previewFeature = tab.previewFeature;
+      }
+      this.#managedTabIds = newIds;
+      const autoSelect = widget2.autoSelectFirstItemOnShow;
+      if (tabs.some((tab) => tab.selected)) {
+        widget2.setAutoSelectFirstItemOnShow(false);
+      }
+      let index = 0;
+      for (const tab of tabs) {
+        const existingTab = widget2.tabsById.get(tab.id);
+        if (existingTab) {
+          widget2.changeTabView(tab.id, tab.view);
+          widget2.changeTabTitle(tab.id, tab.title, tab.tabTooltip);
+          if (tab.jslogContext !== void 0) {
+            existingTab.jslogContext = tab.jslogContext;
+          }
+          if (tab.isCloseable !== void 0) {
+            existingTab.closeable = tab.isCloseable;
+          }
+          if (tab.previewFeature !== void 0) {
+            existingTab.previewFeature = tab.previewFeature;
+          }
+          const currentIndex = widget2.tabIndex(tab.id);
+          if (currentIndex !== index) {
+            widget2.insertBefore(existingTab, index);
+          }
+        } else {
+          widget2.appendTab(
+            tab.id,
+            tab.title,
+            tab.view,
+            tab.tabTooltip,
+            /* userGesture=*/
+            false,
+            tab.isCloseable,
+            tab.previewFeature,
+            index,
+            tab.jslogContext
+          );
         }
-        const currentIndex = widget2.tabIndex(tab.id);
-        if (currentIndex !== index) {
-          widget2.insertBefore(existingTab, index);
+        const badge2 = tab.badge ?? null;
+        if (this.#tabBadges.get(tab.id) !== badge2 && (badge2 !== null || this.#tabBadges.has(tab.id))) {
+          this.#tabBadges.set(tab.id, badge2);
+          widget2.setBadge(tab.id, badge2);
         }
-      } else {
-        widget2.appendTab(
-          tab.id,
-          tab.title,
-          tab.view,
-          tab.tabTooltip,
-          /* userGesture=*/
-          false,
-          tab.isCloseable,
-          tab.previewFeature,
-          index,
-          tab.jslogContext
-        );
+        if (tab.enabled !== void 0) {
+          widget2.setTabEnabled(tab.id, tab.enabled);
+        }
+        if (tab.selected) {
+          widget2.selectTab(tab.id);
+        }
+        ++index;
       }
-      const badge2 = tab.badge ?? null;
-      if (this.#tabBadges.get(tab.id) !== badge2 && (badge2 !== null || this.#tabBadges.has(tab.id))) {
-        this.#tabBadges.set(tab.id, badge2);
-        widget2.setBadge(tab.id, badge2);
-      }
-      if (tab.enabled !== void 0) {
-        widget2.setTabEnabled(tab.id, tab.enabled);
-      }
-      if (tab.selected) {
-        widget2.selectTab(tab.id);
-      }
-      ++index;
+      widget2.setAutoSelectFirstItemOnShow(autoSelect);
+    } finally {
+      this.#updatingTabs = false;
     }
   }
 };
@@ -7722,16 +7806,32 @@ var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper
 };
 var widgetForView = /* @__PURE__ */ new WeakMap();
 var ContainerWidget = class extends VBox {
-  view;
+  #view;
   materializePromise;
-  constructor(view) {
-    super();
+  constructor(element, view) {
+    super(element instanceof HTMLElement ? element : void 0);
     this.element.classList.add("flex-auto", "view-container", "overflow-auto");
-    this.view = view;
     this.element.tabIndex = -1;
     markAsTabpanel(this.element);
-    setLabel(this.element, i18nString7(UIStrings7.sPanel, { PH1: view.title() }));
     this.setDefaultFocusedElement(this.element);
+    if (element && !(element instanceof HTMLElement)) {
+      this.view = element;
+    } else if (view) {
+      this.view = view;
+    }
+  }
+  get view() {
+    if (!this.#view) {
+      throw new Error("ContainerWidget is missing a view");
+    }
+    return this.#view;
+  }
+  set view(view) {
+    if (this.#view === view) {
+      return;
+    }
+    this.#view = view;
+    setLabel(this.element, i18nString7(UIStrings7.sPanel, { PH1: view.title() }));
   }
   materialize() {
     if (this.materializePromise) {
@@ -16060,7 +16160,7 @@ div {
    * We need an "inverted" color here - because the text is on a darker background the regular foreground text colors don't work. It's been logged to the dark mode tracking spreadsheet
    */
   color: var(--sys-color-inverse-on-surface);
-  border-radius: 7px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 div.verbose {
@@ -18179,7 +18279,10 @@ var GlassPane = class _GlassPane {
     if (!this.isShowing()) {
       return;
     }
-    this.#widget.detach();
+    this.#widget.detach(
+      /* overrideHideOnDetach= */
+      true
+    );
     if (this.#onHideCallback) {
       this.#onHideCallback();
     }
@@ -19919,11 +20022,11 @@ var ForwardedInputEventHandler = class {
   constructor() {
     Host11.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
       Host11.InspectorFrontendHostAPI.Events.KeyEventUnhandled,
-      this.onKeyEventUnhandled,
+      this.#onKeyEventUnhandled,
       this
     );
   }
-  async onKeyEventUnhandled(event) {
+  async #onKeyEventUnhandled(event) {
     const { type, key, keyCode, modifiers } = event.data;
     if (type !== "keydown") {
       return;

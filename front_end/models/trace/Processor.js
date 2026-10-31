@@ -254,6 +254,7 @@ export class TraceProcessor extends EventTarget {
         if (!navStarts || navStartIndex === undefined || navStartIndex === -1) {
             throw new Lantern.Core.LanternError('Could not find navigation start');
         }
+        const processedNavigation = LanternComputationData.createProcessedNavigation(data, frameId, navigation);
         const startTime = navStarts[navStartIndex].ts;
         const endTime = navStartIndex + 1 < navStarts.length ? navStarts[navStartIndex + 1].ts : Number.POSITIVE_INFINITY;
         const boundedTraceEvents = traceEvents.filter(e => e.ts >= startTime && e.ts < endTime);
@@ -264,7 +265,6 @@ export class TraceProcessor extends EventTarget {
         };
         const requests = LanternComputationData.createNetworkRequests(trace, data, startTime, endTime);
         const graph = LanternComputationData.createGraph(requests, trace, data);
-        const processedNavigation = LanternComputationData.createProcessedNavigation(data, frameId, navigation);
         const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
         if (!networkAnalysis) {
             return;

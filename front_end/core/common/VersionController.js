@@ -48,7 +48,7 @@ export class VersionController {
     updateVersion() {
         const currentVersion = VersionController.CURRENT_VERSION;
         const minimumVersion = Math.min(this.#globalVersionSetting.get(), this.#syncedVersionSetting.get(), this.#localVersionSetting.get());
-        const methodsToRun = this.methodsToRunToUpdateVersion(minimumVersion, currentVersion);
+        const methodsToRun = this.#methodsToRunToUpdateVersion(minimumVersion, currentVersion);
         console.assert(
         // @ts-expect-error
         this[`updateVersionFrom${currentVersion}To${currentVersion + 1}`] === undefined, 'Unexpected migration method found. Increment CURRENT_VERSION or remove the method.');
@@ -58,7 +58,7 @@ export class VersionController {
         }
         this.resetToCurrent();
     }
-    methodsToRunToUpdateVersion(oldVersion, currentVersion) {
+    #methodsToRunToUpdateVersion(oldVersion, currentVersion) {
         const result = [];
         for (let i = oldVersion; i < currentVersion; ++i) {
             result.push('updateVersionFrom' + i + 'To' + (i + 1));
@@ -66,7 +66,7 @@ export class VersionController {
         return result;
     }
     updateVersionFrom0To1() {
-        this.clearBreakpointsWhenTooMany(this.#settings.createLocalSetting('breakpoints', []), 500000);
+        this.#clearBreakpointsWhenTooMany(this.#settings.createLocalSetting('breakpoints', []), 500000);
     }
     updateVersionFrom1To2() {
         this.#settings.createSetting('previouslyViewedFiles', []).set([]);
@@ -254,10 +254,10 @@ export class VersionController {
         this.#removeSetting(oldSetting);
     }
     updateVersionFrom11To12() {
-        this.migrateSettingsFromLocalStorage();
+        this.#migrateSettingsFromLocalStorage();
     }
     updateVersionFrom12To13() {
-        this.migrateSettingsFromLocalStorage();
+        this.#migrateSettingsFromLocalStorage();
         this.#removeSetting(this.#settings.createSetting('timelineOverviewMode', ''));
     }
     updateVersionFrom13To14() {
@@ -738,7 +738,7 @@ export class VersionController {
      * multiple times! E.g. when renaming a setting one has to check that the
      * a setting with the new name does not yet exist.
      * ----------------------------------------------------------------------- */
-    migrateSettingsFromLocalStorage() {
+    #migrateSettingsFromLocalStorage() {
         // This step migrates all the settings except for the ones below into the browser profile.
         const localSettings = new Set([
             'advancedSearchConfig',
@@ -767,7 +767,7 @@ export class VersionController {
             this.#settings.globalStorage.set(key, value);
         }
     }
-    clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {
+    #clearBreakpointsWhenTooMany(breakpointsSetting, maxBreakpointsCount) {
         // If there are too many breakpoints in a storage, it is likely due to a recent bug that caused
         // periodical breakpoints duplication leading to inspector slowness.
         if (breakpointsSetting.get().length > maxBreakpointsCount) {

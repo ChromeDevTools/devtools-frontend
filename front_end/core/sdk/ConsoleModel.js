@@ -61,34 +61,34 @@ export class ConsoleModel extends SDKModel {
         this.#console = target.targetManager().getConsole();
         const resourceTreeModel = target.model(ResourceTreeModel);
         if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
-            this.initTarget(target);
+            this.#initTarget(target);
             return;
         }
         const eventListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.CachedResourcesLoaded, () => {
             Common.EventTarget.removeEventListeners([eventListener]);
-            this.initTarget(target);
+            this.#initTarget(target);
         });
     }
-    initTarget(target) {
+    #initTarget(target) {
         const eventListeners = [];
         const cpuProfilerModel = target.model(CPUProfilerModel);
         if (cpuProfilerModel) {
-            eventListeners.push(cpuProfilerModel.addEventListener("ConsoleProfileStarted" /* CPUProfilerModelEvents.CONSOLE_PROFILE_STARTED */, this.consoleProfileStarted.bind(this, cpuProfilerModel)));
-            eventListeners.push(cpuProfilerModel.addEventListener("ConsoleProfileFinished" /* CPUProfilerModelEvents.CONSOLE_PROFILE_FINISHED */, this.consoleProfileFinished.bind(this, cpuProfilerModel)));
+            eventListeners.push(cpuProfilerModel.addEventListener("ConsoleProfileStarted" /* CPUProfilerModelEvents.CONSOLE_PROFILE_STARTED */, this.#consoleProfileStarted.bind(this, cpuProfilerModel)));
+            eventListeners.push(cpuProfilerModel.addEventListener("ConsoleProfileFinished" /* CPUProfilerModelEvents.CONSOLE_PROFILE_FINISHED */, this.#consoleProfileFinished.bind(this, cpuProfilerModel)));
         }
         const resourceTreeModel = target.model(ResourceTreeModel);
         if (resourceTreeModel && target.parentTarget()?.type() !== Type.FRAME) {
-            eventListeners.push(resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.primaryPageChanged, this));
+            eventListeners.push(resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#primaryPageChanged, this));
         }
         const runtimeModel = target.model(RuntimeModel);
         if (runtimeModel) {
-            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.ExceptionThrown, this.exceptionThrown.bind(this, runtimeModel)));
-            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.ExceptionRevoked, this.exceptionRevoked.bind(this, runtimeModel)));
-            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.ConsoleAPICalled, this.consoleAPICalled.bind(this, runtimeModel)));
+            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.ExceptionThrown, this.#exceptionThrown.bind(this, runtimeModel)));
+            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.ExceptionRevoked, this.#exceptionRevoked.bind(this, runtimeModel)));
+            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.ConsoleAPICalled, this.#consoleAPICalled.bind(this, runtimeModel)));
             if (target.parentTarget()?.type() !== Type.FRAME) {
-                eventListeners.push(runtimeModel.debuggerModel().addEventListener(DebuggerModelEvents.GlobalObjectCleared, this.clearIfNecessary, this));
+                eventListeners.push(runtimeModel.debuggerModel().addEventListener(DebuggerModelEvents.GlobalObjectCleared, this.#clearIfNecessary, this));
             }
-            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.QueryObjectRequested, this.queryObjectRequested.bind(this, runtimeModel)));
+            eventListeners.push(runtimeModel.addEventListener(RuntimeModelEvents.QueryObjectRequested, this.#queryObjectRequested.bind(this, runtimeModel)));
         }
         this.#targetListeners.set(target, eventListeners);
     }
@@ -132,7 +132,7 @@ export class ConsoleModel extends SDKModel {
         msg.setPageLoadSequenceNumber(this.#pageLoadSequenceNumber);
         if (msg.source === Common.Console.FrontendMessageSource.ConsoleAPI &&
             msg.type === "clear" /* Protocol.Runtime.ConsoleAPICalledEventType.Clear */) {
-            this.clearIfNecessary();
+            this.#clearIfNecessary();
         }
         this.#messages.push(msg);
         this.#messagesByTimestamp.set(msg.timestamp, msg);
@@ -146,17 +146,17 @@ export class ConsoleModel extends SDKModel {
             }
             modelMap.set(exceptionId, msg);
         }
-        this.incrementErrorWarningCount(msg);
+        this.#incrementErrorWarningCount(msg);
         this.dispatchEventToListeners(Events.MessageAdded, msg);
     }
-    exceptionThrown(runtimeModel, event) {
+    #exceptionThrown(runtimeModel, event) {
         const exceptionWithTimestamp = event.data;
         const affectedResources = extractExceptionMetaData(exceptionWithTimestamp.details.exceptionMetaData);
         const consoleMessage = ConsoleMessage.fromException(runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined, affectedResources);
         consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
         this.addMessage(consoleMessage);
     }
-    exceptionRevoked(runtimeModel, event) {
+    #exceptionRevoked(runtimeModel, event) {
         const exceptionId = event.data;
         const modelMap = this.#messageByExceptionId.get(runtimeModel);
         const exceptionMessage = modelMap ? modelMap.get(exceptionId) : null;
@@ -167,7 +167,7 @@ export class ConsoleModel extends SDKModel {
         exceptionMessage.level = "verbose" /* Protocol.Log.LogEntryLevel.Verbose */;
         this.dispatchEventToListeners(Events.MessageUpdated, exceptionMessage);
     }
-    consoleAPICalled(runtimeModel, event) {
+    #consoleAPICalled(runtimeModel, event) {
         const call = event.data;
         let level = "info" /* Protocol.Log.LogEntryLevel.Info */;
         if (call.type === "debug" /* Protocol.Runtime.ConsoleAPICalledEventType.Debug */) {
@@ -216,7 +216,7 @@ export class ConsoleModel extends SDKModel {
         }
         this.addMessage(consoleMessage);
     }
-    queryObjectRequested(runtimeModel, event) {
+    #queryObjectRequested(runtimeModel, event) {
         const { objects, executionContextId } = event.data;
         const details = {
             type: FrontendMessageType.QueryObjectResult,
@@ -226,14 +226,14 @@ export class ConsoleModel extends SDKModel {
         const consoleMessage = new ConsoleMessage(runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, "info" /* Protocol.Log.LogEntryLevel.Info */, '', details);
         this.addMessage(consoleMessage);
     }
-    clearIfNecessary() {
+    #clearIfNecessary() {
         const settings = this.target().targetManager().settings;
         if (!settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
-            this.clear();
+            this.#clear();
         }
         ++this.#pageLoadSequenceNumber;
     }
-    primaryPageChanged(event) {
+    #primaryPageChanged(event) {
         const settings = this.target().targetManager().settings;
         if (settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
             const { frame } = event.data;
@@ -245,15 +245,15 @@ export class ConsoleModel extends SDKModel {
             }
         }
     }
-    consoleProfileStarted(cpuProfilerModel, event) {
+    #consoleProfileStarted(cpuProfilerModel, event) {
         const { data } = event;
-        this.addConsoleProfileMessage(cpuProfilerModel, "profile" /* Protocol.Runtime.ConsoleAPICalledEventType.Profile */, data.scriptLocation, i18nString(UIStrings.profileSStarted, { PH1: data.title }));
+        this.#addConsoleProfileMessage(cpuProfilerModel, "profile" /* Protocol.Runtime.ConsoleAPICalledEventType.Profile */, data.scriptLocation, i18nString(UIStrings.profileSStarted, { PH1: data.title }));
     }
-    consoleProfileFinished(cpuProfilerModel, event) {
+    #consoleProfileFinished(cpuProfilerModel, event) {
         const { data } = event;
-        this.addConsoleProfileMessage(cpuProfilerModel, "profileEnd" /* Protocol.Runtime.ConsoleAPICalledEventType.ProfileEnd */, data.scriptLocation, i18nString(UIStrings.profileSFinished, { PH1: data.title }));
+        this.#addConsoleProfileMessage(cpuProfilerModel, "profileEnd" /* Protocol.Runtime.ConsoleAPICalledEventType.ProfileEnd */, data.scriptLocation, i18nString(UIStrings.profileSFinished, { PH1: data.title }));
     }
-    addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
+    #addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
         const script = scriptLocation.script();
         const callFrames = [{
                 functionName: '',
@@ -264,7 +264,7 @@ export class ConsoleModel extends SDKModel {
             }];
         this.addMessage(new ConsoleMessage(cpuProfilerModel.runtimeModel(), Common.Console.FrontendMessageSource.ConsoleAPI, "info" /* Protocol.Log.LogEntryLevel.Info */, messageText, { type, stackTrace: { callFrames } }));
     }
-    incrementErrorWarningCount(msg) {
+    #incrementErrorWarningCount(msg) {
         if (msg.source === "violation" /* Protocol.Log.LogEntrySource.Violation */) {
             this.#violations++;
             return;
@@ -299,11 +299,11 @@ export class ConsoleModel extends SDKModel {
             // Runtime.discardConsoleEntries implies Runtime.releaseObjectGroup('console').
             runtimeModel.releaseObjectGroup('live-expression');
         }
-        for (const target of targetManager.targets()) {
-            target.model(ConsoleModel)?.clear();
+        for (const consoleModel of targetManager.models(ConsoleModel)) {
+            consoleModel.#clear();
         }
     }
-    clear() {
+    #clear() {
         this.#messages = [];
         this.#messagesByTimestamp.clear();
         this.#messageByExceptionId.clear();

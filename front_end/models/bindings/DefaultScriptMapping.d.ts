@@ -13,8 +13,5 @@ export declare class DefaultScriptMapping implements DebuggerSourceMapping {
     rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation | null;
     uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber?: number): SDK.DebuggerModel.Location[];
     uiLocationRangeToRawLocationRanges(uiSourceCode: Workspace.UISourceCode.UISourceCode, { startLine, startColumn, endLine, endColumn }: TextUtils.TextRange.TextRange): SDK.DebuggerModel.LocationRange[] | null;
-    private parsedScriptSource;
-    private discardedScriptSource;
-    private globalObjectCleared;
     dispose(): void;
 }

@@ -3,6 +3,6 @@
  * not running in hosted mode.
  **/
 export declare class ForwardedInputEventHandler {
+    #private;
     constructor();
-    private onKeyEventUnhandled;
 }

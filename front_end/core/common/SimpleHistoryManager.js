@@ -15,13 +15,13 @@ export class SimpleHistoryManager {
         this.#coalescingReadonly = 0;
         this.#historyDepth = historyDepth;
     }
-    readOnlyLock() {
+    #readOnlyLock() {
         ++this.#coalescingReadonly;
     }
-    releaseReadOnlyLock() {
+    #releaseReadOnlyLock() {
         --this.#coalescingReadonly;
     }
-    getPreviousValidIndex() {
+    #getPreviousValidIndex() {
         if (this.empty()) {
             return -1;
         }
@@ -34,7 +34,7 @@ export class SimpleHistoryManager {
         }
         return revealIndex;
     }
-    getNextValidIndex() {
+    #getNextValidIndex() {
         let revealIndex = this.#activeEntryIndex + 1;
         while (revealIndex < this.#entries.length && !this.#entries[revealIndex].valid()) {
             ++revealIndex;
@@ -44,7 +44,7 @@ export class SimpleHistoryManager {
         }
         return revealIndex;
     }
-    readOnly() {
+    #readOnly() {
         return Boolean(this.#coalescingReadonly);
     }
     empty() {
@@ -54,7 +54,7 @@ export class SimpleHistoryManager {
         return this.empty() ? null : this.#entries[this.#activeEntryIndex];
     }
     push(entry) {
-        if (this.readOnly()) {
+        if (this.#readOnly()) {
             return;
         }
         if (!this.empty()) {
@@ -67,31 +67,31 @@ export class SimpleHistoryManager {
         this.#activeEntryIndex = this.#entries.length - 1;
     }
     canRollback() {
-        return this.getPreviousValidIndex() >= 0;
+        return this.#getPreviousValidIndex() >= 0;
     }
     canRollover() {
-        return this.getNextValidIndex() >= 0;
+        return this.#getNextValidIndex() >= 0;
     }
     rollback() {
-        const revealIndex = this.getPreviousValidIndex();
+        const revealIndex = this.#getPreviousValidIndex();
         if (revealIndex === -1) {
             return false;
         }
-        this.readOnlyLock();
+        this.#readOnlyLock();
         this.#activeEntryIndex = revealIndex;
         this.#entries[revealIndex].reveal();
-        this.releaseReadOnlyLock();
+        this.#releaseReadOnlyLock();
         return true;
     }
     rollover() {
-        const revealIndex = this.getNextValidIndex();
+        const revealIndex = this.#getNextValidIndex();
         if (revealIndex === -1) {
             return false;
         }
-        this.readOnlyLock();
+        this.#readOnlyLock();
         this.#activeEntryIndex = revealIndex;
         this.#entries[revealIndex].reveal();
-        this.releaseReadOnlyLock();
+        this.#releaseReadOnlyLock();
         return true;
     }
 }

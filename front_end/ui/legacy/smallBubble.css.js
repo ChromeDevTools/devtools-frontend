@@ -25,7 +25,7 @@ div {
    * We need an "inverted" color here - because the text is on a darker background the regular foreground text colors don't work. It's been logged to the dark mode tracking spreadsheet
    */
   color: var(--sys-color-inverse-on-surface);
-  border-radius: 7px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 div.verbose {

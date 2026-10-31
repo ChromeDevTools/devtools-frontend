@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/ai_evals/accessibility",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/ai_evals/accessibility/a11y-aria-hidden-focus.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-button-name.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-color-contrast.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-form-label.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-heading-order.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-image-alt.test.ts",
+    "../../../../../../test/ai_evals/accessibility/a11y-link-in-text-block.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../harness_library-tsconfig.ref.json"
+    },
+    {
+      "path": "../../e2e/helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    }
+  ]
+}

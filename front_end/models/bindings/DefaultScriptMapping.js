@@ -1,6 +1,7 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+var _a;
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -19,9 +20,9 @@ export class DefaultScriptMapping {
             new ContentProviderBasedProject(workspace, 'debugger:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Debugger, '', true /* isServiceProject */);
         NetworkProject.setTargetForProject(this.#project, debuggerModel.target());
         this.#eventListeners = [
-            debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
-            debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
-            debuggerModel.addEventListener(SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this.discardedScriptSource, this),
+            debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.#globalObjectCleared, this),
+            debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.#parsedScriptSource, this),
+            debuggerModel.addEventListener(SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this.#discardedScriptSource, this),
         ];
         this.#uiSourceCodeToScript = new Map();
         this.#scriptToUISourceCode = new Map();
@@ -79,9 +80,9 @@ export class DefaultScriptMapping {
         const end = script.debuggerModel.createRawLocation(script, endLine, endColumn);
         return [{ start, end }];
     }
-    parsedScriptSource(event) {
+    #parsedScriptSource(event) {
         const script = event.data;
-        const url = DefaultScriptMapping.createV8ScriptURL(script);
+        const url = _a.createV8ScriptURL(script);
         const uiSourceCode = this.#project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
         if (script.isBreakpointCondition) {
             uiSourceCode.markAsUnconditionallyIgnoreListed();
@@ -92,7 +93,7 @@ export class DefaultScriptMapping {
         this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, mimeType);
         void this.#debuggerWorkspaceBinding.updateLocations(script);
     }
-    discardedScriptSource(event) {
+    #discardedScriptSource(event) {
         const script = event.data;
         const uiSourceCode = this.#scriptToUISourceCode.get(script);
         if (uiSourceCode === undefined) {
@@ -102,7 +103,7 @@ export class DefaultScriptMapping {
         this.#uiSourceCodeToScript.delete(uiSourceCode);
         this.#project.removeUISourceCode(uiSourceCode.url());
     }
-    globalObjectCleared() {
+    #globalObjectCleared() {
         this.#scriptToUISourceCode.clear();
         this.#uiSourceCodeToScript.clear();
         this.#project.reset();
@@ -110,10 +111,11 @@ export class DefaultScriptMapping {
     dispose() {
         defaultScriptMappings.delete(this);
         Common.EventTarget.removeEventListeners(this.#eventListeners);
-        this.globalObjectCleared();
+        this.#globalObjectCleared();
         this.#project.dispose();
     }
 }
+_a = DefaultScriptMapping;
 // TODO(bmeurer): Remove the static methods from DefaultScriptMapping
 // and get rid of this global table.
 const defaultScriptMappings = new Set();

@@ -126,14 +126,11 @@ export declare class LocalJSONObject extends RemoteObject {
     get value(): typeof RemoteObject.prototype.value;
     unserializableValue(): string | undefined;
     get description(): string;
-    private formatValue;
-    private concatenate;
     get type(): string;
     get subtype(): string | undefined;
     get hasChildren(): boolean;
     getOwnProperties(_generatePreview: boolean, nonIndexedPropertiesOnly?: boolean): Promise<GetPropertiesResult>;
     getAllProperties(accessorPropertiesOnly: boolean, generatePreview: boolean, nonIndexedPropertiesOnly?: boolean): Promise<GetPropertiesResult>;
-    private children;
     arrayLength(): number;
     callFunction<T, U>(functionDeclaration: (this: U, ...args: any[]) => T, args?: Protocol.Runtime.CallArgument[]): Promise<CallFunctionResult>;
     callFunctionJSON<T, U>(functionDeclaration: (this: U, ...args: any[]) => T, args: Protocol.Runtime.CallArgument[] | undefined): Promise<T | null>;

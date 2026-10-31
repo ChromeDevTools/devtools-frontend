@@ -172,7 +172,7 @@
 
 .overlay-type-TIMINGS_MARKER {
   bottom: 0;
-  width: 0.5px;
+  width: var(--sys-size-1);
   pointer-events: auto;
   background-color: var(--marker-color); /* stylelint-disable-line plugin/use_theme_colors */
 }

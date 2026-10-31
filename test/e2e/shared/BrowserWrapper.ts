@@ -9,7 +9,7 @@ import * as url from 'node:url';
 import * as puppeteer from 'puppeteer-core';
 
 import {setupBrowserProcessIO} from '../../conductor/events.js';
-import {GEN_DIR} from '../../conductor/paths.js';
+import {DEVTOOLS_BUNDLED_CHROMIUM_DEPS, GEN_DIR} from '../../conductor/paths.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
 import {chromeLogin, configureDevToolsPreferences} from './auth-helper.js';
@@ -156,9 +156,6 @@ export class Launcher {
   }
 
   static async launchChrome(settings: BrowserSettings, serverPort: number): Promise<puppeteer.Browser> {
-    const frontEndDirectory = url.pathToFileURL(
-        path.join(GEN_DIR, 'front_end'),
-    );
     const disabledFeatures = settings.disabledFeatures ?? DEFAULT_BROWSER_SETTINGS.disabledFeatures;
     const launchArgs = [
       '--enable-experimental-web-platform-features',
@@ -171,13 +168,22 @@ export class Launcher {
       `--privacy-sandbox-enrollment-overrides=https://localhost:${serverPort}`,
       '--remote-allow-origins=*',
       '--ignore-certificate-errors-spki-list=KLy6vv6synForXwI6lDIl+D3ZrMV6Y1EMTY6YpOcAos=',
-      `--custom-devtools-frontend=${frontEndDirectory}`,
       '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
       '--disable-gpu',
       '--enable-crash-reporter',
       `--disable-features=${disabledFeatures.join(',')}`,
       `--remote-debugging-port=0`,
     ];
+
+    // In a chromium checkout with devtools_bundled_chromium_deps False, DevTools is bundled
+    // into the //chrome binary.
+    // Otherwise we use a pre-built CfT with --custom-devtools-frontend.
+    if (DEVTOOLS_BUNDLED_CHROMIUM_DEPS) {
+      const frontEndDirectory = url.pathToFileURL(
+          path.join(GEN_DIR, 'front_end'),
+      );
+      launchArgs.push(`--custom-devtools-frontend=${frontEndDirectory}`);
+    }
 
     const ignoreDefaultArgs = [
       '--disable-crash-reporter',

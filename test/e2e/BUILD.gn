@@ -87,7 +87,6 @@ node_script_test("devtools_e2e_tests") {
   data_deps = [
     ":test_inputs",
     ":tests",
-    "../../front_end",
     "../../scripts/hosted_mode",
     "resources",
   ]
@@ -97,7 +96,10 @@ node_script_test("devtools_e2e_tests") {
         !is_chromeos_device) {
       data_deps += [ "//chrome" ]
     }
-  } else if (!build_with_chromium) {
-    data = [ devtools_location_prepend + "third_party/chrome/" ]
+  } else {
+    data_deps += [ "../../front_end" ]
+    if (!build_with_chromium) {
+      data = [ devtools_location_prepend + "third_party/chrome/" ]
+    }
   }
 }

@@ -12,6 +12,7 @@ export const CHECKOUT_ROOT: string = path.join(import.meta.dirname, '..', build.
 export const BUILD_ROOT: string = path.join(import.meta.dirname, '..', build.BUILD_ROOT);
 export const GEN_DIR: string = path.join(BUILD_ROOT, 'gen', path.relative(CHECKOUT_ROOT, SOURCE_ROOT));
 export const BUILD_WITH_CHROMIUM: boolean = build.BUILD_WITH_CHROMIUM;
+export const DEVTOOLS_BUNDLED_CHROMIUM_DEPS: boolean = build.DEVTOOLS_BUNDLED_CHROMIUM_DEPS;
 export const TEST_ID_REGEX: RegExp = /^(.*\.[tj]s):(.*)$/;
 
 function rebase(fromRoot: string, toRoot: string, filename: string, newExt?: string) {

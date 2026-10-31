@@ -57,7 +57,7 @@
 .center {
   width: 0.7em;
   height: 0.7em;
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .dial {

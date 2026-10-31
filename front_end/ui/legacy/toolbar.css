@@ -14,7 +14,8 @@
   align-items: center;
   z-index: 0;
 
-  --toolbar-height: 26px;
+  /* 28px outer toolbar track (--sys-size-12) minus 2px vertical border/inset allowance (--sys-size-2). */
+  --toolbar-height: calc(var(--sys-size-12) - var(--sys-size-2));
 }
 
 :host([floating]) {

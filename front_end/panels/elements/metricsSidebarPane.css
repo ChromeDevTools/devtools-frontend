@@ -41,7 +41,6 @@
 
 .metrics .label {
   position: absolute;
-  font-size: 10px;
   left: var(--sys-size-3);
 }
 

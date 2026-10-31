@@ -169,7 +169,7 @@ ol.tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.sel
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus-visible {
   width: fit-content;
-  padding-right: 3px;
+  padding-right: var(--sys-size-3);
 }
 
 /* Navigation tree variant */

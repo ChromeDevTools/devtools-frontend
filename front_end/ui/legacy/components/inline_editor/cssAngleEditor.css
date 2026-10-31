@@ -93,7 +93,7 @@
 
 :host-context(.theme-with-dark-background) .hand::before {
   /* stylelint-disable-next-line plugin/use_theme_colors */
-  box-shadow: 0 0 5px hsl(0deg 0% 0% / 80%);
+  box-shadow: 0 0 var(--sys-size-3) hsl(0deg 0% 0% / 80%);
 }
 
 :host-context(.theme-with-dark-background) .center,

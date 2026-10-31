@@ -119,7 +119,7 @@
   color: var(--sys-color-token-subtle);
   user-select: none;
   flex: none;
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .message-level-icon,

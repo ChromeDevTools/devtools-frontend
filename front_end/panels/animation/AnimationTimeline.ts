@@ -1008,7 +1008,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
       const line = UI.UIUtils.createSVGChild(this.#grid, 'rect', 'animation-timeline-grid-line');
-      line.setAttribute('x', (time * this.pixelTimeRatio() + 10).toString());
+      line.setAttribute('x', (time * this.pixelTimeRatio() + 8).toString());
       line.setAttribute('y', '23');
       line.setAttribute('height', '100%');
       line.setAttribute('width', '1');
@@ -1019,7 +1019,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         lastDraw = gridWidth;
         const label = UI.UIUtils.createSVGChild(this.#grid, 'text', 'animation-timeline-grid-label');
         label.textContent = isScrollDriven ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time);
-        label.setAttribute('x', (gridWidth + 12).toString());
+        label.setAttribute('x', (gridWidth + 10).toString());
         label.setAttribute('y', '16');
       }
     }
@@ -1119,7 +1119,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
 
     // Seek to current mouse position.
     if (!this.#gridOffsetLeft) {
-      this.#gridOffsetLeft = this.#grid.getBoundingClientRect().left + 10;
+      this.#gridOffsetLeft = this.#grid.getBoundingClientRect().left + 8;
     }
 
     const {x} = event;

@@ -158,7 +158,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-content-clip .device-mode-screen-area {
-  --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
+  --override-screen-area-box-shadow: hsl(240deg 3% 84% / 50%) 0 0 0 var(--sys-size-1), hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
 
   box-shadow: var(--override-screen-area-box-shadow);
 }

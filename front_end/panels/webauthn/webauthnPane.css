@@ -6,7 +6,6 @@
 @scope to (devtools-widget > *) {
   .webauthn-pane {
     overflow: auto;
-    min-width: 500px;
   }
 
   .webauthn-toolbar-container {

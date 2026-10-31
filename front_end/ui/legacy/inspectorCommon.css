@@ -560,13 +560,13 @@ dt-icon-label {
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .undisplayable-text,
 .expandable-inline-button {
   border: none;
-  padding: var(--sys-size-1) 3px;
+  padding: var(--sys-size-1) var(--sys-size-3);
   margin: 0 var(--sys-size-2);
   font-size: var(--sys-typescale-body5-size);
   font-family: inherit;

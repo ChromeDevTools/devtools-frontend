@@ -164,10 +164,9 @@
 
     .answer-body-wrapper {
       @container(min-width: 700px) {
-        /* Purposefully not using design system variables, this is a
-         * specific size to indent the content in and align it with the
-         * walkthrough CTA. */
-        padding-left: 35px;
+        /* Indent the content to align with the walkthrough CTA
+         * (icon width + flex gap + button horizontal padding). */
+        padding-left: calc(var(--sys-size-9) + var(--sys-size-2) + var(--sys-size-6));
       }
     }
 

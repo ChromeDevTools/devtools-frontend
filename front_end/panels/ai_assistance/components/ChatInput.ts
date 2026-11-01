@@ -225,6 +225,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
             aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
             class="chat-inline-button"
             @click=${input.onNewConversation}
+            .reducedFocusRing=${true}
             .data=${{
               variant: Buttons.Button.Variant.TEXT,
               title: lockedString(UIStringsNotTranslate.startNewChat),
@@ -430,6 +431,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                         class="start-new-chat-button"
                         aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
                         @click=${input.onNewConversation}
+                        .reducedFocusRing=${true}
                         .data=${{
                           variant: Buttons.Button.Variant.OUTLINED,
                           size: Buttons.Button.Size.SMALL,

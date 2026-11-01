@@ -6,7 +6,7 @@
 
 :host {
   margin: var(--sys-size-3) var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
-  min-width: 150px;
+  min-width: var(--sys-size-22);
 }
 
 .value {

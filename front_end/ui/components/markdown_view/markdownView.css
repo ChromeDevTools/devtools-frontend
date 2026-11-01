@@ -121,7 +121,7 @@ devtools-code-block {
 
 h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
   font: var(--sys-typescale-body4-bold);
-  margin: var(--sys-size-1) 0 10px;
+  margin: var(--sys-size-1) 0 var(--sys-size-5);
 }
 
 .message table {

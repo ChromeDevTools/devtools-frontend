@@ -163,7 +163,8 @@ p {
   content: "";
   display: block;
   position: absolute;
-  left: calc(var(--issue-indent) + 23px);
+  /* Align with .leading-issue-icon left edge: --issue-indent + 16px disclosure arrow (--sys-size-8) + 7px icon margin-left (--sys-size-5 - --sys-size-1). */
+  left: calc(var(--issue-indent) + var(--sys-size-8) + var(--sys-size-5) - var(--sys-size-1));
   top: 0;
   bottom: var(--sys-size-9);
   width: var(--sys-size-2);

@@ -75,7 +75,8 @@
 
 .network-waterfall-header,
 .network-log-grid.data-grid thead {
-  height: 31px;
+  /* 32px (--sys-size-13) header height minus 1px (--sys-size-1) bottom border offset. */
+  height: calc(var(--sys-size-13) - var(--sys-size-1));
   background-color: var(--sys-color-surface1);
 }
 

@@ -172,7 +172,7 @@ tr:has([aria-expanded="true"].network-fetch-timing-bar-clickable) ~ .network-fet
 
 .network-fetch-timing-bar-details,
 .router-evaluation-timing-bar-details {
-  padding-left: 11px;
+  padding-left: var(--sys-size-5);
   width: fit-content;
 }
 

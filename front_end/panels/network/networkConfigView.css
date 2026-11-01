@@ -45,7 +45,7 @@
 
 .network-config-input-validation-error {
   color: var(--sys-color-error);
-  margin: 5px 0;
+  margin: var(--sys-size-3) 0;
 }
 
 .network-config-input-validation-error:empty {

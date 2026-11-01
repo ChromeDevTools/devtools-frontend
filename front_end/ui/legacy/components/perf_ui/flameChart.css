@@ -77,7 +77,7 @@
 }
 
 .flame-chart-entry-info table tr td:not(:empty) {
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
   white-space: nowrap;
 }
 

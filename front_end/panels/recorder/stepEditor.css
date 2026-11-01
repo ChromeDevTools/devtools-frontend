@@ -81,7 +81,7 @@
 }
 
 .row-buttons {
-  margin-top: 3px;
+  margin-top: var(--sys-size-3);
 }
 
 .error {

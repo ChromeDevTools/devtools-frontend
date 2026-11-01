@@ -163,7 +163,6 @@
   .breakpoint-item {
     display: flex;
     align-items: center;
-    line-height: 13px;
     height: var(--sys-size-9);
     padding-right: var(--sys-size-5);
   }

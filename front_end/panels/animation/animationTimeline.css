@@ -330,7 +330,7 @@ text.animation-timeline-grid-label {
   align-items: center;
   justify-content: center;
   margin-left: var(--timeline-controls-width);
-  padding: 10px;
+  padding: var(--sys-size-5);
 }
 
 .animation-controls-toolbar {

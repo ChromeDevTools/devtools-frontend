@@ -72,7 +72,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-row {
   position: relative;
-  height: 15px;
+  height: var(--sys-size-7);
 }
 
 .network-timing-bar {

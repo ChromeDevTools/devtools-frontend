@@ -241,10 +241,10 @@ devtools-toolbar.device-mode-toolbar-options {
 
 .device-mode-bottom-right-resizer > div {
   position: absolute;
-  bottom: 3px;
-  right: 3px;
-  width: 13px;
-  height: 13px;
+  bottom: var(--sys-size-3);
+  right: var(--sys-size-3);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeDiagonal);
 }

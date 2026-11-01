@@ -130,7 +130,7 @@
 
 .cpu-preset-calibrate .button-container {
   display: flex;
-  gap: 10px;
+  gap: var(--sys-size-5);
 }
 
 .cpu-preset-calibrate .text-container {

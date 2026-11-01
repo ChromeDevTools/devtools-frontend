@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -11,9 +9,14 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SettingsUI from '../../ui/legacy/components/settings_ui/settings_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import renderingOptionsStyles from './renderingOptions.css.js';
+
+const {html, nothing, render} = Lit;
+const {bindToSetting} = UI.UIUtils;
+const {renderControlForSetting} = SettingsUI.SettingsUI;
 
 const UIStrings = {
   /**
@@ -193,140 +196,213 @@ const supportsJpegXl = (): boolean => {
   return Boolean(Root.Runtime.hostConfig.devToolsJpegXlImageFormat?.enabled);
 };
 
+export interface ViewInput {
+  showPaintRectsSetting: Common.Settings.Setting<boolean>;
+  showLayoutShiftRegionsSetting: Common.Settings.Setting<boolean>;
+  showDebugBordersSetting: Common.Settings.Setting<boolean>;
+  showFPSCounterSetting: Common.Settings.Setting<boolean>;
+  showScrollBottleneckRectsSetting: Common.Settings.Setting<boolean>;
+  showAdHighlightsSetting: Common.Settings.Setting<boolean>|null;
+  localFontsDisabledSetting: Common.Settings.Setting<boolean>;
+  emulatePageFocusSetting: Common.Settings.Setting<boolean>;
+  onEmulatePageFocusChange: () => void;
+  emulateAutoDarkModeSetting: Common.Settings.Setting<boolean>;
+  prefersColorSchemeSetting: Common.Settings.Setting<string>;
+  prefersColorSchemeDisabled: boolean;
+  emulatedCSSMediaSetting: Common.Settings.Setting<string>;
+  forcedColorsSetting: Common.Settings.Setting<string>;
+  prefersContrastSetting: Common.Settings.Setting<string>|null;
+  prefersReducedMotionSetting: Common.Settings.Setting<string>;
+  prefersReducedDataSetting: Common.Settings.Setting<string>|null;
+  prefersReducedTransparencySetting: Common.Settings.Setting<string>|null;
+  colorGamutSetting: Common.Settings.Setting<string>;
+  visionDeficiencySetting: Common.Settings.Setting<unknown>;
+  osTextScaleSetting: Common.Settings.Setting<string>;
+  avifFormatDisabledSetting: Common.Settings.Setting<boolean>;
+  jpegXlFormatDisabledSetting: Common.Settings.Setting<boolean>|null;
+  webpFormatDisabledSetting: Common.Settings.Setting<boolean>;
+}
+
+export type ViewOutput = undefined;
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+function renderCheckbox(label: Common.UIString.LocalizedString, subtitle: Common.UIString.LocalizedString,
+                        setting: Common.Settings.Setting<boolean>, onChange?: () => void): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <devtools-checkbox
+      title=${label}
+      ${bindToSetting(setting)}
+      @change=${onChange ?? nothing}>
+      ${label}
+      <div class="devtools-checkbox-subtitle">${subtitle}</div>
+    </devtools-checkbox>
+  `;
+  // clang-format on
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${renderingOptionsStyles}</style>
+        ${renderCheckbox(
+            i18nString(UIStrings.paintFlashing),
+            i18nString(UIStrings.highlightsAreasOfThePageGreen),
+            input.showPaintRectsSetting)}
+        ${renderCheckbox(
+            i18nString(UIStrings.layoutShiftRegions),
+            i18nString(UIStrings.highlightsAreasOfThePageBlueThat),
+            input.showLayoutShiftRegionsSetting)}
+        ${renderCheckbox(
+            i18nString(UIStrings.layerBorders),
+            i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
+            input.showDebugBordersSetting)}
+        ${renderCheckbox(
+            i18nString(UIStrings.frameRenderingStats),
+            i18nString(UIStrings.plotsFrameThroughputDropped),
+            input.showFPSCounterSetting)}
+        ${renderCheckbox(
+            i18nString(UIStrings.scrollingPerformanceIssues),
+            i18nString(UIStrings.highlightsElementsTealThatCan),
+            input.showScrollBottleneckRectsSetting)}
+        ${input.showAdHighlightsSetting ? renderCheckbox(
+            i18nString(UIStrings.highlightAds),
+            i18nString(UIStrings.highlightsElementsRedDetectedToBe),
+            input.showAdHighlightsSetting) : nothing}
+        ${renderCheckbox(
+            i18nString(UIStrings.disableLocalFonts),
+            i18nString(UIStrings.disablesLocalSourcesInFontface),
+            input.localFontsDisabledSetting)}
+        ${renderCheckbox(
+            i18nString(UIStrings.emulateAFocusedPage),
+            i18nString(UIStrings.emulatesAFocusedPage),
+            input.emulatePageFocusSetting,
+            input.onEmulatePageFocusChange)}
+        ${renderCheckbox(
+            i18nString(UIStrings.emulateAutoDarkMode),
+            i18nString(UIStrings.emulatesAutoDarkMode),
+            input.emulateAutoDarkModeSetting)}
+        <div class="panel-section-separator"></div>
+        ${renderControlForSetting(
+            input.prefersColorSchemeSetting,
+            i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
+            input.prefersColorSchemeDisabled)}
+        ${renderControlForSetting(
+            input.emulatedCSSMediaSetting,
+            i18nString(UIStrings.forcesMediaTypeForTestingPrint))}
+        ${renderControlForSetting(
+            input.forcedColorsSetting,
+            i18nString(UIStrings.forcesCssForcedColors))}
+        ${input.prefersContrastSetting ? renderControlForSetting(
+            input.prefersContrastSetting,
+            i18nString(UIStrings.forcesCssPreferscontrastMedia)) : nothing}
+        ${renderControlForSetting(
+            input.prefersReducedMotionSetting,
+            i18nString(UIStrings.forcesCssPrefersreducedmotion))}
+        ${input.prefersReducedDataSetting ? renderControlForSetting(
+            input.prefersReducedDataSetting,
+            i18nString(UIStrings.forcesCssPrefersreduceddataMedia)) : nothing}
+        ${input.prefersReducedTransparencySetting ? renderControlForSetting(
+            input.prefersReducedTransparencySetting,
+            i18nString(UIStrings.forcesCssPrefersreducedtransparencyMedia)) : nothing}
+        ${renderControlForSetting(
+            input.colorGamutSetting,
+            i18nString(UIStrings.forcesCssColorgamutMediaFeature))}
+        <div class="panel-section-separator"></div>
+        ${renderControlForSetting(
+            input.visionDeficiencySetting,
+            i18nString(UIStrings.forcesVisionDeficiencyEmulation))}
+        <div class="panel-section-separator"></div>
+        ${renderControlForSetting(
+            input.osTextScaleSetting,
+            i18nString(UIStrings.forcesOsTextScaleEmulation))}
+        <div class="panel-section-separator"></div>
+        ${renderCheckbox(
+            i18nString(UIStrings.disableAvifImageFormat),
+            i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+            input.avifFormatDisabledSetting)}
+        ${input.jpegXlFormatDisabledSetting ? renderCheckbox(
+            i18nString(UIStrings.disableJpegXlImageFormat),
+            i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+            input.jpegXlFormatDisabledSetting) : nothing}
+        ${renderCheckbox(
+            i18nString(UIStrings.disableWebpImageFormat),
+            i18nString(UIStrings.requiresAPageReloadToApplyAnd),
+            input.webpFormatDisabledSetting)}
+        <div class="panel-section-separator"></div>
+      `,
+      target, {container: {attributes: {jslog: `${VisualLogging.panel('rendering').track({resize: true})}`}}});
+  // clang-format on
+};
+
 export class RenderingOptionsView extends UI.Widget.VBox {
-  #jpegXlCheckboxAdded = false;
+  readonly #view: View;
+  readonly #autoDarkModeSetting =
+      Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor);
 
-  constructor() {
-    super({useShadowDom: true});
-    this.registerRequiredCSS(renderingOptionsStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('rendering').track({resize: true})}`);
-
-    this.#appendCheckbox(i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
-                         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showPaintRectsSettingDescriptor));
-    this.#appendCheckbox(
-        i18nString(UIStrings.layoutShiftRegions), i18nString(UIStrings.highlightsAreasOfThePageBlueThat),
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showLayoutShiftRegionsSettingDescriptor));
-    this.#appendCheckbox(
-        i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showDebugBordersSettingDescriptor));
-    this.#appendCheckbox(i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped),
-                         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showFPSCounterSettingDescriptor));
-    this.#appendCheckbox(
-        i18nString(UIStrings.scrollingPerformanceIssues), i18nString(UIStrings.highlightsElementsTealThatCan),
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showScrollBottleneckRectsSettingDescriptor));
-
-    // The 'Highlight ads' setting now lives in the Ads panel under Application.
-    // We display this legacy setting only when the Ads panel isn't enabled.
-    if (!Root.Runtime.hostConfig.devToolsAdsPanel?.enabled) {
-      this.#appendCheckbox(
-          i18nString(UIStrings.highlightAds), i18nString(UIStrings.highlightsElementsRedDetectedToBe),
-          Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor));
-    }
-
-    this.#appendCheckbox(
-        i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface),
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.localFontsDisabledSettingDescriptor));
-    this.#appendCheckbox(i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
-                         Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor),
-                         {toggle: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab});
-    const autoDarkModeSetting =
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulateAutoDarkModeSettingDescriptor);
-    this.#appendCheckbox(i18nString(UIStrings.emulateAutoDarkMode), i18nString(UIStrings.emulatesAutoDarkMode),
-                         autoDarkModeSetting);
-
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-    this.#appendSelect(i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
-                       Common.Settings.Settings.instance().resolve(
-                           SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor),
-                       autoDarkModeSetting.get());
-    this.#appendSelect(i18nString(UIStrings.forcesMediaTypeForTestingPrint),
-                       Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedCSSMediaSettingDescriptor));
-    this.#appendSelect(i18nString(UIStrings.forcesCssForcedColors),
-                       Common.Settings.Settings.instance().resolve(
-                           SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor));
-    if (supportsPrefersContrast()) {
-      this.#appendSelect(i18nString(UIStrings.forcesCssPreferscontrastMedia),
-                         Common.Settings.Settings.instance().resolve(
-                             SDK.SDKSettings.emulatedCSSMediaFeaturePrefersContrastSettingDescriptor));
-    }
-    this.#appendSelect(i18nString(UIStrings.forcesCssPrefersreducedmotion),
-                       Common.Settings.Settings.instance().resolve(
-                           SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor));
-    if (supportsPrefersReducedData()) {
-      this.#appendSelect(i18nString(UIStrings.forcesCssPrefersreduceddataMedia),
-                         Common.Settings.Settings.instance().resolve(
-                             SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor));
-    }
-    if (supportsPrefersReducedTransparency()) {
-      this.#appendSelect(i18nString(UIStrings.forcesCssPrefersreducedtransparencyMedia),
-                         Common.Settings.Settings.instance().resolve(
-                             SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor));
-    }
-    this.#appendSelect(i18nString(UIStrings.forcesCssColorgamutMediaFeature),
-                       Common.Settings.Settings.instance().resolve(
-                           SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor));
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-    this.#appendSelect(
-        i18nString(UIStrings.forcesVisionDeficiencyEmulation),
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedVisionDeficiencySettingDescriptor));
-
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-    this.#appendSelect(
-        i18nString(UIStrings.forcesOsTextScaleEmulation),
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor));
-
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-
-    const avifFormatDisabledSetting =
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.avifFormatDisabledSettingDescriptor);
-    const jpegXlFormatDisabledSetting =
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.jpegXlFormatDisabledSettingDescriptor);
-    const webpFormatDisabledSetting =
-        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.webpFormatDisabledSettingDescriptor);
-
-    this.#appendCheckbox(
-        i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
-        avifFormatDisabledSetting);
-
-    const webpCheckbox = this.#appendCheckbox(
-        i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
-        webpFormatDisabledSetting);
-
-    this.#appendJpegXlCheckboxWhenSupported(webpCheckbox, jpegXlFormatDisabledSetting);
-
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element, {useShadowDom: true});
+    this.#view = view;
+    this.requestUpdate();
   }
 
-  #appendCheckbox(
-      label: Common.UIString.LocalizedString, subtitle: Common.UIString.LocalizedString,
-      setting: Common.Settings.Setting<boolean>, metric?: UI.UIUtils.UserMetricOptions): UI.UIUtils.CheckboxLabel {
-    const checkbox = UI.UIUtils.CheckboxLabel.create(label, false, subtitle, setting.name);
-    UI.UIUtils.bindCheckbox(checkbox, setting, metric);
-    this.contentElement.appendChild(checkbox);
-    return checkbox;
+  override wasShown(): void {
+    super.wasShown();
+    this.#autoDarkModeSetting.addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
   }
 
-  #appendJpegXlCheckboxWhenSupported(
-      webpCheckbox: UI.UIUtils.CheckboxLabel, jpegXlFormatDisabledSetting: Common.Settings.Setting<boolean>): void {
-    if (this.#jpegXlCheckboxAdded || !supportsJpegXl()) {
-      return;
-    }
-
-    this.#jpegXlCheckboxAdded = true;
-    webpCheckbox.before(this.#appendCheckbox(
-        i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
-        jpegXlFormatDisabledSetting));
+  override willHide(): void {
+    super.willHide();
+    this.#autoDarkModeSetting.removeChangeListener(this.requestUpdate, this);
   }
 
-  #appendSelect(label: string, setting: Common.Settings.Setting<unknown>, disabled?: boolean): void {
-    const control = SettingsUI.SettingsUI.createControlForSetting(setting, label, disabled);
-    if (control) {
-      this.contentElement.appendChild(control);
-    }
+  override performUpdate(): void {
+    const settings = Common.Settings.Settings.instance();
+    const viewInput: ViewInput = {
+      showPaintRectsSetting: settings.resolve(SDK.SDKSettings.showPaintRectsSettingDescriptor),
+      showLayoutShiftRegionsSetting: settings.resolve(SDK.SDKSettings.showLayoutShiftRegionsSettingDescriptor),
+      showDebugBordersSetting: settings.resolve(SDK.SDKSettings.showDebugBordersSettingDescriptor),
+      showFPSCounterSetting: settings.resolve(SDK.SDKSettings.showFPSCounterSettingDescriptor),
+      showScrollBottleneckRectsSetting: settings.resolve(SDK.SDKSettings.showScrollBottleneckRectsSettingDescriptor),
+      // The 'Highlight ads' setting now lives in the Ads panel under Application.
+      // We display this legacy setting only when the Ads panel isn't enabled.
+      showAdHighlightsSetting: Root.Runtime.hostConfig.devToolsAdsPanel?.enabled ?
+          null :
+          settings.resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor),
+      localFontsDisabledSetting: settings.resolve(SDK.SDKSettings.localFontsDisabledSettingDescriptor),
+      emulatePageFocusSetting: settings.resolve(SDK.SDKSettings.emulatePageFocusSettingDescriptor),
+      onEmulatePageFocusChange: () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.ToggleEmulateFocusedPageFromRenderingTab);
+      },
+      emulateAutoDarkModeSetting: this.#autoDarkModeSetting,
+      prefersColorSchemeSetting:
+          settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor),
+      prefersColorSchemeDisabled: Boolean(this.#autoDarkModeSetting.get()),
+      emulatedCSSMediaSetting: settings.resolve(SDK.SDKSettings.emulatedCSSMediaSettingDescriptor),
+      forcedColorsSetting: settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeatureForcedColorsSettingDescriptor),
+      prefersContrastSetting: supportsPrefersContrast() ?
+          settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersContrastSettingDescriptor) :
+          null,
+      prefersReducedMotionSetting:
+          settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor),
+      prefersReducedDataSetting: supportsPrefersReducedData() ?
+          settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor) :
+          null,
+      prefersReducedTransparencySetting: supportsPrefersReducedTransparency() ?
+          settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor) :
+          null,
+      colorGamutSetting: settings.resolve(SDK.SDKSettings.emulatedCSSMediaFeatureColorGamutSettingDescriptor),
+      visionDeficiencySetting: settings.resolve(SDK.SDKSettings.emulatedVisionDeficiencySettingDescriptor),
+      osTextScaleSetting: settings.resolve(SDK.SDKSettings.emulatedOSTextScaleSettingDescriptor),
+      avifFormatDisabledSetting: settings.resolve(SDK.SDKSettings.avifFormatDisabledSettingDescriptor),
+      jpegXlFormatDisabledSetting:
+          supportsJpegXl() ? settings.resolve(SDK.SDKSettings.jpegXlFormatDisabledSettingDescriptor) : null,
+      webpFormatDisabledSetting: settings.resolve(SDK.SDKSettings.webpFormatDisabledSettingDescriptor),
+    };
+    this.#view(viewInput, undefined, this.contentElement);
   }
 }
 

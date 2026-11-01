@@ -13,6 +13,11 @@ devtools-checkbox {
   flex: none;
 }
 
+.devtools-checkbox-subtitle {
+  color: var(--sys-color-token-subtle);
+  white-space: break-spaces;
+}
+
 .panel-section-separator {
   height: var(--sys-size-1);
   margin-bottom: 10px;

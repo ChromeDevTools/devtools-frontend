@@ -82,10 +82,13 @@ ts_library("unittests") {
   sources = [
     "InspectorMain.test.ts",
     "OutermostTargetSelector.test.ts",
+    "RenderingOptions.test.ts",
   ]
 
   ts_deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",

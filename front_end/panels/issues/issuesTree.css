@@ -300,7 +300,6 @@ ul > li.plain-enum::before {
 
 .affected-resource-cookie {
   font-size: var(--sys-typescale-body4-size);
-  line-height: 18px;
   border: 0;
   border-collapse: collapse;
 }

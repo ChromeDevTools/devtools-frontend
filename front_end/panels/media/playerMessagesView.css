@@ -14,8 +14,11 @@
 }
 
 .media-messages-level-dropdown-element {
-  height: 18px;
-  line-height: 18px;
+  /* 16px (--sys-size-8) + 2px (--sys-size-2) = 18px row height matching
+   * SoftDropDown.setRowHeight(18) so all 6 items (108px) fit the 108px
+   * GlassPane without vertical scrollbar clipping. */
+  height: calc(var(--sys-size-8) + var(--sys-size-2));
+  line-height: calc(var(--sys-size-8) + var(--sys-size-2));
 }
 
 .media-messages-level-dropdown-text {

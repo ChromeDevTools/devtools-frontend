@@ -10,7 +10,7 @@
 
 .root {
   align-items: flex-start; /* keep chart at top so it doesnt change position as the legend changes height */
-  gap: var(--sys-size-6) 30px;
+  gap: var(--sys-size-6) var(--sys-size-12);
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;

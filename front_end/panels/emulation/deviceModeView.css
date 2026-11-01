@@ -57,7 +57,7 @@
 devtools-toolbar {
   overflow: hidden;
   flex: 0 100000 auto;
-  padding: 0 5px;
+  padding: 0 var(--sys-size-3);
 
   &[wrappable] {
     height: var(--toolbar-height);

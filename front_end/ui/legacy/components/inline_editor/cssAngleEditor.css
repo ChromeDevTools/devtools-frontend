@@ -83,7 +83,7 @@
   height: 1em;
   border-radius: var(--sys-shape-corner-full);
   cursor: pointer;
-  box-shadow: 0 0 5px var(--box-shadow-outline-color);
+  box-shadow: 0 0 var(--sys-size-3) var(--box-shadow-outline-color);
 }
 
 .hand::before,

@@ -135,7 +135,7 @@ devtools-recording-list-view {
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
   color: var(--sys-color-primary);
-  outline-offset: 3px;
+  outline-offset: var(--sys-size-2);
 }
 
 .feedback .devtools-link:focus-visible,

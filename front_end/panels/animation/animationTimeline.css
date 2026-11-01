@@ -451,7 +451,6 @@ text.animation-timeline-grid-label {
 .animation-playback-rate-control {
   margin: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-2);
   display: flex;
-  width: 120px;
 }
 
 .animation-playback-rate-button {
@@ -464,7 +463,7 @@ text.animation-timeline-grid-label {
   margin-right: calc(-1 * var(--sys-size-1));
   padding: var(--sys-size-1) var(--sys-size-3);
   background-color: transparent;
-  flex: 1 0 auto;
+  width: var(--sys-size-14);
   text-align: center;
 }
 

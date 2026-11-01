@@ -55,16 +55,6 @@
   flex: auto;
 }
 
-.storage-view .storage-table-error {
-  color: var(--sys-color-error);
-  font-size: var(--sys-typescale-headline1-size);
-  font-weight: bold;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .storage-view.query {
   padding: var(--sys-size-2) 0;
   overflow: hidden auto;

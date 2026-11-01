@@ -878,19 +878,6 @@ devtools-toolbar {
     opacity: 50%;
   }
 
-  .toolbar-button.copied-to-clipboard::after {
-    content: attr(data-content);
-    position: fixed;
-    margin-top: calc(2 * var(--toolbar-height));
-    padding: 3px 5px;
-    color: var(--sys-color-token-subtle);
-    background: var(--sys-color-cdt-base-container);
-    animation: 2s fade-out;
-    font-weight: normal;
-    border: var(--sys-size-1) solid var(--sys-color-divider);
-    border-radius: 3px;
-  }
-
   .toolbar-button.toolbar-state-on .toolbar-glyph {
     color: var(--icon-toggled);
   }

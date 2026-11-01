@@ -37,7 +37,7 @@
 
 .perfmon-chart-suspend-overlay {
   display: flex;
-  font-size: 26px;
+  font-size: var(--sys-typescale-headline1-size);
   align-items: center;
   justify-content: center;
 }

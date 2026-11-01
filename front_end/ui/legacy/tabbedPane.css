@@ -52,7 +52,8 @@
 
 .tabbed-pane-header {
   display: flex;
-  flex: 0 0 27px;
+  /* 28px standard toolbar height (--sys-size-12) minus 1px bottom border (--sys-size-1). */
+  flex: 0 0 calc(var(--sys-size-12) - var(--sys-size-1));
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: visible;
   width: 100%;

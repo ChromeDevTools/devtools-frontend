@@ -85,7 +85,7 @@
 }
 
 .error {
-  margin: 3px 0 var(--sys-size-4);
+  margin: var(--sys-size-3) 0 var(--sys-size-4);
   padding: var(--sys-size-5) var(--sys-size-6);
   background: var(--sys-color-error-container);
   color: var(--sys-color-error);

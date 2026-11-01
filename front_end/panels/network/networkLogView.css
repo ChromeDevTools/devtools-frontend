@@ -97,7 +97,7 @@
 }
 
 .network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
-  right: 15px;
+  right: var(--sys-size-7);
   pointer-events: none;
 }
 

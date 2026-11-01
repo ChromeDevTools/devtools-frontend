@@ -22,9 +22,12 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-row {
-  height: 26px;
-  min-height: 26px;
-  line-height: 26px;
+  /* 28px icon-column/toolbar base (--sys-size-12) minus 2px compact
+   * row offset (--sys-size-2) = 26px, matching the 26px child cells
+   * and continuous border-right column dividers below. */
+  height: calc(var(--sys-size-12) - var(--sys-size-2));
+  min-height: calc(var(--sys-size-12) - var(--sys-size-2));
+  line-height: calc(var(--sys-size-12) - var(--sys-size-2));
 
   &:nth-child(odd) {
     background: var(--sys-color-surface1);

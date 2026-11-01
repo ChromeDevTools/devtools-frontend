@@ -4,11 +4,6 @@
  * found in the LICENSE file.
  */
 
-.properties-widget-section {
-  padding: var(--sys-size-2) 0 var(--sys-size-2) 5px;
-  flex: none;
-}
-
 .properties-widget-toolbar {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-shrink: 0;

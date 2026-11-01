@@ -38,7 +38,7 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
   align-items: center;
   justify-content: center;
   height: auto !important; /* stylelint-disable-line declaration-no-important */
-  width: 27px;
+  width: 100%;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   gap: 0;
 }

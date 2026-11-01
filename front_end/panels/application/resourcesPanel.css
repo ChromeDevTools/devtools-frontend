@@ -88,10 +88,6 @@
   user-select: none;
 }
 
-.database-user-query .prompt-icon {
-  margin-top: -10px;
-}
-
 .database-query-prompt-container .prompt-icon {
   top: var(--sys-size-4);
 }

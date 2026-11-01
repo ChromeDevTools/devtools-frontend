@@ -59,11 +59,6 @@
     border-radius: var(--sys-shape-corner-medium) var(--sys-shape-corner-medium) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small);
   }
 
-  .wrapper.bottom {
-    margin-top: 5px;
-    border-radius: var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
-  }
-
   header {
     display: flex;
     flex-direction: row;

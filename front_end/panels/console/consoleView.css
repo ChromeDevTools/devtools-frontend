@@ -103,7 +103,9 @@
   position: relative;
   padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) 0;
   margin-left: var(--sys-size-11);
-  min-height: 18px;
+  /* 16px (--sys-size-8) single-line content/medium-icon box
+   * + 2 * 1px (--sys-size-1) top & bottom padding */
+  min-height: calc(var(--sys-size-8) + 2 * var(--sys-size-1));
   flex: auto;
   display: flex;
   align-items: flex-end;

@@ -29,7 +29,7 @@
   .screencast-navigation input {
     flex: 1;
     margin: var(--sys-size-2);
-    max-height: 19px;
+    max-height: var(--sys-size-9);
   }
 
   .screencast-navigation .progress {

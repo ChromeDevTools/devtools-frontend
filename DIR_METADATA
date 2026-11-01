@@ -17,6 +17,12 @@ agentic_review: {
     ]
   }
   capability_groups: {
+    path_expression: ["front_end/.*\\.ts"]
+    path_expression_exclusion: [".*\\.test\\.ts"]
+    content_patterns: ["UIStrings", "@description", "i18n(String|FormatString|Template)"]
+    review_capability_skills: [".agents/skills/devtools-uistrings/SKILL.md"]
+  }
+  capability_groups: {
     path_expression: [
       "front_end/(core|models|entrypoints|generated)/.*\\.ts",
       ".*BUILD\\.gn",

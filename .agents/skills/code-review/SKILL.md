@@ -42,6 +42,7 @@ Load the skill or `.agents/rules/` files that match what the diff touches, and a
 | Ported Chromium web tests (`web_tests/http/tests/devtools`) | `migrate-chromium-test` |
 | Flaky or disabled tests, or `it.skip` / `it.skipOnPlatforms` | `fix-tests` |
 | Rendering user-controlled strings (URLs, names, console text) | `devtools-unicode-escaping` |
+| Adding or modifying `UIStrings` or `@description` / `@example` L10n comments | `devtools-uistrings` |
 | `front_end/models/*`, `BUILD.gn`, `devtools_grd_files.gni`, entrypoints | `devtools-model-management` |
 | Reviewing foundation, models, and build configs (`front_end/(core|models|entrypoints|generated)/**`, `BUILD.gn`, `*.gni`) | `.agents/rules/models-and-core/*.md` |
 | Merging modules or consolidating `BUILD.gn` | `merging-devtools-module` |

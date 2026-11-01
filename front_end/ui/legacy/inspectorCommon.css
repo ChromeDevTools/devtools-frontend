@@ -239,7 +239,7 @@ input::placeholder {
 .harmony-input:not([type]),
 .harmony-input[type='number'],
 .harmony-input[type='text'] {
-  padding: 3px var(--sys-size-4);
+  padding: var(--sys-size-2) var(--sys-size-4);
   height: var(--sys-size-11);
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);

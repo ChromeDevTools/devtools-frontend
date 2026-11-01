@@ -22,10 +22,11 @@
   align-items: center;
   box-sizing: border-box;
   width: var(--sys-size-7);
-  height: 10px;
+  /* 8px (--sys-size-5) interior height + 2 * 1px (--sys-size-1) top/bottom borders. */
+  height: calc(var(--sys-size-5) + 2 * var(--sys-size-1));
   margin: 0 var(--sys-size-2);
   border: var(--sys-size-1) solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
-  border-radius: 10px;
+  border-radius: var(--sys-shape-corner-full);
   background: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
   padding: 0;
   position: relative;

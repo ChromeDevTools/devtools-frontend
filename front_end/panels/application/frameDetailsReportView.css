@@ -109,11 +109,6 @@ button.text-link {
   font-weight: bold;
 }
 
-.link:not(button):has(devtools-icon) {
-  vertical-align: baseline;
-  margin-inline-start: 3px;
-}
-
 .inline-icon {
   margin-bottom: -5px;
   width: 18px;

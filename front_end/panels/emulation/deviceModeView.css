@@ -316,7 +316,8 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-left .device-mode-ruler-inner {
-  inset: 19px 0 0;
+  /* Offset by the 20px ruler track (--sys-size-9) minus the parent's 1px top border (--sys-size-1) to align with the viewport top edge. */
+  inset: calc(var(--sys-size-9) - var(--sys-size-1)) 0 0;
   border-right: var(--sys-size-1) solid var(--sys-color-token-subtle);
   background-color: var(--sys-color-cdt-base-container);
 }

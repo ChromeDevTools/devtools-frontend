@@ -31,10 +31,11 @@
   content: "";
   width: var(--sys-size-1);
   background: var(--sys-color-primary);
-  height: 7px;
   position: absolute;
   left: var(--sys-size-2);
-  top: 5px;
+  /* 6px (--sys-size-4) outer offset minus 1px (--sys-size-1) handle border
+   * gives symmetric 5px top/bottom insets (7px grip line) in 17px box */
+  inset-block: calc(var(--sys-size-4) - var(--sys-size-1));
   border-radius: var(--sys-size-1);
 }
 

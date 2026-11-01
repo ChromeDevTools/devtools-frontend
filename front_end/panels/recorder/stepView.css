@@ -175,26 +175,6 @@
   overflow: auto;
 }
 
-devtools-recorder-step-editor {
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-  padding: 3px 6px 6px;
-  margin-left: calc(-1 * var(--sys-size-4));
-  border-radius: 3px;
-}
-
-devtools-recorder-step-editor:hover {
-  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
-}
-
-devtools-recorder-step-editor.is-selected {
-  background-color: color-mix(
-    in srgb,
-    var(--sys-color-tonal-container),
-    var(--sys-color-cdt-base-container) 50%
-  );
-  border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
-}
-
 .summary {
   display: flex;
   flex-flow: row nowrap;

@@ -199,11 +199,13 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-scrubber-line {
-  width: 11px;
+  /* 11px width: 2 * 6px left inset (--sys-size-4) - 1px line (--sys-size-1). */
+  width: calc(2 * var(--sys-size-4) - var(--sys-size-1));
+  /* 6px inset (--sys-size-4) - 1px border (--sys-size-1) aligns the 1px stem. */
   background: linear-gradient(
     to right,
-    transparent 5px,
-    var(--sys-color-error) 5px,
+    transparent calc(var(--sys-size-4) - var(--sys-size-1)),
+    var(--sys-color-error) calc(var(--sys-size-4) - var(--sys-size-1)),
     var(--sys-color-error) var(--sys-size-4),
     transparent var(--sys-size-4)
   );
@@ -211,7 +213,8 @@ circle.animation-keyframe-point:active {
   top: calc(-1 * var(--sys-size-12));
   height: var(--sys-size-12);
   left: calc(-1 * var(--sys-size-4));
-  padding: 0 5px;
+  /* 5px side hit padding: 6px (--sys-size-4) - 1px line width (--sys-size-1). */
+  padding: 0 calc(var(--sys-size-4) - var(--sys-size-1));
   z-index: 3;
 }
 

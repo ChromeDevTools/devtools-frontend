@@ -58,8 +58,8 @@ select {
   border: none;
   border-radius: var(--sys-shape-corner-extra-small);
   height: var(--sys-size-9);
-  max-width: 140px;
-  min-width: 140px;
+  max-width: var(--sys-size-22);
+  min-width: var(--sys-size-22);
   padding: 0 var(--sys-size-6) 0 var(--sys-size-5);
   position: relative;
   color: var(--sys-color-on-surface);

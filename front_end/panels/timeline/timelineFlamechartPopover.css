@@ -16,7 +16,7 @@
 }
 
 .timeline-flamechart-popover span {
-  margin-right: 5px;
+  margin-right: var(--sys-size-3);
 }
 
 .timeline-flamechart-popover span.popoverinfo-network-time {

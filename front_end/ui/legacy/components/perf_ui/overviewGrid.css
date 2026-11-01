@@ -93,7 +93,7 @@
   transition: opacity 100ms 250ms;
   display: flex;
   position: absolute;
-  top: 15px;
+  top: var(--sys-size-8);
   justify-content: center;
   z-index: 600;
   left: 0;

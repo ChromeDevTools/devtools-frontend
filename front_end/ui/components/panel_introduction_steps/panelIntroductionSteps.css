@@ -30,7 +30,7 @@ h1 {
   font-size: var(--sys-typescale-body3-size);
   letter-spacing: 0.03em;
   line-height: 1.54;
-  margin-bottom: 9px;
+  margin-bottom: var(--sys-size-5);
   position: relative;
 }
 

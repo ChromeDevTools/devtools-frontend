@@ -30,7 +30,7 @@ iframe {
 
 header {
   display: flex;
-  padding: 3px var(--sys-size-5);
+  padding: var(--sys-size-3) var(--sys-size-5);
   justify-content: space-between;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }

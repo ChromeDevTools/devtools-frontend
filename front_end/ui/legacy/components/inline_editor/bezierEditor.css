@@ -5,8 +5,7 @@
  */
 
 :host {
-  width: 270px;
-  height: 350px;
+  width: var(--sys-size-30);
   user-select: none;
   padding: var(--sys-size-8);
   overflow: hidden;

@@ -634,23 +634,6 @@ button.link:focus-visible {
     border: var(--sys-size-1) solid Highlight;
   }
 }
-/* search input with customized styling */
-input.custom-search-input::-webkit-search-cancel-button {
-  appearance: none;
-  width: var(--sys-size-8);
-  height: 15px;
-  margin-right: 0;
-  opacity: 70%;
-  mask-image: var(--image-file-cross-circle-filled);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: 99%;
-  background-color: var(--icon-default);
-}
-
-input.custom-search-input::-webkit-search-cancel-button:hover {
-  opacity: 99%;
-}
 /* loading spinner */
 .spinner::before {
   display: block;

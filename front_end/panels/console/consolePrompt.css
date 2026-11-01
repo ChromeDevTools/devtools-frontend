@@ -40,8 +40,10 @@
 
 .preview-result-icon {
   position: absolute;
-  left: -13px;
-  top: calc(-1 * var(--sys-size-1));
+  /* Offset both .console-prompt-icon's 12px (--sys-size-6) gutter offset and
+   * .console-eager-preview's 4px (--sys-size-3) left margin so both icons align. */
+  left: calc(-1 * (var(--sys-size-6) + var(--sys-size-3)));
+  top: 0;
 }
 
 .console-eager-inner-preview:empty,

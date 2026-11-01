@@ -32,7 +32,8 @@
 .tree-outline li .selection {
   display: none;
   z-index: -1;
-  margin-left: -10000px;
+  /* Extend selection background leftward across any tree nesting depth. */
+  margin-left: -100vw;
 }
 
 .tree-outline:not(.hide-selection-when-blurred, .elements-tree-outline) li.selected {

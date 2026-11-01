@@ -292,7 +292,6 @@ ul > li.plain-enum::before {
 
 .affected-resource-label {
   font-size: var(--sys-typescale-body4-size);
-  line-height: 18px;
   color: var(--sys-color-on-surface);
   position: relative;
   cursor: pointer;

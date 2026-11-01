@@ -15,10 +15,6 @@
   position: relative;
 }
 
-button.view-trace {
-  margin: 10px;
-}
-
 /** `window.opener` is null for windows opened from DevTools. This breaks
     the LH viewer app, so disable this feature. */
 

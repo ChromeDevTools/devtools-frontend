@@ -305,7 +305,8 @@
 }
 
 .tabbed-pane-tab-slider {
-  height: 3px;
+  /* 2px indicator above header + 1px border-bottom overlap (3px total). */
+  height: calc(var(--sys-size-2) + var(--sys-size-1));
   position: absolute;
   bottom: calc(-1 * var(--sys-size-1));
   background-color: var(--sys-color-primary);

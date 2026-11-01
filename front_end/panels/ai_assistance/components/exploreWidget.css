@@ -27,7 +27,7 @@
 
     .link {
       padding: 0;
-      margin: 0 3px;
+      margin: 0 var(--sys-size-3);
     }
 
     .header {

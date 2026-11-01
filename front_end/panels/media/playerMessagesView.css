@@ -32,7 +32,7 @@
 .media-messages-message-container {
   margin: var(--sys-size-3);
   font-size: var(--sys-typescale-body2-size);
-  line-height: 18px;
+  line-height: var(--sys-typescale-body2-line-height);
   padding: var(--sys-size-3);
   user-select: text;
 }

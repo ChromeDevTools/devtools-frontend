@@ -319,13 +319,6 @@ td.time-column {
   z-index: 0;
 }
 
-.network-log-grid.data-grid .resources-dividers-label-bar {
-  background-color: transparent;
-  border: none;
-  height: 30px;
-  pointer-events: none;
-}
-
 .network-log-grid.data-grid span.separator-in-cell {
   user-select: none;
   min-width: 1ex;

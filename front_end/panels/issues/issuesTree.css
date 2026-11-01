@@ -187,7 +187,8 @@ p {
 }
 
 devtools-icon.leading-issue-icon {
-  margin: var(--sys-size-1) 0 calc(-1 * var(--sys-size-1)) 7px;
+  /* 8px (--sys-size-5) minus 1px (--sys-size-1) aligns the 20px icon after the 16px disclosure arrow with the 23px .issue-body::before border and 43px body indent. */
+  margin: var(--sys-size-1) 0 calc(-1 * var(--sys-size-1)) calc(var(--sys-size-5) - var(--sys-size-1));
 }
 
 .message {

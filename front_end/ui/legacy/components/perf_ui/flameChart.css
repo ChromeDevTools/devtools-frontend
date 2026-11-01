@@ -85,6 +85,11 @@
 
 .flame-chart-edit-confirm {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: var(--sys-size-6);
+  right: var(--sys-size-6);
+}
+
+:has(+ .chart-viewport-v-scroll:not(.hidden)) > .flame-chart-edit-confirm {
+  /* 12px margin (--sys-size-6) + 16px scrollbar gutter (--sys-size-8) = 28px (--sys-size-12). */
+  right: var(--sys-size-12);
 }

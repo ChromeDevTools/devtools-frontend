@@ -59,7 +59,7 @@
 }
 
 .lighthouse-form-section-label {
-  margin: 7px 0;
+  margin: var(--sys-size-5) 0;
   font-weight: 500;
 }
 

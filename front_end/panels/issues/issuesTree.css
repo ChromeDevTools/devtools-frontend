@@ -33,7 +33,9 @@
 }
 
 .issues li.parent::before {
-  margin-top: 7px;
+  /* Center the 16px chevron on the 20px leading issue icon:
+     4px header padding + 2px header child margin + (20px - 16px) / 2 = 8px. */
+  margin-top: var(--sys-size-5);
 }
 
 .issues .affected-resources li.parent::before {

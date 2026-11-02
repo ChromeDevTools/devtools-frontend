@@ -348,7 +348,8 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-list {
-  border-spacing: 10px 0;
+  /* 12px left margin offset minus 2px cell left padding so column 1 aligns flush with parent container */
+  border-spacing: calc(var(--sys-size-6) - var(--sys-size-2)) 0;
   margin-left: calc(-1 * var(--sys-size-6));
 }
 

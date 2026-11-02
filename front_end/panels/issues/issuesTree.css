@@ -426,7 +426,8 @@ ul > li.plain-enum::before {
 }
 
 .aggregated-issues-count {
-  padding: 3px 7px 0;
+  /* Center the 14px (--sys-size-7) adorner pill vertically against the 20px (--sys-size-9) issue icon. */
+  padding: calc((var(--sys-size-9) - var(--sys-size-7)) / 2) var(--sys-size-4) 0;
 }
 
 .affected-resource-directive-info-header {

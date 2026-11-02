@@ -146,8 +146,8 @@ p {
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: var(--sys-size-4) 0;
   position: relative;
-  padding-left: calc(var(--issue-indent) + 43px);
-  padding-bottom: 26px;
+  padding-left: calc(var(--issue-indent) + var(--sys-size-14));
+  padding-bottom: var(--sys-size-11);
   padding-right: var(--sys-size-5);
 }
 

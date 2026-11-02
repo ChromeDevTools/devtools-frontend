@@ -5,7 +5,8 @@
  */
 
 .search-bar {
-  flex: 0 0 33px;
+  /* 32px search toolbar (28px row + 2x2px margin) plus 1px top border. */
+  flex: 0 0 calc(var(--sys-size-13) + var(--sys-size-1));
   border-top: var(--sys-size-1) solid var(--sys-color-divider);
 
   devtools-icon[name="search"] {

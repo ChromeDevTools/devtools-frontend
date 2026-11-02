@@ -251,11 +251,6 @@
    * @param panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
-    // TODO(crbug.com/518066451): Remove fallback once https://crrev.com/c/8702200
-    // lands in chromium/src (see https://crrev.com/c/8704657).
-    if (!UI.ViewManager.ViewManager.instance().hasView(panelName)) {
-      return this.showExtensionSidebarPane(panelName);
-    }
     return UI.InspectorView.InspectorView.instance().showPanel(panelName);
   };
 

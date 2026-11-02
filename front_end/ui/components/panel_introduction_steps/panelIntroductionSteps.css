@@ -43,13 +43,15 @@ h1 {
   color: var(--sys-color-primary);
   content: counter(custom-counter);
   font-size: var(--sys-typescale-body4-size);
-  height: 18px;
-  left: -30px;
+  height: var(--sys-size-8);
+  /* 24px (--sys-size-11) + 6px (--sys-size-4) matches the 30px .intro-steps left margin */
+  left: calc(-1 * (var(--sys-size-11) + var(--sys-size-4)));
   line-height: var(--sys-size-9);
   position: absolute;
   text-align: center;
-  top: 0;
-  width: 18px;
+  /* 2px (--sys-size-2) + 1px (--sys-size-1) aligns the 16px badge with body3 step text */
+  top: calc(var(--sys-size-2) + var(--sys-size-1));
+  width: var(--sys-size-8);
   display: flex;
   align-items: center;
   justify-content: center;

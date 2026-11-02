@@ -6,16 +6,23 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("sources") {
   sources = [
+    "sources-add-to-cart-handler.test.ts",
+    "sources-blank-screen-render.test.ts",
     "sources-canvas-signature-locator.test.ts",
     "sources-chart-lookback-config.test.ts",
+    "sources-draft-response-freeze.test.ts",
     "sources-firebase-carrier-search.test.ts",
     "sources-input-safety-audit.test.ts",
+    "sources-page-reload-loop.test.ts",
+    "sources-popup-not-displayed.test.ts",
     "sources-script-explanation-perf.test.ts",
+    "sources-theme-switcher-code.test.ts",
     "sources-third-party-consent-locator.test.ts",
   ]
 
   ts_deps = [
     "..:harness_library",
+    "../../conductor:implementation",
     "../helpers",
     "../report",
   ]

@@ -191,31 +191,6 @@ devtools-icon.leading-issue-icon {
   margin: var(--sys-size-1) 0 calc(-1 * var(--sys-size-1)) calc(var(--sys-size-5) - var(--sys-size-1));
 }
 
-.message {
-  line-height: 18px;
-  font-size: var(--sys-typescale-body4-size);
-  color: var(--sys-color-token-subtle);
-  margin-bottom: var(--sys-size-3);
-  user-select: text;
-}
-
-.message p {
-  margin-bottom: var(--sys-size-8);
-}
-
-.message li {
-  margin-top: var(--sys-size-5);
-}
-
-.message code {
-  color: var(--sys-color-on-surface);
-  padding: 0 var(--sys-size-2);
-  font-size: var(--sys-typescale-body4-size);
-  user-select: text;
-  cursor: text;
-  background: var(--sys-color-surface2);
-}
-
 .separator::before {
   content: "·";
   padding-left: 1ex;

@@ -123,7 +123,9 @@ export class DevToolsPage extends PageWrapper {
 
   async ensureReadyForTesting(): Promise<void> {
     const devToolsVeLogging = {enabled: true, testing: true};
-    await this.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
+    const devToolsProtocolMonitor = {enabled: true};
+    await this.evaluateOnNewDocument(
+        `globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging, devToolsProtocolMonitor})};`);
     await this.waitForFunction(async () => {
       try {
         const result = await this.page.evaluate(async function() {

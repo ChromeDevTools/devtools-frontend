@@ -272,6 +272,7 @@ export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
     'FencedFrames',
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
+    'DevToolsProtocolMonitor',
     'DevToolsVeLogging:testing/true',
     'CADisplayLink',
   ],

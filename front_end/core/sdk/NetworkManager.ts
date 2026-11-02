@@ -927,7 +927,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest|null {
-    return this.#requestsByLoaderId.get(loaderId) || null;
+    return this.#requestsByLoaderId.get(loaderId) ||
+        this.#multitargetNetworkManager.inflightMainResourceRequests.get(loaderId) || null;
   }
 
   resourceChangedPriority({requestId, newPriority}: Protocol.Network.ResourceChangedPriorityEvent): void {

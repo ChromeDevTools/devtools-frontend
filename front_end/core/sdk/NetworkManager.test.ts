@@ -1664,6 +1664,45 @@ describe('MultitargetNetworkManager', () => {
     assert.isNotOk(multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
   });
 
+  it('finds in-flight main resource requests across targets by loaderId', async () => {
+    const parentTarget = universe.createTarget({});
+    const subframeTarget = universe.createTarget({parentTarget, type: SDK.Target.Type.FRAME});
+
+    const parentNetworkManager = parentTarget.model(SDK.NetworkManager.NetworkManager)!;
+    const subframeNetworkManager = subframeTarget.model(SDK.NetworkManager.NetworkManager)!;
+
+    const requestId = 'loader-1' as Protocol.Network.RequestId;
+    const loaderId = 'loader-1' as Protocol.Network.LoaderId;
+    const requestPromise = parentNetworkManager.once(SDK.NetworkManager.Events.RequestStarted);
+    parentNetworkManager.dispatcher.requestWillBeSent({
+      requestId,
+      loaderId,
+      documentURL: 'http://example.com/subframe.html',
+      request: {
+        url: 'http://example.com/subframe.html',
+        method: 'GET',
+        headers: {},
+        initialPriority: Protocol.Network.ResourcePriority.High,
+        referrerPolicy: Protocol.Network.RequestReferrerPolicy.NoReferrer,
+      },
+      timestamp: 1 as Protocol.Network.MonotonicTime,
+      wallTime: 1 as Protocol.Network.TimeSinceEpoch,
+      initiator: {type: Protocol.Network.InitiatorType.Other},
+      redirectHasExtraInfo: false,
+    });
+
+    const {request} = await requestPromise;
+    assert.strictEqual(subframeNetworkManager.requestForLoaderId(loaderId), request);
+
+    subframeNetworkManager.dispatcher.loadingFinished({
+      requestId,
+      timestamp: 2 as Protocol.Network.MonotonicTime,
+      encodedDataLength: 0,
+    });
+
+    assert.strictEqual(subframeNetworkManager.requestForLoaderId(loaderId), request);
+  });
+
   it('uses main frame to get certificate', () => {
     const targetManager = universe.targetManager;
     const tabTarget = universe.createTarget({type: SDK.Target.Type.TAB});

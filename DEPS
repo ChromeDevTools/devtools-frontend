@@ -12,13 +12,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '3a23de59abccaf1a0c550edbbed08c8043808899',
+  'build_revision': '0ccf14aa68fa5f36fb7df25bb4620be72f0b781d',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'd0d4c192e3c718016b3a0c5d44ccec632bccfe96',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'bed65db1bb5d1022dab89cf62e7609b12084747b',
+  'depot_tools_revision': 'a80c66c5510b7758fd4df7da5d0f6802cf56454f',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': 'e7943497823b2371b2b012986f36d5c9b94b8fc5',
@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:224f6aa73aeb73aafb05df998073ff2c7cae666f',
+  'gn_version': 'git_revision:ed7fee04cb30b96ed40ef188acfad5417349e399',
 
   'cmake_version': 'version:2@3.21.3',
 
@@ -65,7 +65,7 @@ vars = {
   'cpython3_version': 'version:3@3.11.9.chromium.38',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:dfc32e4edca158cff2b64a1658ee3940f0116b3a',
+  'siso_version': 'git_revision:c508213533aa5cd425b69cb0f66e53522d77022d',
 
   # Fetches the AI Evals testing data.
   'checkout_devtools_ai_evals': False,

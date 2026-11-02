@@ -174,15 +174,35 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     if (this.#activeThreadId !== threadId) {
       this.#clearCloseTimeout();
       this.#activeThreadId = threadId;
-      if (threadId && this.isShowing()) {
-        document.documentElement.addEventListener('keydown', this.#onKeyDown);
-        document.documentElement.addEventListener('click', this.#onClickOutside, {capture: true});
-      } else {
-        document.documentElement.removeEventListener('keydown', this.#onKeyDown);
-        document.documentElement.removeEventListener('click', this.#onClickOutside, {capture: true});
-      }
+      this.#updateDocumentListeners();
       this.#markActiveThreadResponseSeen();
     }
+  }
+
+  /**
+   * Escape is handled while a thread is open or comment mode is on. The
+   * listener is registered in the capture phase so that, in comment mode, the
+   * first Escape exits the mode before any panel-level Escape handling (or the
+   * drawer toggle) sees it. When neither applies the listener is removed and
+   * Escape keeps its default DevTools behavior.
+   */
+  #updateDocumentListeners(): void {
+    const isShowing = this.isShowing();
+    if (isShowing && (this.#activeThreadId || this.#commentManager.isCommentMode())) {
+      document.addEventListener('keydown', this.#onKeyDown, {capture: true});
+    } else {
+      document.removeEventListener('keydown', this.#onKeyDown, {capture: true});
+    }
+    if (isShowing && this.#activeThreadId) {
+      document.addEventListener('click', this.#onClickOutside, {capture: true});
+    } else {
+      document.removeEventListener('click', this.#onClickOutside, {capture: true});
+    }
+  }
+
+  #removeDocumentListeners(): void {
+    document.removeEventListener('keydown', this.#onKeyDown, {capture: true});
+    document.removeEventListener('click', this.#onClickOutside, {capture: true});
   }
 
   /**
@@ -241,18 +261,14 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
         this.#onAgentAttachedChanged,
         this,
     );
-    if (this.#activeThreadId) {
-      document.documentElement.addEventListener('keydown', this.#onKeyDown);
-      document.documentElement.addEventListener('click', this.#onClickOutside, {capture: true});
-    }
+    this.#updateDocumentListeners();
 
     this.requestUpdate();
   }
 
   override willHide(): void {
     this.#clearCloseTimeout();
-    document.documentElement.removeEventListener('keydown', this.#onKeyDown);
-    document.documentElement.removeEventListener('click', this.#onClickOutside, {capture: true});
+    this.#removeDocumentListeners();
     this.#commentOverlayManager.stop();
     this.#commentOverlayManager.removeEventListener(
         Comments.CommentOverlayManager.Events.POSITIONS_UPDATED,
@@ -309,6 +325,7 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     if (!isModeActive) {
       this.#setActiveThreadId(null);
     }
+    this.#updateDocumentListeners();
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(
         'comments.toggle-comment-mode',
     );
@@ -405,10 +422,23 @@ export class CommentsOverlayWidget extends UI.Widget.Widget {
     this.requestUpdate();
   };
 
+  /**
+   * Escape priority: an open thread closes first; otherwise, in comment mode,
+   * Escape exits comment mode. Open dialogs keep handling their own Escape.
+   */
   #onKeyDown = (event: KeyboardEvent): void => {
-    if (this.#activeThreadId && event.key === 'Escape' && !event.isComposing) {
+    if (event.key !== 'Escape' || event.isComposing || !UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(event) ||
+        UI.Dialog.Dialog.hasInstance()) {
+      return;
+    }
+    if (this.#activeThreadId) {
       event.consume(true);
       this.#handleCloseCommentThread();
+      return;
+    }
+    if (this.#commentManager.isCommentMode()) {
+      event.consume(true);
+      setCommentModeByUser(this.#commentManager, false);
     }
   };
 

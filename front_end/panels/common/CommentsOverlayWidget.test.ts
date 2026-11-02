@@ -414,6 +414,23 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
       sinon.assert.calledOnceWithExactly(showViewStub, 'comments', true);
     });
 
+    it('opens the drawer on the Comments tab when Escape exits comment mode', () => {
+      const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+      widget.setOverlayManagerForTest(overlayManager);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget, {allowMultipleChildren: true});
+      commentManager.setCommentMode(true);
+
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true});
+      document.body.dispatchEvent(event);
+
+      assert.isTrue(event.defaultPrevented);
+      assert.isFalse(commentManager.isCommentMode());
+      sinon.assert.calledOnceWithExactly(showViewStub, 'comments', true);
+
+      widget.detach();
+    });
+
     it('does not reveal the Comments tab when comment mode is turned off by agent detach', () => {
       commentManager.setCommentMode(true);
       commentManager.setAgentAttached(false);
@@ -883,6 +900,116 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     el.remove();
     widget.detach();
+  });
+
+  describe('Escape in comment mode', () => {
+    function pressEscape(target: EventTarget = document.body, init: KeyboardEventInit = {}): KeyboardEvent {
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true, ...init});
+      target.dispatchEvent(event);
+      return event;
+    }
+
+    function renderWidget(): PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget {
+      const widget = new PanelCommon.CommentsOverlayWidget.CommentsOverlayWidget(undefined, [commentManager]);
+      widget.setOverlayManagerForTest(overlayManager);
+      widget.markAsRoot();
+      renderElementIntoDOM(widget, {allowMultipleChildren: true});
+      return widget;
+    }
+
+    it('closes the open thread first and exits comment mode on the next Escape', async () => {
+      const widget = renderWidget();
+      const el = document.createElement('div');
+      el.setAttribute('jslog', 'TreeItem; context: escape-exit-mode-test');
+      el.textContent = 'escape exit mode content';
+      el.getBoundingClientRect = () => new DOMRect(100, 100, 150, 40);
+      renderElementIntoDOM(el, {allowMultipleChildren: true});
+
+      commentManager.setCommentMode(true);
+      overlayManager.createComment(el, 'Saved comment')?.save();
+      widget.requestUpdate();
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isNotNull(widget.contentElement.querySelector('.comment-popup-widget'));
+
+      assert.isTrue(pressEscape().defaultPrevented);
+      widget.requestUpdate();
+      await UI.Widget.Widget.allUpdatesComplete;
+      assert.isNull(widget.contentElement.querySelector('.comment-popup-widget'));
+      assert.isTrue(commentManager.isCommentMode());
+
+      assert.isTrue(pressEscape().defaultPrevented);
+      assert.isFalse(commentManager.isCommentMode());
+
+      el.remove();
+      widget.detach();
+    });
+
+    it('exits comment mode before panel-level Escape handlers run', () => {
+      const widget = renderWidget();
+      commentManager.setCommentMode(true);
+
+      const input = document.createElement('input');
+      renderElementIntoDOM(input, {allowMultipleChildren: true});
+      const panelHandler = sinon.spy();
+      input.addEventListener('keydown', panelHandler);
+
+      const event = pressEscape(input);
+
+      assert.isTrue(event.defaultPrevented);
+      assert.isFalse(commentManager.isCommentMode());
+      sinon.assert.notCalled(panelHandler);
+
+      input.remove();
+      widget.detach();
+    });
+
+    it('ignores other keys, modified Escape and Escape during IME composition', () => {
+      const widget = renderWidget();
+      commentManager.setCommentMode(true);
+
+      const keyEvent = new KeyboardEvent('keydown', {key: 'a', bubbles: true, cancelable: true});
+      document.body.dispatchEvent(keyEvent);
+      assert.isFalse(keyEvent.defaultPrevented);
+      assert.isFalse(pressEscape(document.body, {shiftKey: true}).defaultPrevented);
+      assert.isFalse(pressEscape(document.body, {isComposing: true}).defaultPrevented);
+      assert.isTrue(commentManager.isCommentMode());
+
+      widget.detach();
+    });
+
+    it('does not exit comment mode while a dialog is open', () => {
+      const widget = renderWidget();
+      commentManager.setCommentMode(true);
+      const hasInstanceStub = sinon.stub(UI.Dialog.Dialog, 'hasInstance').returns(true);
+
+      const event = pressEscape();
+      // Restore before teardown, which may close leftover dialogs while hasInstance() is true.
+      hasInstanceStub.restore();
+
+      assert.isFalse(event.defaultPrevented);
+      assert.isTrue(commentManager.isCommentMode());
+
+      widget.detach();
+    });
+
+    it('leaves Escape untouched when comment mode is off', () => {
+      const widget = renderWidget();
+      commentManager.setCommentMode(true);
+      commentManager.setCommentMode(false);
+
+      assert.isFalse(pressEscape().defaultPrevented);
+
+      widget.detach();
+    });
+
+    it('stops handling Escape once the widget is hidden', () => {
+      const widget = renderWidget();
+      commentManager.setCommentMode(true);
+      widget.detach();
+
+      assert.isFalse(pressEscape().defaultPrevented);
+      assert.isTrue(commentManager.isCommentMode());
+    });
   });
 
   it('closes draft comment thread UI, removes draft, and propagates click when clicking outside the popup',

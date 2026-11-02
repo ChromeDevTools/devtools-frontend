@@ -139,7 +139,7 @@
 .text-with-icon {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--sys-size-3);
 }
 
 .conditions-list-header {

@@ -79,15 +79,6 @@
   white-space: pre-wrap;
 }
 
-.prompt-icon {
-  position: absolute;
-  display: block;
-  left: 7px;
-  top: 9px;
-  margin-top: -7px;
-  user-select: none;
-}
-
 .database-query-prompt-container .prompt-icon {
   top: var(--sys-size-4);
 }
